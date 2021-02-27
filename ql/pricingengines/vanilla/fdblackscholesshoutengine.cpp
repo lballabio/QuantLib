@@ -92,27 +92,15 @@ namespace QuantLib {
 
         const auto conditions =
             FdmStepConditionComposite::vanillaComposite(
-                emptyDividendSchedule,
+                zeroDividendSchedule,
                 arguments_.exercise, mesher,
                 innerValuecalculator,
                 process_->riskFreeRate()->referenceDate(),
                 process_->riskFreeRate()->dayCounter());
 
-        std::vector<Time> stoppingTimes = conditions->stoppingTimes();
-
-        for (const auto& cf: arguments_.cashFlow) {
-            const Time t = process_->time(cf->date());
-            stoppingTimes.push_back(t);
-            stoppingTimes.push_back(std::min(maturity, t+1e-5));
-        }
-
-        const auto final_conditions = ext::make_shared<FdmStepConditionComposite>(
-            std::list<std::vector<Time> >{stoppingTimes},
-            conditions->conditions());
-
         const FdmSolverDesc solverDesc = {
             mesher, FdmBoundaryConditionSet(),
-            final_conditions, innerValuecalculator,
+            conditions, innerValuecalculator,
             maturity, tGrid_, dampingSteps_ };
 
         const auto solver =
