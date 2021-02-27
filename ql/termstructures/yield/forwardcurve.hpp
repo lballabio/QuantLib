@@ -217,18 +217,7 @@ namespace QuantLib {
     : ForwardRateStructure(settlementDays, calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#if defined(QL_PATCH_MSVC)
-#pragma warning(push)
-#pragma warning(disable:4996)
-#endif
+    QL_DEPRECATED_DISABLE_WARNING
 
     template <class T>
     InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
@@ -239,15 +228,7 @@ namespace QuantLib {
     : ForwardRateStructure(dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
 
-#if defined(QL_PATCH_MSVC)
-#pragma warning(pop)
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif
+    QL_DEPRECATED_ENABLE_WARNING
 
     template <class T>
     InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
