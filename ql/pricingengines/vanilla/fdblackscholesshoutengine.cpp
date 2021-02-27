@@ -30,7 +30,6 @@
 #include <ql/methods/finitedifferences/utilities/fdmshoutloginnervaluecalculator.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesshoutengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <utility>
 
 namespace QuantLib {
 
@@ -110,7 +109,6 @@ namespace QuantLib {
         const auto final_conditions = ext::make_shared<FdmStepConditionComposite>(
             std::list<std::vector<Time> >{stoppingTimes},
             conditions->conditions());
-
 
         const FdmSolverDesc solverDesc = {
             mesher, FdmBoundaryConditionSet(),

@@ -38,6 +38,7 @@ class AmericanOptionTest {
     static void testFDShoutNPV();
     static void testZeroVolFDShoutNPV();
     static void testLargeDividendShoutNPV();
+    static void testEscrowedVsSpotAmericanOption();
     static boost::unit_test_framework::test_suite* suite();
 };
 

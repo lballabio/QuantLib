@@ -29,9 +29,9 @@ namespace QuantLib {
         Handle<YieldTermStructure> qTS,
         ext::function<Real(Date)> toTime,
         Time maturity)
-    : dividendSchedule_(dividendSchedule),
-      rTS_(rTS), qTS_(qTS),
-      toTime_(toTime), maturity_(maturity) {}
+    : dividendSchedule_(std::move(dividendSchedule)),
+      rTS_(std::move(rTS)), qTS_(std::move(qTS)),
+      toTime_(std::move(toTime)), maturity_(maturity) {}
 
 
     Real EscrowedDividendAdjustment::dividendAdjustment(Time t) const {

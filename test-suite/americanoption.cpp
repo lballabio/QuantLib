@@ -616,10 +616,10 @@ void AmericanOptionTest::testZeroVolFDShoutNPV() {
     Settings::instance().evaluationDate() = today;
 
     const auto spot = Handle<Quote>(ext::make_shared<SimpleQuote>(100.0));
-    const auto q = Handle<YieldTermStructure>(flatRate(0.00, dc));
+    const auto q = Handle<YieldTermStructure>(flatRate(0.03, dc));
     const auto r = Handle<YieldTermStructure>(flatRate(0.07, dc));
 
-    const auto volTS = Handle<BlackVolTermStructure>(flatVol(1e-4, dc));
+    const auto volTS = Handle<BlackVolTermStructure>(flatVol(1e-6, dc));
     const auto process = ext::make_shared<BlackScholesMertonProcess>(
             spot, q, r, volTS);
 
@@ -634,17 +634,17 @@ void AmericanOptionTest::testZeroVolFDShoutNPV() {
    );
 
    option.setPricingEngine(
-       ext::make_shared<FdBlackScholesVanillaEngine>(process, 400, 800));
+       ext::make_shared<FdBlackScholesVanillaEngine>(process, 50, 50));
 
    const Real americanNPV = option.NPV();
 
    option.setPricingEngine(
-       ext::make_shared<FdBlackScholesShoutEngine>(process, 100, 100));
+       ext::make_shared<FdBlackScholesShoutEngine>(process, 50, 50));
 
    const Real shoutNPV = option.NPV();
    const DiscountFactor df = r->discount(maturityDate)/r->discount(dividendDate);
 
-   const Real tol = 5e-3;
+   const Real tol = 1e-3;
    const Real diff = std::fabs(americanNPV - shoutNPV/df);
 
    if (diff > tol) {
@@ -670,12 +670,12 @@ void AmericanOptionTest::testLargeDividendShoutNPV() {
     const Real s0 = 100.0;
     const Volatility vol = 0.25;
 
-    const auto q = Handle<YieldTermStructure>(flatRate(0.0, dc));
-    const auto r = Handle<YieldTermStructure>(flatRate(0.0, dc));
+    const auto q = Handle<YieldTermStructure>(flatRate(0.00, dc));
+    const auto r = Handle<YieldTermStructure>(flatRate(0.00, dc));
     const auto vTS = Handle<BlackVolTermStructure>(flatVol(vol, dc));
 
     const auto process = ext::make_shared<BlackScholesMertonProcess>(
-        Handle<Quote>(ext::make_shared<SimpleQuote>(s0)), r, q, vTS);
+        Handle<Quote>(ext::make_shared<SimpleQuote>(s0)), q, r, vTS);
 
    const auto maturityDate = today + Period(6, Months);
    const Date dividendDate = today + Period(3, Months);
@@ -718,23 +718,101 @@ void AmericanOptionTest::testLargeDividendShoutNPV() {
    }
 }
 
+void AmericanOptionTest::testEscrowedVsSpotAmericanOption() {
+    BOOST_TEST_MESSAGE("Testing escrowed vs spot dividend model "
+            "for American options...");
+
+    SavedSettings backup;
+
+    const auto dc = Actual360();
+    const auto today = Date(27, February, 2021);
+    Settings::instance().evaluationDate() = today;
+
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.3));
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100)),
+        Handle<YieldTermStructure>(flatRate(0.08, dc)),
+        Handle<YieldTermStructure>(flatRate(0.04, dc)),
+        Handle<BlackVolTermStructure>(flatVol(vol, dc))
+    );
+
+   const auto maturityDate = today + Period(12, Months);
+   const Date dividendDate = today + Period(10, Months);
+   const Real divAmount = 10.0;
+
+   const Real strike = 100.0;
+   DividendVanillaOption option(
+       ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+       ext::make_shared<AmericanExercise>(today, maturityDate),
+       std::vector<Date>{dividendDate},
+       std::vector<Real>{divAmount}
+   );
+
+   option.setPricingEngine(
+       ext::make_shared<FdBlackScholesVanillaEngine>(process, 100, 400));
+
+   const Real spotNpv = option.NPV();
+   const Real spotDelta = option.delta();
+
+   vol->setValue(100/90.*0.3);
+
+   option.setPricingEngine(
+       MakeFdBlackScholesVanillaEngine(process)
+           .withTGrid(100)
+           .withXGrid(400)
+           .withCashDividendModel(FdBlackScholesVanillaEngine::Escrowed)
+    );
+
+   const Real escrowedNpv = option.NPV();
+   const Real escrowedDelta = option.delta();
+
+   const Real diffNpv = std::abs(escrowedNpv - spotNpv);
+   const Real tol = 1e-2;
+
+   if (diffNpv > tol) {
+       BOOST_FAIL("failed to compare American option NPV with "
+               "escrowed and spot dividend model "
+               << "\n    escrowed div: " << escrowedNpv
+               << "\n    spot div    : " << spotNpv
+               << "\n    difference: " << diffNpv
+               << "\n    tolerance:  " << tol);
+   }
+
+
+   const Real diffDelta = std::abs(escrowedDelta - spotDelta);
+
+   if (diffDelta > tol) {
+       BOOST_FAIL("failed to compare American option Delta with "
+               "escrowed and spot dividend model "
+               << "\n    escrowed div: " << escrowedDelta
+               << "\n    spot div    : " << spotDelta
+               << "\n    difference: " << diffDelta
+               << "\n    tolerance:  " << tol);
+   }
+}
+
 test_suite* AmericanOptionTest::suite() {
     auto* suite = BOOST_TEST_SUITE("American option tests");
-//    suite->add(
-//        QUANTLIB_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
-//    suite->add(
-//        QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
-//    // FLOATING_POINT_EXCEPTION
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testJuValues));
-//    // FLOATING_POINT_EXCEPTION
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdValues));
-//    // FLOATING_POINT_EXCEPTION
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
-//    // FLOATING_POINT_EXCEPTION
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testZeroVolFDShoutNPV));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testLargeDividendShoutNPV));
+    suite->add(
+        QUANTLIB_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
+    suite->add(
+        QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
+    // FLOATING_POINT_EXCEPTION
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testJuValues));
+    // FLOATING_POINT_EXCEPTION
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdValues));
+    // FLOATING_POINT_EXCEPTION
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
+    // FLOATING_POINT_EXCEPTION
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testZeroVolFDShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(
+        &AmericanOptionTest::testLargeDividendShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(
+        &AmericanOptionTest::testEscrowedVsSpotAmericanOption));
+
     return suite;
 }
 

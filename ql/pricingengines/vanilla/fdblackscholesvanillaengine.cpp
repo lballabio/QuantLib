@@ -19,6 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/functional.hpp>
 #include <ql/exercise.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/utilities/escroweddividendadjustment.hpp>
@@ -27,10 +28,10 @@
 #include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmescrowedloginnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <utility>
 
 namespace QuantLib {
 
@@ -70,6 +71,7 @@ namespace QuantLib {
 
 
     void FdBlackScholesVanillaEngine::calculate() const {
+        using namespace ext::placeholders;
 
         // 0. Cash dividend model
         const Date exerciseDate = arguments_.exercise->lastDate();
@@ -79,26 +81,30 @@ namespace QuantLib {
         Real spotAdjustment = 0.0;
         DividendSchedule dividendSchedule = DividendSchedule();
 
+        ext::shared_ptr<EscrowedDividendAdjustment> escrowedDivAdj;
+
         switch (cashDividendModel_) {
           case Spot:
             dividendSchedule = arguments_.cashFlow;
             break;
           case Escrowed:
-            using namespace ext::placeholders;
-            spotAdjustment = EscrowedDividendAdjustment(
+            QL_REQUIRE(!quantoHelper_,
+                "Escrowed dividend model is not supported for Quanto-Options");
+
+            escrowedDivAdj = ext::make_shared<EscrowedDividendAdjustment>(
                 arguments_.cashFlow,
                 process_->riskFreeRate(),
                 process_->dividendYield(),
                 ext::bind(&GeneralizedBlackScholesProcess::time, process_, _1),
-                maturity).dividendAdjustment(process_->time(settlementDate));
+                maturity
+            );
+
+            spotAdjustment =
+                escrowedDivAdj->dividendAdjustment(process_->time(settlementDate));
 
             QL_REQUIRE(process_->x0() + spotAdjustment > 0.0,
                     "spot minus dividends becomes negative");
 
-            for (const auto& divIter : arguments_.cashFlow)
-                QL_REQUIRE(divIter->amount() == 0.0 ||
-                           arguments_.exercise->type() == Exercise::European,
-                    "Escrowed dividend model expects an European option");
             break;
           default:
               QL_FAIL("unknwon cash dividend model");
@@ -108,20 +114,31 @@ namespace QuantLib {
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
+        const ext::shared_ptr<Fdm1dMesher> equityMesher =
+            ext::make_shared<FdmBlackScholesMesher>(
                     xGrid_, process_, maturity, payoff->strike(), 
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                     std::pair<Real, Real>(payoff->strike(), 0.1),
                     dividendSchedule, quantoHelper_,
-                    spotAdjustment));
+                    spotAdjustment);
         
-        const ext::shared_ptr<FdmMesher> mesher (
-            new FdmMesherComposite(equityMesher));
+        const ext::shared_ptr<FdmMesher> mesher =
+            ext::make_shared<FdmMesherComposite>(equityMesher);
         
         // 2. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-                                      new FdmLogInnerValue(payoff, mesher, 0));
+        ext::shared_ptr<FdmInnerValueCalculator> calculator;
+        switch (cashDividendModel_) {
+          case Spot:
+              calculator = ext::make_shared<FdmLogInnerValue>(
+                  payoff, mesher, 0);
+            break;
+          case Escrowed:
+              calculator = ext::make_shared<FdmEscrowedLogInnerValueCalculator>(
+                  escrowedDivAdj, payoff, mesher, 0);
+            break;
+          default:
+              QL_FAIL("unknwon cash dividend model");
+        }
 
         // 3. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions = 
