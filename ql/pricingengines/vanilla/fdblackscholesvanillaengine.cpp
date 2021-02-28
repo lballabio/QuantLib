@@ -88,9 +88,11 @@ namespace QuantLib {
             dividendSchedule = arguments_.cashFlow;
             break;
           case Escrowed:
-            for (const auto& cf: arguments_.cashFlow)
-                dividendSchedule.push_back(
-                    ext::make_shared<FixedDividend>(0.0, cf->date()));
+            if  (arguments_.exercise->type() != Exercise::European)
+                // add dividend dates as stopping times
+                for (const auto& cf: arguments_.cashFlow)
+                    dividendSchedule.push_back(
+                        ext::make_shared<FixedDividend>(0.0, cf->date()));
 
             QL_REQUIRE(quantoHelper_ == nullptr,
                 "Escrowed dividend model is not supported for Quanto-Options");
