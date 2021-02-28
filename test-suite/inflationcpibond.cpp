@@ -60,7 +60,7 @@ namespace inflation_cpi_bond_test {
         const DayCounter& dc,
         const Handle<YieldTermStructure>& yTS) {
 
-        QL_DEPRECATED_DISABLE_WARNING
+        QL_DEPRECATED_DISABLE_WARNING_III
 
         std::vector<ext::shared_ptr<Helper> > instruments;
         for (Datum datum : iiData) {
@@ -75,7 +75,7 @@ namespace inflation_cpi_bond_test {
         }
         return instruments;
 
-        QL_DEPRECATED_ENABLE_WARNING
+        QL_DEPRECATED_ENABLE_WARNING_III
     }
 
 

@@ -32,11 +32,17 @@
 #include <ql/termstructures/inflationtermstructure.hpp>
 
 
-#define QL_DEPRECATED_III_CONSTRUCTOR                                         \
-    /*! \deprecated The use of interpolated is not a feature of the index but \
-     *              of the coupons etc. using the index.                      \
-     *              Use the other constructor instead.                        \
-     *              Deprecated in version 1.22. */                            \
+#define QL_DEPRECATED_DISABLE_WARNING_III \
+    /**/                                  \
+    QL_DEPRECATED_DISABLE_WARNING
+
+#define QL_DEPRECATED_ENABLE_WARNING_III \
+    /**/                                 \
+    QL_DEPRECATED_ENABLE_WARNING
+
+
+#define QL_DEPRECATED_III_CONSTRUCTOR \
+    /**/                              \
     QL_DEPRECATED
 
 #define QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR \
@@ -48,11 +54,8 @@
     QL_DEPRECATED_ENABLE_WARNING
 
 
-#define QL_DEPRECATED_III_INTERPOLATED_METHOD                                 \
-    /*! \deprecated The use of interpolated is not a feature of the index but \
-     *              of the coupons etc. using the index.                      \
-     *              Use the other constructor instead.                        \
-     *              Deprecated in version 1.22. */                            \
+#define QL_DEPRECATED_III_INTERPOLATED_METHOD \
+    /**/                                      \
     QL_DEPRECATED
 
 #define QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD \
@@ -64,11 +67,8 @@
     QL_DEPRECATED_ENABLE_WARNING
 
 
-#define QL_DEPRECATED_III_INTERPOLATED_MEMBER                                 \
-    /*! \deprecated The use of interpolated is not a feature of the index but \
-     *              of the coupons etc. using the index.                      \
-     *              Use the other constructor instead.                        \
-     *              Deprecated in version 1.22. */                            \
+#define QL_DEPRECATED_III_INTERPOLATED_MEMBER \
+    /**/                                      \
     QL_DEPRECATED
 
 #define QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER \

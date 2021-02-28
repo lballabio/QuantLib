@@ -70,7 +70,7 @@ namespace inflation_cpi_capfloor_test {
         const DayCounter &dc,
         const Handle<YieldTermStructure>& discountCurve) {
 
-        QL_DEPRECATED_DISABLE_WARNING
+        QL_DEPRECATED_DISABLE_WARNING_III
 
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
@@ -85,7 +85,7 @@ namespace inflation_cpi_capfloor_test {
 
         return instruments;
         
-        QL_DEPRECATED_ENABLE_WARNING
+        QL_DEPRECATED_ENABLE_WARNING_III
     }
 
 
@@ -335,7 +335,7 @@ namespace inflation_cpi_capfloor_test {
 void InflationCPICapFloorTest::cpicapfloorpricesurface() {
     BOOST_TEST_MESSAGE("Checking CPI cap/floor against price surface...");
     
-    QL_DEPRECATED_DISABLE_WARNING
+    QL_DEPRECATED_DISABLE_WARNING_III
 
     using namespace inflation_cpi_capfloor_test;
     
@@ -400,14 +400,14 @@ void InflationCPICapFloorTest::cpicapfloorpricesurface() {
     // remove circular refernce
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 
-    QL_DEPRECATED_ENABLE_WARNING
+    QL_DEPRECATED_ENABLE_WARNING_III
 }
 
 
 void InflationCPICapFloorTest::cpicapfloorpricer() {
     BOOST_TEST_MESSAGE("Checking CPI cap/floor pricer...");
 
-    QL_DEPRECATED_DISABLE_WARNING
+    QL_DEPRECATED_DISABLE_WARNING_III
     
     using namespace inflation_cpi_capfloor_test;
 
@@ -468,7 +468,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
     // remove circular refernce
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 
-    QL_DEPRECATED_ENABLE_WARNING
+    QL_DEPRECATED_ENABLE_WARNING_III
 }
 
 
