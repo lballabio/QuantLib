@@ -595,7 +595,7 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
 
     ext::shared_ptr<PricingEngine> mcdoublebarrierengine;
     mcdoublebarrierengine = MakeMCDoubleBarrierEngine<PseudoRandom>(bsmProcess)
-        .withSteps(10000)
+        .withSteps(5000)
         .withAntitheticVariate()
         .withAbsoluteTolerance(0.5)
         .withSeed(1);
@@ -618,18 +618,20 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
     knockOutDoubleBarrierOption.setPricingEngine(analyticdoublebarrierengine);
     analytical = knockOutDoubleBarrierOption.NPV();
 
+    tolerance = 0.01;
+
     mcdoublebarrierengine = MakeMCDoubleBarrierEngine<PseudoRandom>(bsmProcess)
         .withSteps(10000)
         .withAntitheticVariate()
-        .withAbsoluteTolerance(0.005)
-        .withSeed(3);
+        .withAbsoluteTolerance(tolerance)
+        .withSeed(10);
     knockOutDoubleBarrierOption.setPricingEngine(mcdoublebarrierengine);
     monteCarlo = knockOutDoubleBarrierOption.NPV();
 
-    percentageDiff = std::abs(analytical - monteCarlo) / analytical;
+    Real diff = std::abs(analytical - monteCarlo);
 
-    if (percentageDiff > tolerance){
-        REPORT_FAILURE_DOUBLE_BARRIER_MC(analytical, monteCarlo, percentageDiff);
+    if (diff > tolerance){
+        REPORT_FAILURE_DOUBLE_BARRIER_MC(analytical, monteCarlo, diff);
     }
 
 }
@@ -638,18 +640,19 @@ test_suite* DoubleBarrierOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("DoubleBarrier");
 
     if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &DoubleBarrierOptionTest::testEuropeanHaugValues));
+        suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testEuropeanHaugValues));
     }
 
     return suite;
 }
 
-test_suite* DoubleBarrierOptionTest::experimental() {
+test_suite* DoubleBarrierOptionTest::experimental(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("DoubleBarrier_experimental");
-    suite->add(QUANTLIB_TEST_CASE(
-                      &DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues));
-    suite->add(QUANTLIB_TEST_CASE(
-                   &DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical));
+    suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues));
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical));
+    }
+
     return suite;
 }

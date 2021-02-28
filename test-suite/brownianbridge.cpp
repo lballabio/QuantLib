@@ -173,7 +173,7 @@ void BrownianBridgeTest::testPathGeneration() {
 
     Size N = times.size();
 
-    Size samples = 262143;
+    Size samples = 131071;
     unsigned long seed = 42;
     SobolRsg sobol(N, seed);
     InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal> gsg(sobol);
@@ -218,7 +218,7 @@ void BrownianBridgeTest::testPathGeneration() {
     std::vector<Real> mean = stats2.mean();
     Matrix covariance = stats2.covariance();
 
-    Real meanTolerance = 1.5e-5;
+    Real meanTolerance = 3.0e-5;
     Real covTolerance = 3.0e-3;
 
     Real maxMeanError = maxRelDiff(mean.begin(), mean.end(),

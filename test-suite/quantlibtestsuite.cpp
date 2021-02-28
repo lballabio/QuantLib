@@ -371,10 +371,10 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     test->add(QUANTLIB_TEST_CASE(startTimer));
 
-    test->add(AmericanOptionTest::suite());
+    test->add(AmericanOptionTest::suite(speed));
     test->add(AndreasenHugeVolatilityInterplTest::suite(speed));
     test->add(ArrayTest::suite());
-    test->add(AsianOptionTest::suite());
+    test->add(AsianOptionTest::suite(speed));
     test->add(AssetSwapTest::suite()); // fails with QL_USE_INDEXED_COUPON
     test->add(AutocovariancesTest::suite());
     test->add(BarrierOptionTest::suite());
@@ -408,12 +408,12 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ExchangeRateTest::suite());
     test->add(FastFourierTransformTest::suite());
     test->add(FdHestonTest::suite(speed));
-    test->add(FdmLinearOpTest::suite());
+    test->add(FdmLinearOpTest::suite(speed));
     test->add(FdCevTest::suite(speed));
     test->add(FdCIRTest::suite(speed));
     test->add(FdSabrTest::suite(speed));
     test->add(FittedBondDiscountCurveTest::suite());
-    test->add(ForwardOptionTest::suite());
+    test->add(ForwardOptionTest::suite(speed));
     test->add(ForwardRateAgreementTest::suite());
     test->add(FunctionsTest::suite());
     test->add(GARCHTest::suite());
@@ -434,7 +434,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(JumpDiffusionTest::suite());
     test->add(LazyObjectTest::suite());
     test->add(LinearLeastSquaresRegressionTest::suite());
-    test->add(LookbackOptionTest::suite());
+    test->add(LookbackOptionTest::suite(speed));
     test->add(LowDiscrepancyTest::suite());
     test->add(MarketModelTest::suite(speed));
     test->add(MarketModelCmsTest::suite(speed));
@@ -444,7 +444,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MarketModelSmmCapletHomoCalibrationTest::suite());
     test->add(MarkovFunctionalTest::suite(speed));
     test->add(MatricesTest::suite());
-    test->add(MCLongstaffSchwartzEngineTest::suite());
+    test->add(MCLongstaffSchwartzEngineTest::suite(speed));
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
     test->add(NumericalDifferentiationTest::suite());
@@ -473,7 +473,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(StatisticsTest::suite());
     test->add(SwapTest::suite());
     test->add(SwapForwardMappingsTest::suite());
-    test->add(SwaptionTest::suite());
+    test->add(SwaptionTest::suite(speed));
     test->add(SwaptionVolatilityCubeTest::suite());
     test->add(SwaptionVolatilityMatrixTest::suite());
     test->add(TermStructureTest::suite());
@@ -488,10 +488,10 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     // tests for experimental classes
     test->add(AmortizingBondTest::suite());
-    test->add(AsianOptionTest::experimental());
+    test->add(AsianOptionTest::experimental(speed));
     test->add(BasismodelsTest::suite());
     test->add(BarrierOptionTest::experimental());
-    test->add(DoubleBarrierOptionTest::experimental());
+    test->add(DoubleBarrierOptionTest::experimental(speed));
     test->add(BlackDeltaCalculatorTest::suite());
     test->add(CallableBondTest::suite());
     test->add(CatBondTest::suite());

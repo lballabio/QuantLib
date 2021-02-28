@@ -21,6 +21,7 @@
 #define quantlib_test_mc_longstaff_schwartz_engine_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -29,7 +30,7 @@ class MCLongstaffSchwartzEngineTest {
   public:
     static void testAmericanOption();
     static void testAmericanMaxOption();
-    static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 

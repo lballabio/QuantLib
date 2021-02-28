@@ -4723,8 +4723,6 @@ test_suite* MarketModelTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testOneStepForwardsAndOptionlets));
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testOneStepNormalForwardsAndOptionlets));
 
-    suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testGreeks));
-
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdVolatilityIntegration));
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdVolatilityCompare));
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAbcdVolatilityFit));
@@ -4738,8 +4736,11 @@ test_suite* MarketModelTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCovariance));
 
     if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testGreeks));
         suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testPathwiseVegas));
+    }
 
+    if (speed == Slow) {
         using namespace market_model_test;
 
         setup();
@@ -4763,9 +4764,7 @@ test_suite* MarketModelTest::suite(SpeedLevel speed) {
         suite->add(QUANTLIB_TEST_CASE([=](){
             MarketModelTest::testCallableSwapAnderson(ExponentialCorrelationAbcdVolatility, todaysForwards.size());
         }));
-    }
 
-    if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testAllMultiStepProducts));
         suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapNaif));
         suite->add(QUANTLIB_TEST_CASE(&MarketModelTest::testCallableSwapLS));

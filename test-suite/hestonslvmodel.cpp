@@ -2580,47 +2580,32 @@ void HestonSLVModelTest::testDiffusionAndDriftSlvProcess() {
 test_suite* HestonSLVModelTest::experimental(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Heston Stochastic Local Volatility tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootZeroFlowBC));
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testTransformedZeroFlowBC));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testBarrierPricingViaHestonLocalVol));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testMonteCarloVsFdmPricing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testLocalVolsvSLVPropDensity));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonSLVModelTest::testDiffusionAndDriftSlvProcess));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootEvolveWithStationaryDensity));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootLogEvolveWithStationaryDensity));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testSquareRootFokkerPlanckFwdEquation));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBarrierPricingViaHestonLocalVol));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testLocalVolsvSLVPropDensity));
+    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testDiffusionAndDriftSlvProcess));
 
     if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
+        suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage));
+        suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testMonteCarloVsFdmPricing));
     }
 
     if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &HestonSLVModelTest::testMonteCarloCalibration));
-        suite->add(QUANTLIB_TEST_CASE(
-            &HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
-        suite->add(QUANTLIB_TEST_CASE(
-            &HestonSLVModelTest::testMoustacheGraph));
+        suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testHestonFokkerPlanckFwdEquation));
+        suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testMonteCarloCalibration));
+        suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
+        suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testMoustacheGraph));
     }
 
 //    these tests take very long
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testForwardSkewSLV));
+//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testForwardSkewSLV));
 //    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testFDMCalibration));
-//    suite->add(QUANTLIB_TEST_CASE(
-//        &HestonSLVModelTest::testBarrierPricingMixedModels));
+//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBarrierPricingMixedModels));
 
     return suite;
 }
