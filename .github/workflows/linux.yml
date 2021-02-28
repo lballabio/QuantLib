@@ -159,7 +159,6 @@ jobs:
             cxx: g++
             configureflags: --enable-parallel-unit-test-runner
             moreflags: -lboost_thread -lboost_system -pthread -lrt
-            tests: true
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
     - uses: actions/checkout@v2
