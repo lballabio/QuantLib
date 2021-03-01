@@ -3228,53 +3228,34 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDAXCalibration));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsBlack));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticVsCached));
-    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
-    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMultipleStrikesEngine));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testMcVsCached));
-    suite->add(QUANTLIB_TEST_CASE(
-                    &HestonModelTest::testAnalyticPiecewiseTimeDependent));
-    suite->add(QUANTLIB_TEST_CASE(
-                    &HestonModelTest::testDAXCalibrationOfTimeDependentModel));
-    suite->add(QUANTLIB_TEST_CASE(
-                    &HestonModelTest::testAlanLewisReferencePrices));
-    suite->add(QUANTLIB_TEST_CASE(
-                    &HestonModelTest::testExpansionOnAlanLewisReference));
-    suite->add(QUANTLIB_TEST_CASE(
-                    &HestonModelTest::testExpansionOnFordeReference));
-    suite->add(QUANTLIB_TEST_CASE(
-                    &HestonModelTest::testAllIntegrationMethods));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticPiecewiseTimeDependent));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDAXCalibrationOfTimeDependentModel));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAlanLewisReferencePrices));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testExpansionOnAlanLewisReference));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testExpansionOnFordeReference));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAllIntegrationMethods));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonCumulants));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonEngine));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCharacteristicFct));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonModelTest::testAndersenPiterbargPricing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonModelTest::testAndersenPiterbargControlVariateIntegrand));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonModelTest::testAndersenPiterbargConvergence));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonModelTest::testPiecewiseTimeDependentChFvsHestonChF));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonModelTest::testPiecewiseTimeDependentComparison));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonModelTest::testPiecewiseTimeDependentChFAsymtotic));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonModelTest::testSmallSigmaExpansion));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonModelTest::testSmallSigmaExpansion4ExpFitting));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonModelTest::testExponentialFitting4StrikesAndMaturities));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAndersenPiterbargPricing));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAndersenPiterbargControlVariateIntegrand));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAndersenPiterbargConvergence));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testPiecewiseTimeDependentChFvsHestonChF));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testPiecewiseTimeDependentComparison));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testPiecewiseTimeDependentChFAsymtotic));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testSmallSigmaExpansion));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testSmallSigmaExpansion4ExpFitting));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testExponentialFitting4StrikesAndMaturities));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testHestonEngineIntegration));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonModelTest::testOptimalControlVariateChoice));
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonModelTest::testAsymptoticControlVariate));
-
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testOptimalControlVariateChoice));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAsymptoticControlVariate));
 
     if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &HestonModelTest::testFdBarrierVsCached));
+        suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
+        suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdBarrierVsCached));
+        suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testFdVanillaVsCached));
     }
 
     if (speed == Slow) {
@@ -3286,7 +3267,6 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
 
 test_suite* HestonModelTest::experimental() {
     auto* suite = BOOST_TEST_SUITE("Heston model experimental tests");
-    suite->add(QUANTLIB_TEST_CASE(
-        &HestonModelTest::testAnalyticPDFHestonEngine));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAnalyticPDFHestonEngine));
     return suite;
 }

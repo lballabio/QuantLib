@@ -1715,40 +1715,31 @@ void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() 
     }
 }
 
-test_suite* FdmLinearOpTest::suite() {
+test_suite* FdmLinearOpTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("linear operator tests");
 
-    suite->add(
-        QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmLinearOpLayout));
-    suite->add(
-        QUANTLIB_TEST_CASE(&FdmLinearOpTest::testUniformGridMesher));
-    suite->add(
-        QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFirstDerivativesMapApply));
-    suite->add(
-        QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSecondDerivativesMapApply));
-    suite->add(QUANTLIB_TEST_CASE(
-        &FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids));
-    suite->add(QUANTLIB_TEST_CASE(
-        &FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply));
-    suite->add(
-        QUANTLIB_TEST_CASE(&FdmLinearOpTest::testTripleBandMapSolve));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmLinearOpLayout));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testUniformGridMesher));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFirstDerivativesMapApply));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSecondDerivativesMapApply));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testTripleBandMapSolve));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonBarrier));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonAmerican));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonExpress));
-    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonHullWhiteOp));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testBiCGstab));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testGMRES));
-    suite->add(
-        QUANTLIB_TEST_CASE(&FdmLinearOpTest::testCrankNicolsonWithDamping));
-    suite->add(
-        QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSpareMatrixReference));
-    suite->add(
-        QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSparseMatrixZeroAssignment));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testCrankNicolsonWithDamping));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSpareMatrixReference));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testSparseMatrixZeroAssignment));
     suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmMesherIntegral));
-    suite->add(QUANTLIB_TEST_CASE(
-        &FdmLinearOpTest::testHighInterestRateBlackScholesMesher));
-    suite->add(QUANTLIB_TEST_CASE(
-        &FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testHighInterestRateBlackScholesMesher));
+    suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&FdmLinearOpTest::testFdmHestonHullWhiteOp));
+    }
 
     return suite;
 }

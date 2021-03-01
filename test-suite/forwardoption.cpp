@@ -43,7 +43,7 @@ using namespace boost::unit_test_framework;
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, moneyness, reset, expected, calculated, \
                        error, tolerance) \
-    BOOST_FAIL("Forward " << exerciseTypeToString(exercise) << " " \
+    BOOST_ERROR("Forward " << exerciseTypeToString(exercise) << " " \
                << payoff->optionType() << " option with " \
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    spot value:        " << s << "\n" \
@@ -704,9 +704,9 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
 
    for (auto type : optionTypes) {
 
-       Real tolerance = 1e-4;
+       Real tolerance = 1e-3;
        Size timeSteps = 50;
-       Size numberOfSamples = 131072;
+       Size numberOfSamples = 16383;
        Size mcSeed = 42;
 
        Real q = 0.03;
@@ -754,11 +754,11 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
        ext::shared_ptr<AnalyticHestonForwardEuropeanEngine> analyticEngine(
            new AnalyticHestonForwardEuropeanEngine(hestonProcess));
 
-      Real moneyness[] = { 0.8, 0.9, 1.0, 1.1, 1.2 };
+      Real moneyness[] = { 0.8, 1.0, 1.2 };
 
-      for (double& moneynes : moneyness) {
+      for (double& m : moneyness) {
 
-          ForwardVanillaOption option(moneynes, reset, payoff, exercise);
+          ForwardVanillaOption option(m, reset, payoff, exercise);
 
           option.setPricingEngine(analyticEngine);
           Real analyticPrice = option.NPV();
@@ -769,7 +769,7 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
 
           if (error > tolerance) {
               REPORT_FAILURE("testHestonMCVsAnalyticPrices", payoff, exercise, s, q, r, today, vol,
-                             moneynes, reset, analyticPrice, mcPrice, error, tolerance);
+                             m, reset, analyticPrice, mcPrice, error, tolerance);
           }
 
           option.setPricingEngine(mcEngineCv);
@@ -778,7 +778,7 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
           Real errorCv = relativeError(analyticPrice, mcPriceCv, s);
           if (errorCv > tolerance) {
               REPORT_FAILURE("testHestonMCControlVariateVsAnalyticPrices", payoff, exercise, s, q,
-                             r, today, vol, moneynes, reset, analyticPrice, mcPrice, errorCv,
+                             r, today, vol, m, reset, analyticPrice, mcPrice, errorCv,
                              tolerance);
           }
       }
@@ -787,16 +787,23 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
 
 
 
-test_suite* ForwardOptionTest::suite() {
+test_suite* ForwardOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Forward option tests");
+
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testValues));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testGreeks));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceValues));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testPerformanceGreeks));
     suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testGreeksInitialization));
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testMCPrices));
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testHestonMCPrices));
-    suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testHestonAnalyticalVsMCPrices));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testMCPrices));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testHestonAnalyticalVsMCPrices));
+        suite->add(QUANTLIB_TEST_CASE(&ForwardOptionTest::testHestonMCPrices));
+    }
 
     return suite;
 }

@@ -313,13 +313,15 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     }
 }
 
-test_suite* MCLongstaffSchwartzEngineTest::suite() {
+test_suite* MCLongstaffSchwartzEngineTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Longstaff Schwartz MC engine tests");
-    // FLOATING_POINT_EXCEPTION
-    suite->add(QUANTLIB_TEST_CASE(
-         &MCLongstaffSchwartzEngineTest::testAmericanOption));
-    suite->add(QUANTLIB_TEST_CASE(
-         &MCLongstaffSchwartzEngineTest::testAmericanMaxOption));
+
+    suite->add(QUANTLIB_TEST_CASE(&MCLongstaffSchwartzEngineTest::testAmericanMaxOption));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&MCLongstaffSchwartzEngineTest::testAmericanOption));
+    }
+
     return suite;
 }
 

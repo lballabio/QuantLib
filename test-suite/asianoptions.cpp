@@ -514,15 +514,23 @@ void testDiscreteGeometricAveragePriceHeston(const ext::shared_ptr<PricingEngine
 
     // data from "A Recursive Method for Discretely Monitored Geometric Asian Option
     // Prices", Kim, Kim, Kim & Wee, Bull. Korean Math. Soc. 53, 733-749, 2016
-    int days[] =    {30, 91, 182, 365, 730, 1095, 30, 91, 182, 365, 730, 1095, 30,
-                      91, 182, 365, 730, 1095};
-    Real strikes[] = {90, 90, 90, 90, 90, 90, 100, 100, 100, 100, 100, 100, 110,
-                      110, 110, 110, 110, 110};
+    int days[] = {
+        30, 91, 182, 365, 730, 1095,
+        30, 91, 182, 365, 730, 1095,
+        30, 91, 182, 365, 730, 1095
+    };
+    Real strikes[] = {
+        90, 90, 90, 90, 90, 90,
+        100, 100, 100, 100, 100, 100,
+        110, 110, 110, 110, 110, 110
+    };
 
     // Prices from Tables 1, 2 and 3
-    Real prices[] =  {10.2732, 10.9554, 11.9916, 13.6950, 16.1773, 18.0146, 2.4389,
-                      3.7881, 5.2132, 7.2243, 9.9948, 12.0639, 0.1012, 0.5949, 1.4444,
-                      2.9479, 5.3531, 7.3315};
+    Real prices[] = {
+        10.2732, 10.9554, 11.9916, 13.6950, 16.1773, 18.0146,
+        2.4389, 3.7881, 5.2132, 7.2243, 9.9948, 12.0639,
+        0.1012, 0.5949, 1.4444, 2.9479, 5.3531, 7.3315
+    };
 
     DayCounter dc = Actual365Fixed();
     Date today = Settings::instance().evaluationDate();
@@ -616,9 +624,11 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
 
     // 30-day options need wider tolerance due to uncertainty around what "weekly
     // fixing" dates mean over a 30-day month!
-    Real tol[] =     {4.0e-2, 2.0e-2, 2.0e-2, 3.0e-2, 3.0e-2, 2.0e-2, 1.0e-1, 1.0e-2,
-                      2.0e-2, 2.0e-2, 2.0e-2, 1.0e-2, 2.0e-2, 1.0e-2, 1.0e-2, 1.0e-2,
-                      1.0e-2, 1.0e-2};
+    Real tol[] = {
+        4.0e-2, 2.0e-2, 2.0e-2, 3.0e-2, 3.0e-2, 6.0e-2,
+        1.0e-1, 1.0e-2, 2.0e-2, 2.0e-2, 4.0e-2, 6.0e-2,
+        2.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 4.0e-2, 6.0e-2
+    };
 
     DayCounter dc = Actual365Fixed();
     Date today = Settings::instance().evaluationDate();
@@ -641,7 +651,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
 
     ext::shared_ptr<PricingEngine> engine =
         MakeMCDiscreteGeometricAPHestonEngine<LowDiscrepancy>(hestonProcess)
-        .withSamples(65535)
+        .withSamples(32767)
         .withSeed(43);
 
     testDiscreteGeometricAveragePriceHeston(engine, tol);
@@ -965,7 +975,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
         ext::shared_ptr<PricingEngine> engine =
             MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
                 .withSeed(42)
-                .withSamples(32768);
+                .withSamples(8191);
 
         DiscreteAveragingAsianOption option(averageType, runningSum,
                                             pastFixings, fixingDates,
@@ -989,7 +999,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
             MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
                 .withSeed(42)
                 .withSteps(48)
-                .withSamples(8192)
+                .withSamples(8191)
                 .withControlVariate(true);
 
         option.setPricingEngine(engine2);
@@ -1039,14 +1049,14 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
     ext::shared_ptr<PricingEngine> engine3 =
         MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
             .withSeed(42)
-            .withSteps(360)
-            .withSamples(32768);
+            .withSteps(180)
+            .withSamples(32767);
 
     ext::shared_ptr<PricingEngine> engine4 =
         MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
             .withSeed(42)
-            .withSteps(360)
-            .withSamples(16384)
+            .withSteps(180)
+            .withSamples(16383)
             .withControlVariate(true);
 
     std::vector<Date> fixingDates(120);
@@ -1057,7 +1067,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
     ext::shared_ptr<Exercise> exercise(new
         EuropeanExercise(fixingDates[119]));
 
-    for (Size i=0; i<5; i++) {
+    for (Size i=0; i<LENGTH(prices); i++) {
         Real strike = strikes[i];
         Real expected = prices[i];
 
@@ -1070,7 +1080,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
 
         option.setPricingEngine(engine3);
         Real calculated = option.NPV();
-        Real tolerance = 5.0e-2;
+        Real tolerance = 6.0e-2;
 
         if (std::fabs(calculated-expected) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
@@ -1984,46 +1994,41 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston() {
 
 }
 
-test_suite* AsianOptionTest::suite() {
+test_suite* AsianOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Asian option tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticContinuousGeometricAveragePrice));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testMCDiscreteGeometricAveragePrice));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testMCDiscreteArithmeticAverageStrike));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testPastFixings));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAllFixingsInThePast));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticContinuousGeometricAveragePrice));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAverageStrike));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteGeometricAveragePrice));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAverageStrike));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testPastFixings));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAllFixingsInThePast));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
+    }
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston));
+        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston));
+    }
 
     return suite;
 }
 
-test_suite* AsianOptionTest::experimental() {
+test_suite* AsianOptionTest::experimental(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Asian option experimental tests");
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testLevyEngine));
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testVecerEngine));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings));
+    }
+
     return suite;
 }

@@ -658,19 +658,18 @@ void LookbackOptionTest::testMonteCarloLookback() {
 }
 
 
-test_suite* LookbackOptionTest::suite() {
+test_suite* LookbackOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Lookback option tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
-                &LookbackOptionTest::testAnalyticContinuousFloatingLookback));
-    suite->add(QUANTLIB_TEST_CASE(
-                &LookbackOptionTest::testAnalyticContinuousFixedLookback));
-    suite->add(QUANTLIB_TEST_CASE(
-                &LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback));
-    suite->add(QUANTLIB_TEST_CASE(
-                &LookbackOptionTest::testAnalyticContinuousPartialFixedLookback));
-    suite->add(QUANTLIB_TEST_CASE(
-                   &LookbackOptionTest::testMonteCarloLookback));
+    suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testAnalyticContinuousFloatingLookback));
+    suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testAnalyticContinuousFixedLookback));
+    suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback));
+    suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testAnalyticContinuousPartialFixedLookback));
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testMonteCarloLookback));
+    }
+
     return suite;
 }
 
