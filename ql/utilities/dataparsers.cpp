@@ -28,9 +28,6 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#if !defined(x64) && !defined(QL_PATCH_SOLARIS)
-#include <boost/lexical_cast.hpp>
-#endif
 #ifndef QL_PATCH_SOLARIS
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -38,6 +35,7 @@
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
+#include <string>
 #include <locale>
 #include <cctype>
 #if defined(BOOST_NO_STDC_NAMESPACE)
@@ -49,11 +47,7 @@ namespace QuantLib {
     namespace io {
 
         Integer to_integer(const std::string& str) {
-        #if !defined(x64) && !defined(QL_PATCH_SOLARIS)
-            return boost::lexical_cast<Integer>(str.c_str());
-        #else
-            return std::atoi(str.c_str());
-        #endif
+            return std::stoi(str);
         }
 
     }

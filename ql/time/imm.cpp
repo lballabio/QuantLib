@@ -154,8 +154,6 @@ namespace QuantLib {
         else if (ms=="Z") m = December;
         else QL_FAIL("invalid IMM month letter");
 
-//        Year y = boost::lexical_cast<Year>(); // lexical_cast causes compilation errors with x64
-
         Year y= io::to_integer(code.substr(1,1));
         /* year<1900 are not valid QuantLib years: to avoid a run-time
            exception few lines below we need to add 10 years right away */
