@@ -44,14 +44,6 @@
 
 namespace QuantLib {
 
-    namespace io {
-
-        Integer to_integer(const std::string& str) {
-            return std::stoi(str);
-        }
-
-    }
-
     Period PeriodParser::parse(const std::string& str) {
         QL_REQUIRE(str.length()>1, "period string length must be at least 2");
 
@@ -93,7 +85,7 @@ namespace QuantLib {
         QL_REQUIRE(nPos<iPos, "no numbers of " << units << " provided");
         Integer n;
         try {
-            n = io::to_integer(str.substr(nPos,iPos));
+            n = std::stoi(str.substr(nPos,iPos));
         } catch (std::exception& e) {
             QL_FAIL("unable to parse the number of units of " << units <<
                     " in '" << str << "'. Error:" << e.what());
@@ -121,9 +113,9 @@ namespace QuantLib {
     Date DateParser::parseISO(const std::string& str) {
         QL_REQUIRE(str.size() == 10 && str[4] == '-' && str[7] == '-',
                    "invalid format");
-        Integer year = io::to_integer(str.substr(0, 4));
-        Month month = static_cast<Month>(io::to_integer(str.substr(5, 2)));
-        Integer day = io::to_integer(str.substr(8, 2));
+        Integer year = std::stoi(str.substr(0, 4));
+        Month month = static_cast<Month>(std::stoi(str.substr(5, 2)));
+        Integer day = std::stoi(str.substr(8, 2));
 
         return {day, month, year};
     }

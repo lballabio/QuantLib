@@ -30,6 +30,7 @@
 #pragma GCC diagnostic pop
 #endif
 #include <algorithm>
+#include <string>
 
 using boost::algorithm::to_upper_copy;
 using std::string;
@@ -103,7 +104,7 @@ namespace QuantLib {
         else if (monthString=="DEC") m = December;
         else QL_FAIL("not an ECB month (and it should have been)");
 
-        Year y = io::to_integer(code.substr(3, 2));
+        Year y = std::stoi(code.substr(3, 2));
         Date referenceDate = (refDate != Date() ?
                               refDate :
                               Date(Settings::instance().evaluationDate()));
@@ -252,7 +253,7 @@ namespace QuantLib {
         else if (monthString=="OCT") result << "NOV" << code.substr(3, 2);
         else if (monthString=="NOV") result << "DEC" << code.substr(3, 2);
         else if (monthString=="DEC") {
-            unsigned int y = (io::to_integer(code.substr(3, 2)) + 1) % 100;
+            unsigned int y = (std::stoi(code.substr(3, 2)) + 1) % 100;
             string padding;
             if (y < 10)
                 padding = "0";
