@@ -94,12 +94,12 @@
 #include <ql/types.hpp>
 #include <ql/version.hpp>
 #include <boost/test/unit_test.hpp>
-#include <boost/timer/timer.hpp>
 #include <iomanip>
 #include <iostream>
 #include <list>
 #include <string>
 #include <utility>
+#include <chrono>
 
 /* PAPI code
 #include <stdio.h
@@ -114,23 +114,8 @@
 #  define BOOST_LIB_NAME boost_unit_test_framework
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_timer
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_chrono
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_system
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-
-/* uncomment the following lines to unmask floating-point exceptions.
-   See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
-*/
-//#  include <float.h>
-//   namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
-
 #endif
+
 #include "utilities.hpp"
 
 #include "americanoption.hpp"
@@ -158,7 +143,6 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    boost::timer::cpu_timer t;
     std::list<double> runTimes;
 
     /* PAPI code
@@ -171,19 +155,14 @@ namespace {
         typedef void (*fct_ptr)();
         explicit TimedCase(fct_ptr f) : f_(f) {}
 
-        void startTimer() const {
-            t.start();
-
+        void startMeasurement() const {
             /* PAPI code
                lflop = flop;
                PAPI_flops(&real_time, &proc_time, &flop, &mflops);
             */
         }
 
-        void stopTimer() const {
-            t.stop();
-            runTimes.push_back(t.elapsed().wall * 1e-9);
-
+        void stopMeasurement() const {
             /* PAPI code
                PAPI_flops(&real_time, &proc_time, &flop, &mflops);
                printf("Real_time: %f Proc_time: %f Total mflop: %f\n",
@@ -192,10 +171,13 @@ namespace {
         }
 
         void operator()() const {
-            startTimer();
+            startMeasurement();
+            auto startTime = std::chrono::steady_clock::now();
             BOOST_CHECK(true); // to prevent no-assertion warning
             f_();
-            stopTimer();
+            auto stopTime = std::chrono::steady_clock::now();
+            stopMeasurement();
+            runTimes.push_back(std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count() * 1e-6);
         }
       private:
         fct_ptr f_;
