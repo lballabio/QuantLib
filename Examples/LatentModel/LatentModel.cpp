@@ -26,7 +26,7 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
-
+#include <string>
 #include <iostream>
 #include <iomanip>
 
@@ -68,8 +68,7 @@ int main(int, char* []) {
         std::vector<Real> hazardRates(3, -std::log(1.-0.01));
         std::vector<std::string> names;
         for(Size i=0; i<hazardRates.size(); i++)
-            names.push_back(std::string("Acme") + 
-                boost::lexical_cast<std::string>(i));
+            names.push_back(std::string("Acme") + std::to_string(i));
         std::vector<Handle<DefaultProbabilityTermStructure> > defTS;
         defTS.reserve(hazardRates.size());
         for (double& hazardRate : hazardRates)
