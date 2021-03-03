@@ -182,7 +182,7 @@ namespace QuantLib {
         #if defined(QL_ENABLE_SESSIONS)
         ThreadKey id = sessionId();
         #else
-        ThreadKey id = 0;
+        ThreadKey id {};
         #endif
 
         ext::shared_ptr<T>& instance = instances_[id];
