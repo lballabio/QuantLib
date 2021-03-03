@@ -43,16 +43,9 @@
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
-#include <boost/timer/timer.hpp>
 
 #define BOOST_TEST_NO_MAIN 1
-#if BOOST_VERSION < 107000
-#define timer __TIMER__
 #include <boost/test/included/unit_test.hpp>
-#undef timer
-#else
-#include <boost/test/included/unit_test.hpp>
-#endif
 #include <boost/algorithm/string.hpp>
 
 #include <map>
@@ -60,17 +53,12 @@
 #include <sstream>
 #include <utility>
 #include <fstream>
+#include <chrono>
 #include <string>
 #include <cstring>
 #include <cstdlib>
 
 #ifdef BOOST_MSVC
-#  define BOOST_LIB_NAME boost_timer
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_chrono
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
 #  define BOOST_LIB_NAME boost_system
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
@@ -408,7 +396,7 @@ int main( int argc, char* argv[] )
             message_queue rq(open_only, testResultQueueName);
 
             while (!id.terminate) {
-                boost::timer::cpu_timer t;
+                auto startTime = std::chrono::steady_clock::now();
 
                 #if BOOST_VERSION < 106200
                     BOOST_TEST_FOREACH( test_observer*, to,
@@ -425,8 +413,10 @@ int main( int argc, char* argv[] )
                     framework::run(id.id, false);
                 #endif
 
+                auto stopTime = std::chrono::steady_clock::now();
+                double T = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count() * 1e-6;
                 runTimeLogs.push_back(std::make_pair(
-                    framework::get(id.id, TUT_ANY).p_name, t.elapsed().wall));
+                    framework::get(id.id, TUT_ANY).p_name, T));
 
                 output_logstream(log_stream(), oldBuf, logBuf);
 

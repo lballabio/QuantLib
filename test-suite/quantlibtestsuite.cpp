@@ -29,8 +29,6 @@
 #include <boost/test/unit_test.hpp>
 #endif
 
-#include <boost/timer/timer.hpp>
-
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
 */
@@ -41,24 +39,10 @@
 #  define BOOST_LIB_NAME boost_unit_test_framework
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_timer
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_chrono
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_system
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
 #endif
 
-/* uncomment the following lines to unmask floating-point exceptions.
-   See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
-*/
-//#  include <float.h>
-//   namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
-
 #endif
+
 #include "utilities.hpp"
 #include "speedlevel.hpp"
 
@@ -221,22 +205,28 @@
 
 #include <iostream>
 #include <iomanip>
+#include <chrono>
 
 using namespace boost::unit_test_framework;
 
 namespace {
 
-    boost::timer::cpu_timer t;
+    decltype(std::chrono::steady_clock::now()) start;
 
-    void startTimer() { t.start(); }
+    void startTimer() {
+        start = std::chrono::steady_clock::now();
+    }
+
     void stopTimer() {
-        t.stop();
-        std::cout << "\nTests completed in ";
-        double seconds = t.elapsed().wall * 1e-9;
+        auto stop = std::chrono::steady_clock::now();
+
+        double seconds = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count() * 1e-3;
         int hours = int(seconds/3600);
         seconds -= hours * 3600;
         int minutes = int(seconds/60);
         seconds -= minutes * 60;
+
+        std::cout << "\nTests completed in ";
         if (hours > 0)
             std::cout << hours << " h ";
         if (hours > 0 || minutes > 0)
