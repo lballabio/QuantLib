@@ -33,6 +33,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/currencies/europe.hpp>
 #include <iostream>
+#include <string>
 
 using namespace QuantLib;
 using namespace std;
@@ -183,8 +184,7 @@ void NthToDefaultTest::testGauss() {
     // Set up pool and basket
     std::vector<std::string> namesIds;
     for(Size i=0; i<names; i++)
-        namesIds.push_back(std::string("Name") + 
-            boost::lexical_cast<std::string>(i));
+        namesIds.push_back(std::string("Name") + std::to_string(i));
 
     std::vector<Issuer> issuers;
     for(Size i=0; i<names; i++) {
@@ -314,8 +314,7 @@ void NthToDefaultTest::testStudent() {
     // Set up pool and basket
     std::vector<std::string> namesIds;
     for(Size i=0; i<names; i++)
-        namesIds.push_back(std::string("Name") + 
-            boost::lexical_cast<std::string>(i));
+        namesIds.push_back(std::string("Name") + std::to_string(i));
 
     std::vector<Issuer> issuers;
     for(Size i=0; i<names; i++) {

@@ -47,7 +47,6 @@
 #define BOOST_TEST_NO_MAIN 1
 #include <boost/test/included/unit_test.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <map>
 #include <list>
@@ -208,7 +207,7 @@ int main( int argc, char* argv[] )
 
                     QL_REQUIRE(tok.size() == 2,
                         "every line should consists of two entries");
-                    runTimeLog[tok[0]] = boost::lexical_cast<Time>(tok[1]);
+                    runTimeLog[tok[0]] = std::stod(tok[1]);
                 }
             }
             in.close();
@@ -227,7 +226,7 @@ int main( int argc, char* argv[] )
                 std::vector<std::string> tok;
                 boost::split(tok, arg, boost::is_any_of("="));
                 if (tok.size() == 2 && tok[0] == "--nProc") {
-                    nProc = boost::lexical_cast<unsigned>(tok[1]);
+                    nProc = std::stoul(tok[1]);
                 }
                 else if (arg != "--build_info=yes") {
                     cmd << arg << " ";
