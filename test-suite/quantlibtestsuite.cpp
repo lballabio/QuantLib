@@ -211,7 +211,7 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    std::chrono::time_point<std::chrono::steady_clock> start;
+    decltype(std::chrono::steady_clock::now()) start;
 
     void startTimer() {
         start = std::chrono::steady_clock::now();
