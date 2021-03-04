@@ -20,8 +20,8 @@
 
 #include <ql/instruments/asianoption.hpp>
 #include <ql/time/date.hpp>
-#include <utility>
 #include <ql/settings.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -60,9 +60,7 @@ namespace QuantLib {
     : OneAssetOption(payoff, exercise),
       averageType_(averageType), runningAccumulator_(0.0), pastFixings_(0),
       fixingDates_(fixingDates), allPastFixingsProvided_(true),
-      allPastFixings_(allPastFixings) {
-        std::sort(fixingDates_.begin(), fixingDates_.end());
-    }
+      allPastFixings_(allPastFixings) {}
 
     void DiscreteAveragingAsianOption::setupArguments(
                                        PricingEngine::arguments* args) const {
