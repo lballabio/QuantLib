@@ -29,7 +29,6 @@ namespace QuantLib {
         const ext::shared_ptr<Payoff>& payoff,
         const Date& valueDate,
         const Date& maturityDate,
-        const Handle<YieldTermStructure>& discountCurve,
         Handle<Quote> convexityAdjustment,
         OvernightAveraging::Type averagingMethod)
     : Forward(overnightIndex->dayCounter(),
@@ -39,7 +38,7 @@ namespace QuantLib {
               payoff,
               valueDate,
               maturityDate,
-              discountCurve),
+              overnightIndex->forwardingTermStructure()),
       overnightIndex_(overnightIndex), convexityAdjustment_(std::move(convexityAdjustment)),
       averagingMethod_(averagingMethod) {}
 
@@ -49,6 +48,7 @@ namespace QuantLib {
         Date d1 = valueDate_;
         const TimeSeries<Real>& history = IndexManager::instance()
             .getHistory(overnightIndex_->name());
+        Handle<YieldTermStructure> forwardCurve = overnightIndex_->forwardingTermStructure();
         Real fwd;
         while (d1 < maturityDate_) {
             Date d2 = calendar_.advance(d1, 1, Days);
@@ -57,7 +57,7 @@ namespace QuantLib {
                 QL_REQUIRE(fwd != Null<Real>(), "missing rate on " <<
                     d1 << " for index " << overnightIndex_->name());
             } else {
-                fwd = discountCurve_->forwardRate(d1, d2, dayCounter_, Simple).rate();
+                fwd = forwardCurve->forwardRate(d1, d2, dayCounter_, Simple).rate();
             }
             avg += fwd * dayCounter_.yearFraction(d1, d2);
             d1 = d2;

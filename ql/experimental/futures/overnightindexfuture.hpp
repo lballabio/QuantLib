@@ -31,9 +31,10 @@
 
 namespace QuantLib {
 
-    /*
-    Future on a compounded overnight index investment. Compatable with
-    SOFR futures and Sonia futures available on CME and ICE exchanges.
+    /*! Future on a compounded overnight index investment.
+
+        Compatible with SOFR futures and Sonia futures available on
+        CME and ICE exchanges.
     */
     class OvernightIndexFuture : public Forward {
       public:
@@ -41,7 +42,6 @@ namespace QuantLib {
                              const ext::shared_ptr<Payoff>& payoff,
                              const Date& valueDate,
                              const Date& maturityDate,
-                             const Handle<YieldTermStructure>& discountCurve,
                              Handle<Quote> convexityAdjustment = Handle<Quote>(),
                              OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 

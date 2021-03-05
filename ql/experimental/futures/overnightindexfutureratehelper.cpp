@@ -56,8 +56,10 @@ namespace QuantLib {
         OvernightAveraging::Type averagingMethod)
     : RateHelper(price) {
         ext::shared_ptr<Payoff> payoff;
+        ext::shared_ptr<OvernightIndex> index =
+            ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
         future_ = ext::make_shared<OvernightIndexFuture>(
-            overnightIndex, payoff, valueDate, maturityDate, termStructureHandle_,
+            index, payoff, valueDate, maturityDate,
             convexityAdjustment, averagingMethod);
         earliestDate_ = valueDate;
         latestDate_ = maturityDate;

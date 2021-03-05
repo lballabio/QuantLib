@@ -98,10 +98,10 @@ void SofrFuturesTest::testBootstrap() {
                                                                  Actual365Fixed());
 
     // test curve with one of the futures
+    ext::shared_ptr<OvernightIndex> sofr =
+        ext::make_shared<Sofr>(Handle<YieldTermStructure>(curve));
     ext::shared_ptr<Payoff> payoff(new ForwardTypePayoff(Position::Long, 97.440));
-    OvernightIndexFuture sf(index, payoff,
-                            Date(20, Mar, 2019), Date(19, Jun, 2019),
-                            Handle<YieldTermStructure>(curve));
+    OvernightIndexFuture sf(sofr, payoff, Date(20, March, 2019), Date(19, June, 2019));
 
     Real expected_price = 97.44;
     Real expected_npv = 0.0;
