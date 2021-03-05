@@ -2397,58 +2397,42 @@ void InterpolationTest::testBackwardFlatOnSinglePoint() {
     }
 }
 
-test_suite* InterpolationTest::suite() {
+test_suite* InterpolationTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Interpolation tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testSplineOnGenericValues));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testSimmetricEndConditions));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testDerivativeEndConditions));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testNonRestrictiveHymanFilter));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testSplineOnRPN15AValues));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testSplineOnGaussianValues));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testSplineErrorOnGaussianValues));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSplineOnGenericValues));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSimmetricEndConditions));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testDerivativeEndConditions));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNonRestrictiveHymanFilter));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSplineOnRPN15AValues));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSplineOnGaussianValues));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSplineErrorOnGaussianValues));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testMultiSpline));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testAsFunctor));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testFritschButland));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testForwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &InterpolationTest::testFlochKennedySabrIsSmoothAroundATM));
-    suite->add(QUANTLIB_TEST_CASE(
-        &InterpolationTest::testLeFlochKennedySabrExample));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testFlochKennedySabrIsSmoothAroundATM));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLeFlochKennedySabrExample));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testKernelInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-                              &InterpolationTest::testKernelInterpolation2D));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testKernelInterpolation2D));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicDerivatives));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicUpdate));
-    suite->add(QUANTLIB_TEST_CASE(
-        &InterpolationTest::testUnknownRichardsonExtrapolation));
-    suite->add(QUANTLIB_TEST_CASE(
-                            &InterpolationTest::testRichardsonExtrapolation));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testUnknownRichardsonExtrapolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testRichardsonExtrapolation));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrSingleCases));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testTransformations));
-    suite->add(QUANTLIB_TEST_CASE(
-        &InterpolationTest::testLagrangeInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &InterpolationTest::testLagrangeInterpolationAtSupportPoint));
-    suite->add(QUANTLIB_TEST_CASE(
-        &InterpolationTest::testLagrangeInterpolationDerivative));
-    suite->add(QUANTLIB_TEST_CASE(
-        &InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolationAtSupportPoint));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolationDerivative));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBSplines));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlatOnSinglePoint));
 
-    suite->add(QUANTLIB_TEST_CASE(
-        &InterpolationTest::testBackwardFlatOnSinglePoint));
-
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));
+    }
 
     return suite;
 }
