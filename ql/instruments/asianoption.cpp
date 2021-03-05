@@ -56,11 +56,10 @@ namespace QuantLib {
         std::vector<Date> fixingDates,
         const ext::shared_ptr<StrikedTypePayoff>& payoff,
         const ext::shared_ptr<Exercise>& exercise,
-        const std::vector<Real>& allPastFixings)
-    : OneAssetOption(payoff, exercise),
-      averageType_(averageType), runningAccumulator_(0.0), pastFixings_(0),
-      fixingDates_(fixingDates), allPastFixingsProvided_(true),
-      allPastFixings_(allPastFixings) {}
+        std::vector<Real> allPastFixings)
+    : OneAssetOption(payoff, exercise), averageType_(averageType), runningAccumulator_(0.0),
+      pastFixings_(0), fixingDates_(std::move(std::move(fixingDates))),
+      allPastFixingsProvided_(true), allPastFixings_(std::move(allPastFixings)) {}
 
     void DiscreteAveragingAsianOption::setupArguments(
                                        PricingEngine::arguments* args) const {
@@ -77,11 +76,11 @@ namespace QuantLib {
             Date today = Settings::instance().evaluationDate();
 
             pastFixings = 0;
-            for (Size i=0; i<fixingDates_.size(); i++) {
-                if (fixingDates_[i] < today) {
+            for (auto fixingDate : fixingDates_) {
+                if (fixingDate < today) {
                     pastFixings += 1;
                 } else {
-                    futureFixingDates.push_back(fixingDates_[i]);
+                    futureFixingDates.push_back(fixingDate);
                 }
             }
             fixingDates = futureFixingDates;

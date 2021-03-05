@@ -80,7 +80,7 @@ namespace QuantLib {
                                      std::vector<Date> fixingDates,
                                      const ext::shared_ptr<StrikedTypePayoff>& payoff,
                                      const ext::shared_ptr<Exercise>& exercise,
-                                     const std::vector<Real>& allPastFixings = std::vector<Real>());
+                                     std::vector<Real> allPastFixings = std::vector<Real>());
 
         void setupArguments(PricingEngine::arguments*) const override;
 
