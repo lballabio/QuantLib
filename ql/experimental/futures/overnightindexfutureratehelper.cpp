@@ -59,14 +59,14 @@ namespace QuantLib {
         ext::shared_ptr<OvernightIndex> index =
             ext::dynamic_pointer_cast<OvernightIndex>(overnightIndex->clone(termStructureHandle_));
         future_ = ext::make_shared<OvernightIndexFuture>(
-            index, payoff, valueDate, maturityDate,
-            convexityAdjustment, averagingMethod);
+            index, valueDate, maturityDate, convexityAdjustment, averagingMethod);
         earliestDate_ = valueDate;
         latestDate_ = maturityDate;
     }
 
     Real OvernightIndexFutureRateHelper::impliedQuote() const {
-        return future_->spotValue();
+        future_->recalculate();
+        return future_->NPV();
     }
 
     void OvernightIndexFutureRateHelper::setTermStructure(YieldTermStructure* t) {

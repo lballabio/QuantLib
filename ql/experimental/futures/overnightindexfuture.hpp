@@ -36,29 +36,25 @@ namespace QuantLib {
         Compatible with SOFR futures and Sonia futures available on
         CME and ICE exchanges.
     */
-    class OvernightIndexFuture : public Forward {
+    class OvernightIndexFuture : public Instrument {
       public:
         OvernightIndexFuture(const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                             const ext::shared_ptr<Payoff>& payoff,
                              const Date& valueDate,
                              const Date& maturityDate,
                              Handle<Quote> convexityAdjustment = Handle<Quote>(),
                              OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 
         //! returns spot value/price of an underlying financial instrument
-        Real spotValue() const override;
-
-        //! NPV of income/dividends/storage-costs etc. of underlying instrument
-        Real spotIncome(const Handle<YieldTermStructure>&) const override;
-
-        Real forwardValue() const override;
+        Real spotValue() const;
 
         Real convexityAdjustment() const;
-
+        bool isExpired() const override;
       private:
+        void performCalculations() const override;
         Real averagedSpotValue() const;
         Real compoundedSpotValue() const;
         ext::shared_ptr<OvernightIndex> overnightIndex_;
+        Date valueDate_, maturityDate_;
         Handle<Quote> convexityAdjustment_;
         OvernightAveraging::Type averagingMethod_;
     };

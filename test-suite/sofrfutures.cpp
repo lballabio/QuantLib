@@ -100,33 +100,20 @@ void SofrFuturesTest::testBootstrap() {
     // test curve with one of the futures
     ext::shared_ptr<OvernightIndex> sofr =
         ext::make_shared<Sofr>(Handle<YieldTermStructure>(curve));
-    ext::shared_ptr<Payoff> payoff(new ForwardTypePayoff(Position::Long, 97.440));
-    OvernightIndexFuture sf(sofr, payoff, Date(20, March, 2019), Date(19, June, 2019));
+    OvernightIndexFuture sf(sofr, Date(20, March, 2019), Date(19, June, 2019));
 
     Real expected_price = 97.44;
-    Real expected_npv = 0.0;
     Real tolerance = 1.0e-9;
 
-    Real error = std::fabs(sf.spotValue() - expected_price);
+    Real error = std::fabs(sf.NPV() - expected_price);
     if (error > tolerance) {
         BOOST_ERROR("sample futures:\n"
                     << std::setprecision(8)
-                    << "\n estimated price: " << sf.spotValue()
+                    << "\n estimated price: " << sf.NPV()
                     << "\n expected price:  " << expected_price
                     << "\n error:           " << error
                     << "\n tolerance:       " << tolerance);
     }
-
-    error = std::fabs(sf.NPV() - expected_npv);
-    if (error > tolerance) {
-        BOOST_ERROR("sample futures:\n"
-                    << std::setprecision(8)
-                    << "\n estimated NPV: " << sf.NPV()
-                    << "\n expected NPV:  " << expected_npv
-                    << "\n error:         " << error
-                    << "\n tolerance:     " << tolerance);
-    }
-
 }
 
 
