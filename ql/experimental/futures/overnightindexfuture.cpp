@@ -40,7 +40,9 @@ namespace QuantLib {
               maturityDate,
               overnightIndex->forwardingTermStructure()),
       overnightIndex_(overnightIndex), convexityAdjustment_(std::move(convexityAdjustment)),
-      averagingMethod_(averagingMethod) {}
+      averagingMethod_(averagingMethod) {
+        underlyingIncome_ = 0.0;
+    }
 
     Real OvernightIndexFuture::averagedSpotValue() const {
         Date today = Settings::instance().evaluationDate();
@@ -120,7 +122,6 @@ namespace QuantLib {
     }
 
     Real OvernightIndexFuture::spotIncome(const Handle<YieldTermStructure>&) const {
-        underlyingIncome_ = 0;
         return underlyingIncome_;
     }
 
