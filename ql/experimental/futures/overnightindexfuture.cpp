@@ -36,7 +36,7 @@ namespace QuantLib {
         registerWith(overnightIndex_);
     }
 
-    Real OvernightIndexFuture::averagedSpotValue() const {
+    Real OvernightIndexFuture::averagedRate() const {
         Date today = Settings::instance().evaluationDate();
         Calendar calendar = overnightIndex_->fixingCalendar();
         DayCounter dayCounter = overnightIndex_->dayCounter();
@@ -59,12 +59,10 @@ namespace QuantLib {
             d1 = d2;
         }
 
-        Real R = convexityAdjustment() + avg /
-            dayCounter.yearFraction(valueDate_, maturityDate_);
-        return 100.0 * (1.0 - R);
+        return avg / dayCounter.yearFraction(valueDate_, maturityDate_);
     }
 
-    Real OvernightIndexFuture::compoundedSpotValue() const {
+    Real OvernightIndexFuture::compoundedRate() const {
         Date today = Settings::instance().evaluationDate();
         Calendar calendar = overnightIndex_->fixingCalendar();
         DayCounter dayCounter = overnightIndex_->dayCounter();
@@ -95,18 +93,16 @@ namespace QuantLib {
         }
         prod /= forwardDiscount;
 
-        Real R = convexityAdjustment() + (prod - 1) /
-            dayCounter.yearFraction(valueDate_, maturityDate_);
-        return 100.0 * (1.0 - R);
+        return (prod - 1) / dayCounter.yearFraction(valueDate_, maturityDate_);
     }
 
-    Real OvernightIndexFuture::spotValue() const {
+    Real OvernightIndexFuture::rate() const {
         switch (averagingMethod_) {
           case OvernightAveraging::Simple:
-            return averagedSpotValue();
+            return averagedRate();
             break;
           case OvernightAveraging::Compound:
-            return compoundedSpotValue();
+            return compoundedRate();
             break;
           default:
               QL_FAIL("unknown compounding convention (" << Integer(averagingMethod_) << ")");
@@ -122,7 +118,8 @@ namespace QuantLib {
     }
 
     void OvernightIndexFuture::performCalculations() const {
-        NPV_ = spotValue();
+        Rate R = convexityAdjustment() + rate();
+        NPV_ = 100.0 * (1.0 - R);
     }
 
 }
