@@ -24,14 +24,14 @@
 
 namespace QuantLib {
 
-    OvernightIndexFuture::OvernightIndexFuture(
-        const ext::shared_ptr<OvernightIndex>& overnightIndex,
-        const Date& valueDate,
-        const Date& maturityDate,
-        Handle<Quote> convexityAdjustment,
-        OvernightAveraging::Type averagingMethod)
-    : overnightIndex_(overnightIndex), valueDate_(valueDate), maturityDate_(maturityDate),
-      convexityAdjustment_(std::move(convexityAdjustment)), averagingMethod_(averagingMethod) {
+    OvernightIndexFuture::OvernightIndexFuture(ext::shared_ptr<OvernightIndex> overnightIndex,
+                                               const Date& valueDate,
+                                               const Date& maturityDate,
+                                               Handle<Quote> convexityAdjustment,
+                                               OvernightAveraging::Type averagingMethod)
+    : overnightIndex_(std::move(overnightIndex)), valueDate_(valueDate),
+      maturityDate_(maturityDate), convexityAdjustment_(std::move(convexityAdjustment)),
+      averagingMethod_(averagingMethod) {
         QL_REQUIRE(overnightIndex_, "null overnight index");
         registerWith(overnightIndex_);
     }

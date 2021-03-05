@@ -38,11 +38,12 @@ namespace QuantLib {
     */
     class OvernightIndexFuture : public Instrument {
       public:
-        OvernightIndexFuture(const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                             const Date& valueDate,
-                             const Date& maturityDate,
-                             Handle<Quote> convexityAdjustment = Handle<Quote>(),
-                             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
+        OvernightIndexFuture(
+            ext::shared_ptr<OvernightIndex> overnightIndex,
+            const Date& valueDate,
+            const Date& maturityDate,
+            Handle<Quote> convexityAdjustment = Handle<Quote>(),
+            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 
         Real convexityAdjustment() const;
         bool isExpired() const override;
