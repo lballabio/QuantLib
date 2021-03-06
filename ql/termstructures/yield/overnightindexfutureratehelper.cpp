@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/futures/overnightindexfutureratehelper.hpp>
+#include <ql/termstructures/yield/overnightindexfutureratehelper.hpp>
 #include <ql/utilities/null_deleter.hpp>
 
 namespace QuantLib {

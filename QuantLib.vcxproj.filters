@@ -277,9 +277,6 @@
     <Filter Include="experimental\finitedifferences">
       <UniqueIdentifier>{d42ff6e1-a70e-4fe7-a35a-db4ca5ef1c95}</UniqueIdentifier>
     </Filter>
-    <Filter Include="experimental\futures">
-      <UniqueIdentifier>{d6e75658-5fbd-44e7-a7b5-3eabdb371b40}</UniqueIdentifier>
-    </Filter>
     <Filter Include="experimental\fx">
       <UniqueIdentifier>{936a8947-d2c0-4bdd-95c5-8b52daf92cc4}</UniqueIdentifier>
     </Filter>
@@ -853,6 +850,9 @@
       <Filter>instruments</Filter>
     </ClInclude>
     <ClInclude Include="ql\instruments\overnightindexedswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\overnightindexfuture.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
     <ClInclude Include="ql\instruments\payoffs.hpp">
@@ -2106,6 +2106,9 @@
     <ClInclude Include="ql\termstructures\yield\oisratehelper.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\yield\overnightindexfutureratehelper.hpp">
+      <Filter>termstructures\yield</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\yield\piecewiseyieldcurve.hpp">
       <Filter>termstructures\yield</Filter>
     </ClInclude>
@@ -3047,15 +3050,6 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\coupons\swapspreadindex.hpp">
       <Filter>experimental\coupons</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\futures\all.hpp">
-      <Filter>experimental\futures</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\futures\overnightindexfuture.hpp">
-      <Filter>experimental\futures</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\futures\overnightindexfutureratehelper.hpp">
-      <Filter>experimental\futures</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\fx\all.hpp">
       <Filter>experimental\fx</Filter>
@@ -4642,6 +4636,9 @@
     <ClCompile Include="ql\instruments\overnightindexedswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\overnightindexfuture.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
     <ClCompile Include="ql\instruments\payoffs.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
@@ -5443,6 +5440,9 @@
     <ClCompile Include="ql\termstructures\yield\oisratehelper.cpp">
       <Filter>termstructures\yield</Filter>
     </ClCompile>
+    <ClCompile Include="ql\termstructures\yield\overnightindexfutureratehelper.cpp">
+      <Filter>termstructures\yield</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\yield\ratehelpers.cpp">
       <Filter>termstructures\yield</Filter>
     </ClCompile>
@@ -6105,12 +6105,6 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\coupons\swapspreadindex.cpp">
       <Filter>experimental\coupons</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\futures\overnightindexfuture.cpp">
-      <Filter>experimental\futures</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\futures\overnightindexfutureratehelper.cpp">
-      <Filter>experimental\futures</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\fx\blackdeltacalculator.cpp">
       <Filter>experimental\fx</Filter>

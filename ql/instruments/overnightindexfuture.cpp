@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/futures/overnightindexfuture.hpp>
+#include <ql/instruments/overnightindexfuture.hpp>
 #include <ql/indexes/indexmanager.hpp>
 #include <utility>
 
