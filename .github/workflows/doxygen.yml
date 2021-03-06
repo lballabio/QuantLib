@@ -7,6 +7,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup
       run: |
+        sudo apt update
         sudo apt install -y doxygen graphviz libboost-dev
         ./autogen.sh
         ./configure

@@ -17,6 +17,7 @@ jobs:
           linux-build-times-
     - name: Setup
       run: |
+        sudo apt update
         sudo apt install -y libboost-all-dev autoconf automake libtool ccache
     - name: Build
       run: |
