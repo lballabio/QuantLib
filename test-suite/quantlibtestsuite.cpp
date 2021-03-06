@@ -420,7 +420,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
-    test->add(InterpolationTest::suite());
+    test->add(InterpolationTest::suite(speed));
     test->add(JumpDiffusionTest::suite());
     test->add(LazyObjectTest::suite());
     test->add(LinearLeastSquaresRegressionTest::suite());
