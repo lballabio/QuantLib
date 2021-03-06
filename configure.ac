@@ -497,7 +497,6 @@ AC_CONFIG_FILES([
     ql/experimental/exoticoptions/Makefile
     ql/experimental/finitedifferences/Makefile
     ql/experimental/forward/Makefile
-    ql/experimental/futures/Makefile
     ql/experimental/fx/Makefile
     ql/experimental/inflation/Makefile
     ql/experimental/lattices/Makefile
