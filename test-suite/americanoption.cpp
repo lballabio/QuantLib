@@ -902,12 +902,11 @@ void AmericanOptionTest::testTodayIsDividendDate() {
     }
 }
 
-test_suite* AmericanOptionTest::suite() {
+test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("American option tests");
-    suite->add(
-        QUANTLIB_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
-    suite->add(
-        QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
+
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testJuValues));
     // FLOATING_POINT_EXCEPTION
@@ -915,7 +914,6 @@ test_suite* AmericanOptionTest::suite() {
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
     // FLOATING_POINT_EXCEPTION
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testZeroVolFDShoutNPV));
     suite->add(QUANTLIB_TEST_CASE(
@@ -924,6 +922,10 @@ test_suite* AmericanOptionTest::suite() {
         &AmericanOptionTest::testEscrowedVsSpotAmericanOption));
     suite->add(QUANTLIB_TEST_CASE(
             &AmericanOptionTest::testTodayIsDividendDate));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
+    }
 
     return suite;
 }
