@@ -123,7 +123,7 @@ namespace QuantLib {
         cf = previousCashFlow(leg, includeSettlementDateFlows, settlementDate);
 
         if (cf==leg.rend())
-            return Date();
+            return {};
 
         return (*cf)->date();
     }
@@ -135,7 +135,7 @@ namespace QuantLib {
         cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
 
         if (cf==leg.end())
-            return Date();
+            return {};
 
         return (*cf)->date();
     }
@@ -248,7 +248,8 @@ namespace QuantLib {
                                      bool includeSettlementDateFlows,
                                      Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
-        if (cf==leg.end()) return Date();
+        if (cf==leg.end())
+            return {};
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
@@ -256,14 +257,15 @@ namespace QuantLib {
             if (cp != nullptr)
                 return cp->accrualStartDate();
         }
-        return Date();
+        return {};
     }
 
     Date CashFlows::accrualEndDate(const Leg& leg,
                                    bool includeSettlementDateFlows,
                                    Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
-        if (cf==leg.end()) return Date();
+        if (cf==leg.end())
+            return {};
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
@@ -271,14 +273,15 @@ namespace QuantLib {
             if (cp != nullptr)
                 return cp->accrualEndDate();
         }
-        return Date();
+        return {};
     }
 
     Date CashFlows::referencePeriodStart(const Leg& leg,
                                          bool includeSettlementDateFlows,
                                          Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
-        if (cf==leg.end()) return Date();
+        if (cf==leg.end())
+            return {};
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
@@ -286,14 +289,15 @@ namespace QuantLib {
             if (cp != nullptr)
                 return cp->referencePeriodStart();
         }
-        return Date();
+        return {};
     }
 
     Date CashFlows::referencePeriodEnd(const Leg& leg,
                                        bool includeSettlementDateFlows,
                                        Date settlementDate) {
         auto cf = nextCashFlow(leg, includeSettlementDateFlows, settlementDate);
-        if (cf==leg.end()) return Date();
+        if (cf==leg.end())
+            return {};
 
         Date paymentDate = (*cf)->date();
         for (; cf<leg.end() && (*cf)->date()==paymentDate; ++cf) {
@@ -301,7 +305,7 @@ namespace QuantLib {
             if (cp != nullptr)
                 return cp->referencePeriodEnd();
         }
-        return Date();
+        return {};
     }
 
     Time CashFlows::accrualPeriod(const Leg& leg,

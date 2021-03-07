@@ -67,7 +67,7 @@ namespace QuantLib {
 
         std::list<std::vector<Time> > stoppingTimes;
         stoppingTimes.push_back(c2->stoppingTimes());
-        stoppingTimes.push_back(std::vector<Time>(1, c1->getTime()));
+        stoppingTimes.emplace_back(1, c1->getTime());
 
         FdmStepConditionComposite::Conditions conditions;
         conditions.push_back(c2);

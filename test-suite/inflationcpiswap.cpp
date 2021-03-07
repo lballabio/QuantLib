@@ -408,8 +408,7 @@ void CPISwapTest::zciisconsistency() {
     zciis.setPricingEngine(dse);
     QL_REQUIRE(fabs(zciis.NPV())<1e-3,"zciis does not reprice to zero");
 
-    std::vector<Date> oneDate;
-    oneDate.push_back(endDate);
+    std::vector<Date> oneDate = {endDate};
     Schedule schOneDate(oneDate, cal, paymentConvention);
 
     CPISwap::Type stype = CPISwap::Payer;

@@ -47,7 +47,7 @@ using namespace QuantLib;
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
 
-    ThreadKey sessionId() { return 0; }
+    ThreadKey sessionId() { return {}; }
 
 }
 #endif

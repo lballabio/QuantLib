@@ -22,7 +22,6 @@
     \brief Black volatility surface back by Heston model
 */
 
-#include <ql/functional.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/blackformula.hpp>
@@ -76,7 +75,6 @@ namespace QuantLib {
     }
 
     Volatility HestonBlackVolSurface::blackVolImpl(Time t, Real strike) const {
-        using namespace ext::placeholders;
         const ext::shared_ptr<HestonProcess> process = hestonModel_->process();
 
         const DiscountFactor df = process->riskFreeRate()->discount(t, true);
@@ -117,9 +115,8 @@ namespace QuantLib {
         const Volatility guess = std::sqrt(theta);
         const Real accuracy = std::numeric_limits<Real>::epsilon();
 
-        const ext::function<Real(Real)> f = ext::bind(
-            &blackValue, payoff.optionType(), strike, fwd, t, _1, df, npv);
-
-        return solver.solve(f, accuracy, guess, 0.01);
+        return solver.solve([&](Volatility _v) { return blackValue(payoff.optionType(), strike, fwd,
+                                                                   t, _v, df, npv); },
+                            accuracy, guess, 0.01);
     }
 }

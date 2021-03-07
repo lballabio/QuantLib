@@ -54,9 +54,6 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-#define BEGIN(x) (x+0)
-#define END(x) (x+LENGTH(x))
-
 namespace market_model_smm_test {
 
     Date todaysDate, startDate, endDate;

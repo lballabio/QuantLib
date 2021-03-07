@@ -18,6 +18,7 @@ this_include_HEADERS = \
     interpolatedsimplezerocurve.hpp \
     nonlinearfittingmethods.hpp \
     oisratehelper.hpp \
+    overnightindexfutureratehelper.hpp \
     piecewiseyieldcurve.hpp \
     piecewisezerospreadedtermstructure.hpp \
     quantotermstructure.hpp \
@@ -34,6 +35,7 @@ cpp_files = \
     forwardstructure.cpp \
     nonlinearfittingmethods.cpp \
     oisratehelper.cpp \
+    overnightindexfutureratehelper.cpp \
     ratehelpers.cpp \
     zeroyieldstructure.cpp
 

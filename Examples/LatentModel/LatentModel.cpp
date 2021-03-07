@@ -26,7 +26,7 @@
 #include <ql/currencies/europe.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
-
+#include <string>
 #include <iostream>
 #include <iomanip>
 
@@ -36,7 +36,7 @@ using namespace QuantLib;
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
 
-    ThreadKey sessionId() { return 0; }
+    ThreadKey sessionId() { return {}; }
 
 }
 #endif
@@ -68,13 +68,12 @@ int main(int, char* []) {
         std::vector<Real> hazardRates(3, -std::log(1.-0.01));
         std::vector<std::string> names;
         for(Size i=0; i<hazardRates.size(); i++)
-            names.push_back(std::string("Acme") + 
-                boost::lexical_cast<std::string>(i));
+            names.push_back(std::string("Acme") + std::to_string(i));
         std::vector<Handle<DefaultProbabilityTermStructure> > defTS;
         defTS.reserve(hazardRates.size());
         for (double& hazardRate : hazardRates)
-            defTS.push_back(Handle<DefaultProbabilityTermStructure>(
-                ext::make_shared<FlatHazardRate>(0, TARGET(), hazardRate, Actual365Fixed())));
+            defTS.emplace_back(
+                ext::make_shared<FlatHazardRate>(0, TARGET(), hazardRate, Actual365Fixed()));
         std::vector<Issuer> issuers;
         for(Size i=0; i<hazardRates.size(); i++) {
             std::vector<QuantLib::Issuer::key_curve_pair> curves(1, 
@@ -82,7 +81,7 @@ int main(int, char* []) {
                     EURCurrency(), QuantLib::SeniorSec,
                     Period(), 1. // amount threshold
                     ), defTS[i]));
-            issuers.push_back(Issuer(curves));
+            issuers.emplace_back(curves);
         }
 
         ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();

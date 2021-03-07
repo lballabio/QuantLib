@@ -23,7 +23,6 @@
 #include <ql/tuple.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newton.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
@@ -388,8 +387,6 @@ namespace QuantLib {
     inline Real SaddlePointLossModel<CP>::CumulantGenerating(
         const Date& date, Real s) const 
     {
-        using namespace ext::placeholders;
-
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
         for(Size i=0; i<invUncondProbs.size(); i++)
@@ -397,23 +394,15 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &SaddlePointLossModel<CP>::CumulantGeneratingCond,
-                    this,
-                    ext::cref(invUncondProbs),
-                   s,
-                    _1)
-                )
-            );
+            [&](const std::vector<Real>& v1) {
+                return CumulantGeneratingCond(invUncondProbs, s, v1);
+            });
     }
 
     template<class CP>
     inline Real SaddlePointLossModel<CP>::CumGen1stDerivative(
         const Date& date, Real s) const 
     {
-        using namespace ext::placeholders;
-
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
         for(Size i=0; i<invUncondProbs.size(); i++)
@@ -421,23 +410,15 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
        return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &SaddlePointLossModel<CP>::CumGen1stDerivativeCond,
-                    this,
-                    ext::cref(invUncondProbs),
-                    s,
-                    _1)
-                )
-            );
+           [&](const std::vector<Real>& v1) {
+               return CumGen1stDerivativeCond(invUncondProbs, s, v1);
+           });
     }
 
     template<class CP>
     inline Real SaddlePointLossModel<CP>::CumGen2ndDerivative(
         const Date& date, Real s) const 
     {
-        using namespace ext::placeholders;
-
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
         for(Size i=0; i<invUncondProbs.size(); i++)
@@ -445,23 +426,15 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &SaddlePointLossModel<CP>::CumGen2ndDerivativeCond,
-                    this,
-                    ext::cref(invUncondProbs),
-                    s,
-                    _1)
-                )
-            );
+           [&](const std::vector<Real>& v1) {
+               return CumGen2ndDerivativeCond(invUncondProbs, s, v1);
+           });
     }
 
     template<class CP>
     inline Real SaddlePointLossModel<CP>::CumGen3rdDerivative(
         const Date& date, Real s) const 
     {
-        using namespace ext::placeholders;
-
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
         for(Size i=0; i<invUncondProbs.size(); i++)
@@ -469,23 +442,15 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &SaddlePointLossModel<CP>::CumGen3rdDerivativeCond,
-                    this,
-                    ext::cref(invUncondProbs),
-                    s,
-                    _1)
-                )
-            );
+           [&](const std::vector<Real>& v1) {
+               return CumGen3rdDerivativeCond(invUncondProbs, s, v1);
+           });
     }
 
     template<class CP>
     inline Real SaddlePointLossModel<CP>::CumGen4thDerivative(
         const Date& date, Real s) const 
     {
-        using namespace ext::placeholders;
-
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
         for(Size i=0; i<invUncondProbs.size(); i++)
@@ -493,23 +458,15 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &SaddlePointLossModel<CP>::CumGen4thDerivativeCond,
-                    this,
-                    ext::cref(invUncondProbs),
-                    s,
-                    _1)
-                )
-            );
+           [&](const std::vector<Real>& v1) {
+               return CumGen4thDerivativeCond(invUncondProbs, s, v1);
+           });
     }
 
     template<class CP>
     inline Probability SaddlePointLossModel<CP>::probOverLoss(
         const Date& d, Real trancheLossFract) const 
     {
-        using namespace ext::placeholders;
-
         // avoid computation:
         if (trancheLossFract >= 
             // time dependent soon:
@@ -522,23 +479,15 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &SaddlePointLossModel<CP>::probOverLossCond,
-                    this,
-                    ext::cref(invUncondProbs),
-                    trancheLossFract,
-                    _1)
-                )
-            );
-        }
+           [&](const std::vector<Real>& v1) {
+               return probOverLossCond(invUncondProbs, trancheLossFract, v1);
+           });
+    }
 
     template<class CP>
     inline Probability SaddlePointLossModel<CP>::probOverPortfLoss(
         const Date& d, Real loss) const 
     {
-        using namespace ext::placeholders;
-
         std::vector<Probability> invUncondProbs = 
             basket_->remainingProbabilities(d);
         for(Size i=0; i<invUncondProbs.size(); i++)
@@ -546,23 +495,15 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &SaddlePointLossModel<CP>::probOverLossPortfCond,
-                    this,
-                    ext::cref(invUncondProbs),
-                    loss,
-                    _1)
-                )
-            );
+           [&](const std::vector<Real>& v1) {
+               return probOverLossPortfCond(invUncondProbs, loss, v1);
+           });
     }
 
     template<class CP>
     inline Real SaddlePointLossModel<CP>::expectedTrancheLoss(
         const Date& d) const 
     {
-        using namespace ext::placeholders;
-
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(d);
         for(Size i=0; i<invUncondProbs.size(); i++)
@@ -570,22 +511,15 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &SaddlePointLossModel<CP>::conditionalExpectedTrancheLoss,
-                    this,
-                    ext::cref(invUncondProbs),
-                    _1)
-                )
-            );
+           [&](const std::vector<Real>& v1) {
+               return conditionalExpectedTrancheLoss(invUncondProbs, v1);
+           });
     }
 
     template<class CP>
     inline Probability SaddlePointLossModel<CP>::probDensity(
         const Date& d, Real loss) const 
     {
-        using namespace ext::placeholders;
-
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(d);
         for(Size i=0; i<invUncondProbs.size(); i++)
@@ -593,40 +527,25 @@ namespace QuantLib {
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &SaddlePointLossModel<CP>::probDensityCond,
-                    this,
-                    ext::cref(invUncondProbs),
-                    loss,
-                    _1)
-                )
-            );
+           [&](const std::vector<Real>& v1) {
+               return probDensityCond(invUncondProbs, loss, v1);
+           });
     }
 
     template<class CP>
     inline Disposable<std::vector<Real> > 
     SaddlePointLossModel<CP>::splitVaRLevel(const Date& date, Real s) const 
     {
-        using namespace ext::placeholders;
-
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
         for(Size i=0; i<invUncondProbs.size(); i++)
             invUncondProbs[i] = 
             copula_->inverseCumulativeY(invUncondProbs[i], i);
 
-        return copula_->integratedExpectedValue(
-            ext::function<Disposable<std::vector<Real> > (
-                const std::vector<Real>& v1)>(
-                    ext::bind(
-                        &SaddlePointLossModel<CP>::splitLossCond,
-                        this,
-                    ext::cref(invUncondProbs),
-                        s,
-                        _1)
-                )
-            );
+        return copula_->integratedExpectedValueV(
+           [&](const std::vector<Real>& v1) {
+               return splitLossCond(invUncondProbs, s, v1);
+           });
     }
 
 
@@ -817,8 +736,7 @@ namespace QuantLib {
                 (12.*suma1*suma1*suma2 - 
                     6.*std::pow(suma1,4.)/suma0)/suma0)/suma0)/suma0;
         }
-        return ext::tuple<Real, Real, Real, Real>(deriv0, deriv2, 
-            deriv3, deriv4);
+        return {deriv0, deriv2, deriv3, deriv4};
     }
 
     template<class CP>
@@ -852,7 +770,7 @@ namespace QuantLib {
             //deriv1 += suma1 / suma0;
             deriv2 += suma2 / suma0 - std::pow(suma1 / suma0 , 2.);
         }
-        return ext::tuple<Real, Real>(deriv0, deriv2);
+        return {deriv0, deriv2};
     }
 
     // ----- Saddle point search ----------------------------------------------
@@ -1416,8 +1334,6 @@ namespace QuantLib {
     Real SaddlePointLossModel<CP>::expectedShortfall(const Date&d, 
         Probability percProb) const 
     {
-        using namespace ext::placeholders;
-
         // assuming I have the tranched one.
         Real lossPerc = percentile(d, percProb);
 
@@ -1436,15 +1352,9 @@ namespace QuantLib {
 
         // Integrate with the tranche or the portfolio according to the limits.
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                  &SaddlePointLossModel<CP>::expectedShortfallFullPortfolioCond,
-                  this,
-                  ext::cref(invUncondProbs),
-                  lossPerc,
-                  _1)
-                )
-            ) / (1.-percProb);
+            [&](const std::vector<Real>& v1) {
+                return expectedShortfallFullPortfolioCond(invUncondProbs, lossPerc, v1);
+            }) / (1.-percProb);
 
     /* test:?
         return std::inner_product(integrESFPartition.begin(), 

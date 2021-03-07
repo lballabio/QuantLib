@@ -169,16 +169,15 @@ void CapFloorTest::testVega() {
     static const Real tolerance = 0.005;
 
     for (int length : lengths) {
-        for (Size j=0; j<LENGTH(vols); j++) {
+        for (double vol : vols) {
             for (double strike : strikes) {
                 for (auto& type : types) {
                     Leg leg = vars.makeLeg(startDate, length);
-                    ext::shared_ptr<CapFloor> capFloor =
-                        vars.makeCapFloor(type, leg, strike, vols[j]);
+                    ext::shared_ptr<CapFloor> capFloor = vars.makeCapFloor(type, leg, strike, vol);
                     ext::shared_ptr<CapFloor> shiftedCapFloor2 =
-                        vars.makeCapFloor(type, leg, strike, vols[j] + shift);
+                        vars.makeCapFloor(type, leg, strike, vol + shift);
                     ext::shared_ptr<CapFloor> shiftedCapFloor1 =
-                        vars.makeCapFloor(type, leg, strike, vols[j] - shift);
+                        vars.makeCapFloor(type, leg, strike, vol - shift);
                     Real value1 = shiftedCapFloor1->NPV();
                     Real value2 = shiftedCapFloor2->NPV();
                     Real numericalVega = (value2 - value1) / (2*shift);
@@ -189,7 +188,7 @@ void CapFloorTest::testVega() {
                         discrepancy /= numericalVega;
                         if (discrepancy > tolerance)
                             BOOST_FAIL("failed to compute cap/floor vega:"
-                                       << "\n   lengths:     " << lengths[j] * Years
+                                       << "\n   lengths:     " << length * Years
                                        << "\n   strike:      " << io::rate(strike) <<
                                        //"\n   types:       " << types[h] <<
                                        std::fixed << std::setprecision(12) << "\n   calculated:  "
@@ -275,16 +274,16 @@ void CapFloorTest::testConsistency() {
     Date startDate = vars.termStructure->referenceDate();
 
     for (int& length : lengths) {
-        for (Size j = 0; j < LENGTH(cap_rates); j++) {
+        for (double& cap_rate : cap_rates) {
             for (double& floor_rate : floor_rates) {
                 for (double vol : vols) {
 
                     Leg leg = vars.makeLeg(startDate, length);
                     ext::shared_ptr<CapFloor> cap =
-                        vars.makeCapFloor(CapFloor::Cap, leg, cap_rates[j], vol);
+                        vars.makeCapFloor(CapFloor::Cap, leg, cap_rate, vol);
                     ext::shared_ptr<CapFloor> floor =
                         vars.makeCapFloor(CapFloor::Floor, leg, floor_rate, vol);
-                    Collar collar(leg, std::vector<Rate>(1, cap_rates[j]),
+                    Collar collar(leg, std::vector<Rate>(1, cap_rate),
                                   std::vector<Rate>(1, floor_rate));
                     collar.setPricingEngine(vars.makeEngine(vol));
 
@@ -293,7 +292,7 @@ void CapFloorTest::testConsistency() {
                                    << "    length:       " << length << " years\n"
                                    << "    volatility:   " << io::volatility(vol) << "\n"
                                    << "    cap value:    " << cap->NPV()
-                                   << " at strike: " << io::rate(cap_rates[j]) << "\n"
+                                   << " at strike: " << io::rate(cap_rate) << "\n"
                                    << "    floor value:  " << floor->NPV()
                                    << " at strike: " << io::rate(floor_rate) << "\n"
                                    << "    collar value: " << collar.NPV());
@@ -313,7 +312,7 @@ void CapFloorTest::testConsistency() {
                                        << "    length:       " << length << " years\n"
                                        << "    volatility:   " << io::volatility(vol) << "\n"
                                        << "    cap value:    " << cap->NPV()
-                                       << " at strike: " << io::rate(cap_rates[j]) << "\n"
+                                       << " at strike: " << io::rate(cap_rate) << "\n"
                                        << "    sum of caplets value:  " << capletsNPV
                                        << " at strike (first): "
                                        << io::rate(caplets[0]->capRates()[0]) << "\n");
@@ -332,7 +331,7 @@ void CapFloorTest::testConsistency() {
                                        << "    length:       " << length << " years\n"
                                        << "    volatility:   " << io::volatility(vol) << "\n"
                                        << "    cap value:    " << floor->NPV()
-                                       << " at strike: " << io::rate(floor_rates[j]) << "\n"
+                                       << " at strike: " << io::rate(floor_rate) << "\n"
                                        << "    sum of floorlets value:  " << floorletsNPV
                                        << " at strike (first): "
                                        << io::rate(floorlets[0]->floorRates()[0]) << "\n");
@@ -351,8 +350,8 @@ void CapFloorTest::testConsistency() {
                                        << "    length:       " << length << " years\n"
                                        << "    volatility:   " << io::volatility(vol) << "\n"
                                        << "    cap value:    " << collar.NPV()
-                                       << " at strike floor: " << io::rate(floor_rates[j])
-                                       << " at strike cap: " << io::rate(cap_rates[j]) << "\n"
+                                       << " at strike floor: " << io::rate(floor_rate)
+                                       << " at strike cap: " << io::rate(cap_rate) << "\n"
                                        << "    sum of collarlets value:  " << collarletsNPV
                                        << " at strike floor (first): "
                                        << io::rate(collarlets[0]->floorRates()[0])

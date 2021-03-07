@@ -53,8 +53,7 @@ namespace QuantLib {
         Size n = cashFlowTimes.size();
         discounters_.reserve(n);
         for (Size j=0; j<n; ++j)
-            discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
-                                                         rateTimes));
+            discounters_.emplace_back(cashFlowTimes[j], rateTimes);
         const std::vector<Rate>& evolutionTimes =
             product_->evolution().evolutionTimes();
         constraints_.resize(evolutionTimes.size());

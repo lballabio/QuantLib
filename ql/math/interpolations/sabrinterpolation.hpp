@@ -32,7 +32,6 @@
 
 #include <ql/math/interpolations/xabrinterpolation.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
-#include <boost/assign/list_of.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -169,11 +168,10 @@ class SABRInterpolation : public Interpolation {
         impl_ = ext::shared_ptr<Interpolation::Impl>(
             new detail::XABRInterpolationImpl<I1, I2, detail::SABRSpecs>(
                 xBegin, xEnd, yBegin, t, forward,
-                boost::assign::list_of(alpha)(beta)(nu)(rho),
-                boost::assign::list_of(alphaIsFixed)(betaIsFixed)(nuIsFixed)(
-                    rhoIsFixed),
+                {alpha, beta, nu, rho},
+                {alphaIsFixed, betaIsFixed, nuIsFixed, rhoIsFixed},
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
-                maxGuesses, boost::assign::list_of(shift)));
+                maxGuesses, {shift}));
         coeffs_ = ext::dynamic_pointer_cast<
             detail::XABRCoeffHolder<detail::SABRSpecs> >(impl_);
     }

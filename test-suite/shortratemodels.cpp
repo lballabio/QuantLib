@@ -300,7 +300,7 @@ void ShortRateModelTest::testSwaps() {
 
     Date settlement = calendar.advance(today,2,Days);
 
-    Date dates[] = {
+    std::vector<Date> dates = {
         settlement,
         calendar.advance(settlement,1,Weeks),
         calendar.advance(settlement,1,Months),
@@ -314,7 +314,7 @@ void ShortRateModelTest::testSwaps() {
         calendar.advance(settlement,10,Years),
         calendar.advance(settlement,15,Years)
     };
-    DiscountFactor discounts[] = {
+    std::vector<DiscountFactor> discounts = {
         1.0,
         0.999258,
         0.996704,
@@ -331,11 +331,7 @@ void ShortRateModelTest::testSwaps() {
 
     Handle<YieldTermStructure> termStructure(
        ext::shared_ptr<YieldTermStructure>(
-           new DiscountCurve(
-               std::vector<Date>(dates,dates+LENGTH(dates)),
-               std::vector<DiscountFactor>(discounts,
-                                           discounts+LENGTH(discounts)),
-               Actual365Fixed())));
+           new DiscountCurve(dates, discounts, Actual365Fixed())));
 
     ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
 

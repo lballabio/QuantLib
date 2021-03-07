@@ -46,11 +46,9 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <boost/assign/std/vector.hpp>
 #include <utility>
 
 using namespace QuantLib;
-using namespace boost::assign;
 using namespace boost::unit_test_framework;
 
 void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
@@ -199,30 +197,33 @@ void NormalCLVModelTest::testIllustrative1DExample() {
         ext::make_shared<OrnsteinUhlenbeckProcess>(
             speed, vol, x0, level));
 
-    std::vector<Date> maturityDates;
-    maturityDates += (today + Period(18, Days)),
-        today + Period(90, Days)  , today + Period(180, Days),
-        today + Period(360, Days) , today + Period(720, Days);
+    std::vector<Date> maturityDates = {
+        today + Period(18, Days),
+        today + Period(90, Days),
+        today + Period(180, Days),
+        today + Period(360, Days),
+        today + Period(720, Days)
+    };
 
     const NormalCLVModel m(bsProcess, ouProcess, maturityDates, 4);
     const ext::function<Real(Real, Real)> g = m.g();
 
     // test collocation points in x_ij
-    std::vector<Date> maturities;
-    maturities += maturityDates[0], maturityDates[2], maturityDates[4];
+    std::vector<Date> maturities = { maturityDates[0], maturityDates[2], maturityDates[4] };
 
-    std::vector<std::vector<Real> > x(3);
-    x[0] += 1.070, 0.984, 0.903, 0.817;
-    x[1] += 0.879, 0.668, 0.472, 0.261;
-    x[2] += 0.528, 0.282, 0.052,-0.194;
+    std::vector<std::vector<Real> > x = {
+        { 1.070, 0.984, 0.903, 0.817 },
+        { 0.879, 0.668, 0.472, 0.261 },
+        { 0.528, 0.282, 0.052,-0.194 }
+    };
 
-    std::vector<std::vector<Real> > s(3);
-    s[0] += 1.104, 1.035, 0.969, 0.895;
-    s[1] += 1.328, 1.122, 0.911, 0.668;
-    s[2] += 1.657, 1.283, 0.854, 0.339;
+    std::vector<std::vector<Real> > s = {
+        {1.104, 1.035, 0.969, 0.895},
+        {1.328, 1.122, 0.911, 0.668},
+        {1.657, 1.283, 0.854, 0.339}
+    };
 
-    std::vector<Real> c;
-    c += 2.3344, 0.7420, -0.7420, -2.3344;
+    std::vector<Real> c = { 2.3344, 0.7420, -0.7420, -2.3344 };
 
     const Real tol = 0.001;
     for (Size i=0; i < maturities.size(); ++i) {
@@ -284,7 +285,6 @@ namespace normal_clv_model_test {
 void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     BOOST_TEST_MESSAGE("Testing Monte Carlo BS option pricing...");
 
-    using namespace ext::placeholders;
     using namespace normal_clv_model_test;
 
     SavedSettings backup;
@@ -324,8 +324,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
         ext::make_shared<OrnsteinUhlenbeckProcess>(
             speed, sigma, x0, level));
 
-    std::vector<Date> maturities;
-    maturities += today + Period(6, Months), maturity;
+    std::vector<Date> maturities = { today + Period(6, Months), maturity };
 
     const NormalCLVModel m(bsProcess, ouProcess, maturities, 8);
     const ext::function<Real(Real, Real)> g = m.g();
@@ -362,8 +361,8 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     }
 
     VanillaOption fdmOption(
-         ext::make_shared<CLVModelPayoff>(
-             payoff->optionType(), payoff->strike(), ext::bind(g, t, _1)),
+         ext::make_shared<CLVModelPayoff>(payoff->optionType(), payoff->strike(),
+                                          [&](Real _x) { return g(t, _x); }),
          exercise);
 
     fdmOption.setPricingEngine(

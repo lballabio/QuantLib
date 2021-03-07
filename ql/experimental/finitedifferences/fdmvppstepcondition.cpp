@@ -21,7 +21,6 @@
 */
 
 #include <ql/experimental/finitedifferences/fdmvppstepcondition.hpp>
-#include <ql/functional.hpp>
 #include <ql/math/array.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
@@ -44,8 +43,6 @@ namespace QuantLib {
       gasPrice_(std::move(gasPrice)), sparkSpreadPrice_(std::move(sparkSpreadPrice)),
       stateEvolveFcts_(nStates_) {
 
-        using namespace ext::placeholders;
-
         QL_REQUIRE(nStates_ == mesher_->layout()->dim()[stateDirection_],
                    "mesher does not fit to vpp arguments");
 
@@ -53,12 +50,10 @@ namespace QuantLib {
             const Size j = i % (2*tMinUp_ + tMinDown_);
 
             if (j < tMinUp_) {
-                stateEvolveFcts_[i] = ext::function<Real (Real)>(
-                    ext::bind(&FdmVPPStepCondition::evolveAtPMin,this, _1));
+                stateEvolveFcts_[i] = [&](Real x){ return evolveAtPMin(x); };
             }
             else if (j < 2*tMinUp_){
-                stateEvolveFcts_[i] = ext::function<Real (Real)>(
-                    ext::bind(&FdmVPPStepCondition::evolveAtPMax,this, _1));
+                stateEvolveFcts_[i] = [&](Real x) { return evolveAtPMax(x); };
             }
         }
     }

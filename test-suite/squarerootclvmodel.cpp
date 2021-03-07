@@ -20,7 +20,6 @@
 
 #include "utilities.hpp"
 #include "squarerootclvmodel.hpp"
-
 #include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -42,16 +41,12 @@
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/noexceptlocalvolsurface.hpp>
-
 #include <ql/experimental/models/squarerootclvmodel.hpp>
 #include <ql/experimental/models/hestonslvfdmmodel.hpp>
 #include <ql/experimental/processes/hestonslvprocess.hpp>
 #include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/experimental/volatility/sabrvoltermstructure.hpp>
-#include <ql/functional.hpp>
-
-#include <boost/assign/std/vector.hpp>
 
 #if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
 #pragma GCC diagnostic push
@@ -66,7 +61,6 @@
 #include <utility>
 
 using namespace QuantLib;
-using namespace boost::assign;
 using namespace boost::unit_test_framework;
 
 
@@ -84,18 +78,6 @@ namespace square_root_clv_model {
 
     typedef boost::math::non_central_chi_squared_distribution<Real>
         chi_squared_type;
-
-    class integrand {
-        CLVModelPayoff payoff;
-        chi_squared_type dist;
-      public:
-        integrand(CLVModelPayoff payoff, const chi_squared_type& dist)
-        : payoff(std::move(payoff)), dist(dist) {}
-        Real operator()(Real x) const {
-            return payoff(x) * boost::math::pdf(dist, x);
-        }
-    };
-
 }
 
 
@@ -103,7 +85,6 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
     BOOST_TEST_MESSAGE(
         "Testing vanilla option pricing with square-root kernel process...");
 
-    using namespace ext::placeholders;
     using namespace square_root_clv_model;
 
     SavedSettings backup;
@@ -166,7 +147,9 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
 
         const CLVModelPayoff clvModelPayoff(optionType, strike, g);
 
-        const ext::function<Real(Real)> f = integrand(clvModelPayoff, dist);
+        const ext::function<Real(Real)> f = [&](Real xi) {
+            return clvModelPayoff(xi) * boost::math::pdf(dist, xi);
+        };
 
         const Real calculated = GaussLobattoIntegral(1000, 1e-6)(
             f, x.front(), x.back()) * rTS->discount(maturity);
@@ -260,14 +243,13 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
                 std::sqrt(sabrVol->blackVariance(m, strike)),
                 rTS->discount(m)).value();
 
-            const CLVModelPayoff clvModelPayoff(
-                optionType, strike,
-                ext::bind(g, t, ext::placeholders::_1));
+            const CLVModelPayoff clvModelPayoff(optionType, strike, [&](Real x) { return g(t, x); });
 
-            const ext::function<Real(Real)> f = integrand(clvModelPayoff, dist);
+            const ext::function<Real(Real)> f = [&](Real xi) {
+                return clvModelPayoff(xi) * boost::math::pdf(dist, xi);
+            };
 
             const Array x = model.collocationPointsX(m);
-
             const Real calculated = GaussLobattoIntegral(1000, 1e-3)(
                 f, x.front(), x.back()) * rTS->discount(m);
 

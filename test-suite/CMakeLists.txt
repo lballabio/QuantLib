@@ -359,7 +359,7 @@ if (USE_BOOST_DYNAMIC_LIBRARIES)
     add_definitions(-DBOOST_TEST_DYN_LINK)
 endif()
 
-find_package (Boost REQUIRED COMPONENTS unit_test_framework timer system OPTIONAL_COMPONENTS chrono)
+find_package (Boost REQUIRED COMPONENTS unit_test_framework)
 
 set (TEST quantlib-test-suite)
 add_executable (${TEST} ${QuantLib-Test_SRC} ${QuantLib-Test_HDR})

@@ -41,12 +41,9 @@
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-
-#include <boost/assign/std/vector.hpp>
 #include <ql/tuple.hpp>
 
 using namespace QuantLib;
-using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
 
 

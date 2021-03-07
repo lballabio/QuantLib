@@ -18,66 +18,61 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/futures/overnightindexfuture.hpp>
+#include <ql/instruments/overnightindexfuture.hpp>
 #include <ql/indexes/indexmanager.hpp>
 #include <utility>
 
 namespace QuantLib {
 
-    OvernightIndexFuture::OvernightIndexFuture(
-        const ext::shared_ptr<OvernightIndex>& overnightIndex,
-        const ext::shared_ptr<Payoff>& payoff,
-        const Date& valueDate,
-        const Date& maturityDate,
-        const Handle<YieldTermStructure>& discountCurve,
-        Handle<Quote> convexityAdjustment,
-        OvernightAveraging::Type averagingMethod)
-    : Forward(overnightIndex->dayCounter(),
-              overnightIndex->fixingCalendar(),
-              overnightIndex->businessDayConvention(),
-              0,
-              payoff,
-              valueDate,
-              maturityDate,
-              discountCurve),
-      overnightIndex_(overnightIndex), convexityAdjustment_(std::move(convexityAdjustment)),
-      averagingMethod_(averagingMethod) {}
+    OvernightIndexFuture::OvernightIndexFuture(ext::shared_ptr<OvernightIndex> overnightIndex,
+                                               const Date& valueDate,
+                                               const Date& maturityDate,
+                                               Handle<Quote> convexityAdjustment,
+                                               OvernightAveraging::Type averagingMethod)
+    : overnightIndex_(std::move(overnightIndex)), valueDate_(valueDate),
+      maturityDate_(maturityDate), convexityAdjustment_(std::move(convexityAdjustment)),
+      averagingMethod_(averagingMethod) {
+        QL_REQUIRE(overnightIndex_, "null overnight index");
+        registerWith(overnightIndex_);
+    }
 
-    Real OvernightIndexFuture::averagedSpotValue() const {
+    Real OvernightIndexFuture::averagedRate() const {
         Date today = Settings::instance().evaluationDate();
+        Calendar calendar = overnightIndex_->fixingCalendar();
+        DayCounter dayCounter = overnightIndex_->dayCounter();
+        Handle<YieldTermStructure> forwardCurve = overnightIndex_->forwardingTermStructure();
         Real avg = 0;
         Date d1 = valueDate_;
         const TimeSeries<Real>& history = IndexManager::instance()
             .getHistory(overnightIndex_->name());
         Real fwd;
         while (d1 < maturityDate_) {
-            Date d2 = calendar_.advance(d1, 1, Days);
+            Date d2 = calendar.advance(d1, 1, Days);
             if (d1 < today) {
                 fwd = history[d1];
                 QL_REQUIRE(fwd != Null<Real>(), "missing rate on " <<
                     d1 << " for index " << overnightIndex_->name());
             } else {
-                fwd = discountCurve_->forwardRate(d1, d2, dayCounter_, Simple).rate();
+                fwd = forwardCurve->forwardRate(d1, d2, dayCounter, Simple).rate();
             }
-            avg += fwd * dayCounter_.yearFraction(d1, d2);
+            avg += fwd * dayCounter.yearFraction(d1, d2);
             d1 = d2;
         }
 
-        Real convAdj = convexityAdjustment_.empty() ? 0.0 :
-            convexityAdjustment_->value();
-        Real R = convAdj + avg /
-            dayCounter_.yearFraction(valueDate_, maturityDate_);
-        return 100.0 * (1.0 - R);
+        return avg / dayCounter.yearFraction(valueDate_, maturityDate_);
     }
 
-    Real OvernightIndexFuture::compoundedSpotValue() const {
+    Real OvernightIndexFuture::compoundedRate() const {
         Date today = Settings::instance().evaluationDate();
+        Calendar calendar = overnightIndex_->fixingCalendar();
+        DayCounter dayCounter = overnightIndex_->dayCounter();
+        Handle<YieldTermStructure> forwardCurve = overnightIndex_->forwardingTermStructure();
         Real prod = 1;
         if (today > valueDate_) {
             // can't value on a weekend inside reference period because we
             // won't know the reset rate until start of next business day.
             // user can supply an estimate if they really want to do this
-            today = calendar_.adjust(today, businessDayConvention_);
+            today = calendar.adjust(today);
             // for valuations inside the reference period, index quotes
             // must have been populated in the history
             const TimeSeries<Real>& history = IndexManager::instance()
@@ -87,51 +82,44 @@ namespace QuantLib {
                 Real r = history[d1];
                 QL_REQUIRE(r != Null<Real>(), "missing rate on " <<
                     d1 << " for index " << overnightIndex_->name());
-                Date d2 = calendar_.advance(d1, 1, Days);
-                prod *= 1 + r * dayCounter_.yearFraction(d1, d2);
+                Date d2 = calendar.advance(d1, 1, Days);
+                prod *= 1 + r * dayCounter.yearFraction(d1, d2);
                 d1 = d2;
             }
         }
-        DiscountFactor forwardDiscount = discountCurve_->discount(maturityDate_);
+        DiscountFactor forwardDiscount = forwardCurve->discount(maturityDate_);
         if (valueDate_ > today) {
-            forwardDiscount /= discountCurve_->discount(valueDate_);
+            forwardDiscount /= forwardCurve->discount(valueDate_);
         }
         prod /= forwardDiscount;
 
-        Real convAdj = convexityAdjustment_.empty() ? 0.0 :
-            convexityAdjustment_->value();
-        Real R = convAdj + (prod - 1) /
-            dayCounter_.yearFraction(valueDate_, maturityDate_);
-        return 100.0 * (1.0 - R);
+        return (prod - 1) / dayCounter.yearFraction(valueDate_, maturityDate_);
     }
 
-    Real OvernightIndexFuture::spotValue() const {
+    Real OvernightIndexFuture::rate() const {
         switch (averagingMethod_) {
           case OvernightAveraging::Simple:
-            underlyingSpotValue_ = averagedSpotValue();
+            return averagedRate();
             break;
           case OvernightAveraging::Compound:
-            underlyingSpotValue_ = compoundedSpotValue();
+            return compoundedRate();
             break;
           default:
               QL_FAIL("unknown compounding convention (" << Integer(averagingMethod_) << ")");
         }
-        return underlyingSpotValue_;
     }
 
-    Real OvernightIndexFuture::spotIncome(const Handle<YieldTermStructure>&) const {
-        underlyingIncome_ = 0;
-        return underlyingIncome_;
-    }
-
-    Real OvernightIndexFuture::forwardValue() const {
-        calculate();
-        return underlyingSpotValue_;
+    bool OvernightIndexFuture::isExpired() const {
+        return detail::simple_event(maturityDate_).hasOccurred();
     }
 
     Real OvernightIndexFuture::convexityAdjustment() const {
-        return convexityAdjustment_.empty() ? 0.0 :
-            convexityAdjustment_->value();
+        return convexityAdjustment_.empty() ? 0.0 : convexityAdjustment_->value();
+    }
+
+    void OvernightIndexFuture::performCalculations() const {
+        Rate R = convexityAdjustment() + rate();
+        NPV_ = 100.0 * (1.0 - R);
     }
 
 }

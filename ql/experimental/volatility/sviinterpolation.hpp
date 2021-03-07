@@ -26,7 +26,6 @@
 
 #include <ql/experimental/volatility/svismilesection.hpp>
 #include <ql/math/interpolations/xabrinterpolation.hpp>
-#include <boost/assign/list_of.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -162,9 +161,8 @@ class SviInterpolation : public Interpolation {
         impl_ = ext::shared_ptr<Interpolation::Impl>(
             new detail::XABRInterpolationImpl<I1, I2, detail::SviSpecs>(
                 xBegin, xEnd, yBegin, t, forward,
-                boost::assign::list_of(a)(b)(sigma)(rho)(m),
-                boost::assign::list_of(aIsFixed)(bIsFixed)(sigmaIsFixed)(
-                    rhoIsFixed)(mIsFixed),
+                {a, b, sigma, rho, m},
+                {aIsFixed, bIsFixed, sigmaIsFixed, rhoIsFixed, mIsFixed},
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses));
         coeffs_ = ext::dynamic_pointer_cast<

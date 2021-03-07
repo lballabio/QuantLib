@@ -22,7 +22,6 @@
 */
 
 #include <ql/errors.hpp>
-#include <ql/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
@@ -43,10 +42,8 @@ namespace QuantLib {
                    || polynomType == LsmBasisSystem::Chebyshev2nd,
                    "insufficient polynom type");
 
-        using namespace ext::placeholders;
-
         // the payoff gives an additional value
-        v_.push_back(ext::bind(&AmericanPathPricer::payoff, this, _1));
+        v_.emplace_back([&](Real state){ return this->payoff(state); });
 
         const ext::shared_ptr<StrikedTypePayoff> strikePayoff
             = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);

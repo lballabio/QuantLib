@@ -93,7 +93,7 @@ namespace QuantLib {
         discounters_.reserve(cashFlowTimes.size());
 
         for (double cashFlowTime : cashFlowTimes)
-            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTime, rateTimes));
+            discounters_.emplace_back(cashFlowTime, rateTimes);
 
 
         // need to check that we are in money market measure
@@ -359,13 +359,11 @@ namespace QuantLib {
         {
             Size thisSize = vegaBumps[i].size();
             QL_REQUIRE(thisSize == numberBumps_,"We must have precisely the same number of bumps for each step.");
-            jacobianComputers_.push_back(RatePseudoRootJacobian(pseudoRootStructure_->pseudoRoot(i),evolution.firstAliveRate()[i],
-                                numeraires_[i],
-                                evolution.rateTaus(),
-                                vegaBumps[i], pseudoRootStructure_->displacements()));
+            jacobianComputers_.emplace_back(
+                pseudoRootStructure_->pseudoRoot(i), evolution.firstAliveRate()[i], numeraires_[i],
+                evolution.rateTaus(), vegaBumps[i], pseudoRootStructure_->displacements());
 
-            jacobiansThisPaths_.push_back(Matrix(numberBumps_,pseudoRootStructure_->numberOfRates()));
-
+            jacobiansThisPaths_.emplace_back(numberBumps_, pseudoRootStructure_->numberOfRates());
         }
 
 
@@ -419,7 +417,7 @@ namespace QuantLib {
         discounters_.reserve(cashFlowTimes.size());
 
         for (double cashFlowTime : cashFlowTimes)
-            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTime, rateTimes));
+            discounters_.emplace_back(cashFlowTime, rateTimes);
 
 
         // need to check that we are in money market measure
@@ -746,18 +744,17 @@ namespace QuantLib {
 
        std::vector<Matrix> jacobiansThisPathsModel;
        for (Size i =0; i < numberRates_; ++i)
-              jacobiansThisPathsModel.push_back(Matrix(numberRates_,factors_));
-
+           jacobiansThisPathsModel.emplace_back(numberRates_, factors_);
 
 
         for (Size i =0; i < numberSteps_; ++i)
         {
-              jacobianComputers_.push_back(RatePseudoRootJacobianAllElements(pseudoRootStructure_->pseudoRoot(i),evolution.firstAliveRate()[i],
-                                numeraires_[i],
-                                evolution.rateTaus(),
-                                pseudoRootStructure_->displacements()));
+            jacobianComputers_.emplace_back(
+                pseudoRootStructure_->pseudoRoot(i), evolution.firstAliveRate()[i], numeraires_[i],
+                evolution.rateTaus(), pseudoRootStructure_->displacements());
 
-              // vector of vector of matrices to store jacobians of rates with respect to pseudo-root elements
+            // vector of vector of matrices to store jacobians of rates with respect to pseudo-root
+            // elements
             jacobiansThisPaths_.push_back(jacobiansThisPathsModel);
         }
 
@@ -812,7 +809,7 @@ namespace QuantLib {
         discounters_.reserve(cashFlowTimes.size());
 
         for (double cashFlowTime : cashFlowTimes)
-            discounters_.push_back(MarketModelPathwiseDiscounter(cashFlowTime, rateTimes));
+            discounters_.emplace_back(cashFlowTime, rateTimes);
 
 
         // need to check that we are in money market measure

@@ -57,7 +57,7 @@ namespace QuantLib {
         */
         virtual Real amount() const = 0;
         //! returns the date that the cash flow trades exCoupon
-        virtual Date exCouponDate() const {return Date();};
+        virtual Date exCouponDate() const { return {}; };
         //! returns true if the cashflow is trading ex-coupon on the refDate
         bool tradingExCoupon(const Date& refDate = Date()) const;
 

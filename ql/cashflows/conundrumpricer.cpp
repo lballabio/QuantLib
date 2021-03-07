@@ -257,10 +257,7 @@ namespace QuantLib {
 
     }
 
-    Real NumericHaganPricer::integrate(Real a,
-        Real b, const ConundrumIntegrand& integrand) const {
-
-            using namespace ext::placeholders;
+    Real NumericHaganPricer::integrate(Real a, Real b, const ConundrumIntegrand& integrand) const {
 
             Real result =.0;
             //double abserr =.0;
@@ -292,7 +289,7 @@ namespace QuantLib {
                     Size k = 3;
                     ext::function<Real (Real)> temp = ext::cref(integrand);
                     VariableChange variableChange(temp, a, upperBoundary, k);
-                    f = ext::bind(&VariableChange::value, &variableChange, _1);
+                    f = [&](Real _x) { return variableChange.value(_x); };
                     result = gaussKronrodNonAdaptive(f, .0, 1.0);
                 } else {
                     f = ext::cref(integrand);

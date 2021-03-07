@@ -43,10 +43,11 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
         Date settlementDate = index->fixingCalendar().advance(today, index->fixingDays() * Days);
 
         // set up quotes with no values
-        std::vector<ext::shared_ptr<SimpleQuote> > quotes;
-        quotes.push_back(ext::make_shared<SimpleQuote>());
-        quotes.push_back(ext::make_shared<SimpleQuote>());
-        quotes.push_back(ext::make_shared<SimpleQuote>());
+        std::vector<ext::shared_ptr<SimpleQuote> > quotes = {
+            ext::make_shared<SimpleQuote>(),
+            ext::make_shared<SimpleQuote>(),
+            ext::make_shared<SimpleQuote>()
+        };
 
 #ifdef QL_USE_INDEXED_COUPON
         bool useIndexedFra = false;

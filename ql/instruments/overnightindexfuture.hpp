@@ -31,34 +31,29 @@
 
 namespace QuantLib {
 
-    /*
-    Future on a compounded overnight index investment. Compatable with
-    SOFR futures and Sonia futures available on CME and ICE exchanges.
+    /*! Future on a compounded overnight index investment.
+
+        Compatible with SOFR futures and Sonia futures available on
+        CME and ICE exchanges.
     */
-    class OvernightIndexFuture : public Forward {
+    class OvernightIndexFuture : public Instrument {
       public:
-        OvernightIndexFuture(const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                             const ext::shared_ptr<Payoff>& payoff,
-                             const Date& valueDate,
-                             const Date& maturityDate,
-                             const Handle<YieldTermStructure>& discountCurve,
-                             Handle<Quote> convexityAdjustment = Handle<Quote>(),
-                             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
-
-        //! returns spot value/price of an underlying financial instrument
-        Real spotValue() const override;
-
-        //! NPV of income/dividends/storage-costs etc. of underlying instrument
-        Real spotIncome(const Handle<YieldTermStructure>&) const override;
-
-        Real forwardValue() const override;
+        OvernightIndexFuture(
+            ext::shared_ptr<OvernightIndex> overnightIndex,
+            const Date& valueDate,
+            const Date& maturityDate,
+            Handle<Quote> convexityAdjustment = Handle<Quote>(),
+            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 
         Real convexityAdjustment() const;
-
+        bool isExpired() const override;
       private:
-        Real averagedSpotValue() const;
-        Real compoundedSpotValue() const;
+        void performCalculations() const override;
+        Real rate() const;
+        Real averagedRate() const;
+        Real compoundedRate() const;
         ext::shared_ptr<OvernightIndex> overnightIndex_;
+        Date valueDate_, maturityDate_;
         Handle<Quote> convexityAdjustment_;
         OvernightAveraging::Type averagingMethod_;
     };

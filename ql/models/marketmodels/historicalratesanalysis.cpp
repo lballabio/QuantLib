@@ -58,7 +58,7 @@ namespace QuantLib {
                 }
             } catch (std::exception& e) {
                 skippedDates.push_back(currentDate);
-                skippedDatesErrorMessage.push_back(e.what());
+                skippedDatesErrorMessage.emplace_back(e.what());
                 continue;
             }
 

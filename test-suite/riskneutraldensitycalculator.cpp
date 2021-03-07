@@ -20,7 +20,6 @@
 
 #include "riskneutraldensitycalculator.hpp"
 #include "utilities.hpp"
-#include <ql/functional.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/functional.hpp>
@@ -416,24 +415,23 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
             spot, rTS, qTS, localVolSurface, dumasTimeGrid, 401, 0.1, 1e-8));
 
     const Real strikes[] = { 25, 50, 95, 100, 105, 150, 200, 400 };
-    const Date maturityDates[] = {
+    const std::vector<Date> maturities = {
         todaysDate + Period(1, Weeks),   todaysDate + Period(1, Months),
         todaysDate + Period(3, Months),  todaysDate + Period(6, Months),
         todaysDate + Period(12, Months), todaysDate + Period(18, Months),
         todaysDate + Period(2, Years),   todaysDate + Period(3, Years) };
-    const std::vector<Date> maturities(
-        maturityDates, maturityDates + LENGTH(maturityDates));
 
 
-    for (auto maturitie : maturities) {
-        const Time expiry = rTS->dayCounter().yearFraction(todaysDate, maturitie);
+    for (auto maturity : maturities) {
+        const Time expiry
+            = rTS->dayCounter().yearFraction(todaysDate, maturity);
 
         const ext::shared_ptr<PricingEngine> engine(
             new FdBlackScholesVanillaEngine(
                 bsmProcess, std::max(Size(51), Size(expiry*101)),
                 201, 0, FdmSchemeDesc::Douglas(), true, b1));
 
-        const ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturitie));
+        const ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
 
         for (double strike : strikes) {
             const ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(
@@ -493,8 +491,7 @@ void RiskNeutralDensityCalculatorTest::testSquareRootProcessRND() {
 
             const Real cdfCalculated = rndCalculator.cdf(v, t);
             const Real cdfExpected = GaussLobattoIntegral(10000, 0.01*tol)(
-                ext::bind(&SquareRootProcessRNDCalculator::pdf,
-                          &rndCalculator, ext::placeholders::_1, t), 0, v);
+                [&](Real _x) { return rndCalculator.pdf(_x, t); }, 0, v);
 
             if (std::fabs(cdfCalculated - cdfExpected) > tol) {
                 BOOST_FAIL("failed to calculate cdf"
@@ -723,10 +720,10 @@ void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
     const Time t = 2.75;
 
     const std::pair<Real, Real> params[] = {
-      std::make_pair(0.1, 1.6),
-      std::make_pair(0.01, 2.0),
-      std::make_pair(10.0, 0.35),
-      std::make_pair(50.0, 0.1)
+        {0.1, 1.6},
+        {0.01, 2.0},
+        {10.0, 0.35},
+        {50.0, 0.1}
     };
 
     const Real tol = 1e-4;
@@ -741,8 +738,7 @@ void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
         const Real ax = 15.0*std::sqrt(t)*alpha*std::pow(f0, beta);
 
         const Real calculated = GaussLobattoIntegral(1000, 1e-8)(
-            ext::bind(&CEVRNDCalculator::pdf, calculator, ext::placeholders::_1, t),
-                      std::max(QL_EPSILON, f0-ax), f0+ax) +
+            [&](Real _x) { return calculator->pdf(_x, t); }, std::max(QL_EPSILON, f0-ax), f0+ax) +
             calculator->massAtZero(t);
 
         if (std::fabs(calculated - 1.0) > tol) {

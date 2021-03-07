@@ -19,7 +19,6 @@
 
 #include "nthorderderivativeop.hpp"
 #include "utilities.hpp"
-#include <ql/functional.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/initializers.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
@@ -418,19 +417,13 @@ namespace {
 
         Disposable<Array> solve_splitting(Size direction, const Array& r, Real dt) const override {
 
-            using namespace ext::placeholders;
             if (direction == direction_) {
                 BiCGStabResult result =
                     QuantLib::BiCGstab(
-                        ext::function<Disposable<Array>(const Array&)>(
-                            ext::bind(
-                                &FdmHeatEquationOp::solve_apply,
-                                this, _1, -dt)),
+                        [&](const Array& a){ return solve_apply(a, -dt); },
                         std::max(Size(10), r.size()), 1e-14,
-                        ext::function<Disposable<Array>(const Array&)>(
-                            ext::bind(&FdmLinearOpComposite::preconditioner,
-                                        this, _1, dt))
-                    ).solve(r, r);
+                        [&](const Array& a){ return preconditioner(a, dt); })
+                        .solve(r, r);
 
                 return result.x;
             }
@@ -616,15 +609,13 @@ void NthOrderDerivativeOpTest::testHigerOrderBSOptionPricing() {
 
     SavedSettings backup;
 
-    Array strikes(8);
-    strikes << 50, 75, 90, 100, 110, 125, 150, 200;
+    Array strikes = { 50, 75, 90, 100, 110, 125, 150, 200 };
 
     const GridSetup initSetup = {
         5.2, 0.1, true, false, 5, 31, 51, FdmSchemeDesc::Douglas()
     };
 
-    Array initialValues(2);
-    initialValues << initSetup.alpha, initSetup.density;
+    Array initialValues = { initSetup.alpha, initSetup.density };
 
     FdmMispricingCostFunction costFct(initSetup, strikes);
     NoConstraint noConstraint;
@@ -659,8 +650,7 @@ void NthOrderDerivativeOpTest::testHigerOrderBSOptionPricing() {
 namespace {
     Real priceQuality(Real h) {
 
-        Array strikes(1);
-        strikes << 100;
+        Array strikes = { 100 };
 
         const Size yGrid = Size(1/h);
         const GridSetup setup = {

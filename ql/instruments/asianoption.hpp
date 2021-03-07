@@ -58,12 +58,30 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
+        /*! This constructor takes the running sum or product of past fixings,
+            depending on the average type.  The fixing dates passed here can be
+            only the future ones.
+        */
         DiscreteAveragingAsianOption(Average::Type averageType,
                                      Real runningAccumulator,
                                      Size pastFixings,
                                      std::vector<Date> fixingDates,
                                      const ext::shared_ptr<StrikedTypePayoff>& payoff,
                                      const ext::shared_ptr<Exercise>& exercise);
+
+        /*! This constructor takes past fixings as a vector, defaulting to an empty
+            vector representing an unseasoned option.  This constructor expects *all* fixing dates
+            to be provided, including those in the past, and to be already sorted.  During the
+            calculations, the option will compare them to the evaluation date to determine which
+            are historic; it will then take as many values from allPastFixings as needed and ignore
+            the others.  If not enough fixings are provided, it will raise an error.
+        */
+        DiscreteAveragingAsianOption(Average::Type averageType,
+                                     std::vector<Date> fixingDates,
+                                     const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                                     const ext::shared_ptr<Exercise>& exercise,
+                                     std::vector<Real> allPastFixings = std::vector<Real>());
+
         void setupArguments(PricingEngine::arguments*) const override;
 
       protected:
@@ -71,6 +89,12 @@ namespace QuantLib {
         Real runningAccumulator_;
         Size pastFixings_;
         std::vector<Date> fixingDates_;
+
+        // For backwards compatibility with the traditional interface, we keep track of
+        // whether this option was initialised using the full array of seasoned fixings
+        // (even if empty) or if a pastFixings and a runningAccumulator was provided
+        bool allPastFixingsProvided_;
+        std::vector<Real> allPastFixings_;
     };
 
     //! Extra %arguments for single-asset discrete-average Asian option

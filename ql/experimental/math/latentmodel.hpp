@@ -25,7 +25,6 @@
 #include <ql/experimental/math/multidimintegrator.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
-// for template spezs
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
@@ -33,7 +32,6 @@
 #include <ql/experimental/math/polarstudenttrng.hpp>
 #include <ql/handle.hpp>
 #include <ql/quote.hpp>
-#include <ql/functional.hpp>
 #include <vector>
 
 /*! \file latentmodel.hpp
@@ -588,31 +586,21 @@ namespace QuantLib {
         */
         Real integratedExpectedValue(
             const ext::function<Real(const std::vector<Real>& v1)>& f) const {
-
             // function composition: composes the integrand with the density 
             //   through a product.
-            return 
-                integration()->integrate(
-                    ext::bind(std::multiplies<Real>(), 
-                    ext::bind(&copulaPolicyImpl::density, copula_,
-                              ext::placeholders::_1),
-                              ext::bind(ext::cref(f),
-                                        ext::placeholders::_1)));   
+            return integration()->integrate(
+                [&](const std::vector<Real>& x){ return copula_.density(x) * f(x); });
         }
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).
         */
-        Disposable<std::vector<Real> > integratedExpectedValue(
+        Disposable<std::vector<Real> > integratedExpectedValueV(
             // const ext::function<std::vector<Real>(
             const ext::function<Disposable<std::vector<Real> >(
                 const std::vector<Real>& v1)>& f ) const {
-            return 
-                integration()->integrateV(//see note in LMIntegrators base class
-                    ext::bind<Disposable<std::vector<Real> > >(
-                        detail::multiplyV(),
-                        ext::bind(&copulaPolicyImpl::density, copula_,
-                                  ext::placeholders::_1),
-                        ext::bind(ext::cref(f), ext::placeholders::_1)));
+            detail::multiplyV M;
+            return integration()->integrateV(//see note in LMIntegrators base class
+                [&](const std::vector<Real>& x){ return M(copula_.density(x), f(x)); });
         }
     protected:
         // Integrable models must provide their integrator.
@@ -686,7 +674,7 @@ namespace QuantLib {
       nVariables_(factorWeights.size())
     {
         for (double factorWeight : factorWeights)
-            factorWeights_.push_back(std::vector<Real>(1, factorWeight));
+            factorWeights_.emplace_back(1, factorWeight);
         for (double factorWeight : factorWeights)
             idiosyncFctrs_.push_back(std::sqrt(1. - factorWeight * factorWeight));
         //convert row to column vector....

@@ -36,8 +36,6 @@
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/pricingengines/basket/fd2dblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/functional.hpp>
-#include <boost/preprocessor/iteration/local.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -325,9 +323,7 @@ void BasketOptionTest::testEuroTwoValues() {
                 QL_FAIL("unknown basket type");
         }
 
-        std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-        procs.push_back(p1);
-        procs.push_back(p2);
+        std::vector<ext::shared_ptr<StochasticProcess1D> > procs = { p1, p2 };
 
         Matrix correlationMatrix(2, 2, value.rho);
         for (Integer j=0; j < 2; j++) {
@@ -523,10 +519,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS3)));
 
-        std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-        procs.push_back(stochProcess1);
-        procs.push_back(stochProcess2);
-        procs.push_back(stochProcess3);
+        std::vector<ext::shared_ptr<StochasticProcess1D> > procs
+            = {stochProcess1, stochProcess2, stochProcess3 };
 
         Matrix correlation(3, 3, value.rho);
         for (Integer j=0; j < 3; j++) {
@@ -660,10 +654,9 @@ void BasketOptionTest::testTavellaValues() {
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS3)));
 
-    std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-    procs.push_back(stochProcess1);
-    procs.push_back(stochProcess2);
-    procs.push_back(stochProcess3);
+    std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1,
+                                                                stochProcess2,
+                                                                stochProcess3};
 
     Matrix correlation(3,3, 0.0);
     for (Integer j=0; j < 3; j++) {
@@ -777,8 +770,7 @@ void BasketOptionTest::testOneDAmericanValues(std::size_t from, std::size_t to) 
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS1)));
 
-    std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-    procs.push_back(stochProcess1);
+    std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1};
 
     Matrix correlation(1, 1, 1.0);
 
@@ -865,8 +857,7 @@ void BasketOptionTest::testOddSamples() {
                                   Handle<YieldTermStructure>(rTS),
                                   Handle<BlackVolTermStructure>(volTS1)));
 
-    std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-    procs.push_back(stochProcess1);
+    std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1};
 
     Matrix correlation(1, 1, 1.0);
 
@@ -1066,15 +1057,12 @@ test_suite* BasketOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::test2DPDEGreeks));
 
     if (speed <= Fast) {
-        #define N_TEST_CASES 5
-        #define BOOST_PP_LOCAL_MACRO(n)                                \
-            suite->add(QUANTLIB_TEST_CASE(                             \
-                ext::bind(&BasketOptionTest::testOneDAmericanValues, \
-                    (n    *LENGTH(oneDataValues))/N_TEST_CASES,        \
-                    ((n+1)*LENGTH(oneDataValues))/N_TEST_CASES)));
-
-        #define BOOST_PP_LOCAL_LIMITS (0, N_TEST_CASES-1)
-        #include BOOST_PP_LOCAL_ITERATE()
+        // unrolled to get different test names
+        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues( 0,  5); }));
+        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues( 5, 11); }));
+        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues(11, 17); }));
+        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues(17, 23); }));
+        suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues(23, 29); }));
     }
 
     if (speed == Slow) {

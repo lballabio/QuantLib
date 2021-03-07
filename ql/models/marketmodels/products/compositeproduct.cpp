@@ -65,7 +65,7 @@ namespace QuantLib {
                                   rateTimes2.begin()),
                        "incompatible rate times");
         }
-        components_.push_back(SubProduct());
+        components_.emplace_back();
         components_.back().product = product;
         components_.back().multiplier = multiplier;
         components_.back().done = false;

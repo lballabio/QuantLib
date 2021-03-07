@@ -218,15 +218,10 @@ namespace QuantLib {
             if (pUncond < 1.e-10) return 0.;
 
             return integratedExpectedValue(
-              ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                &DefaultLatentModel<copulaPolicy>
-                    ::conditionalDefaultProbabilityInvP,
-                this,
-                inverseCumulativeY(pUncond, iName),
-                iName, 
-                ext::placeholders::_1)
-              ));
+                [&](const std::vector<Real>& v1) {
+                    return conditionalDefaultProbabilityInvP(
+                        inverseCumulativeY(pUncond, iName), iName, v1);
+                });
         }
         /*! Pearsons' default probability correlation. 
             Users should consider specialization on the copula type for specific
@@ -241,14 +236,9 @@ namespace QuantLib {
         */
         Probability probAtLeastNEvents(Size n, const Date& date) const {
             return integratedExpectedValue(
-             ext::function<Real (const std::vector<Real>& v1)>(
-              ext::bind(
-              &DefaultLatentModel<copulaPolicy>::conditionalProbAtLeastNEvents,
-              this,
-              n,
-              ext::cref(date),
-              ext::placeholders::_1)
-             ));
+                [&](const std::vector<Real>& v1) {
+                    return conditionalProbAtLeastNEvents(n, date, v1);
+                });
         }
     };
 
@@ -276,11 +266,8 @@ namespace QuantLib {
         Real E1i1j; // joint default covariance term
         if(iNamei !=iNamej) {
             E1i1j = integratedExpectedValue(
-              ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                &DefaultLatentModel<CP>::condProbProduct,
-                this, invPi, invPj, iNamei, iNamej,
-                ext::placeholders::_1) ));
+                [&](const std::vector<Real>& v1) {
+                    return condProbProduct(invPi, invPj, iNamei, iNamej, v1); });
         }else{
             E1i1j = pi;
         }

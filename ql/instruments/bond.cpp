@@ -366,7 +366,7 @@ namespace QuantLib {
         notionals_.clear();
 
         Date lastPaymentDate = Date();
-        notionalSchedule_.push_back(Date());
+        notionalSchedule_.emplace_back();
         for (auto& cashflow : cashflows_) {
             ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(cashflow);
             if (!coupon)
@@ -402,8 +402,8 @@ namespace QuantLib {
     void Bond::arguments::validate() const {
         QL_REQUIRE(settlementDate != Date(), "no settlement date provided");
         QL_REQUIRE(!cashflows.empty(), "no cash flow provided");
-        for (Size i=0; i<cashflows.size(); ++i)
-            QL_REQUIRE(cashflows[i], "null cash flow provided");
+        for (const auto & cf: cashflows)
+            QL_REQUIRE(cf, "null cash flow provided");
     }
 
 }

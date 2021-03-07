@@ -48,6 +48,7 @@ this_include_HEADERS = \
     nonstandardswaption.hpp \
     oneassetoption.hpp \
     overnightindexedswap.hpp \
+    overnightindexfuture.hpp \
     payoffs.hpp \
     quantobarrieroption.hpp \
     quantoforwardvanillaoption.hpp \
@@ -105,6 +106,7 @@ cpp_files = \
     nonstandardswaption.cpp \
     oneassetoption.cpp \
     overnightindexedswap.cpp \
+    overnightindexfuture.cpp \
     payoffs.cpp \
     quantobarrieroption.cpp \
     quantoforwardvanillaoption.cpp \

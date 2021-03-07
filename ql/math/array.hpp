@@ -38,6 +38,7 @@
 #include <algorithm>
 #include <numeric>
 #include <vector>
+#include <initializer_list>
 #include <iomanip>
 
 namespace QuantLib {
@@ -67,6 +68,7 @@ namespace QuantLib {
         #ifdef QL_USE_DISPOSABLE
         Array(const Disposable<Array>&);
         #endif
+        Array(std::initializer_list<Real>);
         //! creates the array from an iterable sequence
         template <class ForwardIterator>
         Array(ForwardIterator begin, ForwardIterator end);
@@ -289,6 +291,11 @@ namespace QuantLib {
             std::copy(begin, end, a.begin());
         }
 
+    }
+
+    inline Array::Array(std::initializer_list<Real> init) {
+        detail::_fill_array_(*this, data_, n_, init.begin(), init.end(),
+                             boost::false_type());
     }
 
     template <class ForwardIterator>
