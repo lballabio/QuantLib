@@ -186,8 +186,6 @@ set(QuantLib_SRC
     experimental/finitedifferences/glued1dmesher.cpp
     experimental/finitedifferences/vanillavppoption.cpp
     experimental/forward/analytichestonforwardeuropeanengine.cpp
-    experimental/futures/overnightindexfuture.cpp
-    experimental/futures/overnightindexfutureratehelper.cpp
     experimental/fx/blackdeltacalculator.cpp
     experimental/fx/deltavolquote.cpp
     experimental/inflation/cpicapfloorengines.cpp
@@ -322,6 +320,7 @@ set(QuantLib_SRC
     instruments/nonstandardswaption.cpp
     instruments/oneassetoption.cpp
     instruments/overnightindexedswap.cpp
+    instruments/overnightindexfuture.cpp
     instruments/payoffs.cpp
     instruments/quantobarrieroption.cpp
     instruments/quantoforwardvanillaoption.cpp
@@ -844,6 +843,7 @@ set(QuantLib_SRC
     termstructures/yield/forwardstructure.cpp
     termstructures/yield/nonlinearfittingmethods.cpp
     termstructures/yield/oisratehelper.cpp
+    termstructures/yield/overnightindexfutureratehelper.cpp
     termstructures/yield/ratehelpers.cpp
     termstructures/yield/zeroyieldstructure.cpp
     termstructures/yieldtermstructure.cpp
@@ -1161,9 +1161,6 @@ set(QuantLib_HDR
     experimental/finitedifferences/vanillavppoption.hpp
     experimental/forward/all.hpp
     experimental/forward/analytichestonforwardeuropeanengine.hpp
-    experimental/futures/all.hpp
-    experimental/futures/overnightindexfuture.hpp
-    experimental/futures/overnightindexfutureratehelper.hpp
     experimental/fx/all.hpp
     experimental/fx/blackdeltacalculator.hpp
     experimental/fx/deltavolquote.hpp
@@ -1382,6 +1379,7 @@ set(QuantLib_HDR
     instruments/nonstandardswaption.hpp
     instruments/oneassetoption.hpp
     instruments/overnightindexedswap.hpp
+    instruments/overnightindexfuture.hpp
     instruments/payoffs.hpp
     instruments/quantobarrieroption.hpp
     instruments/quantoforwardvanillaoption.hpp
@@ -2191,6 +2189,7 @@ set(QuantLib_HDR
     termstructures/yield/interpolatedsimplezerocurve.hpp
     termstructures/yield/nonlinearfittingmethods.hpp
     termstructures/yield/oisratehelper.hpp
+    termstructures/yield/overnightindexfutureratehelper.hpp
     termstructures/yield/piecewiseyieldcurve.hpp
     termstructures/yield/piecewisezerospreadedtermstructure.hpp
     termstructures/yield/quantotermstructure.hpp
