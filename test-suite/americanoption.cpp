@@ -792,6 +792,117 @@ void AmericanOptionTest::testEscrowedVsSpotAmericanOption() {
    }
 }
 
+
+void AmericanOptionTest::testTodayIsDividendDate() {
+    BOOST_TEST_MESSAGE("Testing escrowed vs spot dividend model"
+            " on dividend dates for American options...");
+
+    SavedSettings backup;
+
+    const auto dc = Actual360();
+    const auto today = Date(27, February, 2021);
+    Settings::instance().evaluationDate() = today;
+
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.3));
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100)),
+        Handle<YieldTermStructure>(flatRate(0.05, dc)),
+        Handle<YieldTermStructure>(flatRate(0.07, dc)),
+        Handle<BlackVolTermStructure>(flatVol(vol, dc))
+    );
+
+    const auto maturityDate = today + Period(12, Months);
+    const Date divDate1 = today;
+    const Date divDate2 = today + Period(11, Months);
+    const Real divAmount = 5.0;
+
+    const auto spotEngine =
+        ext::make_shared<FdBlackScholesVanillaEngine>(process, 100, 400);
+
+    const auto escrowedEngine =
+        MakeFdBlackScholesVanillaEngine(process)
+            .withTGrid(100)
+            .withXGrid(400)
+            .withCashDividendModel(FdBlackScholesVanillaEngine::Escrowed);
+
+    const Real strike = 90.0;
+    DividendVanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, strike),
+        ext::make_shared<AmericanExercise>(today, maturityDate),
+        std::vector<Date>{divDate1, divDate2},
+        std::vector<Real>{divAmount, divAmount}
+    );
+
+    option.setPricingEngine(spotEngine);
+
+    Real spotNpv = option.NPV();
+    const Real spotDelta = option.delta();
+    BOOST_CHECK_THROW(option.theta(), QuantLib::Error);
+
+    vol->setValue(100/95.*0.3);
+
+    option.setPricingEngine(escrowedEngine);
+
+    Real escrowedNpv = option.NPV();
+    const Real escrowedDelta = option.delta();
+    BOOST_CHECK_THROW(option.theta(), QuantLib::Error);
+
+    Real diffNpv = std::abs(escrowedNpv - spotNpv);
+    Real tol = 5e-2;
+
+    if (diffNpv > tol) {
+        BOOST_FAIL("failed to compare American option NPV with "
+                "escrowed and spot dividend model "
+                << "\n    escrowed div: " << escrowedNpv
+                << "\n    spot div    : " << spotNpv
+                << "\n    difference: " << diffNpv
+                << "\n    tolerance:  " << tol);
+    }
+
+    const Real diffDelta = std::abs(escrowedDelta - spotDelta);
+
+    tol = 1e-3;
+    if (diffDelta > tol) {
+        BOOST_FAIL("failed to compare American option Delta with "
+                "escrowed and spot dividend model "
+                << "\n    escrowed div: " << escrowedDelta
+                << "\n    spot div    : " << spotDelta
+                << "\n    difference: " << diffDelta
+                << "\n    tolerance:  " << tol);
+    }
+
+    DividendVanillaOption optionTomorrow(
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, strike),
+        ext::make_shared<AmericanExercise>(today, maturityDate),
+        std::vector<Date>{today + Period(1, Days), divDate2},
+        std::vector<Real>{divAmount, divAmount}
+    );
+
+    vol->setValue(0.3);
+
+    optionTomorrow.setPricingEngine(spotEngine);
+    spotNpv = optionTomorrow.NPV();
+
+    vol->setValue(100/95.0*0.3);
+    optionTomorrow.setPricingEngine(escrowedEngine);
+
+    escrowedNpv = optionTomorrow.NPV();
+    BOOST_CHECK_NO_THROW(optionTomorrow.theta());
+
+    diffNpv = std::abs(escrowedNpv - spotNpv);
+    tol = 5e-2;
+
+    if (diffNpv > tol) {
+        BOOST_FAIL("failed to compare American option NPV with "
+                "escrowed and spot dividend model "
+                << "\n    escrowed div: " << escrowedNpv
+                << "\n    spot div    : " << spotNpv
+                << "\n    difference: " << diffNpv
+                << "\n    tolerance:  " << tol);
+    }
+}
+
 test_suite* AmericanOptionTest::suite() {
     auto* suite = BOOST_TEST_SUITE("American option tests");
     suite->add(
@@ -812,6 +923,8 @@ test_suite* AmericanOptionTest::suite() {
         &AmericanOptionTest::testLargeDividendShoutNPV));
     suite->add(QUANTLIB_TEST_CASE(
         &AmericanOptionTest::testEscrowedVsSpotAmericanOption));
+    suite->add(QUANTLIB_TEST_CASE(
+            &AmericanOptionTest::testTodayIsDividendDate));
 
     return suite;
 }
