@@ -907,21 +907,14 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
 
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testJuValues));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdValues));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testZeroVolFDShoutNPV));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AmericanOptionTest::testLargeDividendShoutNPV));
-    suite->add(QUANTLIB_TEST_CASE(
-        &AmericanOptionTest::testEscrowedVsSpotAmericanOption));
-    suite->add(QUANTLIB_TEST_CASE(
-            &AmericanOptionTest::testTodayIsDividendDate));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testLargeDividendShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testEscrowedVsSpotAmericanOption));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testTodayIsDividendDate));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
