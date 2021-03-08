@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include <ql/cashflows/indexedcashflow.hpp>
+#include <ql/cashflows/inflationcashflow.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
@@ -91,8 +91,8 @@ namespace QuantLib {
         legs_[0].push_back(ext::shared_ptr<CashFlow>(
             new SimpleCashFlow(fixedAmount, fixedPayDate)));
         bool growthOnly = true;
-        legs_[1].push_back(ext::shared_ptr<CashFlow>(
-            new IndexedCashFlow(nominal,infIndex,baseDate_,obsDate_,infPayDate,growthOnly)));
+        legs_[1].push_back(ext::shared_ptr<CashFlow>(new ZeroInflationCashFlow(
+            nominal, infIndex, infIndex->interpolated(), baseDate_, obsDate_, infPayDate, growthOnly)));
 
         for (Size j=0; j<2; ++j) {
             for (auto& i : legs_[j])

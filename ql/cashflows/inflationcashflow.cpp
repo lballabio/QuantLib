@@ -31,5 +31,5 @@ namespace QuantLib {
     : IndexedCashFlow(notional, index, baseDate, fixingDate, paymentDate, growthOnly),
       zeroInflationIndex_(index), useInterpolatedFixings_(useInterpolatedFixings) {}
 
-    Real QuantLib::ZeroInflationCashFlow::amount() const { QL_FAIL("Not implemented yet..."); }
+    Real QuantLib::ZeroInflationCashFlow::amount() const { return IndexedCashFlow::amount(); }
 }
