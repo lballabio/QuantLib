@@ -17,29 +17,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmshoutloginnervaluecalculator.hpp
-    \brief inner value for a shout option
+/*! \file fdmescrowedloginnervaluecalculator.hpp
+    \brief inner value for a escrowed dividend model
 */
 
-#ifndef quantlib_fdm_shout_log_inner_value_calculator_hpp
-#define quantlib_fdm_shout_log_inner_value_calculator_hpp
+#ifndef quantlib_fdm_escrowed_log_inner_value_calculator_hpp
+#define quantlib_fdm_escrowed_log_inner_value_calculator_hpp
 
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/escroweddividendadjustment.hpp>
 
 namespace QuantLib {
 
+    class Payoff;
     class FdmMesher;
-    class PlainVanillaPayoff;
-    class BlackVolTermStructure;
 
-    class FdmShoutLogInnerValueCalculator: public FdmInnerValueCalculator {
+    class FdmEscrowedLogInnerValueCalculator: public FdmInnerValueCalculator {
       public:
-        FdmShoutLogInnerValueCalculator(
-            Handle<BlackVolTermStructure> blackVolatility,
+        FdmEscrowedLogInnerValueCalculator(
             ext::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj,
-            Time maturity,
-            ext::shared_ptr<PlainVanillaPayoff> payoff,
+            ext::shared_ptr<Payoff> payoff,
             ext::shared_ptr<FdmMesher> mesher,
             Size direction);
 
@@ -47,10 +44,8 @@ namespace QuantLib {
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override;
 
       private:
-        const Handle<BlackVolTermStructure> blackVolatility_;
         const ext::shared_ptr<EscrowedDividendAdjustment> escrowedDividendAdj_;
-        const Time maturity_;
-        const ext::shared_ptr<PlainVanillaPayoff> payoff_;
+        const ext::shared_ptr<Payoff> payoff_;
         const ext::shared_ptr<FdmMesher> mesher_;
         const Size direction_;
     };

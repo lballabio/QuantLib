@@ -37,6 +37,10 @@ class AmericanOptionTest {
     static void testFdAmericanGreeks();
     static void testFdShoutGreeks();
     static void testFDShoutNPV();
+    static void testZeroVolFDShoutNPV();
+    static void testLargeDividendShoutNPV();
+    static void testEscrowedVsSpotAmericanOption();
+    static void testTodayIsDividendDate();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 

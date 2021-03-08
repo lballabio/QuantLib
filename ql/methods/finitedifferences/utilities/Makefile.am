@@ -5,13 +5,15 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
 	all.hpp \
 	bsmrndcalculator.hpp \
-    cevrndcalculator.hpp \
+	cevrndcalculator.hpp \
+	escroweddividendadjustment.hpp \
 	fdmaffinemodeltermstructure.hpp \
 	fdmaffinemodelswapinnervalue.hpp \
 	fdmboundaryconditionset.hpp \
 	fdmdirichletboundary.hpp \
 	fdmdiscountdirichletboundary.hpp \
 	fdmdividendhandler.hpp \
+	fdmescrowedloginnervaluecalculator.hpp \
 	fdmindicesonboundary.hpp \
 	fdminnervaluecalculator.hpp \
 	fdmshoutloginnervaluecalculator.hpp \
@@ -25,13 +27,15 @@ this_include_HEADERS = \
 	squarerootprocessrndcalculator.hpp
 
 cpp_files = \
-    bsmrndcalculator.cpp \
-    cevrndcalculator.cpp \
+	bsmrndcalculator.cpp \
+	cevrndcalculator.cpp \
+	escroweddividendadjustment.cpp \
 	fdmaffinemodeltermstructure.cpp \
 	fdmaffinemodelswapinnervalue.cpp \
 	fdmdirichletboundary.cpp \
 	fdmdiscountdirichletboundary.cpp \
 	fdmdividendhandler.cpp \
+	fdmescrowedloginnervaluecalculator.cpp \
 	fdmindicesonboundary.cpp \
 	fdminnervaluecalculator.cpp \
 	fdmshoutloginnervaluecalculator.cpp \

@@ -94,7 +94,17 @@ namespace QuantLib {
                 new FdmDividendHandler(cashFlow, mesher,
                                        refDate, dayCounter, 0));
             stepConditions.push_back(dividendCondition);
-            stoppingTimes.push_back(dividendCondition->dividendTimes());
+
+            std::vector<Time> dividendTimes = dividendCondition->dividendTimes();
+            stoppingTimes.push_back(dividendTimes);
+
+            // smoother convergence behavior with number of time steps
+            const Time maturityTime = dayCounter.yearFraction(
+                refDate,exercise->lastDate());
+
+            for (auto& t: dividendTimes)
+                t = std::min(maturityTime, t+1e-5);
+            stoppingTimes.push_back(dividendTimes);
         }
 
         QL_REQUIRE(   exercise->type() == Exercise::American

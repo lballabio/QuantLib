@@ -33,9 +33,13 @@
 namespace QuantLib {
 
     //! Finite-differences shout engine with dividends
-    /*! \ingroup vanillaengines */
+    /*! \ingroup vanillaengines
+
+        \deprecated Use FdBlackScholesShoutEngine instead.
+                    Deprecated in version 1.22.
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendShoutEngine
+    class QL_DEPRECATED FDDividendShoutEngine
         : public FDEngineAdapter<FDShoutCondition<FDDividendEngine<Scheme> >,
                                  DividendVanillaOption::engine> {
         typedef FDEngineAdapter<FDShoutCondition<FDDividendEngine<Scheme> >,
@@ -49,8 +53,11 @@ namespace QuantLib {
     };
 
 
+    /*! \deprecated Use FdBlackScholesShoutEngine instead.
+                    Deprecated in version 1.22.
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendShoutEngineMerton73
+    class QL_DEPRECATED FDDividendShoutEngineMerton73
         : public FDEngineAdapter<FDShoutCondition<
                                      FDDividendEngineMerton73<Scheme> >,
                                  DividendVanillaOption::engine> {
@@ -65,8 +72,11 @@ namespace QuantLib {
         : super(process, timeSteps, gridPoints,timeDependent) {}
     };
 
+    /*! \deprecated Use FdBlackScholesShoutEngine instead.
+                    Deprecated in version 1.22.
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendShoutEngineShiftScale
+    class QL_DEPRECATED FDDividendShoutEngineShiftScale
         : public FDEngineAdapter<FDShoutCondition<
                                      FDDividendEngineShiftScale<Scheme> >,
                                  DividendVanillaOption::engine> {

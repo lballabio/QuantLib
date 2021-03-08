@@ -604,6 +604,304 @@ void AmericanOptionTest::testFDShoutNPV() {
     }
 }
 
+void AmericanOptionTest::testZeroVolFDShoutNPV() {
+    BOOST_TEST_MESSAGE("Testing zero volatility shout option pricing"
+            "with discrete dividends...");
+
+    SavedSettings backup;
+
+    const auto dc = Actual365Fixed();
+    const auto today = Date(14, February, 2021);
+    Settings::instance().evaluationDate() = today;
+
+    const auto spot = Handle<Quote>(ext::make_shared<SimpleQuote>(100.0));
+    const auto q = Handle<YieldTermStructure>(flatRate(0.03, dc));
+    const auto r = Handle<YieldTermStructure>(flatRate(0.07, dc));
+
+    const auto volTS = Handle<BlackVolTermStructure>(flatVol(1e-6, dc));
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+            spot, q, r, volTS);
+
+   const auto maturityDate = today + Period(1, Years);
+   const Date dividendDate = today + Period(3, Months);
+
+   DividendVanillaOption option(
+       ext::make_shared<PlainVanillaPayoff>(Option::Put, 100.0),
+       ext::make_shared<AmericanExercise>(today, maturityDate),
+       std::vector<Date>{dividendDate},
+       std::vector<Real>{10.0}
+   );
+
+   option.setPricingEngine(
+       ext::make_shared<FdBlackScholesVanillaEngine>(process, 50, 50));
+
+   const Real americanNPV = option.NPV();
+
+   option.setPricingEngine(
+       ext::make_shared<FdBlackScholesShoutEngine>(process, 50, 50));
+
+   const Real shoutNPV = option.NPV();
+   const DiscountFactor df = r->discount(maturityDate)/r->discount(dividendDate);
+
+   const Real tol = 1e-3;
+   const Real diff = std::fabs(americanNPV - shoutNPV/df);
+
+   if (diff > tol) {
+       BOOST_FAIL("failed to reproduce American option NPV with "
+               "Shout option pricing engine for "
+               << "\n    calculated: " << shoutNPV/df
+               << "\n    expected  : " << americanNPV
+               << "\n    difference: " << diff
+               << "\n    tolerance:  " << tol);
+   }
+}
+
+void AmericanOptionTest::testLargeDividendShoutNPV() {
+    BOOST_TEST_MESSAGE("Testing zero strike shout option pricing"
+            "with discrete dividends...");
+
+    SavedSettings backup;
+
+    const auto dc = Actual365Fixed();
+    const auto today = Date(21, February, 2021);
+    Settings::instance().evaluationDate() = today;
+
+    const Real s0 = 100.0;
+    const Volatility vol = 0.25;
+
+    const auto q = Handle<YieldTermStructure>(flatRate(0.00, dc));
+    const auto r = Handle<YieldTermStructure>(flatRate(0.00, dc));
+    const auto vTS = Handle<BlackVolTermStructure>(flatVol(vol, dc));
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(s0)), q, r, vTS);
+
+   const auto maturityDate = today + Period(6, Months);
+   const Date dividendDate = today + Period(3, Months);
+   const Real divAmount = 30.0;
+
+   const Real strike = 80.0;
+   DividendVanillaOption divOption(
+       ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+       ext::make_shared<AmericanExercise>(today, maturityDate),
+       std::vector<Date>{dividendDate},
+       std::vector<Real>{divAmount}
+   );
+
+   divOption.setPricingEngine(
+       ext::make_shared<FdBlackScholesShoutEngine>(process, 100, 400));
+
+   const Real calculated = divOption.NPV();
+
+   VanillaOption option(
+       ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+       ext::make_shared<AmericanExercise>(today, dividendDate)
+   );
+
+   option.setPricingEngine(
+       ext::make_shared<FdBlackScholesShoutEngine>(process, 100, 400));
+
+   const Real expected = option.NPV()
+       * r->discount(maturityDate) / r->discount(dividendDate);
+
+   const Real tol = 5e-2;
+   const Real diff = std::fabs(expected - calculated);
+
+   if (diff > tol) {
+       BOOST_FAIL("failed to reproduce American option NPV with "
+               "Shout option pricing engine for "
+               << "\n    calculated: " << calculated
+               << "\n    expected  : " << expected
+               << "\n    difference: " << diff
+               << "\n    tolerance:  " << tol);
+   }
+}
+
+void AmericanOptionTest::testEscrowedVsSpotAmericanOption() {
+    BOOST_TEST_MESSAGE("Testing escrowed vs spot dividend model "
+            "for American options...");
+
+    SavedSettings backup;
+
+    const auto dc = Actual360();
+    const auto today = Date(27, February, 2021);
+    Settings::instance().evaluationDate() = today;
+
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.3));
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100)),
+        Handle<YieldTermStructure>(flatRate(0.08, dc)),
+        Handle<YieldTermStructure>(flatRate(0.04, dc)),
+        Handle<BlackVolTermStructure>(flatVol(vol, dc))
+    );
+
+   const auto maturityDate = today + Period(12, Months);
+   const Date dividendDate = today + Period(10, Months);
+   const Real divAmount = 10.0;
+
+   const Real strike = 100.0;
+   DividendVanillaOption option(
+       ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+       ext::make_shared<AmericanExercise>(today, maturityDate),
+       std::vector<Date>{dividendDate},
+       std::vector<Real>{divAmount}
+   );
+
+   option.setPricingEngine(
+       ext::make_shared<FdBlackScholesVanillaEngine>(process, 100, 400));
+
+   const Real spotNpv = option.NPV();
+   const Real spotDelta = option.delta();
+
+   vol->setValue(100/90.*0.3);
+
+   option.setPricingEngine(
+       MakeFdBlackScholesVanillaEngine(process)
+           .withTGrid(100)
+           .withXGrid(400)
+           .withCashDividendModel(FdBlackScholesVanillaEngine::Escrowed)
+    );
+
+   const Real escrowedNpv = option.NPV();
+   const Real escrowedDelta = option.delta();
+
+   const Real diffNpv = std::abs(escrowedNpv - spotNpv);
+   const Real tol = 1e-2;
+
+   if (diffNpv > tol) {
+       BOOST_FAIL("failed to compare American option NPV with "
+               "escrowed and spot dividend model "
+               << "\n    escrowed div: " << escrowedNpv
+               << "\n    spot div    : " << spotNpv
+               << "\n    difference: " << diffNpv
+               << "\n    tolerance:  " << tol);
+   }
+
+
+   const Real diffDelta = std::abs(escrowedDelta - spotDelta);
+
+   if (diffDelta > tol) {
+       BOOST_FAIL("failed to compare American option Delta with "
+               "escrowed and spot dividend model "
+               << "\n    escrowed div: " << escrowedDelta
+               << "\n    spot div    : " << spotDelta
+               << "\n    difference: " << diffDelta
+               << "\n    tolerance:  " << tol);
+   }
+}
+
+
+void AmericanOptionTest::testTodayIsDividendDate() {
+    BOOST_TEST_MESSAGE("Testing escrowed vs spot dividend model"
+            " on dividend dates for American options...");
+
+    SavedSettings backup;
+
+    const auto dc = Actual360();
+    const auto today = Date(27, February, 2021);
+    Settings::instance().evaluationDate() = today;
+
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.3));
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(100)),
+        Handle<YieldTermStructure>(flatRate(0.05, dc)),
+        Handle<YieldTermStructure>(flatRate(0.07, dc)),
+        Handle<BlackVolTermStructure>(flatVol(vol, dc))
+    );
+
+    const auto maturityDate = today + Period(12, Months);
+    const Date divDate1 = today;
+    const Date divDate2 = today + Period(11, Months);
+    const Real divAmount = 5.0;
+
+    const auto spotEngine =
+        ext::make_shared<FdBlackScholesVanillaEngine>(process, 100, 400);
+
+    const auto escrowedEngine =
+        MakeFdBlackScholesVanillaEngine(process)
+            .withTGrid(100)
+            .withXGrid(400)
+            .withCashDividendModel(FdBlackScholesVanillaEngine::Escrowed);
+
+    const Real strike = 90.0;
+    DividendVanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, strike),
+        ext::make_shared<AmericanExercise>(today, maturityDate),
+        std::vector<Date>{divDate1, divDate2},
+        std::vector<Real>{divAmount, divAmount}
+    );
+
+    option.setPricingEngine(spotEngine);
+
+    Real spotNpv = option.NPV();
+    const Real spotDelta = option.delta();
+    BOOST_CHECK_THROW(option.theta(), QuantLib::Error);
+
+    vol->setValue(100/95.*0.3);
+
+    option.setPricingEngine(escrowedEngine);
+
+    Real escrowedNpv = option.NPV();
+    const Real escrowedDelta = option.delta();
+    BOOST_CHECK_THROW(option.theta(), QuantLib::Error);
+
+    Real diffNpv = std::abs(escrowedNpv - spotNpv);
+    Real tol = 5e-2;
+
+    if (diffNpv > tol) {
+        BOOST_FAIL("failed to compare American option NPV with "
+                "escrowed and spot dividend model "
+                << "\n    escrowed div: " << escrowedNpv
+                << "\n    spot div    : " << spotNpv
+                << "\n    difference: " << diffNpv
+                << "\n    tolerance:  " << tol);
+    }
+
+    const Real diffDelta = std::abs(escrowedDelta - spotDelta);
+
+    tol = 1e-3;
+    if (diffDelta > tol) {
+        BOOST_FAIL("failed to compare American option Delta with "
+                "escrowed and spot dividend model "
+                << "\n    escrowed div: " << escrowedDelta
+                << "\n    spot div    : " << spotDelta
+                << "\n    difference: " << diffDelta
+                << "\n    tolerance:  " << tol);
+    }
+
+    DividendVanillaOption optionTomorrow(
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, strike),
+        ext::make_shared<AmericanExercise>(today, maturityDate),
+        std::vector<Date>{today + Period(1, Days), divDate2},
+        std::vector<Real>{divAmount, divAmount}
+    );
+
+    vol->setValue(0.3);
+
+    optionTomorrow.setPricingEngine(spotEngine);
+    spotNpv = optionTomorrow.NPV();
+
+    vol->setValue(100/95.0*0.3);
+    optionTomorrow.setPricingEngine(escrowedEngine);
+
+    escrowedNpv = optionTomorrow.NPV();
+    BOOST_CHECK_NO_THROW(optionTomorrow.theta());
+
+    diffNpv = std::abs(escrowedNpv - spotNpv);
+    tol = 5e-2;
+
+    if (diffNpv > tol) {
+        BOOST_FAIL("failed to compare American option NPV with "
+                "escrowed and spot dividend model "
+                << "\n    escrowed div: " << escrowedNpv
+                << "\n    spot div    : " << spotNpv
+                << "\n    difference: " << diffNpv
+                << "\n    tolerance:  " << tol);
+    }
+}
+
 test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("American option tests");
 
@@ -613,6 +911,10 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdValues));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testZeroVolFDShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testLargeDividendShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testEscrowedVsSpotAmericanOption));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testTodayIsDividendDate));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
