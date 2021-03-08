@@ -45,11 +45,13 @@ namespace QuantLib {
         typedef FDEngineAdapter<FDShoutCondition<FDDividendEngine<Scheme> >,
                                 DividendVanillaOption::engine> super;
       public:
+        QL_DEPRECATED_DISABLE_WARNING
         FDDividendShoutEngine(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps=100, Size gridPoints=100,
              bool timeDependent = false)
         : super(process, timeSteps, gridPoints,timeDependent) {}
+        QL_DEPRECATED_ENABLE_WARNING
     };
 
 
@@ -65,11 +67,13 @@ namespace QuantLib {
                                     FDDividendEngineMerton73<Scheme> >,
                                 DividendVanillaOption::engine> super;
       public:
+        QL_DEPRECATED_DISABLE_WARNING
         FDDividendShoutEngineMerton73(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps=100, Size gridPoints=100,
              bool timeDependent = false)
         : super(process, timeSteps, gridPoints,timeDependent) {}
+        QL_DEPRECATED_ENABLE_WARNING
     };
 
     /*! \deprecated Use FdBlackScholesShoutEngine instead.
@@ -84,11 +88,13 @@ namespace QuantLib {
                                     FDDividendEngineShiftScale<Scheme> >,
                                 DividendVanillaOption::engine> super;
       public:
+        QL_DEPRECATED_DISABLE_WARNING
         FDDividendShoutEngineShiftScale(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps=100, Size gridPoints=100,
              bool timeDependent = false)
         : super(process, timeSteps, gridPoints,timeDependent) {}
+        QL_DEPRECATED_ENABLE_WARNING
     };
 
 }
