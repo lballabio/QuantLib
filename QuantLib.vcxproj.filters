@@ -558,6 +558,9 @@
     <ClInclude Include="ql\cashflows\indexedcashflow.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\inflationcashflow.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
     <ClInclude Include="ql\cashflows\inflationcoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
@@ -4460,6 +4463,9 @@
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\indexedcashflow.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\cashflows\inflationcashflow.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\inflationcoupon.cpp">

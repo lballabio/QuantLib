@@ -22,6 +22,7 @@ set(QuantLib_SRC
     cashflows/floatingratecoupon.cpp
     cashflows/iborcoupon.cpp
     cashflows/indexedcashflow.cpp
+    cashflows/inflationcashflow.cpp
     cashflows/inflationcoupon.cpp
     cashflows/inflationcouponpricer.cpp
     cashflows/lineartsrpricer.cpp
@@ -943,6 +944,7 @@ set(QuantLib_HDR
     cashflows/floatingratecoupon.hpp
     cashflows/iborcoupon.hpp
     cashflows/indexedcashflow.hpp
+    cashflows/inflationcashflow.hpp
     cashflows/inflationcoupon.hpp
     cashflows/inflationcouponpricer.hpp
     cashflows/lineartsrpricer.hpp

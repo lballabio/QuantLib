@@ -24,6 +24,7 @@ this_include_HEADERS = \
     floatingratecoupon.hpp \
     iborcoupon.hpp \
     indexedcashflow.hpp \
+    inflationcashflow.hpp \
     inflationcoupon.hpp \
     inflationcouponpricer.hpp \
     lineartsrpricer.hpp \
@@ -57,6 +58,7 @@ cpp_files = \
     floatingratecoupon.cpp \
     iborcoupon.cpp \
     indexedcashflow.cpp \
+    inflationcashflow.cpp \
     inflationcoupon.cpp \
     inflationcouponpricer.cpp \
     lineartsrpricer.cpp \

@@ -21,6 +21,7 @@
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/indexedcashflow.hpp>
+#include <ql/cashflows/inflationcashflow.hpp>
 #include <ql/cashflows/inflationcoupon.hpp>
 #include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/cashflows/lineartsrpricer.hpp>
