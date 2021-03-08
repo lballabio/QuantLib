@@ -18,6 +18,18 @@
  */
 
 #include <ql/cashflows/inflationcashflow.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
+    ZeroInflationCashFlow::ZeroInflationCashFlow(const Real& notional,
+                                                 const ext::shared_ptr<ZeroInflationIndex>& index,
+                                                 const bool& useInterpolatedFixings,
+                                                 const Date& baseDate,
+                                                 const Date& fixingDate,
+                                                 const Date& paymentDate,
+                                                 const bool& growthOnly)
+    : IndexedCashFlow(notional, index, baseDate, fixingDate, paymentDate, growthOnly),
+      zeroInflationIndex_(index), useInterpolatedFixings_(useInterpolatedFixings) {}
+
+    Real QuantLib::ZeroInflationCashFlow::amount() const { QL_FAIL("Not implemented yet..."); }
 }

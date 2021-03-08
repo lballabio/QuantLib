@@ -17,14 +17,60 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file simplecashflow.hpp
- \brief Cash flow dependent on an index ratio (NOT a coupon, i.e. no accruals)
+/*! \file inflationcashflow.hpp
+ \brief Cash flow dependent on an inflation index ratio (NOT a coupon, i.e. no accruals).
  */
 
 #ifndef quantlib_inflation_cash_flow_hpp
 #define quantlib_inflation_cash_flow_hpp
 
+#include <ql/cashflows/indexedcashflow.hpp>
+
 namespace QuantLib {
+    class ZeroInflationIndex;
+
+    //! Cash flow dependent on a zero inflation index ratio.
+    class ZeroInflationCashFlow : public IndexedCashFlow {
+      public:
+        ZeroInflationCashFlow(const Real& notional,
+                              const ext::shared_ptr<ZeroInflationIndex>& index,
+                              const bool& useInterpolatedFixings,
+                              const Date& baseDate,
+                              const Date& fixingDate,
+                              const Date& paymentDate,
+                              const bool& growthOnly = false);
+
+        //! \name ZeroInflationCashFlow interface
+        //@{
+        virtual ext::shared_ptr<ZeroInflationIndex> zeroInflationIndex() const {
+            return zeroInflationIndex_;
+        }
+        virtual bool useInterpolatedFixings() const { return useInterpolatedFixings_; }
+        //@}
+
+        //! \name CashFlow interface
+        //@{
+        Real amount() const override;
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&) override;
+        //@}
+
+
+      private:
+        ext::shared_ptr<ZeroInflationIndex> zeroInflationIndex_;
+        bool useInterpolatedFixings_;
+    };
+
+    // inline definitions
+    inline void ZeroInflationCashFlow::accept(AcyclicVisitor& v) {
+        auto* v1 = dynamic_cast<Visitor<ZeroInflationCashFlow>*>(&v);
+        if (v1 != nullptr)
+            v1->visit(*this);
+        else
+            IndexedCashFlow::accept(v);
+    }
 }
 
 #endif
