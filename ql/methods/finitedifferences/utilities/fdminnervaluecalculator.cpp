@@ -85,15 +85,13 @@ namespace QuantLib {
     Real FdmCellAveragingInnerValue::avgInnerValueCalc(const FdmLinearOpIterator& iter, Time t) {
         const Size dim = mesher_->layout()->dim()[direction_];
         const Size coord = iter.coordinates()[direction_];
+
+        if (coord == 0 || coord == dim-1)
+            return innerValue(iter, t);
+
         const Real loc = mesher_->location(iter,direction_);
-        Real a = loc;
-        Real b = loc;
-        if (coord > 0) {
-            a -= mesher_->dminus(iter, direction_)/2.0;
-        }
-        if (coord < dim-1) {
-            b += mesher_->dplus(iter, direction_)/2.0;
-        }
+        const Real a = loc - mesher_->dminus(iter, direction_)/2.0;
+        const Real b = loc + mesher_->dplus(iter, direction_)/2.0;
 
         mapped_payoff f(*payoff_, gridMapping_);
 

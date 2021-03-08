@@ -501,11 +501,13 @@ set(QuantLib_SRC
     methods/finitedifferences/tridiagonaloperator.cpp
     methods/finitedifferences/utilities/bsmrndcalculator.cpp
     methods/finitedifferences/utilities/cevrndcalculator.cpp
+    methods/finitedifferences/utilities/escroweddividendadjustment.cpp
     methods/finitedifferences/utilities/fdmaffinemodelswapinnervalue.cpp
     methods/finitedifferences/utilities/fdmaffinemodeltermstructure.cpp
     methods/finitedifferences/utilities/fdmdirichletboundary.cpp
     methods/finitedifferences/utilities/fdmdiscountdirichletboundary.cpp
     methods/finitedifferences/utilities/fdmdividendhandler.cpp
+    methods/finitedifferences/utilities/fdmescrowedloginnervaluecalculator.cpp
     methods/finitedifferences/utilities/fdmindicesonboundary.cpp
     methods/finitedifferences/utilities/fdminnervaluecalculator.cpp
     methods/finitedifferences/utilities/fdmshoutloginnervaluecalculator.cpp
@@ -1686,12 +1688,14 @@ set(QuantLib_HDR
     methods/finitedifferences/utilities/all.hpp
     methods/finitedifferences/utilities/bsmrndcalculator.hpp
     methods/finitedifferences/utilities/cevrndcalculator.hpp
+    methods/finitedifferences/utilities/escroweddividendadjustment.hpp
     methods/finitedifferences/utilities/fdmaffinemodelswapinnervalue.hpp
     methods/finitedifferences/utilities/fdmaffinemodeltermstructure.hpp
     methods/finitedifferences/utilities/fdmboundaryconditionset.hpp
     methods/finitedifferences/utilities/fdmdirichletboundary.hpp
     methods/finitedifferences/utilities/fdmdiscountdirichletboundary.hpp
     methods/finitedifferences/utilities/fdmdividendhandler.hpp
+    methods/finitedifferences/utilities/fdmescrowedloginnervaluecalculator.hpp
     methods/finitedifferences/utilities/fdmindicesonboundary.hpp
     methods/finitedifferences/utilities/fdminnervaluecalculator.hpp
     methods/finitedifferences/utilities/fdmshoutloginnervaluecalculator.hpp
