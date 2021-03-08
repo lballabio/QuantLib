@@ -19,6 +19,7 @@
 
 #include <ql/cashflows/inflationcashflow.hpp>
 #include <ql/indexes/inflationindex.hpp>
+#include <ql/termstructures/inflationtermstructure.hpp>
 
 namespace QuantLib {
     ZeroInflationCashFlow::ZeroInflationCashFlow(const Real& notional,
@@ -31,5 +32,34 @@ namespace QuantLib {
     : IndexedCashFlow(notional, index, baseDate, fixingDate, paymentDate, growthOnly),
       zeroInflationIndex_(index), useInterpolatedFixings_(useInterpolatedFixings) {}
 
-    Real QuantLib::ZeroInflationCashFlow::amount() const { return IndexedCashFlow::amount(); }
+    Real ZeroInflationCashFlow::amount() const {
+        // work out what it should be
+        auto baseDatePeriod = inflationPeriod(baseDate(), zeroInflationIndex()->frequency());
+        auto fixingDatePeriod = inflationPeriod(fixingDate(), zeroInflationIndex()->frequency());
+
+        Real fixingFront{}, fixingEnd{};
+
+        if (useInterpolatedFixings_) {
+            auto getInterpolatedFixings = [this](const std::pair<Date, Date>& period,
+                                                 const Date& date) -> Real {
+                auto oneDay = Period(1, Days);
+                auto indexStart = zeroInflationIndex_->fixing(period.first);
+                auto indexEnd = zeroInflationIndex_->fixing(period.second + oneDay);
+
+                return indexStart + (indexEnd - indexStart) * (date - period.first) /
+                                        (Real)((period.second + oneDay) - period.first);
+            };
+
+            fixingFront = getInterpolatedFixings(baseDatePeriod, baseDate());
+            fixingEnd = getInterpolatedFixings(fixingDatePeriod, fixingDate());
+        } else {
+            fixingFront = zeroInflationIndex_->fixing(baseDatePeriod.first);
+            fixingEnd = zeroInflationIndex_->fixing(fixingDatePeriod.first);
+        }
+
+        if (growthOnly())
+            return notional() * (fixingEnd / fixingFront - 1.0);
+        else
+            return notional() * (fixingEnd / fixingFront);
+    }
 }
