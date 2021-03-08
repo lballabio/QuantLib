@@ -19,7 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/functional.hpp>
 #include <ql/exercise.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/utilities/escroweddividendadjustment.hpp>
@@ -71,8 +70,6 @@ namespace QuantLib {
 
 
     void FdBlackScholesVanillaEngine::calculate() const {
-        using namespace ext::placeholders;
-
         // 0. Cash dividend model
         const Date exerciseDate = arguments_.exercise->lastDate();
         const Time maturity = process_->time(exerciseDate);
@@ -101,7 +98,7 @@ namespace QuantLib {
                 arguments_.cashFlow,
                 process_->riskFreeRate(),
                 process_->dividendYield(),
-                [=](Date d){ return process_->time(d); },
+                [&](Date d){ return process_->time(d); },
                 maturity
             );
 

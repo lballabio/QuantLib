@@ -20,7 +20,6 @@
 /*! \file fdblackscholesshoutengine.cpp
 */
 
-#include <ql/functional.hpp>
 #include <ql/exercise.hpp>
 #include <ql/methods/finitedifferences/utilities/escroweddividendadjustment.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
@@ -49,13 +48,12 @@ namespace QuantLib {
         const Time maturity = process_->time(exerciseDate);
         const Date settlementDate = process_->riskFreeRate()->referenceDate();
 
-        using namespace ext::placeholders;
         const auto escrowedDividendAdj =
             ext::make_shared<EscrowedDividendAdjustment>(
                 arguments_.cashFlow,
                 process_->riskFreeRate(),
                 process_->dividendYield(),
-                [=](Date d){ return process_->time(d); },
+                [&](Date d){ return process_->time(d); },
                 maturity);
 
         const Real divAdj = escrowedDividendAdj
