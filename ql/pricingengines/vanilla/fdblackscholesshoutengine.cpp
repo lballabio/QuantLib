@@ -55,7 +55,7 @@ namespace QuantLib {
                 arguments_.cashFlow,
                 process_->riskFreeRate(),
                 process_->dividendYield(),
-                ext::bind(&GeneralizedBlackScholesProcess::time, process_, _1),
+                [=](Date d){ return process_->time(d); },
                 maturity);
 
         const Real divAdj = escrowedDividendAdj
