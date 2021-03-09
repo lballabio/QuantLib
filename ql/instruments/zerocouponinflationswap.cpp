@@ -138,15 +138,15 @@ namespace QuantLib {
                               nominal,
                               startDate,
                               maturity,
-                              fixCalendar,
+                              std::move(fixCalendar),
                               fixConvention,
-                              dayCounter,
+                              std::move(dayCounter),
                               fixedRate,
                               infIndex,
                               observationLag,
                               CPI::AsIndex,
                               adjustInfObsDates,
-                              infCalendar,
+                              std::move(infCalendar),
                               infConvention) {}
 
 
