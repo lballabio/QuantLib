@@ -25,6 +25,7 @@
 #define quantlib_inflation_cash_flow_hpp
 
 #include <ql/cashflows/indexedcashflow.hpp>
+#include <ql/cashflows/cpicoupon.hpp>
 
 namespace QuantLib {
     class ZeroInflationIndex;
@@ -34,7 +35,7 @@ namespace QuantLib {
       public:
         ZeroInflationCashFlow(const Real& notional,
                               const ext::shared_ptr<ZeroInflationIndex>& index,
-                              const bool& useInterpolatedFixings,
+                              const CPI::InterpolationType& observationInterpolation,
                               const Date& baseDate,
                               const Date& fixingDate,
                               const Date& paymentDate,
@@ -45,7 +46,9 @@ namespace QuantLib {
         virtual ext::shared_ptr<ZeroInflationIndex> zeroInflationIndex() const {
             return zeroInflationIndex_;
         }
-        virtual bool useInterpolatedFixings() const { return useInterpolatedFixings_; }
+        virtual CPI::InterpolationType observationInterpolation() const {
+            return observationInterpolation_;
+        }
         //@}
 
         //! \name CashFlow interface
@@ -60,7 +63,7 @@ namespace QuantLib {
 
       private:
         ext::shared_ptr<ZeroInflationIndex> zeroInflationIndex_;
-        bool useInterpolatedFixings_;
+        CPI::InterpolationType observationInterpolation_;
     };
 
     // inline definitions

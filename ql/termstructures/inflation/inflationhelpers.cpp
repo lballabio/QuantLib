@@ -107,11 +107,10 @@ namespace QuantLib {
 
         Real nominal = 1000000.0;   // has to be something but doesn't matter what
         Date start = nominalTS->referenceDate();
-        zciis_.reset(new ZeroCouponInflationSwap(
-                                ZeroCouponInflationSwap::Payer,
-                                nominal, start, maturity_,
-                                calendar_, paymentConvention_, dayCounter_, K, // fixed side & fixed rate
-                                new_zii, swapObsLag_));
+        zciis_.reset(new ZeroCouponInflationSwap(ZeroCouponInflationSwap::Payer, nominal, start,
+                                                 maturity_, calendar_, paymentConvention_,
+                                                 dayCounter_, K, // fixed side & fixed rate
+                                                 new_zii, swapObsLag_, CPI::AsIndex));
         // Because very simple instrument only takes
         // standard discounting swap engine.
         zciis_->setPricingEngine(ext::shared_ptr<PricingEngine>(

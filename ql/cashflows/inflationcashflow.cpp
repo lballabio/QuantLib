@@ -22,15 +22,16 @@
 #include <ql/termstructures/inflationtermstructure.hpp>
 
 namespace QuantLib {
-    ZeroInflationCashFlow::ZeroInflationCashFlow(const Real& notional,
-                                                 const ext::shared_ptr<ZeroInflationIndex>& index,
-                                                 const bool& useInterpolatedFixings,
-                                                 const Date& baseDate,
-                                                 const Date& fixingDate,
-                                                 const Date& paymentDate,
-                                                 const bool& growthOnly)
+    ZeroInflationCashFlow::ZeroInflationCashFlow(
+        const Real& notional,
+        const ext::shared_ptr<ZeroInflationIndex>& index,
+        const CPI::InterpolationType& observationInterpolation,
+        const Date& baseDate,
+        const Date& fixingDate,
+        const Date& paymentDate,
+        const bool& growthOnly)
     : IndexedCashFlow(notional, index, baseDate, fixingDate, paymentDate, growthOnly),
-      zeroInflationIndex_(index), useInterpolatedFixings_(useInterpolatedFixings) {}
+      zeroInflationIndex_(index), observationInterpolation_(observationInterpolation) {}
 
     Real ZeroInflationCashFlow::amount() const {
         // work out what it should be
@@ -39,7 +40,10 @@ namespace QuantLib {
 
         Real fixingFront{}, fixingEnd{};
 
-        if (useInterpolatedFixings_) {
+        if (observationInterpolation_ == CPI::AsIndex) {
+            fixingFront = zeroInflationIndex_->fixing(baseDate());
+            fixingEnd = zeroInflationIndex_->fixing(fixingDate());
+        } else if (observationInterpolation_ == CPI::Linear) {
             auto getInterpolatedFixings = [this](const std::pair<Date, Date>& period,
                                                  const Date& date) -> Real {
                 auto oneDay = Period(1, Days);
@@ -52,9 +56,12 @@ namespace QuantLib {
 
             fixingFront = getInterpolatedFixings(baseDatePeriod, baseDate());
             fixingEnd = getInterpolatedFixings(fixingDatePeriod, fixingDate());
-        } else {
+        } else if (observationInterpolation_ == CPI::Flat) {
             fixingFront = zeroInflationIndex_->fixing(baseDatePeriod.first);
             fixingEnd = zeroInflationIndex_->fixing(fixingDatePeriod.first);
+        } else {
+            // We should end up here...
+            QL_FAIL("Unknown ZeroInflationInterpolationType.");
         }
 
         if (growthOnly())

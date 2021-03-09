@@ -42,32 +42,37 @@ namespace QuantLib {
         Rate fixedRate,
         const ext::shared_ptr<ZeroInflationIndex>& infIndex,
         const Period& observationLag,
+        const CPI::InterpolationType& observationInterpolation,
         bool adjustInfObsDates,
         Calendar infCalendar,
         BusinessDayConvention infConvention)
     : Swap(2), type_(type), nominal_(nominal), startDate_(startDate), maturityDate_(maturity),
       fixCalendar_(std::move(fixCalendar)), fixConvention_(fixConvention), fixedRate_(fixedRate),
-      infIndex_(infIndex), observationLag_(observationLag), adjustInfObsDates_(adjustInfObsDates),
+      infIndex_(infIndex), observationLag_(observationLag),
+      observationInterpolation_(observationInterpolation), adjustInfObsDates_(adjustInfObsDates),
       infCalendar_(std::move(infCalendar)), infConvention_(infConvention),
       dayCounter_(std::move(dayCounter)) {
         // first check compatibility of index and swap definitions
-        if (infIndex_->interpolated()) {
+        if (detail::CPI::effectiveInterpolationType(infIndex, observationInterpolation_) ==
+            CPI::Linear) {
             Period pShift(infIndex_->frequency());
             QL_REQUIRE(observationLag_ - pShift > infIndex_->availabilityLag(),
-                       "inconsistency between swap observation of index " << observationLag_ <<
-                       " index availability " << infIndex_->availabilityLag() <<
-                       " interpolated index period " << pShift <<
-                       " and index availability " << infIndex_->availabilityLag() <<
-                       " need (obsLag-index period) > availLag");
+                       "inconsistency between swap observation of index "
+                           << observationLag_ << " index availability "
+                           << infIndex_->availabilityLag() << " interpolated index period "
+                           << pShift << " and index availability " << infIndex_->availabilityLag()
+                           << " need (obsLag-index period) > availLag");
         } else {
             QL_REQUIRE(infIndex_->availabilityLag() < observationLag_,
                        "index tries to observe inflation fixings that do not yet exist: "
-                       << " availability lag " << infIndex_->availabilityLag()
-                       << " versus obs lag = " << observationLag_);
+                           << " availability lag " << infIndex_->availabilityLag()
+                           << " versus obs lag = " << observationLag_);
         }
 
-        if (infCalendar_==Calendar()) infCalendar_ = fixCalendar_;
-        if (infConvention_==BusinessDayConvention()) infConvention_ = fixConvention_;
+        if (infCalendar_ == Calendar())
+            infCalendar_ = fixCalendar_;
+        if (infConvention_ == BusinessDayConvention())
+            infConvention_ = fixConvention_;
 
         if (adjustInfObsDates_) {
             baseDate_ = infCalendar_.adjust(startDate - observationLag_, infConvention_);
@@ -83,18 +88,21 @@ namespace QuantLib {
         // At this point the index may not be able to forecast
         // i.e. do not want to force the existence of an inflation
         // term structure before allowing users to create instruments.
-        Real T = inflationYearFraction(infIndex_->frequency(), infIndex_->interpolated(),
-                                       dayCounter_, baseDate_, obsDate_);
+        Real T =
+            inflationYearFraction(infIndex_->frequency(),
+                                  detail::CPI::isInterpolated(infIndex_, observationInterpolation_),
+                                  dayCounter_, baseDate_, obsDate_);
         // N.B. the -1.0 is because swaps only exchange growth, not notionals as well
-        Real fixedAmount = nominal * ( std::pow(1.0 + fixedRate, T) - 1.0 );
+        Real fixedAmount = nominal * (std::pow(1.0 + fixedRate, T) - 1.0);
 
-        legs_[0].push_back(ext::shared_ptr<CashFlow>(
-            new SimpleCashFlow(fixedAmount, fixedPayDate)));
+        legs_[0].push_back(
+            ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedAmount, fixedPayDate)));
         bool growthOnly = true;
-        legs_[1].push_back(ext::shared_ptr<CashFlow>(new ZeroInflationCashFlow(
-            nominal, infIndex, infIndex->interpolated(), baseDate_, obsDate_, infPayDate, growthOnly)));
+        legs_[1].push_back(ext::shared_ptr<CashFlow>(
+            new ZeroInflationCashFlow(nominal, infIndex, observationInterpolation_, baseDate_,
+                                      obsDate_, infPayDate, growthOnly)));
 
-        for (Size j=0; j<2; ++j) {
+        for (Size j = 0; j < 2; ++j) {
             for (auto& i : legs_[j])
                 registerWith(i);
         }
@@ -112,6 +120,35 @@ namespace QuantLib {
                 QL_FAIL("Unknown zero-inflation-swap type");
         }
     }
+
+    ZeroCouponInflationSwap::ZeroCouponInflationSwap(
+        Type type,
+        Real nominal,
+        const Date& startDate,
+        const Date& maturity,
+        Calendar fixCalendar,
+        BusinessDayConvention fixConvention,
+        DayCounter dayCounter,
+        Rate fixedRate,
+        const ext::shared_ptr<ZeroInflationIndex>& infIndex,
+        const Period& observationLag,
+        bool adjustInfObsDates,
+        Calendar infCalendar,
+        BusinessDayConvention infConvention)
+    : ZeroCouponInflationSwap(type,
+                              nominal,
+                              startDate,
+                              maturity,
+                              fixCalendar,
+                              fixConvention,
+                              dayCounter,
+                              fixedRate,
+                              infIndex,
+                              observationLag,
+                              CPI::AsIndex,
+                              adjustInfObsDates,
+                              infCalendar,
+                              infConvention) {}
 
 
     void ZeroCouponInflationSwap::setupArguments(PricingEngine::arguments* args) const {
@@ -136,16 +173,15 @@ namespace QuantLib {
         // _knowing_ the time from base to obs (etc).
 
         ext::shared_ptr<IndexedCashFlow> icf =
-        ext::dynamic_pointer_cast<IndexedCashFlow>(legs_[1].at(0));
-        QL_REQUIRE(icf,"failed to downcast to IndexedCashFlow in ::fairRate()");
+            ext::dynamic_pointer_cast<IndexedCashFlow>(legs_[1].at(0));
+        QL_REQUIRE(icf, "failed to downcast to IndexedCashFlow in ::fairRate()");
 
         // +1 because the IndexedCashFlow has growthOnly=true
         Real growth = icf->amount() / icf->notional() + 1.0;
-        Real T = inflationYearFraction(infIndex_->frequency(),
-                                       infIndex_->interpolated(),
+        Real T = inflationYearFraction(infIndex_->frequency(), infIndex_->interpolated(),
                                        dayCounter_, baseDate_, obsDate_);
 
-        return std::pow(growth,1.0/T) - 1.0;
+        return std::pow(growth, 1.0 / T) - 1.0;
 
         // we cannot use this simple definition because
         // it does not work for already-issued instruments
@@ -166,13 +202,8 @@ namespace QuantLib {
         return legNPV_[1];
     }
 
-    const Leg& ZeroCouponInflationSwap::fixedLeg() const {
-        return legs_[0];
-    }
+    const Leg& ZeroCouponInflationSwap::fixedLeg() const { return legs_[0]; }
 
-    const Leg& ZeroCouponInflationSwap::inflationLeg() const {
-        return legs_[1];
-    }
+    const Leg& ZeroCouponInflationSwap::inflationLeg() const { return legs_[1]; }
 
 }
-
