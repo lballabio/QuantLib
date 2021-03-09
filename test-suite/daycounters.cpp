@@ -210,6 +210,121 @@ void DayCounterTest::testActualActual() {
     }
 }
 
+void DayCounterTest::testActualActualIsma()
+{
+    BOOST_TEST_MESSAGE("Testing actual/actual (ISMA) with odd last period...");
+
+    bool isEndOfMonth(false);
+    Frequency frequency(Semiannual);
+    Date interestAccrualDate(30, Jan, 1999);
+    Date maturityDate(30, Jun, 2000);
+    Date firstCouponDate(30, Jul, 1999);
+    Date penultimateCouponDate(30, Jan, 2000);
+    Date d1(30, Jan, 2000);
+    Date d2(30, Jun, 2000);
+
+    double expected(152. / (182. * 2));
+
+    Schedule schedule = MakeSchedule()
+        .from(interestAccrualDate)
+        .to(maturityDate)
+        .withFrequency(frequency)
+        .withFirstDate(firstCouponDate)
+        .withNextToLastDate(penultimateCouponDate)
+        .endOfMonth(isEndOfMonth);
+
+    DayCounter dayCounter = ActualActual(ActualActual::ISMA, schedule);
+
+    double calculated(dayCounter.yearFraction(d1, d2));
+
+    if (std::fabs(calculated - expected) > 1.0e-10) {
+        std::ostringstream period;
+        period << "period:                " << d1 << " to " << d2 << "\n"
+               << "firstCouponDate:       " << firstCouponDate << "\n"
+               << "penultimateCouponDate: " << penultimateCouponDate << "\n";
+        BOOST_ERROR(dayCounter.name() << ":\n"
+            << period.str()
+            << std::setprecision(10)
+            << "    calculated: " << calculated << "\n"
+            << "    expected:   " << expected);
+    }
+
+    //////////////////////////////////
+
+    isEndOfMonth = true;
+    frequency = Quarterly;
+    interestAccrualDate = Date(31, May, 1999);
+    maturityDate = Date(30, Apr, 2000);
+    firstCouponDate = Date(31, Aug, 1999);
+    penultimateCouponDate = Date(30, Nov, 1999);
+    d1 = Date(30, Nov, 1999);
+    d2 = Date(30, Apr, 2000);
+
+    expected = 91.0 / (91.0 * 4) + 61.0 / (92.0 * 4);
+
+    schedule = MakeSchedule()
+        .from(interestAccrualDate)
+        .to(maturityDate)
+        .withFrequency(frequency)
+        .withFirstDate(firstCouponDate)
+        .withNextToLastDate(penultimateCouponDate)
+        .endOfMonth(isEndOfMonth);
+
+    dayCounter = ActualActual(ActualActual::ISMA, schedule);
+
+    calculated = dayCounter.yearFraction(d1, d2);
+
+    if (std::fabs(calculated - expected) > 1.0e-10) {
+        std::ostringstream period;
+        period << "period:                " << d1 << " to " << d2 << "\n"
+               << "firstCouponDate:       " << firstCouponDate << "\n"
+               << "penultimateCouponDate: " << penultimateCouponDate << "\n";
+        BOOST_ERROR(dayCounter.name() << ":\n"
+            << period.str()
+            << std::setprecision(10)
+            << "    calculated: " << calculated << "\n"
+            << "    expected:   " << expected);
+    }
+
+
+    //////////////////////////////////
+
+    isEndOfMonth = false;
+    frequency = Quarterly;
+    interestAccrualDate = Date(31, May, 1999);
+    maturityDate = Date(30, Apr, 2000);
+    firstCouponDate = Date(31, Aug, 1999);
+    penultimateCouponDate = Date(30, Nov, 1999);
+    d1 = Date(30, Nov, 1999);
+    d2 = Date(30, Apr, 2000);
+
+    expected = 91.0 / (91.0 * 4) + 61.0 / (90.0 * 4);
+
+    schedule = MakeSchedule()
+        .from(interestAccrualDate)
+        .to(maturityDate)
+        .withFrequency(frequency)
+        .withFirstDate(firstCouponDate)
+        .withNextToLastDate(penultimateCouponDate)
+        .endOfMonth(isEndOfMonth);
+
+    dayCounter = ActualActual(ActualActual::ISMA, schedule);
+
+    calculated = dayCounter.yearFraction(d1, d2);
+
+    if (std::fabs(calculated - expected) > 1.0e-10) {
+        std::ostringstream period;
+        period << "period:                " << d1 << " to " << d2 << "\n"
+               << "firstCouponDate:       " << firstCouponDate << "\n"
+               << "penultimateCouponDate: " << penultimateCouponDate << "\n";
+        BOOST_ERROR(dayCounter.name() << ":\n"
+            << period.str()
+            << std::setprecision(10)
+            << "    calculated: " << calculated << "\n"
+            << "    expected:   " << expected);
+    }
+}
+
 void DayCounterTest::testActualActualWithSemiannualSchedule() {
 
     BOOST_TEST_MESSAGE("Testing actual/actual with schedule "
@@ -941,6 +1056,7 @@ void DayCounterTest::testIntraday() {
 test_suite* DayCounterTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Day counter tests");
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActual));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualIsma));
     suite->add(QUANTLIB_TEST_CASE(
                     &DayCounterTest::testActualActualWithSemiannualSchedule));
     suite->add(QUANTLIB_TEST_CASE(

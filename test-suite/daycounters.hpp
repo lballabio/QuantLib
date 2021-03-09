@@ -28,6 +28,7 @@
 class DayCounterTest {
    public:
     static void testActualActual();
+    static void testActualActualIsma();
     static void testActualActualWithSchedule();
     static void testActualActualWithAnnualSchedule();
     static void testActualActualWithSemiannualSchedule();
