@@ -414,7 +414,7 @@ void InflationTest::testZeroTermStructure() {
     // we are testing UKRPI which is not interpolated
     Date bd = hz->baseDate();
     Real bf = ii->fixing(bd);
-    for (auto d : testIndex) {
+    for (const auto& d : testIndex) {
         Real z = hz->zeroRate(d, Period(0, Days));
         Real t = hz->dayCounter().yearFraction(bd, d);
         if(!ii->interpolated()) // because fixing constant over period
@@ -548,7 +548,7 @@ void InflationTest::testZeroTermStructure() {
     // we are testing UKRPI which is FAKE interpolated for testing here
     bd = hz->baseDate();
     bf = iiyes->fixing(bd);
-    for (auto d : testIndex) {
+    for (const auto& d : testIndex) {
         Real z = hz->zeroRate(d, Period(0, Days));
         Real t = hz->dayCounter().yearFraction(bd, d);
         Real calc = bf * pow( 1+z, t);
