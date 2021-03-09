@@ -397,9 +397,8 @@ void CPISwapTest::zciisconsistency() {
     Period observationLag(2,Months);
 
     Rate quote = 0.03714;
-    ZeroCouponInflationSwap zciis(ztype, nominal, startDate, endDate, cal,
-                                  paymentConvention, dc, quote, common.ii,
-                                  observationLag);
+    ZeroCouponInflationSwap zciis(ztype, nominal, startDate, endDate, cal, paymentConvention, dc,
+                                  quote, common.ii, observationLag, CPI::AsIndex);
 
     // simple structure so simple pricing engine - most work done by index
     ext::shared_ptr<DiscountingSwapEngine>

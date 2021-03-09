@@ -459,12 +459,10 @@ void InflationTest::testZeroTermStructure() {
 
     ext::shared_ptr<ZeroInflationIndex> zii = ext::dynamic_pointer_cast<ZeroInflationIndex>(ii);
     BOOST_REQUIRE_MESSAGE(zii,"dynamic_pointer_cast to ZeroInflationIndex from UKRPI failed");
-    ZeroCouponInflationSwap nzcis(ZeroCouponInflationSwap::Payer,
-                                     1000000.0,
-                                     evaluationDate,
-                                     zcData[6].date,    // end date = maturity
-                                     calendar, bdc, dc, zcData[6].rate/100.0, // fixed rate
-                                     zii, observationLag);
+    ZeroCouponInflationSwap nzcis(ZeroCouponInflationSwap::Payer, 1000000.0, evaluationDate,
+                                  zcData[6].date,                            // end date = maturity
+                                  calendar, bdc, dc, zcData[6].rate / 100.0, // fixed rate
+                                  zii, observationLag, CPI::AsIndex);
 
     // N.B. no coupon pricer because it is not a coupon, effect of inflation curve via
     //      inflation curve attached to the inflation index.
@@ -569,12 +567,10 @@ void InflationTest::testZeroTermStructure() {
 
     ext::shared_ptr<ZeroInflationIndex> ziiyes = ext::dynamic_pointer_cast<ZeroInflationIndex>(iiyes);
     BOOST_REQUIRE_MESSAGE(ziiyes,"dynamic_pointer_cast to ZeroInflationIndex from UKRPI-I failed");
-    ZeroCouponInflationSwap nzcisyes(ZeroCouponInflationSwap::Payer,
-                                     1000000.0,
-                                     evaluationDate,
-                                     zcData[6].date,    // end date = maturity
-                                     calendar, bdc, dc, zcData[6].rate/100.0, // fixed rate
-                                     ziiyes, observationLagyes);
+    ZeroCouponInflationSwap nzcisyes(ZeroCouponInflationSwap::Payer, 1000000.0, evaluationDate,
+                                     zcData[6].date, // end date = maturity
+                                     calendar, bdc, dc, zcData[6].rate / 100.0, // fixed rate
+                                     ziiyes, observationLagyes, CPI::AsIndex);
 
     // N.B. no coupon pricer because it is not a coupon, effect of inflation curve via
     //      inflation curve attached to the inflation index.
