@@ -215,12 +215,6 @@
 #endif
 // clang-format on
 
-/* suppress C++ code analysis warning C26812 in VS 2019:
- * Prefer 'enum class' over 'enum' (Enum.3). */
-#if defined(BOOST_MSVC)
-    __pragma(warning(push))            \
-    __pragma(warning(disable : 26812))
-#endif
 
 // until we stop supporting Visual C++ 2013
 #if defined(QL_PATCH_MSVC_2013)

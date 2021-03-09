@@ -64,6 +64,12 @@
 #pragma warning(disable : 4267)
 #endif
 
+
+/* suppress C++ code analysis warning C26812 in VS 2019:
+ * Prefer 'enum class' over 'enum' (Enum.3). */
+#pragma warning(disable : 26812)
+
+
 #ifndef _CPPRTTI
 #   error Enable Run-Time Type Info (Property Pages | C/C++ | Language)
 #endif
