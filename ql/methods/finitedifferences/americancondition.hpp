@@ -33,8 +33,10 @@
 namespace QuantLib {
 
     //! American exercise condition.
-    class AmericanCondition :
-        public StandardStepCondition {
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.22.
+    */
+    class QL_DEPRECATED AmericanCondition : public StandardStepCondition {
       public:
         explicit AmericanCondition(const Array& intrinsicValues)
         : impl_(new ArrayImpl(intrinsicValues)) {}
