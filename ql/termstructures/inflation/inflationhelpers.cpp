@@ -35,13 +35,16 @@ namespace QuantLib {
         BusinessDayConvention paymentConvention,
         DayCounter dayCounter,
         ext::shared_ptr<ZeroInflationIndex> zii,
+        CPI::InterpolationType observationInterpolation,
         Handle<YieldTermStructure> nominalTermStructure)
     : BootstrapHelper<ZeroInflationTermStructure>(quote), swapObsLag_(swapObsLag),
       maturity_(maturity), calendar_(std::move(calendar)), paymentConvention_(paymentConvention),
       dayCounter_(std::move(dayCounter)), zii_(std::move(zii)),
+      observationInterpolation_(observationInterpolation),
       nominalTermStructure_(std::move(nominalTermStructure)) {
 
-        if (zii_->interpolated()) {
+        if (detail::CPI::effectiveInterpolationType(zii_, observationInterpolation_) ==
+            CPI::Linear) {
             // if interpolated then simple
             earliestDate_ = maturity_ - swapObsLag_;
             latestDate_ = maturity_ - swapObsLag_;
@@ -51,8 +54,8 @@ namespace QuantLib {
             // get an extended validity, however for curve building
             // just put the first date because using that convention
             // for the base date throughout
-            std::pair<Date,Date> limStart = inflationPeriod(maturity_ - swapObsLag_,
-                                                            zii_->frequency());
+            std::pair<Date, Date> limStart =
+                inflationPeriod(maturity_ - swapObsLag_, zii_->frequency());
             earliestDate_ = limStart.first;
             latestDate_ = limStart.first;
         }
@@ -60,20 +63,39 @@ namespace QuantLib {
         // check that the observation lag of the swap
         // is compatible with the availability lag of the index AND
         // it's interpolation (assuming the start day is spot)
-        if (zii_->interpolated()) {
+        if (detail::CPI::effectiveInterpolationType(zii_, observationInterpolation_) ==
+            CPI::Linear) {
             Period pShift(zii_->frequency());
             QL_REQUIRE(swapObsLag_ - pShift > zii_->availabilityLag(),
                        "inconsistency between swap observation of index "
-                       << swapObsLag_ <<
-                       " index availability " << zii_->availabilityLag() <<
-                       " index period " << pShift <<
-                       " and index availability " << zii_->availabilityLag() <<
-                       " need (obsLag-index period) > availLag");
+                           << swapObsLag_ << " index availability " << zii_->availabilityLag()
+                           << " index period " << pShift << " and index availability "
+                           << zii_->availabilityLag() << " need (obsLag-index period) > availLag");
         }
 
         registerWith(Settings::instance().evaluationDate());
         registerWith(nominalTermStructure_);
     }
+
+
+    ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
+        const Handle<Quote>& quote,
+        const Period& swapObsLag,
+        const Date& maturity,
+        Calendar calendar,
+        BusinessDayConvention paymentConvention,
+        DayCounter dayCounter,
+        ext::shared_ptr<ZeroInflationIndex> zii,
+        Handle<YieldTermStructure> nominalTermStructure)
+    : ZeroCouponInflationSwapHelper(quote,
+                                    swapObsLag,
+                                    maturity,
+                                    calendar,
+                                    paymentConvention,
+                                    dayCounter,
+                                    zii,
+                                    CPI::AsIndex,
+                                    nominalTermStructure) {}
 
 
     Real ZeroCouponInflationSwapHelper::impliedQuote() const {
@@ -85,8 +107,7 @@ namespace QuantLib {
     }
 
 
-    void ZeroCouponInflationSwapHelper::setTermStructure(
-            ZeroInflationTermStructure* z) {
+    void ZeroCouponInflationSwapHelper::setTermStructure(ZeroInflationTermStructure* z) {
 
         BootstrapHelper<ZeroInflationTermStructure>::setTermStructure(z);
 
@@ -105,16 +126,16 @@ namespace QuantLib {
         Handle<YieldTermStructure> nominalTS =
             !nominalTermStructure_.empty() ? nominalTermStructure_ : z->nominalTermStructure();
 
-        Real nominal = 1000000.0;   // has to be something but doesn't matter what
+        Real nominal = 1000000.0; // has to be something but doesn't matter what
         Date start = nominalTS->referenceDate();
         zciis_.reset(new ZeroCouponInflationSwap(ZeroCouponInflationSwap::Payer, nominal, start,
                                                  maturity_, calendar_, paymentConvention_,
                                                  dayCounter_, K, // fixed side & fixed rate
-                                                 new_zii, swapObsLag_, CPI::AsIndex));
+                                                 new_zii, swapObsLag_, observationInterpolation_));
         // Because very simple instrument only takes
         // standard discounting swap engine.
-        zciis_->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                new DiscountingSwapEngine(nominalTS)));
+        zciis_->setPricingEngine(
+            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(nominalTS)));
     }
 
 
@@ -142,8 +163,8 @@ namespace QuantLib {
             // get an extended validity, however for curve building
             // just put the first date because using that convention
             // for the base date throughout
-            std::pair<Date,Date> limStart = inflationPeriod(maturity_ - swapObsLag_,
-                                                            yii_->frequency());
+            std::pair<Date, Date> limStart =
+                inflationPeriod(maturity_ - swapObsLag_, yii_->frequency());
             earliestDate_ = limStart.first;
             latestDate_ = limStart.first;
         }
@@ -155,11 +176,9 @@ namespace QuantLib {
             Period pShift(yii_->frequency());
             QL_REQUIRE(swapObsLag_ - pShift > yii_->availabilityLag(),
                        "inconsistency between swap observation of index "
-                       << swapObsLag_ <<
-                       " index availability " << yii_->availabilityLag() <<
-                       " index period " << pShift <<
-                       " and index availability " << yii_->availabilityLag() <<
-                       " need (obsLag-index period) > availLag");
+                           << swapObsLag_ << " index availability " << yii_->availabilityLag()
+                           << " index period " << pShift << " and index availability "
+                           << yii_->availabilityLag() << " need (obsLag-index period) > availLag");
         }
 
         registerWith(Settings::instance().evaluationDate());
@@ -173,8 +192,7 @@ namespace QuantLib {
     }
 
 
-    void YearOnYearInflationSwapHelper::setTermStructure(
-                YoYInflationTermStructure* y) {
+    void YearOnYearInflationSwapHelper::setTermStructure(YoYInflationTermStructure* y) {
 
         BootstrapHelper<YoYInflationTermStructure>::setTermStructure(y);
 
@@ -193,41 +211,32 @@ namespace QuantLib {
         // no problem with different days-in-month
         Date from = Settings::instance().evaluationDate();
         Date to = maturity_;
-        Schedule fixedSchedule = MakeSchedule().from(from).to(to)
-                                    .withTenor(1*Years)
-                                    .withConvention(Unadjusted)
-                                    .withCalendar(calendar_)// fixed leg gets cal from sched
-                                    .backwards();
+        Schedule fixedSchedule = MakeSchedule()
+                                     .from(from)
+                                     .to(to)
+                                     .withTenor(1 * Years)
+                                     .withConvention(Unadjusted)
+                                     .withCalendar(calendar_) // fixed leg gets cal from sched
+                                     .backwards();
         const Schedule& yoySchedule = fixedSchedule;
         Spread spread = 0.0;
         Rate fixedRate = quote()->value();
 
-        Real nominal = 1000000.0;   // has to be something but doesn't matter what
-        yyiis_.reset(new YearOnYearInflationSwap(YearOnYearInflationSwap::Payer,
-                                                    nominal,
-                                                    fixedSchedule,
-                                                    fixedRate,
-                                                    dayCounter_,
-                                                    yoySchedule,
-                                                    new_yii,
-                                                    swapObsLag_,
-                                                    spread,
-                                                    dayCounter_,
-                                                    calendar_,  // inflation index does not have a calendar
-                                                    paymentConvention_));
+        Real nominal = 1000000.0; // has to be something but doesn't matter what
+        yyiis_.reset(new YearOnYearInflationSwap(
+            YearOnYearInflationSwap::Payer, nominal, fixedSchedule, fixedRate, dayCounter_,
+            yoySchedule, new_yii, swapObsLag_, spread, dayCounter_,
+            calendar_, // inflation index does not have a calendar
+            paymentConvention_));
 
 
         // The instrument takes a standard discounting swap engine.
         // The inflation-related work is done by the coupons via the pricer.
         Handle<YieldTermStructure> nominalTS =
-            !nominalTermStructure_.empty() ?
-            nominalTermStructure_ :
-            y->nominalTermStructure(); 
-        yyiis_->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                    new DiscountingSwapEngine(nominalTS)));
-        setCouponPricer(yyiis_->yoyLeg(),
-                        ext::make_shared<YoYInflationCouponPricer>(nominalTS));
+            !nominalTermStructure_.empty() ? nominalTermStructure_ : y->nominalTermStructure();
+        yyiis_->setPricingEngine(
+            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(nominalTS)));
+        setCouponPricer(yyiis_->yoyLeg(), ext::make_shared<YoYInflationCouponPricer>(nominalTS));
     }
 
 }
-

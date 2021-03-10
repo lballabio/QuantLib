@@ -51,7 +51,7 @@ namespace QuantLib {
                                    bool forceOverwrite) {
 
         std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
-        Size n = lim.second - lim.first + 1;
+        Size n = static_cast<QuantLib::Size>(lim.second - lim.first) + 1;
         std::vector<Date> dates(n);
         std::vector<Rate> rates(n);
         for (Size i=0; i<n; ++i) {
