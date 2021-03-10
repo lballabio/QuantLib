@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -337,4 +338,14 @@ namespace QuantLib {
                                             availabilityLag_, currency_, h);
     }
 
+
+    CPI::InterpolationType
+    detail::CPI::effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
+                                            const QuantLib::CPI::InterpolationType& type) {
+        if (type == QuantLib::CPI::AsIndex) {
+            return index->interpolated() ? QuantLib::CPI::Linear : QuantLib::CPI::Flat;
+        } else {
+            return type;
+        }
+    }
 }

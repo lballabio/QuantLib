@@ -20,7 +20,6 @@
 
 #include <ql/cashflows/inflationcashflow.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/indexes/inflationindex.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <utility>
 
@@ -42,7 +41,7 @@ namespace QuantLib {
         Rate fixedRate,
         const ext::shared_ptr<ZeroInflationIndex>& infIndex,
         const Period& observationLag,
-        const CPI::InterpolationType& observationInterpolation,
+        CPI::InterpolationType observationInterpolation,
         bool adjustInfObsDates,
         Calendar infCalendar,
         BusinessDayConvention infConvention)

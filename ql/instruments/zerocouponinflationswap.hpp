@@ -26,15 +26,13 @@
 #ifndef quantlib_xxxzciis_hpp
 #define quantlib_xxxzciis_hpp
 
-#include <ql/cashflows/inflationcashflow.hpp>
+#include <ql/indexes/inflationindex.hpp>
 #include <ql/instruments/swap.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
 
 
 namespace QuantLib {
-    class ZeroInflationIndex;
-
     //! Zero-coupon inflation-indexed swap
     /*! Quoted as a fixed rate \f$ K \f$.  At start:
         \f[
@@ -80,11 +78,16 @@ namespace QuantLib {
                                 Rate fixedRate,
                                 const ext::shared_ptr<ZeroInflationIndex>& infIndex,
                                 const Period& observationLag,
-                                const CPI::InterpolationType& observationInterpolation,
+                                CPI::InterpolationType observationInterpolation,
                                 bool adjustInfObsDates = false,
                                 Calendar infCalendar = Calendar(),
                                 BusinessDayConvention infConvention = BusinessDayConvention());
 
+        /*! \deprecated Use the other constructors incl. the 
+                        CPI::InterpolationType observationInterpolation 
+                        
+                        Deprecated in version 1.22.
+        */
         QL_DEPRECATED
         ZeroCouponInflationSwap(Type type,
                                 Real nominal,

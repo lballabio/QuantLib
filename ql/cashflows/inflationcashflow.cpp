@@ -22,14 +22,13 @@
 #include <ql/termstructures/inflationtermstructure.hpp>
 
 namespace QuantLib {
-    ZeroInflationCashFlow::ZeroInflationCashFlow(
-        const Real& notional,
-        const ext::shared_ptr<ZeroInflationIndex>& index,
-        const CPI::InterpolationType& observationInterpolation,
-        const Date& baseDate,
-        const Date& fixingDate,
-        const Date& paymentDate,
-        const bool& growthOnly)
+    ZeroInflationCashFlow::ZeroInflationCashFlow(Real notional,
+                                                 const ext::shared_ptr<ZeroInflationIndex>& index,
+                                                 CPI::InterpolationType observationInterpolation,
+                                                 const Date& baseDate,
+                                                 const Date& fixingDate,
+                                                 const Date& paymentDate,
+                                                 bool growthOnly)
     : IndexedCashFlow(notional, index, baseDate, fixingDate, paymentDate, growthOnly),
       zeroInflationIndex_(index), observationInterpolation_(observationInterpolation) {}
 

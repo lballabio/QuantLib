@@ -25,21 +25,20 @@
 #define quantlib_inflation_cash_flow_hpp
 
 #include <ql/cashflows/indexedcashflow.hpp>
-#include <ql/cashflows/cpicoupon.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
-    class ZeroInflationIndex;
 
     //! Cash flow dependent on a zero inflation index ratio.
     class ZeroInflationCashFlow : public IndexedCashFlow {
       public:
-        ZeroInflationCashFlow(const Real& notional,
+        ZeroInflationCashFlow(Real notional,
                               const ext::shared_ptr<ZeroInflationIndex>& index,
-                              const CPI::InterpolationType& observationInterpolation,
+                              CPI::InterpolationType observationInterpolation,
                               const Date& baseDate,
                               const Date& fixingDate,
                               const Date& paymentDate,
-                              const bool& growthOnly = false);
+                              bool growthOnly = false);
 
         //! \name ZeroInflationCashFlow interface
         //@{
