@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007, 2009 Chris Kenyon
  Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -172,8 +173,8 @@ namespace QuantLib {
         // _knowing_ the time from base to obs (etc).
 
         ext::shared_ptr<IndexedCashFlow> icf =
-            ext::dynamic_pointer_cast<IndexedCashFlow>(legs_[1].at(0));
-        QL_REQUIRE(icf, "failed to downcast to IndexedCashFlow in ::fairRate()");
+        ext::dynamic_pointer_cast<IndexedCashFlow>(legs_[1].at(0));
+        QL_REQUIRE(icf,"failed to downcast to IndexedCashFlow in ::fairRate()");
 
         // +1 because the IndexedCashFlow has growthOnly=true
         Real growth = icf->amount() / icf->notional() + 1.0;
@@ -182,7 +183,7 @@ namespace QuantLib {
                                   detail::CPI::isInterpolated(infIndex_, observationInterpolation_),
                                   dayCounter_, baseDate_, obsDate_);
 
-        return std::pow(growth, 1.0 / T) - 1.0;
+        return std::pow(growth,1.0/T) - 1.0;
 
         // we cannot use this simple definition because
         // it does not work for already-issued instruments
@@ -203,8 +204,13 @@ namespace QuantLib {
         return legNPV_[1];
     }
 
-    const Leg& ZeroCouponInflationSwap::fixedLeg() const { return legs_[0]; }
+    const Leg& ZeroCouponInflationSwap::fixedLeg() const {
+        return legs_[0];
+    }
 
-    const Leg& ZeroCouponInflationSwap::inflationLeg() const { return legs_[1]; }
+    const Leg& ZeroCouponInflationSwap::inflationLeg() const {
+        return legs_[1];
+    }
 
 }
+
