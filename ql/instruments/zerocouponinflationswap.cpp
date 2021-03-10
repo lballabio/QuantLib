@@ -52,7 +52,7 @@ namespace QuantLib {
       infCalendar_(std::move(infCalendar)), infConvention_(infConvention),
       dayCounter_(std::move(dayCounter)) {
         // first check compatibility of index and swap definitions
-        if (detail::CPI::effectiveInterpolationType(infIndex, observationInterpolation_) ==
+        if (detail::CPI::effectiveInterpolationType(infIndex_, observationInterpolation_) ==
             CPI::Linear) {
             Period pShift(infIndex_->frequency());
             QL_REQUIRE(observationLag_ - pShift > infIndex_->availabilityLag(),
@@ -177,8 +177,10 @@ namespace QuantLib {
 
         // +1 because the IndexedCashFlow has growthOnly=true
         Real growth = icf->amount() / icf->notional() + 1.0;
-        Real T = inflationYearFraction(infIndex_->frequency(), infIndex_->interpolated(),
-                                       dayCounter_, baseDate_, obsDate_);
+        Real T =
+            inflationYearFraction(infIndex_->frequency(),
+                                  detail::CPI::isInterpolated(infIndex_, observationInterpolation_),
+                                  dayCounter_, baseDate_, obsDate_);
 
         return std::pow(growth, 1.0 / T) - 1.0;
 
