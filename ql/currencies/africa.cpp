@@ -39,4 +39,19 @@ namespace QuantLib {
         data_ = zarData;
     }
 
+    // Nigerian Naira
+    /* ISO-4217 code -> NGN
+     * Corresponding code Number -> 566
+     * The NGN ISO code has a currency exponent of 2 ( i.e subdivided into 100 kobo), 100k = 1NGN.
+     */
+    NGNCurrency::NGNCurrency() {
+        static ext::shared_ptr<Data> ngnData(
+            new Data("Nigerian Naira", "NGN", 566,
+                     "N", "K", 100,
+                     Rounding(),
+                     "%3% %1N.2f"));
+        data_ = ngnData;
+    }
+
+
 }

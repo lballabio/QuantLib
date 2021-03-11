@@ -47,6 +47,10 @@ namespace QuantLib {
         ZARCurrency();
     };
 
+    class NGNCurrency : public Currency {
+      public:
+        NGNCurrency();
+    };
 }
 
 #if defined(QL_PATCH_MSVC)
