@@ -39,25 +39,23 @@ namespace QuantLib {
                                        const DayCounter& dayCounter,
                                        bool isInArrears,
                                        const Date& exCouponDate,
+                                       SubPeriodAveraging subPeriodAveraging,
                                        Rate rateSpread)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, couponSpread,
                          refPeriodStart, refPeriodEnd, dayCounter, 
                          isInArrears, exCouponDate),
-      rateSpread_(rateSpread) {
-        const Handle<YieldTermStructure>& rateCurve =
-            index->forwardingTermStructure();
-        const Date& referenceDate = rateCurve->referenceDate();
+      subPeriodAveraging_(subPeriodAveraging), rateSpread_(rateSpread) {
+        Schedule sch = MakeSchedule()
+                           .from(startDate)
+                           .to(endDate)
+                           .withTenor(index->tenor())
+                           .withCalendar(index->fixingCalendar())
+                           .withConvention(index->businessDayConvention())
+                           .backwards()
+                           .endOfMonth(index->endOfMonth());
 
-        observationsSchedule_ = ext::make_shared<Schedule>(startDate, endDate,
-                     index->tenor(),
-                     index->fixingCalendar(),
-                     index->businessDayConvention(), 
-                     index->businessDayConvention(),
-                     DateGeneration::Backward, 
-                     index->endOfMonth());
-
-        observationDates_ = observationsSchedule_->dates();
+        observationDates_ = sch.dates();
         observations_ = observationDates_.size();
      }
 
@@ -92,11 +90,6 @@ namespace QuantLib {
         initialValues_ = std::vector<Real>(observations - 1, 0.);
         observationCvg_ = std::vector<Real>(observations - 1, 0.);
 
-        observationIndexStartDates_ = std::vector<Date>(observations - 1);
-        observationIndexEndDates_ = std::vector<Date>(observations -  1);
-
-        Calendar calendar = index->fixingCalendar();
-
         for (Size i = 0; i < observations - 1; i++) {
             Date refDate = coupon_->isInArrears() ? observationDates[i + 1] : observationDates[i];
             Date fixingDate = index->fixingDate(refDate);
@@ -104,11 +97,8 @@ namespace QuantLib {
             initialValues_[i] =
                 index->fixing(fixingDate) + coupon_->rateSpread();
 
-            observationIndexStartDates_[i] = observationDates[i];
-            observationIndexEndDates_[i] = observationDates[i + 1];
-
-            observationCvg_[i] = index->dayCounter().yearFraction(observationIndexStartDates_[i],
-                                                                  observationIndexEndDates_[i]);
+            observationCvg_[i] =
+                index->dayCounter().yearFraction(observationDates[i], observationDates[i + 1]);
         }
     }
 
@@ -156,7 +146,7 @@ namespace QuantLib {
         Size nCount = initialValues_.size();
         Real dCompRate = 0.0, dTotalCvg = 0.0, dTotalPayment = 0.0;
         for (Size i=0; i<nCount; i++) {
-            dTotalPayment = initialValues_[i] * observationCvg_[i]*dNotional;
+            dTotalPayment = initialValues_[i] * observationCvg_[i] * dNotional;
             dNotional += dTotalPayment;
             dTotalCvg += observationCvg_[i];
         }

@@ -32,8 +32,24 @@
 
 namespace QuantLib {
 
+    //! sub-period coupon averaging method
+    /*! It allows to configure how interest is accrued in the sub-period coupon.
+     */
+    struct SubPeriodAveraging {
+        enum Type {
+            Simple,  /*!< Under the simple convention the amount of
+                      interest is calculated by applying the sub-periodic
+                      rate to the principal, and the payment due
+                      at the end of the period is the sum of those
+                      amounts. */
+            Compound /*!< Under the compound convention, the additional
+                      amount of interest owed each sub-period is calculated
+                      by applying the rate both to the principal
+                      and the accumulated unpaid interest. */
+        };
+    };
+
     class IborIndex;
-    class AveragingRatePricer;
 
     class SubPeriodsCoupon: public FloatingRateCoupon {
       public:
@@ -57,6 +73,7 @@ namespace QuantLib {
                          const DayCounter& dayCounter = DayCounter(),
                          bool isInArrears = false,
                          const Date& exCouponDate = Date(),
+                         SubPeriodAveraging subPeriodAveraging = SubPeriodAveraging::Compound,
                          Rate rateSpread = 0.0 // Spread to be added onto each
                                                // fixing within the
                                                // averaging/compounding calculation
@@ -70,16 +87,16 @@ namespace QuantLib {
             return observationDates_;
         }
 
-        ext::shared_ptr<Schedule> observationsSchedule() const { return observationsSchedule_; }
+        SubPeriodAveraging subPeriodAveraging() const { return subPeriodAveraging_; }
 
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
       private:
-        ext::shared_ptr<Schedule> observationsSchedule_;
         std::vector<Date> observationDates_;
         Size observations_;
+        SubPeriodAveraging subPeriodAveraging_;
         Rate rateSpread_;
     };
 
@@ -97,8 +114,6 @@ namespace QuantLib {
         Real accrualFactor_;
         std::vector<Real> observationCvg_;
         std::vector<Real> initialValues_;
-        std::vector<Date> observationIndexStartDates_;
-        std::vector<Date> observationIndexEndDates_;
         Real discount_;
         Real gearing_;
         Spread spread_;
