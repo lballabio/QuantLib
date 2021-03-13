@@ -26,22 +26,24 @@
 
 namespace QuantLib {
 
-    SubPeriodsCoupon::SubPeriodsCoupon(
-                                    const Date& paymentDate,
-                                    Real nominal,
-                                    const ext::shared_ptr<IborIndex>& index,
-                                    const Date& startDate,
-                                    const Date& endDate,
-                                    Natural fixingDays,
-                                    const DayCounter& dayCounter,
-                                    Real gearing,
-                                    Rate couponSpread,
-                                    Rate rateSpread,
-                                    const Date& refPeriodStart,
-                                    const Date& refPeriodEnd)
+    SubPeriodsCoupon::SubPeriodsCoupon(const Date& paymentDate,
+                                       Real nominal,
+                                       const Date& startDate,
+                                       const Date& endDate,
+                                       Natural fixingDays,
+                                       const ext::shared_ptr<IborIndex>& index,
+                                       Real gearing,
+                                       Rate couponSpread,
+                                       const Date& refPeriodStart,
+                                       const Date& refPeriodEnd,
+                                       const DayCounter& dayCounter,
+                                       bool isInArrears,
+                                       const Date& exCouponDate,
+                                       Rate rateSpread)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, couponSpread,
-                         refPeriodStart, refPeriodEnd, dayCounter),
+                         refPeriodStart, refPeriodEnd, dayCounter, 
+                         isInArrears, exCouponDate),
       rateSpread_(rateSpread) {
         const Handle<YieldTermStructure>& rateCurve =
             index->forwardingTermStructure();
@@ -49,23 +51,14 @@ namespace QuantLib {
 
         observationsSchedule_ = ext::make_shared<Schedule>(startDate, endDate,
                      index->tenor(),
-                     NullCalendar(),
-                     Unadjusted,
-                     Unadjusted,
-                     DateGeneration::Forward,
-                     false);
+                     index->fixingCalendar(),
+                     index->businessDayConvention(), 
+                     index->businessDayConvention(),
+                     DateGeneration::Backward, 
+                     index->endOfMonth());
 
         observationDates_ = observationsSchedule_->dates();
-        observationDates_.pop_back();                       //remove end date
         observations_ = observationDates_.size();
-
-        startTime_ = dayCounter.yearFraction(referenceDate, startDate);
-        endTime_ = dayCounter.yearFraction(referenceDate, endDate);
-
-        for (Size i=0; i<observations_; ++i) {
-            observationTimes_.push_back(
-                dayCounter.yearFraction(referenceDate, observationDates_[i]));
-        }
      }
 
     void SubPeriodsCoupon::accept(AcyclicVisitor& v) {
@@ -75,7 +68,6 @@ namespace QuantLib {
         else
             FloatingRateCoupon::accept(v);
     }
-
 
     void SubPeriodsPricer::initialize(const FloatingRateCoupon& coupon) {
         coupon_ =  dynamic_cast<const SubPeriodsCoupon*>(&coupon);
@@ -90,53 +82,38 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& rateCurve =
             index->forwardingTermStructure();
         discount_ = rateCurve->discount(paymentDate);
+        
         accrualFactor_ = coupon_->accrualPeriod();
-        spreadLegValue_ = spread_ * accrualFactor_* discount_;
+        spreadLegValue_ = spread_ * accrualFactor_ * discount_;
+        Size observations = coupon_->observations();
 
-        startTime_ = coupon_->startTime();
-        endTime_ = coupon_->endTime();
-        observationTimes_ = coupon_->observationTimes();
-        observations_ = coupon_->observations();
+        const std::vector<Date>& observationDates = coupon_->observationDates();
 
-        const std::vector<Date>& observationDates =
-            coupon_->observationsSchedule()->dates();
+        initialValues_ = std::vector<Real>(observations - 1, 0.);
+        observationCvg_ = std::vector<Real>(observations - 1, 0.);
 
-        QL_REQUIRE(observationDates.size()==observations_+2,
-                   "incompatible size of initialValues vector");
-
-        initialValues_ = std::vector<Real>(observationDates.size(),0.);
-
-        observationCvg_ = std::vector<Real>(observationDates.size(),0.);
-
-        observationIndexStartDates_ =
-            std::vector<Date>(observationDates.size());
-        observationIndexEndDates_ =
-            std::vector<Date>(observationDates.size());
+        observationIndexStartDates_ = std::vector<Date>(observations - 1);
+        observationIndexEndDates_ = std::vector<Date>(observations -  1);
 
         Calendar calendar = index->fixingCalendar();
 
-        for(Size i=0; i<observationDates.size(); i++) {
-            Date fixingDate = calendar.advance(
-                                 observationDates[i],
-                                 -static_cast<Integer>(coupon_->fixingDays()),
-                                 Days);
+        for (Size i = 0; i < observations - 1; i++) {
+            Date refDate = coupon_->isInArrears() ? observationDates[i + 1] : observationDates[i];
+            Date fixingDate = index->fixingDate(refDate);
 
             initialValues_[i] =
                 index->fixing(fixingDate) + coupon_->rateSpread();
 
-            Date fixingValueDate = index->valueDate(fixingDate);
-            Date endValueDate = index->maturityDate(fixingValueDate);
+            observationIndexStartDates_[i] = observationDates[i];
+            observationIndexEndDates_[i] = observationDates[i + 1];
 
-            observationIndexStartDates_[i] = fixingValueDate;
-            observationIndexEndDates_[i] = endValueDate;
-
-            observationCvg_[i] =
-                index->dayCounter().yearFraction(fixingValueDate, endValueDate);
+            observationCvg_[i] = index->dayCounter().yearFraction(observationIndexStartDates_[i],
+                                                                  observationIndexEndDates_[i]);
         }
     }
 
     Real SubPeriodsPricer::swapletRate() const {
-        return swapletPrice()/(accrualFactor_*discount_);
+        return swapletPrice() / (accrualFactor_ * discount_);
     }
 
     Real SubPeriodsPricer::capletPrice(Rate) const {
@@ -165,7 +142,7 @@ namespace QuantLib {
             dTotalCvg += observationCvg_[i];
         }
 
-        dAvgRate =  dTotalPayment/dTotalCvg;
+        dAvgRate = dTotalPayment / dTotalCvg;
 
         Real swapletPrice = dAvgRate*coupon_->accrualPeriod()*discount_;
         return gearing_ * swapletPrice + spreadLegValue_;

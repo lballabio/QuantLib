@@ -43,33 +43,31 @@ namespace QuantLib {
           // The Tenor used within the index object should be 1M for
           // averaging/compounding across three coupons within the
           // coupon period.
-          SubPeriodsCoupon(
-                const Date& paymentDate,
-                Real nominal,
-                const ext::shared_ptr<IborIndex>& index,
-                const Date& startDate,
-                const Date& endDate,
-                Natural fixingDays,
-                const DayCounter& dayCounter,
-                Real gearing,
-                Rate couponSpread, // Spread added to the computed
-                                   // averaging/compounding rate.
-                Rate rateSpread, // Spread to be added onto each
-                                 // fixing within the
-                                 // averaging/compounding calculation
-                const Date& refPeriodStart,
-                const Date& refPeriodEnd);
+        SubPeriodsCoupon(const Date& paymentDate,
+                         Real nominal,
+                         const Date& startDate,
+                         const Date& endDate,
+                         Natural fixingDays,
+                         const ext::shared_ptr<IborIndex>& index,
+                         Real gearing = 1.0,
+                         Rate couponSpread = 0.0, // Spread added to the computed
+                                                  // averaging/compounding rate.
+                         const Date& refPeriodStart = Date(),
+                         const Date& refPeriodEnd = Date(),
+                         const DayCounter& dayCounter = DayCounter(),
+                         bool isInArrears = false,
+                         const Date& exCouponDate = Date(),
+                         Rate rateSpread = 0.0 // Spread to be added onto each
+                                               // fixing within the
+                                               // averaging/compounding calculation
+        );
 
         Spread rateSpread() const { return rateSpread_; }
 
-        Real startTime() const { return startTime_; }
-        Real endTime() const { return endTime_; }
         Size observations() const { return observations_; }
+        
         const std::vector<Date>& observationDates() const {
             return observationDates_;
-        }
-        const std::vector<Real>& observationTimes() const {
-            return observationTimes_;
         }
 
         ext::shared_ptr<Schedule> observationsSchedule() const { return observationsSchedule_; }
@@ -79,14 +77,8 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
       private:
-
-        Real startTime_;                               // S
-        Real endTime_;                                 // T
-
         ext::shared_ptr<Schedule> observationsSchedule_;
         std::vector<Date> observationDates_;
-        std::vector<Real> observationTimes_;
-
         Size observations_;
         Rate rateSpread_;
     };
@@ -102,22 +94,15 @@ namespace QuantLib {
 
       protected:
         const SubPeriodsCoupon* coupon_;
-        Real startTime_;
-        Real endTime_;
         Real accrualFactor_;
-        std::vector<Real> observationTimes_;
         std::vector<Real> observationCvg_;
         std::vector<Real> initialValues_;
-
         std::vector<Date> observationIndexStartDates_;
         std::vector<Date> observationIndexEndDates_;
-
-        Size observations_;
         Real discount_;
         Real gearing_;
         Spread spread_;
         Real spreadLegValue_;
-
     };
 
     class AveragingRatePricer: public SubPeriodsPricer {
@@ -131,6 +116,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif
