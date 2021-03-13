@@ -58,6 +58,26 @@ namespace QuantLib {
         observations_ = observationDates_.size();
      }
 
+    SubPeriodsCoupon::SubPeriodsCoupon(const Date& paymentDate,
+                                        Real nominal,
+                                        const Date& startDate,
+                                        const Date& endDate,
+                                        Natural fixingDays,
+                                        const ext::shared_ptr<IborIndex>& index,
+                                        Real gearing,
+                                        Rate couponSpread,
+                                        Rate rateSpread,
+                                        const Date& refPeriodStart,
+                                        const Date& refPeriodEnd,
+                                        const DayCounter& dayCounter,
+                                        bool isInArrears,
+                                        const Date& exCouponDate)
+     : SubPeriodsCoupon(paymentDate, nominal, startDate, endDate, 
+                        fixingDays, index, gearing, couponSpread, 
+                        refPeriodStart, refPeriodEnd, dayCounter, 
+                        isInArrears, exCouponDate, rateSpread) {
+    }
+
     void SubPeriodsCoupon::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<SubPeriodsCoupon>*>(&v);
         if (v1 != nullptr)

@@ -32,23 +32,6 @@
 
 namespace QuantLib {
 
-    //! sub-period coupon averaging method
-    /*! It allows to configure how interest is accrued in the sub-period coupon.
-     */
-    struct SubPeriodAveraging {
-        enum Type {
-            Simple,  /*!< Under the simple convention the amount of
-                      interest is calculated by applying the sub-periodic
-                      rate to the principal, and the payment due
-                      at the end of the period is the sum of those
-                      amounts. */
-            Compound /*!< Under the compound convention, the additional
-                      amount of interest owed each sub-period is calculated
-                      by applying the rate both to the principal
-                      and the accumulated unpaid interest. */
-        };
-    };
-
     class IborIndex;
 
     class SubPeriodsCoupon: public FloatingRateCoupon {
@@ -77,6 +60,24 @@ namespace QuantLib {
                                                // fixing within the
                                                // averaging/compounding calculation
         );
+
+        SubPeriodsCoupon(const Date& paymentDate,
+                         Real nominal,
+                         const Date& startDate,
+                         const Date& endDate,
+                         Natural fixingDays,
+                         const ext::shared_ptr<IborIndex>& index,
+                         Real gearing = 1.0,
+                         Rate couponSpread = 0.0, // Spread added to the computed
+                                                  // averaging/compounding rate.
+                         Rate rateSpread = 0.0,   // Spread to be added onto each
+                                                  // fixing within the
+                                                  // averaging/compounding calculation
+                         const Date& refPeriodStart = Date(),
+                         const Date& refPeriodEnd = Date(),
+                         const DayCounter& dayCounter = DayCounter(),
+                         bool isInArrears = false,
+                         const Date& exCouponDate = Date());
 
         Spread rateSpread() const { return rateSpread_; }
 
