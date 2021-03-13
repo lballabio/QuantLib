@@ -68,11 +68,8 @@ namespace QuantLib {
                          Natural fixingDays,
                          const ext::shared_ptr<IborIndex>& index,
                          Real gearing = 1.0,
-                         Rate couponSpread = 0.0, // Spread added to the computed
-                                                  // averaging/compounding rate.
-                         Rate rateSpread = 0.0,   // Spread to be added onto each
-                                                  // fixing within the
-                                                  // averaging/compounding calculation
+                         Rate couponSpread = 0.0,
+                         Rate rateSpread = 0.0,
                          const Date& refPeriodStart = Date(),
                          const Date& refPeriodEnd = Date(),
                          const DayCounter& dayCounter = DayCounter(),
