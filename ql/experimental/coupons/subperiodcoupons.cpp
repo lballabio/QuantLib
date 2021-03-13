@@ -39,13 +39,12 @@ namespace QuantLib {
                                        const DayCounter& dayCounter,
                                        bool isInArrears,
                                        const Date& exCouponDate,
-                                       SubPeriodAveraging subPeriodAveraging,
                                        Rate rateSpread)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          fixingDays, index, gearing, couponSpread,
                          refPeriodStart, refPeriodEnd, dayCounter, 
                          isInArrears, exCouponDate),
-      subPeriodAveraging_(subPeriodAveraging), rateSpread_(rateSpread) {
+      rateSpread_(rateSpread) {
         Schedule sch = MakeSchedule()
                            .from(startDate)
                            .to(endDate)

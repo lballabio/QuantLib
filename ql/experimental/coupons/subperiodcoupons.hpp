@@ -73,7 +73,6 @@ namespace QuantLib {
                          const DayCounter& dayCounter = DayCounter(),
                          bool isInArrears = false,
                          const Date& exCouponDate = Date(),
-                         SubPeriodAveraging subPeriodAveraging = SubPeriodAveraging::Compound,
                          Rate rateSpread = 0.0 // Spread to be added onto each
                                                // fixing within the
                                                // averaging/compounding calculation
@@ -87,8 +86,6 @@ namespace QuantLib {
             return observationDates_;
         }
 
-        SubPeriodAveraging subPeriodAveraging() const { return subPeriodAveraging_; }
-
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
@@ -96,7 +93,6 @@ namespace QuantLib {
       private:
         std::vector<Date> observationDates_;
         Size observations_;
-        SubPeriodAveraging subPeriodAveraging_;
         Rate rateSpread_;
     };
 
