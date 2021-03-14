@@ -60,11 +60,7 @@ namespace subperiodcoupons_test {
         }
     };
 
-    Leg createIborLeg(const Date& start, 
-        const Date& end, 
-        bool isInArrears = false,
-        Spread spread = 0.0)
-    {
+    Leg createIborLeg(const Date& start, const Date& end, Spread spread = 0.0) {
         CommonVars vars;
         Schedule sch = MakeSchedule()
                            .from(start)
@@ -79,7 +75,6 @@ namespace subperiodcoupons_test {
             .withSpreads(spread)
             .withExCouponPeriod(2 * Days, vars.calendar, vars.businessConvention)
             .withPaymentLag(1)
-            .inArrears(isInArrears)
             .withFixingDays(vars.settlementDays);
     }
 
@@ -91,16 +86,14 @@ namespace subperiodcoupons_test {
         return payments;
     }
 
-    ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start,
-                                                    const Date& end,
-                                                    bool isInArrears = false,
-                                                    Spread spread = 0.0) {
+    ext::shared_ptr<CashFlow>
+    createSubPeriodsCoupon(const Date& start, const Date& end, Spread spread = 0.0) {
         CommonVars vars;
         Date paymentDate = vars.calendar.advance(end, 1 * Days, vars.businessConvention);
         Date exCouponDate = vars.calendar.advance(paymentDate, -2 * Days, vars.businessConvention);
-        ext::shared_ptr<FloatingRateCoupon> cpn(new SubPeriodsCoupon(
-            paymentDate, 1.0, start, end, vars.settlementDays, vars.euribor, 1.0, spread, 0.0,
-            Date(), Date(), vars.dayCount, isInArrears, exCouponDate));
+        ext::shared_ptr<FloatingRateCoupon> cpn(
+            new SubPeriodsCoupon(paymentDate, 1.0, start, end, vars.settlementDays, vars.euribor,
+                                 1.0, spread, 0.0, Date(), Date(), DayCounter(), exCouponDate));
         cpn->setPricer(ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer()));
         return cpn;
     }
@@ -112,7 +105,7 @@ void SubPeriodsCouponTest::test() {
     using namespace subperiodcoupons_test;
 
     Date start(15, April, 2021);
-    Date end(15, September, 2021);
+    Date end(15, October, 2021);
 
     Leg iborLeg = createIborLeg(start, end);
     ext::shared_ptr<CashFlow> subPeriodCpn = createSubPeriodsCoupon(start, end);
@@ -128,8 +121,6 @@ void SubPeriodsCouponTest::test() {
                     << "    expected:    " << expectedPayment << "\n"
                     << "    start:    " << start << "\n"
                     << "    end:    " << end << "\n");
-
-
 }
 
 test_suite* SubPeriodsCouponTest::suite() {

@@ -51,29 +51,12 @@ namespace QuantLib {
                          Real gearing = 1.0,
                          Rate couponSpread = 0.0, // Spread added to the computed
                                                   // averaging/compounding rate.
+                         Rate rateSpread = 0.0,   // Spread to be added onto each
+                                                  // fixing within the
+                                                  // averaging/compounding calculation
                          const Date& refPeriodStart = Date(),
                          const Date& refPeriodEnd = Date(),
                          const DayCounter& dayCounter = DayCounter(),
-                         bool isInArrears = false,
-                         const Date& exCouponDate = Date(),
-                         Rate rateSpread = 0.0 // Spread to be added onto each
-                                               // fixing within the
-                                               // averaging/compounding calculation
-        );
-
-        SubPeriodsCoupon(const Date& paymentDate,
-                         Real nominal,
-                         const Date& startDate,
-                         const Date& endDate,
-                         Natural fixingDays,
-                         const ext::shared_ptr<IborIndex>& index,
-                         Real gearing = 1.0,
-                         Rate couponSpread = 0.0,
-                         Rate rateSpread = 0.0,
-                         const Date& refPeriodStart = Date(),
-                         const Date& refPeriodEnd = Date(),
-                         const DayCounter& dayCounter = DayCounter(),
-                         bool isInArrears = false,
                          const Date& exCouponDate = Date());
 
         Spread rateSpread() const { return rateSpread_; }
@@ -96,7 +79,7 @@ namespace QuantLib {
 
     class SubPeriodsPricer: public FloatingRateCouponPricer {
       public:
-        Rate swapletRate() const override;
+        Rate swapletPrice() const override;
         Real capletPrice(Rate effectiveCap) const override;
         Rate capletRate(Rate effectiveCap) const override;
         Real floorletPrice(Rate effectiveFloor) const override;
@@ -106,24 +89,19 @@ namespace QuantLib {
       protected:
         const SubPeriodsCoupon* coupon_;
         Real accrualFactor_;
-        std::vector<Real> observationCvg_;
-        std::vector<Real> initialValues_;
-        Real discount_;
-        Real gearing_;
-        Spread spread_;
-        Real spreadLegValue_;
+        std::vector<Real> subPeriodFractions_;
+        std::vector<Real> subPeriodFixings_;
     };
 
     class AveragingRatePricer: public SubPeriodsPricer {
       public:
-        Real swapletPrice() const override;
+        Real swapletRate() const override;
     };
 
     class CompoundingRatePricer: public SubPeriodsPricer {
       public:
-        Real swapletPrice() const override;
+        Real swapletRate() const override;
     };
-
 }
 
 #endif
