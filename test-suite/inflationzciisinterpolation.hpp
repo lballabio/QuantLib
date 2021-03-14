@@ -23,11 +23,14 @@
 #include <boost/test/unit_test.hpp>
 
 //! Test the ZCIIS interpolation types AsIndex, Flat and Linear
-class ZCIISInterpolationTest {
-public:
+class InflationZCIISInterpolationTest {
+  public:
+    static void testZCIISAsIndex();
+    static void testZCIISFlat();
+    static void testZCIISLinear();
+
     static boost::unit_test_framework::test_suite* suite();
 };
-
 
 
 #endif
