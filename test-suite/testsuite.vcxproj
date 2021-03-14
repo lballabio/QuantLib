@@ -770,6 +770,7 @@
     <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
+    <ClCompile Include="subperiodcoupons.cpp" />
     <ClCompile Include="swap.cpp" />
     <ClCompile Include="swapforwardmappings.cpp" />
     <ClCompile Include="swaption.cpp" />
@@ -932,6 +933,7 @@
     <ClInclude Include="spreadoption.hpp" />
     <ClInclude Include="squarerootclvmodel.hpp" />
     <ClInclude Include="stats.hpp" />
+    <ClInclude Include="subperiodcoupons.hpp" />
     <ClInclude Include="swap.hpp" />
     <ClInclude Include="swapforwardmappings.hpp" />
     <ClInclude Include="swaption.hpp" />
