@@ -30,6 +30,8 @@ class SubPeriodsCouponTest {
     static void testRegularSinglePeriodForwardStartingCoupon();
     static void testRegularSinglePeriodCouponAfterFixing();
     static void testIrregularSinglePeriodCouponAfterFixing();
+    static void testRegularCompoundedForwardStartingCouponWithMultipleSubPeriods();
+    static void testRegularAveragedForwardStartingCouponWithMultipleSubPeriods();
 
     static boost::unit_test_framework::test_suite* suite();
 };
