@@ -33,8 +33,29 @@
 
 namespace QuantLib {
 
+    //! sub-periods coupon averaging method
+    /*! It allows to configure how interest is accrued.
+     */
+    struct SubPeriodsAveraging {
+        enum Type {
+            Simple,  /*!< Under the simple convention the amount of
+                      interest is calculated by applying the periodic
+                      rate to the principal, and the payment due
+                      at the end of the period is the sum of those
+                      amounts. */
+            Compound /*!< Under the compound convention, the additional
+                      amount of interest owed each sub-period is calculated
+                      by applying the rate both to the principal
+                      and the accumulated unpaid interest. */
+        };
+    };
+
     class IborIndex;
 
+    //! sub-periods coupon
+    /*! %Coupon paying the interest, depending on the averaging convention,
+        due to possible multiple fixing resets in one accrual period.
+    */
     class SubPeriodsCoupon: public FloatingRateCoupon {
       public:
           // The index object passed in has a tenor significantly less than the
@@ -98,7 +119,6 @@ namespace QuantLib {
 
       protected:
         const SubPeriodsCoupon* coupon_;
-        Real accrualFactor_;
         std::vector<Real> subPeriodFixings_;
     };
 
@@ -110,6 +130,50 @@ namespace QuantLib {
     class CompoundingRatePricer: public SubPeriodsPricer {
       public:
         Real swapletRate() const override;
+    };
+
+    //! helper class building a sequence of overnight coupons
+    class SubPeriodsLeg {
+      public:
+        SubPeriodsLeg(const Schedule& schedule, ext::shared_ptr<IborIndex> index);
+        SubPeriodsLeg& withNotionals(Real notional);
+        SubPeriodsLeg& withNotionals(const std::vector<Real>& notionals);
+        SubPeriodsLeg& withPaymentDayCounter(const DayCounter&);
+        SubPeriodsLeg& withPaymentAdjustment(BusinessDayConvention);
+        SubPeriodsLeg& withPaymentCalendar(const Calendar&);
+        SubPeriodsLeg& withPaymentLag(Natural lag);
+        SubPeriodsLeg& withFixingDays(Natural fixingDays);
+        SubPeriodsLeg& withFixingDays(const std::vector<Natural>& fixingDays);
+        SubPeriodsLeg& withGearings(Real gearing);
+        SubPeriodsLeg& withGearings(const std::vector<Real>& gearings);
+        SubPeriodsLeg& withCouponSpreads(Spread spread);
+        SubPeriodsLeg& withCouponSpreads(const std::vector<Spread>& spreads);
+        SubPeriodsLeg& withRateSpreads(Spread spread);
+        SubPeriodsLeg& withRateSpreads(const std::vector<Spread>& spreads);
+        SubPeriodsLeg& withExCouponPeriod(const Period&,
+                                          const Calendar&,
+                                          BusinessDayConvention,
+                                          bool endOfMonth = false);
+        SubPeriodsLeg& withAveragingMethod(SubPeriodsAveraging::Type averagingMethod);
+        operator Leg() const;
+
+      private:
+        Schedule schedule_;
+        ext::shared_ptr<IborIndex> index_;
+        std::vector<Real> notionals_;
+        DayCounter paymentDayCounter_;
+        Calendar paymentCalendar_;
+        BusinessDayConvention paymentAdjustment_;
+        Natural paymentLag_;
+        std::vector<Natural> fixingDays_;
+        std::vector<Real> gearings_;
+        std::vector<Spread> couponSpreads_;
+        std::vector<Spread> rateSpreads_;
+        SubPeriodsAveraging::Type averagingMethod_;
+        Period exCouponPeriod_;
+        Calendar exCouponCalendar_;
+        BusinessDayConvention exCouponAdjustment_;
+        bool exCouponEndOfMonth_;
     };
 }
 
