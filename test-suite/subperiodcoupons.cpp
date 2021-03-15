@@ -113,7 +113,7 @@ namespace subperiodcoupons_test {
     }
 
     Real averagedIborLegPayment(const Leg& leg) {
-        Real acc = 1.0;
+        Real acc = 0.0;
         std::for_each(leg.begin(), leg.end(), [&acc](const ext::shared_ptr<CashFlow>& cf) {
             auto cpn = ext::dynamic_pointer_cast<IborCoupon>(cf);
             Real yearFraction = cpn->accrualPeriod();

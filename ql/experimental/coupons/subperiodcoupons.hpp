@@ -59,21 +59,30 @@ namespace QuantLib {
                          const DayCounter& dayCounter = DayCounter(),
                          const Date& exCouponDate = Date());
 
+        //! \name Inspectors
+        //@{
+        //! fixing dates for the rates to be compounded
+        const std::vector<Date>& fixingDates() const { return fixingDates_; }
+        //! accrual (compounding) periods
+        const std::vector<Time>& dt() const { return dt_; }
+        //! value dates for the rates to be compounded
+        const std::vector<Date>& valueDates() const { return valueDates_; }
+        //! rate spread
         Spread rateSpread() const { return rateSpread_; }
-
-        Size observations() const { return observations_; }
-        
-        const std::vector<Date>& observationDates() const {
-            return observationDates_;
-        }
-
+        //@}
+        //! \name FloatingRateCoupon interface
+        //@{
+        //! the date when the coupon is fully determined
+        Date fixingDate() const override { return fixingDates_.back(); }
+        //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
       private:
-        std::vector<Date> observationDates_;
-        Size observations_;
+        std::vector<Date> valueDates_, fixingDates_;
+        Size n_;
+        std::vector<Time> dt_;
         Rate rateSpread_;
     };
 
@@ -89,7 +98,6 @@ namespace QuantLib {
       protected:
         const SubPeriodsCoupon* coupon_;
         Real accrualFactor_;
-        std::vector<Real> subPeriodFractions_;
         std::vector<Real> subPeriodFixings_;
     };
 
