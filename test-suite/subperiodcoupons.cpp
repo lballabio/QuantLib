@@ -67,8 +67,7 @@ namespace subperiodcoupons_test {
                                .withTenor(euribor->tenor())
                                .withCalendar(euribor->fixingCalendar())
                                .withConvention(euribor->businessDayConvention())
-                               .backwards()
-                               .endOfMonth(euribor->endOfMonth());
+                               .backwards();
             return IborLeg(sch, euribor)
                 .withNotionals(1.0)
                 .withSpreads(spread)
@@ -80,12 +79,15 @@ namespace subperiodcoupons_test {
         ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start,
                                                          const Date& end,
                                                          Spread rateSpread = 0.0,
-                                                         bool useCompoundedRate = true) {
-            Date paymentDate = calendar.advance(end, 1 * Days, businessConvention);
-            Date exCouponDate = calendar.advance(paymentDate, -2 * Days, businessConvention);
+                                                         SubPeriodsAveraging::Type averaging = SubPeriodsAveraging::Compound) {
+            Calendar paymentCalendar = euribor->fixingCalendar();
+            BusinessDayConvention paymentBdc = euribor->businessDayConvention();
+            Date paymentDate = paymentCalendar.advance(end, 1 * Days, paymentBdc);
+            Date exCouponDate = paymentCalendar.advance(paymentDate, -2 * Days, paymentBdc);
             ext::shared_ptr<FloatingRateCoupon> cpn(
                 new SubPeriodsCoupon(paymentDate, 1.0, start, end, settlementDays, euribor, 1.0,
                                      0.0, rateSpread, Date(), Date(), DayCounter(), exCouponDate));
+            bool useCompoundedRate = (averaging == SubPeriodsAveraging::Compound);
             if (useCompoundedRate)
                 cpn->setPricer(
                     ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer()));
@@ -93,6 +95,28 @@ namespace subperiodcoupons_test {
                 cpn->setPricer(
                     ext::shared_ptr<FloatingRateCouponPricer>(new AveragingRatePricer()));
             return cpn;
+        }
+
+        Leg
+        createSubPeriodsLeg(const Date& start,
+                            const Date& end,
+                            const Period& cpnFrequency,
+                            Spread rateSpread,
+                            SubPeriodsAveraging::Type averaging) {
+            Schedule sch = MakeSchedule()
+                               .from(start)
+                               .to(end)
+                               .withTenor(cpnFrequency)
+                               .withCalendar(euribor->fixingCalendar())
+                               .withConvention(euribor->businessDayConvention())
+                               .backwards();
+            return SubPeriodsLeg(sch, euribor)
+                .withNotionals(1.0)
+                .withExCouponPeriod(2 * Days, calendar, businessConvention)
+                .withPaymentLag(1)
+                .withFixingDays(settlementDays)
+                .withRateSpreads(rateSpread)
+                .withAveragingMethod(averaging);
         }
     };
 
@@ -131,13 +155,13 @@ namespace subperiodcoupons_test {
 void testSinglePeriodCouponReplication(const Date& start,
                                        const Date& end,
                                        Spread rateSpread,
-                                       bool useCompoundedRate) {
+                                       SubPeriodsAveraging::Type averaging) {
     using namespace subperiodcoupons_test;
     CommonVars vars;
 
     Leg iborLeg = vars.createIborLeg(start, end, rateSpread);
     ext::shared_ptr<CashFlow> subPeriodCpn =
-        vars.createSubPeriodsCoupon(start, end, rateSpread, useCompoundedRate);
+        vars.createSubPeriodsCoupon(start, end, rateSpread, averaging);
 
     Real tolerance = 1.0e-14;
 
@@ -160,9 +184,8 @@ void testMultipleCompoundedSubPeriodsCouponReplication(const Date& start,
 
     Leg iborLeg = vars.createIborLeg(start, end, rateSpread);
     
-    bool useCompoundedRate = true;
     ext::shared_ptr<CashFlow> subPeriodCpn =
-        vars.createSubPeriodsCoupon(start, end, rateSpread, useCompoundedRate);
+        vars.createSubPeriodsCoupon(start, end, rateSpread, SubPeriodsAveraging::Compound);
 
     const Real tolerance = 1.0e-14;
 
@@ -185,9 +208,8 @@ void testMultipleAveragedSubPeriodsCouponReplication(const Date& start,
 
     Leg iborLeg = vars.createIborLeg(start, end, spread);
     
-    bool useCompoundedRate = false;
     ext::shared_ptr<CashFlow> subPeriodCpn =
-        vars.createSubPeriodsCoupon(start, end, spread, useCompoundedRate);
+        vars.createSubPeriodsCoupon(start, end, spread, SubPeriodsAveraging::Simple);
 
     const Real tolerance = 1.0e-14;
 
@@ -202,6 +224,36 @@ void testMultipleAveragedSubPeriodsCouponReplication(const Date& start,
                     << "    end:    " << end << "\n");
 }
 
+void testSubPeriodsLegReplication(SubPeriodsAveraging::Type averaging) {
+    using namespace subperiodcoupons_test;
+    CommonVars vars;
+
+    Date start(18, March, 2021);
+    Date end(18, March, 2022);
+
+    Spread spread = 0.001;
+
+    ext::shared_ptr<CashFlow> subPeriodCpn =
+        vars.createSubPeriodsCoupon(start, end, spread, averaging);
+
+    Leg subPeriodLeg = vars.createSubPeriodsLeg(start, end, 1 * Years, spread, averaging);
+
+    const Real tolerance = 1.0e-14;
+
+    Real actualPayment = 0.0;
+    // Only one cash flow is expected with this parametrization
+    std::for_each(
+        subPeriodLeg.begin(), subPeriodLeg.end(),
+        [&actualPayment](const ext::shared_ptr<CashFlow>& cf) { actualPayment += cf->amount(); });
+    Real expectedPayment = subPeriodCpn->amount();
+
+    if (std::fabs(actualPayment - expectedPayment) > tolerance)
+        BOOST_ERROR("unable to replicate sub-period leg payments\n"
+                    << std::setprecision(5) << "    calculated:    " << actualPayment << "\n"
+                    << "    expected:    " << expectedPayment << "\n"
+                    << "    averaging:    " << averaging << "\n");
+}
+
 void SubPeriodsCouponTest::testRegularSinglePeriodForwardStartingCoupon() {
     BOOST_TEST_MESSAGE("Testing regular single period forward starting coupon...");
 
@@ -210,8 +262,8 @@ void SubPeriodsCouponTest::testRegularSinglePeriodForwardStartingCoupon() {
 
     Spread spread = 0.001;
     // For a single sub-period averaging method should not matter.
-    testSinglePeriodCouponReplication(start, end, spread, true);
-    testSinglePeriodCouponReplication(start, end, spread, false);
+    testSinglePeriodCouponReplication(start, end, spread, SubPeriodsAveraging::Compound);
+    testSinglePeriodCouponReplication(start, end, spread, SubPeriodsAveraging::Simple);
 }
 
 void SubPeriodsCouponTest::testRegularSinglePeriodCouponAfterFixing() {
@@ -222,8 +274,8 @@ void SubPeriodsCouponTest::testRegularSinglePeriodCouponAfterFixing() {
 
     Spread spread = 0.001;
     // For a single sub-period averaging method should not matter.
-    testSinglePeriodCouponReplication(start, end, spread, true);
-    testSinglePeriodCouponReplication(start, end, spread, false);
+    testSinglePeriodCouponReplication(start, end, spread, SubPeriodsAveraging::Compound);
+    testSinglePeriodCouponReplication(start, end, spread, SubPeriodsAveraging::Simple);
 }
 
 void SubPeriodsCouponTest::testIrregularSinglePeriodCouponAfterFixing() {
@@ -234,8 +286,8 @@ void SubPeriodsCouponTest::testIrregularSinglePeriodCouponAfterFixing() {
 
     Spread spread = 0.001;
     // For a single sub-period averaging method should not matter.
-    testSinglePeriodCouponReplication(start, end, spread, true);
-    testSinglePeriodCouponReplication(start, end, spread, false);
+    testSinglePeriodCouponReplication(start, end, spread, SubPeriodsAveraging::Compound);
+    testSinglePeriodCouponReplication(start, end, spread, SubPeriodsAveraging::Simple);
 }
 
 void SubPeriodsCouponTest::testRegularCompoundedForwardStartingCouponWithMultipleSubPeriods() {
@@ -281,6 +333,14 @@ void SubPeriodsCouponTest::testExCouponCashFlow() {
                     << "    end:    " << end << "\n");
 }
 
+void SubPeriodsCouponTest::testSubPeriodsLegCashFlows() {
+    BOOST_TEST_MESSAGE(
+        "Testing sub-periods leg replication...");
+
+    testSubPeriodsLegReplication(SubPeriodsAveraging::Compound);
+    testSubPeriodsLegReplication(SubPeriodsAveraging::Simple);
+}
+
 test_suite* SubPeriodsCouponTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Sub-period coupons tests");
 
@@ -294,6 +354,7 @@ test_suite* SubPeriodsCouponTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
         &SubPeriodsCouponTest::testRegularAveragedForwardStartingCouponWithMultipleSubPeriods));
     suite->add(QUANTLIB_TEST_CASE(&SubPeriodsCouponTest::testExCouponCashFlow));
+    suite->add(QUANTLIB_TEST_CASE(&SubPeriodsCouponTest::testSubPeriodsLegCashFlows));
 
     return suite;
 }

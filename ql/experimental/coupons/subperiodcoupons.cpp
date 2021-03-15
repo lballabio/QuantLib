@@ -65,7 +65,7 @@ namespace QuantLib {
                 fixingDates_[i] = index->fixingDate(valueDates_[i]);
         }
 
-        // accrual periods
+        // accrual of sub-periods
         dt_.resize(n_);
         const DayCounter& dc = index->dayCounter();
         for (Size i = 0; i < n_; ++i)
