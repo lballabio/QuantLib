@@ -136,6 +136,7 @@ QL_TEST_SRCS = \
 	spreadoption.cpp \
 	squarerootclvmodel.cpp \
 	stats.cpp \
+	subperiodcoupons.cpp \
 	swap.cpp \
 	swapforwardmappings.cpp \
 	swaption.cpp \
@@ -296,6 +297,7 @@ QL_TEST_HDRS = \
 	spreadoption.hpp \
 	squarerootclvmodel.hpp \
 	stats.hpp \
+	subperiodcoupons.hpp \
 	swap.hpp \
 	swapforwardmappings.hpp \
 	swaption.hpp \
