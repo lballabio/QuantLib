@@ -355,21 +355,31 @@ void SubPeriodsCouponTest::testSubPeriodsLegConsistencyChecks() {
     CommonVars vars;
 
     Date start(18, March, 2021);
-    Date end(18, March, 2022);
-
-    Spread rateSpread = 0.001;
-    Spread couponSpread = 0.002;
+    Date end(18, March, 2031);
 
     SubPeriodsLeg subPeriodLeg =
         vars.createSubPeriodsLeg(start, end, 1 * Years);
 
-    BOOST_CHECK_THROW(Leg l(subPeriodLeg.withNotionals(std::vector<Real>())), Error);
-    BOOST_CHECK_THROW(Leg l(subPeriodLeg.withNotionals(std::vector<Real>(2, 1.0))), Error);
-    BOOST_CHECK_THROW(Leg l(subPeriodLeg.withFixingDays(std::vector<Natural>(2, 2))), Error);
-    BOOST_CHECK_THROW(Leg l(subPeriodLeg.withGearings(0.0)), Error);
-    BOOST_CHECK_THROW(Leg l(subPeriodLeg.withGearings(std::vector<Real>(2, 1.0))), Error);
-    BOOST_CHECK_THROW(Leg l(subPeriodLeg.withCouponSpreads(std::vector<Spread>(2, 0.0))), Error);
-    BOOST_CHECK_THROW(Leg l(subPeriodLeg.withRateSpreads(std::vector<Spread>(2, 0.0))), Error);
+    BOOST_CHECK_THROW(
+        Leg l0(vars.createSubPeriodsLeg(start, end, 1 * Years).withNotionals(std::vector<Real>())),
+        Error);
+    BOOST_CHECK_THROW(Leg l1(vars.createSubPeriodsLeg(start, end, 1 * Years)
+                                 .withNotionals(std::vector<Real>(11, 1.0))),
+                      Error);
+    BOOST_CHECK_THROW(Leg l2(vars.createSubPeriodsLeg(start, end, 1 * Years)
+                                 .withFixingDays(std::vector<Natural>(11, 2))),
+                      Error);
+    BOOST_CHECK_THROW(Leg l3(vars.createSubPeriodsLeg(start, end, 1 * Years).withGearings(0.0)),
+                      Error);
+    BOOST_CHECK_THROW(Leg l4(vars.createSubPeriodsLeg(start, end, 1 * Years)
+                                 .withGearings(std::vector<Real>(11, 1.0))),
+                      Error);
+    BOOST_CHECK_THROW(Leg l5(vars.createSubPeriodsLeg(start, end, 1 * Years)
+                                 .withCouponSpreads(std::vector<Spread>(11, 0.0))),
+                      Error);
+    BOOST_CHECK_THROW(Leg l6(vars.createSubPeriodsLeg(start, end, 1 * Years)
+                                 .withRateSpreads(std::vector<Spread>(11, 0.0))),
+                      Error);
 }
 
 test_suite* SubPeriodsCouponTest::suite() {
