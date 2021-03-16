@@ -34,6 +34,7 @@ class SubPeriodsCouponTest {
     static void testRegularAveragedForwardStartingCouponWithMultipleSubPeriods();
     static void testExCouponCashFlow();
     static void testSubPeriodsLegCashFlows();
+    static void testSubPeriodsLegConsistencyChecks();
 
     static boost::unit_test_framework::test_suite* suite();
 };
