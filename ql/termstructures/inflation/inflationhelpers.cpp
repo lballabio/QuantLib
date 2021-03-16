@@ -90,12 +90,12 @@ namespace QuantLib {
     : ZeroCouponInflationSwapHelper(quote,
                                     swapObsLag,
                                     maturity,
-                                    calendar,
+                                    std::move(calendar),
                                     paymentConvention,
-                                    dayCounter,
-                                    zii,
+                                    std::move(dayCounter),
+                                    std::move(zii),
                                     CPI::AsIndex,
-                                    nominalTermStructure) {}
+                                    std::move(nominalTermStructure)) {}
 
 
     Real ZeroCouponInflationSwapHelper::impliedQuote() const {
