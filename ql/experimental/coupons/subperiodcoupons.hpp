@@ -1,7 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
-
  Copyright (C) 2008 Toyin Akin
  Copyright (C) 2021 Marcin Rybacki
 
