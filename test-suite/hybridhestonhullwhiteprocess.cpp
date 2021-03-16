@@ -1478,8 +1478,6 @@ test_suite* HybridHestonHullWhiteProcessTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testDiscretizationError));
     suite->add(QUANTLIB_TEST_CASE(
-        &HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine));
-    suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing));
     suite->add(QUANTLIB_TEST_CASE(
         &HybridHestonHullWhiteProcessTest::testH1HWPricingEngine));
@@ -1487,6 +1485,8 @@ test_suite* HybridHestonHullWhiteProcessTest::suite(SpeedLevel speed) {
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(
             &HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError));
+        suite->add(QUANTLIB_TEST_CASE(
+            &HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine));
     }
 
     if (speed == Slow) {
