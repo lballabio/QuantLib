@@ -20,6 +20,7 @@
 
 #include <ql/instruments/overnightindexfuture.hpp>
 #include <ql/indexes/indexmanager.hpp>
+#include <ql/event.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -28,7 +29,7 @@ namespace QuantLib {
                                                const Date& valueDate,
                                                const Date& maturityDate,
                                                Handle<Quote> convexityAdjustment,
-                                               OvernightAveraging::Type averagingMethod)
+                                               RateAveraging::Type averagingMethod)
     : overnightIndex_(std::move(overnightIndex)), valueDate_(valueDate),
       maturityDate_(maturityDate), convexityAdjustment_(std::move(convexityAdjustment)),
       averagingMethod_(averagingMethod) {
@@ -98,10 +99,10 @@ namespace QuantLib {
 
     Real OvernightIndexFuture::rate() const {
         switch (averagingMethod_) {
-          case OvernightAveraging::Simple:
+          case RateAveraging::Simple:
             return averagedRate();
             break;
-          case OvernightAveraging::Compound:
+          case RateAveraging::Compound:
             return compoundedRate();
             break;
           default:

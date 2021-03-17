@@ -27,27 +27,11 @@
 
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 #include <ql/time/schedule.hpp>
 #include <vector>
 
 namespace QuantLib {
-
-    //! sub-periods coupon averaging method
-    /*! It allows to configure how interest is accrued.
-     */
-    struct SubPeriodsAveraging {
-        enum Type {
-            Simple,  /*!< Under the simple convention the amount of
-                      interest is calculated by applying the periodic
-                      rate to the principal, and the payment due
-                      at the end of the period is the sum of those
-                      amounts. */
-            Compound /*!< Under the compound convention, the additional
-                      amount of interest owed each sub-period is calculated
-                      by applying the rate both to the principal
-                      and the accumulated unpaid interest. */
-        };
-    };
 
     class IborIndex;
 
@@ -153,7 +137,7 @@ namespace QuantLib {
                                           const Calendar&,
                                           BusinessDayConvention,
                                           bool endOfMonth = false);
-        SubPeriodsLeg& withAveragingMethod(SubPeriodsAveraging::Type averagingMethod);
+        SubPeriodsLeg& withAveragingMethod(RateAveraging::Type averagingMethod);
         operator Leg() const;
 
       private:
@@ -168,7 +152,7 @@ namespace QuantLib {
         std::vector<Real> gearings_;
         std::vector<Spread> couponSpreads_;
         std::vector<Spread> rateSpreads_;
-        SubPeriodsAveraging::Type averagingMethod_;
+        RateAveraging::Type averagingMethod_;
         Period exCouponPeriod_;
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_;

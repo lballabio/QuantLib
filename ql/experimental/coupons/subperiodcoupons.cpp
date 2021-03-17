@@ -151,7 +151,7 @@ namespace QuantLib {
 
     SubPeriodsLeg::SubPeriodsLeg(const Schedule &schedule, ext::shared_ptr<IborIndex> i)
     : schedule_(schedule), index_(std::move(i)), paymentCalendar_(schedule.calendar()),
-      paymentAdjustment_(Following), paymentLag_(0), averagingMethod_(SubPeriodsAveraging::Compound), 
+      paymentAdjustment_(Following), paymentLag_(0), averagingMethod_(RateAveraging::Compound), 
       exCouponPeriod_(Period()), exCouponCalendar_(Calendar()), 
       exCouponAdjustment_(Unadjusted), exCouponEndOfMonth_(false) {}
 
@@ -225,7 +225,7 @@ namespace QuantLib {
         return *this;
     }
 
-    SubPeriodsLeg& SubPeriodsLeg::withAveragingMethod(SubPeriodsAveraging::Type averagingMethod) {
+    SubPeriodsLeg& SubPeriodsLeg::withAveragingMethod(RateAveraging::Type averagingMethod) {
         averagingMethod_ = averagingMethod;
         return *this;
     }
@@ -287,11 +287,11 @@ namespace QuantLib {
         }
 
         switch (averagingMethod_) {
-            case SubPeriodsAveraging::Simple:
+            case RateAveraging::Simple:
                 setCouponPricer(cashflows,
                                 ext::shared_ptr<FloatingRateCouponPricer>(new AveragingRatePricer));
                 break;
-            case SubPeriodsAveraging::Compound:
+            case RateAveraging::Compound:
                 setCouponPricer(cashflows, ext::shared_ptr<FloatingRateCouponPricer>(
                                                new CompoundingRatePricer));
                 break;
