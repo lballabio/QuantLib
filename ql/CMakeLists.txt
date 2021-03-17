@@ -949,6 +949,7 @@ set(QuantLib_HDR
     cashflows/lineartsrpricer.hpp
     cashflows/overnightindexedcoupon.hpp
     cashflows/rangeaccrual.hpp
+    cashflows/rateaveraging.hpp
     cashflows/replication.hpp
     cashflows/simplecashflow.hpp
     cashflows/timebasket.hpp

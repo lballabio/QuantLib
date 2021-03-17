@@ -29,6 +29,7 @@ this_include_HEADERS = \
     lineartsrpricer.hpp \
     overnightindexedcoupon.hpp \
     rangeaccrual.hpp \
+    rateaveraging.hpp \
     replication.hpp \
     simplecashflow.hpp \
     timebasket.hpp \
