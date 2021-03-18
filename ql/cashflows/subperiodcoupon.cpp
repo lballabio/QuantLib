@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/coupons/subperiodcoupons.hpp>
+#include <ql/cashflows/subperiodcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/iborindex.hpp>

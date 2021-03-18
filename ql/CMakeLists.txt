@@ -30,6 +30,7 @@ set(QuantLib_SRC
     cashflows/replication.cpp
     cashflows/simplecashflow.cpp
     cashflows/timebasket.cpp
+    cashflows/subperiodcoupon.cpp
     cashflows/yoyinflationcoupon.cpp
     currencies/africa.cpp
     currencies/america.cpp
@@ -103,7 +104,6 @@ set(QuantLib_SRC
     experimental/coupons/proxyibor.cpp
     experimental/coupons/quantocouponpricer.cpp
     experimental/coupons/strippedcapflooredcoupon.cpp
-    experimental/coupons/subperiodcoupons.cpp
     experimental/coupons/swapspreadindex.cpp
     experimental/credit/basecorrelationstructure.cpp
     experimental/credit/basket.cpp
@@ -952,6 +952,7 @@ set(QuantLib_HDR
     cashflows/rateaveraging.hpp
     cashflows/replication.hpp
     cashflows/simplecashflow.hpp
+    cashflows/subperiodcoupon.hpp
     cashflows/timebasket.hpp
     cashflows/yoyinflationcoupon.hpp
     compounding.hpp
@@ -1052,7 +1053,6 @@ set(QuantLib_HDR
     experimental/coupons/proxyibor.hpp
     experimental/coupons/quantocouponpricer.hpp
     experimental/coupons/strippedcapflooredcoupon.hpp
-    experimental/coupons/subperiodcoupons.hpp
     experimental/coupons/swapspreadindex.hpp
     experimental/credit/all.hpp
     experimental/credit/basecorrelationlossmodel.hpp

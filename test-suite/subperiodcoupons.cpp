@@ -18,7 +18,7 @@
 
 #include "subperiodcoupons.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/coupons/subperiodcoupons.hpp>
+#include <ql/cashflows/subperiodcoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/indexes/ibor/euribor.hpp>

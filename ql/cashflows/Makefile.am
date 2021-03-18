@@ -32,6 +32,7 @@ this_include_HEADERS = \
     rateaveraging.hpp \
     replication.hpp \
     simplecashflow.hpp \
+    subperiodcoupon.hpp \
     timebasket.hpp \
     yoyinflationcoupon.hpp
 
@@ -63,6 +64,7 @@ cpp_files = \
     rangeaccrual.cpp \
     replication.cpp \
     simplecashflow.cpp \
+    subperiodcoupon.cpp \
     timebasket.cpp \
     yoyinflationcoupon.cpp
 

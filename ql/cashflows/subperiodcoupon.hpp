@@ -18,12 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file subperiodcoupons.hpp
+/*! \file subperiodcoupon.hpp
     \brief averaging coupons
 */
 
-#ifndef quantlib_sub_period_coupons_hpp
-#define quantlib_sub_period_coupons_hpp
+#ifndef quantlib_sub_period_coupon_hpp
+#define quantlib_sub_period_coupon_hpp
 
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
