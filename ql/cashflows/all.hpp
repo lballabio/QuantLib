@@ -26,8 +26,10 @@
 #include <ql/cashflows/lineartsrpricer.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 #include <ql/cashflows/replication.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
+#include <ql/cashflows/subperiodcoupon.hpp>
 #include <ql/cashflows/timebasket.hpp>
 #include <ql/cashflows/yoyinflationcoupon.hpp>
 

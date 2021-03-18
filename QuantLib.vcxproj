@@ -526,8 +526,10 @@
     <ClInclude Include="ql\cashflows\lineartsrpricer.hpp" />
     <ClInclude Include="ql\cashflows\overnightindexedcoupon.hpp" />
     <ClInclude Include="ql\cashflows\rangeaccrual.hpp" />
+    <ClInclude Include="ql\cashflows\rateaveraging.hpp" />
     <ClInclude Include="ql\cashflows\replication.hpp" />
     <ClInclude Include="ql\cashflows\simplecashflow.hpp" />
+    <ClInclude Include="ql\cashflows\subperiodcoupon.hpp" />
     <ClInclude Include="ql\cashflows\timebasket.hpp" />
     <ClInclude Include="ql\cashflows\yoyinflationcoupon.hpp" />
     <ClInclude Include="ql\currencies\africa.hpp" />
@@ -616,7 +618,6 @@
     <ClInclude Include="ql\experimental\coupons\proxyibor.hpp" />
     <ClInclude Include="ql\experimental\coupons\quantocouponpricer.hpp" />
     <ClInclude Include="ql\experimental\coupons\strippedcapflooredcoupon.hpp" />
-    <ClInclude Include="ql\experimental\coupons\subperiodcoupons.hpp" />
     <ClInclude Include="ql\experimental\coupons\swapspreadindex.hpp" />
     <ClInclude Include="ql\experimental\credit\all.hpp" />
     <ClInclude Include="ql\experimental\credit\basecorrelationlossmodel.hpp" />
@@ -1899,6 +1900,7 @@
     <ClCompile Include="ql\cashflows\rangeaccrual.cpp" />
     <ClCompile Include="ql\cashflows\replication.cpp" />
     <ClCompile Include="ql\cashflows\simplecashflow.cpp" />
+    <ClCompile Include="ql\cashflows\subperiodcoupon.cpp" />
     <ClCompile Include="ql\cashflows\timebasket.cpp" />
     <ClCompile Include="ql\cashflows\yoyinflationcoupon.cpp" />
     <ClCompile Include="ql\currencies\africa.cpp" />
@@ -1967,7 +1969,6 @@
     <ClCompile Include="ql\experimental\coupons\proxyibor.cpp" />
     <ClCompile Include="ql\experimental\coupons\quantocouponpricer.cpp" />
     <ClCompile Include="ql\experimental\coupons\strippedcapflooredcoupon.cpp" />
-    <ClCompile Include="ql\experimental\coupons\subperiodcoupons.cpp" />
     <ClCompile Include="ql\experimental\coupons\swapspreadindex.cpp" />
     <ClCompile Include="ql\experimental\credit\basecorrelationstructure.cpp" />
     <ClCompile Include="ql\experimental\credit\basket.cpp" />

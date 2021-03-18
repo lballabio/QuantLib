@@ -40,7 +40,7 @@ namespace QuantLib {
                                  const Spread overnightSpread,
                                  Pillar::Choice pillar,
                                  Date customPillarDate,
-                                 OvernightAveraging::Type averagingMethod)
+                                 RateAveraging::Type averagingMethod)
     : RelativeDateRateHelper(fixedRate), pillarChoice_(pillar), settlementDays_(settlementDays),
       tenor_(tenor), overnightIndex_(std::move(overnightIndex)),
       discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
@@ -146,7 +146,7 @@ namespace QuantLib {
                                            const ext::shared_ptr<OvernightIndex>& overnightIndex,
                                            Handle<YieldTermStructure> discount,
                                            bool telescopicValueDates, 
-                                           OvernightAveraging::Type averagingMethod)
+                                           RateAveraging::Type averagingMethod)
     : RateHelper(fixedRate), discountHandle_(std::move(discount)),
       telescopicValueDates_(telescopicValueDates), 
       averagingMethod_(averagingMethod) {

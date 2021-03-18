@@ -570,10 +570,16 @@
     <ClInclude Include="ql\cashflows\rangeaccrual.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\rateaveraging.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
     <ClInclude Include="ql\cashflows\replication.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
     <ClInclude Include="ql\cashflows\simplecashflow.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\cashflows\subperiodcoupon.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
     <ClInclude Include="ql\cashflows\timebasket.hpp">
@@ -3045,9 +3051,6 @@
     <ClInclude Include="ql\experimental\coupons\strippedcapflooredcoupon.hpp">
       <Filter>experimental\coupons</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\coupons\subperiodcoupons.hpp">
-      <Filter>experimental\coupons</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\coupons\swapspreadindex.hpp">
       <Filter>experimental\coupons</Filter>
     </ClInclude>
@@ -4472,6 +4475,9 @@
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\simplecashflow.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\cashflows\subperiodcoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\timebasket.cpp">
@@ -6104,9 +6110,6 @@
       <Filter>experimental\coupons</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\coupons\strippedcapflooredcoupon.cpp">
-      <Filter>experimental\coupons</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\coupons\subperiodcoupons.cpp">
       <Filter>experimental\coupons</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\coupons\swapspreadindex.cpp">

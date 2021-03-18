@@ -46,7 +46,7 @@ namespace QuantLib {
       overnightSpread_(0.0),
       fixedDayCount_(overnightIndex->dayCounter()), 
       telescopicValueDates_(false), 
-      averagingMethod_(OvernightAveraging::Compound) {}
+      averagingMethod_(RateAveraging::Compound) {}
 
     MakeOIS::operator OvernightIndexedSwap() const {
         ext::shared_ptr<OvernightIndexedSwap> ois = *this;
@@ -238,7 +238,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeOIS& MakeOIS::withAveragingMethod(OvernightAveraging::Type averagingMethod) {
+    MakeOIS& MakeOIS::withAveragingMethod(RateAveraging::Type averagingMethod) {
         averagingMethod_ = averagingMethod;
         return *this;
     }
