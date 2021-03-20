@@ -28,6 +28,7 @@
 
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopiterator.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -51,7 +52,7 @@ namespace QuantLib {
         Disposable<Array> locations(Size direction) const override;
 
       private:
-        boost::scoped_array<Real> dx_;
+        std::unique_ptr<Real[]> dx_;
         std::vector<std::vector<Real> > locations_;
     };
 }
