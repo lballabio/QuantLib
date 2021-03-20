@@ -34,7 +34,7 @@
 #include <ql/methods/montecarlo/pathpricer.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #if !defined(QL_USE_STD_UNIQUE_PTR)
-#include <boost/scoped_ptr.hpp>
+#include <boost/scoped_array.hpp>
 #endif
 #include <utility>
 #include <memory>
