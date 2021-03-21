@@ -146,7 +146,7 @@ namespace QuantLib {
         void swap(Matrix&);
         //@}
       private:
-        boost::scoped_array<Real> data_;
+        std::unique_ptr<Real[]> data_;
         Size rows_ = 0, columns_ = 0;
     };
 

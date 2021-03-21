@@ -23,7 +23,7 @@
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
 #include <ql/exercise.hpp>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -64,7 +64,7 @@ namespace QuantLib {
             detail::ImpliedVolatilityHelper::clone(process, volQuote);
 
         // engines are built-in for the time being
-        boost::scoped_ptr<PricingEngine> engine;
+        std::unique_ptr<PricingEngine> engine;
         switch (exercise_->type()) {
           case Exercise::European:
             engine.reset(new AnalyticBarrierEngine(newProcess));

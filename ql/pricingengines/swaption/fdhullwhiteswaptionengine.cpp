@@ -17,9 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdhullwhiteswaptionengine.cpp
-*/
-
 #include <ql/exercise.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
@@ -31,8 +28,6 @@
 #include <ql/methods/finitedifferences/solvers/fdmhullwhitesolver.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmaffinemodelswapinnervalue.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-
-#include <boost/scoped_ptr.hpp>
 
 namespace QuantLib {
 
@@ -112,9 +107,8 @@ namespace QuantLib {
                                      calculator, maturity,
                                      tGrid_, dampingSteps_ };
 
-        const boost::scoped_ptr<FdmHullWhiteSolver> solver(
-            new FdmHullWhiteSolver(model_, solverDesc, schemeDesc_));
+        FdmHullWhiteSolver solver(model_, solverDesc, schemeDesc_);
 
-        results_.value = solver->valueAt(0.0);
+        results_.value = solver.valueAt(0.0);
     }
 }

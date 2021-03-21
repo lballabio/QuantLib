@@ -17,9 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdg2swaptionengine.cpp
-*/
-
 #include <ql/exercise.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
@@ -31,8 +28,6 @@
 #include <ql/methods/finitedifferences/solvers/fdmg2solver.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmaffinemodelswapinnervalue.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-
-#include <boost/scoped_ptr.hpp>
 
 namespace QuantLib {
 
@@ -119,9 +114,8 @@ namespace QuantLib {
                                      calculator, maturity,
                                      tGrid_, dampingSteps_ };
 
-        const boost::scoped_ptr<FdmG2Solver> solver(
-            new FdmG2Solver(model_, solverDesc, schemeDesc_));
+        FdmG2Solver solver(model_, solverDesc, schemeDesc_);
 
-        results_.value = solver->valueAt(0.0, 0.0);
+        results_.value = solver.valueAt(0.0, 0.0);
     }
 }
