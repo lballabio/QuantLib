@@ -19,10 +19,8 @@
 */
 
 #include <ql/math/optimization/differentialevolution.hpp>
-
-#include <boost/math/special_functions/fpclassify.hpp>
-
 #include <algorithm>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -301,7 +299,7 @@ namespace QuantLib {
             } catch (Error&) {
                 population[popIter].cost = QL_MAX_REAL;
             }
-            if(!boost::math::isfinite(population[popIter].cost))
+            if (!std::isfinite(population[popIter].cost))
                 population[popIter].cost = QL_MAX_REAL;
 
         }
@@ -391,7 +389,7 @@ namespace QuantLib {
                 population[j].values[i] = l + (u-l)*rng_.nextReal();
             }
             population[j].cost = p.costFunction().value(population[j].values);
-            if(!boost::math::isfinite(population[j].cost))
+            if (!std::isfinite(population[j].cost))
                 population[j].cost = QL_MAX_REAL;
         }
     }

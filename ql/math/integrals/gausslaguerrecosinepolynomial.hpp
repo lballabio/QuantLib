@@ -26,6 +26,7 @@
 
 #include <ql/math/functional.hpp>
 #include <ql/math/integrals/momentbasedgaussianpolynomial.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -44,7 +45,7 @@ namespace QuantLib {
 			if (m_.size() <= n)
 				m_.resize(n+1, std::numeric_limits<mp_real>::quiet_NaN());
 
-			if (boost::math::isnan(m_[n])) {
+			if (std::isnan(m_[n])) {
 				if (n == 0)
 					m_[0] = m0();
 				else if (n == 1)
@@ -60,7 +61,7 @@ namespace QuantLib {
 			if (f_.size() <= n)
 				f_.resize(n+1, std::numeric_limits<mp_real>::quiet_NaN());
 
-			if (boost::math::isnan(f_[n])) {
+			if (std::isnan(f_[n])) {
 				if (n == 0)
 					f_[0] = 1.0;
 				else

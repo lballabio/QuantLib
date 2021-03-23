@@ -19,8 +19,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/experimental/math/fireflyalgorithm.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
 #include <algorithm>
+#include <cmath>
 #include <utility>
 
 namespace QuantLib {
@@ -192,7 +192,7 @@ namespace QuantLib {
                         }
                     }
                     Real val = P.value(z);
-                    if(!boost::math::isnan(val))
+                    if(!std::isnan(val))
 					{
 						//Accept new point
                         x = z;

@@ -29,7 +29,7 @@
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -118,7 +118,7 @@ namespace QuantLib {
             ytry_ = QL_MAX_REAL;
         else
             ytry_ = P.value(ptry_);
-        if (boost::math::isnan(ytry_)) {
+        if (std::isnan(ytry_)) {
             ytry_ = QL_MAX_REAL;
         }
         if (ytry_ <= yb_) {
@@ -163,7 +163,7 @@ namespace QuantLib {
                 values_[i_] = QL_MAX_REAL;
             else
                 values_[i_] = P.value(vertices_[i_]);
-            if (boost::math::isnan(ytry_)) { // handle NAN
+            if (std::isnan(ytry_)) { // handle NAN
                 values_[i_] = QL_MAX_REAL;
             }
         }

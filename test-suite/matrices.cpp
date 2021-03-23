@@ -34,7 +34,7 @@
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <cmath>
 #include <utility>
 
 using namespace QuantLib;
@@ -554,7 +554,7 @@ void MatricesTest::testCholeskyDecomposition() {
     Real tol = 1.0E-12;
     for(Size i=0;i<11;++i) {
         for(Size j=0;j<11;++j) {
-            if(boost::math::isnan(m2[i][j])) {
+            if(std::isnan(m2[i][j])) {
                 BOOST_FAIL("Faield to verify Cholesky decomposition at (i,j)=("
                            << i << "," << j << "), replicated value is nan");
             }

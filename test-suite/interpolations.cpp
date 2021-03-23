@@ -45,7 +45,7 @@
 #include <ql/tuple.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/utilities/null.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <cmath>
 #include <utility>
 
 using namespace QuantLib;
@@ -970,7 +970,7 @@ void InterpolationTest::testFritschButland() {
             for (Size k=0; k<10; ++k) {
                 Real x1 = left_knot + k*0.1, x2 = left_knot + (k+1)*0.1;
                 Real y1 = f(x1), y2 = f(x2);
-                if (boost::math::isnan(y1))
+                if (std::isnan(y1))
                     BOOST_ERROR("NaN detected in case " << i << ":"
                                 << std::fixed
                                 << "\n    f(" << x1 << ") = " << y1);
@@ -2195,7 +2195,7 @@ void InterpolationTest::testLagrangeInterpolation() {
     for (Size i=0; i < 79; ++i) {
         const Real xx = -1.0 + i*0.025;
         const Real calculated = interpl(xx);
-        if (   boost::math::isnan(calculated)
+        if (   std::isnan(calculated)
             || std::fabs(references[i] - calculated) > tol) {
             BOOST_FAIL("failed to reproduce the Lagrange interpolation"
                     << "\n    x         : " << xx
@@ -2225,7 +2225,7 @@ void InterpolationTest::testLagrangeInterpolationAtSupportPoint() {
             const Real expected = 1.0/(1.0 - x[i]);
             const Real calculated = interpl(z);
 
-            if (   boost::math::isnan(calculated)
+            if (   std::isnan(calculated)
                 || std::fabs(expected - calculated) > relTol) {
                 BOOST_FAIL("failed to reproduce the Lagrange interplation"
                         << "\n    x         : " << z
@@ -2255,7 +2255,7 @@ void InterpolationTest::testLagrangeInterpolationDerivative() {
         const Real expected = (interpl(x+eps, true)
             - interpl(x-eps, true))/(2*eps);
 
-        if (   boost::math::isnan(calculated)
+        if (   std::isnan(calculated)
             || std::fabs(expected - calculated) > 25*eps) {
             BOOST_FAIL("failed to reproduce the Lagrange"
                     " interplation derivative"
@@ -2292,7 +2292,7 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
         const Real expected = std::exp(x)/std::cos(x);
 
         const Real diff = std::fabs(expected - calculated);
-        if (   boost::math::isnan(calculated) || diff > tol) {
+        if (std::isnan(calculated) || diff > tol) {
             BOOST_FAIL("failed to reproduce the Lagrange"
                     " interpolation on Chebyshev points"
                     << "\n    x         : " << x
@@ -2307,7 +2307,7 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
                 / square<Real>()(std::cos(x));
 
         const Real diffDeriv = std::fabs(expectedDeriv - calculatedDeriv);
-        if (   boost::math::isnan(calculated) || diffDeriv > tolDeriv) {
+        if (std::isnan(calculated) || diffDeriv > tolDeriv) {
             BOOST_FAIL("failed to reproduce the Lagrange"
                     " interpolation derivative on Chebyshev points"
                     << "\n    x         : " << x
@@ -2351,7 +2351,7 @@ void InterpolationTest::testBSplines() {
 
         const Real calculated = bspline(idx, x);
 
-        if (   boost::math::isnan(calculated)
+        if (   std::isnan(calculated)
             || std::fabs(calculated - expected) > tol) {
             BOOST_FAIL("failed to reproduce the B-Spline value"
                     << "\n    i         : " << idx
