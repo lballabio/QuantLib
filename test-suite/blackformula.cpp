@@ -24,8 +24,7 @@
 #include "blackformula.hpp"
 #include "utilities.hpp"
 #include <ql/pricingengines/blackformula.hpp>
-
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <cmath>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -174,7 +173,7 @@ void BlackFormulaTest::testRadoicicStefanicaLowerBound() {
             Option::Call, strike, forward, c);
 
         const Real error = s - estimate;
-        if (boost::math::isnan(estimate) || std::fabs(error) > 0.05) {
+        if (std::isnan(estimate) || std::fabs(error) > 0.05) {
             BOOST_ERROR("Failed to lower bound Radoicic-Stefanica"
                 "approximation for "
                 << "\n forward     :" << forward

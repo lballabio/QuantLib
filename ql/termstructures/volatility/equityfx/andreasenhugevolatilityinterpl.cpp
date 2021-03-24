@@ -17,9 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file andreasenhugelocalvolatility.cpp
-*/
-
 #include <ql/exercise.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/array.hpp>
@@ -38,7 +35,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/timegrid.hpp>
 #include <ql/utilities/null.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <cmath>
 #include <limits>
 #include <utility>
 
@@ -593,7 +590,7 @@ namespace QuantLib {
         Array localVol = Sqrt(2*dCdT/d2CdK2);
 
         for (Size i=1; i < localVol.size()-1; ++i)
-            if (!boost::math::isfinite(localVol[i]) || localVol[i] < 0.0)
+            if (!std::isfinite(localVol[i]) || localVol[i] < 0.0)
                 localVol[i] = 0.25;
 
         return localVol;

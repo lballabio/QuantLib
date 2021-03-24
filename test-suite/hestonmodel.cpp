@@ -53,7 +53,7 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/period.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <cmath>
 #include <utility>
 
 using namespace QuantLib;
@@ -1314,7 +1314,7 @@ void HestonModelTest::testAlanLewisReferencePrices() {
                 const Real calculated = option.NPV();
                 const Real relError = std::fabs(calculated-expected)/expected;
 
-                if (relError > tol || boost::math::isnan(calculated)) {
+                if (relError > tol || std::isnan(calculated)) {
                     BOOST_ERROR(
                            "failed to reproduce Alan Lewis Reference prices "
                         << "\n    strike     : " << strike
@@ -1617,7 +1617,7 @@ namespace {
 
         const Real error = std::fabs(calculated - expected);
 
-        if (boost::math::isnan(error) || error > tol) {
+        if (std::isnan(error) || error > tol) {
             BOOST_ERROR("failed to reproduce simple Heston Pricing with "
                     << "\n    integration method: " << method
                     <<  std::setprecision(12)
