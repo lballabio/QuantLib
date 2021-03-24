@@ -98,8 +98,8 @@ namespace QuantLib {
             iter != endIter; ++iter) {
             if (iter.coordinates()[direction_] == 0) {
                 const Size idx = iter.index();
-                mapX_->diag()[idx]  = beta  + f*b; //*v(n-1);
-                mapX_->upper()[idx] = gamma + f*c; //*v(n-1);
+                mapX_->diag(idx)  = beta  + f*b; //*v(n-1);
+                mapX_->upper(idx) = gamma + f*c; //*v(n-1);
             }
         }
     }
@@ -120,8 +120,8 @@ namespace QuantLib {
             iter != endIter; ++iter) {
             if (iter.coordinates()[direction_] == n-1) {
                 const Size idx = iter.index();
-                mapX_->diag()[idx] = beta   + f*b; //*v(n+1);
-                mapX_->lower()[idx] = alpha + f*c; //*v(n+1);
+                mapX_->diag(idx) = beta   + f*b; //*v(n+1);
+                mapX_->lower(idx) = alpha + f*c; //*v(n+1);
             }
         }
     }
