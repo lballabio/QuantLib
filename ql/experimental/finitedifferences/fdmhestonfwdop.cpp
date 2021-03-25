@@ -82,25 +82,25 @@ namespace QuantLib {
             if (iter.coordinates()[1] == 0) {
                 const Size idx = iter.index();
                 if (!leverageFct_) {
-                    dxxMap_->upper()[idx]+= alpha*fDx.upper()[idx];
-                    dxxMap_->diag()[idx] += alpha*fDx.diag()[idx];
-                    dxxMap_->lower()[idx] += alpha*fDx.lower()[idx];
+                    dxxMap_->upper(idx) += alpha*fDx.upper(idx);
+                    dxxMap_->diag(idx) += alpha*fDx.diag(idx);
+                    dxxMap_->lower(idx) += alpha*fDx.lower(idx);
                 }
-                boundary_->upper()[idx]= alpha*fDx.upper()[idx];
-                boundary_->diag()[idx] = alpha*fDx.diag()[idx];
-                boundary_->lower()[idx] = alpha*fDx.lower()[idx];
+                boundary_->upper(idx)= alpha*fDx.upper(idx);
+                boundary_->diag(idx) = alpha*fDx.diag(idx);
+                boundary_->lower(idx) = alpha*fDx.lower(idx);
             }
             else if (iter.coordinates()[1] == n-1) {
                 const Size idx = iter.index();
 
                 if (!leverageFct_) {
-                    dxxMap_->upper()[idx]+= beta*fDx.upper()[idx];
-                    dxxMap_->diag()[idx] += beta*fDx.diag()[idx];
-                    dxxMap_->lower()[idx] += beta*fDx.lower()[idx];
+                    dxxMap_->upper(idx)+= beta*fDx.upper(idx);
+                    dxxMap_->diag(idx) += beta*fDx.diag(idx);
+                    dxxMap_->lower(idx) += beta*fDx.lower(idx);
                 }
-                boundary_->upper()[idx]= beta*fDx.upper()[idx];
-                boundary_->diag()[idx] = beta*fDx.diag()[idx];
-                boundary_->lower()[idx] = beta*fDx.lower()[idx];
+                boundary_->upper(idx)= beta*fDx.upper(idx);
+                boundary_->diag(idx) = beta*fDx.diag(idx);
+                boundary_->lower(idx) = beta*fDx.lower(idx);
             }
         }
     }

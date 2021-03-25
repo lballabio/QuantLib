@@ -38,9 +38,12 @@ namespace QuantLib {
         explicit ModTripleBandLinearOp(const TripleBandLinearOp& m)
         : TripleBandLinearOp(m) { }
 
-        boost::shared_array<Real>& lower() { return lower_; }
-        boost::shared_array<Real>& diag()  { return diag_; }
-        boost::shared_array<Real>& upper() { return upper_; }
+        Real lower(Size i) const { return lower_[i]; }
+        Real& lower(Size i) { return lower_[i]; }
+        Real diag(Size i) const { return diag_[i]; }
+        Real& diag(Size i) { return diag_[i]; }
+        Real upper(Size i) const { return upper_[i]; }
+        Real& upper(Size i) { return upper_[i]; }
     };
 }
 
