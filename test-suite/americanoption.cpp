@@ -606,7 +606,7 @@ void AmericanOptionTest::testFDShoutNPV() {
 
 void AmericanOptionTest::testZeroVolFDShoutNPV() {
     BOOST_TEST_MESSAGE("Testing zero volatility shout option pricing"
-            "with discrete dividends...");
+                       " with discrete dividends...");
 
     SavedSettings backup;
 
@@ -658,7 +658,7 @@ void AmericanOptionTest::testZeroVolFDShoutNPV() {
 
 void AmericanOptionTest::testLargeDividendShoutNPV() {
     BOOST_TEST_MESSAGE("Testing zero strike shout option pricing"
-            "with discrete dividends...");
+                       " with discrete dividends...");
 
     SavedSettings backup;
 

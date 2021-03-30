@@ -318,7 +318,7 @@ void SubPeriodsCouponTest::testRegularAveragedForwardStartingCouponWithMultipleS
 }
 
 void SubPeriodsCouponTest::testExCouponCashFlow() {
-    BOOST_TEST_MESSAGE("Testing ex-coupon cash flow..");
+    BOOST_TEST_MESSAGE("Testing ex-coupon cash flow...");
 
     using namespace subperiodcoupons_test;
     CommonVars vars;
