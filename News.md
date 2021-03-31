@@ -1,69 +1,121 @@
-Changes for QuantLib 1.21:
+Changes for QuantLib 1.22:
 ==========================
 
-QuantLib 1.21 includes 24 pull requests from several contributors.
+QuantLib 1.22 includes 53 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/17?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/18?closed=1>.
 
 Portability
 -----------
 
-- As previously announced, this is the last release to support Visual
-  C++ 2012.  Starting from next release, VC++ 2013 or later will be
-  required in order to enable use of C++11 features.
+- As previously announced, this release drops support for Visual
+  C++ 2012.  VC++ 2013 or later is now required.
 
-Instruments
------------
+- The `Date` and `Array` classes are now visualized more clearly in
+  the Visual Studio debugger (thanks to Francois Botha).
 
-- Improve date generation for CDS schedules under the post-big-bang
-  rules (thanks to Francis Duffy).
+Language standard
+-----------------
 
-- Amortizing fixed-rate bonds can now use a generic `InterestRate`
-  object (thanks to Piter Dias).
+- QuantLib now uses the C++11 standard and no longer compiles in C++03
+  mode.  As before, it can be compiled with later versions of the
+  standard.  For details on the C++11 features used, see the pull
+  requests marked "C++11 modernization" at the above link; for
+  information on possible problems, see
+  <https://www.implementingquantlib.com/2021/02/leaving-03-for-real.html>.
 
-- Added Monte Carlo pricer for discrete-average arithmetic Asian
-  options under the Heston model (thanks to Jack Gillett).
+Cashflows
+---------
 
-- Added analytic and Monte Carlo pricers for discrete-average
-  geometric Asian options under the Heston model (thanks to Jack
-  Gillett).  Together, they can also be used as a control variate in
-  Monte Carlo models for arithmetic Asian options.
+- Revised and tested the `SubPeriodCoupon` class (thanks to Marcin
+  Rybacki).  The class was moved out of the `ql/experimental` folder
+  and its interface can now be considered stable.
 
-- Added analytic pricer for continuous-average geometric Asian
-  options under the Heston model (thanks to Jack Gillett).
+- Add simple averaging to overnight-index coupons in addition to the
+  existing compound averaging (thanks to Marcin Rybacki).
 
-- Added analytic pricer for forward options under the Heston model
-  (thanks to Jack Gillett).
+- Fixed accrual calculation for inflation coupon when trading
+  ex-coupon (thanks to GitHub user `bachhani`).
 
-- Added Monte Carlo pricers for forward options under the
-  Black-Scholes and the Heston models (thanks to Jack Gillett).
+Currencies
+----------
 
-Term structures
----------------
-
-- Added Dutch regulatory term structure, a.k.a. ultimate forward term
-  structure (thanks to Marcin Rybacki).
-
-- Generalized exponential spline fitting to an arbitrary number of
-  parameters; it is now also possible to fix kappa (thanks to David
-  Sansom).
-
-- Fixed averaging period for 1-month SOFR futures rate helper (thanks
-  to Eisuke Tani).
+- Added the Nigerian Naira (thanks to Bryte Morio).
 
 Date/time
 ---------
 
-- Fixed a bug and added 2017 holidays in Thailand calendar (thanks to
-  GitHub user `phil-zxx` for the heads-up).
+- Fixed actual/actual (ISMA) day counter calculation for long/short
+  final periods (thanks to Francois Botha).
 
-- Updated Chinese calendar for 2021 (thanks to Cheng Li).
+- Updated a couple of changed rules for New Zealand calendar (thanks
+  to Paul Giltinan).
 
-- Updated Japanese calendar for 2021 (thanks to Eisuke Tani).
+Indexes
+-------
 
+- Added `hasHistoricalFixing` inspector to `Index` class to check if
+  the fixing for a given past date is available (thanks to Ralf
+  Konrad).
 
-Thanks go also to Francois Botha, Peter Caspers, Ralf Konrad, Matthias
-Siemering, Klaus Spanderen and Joseph Wang for smaller fixes,
+Instruments
+-----------
+
+- Added new-style finite-difference engine for shout options (thanks
+  to Klaus Spanderen).  In the case of dividend shout options, an
+  escrowed dividend model is used.
+
+- Revised the `OvernightIndexFutures` class.  The class was moved out
+  of the `ql/experimental` folder and its interface can now be
+  considered stable.
+
+- Added an overloaded constructor for Asian options that takes all
+  past fixings and thus allows to reprice them correctly when the
+  evaluation date changes (thanks to Jack Gillett).
+
+- Added support for seasoned geometric Asian options to the Heston
+  engine (thanks to Jack Gillett).
+
+Patterns
+--------
+
+- Faster implementation of the `Observable` class in the thread-safe
+  case (thanks to Klaus Spanderen).
+
+Term structures
+---------------
+
+- Added experimental rate helper for constant-notional cross-currency
+  basis swaps (thanks to Marcin Rybacki).
+
+- Added volatility type and displacements to year-on-year inflation
+  volatility surfaces (thanks to Peter Caspers).
+
+Deprecated features
+-------------------
+
+- Removed features deprecated in version 1.17: the `Callability::Type`
+  typedef (now `Bond::Price`), the `FdmOrnsteinUhlenbackOp` typedef
+  (now correctly spelled as `FdmOrnsteinUhlenbeckOp`, and a number of
+  old-style finite-difference engines (`FDAmericanEngine`,
+  `FDBermudanEngine`, `FDDividendAmericanEngine` and its variants,
+  `FDDividendEuropeanEngine` and its variants, and `FDEuropeanEngine`)
+  all replaced by the `FdBlackScholesVanillaEngine` class.
+
+- Deprecated the old-style finite difference engines for shout
+  options; they are now replaced by the new `FDDividendShoutEngine`
+  class.
+
+- Deprecated a few unused parts of the old-style finite-differences
+  framework: the `AmericanCondition` class, the `OneFactorOperator`
+  typedef, and the `FDAmericanCondition` class.
+
+Test suite
+----------
+
+- Reduced the run time for the longest-running test cases.
+
+Thanks go also to Francis Duffy and Cay Oest for smaller fixes,
 enhancements and bug reports.
