@@ -40,7 +40,6 @@ cpp_files = \
 	piecewiseconstantabcdvariance.cpp \
 	piecewiseconstantvariance.cpp \
 	pseudorootfacade.cpp \
-	volatilityinterpolationspecifier.cpp \
 	volatilityinterpolationspecifierabcd.cpp
 
 if UNITY_BUILD

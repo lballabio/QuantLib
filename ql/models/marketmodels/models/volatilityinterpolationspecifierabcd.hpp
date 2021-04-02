@@ -39,7 +39,7 @@ namespace QuantLib
                                                                    Real lastCapletVol=0.0
                                                                    );
 
-        ~VolatilityInterpolationSpecifierabcd() override;
+        ~VolatilityInterpolationSpecifierabcd() override = default;
         void setScalingFactors(const std::vector<Real>& scales) override;
         void setLastCapletVol(Real vol) override;
 

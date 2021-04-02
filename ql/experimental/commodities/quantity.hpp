@@ -35,7 +35,7 @@ namespace QuantLib {
       public:
         //! \name Constructors
         //@{
-        Quantity();
+        Quantity() = default;
         Quantity(CommodityType commodityType, UnitOfMeasure unitOfMeasure, Real amount);
         //@}
         //! \name Inspectors
@@ -120,8 +120,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline Quantity::Quantity() = default;
 
     inline Quantity::Quantity(CommodityType commodityType, UnitOfMeasure unitOfMeasure, Real amount)
     : commodityType_(std::move(commodityType)), unitOfMeasure_(std::move(unitOfMeasure)),

@@ -34,8 +34,6 @@ namespace QuantLib {
     }
 
 
-    YoYInflationCouponPricer::YoYInflationCouponPricer() = default;
-
     YoYInflationCouponPricer::YoYInflationCouponPricer(
         Handle<YieldTermStructure> nominalTermStructure)
     : nominalTermStructure_(std::move(nominalTermStructure)) {

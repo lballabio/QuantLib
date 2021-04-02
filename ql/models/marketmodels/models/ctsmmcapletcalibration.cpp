@@ -31,8 +31,6 @@
 
 namespace QuantLib {
 
-    CTSMMCapletCalibration::~CTSMMCapletCalibration() = default;
-
     CTSMMCapletCalibration::CTSMMCapletCalibration(
         EvolutionDescription evolution,
         ext::shared_ptr<PiecewiseConstantCorrelation> corr,

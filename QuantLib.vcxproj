@@ -2428,7 +2428,6 @@
     <ClCompile Include="ql\models\marketmodels\evolvers\lognormalfwdrateiballand.cpp" />
     <ClCompile Include="ql\models\marketmodels\evolvers\lognormalfwdrateipc.cpp" />
     <ClCompile Include="ql\models\marketmodels\evolvers\lognormalfwdratepc.cpp" />
-    <ClCompile Include="ql\models\marketmodels\evolvers\marketmodelvolprocess.cpp" />
     <ClCompile Include="ql\models\marketmodels\evolvers\normalfwdratepc.cpp" />
     <ClCompile Include="ql\models\marketmodels\evolvers\svddfwdratepc.cpp" />
     <ClCompile Include="ql\models\marketmodels\evolvers\volprocesses\squarerootandersen.cpp" />
@@ -2451,7 +2450,6 @@
     <ClCompile Include="ql\models\marketmodels\models\piecewiseconstantabcdvariance.cpp" />
     <ClCompile Include="ql\models\marketmodels\models\piecewiseconstantvariance.cpp" />
     <ClCompile Include="ql\models\marketmodels\models\pseudorootfacade.cpp" />
-    <ClCompile Include="ql\models\marketmodels\models\volatilityinterpolationspecifier.cpp" />
     <ClCompile Include="ql\models\marketmodels\models\volatilityinterpolationspecifierabcd.cpp" />
     <ClCompile Include="ql\models\marketmodels\pathwiseaccountingengine.cpp" />
     <ClCompile Include="ql\models\marketmodels\pathwisediscounter.cpp" />

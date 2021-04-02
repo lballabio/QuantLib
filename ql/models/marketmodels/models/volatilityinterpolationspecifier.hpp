@@ -38,9 +38,9 @@ namespace QuantLib
 {
     class VolatilityInterpolationSpecifier
     {
-    public:
-        VolatilityInterpolationSpecifier();
-        virtual ~VolatilityInterpolationSpecifier();
+      public:
+        VolatilityInterpolationSpecifier() = default;
+        virtual ~VolatilityInterpolationSpecifier() = default;
         virtual void setScalingFactors(const std::vector<Real>& scales)=0;
         virtual void setLastCapletVol(Real vol)=0;
 
@@ -52,9 +52,6 @@ namespace QuantLib
         virtual Size getOffset() const=0;
         virtual Size getNoBigRates() const=0;
         virtual Size getNoSmallRates() const=0;
-
-
-
     };
 }
 

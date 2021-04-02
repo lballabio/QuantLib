@@ -29,6 +29,7 @@
 #include <ql/math/comparison.hpp>
 #include <vector>
 #include <algorithm>
+#include <iterator>
 #include <numeric>
 #include <cmath>
 

@@ -42,7 +42,7 @@ namespace QuantLib {
         Real riskDelta;
         bool unrealized = false;
 
-        EnergyDailyPosition();
+        EnergyDailyPosition() = default;
         EnergyDailyPosition(const Date& date,
                             Real payLegPrice,
                             Real receiveLegPrice,

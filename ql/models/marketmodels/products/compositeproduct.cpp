@@ -22,8 +22,6 @@
 
 namespace QuantLib {
 
-    MarketModelComposite::MarketModelComposite() = default;
-
     const EvolutionDescription& MarketModelComposite::evolution() const {
         QL_REQUIRE(finalized_, "composite not finalized");
         return evolution_;

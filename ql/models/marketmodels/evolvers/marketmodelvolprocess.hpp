@@ -34,8 +34,8 @@ namespace QuantLib
     class MarketModelVolProcess 
     {
       public:
-          MarketModelVolProcess();
-          virtual ~MarketModelVolProcess();
+          MarketModelVolProcess() = default;
+          virtual ~MarketModelVolProcess() = default;
 
           virtual Size variatesPerStep()=0;
           virtual Size numberSteps()=0;

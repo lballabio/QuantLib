@@ -22,8 +22,6 @@
 
 namespace QuantLib {
 
-    CPICouponPricer::CPICouponPricer() = default;
-
     CPICouponPricer::CPICouponPricer(Handle<YieldTermStructure> nominalTermStructure)
     : nominalTermStructure_(std::move(nominalTermStructure)) {
         registerWith(nominalTermStructure_);

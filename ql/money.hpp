@@ -38,7 +38,7 @@ namespace QuantLib {
       public:
         //! \name Constructors
         //@{
-        Money();
+        Money() = default;
         Money(Currency currency, Decimal value);
         Money(Decimal value, Currency currency);
         //@}
@@ -132,8 +132,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline Money::Money() = default;
 
     inline Money::Money(Currency currency, Decimal value)
     : value_(value), currency_(std::move(currency)) {}

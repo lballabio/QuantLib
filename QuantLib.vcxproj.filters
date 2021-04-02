@@ -5044,9 +5044,6 @@
     <ClCompile Include="ql\models\marketmodels\evolvers\lognormalfwdratepc.cpp">
       <Filter>models\marketmodels\evolvers</Filter>
     </ClCompile>
-    <ClCompile Include="ql\models\marketmodels\evolvers\marketmodelvolprocess.cpp">
-      <Filter>models\marketmodels\evolvers</Filter>
-    </ClCompile>
     <ClCompile Include="ql\models\marketmodels\evolvers\normalfwdratepc.cpp">
       <Filter>models\marketmodels\evolvers</Filter>
     </ClCompile>
@@ -5099,9 +5096,6 @@
       <Filter>models\marketmodels\models</Filter>
     </ClCompile>
     <ClCompile Include="ql\models\marketmodels\models\pseudorootfacade.cpp">
-      <Filter>models\marketmodels\models</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\models\marketmodels\models\volatilityinterpolationspecifier.cpp">
       <Filter>models\marketmodels\models</Filter>
     </ClCompile>
     <ClCompile Include="ql\models\marketmodels\models\volatilityinterpolationspecifierabcd.cpp">

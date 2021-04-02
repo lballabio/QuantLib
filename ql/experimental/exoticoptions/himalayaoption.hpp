@@ -57,7 +57,6 @@ namespace QuantLib {
 
     class HimalayaOption::arguments : public MultiAssetOption::arguments {
       public:
-        arguments();
         void validate() const override;
         std::vector<Date> fixingDates;
     };

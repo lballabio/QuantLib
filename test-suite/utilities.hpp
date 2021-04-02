@@ -159,7 +159,7 @@ namespace QuantLib {
     // this cleans up index-fixing histories when destroyed
     class IndexHistoryCleaner {
       public:
-        IndexHistoryCleaner();
+        IndexHistoryCleaner() = default;
         ~IndexHistoryCleaner();
     };
 

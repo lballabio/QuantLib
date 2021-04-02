@@ -42,7 +42,7 @@ namespace QuantLib {
                         Deprecated in version 1.19.
         */
         QL_DEPRECATED
-        CPICouponPricer();
+        CPICouponPricer() = default;
 
         explicit CPICouponPricer(Handle<YieldTermStructure> nominalTermStructure);
 

@@ -40,7 +40,7 @@ namespace QuantLib {
             and must be reassigned to a valid currency before being
             used.
         */
-        Currency();
+        Currency() = default;
         //! \name Inspectors
         //@{
         //! currency name, e.g, "U.S. Dollar"
@@ -111,8 +111,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline Currency::Currency() = default;
 
     inline void Currency::checkNonEmpty() const {
         QL_REQUIRE(data_, "no currency data provided");

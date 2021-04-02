@@ -565,7 +565,6 @@ set(QuantLib_SRC
     models/marketmodels/evolvers/lognormalfwdrateiballand.cpp
     models/marketmodels/evolvers/lognormalfwdrateipc.cpp
     models/marketmodels/evolvers/lognormalfwdratepc.cpp
-    models/marketmodels/evolvers/marketmodelvolprocess.cpp
     models/marketmodels/evolvers/normalfwdratepc.cpp
     models/marketmodels/evolvers/svddfwdratepc.cpp
     models/marketmodels/evolvers/volprocesses/squarerootandersen.cpp
@@ -588,7 +587,6 @@ set(QuantLib_SRC
     models/marketmodels/models/piecewiseconstantabcdvariance.cpp
     models/marketmodels/models/piecewiseconstantvariance.cpp
     models/marketmodels/models/pseudorootfacade.cpp
-    models/marketmodels/models/volatilityinterpolationspecifier.cpp
     models/marketmodels/models/volatilityinterpolationspecifierabcd.cpp
     models/marketmodels/pathwiseaccountingengine.cpp
     models/marketmodels/pathwisediscounter.cpp

@@ -34,7 +34,7 @@ namespace QuantLib {
       public:
         enum EventType { TradeDate, PricingDate };
 
-        PaymentTerm();
+        PaymentTerm() = default;
         PaymentTerm(const std::string& name,
                     EventType eventType,
                     Integer offsetDays,
@@ -85,8 +85,6 @@ namespace QuantLib {
                                    Calendar calendar)
     : name(std::move(name)), eventType(eventType), offsetDays(offsetDays),
       calendar(std::move(calendar)) {}
-
-    inline PaymentTerm::PaymentTerm() = default;
 
     inline const std::string& PaymentTerm::name() const {
         return data_->name;
