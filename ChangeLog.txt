@@ -1,3 +1,118 @@
+commit dc8c7025dd2b4de5f5216ece04e99274d4b741f3
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Apr 2021 10:35:32 +0200
+
+    Set version to 1.22 final
+
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit b572d06e5a64b7fd8f0e73da064220ef5a88b87d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sun, 4 Apr 2021 19:29:37 +0200
+
+    Enforce C++11 standard in manual workflow
+
+ .github/workflows/linux-nondefault.yml | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 10f02a02c3b1d643c20fb032334eacd8f174f360
+Merge: 81d0f5bbf 3807e31cc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 10 Apr 2021 13:51:15 +0200
+
+    Merge pull request #1081.
+    
+    Fix thread-safe observable in C++20 mode
+
+commit 3807e31cc5c0de2c1bb752afd3f45ca724518df1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 5 Apr 2021 16:16:10 +0200
+
+    Use equality-comparable function object.
+    
+    Comparison between `boost::bind` objects doesn't work
+    in gcc when using C++20 mode.
+
+ ql/patterns/observable.cpp | 50 +++++++++++++++++++++++-----------------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
+
+commit 81d0f5bbf635fde1e46ed175bcd7cb364d67ef9d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 2 Apr 2021 17:33:41 +0200
+
+    Avoid compiler errors with VC++13 and VC++15.
+
+ QuantLib.vcxproj                                   |  2 --
+ QuantLib.vcxproj.filters                           |  6 -----
+ ql/CMakeLists.txt                                  |  2 --
+ ql/cashflows/cpicouponpricer.cpp                   |  2 --
+ ql/cashflows/cpicouponpricer.hpp                   |  2 +-
+ ql/cashflows/inflationcouponpricer.cpp             |  2 --
+ ql/cashflows/inflationcouponpricer.hpp             |  2 +-
+ ql/currency.hpp                                    |  4 +--
+ ql/experimental/commodities/energycommodity.cpp    |  3 ---
+ ql/experimental/commodities/energycommodity.hpp    |  2 +-
+ ql/experimental/commodities/exchangecontract.hpp   |  4 +--
+ ql/experimental/commodities/paymentterm.hpp        |  4 +--
+ ql/experimental/commodities/quantity.hpp           |  4 +--
+ ql/experimental/commodities/unitofmeasure.hpp      |  4 +--
+ .../commodities/unitofmeasureconversion.hpp        |  4 +--
+ ql/experimental/exoticoptions/himalayaoption.cpp   |  2 --
+ ql/experimental/exoticoptions/himalayaoption.hpp   |  1 -
+ ql/methods/finitedifferences/bsmoperator.cpp       |  2 --
+ ql/methods/finitedifferences/bsmoperator.hpp       |  2 +-
+ ql/models/marketmodels/evolutiondescription.cpp    |  2 --
+ ql/models/marketmodels/evolutiondescription.hpp    |  2 +-
+ ql/models/marketmodels/evolvers/Makefile.am        |  1 -
+ .../evolvers/marketmodelvolprocess.cpp             | 28 --------------------
+ .../evolvers/marketmodelvolprocess.hpp             |  4 +--
+ ql/models/marketmodels/models/Makefile.am          |  1 -
+ .../marketmodels/models/ctsmmcapletcalibration.cpp |  2 --
+ .../marketmodels/models/ctsmmcapletcalibration.hpp |  2 +-
+ .../models/volatilityinterpolationspecifier.cpp    | 30 ----------------------
+ .../models/volatilityinterpolationspecifier.hpp    |  9 +++----
+ .../volatilityinterpolationspecifierabcd.cpp       |  2 --
+ .../volatilityinterpolationspecifierabcd.hpp       |  2 +-
+ .../marketmodels/products/compositeproduct.cpp     |  2 --
+ .../marketmodels/products/compositeproduct.hpp     |  2 +-
+ ql/money.hpp                                       |  4 +--
+ ql/patterns/lazyobject.hpp                         |  4 +--
+ ql/stochasticprocess.cpp                           |  4 ---
+ ql/stochasticprocess.hpp                           |  4 +--
+ ql/termstructures/inflation/seasonality.cpp        |  3 ---
+ ql/termstructures/inflation/seasonality.hpp        |  2 +-
+ ql/time/schedule.cpp                               |  2 --
+ ql/time/schedule.hpp                               |  1 -
+ ql/timegrid.hpp                                    |  1 +
+ ql/utilities/clone.hpp                             |  5 +---
+ test-suite/utilities.cpp                           |  2 --
+ test-suite/utilities.hpp                           |  2 +-
+ 45 files changed, 27 insertions(+), 150 deletions(-)
+
+commit 60f15c56422077cbd4d8fda52d279bd6be0c14bd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 1 Apr 2021 11:28:16 +0200
+
+    Set version to 1.22 rc
+
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 4bfe51c953d671f822a13b0bb806049ecf101327
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 31 Mar 2021 12:38:10 +0200
+
+    Updated news and changelog
+
+ ChangeLog.txt           | 7235 ++++++++++++++++++++++++++++++++++++++---------
+ Contributors.txt        |    2 +
+ Docs/pages/history.docs |   85 +-
+ News.md                 |  128 +-
+ 4 files changed, 6088 insertions(+), 1362 deletions(-)
+
 commit 8af126f9f551c5e0d4302b89cc1c5817e547bdea
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 30 Mar 2021 17:21:04 +0200

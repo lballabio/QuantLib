@@ -1,7 +1,7 @@
 Changes for QuantLib 1.22:
 ==========================
 
-QuantLib 1.22 includes 53 pull requests from several contributors.
+QuantLib 1.22 includes 54 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
