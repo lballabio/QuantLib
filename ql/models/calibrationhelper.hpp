@@ -44,12 +44,6 @@ namespace QuantLib {
         virtual Real calibrationError() = 0;
     };
 
-    /*! \deprecated Renamed to CalibrationHelper.
-                    Deprecated in version 1.18.
-    */
-    QL_DEPRECATED
-    typedef CalibrationHelper CalibrationHelperBase;
-
     //! liquid Black76 market instrument used during calibration
     class BlackCalibrationHelper : public LazyObject, public CalibrationHelper {
       public:

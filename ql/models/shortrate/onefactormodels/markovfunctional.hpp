@@ -332,8 +332,6 @@ namespace QuantLib {
 
         const Array &volatility() const { return sigma_.params(); }
 
-        // VC++ warns when overriding a deprecated method
-        QL_DEPRECATED_DISABLE_WARNING
         void calibrate(const std::vector<ext::shared_ptr<CalibrationHelper> >& helpers,
                        OptimizationMethod& method,
                        const EndCriteria& endCriteria,
@@ -351,7 +349,7 @@ namespace QuantLib {
                        const EndCriteria& endCriteria,
                        const Constraint& constraint = Constraint(),
                        const std::vector<Real>& weights = std::vector<Real>(),
-                       const std::vector<bool>& fixParameters = std::vector<bool>()) override {
+                       const std::vector<bool>& fixParameters = std::vector<bool>()) {
 
             std::vector<ext::shared_ptr<CalibrationHelper> > tmp(helpers.size());
             for (Size i=0; i<helpers.size(); ++i)
@@ -359,7 +357,6 @@ namespace QuantLib {
 
             calibrate(tmp, method, endCriteria, constraint, weights, fixParameters);
         }
-        QL_DEPRECATED_ENABLE_WARNING
 
         void update() override { LazyObject::update(); }
 
