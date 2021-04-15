@@ -1,6 +1,8 @@
 name: Update copyright list
 on:
-  - push
+  push:
+    branches:
+      - '**'
 jobs:
   copyrights:
     runs-on: ubuntu-latest
