@@ -31,10 +31,10 @@
 /*! @{ */
 
 //! version string
-#define QL_VERSION "1.29"
+#define QL_VERSION "1.30-dev"
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x012900f0
+#define QL_HEX_VERSION 0x01300000
 
 /*! @}  */
 
