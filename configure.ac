@@ -74,10 +74,6 @@ if test "$ql_openmp" = "yes" ; then
    AC_SUBST([CXXFLAGS],["${CXXFLAGS} ${OPENMP_CXXFLAGS}"])
 fi
 
-# Check for mandatory features
-
-QL_CHECK_ASINH
-
 # Check for Boost components
 QL_CHECK_BOOST
 AM_CONDITIONAL(BOOST_UNIT_TEST_FOUND, test "x${BOOST_UNIT_TEST_LIB}" != "x")
