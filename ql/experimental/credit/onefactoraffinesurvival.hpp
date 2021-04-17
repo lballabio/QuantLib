@@ -110,7 +110,7 @@ namespace QuantLib {
                 bool extrapolate = false) const
         {
             #if defined(QL_EXTRA_SAFETY_CHECKS)
-                    QL_REQUIRE(tgt >= tFwd, "Incorrect dates ordering.")
+                QL_REQUIRE(tgt >= tFwd, "Incorrect dates ordering.");
             #endif
             checkRange(tFwd, extrapolate);
             checkRange(tgt, extrapolate);
@@ -137,7 +137,7 @@ namespace QuantLib {
       virtual Probability conditionalSurvivalProbabilityImpl(Time tFwd, Time tgt, Real yVal) const;
 
       // HazardRateStructure interface
-      Real hazardRateImpl(Time t) const override {
+      Real hazardRateImpl(Time) const override {
           // no deterministic component
           return 0.;
       }

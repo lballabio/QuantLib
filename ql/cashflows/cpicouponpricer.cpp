@@ -37,7 +37,7 @@ namespace QuantLib {
 
     void CPICouponPricer::setCapletVolatility(
        const Handle<CPIVolatilitySurface>& capletVol) {
-        QL_REQUIRE(!capletVol.empty(),"empty capletVol handle")
+        QL_REQUIRE(!capletVol.empty(),"empty capletVol handle");
         capletVol_ = capletVol;
         registerWith(capletVol_);
     }

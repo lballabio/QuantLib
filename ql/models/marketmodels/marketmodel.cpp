@@ -33,7 +33,7 @@ namespace QuantLib {
         }
         QL_REQUIRE(i<covariance_.size(),
                    "i (" << i <<
-                   ") must be less than covariance_.size() (" << covariance_.size() << ")")
+                   ") must be less than covariance_.size() (" << covariance_.size() << ")");
         return covariance_[i];
     }
 
@@ -48,7 +48,7 @@ namespace QuantLib {
         }
         QL_REQUIRE(endIndex<covariance_.size(),
                    "endIndex (" << endIndex <<
-                   ") must be less than covariance_.size() (" << covariance_.size() << ")")
+                   ") must be less than covariance_.size() (" << covariance_.size() << ")");
         return totalCovariance_[endIndex];
     }
 
