@@ -59,7 +59,7 @@ namespace QuantLib {
             fixingFront = zeroInflationIndex_->fixing(baseDatePeriod.first);
             fixingEnd = zeroInflationIndex_->fixing(fixingDatePeriod.first);
         } else {
-            // We should end up here...
+            // We should not end up here...
             QL_FAIL("Unknown ZeroInflationInterpolationType.");
         }
 

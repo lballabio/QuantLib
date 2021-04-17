@@ -33,26 +33,96 @@
 using boost::unit_test_framework::test_suite;
 using namespace QuantLib;
 
-namespace ZCIIS_test {
+using ZeroCouponInflationSwapHelpers =
+    std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >;
+
+namespace ZCIIS {
+    struct Result {
+        ext::shared_ptr<ZeroInflationIndex> index;
+        ZeroCouponInflationSwapHelpers helpers;
+        ext::shared_ptr<ZeroInflationCurve> curve;
+        ext::shared_ptr<ZeroCouponInflationSwap> swap;
+    };
+
+    struct Setup {
+        Setup(bool indexIsInterpolated, CPI::InterpolationType observationInterpolation)
+        : indexIsInterpolated(indexIsInterpolated),
+          observationInterpolation(observationInterpolation) {
+            evaluationDate = calendar.adjust(unadjustedEvaluationDate);
+            Settings::instance().evaluationDate() = evaluationDate;
+
+            nominalTermStructure = ext::shared_ptr<YieldTermStructure>(
+                new FlatForward(evaluationDate, 0.05, Actual360()));
+        }
+
+        bool indexIsInterpolated;
+        CPI::InterpolationType observationInterpolation;
+
+        Date unadjustedEvaluationDate{Date(13, August, 2007)};
+        Date evaluationDate;
+
+        Calendar calendar{UnitedKingdom()};
+        BusinessDayConvention bdc{ModifiedFollowing};
+        DayCounter dc{Thirty360()};
+        Period observationLag{Period(2, Months)};
+
+        ZeroCouponInflationSwap::Type swapType{ZeroCouponInflationSwap::Payer};
+        Real swapNomimal{1000000.00};
+
+        Date indexFixingScheduleFrom{Date(1, January, 2005)};
+        Date indexFixingScheduleTo{Date(13, August, 2007)};
+
+        ext::shared_ptr<YieldTermStructure> nominalTermStructure;
+    };
+
+
+    Real fixData[] = {189.9, 189.9, 189.6, 190.5, 191.6, 192.0, 192.2, 192.2, 192.6, 193.1, 193.3,
+                      193.6, 194.1, 193.4, 194.2, 195.0, 196.5, 197.7, 198.5, 198.5, 199.2, 200.1,
+                      200.4, 201.1, 202.7, 201.6, 203.1, 204.4, 205.4, 206.2, 207.3};
+
+    ext::shared_ptr<UKRPI> makeUKRPI(const Setup& setup,
+                                     const RelinkableHandle<ZeroInflationTermStructure>& hz) {
+        // fixing data
+        Schedule rpiSchedule = MakeSchedule()
+                                   .from(setup.indexFixingScheduleFrom)
+                                   .to(setup.indexFixingScheduleTo)
+                                   .withTenor(1 * Months)
+                                   .withCalendar(setup.calendar)
+                                   .withConvention(setup.bdc);
+
+        ext::shared_ptr<UKRPI> ukrpi(new UKRPI(setup.indexIsInterpolated, hz));
+        for (Size i = 0; i < LENGTH(fixData); i++) {
+            ukrpi->addFixing(rpiSchedule[i], fixData[i]);
+        }
+
+        return ukrpi;
+    }
+
     struct Datum {
         Date date;
         Rate rate;
     };
 
-    ext::shared_ptr<YieldTermStructure> nominalTermStructure() {
-        Date evaluationDate(13, August, 2007);
-        return ext::shared_ptr<YieldTermStructure>(
-            new FlatForward(evaluationDate, 0.05, Actual360()));
-    }
+    std::vector<Datum> zcData = {{Date(13, August, 2008), 2.93},  {Date(13, August, 2009), 2.95},
+                                 {Date(13, August, 2010), 2.965}, {Date(15, August, 2011), 2.98},
+                                 {Date(13, August, 2012), 3.0},   {Date(13, August, 2014), 3.06},
+                                 {Date(13, August, 2017), 3.175}, {Date(13, August, 2019), 3.243},
+                                 {Date(15, August, 2022), 3.293}, {Date(14, August, 2027), 3.338},
+                                 {Date(13, August, 2032), 3.348}, {Date(15, August, 2037), 3.348},
+                                 {Date(13, August, 2047), 3.308}, {Date(13, August, 2057), 3.228}};
 
-    template <class T>
-    std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
-        const std::vector<Datum>& iiData,
-        std::function<ext::shared_ptr<BootstrapHelper<T> >(const Handle<Quote>&, const Date&)>
-            makeHelper) {
 
-        std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
-        for (Datum datum : iiData) {
+    ZeroCouponInflationSwapHelpers makeHelpers(const Setup& setup,
+                                               const ext::shared_ptr<ZeroInflationIndex>& index) {
+        auto makeHelper = [&setup, &index](const Handle<Quote>& quote, const Date& maturity) {
+            return ext::make_shared<ZeroCouponInflationSwapHelper>(
+                quote, setup.observationLag, maturity, setup.calendar, setup.bdc, setup.dc, index,
+                setup.observationInterpolation,
+                Handle<YieldTermStructure>(setup.nominalTermStructure));
+        };
+
+        ZeroCouponInflationSwapHelpers instruments;
+        for (Datum datum : zcData) {
             Date maturity = datum.date;
             Handle<Quote> quote(ext::shared_ptr<Quote>(new SimpleQuote(datum.rate / 100.0)));
             auto anInstrument = makeHelper(quote, maturity);
@@ -62,71 +132,48 @@ namespace ZCIIS_test {
         return instruments;
     }
 
-    ext::shared_ptr<ZeroCouponInflationSwap>
-    makeZCIIS(CPI::InterpolationType observationInterpolation) {
-        // try the Zero UK
-        Calendar calendar = UnitedKingdom();
-        BusinessDayConvention bdc = ModifiedFollowing;
-        Date evaluationDate(13, August, 2007);
-        evaluationDate = calendar.adjust(evaluationDate);
-        Settings::instance().evaluationDate() = evaluationDate;
-
-        // fixing data
-        Date from(1, January, 2005);
-        Date to(13, August, 2007);
-        Schedule rpiSchedule = MakeSchedule()
-                                   .from(from)
-                                   .to(to)
-                                   .withTenor(1 * Months)
-                                   .withCalendar(UnitedKingdom())
-                                   .withConvention(ModifiedFollowing);
-
-        Real fixData[] = {189.9, 189.9, 189.6, 190.5, 191.6, 192.0, 192.2, 192.2,
-                          192.6, 193.1, 193.3, 193.6, 194.1, 193.4, 194.2, 195.0,
-                          196.5, 197.7, 198.5, 198.5, 199.2, 200.1, 200.4, 201.1,
-                          202.7, 201.6, 203.1, 204.4, 205.4, 206.2, 207.3};
-
-        RelinkableHandle<ZeroInflationTermStructure> hz;
-        bool interp = false;
-        ext::shared_ptr<UKRPI> iiUKRPI(new UKRPI(interp, hz));
-        for (Size i = 0; i < LENGTH(fixData); i++) {
-            iiUKRPI->addFixing(rpiSchedule[i], fixData[i]);
-        }
-
-        ext::shared_ptr<ZeroInflationIndex> ii =
-            ext::dynamic_pointer_cast<ZeroInflationIndex>(iiUKRPI);
-        ext::shared_ptr<YieldTermStructure> nominalTS = nominalTermStructure();
-
-        // now build the zero inflation curve
-        std::vector<Datum> zcData = {
-            {Date(13, August, 2008), 2.93},  {Date(13, August, 2009), 2.95},
-            {Date(13, August, 2010), 2.965}, {Date(15, August, 2011), 2.98},
-            {Date(13, August, 2012), 3.0},   {Date(13, August, 2014), 3.06},
-            {Date(13, August, 2017), 3.175}, {Date(13, August, 2019), 3.243},
-            {Date(15, August, 2022), 3.293}, {Date(14, August, 2027), 3.338},
-            {Date(13, August, 2032), 3.348}, {Date(15, August, 2037), 3.348},
-            {Date(13, August, 2047), 3.308}, {Date(13, August, 2057), 3.228}};
-
-        Period observationLag = Period(2, Months);
-        DayCounter dc = Thirty360();
-        Frequency frequency = Monthly;
-
-        auto makeHelper = [&](const Handle<Quote>& quote, const Date& maturity) {
-            return ext::make_shared<ZeroCouponInflationSwapHelper>(
-                quote, observationLag, maturity, calendar, bdc, dc, ii, observationInterpolation,
-                Handle<YieldTermStructure>(nominalTS));
-        };
-        auto helpers = makeHelpers<ZeroInflationTermStructure>(zcData, makeHelper);
+    ext::shared_ptr<ZeroInflationCurve>
+    makeZeroInflationCurve(const Setup& setup,
+                           const ext::shared_ptr<ZeroInflationIndex>& index,
+                           const ZeroCouponInflationSwapHelpers& helpers) {
+        auto frequency = Monthly;
 
         Rate baseZeroRate = zcData[0].rate / 100.0;
         ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
-            new PiecewiseZeroInflationCurve<Linear>(evaluationDate, calendar, dc, observationLag,
-                                                    frequency, ii->interpolated(), baseZeroRate,
-                                                    helpers));
+            new PiecewiseZeroInflationCurve<Linear>(setup.evaluationDate, setup.calendar, setup.dc,
+                                                    setup.observationLag, frequency,
+                                                    index->interpolated(), baseZeroRate, helpers));
         pZITS->recalculate();
 
+        return pZITS;
+    }
 
-        return ext::shared_ptr<ZeroCouponInflationSwap>();
+    ext::shared_ptr<ZeroCouponInflationSwap>
+    makeZeroCouponInflationSwap(const Setup& setup,
+                                const ext::shared_ptr<ZeroInflationIndex>& index,
+                                const ext::shared_ptr<ZeroInflationCurve>& curve) {
+        auto maturity = zcData[6].date;
+        auto fixedRate = zcData[6].rate / 100.0;
+
+        return ext::make_shared<ZeroCouponInflationSwap>(
+            setup.swapType, setup.swapNomimal, setup.evaluationDate, maturity, setup.calendar,
+            setup.bdc, setup.dc, fixedRate, index, setup.observationLag,
+            setup.observationInterpolation);
+    }
+
+    Result makeResult(const Setup& setup) {
+        Result result;
+
+        RelinkableHandle<ZeroInflationTermStructure> hz;
+
+        result.index = makeUKRPI(setup, hz);
+        result.helpers = makeHelpers(setup, result.index);
+        result.curve = makeZeroInflationCurve(setup, result.index, result.helpers);
+        result.swap = makeZeroCouponInflationSwap(setup, result.index, result.curve);
+
+        hz.linkTo(result.curve);
+
+        return result;
     }
 }
 
@@ -135,20 +182,19 @@ void InflationZCIISInterpolationTest::testZCIISAsIndex() {
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
+
+    bool indexIsInterpolated = false;
+    const auto setup = ZCIIS::Setup(indexIsInterpolated, CPI::AsIndex);
+
+    auto result = ZCIIS::makeResult(setup);
 }
 
 void InflationZCIISInterpolationTest::testZCIISFlat() {
     BOOST_TEST_MESSAGE("Testing ZCIIS CPI::Flat interpolation type...");
-
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 }
 
 void InflationZCIISInterpolationTest::testZCIISLinear() {
     BOOST_TEST_MESSAGE("Testing ZCIIS CPI::Linear interpolation type...");
-
-    SavedSettings backup;
-    IndexHistoryCleaner cleaner;
 }
 
 test_suite* InflationZCIISInterpolationTest::suite() {
