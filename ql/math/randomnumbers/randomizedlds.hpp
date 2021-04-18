@@ -91,7 +91,7 @@ namespace QuantLib {
         QL_REQUIRE(prsg_.dimension()==dimension_,
                    "generator mismatch: "
                    << dimension_ << "-dim low discrepancy "
-                   << "and " << prsg_.dimension() << "-dim pseudo random")
+                   << "and " << prsg_.dimension() << "-dim pseudo random");
 
         randomizer_ = prsg_.nextSequence();
     }

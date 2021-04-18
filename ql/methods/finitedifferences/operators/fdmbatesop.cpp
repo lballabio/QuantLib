@@ -77,7 +77,7 @@ namespace QuantLib {
                 = ext::dynamic_pointer_cast<FdmDirichletBoundary>(*iter);
 
             QL_REQUIRE(dirichlet, "FdmBatesOp can only deal with Dirichlet "
-                                  "boundary conditions.")
+                                  "boundary conditions.");
 
             valueOfDerivative
                 = dirichlet->applyAfterApplying(x, valueOfDerivative);

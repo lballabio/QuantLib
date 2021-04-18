@@ -138,7 +138,7 @@ namespace QuantLib {
             centralIndex++;
 
         QL_REQUIRE(centralIndex < k_.size(),
-                   "central index is at right boundary")
+                   "central index is at right boundary");
 
         leftIndex_ = centralIndex;
         rightIndex_ = centralIndex;
