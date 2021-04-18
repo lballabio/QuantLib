@@ -5,7 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 12
       matrix:
         include:
           - name: "gcc 5.4 (Boost 1.66)"
