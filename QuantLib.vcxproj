@@ -958,6 +958,7 @@
     <ClInclude Include="ql\instruments\varianceswap.hpp" />
     <ClInclude Include="ql\instruments\yearonyearinflationswap.hpp" />
     <ClInclude Include="ql\instruments\zerocouponinflationswap.hpp" />
+    <ClInclude Include="ql\instruments\zerocouponswap.hpp" />
     <ClInclude Include="ql\legacy\all.hpp" />
     <ClInclude Include="ql\legacy\libormarketmodels\all.hpp" />
     <ClInclude Include="ql\legacy\libormarketmodels\lfmcovarparam.hpp" />
@@ -2199,6 +2200,7 @@
     <ClCompile Include="ql\instruments\varianceswap.cpp" />
     <ClCompile Include="ql\instruments\yearonyearinflationswap.cpp" />
     <ClCompile Include="ql\instruments\zerocouponinflationswap.cpp" />
+    <ClCompile Include="ql\instruments\zerocouponswap.cpp" />
     <ClCompile Include="ql\legacy\libormarketmodels\lfmcovarparam.cpp" />
     <ClCompile Include="ql\legacy\libormarketmodels\lfmcovarproxy.cpp" />
     <ClCompile Include="ql\legacy\libormarketmodels\lfmhullwhiteparam.cpp" />
