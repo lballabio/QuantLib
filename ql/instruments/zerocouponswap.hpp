@@ -106,8 +106,6 @@ namespace QuantLib {
         Type type() const { return type_; }
         Real baseNominal() const { return baseNominal_; }
         Real fixedPayment() const { return fixedPayment_; }
-        Date startDate() const { return startDate_; }
-        Date maturityDate() const { return maturityDate_; }
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
 
         //! just one cashflow in each leg
@@ -131,21 +129,17 @@ namespace QuantLib {
       protected:
         Type type_;
         Real baseNominal_;
-        Date startDate_, maturityDate_;
         Real fixedPayment_;
         ext::shared_ptr<IborIndex> iborIndex_;
     };
-
 
     class ZeroCouponSwap::arguments : public Swap::arguments {
       public:
         void validate() const override;
     };
 
-
     class ZeroCouponSwap::engine
     : public GenericEngine<ZeroCouponSwap::arguments, ZeroCouponSwap::results> {};
-
 }
 
 #endif

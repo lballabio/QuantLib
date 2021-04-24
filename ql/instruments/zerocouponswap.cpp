@@ -76,15 +76,14 @@ namespace QuantLib {
                                    Natural paymentDelay,
                                    RateAveraging::Type averagingMethod)
     : Swap(2), type_(type), baseNominal_(baseNominal), 
-      startDate_(calendar.adjust(startDate, convention)),
-      maturityDate_(calendar.adjust(maturityDate, convention)), 
       fixedPayment_(fixedPayment), iborIndex_(std::move(iborIndex)) {
-
-        Date paymentDate = calendar.advance(maturityDate_, paymentDelay, Days, convention);
+        Date adjustedStart = calendar.adjust(startDate, convention);
+        Date adjustedMaturity = calendar.adjust(maturityDate, convention);
+        Date paymentDate = calendar.advance(adjustedMaturity, paymentDelay, Days, convention);
 
         legs_[0].push_back(
             ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedPayment_, paymentDate)));
-        legs_[1].push_back(createSubPeriodicCoupon(paymentDate, startDate_, maturityDate_,
+        legs_[1].push_back(createSubPeriodicCoupon(paymentDate, adjustedStart, adjustedMaturity,
                                                    baseNominal_, iborIndex_, averagingMethod));
         for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
