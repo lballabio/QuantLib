@@ -98,7 +98,7 @@ namespace QuantLib {
                 payer_[1] = -1.0;
                 break;
             default:
-                QL_FAIL("Unknown zero coupon swap type");
+                QL_FAIL("unknown zero coupon swap type");
         }
     }
 
