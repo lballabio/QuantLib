@@ -27,6 +27,7 @@
 #include <ql/instruments/swap.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 
 namespace QuantLib {
     class IborIndex;
@@ -84,7 +85,8 @@ namespace QuantLib {
                        ext::shared_ptr<IborIndex> iborIndex,
                        const Calendar& calendar,
                        BusinessDayConvention convention = Following,
-                       Natural paymentDelay = 0);
+                       Natural paymentDelay = 0,
+                       RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         ZeroCouponSwap(Type type,
                        Real baseNominal,
@@ -95,7 +97,8 @@ namespace QuantLib {
                        ext::shared_ptr<IborIndex> iborIndex,
                        const Calendar& calendar,
                        BusinessDayConvention convention = Following,
-                       Natural paymentDelay = 0);
+                       Natural paymentDelay = 0,
+                       RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         //! \name Inspectors
         //@{
