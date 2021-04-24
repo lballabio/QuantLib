@@ -109,9 +109,7 @@ namespace QuantLib {
         Date startDate() const { return startDate_; }
         Date maturityDate() const { return maturityDate_; }
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
-        const Calendar& calendar() const { return calendar_; }
-        BusinessDayConvention convention() const { return convention_; }
-        Natural paymentDelay() const { return paymentDelay_; }
+
         //! just one cashflow in each leg
         const Leg& fixedLeg() const;
         //! just one cashflow in each leg
@@ -136,9 +134,6 @@ namespace QuantLib {
         Date startDate_, maturityDate_;
         Real fixedPayment_;
         ext::shared_ptr<IborIndex> iborIndex_;
-        Calendar calendar_;
-        BusinessDayConvention convention_;
-        Natural paymentDelay_;
     };
 
 

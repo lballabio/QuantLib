@@ -78,11 +78,9 @@ namespace QuantLib {
     : Swap(2), type_(type), baseNominal_(baseNominal), 
       startDate_(calendar.adjust(startDate, convention)),
       maturityDate_(calendar.adjust(maturityDate, convention)), 
-      fixedPayment_(fixedPayment),
-      iborIndex_(std::move(iborIndex)), calendar_(calendar), 
-      convention_(convention), paymentDelay_(paymentDelay) {
+      fixedPayment_(fixedPayment), iborIndex_(std::move(iborIndex)) {
 
-        Date paymentDate = calendar_.advance(maturityDate_, paymentDelay_, Days, convention_);
+        Date paymentDate = calendar.advance(maturityDate_, paymentDelay, Days, convention);
 
         legs_[0].push_back(
             ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedPayment_, paymentDate)));
