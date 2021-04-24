@@ -117,4 +117,16 @@ namespace QuantLib {
       calculateFixedPayment(startDate, maturityDate, baseNominal, fixedRate, fixedDayCounter, calendar, convention),
       iborIndex, calendar, convention, paymentDelay, averagingMethod) {
     }
+
+    void ZeroCouponSwap::setupArguments(PricingEngine::arguments* args) const {
+        Swap::setupArguments(args);
+    }
+
+    void ZeroCouponSwap::arguments::validate() const {
+        Swap::arguments::validate();
+    }
+
+    void ZeroCouponSwap::fetchResults(const PricingEngine::results* r) const {
+        Swap::fetchResults(r);
+    }
 }
