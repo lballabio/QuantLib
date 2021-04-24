@@ -79,22 +79,22 @@ namespace QuantLib {
         ZeroCouponSwap(Type type,
                        Real baseNominal,
                        const Date& startDate,
-                       const Date& endDate, 
+                       const Date& maturityDate, 
                        Real fixedPayment,
                        ext::shared_ptr<IborIndex> iborIndex,
-                       Calendar paymentCalendar = Calendar(),
-                       BusinessDayConvention paymentConvention = Unadjusted,
+                       const Calendar& calendar,
+                       BusinessDayConvention convention = Following,
                        Natural paymentDelay = 0);
 
         ZeroCouponSwap(Type type,
                        Real baseNominal,
                        const Date& startDate,
-                       const Date& endDate,
+                       const Date& maturityDate,
                        Real fixedRate,
                        const DayCounter& fixedDayCounter,
                        ext::shared_ptr<IborIndex> iborIndex,
-                       Calendar paymentCalendar = Calendar(),
-                       BusinessDayConvention paymentConvention = Unadjusted,
+                       const Calendar& calendar,
+                       BusinessDayConvention convention = Following,
                        Natural paymentDelay = 0);
 
         //! \name Inspectors
@@ -102,12 +102,12 @@ namespace QuantLib {
         //! "payer" or "receiver" refer to the fixed leg.
         Type type() const { return type_; }
         Real baseNominal() const { return baseNominal_; }
-        Date startDate() const { return startDate_; }
-        Date endDate() const { return endDate_; }
         Real fixedPayment() const { return fixedPayment_; }
+        Date startDate() const { return startDate_; }
+        Date maturityDate() const { return maturityDate_; }
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
-        const Calendar& paymentCalendar() const { return paymentCalendar_; }
-        BusinessDayConvention paymentConvention() const { return paymentConvention_; }
+        const Calendar& calendar() const { return calendar_; }
+        BusinessDayConvention convention() const { return convention_; }
         Natural paymentDelay() const { return paymentDelay_; }
         //! just one cashflow in each leg
         const Leg& fixedLeg() const;
@@ -130,11 +130,11 @@ namespace QuantLib {
       protected:
         Type type_;
         Real baseNominal_;
-        Date startDate_, endDate_;
+        Date startDate_, maturityDate_;
         Real fixedPayment_;
         ext::shared_ptr<IborIndex> iborIndex_;
-        Calendar paymentCalendar_;
-        BusinessDayConvention paymentConvention_;
+        Calendar calendar_;
+        BusinessDayConvention convention_;
         Natural paymentDelay_;
     };
 

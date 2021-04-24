@@ -27,30 +27,17 @@
 #include <ql/instruments/zerocouponswap.hpp>
 
 namespace QuantLib {
-    ZeroCouponSwap::ZeroCouponSwap(Type type,
-                                   Real baseNominal,
-                                   const Date& startDate,
-                                   const Date& endDate,
-                                   Real fixedPayment,
-                                   ext::shared_ptr<IborIndex> iborIndex,
-                                   Calendar paymentCalendar,
-                                   BusinessDayConvention paymentConvention,
-                                   Natural paymentDelay)
-    : Swap(2), type_(type), baseNominal_(baseNominal), startDate_(startDate),
-      endDate_(endDate), fixedPayment_(fixedPayment),
-      iborIndex_(std::move(iborIndex)), paymentCalendar_(std::move(paymentCalendar)), 
-      paymentConvention_(paymentConvention), paymentDelay_(paymentDelay) {
 
-        // basic validation procedure and construction of legs.
-    }
-
-    namespace {
+    namespace {       
         Real calculateFixedPayment(const Date& startDate,
-                                   const Date& endDate,
+                                   const Date& maturityDate,
                                    Real baseNominal,
                                    Rate rate,
-                                   const DayCounter& dayCounter) {
-            Real T = dayCounter.yearFraction(startDate, endDate);
+                                   const DayCounter& dayCounter,
+                                   const Calendar& calendar,
+                                   BusinessDayConvention convention) {
+            Real T = dayCounter.yearFraction(calendar.adjust(startDate, convention), 
+                                             calendar.adjust(maturityDate, convention));
             return baseNominal * (std::pow(1.0 + rate, T) - 1.0);
         }
     }
@@ -58,15 +45,55 @@ namespace QuantLib {
     ZeroCouponSwap::ZeroCouponSwap(Type type,
                                    Real baseNominal,
                                    const Date& startDate,
-                                   const Date& endDate,
+                                   const Date& maturityDate,
+                                   Real fixedPayment,
+                                   ext::shared_ptr<IborIndex> iborIndex,
+                                   const Calendar& calendar,
+                                   BusinessDayConvention convention,
+                                   Natural paymentDelay)
+    : Swap(2), type_(type), baseNominal_(baseNominal), 
+      startDate_(calendar.adjust(startDate, convention)),
+      maturityDate_(calendar.adjust(maturityDate, convention)), 
+      fixedPayment_(fixedPayment),
+      iborIndex_(std::move(iborIndex)), calendar_(calendar), 
+      convention_(convention), paymentDelay_(paymentDelay) {
+
+        Date paymentDate = calendar_.advance(maturityDate_, paymentDelay_, Days, convention_);
+
+        legs_[0].push_back(
+            ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedPayment_, paymentDate)));
+        legs_[1].push_back(ext::shared_ptr<CashFlow>(
+            new SubPeriodsCoupon(paymentDate, baseNominal_, startDate_, maturityDate_,
+                                 iborIndex->fixingDays(), iborIndex_)));
+        for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
+            registerWith(*i);
+
+        switch (type_) {
+            case Payer:
+                payer_[0] = -1.0;
+                payer_[1] = +1.0;
+                break;
+            case Receiver:
+                payer_[0] = +1.0;
+                payer_[1] = -1.0;
+                break;
+            default:
+                QL_FAIL("Unknown zero coupon swap type");
+        }
+    }
+
+    ZeroCouponSwap::ZeroCouponSwap(Type type,
+                                   Real baseNominal,
+                                   const Date& startDate,
+                                   const Date& maturityDate,
                                    Real fixedRate,
                                    const DayCounter& fixedDayCounter,
                                    ext::shared_ptr<IborIndex> iborIndex,
-                                   Calendar paymentCalendar,
-                                   BusinessDayConvention paymentConvention,
+                                   const Calendar& calendar,
+                                   BusinessDayConvention convention,
                                    Natural paymentDelay)
-    : ZeroCouponSwap(type, baseNominal, startDate, endDate, 
-        calculateFixedPayment(startDate, endDate, baseNominal, fixedRate, fixedDayCounter),
-        iborIndex, paymentCalendar, paymentConvention, paymentDelay) {
+    : ZeroCouponSwap(type, baseNominal, startDate, maturityDate,
+      calculateFixedPayment(startDate, maturityDate, baseNominal, fixedRate, fixedDayCounter, calendar, convention),
+      iborIndex, calendar, convention, paymentDelay) {
     }
 }
