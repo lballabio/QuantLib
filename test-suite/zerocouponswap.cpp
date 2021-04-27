@@ -112,6 +112,14 @@ namespace zerocouponswap_test {
             return swap;
         }
     };
+
+    std::string printType(ZeroCouponSwap::Type type) {
+        return type == ZeroCouponSwap::Receiver ? "receiver" : "payer";
+    }
+
+    std::string printAveraging(RateAveraging::Type type) {
+        return type == RateAveraging::Compound ? "compound" : "simple";
+    }
 }
 
 void testReplicationOfZeroCouponSwapNPV(const Date& start,
@@ -154,7 +162,8 @@ void testReplicationOfZeroCouponSwapNPV(const Date& start,
                     << "    expected float leg NPV:    " << expectedFloatLegNPV << "\n"
                     << "    start:    " << start << "\n"
                     << "    end:    " << end << "\n"
-                    << "    averaging:    " << averaging << "\n");
+                    << "    type:    " << printType(type) << "\n"
+                    << "    averaging:    " << printAveraging(averaging) << "\n");
 }
 
 void ZeroCouponSwapTest::testNPVsForOngoingInstrument() {
