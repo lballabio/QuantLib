@@ -129,4 +129,20 @@ namespace QuantLib {
     void ZeroCouponSwap::fetchResults(const PricingEngine::results* r) const {
         Swap::fetchResults(r);
     }
+
+    Real ZeroCouponSwap::fixedLegNPV() const {
+        calculate();
+        QL_REQUIRE(legNPV_[0] != Null<Real>(), "result not available");
+        return legNPV_[0];
+    }
+
+    Real ZeroCouponSwap::floatingLegNPV() const {
+        calculate();
+        QL_REQUIRE(legNPV_[1] != Null<Real>(), "result not available");
+        return legNPV_[1];
+    }
+
+    const Leg& ZeroCouponSwap::fixedLeg() const { return legs_[0]; }
+
+    const Leg& ZeroCouponSwap::floatingLeg() const { return legs_[1]; }
 }

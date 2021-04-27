@@ -795,6 +795,7 @@
     <ClCompile Include="crosscurrencyratehelpers.cpp" />
     <ClCompile Include="zabr.cpp" />
     <ClCompile Include="quantlibtestsuite.cpp" />
+    <ClCompile Include="zerocouponswap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="americanoption.hpp" />
@@ -958,6 +959,7 @@
     <ClInclude Include="vpp.hpp" />
     <ClInclude Include="crosscurrencyratehelpers.hpp" />
     <ClInclude Include="zabr.hpp" />
+    <ClInclude Include="zerocouponswap.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QuantLib.vcxproj">
