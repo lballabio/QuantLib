@@ -203,6 +203,7 @@
 #include "volatilitymodels.hpp"
 #include "vpp.hpp"
 #include "zabr.hpp"
+#include "zerocouponswap.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -478,6 +479,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(UltimateForwardTermStructureTest::suite());
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
+    test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
     test->add(AmortizingBondTest::suite());

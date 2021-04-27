@@ -117,16 +117,16 @@ namespace QuantLib {
         //! \name Instrument interface
         //@{
         void setupArguments(PricingEngine::arguments*) const override;
-        void fetchResults(const PricingEngine::results* r) const override;
         //@}
 
         //! \name Results
         //@{
         Real fixedLegNPV() const;
         Real floatingLegNPV() const;
+        Real fairFixedPayment() const;
         //@}
 
-      protected:
+      private:
         Type type_;
         Real baseNominal_;
         Real fixedPayment_;
@@ -135,6 +135,8 @@ namespace QuantLib {
 
     class ZeroCouponSwap::arguments : public Swap::arguments {
       public:
+        Real baseNominal;
+        Real fixedPayment;
         void validate() const override;
     };
 

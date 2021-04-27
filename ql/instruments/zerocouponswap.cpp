@@ -120,14 +120,22 @@ namespace QuantLib {
 
     void ZeroCouponSwap::setupArguments(PricingEngine::arguments* args) const {
         Swap::setupArguments(args);
+
+        auto* arguments = dynamic_cast<ZeroCouponSwap::arguments*>(args);
+
+        if (arguments == nullptr)
+            return;
+
+        arguments->baseNominal = baseNominal_;
+        arguments->fixedPayment = fixedPayment_;
     }
 
     void ZeroCouponSwap::arguments::validate() const {
         Swap::arguments::validate();
-    }
-
-    void ZeroCouponSwap::fetchResults(const PricingEngine::results* r) const {
-        Swap::fetchResults(r);
+        QL_REQUIRE(baseNominal != Null<Real>(), "base nominal null or not set");
+        QL_REQUIRE(!(baseNominal < 0.0 ), "base nominal cannot be negative");
+        QL_REQUIRE(fixedPayment != Null<Real>(), "fixed payment null or not set");
+        QL_REQUIRE(!(fixedPayment < 0.0), "fixed payment cannot be negative");
     }
 
     Real ZeroCouponSwap::fixedLegNPV() const {
@@ -140,6 +148,20 @@ namespace QuantLib {
         calculate();
         QL_REQUIRE(legNPV_[1] != Null<Real>(), "result not available");
         return legNPV_[1];
+    }
+
+    Real ZeroCouponSwap::fairFixedPayment() const {
+        // Knowing that for the fair payment NPV = 0.0, where:
+        // NPV = (discount at fixed amount pay date) * (payer\receiver * fixed amount)
+        //     + (discount at float amount pay date) * (-payer\receiver * float amount)
+        // we have:
+        // fair amount = NPV float / discount at fixed amount pay date
+        // with NPV float corrected for the payer sign.
+        
+        calculate();
+        QL_REQUIRE(legNPV_[1] != Null<Real>(), "result not available");
+        QL_REQUIRE(endDiscounts_[0] != Null<Real>(), "result not available");
+        return legNPV_[1] / (endDiscounts_[0] * payer_[1]);
     }
 
     const Leg& ZeroCouponSwap::fixedLeg() const { return legs_[0]; }
