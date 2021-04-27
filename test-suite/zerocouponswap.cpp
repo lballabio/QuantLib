@@ -114,62 +114,84 @@ namespace zerocouponswap_test {
     };
 }
 
-void testReplicationOfZeroCouponSwapNpv(ZeroCouponSwap::Type type,
-                                        const Date& start,
+void testReplicationOfZeroCouponSwapNPV(const Date& start,
                                         const Date& end,
-                                        RateAveraging::Type averaging) {
+                                        ZeroCouponSwap::Type type = ZeroCouponSwap::Receiver,
+                                        RateAveraging::Type averaging = RateAveraging::Compound) {
     using namespace zerocouponswap_test;
     CommonVars vars;
     const Real tolerance = 1.0e-9;
 
     auto zcSwap = vars.createZCSwap(type, start, end, averaging);
 
-    Real actualNpv = zcSwap->NPV();
-    Real actualFixedLegNpv = zcSwap->fixedLegNPV();
-    Real actualFloatLegNpv = zcSwap->floatingLegNPV();
+    Real actualNPV = zcSwap->NPV();
+    Real actualFixedLegNPV = zcSwap->fixedLegNPV();
+    Real actualFloatLegNPV = zcSwap->floatingLegNPV();
     
     Date paymentDate = vars.calendar.advance(
         end, vars.paymentDelay * Days, vars.businessConvention);
-    Real discountAtPayment = vars.euriborHandle->discount(paymentDate);
-    Real expectedFixedLegNpv = discountAtPayment * vars.finalPayment;
+    Real discountAtPayment = paymentDate < vars.settlement ? 
+                              0.0 :
+                              vars.euriborHandle->discount(paymentDate);
+    Real expectedFixedLegNPV = -type * discountAtPayment * vars.finalPayment;
     
     auto subPeriodCpn = vars.createSubPeriodsCoupon(start, end, averaging);
-    Real expectedFloatLegNpv = discountAtPayment * subPeriodCpn->amount();
+    Real expectedFloatLegNPV = paymentDate < vars.settlement ? 
+                                0.0 :
+                                type * discountAtPayment * subPeriodCpn->amount();
 
-    Real expectedNpv = type * (expectedFloatLegNpv - expectedFixedLegNpv);
+    Real expectedNPV = expectedFloatLegNPV + expectedFixedLegNPV;
 
-    if ((std::fabs(actualNpv - expectedNpv) > tolerance) || 
-        (std::fabs(actualFixedLegNpv - expectedFixedLegNpv) > tolerance) ||
-        (std::fabs(actualFloatLegNpv - expectedFloatLegNpv) > tolerance))
+    if ((std::fabs(actualNPV - expectedNPV) > tolerance) || 
+        (std::fabs(actualFixedLegNPV - expectedFixedLegNPV) > tolerance) ||
+        (std::fabs(actualFloatLegNPV - expectedFloatLegNPV) > tolerance))
         BOOST_ERROR("unable to replicate NPVs of zero coupon swap and it's legs\n"
-                    << std::setprecision(2) << "    actual NPV:    " << actualNpv << "\n"
-                    << std::setprecision(2) << "    expected NPV:    " << expectedNpv << "\n"
-                    << std::setprecision(2) << "    actual fixed leg NPV:    " << actualFixedLegNpv << "\n"
-                    << std::setprecision(2) << "    expected fixed leg NPV:    " << expectedFixedLegNpv << "\n"
-                    << std::setprecision(2) << "    actual float leg NPV:    " << actualFloatLegNpv << "\n"
-                    << std::setprecision(2) << "    expected float leg NPV:    " << expectedFloatLegNpv << "\n"
+                    << "    actual NPV:    " << actualNPV << "\n"
+                    << "    expected NPV:    " << expectedNPV << "\n"
+                    << "    actual fixed leg NPV:    " << actualFixedLegNPV << "\n"
+                    << "    expected fixed leg NPV:    " << expectedFixedLegNPV << "\n"
+                    << "    actual float leg NPV:    " << actualFloatLegNPV << "\n"
+                    << "    expected float leg NPV:    " << expectedFloatLegNPV << "\n"
                     << "    start:    " << start << "\n"
                     << "    end:    " << end << "\n"
                     << "    averaging:    " << averaging << "\n");
 }
 
-void ZeroCouponSwapTest::test() {
+void ZeroCouponSwapTest::testNPVsForOngoingInstrument() {
     BOOST_TEST_MESSAGE("Testing ongoing zero coupon swap NPVs...");
 
     Date start(12, February, 2021);
     Date end(12, February, 2041);
 
-    testReplicationOfZeroCouponSwapNpv(ZeroCouponSwap::Receiver, start, end,
-                                       RateAveraging::Compound);
-    testReplicationOfZeroCouponSwapNpv(ZeroCouponSwap::Payer, start, end,
+    testReplicationOfZeroCouponSwapNPV(start, end, ZeroCouponSwap::Receiver);
+    testReplicationOfZeroCouponSwapNPV(start, end, ZeroCouponSwap::Payer,
                                        RateAveraging::Simple);
+}
+
+void ZeroCouponSwapTest::testNPVsForForwardStartingInstrument() {
+    BOOST_TEST_MESSAGE("Testing forward starting zero coupon swap NPVs...");
+
+    Date start(15, April, 2021);
+    Date end(12, February, 2041);
+
+    testReplicationOfZeroCouponSwapNPV(start, end);
+}
+
+void ZeroCouponSwapTest::testNPVsForExpiredInstrument() {
+    BOOST_TEST_MESSAGE("Testing expired zero coupon swap NPVs...");
+
+    Date start(12, February, 2000);
+    Date end(12, February, 2020);
+
+    testReplicationOfZeroCouponSwapNPV(start, end);
 }
 
 test_suite* ZeroCouponSwapTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Zero coupon swap tests");
 
-    suite->add(
-        QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::test));
+    suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testNPVsForOngoingInstrument));
+    suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testNPVsForForwardStartingInstrument));
+    suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testNPVsForExpiredInstrument));
 
     return suite;
 }
