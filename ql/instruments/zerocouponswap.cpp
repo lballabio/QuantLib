@@ -157,11 +157,8 @@ namespace QuantLib {
         // we have:
         // fair amount = NPV float / discount at fixed amount pay date
         // with NPV float corrected for the payer sign.
-        
-        calculate();
-        QL_REQUIRE(legNPV_[1] != Null<Real>(), "result not available");
-        QL_REQUIRE(endDiscounts_[0] != Null<Real>(), "result not available");
-        return legNPV_[1] / (endDiscounts_[0] * payer_[1]);
+        Real scaling = payer(1) ? -1.0 : 1.0;
+        return legNPV(1) / (endDiscounts(0) * scaling);
     }
 
     const Leg& ZeroCouponSwap::fixedLeg() const { return legs_[0]; }
