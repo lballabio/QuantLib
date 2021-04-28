@@ -24,9 +24,8 @@
 
 class ZeroCouponSwapTest {
   public:
-    static void testNPVsForOngoingInstrument();
-    static void testNPVsForForwardStartingInstrument();
-    static void testNPVsForExpiredInstrument();
+    static void testInstrumentValuation();
+    static void testFairFixedPayment();
 
     static boost::unit_test_framework::test_suite* suite();
 };
