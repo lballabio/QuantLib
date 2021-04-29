@@ -174,8 +174,8 @@ namespace zerocouponswap_test {
 
     void checkFairFixedPayment(const Date& start,
                                const Date& end,
-                               ZeroCouponSwap::Type type = ZeroCouponSwap::Receiver,
-                               RateAveraging::Type averaging = RateAveraging::Compound) {
+                               ZeroCouponSwap::Type type,
+                               RateAveraging::Type averaging) {
         CommonVars vars;
         const Real tolerance = 1.0e-9;
 
