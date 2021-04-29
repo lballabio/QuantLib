@@ -69,7 +69,9 @@ namespace QuantLib {
         At maturity the two single cashflows are swapped.
 
         \note we do not need Schedules on the legs because they use
-              one or two dates only per leg.
+              one or two dates only per leg. Those dates are not 
+              adjusted for potential non-business days. Only the
+              payment date is subject to adjustment.
     */
 
     class ZeroCouponSwap : public Swap {
