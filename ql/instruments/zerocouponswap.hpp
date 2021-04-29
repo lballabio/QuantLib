@@ -57,7 +57,7 @@ namespace QuantLib {
         For simple averaging we have:
         \f[
         N^{FLT} = N \left[ \sum_{k=0}^{K} \alpha(T_{k},T_{k+1})
-                           L(T_{k},T_{k+1}) -1 \right].
+                           L(T_{k},T_{k+1}) \right].
         \f]
         For a par contract, it holds that:
         \f[
