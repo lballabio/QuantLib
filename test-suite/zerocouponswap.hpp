@@ -28,6 +28,7 @@ class ZeroCouponSwapTest {
     static void testFairFixedPayment();
     static void testFixedPaymentFromRate();
     static void testArgumentsValidation();
+    static void testExpectedCashFlowsInLegs();
 
     static boost::unit_test_framework::test_suite* suite();
 };

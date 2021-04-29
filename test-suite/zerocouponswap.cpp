@@ -271,6 +271,43 @@ void ZeroCouponSwapTest::testArgumentsValidation() {
     BOOST_CHECK_THROW(vars.createZCSwap(end, start, 0.01), Error);
 }
 
+void ZeroCouponSwapTest::testExpectedCashFlowsInLegs() {
+    BOOST_TEST_MESSAGE("Testing expected cash flows in legs...");
+
+    using namespace zerocouponswap_test;
+
+    CommonVars vars;
+    const Real tolerance = 1.0e-9;
+
+    Date start(12, February, 2021);
+    Date end(12, February, 2041);
+
+    auto zcSwap = vars.createZCSwap(start, end, 0.01);
+    auto fixedCashFlow = zcSwap->fixedLeg()[0];
+    auto floatingCashFlow = zcSwap->floatingLeg()[0];
+
+    Date paymentDate =
+        vars.calendar.advance(end, vars.paymentDelay * Days, vars.businessConvention);
+    auto subPeriodCpn = vars.createSubPeriodsCoupon(start, end);
+
+
+    if ((std::fabs(fixedCashFlow->amount() - zcSwap->fixedPayment()) > tolerance) ||
+        (fixedCashFlow->date() != paymentDate))
+        BOOST_ERROR("unable to replicate fixed leg\n"
+                    << "    actual amount:    " << fixedCashFlow->amount() << "\n"
+                    << "    expected amount:    " << zcSwap->fixedPayment() << "\n"
+                    << "    actual payment date:    " << fixedCashFlow->date() << "\n"
+                    << "    expected payment date:    " << paymentDate << "\n");
+
+    if ((std::fabs(floatingCashFlow->amount() - subPeriodCpn->amount()) > tolerance) ||
+        (floatingCashFlow->date() != paymentDate))
+        BOOST_ERROR("unable to replicate floating leg\n"
+                    << "    actual amount:    " << floatingCashFlow->amount() << "\n"
+                    << "    expected amount:    " << subPeriodCpn->amount() << "\n"
+                    << "    actual payment date:    " << floatingCashFlow->date() << "\n"
+                    << "    expected payment date:    " << paymentDate << "\n");
+}
+
 test_suite* ZeroCouponSwapTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Zero coupon swap tests");
 
@@ -278,6 +315,7 @@ test_suite* ZeroCouponSwapTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testFairFixedPayment));
     suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testFixedPaymentFromRate));
     suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testArgumentsValidation));
+    suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testExpectedCashFlowsInLegs));
 
     return suite;
 }
