@@ -53,7 +53,7 @@ namespace zerocouponswap_test {
             dayCount = Actual365Fixed();
             businessConvention = ModifiedFollowing;
             baseNominal = 1.0e6;
-            finalPayment = 0.22e6;
+            finalPayment = 1.2e6;
 
             euribor = ext::shared_ptr<IborIndex>(new Euribor6M(euriborHandle));
             euribor->addFixing(Date(10, February, 2021), 0.0085);
