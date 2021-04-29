@@ -161,6 +161,7 @@ set(QuantLib-Test_SRC
     volatilitymodels.cpp
     vpp.cpp
     zabr.cpp
+    zerocouponswap.cpp
 )
 
 # hpp files, this list is maintained manually
@@ -327,6 +328,7 @@ set(QuantLib-Test_HDR
     volatilitymodels.hpp
     vpp.hpp
     zabr.hpp
+    zerocouponswap.hpp
 )
 
 set(BENCHMARK_FILES 
