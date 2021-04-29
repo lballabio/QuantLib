@@ -233,7 +233,7 @@ void ZeroCouponSwapTest::testFixedPaymentFromRate() {
     
     CommonVars vars;
     const Real tolerance = 1.0e-9;
-    const Rate fixedRate = 0.02;
+    const Rate fixedRate = 0.01;
 
     Date start(12, February, 2021);
     Date end(12, February, 2041);
@@ -262,15 +262,13 @@ void ZeroCouponSwapTest::testArgumentsValidation() {
     Date start(12, February, 2021);
     Date end(12, February, 2041);
 
-    // Negative final payment
-    BOOST_CHECK_THROW(vars.createZCSwap(ZeroCouponSwap::Payer, start, end, 
-                                        1.0e6, -1.0e6, RateAveraging::Compound),
-                      Error);
-
     // Negative base nominal
     BOOST_CHECK_THROW(vars.createZCSwap(ZeroCouponSwap::Payer, start, end, -1.0e6, 1.0e6,
                                         RateAveraging::Compound),
                       Error);
+
+    // Start date after end date
+    BOOST_CHECK_THROW(vars.createZCSwap(end, start, 0.01), Error);
 }
 
 test_suite* ZeroCouponSwapTest::suite() {

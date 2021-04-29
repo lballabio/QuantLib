@@ -33,11 +33,8 @@ namespace QuantLib {
                                    const Date& maturityDate,
                                    Real baseNominal,
                                    Rate rate,
-                                   const DayCounter& dayCounter,
-                                   const Calendar& calendar,
-                                   BusinessDayConvention convention) {
-            Time T = dayCounter.yearFraction(calendar.adjust(startDate, convention), 
-                                             calendar.adjust(maturityDate, convention));
+                                   const DayCounter& dayCounter) {
+            Time T = dayCounter.yearFraction(startDate, maturityDate);
             return baseNominal * (std::pow(1.0 + rate, T) - 1.0);
         }
 
@@ -71,22 +68,25 @@ namespace QuantLib {
                                    const Date& maturityDate,
                                    Real fixedPayment,
                                    ext::shared_ptr<IborIndex> iborIndex,
-                                   const Calendar& calendar,
-                                   BusinessDayConvention convention,
+                                   const Calendar& paymentCalendar,
+                                   BusinessDayConvention paymentConvention,
                                    Natural paymentDelay,
                                    RateAveraging::Type averagingMethod)
     : Swap(2), type_(type), baseNominal_(baseNominal), 
       fixedPayment_(fixedPayment), iborIndex_(std::move(iborIndex)) {
-        Date adjustedStart = calendar.adjust(startDate, convention);
-        Date adjustedMaturity = calendar.adjust(maturityDate, convention);
-        Date paymentDate = calendar.advance(adjustedMaturity, paymentDelay, Days, convention);
 
         QL_REQUIRE(!(baseNominal < 0.0), "base nominal cannot be negative");
-        QL_REQUIRE(!(fixedPayment < 0.0), "fixed payment cannot be negative");
+        QL_REQUIRE(startDate < maturityDate,
+                   "start date (" << startDate 
+                   << ") later than or equal to maturity date ("
+                   << maturityDate << ")");
+
+        Date paymentDate = paymentCalendar.advance(maturityDate, paymentDelay, 
+                                                   Days, paymentConvention);
 
         legs_[0].push_back(
             ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedPayment_, paymentDate)));
-        legs_[1].push_back(createSubPeriodicCoupon(paymentDate, adjustedStart, adjustedMaturity,
+        legs_[1].push_back(createSubPeriodicCoupon(paymentDate, startDate, maturityDate,
                                                    baseNominal_, iborIndex_, averagingMethod));
         for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
@@ -112,13 +112,13 @@ namespace QuantLib {
                                    Real fixedRate,
                                    const DayCounter& fixedDayCounter,
                                    ext::shared_ptr<IborIndex> iborIndex,
-                                   const Calendar& calendar,
-                                   BusinessDayConvention convention,
+                                   const Calendar& paymentCalendar,
+                                   BusinessDayConvention paymentConvention,
                                    Natural paymentDelay,
                                    RateAveraging::Type averagingMethod)
     : ZeroCouponSwap(type, baseNominal, startDate, maturityDate,
-      calculateFixedPayment(startDate, maturityDate, baseNominal, fixedRate, fixedDayCounter, calendar, convention),
-      iborIndex, calendar, convention, paymentDelay, averagingMethod) {
+      calculateFixedPayment(startDate, maturityDate, baseNominal, fixedRate, fixedDayCounter),
+      iborIndex, paymentCalendar, paymentConvention, paymentDelay, averagingMethod) {
     }
 
     Real ZeroCouponSwap::fixedLegNPV() const {

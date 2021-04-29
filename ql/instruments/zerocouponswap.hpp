@@ -75,16 +75,15 @@ namespace QuantLib {
     class ZeroCouponSwap : public Swap {
       public:
         enum Type { Receiver = -1, Payer = 1 };
-        class arguments;
-        class engine;
+        
         ZeroCouponSwap(Type type,
                        Real baseNominal,
                        const Date& startDate,
                        const Date& maturityDate, 
                        Real fixedPayment,
                        ext::shared_ptr<IborIndex> iborIndex,
-                       const Calendar& calendar,
-                       BusinessDayConvention convention = Following,
+                       const Calendar& paymentCalendar,
+                       BusinessDayConvention paymentConvention = Following,
                        Natural paymentDelay = 0,
                        RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
@@ -95,8 +94,8 @@ namespace QuantLib {
                        Real fixedRate,
                        const DayCounter& fixedDayCounter,
                        ext::shared_ptr<IborIndex> iborIndex,
-                       const Calendar& calendar,
-                       BusinessDayConvention convention = Following,
+                       const Calendar& paymentCalendar,
+                       BusinessDayConvention paymentConvention = Following,
                        Natural paymentDelay = 0,
                        RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
