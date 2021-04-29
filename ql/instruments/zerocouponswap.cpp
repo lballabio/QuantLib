@@ -36,7 +36,7 @@ namespace QuantLib {
                                    const DayCounter& dayCounter,
                                    const Calendar& calendar,
                                    BusinessDayConvention convention) {
-            Real T = dayCounter.yearFraction(calendar.adjust(startDate, convention), 
+            Time T = dayCounter.yearFraction(calendar.adjust(startDate, convention), 
                                              calendar.adjust(maturityDate, convention));
             return baseNominal * (std::pow(1.0 + rate, T) - 1.0);
         }
@@ -81,6 +81,9 @@ namespace QuantLib {
         Date adjustedMaturity = calendar.adjust(maturityDate, convention);
         Date paymentDate = calendar.advance(adjustedMaturity, paymentDelay, Days, convention);
 
+        QL_REQUIRE(!(baseNominal < 0.0), "base nominal cannot be negative");
+        QL_REQUIRE(!(fixedPayment < 0.0), "fixed payment cannot be negative");
+
         legs_[0].push_back(
             ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedPayment_, paymentDate)));
         legs_[1].push_back(createSubPeriodicCoupon(paymentDate, adjustedStart, adjustedMaturity,
@@ -116,26 +119,6 @@ namespace QuantLib {
     : ZeroCouponSwap(type, baseNominal, startDate, maturityDate,
       calculateFixedPayment(startDate, maturityDate, baseNominal, fixedRate, fixedDayCounter, calendar, convention),
       iborIndex, calendar, convention, paymentDelay, averagingMethod) {
-    }
-
-    void ZeroCouponSwap::setupArguments(PricingEngine::arguments* args) const {
-        Swap::setupArguments(args);
-
-        auto* arguments = dynamic_cast<ZeroCouponSwap::arguments*>(args);
-
-        if (arguments == nullptr)
-            return;
-
-        arguments->baseNominal = baseNominal_;
-        arguments->fixedPayment = fixedPayment_;
-    }
-
-    void ZeroCouponSwap::arguments::validate() const {
-        Swap::arguments::validate();
-        QL_REQUIRE(baseNominal != Null<Real>(), "base nominal null or not set");
-        QL_REQUIRE(!(baseNominal < 0.0 ), "base nominal cannot be negative");
-        QL_REQUIRE(fixedPayment != Null<Real>(), "fixed payment null or not set");
-        QL_REQUIRE(!(fixedPayment < 0.0), "fixed payment cannot be negative");
     }
 
     Real ZeroCouponSwap::fixedLegNPV() const {

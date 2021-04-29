@@ -114,11 +114,6 @@ namespace QuantLib {
         const Leg& floatingLeg() const;
         //@}
 
-        //! \name Instrument interface
-        //@{
-        void setupArguments(PricingEngine::arguments*) const override;
-        //@}
-
         //! \name Results
         //@{
         Real fixedLegNPV() const;
@@ -132,16 +127,6 @@ namespace QuantLib {
         Real fixedPayment_;
         ext::shared_ptr<IborIndex> iborIndex_;
     };
-
-    class ZeroCouponSwap::arguments : public Swap::arguments {
-      public:
-        Real baseNominal;
-        Real fixedPayment;
-        void validate() const override;
-    };
-
-    class ZeroCouponSwap::engine
-    : public GenericEngine<ZeroCouponSwap::arguments, ZeroCouponSwap::results> {};
 }
 
 #endif

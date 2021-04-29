@@ -26,6 +26,8 @@ class ZeroCouponSwapTest {
   public:
     static void testInstrumentValuation();
     static void testFairFixedPayment();
+    static void testFixedPaymentFromRate();
+    static void testArgumentsValidation();
 
     static boost::unit_test_framework::test_suite* suite();
 };

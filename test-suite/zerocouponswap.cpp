@@ -87,13 +87,22 @@ namespace zerocouponswap_test {
         ext::shared_ptr<ZeroCouponSwap> createZCSwap(ZeroCouponSwap::Type type,
                                                      const Date& start,
                                                      const Date& end,
+                                                     Real baseNominal,
                                                      Real finalPayment,
                                                      RateAveraging::Type averaging) {
-            auto swap = ext::make_shared<ZeroCouponSwap>(
-                type, baseNominal, start, end, finalPayment, euribor, calendar, businessConvention,
-                paymentDelay, averaging);
+            auto swap = ext::make_shared<ZeroCouponSwap>(type, baseNominal, start, end, finalPayment, 
+                                                         euribor, calendar, businessConvention,
+                                                         paymentDelay, averaging);
             swap->setPricingEngine(discountEngine);
             return swap;
+        }
+
+        ext::shared_ptr<ZeroCouponSwap> createZCSwap(ZeroCouponSwap::Type type,
+                                                     const Date& start,
+                                                     const Date& end,
+                                                     Real finalPayment,
+                                                     RateAveraging::Type averaging) {
+            return createZCSwap(type, start, end, baseNominal, finalPayment, averaging);
         }
 
         ext::shared_ptr<ZeroCouponSwap> createZCSwap(ZeroCouponSwap::Type type,
@@ -103,11 +112,12 @@ namespace zerocouponswap_test {
             return createZCSwap(type, start, end, finalPayment, averaging);
         }
 
-        ext::shared_ptr<ZeroCouponSwap>
-        createZCSwap(const Date& start, const Date& end, Rate fixedRate) {
-            auto swap = ext::make_shared<ZeroCouponSwap>(
-                ZeroCouponSwap::Receiver, baseNominal, start, end, fixedRate, dayCount, euribor,
-                calendar, businessConvention, paymentDelay, RateAveraging::Compound);
+        ext::shared_ptr<ZeroCouponSwap> createZCSwap(const Date& start, 
+                                                     const Date& end, 
+                                                     Rate fixedRate) {
+            auto swap = ext::make_shared<ZeroCouponSwap>(ZeroCouponSwap::Receiver, baseNominal, 
+                                                         start, end, fixedRate, dayCount, euribor,
+                                                         calendar, businessConvention, paymentDelay);
             swap->setPricingEngine(discountEngine);
             return swap;
         }
@@ -216,11 +226,60 @@ void ZeroCouponSwapTest::testFairFixedPayment() {
                           ZeroCouponSwap::Payer, RateAveraging::Simple);
 }
 
+void ZeroCouponSwapTest::testFixedPaymentFromRate() {
+    BOOST_TEST_MESSAGE("Testing fixed payment calculation from rate...");
+
+    using namespace zerocouponswap_test;
+    
+    CommonVars vars;
+    const Real tolerance = 1.0e-9;
+    const Rate fixedRate = 0.02;
+
+    Date start(12, February, 2021);
+    Date end(12, February, 2041);
+
+    auto zcSwap = vars.createZCSwap(start, end, fixedRate);
+    Real actualFxdPmt = zcSwap->fixedPayment();
+
+    Time T = vars.dayCount.yearFraction(start, end);
+    Real expectedFxdPmt = zcSwap->baseNominal() * (std::pow(1.0 + fixedRate, T) - 1.0);
+
+    if ((std::fabs(actualFxdPmt - expectedFxdPmt) > tolerance))
+        BOOST_ERROR("unable to replicate fixed payment from rate\n"
+                    << "    actual fixed payment:    " << actualFxdPmt << "\n"
+                    << "    expected fixed payment:    " << expectedFxdPmt << "\n"
+                    << "    start:    " << start << "\n"
+                    << "    end:    " << end << "\n");
+}
+
+void ZeroCouponSwapTest::testArgumentsValidation() {
+    BOOST_TEST_MESSAGE("Testing arguments validation...");
+
+    using namespace zerocouponswap_test;
+
+    CommonVars vars;
+
+    Date start(12, February, 2021);
+    Date end(12, February, 2041);
+
+    // Negative final payment
+    BOOST_CHECK_THROW(vars.createZCSwap(ZeroCouponSwap::Payer, start, end, 
+                                        1.0e6, -1.0e6, RateAveraging::Compound),
+                      Error);
+
+    // Negative base nominal
+    BOOST_CHECK_THROW(vars.createZCSwap(ZeroCouponSwap::Payer, start, end, -1.0e6, 1.0e6,
+                                        RateAveraging::Compound),
+                      Error);
+}
+
 test_suite* ZeroCouponSwapTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Zero coupon swap tests");
 
     suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testInstrumentValuation));
     suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testFairFixedPayment));
+    suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testFixedPaymentFromRate));
+    suite->add(QUANTLIB_TEST_CASE(&ZeroCouponSwapTest::testArgumentsValidation));
 
     return suite;
 }
