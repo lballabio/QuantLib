@@ -194,7 +194,7 @@ namespace QuantLib {
                            "end date (" << iborEndDate <<
                            ") must be greater than start date (" <<
                            iborStartDate << ")");
-                latestRelevantDate_ = iborEndDate;
+                maturityDate_ = iborEndDate;
             }
             break;
           default:
