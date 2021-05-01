@@ -108,6 +108,7 @@ namespace QuantLib {
         Real baseNominal() const { return baseNominal_; }
         Real fixedPayment() const { return fixedPayment_; }
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
+        RateAveraging::Type averagingMethod() const { return averagingMethod_; }
 
         //! just one cashflow in each leg
         const Leg& fixedLeg() const;
@@ -127,6 +128,7 @@ namespace QuantLib {
         Real baseNominal_;
         Real fixedPayment_;
         ext::shared_ptr<IborIndex> iborIndex_;
+        RateAveraging::Type averagingMethod_;
     };
 }
 

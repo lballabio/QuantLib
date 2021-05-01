@@ -73,7 +73,8 @@ namespace QuantLib {
                                    Natural paymentDelay,
                                    RateAveraging::Type averagingMethod)
     : Swap(2), type_(type), baseNominal_(baseNominal), 
-      fixedPayment_(fixedPayment), iborIndex_(std::move(iborIndex)) {
+      fixedPayment_(fixedPayment), iborIndex_(std::move(iborIndex)),
+      averagingMethod_(averagingMethod) {
 
         QL_REQUIRE(!(baseNominal < 0.0), "base nominal cannot be negative");
         QL_REQUIRE(startDate < maturityDate,
@@ -87,7 +88,7 @@ namespace QuantLib {
         legs_[0].push_back(
             ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedPayment_, paymentDate)));
         legs_[1].push_back(createSubPeriodicCoupon(paymentDate, startDate, maturityDate,
-                                                   baseNominal_, iborIndex_, averagingMethod));
+                                                   baseNominal_, iborIndex_, averagingMethod_));
         for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
 
