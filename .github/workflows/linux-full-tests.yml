@@ -74,6 +74,11 @@ jobs:
             tag: groovy
             cc: clang
             cxx: clang++
+          - name: "Clang 12"
+            shortname: clang12
+            tag: hirsute
+            cc: clang
+            cxx: clang++
           - name: "C++11 mode"
             shortname: c++11
             tag: rolling
