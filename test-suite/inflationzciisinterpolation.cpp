@@ -75,6 +75,25 @@ namespace ZCIIS {
         ext::shared_ptr<YieldTermStructure> nominalTermStructure;
     };
 
+    std::ostream& operator<<(std::ostream& out, const Setup& setup) {
+        std::string observationInterpolation;
+        switch (setup.observationInterpolation) {
+            case CPI::AsIndex:
+                observationInterpolation = "CPI::AsIndex";
+                break;
+            case CPI::Flat:
+                observationInterpolation = "CPI::Flat";
+                break;
+            case CPI::Linear:
+                observationInterpolation = "CPI::Linear";
+                break;
+            default:
+                QL_FAIL("Unknown CPI::InterpolationType...");
+        }
+
+        return out << observationInterpolation << " (Index "
+                   << (setup.indexIsInterpolated ? "" : "not ") << "interpolated)";
+    }
 
     Real fixData[] = {189.9, 189.9, 189.6, 190.5, 191.6, 192.0, 192.2, 192.2, 192.6, 193.1, 193.3,
                       193.6, 194.1, 193.4, 194.2, 195.0, 196.5, 197.7, 198.5, 198.5, 199.2, 200.1,
@@ -175,34 +194,85 @@ namespace ZCIIS {
 
         return result;
     }
+
+    void runTest(const Setup& setup) {
+        BOOST_TEST_MESSAGE("Testing ZCIIS " << setup << "...");
+
+        auto result = ZCIIS::makeResult(setup);
+    }
 }
 
-void InflationZCIISInterpolationTest::testZCIISAsIndex() {
-    BOOST_TEST_MESSAGE("Testing ZCIIS CPI::AsIndex interpolation type...");
-
+void InflationZCIISInterpolationTest::asIndexNotInterpolated() {
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
     bool indexIsInterpolated = false;
     const auto setup = ZCIIS::Setup(indexIsInterpolated, CPI::AsIndex);
 
-    auto result = ZCIIS::makeResult(setup);
+    ZCIIS::runTest(setup);
 }
 
-void InflationZCIISInterpolationTest::testZCIISFlat() {
-    BOOST_TEST_MESSAGE("Testing ZCIIS CPI::Flat interpolation type...");
+void InflationZCIISInterpolationTest::asIndexInterpolated() {
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    bool indexIsInterpolated = true;
+    const auto setup = ZCIIS::Setup(indexIsInterpolated, CPI::AsIndex);
+
+    ZCIIS::runTest(setup);
 }
 
-void InflationZCIISInterpolationTest::testZCIISLinear() {
-    BOOST_TEST_MESSAGE("Testing ZCIIS CPI::Linear interpolation type...");
+void InflationZCIISInterpolationTest::flatNotInterpolated() {
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    bool indexIsInterpolated = false;
+    const auto setup = ZCIIS::Setup(indexIsInterpolated, CPI::Flat);
+
+    ZCIIS::runTest(setup);
+}
+
+void InflationZCIISInterpolationTest::flatInterpolated() {
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    bool indexIsInterpolated = true;
+    const auto setup = ZCIIS::Setup(indexIsInterpolated, CPI::Flat);
+
+    ZCIIS::runTest(setup);
+}
+
+void InflationZCIISInterpolationTest::linearNotInterpolated() {
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    bool indexIsInterpolated = false;
+    const auto setup = ZCIIS::Setup(indexIsInterpolated, CPI::Linear);
+
+    ZCIIS::runTest(setup);
+}
+
+void InflationZCIISInterpolationTest::linearInterpolated() {
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    bool indexIsInterpolated = true;
+    const auto setup = ZCIIS::Setup(indexIsInterpolated, CPI::Linear);
+
+    ZCIIS::runTest(setup);
 }
 
 test_suite* InflationZCIISInterpolationTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Zero Coupon Inflation Index Swap (ZCIIS) interpolation tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&InflationZCIISInterpolationTest::testZCIISAsIndex));
-    suite->add(QUANTLIB_TEST_CASE(&InflationZCIISInterpolationTest::testZCIISFlat));
-    suite->add(QUANTLIB_TEST_CASE(&InflationZCIISInterpolationTest::testZCIISLinear));
+    //suite->add(QUANTLIB_TEST_CASE(&InflationZCIISInterpolationTest::asIndexNotInterpolated));
+    suite->add(QUANTLIB_TEST_CASE(&InflationZCIISInterpolationTest::asIndexInterpolated));
+
+    suite->add(QUANTLIB_TEST_CASE(&InflationZCIISInterpolationTest::flatNotInterpolated));
+    suite->add(QUANTLIB_TEST_CASE(&InflationZCIISInterpolationTest::flatInterpolated));
+
+    suite->add(QUANTLIB_TEST_CASE(&InflationZCIISInterpolationTest::linearNotInterpolated));
+    suite->add(QUANTLIB_TEST_CASE(&InflationZCIISInterpolationTest::linearInterpolated));
 
     return suite;
 }

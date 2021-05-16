@@ -25,9 +25,12 @@
 //! Test the ZCIIS interpolation types AsIndex, Flat and Linear
 class InflationZCIISInterpolationTest {
   public:
-    static void testZCIISAsIndex();
-    static void testZCIISFlat();
-    static void testZCIISLinear();
+    static void asIndexNotInterpolated();
+    static void asIndexInterpolated();
+    static void flatNotInterpolated();
+    static void flatInterpolated();
+    static void linearNotInterpolated();
+    static void linearInterpolated();
 
     static boost::unit_test_framework::test_suite* suite();
 };
