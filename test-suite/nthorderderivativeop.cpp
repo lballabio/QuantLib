@@ -498,7 +498,6 @@ namespace {
         }
 
         const Volatility vol2_;
-        const Size direction_;
         SparseMatrix map_;
         TripleBandLinearOp preconditioner_;
     };
