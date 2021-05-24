@@ -462,7 +462,7 @@ namespace {
                     theta*identity_matrix<Real>(n) - u, dv);
         }
 
-        Disposable<SparseMatrix> toMatrix() const {
+        Disposable<SparseMatrix> toMatrix() const override {
             SparseMatrix tmp(map_);
             return tmp;
         }
