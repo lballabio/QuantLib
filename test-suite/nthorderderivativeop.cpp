@@ -410,14 +410,13 @@ namespace {
 
     class FdmHestonNthOrderOp : public FdmLinearOpComposite {
       public:
-        FdmHestonNthOrderOp(
-            Size nPoints,
-            ext::shared_ptr<HestonProcess> hestonProcess,
-            ext::shared_ptr<FdmMesher> mesher,
-            Size direction = 0)
-        : vol2_(0.5*hestonProcess->theta()),
-          preconditioner_(SecondDerivativeOp(direction, mesher)
-              .mult(Array(mesher->layout()->size(), vol2_))) {
+        FdmHestonNthOrderOp(Size nPoints,
+                            const ext::shared_ptr<HestonProcess>& hestonProcess,
+                            const ext::shared_ptr<FdmMesher>& mesher,
+                            Size direction = 0)
+        : vol2_(0.5 * hestonProcess->theta()),
+          preconditioner_(
+              SecondDerivativeOp(direction, mesher).mult(Array(mesher->layout()->size(), vol2_))) {
 
             const Array vv(mesher->locations(1));
             Array varianceValues(0.5*vv);
@@ -522,18 +521,14 @@ namespace {
 
    class MyInnerValueCalculator : public FdmInnerValueCalculator {
       public:
-        MyInnerValueCalculator(
-            ext::shared_ptr<Payoff> payoff,
-            ext::shared_ptr<FdmMesher> mesher,
-            ext::shared_ptr<YieldTermStructure> rTS,
-            ext::shared_ptr<YieldTermStructure> qTS,
-            Volatility vol,
-            Size direction)
-        : payoff_(payoff),
-          mesher_(mesher),
-          rTS_(rTS),
-          qTS_(qTS),
-          vol_(vol),
+        MyInnerValueCalculator(ext::shared_ptr<Payoff> payoff,
+                               ext::shared_ptr<FdmMesher> mesher,
+                               ext::shared_ptr<YieldTermStructure> rTS,
+                               ext::shared_ptr<YieldTermStructure> qTS,
+                               Volatility vol,
+                               Size direction)
+        : payoff_(std::move(std::move(payoff))), mesher_(std::move(std::move(mesher))),
+          rTS_(std::move(std::move(rTS))), qTS_(std::move(std::move(qTS))), vol_(vol),
           direction_(direction) {}
 
         Real innerValue(const FdmLinearOpIterator& iter, Time t)  override {
