@@ -416,7 +416,6 @@ namespace {
             ext::shared_ptr<FdmMesher> mesher,
             Size direction = 0)
         : vol2_(0.5*hestonProcess->theta()),
-          direction_(direction),
           preconditioner_(SecondDerivativeOp(direction, mesher)
               .mult(Array(mesher->layout()->size(), vol2_))) {
 
