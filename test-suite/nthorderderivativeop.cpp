@@ -730,7 +730,7 @@ namespace {
     };
 }
 
-void NthOrderDerivativeOpTest::testHigerOrderHestonOptionPricing() {
+void NthOrderDerivativeOpTest::testHigherOrderHestonOptionPricing() {
     BOOST_TEST_MESSAGE("Testing Heston model option pricing convergence with "
             "higher order finite difference operators...");
 
@@ -797,7 +797,7 @@ namespace {
     }
 }
 
-void NthOrderDerivativeOpTest::testHigerOrderAndRichardsonExtrapolationg() {
+void NthOrderDerivativeOpTest::testHigherOrderAndRichardsonExtrapolation() {
     BOOST_TEST_MESSAGE(
             "Testing Heston option pricing convergence with "
             "higher order FDM operators and Richardson Extrapolation...");
@@ -911,7 +911,7 @@ void NthOrderDerivativeOpTest::testMixedSecondOrder9PointsOnUniformGrid() {
 }
 #endif
 
-test_suite* NthOrderDerivativeOpTest::suite() {
+test_suite* NthOrderDerivativeOpTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("NthOrderDerivativeOp tests");
 
 #ifndef QL_NO_UBLAS_SUPPORT
@@ -937,15 +937,17 @@ test_suite* NthOrderDerivativeOpTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testThirdOrder4PointsUniformGrid));
     suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testHigerOrderHestonOptionPricing));
-    suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testHigerOrderAndRichardsonExtrapolationg));
+        &NthOrderDerivativeOpTest::testHigherOrderAndRichardsonExtrapolation));
     suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testCompareFirstDerivativeOpNonUniformGrid));
     suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testCompareFirstDerivativeOp2dUniformGrid));
     suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testMixedSecondOrder9PointsOnUniformGrid));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&NthOrderDerivativeOpTest::testHigherOrderHestonOptionPricing));
+    }
 
 #endif
 
