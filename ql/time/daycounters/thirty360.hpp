@@ -122,7 +122,7 @@ namespace QuantLib {
         Thirty360()
         : DayCounter(implementation(Thirty360::BondBasis, false)) {}
 
-        Thirty360(Convention c, bool isLastPeriod = false)
+        explicit Thirty360(Convention c, bool isLastPeriod = false)
         : DayCounter(implementation(c, isLastPeriod)) {}
     };
 
