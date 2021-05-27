@@ -138,7 +138,7 @@ void CdoTest::testHW(unsigned dataSet) {
     ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
                new FlatHazardRate (asofDate,
                                    hazardRate,
-                                   ActualActual()));
+                                   ActualActual(ActualActual::ISDA)));
     ext::shared_ptr<Pool> pool (new Pool());
     vector<string> names;
     // probability key items

@@ -101,7 +101,7 @@ namespace inflation_cpi_bond_test {
             Date today(25, November, 2009);
             evaluationDate = calendar.adjust(today);
             Settings::instance().evaluationDate() = evaluationDate;
-            dayCounter = ActualActual();
+            dayCounter = ActualActual(ActualActual::ISDA);
 
             Date from(20, July, 2007);
             Date to(20, November, 2009);
