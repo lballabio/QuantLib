@@ -1034,7 +1034,7 @@ void DayCounterTest::testIntraday() {
     const Time tol = 100*QL_EPSILON;
 
     const DayCounter dayCounters[]
-        = { ActualActual(), Actual365Fixed(), Actual360() };
+        = { ActualActual(ActualActual::ISDA), Actual365Fixed(), Actual360() };
 
     for (DayCounter dc : dayCounters) {
         const Time expected = ((12*60 + 34)*60 + 17 + 0.231298)
