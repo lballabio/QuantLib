@@ -163,7 +163,7 @@ namespace {
         Frequency frequency = Quarterly;
         BusinessDayConvention convention = Following;
         DateGeneration::Rule rule = DateGeneration::TwentiethIMM;
-        DayCounter dayCounter = Thirty360();
+        DayCounter dayCounter = Thirty360(Thirty360::BondBasis);
         Real recoveryRate = 0.4;
 
         RelinkableHandle<YieldTermStructure> discountCurve;
@@ -185,7 +185,7 @@ namespace {
         piecewiseCurve.linkTo(
             ext::shared_ptr<DefaultProbabilityTermStructure>(
                 new PiecewiseDefaultCurve<T,I>(today, helpers,
-                                               Thirty360())));
+                                               Thirty360(Thirty360::BondBasis))));
 
         Real notional = 1.0;
         double tolerance = 1.0e-6;
@@ -265,7 +265,7 @@ namespace {
         piecewiseCurve.linkTo(
             ext::shared_ptr<DefaultProbabilityTermStructure>(
                 new PiecewiseDefaultCurve<T,I>(today, helpers,
-                                               Thirty360())));
+                                               Thirty360(Thirty360::BondBasis))));
 
         Real notional = 1.0;
         double tolerance = 1.0e-6;
@@ -371,7 +371,7 @@ void DefaultProbabilityCurveTest::testSingleInstrumentBootstrap() {
     Frequency frequency = Quarterly;
     BusinessDayConvention convention = Following;
     DateGeneration::Rule rule = DateGeneration::TwentiethIMM;
-    DayCounter dayCounter = Thirty360();
+    DayCounter dayCounter = Thirty360(Thirty360::BondBasis);
     Real recoveryRate = 0.4;
 
     RelinkableHandle<YieldTermStructure> discountCurve;

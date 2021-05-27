@@ -115,7 +115,14 @@ namespace QuantLib {
         };
         static ext::shared_ptr<DayCounter::Impl> implementation(Convention c, bool isLastPeriod);
       public:
-        Thirty360(Convention c = Thirty360::BondBasis, bool isLastPeriod = false)
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.23.
+        */
+        QL_DEPRECATED
+        Thirty360()
+        : DayCounter(implementation(Thirty360::BondBasis, false)) {}
+
+        Thirty360(Convention c, bool isLastPeriod = false)
         : DayCounter(implementation(c, isLastPeriod)) {}
     };
 

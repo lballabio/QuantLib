@@ -164,7 +164,7 @@ namespace overnight_indexed_swap_test {
             eoniaIndex = ext::make_shared<Eonia>(eoniaTermStructure);
             fixedSwapConvention = ModifiedFollowing;
             fixedSwapFrequency = Annual;
-            fixedSwapDayCount = Thirty360();
+            fixedSwapDayCount = Thirty360(Thirty360::BondBasis);
             swapIndex = ext::shared_ptr<IborIndex>(new Euribor3M(swapTermStructure));
             calendar = eoniaIndex->fixingCalendar();
             today = Date(5, February, 2009);
