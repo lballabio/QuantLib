@@ -159,7 +159,7 @@ namespace zerocouponswap_test {
         if ((std::fabs(actualNPV - expectedNPV) > tolerance) ||
             (std::fabs(actualFixedLegNPV - expectedFixedLegNPV) > tolerance) ||
             (std::fabs(actualFloatLegNPV - expectedFloatLegNPV) > tolerance))
-            BOOST_ERROR("unable to replicate NPVs of zero coupon swap and it's legs\n"
+            BOOST_ERROR("unable to replicate NPVs of zero coupon swap and its legs\n"
                         << "    actual NPV:    " << actualNPV << "\n"
                         << "    expected NPV:    " << expectedNPV << "\n"
                         << "    actual fixed leg NPV:    " << actualFixedLegNPV << "\n"
