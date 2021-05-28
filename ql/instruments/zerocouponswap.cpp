@@ -106,7 +106,7 @@ namespace QuantLib {
                                    Real baseNominal,
                                    const Date& startDate,
                                    const Date& maturityDate,
-                                   Real fixedRate,
+                                   Rate fixedRate,
                                    const DayCounter& fixedDayCounter,
                                    ext::shared_ptr<IborIndex> iborIndex,
                                    const Calendar& paymentCalendar,
