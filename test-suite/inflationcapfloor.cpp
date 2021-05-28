@@ -123,7 +123,7 @@ namespace inflation_capfloor_test {
             settlementDays = 0;
             fixingDays = 0;
             settlement = calendar.advance(today,settlementDays,Days);
-            dc = Thirty360();
+            dc = Thirty360(Thirty360::BondBasis);
 
             // yoy index
             //      fixing data

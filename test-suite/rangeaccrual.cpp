@@ -214,7 +214,7 @@ namespace range_accrual_test {
             swapSettlementDays = 2;
             fixedLegFrequency = Annual;
             fixedLegConvention = Unadjusted;
-            fixedLegDayCounter = Thirty360();
+            fixedLegDayCounter = Thirty360(Thirty360::BondBasis);
             ext::shared_ptr<SwapIndex> swapIndexBase(new
                 EuriborSwapIsdaFixA(2*Years, termStructure));
 

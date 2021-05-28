@@ -104,7 +104,7 @@ namespace swaption_test {
             nominal = 1000000.0;
             fixedConvention = Unadjusted;
             fixedFrequency = Annual;
-            fixedDayCount = Thirty360();
+            fixedDayCount = Thirty360(Thirty360::BondBasis);
 
             index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             floatingConvention = index->businessDayConvention();
@@ -511,7 +511,7 @@ void SwaptionTest::testCashSettledSwaptions() {
                                      DateGeneration::Forward, true);
             ext::shared_ptr<VanillaSwap> swap_u360(
                 new VanillaSwap(type[0], vars.nominal,
-                                fixedSchedule_u,strike,Thirty360(),
+                                fixedSchedule_u,strike,Thirty360(Thirty360::BondBasis),
                                 floatSchedule,vars.index,0.0,
                                 vars.index->dayCounter()));
 
@@ -530,7 +530,7 @@ void SwaptionTest::testCashSettledSwaptions() {
                                      DateGeneration::Forward, true);
             ext::shared_ptr<VanillaSwap> swap_a360(
                 new VanillaSwap(type[0],vars.nominal,
-                                fixedSchedule_a,strike,Thirty360(),
+                                fixedSchedule_a,strike,Thirty360(Thirty360::BondBasis),
                                 floatSchedule,vars.index,0.0,
                                 vars.index->dayCounter()));
 
@@ -559,12 +559,12 @@ void SwaptionTest::testCashSettledSwaptions() {
             Handle<YieldTermStructure> termStructure_u360(
                 ext::shared_ptr<YieldTermStructure>(
                     new FlatForward(vars.settlement,swap_u360->fairRate(),
-                                    Thirty360(),Compounded,
+                                    Thirty360(Thirty360::BondBasis),Compounded,
                                     vars.fixedFrequency)));
             Handle<YieldTermStructure> termStructure_a360(
                 ext::shared_ptr<YieldTermStructure>(
                     new FlatForward(vars.settlement,swap_a360->fairRate(),
-                                    Thirty360(),Compounded,
+                                    Thirty360(Thirty360::BondBasis),Compounded,
                                     vars.fixedFrequency)));
             Handle<YieldTermStructure> termStructure_u365(
                 ext::shared_ptr<YieldTermStructure>(
@@ -939,7 +939,7 @@ void checkSwaptionDelta(bool useBachelierVol)
                             MakeVanillaSwap(length, idx, strike)
                                 .withEffectiveDate(startDate)
                                 .withFixedLegTenor(1 * Years)
-                                .withFixedLegDayCount(Thirty360())
+                                .withFixedLegDayCount(Thirty360(Thirty360::BondBasis))
                                 .withFloatingLegSpread(0.0)
                                 .withType(type[h]);
                         underlying->setPricingEngine(swapEngine);

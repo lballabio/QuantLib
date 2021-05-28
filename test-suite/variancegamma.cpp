@@ -223,7 +223,7 @@ void VarianceGammaTest::testSingularityAtZero() {
 
     Date valuation(1,Jan,2017);
     Date maturity(10,Jan,2017);
-    DayCounter discountCounter = Thirty360();
+    DayCounter discountCounter = Thirty360(Thirty360::BondBasis);
 
     Settings::instance().evaluationDate() = valuation;
 

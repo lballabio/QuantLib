@@ -34,7 +34,7 @@ namespace QuantLib {
     : capFloorType_(capFloorType), length_(length), calendar_(std::move(cal)),
       index_(std::move(index)), observationLag_(observationLag), strike_(Null<Rate>()),
       firstCapletExcluded_(false), asOptionlet_(false), effectiveDate_(Date()),
-      dayCounter_(Thirty360()), roll_(ModifiedFollowing), fixingDays_(0), nominal_(1000000.0) {}
+      dayCounter_(Thirty360(Thirty360::BondBasis)), roll_(ModifiedFollowing), fixingDays_(0), nominal_(1000000.0) {}
 
     MakeYoYInflationCapFloor::operator YoYInflationCapFloor() const {
         ext::shared_ptr<YoYInflationCapFloor> capfloor = *this;

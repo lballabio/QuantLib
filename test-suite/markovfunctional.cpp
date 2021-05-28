@@ -1399,25 +1399,25 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
         new SwaptionHelper(1 * Years, 4 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[0]))),
-                           iborIndex1, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex1, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            flatYts_)));
     calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(2 * Years, 3 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[1]))),
-                           iborIndex1, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex1, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            flatYts_)));
     calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(3 * Years, 2 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[2]))),
-                           iborIndex1, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex1, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            flatYts_)));
     calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(4 * Years, 1 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[3]))),
-                           iborIndex1, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex1, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            flatYts_)));
 
     ext::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(
@@ -1525,25 +1525,25 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
         new SwaptionHelper(1 * Years, 4 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[0]))),
-                           iborIndex2, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex2, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            md0Yts_)));
     calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(2 * Years, 3 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[1]))),
-                           iborIndex2, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex2, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            md0Yts_)));
     calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(3 * Years, 2 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[2]))),
-                           iborIndex2, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex2, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            md0Yts_)));
     calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(4 * Years, 1 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[3]))),
-                           iborIndex2, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex2, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            md0Yts_)));
 
     ext::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine2(

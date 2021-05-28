@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
 
         ext::shared_ptr<NonstandardSwap> underlying =
             ext::make_shared<NonstandardSwap>(VanillaSwap(
-                VanillaSwap::Payer, 1.0, fixedSchedule, strike, Thirty360(),
+                VanillaSwap::Payer, 1.0, fixedSchedule, strike, Thirty360(Thirty360::BondBasis),
                 floatingSchedule, euribor6m, 0.00, Actual360()));
 
         std::vector<Date> exerciseDates;
@@ -356,7 +356,7 @@ int main(int argc, char *argv[]) {
 
         ext::shared_ptr<NonstandardSwap> underlying2(new NonstandardSwap(
             VanillaSwap::Payer, nominalFixed, nominalFloating, fixedSchedule,
-            strikes, Thirty360(), floatingSchedule, euribor6m, 1.0, 0.0,
+            strikes, Thirty360(Thirty360::BondBasis), floatingSchedule, euribor6m, 1.0, 0.0,
             Actual360()));
         ext::shared_ptr<NonstandardSwaption> swaption2 =
             ext::make_shared<NonstandardSwaption>(underlying2, exercise);
@@ -392,7 +392,7 @@ int main(int argc, char *argv[]) {
 
         ext::shared_ptr<NonstandardSwap> underlying3(new NonstandardSwap(
             VanillaSwap::Receiver, nominalFixed2, nominalFloating2,
-            fixedSchedule, strikes, Thirty360(), floatingSchedule, euribor6m,
+            fixedSchedule, strikes, Thirty360(Thirty360::BondBasis), floatingSchedule, euribor6m,
             1.0, 0.0, Actual360(), false,
             true)); // final capital exchange
 
@@ -487,7 +487,7 @@ int main(int argc, char *argv[]) {
 
         ext::shared_ptr<FloatFloatSwap> underlying4(new FloatFloatSwap(
                 VanillaSwap::Payer, 1.0, 1.0, fixedSchedule, swapBase,
-                Thirty360(), floatingSchedule, euribor6m, Actual360(), false,
+                Thirty360(Thirty360::BondBasis), floatingSchedule, euribor6m, Actual360(), false,
                 false, 1.0, 0.0, Null<Real>(), Null<Real>(), 1.0, 0.0010));
 
         ext::shared_ptr<FloatFloatSwaption> swaption4 =

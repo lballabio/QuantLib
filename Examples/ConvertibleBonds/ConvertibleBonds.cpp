@@ -86,7 +86,7 @@ int main(int, char* []) {
 
         std::vector<Real> coupons(1, 0.05);
 
-        DayCounter bondDayCount = Thirty360();
+        DayCounter bondDayCount = Thirty360(Thirty360::BondBasis);
 
         Integer callLength[] = { 2, 4 };  // Call dates, years 2, 4.
         Integer putLength[] = { 3 }; // Put dates year 3
