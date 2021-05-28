@@ -49,7 +49,7 @@ namespace QuantLib {
         Assuming the use of compounded averaging the projected value of
         the floating leg becomes:
         \f[
-        N^{FLT} = N \left[ \prod_{k=0}^{K} (1+\alpha(T_{k},T_{k+1}) 
+        N^{FLT} = N \left[ \prod_{k=0}^{K} (1+\alpha(T_{k},T_{k+1})
                            L(T_{k},T_{k+1})) -1 \right],
         \f]
         where \f$ L(T_{i}, T_{j})) \f$ are interest rate index fixings
@@ -69,7 +69,7 @@ namespace QuantLib {
         At maturity the two single cashflows are swapped.
 
         \note we do not need Schedules on the legs because they use
-              one or two dates only per leg. Those dates are not 
+              one or two dates only per leg. Those dates are not
               adjusted for potential non-business days. Only the
               payment date is subject to adjustment.
     */
@@ -77,11 +77,11 @@ namespace QuantLib {
     class ZeroCouponSwap : public Swap {
       public:
         enum Type { Receiver = -1, Payer = 1 };
-        
+
         ZeroCouponSwap(Type type,
                        Real baseNominal,
                        const Date& startDate,
-                       const Date& maturityDate, 
+                       const Date& maturityDate,
                        Real fixedPayment,
                        ext::shared_ptr<IborIndex> iborIndex,
                        const Calendar& paymentCalendar,
@@ -93,7 +93,7 @@ namespace QuantLib {
                        Real baseNominal,
                        const Date& startDate,
                        const Date& maturityDate,
-                       Real fixedRate,
+                       Rate fixedRate,
                        const DayCounter& fixedDayCounter,
                        ext::shared_ptr<IborIndex> iborIndex,
                        const Calendar& paymentCalendar,
@@ -106,7 +106,6 @@ namespace QuantLib {
         //! "payer" or "receiver" refer to the fixed leg.
         Type type() const { return type_; }
         Real baseNominal() const { return baseNominal_; }
-        Real fixedPayment() const { return fixedPayment_; }
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
         RateAveraging::Type averagingMethod() const { return averagingMethod_; }
 
@@ -114,6 +113,8 @@ namespace QuantLib {
         const Leg& fixedLeg() const;
         //! just one cashflow in each leg
         const Leg& floatingLeg() const;
+
+        Real fixedPayment() const;
         //@}
 
         //! \name Results
@@ -124,11 +125,21 @@ namespace QuantLib {
         //@}
 
       private:
+        ZeroCouponSwap(Type type,
+                       Real baseNominal,
+                       const Date& startDate,
+                       const Date& maturityDate,
+                       ext::shared_ptr<IborIndex> iborIndex,
+                       const Calendar& paymentCalendar,
+                       BusinessDayConvention paymentConvention,
+                       Natural paymentDelay,
+                       RateAveraging::Type averagingMethod);
+
         Type type_;
         Real baseNominal_;
-        Real fixedPayment_;
         ext::shared_ptr<IborIndex> iborIndex_;
         RateAveraging::Type averagingMethod_;
+        Date paymentDate_;
     };
 }
 
