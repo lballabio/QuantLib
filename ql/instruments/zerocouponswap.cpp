@@ -26,26 +26,16 @@
 namespace QuantLib {
 
     namespace {       
-        ext::shared_ptr<CashFlow> createSubPeriodicCoupon(const Date& paymentDate,
-                                                          const Date& startDate,
-                                                          const Date& maturityDate,
-                                                          Real nominal,
-                                                          const ext::shared_ptr<IborIndex>& index,
-                                                          RateAveraging::Type averagingMethod) {
+        ext::shared_ptr<CashFlow>
+        compoundedSubPeriodicCoupon(const Date& paymentDate,
+                                    const Date& startDate,
+                                    const Date& maturityDate,
+                                    Real nominal,
+                                    const ext::shared_ptr<IborIndex>& index) {
             auto floatCpn = ext::make_shared<SubPeriodsCoupon>(
                 paymentDate, nominal, startDate, maturityDate, index->fixingDays(), index);
-            switch (averagingMethod) {
-                case RateAveraging::Simple:
-                    floatCpn->setPricer(
-                        ext::shared_ptr<FloatingRateCouponPricer>(new AveragingRatePricer));
-                    break;
-                case RateAveraging::Compound:
-                    floatCpn->setPricer(
-                        ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer));
-                    break;
-                default:
-                    QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
-            }
+            floatCpn->setPricer(
+                ext::shared_ptr<FloatingRateCouponPricer>(new CompoundingRatePricer));
             return floatCpn;
         }
     }
@@ -57,10 +47,9 @@ namespace QuantLib {
                                    ext::shared_ptr<IborIndex> iborIndex,
                                    const Calendar& paymentCalendar,
                                    BusinessDayConvention paymentConvention,
-                                   Natural paymentDelay,
-                                   RateAveraging::Type averagingMethod)
+                                   Natural paymentDelay)
     : Swap(2), type_(type), baseNominal_(baseNominal), iborIndex_(std::move(iborIndex)), 
-      averagingMethod_(averagingMethod), startDate_(startDate), maturityDate_(maturityDate) {
+      startDate_(startDate), maturityDate_(maturityDate) {
 
         QL_REQUIRE(!(baseNominal < 0.0), "base nominal cannot be negative");
         QL_REQUIRE(startDate < maturityDate,
@@ -70,8 +59,8 @@ namespace QuantLib {
 
         paymentDate_ = paymentCalendar.advance(maturityDate, paymentDelay, Days, paymentConvention);
 
-        legs_[1].push_back(createSubPeriodicCoupon(paymentDate_, startDate, maturityDate,
-                                                   baseNominal_, iborIndex_, averagingMethod_));
+        legs_[1].push_back(compoundedSubPeriodicCoupon(paymentDate_, startDate, maturityDate,
+                                                       baseNominal_, iborIndex_));
         for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
 
@@ -97,10 +86,9 @@ namespace QuantLib {
                                    ext::shared_ptr<IborIndex> iborIndex,
                                    const Calendar& paymentCalendar,
                                    BusinessDayConvention paymentConvention,
-                                   Natural paymentDelay,
-                                   RateAveraging::Type averagingMethod)
+                                   Natural paymentDelay)
     : ZeroCouponSwap(type, baseNominal, startDate, maturityDate,
-      iborIndex, paymentCalendar, paymentConvention, paymentDelay, averagingMethod) {
+      iborIndex, paymentCalendar, paymentConvention, paymentDelay) {
 
          legs_[0].push_back(
             ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedPayment, paymentDate_)));
@@ -115,10 +103,9 @@ namespace QuantLib {
                                    ext::shared_ptr<IborIndex> iborIndex,
                                    const Calendar& paymentCalendar,
                                    BusinessDayConvention paymentConvention,
-                                   Natural paymentDelay,
-                                   RateAveraging::Type averagingMethod)
+                                   Natural paymentDelay)
     : ZeroCouponSwap(type, baseNominal, startDate, maturityDate,
-      iborIndex, paymentCalendar, paymentConvention, paymentDelay, averagingMethod) {
+      iborIndex, paymentCalendar, paymentConvention, paymentDelay) {
 
         InterestRate interest(fixedRate, fixedDayCounter, Compounded, Annual);
         legs_[0].push_back(ext::shared_ptr<CashFlow>(

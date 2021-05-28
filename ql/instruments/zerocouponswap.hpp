@@ -27,7 +27,6 @@
 #include <ql/instruments/swap.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
-#include <ql/cashflows/rateaveraging.hpp>
 
 namespace QuantLib {
     class IborIndex;
@@ -54,11 +53,6 @@ namespace QuantLib {
         \f]
         where \f$ L(T_{i}, T_{j})) \f$ are interest rate index fixings
         for accrual period \f$ [T_{i}, T_{j}] \f$.
-        For simple averaging we have:
-        \f[
-        N^{FLT} = N \left[ \sum_{k=0}^{K} \alpha(T_{k},T_{k+1})
-                           L(T_{k},T_{k+1}) \right].
-        \f]
         For a par contract, it holds that:
         \f[
         P_n(0,T) N^{FIX} = P_n(0,T) N^{FLT}
@@ -86,8 +80,7 @@ namespace QuantLib {
                        ext::shared_ptr<IborIndex> iborIndex,
                        const Calendar& paymentCalendar,
                        BusinessDayConvention paymentConvention = Following,
-                       Natural paymentDelay = 0,
-                       RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                       Natural paymentDelay = 0);
 
         ZeroCouponSwap(Type type,
                        Real baseNominal,
@@ -98,8 +91,7 @@ namespace QuantLib {
                        ext::shared_ptr<IborIndex> iborIndex,
                        const Calendar& paymentCalendar,
                        BusinessDayConvention paymentConvention = Following,
-                       Natural paymentDelay = 0,
-                       RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                       Natural paymentDelay = 0);
 
         //! \name Inspectors
         //@{
@@ -109,7 +101,6 @@ namespace QuantLib {
         Date startDate() const { return startDate_; }
         Date maturityDate() const { return maturityDate_; }
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
-        RateAveraging::Type averagingMethod() const { return averagingMethod_; }
 
         //! just one cashflow in each leg
         const Leg& fixedLeg() const;
@@ -135,13 +126,11 @@ namespace QuantLib {
                        ext::shared_ptr<IborIndex> iborIndex,
                        const Calendar& paymentCalendar,
                        BusinessDayConvention paymentConvention,
-                       Natural paymentDelay,
-                       RateAveraging::Type averagingMethod);
+                       Natural paymentDelay);
 
         Type type_;
         Real baseNominal_;
         ext::shared_ptr<IborIndex> iborIndex_;
-        RateAveraging::Type averagingMethod_;
         Date startDate_;
         Date maturityDate_;
         Date paymentDate_;
