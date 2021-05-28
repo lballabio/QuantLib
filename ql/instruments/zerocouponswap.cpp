@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-/*! \file zerocouponswap.hpp
- \brief Zero-coupon interest rate swap
- */
-
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/subperiodcoupon.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
