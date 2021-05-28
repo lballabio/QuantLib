@@ -92,7 +92,7 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
     const Date todaysDate(5, Oct, 2016);
     Settings::instance().evaluationDate() = todaysDate;
 
-    const DayCounter dc = ActualActual();
+    const DayCounter dc = ActualActual(ActualActual::ISDA);
     const Date maturityDate = todaysDate + Period(3, Months);
     const Time maturity = dc.yearFraction(todaysDate, maturityDate);
 

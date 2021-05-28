@@ -190,12 +190,12 @@ namespace piecewise_yield_curve_test {
             fixedLegFrequency = Annual;
             fixedLegDayCounter = Thirty360(Thirty360::BondBasis);
             bondSettlementDays = 3;
-            bondDayCounter = ActualActual();
+            bondDayCounter = ActualActual(ActualActual::ISDA);
             bondConvention = Following;
             bondRedemption = 100.0;
             bmaFrequency = Quarterly;
             bmaConvention = Following;
-            bmaDayCounter = ActualActual();
+            bmaDayCounter = ActualActual(ActualActual::ISDA);
 
             deposits = LENGTH(depositData);
             fras = LENGTH(fraData);

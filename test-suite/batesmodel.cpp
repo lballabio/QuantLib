@@ -66,7 +66,7 @@ void BatesModelTest::testAnalyticVsBlack() {
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
 
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
     Date exerciseDate = settlementDate + 6*Months;
 
     ext::shared_ptr<StrikedTypePayoff> payoff(
@@ -179,7 +179,7 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
 
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
 
     ext::shared_ptr<StrikedTypePayoff> payoff(
                                      new PlainVanillaPayoff(Option::Put, 95));
@@ -308,7 +308,7 @@ void BatesModelTest::testAnalyticVsMCPricing() {
     Date settlementDate(30, March, 2007);
     Settings::instance().evaluationDate() = settlementDate;
 
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
     Date exerciseDate(30, March, 2012);
 
     ext::shared_ptr<StrikedTypePayoff> payoff(

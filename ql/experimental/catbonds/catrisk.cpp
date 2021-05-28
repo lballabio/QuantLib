@@ -88,7 +88,7 @@ namespace QuantLib {
                 gammaAlpha_(rng_, boost::gamma_distribution<>(alpha)),
                 gammaBeta_(rng_, boost::gamma_distribution<>(beta))
     {
-        ActualActual dayCounter;
+        DayCounter dayCounter = ActualActual(ActualActual::ISDA);
         dayCount_ = dayCounter.dayCount(start, end);
         yearFraction_ = dayCounter.yearFraction(start, end);
     }
