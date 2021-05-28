@@ -60,7 +60,7 @@ namespace QuantLib {
                                    Natural paymentDelay,
                                    RateAveraging::Type averagingMethod)
     : Swap(2), type_(type), baseNominal_(baseNominal), iborIndex_(std::move(iborIndex)), 
-      averagingMethod_(averagingMethod) {
+      averagingMethod_(averagingMethod), startDate_(startDate), maturityDate_(maturityDate) {
 
         QL_REQUIRE(!(baseNominal < 0.0), "base nominal cannot be negative");
         QL_REQUIRE(startDate < maturityDate,
@@ -142,6 +142,17 @@ namespace QuantLib {
         // with NPV float corrected for the payer sign.
         Real scaling = payer(1) ? -1.0 : 1.0;
         return floatingLegNPV() / (endDiscounts(0) * scaling);
+    }
+
+    Rate ZeroCouponSwap::fairFixedRate(const DayCounter& dayCounter) const {
+        // Given the relation between the fixed payment (N^FIX) and the fixed rate (K),
+        // N^FIX = N * (1 + K)^T - 1,
+        // the compound factor C = (1 + K)^T
+        // can be equivalently expressed as:
+        // C = N^FIX / N + 1
+        Real compound = fairFixedPayment() / baseNominal_ + 1.0;
+        return InterestRate::impliedRate(compound, dayCounter, Compounded, Annual, startDate_,
+                                         maturityDate_);
     }
 
     const Leg& ZeroCouponSwap::fixedLeg() const { return leg(0); }

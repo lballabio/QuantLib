@@ -26,6 +26,7 @@ class ZeroCouponSwapTest {
   public:
     static void testInstrumentValuation();
     static void testFairFixedPayment();
+    static void testFairFixedRate();
     static void testFixedPaymentFromRate();
     static void testArgumentsValidation();
     static void testExpectedCashFlowsInLegs();

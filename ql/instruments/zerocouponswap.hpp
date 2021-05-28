@@ -106,6 +106,8 @@ namespace QuantLib {
         //! "payer" or "receiver" refer to the fixed leg.
         Type type() const { return type_; }
         Real baseNominal() const { return baseNominal_; }
+        Date startDate() const { return startDate_; }
+        Date maturityDate() const { return maturityDate_; }
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
         RateAveraging::Type averagingMethod() const { return averagingMethod_; }
 
@@ -122,6 +124,7 @@ namespace QuantLib {
         Real fixedLegNPV() const;
         Real floatingLegNPV() const;
         Real fairFixedPayment() const;
+        Rate fairFixedRate(const DayCounter& dayCounter) const;
         //@}
 
       private:
@@ -139,6 +142,8 @@ namespace QuantLib {
         Real baseNominal_;
         ext::shared_ptr<IborIndex> iborIndex_;
         RateAveraging::Type averagingMethod_;
+        Date startDate_;
+        Date maturityDate_;
         Date paymentDate_;
     };
 }
