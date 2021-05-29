@@ -17,11 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
+#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/cashflows/subperiodcoupon.hpp>
-#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/zerocouponswap.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -87,10 +88,16 @@ namespace QuantLib {
                                    const Calendar& paymentCalendar,
                                    BusinessDayConvention paymentConvention,
                                    Natural paymentDelay)
-    : ZeroCouponSwap(type, baseNominal, startDate, maturityDate,
-      iborIndex, paymentCalendar, paymentConvention, paymentDelay) {
+    : ZeroCouponSwap(type,
+                     baseNominal,
+                     startDate,
+                     maturityDate,
+                     std::move(iborIndex),
+                     paymentCalendar,
+                     paymentConvention,
+                     paymentDelay) {
 
-         legs_[0].push_back(
+        legs_[0].push_back(
             ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedPayment, paymentDate_)));
     }
 
@@ -104,8 +111,14 @@ namespace QuantLib {
                                    const Calendar& paymentCalendar,
                                    BusinessDayConvention paymentConvention,
                                    Natural paymentDelay)
-    : ZeroCouponSwap(type, baseNominal, startDate, maturityDate,
-      iborIndex, paymentCalendar, paymentConvention, paymentDelay) {
+    : ZeroCouponSwap(type,
+                     baseNominal,
+                     startDate,
+                     maturityDate,
+                     std::move(iborIndex),
+                     paymentCalendar,
+                     paymentConvention,
+                     paymentDelay) {
 
         InterestRate interest(fixedRate, fixedDayCounter, Compounded, Annual);
         legs_[0].push_back(ext::shared_ptr<CashFlow>(
