@@ -67,9 +67,7 @@ namespace zerocouponswap_test {
                 ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(euriborHandle));
         }
 
-        ext::shared_ptr<CashFlow>
-        createSubPeriodsCoupon(const Date& start,
-                               const Date& end) {
+        ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start, const Date& end) const {
             Date paymentDate = calendar.advance(end, paymentDelay * Days, businessConvention);
             ext::shared_ptr<FloatingRateCoupon> cpn(new SubPeriodsCoupon(
                 paymentDate, baseNominal, start, end, settlementDays, euribor));
