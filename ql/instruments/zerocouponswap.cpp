@@ -133,7 +133,7 @@ namespace QuantLib {
 
     Rate ZeroCouponSwap::fairFixedRate(const DayCounter& dayCounter) const {
         // Given the relation between the fixed payment (N^FIX) and the fixed rate (K),
-        // N^FIX = N * (1 + K)^T - 1,
+        // N^FIX = N * [(1 + K)^T - 1],
         // the compound factor C = (1 + K)^T
         // can be equivalently expressed as:
         // C = N^FIX / N + 1
