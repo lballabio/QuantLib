@@ -33,9 +33,9 @@ namespace QuantLib {
 
     //! Zero-coupon interest rate swap
     /*! Quoted in terms of a known fixed cash flow \f$ N^{FIX} \f$ or
-        a fixed rate \f$ K \f$, where:
+        a fixed rate \f$ R \f$, where:
         \f[
-        N^{FIX} = N \left[ (1+K)^{\alpha(T_{0}, T_{K})}-1 \right] ,
+        N^{FIX} = N \left[ (1+R)^{\alpha(T_{0}, T_{K})}-1 \right] ,
         \f]
         with \f$ \alpha(T_{0}, T_{K}) \f$ being the time fraction
         between the start date of the contract \f$ T_{0} \f$ and
@@ -48,7 +48,7 @@ namespace QuantLib {
         Assuming the use of compounded averaging the projected value of
         the floating leg becomes:
         \f[
-        N^{FLT} = N \left[ \prod_{k=0}^{K} (1+\alpha(T_{k},T_{k+1})
+        N^{FLT} = N \left[ \prod_{k=0}^{K-1} (1+\alpha(T_{k},T_{k+1})
                            L(T_{k},T_{k+1})) -1 \right],
         \f]
         where \f$ L(T_{i}, T_{j})) \f$ are interest rate index fixings
