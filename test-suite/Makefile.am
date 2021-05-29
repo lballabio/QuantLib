@@ -158,7 +158,8 @@ QL_TEST_SRCS = \
 	varianceswaps.cpp \
 	volatilitymodels.cpp \
 	vpp.cpp \
-	zabr.cpp
+	zabr.cpp \
+	zerocouponswap.cpp
 
 QL_TEST_HDRS = \
 	speedlevel.hpp \
@@ -320,7 +321,8 @@ QL_TEST_HDRS = \
 	varianceswaps.hpp \
 	volatilitymodels.hpp \
 	vpp.hpp \
-	zabr.hpp
+	zabr.hpp \
+	zerocouponswap.hpp
 
 QL_TESTS = ${QL_TEST_SRCS} ${QL_TEST_HDRS}
 

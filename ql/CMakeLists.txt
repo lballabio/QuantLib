@@ -335,6 +335,7 @@ set(QuantLib_SRC
     instruments/varianceswap.cpp
     instruments/yearonyearinflationswap.cpp
     instruments/zerocouponinflationswap.cpp
+    instruments/zerocouponswap.cpp
     interestrate.cpp
     legacy/libormarketmodels/lfmcovarparam.cpp
     legacy/libormarketmodels/lfmcovarproxy.cpp
@@ -1396,6 +1397,7 @@ set(QuantLib_HDR
     instruments/varianceswap.hpp
     instruments/yearonyearinflationswap.hpp
     instruments/zerocouponinflationswap.hpp
+    instruments/zerocouponswap.hpp
     interestrate.hpp
     legacy/all.hpp
     legacy/libormarketmodels/all.hpp
