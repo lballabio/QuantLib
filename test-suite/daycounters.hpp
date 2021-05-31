@@ -38,7 +38,7 @@ class DayCounterTest {
     static void testThirty365();
     static void testThirty360_BondBasis();
     static void testThirty360_EurobondBasis();
-    static void testThirty360_German();
+    static void testThirty360_ISDA();
     static void testActual365_Canadian();
     static void testIntraday();
     static boost::unit_test_framework::test_suite* suite();
