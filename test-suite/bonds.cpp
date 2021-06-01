@@ -106,7 +106,7 @@ void BondTest::testYield() {
     Natural settlementDays = 3;
     Real coupons[] = { 0.02, 0.05, 0.08 };
     Frequency frequencies[] = { Semiannual, Annual };
-    DayCounter bondDayCount = Thirty360();
+    DayCounter bondDayCount = Thirty360(Thirty360::BondBasis);
     BusinessDayConvention accrualConvention = Unadjusted;
     BusinessDayConvention paymentConvention = ModifiedFollowing;
     Real redemption = 100.0;
@@ -205,7 +205,7 @@ void BondTest::testAtmRate() {
     Natural settlementDays = 3;
     Real coupons[] = { 0.02, 0.05, 0.08 };
     Frequency frequencies[] = { Semiannual, Annual };
-    DayCounter bondDayCount = Thirty360();
+    DayCounter bondDayCount = Thirty360(Thirty360::BondBasis);
     BusinessDayConvention accrualConvention = Unadjusted;
     BusinessDayConvention paymentConvention = ModifiedFollowing;
     Real redemption = 100.0;
@@ -269,7 +269,7 @@ void BondTest::testZspread() {
     Natural settlementDays = 3;
     Real coupons[] = { 0.02, 0.05, 0.08 };
     Frequency frequencies[] = { Semiannual, Annual };
-    DayCounter bondDayCount = Thirty360();
+    DayCounter bondDayCount = Thirty360(Thirty360::BondBasis);
     BusinessDayConvention accrualConvention = Unadjusted;
     BusinessDayConvention paymentConvention = ModifiedFollowing;
     Real redemption = 100.0;
@@ -1073,7 +1073,7 @@ void BondTest::testBrazilianCached() {
     prices[5] = 1026.19716497;
 
     std::vector<InterestRate> couponRates(1);
-    couponRates[0] = InterestRate(0.1, Thirty360(), Compounded,Annual);
+    couponRates[0] = InterestRate(0.1, Thirty360(Thirty360::BondBasis), Compounded,Annual);
 
     for (Size bondIndex = 0; bondIndex < maturityDates.size(); bondIndex++) {
 

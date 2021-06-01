@@ -364,7 +364,7 @@ void InflationTest::testZeroTermStructure() {
     };
 
     Period observationLag = Period(2,Months);
-    DayCounter dc = Thirty360();
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
     Frequency frequency = Monthly;
     std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > > helpers =
     makeHelpers<ZeroInflationTermStructure,ZeroCouponInflationSwapHelper,
@@ -854,7 +854,7 @@ void InflationTest::testYYTermStructure() {
     };
 
     Period observationLag = Period(2,Months);
-    DayCounter dc = Thirty360();
+    DayCounter dc = Thirty360(Thirty360::BondBasis);
 
     // now build the helpers ...
     std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =

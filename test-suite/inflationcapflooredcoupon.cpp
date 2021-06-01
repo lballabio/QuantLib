@@ -132,7 +132,7 @@ namespace inflation_capfloored_coupon_test {
             fixingDays = 0;
             settlement = calendar.advance(today,settlementDays,Days);
             startDate = settlement;
-            dc = Thirty360();
+            dc = Thirty360(Thirty360::BondBasis);
 
             // yoy index
             //      fixing data
@@ -156,7 +156,7 @@ namespace inflation_capfloored_coupon_test {
             }
 
             ext::shared_ptr<YieldTermStructure> nominalFF(
-                        new FlatForward(evaluationDate, 0.05, ActualActual()));
+                        new FlatForward(evaluationDate, 0.05, ActualActual(ActualActual::ISDA)));
             nominalTS.linkTo(nominalFF);
 
             // now build the YoY inflation curve

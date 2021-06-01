@@ -69,7 +69,7 @@ namespace QuantLib {
       public:
         AnalyticH1HWEngine(const ext::shared_ptr<HestonModel>& model,
                            const ext::shared_ptr<HullWhite>& hullWhiteModel,
-                           Real rhoXV, Size integrationOrder = 144);
+                           Real rhoSr, Size integrationOrder = 144);
 
         AnalyticH1HWEngine(const ext::shared_ptr<HestonModel>& model,
                            const ext::shared_ptr<HullWhite>& hullWhiteModel,

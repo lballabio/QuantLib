@@ -23,20 +23,32 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        bool isLastOfFebruary(Day d, Month m, Year y) {
+            return m == 2 && d == 28 + (Date::isLeap(y) ? 1 : 0);
+        }
+
+    }
+
     ext::shared_ptr<DayCounter::Impl>
-    Thirty360::implementation(Thirty360::Convention c, bool isLastPeriod) {
+    Thirty360::implementation(Thirty360::Convention c, const Date& terminationDate, bool isLastPeriod) {
         switch (c) {
           case USA:
-          case BondBasis:
             return ext::shared_ptr<DayCounter::Impl>(new US_Impl);
           case European:
           case EurobondBasis:
             return ext::shared_ptr<DayCounter::Impl>(new EU_Impl);
           case Italian:
             return ext::shared_ptr<DayCounter::Impl>(new IT_Impl);
+          case ISMA:
+          case BondBasis:
+            return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl);
+          case ISDA:
           case German:
-            return ext::shared_ptr<DayCounter::Impl>(
-                new GER_Impl(isLastPeriod));
+            return ext::shared_ptr<DayCounter::Impl>(new ISDA_Impl(terminationDate, isLastPeriod));
+          case NASD:
+            return ext::shared_ptr<DayCounter::Impl>(new NASD_Impl);
           default:
             QL_FAIL("unknown 30/360 convention");
         }
@@ -45,13 +57,28 @@ namespace QuantLib {
     Date::serial_type Thirty360::US_Impl::dayCount(const Date& d1,
                                                    const Date& d2) const {
         Day dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
-        Integer mm1 = d1.month(), mm2 = d2.month();
+        Month mm1 = d1.month(), mm2 = d2.month();
         Year yy1 = d1.year(), yy2 = d2.year();
 
-        if (dd2 == 31 && dd1 < 30) { dd2 = 1; mm2++; }
+        if (dd1 == 31) { dd1 = 30; }
+        if (dd2 == 31 && dd1 >= 30) { dd2 = 30; }
 
-        return 360*(yy2-yy1) + 30*(mm2-mm1-1) +
-            std::max(Integer(0),30-dd1) + std::min(Integer(30),dd2);
+        if (isLastOfFebruary(dd2, mm2, yy2) && isLastOfFebruary(dd1, mm1, yy1)) { dd2 = 30; }
+        if (isLastOfFebruary(dd1, mm1, yy1)) { dd1 = 30; }
+
+        return 360*(yy2-yy1) + 30*(mm2-mm1) + (dd2-dd1);
+    }
+
+    Date::serial_type Thirty360::ISMA_Impl::dayCount(const Date& d1,
+                                                     const Date& d2) const {
+        Day dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
+        Month mm1 = d1.month(), mm2 = d2.month();
+        Year yy1 = d1.year(), yy2 = d2.year();
+
+        if (dd1 == 31) { dd1 = 30; }
+        if (dd2 == 31 && dd1 == 30) { dd2 = 30; }
+
+        return 360*(yy2-yy1) + 30*(mm2-mm1) + (dd2-dd1);
     }
 
     Date::serial_type Thirty360::EU_Impl::dayCount(const Date& d1,
@@ -60,8 +87,10 @@ namespace QuantLib {
         Month mm1 = d1.month(), mm2 = d2.month();
         Year yy1 = d1.year(), yy2 = d2.year();
 
-        return 360*(yy2-yy1) + 30*(mm2-mm1-1) +
-            std::max(Integer(0),30-dd1) + std::min(Integer(30),dd2);
+        if (dd1 == 31) { dd1 = 30; }
+        if (dd2 == 31) { dd2 = 30; }
+
+        return 360*(yy2-yy1) + 30*(mm2-mm1) + (dd2-dd1);
     }
 
     Date::serial_type Thirty360::IT_Impl::dayCount(const Date& d1,
@@ -70,26 +99,44 @@ namespace QuantLib {
         Month mm1 = d1.month(), mm2 = d2.month();
         Year yy1 = d1.year(), yy2 = d2.year();
 
-        if (mm1 == 2 && dd1 > 27) dd1 = 30;
-        if (mm2 == 2 && dd2 > 27) dd2 = 30;
+        if (dd1 == 31) { dd1 = 30; }
+        if (dd2 == 31) { dd2 = 30; }
 
-        return 360*(yy2-yy1) + 30*(mm2-mm1-1) +
-            std::max(Integer(0),30-dd1) + std::min(Integer(30),dd2);
+        if (mm1 == 2 && dd1 > 27) { dd1 = 30; }
+        if (mm2 == 2 && dd2 > 27) { dd2 = 30; }
+
+        return 360*(yy2-yy1) + 30*(mm2-mm1) + (dd2-dd1);
     }
 
-    Date::serial_type Thirty360::GER_Impl::dayCount(const Date& d1,
-                                                    const Date& d2) const {
+    Date::serial_type Thirty360::ISDA_Impl::dayCount(const Date& d1,
+                                                     const Date& d2) const {
         Day dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
         Month mm1 = d1.month(), mm2 = d2.month();
         Year yy1 = d1.year(), yy2 = d2.year();
 
-        if (mm1 == 2 && dd1 == 28 + (Date::isLeap(yy1) ? 1 : 0))
-            dd1 = 30;
-        if (!isLastPeriod_ && mm2 == 2 && dd2 == 28 + (Date::isLeap(yy2) ? 1 : 0))
-            dd2 = 30;
+        if (dd1 == 31) { dd1 = 30; }
+        if (dd2 == 31) { dd2 = 30; }
 
-        return 360*(yy2-yy1) + 30*(mm2-mm1-1) +
-            std::max(Integer(0),30-dd1) + std::min(Integer(30),dd2);
+        if (isLastOfFebruary(dd1, mm1, yy1)) { dd1 = 30; }
+
+        bool isTerminationDate =
+            terminationDate_ == Date() ? isLastPeriod_ : d2 == terminationDate_;
+        if (!isTerminationDate && isLastOfFebruary(dd2, mm2, yy2)) { dd2 = 30; }
+
+        return 360*(yy2-yy1) + 30*(mm2-mm1) + (dd2-dd1);
+    }
+
+    Date::serial_type Thirty360::NASD_Impl::dayCount(const Date& d1,
+                                                     const Date& d2) const {
+        Day dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
+        Integer mm1 = d1.month(), mm2 = d2.month();
+        Year yy1 = d1.year(), yy2 = d2.year();
+
+        if (dd1 == 31) { dd1 = 30; }
+        if (dd2 == 31 && dd1 >= 30) { dd2 = 30; }
+        if (dd2 == 31 && dd1 < 30) { dd2 = 1; mm2++; }
+
+        return 360*(yy2-yy1) + 30*(mm2-mm1) + (dd2-dd1);
     }
 
 }

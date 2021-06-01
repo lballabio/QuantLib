@@ -126,8 +126,8 @@ namespace inflation_cpi_swap_test {
             fixingDays = 0;
             settlement = calendar.advance(today,settlementDays,Days);
             startDate = settlement;
-            dcZCIIS = ActualActual();
-            dcNominal = ActualActual();
+            dcZCIIS = ActualActual(ActualActual::ISDA);
+            dcNominal = ActualActual(ActualActual::ISDA);
 
             // uk rpi index
             //      fixing data
@@ -393,7 +393,7 @@ void CPISwapTest::zciisconsistency() {
     Date endDate(25, November, 2059);
     Calendar cal = UnitedKingdom();
     BusinessDayConvention paymentConvention = ModifiedFollowing;
-    DayCounter dummyDC, dc = ActualActual();
+    DayCounter dummyDC, dc = ActualActual(ActualActual::ISDA);
     Period observationLag(2,Months);
 
     Rate quote = 0.03714;

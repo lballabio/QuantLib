@@ -88,7 +88,7 @@ namespace swap_test {
             floatingConvention = ModifiedFollowing;
             fixedFrequency = Annual;
             floatingFrequency = Semiannual;
-            fixedDayCount = Thirty360();
+            fixedDayCount = Thirty360(Thirty360::BondBasis);
             index = ext::shared_ptr<IborIndex>(new
                 Euribor(Period(floatingFrequency), termStructure));
             calendar = index->fixingCalendar();

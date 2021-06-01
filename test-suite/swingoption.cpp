@@ -186,7 +186,7 @@ void SwingOptionTest::testExtOUJumpVanillaEngine() {
     const Date today = Date::todaysDate();
     Settings::instance().evaluationDate() = today;
 
-    const DayCounter dc = ActualActual();
+    const DayCounter dc = ActualActual(ActualActual::ISDA);
     const Date maturityDate = today + Period(12, Months);
     const Time maturity = dc.yearFraction(today, maturityDate);
 
@@ -244,7 +244,7 @@ void SwingOptionTest::testFdBSSwingOption() {
 
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
     Date maturityDate = settlementDate + Period(12, Months);
 
     Real strike = 30;
@@ -325,7 +325,7 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
 
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
     Date maturityDate = settlementDate + Period(12, Months);
 
     Real strike = 30;

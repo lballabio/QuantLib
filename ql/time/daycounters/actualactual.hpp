@@ -91,8 +91,15 @@ namespace QuantLib {
                                                                Convention c, 
                                                                const Schedule& schedule);
       public:
-        ActualActual(Convention c = ActualActual::ISDA, 
-                     const Schedule& schedule = Schedule())
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.23.
+        */
+        QL_DEPRECATED
+        ActualActual()
+        : DayCounter(implementation(ActualActual::ISDA, Schedule())) {}
+
+        explicit ActualActual(Convention c,
+                              const Schedule& schedule = Schedule())
         : DayCounter(implementation(c, schedule)) {}
     };
 

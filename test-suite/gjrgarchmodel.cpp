@@ -45,7 +45,7 @@ void GJRGARCHModelTest::testEngines() {
        "Testing Monte Carlo GJR-GARCH engine against "
        "analytic GJR-GARCH engine...");
 
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
 
     const Date today = Date::todaysDate();
     Handle<YieldTermStructure> riskFreeTS(flatRate(today, 0.05, dayCounter));

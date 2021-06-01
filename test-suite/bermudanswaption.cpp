@@ -70,7 +70,7 @@ namespace bermudan_swaption_test {
             floatingConvention = ModifiedFollowing;
             fixedFrequency = Annual;
             floatingFrequency = Semiannual;
-            fixedDayCount = Thirty360();
+            fixedDayCount = Thirty360(Thirty360::BondBasis);
             index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             calendar = index->fixingCalendar();
             today = calendar.adjust(Date::todaysDate());

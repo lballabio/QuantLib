@@ -21,6 +21,7 @@ EXTRA_DIST = \
 	Contributors.txt \
 	LICENSE.TXT \
 	News.md \
+	QuantLib.natvis \
 	QuantLib.props \
 	QuantLib.spec \
 	QuantLib.sln \
