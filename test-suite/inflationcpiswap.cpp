@@ -268,7 +268,7 @@ void CPISwapTest::consistency() {
 
     // ZeroInflationSwap aka CPISwap
 
-    CPISwap::Type type = CPISwap::Payer;
+    Swap::Type type = Swap::Payer;
     Real nominal = 1000000.0;
     bool subtractInflationNominal = true;
     // float+spread leg
@@ -411,7 +411,7 @@ void CPISwapTest::zciisconsistency() {
     std::vector<Date> oneDate = {endDate};
     Schedule schOneDate(oneDate, cal, paymentConvention);
 
-    CPISwap::Type stype = CPISwap::Payer;
+    Swap::Type stype = Swap::Payer;
     Real inflationNominal = nominal;
     Real floatNominal = inflationNominal * std::pow(1.0+quote,50);
     bool subtractInflationNominal = true;
@@ -447,7 +447,7 @@ void CPISwapTest::cpibondconsistency() {
 
     // ZeroInflationSwap aka CPISwap
 
-    CPISwap::Type type = CPISwap::Payer;
+    Swap::Type type = Swap::Payer;
     Real nominal = 1000000.0;
     bool subtractInflationNominal = true;
     // float+spread leg
