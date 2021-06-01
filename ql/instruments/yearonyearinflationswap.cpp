@@ -235,7 +235,7 @@ namespace QuantLib {
             case YearOnYearInflationSwap::Receiver:
                 return out << "Receiver";
             default:
-                QL_FAIL("unknown VanillaSwap::Type(" << Integer(t) << ")");
+                QL_FAIL("unknown YearOnYearInflationSwap::Type(" << Integer(t) << ")");
         }
     }
 

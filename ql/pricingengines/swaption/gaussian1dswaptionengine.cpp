@@ -46,7 +46,7 @@ namespace QuantLib {
 
         VanillaSwap swap = *arguments_.swap;
         Option::Type type =
-            arguments_.type == VanillaSwap::Payer ? Option::Call : Option::Put;
+            arguments_.type == Swap::Payer ? Option::Call : Option::Put;
         const Schedule& fixedSchedule = swap.fixedSchedule();
         const Schedule& floatSchedule = swap.floatingSchedule();
 

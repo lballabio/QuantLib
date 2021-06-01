@@ -147,8 +147,7 @@ namespace QuantLib {
         vSResults->legNPV[0];
     Real baseSwapNPV = vSResults->value;
 
-    VanillaSwap::Type reversedType = arguments_.type == VanillaSwap::Payer ? 
-        VanillaSwap::Receiver : VanillaSwap::Payer;
+    Swap::Type reversedType = arguments_.type == Swap::Payer ? Swap::Receiver : Swap::Payer;
 
     // Swaplet options summatory:
     while(nextFD != arguments_.fixedPayDates.end()) {
