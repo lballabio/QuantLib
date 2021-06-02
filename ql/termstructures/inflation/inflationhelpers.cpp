@@ -204,18 +204,18 @@ namespace QuantLib {
         Rate fixedRate = quote()->value();
 
         Real nominal = 1000000.0;   // has to be something but doesn't matter what
-        yyiis_.reset(new YearOnYearInflationSwap(YearOnYearInflationSwap::Payer,
-                                                    nominal,
-                                                    fixedSchedule,
-                                                    fixedRate,
-                                                    dayCounter_,
-                                                    yoySchedule,
-                                                    new_yii,
-                                                    swapObsLag_,
-                                                    spread,
-                                                    dayCounter_,
-                                                    calendar_,  // inflation index does not have a calendar
-                                                    paymentConvention_));
+        yyiis_.reset(new YearOnYearInflationSwap(Swap::Payer,
+                                                 nominal,
+                                                 fixedSchedule,
+                                                 fixedRate,
+                                                 dayCounter_,
+                                                 yoySchedule,
+                                                 new_yii,
+                                                 swapObsLag_,
+                                                 spread,
+                                                 dayCounter_,
+                                                 calendar_,  // inflation index does not have a calendar
+                                                 paymentConvention_));
 
 
         // The instrument takes a standard discounting swap engine.

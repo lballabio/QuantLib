@@ -896,17 +896,17 @@ void InflationTest::testYYTermStructure() {
         .backwards()
         ;
 
-        YearOnYearInflationSwap yyS2(YearOnYearInflationSwap::Payer,
-                                        1000000.0,
-                                        yoySchedule,//fixed schedule, but same as yoy
-                                        yyData[j].rate/100.0,
-                                        dc,
-                                        yoySchedule,
-                                        iir,
-                                        observationLag,
-                                        0.0,        //spread on index
-                                        dc,
-                                        UnitedKingdom());
+        YearOnYearInflationSwap yyS2(Swap::Payer,
+                                     1000000.0,
+                                     yoySchedule,//fixed schedule, but same as yoy
+                                     yyData[j].rate/100.0,
+                                     dc,
+                                     yoySchedule,
+                                     iir,
+                                     observationLag,
+                                     0.0,        //spread on index
+                                     dc,
+                                     UnitedKingdom());
 
         yyS2.setPricingEngine(sppe);
         setCouponPricer(yyS2.yoyLeg(), pricer);
@@ -934,17 +934,17 @@ void InflationTest::testYYTermStructure() {
         .backwards()
         ;
 
-        YearOnYearInflationSwap yyS3(YearOnYearInflationSwap::Payer,
-                                    1000000.0,
-                                    yoySchedule,//fixed schedule, but same as yoy
-                                    yyData[jj].rate/100.0,
-                                    dc,
-                                    yoySchedule,
-                                    iir,
-                                    observationLag,
-                                    0.0,        //spread on index
-                                    dc,
-                                    UnitedKingdom());
+        YearOnYearInflationSwap yyS3(Swap::Payer,
+                                     1000000.0,
+                                     yoySchedule,//fixed schedule, but same as yoy
+                                     yyData[jj].rate/100.0,
+                                     dc,
+                                     yoySchedule,
+                                     iir,
+                                     observationLag,
+                                     0.0,        //spread on index
+                                     dc,
+                                     UnitedKingdom());
 
         yyS3.setPricingEngine(sppe);
         setCouponPricer(yyS3.yoyLeg(), pricer);
