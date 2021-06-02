@@ -353,9 +353,6 @@
     <ClCompile Include="schedule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="settings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="shortratemodels.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -480,10 +477,13 @@
     <ClCompile Include="ultimateforwardtermstructure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="crosscurrencyratehelpers.cpp">
+    <ClCompile Include="settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="subperiodcoupons.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="crosscurrencyratehelpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -833,9 +833,6 @@
     <ClInclude Include="schedule.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="settings.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="shortratemodels.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -965,10 +962,13 @@
     <ClInclude Include="ultimateforwardtermstructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="crosscurrencyratehelpers.hpp">
+    <ClInclude Include="settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="subperiodcoupons.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="crosscurrencyratehelpers.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

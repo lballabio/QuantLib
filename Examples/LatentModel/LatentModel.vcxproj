@@ -152,6 +152,14 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">LatentModel-mt</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">LatentModel-x64-mt</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(BOOST_DIR);$(QL_DIR);$(IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>$(QL_DIR)\lib;$(BOOST_DIR)\stage\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(BOOST_DIR);$(QL_DIR)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(BOOST_DIR)/stage/libs;$(QL_DIR)/lib</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
       <TypeLibraryName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\LatentModel.tlb</TypeLibraryName>
