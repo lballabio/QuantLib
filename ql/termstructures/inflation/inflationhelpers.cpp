@@ -108,7 +108,7 @@ namespace QuantLib {
         Real nominal = 1000000.0;   // has to be something but doesn't matter what
         Date start = nominalTS->referenceDate();
         zciis_.reset(new ZeroCouponInflationSwap(
-                                ZeroCouponInflationSwap::Payer,
+                                Swap::Payer,
                                 nominal, start, maturity_,
                                 calendar_, paymentConvention_, dayCounter_, K, // fixed side & fixed rate
                                 new_zii, swapObsLag_));

@@ -387,7 +387,7 @@ void CPISwapTest::zciisconsistency() {
 
     CommonVars common;
 
-    ZeroCouponInflationSwap::Type ztype = ZeroCouponInflationSwap::Payer;
+    Swap::Type ztype = Swap::Payer;
     Real  nominal = 1000000.0;
     Date startDate(common.evaluationDate);
     Date endDate(25, November, 2059);
