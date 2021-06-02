@@ -113,7 +113,7 @@ namespace overnight_indexed_swap_test {
     struct CommonVars {
         // global data
         Date today, settlement;
-        OvernightIndexedSwap::Type type;
+        Swap::Type type;
         Real nominal;
         Calendar calendar;
         Natural settlementDays;
@@ -153,7 +153,7 @@ namespace overnight_indexed_swap_test {
         }
 
         CommonVars() {
-            type = OvernightIndexedSwap::Payer;
+            type = Swap::Payer;
             settlementDays = 2;
             nominal = 100.0;
             fixedEoniaConvention = ModifiedFollowing;

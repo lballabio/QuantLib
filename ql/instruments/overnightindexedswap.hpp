@@ -40,8 +40,7 @@ namespace QuantLib {
 
     //! Overnight indexed swap: fix vs compounded overnight rate
     class OvernightIndexedSwap : public Swap {
-    public:
-        enum Type { Receiver = -1, Payer = 1 };
+      public:
         OvernightIndexedSwap(Type type,
                              Real nominal,
                              const Schedule& schedule,
