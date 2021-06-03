@@ -234,16 +234,4 @@ namespace QuantLib {
         fairSpread = Null<Spread>();
     }
 
-    std::ostream& operator<<(std::ostream& out,
-                             VanillaSwap::Type t) {
-        switch (t) {
-          case VanillaSwap::Payer:
-            return out << "Payer";
-          case VanillaSwap::Receiver:
-            return out << "Receiver";
-          default:
-            QL_FAIL("unknown VanillaSwap::Type(" << Integer(t) << ")");
-        }
-    }
-
 }

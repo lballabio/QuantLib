@@ -433,7 +433,7 @@ void InflationCapFloorTest::testParity() {
                     .backwards()
                     ;
 
-                    YearOnYearInflationSwap swap(YearOnYearInflationSwap::Payer, 1000000.0,
+                    YearOnYearInflationSwap swap(Swap::Payer, 1000000.0,
                                                  yoySchedule, // fixed schedule, but same as yoy
                                                  strike, vars.dc, yoySchedule, vars.iir,
                                                  vars.observationLag,

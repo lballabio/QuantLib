@@ -220,7 +220,7 @@ namespace QuantLib {
         DayCounter dayCounter = termStructure()->dayCounter();
         Time start = dayCounter.yearFraction(settlement,
                                              arguments.floatingResetDates[0]);
-        Real w = (arguments.type==VanillaSwap::Payer ? 1 : -1 );
+        Real w = (arguments.type==Swap::Payer ? 1 : -1 );
 
         std::vector<Time> fixedPayTimes(arguments.fixedPayDates.size());
         for (Size i=0; i<fixedPayTimes.size(); ++i)

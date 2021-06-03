@@ -735,17 +735,17 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
                     .backwards()
                     ;
 
-                    YearOnYearInflationSwap swap(YearOnYearInflationSwap::Payer,
-                                                    1000000.0,
-                                                    yoySchedule,//fixed schedule, but same as yoy
-                                                    0.0,//strikes[j],
-                                                    vars.dc,
-                                                    yoySchedule,
-                                                    vars.iir,
-                                                    vars.observationLag,
-                                                    0.0,        //spread on index
-                                                    vars.dc,
-                                                    UnitedKingdom());
+                    YearOnYearInflationSwap swap(Swap::Payer,
+                                                 1000000.0,
+                                                 yoySchedule,//fixed schedule, but same as yoy
+                                                 0.0,//strikes[j],
+                                                 vars.dc,
+                                                 yoySchedule,
+                                                 vars.iir,
+                                                 vars.observationLag,
+                                                 0.0,        //spread on index
+                                                 vars.dc,
+                                                 UnitedKingdom());
 
                     Handle<YieldTermStructure> hTS(vars.nominalTS);
                     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));

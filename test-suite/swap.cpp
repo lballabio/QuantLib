@@ -44,7 +44,7 @@ namespace swap_test {
     struct CommonVars {
         // global data
         Date today, settlement;
-        VanillaSwap::Type type;
+        Swap::Type type;
         Real nominal;
         Calendar calendar;
         BusinessDayConvention fixedConvention, floatingConvention;
@@ -81,7 +81,7 @@ namespace swap_test {
         }
 
         CommonVars() {
-            type = VanillaSwap::Payer;
+            type = Swap::Payer;
             settlementDays = 2;
             nominal = 100.0;
             fixedConvention = Unadjusted;

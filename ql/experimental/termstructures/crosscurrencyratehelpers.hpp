@@ -75,7 +75,7 @@ namespace QuantLib {
                                                            BusinessDayConvention convention,
                                                            bool endOfMonth,
                                                            const ext::shared_ptr<IborIndex>& idx,
-                                                           VanillaSwap::Type type,
+                                                           Swap::Type type,
                                                            Real notional = 1.0,
                                                            Spread basis = 0.0);
         //@}
