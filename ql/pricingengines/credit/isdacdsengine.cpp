@@ -103,6 +103,12 @@ namespace QuantLib {
         // collect nodes from both curves and sort them
         std::vector<Date> yDates, cDates;
 
+        // the calls to dates() below might not trigger bootstrap (because
+        // they will call the InterpolatedCurve methods, not the ones from
+        // PiecewiseYieldCurve or PiecewiseDefaultCurve) so we force it here
+        discountCurve_->discount(0.0);
+        probability_->defaultProbability(0.0);
+
         if(ext::shared_ptr<InterpolatedDiscountCurve<LogLinear> > castY1 =
             ext::dynamic_pointer_cast<
                 InterpolatedDiscountCurve<LogLinear> >(*discountCurve_)) {
