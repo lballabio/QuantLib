@@ -1,4 +1,33 @@
 
+# QL_CHECK_CPP11
+# --------------------
+# Check whether C++11 features are supported by default.
+# If not (e.g., with Clang on Mac OS) add -std=c++11
+AC_DEFUN([QL_CHECK_CPP11],
+[AC_MSG_CHECKING([for C++11 support])
+ AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+        [[@%:@include <initializer_list>
+          struct S {
+            int i = 3;
+            double x = 3.5;
+          };
+
+          class C {
+            public:
+              C(int) noexcept;
+              C(std::initializer_list<int>);
+              S f() { return { 2, 1.5 }; }
+          };
+          ]],
+        [[]])],
+    [AC_MSG_RESULT([yes])],
+    [AC_MSG_RESULT([no: adding -std=c++11 to CXXFLAGS])
+     AC_SUBST([CPP11_CXXFLAGS],["-std=c++11"])
+     AC_SUBST([CXXFLAGS],["${CXXFLAGS} -std=c++11"])
+    ])
+])
+
 # QL_CHECK_BOOST_DEVEL
 # --------------------
 # Check whether the Boost headers are available
