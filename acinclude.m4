@@ -222,6 +222,7 @@ AC_DEFUN([QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM],
  else
      AC_MSG_RESULT([yes])
      AC_SUBST([BOOST_THREAD_LIB],[$boost_thread_lib])
+     AC_SUBST([PTHREAD_CXXFLAGS],["-pthread"])
      AC_SUBST([CXXFLAGS],["${CXXFLAGS} -pthread"])
  fi
 ])

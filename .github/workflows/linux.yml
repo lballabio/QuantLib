@@ -154,7 +154,6 @@ jobs:
             cc: gcc
             cxx: g++
             configureflags: --enable-thread-safe-observer-pattern
-            moreflags: -lboost_thread -lboost_system -pthread
             tests: true
           - name: "Parallel unit-test runner"
             shortname: paralleltests
@@ -162,7 +161,7 @@ jobs:
             cc: gcc
             cxx: g++
             configureflags: --enable-parallel-unit-test-runner
-            moreflags: -lboost_thread -lboost_system -pthread -lrt
+            moreflags: -lrt
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
     - uses: actions/checkout@v2
@@ -195,4 +194,4 @@ jobs:
         echo "#include <ql/quantlib.hpp>" > test1.cpp && echo "int main() { return 0; }" >> test1.cpp
         echo "#include <ql/quantlib.hpp>" > test2.cpp
         make install
-        ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} test1.cpp test2.cpp -lQuantLib ${{ matrix.moreflags }}
+        ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs` ${{ matrix.moreflags }}
