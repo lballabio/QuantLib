@@ -109,6 +109,12 @@ jobs:
             cxx: g++
             cxxflags: "-std=c++17"
             configureflags: --enable-std-classes
+          - name: "OpenMP enabled"
+            shortname: openmp
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            configureflags: --enable-openmp
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
     - uses: actions/checkout@v2

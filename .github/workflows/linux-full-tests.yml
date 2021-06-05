@@ -138,6 +138,12 @@ jobs:
             cc: gcc
             cxx: g++
             configureflags: --enable-thread-safe-observer-pattern
+          - name: "OpenMP enabled"
+            shortname: openmp
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            configureflags: --enable-openmp
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
     - uses: actions/checkout@v2
