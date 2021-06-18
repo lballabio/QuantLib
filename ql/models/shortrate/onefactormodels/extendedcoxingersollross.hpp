@@ -75,11 +75,10 @@ namespace QuantLib {
     //! Short-rate dynamics in the extended Cox-Ingersoll-Ross model
     /*! The short-rate is here
         \f[
-            r_t = \varphi(t) + y_t^2
+            r_t = \varphi(t) + y_t
         \f]
         where \f$ \varphi(t) \f$ is the deterministic time-dependent
-        parameter used for term-structure fitting and \f$ y_t \f$ is the
-        state variable, the square-root of a standard CIR process.
+        parameter used for term-structure fitting and \f$ y_t \f$ is a standard CIR process.
     */
     class ExtendedCoxIngersollRoss::Dynamics
         : public CoxIngersollRoss::Dynamics {
@@ -87,8 +86,8 @@ namespace QuantLib {
         Dynamics(Parameter phi, Real theta, Real k, Real sigma, Real x0)
         : CoxIngersollRoss::Dynamics(theta, k, sigma, x0), phi_(std::move(phi)) {}
 
-        Real variable(Time t, Rate r) const override { return std::sqrt(r - phi_(t)); }
-        Real shortRate(Time t, Real y) const override { return y * y + phi_(t); }
+        Real variable(Time t, Rate r) const override { return r - phi_(t); }
+        Real shortRate(Time t, Real y) const override { return y + phi_(t); }
 
       private:
         Parameter phi_;
@@ -153,4 +152,3 @@ namespace QuantLib {
 
 
 #endif
-
