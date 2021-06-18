@@ -35,30 +35,36 @@ namespace QuantLib {
 
         if (isWeekend(w)
             // New Year's Day
-            || ((d == 1 || (d==3 && w==Monday)) && m == January)
+            || ((d == 1 || (d == 3 && w == Monday)) && m == January)
             // Chakri Memorial Day
-            || ((d == 6 || ((d==7 || d==8) && w==Monday)) && m == April)
-            // Songkran Festival
-            || ((d == 13 || d == 14 || d == 15) && m == April)
-            // Songkran Festival obersvence (usually not more then 1 holiday will be replaced)
-            || (d == 16 && (w == Monday || w == Tuesday) && m == April)
+            || ((d == 6 || ((d == 7 || d == 8) && w == Monday)) && m == April)
+            // Songkran Festival (was cancelled in 2020 due to the Covid-19 Pandamic)
+            || ((d == 13 || d == 14 || d == 15) && m == April && y != 2020)
+            // Substitution Songkran Festival, usually not more than 5 days in total (was cancelled
+            // in 2020 due to the Covid-19 Pandamic)
+            || (d == 16 && (w == Monday || w == Tuesday) && m == April && y != 2020)
             // Labor Day
-            || ((d == 1 || ((d==2 || d==3) && w==Monday)) && m == May)
-            // H.M. the King's Birthday
-            || ((d == 28 || ((d==29 || d==30) && w==Monday)) && m == July && y >= 2017)
-            // H.M. the Queen's Birthday
-            || ((d == 12 || ((d==13 || d==14) && w==Monday)) && m == August)
-            // H.M. King Bhumibol Adulyadej Memorial Day
-            || ((d == 13 || ((d==14 || d==15) && w==Monday)) && m == October && y >= 2017)
-            // H.M. King Bhumibol Adulyadej's Birthday
-            || ((d == 5 || ((d==6 || d==7) && w==Monday)) && m == December)
+            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == May)
+            // Coronation Day
+            || ((d == 4 || ((d == 5 || d == 6) && w == Monday)) && m == May && y >= 2019)
+            // H.M.Queen Suthida Bajrasudhabimalalakshana’s Birthday
+            || ((d == 02 || ((d == 03 || d == 04) && w == Monday)) && m == June && y >= 2019)
+            // H.M. King Maha Vajiralongkorn Phra Vajiraklaochaoyuhua’s Birthday
+            || ((d == 28 || ((d == 29 || d == 30) && w == Monday)) && m == July && y >= 2017)
+            // 	​H.M. Queen Sirikit The Queen Mother’s Birthday / Mother’s Day
+            || ((d == 12 || ((d == 13 || d == 14) && w == Monday)) && m == August)
+            // H.M. King Bhumibol Adulyadej The Great Memorial Day
+            || ((d == 13 || ((d == 14 || d == 15) && w == Monday)) && m == October && y >= 2017)
+            // Chulalongkorn Day
+            || ((d == 23 || ((d == 24 || d == 25) && w == Monday)) && m == October)
+            // H.M. King Bhumibol Adulyadej The Great’s Birthday/ National Day / Father’s Day
+            || ((d == 5 || ((d == 6 || d == 7) && w == Monday)) && m == December)
             // Constitution Day
-            || ((d == 10 || ((d==11 || d==12) && w==Monday)) && m == December)
+            || ((d == 10 || ((d == 11 || d == 12) && w == Monday)) && m == December)
             // New Year’s Eve
             || (d == 31 && m == December)
             // New Year’s Eve Observence
-            || ((d == 1 || d==2) && w == Monday && m == January)
-            )
+            || ((d == 1 || d == 2) && w == Monday && m == January))
             return false;
 
         if ((y == 2000) &&
@@ -234,6 +240,33 @@ namespace QuantLib {
              || (d==27 && m==July)    // Asarnha Bucha Day1
              || (d==23 && m==October) // Chulalongkorn Day
                 ))
+            return false;
+
+        if ((y == 2019) && ((d == 19 && m == February) // Makha Bucha Day
+                            || (d == 6 && m == May)    // Special Holiday
+                            || (d == 20 && m == May)   // Wisakha Bucha Day
+                            || (d == 16 && m == July)  // Asarnha Bucha Day
+                            ))
+            return false;
+
+        if ((y == 2020) && ((d == 10 && m == February)    // Makha Bucha Day
+                            || (d == 6 && m == May)       // Wisakha Bucha Day
+                            || (d == 6 && m == July)      // Asarnha Bucha Day
+                            || (d == 27 && m == July)     // Substitution for Songkran Festival
+                            || (d == 4 && m == September) // Substitution for Songkran Festival
+                            || (d == 7 && m == September) // Substitution for Songkran Festival
+                            || (d == 11 && m == December) // Special Holiday
+                            ))
+            return false;
+
+        if ((y == 2021) && ((d == 12 && m == February)     // Special Holiday
+                            || (d == 26 && m == February)  // Makha Bucha Day
+                            || (d == 26 && m == May)       // Wisakha Bucha Day
+                            || (d == 26 && m == July)      // Asarnha Bucha Day
+                            || (d == 27 && m == July)      // Substitution for Songkran Festival
+                            || (d == 24 && m == September) // Special Holiday
+                            || (d == 22 && m == October)   // ​Substitution for Chulalongkorn Day
+                            ))
             return false;
 
         return true;
