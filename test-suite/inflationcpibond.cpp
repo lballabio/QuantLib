@@ -60,6 +60,8 @@ namespace inflation_cpi_bond_test {
         const DayCounter& dc,
         const Handle<YieldTermStructure>& yTS) {
 
+        QL_DEPRECATED_DISABLE_WARNING_III
+
         std::vector<ext::shared_ptr<Helper> > instruments;
         for (Datum datum : iiData) {
             Date maturity = datum.date;
@@ -72,11 +74,15 @@ namespace inflation_cpi_bond_test {
             instruments.push_back(h);
         }
         return instruments;
+
+        QL_DEPRECATED_ENABLE_WARNING_III
     }
 
 
     struct CommonVars {
 
+        QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+    
         Calendar calendar;
         BusinessDayConvention convention;
         Date evaluationDate;
@@ -112,7 +118,7 @@ namespace inflation_cpi_bond_test {
                 .withConvention(ModifiedFollowing);
 
             bool interp = false;
-            ii = ext::make_shared<UKRPI>(interp, cpiTS);
+            ii = ext::shared_ptr<UKRPI>(new UKRPI(interp, cpiTS));
 
             Real fixData[] = {
                 206.1, 207.3, 208.0, 208.9, 209.7, 210.9,
@@ -168,6 +174,8 @@ namespace inflation_cpi_bond_test {
             // break circular references and allow curves to be destroyed
             cpiTS.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
         }
+    
+        QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
     };
 
 }
@@ -234,4 +242,3 @@ test_suite* InflationCPIBondTest::suite() {
 
     return suite;
 }
-

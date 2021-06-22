@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007, 2009 Chris Kenyon
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,34 +25,37 @@
 #ifndef quantlib_ukrpi_hpp
 #define quantlib_ukrpi_hpp
 
-#include <ql/indexes/inflationindex.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
     //! UK Retail Price Inflation Index
     class UKRPI : public ZeroInflationIndex {
       public:
-        UKRPI(bool interpolated,
-              const Handle<ZeroInflationTermStructure>& ts =
-                    Handle<ZeroInflationTermStructure>())
-        : ZeroInflationIndex("RPI",
-                             UKRegion(),
-                             false,
-                             interpolated,
-                             Monthly,
-                             Period(1, Months),
-                             GBPCurrency(),
-                             ts) {}
+        QL_DEPRECATED_III_CONSTRUCTOR
+        explicit UKRPI(
+            bool interpolated,
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        : UKRPI(ts) {
+            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            interpolated_ = interpolated;
+            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        }
+
+        explicit UKRPI(
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        : ZeroInflationIndex(
+              "RPI", UKRegion(), false, Monthly, Period(1, Months), GBPCurrency(), ts) {}
     };
 
 
     //! Genuine year-on-year UK RPI (i.e. not a ratio of UK RPI)
     class YYUKRPI : public YoYInflationIndex {
       public:
-        YYUKRPI(bool interpolated,
-                const Handle<YoYInflationTermStructure>& ts =
-                        Handle<YoYInflationTermStructure>())
+        explicit YYUKRPI(
+            bool interpolated,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_RPI",
                             UKRegion(),
                             false,
@@ -67,9 +71,9 @@ namespace QuantLib {
     //! Fake year-on-year UK RPI (i.e. a ratio of UK RPI)
     class YYUKRPIr : public YoYInflationIndex {
       public:
-        YYUKRPIr(bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts =
-                        Handle<YoYInflationTermStructure>())
+        explicit YYUKRPIr(
+            bool interpolated,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_RPI",
                             UKRegion(),
                             false,

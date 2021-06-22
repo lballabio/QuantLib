@@ -50,6 +50,7 @@ namespace QuantLib {
       infIndex_(infIndex), observationLag_(observationLag), adjustInfObsDates_(adjustInfObsDates),
       infCalendar_(std::move(infCalendar)), infConvention_(infConvention),
       dayCounter_(std::move(dayCounter)) {
+        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
         // first check compatibility of index and swap definitions
         if (infIndex_->interpolated()) {
             Period pShift(infIndex_->frequency());
@@ -65,6 +66,7 @@ namespace QuantLib {
                        << " availability lag " << infIndex_->availabilityLag()
                        << " versus obs lag = " << observationLag_);
         }
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
 
         if (infCalendar_==Calendar()) infCalendar_ = fixCalendar_;
         if (infConvention_==BusinessDayConvention()) infConvention_ = fixConvention_;
@@ -83,8 +85,10 @@ namespace QuantLib {
         // At this point the index may not be able to forecast
         // i.e. do not want to force the existence of an inflation
         // term structure before allowing users to create instruments.
+        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
         Real T = inflationYearFraction(infIndex_->frequency(), infIndex_->interpolated(),
                                        dayCounter_, baseDate_, obsDate_);
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
         // N.B. the -1.0 is because swaps only exchange growth, not notionals as well
         Real fixedAmount = nominal * ( std::pow(1.0 + fixedRate, T) - 1.0 );
 
@@ -141,9 +145,11 @@ namespace QuantLib {
 
         // +1 because the IndexedCashFlow has growthOnly=true
         Real growth = icf->amount() / icf->notional() + 1.0;
+        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
         Real T = inflationYearFraction(infIndex_->frequency(),
                                        infIndex_->interpolated(),
                                        dayCounter_, baseDate_, obsDate_);
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
 
         return std::pow(growth,1.0/T) - 1.0;
 

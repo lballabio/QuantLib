@@ -41,6 +41,7 @@ namespace QuantLib {
       dayCounter_(std::move(dayCounter)), zii_(std::move(zii)),
       nominalTermStructure_(std::move(nominalTermStructure)) {
 
+        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
         if (zii_->interpolated()) {
             // if interpolated then simple
             earliestDate_ = maturity_ - swapObsLag_;
@@ -56,10 +57,12 @@ namespace QuantLib {
             earliestDate_ = limStart.first;
             latestDate_ = limStart.first;
         }
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
 
         // check that the observation lag of the swap
         // is compatible with the availability lag of the index AND
         // it's interpolation (assuming the start day is spot)
+        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
         if (zii_->interpolated()) {
             Period pShift(zii_->frequency());
             QL_REQUIRE(swapObsLag_ - pShift > zii_->availabilityLag(),
@@ -70,6 +73,7 @@ namespace QuantLib {
                        " and index availability " << zii_->availabilityLag() <<
                        " need (obsLag-index period) > availLag");
         }
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
 
         registerWith(Settings::instance().evaluationDate());
         registerWith(nominalTermStructure_);

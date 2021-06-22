@@ -70,6 +70,8 @@ namespace inflation_cpi_capfloor_test {
         const DayCounter &dc,
         const Handle<YieldTermStructure>& discountCurve) {
 
+        QL_DEPRECATED_DISABLE_WARNING_III
+
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
             Date maturity = iiData[i].date;
@@ -82,10 +84,15 @@ namespace inflation_cpi_capfloor_test {
         }
 
         return instruments;
+        
+        QL_DEPRECATED_ENABLE_WARNING_III
     }
 
 
     struct CommonVars {
+
+        QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+    
         // common data
 
         Size length;
@@ -167,7 +174,7 @@ namespace inflation_cpi_capfloor_test {
             // link from cpi index to cpi TS
             bool interp = false;// this MUST be false because the observation lag is only 2 months
                                 // for ZCIIS; but not for contract if the contract uses a bigger lag.
-            ii = ext::make_shared<UKRPI>(interp, hcpi);
+            ii = ext::shared_ptr<UKRPI>(new UKRPI(interp, hcpi));
             for (Size i=0; i<rpiSchedule.size();i++) {
                 ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
             };
@@ -317,6 +324,8 @@ namespace inflation_cpi_capfloor_test {
                 }
             }
         }
+    
+        QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
     };
 
 }
@@ -326,6 +335,8 @@ namespace inflation_cpi_capfloor_test {
 void InflationCPICapFloorTest::cpicapfloorpricesurface() {
     BOOST_TEST_MESSAGE("Checking CPI cap/floor against price surface...");
     
+    QL_DEPRECATED_DISABLE_WARNING_III
+
     using namespace inflation_cpi_capfloor_test;
     
     CommonVars common;
@@ -388,11 +399,15 @@ void InflationCPICapFloorTest::cpicapfloorpricesurface() {
 
     // remove circular refernce
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+
+    QL_DEPRECATED_ENABLE_WARNING_III
 }
 
 
 void InflationCPICapFloorTest::cpicapfloorpricer() {
     BOOST_TEST_MESSAGE("Checking CPI cap/floor pricer...");
+
+    QL_DEPRECATED_DISABLE_WARNING_III
     
     using namespace inflation_cpi_capfloor_test;
 
@@ -452,6 +467,8 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
 
     // remove circular refernce
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+
+    QL_DEPRECATED_ENABLE_WARNING_III
 }
 
 
@@ -465,4 +482,3 @@ test_suite* InflationCPICapFloorTest::suite() {
 
     return suite;
 }
-

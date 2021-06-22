@@ -61,6 +61,8 @@ namespace inflation_cpi_swap_test {
         const DayCounter &dc,
         const Handle<YieldTermStructure>& discountCurve) {
 
+        QL_DEPRECATED_DISABLE_WARNING_III
+
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
             Date maturity = iiData[i].date;
@@ -73,12 +75,16 @@ namespace inflation_cpi_swap_test {
         }
 
         return instruments;
+
+        QL_DEPRECATED_ENABLE_WARNING_III
     }
 
 
     struct CommonVars {
         // common data
 
+        QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+    
         Size length;
         Date startDate;
         Real volatility;
@@ -149,7 +155,7 @@ namespace inflation_cpi_swap_test {
             // link from cpi index to cpi TS
             bool interp = false;// this MUST be false because the observation lag is only 2 months
                                 // for ZCIIS; but not for contract if the contract uses a bigger lag.
-            ii = ext::make_shared<UKRPI>(interp, hcpi);
+            ii = ext::shared_ptr<UKRPI>(new UKRPI(interp, hcpi));
             for (Size i=0; i<rpiSchedule.size();i++) {
                 ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
             };
@@ -252,6 +258,8 @@ namespace inflation_cpi_swap_test {
             // make sure that the index has the latest zero inflation term structure
             hcpi.linkTo(pCPIts);
         }
+    
+        QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
     };
 
 }
@@ -383,6 +391,8 @@ void CPISwapTest::consistency() {
 void CPISwapTest::zciisconsistency() {
     BOOST_TEST_MESSAGE("Checking CPI swap against zero-coupon inflation swap...");
 
+    QL_DEPRECATED_DISABLE_WARNING_III
+
     using namespace inflation_cpi_swap_test;
 
     CommonVars common;
@@ -435,6 +445,8 @@ void CPISwapTest::zciisconsistency() {
     }
     // remove circular refernce
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+
+    QL_DEPRECATED_ENABLE_WARNING_III
 }
 
 
@@ -547,4 +559,3 @@ test_suite* CPISwapTest::suite() {
 
     return suite;
 }
-

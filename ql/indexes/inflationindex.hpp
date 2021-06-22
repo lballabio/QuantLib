@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,11 +25,60 @@
 #ifndef quantlib_inflation_index_hpp
 #define quantlib_inflation_index_hpp
 
+#include <ql/currency.hpp>
+#include <ql/handle.hpp>
 #include <ql/index.hpp>
 #include <ql/indexes/region.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
-#include <ql/currency.hpp>
-#include <ql/handle.hpp>
+
+
+#define QL_DEPRECATED_DISABLE_WARNING_III \
+    /**/                                  \
+    QL_DEPRECATED_DISABLE_WARNING
+
+#define QL_DEPRECATED_ENABLE_WARNING_III \
+    /**/                                 \
+    QL_DEPRECATED_ENABLE_WARNING
+
+
+#define QL_DEPRECATED_III_CONSTRUCTOR \
+    /**/                              \
+    QL_DEPRECATED
+
+#define QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR \
+    /**/                                              \
+    QL_DEPRECATED_DISABLE_WARNING
+
+#define QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR \
+    /**/                                             \
+    QL_DEPRECATED_ENABLE_WARNING
+
+
+#define QL_DEPRECATED_III_INTERPOLATED_METHOD \
+    /**/                                      \
+    QL_DEPRECATED
+
+#define QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD \
+    /**/                                                      \
+    QL_DEPRECATED_DISABLE_WARNING
+
+#define QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD \
+    /**/                                                     \
+    QL_DEPRECATED_ENABLE_WARNING
+
+
+#define QL_DEPRECATED_III_INTERPOLATED_MEMBER \
+    /**/                                      \
+    QL_DEPRECATED
+
+#define QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER \
+    /**/                                                      \
+    QL_DEPRECATED_DISABLE_WARNING
+
+#define QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER \
+    /**/                                                     \
+    QL_DEPRECATED_ENABLE_WARNING
+
 
 namespace QuantLib {
 
@@ -48,6 +98,7 @@ namespace QuantLib {
          give the previous period's value)
          and enables storage of the most recent uninterpolated value.
          */
+        QL_DEPRECATED_III_CONSTRUCTOR
         InflationIndex(std::string familyName,
                        Region region,
                        bool revised,
@@ -55,6 +106,14 @@ namespace QuantLib {
                        Frequency frequency,
                        const Period& availabilitiyLag,
                        Currency currency);
+
+        InflationIndex(std::string familyName,
+                       Region region,
+                       bool revised,
+                       Frequency frequency,
+                       const Period& availabilitiyLag,
+                       Currency currency);
+
         //! \name Index interface
         //@{
         std::string name() const override;
@@ -103,7 +162,10 @@ namespace QuantLib {
             extrapolated values are constant within each period taking
             the mid-period extrapolated value.
         */
+
+        QL_DEPRECATED_III_INTERPOLATED_METHOD
         bool interpolated() const;
+
         Frequency frequency() const;
         /*! The availability lag describes when the index is
             <i>available</i>, not how it is used.  Specifically the
@@ -121,10 +183,13 @@ namespace QuantLib {
         std::string familyName_;
         Region region_;
         bool revised_;
-        bool interpolated_;
         Frequency frequency_;
         Period availabilityLag_;
         Currency currency_;
+
+        QL_DEPRECATED_III_INTERPOLATED_MEMBER
+        bool interpolated_;
+
       private:
         std::string name_;
     };
@@ -134,11 +199,22 @@ namespace QuantLib {
     class ZeroInflationIndex : public InflationIndex {
       public:
         //! Always use the evaluation date as the reference date
+        QL_DEPRECATED_III_CONSTRUCTOR
         ZeroInflationIndex(
             const std::string& familyName,
             const Region& region,
             bool revised,
             bool interpolated,
+            Frequency frequency,
+            const Period& availabilityLag,
+            const Currency& currency,
+            Handle<ZeroInflationTermStructure> ts = Handle<ZeroInflationTermStructure>());
+
+        //! Always use the evaluation date as the reference date
+        ZeroInflationIndex(
+            const std::string& familyName,
+            const Region& region,
+            bool revised,
             Frequency frequency,
             const Period& availabilityLag,
             const Currency& currency,
@@ -154,14 +230,15 @@ namespace QuantLib {
         //! \name Other methods
         //@{
         Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
-        ext::shared_ptr<ZeroInflationIndex> clone(
-                           const Handle<ZeroInflationTermStructure>& h) const;
+        ext::shared_ptr<ZeroInflationIndex>
+        clone(const Handle<ZeroInflationTermStructure>& h) const;
         //@}
       private:
         bool needsForecast(const Date& fixingDate) const;
         Rate forecastFixing(const Date& fixingDate) const;
         Handle<ZeroInflationTermStructure> zeroInflation_;
     };
+
 
     //! Base class for year-on-year inflation indices.
     /*! These may be genuine indices published on, say, Bloomberg, or
@@ -190,12 +267,18 @@ namespace QuantLib {
         //@}
         //! \name Other methods
         //@{
+        // Override the deprecation above
+        bool interpolated() const;
         bool ratio() const;
         Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
 
-        ext::shared_ptr<YoYInflationIndex> clone(
-                            const Handle<YoYInflationTermStructure>& h) const;
+        ext::shared_ptr<YoYInflationIndex> clone(const Handle<YoYInflationTermStructure>& h) const;
         //@}
+
+      protected:
+        // Override the deprecation above
+        bool interpolated_;
+
       private:
         Rate forecastFixing(const Date& fixingDate) const;
         bool ratio_;
@@ -204,53 +287,39 @@ namespace QuantLib {
 
     // inline
 
-    inline std::string InflationIndex::name() const {
-        return name_;
-    }
+    inline std::string InflationIndex::name() const { return name_; }
 
-    inline void InflationIndex::update() {
-        notifyObservers();
-    }
+    inline void InflationIndex::update() { notifyObservers(); }
 
-    inline std::string InflationIndex::familyName() const {
-        return familyName_;
-    }
+    inline std::string InflationIndex::familyName() const { return familyName_; }
 
-    inline Region InflationIndex::region() const {
-        return region_;
-    }
+    inline Region InflationIndex::region() const { return region_; }
 
-    inline bool InflationIndex::revised() const {
-        return revised_;
-    }
+    inline bool InflationIndex::revised() const { return revised_; }
 
     inline bool InflationIndex::interpolated() const {
+        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
         return interpolated_;
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
     }
 
-    inline Frequency InflationIndex::frequency() const {
-        return frequency_;
-    }
 
-    inline Period InflationIndex::availabilityLag() const {
-        return availabilityLag_;
-    }
+    inline Frequency InflationIndex::frequency() const { return frequency_; }
 
-    inline Currency InflationIndex::currency() const {
-        return currency_;
-    }
+    inline Period InflationIndex::availabilityLag() const { return availabilityLag_; }
+
+    inline Currency InflationIndex::currency() const { return currency_; }
 
     inline Handle<ZeroInflationTermStructure>
     ZeroInflationIndex::zeroInflationTermStructure() const {
         return zeroInflation_;
     }
 
-    inline bool YoYInflationIndex::ratio() const {
-        return ratio_;
-    }
+    inline bool YoYInflationIndex::interpolated() const { return interpolated_; }
 
-    inline Handle<YoYInflationTermStructure>
-    YoYInflationIndex::yoyInflationTermStructure() const {
+    inline bool YoYInflationIndex::ratio() const { return ratio_; }
+
+    inline Handle<YoYInflationTermStructure> YoYInflationIndex::yoyInflationTermStructure() const {
         return yoyInflation_;
     }
 }

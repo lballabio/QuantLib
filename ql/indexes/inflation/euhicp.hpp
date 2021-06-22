@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007, 2009 Chris Kenyon
  Copyright (C) 2010 StatPro Italia srl
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,21 +26,29 @@
 #ifndef quantlib_euhicp_hpp
 #define quantlib_euhicp_hpp
 
-#include <ql/indexes/inflationindex.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
     //! EU HICP index
     class EUHICP : public ZeroInflationIndex {
       public:
-        EUHICP(bool interpolated,
-               const Handle<ZeroInflationTermStructure>& ts =
-                                        Handle<ZeroInflationTermStructure>())
+        QL_DEPRECATED_III_CONSTRUCTOR
+        explicit EUHICP(
+            bool interpolated,
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        : EUHICP(ts) {
+            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            interpolated_ = interpolated;
+            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        }
+
+        explicit EUHICP(
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("HICP",
                              EURegion(),
                              false,
-                             interpolated,
                              Monthly,
                              Period(1, Months), // availability
                              EURCurrency(),
@@ -49,13 +58,21 @@ namespace QuantLib {
     //! EU HICPXT index
     class EUHICPXT : public ZeroInflationIndex {
       public:
-        EUHICPXT(bool interpolated,
-                 const Handle<ZeroInflationTermStructure>& ts =
-                                        Handle<ZeroInflationTermStructure>())
+        QL_DEPRECATED_III_CONSTRUCTOR
+        explicit EUHICPXT(
+            bool interpolated,
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        : EUHICPXT(ts) {
+            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            interpolated_ = interpolated;
+            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        }
+
+        explicit EUHICPXT(
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
         : ZeroInflationIndex("HICPXT",
                              EURegion(),
                              false,
-                             interpolated,
                              Monthly,
                              Period(1, Months), // availability
                              EURCurrency(),
@@ -66,9 +83,9 @@ namespace QuantLib {
     //! Genuine year-on-year EU HICP (i.e. not a ratio of EU HICP)
     class YYEUHICP : public YoYInflationIndex {
       public:
-        YYEUHICP(bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts =
-                                         Handle<YoYInflationTermStructure>())
+        explicit YYEUHICP(
+            bool interpolated,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_HICP",
                             EURegion(),
                             false,
@@ -83,9 +100,9 @@ namespace QuantLib {
     //! Genuine year-on-year EU HICPXT
     class YYEUHICPXT : public YoYInflationIndex {
       public:
-        YYEUHICPXT(bool interpolated,
-                   const Handle<YoYInflationTermStructure>& ts =
-                                         Handle<YoYInflationTermStructure>())
+        explicit YYEUHICPXT(
+            bool interpolated,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_HICPXT",
                             EURegion(),
                             false,
@@ -101,9 +118,9 @@ namespace QuantLib {
     //! Fake year-on-year EU HICP (i.e. a ratio of EU HICP)
     class YYEUHICPr : public YoYInflationIndex {
       public:
-        YYEUHICPr(bool interpolated,
-                  const Handle<YoYInflationTermStructure>& ts =
-                                         Handle<YoYInflationTermStructure>())
+        explicit YYEUHICPr(
+            bool interpolated,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_HICP",
                             EURegion(),
                             false,

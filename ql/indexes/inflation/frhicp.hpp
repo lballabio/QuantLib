@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 Chris Kenyon
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,34 +25,37 @@
 #ifndef quantlib_frhicp_hpp
 #define quantlib_frhicp_hpp
 
-#include <ql/indexes/inflationindex.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
     //! FR HICP index
     class FRHICP : public ZeroInflationIndex {
       public:
-        FRHICP(bool interpolated,
-               const Handle<ZeroInflationTermStructure>& ts =
-                                         Handle<ZeroInflationTermStructure>())
-        : ZeroInflationIndex("HICP",
-                             FranceRegion(),
-                             false,
-                             interpolated,
-                             Monthly,
-                             Period(1, Months),
-                             EURCurrency(),
-                             ts) {}
+        QL_DEPRECATED_III_CONSTRUCTOR
+        explicit FRHICP(
+            bool interpolated,
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        : FRHICP(ts) {
+            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            interpolated_ = interpolated;
+            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        }
+
+        explicit FRHICP(
+            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        : ZeroInflationIndex(
+              "HICP", FranceRegion(), false, Monthly, Period(1, Months), EURCurrency(), ts) {}
     };
 
 
     //! Genuine year-on-year FR HICP (i.e. not a ratio)
     class YYFRHICP : public YoYInflationIndex {
       public:
-        YYFRHICP(bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+        explicit YYFRHICP(
+            bool interpolated,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_HICP",
                             FranceRegion(),
                             false,
@@ -67,9 +71,9 @@ namespace QuantLib {
     //! Fake year-on-year FR HICP (i.e. a ratio)
     class YYFRHICPr : public YoYInflationIndex {
       public:
-        YYFRHICPr(bool interpolated,
-                  const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+        explicit YYFRHICPr(
+            bool interpolated,
+            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_HICP",
                             FranceRegion(),
                             false,
@@ -84,4 +88,3 @@ namespace QuantLib {
 }
 
 #endif
-

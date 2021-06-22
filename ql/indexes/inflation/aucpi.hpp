@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 Chris Kenyon
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,27 +25,30 @@
 #ifndef quantlib_aucpi_hpp
 #define quantlib_aucpi_hpp
 
-#include <ql/indexes/inflationindex.hpp>
 #include <ql/currencies/oceania.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
     //! AU CPI index (either quarterly or annual)
     class AUCPI : public ZeroInflationIndex {
       public:
+        QL_DEPRECATED_III_CONSTRUCTOR
         AUCPI(Frequency frequency,
               bool revised,
               bool interpolated,
-              const Handle<ZeroInflationTermStructure>& ts =
-                                         Handle<ZeroInflationTermStructure>())
-        : ZeroInflationIndex("CPI",
-                             AustraliaRegion(),
-                             revised,
-                             interpolated,
-                             frequency,
-                             Period(2, Months),
-                             AUDCurrency(),
-                             ts) {}
+              const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        : AUCPI(frequency, revised, ts) {
+            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            interpolated_ = interpolated;
+            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        }
+
+        AUCPI(Frequency frequency,
+              bool revised,
+              const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        : ZeroInflationIndex(
+              "CPI", AustraliaRegion(), revised, frequency, Period(2, Months), AUDCurrency(), ts) {}
     };
 
 
@@ -54,8 +58,7 @@ namespace QuantLib {
         YYAUCPI(Frequency frequency,
                 bool revised,
                 bool interpolated,
-                const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YY_CPI",
                             AustraliaRegion(),
                             revised,
@@ -67,14 +70,14 @@ namespace QuantLib {
                             ts) {}
     };
 
+
     //! Fake year-on-year AUCPI (i.e. a ratio)
     class YYAUCPIr : public YoYInflationIndex {
       public:
         YYAUCPIr(Frequency frequency,
                  bool revised,
                  bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                 const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
         : YoYInflationIndex("YYR_CPI",
                             AustraliaRegion(),
                             revised,
@@ -85,8 +88,6 @@ namespace QuantLib {
                             AUDCurrency(),
                             ts) {}
     };
-
 }
 
 #endif
-

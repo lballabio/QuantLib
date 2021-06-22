@@ -82,6 +82,8 @@ namespace inflation_test {
                 const DayCounter& dc,
                 const Handle<YieldTermStructure>& yTS) {
 
+        QL_DEPRECATED_DISABLE_WARNING_III
+
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Datum datum : iiData) {
             Date maturity = datum.date;
@@ -94,6 +96,8 @@ namespace inflation_test {
         }
 
         return instruments;
+
+        QL_DEPRECATED_ENABLE_WARNING_III
     }
 }
 
@@ -221,7 +225,9 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
 
 void InflationTest::testZeroIndex() {
     BOOST_TEST_MESSAGE("Testing zero inflation indices...");
-
+    
+    QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+    
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
@@ -301,6 +307,8 @@ void InflationTest::testZeroIndex() {
             }
         }
     }
+
+    QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
 }
 
 
@@ -308,6 +316,8 @@ void InflationTest::testZeroIndex() {
 void InflationTest::testZeroTermStructure() {
     BOOST_TEST_MESSAGE("Testing zero inflation term structure...");
 
+    QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+    
     using namespace inflation_test;
 
     SavedSettings backup;
@@ -595,11 +605,15 @@ void InflationTest::testZeroTermStructure() {
 
     // remove circular refernce
     hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+
+    QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
 }
 
 void InflationTest::testZeroIndexFutureFixing() {
     BOOST_TEST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
 
+    QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+    
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
@@ -632,6 +646,8 @@ void InflationTest::testZeroIndexFutureFixing() {
     if (retrieved)
         BOOST_ERROR("Retrieved future fixing: "
                     << "\n    returned: " << fixing);
+
+    QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
 }
 
 

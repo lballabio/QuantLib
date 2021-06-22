@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2010, 2011 Chris Kenyon
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -51,24 +52,21 @@ namespace QuantLib {
       payCalendar_(std::move(payCalendar)), payConvention_(payConvention), strike_(strike),
       infIndex_(std::move(infIndex)), observationLag_(observationLag),
       observationInterpolation_(observationInterpolation) {
-        QL_REQUIRE(fixCalendar_ != Calendar(),"CPICapFloor: fixing calendar may not be null.");
-        QL_REQUIRE(payCalendar_ != Calendar(),"CPICapFloor: payment calendar may not be null.");
+        QL_REQUIRE(fixCalendar_ != Calendar(), "CPICapFloor: fixing calendar may not be null.");
+        QL_REQUIRE(payCalendar_ != Calendar(), "CPICapFloor: payment calendar may not be null.");
 
-        if (observationInterpolation_ == CPI::Flat  ||
-            (observationInterpolation_ == CPI::AsIndex && !infIndex_->interpolated())
-            ) {
-            QL_REQUIRE(observationLag_ >= infIndex_->availabilityLag(),
-                       "CPIcapfloor's observationLag must be at least availabilityLag of inflation index: "
-                       <<"when the observation is effectively flat"
-                       << observationLag_ << " vs " << infIndex_->availabilityLag());
-        }
-        if (observationInterpolation_ == CPI::Linear ||
-            (observationInterpolation_ == CPI::AsIndex && infIndex_->interpolated())
-            ) {
+        if (!detail::CPI::isInterpolated(infIndex_.currentLink(), observationInterpolation_)) {
+            QL_REQUIRE(
+                observationLag_ >= infIndex_->availabilityLag(),
+                "CPIcapfloor's observationLag must be at least availabilityLag of inflation index: "
+                    << "when the observation is effectively flat" << observationLag_ << " vs "
+                    << infIndex_->availabilityLag());
+        } else {
             QL_REQUIRE(observationLag_ > infIndex_->availabilityLag(),
-                       "CPIcapfloor's observationLag must be greater than availabilityLag of inflation index: "
-                       <<"when the observation is effectively linear"
-                       << observationLag_ << " vs " << infIndex_->availabilityLag());
+                       "CPIcapfloor's observationLag must be greater than availabilityLag of "
+                       "inflation index: "
+                           << "when the observation is effectively linear" << observationLag_
+                           << " vs " << infIndex_->availabilityLag());
         }
     }
 
@@ -79,9 +77,7 @@ namespace QuantLib {
     }
 
 
-    Date CPICapFloor::payDate() const {
-        return payCalendar_.adjust(maturity_, payConvention_);
-    }
+    Date CPICapFloor::payDate() const { return payCalendar_.adjust(maturity_, payConvention_); }
 
 
     bool CPICapFloor::isExpired() const {
@@ -116,19 +112,15 @@ namespace QuantLib {
         arguments->infIndex = infIndex_;
         arguments->observationLag = observationLag_;
         arguments->observationInterpolation = observationInterpolation_;
-
     }
 
 
-    void CPICapFloor::results::reset() {
-        Instrument::results::reset();
-    }
+    void CPICapFloor::results::reset() { Instrument::results::reset(); }
 
 
     void CPICapFloor::fetchResults(const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
     }
-
 
 
 }
