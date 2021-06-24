@@ -255,6 +255,7 @@ set(QuantLib_SRC
     indexes/bmaindex.cpp
     indexes/ibor/bibor.cpp
     indexes/ibor/eonia.cpp
+    indexes/ibor/estr.cpp
     indexes/ibor/euribor.cpp
     indexes/ibor/eurlibor.cpp
     indexes/ibor/fedfunds.cpp
@@ -1288,6 +1289,7 @@ set(QuantLib_HDR
     indexes/ibor/chflibor.hpp
     indexes/ibor/dkklibor.hpp
     indexes/ibor/eonia.hpp
+    indexes/ibor/estr.hpp
     indexes/ibor/euribor.hpp
     indexes/ibor/eurlibor.hpp
     indexes/ibor/fedfunds.hpp
