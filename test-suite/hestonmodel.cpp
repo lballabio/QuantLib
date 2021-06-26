@@ -45,6 +45,7 @@
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
@@ -3220,6 +3221,77 @@ void HestonModelTest::testAsymptoticControlVariate() {
     }
 }
 
+void HestonModelTest::testLocalVolFromHestonModel() {
+    BOOST_TEST_MESSAGE("Testing Local Volatility pricing from Heston Model...");
+
+    SavedSettings backup;
+
+    const auto todaysDate = Date(28, June, 2021);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    const auto dc = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(flatRate(0.15, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(0.05, dc));
+
+    const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
+
+    const Real v0    =  0.1;
+    const Real rho   = -0.75;
+    const Real sigma =  0.8;
+    const Real kappa =  1.0;
+    const Real theta =  0.16;
+
+    const auto hestonModel = ext::make_shared<HestonModel>(
+        ext::make_shared<HestonProcess>(
+            rTS, qTS, s0, v0, kappa, theta, sigma, rho)
+    );
+
+    VanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, 120.0),
+        ext::make_shared<EuropeanExercise>(todaysDate + Period(1, Years))
+    );
+
+    option.setPricingEngine(
+        ext::make_shared<AnalyticHestonEngine>(
+            hestonModel,
+            AnalyticHestonEngine::OptimalCV,
+            AnalyticHestonEngine::Integration::gaussLaguerre(192)
+        )
+    );
+
+    const Real expected = option.NPV();
+
+    option.setPricingEngine(
+         ext::make_shared<FdBlackScholesVanillaEngine>(
+             ext::make_shared<BlackScholesMertonProcess>(
+                 s0, qTS, rTS,
+                 Handle<BlackVolTermStructure>(
+                      ext::make_shared<HestonBlackVolSurface>(
+                          Handle<HestonModel>(hestonModel),
+                          AnalyticHestonEngine::OptimalCV,
+                          AnalyticHestonEngine::Integration::gaussLaguerre(24)
+                      )
+                 )
+             ),
+             25, 125, 1, FdmSchemeDesc::Douglas(), true, 0.4
+         )
+    );
+
+    const Real calculated = option.NPV();
+
+    const Real tol = 0.005;
+    const Real diff = std::fabs(calculated - expected);
+    if (diff > tol) {
+        BOOST_ERROR("failed to reproduce Heston model values with "
+                    "local volatility pricing"
+                << "\n  calculated: " << calculated
+                << "\n  expected  : " << expected
+                << "\n  difference: " << diff
+                << "\n  tolerance : " << tol);
+    }
+}
+
 
 test_suite* HestonModelTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Heston model tests");
@@ -3251,6 +3323,7 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testHestonEngineIntegration));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testOptimalControlVariateChoice));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAsymptoticControlVariate));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testLocalVolFromHestonModel));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testDifferentIntegrals));
