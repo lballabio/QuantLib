@@ -869,7 +869,6 @@ void VPPTest::testVPPPricing() {
 }
 
 void VPPTest::testKlugeExtOUMatrixDecomposition() {
-#ifndef QL_NO_UBLAS_SUPPORT
     BOOST_TEST_MESSAGE("Testing KlugeExtOU matrix decomposition...");
 
     using namespace vpp_test;
@@ -962,7 +961,6 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
             }
         }
     }
-#endif
 }
 
 

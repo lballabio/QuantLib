@@ -106,12 +106,10 @@ namespace QuantLib {
         return solve_splitting(direction_, r, dt);
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> >
     FdmOrnsteinUhlenbeckOp::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal(1, mapX_.toMatrix());
         return retVal;
     }
-#endif
 
 }

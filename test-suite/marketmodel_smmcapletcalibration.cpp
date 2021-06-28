@@ -340,9 +340,8 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
 // --- Call the desired tests
 test_suite* MarketModelSmmCapletCalibrationTest::suite() {
     auto* suite = BOOST_TEST_SUITE("SMM Caplet calibration test");
-#if !defined(QL_NO_UBLAS_SUPPORT)
-    suite->add(QUANTLIB_TEST_CASE(
-                         &MarketModelSmmCapletCalibrationTest::testFunction));
-    #endif
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelSmmCapletCalibrationTest::testFunction));
+
     return suite;
 }

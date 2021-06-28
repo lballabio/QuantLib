@@ -224,7 +224,6 @@ namespace QuantLib {
         return v;
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> > FdmHestonFwdOp::toMatrixDecomp()
         const {
 
@@ -236,5 +235,5 @@ namespace QuantLib {
 
         return retVal;
     }
-#endif
+
 }
