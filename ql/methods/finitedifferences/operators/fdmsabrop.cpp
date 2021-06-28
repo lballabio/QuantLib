@@ -96,7 +96,6 @@ namespace QuantLib {
         return solve_splitting(1, solve_splitting(0, r, dt), dt) ;
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> > FdmSabrOp::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal(3);
 
@@ -106,5 +105,5 @@ namespace QuantLib {
 
         return retVal;
     }
-#endif
+
 }

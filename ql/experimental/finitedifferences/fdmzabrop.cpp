@@ -107,7 +107,6 @@ Disposable<Array> FdmZabrOp::preconditioner(const Array &r, Real dt) const {
     return solve_splitting(0, r, dt);
 }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
 Disposable<std::vector<SparseMatrix> > FdmZabrOp::toMatrixDecomp() const {
     std::vector<SparseMatrix> retVal(3);
     retVal[0] = dxMap_.getMap().toMatrix();
@@ -115,5 +114,5 @@ Disposable<std::vector<SparseMatrix> > FdmZabrOp::toMatrixDecomp() const {
     retVal[2] = dxyMap_.toMatrix();
     return retVal;
 }
-#endif
+
 }

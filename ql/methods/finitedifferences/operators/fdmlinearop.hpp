@@ -37,9 +37,7 @@ namespace QuantLib {
         virtual ~FdmLinearOp() = default;
         virtual Disposable<array_type> apply(const array_type& r) const = 0;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
         virtual Disposable<SparseMatrix> toMatrix() const = 0;
-#endif
     };
 }
 

@@ -111,7 +111,6 @@ namespace QuantLib {
         return solve_splitting(direction1_, r, dt);
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> > FdmG2Op::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal(3);
         retVal[0] = mapX_.toMatrix();
@@ -120,6 +119,6 @@ namespace QuantLib {
 
         return retVal;
     }
-#endif
+
 }
 

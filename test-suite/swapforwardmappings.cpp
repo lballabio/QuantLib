@@ -452,16 +452,13 @@ void SwapForwardMappingsTest::testSwaptionImpliedVolatility()
 test_suite* SwapForwardMappingsTest::suite() {
     auto* suite = BOOST_TEST_SUITE("swap-forward mappings tests");
 
-
     suite->add(QUANTLIB_TEST_CASE(
         &SwapForwardMappingsTest::testSwaptionImpliedVolatility));
 
     suite->add(QUANTLIB_TEST_CASE(
         &SwapForwardMappingsTest::testForwardSwapJacobians));
-// #if !defined(QL_NO_UBLAS_SUPPORT)
-//     suite->add(QUANTLIB_TEST_CASE(
-//         &SwapForwardMappingsTest::testForwardCoterminalMappings));
-// #endif
+    // suite->add(QUANTLIB_TEST_CASE(
+    //     &SwapForwardMappingsTest::testForwardCoterminalMappings));
     return suite;
 }
 

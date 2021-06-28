@@ -70,9 +70,7 @@ namespace QuantLib {
 
         void swap(TripleBandLinearOp& m);
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
         Disposable<SparseMatrix> toMatrix() const override;
-#endif
 
       protected:
         TripleBandLinearOp() = default;

@@ -76,10 +76,8 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#if !defined(QL_NO_UBLAS_SUPPORT)
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/operation.hpp>
-#endif
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
@@ -383,7 +381,6 @@ void FdmLinearOpTest::testSecondDerivativesMapApply() {
 }
 
 void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
-#ifndef QL_NO_UBLAS_SUPPORT
     BOOST_TEST_MESSAGE("Testing finite differences coefficients...");
 
     const ext::shared_ptr<Fdm1dMesher> mesherX(
@@ -557,7 +554,6 @@ void FdmLinearOpTest::testDerivativeWeightsOnNonUniformGrids() {
             }
         }
     }
-#endif
 }
 
 void FdmLinearOpTest::testSecondOrderMixedDerivativesMapApply() {
@@ -1205,7 +1201,6 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
     }
 }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
 namespace {
     Disposable<Array> axpy(
         const boost::numeric::ublas::compressed_matrix<Real>& A,
@@ -1247,10 +1242,8 @@ namespace {
         return a;
     }
 }
-#endif
 
 void FdmLinearOpTest::testBiCGstab() {
-#if !defined(QL_NO_UBLAS_SUPPORT)
     BOOST_TEST_MESSAGE(
         "Testing bi-conjugated gradient stabilized algorithm...");
 
@@ -1285,11 +1278,9 @@ void FdmLinearOpTest::testBiCGstab() {
                 "\n tolerance:  " << tol <<
                 "\n error:      " << error);
     }
-#endif
 }
 
 void FdmLinearOpTest::testGMRES() {
-#if !defined(QL_NO_UBLAS_SUPPORT)
     BOOST_TEST_MESSAGE("Testing GMRES algorithm...");
 
     const Size n=41, m=21;
@@ -1343,7 +1334,6 @@ void FdmLinearOpTest::testGMRES() {
                 "\n tolerance:  " << tol <<
                 "\n error:      " << errorWithRestart);
     }
-#endif
 }
 
 void FdmLinearOpTest::testCrankNicolsonWithDamping() {
@@ -1439,7 +1429,6 @@ void FdmLinearOpTest::testCrankNicolsonWithDamping() {
 }
 
 void FdmLinearOpTest::testSpareMatrixReference() {
-#ifndef QL_NO_UBLAS_SUPPORT
     BOOST_TEST_MESSAGE("Testing SparseMatrixReference type...");
 
     const Size rows    = 10;
@@ -1480,11 +1469,10 @@ void FdmLinearOpTest::testSpareMatrixReference() {
             }
         }
     }
-#endif
 }
 
 namespace {
-#ifndef QL_NO_UBLAS_SUPPORT
+
     Size nrElementsOfSparseMatrix(const SparseMatrix& m) {
         Size retVal = 0;
         for (SparseMatrix::const_iterator1 i1 = m.begin1();
@@ -1493,11 +1481,10 @@ namespace {
         }
         return retVal;
     }
-#endif
+
 }
 
 void FdmLinearOpTest::testSparseMatrixZeroAssignment() {
-#ifndef QL_NO_UBLAS_SUPPORT
     BOOST_TEST_MESSAGE("Testing assignment to zero in sparse matrix...");
 
     SparseMatrix m(5,5);
@@ -1516,7 +1503,6 @@ void FdmLinearOpTest::testSparseMatrixZeroAssignment() {
     if (nrElementsOfSparseMatrix(m) != 3) {
         BOOST_FAIL("three elements expected");
     }
-#endif
 }
 
 void FdmLinearOpTest::testFdmMesherIntegral() {

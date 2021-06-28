@@ -677,7 +677,6 @@ void MatricesTest::testIterativeSolvers() {
         }
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     const Array v = GMRES(MatrixMult(M1), 1, relTol,
         MatrixMult(inverse(M1))).solve(b, b).x;
 
@@ -696,7 +695,6 @@ void MatricesTest::testIterativeSolvers() {
                 << "\n  rel error     : " << norm2(M1*w-b)/norm2(b)
                 << "\n  rel tolerance : " << relTol);
     }
-    #endif
 }
 
 void MatricesTest::testInitializers() {
@@ -722,7 +720,7 @@ void MatricesTest::testInitializers() {
 
 
 namespace {
-    #if !defined(QL_NO_UBLAS_SUPPORT)
+
     typedef std::pair< std::pair< std::vector<Size>, std::vector<Size> >,
                    std::vector<Real> > coordinate_tuple;
 
@@ -739,14 +737,11 @@ namespace {
         return std::make_pair(std::make_pair(row_idx, col_idx), data);
     }
 
-    #endif
 }
 
 void MatricesTest::testSparseMatrixMemory() {
 
     BOOST_TEST_MESSAGE("Testing sparse matrix memory layout...");
-
-    #if !defined(QL_NO_UBLAS_SUPPORT)
 
     SparseMatrix m(8, 4);
     BOOST_CHECK_EQUAL(m.filled1(), 1);
@@ -796,7 +791,6 @@ void MatricesTest::testSparseMatrixMemory() {
 
     BOOST_CHECK_EQUAL(entries, 4);
 
-    #endif
 }
 
 test_suite* MatricesTest::suite() {
@@ -809,11 +803,9 @@ test_suite* MatricesTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testHighamSqrt));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testQRDecomposition));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testQRSolve));
-    #if !defined(QL_NO_UBLAS_SUPPORT)
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testInverse));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testDeterminant));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testSparseMatrixMemory));
-    #endif
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testCholeskyDecomposition));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testMoorePenroseInverse));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testIterativeSolvers));
