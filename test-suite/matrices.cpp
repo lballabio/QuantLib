@@ -33,9 +33,11 @@
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
+#include <ql/math/matrixutilities/sparsematrix.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <cmath>
 #include <utility>
+#include <numeric>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -718,6 +720,85 @@ void MatricesTest::testInitializers() {
     BOOST_CHECK_EQUAL(m2(1, 2), 6.0);
 }
 
+
+namespace {
+    #if !defined(QL_NO_UBLAS_SUPPORT)
+    typedef std::pair< std::pair< std::vector<Size>, std::vector<Size> >,
+                   std::vector<Real> > coordinate_tuple;
+
+    coordinate_tuple sparseMatrixToCoordinateTuple(const SparseMatrix& m) {
+        std::vector<Size> row_idx, col_idx;
+        std::vector<Real> data;
+        for (auto iter1 = m.begin1(); iter1 != m.end1(); ++iter1)
+            for (auto iter2 = iter1.begin(); iter2 != iter1.end(); ++iter2) {
+                row_idx.push_back(iter1.index1());
+                col_idx.push_back(iter2.index2());
+                data.push_back(*iter2);
+            }
+
+        return std::make_pair(std::make_pair(row_idx, col_idx), data);
+    }
+
+    #endif
+}
+
+void MatricesTest::testSparseMatrixMemory() {
+
+    BOOST_TEST_MESSAGE("Testing sparse matrix memory layout...");
+
+    #if !defined(QL_NO_UBLAS_SUPPORT)
+
+    SparseMatrix m(8, 4);
+    BOOST_CHECK_EQUAL(m.filled1(), 1);
+    BOOST_CHECK_EQUAL(m.size1(), 8);
+    BOOST_CHECK_EQUAL(m.size2(), 4);
+    BOOST_CHECK_EQUAL(std::distance(m.begin1(), m.end1()), m.size1());
+
+    auto coords = sparseMatrixToCoordinateTuple(m);
+    BOOST_CHECK_EQUAL(coords.first.first.size(), 0);
+
+    m(3, 1) = 42;
+    coords = sparseMatrixToCoordinateTuple(m);
+    BOOST_CHECK_EQUAL(std::distance(m.begin1(), m.end1()), m.size1());
+    BOOST_CHECK_EQUAL(coords.first.first.size(), 1);
+    BOOST_CHECK_EQUAL(coords.first.first[0], 3);
+    BOOST_CHECK_EQUAL(coords.first.second[0], 1);
+    BOOST_CHECK_EQUAL(coords.second[0], 42);
+
+    m(1, 2) = 6;
+    coords = sparseMatrixToCoordinateTuple(m);
+    BOOST_CHECK_EQUAL(coords.first.first.size(), 2);
+    BOOST_CHECK_EQUAL(coords.first.first[0], 1);
+    BOOST_CHECK_EQUAL(coords.first.second[0], 2);
+    BOOST_CHECK_EQUAL(coords.second[0], 6);
+
+    Array x{1, 2, 3, 4};
+    Array y = prod(m, x);
+    BOOST_CHECK_EQUAL(y, Array({0, 18, 0, 84}));
+
+    m(3, 2) = 43;
+    coords = sparseMatrixToCoordinateTuple(m);
+    BOOST_CHECK_EQUAL(coords.first.first.size(), 3);
+    BOOST_CHECK_EQUAL(coords.first.first[2], 3);
+    BOOST_CHECK_EQUAL(coords.first.second[2], 2);
+    BOOST_CHECK_EQUAL(coords.second[2], 43);
+
+    m(7, 3) = 44;
+    coords = sparseMatrixToCoordinateTuple(m);
+    BOOST_CHECK_EQUAL(coords.first.first.size(), 4);
+    BOOST_CHECK_EQUAL(coords.first.first[3], 7);
+    BOOST_CHECK_EQUAL(coords.first.second[3], 3);
+    BOOST_CHECK_EQUAL(coords.second[3], 44);
+
+    Size entries(0);
+    for (auto iter1 = m.begin1(); iter1 != m.end1(); ++iter1)
+        entries+=std::distance(iter1.begin(), iter1.end());
+
+    BOOST_CHECK_EQUAL(entries, 4);
+
+    #endif
+}
+
 test_suite* MatricesTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Matrix tests");
 
@@ -731,6 +812,7 @@ test_suite* MatricesTest::suite() {
     #if !defined(QL_NO_UBLAS_SUPPORT)
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testInverse));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testDeterminant));
+    suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testSparseMatrixMemory));
     #endif
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testCholeskyDecomposition));
     suite->add(QUANTLIB_TEST_CASE(&MatricesTest::testMoorePenroseInverse));
