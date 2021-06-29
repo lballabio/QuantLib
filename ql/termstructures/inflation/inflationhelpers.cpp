@@ -43,19 +43,14 @@ namespace QuantLib {
       observationInterpolation_(observationInterpolation),
       nominalTermStructure_(std::move(nominalTermStructure)) {
 
-        if (detail::CPI::effectiveInterpolationType(zii_, observationInterpolation_) ==
-            CPI::Linear) {
-            // if interpolated then simple
-            earliestDate_ = maturity_ - swapObsLag_;
-            latestDate_ = maturity_ - swapObsLag_;
+        std::pair<Date, Date> limStart = inflationPeriod(maturity_ - swapObsLag_, zii_->frequency());
+
+        if (detail::CPI::effectiveInterpolationType(zii_, observationInterpolation_) == CPI::Linear) {
+            // if interpolated, we need to cover the end of the interpolation period
+            earliestDate_ = limStart.first;
+            latestDate_ = limStart.second + 1;
         } else {
-            // but if NOT interpolated then the value is valid
-            // for every day in an inflation period so you actually
-            // get an extended validity, however for curve building
-            // just put the first date because using that convention
-            // for the base date throughout
-            std::pair<Date, Date> limStart =
-                inflationPeriod(maturity_ - swapObsLag_, zii_->frequency());
+            // if not interpolated, the date of the initial fixing is enough
             earliestDate_ = limStart.first;
             latestDate_ = limStart.first;
         }
