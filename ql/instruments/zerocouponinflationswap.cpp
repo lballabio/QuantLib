@@ -53,15 +53,13 @@ namespace QuantLib {
       infCalendar_(std::move(infCalendar)), infConvention_(infConvention),
       dayCounter_(std::move(dayCounter)) {
         // first check compatibility of index and swap definitions
-        if (detail::CPI::effectiveInterpolationType(infIndex_, observationInterpolation_) ==
-            CPI::Linear) {
+        if (detail::CPI::effectiveInterpolationType(infIndex_, observationInterpolation_) == CPI::Linear) {
             Period pShift(infIndex_->frequency());
-            QL_REQUIRE(observationLag_ - pShift > infIndex_->availabilityLag(),
-                       "inconsistency between swap observation of index "
-                           << observationLag_ << " index availability "
-                           << infIndex_->availabilityLag() << " interpolated index period "
+            QL_REQUIRE(observationLag_ - pShift >= infIndex_->availabilityLag(),
+                       "inconsistency between swap observation lag "
+                           << observationLag_ << ", interpolated index period "
                            << pShift << " and index availability " << infIndex_->availabilityLag()
-                           << " need (obsLag-index period) > availLag");
+                           << ": need (obsLag-index period) >= availLag");
         } else {
             QL_REQUIRE(infIndex_->availabilityLag() < observationLag_,
                        "index tries to observe inflation fixings that do not yet exist: "

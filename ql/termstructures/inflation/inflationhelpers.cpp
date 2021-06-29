@@ -63,14 +63,12 @@ namespace QuantLib {
         // check that the observation lag of the swap
         // is compatible with the availability lag of the index AND
         // it's interpolation (assuming the start day is spot)
-        if (detail::CPI::effectiveInterpolationType(zii_, observationInterpolation_) ==
-            CPI::Linear) {
+        if (detail::CPI::effectiveInterpolationType(zii_, observationInterpolation_) == CPI::Linear) {
             Period pShift(zii_->frequency());
-            QL_REQUIRE(swapObsLag_ - pShift > zii_->availabilityLag(),
-                       "inconsistency between swap observation of index "
-                           << swapObsLag_ << " index availability " << zii_->availabilityLag()
-                           << " index period " << pShift << " and index availability "
-                           << zii_->availabilityLag() << " need (obsLag-index period) > availLag");
+            QL_REQUIRE(swapObsLag_ - pShift >= zii_->availabilityLag(),
+                       "inconsistency between swap observation lag "
+                           << swapObsLag_ << ", index period " << pShift << " and index availability "
+                           << zii_->availabilityLag() << ": need (obsLag-index period) >= availLag");
         }
 
         registerWith(Settings::instance().evaluationDate());
@@ -174,11 +172,10 @@ namespace QuantLib {
         // it's interpolation (assuming the start day is spot)
         if (yii_->interpolated()) {
             Period pShift(yii_->frequency());
-            QL_REQUIRE(swapObsLag_ - pShift > yii_->availabilityLag(),
-                       "inconsistency between swap observation of index "
-                           << swapObsLag_ << " index availability " << yii_->availabilityLag()
-                           << " index period " << pShift << " and index availability "
-                           << yii_->availabilityLag() << " need (obsLag-index period) > availLag");
+            QL_REQUIRE(swapObsLag_ - pShift >= yii_->availabilityLag(),
+                       "inconsistency between swap observation lag "
+                           << swapObsLag_ << ", index period " << pShift << " and index availability "
+                           << yii_->availabilityLag() << ": need (obsLag-index period) >= availLag");
         }
 
         registerWith(Settings::instance().evaluationDate());
