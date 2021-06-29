@@ -40,7 +40,8 @@ namespace QuantLib {
         <li>Whit(Pentecost) Monday </li>
         <li>New Year's Day, January 1st</li>
         <li>May Day, May 1st</li>
-        <li>National Independence Day, May 17st</li>
+        <li>National Independence Day, May 17th</li>
+        <li>Christmas Eve, December 24th</li>
         <li>Christmas, December 25th</li>
         <li>Boxing Day, December 26th</li>
         </ul>

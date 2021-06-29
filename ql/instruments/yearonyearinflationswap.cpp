@@ -227,17 +227,5 @@ namespace QuantLib {
         fairSpread = Null<Spread>();
     }
 
-    std::ostream& operator<<(std::ostream& out,
-                             YearOnYearInflationSwap::Type t) {
-        switch (t) {
-            case YearOnYearInflationSwap::Payer:
-                return out << "Payer";
-            case YearOnYearInflationSwap::Receiver:
-                return out << "Receiver";
-            default:
-                QL_FAIL("unknown VanillaSwap::Type(" << Integer(t) << ")");
-        }
-    }
-
 }
 

@@ -57,8 +57,7 @@ namespace QuantLib {
         return npvs(expiry, y, true).second;
     }
 
-    VanillaSwap::Type
-    Gaussian1dFloatFloatSwaptionEngine::underlyingType() const {
+    Swap::Type Gaussian1dFloatFloatSwaptionEngine::underlyingType() const {
         return arguments_.swap->type();
     }
 
@@ -138,7 +137,7 @@ namespace QuantLib {
 
         FloatFloatSwap swap = *arguments_.swap;
         Option::Type type =
-            arguments_.type == VanillaSwap::Payer ? Option::Call : Option::Put;
+            arguments_.type == Swap::Payer ? Option::Call : Option::Put;
 
         Array npv0(2 * integrationPoints_ + 1, 0.0),
             npv1(2 * integrationPoints_ + 1, 0.0); // arrays for npvs of the

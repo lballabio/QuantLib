@@ -166,7 +166,7 @@ namespace QuantLib {
             SolvingFunction function(lambda, Bb_) ;
             Brent s1d;
             s1d.setMaxEvaluations(1000);
-            Real yb = s1d.solve(function, 1e-6, 0.00, -100.0, 100.0);
+            Real yb = s1d.solve(function, 1e-6, 0.00, -10.0*sigmay_, 10.0*sigmay_);
 
             Real h1 = (yb - muy_)/(sigmay_*txy) -
                 rhoxy_*(x  - mux_)/(sigmax_*txy);
@@ -220,7 +220,7 @@ namespace QuantLib {
         DayCounter dayCounter = termStructure()->dayCounter();
         Time start = dayCounter.yearFraction(settlement,
                                              arguments.floatingResetDates[0]);
-        Real w = (arguments.type==VanillaSwap::Payer ? 1 : -1 );
+        Real w = (arguments.type==Swap::Payer ? 1 : -1 );
 
         std::vector<Time> fixedPayTimes(arguments.fixedPayDates.size());
         for (Size i=0; i<fixedPayTimes.size(); ++i)
@@ -241,4 +241,3 @@ namespace QuantLib {
     }
 
 }
-

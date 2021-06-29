@@ -111,14 +111,14 @@ namespace crosscurrencyratehelpers_test {
             ext::shared_ptr<Swap> baseCcyLeg =
                 CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(
                     start, Period(q.n, q.units), settlementDays, calendar, businessConvention,
-                    endOfMonth, baseCcyIdx, VanillaSwap::Receiver, baseCcyLegNotional,
+                    endOfMonth, baseCcyIdx, Swap::Receiver, baseCcyLegNotional,
                     baseCcyLegBasis);
             legs.push_back(baseCcyLeg);
 
             ext::shared_ptr<Swap> quoteCcyLeg =
                 CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(
                     start, Period(q.n, q.units), settlementDays, calendar, businessConvention,
-                    endOfMonth, quoteCcyIdx, VanillaSwap::Payer, quoteCcyLegNotional,
+                    endOfMonth, quoteCcyIdx, Swap::Payer, quoteCcyLegNotional,
                     quoteCcyLegBasis);
             legs.push_back(quoteCcyLeg);
 

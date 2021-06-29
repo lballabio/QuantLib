@@ -106,7 +106,7 @@ namespace QuantLib {
                 for (Size j=0; j<values_.size(); j++) {
                     Real coupon = nominal * (1.0 - bond.values()[j])
                                 + accruedSpread * bond.values()[j];
-                    if (arguments_.type == VanillaSwap::Payer)
+                    if (arguments_.type == Swap::Payer)
                         values_[j] += coupon;
                     else
                         values_[j] -= coupon;
@@ -124,7 +124,7 @@ namespace QuantLib {
                 Real fixedCoupon = arguments_.fixedCoupons[i];
                 for (Size j=0; j<values_.size(); j++) {
                     Real coupon = fixedCoupon*bond.values()[j];
-                    if (arguments_.type == VanillaSwap::Payer)
+                    if (arguments_.type == Swap::Payer)
                         values_[j] -= coupon;
                     else
                         values_[j] += coupon;
@@ -141,7 +141,7 @@ namespace QuantLib {
             Time reset = fixedResetTimes_[i];
             if (useCouponInPostAdjust(reset, t, includeTodaysCashFlows_) && isOnTime(t)) {
                 Real fixedCoupon = arguments_.fixedCoupons[i];
-                if (arguments_.type==VanillaSwap::Payer)
+                if (arguments_.type==Swap::Payer)
                     values_ -= fixedCoupon;
                 else
                     values_ += fixedCoupon;
@@ -156,7 +156,7 @@ namespace QuantLib {
                 Real currentFloatingCoupon = arguments_.floatingCoupons[i];
                 QL_REQUIRE(currentFloatingCoupon != Null<Real>(),
                            "current floating coupon not given");
-                if (arguments_.type == VanillaSwap::Payer)
+                if (arguments_.type == Swap::Payer)
                     values_ += currentFloatingCoupon;
                 else
                     values_ -= currentFloatingCoupon;

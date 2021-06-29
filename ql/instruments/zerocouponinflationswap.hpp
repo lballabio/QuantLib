@@ -50,6 +50,9 @@ namespace QuantLib {
         versus the inflation-indexed notional Because the coupons are
         zero there are no accruals (and no coupons).
 
+        In this swap, the passed type (Payer or Receiver) refers to
+        the inflation leg.
+
         Inflation is generally available on every day, including
         holidays and weekends.  Hence there is a variable to state
         whether the observe/fix dates for inflation are adjusted or
@@ -64,7 +67,6 @@ namespace QuantLib {
     */
     class ZeroCouponInflationSwap : public Swap {
       public:
-        enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class engine;
 
@@ -83,10 +85,9 @@ namespace QuantLib {
                                 Calendar infCalendar = Calendar(),
                                 BusinessDayConvention infConvention = BusinessDayConvention());
 
-        /*! \deprecated Use the other constructors incl. the
-                        CPI::InterpolationType observationInterpolation
+        /*! \deprecated Use the other constructor.
 
-                        Deprecated in version 1.22.
+            Deprecated in version 1.23.
         */
         QL_DEPRECATED
         ZeroCouponInflationSwap(Type type,
@@ -105,7 +106,7 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        //! "payer" or "receiver" refer to the inflation-indexed leg
+        //! "Payer" or "Receiver" refers to the inflation leg
         Type type() const { return type_; }
         Real nominal() const { return nominal_; }
         Date startDate() const { return startDate_; }

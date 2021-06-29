@@ -62,8 +62,7 @@ namespace QuantLib {
             - dayCounter.yearFraction(referenceDate,
                                       arguments_.fixedResetDates[0]);
 
-        Option::Type w = arguments_.type==VanillaSwap::Payer ?
-                                                Option::Call : Option::Put;
+        Option::Type w = arguments_.type==Swap::Payer ? Option::Call : Option::Put;
         Volatility vol = volatility->volatility(exercise, swapLength,
                                                 fairRate, true);
         results_.value = (swap.fixedLegBPS()/basisPoint) *

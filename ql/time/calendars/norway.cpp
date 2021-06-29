@@ -49,7 +49,9 @@ namespace QuantLib {
             // May Day
             || (d == 1  && m == May)
             // National Independence Day
-            || (d == 17  && m == May)
+            || (d == 17 && m == May)
+            // Christmas Eve
+            || (d == 24 && m == December && y >= 2002)
             // Christmas
             || (d == 25 && m == December)
             // Boxing Day

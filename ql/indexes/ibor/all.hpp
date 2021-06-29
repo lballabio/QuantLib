@@ -11,6 +11,7 @@
 #include <ql/indexes/ibor/chflibor.hpp>
 #include <ql/indexes/ibor/dkklibor.hpp>
 #include <ql/indexes/ibor/eonia.hpp>
+#include <ql/indexes/ibor/estr.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/eurlibor.hpp>
 #include <ql/indexes/ibor/fedfunds.hpp>

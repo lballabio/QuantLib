@@ -70,6 +70,11 @@ namespace QuantLib {
         SparseMatrixReference;
 
     inline Disposable<Array> prod(const SparseMatrix& A, const Array& x) {
+        QL_REQUIRE(x.size() == A.size2(),
+                   "vectors and sparse matrices with different sizes ("
+                   << x.size() << ", " << A.size1() << "x" << A.size2() <<
+                   ") cannot be multiplied");
+
         Array b(x.size(), 0.0);
 
         for (Size i=0; i < A.filled1()-1; ++i) {

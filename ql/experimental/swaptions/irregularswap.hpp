@@ -41,7 +41,6 @@ namespace QuantLib {
     //! Irregular swap: fixed vs floating leg
     class IrregularSwap : public Swap {
       public:
-        enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class results;
         class engine;
@@ -118,7 +117,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline IrregularSwap::Type IrregularSwap::type() const {
+    inline Swap::Type IrregularSwap::type() const {
         return type_;
     }
 
@@ -129,9 +128,6 @@ namespace QuantLib {
     inline const Leg& IrregularSwap::floatingLeg() const {
         return legs_[1];
     }
-
-    std::ostream& operator<<(std::ostream& out,
-                             IrregularSwap::Type t);
 
 }
 

@@ -33,7 +33,7 @@
 
 namespace QuantLib {
 
-    FloatFloatSwap::FloatFloatSwap(const VanillaSwap::Type type,
+    FloatFloatSwap::FloatFloatSwap(const Swap::Type type,
                                    const Real nominal1,
                                    const Real nominal2,
                                    const Schedule& schedule1,
@@ -72,7 +72,7 @@ namespace QuantLib {
         init(paymentConvention1, paymentConvention2);
     }
 
-    FloatFloatSwap::FloatFloatSwap(const VanillaSwap::Type type,
+    FloatFloatSwap::FloatFloatSwap(const Swap::Type type,
                                    std::vector<Real> nominal1,
                                    std::vector<Real> nominal2,
                                    Schedule schedule1,
@@ -373,11 +373,11 @@ namespace QuantLib {
             registerWith(*i);
 
         switch (type_) {
-        case VanillaSwap::Payer:
+        case Swap::Payer:
             payer_[0] = -1.0;
             payer_[1] = +1.0;
             break;
-        case VanillaSwap::Receiver:
+        case Swap::Receiver:
             payer_[0] = +1.0;
             payer_[1] = -1.0;
             break;

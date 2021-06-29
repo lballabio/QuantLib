@@ -455,9 +455,11 @@ void InflationTest::testZeroTermStructure() {
 
     ext::shared_ptr<ZeroInflationIndex> zii = ext::dynamic_pointer_cast<ZeroInflationIndex>(ii);
     BOOST_REQUIRE_MESSAGE(zii,"dynamic_pointer_cast to ZeroInflationIndex from UKRPI failed");
-    ZeroCouponInflationSwap nzcis(ZeroCouponInflationSwap::Payer, 1000000.0, evaluationDate,
-                                  zcData[6].date,                            // end date = maturity
-                                  calendar, bdc, dc, zcData[6].rate / 100.0, // fixed rate
+    ZeroCouponInflationSwap nzcis(Swap::Payer,
+                                  1000000.0,
+                                  evaluationDate,
+                                  zcData[6].date,    // end date = maturity
+                                  calendar, bdc, dc, zcData[6].rate/100.0, // fixed rate
                                   zii, observationLag, CPI::AsIndex);
 
     // N.B. no coupon pricer because it is not a coupon, effect of inflation curve via
@@ -564,9 +566,11 @@ void InflationTest::testZeroTermStructure() {
 
     ext::shared_ptr<ZeroInflationIndex> ziiyes = ext::dynamic_pointer_cast<ZeroInflationIndex>(iiyes);
     BOOST_REQUIRE_MESSAGE(ziiyes,"dynamic_pointer_cast to ZeroInflationIndex from UKRPI-I failed");
-    ZeroCouponInflationSwap nzcisyes(ZeroCouponInflationSwap::Payer, 1000000.0, evaluationDate,
-                                     zcData[6].date, // end date = maturity
-                                     calendar, bdc, dc, zcData[6].rate / 100.0, // fixed rate
+    ZeroCouponInflationSwap nzcisyes(Swap::Payer,
+                                     1000000.0,
+                                     evaluationDate,
+                                     zcData[6].date,    // end date = maturity
+                                     calendar, bdc, dc, zcData[6].rate/100.0, // fixed rate
                                      ziiyes, observationLagyes, CPI::AsIndex);
 
     // N.B. no coupon pricer because it is not a coupon, effect of inflation curve via
@@ -889,17 +893,17 @@ void InflationTest::testYYTermStructure() {
         .backwards()
         ;
 
-        YearOnYearInflationSwap yyS2(YearOnYearInflationSwap::Payer,
-                                        1000000.0,
-                                        yoySchedule,//fixed schedule, but same as yoy
-                                        yyData[j].rate/100.0,
-                                        dc,
-                                        yoySchedule,
-                                        iir,
-                                        observationLag,
-                                        0.0,        //spread on index
-                                        dc,
-                                        UnitedKingdom());
+        YearOnYearInflationSwap yyS2(Swap::Payer,
+                                     1000000.0,
+                                     yoySchedule,//fixed schedule, but same as yoy
+                                     yyData[j].rate/100.0,
+                                     dc,
+                                     yoySchedule,
+                                     iir,
+                                     observationLag,
+                                     0.0,        //spread on index
+                                     dc,
+                                     UnitedKingdom());
 
         yyS2.setPricingEngine(sppe);
         setCouponPricer(yyS2.yoyLeg(), pricer);
@@ -927,17 +931,17 @@ void InflationTest::testYYTermStructure() {
         .backwards()
         ;
 
-        YearOnYearInflationSwap yyS3(YearOnYearInflationSwap::Payer,
-                                    1000000.0,
-                                    yoySchedule,//fixed schedule, but same as yoy
-                                    yyData[jj].rate/100.0,
-                                    dc,
-                                    yoySchedule,
-                                    iir,
-                                    observationLag,
-                                    0.0,        //spread on index
-                                    dc,
-                                    UnitedKingdom());
+        YearOnYearInflationSwap yyS3(Swap::Payer,
+                                     1000000.0,
+                                     yoySchedule,//fixed schedule, but same as yoy
+                                     yyData[jj].rate/100.0,
+                                     dc,
+                                     yoySchedule,
+                                     iir,
+                                     observationLag,
+                                     0.0,        //spread on index
+                                     dc,
+                                     UnitedKingdom());
 
         yyS3.setPricingEngine(sppe);
         setCouponPricer(yyS3.yoyLeg(), pricer);

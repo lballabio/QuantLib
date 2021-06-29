@@ -23,6 +23,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ostream>
 
 namespace QuantLib {
 
@@ -180,6 +181,17 @@ namespace QuantLib {
         startDiscounts.clear();
         endDiscounts.clear();
         npvDateDiscount = Null<DiscountFactor>();
+    }
+
+    std::ostream& operator<<(std::ostream& out, Swap::Type t) {
+        switch (t) {
+          case Swap::Payer:
+            return out << "Payer";
+          case Swap::Receiver:
+            return out << "Receiver";
+          default:
+            QL_FAIL("unknown Swap::Type(" << Integer(t) << ")");
+        }
     }
 
 }
