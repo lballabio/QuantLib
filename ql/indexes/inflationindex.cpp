@@ -155,7 +155,7 @@ namespace QuantLib {
         // the term structure is relative to the fixing value at the base date.
         Date baseDate = zeroInflation_->baseDate();
         QL_REQUIRE(!needsForecast(baseDate),
-                   name() << " index fixing at base date is not available");
+                   name() << " index fixing at base date " << baseDate << " is not available");
         Real baseFixing = fixing(baseDate);
         Date effectiveFixingDate;
         if (interpolated()) {
