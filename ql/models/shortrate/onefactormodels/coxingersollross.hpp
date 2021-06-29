@@ -33,7 +33,7 @@ namespace QuantLib {
     //! Cox-Ingersoll-Ross model class.
     /*! This class implements the Cox-Ingersoll-Ross model defined by
         \f[
-            dr_t = k(\theta - r_t)dt + \sqrt{r_t}\sigma dW_t .
+            dr(t) = k(\theta - r(t))dt + \sigma \sqrt{r(t)} dW(t)
         \f]
 
         \bug this class was not tested enough to guarantee

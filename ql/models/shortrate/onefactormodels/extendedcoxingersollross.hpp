@@ -34,8 +34,10 @@ namespace QuantLib {
     /*! This class implements the extended Cox-Ingersoll-Ross model
         defined by
         \f[
-            dr_t = (\theta(t) - \alpha r_t)dt + \sqrt{r_t}\sigma dW_t .
+            r(t) = \varphi(t)+y(t)
         \f]
+        where \f$ \varphi(t) \f$ is the deterministic time-dependent
+        parameter used for term-structure fitting and \f$ y_t \f$ is a standard CIR process.
 
         \bug this class was not tested enough to guarantee
              its functionality.
@@ -76,10 +78,14 @@ namespace QuantLib {
     //! Short-rate dynamics in the extended Cox-Ingersoll-Ross model
     /*! The short-rate is here
         \f[
-            r_t = \varphi(t) + y_t
+            r(t) = \varphi(t) + y(t)
         \f]
         where \f$ \varphi(t) \f$ is the deterministic time-dependent
-        parameter used for term-structure fitting and \f$ y_t \f$ is a standard CIR process.
+        parameter used for term-structure fitting and \f$ y_t \f$ is a standard CIR process
+        with dynamics
+        \f[
+            dy(t)=k(\theta-y(t))dt+\sigma \sqrt{y(t)}dW(t)
+        \f]
     */
     class ExtendedCoxIngersollRoss::Dynamics
         : public CoxIngersollRoss::Dynamics {
