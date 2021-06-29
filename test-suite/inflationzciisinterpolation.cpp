@@ -64,7 +64,7 @@ namespace ZCIIS {
         Calendar calendar{UnitedKingdom()};
         BusinessDayConvention bdc{ModifiedFollowing};
         DayCounter dc{Thirty360(Thirty360::BondBasis)};
-        Period observationLag{Period(2, Months)};
+        Period observationLag{Period(3, Months)};
 
         ZeroCouponInflationSwap::Type swapType{ZeroCouponInflationSwap::Payer};
         Real swapNomimal{1000000.00};
