@@ -46,10 +46,9 @@ namespace QuantLib {
             CPI::InterpolationType observationInterpolation,
             Handle<YieldTermStructure> nominalTermStructure);
 
-        /*! \deprecated Use the other constructors incl. the
-                        CPI::InterpolationType observationInterpolation
+        /*! \deprecated Use the other constructor.
 
-                        Deprecated in version 1.22.
+            Deprecated in version 1.23.
         */
         QL_DEPRECATED
         ZeroCouponInflationSwapHelper(
