@@ -32,7 +32,7 @@ namespace QuantLib {
     //! Cash flow dependent on a zero inflation index ratio.
     /*! The ratio is taken between fixings observed at the start date
         and the end date minus the observation lag; that is, if the start
-        and end dates are, e.g., in June and the observation lag is three 
+        and end dates are, e.g., in June and the observation lag is three
         months, the ratio will be taken between March fixings.
     */
     class ZeroInflationCashFlow : public IndexedCashFlow {
