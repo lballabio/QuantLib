@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file inflationcashflow.hpp
+/*! \file zeroinflationcashflow.hpp
     \brief Cash flow dependent on an inflation index ratio (NOT a coupon, i.e. no accruals).
 */
 
