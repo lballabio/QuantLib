@@ -15,11 +15,11 @@
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
- */
+*/
 
 /*! \file inflationcashflow.hpp
- \brief Cash flow dependent on an inflation index ratio (NOT a coupon, i.e. no accruals).
- */
+    \brief Cash flow dependent on an inflation index ratio (NOT a coupon, i.e. no accruals).
+*/
 
 #ifndef quantlib_inflation_cash_flow_hpp
 #define quantlib_inflation_cash_flow_hpp
@@ -30,22 +30,45 @@
 namespace QuantLib {
 
     //! Cash flow dependent on a zero inflation index ratio.
+    /*! The ratio is taken between fixings observed at the start date
+        and the end date minus the observation lag; that is, if the start
+        and end dates are, e.g., in June and the observation lag is three 
+        months, the ratio will be taken between March fixings.
+    */
     class ZeroInflationCashFlow : public IndexedCashFlow {
       public:
+        /*! The fixings dates for the index are `startDate - observationLag` and
+            `endDate - observationLag`.
+        */
         ZeroInflationCashFlow(Real notional,
                               const ext::shared_ptr<ZeroInflationIndex>& index,
                               CPI::InterpolationType observationInterpolation,
-                              const Date& baseDate,
-                              const Date& fixingDate,
+                              const Date& startDate,
+                              const Date& endDate,
+                              const Period& observationLag,
+                              const Date& paymentDate,
+                              bool growthOnly = false);
+
+        /*! The fixings dates for the index are `startDate - observationLag` and
+            `endDate - observationLag`, adjusted on the passed calendar.
+        */
+        ZeroInflationCashFlow(Real notional,
+                              const ext::shared_ptr<ZeroInflationIndex>& index,
+                              CPI::InterpolationType observationInterpolation,
+                              const Date& startDate,
+                              const Date& endDate,
+                              const Period& observationLag,
+                              const Calendar& calendar,
+                              BusinessDayConvention convention,
                               const Date& paymentDate,
                               bool growthOnly = false);
 
         //! \name ZeroInflationCashFlow interface
         //@{
-        virtual ext::shared_ptr<ZeroInflationIndex> zeroInflationIndex() const {
+        ext::shared_ptr<ZeroInflationIndex> zeroInflationIndex() const {
             return zeroInflationIndex_;
         }
-        virtual CPI::InterpolationType observationInterpolation() const {
+        CPI::InterpolationType observationInterpolation() const {
             return observationInterpolation_;
         }
         //@}
@@ -59,20 +82,13 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
 
-
       private:
         ext::shared_ptr<ZeroInflationIndex> zeroInflationIndex_;
         CPI::InterpolationType observationInterpolation_;
+        Date startDate_, endDate_;
+        Period observationLag_;
     };
 
-    // inline definitions
-    inline void ZeroInflationCashFlow::accept(AcyclicVisitor& v) {
-        auto* v1 = dynamic_cast<Visitor<ZeroInflationCashFlow>*>(&v);
-        if (v1 != nullptr)
-            v1->visit(*this);
-        else
-            IndexedCashFlow::accept(v);
-    }
 }
 
 #endif

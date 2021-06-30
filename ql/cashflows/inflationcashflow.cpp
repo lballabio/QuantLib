@@ -15,22 +15,43 @@
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
- */
+*/
 
 #include <ql/cashflows/inflationcashflow.hpp>
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {
+
     ZeroInflationCashFlow::ZeroInflationCashFlow(Real notional,
                                                  const ext::shared_ptr<ZeroInflationIndex>& index,
                                                  CPI::InterpolationType observationInterpolation,
-                                                 const Date& baseDate,
-                                                 const Date& fixingDate,
+                                                 const Date& startDate,
+                                                 const Date& endDate,
+                                                 const Period& observationLag,
                                                  const Date& paymentDate,
                                                  bool growthOnly)
-    : IndexedCashFlow(notional, index, baseDate, fixingDate, paymentDate, growthOnly),
-      zeroInflationIndex_(index), observationInterpolation_(observationInterpolation) {}
+    : ZeroInflationCashFlow(notional, index, observationInterpolation,
+                            startDate, endDate, observationLag,
+                            NullCalendar(), Unadjusted, paymentDate, growthOnly) {}
+
+    ZeroInflationCashFlow::ZeroInflationCashFlow(Real notional,
+                                                 const ext::shared_ptr<ZeroInflationIndex>& index,
+                                                 CPI::InterpolationType observationInterpolation,
+                                                 const Date& startDate,
+                                                 const Date& endDate,
+                                                 const Period& observationLag,
+                                                 const Calendar& calendar,
+                                                 BusinessDayConvention convention,
+                                                 const Date& paymentDate,
+                                                 bool growthOnly)
+    : IndexedCashFlow(notional, index,
+                      calendar.adjust(startDate - observationLag, convention),
+                      calendar.adjust(endDate - observationLag, convention),
+                      paymentDate, growthOnly),
+      zeroInflationIndex_(index), observationInterpolation_(observationInterpolation),
+      startDate_(startDate), endDate_(endDate), observationLag_(observationLag) {}
 
     Real ZeroInflationCashFlow::amount() const {
         // work out what it should be
@@ -68,4 +89,13 @@ namespace QuantLib {
         else
             return notional() * (fixingEnd / fixingFront);
     }
+
+    void ZeroInflationCashFlow::accept(AcyclicVisitor& v) {
+        auto* v1 = dynamic_cast<Visitor<ZeroInflationCashFlow>*>(&v);
+        if (v1 != nullptr)
+            v1->visit(*this);
+        else
+            IndexedCashFlow::accept(v);
+    }
+
 }

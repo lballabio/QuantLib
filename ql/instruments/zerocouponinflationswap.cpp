@@ -22,6 +22,7 @@
 #include <ql/cashflows/inflationcashflow.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -72,16 +73,19 @@ namespace QuantLib {
         if (infConvention_ == BusinessDayConvention())
             infConvention_ = fixConvention_;
 
-        if (adjustInfObsDates_) {
-            baseDate_ = infCalendar_.adjust(startDate - observationLag_, infConvention_);
-            obsDate_ = infCalendar_.adjust(maturity - observationLag_, infConvention_);
-        } else {
-            baseDate_ = startDate - observationLag_;
-            obsDate_ = maturity - observationLag_;
-        }
-
         Date infPayDate = infCalendar_.adjust(maturity, infConvention_);
         Date fixedPayDate = fixCalendar_.adjust(maturity, fixConvention_);
+
+        bool growthOnly = true;
+
+        auto inflationCashFlow =
+            ext::make_shared<ZeroInflationCashFlow>(nominal, infIndex, observationInterpolation_,
+                                                    startDate, maturity, observationLag_,
+                                                    adjustInfObsDates_ ? infCalendar_ : NullCalendar(),
+                                                    infConvention, infPayDate, growthOnly);
+
+        baseDate_ = inflationCashFlow->baseDate();
+        obsDate_ = inflationCashFlow->fixingDate();
 
         // At this point the index may not be able to forecast
         // i.e. do not want to force the existence of an inflation
@@ -93,17 +97,12 @@ namespace QuantLib {
         // N.B. the -1.0 is because swaps only exchange growth, not notionals as well
         Real fixedAmount = nominal * (std::pow(1.0 + fixedRate, T) - 1.0);
 
-        legs_[0].push_back(
-            ext::shared_ptr<CashFlow>(new SimpleCashFlow(fixedAmount, fixedPayDate)));
-        bool growthOnly = true;
-        legs_[1].push_back(ext::shared_ptr<CashFlow>(
-            new ZeroInflationCashFlow(nominal, infIndex, observationInterpolation_, baseDate_,
-                                      obsDate_, infPayDate, growthOnly)));
+        auto fixedCashFlow = ext::make_shared<SimpleCashFlow>(fixedAmount, fixedPayDate);
 
-        for (Size j = 0; j < 2; ++j) {
-            for (auto& i : legs_[j])
-                registerWith(i);
-        }
+        legs_[0].push_back(fixedCashFlow);
+        legs_[1].push_back(inflationCashFlow);
+
+        registerWith(inflationCashFlow);
 
         switch (type_) {
             case Payer:
@@ -211,4 +210,3 @@ namespace QuantLib {
     }
 
 }
-
