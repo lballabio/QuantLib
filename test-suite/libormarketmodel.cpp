@@ -422,7 +422,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
 
             Rate swapRate  = 0.0404;
             ext::shared_ptr<VanillaSwap> forwardSwap(
-                new VanillaSwap(VanillaSwap::Receiver, 1.0,
+                new VanillaSwap(Swap::Receiver, 1.0,
                                 schedule, swapRate, dayCounter,
                                 schedule, index, 0.0, index->dayCounter()));
             forwardSwap->setPricingEngine(ext::shared_ptr<PricingEngine>(
@@ -439,7 +439,7 @@ void LiborMarketModelTest::testSwaptionPricing() {
 
             swapRate = forwardSwap->fairRate();
             forwardSwap = ext::make_shared<VanillaSwap>(
-                VanillaSwap::Receiver, 1.0,
+                                Swap::Receiver, 1.0,
                                 schedule, swapRate, dayCounter,
                                 schedule, index, 0.0, index->dayCounter());
             forwardSwap->setPricingEngine(ext::shared_ptr<PricingEngine>(

@@ -45,7 +45,7 @@ jobs:
         brew install boost
     - name: Compile
       env:
-        CXXFLAGS: -O2 -std=c++11 -stdlib=libc++ -mmacosx-version-min=10.9
+        CXXFLAGS: -O2 -stdlib=libc++ -mmacosx-version-min=10.9
       run: |
         cmake .
         make -j 2

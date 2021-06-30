@@ -70,8 +70,6 @@ namespace QuantLib {
 
     class ZeroCouponSwap : public Swap {
       public:
-        enum Type { Receiver = -1, Payer = 1 };
-
         ZeroCouponSwap(Type type,
                        Real baseNominal,
                        const Date& startDate,

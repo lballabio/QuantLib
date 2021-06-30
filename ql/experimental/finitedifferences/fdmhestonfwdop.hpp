@@ -58,9 +58,7 @@ namespace QuantLib {
         Disposable<Array> solve_splitting(Size direction, const Array& r, Real s) const override;
         Disposable<Array> preconditioner(const Array& r, Real s) const override;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const override;
-#endif
       private:
         Disposable<Array> getLeverageFctSlice(Time t1, Time t2) const;
         const FdmSquareRootFwdOp::TransformationType type_;

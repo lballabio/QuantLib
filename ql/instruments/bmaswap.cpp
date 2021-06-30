@@ -86,7 +86,7 @@ namespace QuantLib {
         return nominal_;
     }
 
-    BMASwap::Type BMASwap::type() const {
+    Swap::Type BMASwap::type() const {
         return type_;
     }
 

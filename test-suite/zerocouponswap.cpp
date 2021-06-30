@@ -76,7 +76,7 @@ namespace zerocouponswap_test {
             return cpn;
         }
 
-        ext::shared_ptr<ZeroCouponSwap> createZCSwap(ZeroCouponSwap::Type type,
+        ext::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
                                                      const Date& start,
                                                      const Date& end,
                                                      Real baseNominal,
@@ -88,14 +88,14 @@ namespace zerocouponswap_test {
             return swap;
         }
 
-        ext::shared_ptr<ZeroCouponSwap> createZCSwap(ZeroCouponSwap::Type type,
+        ext::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
                                                      const Date& start,
                                                      const Date& end,
                                                      Real finalPayment) {
             return createZCSwap(type, start, end, baseNominal, finalPayment);
         }
 
-        ext::shared_ptr<ZeroCouponSwap> createZCSwap(ZeroCouponSwap::Type type,
+        ext::shared_ptr<ZeroCouponSwap> createZCSwap(Swap::Type type,
                                                      const Date& start,
                                                      const Date& end) {
             return createZCSwap(type, start, end, finalPayment);
@@ -104,7 +104,7 @@ namespace zerocouponswap_test {
         ext::shared_ptr<ZeroCouponSwap> createZCSwap(const Date& start, 
                                                      const Date& end, 
                                                      Rate fixedRate) {
-            auto swap = ext::make_shared<ZeroCouponSwap>(ZeroCouponSwap::Receiver, baseNominal, 
+            auto swap = ext::make_shared<ZeroCouponSwap>(Swap::Receiver, baseNominal, 
                                                          start, end, fixedRate, dayCount, euribor,
                                                          calendar, businessConvention, paymentDelay);
             swap->setPricingEngine(discountEngine);
@@ -112,13 +112,9 @@ namespace zerocouponswap_test {
         }
     };
 
-    std::string printType(ZeroCouponSwap::Type type) {
-        return type == ZeroCouponSwap::Receiver ? "receiver" : "payer";
-    }
-
     void checkReplicationOfZeroCouponSwapNPV(const Date& start,
                                              const Date& end,
-                                             ZeroCouponSwap::Type type = ZeroCouponSwap::Receiver) {
+                                             Swap::Type type = Swap::Receiver) {
         CommonVars vars;
         const Real tolerance = 1.0e-8;
 
@@ -152,12 +148,12 @@ namespace zerocouponswap_test {
                         << "    expected float leg NPV:    " << expectedFloatLegNPV << "\n"
                         << "    start:    " << start << "\n"
                         << "    end:    " << end << "\n"
-                        << "    type:    " << printType(type) << "\n");
+                        << "    type:    " << type << "\n");
     }
 
     void checkFairFixedPayment(const Date& start,
                                const Date& end,
-                               ZeroCouponSwap::Type type) {
+                               Swap::Type type) {
         CommonVars vars;
         const Real tolerance = 1.0e-8;
 
@@ -173,10 +169,10 @@ namespace zerocouponswap_test {
                         << "    fair fixed payment:    " << fairFixedPayment << "\n"
                         << "    start:    " << start << "\n"
                         << "    end:    " << end << "\n"
-                        << "    type:    " << printType(type) << "\n");
+                        << "    type:    " << type << "\n");
     }
 
-    void checkFairFixedRate(const Date& start, const Date& end, ZeroCouponSwap::Type type) {
+    void checkFairFixedRate(const Date& start, const Date& end, Swap::Type type) {
         CommonVars vars;
         const Real tolerance = 1.0e-8;
 
@@ -192,7 +188,7 @@ namespace zerocouponswap_test {
                         << "    fair fixed rate:    " << fairFixedRate << "\n"
                         << "    start:    " << start << "\n"
                         << "    end:    " << end << "\n"
-                        << "    type:    " << printType(type) << "\n");
+                        << "    type:    " << type << "\n");
     }
 }
 
@@ -203,10 +199,10 @@ void ZeroCouponSwapTest::testInstrumentValuation() {
 
     // Ongoing instrument
     checkReplicationOfZeroCouponSwapNPV(Date(12, February, 2021), Date(12, February, 2041),
-                                        ZeroCouponSwap::Receiver);
+                                        Swap::Receiver);
     // Forward starting instrument
     checkReplicationOfZeroCouponSwapNPV(Date(15, April, 2021), Date(12, February, 2041), 
-                                        ZeroCouponSwap::Payer);
+                                        Swap::Payer);
 
     // Expired instrument
     checkReplicationOfZeroCouponSwapNPV(Date(12, February, 2000), Date(12, February, 2020));
@@ -219,11 +215,11 @@ void ZeroCouponSwapTest::testFairFixedPayment() {
 
     // Ongoing instrument
     checkFairFixedPayment(Date(12, February, 2021), Date(12, February, 2041),
-                          ZeroCouponSwap::Receiver);
+                          Swap::Receiver);
 
     // Spot starting instrument
     checkFairFixedPayment(Date(17, March, 2021), Date(12, February, 2041), 
-                          ZeroCouponSwap::Payer);
+                          Swap::Payer);
 }
 
 void ZeroCouponSwapTest::testFairFixedRate() {
@@ -233,10 +229,10 @@ void ZeroCouponSwapTest::testFairFixedRate() {
 
     // Ongoing instrument
     checkFairFixedRate(Date(12, February, 2021), Date(12, February, 2041),
-                       ZeroCouponSwap::Receiver);
+                       Swap::Receiver);
 
     // Spot starting instrument
-    checkFairFixedRate(Date(17, March, 2021), Date(12, February, 2041), ZeroCouponSwap::Payer);
+    checkFairFixedRate(Date(17, March, 2021), Date(12, February, 2041), Swap::Payer);
 }
 
 void ZeroCouponSwapTest::testFixedPaymentFromRate() {
@@ -276,7 +272,7 @@ void ZeroCouponSwapTest::testArgumentsValidation() {
     Date end(12, February, 2041);
 
     // Negative base nominal
-    BOOST_CHECK_THROW(vars.createZCSwap(ZeroCouponSwap::Payer, start, end, -1.0e6, 1.0e6),
+    BOOST_CHECK_THROW(vars.createZCSwap(Swap::Payer, start, end, -1.0e6, 1.0e6),
                       Error);
 
     // Start date after end date

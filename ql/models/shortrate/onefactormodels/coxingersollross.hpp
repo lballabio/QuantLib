@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2021 Magnus Mencke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,15 +26,14 @@
 #define quantlib_cox_ingersoll_ross_hpp
 
 #include <ql/models/shortrate/onefactormodel.hpp>
-#include <ql/stochasticprocess.hpp>
-#include <ql/processes/eulerdiscretization.hpp>
+#include <ql/processes/coxingersollrossprocess.hpp>
 
 namespace QuantLib {
 
     //! Cox-Ingersoll-Ross model class.
     /*! This class implements the Cox-Ingersoll-Ross model defined by
         \f[
-            dr_t = k(\theta - r_t)dt + \sqrt{r_t}\sigma dW_t .
+            dr(t) = k(\theta - r(t))dt + \sigma \sqrt{r(t)} dW(t)
         \f]
 
         \bug this class was not tested enough to guarantee
@@ -58,6 +58,7 @@ namespace QuantLib {
 
         ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
 
+
         class Dynamics;
       protected:
         Real A(Time t, Time T) const override;
@@ -70,7 +71,6 @@ namespace QuantLib {
 
       private:
         class VolatilityConstraint;
-        class HelperProcess;
 
         Parameter& theta_;
         Parameter& k_;
@@ -78,33 +78,10 @@ namespace QuantLib {
         Parameter& r0_;
     };
 
-    class CoxIngersollRoss::HelperProcess : public StochasticProcess1D {
-      public:
-        HelperProcess(Real theta, Real k, Real sigma, Real y0)
-        : y0_(y0), theta_(theta), k_(k), sigma_(sigma) {
-            discretization_ =
-                ext::shared_ptr<discretization>(new EulerDiscretization);
-        }
-
-        Real x0() const override { return y0_; }
-        Real drift(Time, Real y) const override {
-            return (0.5*theta_*k_ - 0.125*sigma_*sigma_)/y
-                - 0.5*k_*y;
-        }
-        Real diffusion(Time, Real) const override { return 0.5 * sigma_; }
-
-      private:
-        Real y0_, theta_, k_, sigma_;
-    };
-
     //! %Dynamics of the short-rate under the Cox-Ingersoll-Ross model
-    /*! The state variable \f$ y_t \f$ will here be the square-root of the
-        short-rate. It satisfies the following stochastic equation
-        \f[
-            dy_t=\left[
-                    (\frac{k\theta }{2}+\frac{\sigma ^2}{8})\frac{1}{y_t}-
-                    \frac{k}{2}y_t \right] d_t+ \frac{\sigma }{2}dW_{t}
-        \f].
+    /*! The short-rate is simulated directly using the Quadratic Exponential
+        discretization scheme as described in Leif Andersen,
+        Efficient Simulation of the Heston Stochastic Volatility Model.
     */
     class CoxIngersollRoss::Dynamics :
         public OneFactorModel::ShortRateDynamics {
@@ -114,14 +91,13 @@ namespace QuantLib {
                  Real sigma,
                  Real x0)
         : ShortRateDynamics(ext::shared_ptr<StochasticProcess1D>(
-                        new HelperProcess(theta, k, sigma, std::sqrt(x0)))) {}
+                        new CoxIngersollRossProcess(k, sigma, x0, theta))) {}
 
-        Real variable(Time, Rate r) const override { return std::sqrt(r); }
-        Real shortRate(Time, Real y) const override { return y * y; }
+        Real variable(Time, Rate r) const override { return r; }
+        Real shortRate(Time, Real y) const override { return y; }
     };
 
 }
 
 
 #endif
-

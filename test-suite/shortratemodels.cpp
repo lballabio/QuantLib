@@ -373,7 +373,7 @@ void ShortRateModelTest::testSwaps() {
                                    DateGeneration::Forward, false);
             for (double rate : rates) {
 
-                VanillaSwap swap(VanillaSwap::Payer, 1000000.0, fixedSchedule, rate,
+                VanillaSwap swap(Swap::Payer, 1000000.0, fixedSchedule, rate,
                                  Thirty360(Thirty360::BondBasis),
                                  floatSchedule, euribor, 0.0, Actual360());
                 swap.setPricingEngine(ext::shared_ptr<PricingEngine>(

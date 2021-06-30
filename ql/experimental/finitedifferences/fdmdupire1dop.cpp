@@ -19,10 +19,7 @@
 
 #include <ql/experimental/finitedifferences/fdmdupire1dop.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
-
-#if !defined(QL_NO_UBLAS_SUPPORT)
 #include <boost/numeric/ublas/matrix.hpp>
-#endif
 
 namespace QuantLib {
 
@@ -66,11 +63,10 @@ Disposable<Array> FdmDupire1dOp::preconditioner(const Array &r, Real dt) const {
     return solve_splitting(0, r, dt);
 }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
 Disposable<std::vector<SparseMatrix> > FdmDupire1dOp::toMatrixDecomp() const {
     std::vector<SparseMatrix> retVal(1);
     retVal[0] = mapT_.toMatrix();
     return retVal;
 }
-#endif
+
 }

@@ -47,7 +47,7 @@ namespace QuantLib {
         operator ext::shared_ptr<OvernightIndexedSwap>() const ;
 
         MakeOIS& receiveFixed(bool flag = true);
-        MakeOIS& withType(OvernightIndexedSwap::Type type);
+        MakeOIS& withType(Swap::Type type);
         MakeOIS& withNominal(Real n);
 
         MakeOIS& withSettlementDays(Natural settlementDays);
@@ -93,7 +93,7 @@ namespace QuantLib {
         DateGeneration::Rule rule_;
         bool endOfMonth_, isDefaultEOM_;
 
-        OvernightIndexedSwap::Type type_;
+        Swap::Type type_;
         Real nominal_;
 
         Spread overnightSpread_;

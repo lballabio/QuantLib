@@ -101,8 +101,7 @@ namespace QuantLib {
         s1d.setUpperBound(maxStrike);
         Rate rStar = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
 
-        Option::Type w = arguments_.type==VanillaSwap::Payer ?
-                                                Option::Put : Option::Call;
+        Option::Type w = arguments_.type==Swap::Payer ? Option::Put : Option::Call;
         Size size = arguments_.fixedCoupons.size();
 
         Real value = 0.0;

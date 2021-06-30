@@ -79,8 +79,8 @@ Real Gaussian1dSmileSection::optionPrice(Rate strike, Option::Type type,
     if (swapIndex_ != nullptr) {
         Swaption s = MakeSwaption(swapIndex_, fixingDate_, strike)
                          .withUnderlyingType(type == Option::Call
-                                                 ? VanillaSwap::Payer
-                                                 : VanillaSwap::Receiver)
+                                                 ? Swap::Payer
+                                                 : Swap::Receiver)
                          .withPricingEngine(engine_);
         Real tmp = s.NPV();
         return tmp / annuity_ * discount;

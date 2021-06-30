@@ -1,4 +1,33 @@
 
+# QL_CHECK_CPP11
+# --------------------
+# Check whether C++11 features are supported by default.
+# If not (e.g., with Clang on Mac OS) add -std=c++11
+AC_DEFUN([QL_CHECK_CPP11],
+[AC_MSG_CHECKING([for C++11 support])
+ AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+        [[@%:@include <initializer_list>
+          struct S {
+            int i = 3;
+            double x = 3.5;
+          };
+
+          class C {
+            public:
+              C(int) noexcept;
+              C(std::initializer_list<int>);
+              S f() { return { 2, 1.5 }; }
+          };
+          ]],
+        [[]])],
+    [AC_MSG_RESULT([yes])],
+    [AC_MSG_RESULT([no: adding -std=c++11 to CXXFLAGS])
+     AC_SUBST([CPP11_CXXFLAGS],["-std=c++11"])
+     AC_SUBST([CXXFLAGS],["${CXXFLAGS} -std=c++11"])
+    ])
+])
+
 # QL_CHECK_BOOST_DEVEL
 # --------------------
 # Check whether the Boost headers are available
@@ -68,31 +97,6 @@ AC_DEFUN([QL_CHECK_BOOST_VERSION_1_59_OR_HIGHER],
     [AC_MSG_RESULT([yes])],
     [AC_MSG_RESULT([no])
      AC_MSG_ERROR([Boost version 1.59 or higher is required for the parallel unit test runner.])
-    ])
-])
-
-
-
-# QL_CHECK_BOOST_UBLAS
-# --------------------
-# Check whether the Boost headers are available
-AC_DEFUN([QL_CHECK_BOOST_UBLAS],
-[AC_MSG_CHECKING([for Boost::uBLAS support])
- AC_COMPILE_IFELSE(
-    [AC_LANG_PROGRAM(
-        [[@%:@include <boost/version.hpp>
-          @%:@if BOOST_VERSION > 106300
-          @%:@include <boost/serialization/array_wrapper.hpp>
-          @%:@endif
-          @%:@include <boost/numeric/ublas/vector_proxy.hpp>
-          @%:@include <boost/numeric/ublas/triangular.hpp>
-          @%:@include <boost/numeric/ublas/lu.hpp>]],
-        [[]])],
-    [AC_MSG_RESULT([yes])],
-    [AC_MSG_RESULT([no])
-     AC_MSG_WARN([Some functionality will be disabled.])
-     AC_DEFINE([QL_NO_UBLAS_SUPPORT],[],
-               [Define this if your compiler does not support Boost::uBLAS.])
     ])
 ])
 
@@ -222,6 +226,7 @@ AC_DEFUN([QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM],
  else
      AC_MSG_RESULT([yes])
      AC_SUBST([BOOST_THREAD_LIB],[$boost_thread_lib])
+     AC_SUBST([PTHREAD_CXXFLAGS],["-pthread"])
      AC_SUBST([CXXFLAGS],["${CXXFLAGS} -pthread"])
  fi
 ])
@@ -273,7 +278,6 @@ AC_DEFUN([QL_CHECK_BOOST_TEST_INTERPROCESS],
 AC_DEFUN([QL_CHECK_BOOST],
 [AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
  AC_REQUIRE([QL_CHECK_BOOST_VERSION])
- AC_REQUIRE([QL_CHECK_BOOST_UBLAS])
  AC_REQUIRE([QL_CHECK_BOOST_UNIT_TEST])
 ])
 

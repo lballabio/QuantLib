@@ -64,7 +64,6 @@ namespace QuantLib {
     */
     class VanillaSwap : public Swap {
       public:
-        enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class results;
         class engine;
@@ -164,7 +163,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline VanillaSwap::Type VanillaSwap::type() const {
+    inline Swap::Type VanillaSwap::type() const {
         return type_;
     }
 
@@ -211,9 +210,6 @@ namespace QuantLib {
     inline const Leg& VanillaSwap::floatingLeg() const {
         return legs_[1];
     }
-
-    std::ostream& operator<<(std::ostream& out,
-                             VanillaSwap::Type t);
 
 }
 

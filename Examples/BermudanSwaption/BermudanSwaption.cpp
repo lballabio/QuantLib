@@ -121,7 +121,7 @@ int main(int, char* []) {
         BusinessDayConvention floatingLegConvention = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         Frequency floatingLegFrequency = Semiannual;
-        VanillaSwap::Type type = VanillaSwap::Payer;
+        Swap::Type type = Swap::Payer;
         Rate dummyFixedRate = 0.03;
         ext::shared_ptr<IborIndex> indexSixMonths(new
             Euribor6M(rhTermStructure));

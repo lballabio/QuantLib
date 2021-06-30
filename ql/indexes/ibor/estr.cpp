@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2021 Magnus Mencke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,26 +17,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmlinearop.hpp
-    \brief linear operator to model a multi dimensinal pde system
-*/
-
-#ifndef quantlib_fdm_linear_op_hpp
-#define quantlib_fdm_linear_op_hpp
-
-#include <ql/math/array.hpp>
-#include <ql/math/matrixutilities/sparsematrix.hpp>
+#include <ql/indexes/ibor/estr.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/currencies/europe.hpp>
 
 namespace QuantLib {
 
-    class FdmLinearOp {
-      public:
-        typedef Array array_type;
-        virtual ~FdmLinearOp() = default;
-        virtual Disposable<array_type> apply(const array_type& r) const = 0;
+    Estr::Estr(const Handle<YieldTermStructure>& h)
+    : OvernightIndex("ESTR", 0, EURCurrency(), TARGET(), Actual360(), h) {}
 
-        virtual Disposable<SparseMatrix> toMatrix() const = 0;
-    };
 }
-
-#endif

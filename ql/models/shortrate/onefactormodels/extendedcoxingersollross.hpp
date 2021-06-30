@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2021 Magnus Mencke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,8 +34,10 @@ namespace QuantLib {
     /*! This class implements the extended Cox-Ingersoll-Ross model
         defined by
         \f[
-            dr_t = (\theta(t) - \alpha r_t)dt + \sqrt{r_t}\sigma dW_t .
+            r(t) = \varphi(t)+y(t)
         \f]
+        where \f$ \varphi(t) \f$ is the deterministic time-dependent
+        parameter used for term-structure fitting and \f$ y_t \f$ is a standard CIR process.
 
         \bug this class was not tested enough to guarantee
              its functionality.
@@ -75,11 +78,14 @@ namespace QuantLib {
     //! Short-rate dynamics in the extended Cox-Ingersoll-Ross model
     /*! The short-rate is here
         \f[
-            r_t = \varphi(t) + y_t^2
+            r(t) = \varphi(t) + y(t)
         \f]
         where \f$ \varphi(t) \f$ is the deterministic time-dependent
-        parameter used for term-structure fitting and \f$ y_t \f$ is the
-        state variable, the square-root of a standard CIR process.
+        parameter used for term-structure fitting and \f$ y_t \f$ is a standard CIR process
+        with dynamics
+        \f[
+            dy(t)=k(\theta-y(t))dt+\sigma \sqrt{y(t)}dW(t)
+        \f]
     */
     class ExtendedCoxIngersollRoss::Dynamics
         : public CoxIngersollRoss::Dynamics {
@@ -87,8 +93,8 @@ namespace QuantLib {
         Dynamics(Parameter phi, Real theta, Real k, Real sigma, Real x0)
         : CoxIngersollRoss::Dynamics(theta, k, sigma, x0), phi_(std::move(phi)) {}
 
-        Real variable(Time t, Rate r) const override { return std::sqrt(r - phi_(t)); }
-        Real shortRate(Time t, Real y) const override { return y * y + phi_(t); }
+        Real variable(Time t, Rate r) const override { return r - phi_(t); }
+        Real shortRate(Time t, Real y) const override { return y + phi_(t); }
 
       private:
         Parameter phi_;
@@ -153,4 +159,3 @@ namespace QuantLib {
 
 
 #endif
-

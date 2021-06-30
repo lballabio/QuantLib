@@ -133,7 +133,7 @@ namespace QuantLib {
             if (j == 0)
                 npv *= -1.0;
         }
-        if (swap_->type() == VanillaSwap::Receiver)
+        if (swap_->type() == Swap::Receiver)
             npv *= -1.0;
 
         return std::max(0.0, npv);

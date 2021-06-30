@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2021, Marcin Rybacki
+ Copyright (C) 2021 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,10 +34,10 @@ namespace QuantLib {
                                                             BusinessDayConvention convention,
                                                             bool endOfMonth,
                                                             const ext::shared_ptr<IborIndex>& idx,
-                                                            VanillaSwap::Type type,
+                                                            Swap::Type type,
                                                             Real notional,
                                                             Spread basis) {
-        bool isPayer = (type == VanillaSwap::Payer);
+        bool isPayer = (type == Swap::Payer);
         Date referenceDate = calendar.adjust(evaluationDate);
         Date earliestDate = calendar.advance(referenceDate, fixingDays * Days, convention);
         Date maturity = earliestDate + tenor;
@@ -86,10 +86,10 @@ namespace QuantLib {
     void CrossCurrencyBasisSwapRateHelper::initializeDates() {
         baseCcyLeg_ = CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(
             evaluationDate_, tenor_, fixingDays_, calendar_, convention_, endOfMonth_, baseCcyIdx_,
-            VanillaSwap::Receiver);
+            Swap::Receiver);
         quoteCcyLeg_ = CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(
             evaluationDate_, tenor_, fixingDays_, calendar_, convention_, endOfMonth_, quoteCcyIdx_,
-            VanillaSwap::Payer);
+            Swap::Payer);
 
         earliestDate_ = std::min(baseCcyLeg_->startDate(), quoteCcyLeg_->startDate());
         latestDate_ = std::max(baseCcyLeg_->maturityDate(), quoteCcyLeg_->maturityDate());

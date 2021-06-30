@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Andreas Gaida
- Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2021 Magnus Mencke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,26 +17,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdmlinearop.hpp
-    \brief linear operator to model a multi dimensinal pde system
+/*! \file eonia.hpp
+    \brief %ESTR index
 */
 
-#ifndef quantlib_fdm_linear_op_hpp
-#define quantlib_fdm_linear_op_hpp
+#ifndef quantlib_estr_hpp
+#define quantlib_estr_hpp
 
-#include <ql/math/array.hpp>
-#include <ql/math/matrixutilities/sparsematrix.hpp>
+#include <ql/indexes/iborindex.hpp>
 
 namespace QuantLib {
 
-    class FdmLinearOp {
+    //! %ESTR (Euro Short-Term Rate) rate fixed by the ECB.
+    class Estr : public OvernightIndex {
       public:
-        typedef Array array_type;
-        virtual ~FdmLinearOp() = default;
-        virtual Disposable<array_type> apply(const array_type& r) const = 0;
-
-        virtual Disposable<SparseMatrix> toMatrix() const = 0;
+        explicit Estr(const Handle<YieldTermStructure>& h =
+                      Handle<YieldTermStructure>());
     };
+
 }
 
 #endif

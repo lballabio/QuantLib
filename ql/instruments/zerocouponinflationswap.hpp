@@ -65,9 +65,9 @@ namespace QuantLib {
     */
     class ZeroCouponInflationSwap : public Swap {
       public:
-        enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class engine;
+        /*! In this swap, the type (Payer or Receiver) refers to the inflation leg. */
         ZeroCouponInflationSwap(Type type,
                                 Real nominal,
                                 const Date& startDate, // start date of contract (only)
@@ -84,7 +84,7 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        //! "payer" or "receiver" refer to the inflation-indexed leg
+        //! "Payer" or "Receiver" refers to the inflation leg
         Type type() const { return type_; }
         Real nominal() const { return nominal_; }
         Date startDate() const { return startDate_; }

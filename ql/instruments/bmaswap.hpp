@@ -34,7 +34,9 @@ namespace QuantLib {
     //! swap paying Libor against BMA coupons
     class BMASwap : public Swap {
       public:
-        enum Type { Receiver = -1, Payer = 1 };
+        /*! In this constructor, the type (Payer or Receiver) refers
+            to the BMA leg.
+        */
         BMASwap(Type type,
                 Real nominal,
                 // Libor leg
@@ -53,7 +55,7 @@ namespace QuantLib {
         Real liborFraction() const;
         Spread liborSpread() const;
         Real nominal() const;
-        //! "payer" or "receiver" refer to the BMA leg
+        //! "Payer" or "Receiver" refers to the BMA leg
         Type type() const;
         const Leg& bmaLeg() const;
         const Leg& liborLeg() const;

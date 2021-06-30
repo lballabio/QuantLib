@@ -628,7 +628,7 @@ int main(int, char* []) {
         Spread spread = 0.0;
 
         Integer lengthInYears = 5;
-        VanillaSwap::Type swapType = VanillaSwap::Payer;
+        Swap::Type swapType = Swap::Payer;
 
         Date maturity = settlementDate + lengthInYears*Years;
         Schedule fixedSchedule(settlementDate, maturity,

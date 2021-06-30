@@ -53,9 +53,8 @@ namespace QuantLib {
         Disposable<Array> solve_splitting(Size direction, const Array& r, Real s) const override;
         Disposable<Array> preconditioner(const Array& r, Real s) const override;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const override;
-#endif
+
       private:
         const ext::shared_ptr<FdmMesher> mesher_;
         const ext::shared_ptr<OrnsteinUhlenbeckProcess> process_;

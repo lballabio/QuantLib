@@ -46,7 +46,7 @@ namespace bermudan_swaption_test {
 
         // underlying swap parameters
         Integer startYears, length;
-        VanillaSwap::Type type;
+        Swap::Type type;
         Real nominal;
         BusinessDayConvention fixedConvention, floatingConvention;
         Frequency fixedFrequency, floatingFrequency;
@@ -63,7 +63,7 @@ namespace bermudan_swaption_test {
         CommonVars() {
             startYears = 1;
             length = 5;
-            type = VanillaSwap::Payer;
+            type = Swap::Payer;
             nominal = 1000.0;
             settlementDays = 2;
             fixedConvention = Unadjusted;

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2021, Marcin Rybacki
+ Copyright (C) 2021 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -75,7 +75,7 @@ namespace QuantLib {
                                                            BusinessDayConvention convention,
                                                            bool endOfMonth,
                                                            const ext::shared_ptr<IborIndex>& idx,
-                                                           VanillaSwap::Type type,
+                                                           Swap::Type type,
                                                            Real notional = 1.0,
                                                            Spread basis = 0.0);
         //@}

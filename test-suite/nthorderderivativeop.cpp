@@ -50,8 +50,6 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-#ifndef QL_NO_UBLAS_SUPPORT
-
 #include <boost/numeric/ublas/banded.hpp>
 
 #if defined(__clang__) || defined(__GNUC__)
@@ -909,12 +907,10 @@ void NthOrderDerivativeOpTest::testMixedSecondOrder9PointsOnUniformGrid() {
                 }
         }
 }
-#endif
+
 
 test_suite* NthOrderDerivativeOpTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("NthOrderDerivativeOp tests");
-
-#ifndef QL_NO_UBLAS_SUPPORT
 
     suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testSparseMatrixApply));
@@ -948,8 +944,6 @@ test_suite* NthOrderDerivativeOpTest::suite(SpeedLevel speed) {
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&NthOrderDerivativeOpTest::testHigherOrderHestonOptionPricing));
     }
-
-#endif
 
     return suite;
 }

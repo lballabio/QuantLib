@@ -169,7 +169,7 @@ namespace {
         Schedule floatSchedule(swapStart, swapEnd, Period(6, Months), TARGET(), ModifiedFollowing,
                                ModifiedFollowing, DateGeneration::Backward, false);
         ext::shared_ptr<VanillaSwap> swap(
-            new VanillaSwap(VanillaSwap::Payer, 10000.0, fixedSchedule, 0.03, Thirty360(Thirty360::BondBasis),
+            new VanillaSwap(Swap::Payer, 10000.0, fixedSchedule, 0.03, Thirty360(Thirty360::BondBasis),
                             floatSchedule, euribor6m, 0.0, euribor6m->dayCounter()));
         swap->setPricingEngine(ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(discYTS)));
         // European exercise and swaption

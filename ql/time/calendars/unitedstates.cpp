@@ -83,6 +83,12 @@ namespace QuantLib {
                 return (d >= 22 && d <= 28) && w == Monday && m == October;
             }
         }
+
+        bool isJuneteenth(Day d, Month m, Year y, Weekday w) {
+            // declared in 2021, but only observed by exchanges since 2022
+            return (d == 19 || (d == 20 && w == Monday) || (d == 18 && w == Friday))
+                && m == June && y >= 2022;
+        }
     }
     
     UnitedStates::UnitedStates(UnitedStates::Market market) {
@@ -142,6 +148,8 @@ namespace QuantLib {
             || isWashingtonBirthday(d, m, y, w)
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
+            // Juneteenth (Monday if Sunday or Friday if Saturday)
+            || isJuneteenth(d, m, y, w)
             // Independence Day (Monday if Sunday or Friday if Saturday)
             || ((d == 4 || (d == 5 && w == Monday) ||
                  (d == 3 && w == Friday)) && m == July)
@@ -188,6 +196,8 @@ namespace QuantLib {
             || (dd == em-3)
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
+            // Juneteenth (Monday if Sunday or Friday if Saturday)
+            || isJuneteenth(d, m, y, w)
             // Independence Day (Monday if Sunday or Friday if Saturday)
             || ((d == 4 || (d == 5 && w == Monday) ||
                  (d == 3 && w == Friday)) && m == July)
@@ -276,6 +286,8 @@ namespace QuantLib {
             || (dd == em-3 && y != 2015)
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
+            // Juneteenth (Monday if Sunday or Friday if Saturday)
+            || isJuneteenth(d, m, y, w)
             // Independence Day (Monday if Sunday or Friday if Saturday)
             || ((d == 4 || (d == 5 && w == Monday) ||
                  (d == 3 && w == Friday)) && m == July)
@@ -344,6 +356,8 @@ namespace QuantLib {
             || isWashingtonBirthday(d, m, y, w)
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
+            // Juneteenth (Monday if Sunday or Friday if Saturday)
+            || isJuneteenth(d, m, y, w)
             // Independence Day (Monday if Sunday)
             || ((d == 4 || (d == 5 && w == Monday)) && m == July)
             // Labor Day (first Monday in September)
