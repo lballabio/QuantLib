@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2020 Lew Wei Hao
+ Copyright (C) 2021 Magnus Mencke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,8 +33,12 @@ namespace QuantLib {
     //! CoxIngersollRoss process class
     /*! This class describes the CoxIngersollRoss process governed by
         \f[
-            dx = a (r - x_t) dt + \sqrt{x_t}\sigma dW_t.
+            dx(t) = k (\theta - x(t)) dt + \sigma \sqrt{x(t)} dW(t).
         \f]
+
+        The process is discretized using the Quadratic Exponential scheme.
+        For details see Leif Andersen,
+        Efficient Simulation of the Heston Stochastic Volatility Model.
 
         \ingroup processes
     */
@@ -101,13 +106,11 @@ namespace QuantLib {
     }
 
     inline Real CoxIngersollRossProcess::evolve (Time t0,
-                                    Real x0,
+      Real x0,
                                     Time dt,
                                     Real dw) const {
         Real result;
-        // This is the QuadraticExponential scheme
-        // for details see Leif Andersen,
-        // Efficient Simulation of the Heston Stochastic Volatility Model
+
         const Real ex = std::exp(-speed_*dt);
 
         const Real m  =  level_+(x0-level_)*ex;
@@ -129,11 +132,10 @@ namespace QuantLib {
             const Real u = CumulativeNormalDistribution()(dw);
 
             result = ((u <= p) ? 0.0 : std::log((1-p)/(1-u))/beta);
-      }
-
+        }
 
         return result;
-      }
+    }
 
 }
 

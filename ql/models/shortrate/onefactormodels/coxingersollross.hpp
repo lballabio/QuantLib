@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2021 Magnus Mencke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,7 +33,7 @@ namespace QuantLib {
     //! Cox-Ingersoll-Ross model class.
     /*! This class implements the Cox-Ingersoll-Ross model defined by
         \f[
-            dr_t = k(\theta - r_t)dt + \sqrt{r_t}\sigma dW_t .
+            dr(t) = k(\theta - r(t))dt + \sigma \sqrt{r(t)} dW(t)
         \f]
 
         \bug this class was not tested enough to guarantee
