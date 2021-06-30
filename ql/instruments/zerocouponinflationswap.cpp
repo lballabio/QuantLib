@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include <ql/cashflows/inflationcashflow.hpp>
+#include <ql/cashflows/zeroinflationcashflow.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>

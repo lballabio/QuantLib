@@ -521,7 +521,6 @@
     <ClInclude Include="ql\cashflows\floatingratecoupon.hpp" />
     <ClInclude Include="ql\cashflows\iborcoupon.hpp" />
     <ClInclude Include="ql\cashflows\indexedcashflow.hpp" />
-    <ClInclude Include="ql\cashflows\inflationcashflow.hpp" />
     <ClInclude Include="ql\cashflows\inflationcoupon.hpp" />
     <ClInclude Include="ql\cashflows\inflationcouponpricer.hpp" />
     <ClInclude Include="ql\cashflows\lineartsrpricer.hpp" />
@@ -533,6 +532,7 @@
     <ClInclude Include="ql\cashflows\subperiodcoupon.hpp" />
     <ClInclude Include="ql\cashflows\timebasket.hpp" />
     <ClInclude Include="ql\cashflows\yoyinflationcoupon.hpp" />
+    <ClInclude Include="ql\cashflows\zeroinflationcashflow.hpp" />
     <ClInclude Include="ql\currencies\africa.hpp" />
     <ClInclude Include="ql\currencies\all.hpp" />
     <ClInclude Include="ql\currencies\america.hpp" />
@@ -1896,7 +1896,6 @@
     <ClCompile Include="ql\cashflows\floatingratecoupon.cpp" />
     <ClCompile Include="ql\cashflows\iborcoupon.cpp" />
     <ClCompile Include="ql\cashflows\indexedcashflow.cpp" />
-    <ClCompile Include="ql\cashflows\inflationcashflow.cpp" />
     <ClCompile Include="ql\cashflows\inflationcoupon.cpp" />
     <ClCompile Include="ql\cashflows\inflationcouponpricer.cpp" />
     <ClCompile Include="ql\cashflows\lineartsrpricer.cpp" />
@@ -1907,6 +1906,7 @@
     <ClCompile Include="ql\cashflows\subperiodcoupon.cpp" />
     <ClCompile Include="ql\cashflows\timebasket.cpp" />
     <ClCompile Include="ql\cashflows\yoyinflationcoupon.cpp" />
+    <ClCompile Include="ql\cashflows\zeroinflationcashflow.cpp" />
     <ClCompile Include="ql\currencies\africa.cpp" />
     <ClCompile Include="ql\currencies\america.cpp" />
     <ClCompile Include="ql\currencies\asia.cpp" />

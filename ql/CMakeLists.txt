@@ -22,7 +22,6 @@ set(QuantLib_SRC
     cashflows/floatingratecoupon.cpp
     cashflows/iborcoupon.cpp
     cashflows/indexedcashflow.cpp
-    cashflows/inflationcashflow.cpp
     cashflows/inflationcoupon.cpp
     cashflows/inflationcouponpricer.cpp
     cashflows/lineartsrpricer.cpp
@@ -33,6 +32,7 @@ set(QuantLib_SRC
     cashflows/timebasket.cpp
     cashflows/subperiodcoupon.cpp
     cashflows/yoyinflationcoupon.cpp
+    cashflows/zeroinflationcashflow.cpp
     currencies/africa.cpp
     currencies/america.cpp
     currencies/asia.cpp
@@ -945,7 +945,6 @@ set(QuantLib_HDR
     cashflows/floatingratecoupon.hpp
     cashflows/iborcoupon.hpp
     cashflows/indexedcashflow.hpp
-    cashflows/inflationcashflow.hpp
     cashflows/inflationcoupon.hpp
     cashflows/inflationcouponpricer.hpp
     cashflows/lineartsrpricer.hpp
@@ -957,6 +956,7 @@ set(QuantLib_HDR
     cashflows/subperiodcoupon.hpp
     cashflows/timebasket.hpp
     cashflows/yoyinflationcoupon.hpp
+    cashflows/zeroinflationcashflow.hpp
     compounding.hpp
     config.ansi.hpp
     config.mingw.hpp

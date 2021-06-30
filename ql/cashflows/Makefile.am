@@ -24,7 +24,6 @@ this_include_HEADERS = \
     floatingratecoupon.hpp \
     iborcoupon.hpp \
     indexedcashflow.hpp \
-    inflationcashflow.hpp \
     inflationcoupon.hpp \
     inflationcouponpricer.hpp \
     lineartsrpricer.hpp \
@@ -35,7 +34,8 @@ this_include_HEADERS = \
     simplecashflow.hpp \
     subperiodcoupon.hpp \
     timebasket.hpp \
-    yoyinflationcoupon.hpp
+    yoyinflationcoupon.hpp \
+    zeroinflationcashflow.hpp
 
 cpp_files = \
     averagebmacoupon.cpp \
@@ -58,7 +58,6 @@ cpp_files = \
     floatingratecoupon.cpp \
     iborcoupon.cpp \
     indexedcashflow.cpp \
-    inflationcashflow.cpp \
     inflationcoupon.cpp \
     inflationcouponpricer.cpp \
     lineartsrpricer.cpp \
@@ -68,7 +67,8 @@ cpp_files = \
     simplecashflow.cpp \
     subperiodcoupon.cpp \
     timebasket.cpp \
-    yoyinflationcoupon.cpp
+    yoyinflationcoupon.cpp \
+    zeroinflationcashflow.cpp
 
 if UNITY_BUILD
 
