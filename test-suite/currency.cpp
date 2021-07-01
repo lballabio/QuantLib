@@ -24,14 +24,14 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-void CurrencyTest::testConstructor() {
+void CurrencyTest::testBespokeConstructor() {
     BOOST_TEST_MESSAGE("Testing bespoke currency constructor...");
 
     Currency replicatedUsd("U.S. dollar", "USD", 840, "$", "", 100, Rounding(), "");
     Currency usd = USDCurrency();
 
     if (replicatedUsd.empty())
-        BOOST_ERROR("Failed to create custom currency.");
+        BOOST_ERROR("Failed to create bespoke currency.");
 
     if (replicatedUsd != usd)
         BOOST_ERROR("Failed to mimic USD currency.");
@@ -40,7 +40,7 @@ void CurrencyTest::testConstructor() {
 test_suite* CurrencyTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Currency tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&CurrencyTest::testConstructor));
+    suite->add(QUANTLIB_TEST_CASE(&CurrencyTest::testBespokeConstructor));
 
     return suite;
 }
