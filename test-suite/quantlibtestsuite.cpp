@@ -84,6 +84,7 @@
 #include "creditdefaultswap.hpp"
 #include "creditriskplus.hpp"
 #include "crosscurrencyratehelpers.hpp"
+#include "currency.hpp"
 #include "curvestates.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
@@ -388,6 +389,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CPISwapTest::suite());
     test->add(CreditDefaultSwapTest::suite());
     test->add(CrossCurrencyRateHelpersTest::suite());
+    test->add(CurrencyTest::suite());
     test->add(CurveStatesTest::suite());
     test->add(DateTest::suite(speed));
     test->add(DayCounterTest::suite());
