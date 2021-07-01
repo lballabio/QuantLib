@@ -19,7 +19,6 @@
 #include "currency.hpp"
 #include "utilities.hpp"
 #include <ql/currency.hpp>
-#include <ql/currencies/america.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -27,14 +26,29 @@ using namespace boost::unit_test_framework;
 void CurrencyTest::testBespokeConstructor() {
     BOOST_TEST_MESSAGE("Testing bespoke currency constructor...");
 
-    Currency replicatedUsd("U.S. dollar", "USD", 840, "$", "", 100, Rounding(), "");
-    Currency usd = USDCurrency();
+    std::string name("Some Currency");
+    std::string code("CCY");
+    std::string symbol("#");
 
-    if (replicatedUsd.empty())
+    Currency customCcy(name, code, 100, symbol, "", 100, Rounding(), "");
+
+    if (customCcy.empty())
         BOOST_ERROR("Failed to create bespoke currency.");
 
-    if (replicatedUsd != usd)
-        BOOST_ERROR("Failed to mimic USD currency.");
+    if (customCcy.name() != name)
+        BOOST_ERROR("incorrect currency name\n"
+                    << "    actual:    " << customCcy.name() << "\n"
+                    << "    expected:    " << name << "\n");
+
+    if (customCcy.code() != code)
+        BOOST_ERROR("incorrect currency code\n"
+                    << "    actual:    " << customCcy.code() << "\n"
+                    << "    expected:    " << code << "\n");
+
+    if (customCcy.symbol() != symbol)
+        BOOST_ERROR("incorrect currency symbol\n"
+                    << "    actual:    " << customCcy.symbol() << "\n"
+                    << "    expected:    " << symbol << "\n");
 }
 
 test_suite* CurrencyTest::suite() {
