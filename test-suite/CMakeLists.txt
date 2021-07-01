@@ -39,6 +39,7 @@ set(QuantLib-Test_SRC
     creditdefaultswap.cpp
     creditriskplus.cpp
     crosscurrencyratehelpers.cpp
+    currency.cpp
     curvestates.cpp
     dates.cpp
     daycounters.cpp
@@ -205,6 +206,7 @@ set(QuantLib-Test_HDR
     creditdefaultswap.hpp
     creditriskplus.hpp
     crosscurrencyratehelpers.hpp
+    currency.hpp
     curvestates.hpp
     dates.hpp
     daycounters.hpp
