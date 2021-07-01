@@ -66,9 +66,9 @@ namespace inflation_cpi_swap_test {
             Date maturity = iiData[i].date;
             Handle<Quote> quote(ext::shared_ptr<Quote>(
                                 new SimpleQuote(iiData[i].rate/100.0)));
-            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
-                                quote, observationLag, maturity,
-                                calendar, bdc, dc, ii, discountCurve));
+            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(quote, observationLag, maturity,
+                                                                    calendar, bdc, dc, ii,
+                                                                    CPI::AsIndex, discountCurve));
             instruments.push_back(anInstrument);
         }
 
@@ -397,9 +397,8 @@ void CPISwapTest::zciisconsistency() {
     Period observationLag(2,Months);
 
     Rate quote = 0.03714;
-    ZeroCouponInflationSwap zciis(ztype, nominal, startDate, endDate, cal,
-                                  paymentConvention, dc, quote, common.ii,
-                                  observationLag);
+    ZeroCouponInflationSwap zciis(ztype, nominal, startDate, endDate, cal, paymentConvention, dc,
+                                  quote, common.ii, observationLag, CPI::AsIndex);
 
     // simple structure so simple pricing engine - most work done by index
     ext::shared_ptr<DiscountingSwapEngine>

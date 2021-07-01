@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2007, 2009 Chris Kenyon
  Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,15 +26,13 @@
 #ifndef quantlib_xxxzciis_hpp
 #define quantlib_xxxzciis_hpp
 
+#include <ql/indexes/inflationindex.hpp>
 #include <ql/instruments/swap.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
 
 
-
 namespace QuantLib {
-    class ZeroInflationIndex;
-
     //! Zero-coupon inflation-indexed swap
     /*! Quoted as a fixed rate \f$ K \f$.  At start:
         \f[
@@ -51,6 +50,9 @@ namespace QuantLib {
         versus the inflation-indexed notional Because the coupons are
         zero there are no accruals (and no coupons).
 
+        In this swap, the passed type (Payer or Receiver) refers to
+        the inflation leg.
+
         Inflation is generally available on every day, including
         holidays and weekends.  Hence there is a variable to state
         whether the observe/fix dates for inflation are adjusted or
@@ -67,7 +69,27 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        /*! In this swap, the type (Payer or Receiver) refers to the inflation leg. */
+
+        ZeroCouponInflationSwap(Type type,
+                                Real nominal,
+                                const Date& startDate, // start date of contract (only)
+                                const Date& maturity,  // this is pre-adjustment!
+                                Calendar fixCalendar,
+                                BusinessDayConvention fixConvention,
+                                DayCounter dayCounter,
+                                Rate fixedRate,
+                                const ext::shared_ptr<ZeroInflationIndex>& infIndex,
+                                const Period& observationLag,
+                                CPI::InterpolationType observationInterpolation,
+                                bool adjustInfObsDates = false,
+                                Calendar infCalendar = Calendar(),
+                                BusinessDayConvention infConvention = BusinessDayConvention());
+
+        /*! \deprecated Use the other constructor.
+
+            Deprecated in version 1.23.
+        */
+        QL_DEPRECATED
         ZeroCouponInflationSwap(Type type,
                                 Real nominal,
                                 const Date& startDate, // start date of contract (only)
@@ -100,6 +122,9 @@ namespace QuantLib {
             return infIndex_;
         }
         Period observationLag() const { return observationLag_; }
+        CPI::InterpolationType observationInterpolation() const {
+            return observationInterpolation_;
+        }
         bool adjustObservationDates() const { return adjustInfObsDates_; }
         Calendar inflationCalendar() const { return infCalendar_; }
         BusinessDayConvention inflationConvention() const {
@@ -133,6 +158,7 @@ namespace QuantLib {
         Rate fixedRate_;
         ext::shared_ptr<ZeroInflationIndex> infIndex_;
         Period observationLag_;
+        CPI::InterpolationType observationInterpolation_;
         bool adjustInfObsDates_;
         Calendar infCalendar_;
         BusinessDayConvention infConvention_;

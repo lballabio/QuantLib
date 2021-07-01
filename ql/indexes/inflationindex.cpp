@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,7 +51,7 @@ namespace QuantLib {
                                    bool forceOverwrite) {
 
         std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
-        Size n = lim.second - lim.first + 1;
+        Size n = static_cast<QuantLib::Size>(lim.second - lim.first) + 1;
         std::vector<Date> dates(n);
         std::vector<Rate> rates(n);
         for (Size i=0; i<n; ++i) {
@@ -154,7 +155,7 @@ namespace QuantLib {
         // the term structure is relative to the fixing value at the base date.
         Date baseDate = zeroInflation_->baseDate();
         QL_REQUIRE(!needsForecast(baseDate),
-                   name() << " index fixing at base date is not available");
+                   name() << " index fixing at base date " << baseDate << " is not available");
         Real baseFixing = fixing(baseDate);
         Date effectiveFixingDate;
         if (interpolated()) {
@@ -337,4 +338,14 @@ namespace QuantLib {
                                             availabilityLag_, currency_, h);
     }
 
+
+    CPI::InterpolationType
+    detail::CPI::effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
+                                            const QuantLib::CPI::InterpolationType& type) {
+        if (type == QuantLib::CPI::AsIndex) {
+            return index->interpolated() ? QuantLib::CPI::Linear : QuantLib::CPI::Flat;
+        } else {
+            return type;
+        }
+    }
 }

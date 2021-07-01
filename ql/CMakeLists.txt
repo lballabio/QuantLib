@@ -32,6 +32,7 @@ set(QuantLib_SRC
     cashflows/timebasket.cpp
     cashflows/subperiodcoupon.cpp
     cashflows/yoyinflationcoupon.cpp
+    cashflows/zeroinflationcashflow.cpp
     currencies/africa.cpp
     currencies/america.cpp
     currencies/asia.cpp
@@ -955,6 +956,7 @@ set(QuantLib_HDR
     cashflows/subperiodcoupon.hpp
     cashflows/timebasket.hpp
     cashflows/yoyinflationcoupon.hpp
+    cashflows/zeroinflationcashflow.hpp
     compounding.hpp
     config.ansi.hpp
     config.mingw.hpp

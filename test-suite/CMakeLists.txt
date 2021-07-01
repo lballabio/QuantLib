@@ -80,6 +80,7 @@ set(QuantLib-Test_SRC
     inflationcpicapfloor.cpp
     inflationcpiswap.cpp
     inflationvolatility.cpp
+	inflationzciisinterpolation.cpp
     instruments.cpp
     integrals.cpp
     interestrates.cpp
@@ -246,6 +247,7 @@ set(QuantLib-Test_HDR
     inflationcpicapfloor.hpp
     inflationcpiswap.hpp
     inflationvolatility.hpp
+	inflationzciisinterpolation.hpp
     instruments.hpp
     integrals.hpp
     interestrates.hpp

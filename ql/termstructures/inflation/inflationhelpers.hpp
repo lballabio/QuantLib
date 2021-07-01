@@ -25,45 +25,60 @@
 #ifndef quantlib_inflation_helpers_hpp
 #define quantlib_inflation_helpers_hpp
 
+#include <ql/instruments/yearonyearinflationswap.hpp>
+#include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
-#include <ql/instruments/zerocouponinflationswap.hpp>
-#include <ql/instruments/yearonyearinflationswap.hpp>
 
 namespace QuantLib {
 
     //! Zero-coupon inflation-swap bootstrap helper
-    class ZeroCouponInflationSwapHelper
-    : public BootstrapHelper<ZeroInflationTermStructure> {
-    public:
-      ZeroCouponInflationSwapHelper(
-          const Handle<Quote>& quote,
-          const Period& swapObsLag, // lag on swap observation of index
-          const Date& maturity,
-          Calendar calendar, // index may have null calendar as valid on every day
-          BusinessDayConvention paymentConvention,
-          DayCounter dayCounter,
-          ext::shared_ptr<ZeroInflationIndex> zii,
-          Handle<YieldTermStructure> nominalTermStructure);
+    class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermStructure> {
+      public:
+        ZeroCouponInflationSwapHelper(
+            const Handle<Quote>& quote,
+            const Period& swapObsLag, // lag on swap observation of index
+            const Date& maturity,
+            Calendar calendar, // index may have null calendar as valid on every day
+            BusinessDayConvention paymentConvention,
+            DayCounter dayCounter,
+            ext::shared_ptr<ZeroInflationIndex> zii,
+            CPI::InterpolationType observationInterpolation,
+            Handle<YieldTermStructure> nominalTermStructure);
 
-      void setTermStructure(ZeroInflationTermStructure*) override;
-      Real impliedQuote() const override;
+        /*! \deprecated Use the other constructor.
 
-    protected:
-      Period swapObsLag_;
-      Date maturity_;
-      Calendar calendar_;
-      BusinessDayConvention paymentConvention_;
-      DayCounter dayCounter_;
-      ext::shared_ptr<ZeroInflationIndex> zii_;
-      ext::shared_ptr<ZeroCouponInflationSwap> zciis_;
-      Handle<YieldTermStructure> nominalTermStructure_;
+            Deprecated in version 1.23.
+        */
+        QL_DEPRECATED
+        ZeroCouponInflationSwapHelper(
+            const Handle<Quote>& quote,
+            const Period& swapObsLag, // lag on swap observation of index
+            const Date& maturity,
+            Calendar calendar, // index may have null calendar as valid on every day
+            BusinessDayConvention paymentConvention,
+            DayCounter dayCounter,
+            ext::shared_ptr<ZeroInflationIndex> zii,
+            Handle<YieldTermStructure> nominalTermStructure);
+
+        void setTermStructure(ZeroInflationTermStructure*) override;
+        Real impliedQuote() const override;
+
+      protected:
+        Period swapObsLag_;
+        Date maturity_;
+        Calendar calendar_;
+        BusinessDayConvention paymentConvention_;
+        DayCounter dayCounter_;
+        ext::shared_ptr<ZeroInflationIndex> zii_;
+        CPI::InterpolationType observationInterpolation_;
+        ext::shared_ptr<ZeroCouponInflationSwap> zciis_;
+        Handle<YieldTermStructure> nominalTermStructure_;
     };
 
 
     //! Year-on-year inflation-swap bootstrap helper
-    class YearOnYearInflationSwapHelper
-        : public BootstrapHelper<YoYInflationTermStructure> {
+    class YearOnYearInflationSwapHelper : public BootstrapHelper<YoYInflationTermStructure> {
       public:
         YearOnYearInflationSwapHelper(const Handle<Quote>& quote,
                                       const Period& swapObsLag_,

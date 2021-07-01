@@ -65,10 +65,8 @@ namespace inflation_cpi_bond_test {
             Date maturity = datum.date;
             Handle<Quote> quote(ext::shared_ptr<Quote>(
                                 new SimpleQuote(datum.rate/100.0)));
-            ext::shared_ptr<Helper> h(
-                      new ZeroCouponInflationSwapHelper(quote, observationLag,
-                                                        maturity, calendar,
-                                                        bdc, dc, ii, yTS));
+            ext::shared_ptr<Helper> h(new ZeroCouponInflationSwapHelper(
+                quote, observationLag, maturity, calendar, bdc, dc, ii, CPI::AsIndex, yTS));
             instruments.push_back(h);
         }
         return instruments;
