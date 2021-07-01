@@ -42,6 +42,7 @@ namespace QuantLib {
         <li>Canada Day, July 1st (possibly moved to Monday)</li>
         <li>Provincial Holiday, first Monday of August</li>
         <li>Labour Day, first Monday of September</li>
+        <li>National Day for Truth and Reconciliation, September 30th (possibly moved to Monday)</li>
         <li>Thanksgiving Day, second Monday of October</li>
         <li>Remembrance Day, November 11th (possibly moved to Monday)</li>
         <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
