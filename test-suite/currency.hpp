@@ -24,7 +24,7 @@
 
 class CurrencyTest {
   public:
-    static void test();
+    static void testConstructor();
 
     static boost::unit_test_framework::test_suite* suite();
 };
