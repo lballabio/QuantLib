@@ -43,15 +43,15 @@ namespace QuantLib {
       rounding(rounding), triangulated(std::move(triangulationCurrency)),
       formatString(std::move(formatString)) {}
 
-    Currency::Currency(std::string name,
-                       std::string code,
+    Currency::Currency(const std::string& name,
+                       const std::string& code,
                        Integer numericCode,
-                       std::string symbol,
-                       std::string fractionSymbol,
+                       const std::string& symbol,
+                       const std::string& fractionSymbol,
                        Integer fractionsPerUnit,
                        const Rounding& rounding,
-                       std::string formatString,
-                       Currency triangulationCurrency)
+                       const std::string& formatString,
+                       const Currency& triangulationCurrency)
     : data_(ext::make_shared<Currency::Data>(name,
                                              code,
                                              numericCode,

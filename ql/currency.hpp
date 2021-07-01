@@ -43,15 +43,15 @@ namespace QuantLib {
             used.
         */
         Currency() = default;
-        Currency(std::string name,
-                 std::string code,
+        Currency(const std::string &name,
+                 const std::string &code,
                  Integer numericCode,
-                 std::string symbol,
-                 std::string fractionSymbol,
+                 const std::string &symbol,
+                 const std::string &fractionSymbol,
                  Integer fractionsPerUnit,
                  const Rounding& rounding,
-                 std::string formatString,
-                 Currency triangulationCurrency = Currency());
+                 const std::string &formatString,
+                 const Currency &triangulationCurrency = Currency());
         //@}
         //! \name Inspectors
         //@{
