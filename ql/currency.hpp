@@ -34,6 +34,8 @@ namespace QuantLib {
     //! %Currency specification
     class Currency {
       public:
+        //! \name Constructors
+        //@{
         //! default constructor
         /*! Instances built via this constructor have undefined
             behavior. Such instances can only act as placeholders
@@ -41,6 +43,16 @@ namespace QuantLib {
             used.
         */
         Currency() = default;
+        Currency(const std::string& name,
+                 const std::string& code,
+                 Integer numericCode,
+                 const std::string& symbol,
+                 const std::string& fractionSymbol,
+                 Integer fractionsPerUnit,
+                 const Rounding& rounding,
+                 const std::string& formatString,
+                 const Currency& triangulationCurrency = Currency());
+        //@}
         //! \name Inspectors
         //@{
         //! currency name, e.g, "U.S. Dollar"
