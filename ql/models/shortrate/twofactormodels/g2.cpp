@@ -167,7 +167,8 @@ namespace QuantLib {
             SolvingFunction function(lambda, Bb_) ;
             Brent s1d;
             s1d.setMaxEvaluations(1000);
-            Real yb = s1d.solve(function, 1e-6, 0.00, -10.0*sigmay_, 10.0*sigmay_);
+            Real searchBound = std::max(10.0*sigmay_, 1.0);
+            Real yb = s1d.solve(function, 1e-6, 0.00, -searchBound, searchBound);
 
             Real h1 = (yb - muy_)/(sigmay_*txy) -
                 rhoxy_*(x  - mux_)/(sigmax_*txy);
