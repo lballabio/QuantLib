@@ -341,14 +341,11 @@ namespace QuantLib {
                          );
         leg.push_back(xnl);
 
+        // no caps and floors here, so this is enough
+        setCouponPricer(leg, ext::make_shared<CPICouponPricer>());
 
         return leg;
     }
 
-
-
-
-
-
-} // namespace RiskLib
+}
 

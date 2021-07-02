@@ -222,12 +222,11 @@ namespace QuantLib {
             paymentConvention_));
 
         // The instrument takes a standard discounting swap engine.
-        // The inflation-related work is done by the coupons via the pricer.
+        // The inflation-related work is done by the coupons.
         Handle<YieldTermStructure> nominalTS =
             !nominalTermStructure_.empty() ? nominalTermStructure_ : y->nominalTermStructure();
         yyiis_->setPricingEngine(
             ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(nominalTS)));
-        setCouponPricer(yyiis_->yoyLeg(), ext::make_shared<YoYInflationCouponPricer>(nominalTS));
     }
 
 }

@@ -443,8 +443,6 @@ void InflationCapFloorTest::testParity() {
                     Handle<YieldTermStructure> hTS(vars.nominalTS);
                     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
                     swap.setPricingEngine(sppe);
-                    setCouponPricer(swap.yoyLeg(),
-                                    ext::make_shared<YoYInflationCouponPricer>(vars.nominalTS));
 
                     // N.B. nominals are 10e6
                     if (std::fabs((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-6) {

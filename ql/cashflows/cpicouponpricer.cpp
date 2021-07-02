@@ -133,13 +133,12 @@ namespace QuantLib {
         // use yield curve from index (which sets discount)
 
         discount_ = 1.0;
-        if (paymentDate_ > rateCurve_->referenceDate()) {
-            if (rateCurve_.empty()) {
-                // allow to extract rates, but mark the discount as invalid for prices
-                discount_ = Null<Real>();
-            } else {
+        if (rateCurve_.empty()) {
+            // allow to extract rates, but mark the discount as invalid for prices
+            discount_ = Null<Real>();
+        } else {
+            if (paymentDate_ > rateCurve_->referenceDate())
                 discount_ = rateCurve_->discount(paymentDate_);
-            }
         }
     }
 

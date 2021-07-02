@@ -876,8 +876,6 @@ void InflationTest::testYYTermStructure() {
     // usual swap engine
     Handle<YieldTermStructure> hTS(nominalTS);
     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
-    ext::shared_ptr<InflationCouponPricer> pricer =
-        ext::make_shared<YoYInflationCouponPricer>(hTS);
 
     // make sure that the index has the latest yoy term structure
     hy.linkTo(pYYTS);
@@ -906,8 +904,6 @@ void InflationTest::testYYTermStructure() {
                                      UnitedKingdom());
 
         yyS2.setPricingEngine(sppe);
-        setCouponPricer(yyS2.yoyLeg(), pricer);
-
 
         BOOST_CHECK_MESSAGE(fabs(yyS2.NPV())<eps,"fresh yoy swap NPV!=0 from TS "
                 <<"swap quote for pt " << j
@@ -944,7 +940,6 @@ void InflationTest::testYYTermStructure() {
                                      UnitedKingdom());
 
         yyS3.setPricingEngine(sppe);
-        setCouponPricer(yyS3.yoyLeg(), pricer);
 
         BOOST_CHECK_MESSAGE(fabs(yyS3.NPV())< 20000.0,
                             "unexpected size of aged YoY swap, aged "
