@@ -2582,7 +2582,7 @@ void HestonSLVModelTest::testBarrierPricingMixedModelsMonteCarloVsFdmPricing() {
         "Testing European and Barrier Pricing for Monte-Carlo and FDM "
         "Pricing in Heston SLV models with a mixing factor...");
 
-    const Real epsilon = 0.01;
+    const Real epsilon = 0.015;
 
     SavedSettings backup;
     const DayCounter dc = ActualActual(ActualActual::ISDA);
@@ -2660,6 +2660,10 @@ void HestonSLVModelTest::testBarrierPricingMixedModelsMonteCarloVsFdmPricing() {
     vanillaOption.setPricingEngine(hestonVanillaEngine);
     const Real localVolPrice = vanillaOption.NPV();
 
+    const ext::shared_ptr<BrownianGeneratorFactory> sobolGeneratorFactory(
+        ext::make_shared<SobolBrownianGeneratorFactory>(SobolBrownianGenerator::Diagonal, 1234UL,
+                                                        SobolRsg::JoeKuoD7));
+
     for (double mixingFactor : mixingFactors) {
 
         // Finite Difference calibration
@@ -2685,7 +2689,7 @@ void HestonSLVModelTest::testBarrierPricingMixedModelsMonteCarloVsFdmPricing() {
         const ext::shared_ptr<LocalVolTermStructure> leverageFctMC =
             HestonSLVMCModel(
                 localVol, hestonModel,
-                ext::shared_ptr<BrownianGeneratorFactory>(new MTBrownianGeneratorFactory(1234UL)),
+                sobolGeneratorFactory,
                 maturityDate, timeStepsPerYear, nBins, calibrationPaths, requiredDates,
                 mixingFactor).leverageFunction();
 
@@ -2777,7 +2781,7 @@ test_suite* HestonSLVModelTest::experimental(SpeedLevel speed) {
         suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testMonteCarloCalibration));
         suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
         suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testMoustacheGraph));
-        suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBarrierPricingMixedModelsMonteCarloVsFdmPricing));
+        suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBarrierPricingMixedModelsMonteCarloVsFdmPricing)); // ~250s
     }
 
 //    these tests take very long
