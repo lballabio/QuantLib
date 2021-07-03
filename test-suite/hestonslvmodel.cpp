@@ -2781,13 +2781,13 @@ test_suite* HestonSLVModelTest::experimental(SpeedLevel speed) {
         suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testMonteCarloCalibration));
         suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquationLocalVol));
         suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testMoustacheGraph));
-        suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBarrierPricingMixedModelsMonteCarloVsFdmPricing)); // ~250s
     }
 
 //    these tests take very long
 //    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testForwardSkewSLV));
 //    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testFDMCalibration));
 //    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBarrierPricingMixedModels));
+//    suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBarrierPricingMixedModelsMonteCarloVsFdmPricing)); // ~250s
 
     return suite;
 }
