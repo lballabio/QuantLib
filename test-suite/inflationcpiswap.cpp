@@ -330,15 +330,9 @@ void CPISwapTest::consistency() {
         }
     }
 
-
     // simple structure so simple pricing engine - most work done by index
-    ext::shared_ptr<DiscountingSwapEngine>
-        dse(new DiscountingSwapEngine(common.nominalTS));
-    ext::shared_ptr<CPICouponPricer> pricer =
-        ext::make_shared<CPICouponPricer>(common.nominalTS);
-
+    ext::shared_ptr<DiscountingSwapEngine> dse(new DiscountingSwapEngine(common.nominalTS));
     zisV.setPricingEngine(dse);
-    setCouponPricer(zisV.cpiLeg(), pricer);
     
     // get float+spread & fixed*inflation leg prices separately
     Real testInfLegNPV = 0.0;
@@ -509,13 +503,8 @@ void CPISwapTest::cpibondconsistency() {
 
 
     // simple structure so simple pricing engine - most work done by index
-    ext::shared_ptr<DiscountingSwapEngine>
-    dse(new DiscountingSwapEngine(common.nominalTS));
-    ext::shared_ptr<CPICouponPricer> pricer =
-        ext::make_shared<CPICouponPricer>(common.nominalTS);
-
+    ext::shared_ptr<DiscountingSwapEngine> dse(new DiscountingSwapEngine(common.nominalTS));
     zisV.setPricingEngine(dse);
-    setCouponPricer(zisV.cpiLeg(), pricer);
 
     // now do the bond equivalent
     std::vector<Rate> fixedRates(1,fixedRate);
@@ -526,13 +515,11 @@ void CPISwapTest::cpibondconsistency() {
                  observationInterpolation, fixedSchedule,
                  fixedRates, fixedDayCount, fixedPaymentConvention);
 
-    ext::shared_ptr<DiscountingBondEngine>
-    dbe(new DiscountingBondEngine(common.nominalTS));
+    ext::shared_ptr<DiscountingBondEngine> dbe(new DiscountingBondEngine(common.nominalTS));
     cpiB.setPricingEngine(dbe);
-    setCouponPricer(cpiB.cashflows(), pricer);
 
     QL_REQUIRE(fabs(cpiB.NPV() - zisV.legNPV(0))<1e-5,"cpi bond does not equal equivalent cpi swap leg");
-    // remove circular refernce
+    // remove circular reference
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 }
 

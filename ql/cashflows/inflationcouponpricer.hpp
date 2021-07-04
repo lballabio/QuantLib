@@ -85,10 +85,6 @@ namespace QuantLib {
     */
     class YoYInflationCouponPricer : public InflationCouponPricer {
       public:
-        /*! \deprecated Use one of the other constructors.
-                        Deprecated in version 1.19.
-        */
-        QL_DEPRECATED
         YoYInflationCouponPricer() = default;
 
         explicit YoYInflationCouponPricer(Handle<YieldTermStructure> nominalTermStructure);

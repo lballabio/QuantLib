@@ -38,10 +38,6 @@ namespace QuantLib {
     */
     class CPICouponPricer : public InflationCouponPricer {
       public:
-        /*! \deprecated Use one of the other constructors.
-                        Deprecated in version 1.19.
-        */
-        QL_DEPRECATED
         CPICouponPricer() = default;
 
         explicit CPICouponPricer(Handle<YieldTermStructure> nominalTermStructure);

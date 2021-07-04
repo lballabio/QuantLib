@@ -224,8 +224,6 @@ namespace inflation_capfloored_coupon_test {
             .withSpreads(spreadVector)
             .withPaymentAdjustment(convention);
 
-            setCouponPricer(yoyLeg, ext::make_shared<YoYInflationCouponPricer>(nominalTS));
-
             return yoyLeg;
         }
 
@@ -304,7 +302,6 @@ namespace inflation_capfloored_coupon_test {
             .withFloors(floors);
 
             setCouponPricer(yoyLeg, pricer);
-            //setCouponPricer(iborLeg, pricer);
 
             return yoyLeg;
         }
@@ -750,7 +747,6 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
                     Handle<YieldTermStructure> hTS(vars.nominalTS);
                     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
                     swap.setPricingEngine(sppe);
-                    setCouponPricer(swap.yoyLeg(), ext::make_shared<YoYInflationCouponPricer>(vars.nominalTS));
 
                     Leg leg2 = vars.makeYoYCapFlooredLeg(whichPricer, from, length,
                                                          std::vector<Rate>(length, strike), // cap
