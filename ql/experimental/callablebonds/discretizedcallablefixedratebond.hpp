@@ -24,8 +24,8 @@
 #ifndef quantlib_discretized_callable_fixed_rate_bond_hpp
 #define quantlib_discretized_callable_fixed_rate_bond_hpp
 
-#include <ql/experimental/callablebonds/callablebond.hpp>
 #include <ql/discretizedasset.hpp>
+#include <ql/experimental/callablebonds/callablebond.hpp>
 
 namespace QuantLib {
 
@@ -42,9 +42,11 @@ namespace QuantLib {
         void postAdjustValuesImpl() override;
 
       private:
+        enum class CouponAdjustment { pre, post };
         CallableBond::arguments arguments_;
         Time redemptionTime_;
         std::vector<Time> couponTimes_;
+        std::vector<CouponAdjustment> couponAdjustments_;
         std::vector<Time> callabilityTimes_;
         void applyCallability(Size i);
         void addCoupon(Size i);
@@ -53,4 +55,3 @@ namespace QuantLib {
 }
 
 #endif
-
