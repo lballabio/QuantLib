@@ -1,121 +1,108 @@
-Changes for QuantLib 1.22:
+Changes for QuantLib 1.23:
 ==========================
 
-QuantLib 1.22 includes 54 pull requests from several contributors.
+QuantLib 1.23 includes 30 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/18?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/19?closed=1>.
 
 Portability
 -----------
 
-- As previously announced, this release drops support for Visual
-  C++ 2012.  VC++ 2013 or later is now required.
+- On Mac OS, the `-std=c++11` flag is now added automatically when
+  needed.  This applies to both `configure` and `cmake` (thanks to
+  Leander Schulten).
 
-- The `Date` and `Array` classes are now visualized more clearly in
-  the Visual Studio debugger (thanks to Francois Botha).
+- We now assume that the compiler supports Boost::uBLAS and no longer
+  check for it in configure.  (The check was originally introduced for
+  versions of gcc before 4.x, which don't support C++ anyway.)
+  Please let us know if this causes problems on some systems.
 
-Language standard
------------------
-
-- QuantLib now uses the C++11 standard and no longer compiles in C++03
-  mode.  As before, it can be compiled with later versions of the
-  standard.  For details on the C++11 features used, see the pull
-  requests marked "C++11 modernization" at the above link; for
-  information on possible problems, see
-  <https://www.implementingquantlib.com/2021/02/leaving-03-for-real.html>.
+- The `Period`, `InterestRate` and `InterestRateIndex` classes are now
+  visualized more clearly in the Visual Studio debugger (thanks to
+  Francois Botha).
 
 Cashflows
 ---------
 
-- Revised and tested the `SubPeriodCoupon` class (thanks to Marcin
-  Rybacki).  The class was moved out of the `ql/experimental` folder
-  and its interface can now be considered stable.
+- Year-on-year and CPI legs are now set a default coupon pricer.  In
+  most cases, this removes the need for setting it explicitly.
 
-- Add simple averaging to overnight-index coupons in addition to the
-  existing compound averaging (thanks to Marcin Rybacki).
-
-- Fixed accrual calculation for inflation coupon when trading
-  ex-coupon (thanks to GitHub user `bachhani`).
+- Add new `ZeroInflationCashFlow` class, used in zero-coupon inflation
+  swaps (thanks to Ralf Konrad).
 
 Currencies
 ----------
 
-- Added the Nigerian Naira (thanks to Bryte Morio).
+- Added custom constructor that allows to create bespoke currencies
+  not already included in the library (thanks to Marcin Rybacki).
 
 Date/time
 ---------
 
-- Fixed actual/actual (ISMA) day counter calculation for long/short
-  final periods (thanks to Francois Botha).
+- Fixed implementation of U.S. 30/360 convention (the old one is still
+  available as 30/360 NASD).
 
-- Updated a couple of changed rules for New Zealand calendar (thanks
-  to Paul Giltinan).
+- The 30/360 ISDA convention can now take the termination date as a
+  constructor argument and use it to adjust the calculation properly.
+
+- Added the 30/360 ISMA convention; the Bond-Basis convention is now
+  an alias to the former.
+
+- The 30/360 German convention was renamed to ISDA; "German" remains
+  as an alias.
+
+- Added new Canadian holiday (National Day for Truth and
+  Reconciliation) established in 2021 (thanks to GitHub user `qiubill`
+  for the heads-up).
+
+- Added new U.S. holiday (Juneteenth) established in 2021.
+
+- Added new Platinum Jubilee U.K. holiday for 2022 (thanks to Ioannis
+  Rigopoulos for the heads-up.)
+
+- Added missing Christmas Eve holiday to Norwegian calendar (thanks to
+  Prince Nanda).
 
 Indexes
 -------
 
-- Added `hasHistoricalFixing` inspector to `Index` class to check if
-  the fixing for a given past date is available (thanks to Ralf
-  Konrad).
+- Added ESTR index (thanks to Magnus Mencke).
 
 Instruments
 -----------
 
-- Added new-style finite-difference engine for shout options (thanks
-  to Klaus Spanderen).  In the case of dividend shout options, an
-  escrowed dividend model is used.
+- Added zero-coupon swap (thanks to Marcin Rybacki).
 
-- Revised the `OvernightIndexFutures` class.  The class was moved out
-  of the `ql/experimental` folder and its interface can now be
-  considered stable.
+- The `Type` enumeration defined in several swap classes was moved to
+  their base `Swap` class.
 
-- Added an overloaded constructor for Asian options that takes all
-  past fixings and thus allows to reprice them correctly when the
-  evaluation date changes (thanks to Jack Gillett).
+- Fixed sign of theta in experimental Kirk engine for spread options
+  (thanks to Xu Ruilong for the heads-up).
 
-- Added support for seasoned geometric Asian options to the Heston
-  engine (thanks to Jack Gillett).
+Processes
+---------
 
-Patterns
---------
-
-- Faster implementation of the `Observable` class in the thread-safe
-  case (thanks to Klaus Spanderen).
-
-Term structures
----------------
-
-- Added experimental rate helper for constant-notional cross-currency
-  basis swaps (thanks to Marcin Rybacki).
-
-- Added volatility type and displacements to year-on-year inflation
-  volatility surfaces (thanks to Peter Caspers).
+- Improved discretization of Cox-Ingersoll-Ross process to avoid
+  occasional divergence (thanks to Magnus Mencke).
 
 Deprecated features
 -------------------
 
-- Removed features deprecated in version 1.17: the `Callability::Type`
-  typedef (now `Bond::Price`), the `FdmOrnsteinUhlenbackOp` typedef
-  (now correctly spelled as `FdmOrnsteinUhlenbeckOp`, and a number of
-  old-style finite-difference engines (`FDAmericanEngine`,
-  `FDBermudanEngine`, `FDDividendAmericanEngine` and its variants,
-  `FDDividendEuropeanEngine` and its variants, and `FDEuropeanEngine`)
-  all replaced by the `FdBlackScholesVanillaEngine` class.
+- Deprecated default constructor for actual/actual and 30/360 day
+  counters; the desired convention should now be passed explicitly.
 
-- Deprecated the old-style finite difference engines for shout
-  options; they are now replaced by the new `FDDividendShoutEngine`
-  class.
+- Removed features deprecated in version 1.18: the
+  `CalibrationHelperBase` typedef (now `CalibrationHelper`), some
+  overloads of the `CalibratedModel::calibrate` and
+  `CalibratedModel::value` methods, the constructors of
+  `PiecewiseYieldCurve` and `PiecewiseDefaultCurve` taking an
+  `accuracy` parameter, the constructors of `BondHelper`,
+  `FixedRateBondHelper` and `CPIBondHelper` taking a boolean
+  `useCleanPrice` parameter, the `BondHelper::useCleanPrice()` method,
+  and the non-static `Calendar::holidayList` method.
 
-- Deprecated a few unused parts of the old-style finite-differences
-  framework: the `AmericanCondition` class, the `OneFactorOperator`
-  typedef, and the `FDAmericanCondition` class.
 
-Test suite
-----------
-
-- Reduced the run time for the longest-running test cases.
-
-Thanks go also to Francis Duffy and Cay Oest for smaller fixes,
-enhancements and bug reports.
+Thanks go also to Francis Duffy, Kevin Kirchhoff, Magnus Mencke and
+Klaus Spanderen for smaller fixes, enhancements and bug reports.
