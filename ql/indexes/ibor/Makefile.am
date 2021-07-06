@@ -41,7 +41,7 @@ this_include_HEADERS = \
 cpp_files = \
     bibor.cpp \
     eonia.cpp \
-    estr.hpp \
+    estr.cpp \
     euribor.cpp \
     eurlibor.cpp \
     fedfunds.cpp \
