@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2018 StatPro Italia srl
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
@@ -568,6 +570,65 @@ void CallableBondTest::testCached() {
 
 }
 
+void CallableBondTest::testIssue930() {
+
+    BOOST_TEST_MESSAGE("Testing issue 930...");
+
+    SavedSettings backup;
+    Settings::instance().evaluationDate() = Date(18, May, 2021);
+
+    auto makeCallableBond = [](Date callDate) {
+        RelinkableHandle<YieldTermStructure> termStructure;
+        termStructure.linkTo(ext::make_shared<FlatForward>(Settings::instance().evaluationDate(),
+                                                           0.02, Actual365Fixed()));
+
+        Date pricingDate = Settings::instance().evaluationDate();
+        auto settlementDays = 2;
+        auto settlementDate = Date(20, May, 2021);
+        auto coupon = 0.05;
+        auto faceAmount = 100.00;
+        auto redemption = faceAmount;
+        auto paymentConvention = BusinessDayConvention::Following;
+        auto accrualDCC = Thirty360(Thirty360::Convention::USA);
+        auto maturityDate = Date(14, Feb, 2026);
+        auto issueDate = settlementDate - 2 * 366 * Days;
+        auto calendar = UnitedStates(UnitedStates::FederalReserve);
+        Schedule schedule = MakeSchedule()
+                                .from(issueDate)
+                                .to(maturityDate)
+                                .withFrequency(Semiannual)
+                                .withCalendar(calendar)
+                                .withConvention(Unadjusted)
+                                .withTerminationDateConvention(Unadjusted)
+                                .backwards()
+                                .endOfMonth(false);
+        std::vector<Rate> coupons = std::vector<Rate>(schedule.size(), coupon);
+
+        CallabilitySchedule callabilitySchedule;
+        callabilitySchedule.push_back(ext::make_shared<Callability>(
+            Bond::Price(faceAmount, Bond::Price::Clean), Callability::Type::Call, callDate));
+
+        auto callableBond = ext::make_shared<CallableFixedRateBond>(
+            settlementDays, faceAmount, schedule, coupons, accrualDCC,
+            BusinessDayConvention::Following, redemption, issueDate, callabilitySchedule);
+        auto model = ext::make_shared<HullWhite>(termStructure, 1e-12, 0.003);
+        auto engine = ext::make_shared<TreeCallableFixedRateBondEngine>(model, 40);
+
+        callableBond->setPricingEngine(engine);
+
+        return callableBond;
+    };
+
+    auto initialCallDate = Date(14, Feb, 2022);
+
+    for (int i = -10; i < 11; i++) {
+        auto callDate = initialCallDate + i * Days;
+        auto callableBond = makeCallableBond(callDate);
+        auto npv = callableBond->NPV();
+        BOOST_TEST_MESSAGE(io::iso_date(callDate) << ": " << std::setprecision(5) << npv);
+    }
+}
+
 test_suite* CallableBondTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Convertible-bond tests");
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testConsistency));
@@ -575,6 +636,7 @@ test_suite* CallableBondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testObservability));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testDegenerate));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testCached));
+    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testIssue930));
     return suite;
 }
 
