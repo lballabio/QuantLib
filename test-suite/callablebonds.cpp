@@ -582,13 +582,11 @@ void CallableBondTest::testIssue930() {
         termStructure.linkTo(ext::make_shared<FlatForward>(Settings::instance().evaluationDate(),
                                                            0.02, Actual365Fixed()));
 
-        Date pricingDate = Settings::instance().evaluationDate();
         auto settlementDays = 2;
         auto settlementDate = Date(20, May, 2021);
         auto coupon = 0.05;
         auto faceAmount = 100.00;
         auto redemption = faceAmount;
-        auto paymentConvention = BusinessDayConvention::Following;
         auto accrualDCC = Thirty360(Thirty360::Convention::USA);
         auto maturityDate = Date(14, Feb, 2026);
         auto issueDate = settlementDate - 2 * 366 * Days;
