@@ -1,16 +1,32 @@
 #!/bin/bash
 
-# execute this script from the root of an uncompressed QuantLib tarball
-
-# get reference lists of distributed files (done with find; this is
-# why this script should be run from an uncompressed tarball created
-# with 'make dist', not from a working copy.)
+# get reference lists of existing files (done with find)
 
 find ql -name '*.[hc]pp' -or -name '*.[hc]' \
 | grep -v 'ql/config\.hpp' | sort > ql.ref.files
 find test-suite -name '*.[hc]pp' \
 | grep -v 'quantlibbenchmark' | grep -v '/main\.cpp' \
 | sort > test-suite.ref.files
+
+# get list of distributed files from packaged tarball
+
+make dist
+
+mkdir dist-check
+mv QuantLib-*.tar.gz dist-check
+cd dist-check
+tar xfz QuantLib-*.tar.gz
+rm QuantLib-*.tar.gz
+cd QuantLib-*
+
+find ql -name '*.[hc]pp' -or -name '*.[hc]' \
+| grep -v 'ql/config\.hpp' | sort > ../../ql.dist.files
+find test-suite -name '*.[hc]pp' \
+| grep -v 'quantlibbenchmark' | grep -v '/main\.cpp' \
+| sort > ../../test-suite.dist.files
+
+cd ../..
+rm -rf dist-check
 
 # extract file names from VC++ projects and clean up so that they
 # have the same format as the reference lists.
@@ -41,6 +57,9 @@ grep -o -E '[a-zA-Z0-9_/\.]*\.[hc]pp' test-suite/CMakeLists.txt \
 | sed -e 's|^|test-suite/|' | sort -u > test-suite.cmake.files
 
 # write out differences...
+
+diff -b ql.dist.files ql.ref.files > ql.dist.diff
+diff -b test-suite.dist.files test-suite.ref.files > test-suite.dist.diff
 
 diff -b ql.cmake.files ql.ref.files > ql.cmake.diff
 diff -b test-suite.cmake.files test-suite.ref.files > test-suite.cmake.diff
