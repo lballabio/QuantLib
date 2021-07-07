@@ -453,7 +453,7 @@ namespace QuantLib {
 
                 hestonFwdOp = ext::shared_ptr<FdmLinearOpComposite>(
                                 new FdmHestonFwdOp(mesher, hestonProcess,
-                                               trafoType, leverageFct));
+                                               trafoType, leverageFct, mixingFactor_));
             }
 
             Array pn = p;
