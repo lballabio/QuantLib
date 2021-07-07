@@ -570,17 +570,19 @@ void CallableBondTest::testCached() {
 
 }
 
-void CallableBondTest::testIssue930() {
+void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
 
-    BOOST_TEST_MESSAGE("Testing issue 930...");
+    BOOST_TEST_MESSAGE("Testing snap of exercise dates to the closest coupon date...");
+
+    auto today = Date(18, May, 2021);
+    auto calendar = UnitedStates(UnitedStates::FederalReserve);
 
     SavedSettings backup;
-    Settings::instance().evaluationDate() = Date(18, May, 2021);
+    Settings::instance().evaluationDate() = today;
 
-    auto makeCallableBond = [](Date callDate) {
+    auto makeCallableBond = [&today, &calendar](Date callDate) {
         RelinkableHandle<YieldTermStructure> termStructure;
-        termStructure.linkTo(ext::make_shared<FlatForward>(Settings::instance().evaluationDate(),
-                                                           0.02, Actual365Fixed()));
+        termStructure.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
 
         auto settlementDays = 2;
         auto settlementDate = Date(20, May, 2021);
@@ -590,7 +592,6 @@ void CallableBondTest::testIssue930() {
         auto accrualDCC = Thirty360(Thirty360::Convention::USA);
         auto maturityDate = Date(14, Feb, 2026);
         auto issueDate = settlementDate - 2 * 366 * Days;
-        auto calendar = UnitedStates(UnitedStates::FederalReserve);
         Schedule schedule = MakeSchedule()
                                 .from(issueDate)
                                 .to(maturityDate)
@@ -600,7 +601,7 @@ void CallableBondTest::testIssue930() {
                                 .withTerminationDateConvention(Unadjusted)
                                 .backwards()
                                 .endOfMonth(false);
-        std::vector<Rate> coupons = std::vector<Rate>(schedule.size(), coupon);
+        std::vector<Rate> coupons = std::vector<Rate>(schedule.size() - 1, coupon);
 
         CallabilitySchedule callabilitySchedule;
         callabilitySchedule.push_back(ext::make_shared<Callability>(
@@ -618,12 +619,21 @@ void CallableBondTest::testIssue930() {
     };
 
     auto initialCallDate = Date(14, Feb, 2022);
+    auto expectedBondPrice = 103.47;
+    auto tolerance = 0.10;
 
     for (int i = -10; i < 11; i++) {
         auto callDate = initialCallDate + i * Days;
-        auto callableBond = makeCallableBond(callDate);
-        auto npv = callableBond->NPV();
-        BOOST_TEST_MESSAGE(io::iso_date(callDate) << ": " << std::setprecision(5) << npv);
+        if (calendar.isBusinessDay(callDate)) {
+            auto callableBond = makeCallableBond(callDate);
+            auto npv = callableBond->NPV();
+            if (std::fabs(npv - expectedBondPrice) > tolerance) {
+                BOOST_ERROR("failed to reproduce bond price at "
+                            << io::iso_date(callDate) << ":\n"
+                            << std::setprecision(7) << "    calculated: " << npv << "\n"
+                            << "    expected:   " << expectedBondPrice << " +/- " << tolerance);
+            }
+        }
     }
 }
 
@@ -634,7 +644,7 @@ test_suite* CallableBondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testObservability));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testDegenerate));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testCached));
-    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testIssue930));
+    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testSnappingExerciseDate2ClosestCouponDate));
     return suite;
 }
 
