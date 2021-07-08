@@ -41,30 +41,41 @@ namespace QuantLib {
 
         redemptionTime_ = dayCounter.yearFraction(referenceDate, args.redemptionDate);
 
-        couponTimes_.resize(args.couponDates.size());
+        /* By default the coupon adjustment should take place in
+         * DiscretizedCallableFixedRateBond::preAdjustValuesImpl(). */
         couponAdjustments_ =
             std::vector<CouponAdjustment>(args.couponDates.size(), CouponAdjustment::pre);
+
+        couponTimes_.resize(args.couponDates.size());
         for (Size i = 0; i < couponTimes_.size(); ++i) {
-            auto couponDate = args.couponDates[i];
-            couponTimes_[i] = dayCounter.yearFraction(referenceDate, couponDate);
-            if (std::find(args.callabilityDates.begin(), args.callabilityDates.end(), couponDate) !=
-                args.callabilityDates.end()) {
-                couponAdjustments_[i] = CouponAdjustment::post;
-            }
+            couponTimes_[i] = dayCounter.yearFraction(referenceDate, args.couponDates[i]);
         }
 
         callabilityTimes_.resize(args.callabilityDates.size());
-        for (Size i = 0; i < callabilityTimes_.size(); ++i)
-            callabilityTimes_[i] = dayCounter.yearFraction(referenceDate, args.callabilityDates[i]);
+        for (Size i = 0; i < callabilityTimes_.size(); ++i) {
+            const Date callabilityDate = args.callabilityDates[i];
+            Time callabilityTime = dayCounter.yearFraction(referenceDate, args.callabilityDates[i]);
 
-        // To avoid mispricing, we snap exercise dates to the closest coupon date.
-        for (double& exerciseTime : callabilityTimes_) {
-            for (double couponTime : couponTimes_) {
-                if (withinNextWeek(exerciseTime, couponTime)) {
-                    exerciseTime = couponTime;
+            // To avoid mispricing, we snap exercise dates to the closest coupon date.
+            for (Size j = 0; j < couponTimes_.size(); j++) {
+                const Time couponTime = couponTimes_[j];
+                if (withinNextWeek(callabilityTime, couponTime)) {
+                    // Snap the exercise date.
+                    callabilityTime = couponTime;
+
+                    /* If the call and coupon date matches we know for certain that we will
+                     * receive the coupon. Therefore it does not have an impact on the
+                     * callability decision and should be added after we evaluate the
+                     * callability in DiscretizedCallableFixedRateBond::postAdjustValuesImpl(). */
+                    const Date couponDate = args.couponDates[j];
+                    if (callabilityDate == couponDate) {
+                        couponAdjustments_[j] = CouponAdjustment::post;
+                    }
                     break;
                 }
             }
+
+            callabilityTimes_[i] = callabilityTime;
         }
     }
 
@@ -123,6 +134,7 @@ namespace QuantLib {
             }
         }
         for (Size i = 0; i < couponTimes_.size(); i++) {
+            /* Exercise and coupon date matches. */
             if (couponAdjustments_[i] == CouponAdjustment::post) {
                 Time t = couponTimes_[i];
                 if (t >= 0.0 && isOnTime(t)) {
