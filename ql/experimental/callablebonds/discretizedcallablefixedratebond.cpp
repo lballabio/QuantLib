@@ -19,7 +19,6 @@
 */
 
 #include <ql/experimental/callablebonds/discretizedcallablefixedratebond.hpp>
-#include <algorithm>
 
 namespace QuantLib {
 
@@ -134,10 +133,10 @@ namespace QuantLib {
             }
         }
         for (Size i = 0; i < couponTimes_.size(); i++) {
-            /* Exercise and coupon date matches. */
             if (couponAdjustments_[i] == CouponAdjustment::post) {
                 Time t = couponTimes_[i];
                 if (t >= 0.0 && isOnTime(t)) {
+                    /* Exercise and coupon date matches. */
                     addCoupon(i);
                 }
             }
