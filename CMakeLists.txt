@@ -11,6 +11,10 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/quantlib.cmake)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ${UNIX})
 option(USE_BOOST_DYNAMIC_LIBRARIES "Use the shared version of Boost libraries" ${UNIX})
+
+option(BUILD_TESTS "Build the tests" ON)
+option(BUILD_EXAMPLES "Build the examples" ON)
+
 if (USE_BOOST_DYNAMIC_LIBRARIES)
     add_definitions(-DBOOST_ALL_DYN_LINK)
 else()
@@ -49,13 +53,11 @@ if (Boost_FOUND)
 endif (Boost_FOUND)
 
 add_subdirectory(ql)
-add_subdirectory(Examples)
-add_subdirectory(test-suite)
+if (BUILD_EXAMPLES)
+    add_subdirectory(Examples)
+endif()
+if (BUILD_TESTS)
+    add_subdirectory(test-suite)
+endif()
 
-#
-# Copy across the ANSI config file into the build directory. Users
-# need to change userconfig.hpp if they require different settings.
-#
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/ql/config.ansi.hpp
-  ${PROJECT_BINARY_DIR}/config.hpp COPYONLY)
-install(FILES ${PROJECT_BINARY_DIR}/config.hpp DESTINATION include/ql)
+include(cmake/config.cmake)
