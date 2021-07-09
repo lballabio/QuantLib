@@ -583,7 +583,10 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
     SavedSettings backup;
     Settings::instance().evaluationDate() = today;
 
-    auto makeCallableBond = [&today, &calendar](Date callDate) {
+
+    auto makeBonds = [&today, &calendar](Date callDate,
+                                         ext::shared_ptr<FixedRateBond>& fixedRateBond,
+                                         ext::shared_ptr<CallableFixedRateBond>& callableBond) {
         RelinkableHandle<YieldTermStructure> termStructure;
         termStructure.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
 
@@ -604,37 +607,52 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
                                 .withTerminationDateConvention(Unadjusted)
                                 .backwards()
                                 .endOfMonth(false);
-        std::vector<Rate> coupons = std::vector<Rate>(schedule.size() - 1, coupon);
+        auto coupons = std::vector<Rate>(schedule.size() - 1, coupon);
 
         CallabilitySchedule callabilitySchedule;
         callabilitySchedule.push_back(ext::make_shared<Callability>(
             Bond::Price(faceAmount, Bond::Price::Clean), Callability::Type::Call, callDate));
 
-        auto callableBond = ext::make_shared<CallableFixedRateBond>(
+        auto newCallableBond = ext::make_shared<CallableFixedRateBond>(
             settlementDays, faceAmount, schedule, coupons, accrualDCC,
             BusinessDayConvention::Following, redemption, issueDate, callabilitySchedule);
+
         auto model = ext::make_shared<HullWhite>(termStructure, 1e-12, 0.003);
-        auto engine = ext::make_shared<TreeCallableFixedRateBondEngine>(model, 40);
+        auto treeEngine = ext::make_shared<TreeCallableFixedRateBondEngine>(model, 40);
+        newCallableBond->setPricingEngine(treeEngine);
 
-        callableBond->setPricingEngine(engine);
+        callableBond.swap(newCallableBond);
 
-        return callableBond;
+        auto fixedRateBondSchedule = schedule.until(callDate);
+        auto fixedRateBondCoupons = std::vector<Rate>(schedule.size() - 1, coupon);
+
+        auto newFixedRateBond = ext::make_shared<FixedRateBond>(
+            settlementDays, faceAmount, fixedRateBondSchedule, fixedRateBondCoupons, accrualDCC,
+            BusinessDayConvention::Following, redemption, issueDate);
+        auto discountigEngine = ext::make_shared<DiscountingBondEngine>(termStructure);
+        newFixedRateBond->setPricingEngine(discountigEngine);
+
+        fixedRateBond.swap(newFixedRateBond);
     };
 
     auto initialCallDate = Date(14, Feb, 2022);
-    auto expectedBondPrice = 103.47;
-    auto tolerance = 0.10;
+    auto tolerance = 0.04;
+
+    ext::shared_ptr<CallableFixedRateBond> callableBond;
+    ext::shared_ptr<FixedRateBond> fixedRateBond;
 
     for (int i = -10; i < 11; i++) {
         auto callDate = initialCallDate + i * Days;
         if (calendar.isBusinessDay(callDate)) {
-            auto callableBond = makeCallableBond(callDate);
-            auto npv = callableBond->NPV();
-            if (std::fabs(npv - expectedBondPrice) > tolerance) {
+            makeBonds(callDate, fixedRateBond, callableBond);
+            auto npvFixedRateBond = fixedRateBond->NPV();
+            auto npvCallable = callableBond->NPV();
+
+            if (std::fabs(npvCallable - npvFixedRateBond) > tolerance) {
                 BOOST_ERROR("failed to reproduce bond price at "
                             << io::iso_date(callDate) << ":\n"
-                            << std::setprecision(7) << "    calculated: " << npv << "\n"
-                            << "    expected:   " << expectedBondPrice << " +/- " << tolerance);
+                            << std::setprecision(7) << "    calculated: " << npvCallable << "\n"
+                            << "    expected:   " << npvFixedRateBond << " +/- " << tolerance);
             }
         }
     }
