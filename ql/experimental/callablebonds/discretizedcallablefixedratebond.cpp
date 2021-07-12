@@ -33,17 +33,18 @@ namespace QuantLib {
 
 
     DiscretizedCallableFixedRateBond::DiscretizedCallableFixedRateBond(
-        const CallableBond::arguments& args,
-        const Date& referenceDate,
-        const DayCounter& dayCounter)
-    : arguments_(args) {
+        const CallableBond::arguments& args, const Handle<YieldTermStructure>& termStructure)
+    : arguments_(args), adjustedCallabilityPrices_(args.callabilityPrices) {
+
+        auto dayCounter = termStructure->dayCounter();
+        auto referenceDate = termStructure->referenceDate();
 
         redemptionTime_ = dayCounter.yearFraction(referenceDate, args.redemptionDate);
 
         /* By default the coupon adjustment should take place in
-         * DiscretizedCallableFixedRateBond::preAdjustValuesImpl(). */
+         * DiscretizedCallableFixedRateBond::postAdjustValuesImpl(). */
         couponAdjustments_ =
-            std::vector<CouponAdjustment>(args.couponDates.size(), CouponAdjustment::pre);
+            std::vector<CouponAdjustment>(args.couponDates.size(), CouponAdjustment::post);
 
         couponTimes_.resize(args.couponDates.size());
         for (Size i = 0; i < couponTimes_.size(); ++i) {
@@ -58,18 +59,25 @@ namespace QuantLib {
             // To avoid mispricing, we snap exercise dates to the closest coupon date.
             for (Size j = 0; j < couponTimes_.size(); j++) {
                 const Time couponTime = couponTimes_[j];
-                if (withinNextWeek(callabilityTime, couponTime)) {
+                const Date couponDate = args.couponDates[j];
+
+                if (withinNextWeek(callabilityTime, couponTime) && callabilityDate < couponDate) {
                     // Snap the exercise date.
                     callabilityTime = couponTime;
 
-                    /* If the call and coupon date matches we know for certain that we will
-                     * receive the coupon. Therefore it does not have an impact on the
-                     * callability decision and should be added after we evaluate the
-                     * callability in DiscretizedCallableFixedRateBond::postAdjustValuesImpl(). */
-                    const Date couponDate = args.couponDates[j];
-                    if (callabilityDate == couponDate) {
-                        couponAdjustments_[j] = CouponAdjustment::post;
-                    }
+                    /* The order of events must be changed here. In
+                     * DiscretizedCallableFixedRateBond::postAdjustValuesImpl() the callability is
+                     * done before adding of the coupon. However from the
+                     * DiscretizedAsset::rollback(Time to) perspective the coupon must be added
+                     * before the callability as it is later in time. */
+                    couponAdjustments_[j] = CouponAdjustment::pre;
+
+                    /* We snapped the callabilityTime so we need to take into account the missing
+                     * discount factor. */
+                    auto discountTillCallDate = termStructure->discount(callabilityDate);
+                    auto discountTillCouponDate = termStructure->discount(couponDate);
+                    adjustedCallabilityPrices_[i] *= discountTillCallDate / discountTillCouponDate;
+
                     break;
                 }
             }
@@ -149,12 +157,12 @@ namespace QuantLib {
         switch (arguments_.putCallSchedule[i]->type()) {
             case Callability::Call:
                 for (j = 0; j < values_.size(); j++) {
-                    values_[j] = std::min(arguments_.callabilityPrices[i], values_[j]);
+                    values_[j] = std::min(adjustedCallabilityPrices_[i], values_[j]);
                 }
                 break;
             case Callability::Put:
                 for (j = 0; j < values_.size(); j++) {
-                    values_[j] = std::max(values_[j], arguments_.callabilityPrices[i]);
+                    values_[j] = std::max(values_[j], adjustedCallabilityPrices_[i]);
                 }
                 break;
             default:

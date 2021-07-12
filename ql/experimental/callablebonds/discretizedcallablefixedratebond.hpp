@@ -33,8 +33,7 @@ namespace QuantLib {
     class DiscretizedCallableFixedRateBond : public DiscretizedAsset {
       public:
         DiscretizedCallableFixedRateBond(const CallableBond::arguments&,
-                                         const Date& referenceDate,
-                                         const DayCounter& dayCounter);
+                                         const Handle<YieldTermStructure>& termStructure);
         void reset(Size size) override;
         std::vector<Time> mandatoryTimes() const override;
 
@@ -49,6 +48,7 @@ namespace QuantLib {
         std::vector<Time> couponTimes_;
         std::vector<CouponAdjustment> couponAdjustments_;
         std::vector<Time> callabilityTimes_;
+        std::vector<Real> adjustedCallabilityPrices_;
         void applyCallability(Size i);
         void addCoupon(Size i);
     };

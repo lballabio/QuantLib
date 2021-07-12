@@ -636,7 +636,7 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
     };
 
     auto initialCallDate = Date(14, Feb, 2022);
-    auto tolerance = 0.04;
+    auto tolerance = 1e-10;
 
     ext::shared_ptr<CallableFixedRateBond> callableBond;
     ext::shared_ptr<FixedRateBond> fixedRateBond;
@@ -652,7 +652,8 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
                 BOOST_ERROR("failed to reproduce bond price at "
                             << io::iso_date(callDate) << ":\n"
                             << std::setprecision(7) << "    calculated: " << npvCallable << "\n"
-                            << "    expected:   " << npvFixedRateBond << " +/- " << tolerance);
+                            << "    expected:   " << npvFixedRateBond << " +/- " << std::scientific
+                            << std::setprecision(1) << tolerance);
             }
         }
     }
