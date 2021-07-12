@@ -3231,8 +3231,26 @@ void HestonModelTest::testLocalVolFromHestonModel() {
 
     const auto dc = Actual365Fixed();
 
-    const Handle<YieldTermStructure> rTS(flatRate(0.15, dc));
-    const Handle<YieldTermStructure> qTS(flatRate(0.05, dc));
+    const Handle<YieldTermStructure> rTS(
+        ext::make_shared<ZeroCurve>(
+            std::vector<Date>{
+                todaysDate, todaysDate + Period(90, Days),
+                todaysDate + Period(180, Days), todaysDate + Period(1, Years)
+            },
+            std::vector<Rate>{0.075, 0.05, 0.075, 0.1},
+            dc
+        )
+    );
+
+    const Handle<YieldTermStructure> qTS(
+        ext::make_shared<ZeroCurve>(
+            std::vector<Date>{
+                todaysDate, todaysDate + Period(90, Days), todaysDate + Period(1, Years)
+            },
+            std::vector<Rate>{0.06, 0.04, 0.12},
+            dc
+        )
+    );
 
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
 
@@ -3280,7 +3298,7 @@ void HestonModelTest::testLocalVolFromHestonModel() {
 
     const Real calculated = option.NPV();
 
-    const Real tol = 0.005;
+    const Real tol = 0.002;
     const Real diff = std::fabs(calculated - expected);
     if (diff > tol) {
         BOOST_ERROR("failed to reproduce Heston model values with "
