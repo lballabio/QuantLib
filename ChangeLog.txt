@@ -1,3 +1,64 @@
+commit bf0959a3306264eece60da793a2d2e3f6bdf3330
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.23 final.
+
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 0d95b09e2c8bf711abb5092884fa3880c81d27be
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 7 Jul 2021 13:07:11 +0200
+
+    Add missing file to Makefile.am
+
+ test-suite/Makefile.am | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 7164dd43df3cbf4507e5652ad4a10bffcb587faa
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 7 Jul 2021 12:51:04 +0200
+
+    Also check list of distributed files
+
+ .github/workflows/filelists.yml |  8 ++++++++
+ tools/check_filelists.sh        | 29 ++++++++++++++++++++++++-----
+ tools/check_filelists_diffs.py  | 17 +++++++++++++++--
+ 3 files changed, 47 insertions(+), 7 deletions(-)
+
+commit ab6261093f28a7980bf051d2d2662d6785eee6b1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 6 Jul 2021 14:49:24 +0200
+
+    List correct source file in Makefile
+
+ ql/indexes/ibor/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 730d083f4f21561c367ca33a8969e36a964b1bd0
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 1 Apr 2021 11:28:16 +0200
+
+    Set version to 1.23 rc
+
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit fc908dbb92c5753d6472594005b5654dcb3196fb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 5 Jul 2021 14:03:22 +0200
+
+    Update changelog and news.
+
+ ChangeLog.txt           | 7430 +++++++++--------------------------------------
+ Contributors.txt        |    4 +
+ Docs/pages/history.docs |   74 +-
+ News.md                 |  141 +-
+ 4 files changed, 1517 insertions(+), 6132 deletions(-)
+
 commit 78def11a12f03f440b0f292e72c6ab9f64bb375c
 Merge: e00592723 e38e509be
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
