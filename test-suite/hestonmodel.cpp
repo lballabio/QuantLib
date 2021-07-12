@@ -3298,7 +3298,7 @@ void HestonModelTest::testLocalVolFromHestonModel() {
 
     const Real calculated = option.NPV();
 
-    const Real tol = 0.005;
+    const Real tol = 0.002;
     const Real diff = std::fabs(calculated - expected);
     if (diff > tol) {
         BOOST_ERROR("failed to reproduce Heston model values with "
