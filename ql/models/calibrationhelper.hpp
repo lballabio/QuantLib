@@ -58,23 +58,6 @@ namespace QuantLib {
             registerWith(volatility_);
         }
 
-        /*! \deprecated Use the other constructor.  It you're
-                        inheriting from BlackCalibrationHelper, move
-                        `termStructure_` to your derived class.
-                        Deprecated in version 1.19.
-        */
-        QL_DEPRECATED
-        BlackCalibrationHelper(Handle<Quote> volatility,
-                               Handle<YieldTermStructure> termStructure,
-                               CalibrationErrorType calibrationErrorType = RelativePriceError,
-                               const VolatilityType type = ShiftedLognormal,
-                               const Real shift = 0.0)
-        : volatility_(std::move(volatility)), termStructure_(std::move(termStructure)),
-          volatilityType_(type), shift_(shift), calibrationErrorType_(calibrationErrorType) {
-            registerWith(volatility_);
-            registerWith(termStructure_);
-        }
-
         void performCalculations() const override {
             marketValue_ = blackPrice(volatility_->value());
         }

@@ -42,16 +42,6 @@ namespace QuantLib {
                                     const std::vector<Date>& jumpDates)
     : YieldTermStructure(settlDays, cal, dc, jumps, jumpDates) {}
 
-    QL_DEPRECATED_DISABLE_WARNING
-
-    ForwardRateStructure::ForwardRateStructure(
-                                    const DayCounter& dc,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates)
-    : YieldTermStructure(dc, jumps, jumpDates) {}
-
-    QL_DEPRECATED_ENABLE_WARNING
-
     Rate ForwardRateStructure::zeroYieldImpl(Time t) const {
         if (t == 0.0)
             return forwardImpl(0.0);
