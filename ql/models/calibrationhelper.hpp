@@ -49,6 +49,8 @@ namespace QuantLib {
       public:
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
+
+        QL_DEPRECATED_DISABLE_WARNING
         BlackCalibrationHelper(Handle<Quote> volatility,
                                CalibrationErrorType calibrationErrorType = RelativePriceError,
                                const VolatilityType type = ShiftedLognormal,
@@ -57,6 +59,7 @@ namespace QuantLib {
           calibrationErrorType_(calibrationErrorType) {
             registerWith(volatility_);
         }
+        QL_DEPRECATED_ENABLE_WARNING
 
         void performCalculations() const override {
             marketValue_ = blackPrice(volatility_->value());
