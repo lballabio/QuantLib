@@ -117,7 +117,8 @@
 #endif
 
 /* Define this to make Singleton initialization thread-safe.
-   Note: There is no support for thread safety and multiple sessions.
+   Note: QL_ENABLE_SESSIONS implies thread safe initialization no matter
+         if defined or not.
 */
 #ifndef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
 //#   define QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
