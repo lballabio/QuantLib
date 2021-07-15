@@ -59,6 +59,8 @@ namespace QuantLib {
           calibrationErrorType_(calibrationErrorType) {
             registerWith(volatility_);
         }
+
+        ~BlackCalibrationHelper() = default;
         QL_DEPRECATED_ENABLE_WARNING
 
         void performCalculations() const override {
