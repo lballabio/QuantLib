@@ -43,6 +43,7 @@ public:
     static void testBarrierPricingViaHestonLocalVol();
     static void testBarrierPricingMixedModels();
     static void testMonteCarloVsFdmPricing();
+    static void testBarrierPricingMixedModelsMonteCarloVsFdmPricing();
     static void testMonteCarloCalibration();
     static void testMoustacheGraph();
     static void testForwardSkewSLV();
