@@ -51,18 +51,6 @@ namespace QuantLib {
         registerWith (h);
     }
 
-    BMAIndex::BMAIndex(const Handle<YieldTermStructure>& h,
-                       const Calendar& fixingCalendar)
-    : InterestRateIndex("BMA",
-                        1 * Weeks,
-                        1,
-                        USDCurrency(),
-                        fixingCalendar,
-                        ActualActual(ActualActual::ISDA)),
-      termStructure_(h) {
-        registerWith (h);
-    }
-
     bool BMAIndex::isValidFixingDate(const Date& date) const {
         Calendar cal = fixingCalendar();
         // either the fixing date is last Wednesday, or all days
