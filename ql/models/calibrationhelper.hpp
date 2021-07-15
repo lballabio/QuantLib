@@ -44,13 +44,13 @@ namespace QuantLib {
         virtual Real calibrationError() = 0;
     };
 
+    QL_DEPRECATED_DISABLE_WARNING
     //! liquid Black76 market instrument used during calibration
     class BlackCalibrationHelper : public LazyObject, public CalibrationHelper {
       public:
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
 
-        QL_DEPRECATED_DISABLE_WARNING
         BlackCalibrationHelper(Handle<Quote> volatility,
                                CalibrationErrorType calibrationErrorType = RelativePriceError,
                                const VolatilityType type = ShiftedLognormal,
@@ -61,7 +61,6 @@ namespace QuantLib {
         }
 
         ~BlackCalibrationHelper() = default;
-        QL_DEPRECATED_ENABLE_WARNING
 
         void performCalculations() const override {
             marketValue_ = blackPrice(volatility_->value());
@@ -115,6 +114,7 @@ namespace QuantLib {
         class ImpliedVolatilityHelper;
         const CalibrationErrorType calibrationErrorType_;
     };
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
