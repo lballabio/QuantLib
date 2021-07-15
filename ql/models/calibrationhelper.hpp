@@ -96,7 +96,12 @@ namespace QuantLib {
       protected:
         mutable Real marketValue_;
         Handle<Quote> volatility_;
-        Handle<YieldTermStructure> termStructure_;
+        /*! \deprecated Don't use this data member.  It you're
+                        inheriting from BlackCalibrationHelper, move
+                        `termStructure_` to your derived class.
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED Handle<YieldTermStructure> termStructure_;
         ext::shared_ptr<PricingEngine> engine_;
         const VolatilityType volatilityType_;
         const Real shift_;
