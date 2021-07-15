@@ -60,8 +60,6 @@ namespace QuantLib {
             registerWith(volatility_);
         }
 
-        ~BlackCalibrationHelper() = default;
-
         void performCalculations() const override {
             marketValue_ = blackPrice(volatility_->value());
         }
