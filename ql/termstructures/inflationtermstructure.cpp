@@ -23,6 +23,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     InflationTermStructure::InflationTermStructure(
                                         Rate baseRate,
                                         const Period& observationLag,
@@ -68,6 +70,7 @@ namespace QuantLib {
         setSeasonality(seasonality);
     }
 
+    QL_DEPRECATED_ENABLE_WARNING
 
     void InflationTermStructure::setSeasonality(
                           const ext::shared_ptr<Seasonality>& seasonality) {
