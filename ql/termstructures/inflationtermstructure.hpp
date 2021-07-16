@@ -30,6 +30,8 @@
 namespace QuantLib {
     class InflationIndex;
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     //! Interface for inflation term structures.
     /*! \ingroup inflationtermstructures */
     class InflationTermStructure : public TermStructure {
@@ -69,7 +71,6 @@ namespace QuantLib {
         virtual Frequency frequency() const;
         virtual bool indexIsInterpolated() const;
         virtual Rate baseRate() const;
-        virtual Handle<YieldTermStructure> nominalTermStructure() const;
 
         //! minimum (base) date
         /*! Important in inflation since it starts before nominal
@@ -83,6 +84,14 @@ namespace QuantLib {
         */
         virtual Date baseDate() const = 0;
         //@}
+
+        /*! \deprecated Don't use this method.  Objects such as pricers
+                        or bootstrap helpers that need a nominal curve
+                        should be passed one explicitly.
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED 
+        virtual Handle<YieldTermStructure> nominalTermStructure() const;
 
         //! Functions to set and get seasonality.
         /*! Calling setSeasonality with no arguments means unsetting
@@ -114,9 +123,19 @@ namespace QuantLib {
         Frequency frequency_;
         bool indexIsInterpolated_;
         mutable Rate baseRate_;
+        /*! \deprecated Don't use this data member.  If you're
+                        inheriting from InflationTermStructure, don't
+                        have your class take a nominal curve.  Objects
+                        such as pricers or bootstrap helpers that need
+                        a nominal curve should be passed one
+                        explicitly.
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED 
         Handle<YieldTermStructure> nominalTermStructure_;
     };
 
+    QL_DEPRECATED_ENABLE_WARNING
 
     //! Interface for zero inflation term structures.
     // Child classes use templates but do not want that exposed to
@@ -271,10 +290,12 @@ namespace QuantLib {
         return baseRate_;
     }
 
+    QL_DEPRECATED_DISABLE_WARNING
     inline Handle<YieldTermStructure>
     InflationTermStructure::nominalTermStructure() const {
         return nominalTermStructure_;
     }
+    QL_DEPRECATED_ENABLE_WARNING
 
     inline ext::shared_ptr<Seasonality> InflationTermStructure::seasonality() const {
         return seasonality_;

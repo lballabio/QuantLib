@@ -138,12 +138,15 @@ namespace QuantLib {
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
         paymentDate_ = coupon_->date();
+
+        QL_DEPRECATED_DISABLE_WARNING
         rateCurve_ =
             !nominalTermStructure_.empty() ?
             nominalTermStructure_ :
             ext::dynamic_pointer_cast<YoYInflationIndex>(coupon.index())
             ->yoyInflationTermStructure()
             ->nominalTermStructure();
+        QL_DEPRECATED_ENABLE_WARNING
 
         // past or future fixing is managed in YoYInflationIndex::fixing()
         // use yield curve from index (which sets discount)
