@@ -44,11 +44,13 @@ namespace QuantLib {
         virtual Real calibrationError() = 0;
     };
 
+    QL_DEPRECATED_DISABLE_WARNING
     //! liquid Black76 market instrument used during calibration
     class BlackCalibrationHelper : public LazyObject, public CalibrationHelper {
       public:
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
+
         BlackCalibrationHelper(Handle<Quote> volatility,
                                CalibrationErrorType calibrationErrorType = RelativePriceError,
                                const VolatilityType type = ShiftedLognormal,
@@ -96,7 +98,12 @@ namespace QuantLib {
       protected:
         mutable Real marketValue_;
         Handle<Quote> volatility_;
-        Handle<YieldTermStructure> termStructure_;
+        /*! \deprecated Don't use this data member.  It you're
+                        inheriting from BlackCalibrationHelper, move
+                        `termStructure_` to your derived class.
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED Handle<YieldTermStructure> termStructure_;
         ext::shared_ptr<PricingEngine> engine_;
         const VolatilityType volatilityType_;
         const Real shift_;
@@ -105,6 +112,7 @@ namespace QuantLib {
         class ImpliedVolatilityHelper;
         const CalibrationErrorType calibrationErrorType_;
     };
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
