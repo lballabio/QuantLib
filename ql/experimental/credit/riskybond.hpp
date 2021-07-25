@@ -81,7 +81,6 @@ namespace QuantLib {
                 Natural settlementDays = 0,
                 Calendar calendar = Calendar());
       ~RiskyBond() override = default;
-      virtual std::vector<ext::shared_ptr<CashFlow> > cashflows() const = 0;
       std::vector<ext::shared_ptr<CashFlow> > expectedCashflows();
       virtual Real notional(Date date = Date::minDate()) const = 0;
       virtual Date effectiveDate() const = 0;
@@ -92,6 +91,10 @@ namespace QuantLib {
       Real totalFutureFlows() const;
       std::string name() const;
       Currency ccy() const;
+      Natural settlementDays() const;
+      const Calendar& calendar() const;
+      const std::vector<Real>& notionals() const;
+      const std::vector<ext::shared_ptr<CashFlow>> cashflows() const;
       Handle<YieldTermStructure> yieldTS() const;
       Handle<DefaultProbabilityTermStructure> defaultTS() const;
       Real recoveryRate() const;
@@ -113,7 +116,19 @@ namespace QuantLib {
         // engines data
         Natural settlementDays_;
         Calendar calendar_;
+        std::vector<Real> notionals_;
+        std::vector<ext::shared_ptr<CashFlow> > leg_;
     };
+
+    inline Natural RiskyBond::settlementDays() const { return settlementDays_; }
+
+    inline const Calendar& RiskyBond::calendar() const { return calendar_; }
+
+    inline const std::vector<Real>& RiskyBond::notionals() const { return notionals_; }
+
+    inline const std::vector<ext::shared_ptr<CashFlow>> RiskyBond::cashflows() const {
+        return leg_;
+    }
 
     inline std::string RiskyBond::name() const {
         return name_;
@@ -152,7 +167,6 @@ namespace QuantLib {
                      std::vector<Real> notionals,
                      const Handle<YieldTermStructure>& yieldTS,
                      Natural settlementDays = 0);
-      std::vector<ext::shared_ptr<CashFlow> > cashflows() const override;
       Real notional(Date date = Date::minDate()) const override;
       Date effectiveDate() const override;
       Date maturityDate() const override;
@@ -164,8 +178,6 @@ namespace QuantLib {
       Real rate_;
       DayCounter dayCounter_;
       // BusinessDayConvention paymentConvention_;
-      std::vector<Real> notionals_;
-      std::vector<ext::shared_ptr<CashFlow> > leg_;
       std::vector<ext::shared_ptr<CashFlow> > interestLeg_;
       std::vector<ext::shared_ptr<CashFlow> > redemptionLeg_;
     };
@@ -187,7 +199,6 @@ namespace QuantLib {
                         std::vector<Real> notionals,
                         const Handle<YieldTermStructure>& yieldTS,
                         Natural settlementDays = 0);
-      std::vector<ext::shared_ptr<CashFlow> > cashflows() const override;
       Real notional(Date date = Date::minDate()) const override;
       Date effectiveDate() const override;
       Date maturityDate() const override;
@@ -201,8 +212,6 @@ namespace QuantLib {
         Integer fixingDays_;
         Real spread_;
         // BusinessDayConvention paymentConvention_;
-        std::vector<Real> notionals_;
-        std::vector<ext::shared_ptr<CashFlow> > leg_;
         std::vector<ext::shared_ptr<CashFlow> > interestLeg_;
         std::vector<ext::shared_ptr<CashFlow> > redemptionLeg_;
     };

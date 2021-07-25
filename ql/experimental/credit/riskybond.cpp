@@ -176,9 +176,6 @@ namespace QuantLib {
         redemptionLeg_.push_back(redemption);
     }
 
-    std::vector<ext::shared_ptr<CashFlow> > RiskyFixedBond::cashflows() const{
-        return leg_;
-    }
     std::vector<ext::shared_ptr<CashFlow> > RiskyFixedBond::interestFlows() const{
         return interestLeg_;
     }
@@ -254,11 +251,6 @@ namespace QuantLib {
             fictitiousPricer(new
                 BlackIborCouponPricer(Handle<OptionletVolatilityStructure>()));
         setCouponPricer(leg_,fictitiousPricer);
-    }
-
-    std::vector<ext::shared_ptr<CashFlow> > RiskyFloatingBond::cashflows()
-        const {
-        return leg_;
     }
 
     std::vector<ext::shared_ptr<CashFlow> > RiskyFloatingBond::interestFlows()
