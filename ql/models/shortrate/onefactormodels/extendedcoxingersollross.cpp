@@ -93,7 +93,10 @@ namespace QuantLib {
         NonCentralCumulativeChiSquareDistribution chis(df, ncps);
         NonCentralCumulativeChiSquareDistribution chit(df, ncpt);
 
-        Real z = std::log(CoxIngersollRoss::A(t,s)/strike)/b;
+        Real discountShift = (discountT*CoxIngersollRoss::A(0.0,s)*std::exp(-B(0.0,s)*x0()))/
+        (discountS*CoxIngersollRoss::A(0.0,t)*std::exp(-B(0.0,t)*x0()));
+        
+        Real z = (std::log(CoxIngersollRoss::A(t,s)/strike)-std::log(discountShift))/b;
         Real call = discountS*chis(2.0*z*(rho+psi+b)) -
             strike*discountT*chit(2.0*z*(rho+psi));
         if (type == Option::Call)
