@@ -35,11 +35,13 @@ namespace QuantLib {
                          Real recoveryRate,
                          Handle<DefaultProbabilityTermStructure> defaultTS,
                          Handle<YieldTermStructure> yieldTS,
+                         std::vector<Real> notionals,
                          Natural settlementDays,
                          Calendar calendar)
     : name_(std::move(name)), ccy_(std::move(ccy)), recoveryRate_(recoveryRate),
       defaultTS_(std::move(defaultTS)), yieldTS_(std::move(yieldTS)),
-      settlementDays_(settlementDays), calendar_(std::move(calendar)) {
+      notionals_(std::move(notionals)), settlementDays_(settlementDays),
+      calendar_(std::move(calendar)) {
         registerWith (yieldTS_);
         registerWith (defaultTS_);
         //the two above might not be registered with evalDate
@@ -144,10 +146,9 @@ namespace QuantLib {
                                    std::vector<Real> notionals,
                                    const Handle<YieldTermStructure>& yieldTS,
                                    Natural settlementDays)
-    : RiskyBond(name, ccy, recoveryRate, defaultTS, yieldTS, settlementDays, schedule.calendar()),
-      schedule_(schedule), rate_(rate), dayCounter_(std::move(dayCounter)),
-      // paymentConvention_(paymentConvention),
-      notionals_(std::move(notionals)) {
+    : RiskyBond(name, ccy, recoveryRate, defaultTS, yieldTS, notionals, settlementDays, schedule.calendar()),
+      schedule_(schedule), rate_(rate), dayCounter_(std::move(dayCounter))
+    {
         // FIXME: Take paymentConvention into account
         std::vector<Date> dates = schedule_.dates();
         Real previousNotional = notionals_.front();
@@ -216,9 +217,8 @@ namespace QuantLib {
                                          std::vector<Real> notionals,
                                          const Handle<YieldTermStructure>& yieldTS,
                                          Natural settlementDays)
-    : RiskyBond(name, ccy, recoveryRate, defaultTS, yieldTS, settlementDays, schedule.calendar()),
-      schedule_(schedule), index_(std::move(index)), fixingDays_(fixingDays), spread_(spread),
-      notionals_(std::move(notionals)) {
+    : RiskyBond(name, ccy, recoveryRate, defaultTS, yieldTS, notionals, settlementDays, schedule.calendar()),
+      schedule_(schedule), index_(std::move(index)), fixingDays_(fixingDays), spread_(spread) {
 
         // FIXME: Take paymentConvention into account
         std::vector<Date> dates = schedule_.dates();

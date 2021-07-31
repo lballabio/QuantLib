@@ -19,50 +19,40 @@
 */
 
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <utility>
+#include <ql\experimental\credit\riskybond.hpp>
+#include <ql/pricingengines/riskybondengine.hpp>
+
 
 namespace QuantLib {
 
-    DiscountingBondEngine::DiscountingBondEngine(
-        Handle<YieldTermStructure> discountCurve,
-        const boost::optional<bool>& includeSettlementDateFlows)
-    : discountCurve_(std::move(discountCurve)),
-      includeSettlementDateFlows_(includeSettlementDateFlows) {
-        registerWith(discountCurve_);
+    RiskyBondEngine::RiskyBondEngine(std::shared_ptr<RiskyBond> bond)
+    : bond_(std::move(bond)) {
     }
 
-    void DiscountingBondEngine::calculate() const {
-        QL_REQUIRE(!discountCurve_.empty(),
-                   "discounting term structure handle is empty");
+    void RiskyBondEngine::calculate() const {
+        Real NPV_ = 0;
+        Date today = Settings::instance().evaluationDate();
+        Date npvDate = bond_->calendar().advance(today, bond_->settlementDays(), Days);
+        std::vector<ext::shared_ptr<CashFlow> > cf = bond_->cashflows();
+        Date d1 = bond_->effectiveDate();
+        for (auto& i : cf) {
+            Date d2 = i->date();
+            if (d2 > npvDate) {
+                d1 = std::max(npvDate, d1);
+                Date defaultDate = d1 + (d2 - d1) / 2;
 
-        results_.valuationDate = (*discountCurve_)->referenceDate();
-
-        bool includeRefDateFlows = includeSettlementDateFlows_ ? // NOLINT(readability-implicit-bool-conversion)
-                                       *includeSettlementDateFlows_ :
-                                       Settings::instance().includeReferenceDateEvents();
-
-        results_.value = CashFlows::npv(arguments_.cashflows,
-                                        **discountCurve_,
-                                        includeRefDateFlows,
-                                        results_.valuationDate,
-                                        results_.valuationDate);
-
-        // a bond's cashflow on settlement date is never taken into
-        // account, so we might have to play it safe and recalculate
-        if (!includeRefDateFlows
-                     && results_.valuationDate == arguments_.settlementDate) {
-            // same parameters as above, we can avoid another call
-            results_.settlementValue = results_.value;
-        } else {
-            // no such luck
-            results_.settlementValue =
-                CashFlows::npv(arguments_.cashflows,
-                               **discountCurve_,
-                               false,
-                               arguments_.settlementDate,
-                               arguments_.settlementDate);
+                Real coupon = i->amount() * bond_->defaultTS()->survivalProbability(d2);
+                Real recovery = bond_->notional(defaultDate) *bond_->recoveryRate() * (bond_->defaultTS()->survivalProbability(d1) -
+                                                      bond_->defaultTS()->survivalProbability(d2));
+                NPV_ += coupon * bond_->yieldTS()->discount(d2);
+                NPV_ += recovery * bond_->yieldTS()->discount(defaultDate);
+            }
+            d1 = d2;
         }
+
+        results_.settlementValue = NPV_;
+        results_.valuationDate = npvDate;
     }
 
 }

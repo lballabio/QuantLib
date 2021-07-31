@@ -78,6 +78,7 @@ namespace QuantLib {
                 Real recoveryRate,
                 Handle<DefaultProbabilityTermStructure> defaultTS,
                 Handle<YieldTermStructure> yieldTS,
+                std::vector<Real> notionals,
                 Natural settlementDays = 0,
                 Calendar calendar = Calendar());
       ~RiskyBond() override = default;
@@ -123,8 +124,6 @@ namespace QuantLib {
     inline Natural RiskyBond::settlementDays() const { return settlementDays_; }
 
     inline const Calendar& RiskyBond::calendar() const { return calendar_; }
-
-    inline const std::vector<Real>& RiskyBond::notionals() const { return notionals_; }
 
     inline const std::vector<ext::shared_ptr<CashFlow>> RiskyBond::cashflows() const {
         return leg_;

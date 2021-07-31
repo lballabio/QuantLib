@@ -28,21 +28,16 @@
 #include <ql/instruments/bond.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/handle.hpp>
+#include <ql\experimental\credit\riskybond.hpp>
 
 namespace QuantLib {
 
-    class DiscountingBondEngine : public Bond::engine {
+    class RiskyBondEngine : public Bond::engine {
       public:
-        DiscountingBondEngine(
-            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
-            const boost::optional<bool>& includeSettlementDateFlows = boost::none);
+        RiskyBondEngine(std::shared_ptr<RiskyBond> bond);
         void calculate() const override;
-        Handle<YieldTermStructure> discountCurve() const {
-            return discountCurve_;
-        }
       private:
-        Handle<YieldTermStructure> discountCurve_;
-        boost::optional<bool> includeSettlementDateFlows_;
+        std::shared_ptr<RiskyBond> bond_;
     };
 
 }
