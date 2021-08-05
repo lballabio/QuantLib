@@ -230,5 +230,4 @@ namespace QuantLib {
 
 }
 
-
 #endif
