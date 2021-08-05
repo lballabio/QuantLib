@@ -27,7 +27,7 @@
 #include <ql/instruments/bond.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/handle.hpp>
-#include <ql\experimental\credit\riskybond.hpp>
+#include <ql/experimental/credit/riskybond.hpp>
 
 namespace QuantLib {
 
