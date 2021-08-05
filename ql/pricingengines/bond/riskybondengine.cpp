@@ -19,7 +19,7 @@
 
 #include <ql/cashflows/cashflows.hpp>
 #include <utility>
-#include <ql\experimental\credit\riskybond.hpp>
+#include <ql/experimental/credit/riskybond.hpp>
 #include <ql/pricingengines/bond/riskybondengine.hpp>
 
 
