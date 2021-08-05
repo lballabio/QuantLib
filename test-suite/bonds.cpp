@@ -46,6 +46,11 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
+#include <ql/experimental/credit/riskybond.hpp>
+#include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/currencies/europe.hpp>
+#include <ql/pricingengines/riskybondengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1575,6 +1580,58 @@ void BondTest::testFixedBondWithGivenDates() {
     }
 }
 
+void BondTest::testRiskyBondWithGivenDates() {
+
+    BOOST_TEST_MESSAGE("Testing risky fixed bond engine");
+
+    using namespace bonds_test;
+
+    Date today(22, November, 2004);
+    Date temp = Settings::instance().evaluationDate(); 
+    Settings::instance().evaluationDate() = today;
+
+    // Probability Structure
+    Handle<Quote> hazardRate(ext::shared_ptr<Quote>(new SimpleQuote(0.001)));
+    Handle<DefaultProbabilityTermStructure> defaultProbability(
+        ext::shared_ptr<DefaultProbabilityTermStructure>(
+            new FlatHazardRate(0, TARGET(), hazardRate, Actual360())));
+
+    // Yield term structure
+    RelinkableHandle<YieldTermStructure> riskFree;
+    riskFree.linkTo(ext::shared_ptr<YieldTermStructure>(new FlatForward(today, 0.02, Actual360())));
+    Schedule sch1(Date(30, November, 2004), Date(30, November, 2008), Period(Semiannual),
+                  UnitedStates(UnitedStates::GovernmentBond), Unadjusted, Unadjusted,
+                  DateGeneration::Backward, false);
+
+    // Create Bond
+    std::string name = "riskBond";
+    Natural settlementDays = 1;
+    Real tolerance = 1.0e-6;
+    std::vector<Real> notionals = {0.0167, 0.023, 0.03234, 0.034, 0.038, 0.042, 0.047, 0.053};
+    Real recoveryRate = 1.2;
+    Real rate = 1.0;
+    ext::shared_ptr<RiskyBond> bond(new RiskyFixedBond(
+        name, EURCurrency(), recoveryRate, defaultProbability, sch1, rate, Actual360(),
+        BusinessDayConvention::Nearest, notionals, riskFree, settlementDays));
+
+    // Create Engine
+    ext::shared_ptr<PricingEngine> bondEngine(new RiskyBondEngine(bond));
+    bond->setPricingEngine(bondEngine);
+
+    // Calculate and validate price
+    Real expected = 0.1513;
+    Real calculated = bond->NPV();
+    if (std::fabs(expected - calculated) > tolerance) {
+        BOOST_FAIL("Failed to calculate risky bond price:\n"
+                   << std::fixed << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected << "\n"
+                   << "    error:      " << expected - calculated);
+    }
+
+    Settings::instance().evaluationDate() = temp;
+}
+
+
 void BondTest::testFixedRateBondWithArbitrarySchedule() {
     BOOST_TEST_MESSAGE("Testing fixed-rate bond with arbitrary schedule...");
     SavedSettings backup;
@@ -1674,6 +1731,7 @@ test_suite* BondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedFloating));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testBrazilianCached));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testFixedBondWithGivenDates));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testRiskyBondWithGivenDates));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponGilt));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponAustralianBond));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testBondFromScheduleWithDateVector));

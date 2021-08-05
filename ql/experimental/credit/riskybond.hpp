@@ -102,10 +102,13 @@ namespace QuantLib {
       //! \name Instrument interface
       //@{
       bool isExpired() const override;
+      void setupArguments(PricingEngine::arguments*) const override;
+      class arguments;
+      class results;
+      class engine;
       //@}
     protected:
       void setupExpired() const override;
-      void performCalculations() const override;
 
     private:
         std::string name_;
@@ -120,6 +123,24 @@ namespace QuantLib {
         std::vector<Real> notionals_;
         std::vector<ext::shared_ptr<CashFlow> > leg_;
     };
+
+    class RiskyBond::arguments : public PricingEngine::arguments {
+      public:
+        arguments();
+        void validate() const override;
+        const RiskyBond *bond;
+    };
+
+    class RiskyBond::results : public Instrument::results {
+      public:
+        Real settlementValue;
+        void reset() override {
+            settlementValue = Null<Real>();
+            Instrument::results::reset();
+        }
+    };
+
+    class RiskyBond::engine : public GenericEngine<RiskyBond::arguments, RiskyBond::results> {};
 
     inline Natural RiskyBond::settlementDays() const { return settlementDays_; }
 

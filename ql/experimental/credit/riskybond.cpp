@@ -48,36 +48,20 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
+    void RiskyBond::setupArguments(PricingEngine::arguments* args) const {
+        auto* moreArgs = dynamic_cast<RiskyBond::arguments*>(args);
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
+        Date today = Settings::instance().evaluationDate();
+
+        moreArgs->bond = this;
+    }
+
     bool RiskyBond::isExpired() const {
         return detail::simple_event(maturityDate()).hasOccurred();
     }
 
     void RiskyBond::setupExpired() const {
         Instrument::setupExpired();
-    }
-
-    void RiskyBond::performCalculations() const {
-        NPV_ = 0;
-        Date today = Settings::instance().evaluationDate();
-        Date npvDate = calendar_.advance(today, settlementDays_, Days);
-        std::vector<ext::shared_ptr<CashFlow> > cf = cashflows();
-        Date d1 = effectiveDate();
-        for (auto& i : cf) {
-            Date d2 = i->date();
-            if (d2 > npvDate) {
-                d1 = max(npvDate , d1);
-                Date defaultDate = d1 + (d2-d1)/2;
-
-                Real coupon = i->amount() * defaultTS_->survivalProbability(d2);
-                Real recovery = notional(defaultDate) * recoveryRate_
-                    * (defaultTS_->survivalProbability(d1)
-                       -defaultTS_->survivalProbability(d2));
-                NPV_ += coupon * yieldTS()->discount(d2);
-                NPV_ += recovery * yieldTS()->discount(defaultDate);
-            }
-            d1 = d2;
-        }
-        valuationDate_ = npvDate;
     }
 
     Real RiskyBond::riskfreeNPV() const {
@@ -284,5 +268,11 @@ namespace QuantLib {
         return schedule_.dates().back();
     }
 
+    RiskyBond::arguments::arguments(){
+    }
+
+    void RiskyBond::arguments::validate() const {
+        //TODO fill up
+    }
 }
 

@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 Giorgio Facchinetti
- Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2021 Lew Wei Hao
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,12 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file discountingbondengine.hpp
-    \brief discounting bond engine
+/*! \file riskybondengine.hpp
+    \brief risky bond engine
 */
 
-#ifndef quantlib_discounting_bond_engine_hpp
-#define quantlib_discounting_bond_engine_hpp
+#ifndef quantlib_risky_bond_engine_hpp
+#define quantlib_risky_bond_engine_hpp
 
 #include <ql/instruments/bond.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
@@ -32,12 +31,12 @@
 
 namespace QuantLib {
 
-    class RiskyBondEngine : public Bond::engine {
+    class RiskyBondEngine : public RiskyBond::engine {
       public:
-        RiskyBondEngine(std::shared_ptr<RiskyBond> bond);
+        RiskyBondEngine(ext::shared_ptr<RiskyBond> bond);
         void calculate() const override;
       private:
-        std::shared_ptr<RiskyBond> bond_;
+        ext::shared_ptr<RiskyBond> bond_;
     };
 
 }
