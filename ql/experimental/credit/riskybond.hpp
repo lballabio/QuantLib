@@ -118,9 +118,9 @@ namespace QuantLib {
         Handle<YieldTermStructure> yieldTS_;
     protected:
         // engines data
+        std::vector<Real> notionals_;
         Natural settlementDays_;
         Calendar calendar_;
-        std::vector<Real> notionals_;
         std::vector<ext::shared_ptr<CashFlow> > leg_;
     };
 
