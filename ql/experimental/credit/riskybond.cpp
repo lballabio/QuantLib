@@ -51,8 +51,6 @@ namespace QuantLib {
     void RiskyBond::setupArguments(PricingEngine::arguments* args) const {
         auto* moreArgs = dynamic_cast<RiskyBond::arguments*>(args);
         QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
-        Date today = Settings::instance().evaluationDate();
-
         moreArgs->bond = this;
     }
 
@@ -268,11 +266,8 @@ namespace QuantLib {
         return schedule_.dates().back();
     }
 
-    RiskyBond::arguments::arguments(){
-    }
-
-    void RiskyBond::arguments::validate() const {
-        //TODO fill up
+    void RiskyBond::arguments::validate() const { 
+        QL_REQUIRE(bond != NULL, "Bond is null");
     }
 }
 

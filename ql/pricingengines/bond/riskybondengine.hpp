@@ -33,10 +33,7 @@ namespace QuantLib {
 
     class RiskyBondEngine : public RiskyBond::engine {
       public:
-        RiskyBondEngine(ext::shared_ptr<RiskyBond> bond);
         void calculate() const override;
-      private:
-        ext::shared_ptr<RiskyBond> bond_;
     };
 
 }

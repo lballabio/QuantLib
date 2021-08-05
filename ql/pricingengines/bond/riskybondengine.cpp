@@ -20,14 +20,10 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <utility>
 #include <ql\experimental\credit\riskybond.hpp>
-#include <ql/pricingengines/riskybondengine.hpp>
+#include <ql/pricingengines/bond/riskybondengine.hpp>
 
 
 namespace QuantLib {
-
-    RiskyBondEngine::RiskyBondEngine(ext::shared_ptr<RiskyBond> bond)
-    {
-    }
 
     void RiskyBondEngine::calculate() const {
         Real NPV_ = 0;

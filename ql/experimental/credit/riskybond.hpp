@@ -126,19 +126,11 @@ namespace QuantLib {
 
     class RiskyBond::arguments : public PricingEngine::arguments {
       public:
-        arguments();
         void validate() const override;
         const RiskyBond *bond;
     };
 
-    class RiskyBond::results : public Instrument::results {
-      public:
-        Real settlementValue;
-        void reset() override {
-            settlementValue = Null<Real>();
-            Instrument::results::reset();
-        }
-    };
+    class RiskyBond::results : public Instrument::results {};
 
     class RiskyBond::engine : public GenericEngine<RiskyBond::arguments, RiskyBond::results> {};
 

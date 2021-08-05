@@ -50,7 +50,7 @@
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/currencies/europe.hpp>
-#include <ql/pricingengines/riskybondengine.hpp>
+#include <ql/pricingengines/bond/riskybondengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -1615,7 +1615,7 @@ void BondTest::testRiskyBondWithGivenDates() {
         BusinessDayConvention::Nearest, notionals, riskFree, settlementDays));
 
     // Create Engine
-    ext::shared_ptr<PricingEngine> bondEngine(new RiskyBondEngine(bond));
+    ext::shared_ptr<PricingEngine> bondEngine(new RiskyBondEngine());
     bond->setPricingEngine(bondEngine);
 
     // Calculate and validate price
