@@ -39,7 +39,7 @@ namespace QuantLib {
 
                 Real coupon = i->amount() * arguments_.bond->defaultTS()->survivalProbability(d2);
                 Real recovery = arguments_.bond->notional(defaultDate) *arguments_.bond->recoveryRate() * (arguments_.bond->defaultTS()->survivalProbability(d1) -
-                                                      arguments_.bond->defaultTS()->survivalProbability(d2));
+                                                      arguments_.bond->defaultTS()->survivalProbability(d2)); 
                 NPV_ += coupon * arguments_.bond->yieldTS()->discount(d2);
                 NPV_ += recovery * arguments_.bond->yieldTS()->discount(defaultDate);
             }
