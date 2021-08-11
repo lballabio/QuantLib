@@ -41,12 +41,6 @@ namespace QuantLib {
       public:
         explicit BMAIndex(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
-        /*! \deprecated Use the other constructor instead.
-                        Deprecated in version 1.19.
-        */
-        QL_DEPRECATED
-        BMAIndex(const Handle<YieldTermStructure>& h,
-                 const Calendar& fixingCalendar);
         //! \name Index interface
         //@{
         /*! BMA is fixed weekly on Wednesdays.

@@ -50,22 +50,6 @@ namespace QuantLib {
                                        const std::vector<Rate>& rates,
                                        const Interpolator& interpolator = Interpolator());
 
-        /*! \deprecated Use the constructor not taking a yield
-                        term structure.
-                        Deprecated in version 1.19.
-        */
-        QL_DEPRECATED
-        InterpolatedZeroInflationCurve(const Date& referenceDate,
-                                       const Calendar& calendar,
-                                       const DayCounter& dayCounter,
-                                       const Period& lag,
-                                       Frequency frequency,
-                                       bool indexIsInterpolated,
-                                       const Handle<YieldTermStructure>& yTS,
-                                       std::vector<Date> dates,
-                                       const std::vector<Rate>& rates,
-                                       const Interpolator& interpolator = Interpolator());
-
         //! \name InflationTermStructure interface
         //@{
         Date baseDate() const override;
@@ -99,22 +83,6 @@ namespace QuantLib {
                                        Frequency frequency,
                                        bool indexIsInterpolated,
                                        Rate baseZeroRate,
-                                       const Interpolator &interpolator
-                                                            = Interpolator());
-
-        /*! \deprecated Use the constructor not taking a yield
-                        term structure.
-                        Deprecated in version 1.19.
-        */
-        QL_DEPRECATED
-        InterpolatedZeroInflationCurve(const Date& referenceDate,
-                                       const Calendar& calendar,
-                                       const DayCounter& dayCounter,
-                                       const Period& lag,
-                                       Frequency frequency,
-                                       bool indexIsInterpolated,
-                                       Rate baseZeroRate,
-                                       const Handle<YieldTermStructure>& yTS,
                                        const Interpolator &interpolator
                                                             = Interpolator());
     };
@@ -186,68 +154,6 @@ namespace QuantLib {
     }
 
     template <class Interpolator>
-    InterpolatedZeroInflationCurve<Interpolator>::InterpolatedZeroInflationCurve(
-        const Date& referenceDate,
-        const Calendar& calendar,
-        const DayCounter& dayCounter,
-        const Period& lag,
-        Frequency frequency,
-        bool indexIsInterpolated,
-        const Handle<YieldTermStructure>& yTS,
-        std::vector<Date> dates,
-        const std::vector<Rate>& rates,
-        const Interpolator& interpolator)
-    : ZeroInflationTermStructure(
-          referenceDate, calendar, dayCounter, rates[0], lag, frequency, indexIsInterpolated, yTS),
-      InterpolatedCurve<Interpolator>(std::vector<Time>(), rates, interpolator),
-      dates_(std::move(dates)) {
-
-        QL_REQUIRE(dates_.size() > 1, "too few dates: " << dates_.size());
-
-        // check that the data starts from the beginning,
-        // i.e. referenceDate - lag, at least must be in the relevant
-        // period
-        std::pair<Date, Date> lim =
-            inflationPeriod(referenceDate - this->observationLag(), frequency);
-        QL_REQUIRE(lim.first <= dates_[0] && dates_[0] <= lim.second,
-                   "first data date is not in base period, date: "
-                       << dates_[0] << " not within [" << lim.first << "," << lim.second << "]");
-
-        // by convention, if the index is not interpolated we pull all the dates
-        // back to the start of their inflationPeriods
-        // otherwise the time calculations will be inconsistent
-        if (!indexIsInterpolated_) {
-            for (auto& date : dates_) {
-                date = inflationPeriod(date, frequency).first;
-            }
-        }
-
-        QL_REQUIRE(this->data_.size() == dates_.size(),
-                   "indices/dates count mismatch: " << this->data_.size() << " vs "
-                                                    << dates_.size());
-
-        this->times_.resize(dates_.size());
-        this->times_[0] = timeFromReference(dates_[0]);
-        for (Size i = 1; i < dates_.size(); i++) {
-            QL_REQUIRE(dates_[i] > dates_[i - 1], "dates not sorted");
-
-            // but must be greater than -1
-            QL_REQUIRE(this->data_[i] > -1.0, "zero inflation data < -100 %");
-
-            // this can be negative
-            this->times_[i] = timeFromReference(dates_[i]);
-            QL_REQUIRE(!close(this->times_[i], this->times_[i - 1]),
-                       "two dates correspond to the same time "
-                       "under this curve's day count convention");
-        }
-
-        this->interpolation_ = this->interpolator_.interpolate(
-            this->times_.begin(), this->times_.end(), this->data_.begin());
-        this->interpolation_.update();
-    }
-
-
-    template <class Interpolator>
     InterpolatedZeroInflationCurve<Interpolator>::
     InterpolatedZeroInflationCurve(const Date& referenceDate,
                                    const Calendar& calendar,
@@ -259,22 +165,6 @@ namespace QuantLib {
                                    const Interpolator& interpolator)
     :  ZeroInflationTermStructure(referenceDate, calendar, dayCounter, baseZeroRate,
                                   lag, frequency, indexIsInterpolated),
-       InterpolatedCurve<Interpolator>(interpolator) {
-    }
-
-    template <class Interpolator>
-    InterpolatedZeroInflationCurve<Interpolator>::
-    InterpolatedZeroInflationCurve(const Date& referenceDate,
-                                   const Calendar& calendar,
-                                   const DayCounter& dayCounter,
-                                   const Period& lag,
-                                   Frequency frequency,
-                                   bool indexIsInterpolated,
-                                   Rate baseZeroRate,
-                                   const Handle<YieldTermStructure>& yTS,
-                                   const Interpolator& interpolator)
-    :  ZeroInflationTermStructure(referenceDate, calendar, dayCounter, baseZeroRate,
-                                  lag, frequency, indexIsInterpolated, yTS),
        InterpolatedCurve<Interpolator>(interpolator) {
     }
 

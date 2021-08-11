@@ -34,7 +34,12 @@ jobs:
             cxx: g++
           - name: "gcc 10.x"
             shortname: gcc10
-            tag: groovy
+            tag: hirsute
+            cc: gcc
+            cxx: g++
+          - name: "gcc 11.x"
+            shortname: gcc11
+            tag: impish
             cc: gcc
             cxx: g++
           - name: "Clang 6 (Boost 1.72)"
@@ -128,6 +133,9 @@ jobs:
           linux-nondef-build-${{ matrix.shortname }}-${{ github.ref }}-
           linux-nondef-build-${{ matrix.shortname }}-refs/heads/master-
           linux-nondef-build-${{ matrix.shortname }}-
+    - name: Compiler version
+      run: |
+        ${{ matrix.cc }} --version
     - name: Build
       run: |
         ./autogen.sh
