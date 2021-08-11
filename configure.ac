@@ -269,7 +269,7 @@ if test "$ql_use_safe_singleton_init" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_safe_singleton_init])
 
-if test "$ql_use_tsop" = "yes" || test "$ql_use_safe_singleton_init" = "yes"; then
+if test "$ql_use_sessions" = "yes" || test "$ql_use_tsop" = "yes" || test "$ql_use_safe_singleton_init" = "yes"; then
    QL_CHECK_BOOST_VERSION_1_58_OR_HIGHER
    QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM
 else
