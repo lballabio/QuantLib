@@ -225,7 +225,8 @@ AC_ARG_ENABLE([sessions],
                               have to provide and link with the library
                               a sessionId() function in namespace QuantLib,
                               returning a different session id for each
-                              session.]),
+                              session. This also implies thread-safe
+                              Singleton initialization.]),
               [ql_use_sessions=$enableval],
               [ql_use_sessions=no])
 if test "$ql_use_sessions" = "yes" ; then
@@ -259,8 +260,9 @@ AC_ARG_ENABLE([thread-safe-singleton-init],
               AS_HELP_STRING([--enable-thread-safe-singleton-init],
                              [If enabled, singleton initialization will
                               be thread-safe. This requires Boost 1.58
-                              or later and is not supported when sessions
-                              are enabled.]),
+                              or later.  Note that --enable-sessions
+                              implies thread-safe initialization,
+                              whether this is defined or not]),
               [ql_use_safe_singleton_init=$enableval],
               [ql_use_safe_singleton_init=no])
 if test "$ql_use_safe_singleton_init" = "yes" ; then
