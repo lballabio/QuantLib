@@ -149,6 +149,12 @@ jobs:
             cc: gcc
             cxx: g++
             configureflags: --enable-thread-safe-observer-pattern
+          - name: "Thread-safe singleton init enabled"
+            shortname: threadsafeinit
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            configureflags: --enable-thread-safe-singleton-init
           - name: "Sessions enabled"
             shortname: sessions
             tag: rolling
