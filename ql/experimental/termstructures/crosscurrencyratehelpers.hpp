@@ -28,7 +28,7 @@
 
 namespace QuantLib {
     //! Rate helper for bootstrapping over XCCY basis swap rates
-    /*! 
+    /*!
     Constant notional cross currency swap helper.
     Unlike marked-to-market cross currency swaps, both notionals
     expressed in base and quote currency remain constant throughout
@@ -105,6 +105,73 @@ namespace QuantLib {
 
     inline const Leg& CrossCurrencyBasisSwapRateHelper::quoteCurrencyLeg() const {
         return quoteCcyLeg_->leg(0);
+    }
+
+    //! Rate helper for bootstrapping over MtM XCCY basis swap rates
+    /*!
+    Resettable cross currency swap helper.
+
+    For more details see:
+    N. Moreni, A. Pallavicini (2015)
+    FX Modelling in Collateralized Markets: foreign measures, basis curves
+    and pricing formulae.
+    */
+    class MtMCrossCurrencyBasisSwapRateHelper : public RelativeDateRateHelper {
+      public:
+        MtMCrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
+                                            const Period& tenor,
+                                            Natural fixingDays,
+                                            Calendar calendar,
+                                            BusinessDayConvention convention,
+                                            bool endOfMonth,
+                                            ext::shared_ptr<IborIndex> baseCurrencyIndex,
+                                            ext::shared_ptr<IborIndex> quoteCurrencyIndex,
+                                            Handle<YieldTermStructure> collateralCurve,
+                                            bool isFxBaseCurrencyCollateralCurrency,
+                                            bool isBasisOnFxBaseCurrencyLeg,
+                                            bool isFxBaseCurrencyLegResettable);
+        //! \name RateHelper interface
+        //@{
+        Real impliedQuote() const override;
+        void setTermStructure(YieldTermStructure*) override;
+        //@}
+        //! \name MtMCrossCurrencyBasisSwapRateHelper inspectors
+        //@{
+        const Leg& baseCurrencyLeg() const;
+        const Leg& quoteCurrencyLeg() const;
+        //@}
+        //! \name Visitability
+        //@{
+        void accept(AcyclicVisitor&) override;
+        //@}
+      protected:
+        void initializeDates() override;
+
+        Period tenor_;
+        Natural fixingDays_;
+        Calendar calendar_;
+        BusinessDayConvention convention_;
+        bool endOfMonth_;
+        ext::shared_ptr<IborIndex> baseCcyIdx_;
+        ext::shared_ptr<IborIndex> quoteCcyIdx_;
+        Handle<YieldTermStructure> collateralHandle_;
+        bool isFxBaseCurrencyCollateralCurrency_;
+        bool isBasisOnFxBaseCurrencyLeg_;
+        bool isFxBaseCurrencyLegResettable_;
+
+        Schedule schedule_;
+        Leg baseCcyLeg_;
+        Leg quoteCcyLeg_;
+
+        RelinkableHandle<YieldTermStructure> termStructureHandle_;
+    };
+
+    inline const Leg& MtMCrossCurrencyBasisSwapRateHelper::baseCurrencyLeg() const {
+        return baseCcyLeg_;
+    }
+
+    inline const Leg& MtMCrossCurrencyBasisSwapRateHelper::quoteCurrencyLeg() const {
+        return quoteCcyLeg_;
     }
 }
 
