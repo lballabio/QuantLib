@@ -46,7 +46,6 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
-#include <ql/experimental/credit/riskybond.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/currencies/europe.hpp>
