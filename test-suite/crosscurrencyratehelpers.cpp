@@ -21,6 +21,8 @@
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -107,6 +109,16 @@ namespace crosscurrencyratehelpers_test {
                 .backwards();
         }
 
+        Leg constantNotionalLeg(const Schedule& schedule,
+                                const ext::shared_ptr<IborIndex>& idx,
+                                Real notional,
+                                Spread basis) const {
+            Leg leg = IborLeg(schedule, idx).withNotionals(notional).withSpreads(basis);
+            Date lastPaymentDate = leg.back()->date();
+            leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
+            return leg;
+        }
+
         std::vector<ext::shared_ptr<Swap> >
         buildXccyBasisSwap(const XccyTestDatum& q,
                            Real fxSpot,
@@ -121,15 +133,14 @@ namespace crosscurrencyratehelpers_test {
             std::vector<ext::shared_ptr<Swap> > legs;
             bool payer = true;
 
-            Leg baseCcyLeg = CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(
-                legSchedule(Period(q.n, q.units), baseCcyIdx), baseCcyIdx, baseCcyLegNotional,
-                baseCcyLegBasis);
+            Leg baseCcyLeg = constantNotionalLeg(legSchedule(Period(q.n, q.units), baseCcyIdx),
+                                                 baseCcyIdx, baseCcyLegNotional, baseCcyLegBasis);
             legs.push_back(ext::make_shared<Swap>(std::vector<Leg>(1, baseCcyLeg),
                                                   std::vector<bool>(1, !payer)));
 
-            Leg quoteCcyLeg = CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(
-                legSchedule(Period(q.n, q.units), quoteCcyIdx), quoteCcyIdx, quoteCcyLegNotional,
-                quoteCcyLegBasis);
+            Leg quoteCcyLeg =
+                constantNotionalLeg(legSchedule(Period(q.n, q.units), quoteCcyIdx), quoteCcyIdx,
+                                    quoteCcyLegNotional, quoteCcyLegBasis);
             legs.push_back(ext::make_shared<Swap>(std::vector<Leg>(1, quoteCcyLeg),
                                                   std::vector<bool>(1, payer)));
             return legs;

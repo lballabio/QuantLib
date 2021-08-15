@@ -49,6 +49,15 @@ namespace QuantLib {
                 .backwards();
         }
 
+        Leg buildConstNotionalLegProxy(const Schedule& schedule,
+                                       const ext::shared_ptr<IborIndex>& idx) {
+            const Real notional = 1.0;
+            Leg leg = IborLeg(schedule, idx).withNotionals(notional);
+            Date lastPaymentDate = leg.back()->date();
+            leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
+            return leg;
+        }
+
         bool includeSettlementDateFlows() {
             return Settings::instance().includeReferenceDateEvents();
         }
@@ -66,17 +75,6 @@ namespace QuantLib {
         }
     }
 
-    Leg
-    CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(const Schedule& schedule,
-                                                            const ext::shared_ptr<IborIndex>& idx,
-                                                            Real notional,
-                                                            Spread basis) {
-        Leg leg = IborLeg(schedule, idx).withNotionals(notional).withSpreads(basis);
-        Date lastPaymentDate = leg.back()->date();
-        leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
-        return leg;
-    }
-
     CrossCurrencyBasisSwapRateHelper::CrossCurrencyBasisSwapRateHelper(
         const Handle<Quote>& basis,
         const Period& tenor,
@@ -89,13 +87,14 @@ namespace QuantLib {
         Handle<YieldTermStructure> collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg)
-    : RelativeDateRateHelper(basis), baseCcyLegSchedule_(legSchedule(evaluationDate_,
-                                                                     tenor,
-                                                                     baseCurrencyIndex->tenor(),
-                                                                     fixingDays,
-                                                                     calendar,
-                                                                     convention,
-                                                                     endOfMonth)),
+    : RelativeDateRateHelper(basis),
+      baseCcyLegSchedule_(legSchedule(evaluationDate_,
+                                      tenor,
+                                      baseCurrencyIndex->tenor(),
+                                      fixingDays,
+                                      calendar,
+                                      convention,
+                                      endOfMonth)),
       quoteCcyLegSchedule_(legSchedule(evaluationDate_,
                                        tenor,
                                        quoteCurrencyIndex->tenor(),
@@ -115,14 +114,12 @@ namespace QuantLib {
     }
 
     void CrossCurrencyBasisSwapRateHelper::initializeDates() {
-        baseCcyLeg_ = CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(baseCcyLegSchedule_,
-                                                                              baseCcyIdx_);
-        quoteCcyLeg_ = CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(quoteCcyLegSchedule_,
-                                                                               quoteCcyIdx_);
-        earliestDate_ =
-            std::min(CashFlows::startDate(baseCcyLeg_), CashFlows::startDate(quoteCcyLeg_));
-        latestDate_ =
-            std::max(CashFlows::maturityDate(baseCcyLeg_), CashFlows::maturityDate(quoteCcyLeg_));
+        baseCcyLegProxy_ = buildConstNotionalLegProxy(baseCcyLegSchedule_, baseCcyIdx_);
+        quoteCcyLegProxy_ = buildConstNotionalLegProxy(quoteCcyLegSchedule_, quoteCcyIdx_);
+        earliestDate_ = std::min(CashFlows::startDate(baseCcyLegProxy_),
+                                 CashFlows::startDate(quoteCcyLegProxy_));
+        latestDate_ = std::max(CashFlows::maturityDate(baseCcyLegProxy_),
+                               CashFlows::maturityDate(quoteCcyLegProxy_));
     }
 
     const Handle<YieldTermStructure>&
@@ -139,14 +136,14 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
 
-        Real npvBaseCcy = -npvXccyLeg(baseCcyLeg_, baseCcyLegDiscountHandle());
-        Real npvQuoteCcy = npvXccyLeg(quoteCcyLeg_, quoteCcyLegDiscountHandle());
+        Real npvBaseCcy = -npvXccyLeg(baseCcyLegProxy_, baseCcyLegDiscountHandle());
+        Real npvQuoteCcy = npvXccyLeg(quoteCcyLegProxy_, quoteCcyLegDiscountHandle());
         const Spread basisPoint = 1.0e-4;
         Real bps = 0.0;
         if (isBasisOnFxBaseCurrencyLeg_)
-            bps = -bpsXccyLeg(baseCcyLeg_, baseCcyLegDiscountHandle());
+            bps = -bpsXccyLeg(baseCcyLegProxy_, baseCcyLegDiscountHandle());
         else
-            bps = bpsXccyLeg(quoteCcyLeg_, quoteCcyLegDiscountHandle());
+            bps = bpsXccyLeg(quoteCcyLegProxy_, quoteCcyLegDiscountHandle());
         return -(npvQuoteCcy + npvBaseCcy) / bps * basisPoint;
     }
 

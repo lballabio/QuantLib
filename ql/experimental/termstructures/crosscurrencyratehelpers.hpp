@@ -61,13 +61,6 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
-        //! \name CrossCurrencyBasisSwapRateHelper utility functions.
-        //@{
-        static Leg buildCrossCurrencyLeg(const Schedule& schedule,
-                                         const ext::shared_ptr<IborIndex>& idx,
-                                         Real notional = 1.0,
-                                         Spread basis = 0.0);
-        //@}
       protected:
         void initializeDates() override;
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
@@ -81,8 +74,8 @@ namespace QuantLib {
         bool isFxBaseCurrencyCollateralCurrency_;
         bool isBasisOnFxBaseCurrencyLeg_;
 
-        Leg baseCcyLeg_;
-        Leg quoteCcyLeg_;
+        Leg baseCcyLegProxy_;
+        Leg quoteCcyLegProxy_;
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
