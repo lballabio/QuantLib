@@ -1613,7 +1613,6 @@ void BondTest::testRiskyBondWithGivenDates() {
     couponRates[2] = 0.03125;
     couponRates[3] = 0.0325;
     Real recoveryRate = 1.2;
-    Real rate = 1.0;
     FixedRateBond bond(settlementDays, vars.faceAmount, sch1, couponRates,
                         ActualActual(ActualActual::ISMA), ModifiedFollowing, 100.0,
                         Date(20, November, 2004));
