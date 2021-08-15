@@ -68,43 +68,34 @@ namespace QuantLib {
         //@}
         //! \name CrossCurrencyBasisSwapRateHelper utility functions.
         //@{
-        static ext::shared_ptr<Swap> buildCrossCurrencyLeg(const Date& evaluationDate,
-                                                           const Period& tenor,
-                                                           Natural fixingDays,
-                                                           const Calendar& calendar,
-                                                           BusinessDayConvention convention,
-                                                           bool endOfMonth,
-                                                           const ext::shared_ptr<IborIndex>& idx,
-                                                           Swap::Type type,
-                                                           Real notional = 1.0,
-                                                           Spread basis = 0.0);
+        static Leg buildCrossCurrencyLeg(const Schedule& schedule,
+                                         const ext::shared_ptr<IborIndex>& idx,
+                                         Real notional = 1.0,
+                                         Spread basis = 0.0);
         //@}
       protected:
         void initializeDates() override;
 
-        Period tenor_;
-        Natural fixingDays_;
-        Calendar calendar_;
-        BusinessDayConvention convention_;
-        bool endOfMonth_;
+        Schedule baseCcyLegSchedule_;
+        Schedule quoteCcyLegSchedule_;
         ext::shared_ptr<IborIndex> baseCcyIdx_;
         ext::shared_ptr<IborIndex> quoteCcyIdx_;
         Handle<YieldTermStructure> collateralHandle_;
         bool isFxBaseCurrencyCollateralCurrency_;
         bool isBasisOnFxBaseCurrencyLeg_;
 
-        ext::shared_ptr<Swap> baseCcyLeg_;
-        ext::shared_ptr<Swap> quoteCcyLeg_;
+        Leg baseCcyLeg_;
+        Leg quoteCcyLeg_;
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
     inline const Leg& CrossCurrencyBasisSwapRateHelper::baseCurrencyLeg() const {
-        return baseCcyLeg_->leg(0);
+        return baseCcyLeg_;
     }
 
     inline const Leg& CrossCurrencyBasisSwapRateHelper::quoteCurrencyLeg() const {
-        return quoteCcyLeg_->leg(0);
+        return quoteCcyLeg_;
     }
 
     //! Rate helper for bootstrapping over MtM XCCY basis swap rates
@@ -116,7 +107,7 @@ namespace QuantLib {
     FX Modelling in Collateralized Markets: foreign measures, basis curves
     and pricing formulae.
     */
-    class MtMCrossCurrencyBasisSwapRateHelper : public RelativeDateRateHelper {
+    class MtMCrossCurrencyBasisSwapRateHelper : public CrossCurrencyBasisSwapRateHelper {
       public:
         MtMCrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
                                             const Period& tenor,
@@ -133,12 +124,6 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
-        void setTermStructure(YieldTermStructure*) override;
-        //@}
-        //! \name MtMCrossCurrencyBasisSwapRateHelper inspectors
-        //@{
-        const Leg& baseCurrencyLeg() const;
-        const Leg& quoteCurrencyLeg() const;
         //@}
         //! \name Visitability
         //@{
@@ -146,33 +131,8 @@ namespace QuantLib {
         //@}
       protected:
         void initializeDates() override;
-
-        Period tenor_;
-        Natural fixingDays_;
-        Calendar calendar_;
-        BusinessDayConvention convention_;
-        bool endOfMonth_;
-        ext::shared_ptr<IborIndex> baseCcyIdx_;
-        ext::shared_ptr<IborIndex> quoteCcyIdx_;
-        Handle<YieldTermStructure> collateralHandle_;
-        bool isFxBaseCurrencyCollateralCurrency_;
-        bool isBasisOnFxBaseCurrencyLeg_;
         bool isFxBaseCurrencyLegResettable_;
-
-        Schedule schedule_;
-        Leg baseCcyLeg_;
-        Leg quoteCcyLeg_;
-
-        RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
-
-    inline const Leg& MtMCrossCurrencyBasisSwapRateHelper::baseCurrencyLeg() const {
-        return baseCcyLeg_;
-    }
-
-    inline const Leg& MtMCrossCurrencyBasisSwapRateHelper::quoteCurrencyLeg() const {
-        return quoteCcyLeg_;
-    }
 }
 
 #endif

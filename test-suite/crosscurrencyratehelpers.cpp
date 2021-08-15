@@ -95,9 +95,20 @@ namespace crosscurrencyratehelpers_test {
             return instruments;
         }
 
+        Schedule legSchedule(const Period& tenor, 
+                             const ext::shared_ptr<IborIndex>& idx) const {
+            return MakeSchedule()
+                .from(settlement)
+                .to(settlement + tenor)
+                .withTenor(idx->tenor())
+                .withCalendar(calendar)
+                .withConvention(businessConvention)
+                .endOfMonth(endOfMonth)
+                .backwards();
+        }
+
         std::vector<ext::shared_ptr<Swap> >
-        buildXccyBasisSwap(const Date& start,
-                           const XccyTestDatum& q,
+        buildXccyBasisSwap(const XccyTestDatum& q,
                            Real fxSpot,
                            bool isFxBaseCurrencyCollateralCurrency,
                            bool isBasisOnFxBaseCurrencyLeg) const {
@@ -108,19 +119,19 @@ namespace crosscurrencyratehelpers_test {
             Spread quoteCcyLegBasis = isBasisOnFxBaseCurrencyLeg ? 0.0 : q.basis * basisPoint;
 
             std::vector<ext::shared_ptr<Swap> > legs;
-            ext::shared_ptr<Swap> baseCcyLeg =
-                CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(
-                    start, Period(q.n, q.units), settlementDays, calendar, businessConvention,
-                    endOfMonth, baseCcyIdx, Swap::Receiver, baseCcyLegNotional,
-                    baseCcyLegBasis);
-            legs.push_back(baseCcyLeg);
+            bool payer = true;
 
-            ext::shared_ptr<Swap> quoteCcyLeg =
-                CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(
-                    start, Period(q.n, q.units), settlementDays, calendar, businessConvention,
-                    endOfMonth, quoteCcyIdx, Swap::Payer, quoteCcyLegNotional,
-                    quoteCcyLegBasis);
-            legs.push_back(quoteCcyLeg);
+            Leg baseCcyLeg = CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(
+                legSchedule(Period(q.n, q.units), baseCcyIdx), baseCcyIdx, baseCcyLegNotional,
+                baseCcyLegBasis);
+            legs.push_back(ext::make_shared<Swap>(std::vector<Leg>(1, baseCcyLeg),
+                                                  std::vector<bool>(1, !payer)));
+
+            Leg quoteCcyLeg = CrossCurrencyBasisSwapRateHelper::buildCrossCurrencyLeg(
+                legSchedule(Period(q.n, q.units), quoteCcyIdx), quoteCcyIdx, quoteCcyLegNotional,
+                quoteCcyLegBasis);
+            legs.push_back(ext::make_shared<Swap>(std::vector<Leg>(1, quoteCcyLeg),
+                                                  std::vector<bool>(1, payer)));
 
             return legs;
         }
@@ -196,9 +207,8 @@ void testConstantNotionalCrossCurrencySwapsNPV(bool isFxBaseCurrencyCollateralCu
     for (Size i = 0; i < vars.basisData.size(); ++i) {
 
         XccyTestDatum quote = vars.basisData[i];
-        std::vector<ext::shared_ptr<Swap> > xccySwapProxy =
-            vars.buildXccyBasisSwap(vars.today, quote, vars.fxSpot,
-                                    isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg);
+        std::vector<ext::shared_ptr<Swap> > xccySwapProxy = vars.buildXccyBasisSwap(
+            quote, vars.fxSpot, isFxBaseCurrencyCollateralCurrency, isBasisOnFxBaseCurrencyLeg);
 
         if (isFxBaseCurrencyCollateralCurrency) {
             xccySwapProxy[0]->setPricingEngine(collateralCcyLegEngine);
