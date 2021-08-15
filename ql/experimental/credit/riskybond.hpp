@@ -24,18 +24,18 @@
 #ifndef quantlib_riskybond_hpp
 #define quantlib_riskybond_hpp
 
-#include <ql/instrument.hpp>
-#include <ql/experimental/credit/issuer.hpp>
-#include <ql/default.hpp>
-#include <ql/time/schedule.hpp>
-#include <ql/time/daycounter.hpp>
 #include <ql/cashflow.hpp>
-#include <ql/indexes/iborindex.hpp>
-#include <ql/patterns/lazyobject.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/experimental/credit/pool.hpp>
-#include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/currency.hpp>
+#include <ql/default.hpp>
+#include <ql/experimental/credit/issuer.hpp>
+#include <ql/experimental/credit/pool.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/instrument.hpp>
+#include <ql/patterns/lazyobject.hpp>
+#include <ql/termstructures/defaulttermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/time/daycounter.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -43,7 +43,7 @@ namespace QuantLib {
       \ingroup credit
     */
     class RiskyBond : public Instrument {
-    public:
+      public:
         /*! The value is contingent to survival, i.e., the knockout
             probability is considered.  To compute the npv given that
             the issuer has survived, use the riskfreeNPV().
@@ -67,131 +67,98 @@ namespace QuantLib {
             \f[
                 \sum_{i=1}^{n}Rec N(T_{i}^{mid}) P(t,T_{i}^{mid})Q(T_{i-1}<\tau\leq T_{i})
             \f]
-            where \f$Rec\f$ is the recovery rate and \f$N(T)\f$ is the time T notional. The default probability can be
-            rewritten as
-            \f[
-                Q(T_{i-1}<\tau\leq T_{i})=Q(T_{i}<\tau)-Q(T_{i-1}<\tau)=(1-Q(T_{i}\geq\tau))-(1-Q(T_{i-1}\geq\tau))=Q(T_{i-1}\geq\tau)-Q(T_{i}\geq\tau)
+            where \f$Rec\f$ is the recovery rate and \f$N(T)\f$ is the time T notional. The default
+           probability can be rewritten as \f[ Q(T_{i-1}<\tau\leq
+           T_{i})=Q(T_{i}<\tau)-Q(T_{i-1}<\tau)=(1-Q(T_{i}\geq\tau))-(1-Q(T_{i-1}\geq\tau))=Q(T_{i-1}\geq\tau)-Q(T_{i}\geq\tau)
             \f]
         */
-      RiskyBond(std::string name,
-                Currency ccy,
-                Real recoveryRate,
-                Handle<DefaultProbabilityTermStructure> defaultTS,
-                Handle<YieldTermStructure> yieldTS,
-                std::vector<Real> notionals,
-                Natural settlementDays = 0,
-                Calendar calendar = Calendar());
-      ~RiskyBond() override = default;
-      std::vector<ext::shared_ptr<CashFlow> > expectedCashflows();
-      virtual Real notional(Date date = Date::minDate()) const = 0;
-      virtual Date effectiveDate() const = 0;
-      virtual Date maturityDate() const = 0;
-      virtual std::vector<ext::shared_ptr<CashFlow> > interestFlows() const = 0;
-      virtual std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const = 0;
-      Real riskfreeNPV() const;
-      Real totalFutureFlows() const;
-      std::string name() const;
-      Currency ccy() const;
-      Natural settlementDays() const;
-      const Calendar& calendar() const;
-      const std::vector<Real>& notionals() const;
-      const std::vector<ext::shared_ptr<CashFlow>> cashflows() const;
-      Handle<YieldTermStructure> yieldTS() const;
-      Handle<DefaultProbabilityTermStructure> defaultTS() const;
-      Real recoveryRate() const;
-      //! \name Instrument interface
-      //@{
-      bool isExpired() const override;
-      void setupArguments(PricingEngine::arguments*) const override;
-      class arguments;
-      class results;
-      class engine;
-      //@}
-    protected:
-      void setupExpired() const override;
+        RiskyBond(std::string name,
+                  Currency ccy,
+                  Real recoveryRate,
+                  Handle<DefaultProbabilityTermStructure> defaultTS,
+                  Handle<YieldTermStructure> yieldTS,
+                  Natural settlementDays = 0,
+                  Calendar calendar = Calendar());
+        ~RiskyBond() override = default;
+        virtual std::vector<ext::shared_ptr<CashFlow> > cashflows() const = 0;
+        std::vector<ext::shared_ptr<CashFlow> > expectedCashflows();
+        virtual Real notional(Date date = Date::minDate()) const = 0;
+        virtual Date effectiveDate() const = 0;
+        virtual Date maturityDate() const = 0;
+        virtual std::vector<ext::shared_ptr<CashFlow> > interestFlows() const = 0;
+        virtual std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const = 0;
+        Real riskfreeNPV() const;
+        Real totalFutureFlows() const;
+        std::string name() const;
+        Currency ccy() const;
+        Handle<YieldTermStructure> yieldTS() const;
+        Handle<DefaultProbabilityTermStructure> defaultTS() const;
+        Real recoveryRate() const;
+        //! \name Instrument interface
+        //@{
+        bool isExpired() const override;
+        //@}
+      protected:
+        void setupExpired() const override;
+        void performCalculations() const override;
 
-    private:
+      private:
         std::string name_;
         Currency ccy_;
         Real recoveryRate_;
         Handle<DefaultProbabilityTermStructure> defaultTS_;
         Handle<YieldTermStructure> yieldTS_;
-    protected:
+
+      protected:
         // engines data
-        std::vector<Real> notionals_;
         Natural settlementDays_;
         Calendar calendar_;
-        std::vector<ext::shared_ptr<CashFlow> > leg_;
     };
 
-    class RiskyBond::arguments : public PricingEngine::arguments {
-      public:
-        void validate() const override;
-        const RiskyBond *bond;
-    };
+    inline std::string RiskyBond::name() const { return name_; }
 
-    class RiskyBond::results : public Instrument::results {};
+    inline Currency RiskyBond::ccy() const { return ccy_; }
 
-    class RiskyBond::engine : public GenericEngine<RiskyBond::arguments, RiskyBond::results> {};
+    inline Handle<YieldTermStructure> RiskyBond::yieldTS() const { return yieldTS_; }
 
-    inline Natural RiskyBond::settlementDays() const { return settlementDays_; }
-
-    inline const Calendar& RiskyBond::calendar() const { return calendar_; }
-
-    inline const std::vector<ext::shared_ptr<CashFlow>> RiskyBond::cashflows() const {
-        return leg_;
-    }
-
-    inline std::string RiskyBond::name() const {
-        return name_;
-    }
-
-    inline Currency RiskyBond::ccy() const {
-        return ccy_;
-    }
-
-    inline Handle<YieldTermStructure> RiskyBond::yieldTS() const {
-        return yieldTS_;
-    }
-
-    inline Handle<DefaultProbabilityTermStructure>
-    RiskyBond::defaultTS() const {
+    inline Handle<DefaultProbabilityTermStructure> RiskyBond::defaultTS() const {
         return defaultTS_;
     }
 
-    inline Real RiskyBond::recoveryRate() const {
-        return recoveryRate_;
-    }
+    inline Real RiskyBond::recoveryRate() const { return recoveryRate_; }
 
     /*! Default risky fixed bond
       \ingroup credit
     */
     class RiskyFixedBond : public RiskyBond {
-    public:
-      RiskyFixedBond(const std::string& name,
-                     const Currency& ccy,
-                     Real recoveryRate,
-                     const Handle<DefaultProbabilityTermStructure>& defaultTS,
-                     const Schedule& schedule,
-                     Real rate,
-                     DayCounter dayCounter,
-                     BusinessDayConvention paymentConvention,
-                     std::vector<Real> notionals,
-                     const Handle<YieldTermStructure>& yieldTS,
-                     Natural settlementDays = 0);
-      Real notional(Date date = Date::minDate()) const override;
-      Date effectiveDate() const override;
-      Date maturityDate() const override;
-      std::vector<ext::shared_ptr<CashFlow> > interestFlows() const override;
-      std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const override;
+      public:
+        RiskyFixedBond(const std::string& name,
+                       const Currency& ccy,
+                       Real recoveryRate,
+                       const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                       const Schedule& schedule,
+                       Real rate,
+                       DayCounter dayCounter,
+                       BusinessDayConvention paymentConvention,
+                       std::vector<Real> notionals,
+                       const Handle<YieldTermStructure>& yieldTS,
+                       Natural settlementDays = 0);
+        std::vector<ext::shared_ptr<CashFlow> > cashflows() const override;
+        Real notional(Date date = Date::minDate()) const override;
+        Date effectiveDate() const override;
+        Date maturityDate() const override;
+        std::vector<ext::shared_ptr<CashFlow> > interestFlows() const override;
+        std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const override;
 
-    private:
-      Schedule schedule_;
-      Real rate_;
-      DayCounter dayCounter_;
-      // BusinessDayConvention paymentConvention_;
-      std::vector<ext::shared_ptr<CashFlow> > interestLeg_;
-      std::vector<ext::shared_ptr<CashFlow> > redemptionLeg_;
+      private:
+        Schedule schedule_;
+        Real rate_;
+        DayCounter dayCounter_;
+        // BusinessDayConvention paymentConvention_;
+        std::vector<Real> notionals_;
+        std::vector<ext::shared_ptr<CashFlow> > leg_;
+        std::vector<ext::shared_ptr<CashFlow> > interestLeg_;
+        std::vector<ext::shared_ptr<CashFlow> > redemptionLeg_;
     };
 
 
@@ -199,35 +166,39 @@ namespace QuantLib {
       \ingroup credit
     */
     class RiskyFloatingBond : public RiskyBond {
-    public:
-      RiskyFloatingBond(const std::string& name,
-                        const Currency& ccy,
-                        Real recoveryRate,
-                        const Handle<DefaultProbabilityTermStructure>& defaultTS,
-                        const Schedule& schedule,
-                        ext::shared_ptr<IborIndex> index,
-                        Integer fixingDays,
-                        Real spread,
-                        std::vector<Real> notionals,
-                        const Handle<YieldTermStructure>& yieldTS,
-                        Natural settlementDays = 0);
-      Real notional(Date date = Date::minDate()) const override;
-      Date effectiveDate() const override;
-      Date maturityDate() const override;
-      std::vector<ext::shared_ptr<CashFlow> > interestFlows() const override;
-      std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const override;
+      public:
+        RiskyFloatingBond(const std::string& name,
+                          const Currency& ccy,
+                          Real recoveryRate,
+                          const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                          const Schedule& schedule,
+                          ext::shared_ptr<IborIndex> index,
+                          Integer fixingDays,
+                          Real spread,
+                          std::vector<Real> notionals,
+                          const Handle<YieldTermStructure>& yieldTS,
+                          Natural settlementDays = 0);
+        std::vector<ext::shared_ptr<CashFlow> > cashflows() const override;
+        Real notional(Date date = Date::minDate()) const override;
+        Date effectiveDate() const override;
+        Date maturityDate() const override;
+        std::vector<ext::shared_ptr<CashFlow> > interestFlows() const override;
+        std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const override;
 
-    private:
+      private:
         Schedule schedule_;
         ext::shared_ptr<IborIndex> index_;
         DayCounter dayCounter_;
         Integer fixingDays_;
         Real spread_;
         // BusinessDayConvention paymentConvention_;
+        std::vector<Real> notionals_;
+        std::vector<ext::shared_ptr<CashFlow> > leg_;
         std::vector<ext::shared_ptr<CashFlow> > interestLeg_;
         std::vector<ext::shared_ptr<CashFlow> > redemptionLeg_;
     };
 
 }
+
 
 #endif

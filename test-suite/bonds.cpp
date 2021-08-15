@@ -1587,11 +1587,10 @@ void BondTest::testRiskyBondWithGivenDates() {
     using namespace bonds_test;
 
     Date today(22, November, 2004);
-    Date temp = Settings::instance().evaluationDate(); 
-    Settings::instance().evaluationDate() = today;
+    Date temp = Settings::instance().evaluationDate();
 
     // Probability Structure
-    Handle<Quote> hazardRate(ext::shared_ptr<Quote>(new SimpleQuote(0.001)));
+    Handle<Quote> hazardRate(ext::shared_ptr<Quote>(new SimpleQuote(0.1)));
     Handle<DefaultProbabilityTermStructure> defaultProbability(
         ext::shared_ptr<DefaultProbabilityTermStructure>(
             new FlatHazardRate(0, TARGET(), hazardRate, Actual360())));
@@ -1608,19 +1607,28 @@ void BondTest::testRiskyBondWithGivenDates() {
     Natural settlementDays = 1;
     Real tolerance = 1.0e-6;
     std::vector<Real> notionals = {0.0167, 0.023, 0.03234, 0.034, 0.038, 0.042, 0.047, 0.053};
+    CommonVars vars;
+    std::vector<Rate> couponRates(4);
+    couponRates[0] = 0.02875;
+    couponRates[1] = 0.03;
+    couponRates[2] = 0.03125;
+    couponRates[3] = 0.0325;
     Real recoveryRate = 1.2;
     Real rate = 1.0;
-    ext::shared_ptr<RiskyBond> bond(new RiskyFixedBond(
-        name, EURCurrency(), recoveryRate, defaultProbability, sch1, rate, Actual360(),
-        BusinessDayConvention::Nearest, notionals, riskFree, settlementDays));
+    FixedRateBond bond(settlementDays, vars.faceAmount, sch1, couponRates,
+                        ActualActual(ActualActual::ISMA), ModifiedFollowing, 100.0,
+                        Date(20, November, 2004));
+
+    // Set evaluation date
+    Settings::instance().evaluationDate() = today;
 
     // Create Engine
-    ext::shared_ptr<PricingEngine> bondEngine(new RiskyBondEngine());
-    bond->setPricingEngine(bondEngine);
+    ext::shared_ptr<PricingEngine> bondEngine(new RiskyBondEngine(sch1, defaultProbability, recoveryRate, riskFree));
+    bond.setPricingEngine(bondEngine);
 
     // Calculate and validate price
-    Real expected = 0.1513;
-    Real calculated = bond->NPV();
+    Real expected = 768145.075683;
+    Real calculated = bond.NPV();
     if (std::fabs(expected - calculated) > tolerance) {
         BOOST_FAIL("Failed to calculate risky bond price:\n"
                    << std::fixed << "    calculated: " << calculated << "\n"
@@ -1628,6 +1636,7 @@ void BondTest::testRiskyBondWithGivenDates() {
                    << "    error:      " << expected - calculated);
     }
 
+    // Restore evaluation date
     Settings::instance().evaluationDate() = temp;
 }
 
