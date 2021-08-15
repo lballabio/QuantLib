@@ -125,26 +125,28 @@ namespace QuantLib {
             std::max(CashFlows::maturityDate(baseCcyLeg_), CashFlows::maturityDate(quoteCcyLeg_));
     }
 
+    const Handle<YieldTermStructure>&
+    CrossCurrencyBasisSwapRateHelper::baseCcyLegDiscountHandle() const {
+        return isFxBaseCurrencyCollateralCurrency_ ? collateralHandle_ : termStructureHandle_;
+    }
+
+    const Handle<YieldTermStructure>&
+    CrossCurrencyBasisSwapRateHelper::quoteCcyLegDiscountHandle() const {
+        return isFxBaseCurrencyCollateralCurrency_ ? termStructureHandle_ : collateralHandle_;
+    }
+
     Real CrossCurrencyBasisSwapRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
 
-        Real npvBaseCcy =
-            -npvXccyLeg(baseCcyLeg_, isFxBaseCurrencyCollateralCurrency_ ? collateralHandle_ :
-                                                                          termStructureHandle_);
-        Real npvQuoteCcy =
-            npvXccyLeg(quoteCcyLeg_, isFxBaseCurrencyCollateralCurrency_ ? termStructureHandle_ :
-                                                                           collateralHandle_);
+        Real npvBaseCcy = -npvXccyLeg(baseCcyLeg_, baseCcyLegDiscountHandle());
+        Real npvQuoteCcy = npvXccyLeg(quoteCcyLeg_, quoteCcyLegDiscountHandle());
         const Spread basisPoint = 1.0e-4;
         Real bps = 0.0;
         if (isBasisOnFxBaseCurrencyLeg_)
-            bps =
-                -bpsXccyLeg(baseCcyLeg_, isFxBaseCurrencyCollateralCurrency_ ? collateralHandle_ :
-                                                                              termStructureHandle_);
+            bps = -bpsXccyLeg(baseCcyLeg_, baseCcyLegDiscountHandle());
         else
-            bps = bpsXccyLeg(quoteCcyLeg_, isFxBaseCurrencyCollateralCurrency_ ?
-                                               termStructureHandle_ :
-                                               collateralHandle_);
+            bps = bpsXccyLeg(quoteCcyLeg_, quoteCcyLegDiscountHandle());
         return -(npvQuoteCcy + npvBaseCcy) / bps * basisPoint;
     }
 

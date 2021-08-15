@@ -57,11 +57,6 @@ namespace QuantLib {
         Real impliedQuote() const override;
         void setTermStructure(YieldTermStructure*) override;
         //@}
-        //! \name CrossCurrencyBasisSwapRateHelper inspectors
-        //@{
-        const Leg& baseCurrencyLeg() const;
-        const Leg& quoteCurrencyLeg() const;
-        //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
@@ -75,6 +70,8 @@ namespace QuantLib {
         //@}
       protected:
         void initializeDates() override;
+        const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
+        const Handle<YieldTermStructure>& quoteCcyLegDiscountHandle() const;
 
         Schedule baseCcyLegSchedule_;
         Schedule quoteCcyLegSchedule_;
@@ -89,14 +86,6 @@ namespace QuantLib {
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
-
-    inline const Leg& CrossCurrencyBasisSwapRateHelper::baseCurrencyLeg() const {
-        return baseCcyLeg_;
-    }
-
-    inline const Leg& CrossCurrencyBasisSwapRateHelper::quoteCurrencyLeg() const {
-        return quoteCcyLeg_;
-    }
 
     //! Rate helper for bootstrapping over MtM XCCY basis swap rates
     /*!

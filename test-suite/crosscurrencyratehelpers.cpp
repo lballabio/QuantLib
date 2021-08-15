@@ -132,7 +132,6 @@ namespace crosscurrencyratehelpers_test {
                 quoteCcyLegBasis);
             legs.push_back(ext::make_shared<Swap>(std::vector<Leg>(1, quoteCcyLeg),
                                                   std::vector<bool>(1, payer)));
-
             return legs;
         }
 
