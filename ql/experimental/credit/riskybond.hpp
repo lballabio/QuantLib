@@ -46,17 +46,40 @@ namespace QuantLib {
       public:
         /*! The value is contingent to survival, i.e., the knockout
             probability is considered.  To compute the npv given that
-            the issuer has survived, divide the npv by
-            \f[(1-P_{def}(T_{npv}))\f]
+            the issuer has survived, use the riskfreeNPV().
+
+            In each of the \f$n\f$ coupon periods, we can calculate the value
+            in the case of survival and default, assuming that the issuer
+            can only default in the middle of a coupon period. We denote this time
+            \f$T_{i}^{mid}=\frac{T_{i-1}+T_{i}}{2}\f$.
+
+            Given survival we receive the full cash flow (both coupons and notional).
+            The time \f$t\f$ value of these payments are given by
+            \f[
+                \sum_{i=1}^{n}CF_{i}P(t,T_{i})Q(T_{i}<\tau)
+            \f]
+            where \f$P(t,T)\f$ is the time \f$T\f$ discount bond
+            and \f$Q(T<\tau)\f$ is the time \f$T\f$ survival probability.
+            \f$n\f$ is the number of coupon periods. This takes care of the payments
+            in the case of survival.
+
+            Given default we receive only a fraction of the notional at default.
+            \f[
+                \sum_{i=1}^{n}Rec N(T_{i}^{mid}) P(t,T_{i}^{mid})Q(T_{i-1}<\tau\leq T_{i})
+            \f]
+            where \f$Rec\f$ is the recovery rate and \f$N(T)\f$ is the time T notional. The default
+           probability can be rewritten as \f[ Q(T_{i-1}<\tau\leq
+           T_{i})=Q(T_{i}<\tau)-Q(T_{i-1}<\tau)=(1-Q(T_{i}\geq\tau))-(1-Q(T_{i-1}\geq\tau))=Q(T_{i-1}\geq\tau)-Q(T_{i}\geq\tau)
+            \f]
         */
-        RiskyBond(const std::string& name,
-                  const Currency& ccy,
+        RiskyBond(std::string name,
+                  Currency ccy,
                   Real recoveryRate,
-                  const Handle<DefaultProbabilityTermStructure>& defaultTS,
-                  const Handle<YieldTermStructure>& yieldTS,
+                  Handle<DefaultProbabilityTermStructure> defaultTS,
+                  Handle<YieldTermStructure> yieldTS,
                   Natural settlementDays = 0,
-                  const Calendar& calendar = Calendar());
-        virtual ~RiskyBond() {}
+                  Calendar calendar = Calendar());
+        ~RiskyBond() override = default;
         virtual std::vector<ext::shared_ptr<CashFlow> > cashflows() const = 0;
         std::vector<ext::shared_ptr<CashFlow> > expectedCashflows();
         virtual Real notional(Date date = Date::minDate()) const = 0;
@@ -73,11 +96,11 @@ namespace QuantLib {
         Real recoveryRate() const;
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
+        bool isExpired() const override;
         //@}
       protected:
-        void setupExpired() const;
-        void performCalculations() const;
+        void setupExpired() const override;
+        void performCalculations() const override;
 
       private:
         std::string name_;
@@ -115,17 +138,17 @@ namespace QuantLib {
                        const Handle<DefaultProbabilityTermStructure>& defaultTS,
                        const Schedule& schedule,
                        Real rate,
-                       const DayCounter& dayCounter,
+                       DayCounter dayCounter,
                        BusinessDayConvention paymentConvention,
-                       const std::vector<Real>& notionals,
+                       std::vector<Real> notionals,
                        const Handle<YieldTermStructure>& yieldTS,
                        Natural settlementDays = 0);
-        std::vector<ext::shared_ptr<CashFlow> > cashflows() const;
-        Real notional(Date date = Date::minDate()) const;
-        Date effectiveDate() const;
-        Date maturityDate() const;
-        std::vector<ext::shared_ptr<CashFlow> > interestFlows() const;
-        std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const;
+        std::vector<ext::shared_ptr<CashFlow> > cashflows() const override;
+        Real notional(Date date = Date::minDate()) const override;
+        Date effectiveDate() const override;
+        Date maturityDate() const override;
+        std::vector<ext::shared_ptr<CashFlow> > interestFlows() const override;
+        std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const override;
 
       private:
         Schedule schedule_;
@@ -149,18 +172,18 @@ namespace QuantLib {
                           Real recoveryRate,
                           const Handle<DefaultProbabilityTermStructure>& defaultTS,
                           const Schedule& schedule,
-                          const ext::shared_ptr<IborIndex>& index,
+                          ext::shared_ptr<IborIndex> index,
                           Integer fixingDays,
                           Real spread,
-                          const std::vector<Real>& notionals,
+                          std::vector<Real> notionals,
                           const Handle<YieldTermStructure>& yieldTS,
                           Natural settlementDays = 0);
-        std::vector<ext::shared_ptr<CashFlow> > cashflows() const;
-        Real notional(Date date = Date::minDate()) const;
-        Date effectiveDate() const;
-        Date maturityDate() const;
-        std::vector<ext::shared_ptr<CashFlow> > interestFlows() const;
-        std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const;
+        std::vector<ext::shared_ptr<CashFlow> > cashflows() const override;
+        Real notional(Date date = Date::minDate()) const override;
+        Date effectiveDate() const override;
+        Date maturityDate() const override;
+        std::vector<ext::shared_ptr<CashFlow> > interestFlows() const override;
+        std::vector<ext::shared_ptr<CashFlow> > notionalFlows() const override;
 
       private:
         Schedule schedule_;
