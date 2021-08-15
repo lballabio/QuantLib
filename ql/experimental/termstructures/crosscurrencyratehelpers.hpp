@@ -82,7 +82,10 @@ namespace QuantLib {
 
     //! Rate helper for bootstrapping over MtM XCCY basis swap rates
     /*!
-    Resettable cross currency swap helper.
+    Helper for a cross currency swap with resettable notional.
+    This means that at each interest payment the notional on the MtM
+    leg is being reset to reflect the changes in the FX rate - reducing
+    the counterparty and FX risk of the structure.
 
     For more details see:
     N. Moreni, A. Pallavicini (2015)
