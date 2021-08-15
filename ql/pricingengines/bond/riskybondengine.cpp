@@ -29,11 +29,11 @@ namespace QuantLib {
                                      Handle<DefaultProbabilityTermStructure> defaultTS,
                                      Real recoveryRate,
                                      Handle<YieldTermStructure> yieldTS)
-    : defaultTS_(std::move(defaultTS)), 
-      yieldTS_(std::move(yieldTS)),
-      recoveryRate_(recoveryRate),
-      schedule_(schedule){
-    }
+    : schedule_(schedule),
+      defaultTS_(std::move(defaultTS)), 
+      recoveryRate_(recoveryRate), 
+      yieldTS_(std::move(yieldTS))
+      {}
 
     void RiskyBondEngine::calculate() const {
         Real NPV_ = 0;
