@@ -95,7 +95,6 @@ namespace QuantLib {
     class MtMCrossCurrencyBasisSwapRateHelper : public CrossCurrencyBasisSwapRateHelper {
       public:
         MtMCrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis, 
-                                            const Handle<Quote>& fxSpot,
                                             const Period& tenor,
                                             Natural fixingDays,
                                             Calendar calendar,
@@ -118,7 +117,6 @@ namespace QuantLib {
       protected:
         void initializeDates() override;
 
-        Handle<Quote> fxSpot_;
         bool isFxBaseCurrencyLegResettable_;
     };
 }

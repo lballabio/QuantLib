@@ -50,8 +50,8 @@ namespace QuantLib {
         }
 
         Leg buildConstNotionalLegProxy(const Schedule& schedule,
-                                       const ext::shared_ptr<IborIndex>& idx) {
-            const Real notional = 1.0;
+                                       const ext::shared_ptr<IborIndex>& idx,
+                                       Real notional = 1.0) {
             Leg leg = IborLeg(schedule, idx).withNotionals(notional);
             Date lastPaymentDate = leg.back()->date();
             leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
@@ -73,6 +73,46 @@ namespace QuantLib {
             const YieldTermStructure& discount_ref = **discountCurve;
             return CashFlows::bps(leg, discount_ref, includeSettlementDateFlows(), refDate);
         }
+
+        class MtMLegCalculator : public AcyclicVisitor, public Visitor<Coupon> {
+          public:
+            explicit MtMLegCalculator(const YieldTermStructure& collateralCurve,
+                                      const YieldTermStructure& foreignCurve,
+                                      bool isFxBaseCurrencyLegResettable)
+            : collateralCurve_(collateralCurve), foreignCurve_(foreignCurve),
+              isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable), bps_(0.0), npv_(0.0) {}
+            void visit(Coupon& c) override {
+                Date start = c.accrualStartDate();
+                Date end = c.accrualEndDate();
+                Time accrual = c.accrualPeriod();
+
+                Real npv = adjustedNotional(start) *
+                           (-discount(start) + discount(end) * (1.0 + c.rate() * accrual));
+                npv_ += npv;
+
+                Real bps = adjustedNotional(start) * discount(end) * accrual;
+                bps_ += bps;
+            }
+            Real bps() const { return bps_; }
+            Real NPV() const { return npv_; }
+
+          private:
+            Real discount(const Date& d) const {
+                if (isFxBaseCurrencyLegResettable_)
+                    return foreignCurve_.discount(d);
+                return collateralCurve_.discount(d);
+            }
+            Real adjustedNotional(const Date& d) const {
+                if (isFxBaseCurrencyLegResettable_)
+                    return foreignCurve_.discount(d) / collateralCurve_.discount(d);
+                return collateralCurve_.discount(d) / foreignCurve_.discount(d);
+            }
+
+            const YieldTermStructure& collateralCurve_;
+            const YieldTermStructure& foreignCurve_;
+            bool isFxBaseCurrencyLegResettable_;
+            Real bps_, npv_;
+        };
     }
 
     CrossCurrencyBasisSwapRateHelper::CrossCurrencyBasisSwapRateHelper(
