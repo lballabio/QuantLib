@@ -76,11 +76,12 @@ namespace QuantLib {
 
         class MtMLegCalculator : public AcyclicVisitor, public Visitor<Coupon> {
           public:
-            explicit MtMLegCalculator(const YieldTermStructure& collateralCurve,
-                                      const YieldTermStructure& foreignCurve,
+            explicit MtMLegCalculator(const YieldTermStructure& quoteCcyCurve,
+                                      const YieldTermStructure& baseCcyCurve,
                                       bool isFxBaseCurrencyLegResettable)
-            : collateralCurve_(collateralCurve), foreignCurve_(foreignCurve),
-              isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable), bps_(0.0), npv_(0.0) {}
+            : quoteCcyCurve_(quoteCcyCurve), baseCcyCurve_(baseCcyCurve),
+              isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
+              bps_(0.0), npv_(0.0) {}
             void visit(Coupon& c) override {
                 Date start = c.accrualStartDate();
                 Date end = c.accrualEndDate();
@@ -99,17 +100,17 @@ namespace QuantLib {
           private:
             Real discount(const Date& d) const {
                 if (isFxBaseCurrencyLegResettable_)
-                    return foreignCurve_.discount(d);
-                return collateralCurve_.discount(d);
+                    return baseCcyCurve_.discount(d);
+                return quoteCcyCurve_.discount(d);
             }
             Real adjustedNotional(const Date& d) const {
                 if (isFxBaseCurrencyLegResettable_)
-                    return foreignCurve_.discount(d) / collateralCurve_.discount(d);
-                return collateralCurve_.discount(d) / foreignCurve_.discount(d);
+                    return baseCcyCurve_.discount(d) / quoteCcyCurve_.discount(d);
+                return quoteCcyCurve_.discount(d) / baseCcyCurve_.discount(d);
             }
 
-            const YieldTermStructure& collateralCurve_;
-            const YieldTermStructure& foreignCurve_;
+            const YieldTermStructure& quoteCcyCurve_;
+            const YieldTermStructure& baseCcyCurve_;
             bool isFxBaseCurrencyLegResettable_;
             Real bps_, npv_;
         };
