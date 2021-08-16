@@ -21,7 +21,6 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/experimental/termstructures/crosscurrencyratehelpers.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
 
@@ -36,6 +35,9 @@ namespace QuantLib {
                              const Calendar& calendar,
                              BusinessDayConvention convention,
                              bool endOfMonth) {
+            QL_REQUIRE(tenor >= frequency,
+                       "XCCY instrument tenor should not be smaller than coupon frequency.");
+
             Date referenceDate = calendar.adjust(evaluationDate);
             Date earliestDate = calendar.advance(referenceDate, fixingDays * Days, convention);
             Date maturity = earliestDate + tenor;
@@ -49,71 +51,136 @@ namespace QuantLib {
                 .backwards();
         }
 
-        Leg buildConstNotionalLegProxy(const Schedule& schedule,
-                                       const ext::shared_ptr<IborIndex>& idx,
-                                       Real notional = 1.0) {
-            Leg leg = IborLeg(schedule, idx).withNotionals(notional);
-            Date lastPaymentDate = leg.back()->date();
-            leg.push_back(ext::make_shared<SimpleCashFlow>(notional, lastPaymentDate));
-            return leg;
+        Leg buildIborLeg(const Date& evaluationDate,
+                         const Period& tenor,
+                         Natural fixingDays,
+                         const Calendar& calendar,
+                         BusinessDayConvention convention,
+                         bool endOfMonth,
+                         const ext::shared_ptr<IborIndex>& idx) {
+            Schedule sch = legSchedule(evaluationDate, tenor, idx->tenor(), fixingDays, calendar,
+                                       convention, endOfMonth);
+            return IborLeg(sch, idx).withNotionals(1.0);
         }
 
         bool includeSettlementDateFlows() {
             return Settings::instance().includeReferenceDateEvents();
         }
 
-        Real npvXccyLeg(const Leg& leg, const Handle<YieldTermStructure>& discountCurve) {
-            Date refDate = discountCurve->referenceDate();
-            const YieldTermStructure& discount_ref = **discountCurve;
-            return CashFlows::npv(leg, discount_ref, includeSettlementDateFlows(), refDate);
+        Real npvConstNotionalLeg(const Leg& iborLeg,
+                                 const Handle<YieldTermStructure>& discountCurveHandle) {
+            Date refDate = discountCurveHandle->referenceDate();
+            const YieldTermStructure& discountRef = **discountCurveHandle;
+            return CashFlows::npv(iborLeg, discountRef, includeSettlementDateFlows(), refDate) +
+                   discountRef.discount(iborLeg.back()->date());
         }
 
-        Real bpsXccyLeg(const Leg& leg, const Handle<YieldTermStructure>& discountCurve) {
-            Date refDate = discountCurve->referenceDate();
-            const YieldTermStructure& discount_ref = **discountCurve;
-            return CashFlows::bps(leg, discount_ref, includeSettlementDateFlows(), refDate);
+        Real bpsConstNotionalLeg(const Leg& iborLeg,
+                                 const Handle<YieldTermStructure>& discountCurveHandle) {
+            const Spread basisPoint = 1.0e-4;
+            Date refDate = discountCurveHandle->referenceDate();
+            const YieldTermStructure& discountRef = **discountCurveHandle;
+            return CashFlows::bps(iborLeg, discountRef, includeSettlementDateFlows(), refDate) /
+                   basisPoint;
         }
 
-        class MtMLegCalculator : public AcyclicVisitor, public Visitor<Coupon> {
+        class MtMLegHelper {
           public:
-            explicit MtMLegCalculator(const YieldTermStructure& quoteCcyCurve,
-                                      const YieldTermStructure& baseCcyCurve,
-                                      bool isFxBaseCurrencyLegResettable)
-            : quoteCcyCurve_(quoteCcyCurve), baseCcyCurve_(baseCcyCurve),
-              isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable),
-              bps_(0.0), npv_(0.0) {}
-            void visit(Coupon& c) override {
-                Date start = c.accrualStartDate();
-                Date end = c.accrualEndDate();
-                Time accrual = c.accrualPeriod();
-
-                Real npv = adjustedNotional(start) *
-                           (-discount(start) + discount(end) * (1.0 + c.rate() * accrual));
-                npv_ += npv;
-
-                Real bps = adjustedNotional(start) * discount(end) * accrual;
-                bps_ += bps;
-            }
-            Real bps() const { return bps_; }
-            Real NPV() const { return npv_; }
-
-          private:
+            explicit MtMLegHelper(const YieldTermStructure& baseCcyCurve,
+                                  const YieldTermStructure& quoteCcyCurve,
+                                  bool isForBaseCcyLeg)
+            : baseCcyCurve_(baseCcyCurve), quoteCcyCurve_(quoteCcyCurve),
+              isForBaseCcyLeg_(isForBaseCcyLeg) {}
             Real discount(const Date& d) const {
-                if (isFxBaseCurrencyLegResettable_)
+                if (isForBaseCcyLeg_)
                     return baseCcyCurve_.discount(d);
                 return quoteCcyCurve_.discount(d);
             }
             Real adjustedNotional(const Date& d) const {
-                if (isFxBaseCurrencyLegResettable_)
+                if (isForBaseCcyLeg_)
                     return baseCcyCurve_.discount(d) / quoteCcyCurve_.discount(d);
                 return quoteCcyCurve_.discount(d) / baseCcyCurve_.discount(d);
             }
 
-            const YieldTermStructure& quoteCcyCurve_;
+          private:
             const YieldTermStructure& baseCcyCurve_;
-            bool isFxBaseCurrencyLegResettable_;
-            Real bps_, npv_;
+            const YieldTermStructure& quoteCcyCurve_;
+            bool isForBaseCcyLeg_;
         };
+
+        class MtMLegNPVCalculator : public AcyclicVisitor, public Visitor<Coupon> {
+          public:
+            explicit MtMLegNPVCalculator(const YieldTermStructure& baseCcyCurve,
+                                         const YieldTermStructure& quoteCcyCurve,
+                                         bool isForBaseCcyLeg)
+            : helper_(baseCcyCurve, quoteCcyCurve, isForBaseCcyLeg), npv_(0.0) {}
+            void visit(Coupon& c) override {
+                Date start = c.accrualStartDate();
+                Date end = c.accrualEndDate();
+                Time accrual = c.accrualPeriod();
+                Real npv =
+                    helper_.adjustedNotional(start) *
+                    (-helper_.discount(start) + helper_.discount(end) * (1.0 + c.rate() * accrual));
+                npv_ += npv;
+            }
+            Real NPV() const { return npv_; }
+
+          private:
+            MtMLegHelper helper_;
+            Real npv_;
+        };
+
+        class MtMLegBPSCalculator : public AcyclicVisitor, public Visitor<Coupon> {
+          public:
+            explicit MtMLegBPSCalculator(const YieldTermStructure& baseCcyCurve,
+                                         const YieldTermStructure& quoteCcyCurve,
+                                         bool isForBaseCcyLeg)
+            : helper_(baseCcyCurve, quoteCcyCurve, isForBaseCcyLeg), bps_(0.0) {}
+            void visit(Coupon& c) override {
+                Date start = c.accrualStartDate();
+                Date end = c.accrualEndDate();
+                Time accrual = c.accrualPeriod();
+                Real bps = helper_.adjustedNotional(start) * helper_.discount(end) * accrual;
+                bps_ += bps;
+            }
+            Real BPS() const { return bps_; }
+
+          private:
+            MtMLegHelper helper_;
+            Real bps_;
+        };
+
+        Real npvResettingLeg(const Leg& iborLeg,
+                             const Handle<YieldTermStructure>& baseCcyCurveHandle,
+                             const Handle<YieldTermStructure>& quoteCcyCurveHandle,
+                             bool isFxBaseCurrencyCollateralCurrency) {
+            const YieldTermStructure& baseCcyCurveRef = **baseCcyCurveHandle;
+            const YieldTermStructure& quoteCcyCurveRef = **quoteCcyCurveHandle;
+
+            MtMLegNPVCalculator calc(baseCcyCurveRef, quoteCcyCurveRef,
+                                     isFxBaseCurrencyCollateralCurrency);
+            for (const auto& i : iborLeg) {
+                CashFlow& cf = *i;
+                cf.accept(calc);
+            }
+            return calc.NPV();
+        }
+
+        Real bpsResettingLeg(const Leg& iborLeg,
+                             const Handle<YieldTermStructure>& baseCcyCurveHandle,
+                             const Handle<YieldTermStructure>& quoteCcyCurveHandle,
+                             bool isFxBaseCurrencyCollateralCurrency) {
+            const YieldTermStructure& baseCcyCurveRef = **baseCcyCurveHandle;
+            const YieldTermStructure& quoteCcyCurveRef = **quoteCcyCurveHandle;
+
+            MtMLegBPSCalculator calc(baseCcyCurveRef, quoteCcyCurveRef,
+                                     isFxBaseCurrencyCollateralCurrency);
+            for (const auto& i : iborLeg) {
+                CashFlow& cf = *i;
+                cf.accept(calc);
+            }
+            return calc.BPS();
+        }
     }
 
     CrossCurrencyBasisSwapRateHelper::CrossCurrencyBasisSwapRateHelper(
@@ -128,23 +195,9 @@ namespace QuantLib {
         Handle<YieldTermStructure> collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg)
-    : RelativeDateRateHelper(basis),
-      baseCcyLegSchedule_(legSchedule(evaluationDate_,
-                                      tenor,
-                                      baseCurrencyIndex->tenor(),
-                                      fixingDays,
-                                      calendar,
-                                      convention,
-                                      endOfMonth)),
-      quoteCcyLegSchedule_(legSchedule(evaluationDate_,
-                                       tenor,
-                                       quoteCurrencyIndex->tenor(),
-                                       fixingDays,
-                                       calendar,
-                                       convention,
-                                       endOfMonth)),
-      baseCcyIdx_(std::move(baseCurrencyIndex)), quoteCcyIdx_(std::move(quoteCurrencyIndex)),
-      collateralHandle_(std::move(collateralCurve)),
+    : RelativeDateRateHelper(basis), tenor_(tenor), fixingDays_(fixingDays), calendar_(calendar),
+      convention_(convention), endOfMonth_(endOfMonth), baseCcyIdx_(std::move(baseCurrencyIndex)),
+      quoteCcyIdx_(std::move(quoteCurrencyIndex)), collateralHandle_(std::move(collateralCurve)),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
       isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg) {
         registerWith(baseCcyIdx_);
@@ -155,36 +208,39 @@ namespace QuantLib {
     }
 
     void CrossCurrencyBasisSwapRateHelper::initializeDates() {
-        baseCcyLegProxy_ = buildConstNotionalLegProxy(baseCcyLegSchedule_, baseCcyIdx_);
-        quoteCcyLegProxy_ = buildConstNotionalLegProxy(quoteCcyLegSchedule_, quoteCcyIdx_);
-        earliestDate_ = std::min(CashFlows::startDate(baseCcyLegProxy_),
-                                 CashFlows::startDate(quoteCcyLegProxy_));
-        latestDate_ = std::max(CashFlows::maturityDate(baseCcyLegProxy_),
-                               CashFlows::maturityDate(quoteCcyLegProxy_));
+        baseCcyIborLeg_ = buildIborLeg(evaluationDate_, tenor_, fixingDays_, calendar_, convention_,
+                                       endOfMonth_, baseCcyIdx_);
+        quoteCcyIborLeg_ = buildIborLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
+                                        convention_, endOfMonth_, quoteCcyIdx_);
+        earliestDate_ =
+            std::min(CashFlows::startDate(baseCcyIborLeg_), CashFlows::startDate(quoteCcyIborLeg_));
+        latestDate_ = std::max(CashFlows::maturityDate(baseCcyIborLeg_),
+                               CashFlows::maturityDate(quoteCcyIborLeg_));
     }
 
     const Handle<YieldTermStructure>&
     CrossCurrencyBasisSwapRateHelper::baseCcyLegDiscountHandle() const {
+        QL_REQUIRE(!termStructureHandle_.empty(), "term structure not set");
+        QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
         return isFxBaseCurrencyCollateralCurrency_ ? collateralHandle_ : termStructureHandle_;
     }
 
     const Handle<YieldTermStructure>&
     CrossCurrencyBasisSwapRateHelper::quoteCcyLegDiscountHandle() const {
+        QL_REQUIRE(!termStructureHandle_.empty(), "term structure not set");
+        QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
         return isFxBaseCurrencyCollateralCurrency_ ? termStructureHandle_ : collateralHandle_;
     }
 
     Real CrossCurrencyBasisSwapRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
-        QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
-
-        Real npvBaseCcy = -npvXccyLeg(baseCcyLegProxy_, baseCcyLegDiscountHandle());
-        Real npvQuoteCcy = npvXccyLeg(quoteCcyLegProxy_, quoteCcyLegDiscountHandle());
+        Real npvBaseCcy = -npvConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
+        Real npvQuoteCcy = npvConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle());
         const Spread basisPoint = 1.0e-4;
         Real bps = 0.0;
         if (isBasisOnFxBaseCurrencyLeg_)
-            bps = -bpsXccyLeg(baseCcyLegProxy_, baseCcyLegDiscountHandle());
+            bps = -bpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
         else
-            bps = bpsXccyLeg(quoteCcyLegProxy_, quoteCcyLegDiscountHandle());
+            bps = bpsConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle());
         return -(npvQuoteCcy + npvBaseCcy) / bps * basisPoint;
     }
 
@@ -201,6 +257,63 @@ namespace QuantLib {
 
     void CrossCurrencyBasisSwapRateHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<CrossCurrencyBasisSwapRateHelper>*>(&v);
+        if (v1 != nullptr)
+            v1->visit(*this);
+        else
+            RateHelper::accept(v);
+    }
+
+    MtMCrossCurrencyBasisSwapRateHelper::MtMCrossCurrencyBasisSwapRateHelper(
+        const Handle<Quote>& basis,
+        const Period& tenor,
+        Natural fixingDays,
+        Calendar calendar,
+        BusinessDayConvention convention,
+        bool endOfMonth,
+        ext::shared_ptr<IborIndex> baseCurrencyIndex,
+        ext::shared_ptr<IborIndex> quoteCurrencyIndex,
+        Handle<YieldTermStructure> collateralCurve,
+        bool isFxBaseCurrencyCollateralCurrency,
+        bool isBasisOnFxBaseCurrencyLeg,
+        bool isFxBaseCurrencyLegResettable)
+    : CrossCurrencyBasisSwapRateHelper(basis,
+                                       tenor,
+                                       fixingDays,
+                                       calendar,
+                                       convention,
+                                       endOfMonth,
+                                       baseCurrencyIndex,
+                                       quoteCurrencyIndex,
+                                       collateralCurve,
+                                       isFxBaseCurrencyCollateralCurrency,
+                                       isBasisOnFxBaseCurrencyLeg),
+      isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable) {}
+
+    Real MtMCrossCurrencyBasisSwapRateHelper::impliedQuote() const {
+        Real npvBaseCcy = isFxBaseCurrencyLegResettable_ ?
+                              -npvResettingLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle(),
+                                               quoteCcyLegDiscountHandle(), true) :
+                              -npvConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
+        Real npvQuoteCcy = isFxBaseCurrencyLegResettable_ ?
+                               -npvConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle()) :
+                               -npvResettingLeg(quoteCcyIborLeg_, baseCcyLegDiscountHandle(),
+                                                quoteCcyLegDiscountHandle(), false);
+        Real bps = 0.0;
+        if (isBasisOnFxBaseCurrencyLeg_)
+            bps = isFxBaseCurrencyLegResettable_ ?
+                      -bpsResettingLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle(),
+                                       quoteCcyLegDiscountHandle(), true) :
+                      -bpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
+        else
+            bps = isFxBaseCurrencyLegResettable_ ?
+                      -bpsConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle()) :
+                      -bpsResettingLeg(quoteCcyIborLeg_, baseCcyLegDiscountHandle(),
+                                       quoteCcyLegDiscountHandle(), false);
+        return -(npvQuoteCcy + npvBaseCcy) / bps;
+    }
+
+    void MtMCrossCurrencyBasisSwapRateHelper::accept(AcyclicVisitor& v) {
+        auto* v1 = dynamic_cast<Visitor<MtMCrossCurrencyBasisSwapRateHelper>*>(&v);
         if (v1 != nullptr)
             v1->visit(*this);
         else

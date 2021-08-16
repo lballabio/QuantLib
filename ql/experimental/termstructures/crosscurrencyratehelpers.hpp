@@ -66,16 +66,19 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
         const Handle<YieldTermStructure>& quoteCcyLegDiscountHandle() const;
 
-        Schedule baseCcyLegSchedule_;
-        Schedule quoteCcyLegSchedule_;
+        Period tenor_;
+        Natural fixingDays_; 
+        Calendar calendar_;
+        BusinessDayConvention convention_;
+        bool endOfMonth_;
         ext::shared_ptr<IborIndex> baseCcyIdx_;
         ext::shared_ptr<IborIndex> quoteCcyIdx_;
         Handle<YieldTermStructure> collateralHandle_;
         bool isFxBaseCurrencyCollateralCurrency_;
         bool isBasisOnFxBaseCurrencyLeg_;
 
-        Leg baseCcyLegProxy_;
-        Leg quoteCcyLegProxy_;
+        Leg baseCcyIborLeg_;
+        Leg quoteCcyIborLeg_;
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
@@ -115,8 +118,6 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
       protected:
-        void initializeDates() override;
-
         bool isFxBaseCurrencyLegResettable_;
     };
 }
