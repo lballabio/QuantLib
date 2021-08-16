@@ -235,13 +235,12 @@ namespace QuantLib {
     Real CrossCurrencyBasisSwapRateHelper::impliedQuote() const {
         Real npvBaseCcy = -npvConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
         Real npvQuoteCcy = npvConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle());
-        const Spread basisPoint = 1.0e-4;
         Real bps = 0.0;
         if (isBasisOnFxBaseCurrencyLeg_)
             bps = -bpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
         else
             bps = bpsConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle());
-        return -(npvQuoteCcy + npvBaseCcy) / bps * basisPoint;
+        return -(npvQuoteCcy + npvBaseCcy) / bps;
     }
 
     void CrossCurrencyBasisSwapRateHelper::setTermStructure(YieldTermStructure* t) {
