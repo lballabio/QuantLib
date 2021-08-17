@@ -72,7 +72,7 @@ namespace QuantLib {
             Date refDate = discountCurveHandle->referenceDate();
             const YieldTermStructure& discountRef = **discountCurveHandle;
             return CashFlows::npv(iborLeg, discountRef, includeSettlementDateFlows(), refDate) +
-                   discountRef.discount(iborLeg.back()->date());
+                   discountRef.discount(iborLeg.back()->date()) - 1.0;
         }
 
         Real bpsConstNotionalLeg(const Leg& iborLeg,
@@ -86,34 +86,26 @@ namespace QuantLib {
 
         class ResettingLegHelper {
           public:
-            explicit ResettingLegHelper(const YieldTermStructure& baseCcyCurve,
-                                        const YieldTermStructure& quoteCcyCurve,
-                                        bool isForBaseCcyLeg)
-            : baseCcyCurve_(baseCcyCurve), quoteCcyCurve_(quoteCcyCurve),
-              isForBaseCcyLeg_(isForBaseCcyLeg) {}
+            explicit ResettingLegHelper(const YieldTermStructure& discountCurve,
+                                        const YieldTermStructure& foreignCurve)
+            : discountCurve_(discountCurve), foreignCurve_(foreignCurve) {}
             Real discount(const Date& d) const {
-                if (isForBaseCcyLeg_)
-                    return baseCcyCurve_.discount(d);
-                return quoteCcyCurve_.discount(d);
+                return discountCurve_.discount(d);
             }
             Real adjustedNotional(const Date& d) const {
-                if (isForBaseCcyLeg_)
-                    return quoteCcyCurve_.discount(d) / baseCcyCurve_.discount(d);
-                return baseCcyCurve_.discount(d) / quoteCcyCurve_.discount(d);
+                return foreignCurve_.discount(d) / discountCurve_.discount(d);
             }
 
           private:
-            const YieldTermStructure& baseCcyCurve_;
-            const YieldTermStructure& quoteCcyCurve_;
-            bool isForBaseCcyLeg_;
+            const YieldTermStructure& discountCurve_;
+            const YieldTermStructure& foreignCurve_;
         };
 
         class ResettingLegNPVCalculator : public AcyclicVisitor, public Visitor<Coupon> {
           public:
-            explicit ResettingLegNPVCalculator(const YieldTermStructure& baseCcyCurve,
-                                               const YieldTermStructure& quoteCcyCurve,
-                                               bool isForBaseCcyLeg)
-            : helper_(baseCcyCurve, quoteCcyCurve, isForBaseCcyLeg), npv_(0.0) {}
+            explicit ResettingLegNPVCalculator(const YieldTermStructure& discountCurve,
+                                               const YieldTermStructure& foreignCurve)
+            : helper_(discountCurve, foreignCurve), npv_(0.0) {}
             void visit(Coupon& c) override {
                 Date start = c.accrualStartDate();
                 Date end = c.accrualEndDate();
@@ -132,10 +124,9 @@ namespace QuantLib {
 
         class ResettingLegBPSCalculator : public AcyclicVisitor, public Visitor<Coupon> {
           public:
-            explicit ResettingLegBPSCalculator(const YieldTermStructure& baseCcyCurve,
-                                               const YieldTermStructure& quoteCcyCurve,
-                                               bool isForBaseCcyLeg)
-            : helper_(baseCcyCurve, quoteCcyCurve, isForBaseCcyLeg), bps_(0.0) {}
+            explicit ResettingLegBPSCalculator(const YieldTermStructure& discountCurve,
+                                               const YieldTermStructure& foreignCurve)
+            : helper_(discountCurve, foreignCurve), bps_(0.0) {}
             void visit(Coupon& c) override {
                 Date start = c.accrualStartDate();
                 Date end = c.accrualEndDate();
@@ -151,14 +142,12 @@ namespace QuantLib {
         };
 
         Real npvResettingLeg(const Leg& iborLeg,
-                             const Handle<YieldTermStructure>& baseCcyCurveHandle,
-                             const Handle<YieldTermStructure>& quoteCcyCurveHandle,
-                             bool isFxBaseCurrencyLegResettable) {
-            const YieldTermStructure& baseCcyCurveRef = **baseCcyCurveHandle;
-            const YieldTermStructure& quoteCcyCurveRef = **quoteCcyCurveHandle;
+                             const Handle<YieldTermStructure>& discountCurveHandle,
+                             const Handle<YieldTermStructure>& foreignCurveHandle) {
+            const YieldTermStructure& discountCurveRef = **discountCurveHandle;
+            const YieldTermStructure& foreignCurveRef = **foreignCurveHandle;
 
-            ResettingLegNPVCalculator calc(baseCcyCurveRef, quoteCcyCurveRef,
-                                           isFxBaseCurrencyLegResettable);
+            ResettingLegNPVCalculator calc(discountCurveRef, foreignCurveRef);
             for (const auto& i : iborLeg) {
                 CashFlow& cf = *i;
                 cf.accept(calc);
@@ -167,14 +156,12 @@ namespace QuantLib {
         }
 
         Real bpsResettingLeg(const Leg& iborLeg,
-                             const Handle<YieldTermStructure>& baseCcyCurveHandle,
-                             const Handle<YieldTermStructure>& quoteCcyCurveHandle,
-                             bool isFxBaseCurrencyLegResettable) {
-            const YieldTermStructure& baseCcyCurveRef = **baseCcyCurveHandle;
-            const YieldTermStructure& quoteCcyCurveRef = **quoteCcyCurveHandle;
+                             const Handle<YieldTermStructure>& discountCurveHandle,
+                             const Handle<YieldTermStructure>& foreignCurveHandle) {
+            const YieldTermStructure& discountCurveRef = **discountCurveHandle;
+            const YieldTermStructure& foreignCurveRef = **foreignCurveHandle;
 
-            ResettingLegBPSCalculator calc(baseCcyCurveRef, quoteCcyCurveRef,
-                                           isFxBaseCurrencyLegResettable);
+            ResettingLegBPSCalculator calc(discountCurveRef, foreignCurveRef);
             for (const auto& i : iborLeg) {
                 CashFlow& cf = *i;
                 cf.accept(calc);
@@ -291,23 +278,23 @@ namespace QuantLib {
     Real MtMCrossCurrencyBasisSwapRateHelper::impliedQuote() const {
         Real npvBaseCcy = isFxBaseCurrencyLegResettable_ ?
                               -npvResettingLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle(),
-                                               quoteCcyLegDiscountHandle(), true) :
+                                               quoteCcyLegDiscountHandle()) :
                               -npvConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
         Real npvQuoteCcy = isFxBaseCurrencyLegResettable_ ?
                                npvConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle()) :
-                               npvResettingLeg(quoteCcyIborLeg_, baseCcyLegDiscountHandle(),
-                                               quoteCcyLegDiscountHandle(), false);
+                               npvResettingLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle(),
+                                               baseCcyLegDiscountHandle());
         Real bps = 0.0;
         if (isBasisOnFxBaseCurrencyLeg_)
             bps = isFxBaseCurrencyLegResettable_ ?
                       -bpsResettingLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle(),
-                                       quoteCcyLegDiscountHandle(), true) :
+                                       quoteCcyLegDiscountHandle()) :
                       -bpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
         else
             bps = isFxBaseCurrencyLegResettable_ ?
                       bpsConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle()) :
-                      bpsResettingLeg(quoteCcyIborLeg_, baseCcyLegDiscountHandle(),
-                                      quoteCcyLegDiscountHandle(), false);
+                      bpsResettingLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle(),
+                                      baseCcyLegDiscountHandle());
         return -(npvQuoteCcy + npvBaseCcy) / bps;
     }
 
