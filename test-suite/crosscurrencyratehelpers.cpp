@@ -111,7 +111,7 @@ namespace crosscurrencyratehelpers_test {
         }
 
         std::vector<ext::shared_ptr<RateHelper> >
-        buildResettableXccyRateHelpers(const std::vector<XccyTestDatum>& xccyData,
+        buildResettingXccyRateHelpers(const std::vector<XccyTestDatum>& xccyData,
                                        const Handle<YieldTermStructure>& collateralHandle,
                                        bool isFxBaseCurrencyCollateralCurrency,
                                        bool isBasisOnFxBaseCurrencyLeg,
@@ -273,10 +273,9 @@ void testConstantNotionalCrossCurrencySwapsNPV(bool isFxBaseCurrencyCollateralCu
     }
 }
 
-
 void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
-                                      bool isBasisOnFxBaseCurrencyLeg,
-                                      bool isFxBaseCurrencyLegResettable) {
+                                     bool isBasisOnFxBaseCurrencyLeg,
+                                     bool isFxBaseCurrencyLegResettable) {
 
     using namespace crosscurrencyratehelpers_test;
 
@@ -285,29 +284,44 @@ void testResettingCrossCurrencySwaps(bool isFxBaseCurrencyCollateralCurrency,
     Handle<YieldTermStructure> collateralHandle =
         isFxBaseCurrencyCollateralCurrency ? vars.baseCcyIdxHandle : vars.quoteCcyIdxHandle;
 
-    std::vector<ext::shared_ptr<RateHelper> > instruments = vars.buildResettableXccyRateHelpers(
-        vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
-        isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable);
-    ext::shared_ptr<YieldTermStructure> foreignCcyCurve(
-        new PiecewiseYieldCurve<Discount, LogLinear>(vars.settlement, instruments, vars.dayCount));
-    foreignCcyCurve->enableExtrapolation();
+    std::vector<ext::shared_ptr<RateHelper> > resettingInstruments =
+        vars.buildResettingXccyRateHelpers(
+            vars.basisData, collateralHandle, isFxBaseCurrencyCollateralCurrency,
+            isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable);
+    
+    std::vector<ext::shared_ptr<RateHelper> > constNotionalInstruments =
+        vars.buildConstantNotionalXccyRateHelpers(vars.basisData, collateralHandle,
+                                                  isFxBaseCurrencyCollateralCurrency,
+                                                  isBasisOnFxBaseCurrencyLeg);
 
-    Real tolerance = 1.0e-9;
+    ext::shared_ptr<YieldTermStructure> resettingCurve(
+        new PiecewiseYieldCurve<Discount, LogLinear>(vars.settlement, resettingInstruments, vars.dayCount));
+    resettingCurve->enableExtrapolation();
 
-    for (Size i = 0; i < vars.basisData.size(); ++i) {
+    ext::shared_ptr<YieldTermStructure> constNotionalCurve(
+        new PiecewiseYieldCurve<Discount, LogLinear>(vars.settlement, constNotionalInstruments,
+                                                     vars.dayCount));
+    constNotionalCurve->enableExtrapolation();
 
-        XccyTestDatum quote = vars.basisData[i];
-        Spread basis = quote.basis;
-        Period tenor(quote.n, quote.units);
-        instruments[i]->setTermStructure(foreignCcyCurve.get());
-        Spread impliedBasis = instruments[i]->impliedQuote() * 10000.0;
+    Real tolerance = 1.0e-4 * 5;
+    Size numberOfInstruments = vars.basisData.size();
 
-        if (std::fabs(basis - impliedBasis) > tolerance)
-            BOOST_ERROR("unable to reproduce the cross currency basis\n"
-                        << std::setprecision(5) << "    calculated basis:    " << impliedBasis
-                        << "\n"
-                        << "    expected:    " << basis << "\n"
-                        << "    tenor:    " << tenor << "\n");
+    for (Size i = 0; i < numberOfInstruments; ++i) {
+
+        Date maturity = resettingInstruments[i]->maturityDate();
+        Rate resettingZero = resettingCurve->zeroRate(maturity, vars.dayCount, Continuous);
+        Rate constNotionalZero = constNotionalCurve->zeroRate(maturity, vars.dayCount, Continuous);
+
+        // The difference between resetting and constant notional curves
+        // is not expected to be substantial. With the current setup it should
+        // amount to only a few basis points - hence the tolerance level was
+        // set at 5 bps.
+        if (std::fabs(resettingZero - constNotionalZero) > tolerance)
+            BOOST_ERROR("too large difference between resetting and constant notional curve \n"
+                        << std::setprecision(5)
+                        << "    zero from resetting curve:    " << resettingZero << "\n"
+                        << "    zero from const notional curve:    " << constNotionalZero << "\n"
+                        << "    maturity:    " << maturity << "\n");
     }
 }
 
