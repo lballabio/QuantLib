@@ -27,7 +27,8 @@
 #include <ql/termstructures/yield/ratehelpers.hpp>
 
 namespace QuantLib {
-    //! Rate helpers for bootstrapping over XCCY basis swap rates
+    //! Rate helper for bootstrapping over constant notional
+    //! cross currency basis swaps
     /*!
     Constant notional cross currency swap helper.
     Unlike marked-to-market cross currency swaps, both notionals
@@ -95,7 +96,7 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
-    //! Rate helper for bootstrapping over MtM XCCY basis swap rates
+    //! Rate helper for bootstrapping over MtM cross currency basis swaps
     /*!
     Helper for a cross currency swap with resetting notional.
     This means that at each interest payment the notional on the MtM
