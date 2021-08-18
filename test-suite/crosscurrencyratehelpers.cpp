@@ -97,11 +97,11 @@ namespace crosscurrencyratehelpers_test {
         }
 
         ext::shared_ptr<RateHelper>
-        resettableXccyRateHelper(const XccyTestDatum& q,
-                                 const Handle<YieldTermStructure>& collateralHandle,
-                                 bool isFxBaseCurrencyCollateralCurrency,
-                                 bool isBasisOnFxBaseCurrencyLeg,
-                                 bool isFxBaseCurrencyLegResettable) const {
+        resettingXccyRateHelper(const XccyTestDatum& q,
+                                const Handle<YieldTermStructure>& collateralHandle,
+                                bool isFxBaseCurrencyCollateralCurrency,
+                                bool isBasisOnFxBaseCurrencyLeg,
+                                bool isFxBaseCurrencyLegResettable) const {
             Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
             Period tenor(q.n, q.units);
             return ext::shared_ptr<RateHelper>(new MtMCrossCurrencyBasisSwapRateHelper(
@@ -119,7 +119,7 @@ namespace crosscurrencyratehelpers_test {
             std::vector<ext::shared_ptr<RateHelper> > instruments;
             instruments.reserve(xccyData.size());
             for (const auto& i : xccyData) {
-                instruments.push_back(resettableXccyRateHelper(
+                instruments.push_back(resettingXccyRateHelper(
                     i, collateralHandle, isFxBaseCurrencyCollateralCurrency,
                     isBasisOnFxBaseCurrencyLeg, isFxBaseCurrencyLegResettable));
             }
