@@ -37,6 +37,8 @@ class CrossCurrencyRateHelpersTest {
     static void testResettingBasisSwapsWithCollateralAndBasisInBaseCcy();
     static void testResettingBasisSwapsWithCollateralAndBasisInQuoteCcy();
 
+    static void testExceptionWhenInstrumentTenorShorterThanIndexFrequency();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 

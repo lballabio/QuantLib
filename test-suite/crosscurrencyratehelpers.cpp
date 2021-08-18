@@ -417,6 +417,22 @@ void CrossCurrencyRateHelpersTest::testResettingBasisSwapsWithCollateralAndBasis
                                      isFxBaseCurrencyLegResettable);
 }
 
+void CrossCurrencyRateHelpersTest::testExceptionWhenInstrumentTenorShorterThanIndexFrequency() {
+    BOOST_TEST_MESSAGE(
+        "Testing exception when instrument tenor is shorter than index frequency...");
+
+    using namespace crosscurrencyratehelpers_test;
+
+    CommonVars vars;
+
+    std::vector<XccyTestDatum> data{{1, Months, 10.0}};
+    Handle<YieldTermStructure> collateralHandle;
+    
+    BOOST_CHECK_THROW(
+        std::vector<ext::shared_ptr<RateHelper> > resettingInstruments =
+            vars.buildConstantNotionalXccyRateHelpers(data, collateralHandle, true, true),
+        Error);
+}
 
 test_suite* CrossCurrencyRateHelpersTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Cross currency rate helpers tests");
@@ -442,5 +458,8 @@ test_suite* CrossCurrencyRateHelpersTest::suite() {
         &CrossCurrencyRateHelpersTest::testResettingBasisSwapsWithCollateralAndBasisInBaseCcy));
     suite->add(QUANTLIB_TEST_CASE(
         &CrossCurrencyRateHelpersTest::testResettingBasisSwapsWithCollateralAndBasisInQuoteCcy));
+
+    suite->add(QUANTLIB_TEST_CASE(
+        &CrossCurrencyRateHelpersTest::testExceptionWhenInstrumentTenorShorterThanIndexFrequency));
     return suite;
 }
