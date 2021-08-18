@@ -182,9 +182,10 @@ namespace QuantLib {
         Handle<YieldTermStructure> collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg)
-    : RelativeDateRateHelper(basis), tenor_(tenor), fixingDays_(fixingDays), calendar_(calendar),
-      convention_(convention), endOfMonth_(endOfMonth), baseCcyIdx_(std::move(baseCurrencyIndex)),
-      quoteCcyIdx_(std::move(quoteCurrencyIndex)), collateralHandle_(std::move(collateralCurve)),
+    : RelativeDateRateHelper(basis), tenor_(tenor), fixingDays_(fixingDays),
+      calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
+      baseCcyIdx_(std::move(baseCurrencyIndex)), quoteCcyIdx_(std::move(quoteCurrencyIndex)),
+      collateralHandle_(std::move(collateralCurve)),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
       isBasisOnFxBaseCurrencyLeg_(isBasisOnFxBaseCurrencyLeg) {
         registerWith(baseCcyIdx_);
