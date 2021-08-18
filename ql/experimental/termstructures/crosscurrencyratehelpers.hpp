@@ -27,12 +27,24 @@
 #include <ql/termstructures/yield/ratehelpers.hpp>
 
 namespace QuantLib {
-    //! Rate helper for bootstrapping over XCCY basis swap rates
+    //! Rate helpers for bootstrapping over XCCY basis swap rates
     /*!
     Constant notional cross currency swap helper.
     Unlike marked-to-market cross currency swaps, both notionals
     expressed in base and quote currency remain constant throughout
     the lifetime of the swap.
+
+    Note on used conventions. Consider a currency pair EUR-USD.
+    EUR is the base currency, while USD is the quote currency.
+    The quote currency indicates the amount to be paid in that
+    currency for one unit of base currency.
+    Hence, for a cross currency swap we define a base currency
+    leg and a quote currency leg. The parameters of the instrument,
+    e.g. collateral currency, basis, resetting  or constant notional
+    legs are defined relative to what base and quote currencies are.
+    For example, in case of EUR-USD basis swaps the collateral is paid
+    in quote currency (USD), the basis is given on the base currency
+    leg (EUR), etc.
 
     For more details see:
     N. Moreni, A. Pallavicini (2015)
