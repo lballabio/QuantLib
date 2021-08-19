@@ -215,6 +215,11 @@ namespace QuantLib {
         0.037361073762679023410321241766599
         } ;
 
+     void GaussKronrodNonAdaptive::setRelativeAccuracy(Real relativeAccuracy) { 
+        relativeAccuracy_ = relativeAccuracy;
+    }
+ 
+ 
     Real GaussKronrodNonAdaptive::relativeAccuracy() const {
         return relativeAccuracy_;
     }
