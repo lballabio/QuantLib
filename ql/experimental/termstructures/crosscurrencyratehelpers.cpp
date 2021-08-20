@@ -63,15 +63,12 @@ namespace QuantLib {
             return IborLeg(sch, idx).withNotionals(1.0);
         }
 
-        bool includeReferenceDateEvents() {
-            return Settings::instance().includeReferenceDateEvents();
-        }
-
         Real npvConstNotionalLeg(const Leg& iborLeg,
                                  const Handle<YieldTermStructure>& discountCurveHandle) {
             Date refDate = discountCurveHandle->referenceDate();
             const YieldTermStructure& discountRef = **discountCurveHandle;
-            return CashFlows::npv(iborLeg, discountRef, includeReferenceDateEvents(), refDate) +
+            bool includeSettleDateFlows = true;
+            return CashFlows::npv(iborLeg, discountRef, includeSettleDateFlows, refDate) +
                    discountRef.discount(iborLeg.back()->date()) - 1.0;
         }
 
@@ -80,7 +77,8 @@ namespace QuantLib {
             const Spread basisPoint = 1.0e-4;
             Date refDate = discountCurveHandle->referenceDate();
             const YieldTermStructure& discountRef = **discountCurveHandle;
-            return CashFlows::bps(iborLeg, discountRef, includeReferenceDateEvents(), refDate) /
+            bool includeSettleDateFlows = true;
+            return CashFlows::bps(iborLeg, discountRef, includeSettleDateFlows, refDate) /
                    basisPoint;
         }
 
