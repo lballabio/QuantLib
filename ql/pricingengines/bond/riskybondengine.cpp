@@ -38,7 +38,6 @@ namespace QuantLib {
 
     void RiskyBondEngine::calculate() const {
         Real NPV_ = 0;
-        Date today = Settings::instance().evaluationDate();
         Date npvDate = arguments_.settlementDate;
         std::vector<ext::shared_ptr<CashFlow> > cf = arguments_.cashflows;
         Date d1 = CashFlows::startDate(arguments_.cashflows);
