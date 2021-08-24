@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using these metadata.
+
+title: "QuantLib: a free/open-source library for quantitative finance"
+authors:
+  - name: "The QuantLib contributors"
+url: "https://www.quantlib.org/"
+type: software
+doi: 10.5281/zenodo.1440997
+license: BSD-3-Clause
+repository-code: "https://github.com/lballabio/QuantLib"
