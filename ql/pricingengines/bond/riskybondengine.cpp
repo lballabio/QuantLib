@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2008 Roland Lichters
  Copyright (C) 2021 Lew Wei Hao
 
  This file is part of QuantLib, a free-software/open-source library
@@ -17,11 +18,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/cashflows/cashflows.hpp>
-#include <utility>
-#include <ql/experimental/credit/riskybond.hpp>
 #include <ql/pricingengines/bond/riskybondengine.hpp>
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
+#include <utility>
 
 
 namespace QuantLib {

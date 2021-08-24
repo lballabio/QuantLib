@@ -1,6 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
+ Copyright (C) 2008 Roland Lichters
  Copyright (C) 2021 Lew Wei Hao
 
  This file is part of QuantLib, a free-software/open-source library
@@ -26,11 +27,40 @@
 
 #include <ql/instruments/bond.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/handle.hpp>
-#include <ql/experimental/credit/riskybond.hpp>
 
 namespace QuantLib {
 
+    //! Risky pricing engine for bonds
+    /*! The value of each cashflow is contingent to survival, i.e., the knockout
+        probability is considered.
+
+        In each of the \f$n\f$ coupon periods, we can calculate the value
+        in the case of survival and default, assuming that the issuer
+        can only default in the middle of a coupon period. We denote this time
+        \f$T_{i}^{mid}=\frac{T_{i-1}+T_{i}}{2}\f$.
+
+        Given survival we receive the full cash flow (both coupons and notional).
+        The time \f$t\f$ value of these payments are given by
+        \f[
+            \sum_{i=1}^{n}CF_{i}P(t,T_{i})Q(T_{i}<\tau)
+        \f]
+        where \f$P(t,T)\f$ is the time \f$T\f$ discount bond
+        and \f$Q(T<\tau)\f$ is the time \f$T\f$ survival probability.
+        \f$n\f$ is the number of coupon periods. This takes care of the payments
+        in the case of survival.
+
+        Given default we receive only a fraction of the notional at default.
+        \f[
+            \sum_{i=1}^{n}Rec N(T_{i}^{mid}) P(t,T_{i}^{mid})Q(T_{i-1}<\tau\leq T_{i})
+        \f]
+        where \f$Rec\f$ is the recovery rate and \f$N(T)\f$ is the time T notional. The default probability can be
+        rewritten as
+        \f[
+            Q(T_{i-1}<\tau\leq T_{i})=Q(T_{i}<\tau)-Q(T_{i-1}<\tau)=(1-Q(T_{i}\geq\tau))-(1-Q(T_{i-1}\geq\tau))=Q(T_{i-1}\geq\tau)-Q(T_{i}\geq\tau)
+        \f]
+    */
     class RiskyBondEngine : public Bond::engine {
       public:
         RiskyBondEngine(Handle<DefaultProbabilityTermStructure> defaultTS,
