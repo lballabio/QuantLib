@@ -297,8 +297,6 @@ namespace QuantLib {
         Date settlementDate;
         Leg cashflows;
         Calendar calendar;
-        Natural settlementDays;
-        std::vector<Real> notionals;
         void validate() const override;
     };
 

@@ -1622,7 +1622,7 @@ void BondTest::testRiskyBondWithGivenDates() {
     Settings::instance().evaluationDate() = today;
 
     // Create Engine
-    ext::shared_ptr<PricingEngine> bondEngine(new RiskyBondEngine(sch1, defaultProbability, recoveryRate, riskFree));
+    ext::shared_ptr<PricingEngine> bondEngine(new RiskyBondEngine(defaultProbability, recoveryRate, riskFree));
     bond.setPricingEngine(bondEngine);
 
     // Calculate and validate price

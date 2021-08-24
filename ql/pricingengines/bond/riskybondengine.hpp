@@ -33,33 +33,28 @@ namespace QuantLib {
 
     class RiskyBondEngine : public Bond::engine {
       public:
-        RiskyBondEngine(Schedule schedule,
-                        Handle<DefaultProbabilityTermStructure> defaultTS,
+        RiskyBondEngine(Handle<DefaultProbabilityTermStructure> defaultTS,
                         Real recoveryRate,
                         Handle<YieldTermStructure> yieldTS);
         void calculate() const override;
         Handle<DefaultProbabilityTermStructure> defaultTS() const;
-        Schedule schedule() const;
         Real recoveryRate() const;
         Handle<YieldTermStructure> yieldTS() const;
       private:
-        Schedule schedule_;
         Handle<DefaultProbabilityTermStructure> defaultTS_;
         Real recoveryRate_;
         Handle<YieldTermStructure> yieldTS_;
     };
 
+
     inline Handle<DefaultProbabilityTermStructure> RiskyBondEngine::defaultTS() const {
         return defaultTS_;
     }
 
-    inline Schedule RiskyBondEngine::schedule() const {
-        return schedule_;
-    }
-
     inline Real RiskyBondEngine::recoveryRate() const { return recoveryRate_; }
 
-     inline Handle<YieldTermStructure> RiskyBondEngine::yieldTS() const { return yieldTS_; }
+    inline Handle<YieldTermStructure> RiskyBondEngine::yieldTS() const { return yieldTS_; }
+
 }
 
 #endif

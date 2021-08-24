@@ -288,8 +288,6 @@ namespace QuantLib {
         arguments->settlementDate = settlementDate();
         arguments->cashflows = cashflows_;
         arguments->calendar = calendar_;
-        arguments->settlementDays = settlementDays_;
-        arguments->notionals = notionals_;
     }
 
     void Bond::fetchResults(const PricingEngine::results* r) const {

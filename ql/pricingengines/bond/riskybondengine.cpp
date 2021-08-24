@@ -26,12 +26,10 @@
 
 namespace QuantLib {
 
-    RiskyBondEngine::RiskyBondEngine(Schedule schedule,
-                                     Handle<DefaultProbabilityTermStructure> defaultTS,
+    RiskyBondEngine::RiskyBondEngine(Handle<DefaultProbabilityTermStructure> defaultTS,
                                      Real recoveryRate,
                                      Handle<YieldTermStructure> yieldTS)
-    : schedule_(schedule),
-      defaultTS_(std::move(defaultTS)), 
+    : defaultTS_(std::move(defaultTS)), 
       recoveryRate_(recoveryRate), 
       yieldTS_(std::move(yieldTS))
       {}
