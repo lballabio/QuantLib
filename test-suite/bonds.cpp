@@ -1581,7 +1581,7 @@ void BondTest::testFixedBondWithGivenDates() {
 
 void BondTest::testRiskyBondWithGivenDates() {
 
-    BOOST_TEST_MESSAGE("Testing risky fixed bond engine");
+    BOOST_TEST_MESSAGE("Testing risky fixed bond engine...");
 
     using namespace bonds_test;
 
@@ -1612,7 +1612,8 @@ void BondTest::testRiskyBondWithGivenDates() {
     couponRates[1] = 0.03;
     couponRates[2] = 0.03125;
     couponRates[3] = 0.0325;
-    Real recoveryRate = 1.2;
+    Real recoveryRate = 0.4;
+
     FixedRateBond bond(settlementDays, vars.faceAmount, sch1, couponRates,
                         ActualActual(ActualActual::ISMA), ModifiedFollowing, 100.0,
                         Date(20, November, 2004));
@@ -1625,11 +1626,12 @@ void BondTest::testRiskyBondWithGivenDates() {
     bond.setPricingEngine(bondEngine);
 
     // Calculate and validate price
-    Real expected = 1093525.223033;
+    Real expected = 837469.397855;
     Real calculated = bond.NPV();
     if (std::fabs(expected - calculated) > tolerance) {
         BOOST_FAIL("Failed to calculate risky bond price:\n"
-                   << std::fixed << "    calculated: " << calculated << "\n"
+                   << std::fixed
+                   << "    calculated: " << calculated << "\n"
                    << "    expected:   " << expected << "\n"
                    << "    error:      " << expected - calculated);
     }
