@@ -47,9 +47,6 @@ namespace QuantLib {
         Handle<DefaultProbabilityTermStructure> defaultTS_;
         Real recoveryRate_;
         Handle<YieldTermStructure> yieldTS_;
-        Date effectiveDate() const;
-        Date maturityDate() const;
-        Real notional(Date date, std::vector<Real> notionals) const;
     };
 
     inline Handle<DefaultProbabilityTermStructure> RiskyBondEngine::defaultTS() const {

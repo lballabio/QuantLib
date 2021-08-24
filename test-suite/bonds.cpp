@@ -1625,7 +1625,7 @@ void BondTest::testRiskyBondWithGivenDates() {
     bond.setPricingEngine(bondEngine);
 
     // Calculate and validate price
-    Real expected = 768145.075683;
+    Real expected = 1093525.223033;
     Real calculated = bond.NPV();
     if (std::fabs(expected - calculated) > tolerance) {
         BOOST_FAIL("Failed to calculate risky bond price:\n"

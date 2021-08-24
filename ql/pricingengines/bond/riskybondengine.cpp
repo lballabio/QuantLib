@@ -21,6 +21,7 @@
 #include <utility>
 #include <ql/experimental/credit/riskybond.hpp>
 #include <ql/pricingengines/bond/riskybondengine.hpp>
+#include <ql/cashflows/coupon.hpp>
 
 
 namespace QuantLib {
@@ -38,43 +39,32 @@ namespace QuantLib {
     void RiskyBondEngine::calculate() const {
         Real NPV_ = 0;
         Date today = Settings::instance().evaluationDate();
-        Date npvDate = arguments_.calendar.advance(today, arguments_.settlementDays, Days);
+        Date npvDate = arguments_.settlementDate;
         std::vector<ext::shared_ptr<CashFlow> > cf = arguments_.cashflows;
-        Date d1 = effectiveDate();
+        Date d1 = CashFlows::startDate(arguments_.cashflows);
         for (auto& i : cf) {
             Date d2 = i->date();
             if (d2 > npvDate) {
                 d1 = std::max(npvDate, d1);
                 Date defaultDate = d1 + (d2 - d1) / 2;
 
-                Real coupon = i->amount() * defaultTS()->survivalProbability(d2);
-                Real recovery = notional(defaultDate, arguments_.notionals) * recoveryRate() * (defaultTS()->survivalProbability(d1) -
-                                                      defaultTS()->survivalProbability(d2)); 
-                NPV_ += coupon * yieldTS()->discount(d2);
-                NPV_ += recovery * yieldTS()->discount(defaultDate);
+                Real couponAmount = i->amount() * defaultTS()->survivalProbability(d2);
+
+                auto coupon = ext::dynamic_pointer_cast<Coupon>(i);
+                if (coupon != nullptr) {
+                    Real recovery = coupon->nominal() * recoveryRate() *
+                                    (defaultTS()->survivalProbability(d1) -
+                                     defaultTS()->survivalProbability(d2)); 
+                    NPV_ += recovery * yieldTS()->discount(defaultDate);
+                }
+                
+                NPV_ += couponAmount * yieldTS()->discount(d2);
             }
             d1 = d2;
         }
 
         results_.value = NPV_;
         results_.valuationDate = npvDate;
-    }
-
-    Date RiskyBondEngine::effectiveDate() const { return schedule_.dates().front(); }
-
-    Date RiskyBondEngine::maturityDate() const { return schedule_.dates().back(); }
-
-    Real RiskyBondEngine::notional(Date date, std::vector<Real> notionals) const {
-        if (date > maturityDate())
-            return 0.0;
-        Real ntl = notionals.front();
-        for (Size i = 0; i < schedule_.size(); i++) {
-            if (i < notionals.size() && schedule_[i] <= date)
-                ntl = notionals[i];
-            else
-                break;
-        }
-        return ntl;
     }
 
 }
