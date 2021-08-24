@@ -37,17 +37,21 @@ namespace QuantLib {
     }
 
     void RiskyBondEngine::calculate() const {
-        Real NPV = 0;
-        Date npvDate = arguments_.settlementDate;
+        Date npvDate = yieldTS()->referenceDate();
+        Date settlementDate = arguments_.settlementDate;
         Date startDate = CashFlows::startDate(arguments_.cashflows);
         Date d1 = std::max(npvDate, startDate);
 
+        Real NPV = 0.0;
+        Real settlementValue = 0.0;
         for (auto& cf : arguments_.cashflows) {
             Date d2 = cf->date();
             if (d2 > npvDate) {
 
                 Real weightedCouponAmount = cf->amount() * defaultTS()->survivalProbability(d2);
                 NPV += weightedCouponAmount * yieldTS()->discount(d2);
+                if (d2 > settlementDate)
+                    settlementValue += weightedCouponAmount * yieldTS()->discount(d2);
 
                 auto coupon = ext::dynamic_pointer_cast<Coupon>(cf);
                 if (coupon != nullptr) {
@@ -56,12 +60,16 @@ namespace QuantLib {
                                     (defaultTS()->survivalProbability(d1) -
                                      defaultTS()->survivalProbability(d2)); 
                     NPV += weightedRecovery * yieldTS()->discount(defaultDate);
+                    if (d2 > settlementDate)
+                        settlementValue += weightedRecovery * yieldTS()->discount(defaultDate);
+
                     d1 = d2;
                 }
             }
         }
 
         results_.value = NPV;
+        results_.settlementValue = settlementValue / yieldTS()->discount(settlementDate);
         results_.valuationDate = npvDate;
     }
 
