@@ -30,6 +30,8 @@ using namespace std;
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     RiskyBond::RiskyBond(std::string name,
                          Currency ccy,
                          Real recoveryRate,
@@ -291,6 +293,8 @@ namespace QuantLib {
     Date RiskyFloatingBond::maturityDate() const {
         return schedule_.dates().back();
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
