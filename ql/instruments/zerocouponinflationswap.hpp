@@ -109,8 +109,8 @@ namespace QuantLib {
         //! "Payer" or "Receiver" refers to the inflation leg
         Type type() const { return type_; }
         Real nominal() const { return nominal_; }
-        Date startDate() const { return startDate_; }
-        Date maturityDate() const { return maturityDate_; }
+        virtual Date startDate() const override { return startDate_; }
+        virtual Date maturityDate() const override { return maturityDate_; }
         Calendar fixedCalendar() const { return fixCalendar_; }
         BusinessDayConvention fixedConvention() const {
             return fixConvention_;
