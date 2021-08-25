@@ -96,8 +96,8 @@ namespace QuantLib {
         //! "payer" or "receiver" refer to the fixed leg.
         Type type() const { return type_; }
         Real baseNominal() const { return baseNominal_; }
-        virtual Date startDate() const override { return startDate_; }
-        virtual Date maturityDate() const override { return maturityDate_; }
+        Date startDate() const override { return startDate_; }
+        Date maturityDate() const override { return maturityDate_; }
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
 
         //! just one cashflow in each leg
