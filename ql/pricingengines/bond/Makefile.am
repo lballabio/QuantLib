@@ -5,11 +5,13 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     bondfunctions.hpp \
-    discountingbondengine.hpp
+    discountingbondengine.hpp \
+	riskybondengine.hpp
 
 cpp_files = \
     bondfunctions.cpp \
-    discountingbondengine.cpp
+    discountingbondengine.cpp \
+	riskybondengine.cpp
 
 if UNITY_BUILD
 

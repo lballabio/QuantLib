@@ -40,9 +40,12 @@
 namespace QuantLib {
 
     /*! Base class for default risky bonds
-      \ingroup credit
+        \ingroup credit
+
+        \deprecated Use RiskyBondEngine with regular bonds instead.
+                    Deprecated in version 1.24.
     */
-    class RiskyBond : public Instrument {
+    class QL_DEPRECATED RiskyBond : public Instrument {
     public:
         /*! The value is contingent to survival, i.e., the knockout
             probability is considered.  To compute the npv given that
@@ -136,10 +139,15 @@ namespace QuantLib {
         return recoveryRate_;
     }
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     /*! Default risky fixed bond
-      \ingroup credit
+        \ingroup credit
+
+        \deprecated Use RiskyBondEngine with regular bonds instead.
+                    Deprecated in version 1.24.
     */
-    class RiskyFixedBond : public RiskyBond {
+    class QL_DEPRECATED RiskyFixedBond : public RiskyBond {
     public:
       RiskyFixedBond(const std::string& name,
                      const Currency& ccy,
@@ -172,9 +180,12 @@ namespace QuantLib {
 
 
     /*! Default risky floating bonds
-      \ingroup credit
+        \ingroup credit
+
+        \deprecated Use RiskyBondEngine with regular bonds instead.
+                    Deprecated in version 1.24.
     */
-    class RiskyFloatingBond : public RiskyBond {
+    class QL_DEPRECATED RiskyFloatingBond : public RiskyBond {
     public:
       RiskyFloatingBond(const std::string& name,
                         const Currency& ccy,
@@ -206,6 +217,8 @@ namespace QuantLib {
         std::vector<ext::shared_ptr<CashFlow> > interestLeg_;
         std::vector<ext::shared_ptr<CashFlow> > redemptionLeg_;
     };
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

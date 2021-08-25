@@ -4385,6 +4385,7 @@
     <ClInclude Include="ql\instruments\zerocouponswap.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\bond\riskybondengine.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7090,5 +7091,6 @@
     <ClCompile Include="ql\instruments\zerocouponswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\bond\riskybondengine.cpp" />
   </ItemGroup>
 </Project>

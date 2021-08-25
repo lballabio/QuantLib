@@ -680,6 +680,7 @@ set(QuantLib_SRC
     pricingengines/blackscholescalculator.cpp
     pricingengines/bond/bondfunctions.cpp
     pricingengines/bond/discountingbondengine.cpp
+    pricingengines/bond/riskybondengine.cpp
     pricingengines/capfloor/analyticcapfloorengine.cpp
     pricingengines/capfloor/bacheliercapfloorengine.cpp
     pricingengines/capfloor/blackcapfloorengine.cpp
@@ -1947,6 +1948,7 @@ set(QuantLib_HDR
     pricingengines/bond/all.hpp
     pricingengines/bond/bondfunctions.hpp
     pricingengines/bond/discountingbondengine.hpp
+    pricingengines/bond/riskybondengine.hpp
     pricingengines/capfloor/all.hpp
     pricingengines/capfloor/analyticcapfloorengine.hpp
     pricingengines/capfloor/bacheliercapfloorengine.hpp
