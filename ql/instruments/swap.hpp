@@ -76,8 +76,8 @@ namespace QuantLib {
         //! \name Additional interface
         //@{
         Size numberOfLegs() const;
-        Date startDate() const;
-        Date maturityDate() const;
+        virtual Date startDate() const;
+        virtual Date maturityDate() const;
         Real legBPS(Size j) const {
             QL_REQUIRE(j<legs_.size(), "leg# " << j << " doesn't exist!");
             calculate();
