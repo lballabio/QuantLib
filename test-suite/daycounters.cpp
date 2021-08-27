@@ -1073,7 +1073,7 @@ void DayCounterTest::testActualActualOutOfScheduleRange() {
 
     try {
         dayCounter.yearFraction(today, today + Period(9, Years));
-    } catch (const std::exception& e) {
+    } catch (const std::exception&) {
         raised = true;
     }
        
