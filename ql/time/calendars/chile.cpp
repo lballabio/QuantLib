@@ -38,6 +38,7 @@ namespace QuantLib {
         if (isWeekend(w)
             // New Year's Day
             || (d == 1 && m == January)
+            || (d == 2 && m == January && w == Monday && y > 2016)
             // Good Friday
             || (dd == em-3)
             // Easter Saturday
@@ -46,14 +47,28 @@ namespace QuantLib {
             || (d == 1 && m == May)
             // Navy Day
             || (d == 21 && m == May)
+            // Day of Aboriginal People
+            || (d == 21 && m == June && y >= 2021)
+            // St. Peter and St. Paul
+            || (d >= 26 && d <= 29 && m == June && w == Monday)
+            || (d == 2 && m == July && w == Monday)
             // Our Lady of Mount Carmel
             || (d == 16 && m == July)
             // Assumption Day
             || (d == 15 && m == August)
             // Independence Day
+            || (d == 17 && m == September && ((w == Monday && y >= 2007) || (w == Friday && y > 2016)))
             || (d == 18 && m == September)
             // Army Day
             || (d == 19 && m == September)
+            || (d == 20 && m == September && w == Friday && y >= 2007)
+            // Discovery of Two Worlds
+            || (d >= 9 && d <= 12 && m == October && w == Monday)
+            || (d == 15 && m == October && w == Monday)
+            // Reformation Day
+            || (((d == 27 && m == October && w == Friday)
+                 || (d == 31 && m == October && w != Tuesday && w != Wednesday)
+                 || (d == 2 && m == November && w == Friday)) && y >= 2008)
             // All Saints' Day
             || (d == 1 && m == November)
             // Immaculate Conception
@@ -62,85 +77,6 @@ namespace QuantLib {
             || (d == 25 && m == December)
             )
             return false;
-
-        if (y == 2018) {
-            if (// Feast of St Peter and St Paul
-                (d == 2 && m == July)
-                // Independence Day Holiday (additional holiday)
-                || (d == 17 && m == September)
-                // Day of the Race
-                || (d == 15 && m == October)
-                // Reformation Day
-                || (d == 2 && m == November)
-                )
-                return false;
-        }
-
-        if (y == 2019) {
-            // Feast of St Peter and St Paul and Day of the Race fall
-            // on Saturday in 2019
-            if (// Army Day Holiday (additional holiday)
-                (d == 20 && m == September)
-                // Reformation Day
-                || (d == 1 && m == November)
-                )
-                return false;
-        }
-
-        if (y == 2020) {
-            // Reformation Day falls on Saturday in 2020
-            if (// Feast of St Peter and St Paul
-                (d == 29 && m == June)
-                // Day of the Race
-                || (d == 12 && m == October)
-                )
-                return false;
-        }
-
-        if (y == 2021) {
-            // Reformation Day falls on Sunday in 2021
-            if (// Feast of St Peter and St Paul
-                (d == 28 && m == June)
-                // Day of the Race
-                || (d == 11 && m == October)
-                )
-                return false;
-        }
-
-        if (y == 2022) {
-            if (// Feast of St Peter and St Paul
-                (d == 27 && m == June)
-                // Day of the Race
-                || (d == 10 && m == October)
-                // Reformation Day
-                || (d == 31 && m == October)
-                )
-                return false;
-        }
-
-        if (y == 2023) {
-            if (// New Year Holiday (additional holiday)
-                (d == 2 && m == January)
-                // Feast of St Peter and St Paul
-                || (d == 26 && m == June)
-                // Day of the Race
-                || (d == 9 && m == October)
-                // Reformation Day
-                || (d == 31 && m == October)
-                )
-                return false;
-        }
-
-        if (y == 2024) {
-            // Feast of St Peter and St Paul falls on Saturday in 2024
-            if (// Day of the Race
-                (d == 14 && m == October)
-                // Reformation Day
-                || (d == 31 && m == October)
-                )
-                return false;
-        }
-
 
         return true;
     }

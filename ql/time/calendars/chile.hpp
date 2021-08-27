@@ -30,33 +30,28 @@ namespace QuantLib {
 
     //! Chilean calendars
     /*! Holidays for the Santiago Stock Exchange
-        (data from <https://publicholidays.cl/>):
+        (data from <https://en.wikipedia.org/wiki/Public_holidays_in_Chile>):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st</li>
+        <li>January 2nd, when falling on a Monday (since 2017)</li>
         <li>Good Friday</li>
         <li>Easter Saturday</li>
         <li>Labour Day, May 1st</li>
         <li>Navy Day, May 21st</li>
+        <li>Day of Aboriginal People, June 21st (since 2021)</li>
+        <li>Saint Peter and Saint Paul, June 29th (moved to the nearest Monday if it falls on a weekday)</li>
         <li>Our Lady of Mount Carmel, July 16th</li>
         <li>Assumption Day, August 15th</li>
-        <li>Independence Day, September 18th</li>
-        <li>Army Day, September 19th</li>
+        <li>Independence Day, September 18th (also the 17th if the latter falls on a Monday or Friday)</li>
+        <li>Army Day, September 19th (also the 20th if the latter falls on a Friday)</li>
+        <li>Discovery of Two Worlds, October 12th (moved to the nearest Monday if it falls on a weekday)</li>
+        <li>Reformation Day, October 31st (since 2008; moved to the preceding Friday if it falls on a Tuesday,
+            or to the following Friday if it falls on a Wednesday)</li>
         <li>All Saints' Day, November 1st</li>
         <li>Immaculate Conception, December 8th</li>
         <li>Christmas Day, December 25th</li>
-        </ul>
-
-        Other holidays for which no rule is given
-        (data available for 2018-2024 only:)
-        <ul>
-        <li>New Year Holiday</li>
-        <li>Feast of St Peter and St Paul</li>
-        <li>Independence Day Holiday</li>
-        <li>Army Day Holiday</li>
-        <li>Day of the Race</li>
-        <li>Reformation Day</li>
         </ul>
 
         \ingroup calendars
