@@ -66,7 +66,6 @@ namespace QuantLib {
 
         Real relAccuracy_;
         const bool useConvergenceEstimate_;
-        const static Real alpha_, beta_, x1_, x2_, x3_;
     };
 }
 #endif

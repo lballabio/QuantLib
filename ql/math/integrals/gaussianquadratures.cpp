@@ -28,6 +28,81 @@
 
 namespace QuantLib {
 
+    namespace { // file scope
+
+        namespace TabulatedGaussLegendrePrivate {
+
+            // Abscissas and Weights from Abramowitz and Stegun
+
+            /* order 6 */
+            constexpr Real x6[3] = { 0.238619186083197,
+                                     0.661209386466265,
+                                     0.932469514203152 };
+
+            constexpr Real w6[3] = { 0.467913934572691,
+                                     0.360761573048139,
+                                     0.171324492379170 };
+
+            constexpr Size n6 = 3;
+
+            /* order 7 */
+            constexpr Real x7[4] = { 0.000000000000000,
+                                     0.405845151377397,
+                                     0.741531185599394,
+                                     0.949107912342759 };
+
+            constexpr Real w7[4] = { 0.417959183673469,
+                                     0.381830050505119,
+                                     0.279705391489277,
+                                     0.129484966168870 };
+
+            constexpr Size n7 = 4;
+
+            /* order 12 */
+            constexpr Real x12[6] = { 0.125233408511469,
+                                      0.367831498998180,
+                                      0.587317954286617,
+                                      0.769902674194305,
+                                      0.904117256370475,
+                                      0.981560634246719 };
+
+            constexpr Real w12[6] = { 0.249147045813403,
+                                      0.233492536538355,
+                                      0.203167426723066,
+                                      0.160078328543346,
+                                      0.106939325995318,
+                                      0.047175336386512 };
+
+            constexpr Size n12 = 6;
+
+            /* order 20 */
+            constexpr Real x20[10] = { 0.076526521133497,
+                                       0.227785851141645,
+                                       0.373706088715420,
+                                       0.510867001950827,
+                                       0.636053680726515,
+                                       0.746331906460151,
+                                       0.839116971822219,
+                                       0.912234428251326,
+                                       0.963971927277914,
+                                       0.993128599185095 };
+
+            constexpr Real w20[10] = { 0.152753387130726,
+                                       0.149172986472604,
+                                       0.142096109318382,
+                                       0.131688638449177,
+                                       0.118194531961518,
+                                       0.101930119817240,
+                                       0.083276741576704,
+                                       0.062672048334109,
+                                       0.040601429800387,
+                                       0.017614007139152 };
+
+            constexpr Size n20 = 10;
+        }
+
+    } // namespace { // file scope
+
     GaussianQuadrature::GaussianQuadrature(
                                 Size n,
                                 const GaussianOrthogonalPolynomial& orthPoly)
@@ -59,6 +134,7 @@ namespace QuantLib {
 
 
     void TabulatedGaussLegendre::order(Size order) {
+        using namespace TabulatedGaussLegendrePrivate;
         switch(order) {
           case(6):
             order_=order; x_=x6; w_=w6; n_=n6;
@@ -76,74 +152,5 @@ namespace QuantLib {
             QL_FAIL("order " << order << " not supported");
         }
     }
-
-
-    // Abscissas and Weights from Abramowitz and Stegun
-
-    /* order 6 */
-    const Real TabulatedGaussLegendre::x6[3] = { 0.238619186083197,
-                                                 0.661209386466265,
-                                                 0.932469514203152 };
-
-    const Real TabulatedGaussLegendre::w6[3] = { 0.467913934572691,
-                                                 0.360761573048139,
-                                                 0.171324492379170 };
-
-    const Size TabulatedGaussLegendre::n6 = 3;
-
-    /* order 7 */
-    const Real TabulatedGaussLegendre::x7[4] = { 0.000000000000000,
-                                                 0.405845151377397,
-                                                 0.741531185599394,
-                                                 0.949107912342759 };
-
-    const Real TabulatedGaussLegendre::w7[4] = { 0.417959183673469,
-                                                 0.381830050505119,
-                                                 0.279705391489277,
-                                                 0.129484966168870 };
-
-    const Size TabulatedGaussLegendre::n7 = 4;
-
-    /* order 12 */
-    const Real TabulatedGaussLegendre::x12[6] = { 0.125233408511469,
-                                                  0.367831498998180,
-                                                  0.587317954286617,
-                                                  0.769902674194305,
-                                                  0.904117256370475,
-                                                  0.981560634246719 };
-
-    const Real TabulatedGaussLegendre::w12[6] = { 0.249147045813403,
-                                                  0.233492536538355,
-                                                  0.203167426723066,
-                                                  0.160078328543346,
-                                                  0.106939325995318,
-                                                  0.047175336386512 };
-
-    const Size TabulatedGaussLegendre::n12 = 6;
-
-    /* order 20 */
-    const Real TabulatedGaussLegendre::x20[10] = { 0.076526521133497,
-                                                   0.227785851141645,
-                                                   0.373706088715420,
-                                                   0.510867001950827,
-                                                   0.636053680726515,
-                                                   0.746331906460151,
-                                                   0.839116971822219,
-                                                   0.912234428251326,
-                                                   0.963971927277914,
-                                                   0.993128599185095 };
-
-    const Real TabulatedGaussLegendre::w20[10] = { 0.152753387130726,
-                                                   0.149172986472604,
-                                                   0.142096109318382,
-                                                   0.131688638449177,
-                                                   0.118194531961518,
-                                                   0.101930119817240,
-                                                   0.083276741576704,
-                                                   0.062672048334109,
-                                                   0.040601429800387,
-                                                   0.017614007139152 };
-
-    const Size TabulatedGaussLegendre::n20 = 10;
 
 }

@@ -26,11 +26,20 @@
 
 namespace QuantLib {
 
-    const Real GaussLobattoIntegral::alpha_ = std::sqrt(2.0/3.0); 
-    const Real GaussLobattoIntegral::beta_  = 1.0/std::sqrt(5.0);
-    const Real GaussLobattoIntegral::x1_    = 0.94288241569547971906; 
-    const Real GaussLobattoIntegral::x2_    = 0.64185334234578130578;
-    const Real GaussLobattoIntegral::x3_    = 0.23638319966214988028;
+    namespace { // file scope
+
+        namespace GaussLobattoIntegralPrivate {
+
+            // std::sqrt is not (reliably) constexpr
+            const Real alpha_ = std::sqrt(2.0/3.0);
+            const Real beta_  = 1.0/std::sqrt(5.0);
+
+            constexpr Real x1_    = 0.94288241569547971906;
+            constexpr Real x2_    = 0.64185334234578130578;
+            constexpr Real x3_    = 0.23638319966214988028;
+        }
+
+    } // namespace { // file scope
 
     GaussLobattoIntegral::GaussLobattoIntegral(Size maxIterations,
                                                Real absAccuracy,
@@ -55,8 +64,8 @@ namespace QuantLib {
     Real GaussLobattoIntegral::calculateAbsTolerance(
                                      const ext::function<Real (Real)>& f, 
                                      Real a, Real b) const {
-        
 
+        using namespace GaussLobattoIntegralPrivate;
         Real relTol = std::max(relAccuracy_, QL_EPSILON);
         
         const Real m = (a+b)/2; 
@@ -114,6 +123,7 @@ namespace QuantLib {
                                      const ext::function<Real (Real)>& f,
                                      Real a, Real b, Real fa, Real fb,
                                      Real acc) const {
+        using namespace GaussLobattoIntegralPrivate;
         QL_REQUIRE(numberOfEvaluations() < maxEvaluations(),
                    "max number of iterations reached");
         

@@ -246,22 +246,6 @@ namespace QuantLib {
         const Real* w_;
         const Real* x_;
         Size  n_;
-
-        static const Real w6[3];
-        static const Real x6[3];
-        static const Size n6;
-
-        static const Real w7[4];
-        static const Real x7[4];
-        static const Size n7;
-
-        static const Real w12[6];
-        static const Real x12[6];
-        static const Size n12;
-
-        static const Real w20[10];
-        static const Real x20[10];
-        static const Size n20;
     };
 
 }
