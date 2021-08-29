@@ -81,7 +81,6 @@ namespace QuantLib {
       private:
         Size safeGridPoints(Size gridPoints,
                             Time residualTime) const;
-        static const Real safetyZoneFactor_;
     };
 
     template <typename base, typename engine>

@@ -30,7 +30,14 @@
 
 namespace QuantLib {
 
-    const Real FDVanillaEngine::safetyZoneFactor_ = 1.1;
+    namespace { // file scope
+
+        namespace FDVanillaEnginePrivate {
+
+            constexpr Real safetyZoneFactor_ = 1.1;
+        }
+
+    } // namespace { // file scope
 
     void FDVanillaEngine::setGridLimits() const {
         setGridLimits(process_->stateVariable()->value(),
@@ -66,6 +73,7 @@ namespace QuantLib {
     }
 
     void FDVanillaEngine::ensureStrikeInGrid() const {
+        using namespace FDVanillaEnginePrivate;
         // ensure strike is included in the grid
         ext::shared_ptr<StrikedTypePayoff> striked_payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
