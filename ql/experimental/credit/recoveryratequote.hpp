@@ -33,9 +33,8 @@ namespace QuantLib {
         /*! Returns a map with the ISDA conventional (values by
             default) of the recovery rate per each ISDA seniority.
         */
-        static Real conventionalRecovery(Seniority sen) {
-            return IsdaConvRecoveries[sen];
-        }
+        static Real conventionalRecovery(Seniority sen);
+
         RecoveryRateQuote(Real value = Null<Real>(),
                           Seniority seniority = NoSeniority);
         //! \name Quote interface
@@ -59,8 +58,6 @@ namespace QuantLib {
         static std::map<Seniority, Real> makeIsdaMap(const Real (&(arrayIsdaRR))[N]);
 
       private:
-        // Conventional recoveries for ISDA seniorities
-        static const Real IsdaConvRecoveries[];
         // The seniority this recovery is quoted for.
         Seniority seniority_;
         // The recovery value. In fractional units.

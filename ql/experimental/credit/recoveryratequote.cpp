@@ -21,17 +21,29 @@
 
 namespace QuantLib {
 
-    const Real RecoveryRateQuote::IsdaConvRecoveries[] =  {
-        0.65,// SECDOM
-        0.4, // SNRFOR
-        0.2, // SUBLT2
-        0.2, // JRSUBUT2
-        0.15 // PREFT1
-    };
+    namespace { // file scope
+
+        namespace RecoveryRateQuotePrivate {
+
+            // Conventional recoveries for ISDA seniorities
+            constexpr Real IsdaConvRecoveries[] =  {
+                0.65,// SECDOM
+                0.4, // SNRFOR
+                0.2, // SUBLT2
+                0.2, // JRSUBUT2
+                0.15 // PREFT1
+            };
+        }
+
+    } // namespace { // file scope
 
     std::map<Seniority, Real> makeIsdaConvMap() {
         return RecoveryRateQuote::makeIsdaMap(
-            RecoveryRateQuote::IsdaConvRecoveries);
+            RecoveryRateQuotePrivate::IsdaConvRecoveries);
+    }
+
+    Real RecoveryRateQuote::conventionalRecovery(Seniority sen) {
+        return RecoveryRateQuotePrivate::IsdaConvRecoveries[sen];
     }
 
     RecoveryRateQuote::RecoveryRateQuote(Real value,
