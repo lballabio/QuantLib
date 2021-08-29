@@ -510,7 +510,7 @@ test_suite* CashFlowsTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testDefaultSettlementDate));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testExCouponDates));
-    if (IborCoupon::usingAtParCoupons())
+    if (Settings::instance().iborCouponSettings().usingAtParCoupons())
         suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
 
     suite->add(QUANTLIB_TEST_CASE(

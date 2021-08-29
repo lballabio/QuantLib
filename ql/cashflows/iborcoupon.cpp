@@ -25,31 +25,12 @@
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/iborcouponsettings.hpp>
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <utility>
 
 namespace QuantLib {
-
-    bool IborCoupon::constructorWasNotCalled_ = true;
-
-#ifndef QL_USE_INDEXED_COUPON
-    bool IborCoupon::usingAtParCoupons_ = true;
-#else
-    bool IborCoupon::usingAtParCoupons_ = false;
-#endif
-
-    void IborCoupon::createAtParCoupons() {
-        QL_ASSERT(constructorWasNotCalled_,
-                  "Cannot call this method after the first IborCoupon was created.");
-        usingAtParCoupons_ = true;
-    }
-
-    void IborCoupon::createIndexedCoupons() {
-        QL_ASSERT(constructorWasNotCalled_,
-                  "Cannot call this method after the first IborCoupon was created.");
-        usingAtParCoupons_ = false;
-    }
 
     IborCoupon::IborCoupon(const Date& paymentDate,
                            Real nominal,
@@ -69,7 +50,7 @@ namespace QuantLib {
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears, exCouponDate),
       iborIndex_(iborIndex) {
-        constructorWasNotCalled_ = false;
+        IborCouponSettings & settings = Settings::instance().iborCouponSettings();
 
         fixingDate_ = fixingDate();
 
@@ -79,7 +60,7 @@ namespace QuantLib {
         fixingValueDate_ = fixingCalendar.advance(
             fixingDate_, indexFixingDays, Days);
 
-        if (usingAtParCoupons_) {
+        if (settings.usingAtParCoupons()) {
             if (isInArrears_)
                 fixingEndDate_ = index_->maturityDate(fixingValueDate_);
             else { // par coupon approximation
@@ -149,7 +130,6 @@ namespace QuantLib {
         else
             FloatingRateCoupon::accept(v);
     }
-
 
     IborLeg::IborLeg(Schedule schedule, ext::shared_ptr<IborIndex> index)
     : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following),

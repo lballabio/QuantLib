@@ -804,7 +804,7 @@ void OptionletStripperTest::testSwitchStrike() {
                                Null< Rate >(), vars.accuracy));
 
     Real expected;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!Settings::instance().iborCouponSettings().usingAtParCoupons())
         expected = 0.02981258;
     else
         expected = 0.02981223;
@@ -821,7 +821,7 @@ void OptionletStripperTest::testSwitchStrike() {
     yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
         0, vars.calendar, 0.05, vars.dayCounter));
 
-    if (!IborCoupon::usingAtParCoupons())
+    if (!Settings::instance().iborCouponSettings().usingAtParCoupons())
         expected = 0.0499381;
     else
         expected = 0.0499371;

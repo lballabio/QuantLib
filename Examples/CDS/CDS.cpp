@@ -269,8 +269,8 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
 
     // check if indexed coupon is defined (it should not to be 100% consistent with
     // the ISDA spec)
-    if (!IborCoupon::usingAtParCoupons()) {
-        std::cout << "Warning: IborCoupon::usingAtParCoupons() == false is used, "
+    if (!Settings::instance().iborCouponSettings().usingAtParCoupons()) {
+        std::cout << "Warning: usingAtParCoupons() == false is used, "
                   << "which is not precisely consistent with the specification "
                   << "of the ISDA rate curve." << std::endl;
     }
@@ -484,7 +484,7 @@ void example03() {
                                               false, actual360);
 
     // this index is probably not important since we are not using
-    // IborCoupon::usingAtParCoupons() == false 
+    // usingAtParCoupons() == false
     // - define it "isda compliant" anyway
     ext::shared_ptr<IborIndex> euribor6m = ext::make_shared<IborIndex>(
         "IsdaIbor", 6 * Months, 2, EURCurrency(), WeekendsOnly(),

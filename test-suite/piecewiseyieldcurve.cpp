@@ -1546,7 +1546,7 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testSwapRateHelperSpotDate));
 
-    if (IborCoupon::usingAtParCoupons()) {
+    if (Settings::instance().iborCouponSettings().usingAtParCoupons()) {
         // This regression test didn't work with indexed coupons anyway.
         suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testBadPreviousCurve));

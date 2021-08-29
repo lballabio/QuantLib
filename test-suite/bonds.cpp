@@ -921,7 +921,7 @@ void BondTest::testCachedFloating() {
     setCouponPricer(bond1.cashflows(),pricer);
 
     Real cachedPrice1;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!Settings::instance().iborCouponSettings().usingAtParCoupons())
         cachedPrice1 = 99.874645;
     else
         cachedPrice1 = 99.874646;
@@ -952,7 +952,7 @@ void BondTest::testCachedFloating() {
     setCouponPricer(bond2.cashflows(),pricer);
 
     Real cachedPrice2;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!Settings::instance().iborCouponSettings().usingAtParCoupons())
         cachedPrice2 = 97.955904;
     else
         cachedPrice2 = 97.955904;
@@ -987,7 +987,7 @@ void BondTest::testCachedFloating() {
     setCouponPricer(bond3.cashflows(),pricer);
 
     Real cachedPrice3;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!Settings::instance().iborCouponSettings().usingAtParCoupons())
         cachedPrice3 = 98.495458;
     else
         cachedPrice3 = 98.495459;
@@ -1014,7 +1014,7 @@ void BondTest::testCachedFloating() {
     setCouponPricer(bond4.cashflows(), pricer);
 
     Real cachedPrice4;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!Settings::instance().iborCouponSettings().usingAtParCoupons())
         cachedPrice4 = 98.892346;
     else
         cachedPrice4 = 98.892055;

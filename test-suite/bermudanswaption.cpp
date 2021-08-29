@@ -150,7 +150,7 @@ void BermudanSwaptionTest::testCachedValues() {
 
     Real itmValue,    atmValue,    otmValue;
     Real itmValueFdm, atmValueFdm, otmValueFdm;
-    if (!IborCoupon::usingAtParCoupons()) {
+    if (!Settings::instance().iborCouponSettings().usingAtParCoupons()) {
         itmValue    = 42.2413,    atmValue = 12.8789,    otmValue = 2.4759;
         itmValueFdm = 42.2111, atmValueFdm = 12.8879, otmValueFdm = 2.44443;
     } else {
@@ -206,7 +206,7 @@ void BermudanSwaptionTest::testCachedValues() {
     exercise =
         ext::shared_ptr<Exercise>(new BermudanExercise(exerciseDates));
 
-    if (!IborCoupon::usingAtParCoupons()) {
+    if (!Settings::instance().iborCouponSettings().usingAtParCoupons()) {
         itmValue = 42.1917; atmValue = 12.7788; otmValue = 2.4388;
     } else {
         itmValue = 42.1974; atmValue = 12.7825; otmValue = 2.4399;
@@ -273,7 +273,7 @@ void BermudanSwaptionTest::testCachedG2Values() {
         ext::make_shared<TreeSwaptionEngine>(g2Model, 50));
 
     Real expectedFdm[5], expectedTree[5];
-    if (!IborCoupon::usingAtParCoupons()) {
+    if (!Settings::instance().iborCouponSettings().usingAtParCoupons()) {
         Real tmpExpectedFdm[]  = { 103.231, 54.6519, 20.0475, 5.26941, 1.07097 };
         Real tmpExpectedTree[] = { 103.253, 54.6685, 20.1399, 5.40517, 1.10642 };
         std::copy(tmpExpectedFdm,  tmpExpectedFdm + 5,  expectedFdm);

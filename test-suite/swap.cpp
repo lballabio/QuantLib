@@ -316,7 +316,7 @@ void SwapTest::testCachedValue() {
                     << "    expected:   " << 2);
 
     Real cachedNPV;  
-    if (IborCoupon::usingAtParCoupons())
+    if (Settings::instance().iborCouponSettings().usingAtParCoupons())
         cachedNPV = -5.872863313209;
     else
         cachedNPV = -5.872342992212;
