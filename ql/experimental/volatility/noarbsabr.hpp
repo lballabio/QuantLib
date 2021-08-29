@@ -54,6 +54,7 @@
 #include <ql/types.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 
+#include <array>
 #include <vector>
 
 namespace QuantLib {
@@ -137,7 +138,8 @@ class NoArbSabrModel {
 
 namespace detail {
 
-extern "C" const unsigned long sabrabsprob[1209600];
+static constexpr std::size_t SabrAbsProbArraySize = 1209600;
+const std::array<unsigned long, SabrAbsProbArraySize> & SabrAbsProbArray();
 
 class D0Interpolator {
   public:

@@ -222,6 +222,8 @@ Real D0Interpolator::operator()() const {
     // we do not need to check the indices here, because this is already
     // done in the NoArbSabr constructor
 
+    const std::array<unsigned long, SabrAbsProbArraySize> & sabrabsprob =
+        SabrAbsProbArray();
     Size tauInd = std::upper_bound(tauG_.begin(), tauG_.end(), expiryTime_) -
                                    tauG_.begin();
     if (tauInd == tauG_.size())
