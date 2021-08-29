@@ -119,30 +119,8 @@ namespace QuantLib {
            operations (we use average=0 and sigma=1 most of the
            time). The speed difference is noticeable.
         */
-        static Real standard_value(Real x) {
-            Real z;
-            if (x < x_low_ || x_high_ < x) {
-                z = tail_value(x);
-            } else {
-                z = x - 0.5;
-                Real r = z*z;
-                z = (((((a1_*r+a2_)*r+a3_)*r+a4_)*r+a5_)*r+a6_)*z /
-                    (((((b1_*r+b2_)*r+b3_)*r+b4_)*r+b5_)*r+1.0);
-            }
+        static Real standard_value(Real x);
 
-            // The relative error of the approximation has absolute value less
-            // than 1.15e-9.  One iteration of Halley's rational method (third
-            // order) gives full machine precision.
-            // #define REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
-            #ifdef REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
-            // error (f_(z) - x) divided by the cumulative's derivative
-            const Real r = (f_(z) - x) * M_SQRT2 * M_SQRTPI * exp(0.5 * z*z);
-            //  Halley's method
-            z -= r/(1+0.5*z*r);
-            #endif
-
-            return z;
-        }
       private:
         /* Handling tails moved into a separate method, which should
            make the inlining of operator() and standard_value method
@@ -150,35 +128,8 @@ namespace QuantLib {
            inlined.
         */
         static Real tail_value(Real x);
-        #if defined(QL_PATCH_SOLARIS)
         CumulativeNormalDistribution f_;
-        #else
-        static const CumulativeNormalDistribution f_;
-        #endif
         Real average_, sigma_;
-        static const Real a1_;
-        static const Real a2_;
-        static const Real a3_;
-        static const Real a4_;
-        static const Real a5_;
-        static const Real a6_;
-        static const Real b1_;
-        static const Real b2_;
-        static const Real b3_;
-        static const Real b4_;
-        static const Real b5_;
-        static const Real c1_;
-        static const Real c2_;
-        static const Real c3_;
-        static const Real c4_;
-        static const Real c5_;
-        static const Real c6_;
-        static const Real d1_;
-        static const Real d2_;
-        static const Real d3_;
-        static const Real d4_;
-        static const Real x_low_;
-        static const Real x_high_;
     };
 
     // backward compatibility
@@ -215,23 +166,6 @@ namespace QuantLib {
         Real operator()(Real x) const;
       private:
         Real average_, sigma_;
-        static const Real a0_;
-        static const Real a1_;
-        static const Real a2_;
-        static const Real a3_;
-        static const Real b0_;
-        static const Real b1_;
-        static const Real b2_;
-        static const Real b3_;
-        static const Real c0_;
-        static const Real c1_;
-        static const Real c2_;
-        static const Real c3_;
-        static const Real c4_;
-        static const Real c5_;
-        static const Real c6_;
-        static const Real c7_;
-        static const Real c8_;
     };
 
     //! Maddock's Inverse cumulative normal distribution class

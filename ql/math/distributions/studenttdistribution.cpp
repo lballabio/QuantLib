@@ -24,9 +24,8 @@
 namespace QuantLib {
 
     Real StudentDistribution::operator()(Real x) const {
-        static GammaFunction G;
-        Real g1 = std::exp (G.logValue(0.5 * (n_ + 1)));
-        Real g2 = std::exp (G.logValue(0.5 * n_));
+        Real g1 = std::exp (GammaFunction::logValue(0.5 * (n_ + 1)));
+        Real g2 = std::exp (GammaFunction::logValue(0.5 * n_));
 
         Real power = std::pow (1. + x*x / n_, 0.5 * (n_ + 1));
 

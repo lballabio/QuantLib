@@ -36,6 +36,66 @@
 
 namespace QuantLib {
 
+    namespace { // file scope
+
+        namespace InverseCumulativeNormalPrivate {
+
+            // Coefficients for the rational approximation.
+            constexpr Real a1_ = -3.969683028665376e+01;
+            constexpr Real a2_ =  2.209460984245205e+02;
+            constexpr Real a3_ = -2.759285104469687e+02;
+            constexpr Real a4_ =  1.383577518672690e+02;
+            constexpr Real a5_ = -3.066479806614716e+01;
+            constexpr Real a6_ =  2.506628277459239e+00;
+
+            constexpr Real b1_ = -5.447609879822406e+01;
+            constexpr Real b2_ =  1.615858368580409e+02;
+            constexpr Real b3_ = -1.556989798598866e+02;
+            constexpr Real b4_ =  6.680131188771972e+01;
+            constexpr Real b5_ = -1.328068155288572e+01;
+
+            constexpr Real c1_ = -7.784894002430293e-03;
+            constexpr Real c2_ = -3.223964580411365e-01;
+            constexpr Real c3_ = -2.400758277161838e+00;
+            constexpr Real c4_ = -2.549732539343734e+00;
+            constexpr Real c5_ =  4.374664141464968e+00;
+            constexpr Real c6_ =  2.938163982698783e+00;
+
+            constexpr Real d1_ =  7.784695709041462e-03;
+            constexpr Real d2_ =  3.224671290700398e-01;
+            constexpr Real d3_ =  2.445134137142996e+00;
+            constexpr Real d4_ =  3.754408661907416e+00;
+
+            // Limits of the approximation regions
+            constexpr Real x_low_ = 0.02425;
+            constexpr Real x_high_= 1.0 - x_low_;
+        }
+
+        namespace MoroInverseCumulativeNormalPrivate {
+
+            constexpr Real a0_ =  2.50662823884;
+            constexpr Real a1_ =-18.61500062529;
+            constexpr Real a2_ = 41.39119773534;
+            constexpr Real a3_ =-25.44106049637;
+
+            constexpr Real b0_ = -8.47351093090;
+            constexpr Real b1_ = 23.08336743743;
+            constexpr Real b2_ =-21.06224101826;
+            constexpr Real b3_ =  3.13082909833;
+
+            constexpr Real c0_ = 0.3374754822726147;
+            constexpr Real c1_ = 0.9761690190917186;
+            constexpr Real c2_ = 0.1607979714918209;
+            constexpr Real c3_ = 0.0276438810333863;
+            constexpr Real c4_ = 0.0038405729373609;
+            constexpr Real c5_ = 0.0003951896511919;
+            constexpr Real c6_ = 0.0000321767881768;
+            constexpr Real c7_ = 0.0000002888167364;
+            constexpr Real c8_ = 0.0000003960315187;
+        }
+
+    } // namespace { // file scope
+
     Real CumulativeNormalDistribution::operator()(Real z) const {
         //QL_REQUIRE(!(z >= average_ && 2.0*average_-z > average_),
         //           "not a real number. ");
@@ -63,41 +123,36 @@ namespace QuantLib {
         return result;
     }
 
-    #if !defined(QL_PATCH_SOLARIS)
-    const CumulativeNormalDistribution InverseCumulativeNormal::f_;
-    #endif
+    Real InverseCumulativeNormal::standard_value(Real x) {
+        using namespace InverseCumulativeNormalPrivate;
 
-    // Coefficients for the rational approximation.
-    const Real InverseCumulativeNormal::a1_ = -3.969683028665376e+01;
-    const Real InverseCumulativeNormal::a2_ =  2.209460984245205e+02;
-    const Real InverseCumulativeNormal::a3_ = -2.759285104469687e+02;
-    const Real InverseCumulativeNormal::a4_ =  1.383577518672690e+02;
-    const Real InverseCumulativeNormal::a5_ = -3.066479806614716e+01;
-    const Real InverseCumulativeNormal::a6_ =  2.506628277459239e+00;
+        Real z;
+        if (x < x_low_ || x_high_ < x) {
+            z = tail_value(x);
+        } else {
+            z = x - 0.5;
+            Real r = z*z;
+            z = (((((a1_*r+a2_)*r+a3_)*r+a4_)*r+a5_)*r+a6_)*z /
+                (((((b1_*r+b2_)*r+b3_)*r+b4_)*r+b5_)*r+1.0);
+        }
 
-    const Real InverseCumulativeNormal::b1_ = -5.447609879822406e+01;
-    const Real InverseCumulativeNormal::b2_ =  1.615858368580409e+02;
-    const Real InverseCumulativeNormal::b3_ = -1.556989798598866e+02;
-    const Real InverseCumulativeNormal::b4_ =  6.680131188771972e+01;
-    const Real InverseCumulativeNormal::b5_ = -1.328068155288572e+01;
+        // The relative error of the approximation has absolute value less
+        // than 1.15e-9.  One iteration of Halley's rational method (third
+        // order) gives full machine precision.
+        // #define REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
+        #ifdef REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
+        // error (f_(z) - x) divided by the cumulative's derivative
+        const Real r = (f_(z) - x) * M_SQRT2 * M_SQRTPI * exp(0.5 * z*z);
+        //  Halley's method
+        z -= r/(1+0.5*z*r);
+        #endif
 
-    const Real InverseCumulativeNormal::c1_ = -7.784894002430293e-03;
-    const Real InverseCumulativeNormal::c2_ = -3.223964580411365e-01;
-    const Real InverseCumulativeNormal::c3_ = -2.400758277161838e+00;
-    const Real InverseCumulativeNormal::c4_ = -2.549732539343734e+00;
-    const Real InverseCumulativeNormal::c5_ =  4.374664141464968e+00;
-    const Real InverseCumulativeNormal::c6_ =  2.938163982698783e+00;
-
-    const Real InverseCumulativeNormal::d1_ =  7.784695709041462e-03;
-    const Real InverseCumulativeNormal::d2_ =  3.224671290700398e-01;
-    const Real InverseCumulativeNormal::d3_ =  2.445134137142996e+00;
-    const Real InverseCumulativeNormal::d4_ =  3.754408661907416e+00;
-
-    // Limits of the approximation regions
-    const Real InverseCumulativeNormal::x_low_ = 0.02425;
-    const Real InverseCumulativeNormal::x_high_= 1.0 - x_low_;
+        return z;
+    }
 
     Real InverseCumulativeNormal::tail_value(Real x) {
+        using namespace InverseCumulativeNormalPrivate;
+
         if (x <= 0.0 || x >= 1.0) {
             // try to recover if due to numerical error
             if (close_enough(x, 1.0)) {
@@ -126,27 +181,9 @@ namespace QuantLib {
         return z;
     }
 
-    const Real MoroInverseCumulativeNormal::a0_ =  2.50662823884;
-    const Real MoroInverseCumulativeNormal::a1_ =-18.61500062529;
-    const Real MoroInverseCumulativeNormal::a2_ = 41.39119773534;
-    const Real MoroInverseCumulativeNormal::a3_ =-25.44106049637;
-
-    const Real MoroInverseCumulativeNormal::b0_ = -8.47351093090;
-    const Real MoroInverseCumulativeNormal::b1_ = 23.08336743743;
-    const Real MoroInverseCumulativeNormal::b2_ =-21.06224101826;
-    const Real MoroInverseCumulativeNormal::b3_ =  3.13082909833;
-
-    const Real MoroInverseCumulativeNormal::c0_ = 0.3374754822726147;
-    const Real MoroInverseCumulativeNormal::c1_ = 0.9761690190917186;
-    const Real MoroInverseCumulativeNormal::c2_ = 0.1607979714918209;
-    const Real MoroInverseCumulativeNormal::c3_ = 0.0276438810333863;
-    const Real MoroInverseCumulativeNormal::c4_ = 0.0038405729373609;
-    const Real MoroInverseCumulativeNormal::c5_ = 0.0003951896511919;
-    const Real MoroInverseCumulativeNormal::c6_ = 0.0000321767881768;
-    const Real MoroInverseCumulativeNormal::c7_ = 0.0000002888167364;
-    const Real MoroInverseCumulativeNormal::c8_ = 0.0000003960315187;
-
     Real MoroInverseCumulativeNormal::operator()(Real x) const {
+        using namespace MoroInverseCumulativeNormalPrivate;
+
         QL_REQUIRE(x > 0.0 && x < 1.0,
                    "MoroInverseCumulativeNormal(" << x
                    << ") undefined: must be 0<x<1");

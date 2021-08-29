@@ -61,10 +61,8 @@ namespace QuantLib {
         typedef Real argument_type;
         typedef Real result_type;
 
-        Real value(Real x) const;
-        Real logValue(Real x) const;
-      private:
-        static const Real c1_, c2_, c3_, c4_, c5_, c6_;
+        static Real value(Real x);
+        static Real logValue(Real x);
     };
 
 }

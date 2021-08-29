@@ -52,7 +52,7 @@ namespace QuantLib {
         }
         else {
             t = std::exp(f2*std::log(x2) - x2 -
-                         GammaFunction().logValue(f2 + 1));
+                         GammaFunction::logValue(f2 + 1));
         }
 
         Real ans = v*t;

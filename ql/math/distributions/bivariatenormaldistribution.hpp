@@ -63,7 +63,6 @@ namespace QuantLib {
         Real operator()(Real a, Real b) const;
       private:
         Real rho_, rho2_;
-        static const Real x_[], y_[];
     };
 
 

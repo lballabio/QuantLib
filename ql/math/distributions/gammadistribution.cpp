@@ -21,10 +21,24 @@
 
 namespace QuantLib {
 
+    namespace { // file scope
+
+        namespace GammaFunctionPrivate {
+
+            constexpr Real c1_ = 76.18009172947146;
+            constexpr Real c2_ = -86.50532032941677;
+            constexpr Real c3_ = 24.01409824083091;
+            constexpr Real c4_ = -1.231739572450155;
+            constexpr Real c5_ = 0.1208650973866179e-2;
+            constexpr Real c6_ = -0.5395239384953e-5;
+        }
+
+    } // namespace { // file scope
+
     Real CumulativeGammaDistribution::operator()(Real x) const {
         if (x <= 0.0) return 0.0;
 
-        Real gln = GammaFunction().logValue(a_);
+        Real gln = GammaFunction::logValue(a_);
 
         if (x<(a_+1.0)) {
             Real ap = a_;
@@ -59,14 +73,9 @@ namespace QuantLib {
         QL_FAIL("too few iterations");
     }
 
-    const Real GammaFunction::c1_ = 76.18009172947146;
-    const Real GammaFunction::c2_ = -86.50532032941677;
-    const Real GammaFunction::c3_ = 24.01409824083091;
-    const Real GammaFunction::c4_ = -1.231739572450155;
-    const Real GammaFunction::c5_ = 0.1208650973866179e-2;
-    const Real GammaFunction::c6_ = -0.5395239384953e-5;
+    Real GammaFunction::logValue(Real x) {
+        using namespace GammaFunctionPrivate;
 
-    Real GammaFunction::logValue(Real x) const {
         QL_REQUIRE(x>0.0, "positive argument required");
         Real temp = x + 5.5;
         temp -= (x + 0.5)*std::log(temp);
@@ -81,7 +90,7 @@ namespace QuantLib {
         return -temp+std::log(2.5066282746310005*ser/x);
     }
 
-    Real GammaFunction::value(Real x) const {
+    Real GammaFunction::value(Real x) {
         if (x >= 1.0) {
             return std::exp(logValue(x));
         }

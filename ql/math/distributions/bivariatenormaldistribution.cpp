@@ -25,23 +25,30 @@
 
 namespace QuantLib {
 
-    // Drezner 1978
+    namespace { // file scope
 
-    const Real BivariateCumulativeNormalDistributionDr78::x_[] = {
-        0.24840615,
-        0.39233107,
-        0.21141819,
-        0.03324666,
-        0.00082485334
-    };
+        namespace BivariateCumulativeNormalDistributionDr78Private {
 
-    const Real BivariateCumulativeNormalDistributionDr78::y_[] = {
-        0.10024215,
-        0.48281397,
-        1.06094980,
-        1.77972940,
-        2.66976040000
-    };
+            // Drezner 1978
+
+            constexpr Real x_[] = {
+                0.24840615,
+                0.39233107,
+                0.21141819,
+                0.03324666,
+                0.00082485334
+            };
+
+            constexpr Real y_[] = {
+                0.10024215,
+                0.48281397,
+                1.06094980,
+                1.77972940,
+                2.66976040000
+            };
+        }
+
+    } // namespace { // file scope
 
     BivariateCumulativeNormalDistributionDr78::
     BivariateCumulativeNormalDistributionDr78(Real rho)
@@ -55,6 +62,8 @@ namespace QuantLib {
 
     Real BivariateCumulativeNormalDistributionDr78::operator()(Real a,
                                                                Real b) const {
+
+        using namespace BivariateCumulativeNormalDistributionDr78Private;
 
         CumulativeNormalDistribution cumNormalDist;
         Real CumNormDistA = cumNormalDist(a);
