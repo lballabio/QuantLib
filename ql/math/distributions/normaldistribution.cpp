@@ -22,6 +22,7 @@
 
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/comparison.hpp>
+#include <ql/math/errorfunction.hpp>
 
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
@@ -101,7 +102,7 @@ namespace QuantLib {
         //           "not a real number. ");
         z = (z - average_) / sigma_;
 
-        Real result = 0.5 * ( 1.0 + errorFunction_( z*M_SQRT_2 ) );
+        Real result = 0.5 * ( 1.0 + ErrorFunction::erf( z*M_SQRT_2 ) );
         if (result<=1e-8) { //todo: investigate the threshold level
             // Asymptotic expansion for very negative z following (26.2.12)
             // on page 408 in M. Abramowitz and A. Stegun,

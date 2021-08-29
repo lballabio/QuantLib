@@ -26,7 +26,7 @@
 #ifndef quantlib_normal_distribution_hpp
 #define quantlib_normal_distribution_hpp
 
-#include <ql/math/errorfunction.hpp>
+#include <ql/types.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -81,7 +81,6 @@ namespace QuantLib {
       private:
         Real average_, sigma_;
         NormalDistribution gaussian_;
-        ErrorFunction errorFunction_;
     };
 
 

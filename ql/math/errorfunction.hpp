@@ -38,19 +38,9 @@ namespace QuantLib {
         typedef Real argument_type;
         typedef Real result_type;
 
-        ErrorFunction() = default;
         // function
+        static Real erf(Real x);
         Real operator()(Real x) const;
-      private:
-        static const Real tiny, one, erx, efx, efx8;
-        static const Real pp0, pp1,pp2,pp3,pp4;
-        static const Real qq1,qq2,qq3,qq4,qq5;
-        static const Real pa0,pa1,pa2,pa3,pa4,pa5,pa6;
-        static const Real qa1,qa2,qa3,qa4,qa5,qa6;
-        static const Real ra0,ra1,ra2,ra3,ra4,ra5,ra6,ra7;
-        static const Real sa1,sa2,sa3,sa4,sa5,sa6,sa7,sa8;
-        static const Real rb0,rb1,rb2,rb3,rb4,rb5,rb6;
-        static const Real sb1,sb2,sb3,sb4,sb5,sb6,sb7;
     };
 
 }
