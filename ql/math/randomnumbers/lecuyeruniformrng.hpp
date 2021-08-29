@@ -50,17 +50,6 @@ namespace QuantLib {
         mutable long temp1, temp2;
         mutable long y;
         mutable std::vector<long> buffer;
-        static const long m1;
-        static const long a1;
-        static const long q1;
-        static const long r1;
-        static const long m2;
-        static const long a2;
-        static const long q2;
-        static const long r2;
-        static const int bufferSize;
-        static const long bufferNormalizer;
-        static const long double maxRandom;
     };
 
 }

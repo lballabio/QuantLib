@@ -20,32 +20,36 @@
 
 #include <ql/math/randomnumbers/primitivepolynomials.hpp>
 
-static const long PrimitivePolynomialDegree01[]={
+namespace QuantLib {
+
+namespace { // file scope
+
+constexpr long PrimitivePolynomialDegree01[]={
 0, /* x+1 (1)(1) */
 -1 };
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_01
-static const long PrimitivePolynomialDegree02[]={
+constexpr long PrimitivePolynomialDegree02[]={
 1, /* x^2+x+1 (1)1(1) */
 -1 };
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_02
-static const long PrimitivePolynomialDegree03[]={
+constexpr long PrimitivePolynomialDegree03[]={
 1, /* x^3    +x+1 (1)01(1) */
 2, /* x^3+x^2  +1 (1)10(1) */
 -1 };
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_03
-static const long PrimitivePolynomialDegree04[]={
+constexpr long PrimitivePolynomialDegree04[]={
 1, /* x^4+       +x+1 (1)001(1) */
 4, /* x^4+x^3+     +1 (1)100(1) */
 -1 };
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_04
-static const long PrimitivePolynomialDegree05[]={
+constexpr long PrimitivePolynomialDegree05[]={
 2,  /* x^5        +x^2  +1 (1)0010(1) */
 4,  /* x^5    +x^3      +1 (1)0100(1) */
 7,  /* x^5    +x^3+x^2+x+1 (1)0111(1) */
@@ -56,7 +60,7 @@ static const long PrimitivePolynomialDegree05[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_05
-static const long PrimitivePolynomialDegree06[]={
+constexpr long PrimitivePolynomialDegree06[]={
 1,  /* x^6                +x+1 (1)00001(1) */
 13, /* x^6    +x^4+x^3    +x+1 (1)01101(1) */
 16, /* x^6+x^5              +1 (1)10000(1) */
@@ -67,7 +71,7 @@ static const long PrimitivePolynomialDegree06[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_06
-static const long PrimitivePolynomialDegree07[]={
+constexpr long PrimitivePolynomialDegree07[]={
 1,  /* x^7                    +x+1 (1)000001(1) */
 4,  /* x^7            +x^3      +1 (1)000100(1) */
 7,  /* x^7            +x^3+x^2+x+1 (1)000111(1) */
@@ -91,7 +95,7 @@ static const long PrimitivePolynomialDegree07[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_07
-static const long PrimitivePolynomialDegree08[]={
+constexpr long PrimitivePolynomialDegree08[]={
 14,
 21,
 22,
@@ -112,7 +116,7 @@ static const long PrimitivePolynomialDegree08[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_08
-static const long PrimitivePolynomialDegree09[]={
+constexpr long PrimitivePolynomialDegree09[]={
 8,
 13,
 16,
@@ -165,7 +169,7 @@ static const long PrimitivePolynomialDegree09[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_09
-static const long PrimitivePolynomialDegree10[]={
+constexpr long PrimitivePolynomialDegree10[]={
 4,
 13,
 19,
@@ -230,7 +234,7 @@ static const long PrimitivePolynomialDegree10[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_10
-static const long PrimitivePolynomialDegree11[]={
+constexpr long PrimitivePolynomialDegree11[]={
 2,
 11,
 21,
@@ -411,7 +415,7 @@ static const long PrimitivePolynomialDegree11[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_11
-static const long PrimitivePolynomialDegree12[]={
+constexpr long PrimitivePolynomialDegree12[]={
 41,
 52,
 61,
@@ -560,7 +564,7 @@ static const long PrimitivePolynomialDegree12[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_12
-static const long PrimitivePolynomialDegree13[]={
+constexpr long PrimitivePolynomialDegree13[]={
 13,
 19,
 26,
@@ -1195,7 +1199,7 @@ static const long PrimitivePolynomialDegree13[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_13
-static const long PrimitivePolynomialDegree14[]={
+constexpr long PrimitivePolynomialDegree14[]={
 21,
 28,
 41,
@@ -1956,7 +1960,7 @@ static const long PrimitivePolynomialDegree14[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_14
-static const long PrimitivePolynomialDegree15[]={
+constexpr long PrimitivePolynomialDegree15[]={
 1,
 8,
 11,
@@ -3761,7 +3765,7 @@ static const long PrimitivePolynomialDegree15[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_15
-static const long PrimitivePolynomialDegree16[]={
+constexpr long PrimitivePolynomialDegree16[]={
 22,
 28,
 31,
@@ -5814,7 +5818,7 @@ static const long PrimitivePolynomialDegree16[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_16
-static const long PrimitivePolynomialDegree17[]={
+constexpr long PrimitivePolynomialDegree17[]={
 4,
 7,
 16,
@@ -13529,7 +13533,7 @@ static const long PrimitivePolynomialDegree17[]={
 #endif
 
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_17
-static const long PrimitivePolynomialDegree18[]={
+constexpr long PrimitivePolynomialDegree18[]={
 19,
 31,
 38,
@@ -21314,13 +21318,7 @@ static const long PrimitivePolynomialDegree18[]={
 #error too many polynomials requested. not provided by this file
 #endif
 
-#ifdef __cplusplus
-
-extern "C"
-
-#endif
-
-const long *const PrimitivePolynomials[N_MAX_DEGREE]={
+constexpr std::array<const long *, N_MAX_DEGREE> PrimitivePolynomialsImpl = {
    PrimitivePolynomialDegree01
 #if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_01
  , PrimitivePolynomialDegree02
@@ -21374,3 +21372,12 @@ const long *const PrimitivePolynomials[N_MAX_DEGREE]={
  , PrimitivePolynomialDegree18
 #endif
 };
+
+} // namespace { // file scope
+
+const std::array<const long *, N_MAX_DEGREE> & PrimitivePolynomials()
+{
+    return PrimitivePolynomialsImpl;
+}
+
+} // namespace QuantLib;

@@ -20,6 +20,8 @@
 #ifndef primitivepolynomials_hpp
 #define primitivepolynomials_hpp
 
+#include <array>
+
 /* This file is provided for the use with Sobol' sequences of higher
  * dimensions. The dimensionality of the Sobol' sequence can be extended to
  * virtually any size you ever might need by the aid of the table of
@@ -241,22 +243,7 @@
 # define N_MAX_DEGREE 27
 #endif
 
-/* Microsoft Visual C++ 6.0 */
-#if defined(_MSC_VER)
-    /* disable useless warning C4049
-       compiler limit : terminating line number emission
-       No line number support is available for file with more
-       than 64K source lines. */
-    #pragma warning(disable: 4049)
-#endif
-
-extern
-
-#ifdef __cplusplus
-
-"C"
-
-#endif
+namespace QuantLib {
 
 /*! You can access the following array as in PrimitivePolynomials[i][j]
     with i and j counting from 0 in C convention. PrimitivePolynomials[i][j]
@@ -264,6 +251,9 @@ extern
     i+1. Each one-dimensional array of primitive polynomials of a given
     degree is terminated with an entry of -1. Accessing beyond this entry
     will result in a memory violation and must be avoided.  */
-const long *const PrimitivePolynomials[N_MAX_DEGREE];
+
+const std::array<const long *, N_MAX_DEGREE> & PrimitivePolynomials();
+
+} // namespace QuantLib
 
 #endif

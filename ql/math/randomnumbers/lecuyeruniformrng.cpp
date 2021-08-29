@@ -22,25 +22,33 @@
 
 namespace QuantLib {
 
-    const long LecuyerUniformRng::m1 = 2147483563L;
-    const long LecuyerUniformRng::a1 = 40014L;
-    const long LecuyerUniformRng::q1 = 53668L;
-    const long LecuyerUniformRng::r1 = 12211L;
+    namespace { // file scope
 
-    const long LecuyerUniformRng::m2 = 2147483399L;
-    const long LecuyerUniformRng::a2 = 40692L;
-    const long LecuyerUniformRng::q2 = 52774L;
-    const long LecuyerUniformRng::r2 = 3791L;
+        namespace LecuyerUniformRngPrivate {
 
-    const int LecuyerUniformRng::bufferSize = 32;
+            constexpr long m1 = 2147483563L;
+            constexpr long a1 = 40014L;
+            constexpr long q1 = 53668L;
+            constexpr long r1 = 12211L;
 
-    // int(1+m1/bufferSize) = int(1+(m1-1)/bufferSize)
-    const long LecuyerUniformRng::bufferNormalizer = 67108862L;
+            constexpr long m2 = 2147483399L;
+            constexpr long a2 = 40692L;
+            constexpr long q2 = 52774L;
+            constexpr long r2 = 3791L;
 
-    const long double LecuyerUniformRng::maxRandom = 1.0-QL_EPSILON;
+            constexpr int bufferSize = 32;
+
+            // int(1+m1/bufferSize) = int(1+(m1-1)/bufferSize)
+            constexpr long bufferNormalizer = 67108862L;
+
+            constexpr long double maxRandom = 1.0-QL_EPSILON;
+        }
+
+    } // namespace { // file scope
 
     LecuyerUniformRng::LecuyerUniformRng(long seed)
-    : buffer(LecuyerUniformRng::bufferSize) {
+    : buffer(LecuyerUniformRngPrivate::bufferSize) {
+        using namespace LecuyerUniformRngPrivate;
         // Need to prevent seed=0, so use seed=0 to have a "random" seed
         temp2 = temp1 = (seed != 0 ? seed : SeedGenerator::instance().get());
         // Load the shuffle table (after 8 warm-ups)
@@ -56,6 +64,7 @@ namespace QuantLib {
     }
 
     LecuyerUniformRng::sample_type LecuyerUniformRng::next() const {
+        using namespace LecuyerUniformRngPrivate;
         long k = temp1/q1;
         // Compute temp1=(a1*temp1) % m1
         // without overflows (Schrage's method)

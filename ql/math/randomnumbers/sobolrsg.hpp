@@ -121,19 +121,10 @@ namespace QuantLib {
         /*! skip to the n-th sample in the low-discrepancy sequence */
         void skipTo(boost::uint_least32_t n);
         const std::vector<boost::uint_least32_t>& nextInt32Sequence() const;
-
-        const SobolRsg::sample_type& nextSequence() const {
-            const std::vector<boost::uint_least32_t>& v = nextInt32Sequence();
-            // normalize to get a double in (0,1)
-            for (Size k=0; k<dimensionality_; ++k)
-                sequence_.value[k] = v[k] * normalizationFactor_;
-            return sequence_;
-        }
+        const sample_type& nextSequence() const;
         const sample_type& lastSequence() const { return sequence_; }
         Size dimension() const { return dimensionality_; }
       private:
-        static const int bits_;
-        static const double normalizationFactor_;
         Size dimensionality_;
         mutable boost::uint_least32_t sequenceCounter_;
         mutable bool firstDraw_;

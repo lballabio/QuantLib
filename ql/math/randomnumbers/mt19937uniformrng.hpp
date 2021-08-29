@@ -39,9 +39,6 @@ namespace QuantLib {
               checking them against known good results.
     */
     class MersenneTwisterUniformRng {
-      private:
-        static const Size N = 624; // state size
-        static const Size M = 397; // shift size
       public:
         typedef Sample<Real> sample_type;
         /*! if the given seed is 0, a random seed will be chosen
@@ -57,25 +54,13 @@ namespace QuantLib {
             return (Real(nextInt32()) + 0.5)/4294967296.0;
         }
         //! return a random integer in the [0,0xffffffff]-interval
-        unsigned long nextInt32() const  {
-            if (mti==N)
-                twist(); /* generate N words at a time */
-
-            unsigned long y = mt[mti++];
-
-            /* Tempering */
-            y ^= (y >> 11);
-            y ^= (y << 7) & 0x9d2c5680UL;
-            y ^= (y << 15) & 0xefc60000UL;
-            y ^= (y >> 18);
-            return y;
-        }
+        unsigned long nextInt32() const;
       private:
+        static constexpr Size N = 624; // state size
         void seedInitialization(unsigned long seed);
         void twist() const;
         mutable unsigned long mt[N];
         mutable Size mti;
-        static const unsigned long MATRIX_A, UPPER_MASK, LOWER_MASK;
     };
 
 }

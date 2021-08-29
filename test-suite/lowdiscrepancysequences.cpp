@@ -61,6 +61,7 @@ void LowDiscrepancyTest::testPolynomialsModuloTwo() {
             120032,  356960,  276480, 1296000, 1719900, 4202496
     };
 
+    const auto & primitive_polynomials = PrimitivePolynomials();
     Size i=0,j=0,n=0;
     BigInteger polynomial=0;
     while (n<PPMT_MAX_DIM || polynomial!=-1) {
@@ -68,7 +69,7 @@ void LowDiscrepancyTest::testPolynomialsModuloTwo() {
             ++i; // Increase degree index
             j=0; // Reset index of polynomial in degree.
         }
-        polynomial = PrimitivePolynomials[i][j];
+        polynomial = primitive_polynomials[i][j];
         if (polynomial==-1) {
             --n;
             if (j!=jj[i]) {

@@ -51,7 +51,6 @@ namespace QuantLib {
           uniformly chosen from (0.0,1.0) */
         sample_type next() const;
       private:
-        static const int KK, LL, TT, QUALITY;
         mutable std::vector<double> ranf_arr_buf;
         mutable size_t ranf_arr_ptr, ranf_arr_sentinel;
         mutable std::vector<double> ran_u;

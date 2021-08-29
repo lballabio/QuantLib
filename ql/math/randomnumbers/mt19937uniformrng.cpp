@@ -71,19 +71,30 @@
 
 namespace QuantLib {
 
-    // constant vector a
-    const unsigned long MersenneTwisterUniformRng::MATRIX_A = 0x9908b0dfUL;
-    // most significant w-r bits
-    const unsigned long MersenneTwisterUniformRng::UPPER_MASK=0x80000000UL;
-    // least significant r bits
-    const unsigned long MersenneTwisterUniformRng::LOWER_MASK=0x7fffffffUL;
+    namespace { // file scope
 
+        namespace MersenneTwisterUniformRngPrivate {
+
+            // shift size
+            constexpr Size M = 397;
+            // constant vector a
+            constexpr unsigned long MATRIX_A = 0x9908b0dfUL;
+            // most significant w-r bits
+            constexpr unsigned long UPPER_MASK=0x80000000UL;
+            // least significant r bits
+            constexpr unsigned long LOWER_MASK=0x7fffffffUL;
+
+            constexpr unsigned long mag01[2]={0x0UL, MATRIX_A};
+        }
+
+    } // namespace { // file scope
 
     MersenneTwisterUniformRng::MersenneTwisterUniformRng(unsigned long seed) {
         seedInitialization(seed);
     }
 
     void MersenneTwisterUniformRng::seedInitialization(unsigned long seed) {
+        using namespace MersenneTwisterUniformRngPrivate;
         /* initializes mt with a seed */
         unsigned long s = (seed != 0 ? seed : SeedGenerator::instance().get());
         mt[0]= s & 0xffffffffUL;
@@ -101,6 +112,7 @@ namespace QuantLib {
 
     MersenneTwisterUniformRng::MersenneTwisterUniformRng(
                                       const std::vector<unsigned long>& seeds) {
+        using namespace MersenneTwisterUniformRngPrivate;
         seedInitialization(19650218UL);
         Size i=1, j=0, k = (N>seeds.size() ? N : seeds.size());
         for (; k != 0U; k--) {
@@ -123,7 +135,7 @@ namespace QuantLib {
     }
 
     void MersenneTwisterUniformRng::twist() const {
-        static const unsigned long mag01[2]={0x0UL, MATRIX_A};
+        using namespace MersenneTwisterUniformRngPrivate;
         /* mag01[x] = x * MATRIX_A  for x=0,1 */
         Size kk;
         unsigned long y;
@@ -142,4 +154,18 @@ namespace QuantLib {
         mti = 0;
     }
 
+    unsigned long MersenneTwisterUniformRng::nextInt32() const {
+        using namespace MersenneTwisterUniformRngPrivate;
+        if (mti==N)
+            twist(); /* generate N words at a time */
+
+        unsigned long y = mt[mti++];
+
+        /* Tempering */
+        y ^= (y >> 11);
+        y ^= (y << 7) & 0x9d2c5680UL;
+        y ^= (y << 15) & 0xefc60000UL;
+        y ^= (y >> 18);
+        return y;
+    }
 }
