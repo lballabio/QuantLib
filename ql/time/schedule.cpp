@@ -349,7 +349,7 @@ namespace QuantLib {
 
         // adjustments
         if (*rule_==DateGeneration::ThirdWednesday)
-            for (Size i=1; i<dates_.size()-1; ++i)
+            for (Size i=0; i<dates_.size(); ++i)
                 dates_[i] = Date::nthWeekday(3, Wednesday,
                                              dates_[i].month(),
                                              dates_[i].year());
