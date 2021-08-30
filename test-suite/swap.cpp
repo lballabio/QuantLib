@@ -328,17 +328,21 @@ void SwapTest::testCachedValue() {
 
 void SwapTest::testThirdWednesdayAdjustment() {
 
-    BOOST_TEST_MESSAGE("Testing vanilla-swap calculation of fair fixed rate...");
+    BOOST_TEST_MESSAGE("Testing third wednesday adjustment...");
 
     using namespace swap_test;
 
     CommonVars vars;
 
     ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(1, 0.0, -0.001, DateGeneration::ThirdWednesday);
-    BOOST_REQUIRE(swap->floatingSchedule().startDate() == Date(16, September, 2015),
-                    "Wrong Start Date " << swap->floatingSchedule.startDate());
-    BOOST_REQUIRE(swap->floatingSchedule().endDate() == Date(21, September, 2016),
-                    "Wrong End Date " << swap->floatingSchedule.endDate());
+
+    if (swap->floatingSchedule().startDate() != Date(16, September, 2015)) {
+        BOOST_ERROR("Wrong Start Date " << swap->floatingSchedule().startDate());
+    }
+
+     if (swap->floatingSchedule().endDate() != Date(21, September, 2016)) {
+        BOOST_ERROR("Wrong End Date " << swap->floatingSchedule().endDate());
+    }
 }
 
 test_suite* SwapTest::suite() {
