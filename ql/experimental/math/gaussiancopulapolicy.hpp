@@ -118,9 +118,8 @@ namespace QuantLib {
         }
     private:
         mutable Size numFactors_;
-        // no op =
-        static const NormalDistribution density_;
-        static const CumulativeNormalDistribution cumulative_;
+        NormalDistribution density_;
+        CumulativeNormalDistribution cumulative_;
     };
 
 }
