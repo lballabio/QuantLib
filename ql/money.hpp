@@ -76,14 +76,11 @@ namespace QuantLib {
                                          currency of the first
                                          operand */
         };
-        static ConversionType conversionType;
-        static Currency baseCurrency;
         //@}
       private:
         Decimal value_ = 0.0;
         Currency currency_;
     };
-
 
     // More arithmetics and comparisons
 
