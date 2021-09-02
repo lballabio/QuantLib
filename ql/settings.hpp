@@ -26,6 +26,8 @@
 #ifndef quantlib_settings_hpp
 #define quantlib_settings_hpp
 
+#include <ql/cashflows/iborcouponsettings.hpp>
+#include <ql/moneysettings.hpp>
 #include <ql/patterns/singleton.hpp>
 #include <ql/time/date.hpp>
 #include <ql/utilities/observablevalue.hpp>
@@ -107,8 +109,17 @@ namespace QuantLib {
 
         bool& enforcesTodaysHistoricFixings();
         bool enforcesTodaysHistoricFixings() const;
+
+        const MoneySettings & moneySettings() const;
+        MoneySettings & moneySettings();
+
+        const IborCouponSettings & iborCouponSettings() const;
+        IborCouponSettings & iborCouponSettings();
+
       private:
         DateProxy evaluationDate_;
+        MoneySettings moneySettings_;
+        IborCouponSettings iborCouponSettings_;
         bool includeReferenceDateEvents_ = false;
         boost::optional<bool> includeTodaysCashFlows_;
         bool enforcesTodaysHistoricFixings_ = false;
@@ -122,6 +133,8 @@ namespace QuantLib {
         ~SavedSettings();
       private:
         Date evaluationDate_;
+        MoneySettings moneySettings_;
+        IborCouponSettings iborCouponSettings_;
         bool includeReferenceDateEvents_;
         boost::optional<bool> includeTodaysCashFlows_;
         bool enforcesTodaysHistoricFixings_;
@@ -173,6 +186,22 @@ namespace QuantLib {
 
     inline bool Settings::enforcesTodaysHistoricFixings() const {
         return enforcesTodaysHistoricFixings_;
+    }
+
+    inline const MoneySettings & Settings::moneySettings() const {
+        return moneySettings_;
+    }
+
+    inline MoneySettings & Settings::moneySettings() {
+        return moneySettings_;
+    }
+
+    inline const IborCouponSettings & Settings::iborCouponSettings() const {
+        return iborCouponSettings_;
+    }
+
+    inline IborCouponSettings & Settings::iborCouponSettings() {
+        return iborCouponSettings_;
     }
 
 }

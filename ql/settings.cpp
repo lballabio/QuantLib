@@ -46,24 +46,27 @@ namespace QuantLib {
         evaluationDate_ = Date();
     }
 
-    SavedSettings::SavedSettings()
-    : evaluationDate_(Settings::instance().evaluationDate()),
-      includeReferenceDateEvents_(
-                        Settings::instance().includeReferenceDateEvents()),
-      includeTodaysCashFlows_(Settings::instance().includeTodaysCashFlows()),
-      enforcesTodaysHistoricFixings_(
-                        Settings::instance().enforcesTodaysHistoricFixings()) {}
+    SavedSettings::SavedSettings() {
+        const Settings & settings = Settings::instance();
+        evaluationDate_ = settings.evaluationDate();
+        moneySettings_ = settings.moneySettings();
+        iborCouponSettings_ = settings.iborCouponSettings();
+        includeReferenceDateEvents_ = settings.includeReferenceDateEvents();
+        includeTodaysCashFlows_ = settings.includeTodaysCashFlows();
+        enforcesTodaysHistoricFixings_ = settings.enforcesTodaysHistoricFixings();
+    }
 
     SavedSettings::~SavedSettings() {
         try {
-            if (Settings::instance().evaluationDate() != evaluationDate_)
-                Settings::instance().evaluationDate() = evaluationDate_;
-            Settings::instance().includeReferenceDateEvents() =
-                includeReferenceDateEvents_;
-            Settings::instance().includeTodaysCashFlows() =
-                includeTodaysCashFlows_;
-            Settings::instance().enforcesTodaysHistoricFixings() =
-                enforcesTodaysHistoricFixings_;
+            Settings & settings = Settings::instance();
+            if (settings.evaluationDate() != evaluationDate_)
+                settings.evaluationDate() = evaluationDate_;
+            settings.evaluationDate() = evaluationDate_;
+            settings.moneySettings() = moneySettings_;
+            settings.iborCouponSettings() = iborCouponSettings_;
+            settings.includeReferenceDateEvents() = includeReferenceDateEvents_;
+            settings.includeTodaysCashFlows() = includeTodaysCashFlows_;
+            settings.enforcesTodaysHistoricFixings() = enforcesTodaysHistoricFixings_;
         } catch (...) {
             // nothing we can do except bailing out.
         }
