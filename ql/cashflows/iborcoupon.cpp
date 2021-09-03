@@ -29,8 +29,12 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <utility>
 
+#include <mutex>
+
 namespace QuantLib {
 
+    std::mutex ibor_coupon_mutex;	
+	
     bool IborCoupon::constructorWasNotCalled_ = true;
 
 #ifndef QL_USE_INDEXED_COUPON
@@ -40,15 +44,19 @@ namespace QuantLib {
 #endif
 
     void IborCoupon::createAtParCoupons() {
+	ibor_coupon_mutex.lock();
         QL_ASSERT(constructorWasNotCalled_,
                   "Cannot call this method after the first IborCoupon was created.");
         usingAtParCoupons_ = true;
+	ibor_coupon_mutex.unlock();
     }
 
     void IborCoupon::createIndexedCoupons() {
+	ibor_coupon_mutex.lock();
         QL_ASSERT(constructorWasNotCalled_,
                   "Cannot call this method after the first IborCoupon was created.");
         usingAtParCoupons_ = false;
+        ibor_coupon_mutex.unlock();
     }
 
     IborCoupon::IborCoupon(const Date& paymentDate,
