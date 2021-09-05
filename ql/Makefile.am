@@ -41,6 +41,7 @@ this_include_HEADERS = \
 	interestrate.hpp \
 	mathconstants.hpp \
 	money.hpp \
+	moneysettings.hpp \
 	numericalmethod.hpp \
 	option.hpp \
 	payoff.hpp \
@@ -73,6 +74,7 @@ cpp_files = \
     index.cpp \
     interestrate.cpp \
     money.cpp \
+    moneysettings.cpp \
     position.cpp \
     prices.cpp \
 	rebatedexercise.cpp \
