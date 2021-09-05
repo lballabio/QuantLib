@@ -1,2 +1,5 @@
 add_executable(LatentModel LatentModel.cpp)
-target_link_libraries(LatentModel ${QL_LINK_LIBRARY})
+target_link_libraries(LatentModel ql_library ${QL_EXAMPLES_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS LatentModel RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

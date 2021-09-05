@@ -1,8 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 J. Erik Radmall
-
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -17,35 +15,31 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file commoditysettings.hpp
-    \brief commodity settings
+/*! \file singleton.cpp
+    \brief basic support for the singleton pattern
 */
 
-#ifndef quantlib_commodity_settings_hpp
-#define quantlib_commodity_settings_hpp
-
 #include <ql/patterns/singleton.hpp>
-#include <ql/experimental/commodities/unitofmeasure.hpp>
-#include <ql/currency.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
-    //! global repository for run-time library settings
-    class QL_EXPORT CommoditySettings : public Singleton<CommoditySettings> {
-        friend class Singleton<CommoditySettings>;
-      private:
-        CommoditySettings();
-
-      public:
-        Currency& currency();
-        UnitOfMeasure& unitOfMeasure();
-      private:
-        Currency currency_;
-        UnitOfMeasure unitOfMeasure_;
-    };
-
+#if defined(QL_ENABLE_SESSIONS)
+ThreadKey defaultSessionId() {
+    return {};
 }
 
+SessionIdFunction session_id_function = defaultSessionId;
 
+ThreadKey sessionId() {
+    return (*session_id_function)();
+}
+
+void setSessionIdFunction(SessionIdFunction sid_function) {
+    QL_ASSERT(sid_function,
+        "setSessionIdFunction was called with a null function");
+    session_id_function = sid_function;
+}
 #endif
 
+}

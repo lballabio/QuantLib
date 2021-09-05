@@ -34,7 +34,7 @@ namespace QuantLib {
 
     namespace detail {
 
-        class Tracing : public Singleton<Tracing> {
+        class QL_EXPORT Tracing : public Singleton<Tracing> {
             friend class QuantLib::Singleton<Tracing>;
           private:
             Tracing();  // NOLINT(modernize-use-equals-delete)

@@ -27,7 +27,7 @@
 */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
@@ -46,12 +46,6 @@
 
 using namespace std;
 using namespace QuantLib;
-
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-    ThreadKey sessionId() { return {}; }
-}
-#endif
 
 // par-rate approximation
 Rate parRate(const YieldTermStructure& yts,

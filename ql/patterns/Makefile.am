@@ -12,7 +12,8 @@ this_include_HEADERS = \
     visitor.hpp
 
 cpp_files = \
-	observable.cpp
+	observable.cpp \
+	singleton.cpp
 
 if UNITY_BUILD
 

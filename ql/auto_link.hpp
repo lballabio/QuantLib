@@ -24,12 +24,6 @@
 #include <ql/version.hpp>
 #include <boost/config.hpp>
 
-#ifdef _M_X64
-#  define QL_LIB_PLATFORM "-x64"
-#else
-#  define QL_LIB_PLATFORM
-#endif
-
 /*** libraries to be linked ***/
 
 // select thread opt:
@@ -54,7 +48,14 @@
 #  endif
 #endif
 
-#define QL_LIB_NAME "QuantLib" QL_LIB_PLATFORM QL_LIB_THREAD_OPT QL_LIB_RT_OPT ".lib"
+// select arch opt:
+#ifdef _M_X64
+#  define QL_LIB_PLATFORM "-x64"
+#else
+#  define QL_LIB_PLATFORM
+#endif
+
+#define QL_LIB_NAME "QuantLib" QL_LIB_THREAD_OPT QL_LIB_RT_OPT QL_LIB_PLATFORM ".lib"
 
 #pragma comment(lib, QL_LIB_NAME)
 #ifdef BOOST_LIB_DIAGNOSTIC
@@ -63,9 +64,6 @@
 
 /* Also, these Boost libraries might be needed */
 #if defined(QL_ENABLE_SESSIONS) || defined(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN) || defined(QL_ENABLE_SINGLETON_THREAD_SAFE_INIT)
-#  define BOOST_LIB_NAME boost_system
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
 #  define BOOST_LIB_NAME boost_thread
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME

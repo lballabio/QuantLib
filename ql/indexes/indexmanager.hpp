@@ -33,7 +33,7 @@ namespace QuantLib {
 
     //! global repository for past index fixings
     /*! \note index names are case insensitive */
-    class IndexManager : public Singleton<IndexManager> {
+    class QL_EXPORT IndexManager : public Singleton<IndexManager> {
         friend class Singleton<IndexManager>;
 
       private:

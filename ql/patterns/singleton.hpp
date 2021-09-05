@@ -27,6 +27,8 @@
 #include <ql/qldefines.hpp>
 
 #ifdef QL_ENABLE_SESSIONS
+#    include <type_traits>
+#    include <boost/thread/locks.hpp>
 #    include <boost/thread/shared_mutex.hpp>
 #else
 #    ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
@@ -65,8 +67,18 @@ namespace QuantLib {
 #endif
 
 #if defined(QL_ENABLE_SESSIONS)
-    // definition must be provided by the user
+    // A default SessionIdFunction is provided by the library.
+    // You may implement a custom sessionId function and set it as follows:
+    //     setSessionIdFunction(yourSessionIdFunction);
+    // Your function need not be in the QuantLib namespace, but it must have
+    // the following signature:
+    //     QuantLib::ThreadKey (*sessionIdFunction)()
+    // To reset the library to the default sessionId functions:
+    //     setSessionIdFunction();
+    using SessionIdFunction = std::add_pointer<ThreadKey()>::type;
     ThreadKey sessionId();
+    ThreadKey defaultSessionId();
+    void setSessionIdFunction(SessionIdFunction = defaultSessionId);
 #endif
 
     //! Basic support for the singleton pattern.

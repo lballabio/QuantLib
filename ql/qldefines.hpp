@@ -223,5 +223,14 @@
 #  define QL_NOEXCEPT noexcept
 #endif
 
+#if defined(BOOST_MSVC)
+#    if defined(QL_COMPILATION)
+#        define QL_EXPORT __declspec(dllexport)
+#    else
+#        define QL_EXPORT __declspec(dllimport)
+#    endif
+#else
+#    define QL_EXPORT
+#endif
 
 #endif

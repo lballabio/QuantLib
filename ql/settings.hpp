@@ -36,7 +36,7 @@
 namespace QuantLib {
 
     //! global repository for run-time library settings
-    class Settings : public Singleton<Settings> {
+    class QL_EXPORT Settings : public Singleton<Settings> {
         friend class Singleton<Settings>;
       private:
         Settings();

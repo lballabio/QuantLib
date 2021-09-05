@@ -38,7 +38,7 @@ namespace QuantLib {
     /*! \test lookup of direct, triangulated, and derived exchange
               rates is tested.
     */
-    class ExchangeRateManager : public Singleton<ExchangeRateManager> {
+    class QL_EXPORT ExchangeRateManager : public Singleton<ExchangeRateManager> {
         friend class Singleton<ExchangeRateManager>;
       private:
         ExchangeRateManager();

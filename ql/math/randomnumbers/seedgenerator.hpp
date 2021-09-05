@@ -35,7 +35,7 @@ namespace QuantLib {
 
         \test correct initialization of the single instance is tested.
     */
-    class SeedGenerator : public Singleton<SeedGenerator> {
+    class QL_EXPORT SeedGenerator : public Singleton<SeedGenerator> {
         friend class Singleton<SeedGenerator>;
       public:
         unsigned long get();
