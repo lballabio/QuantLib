@@ -861,6 +861,7 @@ set(QuantLib_SRC
     time/calendars/botswana.cpp
     time/calendars/brazil.cpp
     time/calendars/canada.cpp
+    time/calendars/chile.cpp
     time/calendars/china.cpp
     time/calendars/czechrepublic.cpp
     time/calendars/denmark.cpp
@@ -2222,6 +2223,7 @@ set(QuantLib_HDR
     time/calendars/botswana.hpp
     time/calendars/brazil.hpp
     time/calendars/canada.hpp
+    time/calendars/chile.hpp
     time/calendars/china.hpp
     time/calendars/czechrepublic.hpp
     time/calendars/denmark.hpp
