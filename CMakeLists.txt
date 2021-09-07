@@ -48,6 +48,8 @@ if (Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif (Boost_FOUND)
 
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/options.cmake)
+
 add_subdirectory(ql)
 add_subdirectory(Examples)
 add_subdirectory(test-suite)

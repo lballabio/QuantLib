@@ -2301,16 +2301,17 @@ set(QuantLib_HDR
 
 get_quantlib_library_name(QL_OUTPUT_NAME)
 
+add_library(${QL_OUTPUT_NAME} ${QuantLib_SRC} ${QuantLib_HDR})
+
 if(WIN32)
     if (${BUILD_SHARED_LIBS})
         # Windows needs to link static library (nothing is declared to export in QuantLib)
         message(FATAL_ERROR "You should build QuantLib in STATIC mode as nothing is exported from the library. Use BUILD_SHARED_LIBS=OFF")
     endif()
-    add_library(${QL_OUTPUT_NAME} ${QuantLib_SRC} ${QuantLib_HDR})
     set_property(TARGET ${QL_OUTPUT_NAME} PROPERTY PROJECT_LABEL "QuantLib")
-else()
-    add_library(${QL_OUTPUT_NAME} ${QuantLib_SRC} ${QuantLib_HDR})
 endif()
+
+target_link_libraries(${QL_OUTPUT_NAME} PUBLIC ${EXTRA_LIBS})
 set(QL_LINK_LIBRARY ${QL_OUTPUT_NAME} PARENT_SCOPE)
 
 foreach(file ${QuantLib_HDR})
