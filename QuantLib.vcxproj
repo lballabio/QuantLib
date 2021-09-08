@@ -1763,6 +1763,7 @@
     <ClInclude Include="ql\time\calendars\botswana.hpp" />
     <ClInclude Include="ql\time\calendars\brazil.hpp" />
     <ClInclude Include="ql\time\calendars\canada.hpp" />
+    <ClInclude Include="ql\time\calendars\chile.hpp" />
     <ClInclude Include="ql\time\calendars\china.hpp" />
     <ClInclude Include="ql\time\calendars\czechrepublic.hpp" />
     <ClInclude Include="ql\time\calendars\denmark.hpp" />
@@ -2721,6 +2722,7 @@
     <ClCompile Include="ql\time\calendars\botswana.cpp" />
     <ClCompile Include="ql\time\calendars\brazil.cpp" />
     <ClCompile Include="ql\time\calendars\canada.cpp" />
+    <ClCompile Include="ql\time\calendars\chile.cpp" />
     <ClCompile Include="ql\time\calendars\china.cpp" />
     <ClCompile Include="ql\time\calendars\czechrepublic.cpp" />
     <ClCompile Include="ql\time\calendars\denmark.cpp" />
