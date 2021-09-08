@@ -14,38 +14,28 @@ endmacro()
 
 set(PREPROCESSOR_COMMENT "Enables the correspondig preprocessors in <ql/userconfig.hpp>.")
 
-option(QL_ERROR_FUNCTIONS                     ${PREPROCESSOR_COMMENT})
-option(QL_ERROR_LINES                         ${PREPROCESSOR_COMMENT})
-option(QL_ENABLE_TRACING                      ${PREPROCESSOR_COMMENT})
-option(QL_EXTRA_SAFETY_CHECKS                 ${PREPROCESSOR_COMMENT})
-option(QL_USE_INDEXED_COUPON                  ${PREPROCESSOR_COMMENT})
-option(QL_ENABLE_SESSIONS                     ${PREPROCESSOR_COMMENT})
-option(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN ${PREPROCESSOR_COMMENT})
-option(QL_HIGH_RESOLUTION_DATE                ${PREPROCESSOR_COMMENT})
-option(QL_USE_STD_SHARED_PTR                  ${PREPROCESSOR_COMMENT})
-# option(QL_USE_STD_UNIQUE_PTR                  ${PREPROCESSOR_COMMENT} ON)     ### skipped as it cannot be switch off
-                                                                                ### without skipping <ql/userconfig.hpp>
-option(QL_USE_STD_FUNCTION                    ${PREPROCESSOR_COMMENT})
-option(QL_USE_STD_TUPLE                       ${PREPROCESSOR_COMMENT})
-option(QL_USE_DISPOSABLE                      ${PREPROCESSOR_COMMENT})
-option(QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER    ${PREPROCESSOR_COMMENT})
-option(QL_ENABLE_SINGLETON_THREAD_SAFE_INIT   ${PREPROCESSOR_COMMENT})
+list(APPEND CONFIG_PREPROCESSORS
+    QL_ERROR_FUNCTIONS
+    QL_ERROR_LINES
+    QL_ENABLE_TRACING
+    QL_EXTRA_SAFETY_CHECKS
+    QL_USE_INDEXED_COUPON
+    QL_ENABLE_SESSIONS
+    QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+    QL_HIGH_RESOLUTION_DATE
+    QL_USE_STD_SHARED_PTR
+    # QL_USE_STD_UNIQUE_PTR                     ### skipped as it cannot be switch off without skipping <ql/userconfig.hpp>
+    QL_USE_STD_FUNCTION
+    QL_USE_STD_TUPLE
+    QL_USE_DISPOSABLE
+    QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+    QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
+)
 
-setPreprocessor(QL_ERROR_FUNCTIONS                     ${QL_ERROR_FUNCTIONS})
-setPreprocessor(QL_ERROR_LINES                         ${QL_ERROR_LINES})
-setPreprocessor(QL_ENABLE_TRACING                      ${QL_ENABLE_TRACING})
-setPreprocessor(QL_EXTRA_SAFETY_CHECKS                 ${QL_EXTRA_SAFETY_CHECKS})
-setPreprocessor(QL_USE_INDEXED_COUPON                  ${QL_USE_INDEXED_COUPON})
-setPreprocessor(QL_ENABLE_SESSIONS                     ${QL_ENABLE_SESSIONS})
-setPreprocessor(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN ${QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN})
-setPreprocessor(QL_HIGH_RESOLUTION_DATE                ${QL_HIGH_RESOLUTION_DATE})
-setPreprocessor(QL_USE_STD_SHARED_PTR                  ${QL_USE_STD_SHARED_PTR})
-# setPreprocessor(QL_USE_STD_UNIQUE_PTR                  ${QL_USE_STD_UNIQUE_PTR})
-setPreprocessor(QL_USE_STD_FUNCTION                    ${QL_USE_STD_FUNCTION})
-setPreprocessor(QL_USE_STD_TUPLE                       ${QL_USE_STD_TUPLE})
-setPreprocessor(QL_USE_DISPOSABLE                      ${QL_USE_DISPOSABLE})
-setPreprocessor(QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER    ${QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER})
-setPreprocessor(QL_ENABLE_SINGLETON_THREAD_SAFE_INIT   ${QL_ENABLE_SINGLETON_THREAD_SAFE_INIT})
+foreach(item ${CONFIG_PREPROCESSORS})
+    option(         ${item}     ${PREPROCESSOR_COMMENT})
+    setPreprocessor(${item}     ${${item}})
+endforeach()
 
 if(${QL_ENABLE_SESSIONS} OR ${QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN} OR ${QL_ENABLE_SINGLETON_THREAD_SAFE_INIT})
     addBoostThreadLibrary()
