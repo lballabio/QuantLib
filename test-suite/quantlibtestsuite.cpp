@@ -32,15 +32,13 @@
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
 */
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
-
-#ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
-#  define BOOST_LIB_NAME boost_unit_test_framework
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#endif
-
+#  ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+#      define BOOST_LIB_NAME boost_unit_test_framework
+#      include <boost/config/auto_link.hpp>
+#      undef BOOST_LIB_NAME
+#  endif
 #endif
 
 #include "utilities.hpp"
