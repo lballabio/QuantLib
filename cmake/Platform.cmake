@@ -7,6 +7,9 @@ if (MSVC)
 
     # Export all symbols so MSVC can populate the .lib and .dll
     if (BUILD_SHARED_LIBS)
+        # Temp: disable DLL builds on MSVC
+        message(FATAL_ERROR
+            "Shared library (DLL) builds for QuantLib on MSVC are not supported")
         set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
     endif()
 
