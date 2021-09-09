@@ -2304,6 +2304,8 @@ set(QuantLib_HDR
 get_quantlib_library_name(QL_OUTPUT_NAME)
 
 add_library(${QL_OUTPUT_NAME} ${QuantLib_SRC} ${QuantLib_HDR})
+target_link_libraries(${QL_OUTPUT_NAME} PUBLIC ${EXTRA_LIBS})
+set(QL_LINK_LIBRARY ${QL_OUTPUT_NAME} PARENT_SCOPE)
 
 if(WIN32)
     if (${BUILD_SHARED_LIBS})
@@ -2312,9 +2314,6 @@ if(WIN32)
     endif()
     set_property(TARGET ${QL_OUTPUT_NAME} PROPERTY PROJECT_LABEL "QuantLib")
 endif()
-
-target_link_libraries(${QL_OUTPUT_NAME} PUBLIC ${EXTRA_LIBS})
-set(QL_LINK_LIBRARY ${QL_OUTPUT_NAME} PARENT_SCOPE)
 
 foreach(file ${QuantLib_HDR})
     get_filename_component(dir ${file} DIRECTORY)
