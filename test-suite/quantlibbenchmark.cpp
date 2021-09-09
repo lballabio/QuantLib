@@ -215,11 +215,7 @@ namespace {
 
     void printResults() {
         std::string header = "Benchmark Suite "
-        #ifdef BOOST_MSVC
-        QL_LIB_NAME;
-        #else
         "QuantLib " QL_VERSION;
-        #endif
 
         std::cout << std::endl
                   << std::string(56,'-') << std::endl;
