@@ -2178,11 +2178,138 @@ set(QL_HEADERS
     volatilitymodel.hpp
 )
 
+set(QL_ALL_HEADERS
+    ${CMAKE_BINARY_DIR}/ql/cashflows/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/currencies/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/amortizingbonds/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/asian/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/averageois/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/barrieroption/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/basismodels/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/callablebonds/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/catbonds/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/commodities/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/convertiblebonds/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/coupons/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/credit/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/exoticoptions/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/finitedifferences/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/forward/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/fx/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/inflation/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/lattices/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/math/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/mcbasket/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/models/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/processes/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/risk/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/shortrate/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/swaptions/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/termstructures/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/variancegamma/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/varianceoption/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/experimental/volatility/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/indexes/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/indexes/ibor/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/indexes/inflation/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/indexes/swap/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/instruments/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/instruments/bonds/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/legacy/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/legacy/libormarketmodels/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/math/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/math/copulas/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/math/distributions/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/math/integrals/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/math/interpolations/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/math/matrixutilities/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/math/ode/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/math/optimization/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/math/randomnumbers/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/math/solvers1d/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/math/statistics/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/methods/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/methods/finitedifferences/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/methods/finitedifferences/meshers/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/methods/finitedifferences/operators/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/methods/finitedifferences/schemes/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/methods/finitedifferences/solvers/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/methods/finitedifferences/stepconditions/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/methods/finitedifferences/utilities/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/methods/lattices/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/methods/montecarlo/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/equity/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/browniangenerators/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/callability/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/correlations/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/curvestates/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/driftcomputation/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/evolvers/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/evolvers/volprocesses/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/models/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/pathwisegreeks/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/products/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/products/multistep/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/products/onestep/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/marketmodels/products/pathwise/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/shortrate/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/shortrate/calibrationhelpers/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/shortrate/onefactormodels/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/shortrate/twofactormodels/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/models/volatility/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/patterns/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/asian/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/barrier/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/basket/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/bond/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/capfloor/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/cliquet/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/credit/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/forward/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/inflation/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/lookback/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/quanto/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/swap/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/swaption/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/pricingengines/vanilla/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/processes/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/quotes/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/termstructures/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/termstructures/credit/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/termstructures/inflation/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/termstructures/volatility/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/termstructures/volatility/capfloor/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/termstructures/volatility/equityfx/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/termstructures/volatility/inflation/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/termstructures/volatility/optionlet/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/termstructures/volatility/swaption/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/termstructures/yield/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/time/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/time/calendars/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/time/daycounters/all.hpp
+    ${CMAKE_BINARY_DIR}/ql/utilities/all.hpp)
+
 set(QL_BUILT_HEADERS
     ${CMAKE_BINARY_DIR}/ql/config.hpp
     ${CMAKE_BINARY_DIR}/ql/version.hpp)
 
-add_library(ql_library ${QL_SOURCES} ${QL_HEADERS} ${QL_BUILT_HEADERS})
+add_custom_command(OUTPUT ${QL_ALL_HEADERS}
+    COMMAND ${CMAKE_COMMAND}
+        -DSOURCE_DIR=${CMAKE_SOURCE_DIR}
+        -DBINARY_DIR=${CMAKE_BINARY_DIR}
+        -P ${CMAKE_SOURCE_DIR}/cmake/GenerateHeaders.cmake
+    COMMENT "Generating all.hpp headers..."
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+add_library(ql_library
+    ${QL_SOURCES}
+    ${QL_HEADERS}
+    ${QL_ALL_HEADERS}
+    ${QL_BUILT_HEADERS})
 
 set_target_properties(ql_library PROPERTIES
     OUTPUT_NAME ${PACKAGE_NAME}
@@ -2214,10 +2341,17 @@ install(TARGETS ql_library
 # Install ql source headers preserving ql hierarchy
 foreach(file ${QL_HEADERS})
     get_filename_component(dir ${file} DIRECTORY)
-    install(FILES ${file} DESTINATION ${QL_INSTALL_INCLUDEDIR}/ql/${dir})
+    install(FILES ${file} DESTINATION "${QL_INSTALL_INCLUDEDIR}/ql/${dir}")
+endforeach()
+
+# Install all.hpp headers from the build directory
+foreach(file ${QL_ALL_HEADERS})
+    get_filename_component(dir ${file} DIRECTORY)
+    file(RELATIVE_PATH path ${CMAKE_BINARY_DIR} ${dir})
+    install(FILES ${file} DESTINATION "${QL_INSTALL_INCLUDEDIR}/${path}")
 endforeach()
 
 # Install built headers from the build directory
 foreach(file ${QL_BUILT_HEADERS})
-    install(FILES ${file} DESTINATION ${QL_INSTALL_INCLUDEDIR}/ql/)
+    install(FILES ${file} DESTINATION "${QL_INSTALL_INCLUDEDIR}/ql/")
 endforeach()
