@@ -5,7 +5,7 @@ import sys
 inputs = [
     ("ql.dist.diff", "Some Makefile.am"),
     ("test-suite.dist.diff", "test-suite/Makefile.am"),
-    ("ql.cmake.diff", "ql/CMakeLists.txt"),
+    #("ql.cmake.diff", "ql/CMakeLists.txt"),
     ("test-suite.cmake.diff", "test-suite/CMakeLists.txt"),
     ("ql.vcx.diff", "QuantLib.vcxproj"),
     ("ql.vcx.filters.diff", "QuantLib.vcxproj.filters"),
