@@ -119,7 +119,7 @@ namespace QuantLib {
                             Time dt,
                             const Array& dw) const {
         Array retVal(2);
-        Real vol, vol2, mu, nu, dy;
+        Real vol, vol2, mu, nu;
 
         const Real sdt = std::sqrt(dt);
         const Real sqrhov = std::sqrt(1.0 - rho_(t0)*rho_(t0));
