@@ -1968,7 +1968,6 @@ set(QL_HEADERS
     processes/coxingersollrossprocess.hpp
     processes/squarerootprocess.hpp
     processes/stochasticprocessarray.hpp
-    qldefines.hpp
     quantlib.hpp
     quote.hpp
     quotes/compositequote.hpp
@@ -2295,6 +2294,7 @@ set(QL_ALL_HEADERS
 
 set(QL_BUILT_HEADERS
     ${CMAKE_BINARY_DIR}/ql/config.hpp
+    ${CMAKE_BINARY_DIR}/ql/qldefines.hpp
     ${CMAKE_BINARY_DIR}/ql/version.hpp)
 
 add_custom_command(OUTPUT ${QL_ALL_HEADERS}
