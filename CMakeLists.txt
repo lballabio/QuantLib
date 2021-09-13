@@ -75,9 +75,19 @@ if (QL_ENABLE_SESSIONS)
     set(QL_ENABLE_SINGLETON_THREAD_SAFE_INIT ON)
 endif()
 
-# Shared or static libs
+# Project shared libs ON for UNIX
 if (NOT DEFINED BUILD_SHARED_LIBS)
-    set(BUILD_SHARED_LIBS OFF)
+    set(BUILD_SHARED_LIBS ${UNIX})
+endif()
+
+# Boost static libs ON for MSVC
+if (NOT DEFINED Boost_USE_STATIC_LIBS)
+    set(Boost_USE_STATIC_LIBS ${MSVC})
+endif()
+
+# Boost static runtime ON for MSVC
+if (NOT DEFINED Boost_USE_STATIC_RUNTIME)
+    set(Boost_USE_STATIC_RUNTIME ${MSVC})
 endif()
 
 # Boost thread and unit_test_framework needed for tests and benchmark
