@@ -18,6 +18,7 @@
 #include <ql/processes/merton76process.hpp>
 #include <ql/processes/mfstateprocess.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/processes/piecewisetimedependenthestonprocess.hpp>
 #include <ql/processes/coxingersollrossprocess.hpp>
 #include <ql/processes/squarerootprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>

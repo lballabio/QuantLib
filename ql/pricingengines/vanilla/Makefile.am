@@ -46,6 +46,7 @@ this_include_HEADERS = \
     mcdigitalengine.hpp \
     mceuropeanengine.hpp \
     mceuropeanhestonengine.hpp \
+    mceuropeanptdhestonengine.hpp \
     mceuropeangjrgarchengine.hpp \
     mchestonhullwhiteengine.hpp \
     mcvanillaengine.hpp

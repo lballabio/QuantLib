@@ -21,6 +21,7 @@ this_include_HEADERS = \
 	merton76process.hpp \
 	mfstateprocess.hpp \
 	ornsteinuhlenbeckprocess.hpp \
+	piecewisetimedependenthestonprocess.hpp \
 	coxingersollrossprocess.hpp \
 	squarerootprocess.hpp \
 	stochasticprocessarray.hpp
@@ -43,6 +44,7 @@ cpp_files = \
 	merton76process.cpp \
 	mfstateprocess.cpp \
 	ornsteinuhlenbeckprocess.cpp \
+	piecewisetimedependenthestonprocess.cpp \
 	coxingersollrossprocess.cpp \
 	squarerootprocess.cpp \
 	stochasticprocessarray.cpp

@@ -1599,6 +1599,7 @@
     <ClInclude Include="ql\pricingengines\vanilla\mceuropeanengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\mceuropeangjrgarchengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\mceuropeanhestonengine.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\mceuropeanptdhestonengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\mchestonhullwhiteengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\mcvanillaengine.hpp" />
     <ClInclude Include="ql\processes\all.hpp" />
@@ -1620,6 +1621,7 @@
     <ClInclude Include="ql\processes\merton76process.hpp" />
     <ClInclude Include="ql\processes\mfstateprocess.hpp" />
     <ClInclude Include="ql\processes\ornsteinuhlenbeckprocess.hpp" />
+    <ClInclude Include="ql\processes\piecewisetimedependenthestonprocess.hpp" />
     <ClInclude Include="ql\processes\squarerootprocess.hpp" />
     <ClInclude Include="ql\processes\stochasticprocessarray.hpp" />
     <ClInclude Include="ql\quotes\all.hpp" />
@@ -2635,6 +2637,7 @@
     <ClCompile Include="ql\processes\merton76process.cpp" />
     <ClCompile Include="ql\processes\mfstateprocess.cpp" />
     <ClCompile Include="ql\processes\ornsteinuhlenbeckprocess.cpp" />
+    <ClCompile Include="ql\processes\piecewisetimedependenthestonprocess.cpp" />
     <ClCompile Include="ql\processes\squarerootprocess.cpp" />
     <ClCompile Include="ql\processes\stochasticprocessarray.cpp" />
     <ClCompile Include="ql\quotes\eurodollarfuturesquote.cpp" />

@@ -2304,6 +2304,9 @@
     <ClInclude Include="ql\processes\ornsteinuhlenbeckprocess.hpp">
       <Filter>processes</Filter>
     </ClInclude>
+    <ClInclude Include="ql\processes\piecewisetimedependenthestonprocess.hpp">
+      <Filter>processes</Filter>
+    </ClInclude>
     <ClInclude Include="ql\processes\squarerootprocess.hpp">
       <Filter>processes</Filter>
     </ClInclude>
@@ -2524,6 +2527,9 @@
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\mceuropeanhestonengine.hpp">
+      <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\vanilla\mceuropeanptdhestonengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\mchestonhullwhiteengine.hpp">
@@ -5568,6 +5574,9 @@
       <Filter>processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\ornsteinuhlenbeckprocess.cpp">
+      <Filter>processes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\processes\piecewisetimedependenthestonprocess.cpp">
       <Filter>processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\processes\squarerootprocess.cpp">

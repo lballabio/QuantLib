@@ -43,7 +43,9 @@
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/hestonexpansionengine.hpp>
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
+#include <ql/pricingengines/vanilla/mceuropeanptdhestonengine.hpp>
 #include <ql/processes/hestonprocess.hpp>
+#include <ql/processes/piecewisetimedependenthestonprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -2711,6 +2713,155 @@ void HestonModelTest::testPiecewiseTimeDependentChFAsymtotic() {
     }
 }
 
+
+void HestonModelTest::testPiecewiseTimeDependentProcess() {
+    BOOST_TEST_MESSAGE("Testing piecewise time dependent Heston process");
+
+    SavedSettings backup;
+
+    const Real tolerance = 0.0015;
+    const Date settlementDate(1, January, 2020);
+    Settings::instance().evaluationDate() = settlementDate;
+
+    const DayCounter dc = Actual365Fixed();
+    const Calendar calendar = NullCalendar();
+    const Handle<YieldTermStructure> rTS(flatRate(0.01, dc));
+    const Handle<YieldTermStructure> qTS(flatRate(0.04, dc));
+
+    const Real spot = 100.0;
+    const Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(spot)));
+
+    // Dummy BS process (used for IV conversions)
+    const Handle<BlackVolTermStructure> volTS(flatVol(settlementDate, 0.2, dc));
+    const ext::shared_ptr<BlackScholesMertonProcess> ref_process(
+        ext::make_shared<BlackScholesMertonProcess>(s0, qTS, rTS, volTS));
+
+    const Real strikes[] = {90.0, 95.0, 100.0, 105.0, 110.};
+    const Date expiries[] = {Date(1, April, 2020), Date(1, July, 2020)};
+
+    // Set up PWC parameters, first 6M constant (and compare via constant Heston)
+    std::vector<Time> pTimes = {0.25, 0.50, 1.00};
+
+    PiecewiseConstantParameter theta(pTimes, PositiveConstraint());
+    PiecewiseConstantParameter kappa(pTimes, PositiveConstraint());
+    PiecewiseConstantParameter rho(pTimes, BoundaryConstraint(-1.0, 1.0));
+    PiecewiseConstantParameter sigma(pTimes, PositiveConstraint());
+
+    const Real v0 = 0.01;
+    const Real thetaValues[] = {0.027, 0.035, 0.035};
+    const Real kappaValues[] = {0.288, 0.488, 0.488};
+    const Real rhoValues[] = {-0.098, -0.248, -0.248};
+    const Real sigmaValues[] = {0.439, 0.141, 0.141};
+
+    for (Size k=0; k < 3; ++k) {
+        theta.setParam(k, thetaValues[k]);
+        kappa.setParam(k, kappaValues[k]);
+        rho.setParam(k, rhoValues[k]);
+        sigma.setParam(k, sigmaValues[k]);
+    }
+
+    // Standard Heston model pricer should match out to 3M
+    const ext::shared_ptr<HestonProcess> hestonProcess(
+        ext::make_shared<HestonProcess>(rTS, qTS, s0, v0,
+            kappaValues[0], thetaValues[0], sigmaValues[0], rhoValues[0]));
+
+    const ext::shared_ptr<HestonModel> hestonModel(
+        ext::make_shared<HestonModel>(hestonProcess));
+
+    const ext::shared_ptr<AnalyticHestonEngine> analyticHestonEngine(
+        ext::make_shared<AnalyticHestonEngine>(hestonModel));
+
+    // Analytic PTD pricer
+    std::vector<Time> modelTimes = {0.25, 0.50, 1.00, 10.0};
+    const TimeGrid modelGrid(modelTimes.begin(), modelTimes.end());
+
+    const ext::shared_ptr<PiecewiseTimeDependentHestonModel> ptdModel(
+        ext::make_shared<PiecewiseTimeDependentHestonModel>(
+            rTS, qTS, s0, v0, theta, kappa, sigma, rho, modelGrid));
+
+    const ext::shared_ptr<AnalyticPTDHestonEngine> analyticPtdHestonEngine(
+        ext::make_shared<AnalyticPTDHestonEngine>(ptdModel));
+
+    // MC PTD pricer
+    Size timeSteps = 48;
+    Size mcSeed = 43;
+    Size numberOfSamples = 65536;
+    PiecewiseTimeDependentHestonProcess::Discretization discretization = 
+        PiecewiseTimeDependentHestonProcess::PartialTruncation;
+
+    const ext::shared_ptr<PiecewiseTimeDependentHestonProcess> ptdHestonProcess(
+        ext::make_shared<PiecewiseTimeDependentHestonProcess>(rTS, qTS, s0, v0,
+            kappa, theta, sigma, rho, modelGrid, discretization));
+
+    const ext::shared_ptr<PricingEngine> mcPtdHestonEngine 
+        = MakeMCEuropeanPTDHestonEngine<LowDiscrepancy>(ptdHestonProcess)
+            .withSteps(timeSteps)
+            .withSamples(numberOfSamples)
+            .withSeed(mcSeed);
+
+    for (Size i=0; i < 2; ++i) {
+        for (Size j=0; j < 5; ++j) {
+
+            Date expiryDate = expiries[i];
+            Real strike = strikes[j];
+
+            Option::Type type;
+            if (strike > spot) {
+                type = Option::Call;
+            } else {
+                type = Option::Put;
+            };
+
+            ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(expiryDate));
+            ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+            VanillaOption europeanOption(payoff, europeanExercise);
+
+            europeanOption.setPricingEngine(mcPtdHestonEngine);
+            Real ptdHestonMcPrice = europeanOption.NPV();
+            Real ptdHestonMcIV = europeanOption.impliedVolatility(
+                ptdHestonMcPrice, ref_process);
+
+            europeanOption.setPricingEngine(analyticPtdHestonEngine);
+            Real ptdHestonAnalyticPrice = europeanOption.NPV();
+            Real ptdHestonAnalyticIV = europeanOption.impliedVolatility(
+                ptdHestonAnalyticPrice, ref_process);
+
+            if (std::fabs(ptdHestonMcIV - ptdHestonAnalyticIV) > tolerance) {
+                BOOST_ERROR("MC and analytic prices failed to agree for piecewise "
+                            "constant time dependent Heston Model"
+                        << "\n  Strike     : " << strike
+                        << "\n  Expiry     : " << expiryDate
+                        << "\n  Type       : " << type
+                        << "\n  Analytic IV: " << ptdHestonMcIV
+                        << "\n  MC IV      : " << ptdHestonAnalyticIV
+                        << "\n  diff       : " << std::fabs(ptdHestonMcIV - ptdHestonAnalyticIV)
+                        << "\n  tolerance  : " << tolerance);
+            }
+
+            if (i == 0) {
+                europeanOption.setPricingEngine(analyticHestonEngine);
+                Real hestonPrice = europeanOption.NPV();
+                Real hestonIV = europeanOption.impliedVolatility(
+                    hestonPrice, ref_process);
+
+                if (std::fabs(ptdHestonMcIV - hestonIV) > tolerance) {
+                    BOOST_ERROR("MC piecewise constant time dependent Heston Model and "
+                                "Analytic fixed Heston Model failed to agree during first "
+                                "PTD parameter window"
+                            << "\n  Strike     : " << strike
+                            << "\n  Expiry     : " << expiryDate
+                            << "\n  Type       : " << type
+                            << "\n  Analytic IV: " << ptdHestonMcIV
+                            << "\n  MC IV      : " << hestonIV
+                            << "\n  diff       : " << std::fabs(ptdHestonMcIV - ptdHestonAnalyticIV)
+                            << "\n  tolerance  : " << tolerance);
+                }
+            }
+        }
+    }
+}
+
+
 void HestonModelTest::testSmallSigmaExpansion() {
     BOOST_TEST_MESSAGE("Testing small sigma expansion of "
                        "the characteristic function...");
@@ -3335,6 +3486,7 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testPiecewiseTimeDependentChFvsHestonChF));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testPiecewiseTimeDependentComparison));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testPiecewiseTimeDependentChFAsymtotic));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testPiecewiseTimeDependentProcess));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testSmallSigmaExpansion));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testSmallSigmaExpansion4ExpFitting));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testExponentialFitting4StrikesAndMaturities));

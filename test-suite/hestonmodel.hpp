@@ -54,6 +54,7 @@ class HestonModelTest {
     static void testPiecewiseTimeDependentChFvsHestonChF();
     static void testPiecewiseTimeDependentComparison();
     static void testPiecewiseTimeDependentChFAsymtotic();
+    static void testPiecewiseTimeDependentProcess();
     static void testSmallSigmaExpansion();
     static void testSmallSigmaExpansion4ExpFitting();
     static void testExponentialFitting4StrikesAndMaturities();

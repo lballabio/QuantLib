@@ -769,6 +769,7 @@ set(QuantLib_SRC
     processes/merton76process.cpp
     processes/mfstateprocess.cpp
     processes/ornsteinuhlenbeckprocess.cpp
+    processes/piecewisetimedependenthestonprocess.cpp
     processes/coxingersollrossprocess.cpp
     processes/squarerootprocess.cpp
     processes/stochasticprocessarray.cpp
@@ -2051,6 +2052,7 @@ set(QuantLib_HDR
     pricingengines/vanilla/mceuropeanengine.hpp
     pricingengines/vanilla/mceuropeangjrgarchengine.hpp
     pricingengines/vanilla/mceuropeanhestonengine.hpp
+    pricingengines/vanilla/mceuropeanptdhestonengine.hpp
     pricingengines/vanilla/mchestonhullwhiteengine.hpp
     pricingengines/vanilla/mcvanillaengine.hpp
     processes/all.hpp
@@ -2071,6 +2073,7 @@ set(QuantLib_HDR
     processes/merton76process.hpp
     processes/mfstateprocess.hpp
     processes/ornsteinuhlenbeckprocess.hpp
+    processes/piecewisetimedependenthestonprocess.hpp
     processes/coxingersollrossprocess.hpp
     processes/squarerootprocess.hpp
     processes/stochasticprocessarray.hpp
