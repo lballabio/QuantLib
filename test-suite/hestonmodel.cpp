@@ -3486,7 +3486,6 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testPiecewiseTimeDependentChFvsHestonChF));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testPiecewiseTimeDependentComparison));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testPiecewiseTimeDependentChFAsymtotic));
-    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testPiecewiseTimeDependentProcess));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testSmallSigmaExpansion));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testSmallSigmaExpansion4ExpFitting));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testExponentialFitting4StrikesAndMaturities));
@@ -3503,6 +3502,7 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
 
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testKahlJaeckelCase));
+        suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testPiecewiseTimeDependentProcess));
     }
 
     return suite;
