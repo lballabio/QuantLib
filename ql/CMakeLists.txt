@@ -1968,7 +1968,6 @@ set(QL_HEADERS
     processes/coxingersollrossprocess.hpp
     processes/squarerootprocess.hpp
     processes/stochasticprocessarray.hpp
-    quantlib.hpp
     quote.hpp
     quotes/compositequote.hpp
     quotes/derivedquote.hpp
@@ -2177,7 +2176,13 @@ set(QL_HEADERS
     volatilitymodel.hpp
 )
 
-set(QL_ALL_HEADERS
+set(QL_CONFIGURED_HEADERS
+    ${CMAKE_BINARY_DIR}/ql/config.hpp
+    ${CMAKE_BINARY_DIR}/ql/qldefines.hpp
+    ${CMAKE_BINARY_DIR}/ql/version.hpp)
+
+set(QL_GENERATED_HEADERS
+    ${CMAKE_BINARY_DIR}/ql/quantlib.hpp
     ${CMAKE_BINARY_DIR}/ql/cashflows/all.hpp
     ${CMAKE_BINARY_DIR}/ql/currencies/all.hpp
     ${CMAKE_BINARY_DIR}/ql/experimental/all.hpp
@@ -2292,24 +2297,19 @@ set(QL_ALL_HEADERS
     ${CMAKE_BINARY_DIR}/ql/time/daycounters/all.hpp
     ${CMAKE_BINARY_DIR}/ql/utilities/all.hpp)
 
-set(QL_BUILT_HEADERS
-    ${CMAKE_BINARY_DIR}/ql/config.hpp
-    ${CMAKE_BINARY_DIR}/ql/qldefines.hpp
-    ${CMAKE_BINARY_DIR}/ql/version.hpp)
-
-add_custom_command(OUTPUT ${QL_ALL_HEADERS}
+add_custom_command(OUTPUT ${QL_GENERATED_HEADERS}
     COMMAND ${CMAKE_COMMAND}
         -DSOURCE_DIR=${CMAKE_SOURCE_DIR}
         -DBINARY_DIR=${CMAKE_BINARY_DIR}
         -P ${CMAKE_SOURCE_DIR}/cmake/GenerateHeaders.cmake
-    COMMENT "Generating all.hpp headers..."
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+    COMMENT "Generating headers..."
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
 add_library(ql_library
     ${QL_SOURCES}
     ${QL_HEADERS}
-    ${QL_ALL_HEADERS}
-    ${QL_BUILT_HEADERS})
+    ${QL_CONFIGURED_HEADERS}
+    ${QL_GENERATED_HEADERS})
 
 set_target_properties(ql_library PROPERTIES
     OUTPUT_NAME ${PACKAGE_NAME}
@@ -2344,14 +2344,14 @@ foreach(file ${QL_HEADERS})
     install(FILES ${file} DESTINATION "${QL_INSTALL_INCLUDEDIR}/ql/${dir}")
 endforeach()
 
-# Install all.hpp headers from the build directory
-foreach(file ${QL_ALL_HEADERS})
+# Install configured headers from the build directory
+foreach(file ${QL_CONFIGURED_HEADERS})
+    install(FILES ${file} DESTINATION "${QL_INSTALL_INCLUDEDIR}/ql/")
+endforeach()
+
+# Install generated headers from the build directory
+foreach(file ${QL_GENERATED_HEADERS})
     get_filename_component(dir ${file} DIRECTORY)
     file(RELATIVE_PATH path ${CMAKE_BINARY_DIR} ${dir})
     install(FILES ${file} DESTINATION "${QL_INSTALL_INCLUDEDIR}/${path}")
-endforeach()
-
-# Install built headers from the build directory
-foreach(file ${QL_BUILT_HEADERS})
-    install(FILES ${file} DESTINATION "${QL_INSTALL_INCLUDEDIR}/ql/")
 endforeach()
