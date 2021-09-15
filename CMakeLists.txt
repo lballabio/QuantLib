@@ -70,11 +70,6 @@ if (QL_USE_STD_CLASSES)
     set(QL_USE_STD_TUPLE ON)
 endif()
 
-# Sessions requires thread-safe initialization
-if (QL_ENABLE_SESSIONS)
-    set(QL_ENABLE_SINGLETON_THREAD_SAFE_INIT ON)
-endif()
-
 # Project shared libs ON for UNIX
 if (NOT DEFINED BUILD_SHARED_LIBS)
     set(BUILD_SHARED_LIBS ${UNIX})
