@@ -955,6 +955,10 @@ set(QL_HEADERS
     cashflows/yoyinflationcoupon.hpp
     cashflows/zeroinflationcashflow.hpp
     compounding.hpp
+    config.ansi.hpp
+    config.mingw.hpp
+    config.msvc.hpp
+    config.sun.hpp
     currencies/africa.hpp
     currencies/america.hpp
     currencies/asia.hpp
@@ -2163,6 +2167,7 @@ set(QL_HEADERS
     timeseries.hpp
     tuple.hpp
     types.hpp
+    userconfig.hpp
     utilities/clone.hpp
     utilities/dataformatters.hpp
     utilities/dataparsers.hpp
