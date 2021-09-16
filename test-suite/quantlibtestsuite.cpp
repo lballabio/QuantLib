@@ -32,15 +32,13 @@
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
 */
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
-
-#ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
-#  define BOOST_LIB_NAME boost_unit_test_framework
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#endif
-
+#  ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+#      define BOOST_LIB_NAME boost_unit_test_framework
+#      include <boost/config/auto_link.hpp>
+#      undef BOOST_LIB_NAME
+#  endif
 #endif
 
 #include "utilities.hpp"
@@ -322,11 +320,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     std::ostringstream header;
     header <<
         " Testing "
-        #ifdef BOOST_MSVC
-        QL_LIB_NAME
-        #else
         "QuantLib " QL_VERSION
-        #endif
         "\n  QL_EXTRA_SAFETY_CHECKS "
         #ifdef QL_EXTRA_SAFETY_CHECKS
         "  defined"

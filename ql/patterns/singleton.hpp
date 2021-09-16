@@ -27,6 +27,7 @@
 #include <ql/qldefines.hpp>
 
 #ifdef QL_ENABLE_SESSIONS
+#    include <boost/thread/locks.hpp>
 #    include <boost/thread/shared_mutex.hpp>
 #else
 #    ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
