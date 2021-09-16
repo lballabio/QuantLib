@@ -47,7 +47,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup
       run: |
-        $Url = "https://sourceforge.net/projects/boost/files/boost-binaries/1.75.0/boost_1_75_0-msvc-14.2-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.75.0/binaries/boost_1_75_0-msvc-14.2-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
         Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.75.0"
     - name: Compile
@@ -68,7 +68,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup
       run: |
-        $Url = "https://sourceforge.net/projects/boost/files/boost-binaries/1.75.0/boost_1_75_0-msvc-14.2-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.75.0/binaries/boost_1_75_0-msvc-14.2-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
         Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.75.0"
     - name: Compile
