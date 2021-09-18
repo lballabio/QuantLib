@@ -26,6 +26,7 @@
 #define quantlib_money_hpp
 
 #include <ql/currency.hpp>
+#include <ql/patterns/singleton.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -76,14 +77,36 @@ namespace QuantLib {
                                          currency of the first
                                          operand */
         };
-        static ConversionType conversionType;
-        static Currency baseCurrency;
+        //! Money::Settings forward declaration
+        class Settings;
         //@}
       private:
         Decimal value_ = 0.0;
         Currency currency_;
     };
 
+    //! Money::Settings: nested class for Money per-session settings
+    class Money::Settings : public Singleton<Money::Settings> {
+        friend class Singleton<Money::Settings>;
+      private:
+        Settings();
+        // disable copy/move
+        Settings(const Settings &) = delete;
+        Settings & operator=(const Settings &) = delete;
+        Settings(Settings &&) = delete;
+        Settings & operator=(Settings &&) = delete;
+
+      public:
+        const Money::ConversionType & conversionType() const;
+        Money::ConversionType & conversionType();
+
+        const Currency & baseCurrency() const;
+        Currency & baseCurrency();
+
+      private:
+        Money::ConversionType conversionType_;
+        Currency baseCurrency_;
+    };
 
     // More arithmetics and comparisons
 
