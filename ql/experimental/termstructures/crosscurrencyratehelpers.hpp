@@ -27,6 +27,47 @@
 #include <ql/termstructures/yield/ratehelpers.hpp>
 
 namespace QuantLib {
+    //! Base class for cross currency basis swap rate helpers
+    class CrossCurrencyBasisSwapRateHelper : public RelativeDateRateHelper {
+      public:
+        //! \name RateHelper interface
+        //@{
+        void setTermStructure(YieldTermStructure*) override;
+        //@}
+      protected:
+        CrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
+                                         const Period& tenor,
+                                         Natural fixingDays,
+                                         Calendar calendar,
+                                         BusinessDayConvention convention,
+                                         bool endOfMonth,
+                                         ext::shared_ptr<IborIndex> baseCurrencyIndex,
+                                         ext::shared_ptr<IborIndex> quoteCurrencyIndex,
+                                         Handle<YieldTermStructure> collateralCurve,
+                                         bool isFxBaseCurrencyCollateralCurrency,
+                                         bool isBasisOnFxBaseCurrencyLeg);
+
+        void initializeDates() override;
+        const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
+        const Handle<YieldTermStructure>& quoteCcyLegDiscountHandle() const;
+
+        Period tenor_;
+        Natural fixingDays_;
+        Calendar calendar_;
+        BusinessDayConvention convention_;
+        bool endOfMonth_;
+        ext::shared_ptr<IborIndex> baseCcyIdx_;
+        ext::shared_ptr<IborIndex> quoteCcyIdx_;
+        Handle<YieldTermStructure> collateralHandle_;
+        bool isFxBaseCurrencyCollateralCurrency_;
+        bool isBasisOnFxBaseCurrencyLeg_;
+
+        Leg baseCcyIborLeg_;
+        Leg quoteCcyIborLeg_;
+
+        RelinkableHandle<YieldTermStructure> termStructureHandle_;
+    };
+    
     //! Rate helper for bootstrapping over constant notional
     //! cross currency basis swaps
     /*!
@@ -52,48 +93,28 @@ namespace QuantLib {
     FX Modelling in Collateralized Markets: foreign measures, basis curves
     and pricing formulae.
     */
-    class CrossCurrencyBasisSwapRateHelper : public RelativeDateRateHelper {
+    class ConstNotionalCrossCurrencyBasisSwapRateHelper : public CrossCurrencyBasisSwapRateHelper {
       public:
-        CrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
-                                         const Period& tenor,
-                                         Natural fixingDays,
-                                         Calendar calendar,
-                                         BusinessDayConvention convention,
-                                         bool endOfMonth,
-                                         ext::shared_ptr<IborIndex> baseCurrencyIndex,
-                                         ext::shared_ptr<IborIndex> quoteCurrencyIndex,
-                                         Handle<YieldTermStructure> collateralCurve,
-                                         bool isFxBaseCurrencyCollateralCurrency,
-                                         bool isBasisOnFxBaseCurrencyLeg);
+        ConstNotionalCrossCurrencyBasisSwapRateHelper(
+            const Handle<Quote>& basis,
+            const Period& tenor,
+            Natural fixingDays,
+            const Calendar& calendar,
+            BusinessDayConvention convention,
+            bool endOfMonth,
+            const ext::shared_ptr<IborIndex>& baseCurrencyIndex,
+            const ext::shared_ptr<IborIndex>& quoteCurrencyIndex,
+            const Handle<YieldTermStructure>& collateralCurve,
+            bool isFxBaseCurrencyCollateralCurrency,
+            bool isBasisOnFxBaseCurrencyLeg);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
-        void setTermStructure(YieldTermStructure*) override;
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
-      protected:
-        void initializeDates() override;
-        const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
-        const Handle<YieldTermStructure>& quoteCcyLegDiscountHandle() const;
-
-        Period tenor_;
-        Natural fixingDays_; 
-        Calendar calendar_;
-        BusinessDayConvention convention_;
-        bool endOfMonth_;
-        ext::shared_ptr<IborIndex> baseCcyIdx_;
-        ext::shared_ptr<IborIndex> quoteCcyIdx_;
-        Handle<YieldTermStructure> collateralHandle_;
-        bool isFxBaseCurrencyCollateralCurrency_;
-        bool isBasisOnFxBaseCurrencyLeg_;
-
-        Leg baseCcyIborLeg_;
-        Leg quoteCcyIborLeg_;
-
-        RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
     //! Rate helper for bootstrapping over MtM cross currency basis swaps

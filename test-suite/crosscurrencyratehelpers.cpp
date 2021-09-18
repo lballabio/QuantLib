@@ -74,7 +74,7 @@ namespace crosscurrencyratehelpers_test {
                                        bool isBasisOnFxBaseCurrencyLeg) const {
             Handle<Quote> quoteHandle(ext::make_shared<SimpleQuote>(q.basis * basisPoint));
             Period tenor(q.n, q.units);
-            return ext::shared_ptr<RateHelper>(new CrossCurrencyBasisSwapRateHelper(
+            return ext::shared_ptr<RateHelper>(new ConstNotionalCrossCurrencyBasisSwapRateHelper(
                 quoteHandle, tenor, settlementDays, calendar, businessConvention, endOfMonth,
                 baseCcyIdx, quoteCcyIdx, collateralHandle, isFxBaseCurrencyCollateralCurrency,
                 isBasisOnFxBaseCurrencyLeg));

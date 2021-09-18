@@ -90,7 +90,7 @@ namespace QuantLib {
             Real discount(const Date& d) const {
                 return discountCurve_.discount(d);
             }
-            Real adjustedNotional(const Date& d) const {
+            Real notionalAdjustment(const Date& d) const {
                 return foreignCurve_.discount(d) / discountCurve_.discount(d);
             }
 
@@ -107,11 +107,17 @@ namespace QuantLib {
             void visit(Coupon& c) override {
                 Date start = c.accrualStartDate();
                 Date end = c.accrualEndDate();
-                Time accrual = c.accrualPeriod();
-                Real npv =
-                    helper_.adjustedNotional(start) *
-                    (-helper_.discount(start) + helper_.discount(end) * (1.0 + c.rate() * accrual));
-                npv_ += npv;
+                Real adjustedNotional = c.nominal() * helper_.notionalAdjustment(start);
+
+                // NPV of a resetting coupon consists of a redemption of borrowed amount occuring
+                // at the end of the accrual period plus the accrued interest, minus the borrowed
+                // amount at the start of the period. All amounts are corrected by an adjustment
+                // corresponding to the implied forward exchange rate, which is estimated by
+                // the ratio of foreign and domestic curves discount factors.
+                Real npvRedeemedAmount =
+                    adjustedNotional * helper_.discount(end) * (1.0 + c.rate() * c.accrualPeriod());
+                Real npvBorrowedAmount = -adjustedNotional * helper_.discount(start);
+                npv_ += npvRedeemedAmount + npvBorrowedAmount;
             }
             Real NPV() const { return npv_; }
 
@@ -129,8 +135,8 @@ namespace QuantLib {
                 Date start = c.accrualStartDate();
                 Date end = c.accrualEndDate();
                 Time accrual = c.accrualPeriod();
-                Real bps = helper_.adjustedNotional(start) * helper_.discount(end) * accrual;
-                bps_ += bps;
+                Real adjustedNotional = c.nominal() * helper_.notionalAdjustment(start);
+                bps_ += adjustedNotional * helper_.discount(end) * accrual;
             }
             Real BPS() const { return bps_; }
 
@@ -218,17 +224,6 @@ namespace QuantLib {
         return isFxBaseCurrencyCollateralCurrency_ ? termStructureHandle_ : collateralHandle_;
     }
 
-    Real CrossCurrencyBasisSwapRateHelper::impliedQuote() const {
-        Real npvBaseCcy = -npvConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
-        Real npvQuoteCcy = npvConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle());
-        Real bps = 0.0;
-        if (isBasisOnFxBaseCurrencyLeg_)
-            bps = -bpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
-        else
-            bps = bpsConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle());
-        return -(npvQuoteCcy + npvBaseCcy) / bps;
-    }
-
     void CrossCurrencyBasisSwapRateHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
@@ -240,8 +235,43 @@ namespace QuantLib {
         RelativeDateRateHelper::setTermStructure(t);
     }
 
-    void CrossCurrencyBasisSwapRateHelper::accept(AcyclicVisitor& v) {
-        auto* v1 = dynamic_cast<Visitor<CrossCurrencyBasisSwapRateHelper>*>(&v);
+    ConstNotionalCrossCurrencyBasisSwapRateHelper::ConstNotionalCrossCurrencyBasisSwapRateHelper(
+        const Handle<Quote>& basis,
+        const Period& tenor,
+        Natural fixingDays,
+        const Calendar& calendar,
+        BusinessDayConvention convention,
+        bool endOfMonth,
+        const ext::shared_ptr<IborIndex>& baseCurrencyIndex,
+        const ext::shared_ptr<IborIndex>& quoteCurrencyIndex,
+        const Handle<YieldTermStructure>& collateralCurve,
+        bool isFxBaseCurrencyCollateralCurrency,
+        bool isBasisOnFxBaseCurrencyLeg)
+    : CrossCurrencyBasisSwapRateHelper(basis,
+                                       tenor,
+                                       fixingDays,
+                                       calendar,
+                                       convention,
+                                       endOfMonth,
+                                       baseCurrencyIndex,
+                                       quoteCurrencyIndex,
+                                       collateralCurve,
+                                       isFxBaseCurrencyCollateralCurrency,
+                                       isBasisOnFxBaseCurrencyLeg) {}
+
+    Real ConstNotionalCrossCurrencyBasisSwapRateHelper::impliedQuote() const {
+        Real npvBaseCcy = -npvConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
+        Real npvQuoteCcy = npvConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle());
+        Real bps = 0.0;
+        if (isBasisOnFxBaseCurrencyLeg_)
+            bps = -bpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
+        else
+            bps = bpsConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle());
+        return -(npvQuoteCcy + npvBaseCcy) / bps;
+    }
+
+    void ConstNotionalCrossCurrencyBasisSwapRateHelper::accept(AcyclicVisitor& v) {
+        auto* v1 = dynamic_cast<Visitor<ConstNotionalCrossCurrencyBasisSwapRateHelper>*>(&v);
         if (v1 != nullptr)
             v1->visit(*this);
         else
