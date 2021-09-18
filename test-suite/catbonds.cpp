@@ -209,6 +209,8 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
 
     using namespace catbonds_test;
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     CommonVars vars;
 
     Date today(22,November,2004);
@@ -270,7 +272,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     setCouponPricer(catBond1.cashflows(),pricer);
 
     Real cachedPrice1;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!iborcoupon_settings.usingAtParCoupons())
         cachedPrice1 = 99.874645;
     else
         cachedPrice1 = 99.874646;
@@ -317,7 +319,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     setCouponPricer(catBond2.cashflows(),pricer);
 
     Real cachedPrice2; 
-    if (!IborCoupon::usingAtParCoupons())
+    if (!iborcoupon_settings.usingAtParCoupons())
         cachedPrice2 = 97.955904;
     else
         cachedPrice2 = 97.955904;
@@ -365,7 +367,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     setCouponPricer(catBond3.cashflows(),pricer);
 
     Real cachedPrice3;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!iborcoupon_settings.usingAtParCoupons())
         cachedPrice3 = 98.495458;
     else
         cachedPrice3 = 98.495459;
