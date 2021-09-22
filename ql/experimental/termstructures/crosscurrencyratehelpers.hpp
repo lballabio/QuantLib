@@ -27,25 +27,26 @@
 #include <ql/termstructures/yield/ratehelpers.hpp>
 
 namespace QuantLib {
-    //! Base class for cross currency basis swap rate helpers
-    class CrossCurrencyBasisSwapRateHelper : public RelativeDateRateHelper {
+
+    //! Base class for cross-currency basis swap rate helpers
+    class CrossCurrencyBasisSwapRateHelperBase : public RelativeDateRateHelper {
       public:
         //! \name RateHelper interface
         //@{
         void setTermStructure(YieldTermStructure*) override;
         //@}
       protected:
-        CrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
-                                         const Period& tenor,
-                                         Natural fixingDays,
-                                         Calendar calendar,
-                                         BusinessDayConvention convention,
-                                         bool endOfMonth,
-                                         ext::shared_ptr<IborIndex> baseCurrencyIndex,
-                                         ext::shared_ptr<IborIndex> quoteCurrencyIndex,
-                                         Handle<YieldTermStructure> collateralCurve,
-                                         bool isFxBaseCurrencyCollateralCurrency,
-                                         bool isBasisOnFxBaseCurrencyLeg);
+        CrossCurrencyBasisSwapRateHelperBase(const Handle<Quote>& basis,
+                                             const Period& tenor,
+                                             Natural fixingDays,
+                                             Calendar calendar,
+                                             BusinessDayConvention convention,
+                                             bool endOfMonth,
+                                             ext::shared_ptr<IborIndex> baseCurrencyIndex,
+                                             ext::shared_ptr<IborIndex> quoteCurrencyIndex,
+                                             Handle<YieldTermStructure> collateralCurve,
+                                             bool isFxBaseCurrencyCollateralCurrency,
+                                             bool isBasisOnFxBaseCurrencyLeg);
 
         void initializeDates() override;
         const Handle<YieldTermStructure>& baseCcyLegDiscountHandle() const;
@@ -67,11 +68,9 @@ namespace QuantLib {
 
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
-    
-    //! Rate helper for bootstrapping over constant notional
-    //! cross currency basis swaps
+
+    //! Rate helper for bootstrapping over constant-notional cross-currency basis swaps
     /*!
-    Constant notional cross currency swap helper.
     Unlike marked-to-market cross currency swaps, both notionals
     expressed in base and quote currency remain constant throughout
     the lifetime of the swap.
@@ -93,7 +92,7 @@ namespace QuantLib {
     FX Modelling in Collateralized Markets: foreign measures, basis curves
     and pricing formulae.
     */
-    class ConstNotionalCrossCurrencyBasisSwapRateHelper : public CrossCurrencyBasisSwapRateHelper {
+    class ConstNotionalCrossCurrencyBasisSwapRateHelper : public CrossCurrencyBasisSwapRateHelperBase {
       public:
         ConstNotionalCrossCurrencyBasisSwapRateHelper(
             const Handle<Quote>& basis,
@@ -117,7 +116,15 @@ namespace QuantLib {
         //@}
     };
 
-    //! Rate helper for bootstrapping over MtM cross currency basis swaps
+
+    /*! \deprecated Use ConstNotionalCrossCurrencyBasisSwapRateHelper instead.
+                    Deprecated in version 1.24.
+    */
+    QL_DEPRECATED
+    typedef ConstNotionalCrossCurrencyBasisSwapRateHelper CrossCurrencyBasisSwapRateHelper;
+
+
+    //! Rate helper for bootstrapping over market-to-market cross-currency basis swaps
     /*!
     Helper for a cross currency swap with resetting notional.
     This means that at each interest payment the notional on the MtM
@@ -129,9 +136,9 @@ namespace QuantLib {
     FX Modelling in Collateralized Markets: foreign measures, basis curves
     and pricing formulae.
     */
-    class MtMCrossCurrencyBasisSwapRateHelper : public CrossCurrencyBasisSwapRateHelper {
+    class MtMCrossCurrencyBasisSwapRateHelper : public CrossCurrencyBasisSwapRateHelperBase {
       public:
-        MtMCrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis, 
+        MtMCrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
                                             const Period& tenor,
                                             Natural fixingDays,
                                             const Calendar& calendar,
@@ -151,7 +158,7 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
-      protected:
+      private:
         bool isFxBaseCurrencyLegResettable_;
     };
 }

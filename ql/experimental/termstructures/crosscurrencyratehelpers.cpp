@@ -146,7 +146,7 @@ namespace QuantLib {
         }
     }
 
-    CrossCurrencyBasisSwapRateHelper::CrossCurrencyBasisSwapRateHelper(
+    CrossCurrencyBasisSwapRateHelperBase::CrossCurrencyBasisSwapRateHelperBase(
         const Handle<Quote>& basis,
         const Period& tenor,
         Natural fixingDays,
@@ -171,7 +171,7 @@ namespace QuantLib {
         initializeDates();
     }
 
-    void CrossCurrencyBasisSwapRateHelper::initializeDates() {
+    void CrossCurrencyBasisSwapRateHelperBase::initializeDates() {
         baseCcyIborLeg_ = buildIborLeg(evaluationDate_, tenor_, fixingDays_, calendar_, convention_,
                                        endOfMonth_, baseCcyIdx_);
         quoteCcyIborLeg_ = buildIborLeg(evaluationDate_, tenor_, fixingDays_, calendar_,
@@ -183,20 +183,20 @@ namespace QuantLib {
     }
 
     const Handle<YieldTermStructure>&
-    CrossCurrencyBasisSwapRateHelper::baseCcyLegDiscountHandle() const {
+    CrossCurrencyBasisSwapRateHelperBase::baseCcyLegDiscountHandle() const {
         QL_REQUIRE(!termStructureHandle_.empty(), "term structure not set");
         QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
         return isFxBaseCurrencyCollateralCurrency_ ? collateralHandle_ : termStructureHandle_;
     }
 
     const Handle<YieldTermStructure>&
-    CrossCurrencyBasisSwapRateHelper::quoteCcyLegDiscountHandle() const {
+    CrossCurrencyBasisSwapRateHelperBase::quoteCcyLegDiscountHandle() const {
         QL_REQUIRE(!termStructureHandle_.empty(), "term structure not set");
         QL_REQUIRE(!collateralHandle_.empty(), "collateral term structure not set");
         return isFxBaseCurrencyCollateralCurrency_ ? termStructureHandle_ : collateralHandle_;
     }
 
-    void CrossCurrencyBasisSwapRateHelper::setTermStructure(YieldTermStructure* t) {
+    void CrossCurrencyBasisSwapRateHelperBase::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
         bool observer = false;
@@ -219,17 +219,17 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& collateralCurve,
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg)
-    : CrossCurrencyBasisSwapRateHelper(basis,
-                                       tenor,
-                                       fixingDays,
-                                       calendar,
-                                       convention,
-                                       endOfMonth,
-                                       baseCurrencyIndex,
-                                       quoteCurrencyIndex,
-                                       collateralCurve,
-                                       isFxBaseCurrencyCollateralCurrency,
-                                       isBasisOnFxBaseCurrencyLeg) {}
+    : CrossCurrencyBasisSwapRateHelperBase(basis,
+                                           tenor,
+                                           fixingDays,
+                                           calendar,
+                                           convention,
+                                           endOfMonth,
+                                           baseCurrencyIndex,
+                                           quoteCurrencyIndex,
+                                           collateralCurve,
+                                           isFxBaseCurrencyCollateralCurrency,
+                                           isBasisOnFxBaseCurrencyLeg) {}
 
     Real ConstNotionalCrossCurrencyBasisSwapRateHelper::impliedQuote() const {
         Real npvBaseCcy = 0.0, bpsBaseCcy = 0.0;
@@ -262,17 +262,17 @@ namespace QuantLib {
         bool isFxBaseCurrencyCollateralCurrency,
         bool isBasisOnFxBaseCurrencyLeg,
         bool isFxBaseCurrencyLegResettable)
-    : CrossCurrencyBasisSwapRateHelper(basis,
-                                       tenor,
-                                       fixingDays,
-                                       calendar,
-                                       convention,
-                                       endOfMonth,
-                                       baseCurrencyIndex,
-                                       quoteCurrencyIndex,
-                                       collateralCurve,
-                                       isFxBaseCurrencyCollateralCurrency,
-                                       isBasisOnFxBaseCurrencyLeg),
+    : CrossCurrencyBasisSwapRateHelperBase(basis,
+                                           tenor,
+                                           fixingDays,
+                                           calendar,
+                                           convention,
+                                           endOfMonth,
+                                           baseCurrencyIndex,
+                                           quoteCurrencyIndex,
+                                           collateralCurve,
+                                           isFxBaseCurrencyCollateralCurrency,
+                                           isBasisOnFxBaseCurrencyLeg),
       isFxBaseCurrencyLegResettable_(isFxBaseCurrencyLegResettable) {}
 
     Real MtMCrossCurrencyBasisSwapRateHelper::impliedQuote() const {
