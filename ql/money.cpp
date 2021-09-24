@@ -253,7 +253,7 @@ namespace QuantLib {
         return *this;
     }
 
-    Money::ConversionTypeProxy::operator ConversionType() const {
+    Money::ConversionTypeProxy::operator Money::ConversionType() const {
         return Money::Settings::instance().conversionType();
     }
 

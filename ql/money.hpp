@@ -94,7 +94,7 @@ namespace QuantLib {
         struct ConversionTypeProxy {
           public:
             ConversionTypeProxy& operator=(Money::ConversionType);
-            operator ConversionType() const;
+            operator Money::ConversionType() const;
         };
 
       public:
