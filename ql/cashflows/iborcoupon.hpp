@@ -73,18 +73,24 @@ namespace QuantLib {
         Time spanningTime_;
 
       public:
-        //! IborCoupon::Settings forward declaration
+        // IborCoupon::Settings forward declaration
         class Settings;
-        //! deprecated: use IborCouponSettings::Settings::createAtParCoupons instead
+        /*! \deprecated Use IborCouponSettings::Settings::instance().createAtParCoupons() instead
+                        Deprecated in version 1.24.
+        */
         QL_DEPRECATED static void createAtParCoupons();
-        //! deprecated: use IborCouponSettings::Settings::createIndexedCoupons instead
+        /*! \deprecated Use IborCouponSettings::Settings::instance().createIndexedCoupons() instead
+                        Deprecated in version 1.24.
+        */
         QL_DEPRECATED static void createIndexedCoupons();
-        //! deprecated: use IborCouponSettings::Settings::usingAtParCoupons instead
+        /*! \deprecated Use IborCouponSettings::Settings::instance().usingAtParCoupons() instead
+                        Deprecated in version 1.24.
+        */
         QL_DEPRECATED static bool usingAtParCoupons();
     };
 
 
-    //! IborCoupon::Settings: nested class for IborCoupon per-session settings
+    //! Per-session settings for IborCoupon class
     class IborCoupon::Settings : public Singleton<IborCoupon::Settings> {
         friend class Singleton<IborCoupon::Settings>;
       private:
