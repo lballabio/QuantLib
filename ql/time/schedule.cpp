@@ -248,6 +248,7 @@ namespace QuantLib {
           case DateGeneration::Twentieth:
           case DateGeneration::TwentiethIMM:
           case DateGeneration::ThirdWednesday:
+          case DateGeneration::ThirdWednesdayInclusive:
           case DateGeneration::OldCDS:
           case DateGeneration::CDS:
           case DateGeneration::CDS2015:
@@ -349,10 +350,13 @@ namespace QuantLib {
 
         // adjustments
         if (*rule_==DateGeneration::ThirdWednesday)
-            for (Size i=0; i<dates_.size(); ++i)
+            for (Size i=1; i<dates_.size()-1; ++i)
                 dates_[i] = Date::nthWeekday(3, Wednesday,
                                              dates_[i].month(),
                                              dates_[i].year());
+        else if (*rule_ == DateGeneration::ThirdWednesdayInclusive)
+            for (Size i=0; i < dates_.size(); ++i)
+                dates_[i] = Date::nthWeekday(3, Wednesday, dates_[i].month(), dates_[i].year());
 
         if (*endOfMonth_ && calendar_.isEndOfMonth(seed)) {
             // adjust to end of month

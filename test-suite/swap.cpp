@@ -334,7 +334,7 @@ void SwapTest::testThirdWednesdayAdjustment() {
 
     CommonVars vars;
 
-    ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(1, 0.0, -0.001, DateGeneration::ThirdWednesday);
+    ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(1, 0.0, -0.001, DateGeneration::ThirdWednesdayInclusive);
 
     if (swap->floatingSchedule().startDate() != Date(16, September, 2015)) {
         BOOST_ERROR("Wrong Start Date " << swap->floatingSchedule().startDate());
