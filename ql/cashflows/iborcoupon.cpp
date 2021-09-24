@@ -158,11 +158,7 @@ namespace QuantLib {
          usingAtParCoupons_ = false;
     }
 
-    const bool & IborCoupon::Settings::usingAtParCoupons() const {
-        return usingAtParCoupons_;
-    }
-
-    bool & IborCoupon::Settings::usingAtParCoupons() {
+    bool IborCoupon::Settings::usingAtParCoupons() const {
         return usingAtParCoupons_;
     }
 
