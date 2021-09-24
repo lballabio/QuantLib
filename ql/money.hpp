@@ -77,15 +77,38 @@ namespace QuantLib {
                                          currency of the first
                                          operand */
         };
-        //! Money::Settings forward declaration
+        // Money::Settings forward declaration
         class Settings;
         //@}
       private:
         Decimal value_ = 0.0;
         Currency currency_;
+
+        // temporary support for old syntax
+        struct BaseCurrencyProxy {
+          public:
+            BaseCurrencyProxy& operator=(const Currency&);
+            operator Currency() const;
+        };
+
+        struct ConversionTypeProxy {
+          public:
+            ConversionTypeProxy& operator=(Money::ConversionType);
+            operator ConversionType() const;
+        };
+
+      public:
+        /*! \deprecated Use Money::Settings::instance().baseCurrency() instead.
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED static BaseCurrencyProxy baseCurrency;
+        /*! \deprecated Use Money::Settings::instance().conversionType() instead.
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED static ConversionTypeProxy conversionType;
     };
 
-    //! Money::Settings: nested class for Money per-session settings
+    //! Per-session settings for the Money class
     class Money::Settings : public Singleton<Money::Settings> {
         friend class Singleton<Money::Settings>;
       private:

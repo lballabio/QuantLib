@@ -238,4 +238,23 @@ namespace QuantLib {
     {
         return baseCurrency_;
     }
+
+    Money::BaseCurrencyProxy& Money::BaseCurrencyProxy::operator=(const Currency& c) {
+        Money::Settings::instance().baseCurrency() = c;
+        return *this;
+    }
+
+    Money::BaseCurrencyProxy::operator Currency() const {
+        return Money::Settings::instance().baseCurrency();
+    }
+
+    Money::ConversionTypeProxy& Money::ConversionTypeProxy::operator=(ConversionType t) {
+        Money::Settings::instance().conversionType() = t;
+        return *this;
+    }
+
+    Money::ConversionTypeProxy::operator ConversionType() const {
+        return Money::Settings::instance().conversionType();
+    }
+
 }
