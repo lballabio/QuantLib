@@ -95,11 +95,6 @@ namespace QuantLib {
         friend class Singleton<IborCoupon::Settings>;
       private:
         Settings();
-        // disable copy/move
-        Settings(const Settings &) = delete;
-        Settings & operator=(const Settings &) = delete;
-        Settings(Settings &&) = delete;
-        Settings & operator=(Settings &&) = delete;
 
       public:
         //! When called, IborCoupons are created as indexed coupons instead of par coupons.

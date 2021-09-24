@@ -113,11 +113,6 @@ namespace QuantLib {
         friend class Singleton<Money::Settings>;
       private:
         Settings();
-        // disable copy/move
-        Settings(const Settings &) = delete;
-        Settings & operator=(const Settings &) = delete;
-        Settings(Settings &&) = delete;
-        Settings & operator=(Settings &&) = delete;
 
       public:
         const Money::ConversionType & conversionType() const;
