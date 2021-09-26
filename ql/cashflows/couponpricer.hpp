@@ -106,8 +106,8 @@ namespace QuantLib {
         Real spanningTime_;
         Real spanningTimeIndexMaturity_;
 
-        bool useIndexedCoupon_;
         Handle<OptionletVolatilityStructure> capletVol_;
+        bool useIndexedCoupon_;
     };
 
     /*! Black-formula pricer for capped/floored Ibor coupons
