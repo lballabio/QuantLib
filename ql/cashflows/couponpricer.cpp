@@ -63,8 +63,6 @@ namespace QuantLib {
             }
         }
 
-        const DayCounter& dc = index_->dayCounter();
-
         coupon_->spanningTime_ =
             index_->dayCounter().yearFraction(coupon_->fixingValueDate_, coupon_->fixingEndDate_);
 
