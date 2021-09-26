@@ -209,11 +209,12 @@ namespace {
         // However, if indexed coupons are used the floating leg is not at par,
         // so we need to relax the tolerance to a level at which it will only
         // catch large errors.
-        Real tol2;
-        if (!IborCoupon::usingAtParCoupons())
+        Real tol2 =
+#ifdef QL_USE_INDEXED_COUPON
             tol2 = 0.02;
-        else
+#else
             tol2 = tol;
+#endif
 
         SwaptionCashFlows singleCurveCashFlows(swaption, proj6mYTS, contTenorSpread);
         for (Size k = 1; k < singleCurveCashFlows.floatWeights().size() - 1; ++k) {

@@ -665,15 +665,15 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                              795915.9787,
                              -4702034.688,
                              -4042340.999};
-    Real tolerance;
-    if (IborCoupon::usingAtParCoupons()) {
-        tolerance = 1.0e-6;
-    } else {
+    Real tolerance =
+#ifdef QL_USE_INDEXED_COUPON
         /* The risk-free curve is a bit off. We might skip the tests
            altogether and rely on running them with indexed coupons
            disabled, but leaving them can be useful anyway. */
-        tolerance = 1.0e-3;
-    }
+        1.0e-3;
+#else
+        1.0e-6;
+#endif
 
     size_t l = 0;
 

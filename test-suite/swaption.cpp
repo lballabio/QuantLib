@@ -397,11 +397,12 @@ void SwaptionTest::testCachedValue() {
     ext::shared_ptr<Swaption> swaption =
         vars.makeSwaption(swap, exerciseDate, 0.20);
 
-    Real cachedNPV;
-    if (IborCoupon::usingAtParCoupons())
-        cachedNPV = 0.036418158579;
-    else
-        cachedNPV = 0.036421429684;
+    Real cachedNPV =
+#ifdef QL_USE_INDEXED_COUPON
+        0.036421429684;
+#else
+        0.036418158579;
+#endif
 
     // FLOATING_POINT_EXCEPTION
     if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-12)

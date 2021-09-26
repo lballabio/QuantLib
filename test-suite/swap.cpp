@@ -315,11 +315,12 @@ void SwapTest::testCachedValue() {
                     << "    calculated: " << swap->numberOfLegs() << "\n"
                     << "    expected:   " << 2);
 
-    Real cachedNPV;  
-    if (IborCoupon::usingAtParCoupons())
-        cachedNPV = -5.872863313209;
-    else
-        cachedNPV = -5.872342992212;
+    Real cachedNPV =
+#ifdef QL_USE_INDEXED_COUPON
+        -5.872863313209;
+#else
+        -5.872342992212;
+#endif
 
     if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
         BOOST_ERROR("failed to reproduce cached swap value:\n"

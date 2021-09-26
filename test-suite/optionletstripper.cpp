@@ -803,11 +803,12 @@ void OptionletStripperTest::testSwitchStrike() {
         new OptionletStripper1(vars.capFloorVolSurface, iborIndex,
                                Null< Rate >(), vars.accuracy));
 
-    Real expected;
-    if (!IborCoupon::usingAtParCoupons())
-        expected = 0.02981258;
-    else
-        expected = 0.02981223;
+    Real expected =
+#ifdef QL_USE_INDEXED_COUPON
+        0.02981258;
+#else
+        0.02981223;
+#endif
 
     Real error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)
@@ -821,10 +822,11 @@ void OptionletStripperTest::testSwitchStrike() {
     yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
         0, vars.calendar, 0.05, vars.dayCounter));
 
-    if (!IborCoupon::usingAtParCoupons())
+#ifdef QL_USE_INDEXED_COUPON
         expected = 0.0499381;
-    else
+#else
         expected = 0.0499371;
+#endif
 
     error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)

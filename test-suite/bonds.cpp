@@ -920,11 +920,12 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond1.cashflows(),pricer);
 
-    Real cachedPrice1;
-    if (!IborCoupon::usingAtParCoupons())
-        cachedPrice1 = 99.874645;
-    else
-        cachedPrice1 = 99.874646;
+    Real cachedPrice1 =
+#ifdef QL_USE_INDEXED_COUPON
+    99.874645;
+#else
+    99.874646;
+#endif
 
     Real price = bond1.cleanPrice();
     if (std::fabs(price-cachedPrice1) > tolerance) {
@@ -951,11 +952,12 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond2.cashflows(),pricer);
 
-    Real cachedPrice2;
-    if (!IborCoupon::usingAtParCoupons())
-        cachedPrice2 = 97.955904;
-    else
-        cachedPrice2 = 97.955904;
+    Real cachedPrice2 =
+#ifdef QL_USE_INDEXED_COUPON
+        97.955904;
+#else
+        97.955904;
+#endif
 
     price = bond2.cleanPrice();
     if (std::fabs(price-cachedPrice2) > tolerance) {
@@ -986,11 +988,12 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond3.cashflows(),pricer);
 
-    Real cachedPrice3;
-    if (!IborCoupon::usingAtParCoupons())
-        cachedPrice3 = 98.495458;
-    else
-        cachedPrice3 = 98.495459;
+    Real cachedPrice3 =
+#ifdef QL_USE_INDEXED_COUPON
+        98.495458;
+#else
+        98.495459;
+#endif
 
     price = bond3.cleanPrice();
     if (std::fabs(price-cachedPrice3) > tolerance) {
@@ -1013,11 +1016,12 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond4.cashflows(), pricer);
 
-    Real cachedPrice4;
-    if (!IborCoupon::usingAtParCoupons())
-        cachedPrice4 = 98.892346;
-    else
-        cachedPrice4 = 98.892055;
+    Real cachedPrice4 =
+#ifdef QL_USE_INDEXED_COUPON
+        98.892346;
+#else
+        98.892055;
+#endif
 
     price = bond4.cleanPrice();
     if (std::fabs(price - cachedPrice4) > tolerance) {

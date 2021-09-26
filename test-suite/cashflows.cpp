@@ -510,9 +510,9 @@ test_suite* CashFlowsTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testDefaultSettlementDate));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testExCouponDates));
-    if (IborCoupon::usingAtParCoupons())
-        suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
-
+#ifndef QL_USE_INDEXED_COUPON
+    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
+#endif
     suite->add(QUANTLIB_TEST_CASE(
                              &CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth));
     suite->add(QUANTLIB_TEST_CASE(

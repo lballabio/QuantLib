@@ -267,14 +267,6 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
     ext::shared_ptr<IborIndex> euribor6m =
         ext::make_shared<Euribor>(Euribor(6 * Months));
 
-    // check if indexed coupon is defined (it should not to be 100% consistent with
-    // the ISDA spec)
-    if (!IborCoupon::usingAtParCoupons()) {
-        std::cout << "Warning: IborCoupon::usingAtParCoupons() == false is used, "
-                  << "which is not precisely consistent with the specification "
-                  << "of the ISDA rate curve." << std::endl;
-    }
-
     DayCounter thirty360 = Thirty360(Thirty360::BondBasis);
 
     ext::shared_ptr<SwapRateHelper> sw2y = ext::make_shared<SwapRateHelper>(
