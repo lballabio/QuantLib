@@ -31,26 +31,6 @@
 
 namespace QuantLib {
 
-    bool IborCoupon::constructorWasNotCalled_ = true;
-
-#ifndef QL_USE_INDEXED_COUPON
-    bool IborCoupon::usingAtParCoupons_ = true;
-#else
-    bool IborCoupon::usingAtParCoupons_ = false;
-#endif
-
-    void IborCoupon::createAtParCoupons() {
-        QL_ASSERT(constructorWasNotCalled_,
-                  "Cannot call this method after the first IborCoupon was created.");
-        usingAtParCoupons_ = true;
-    }
-
-    void IborCoupon::createIndexedCoupons() {
-        QL_ASSERT(constructorWasNotCalled_,
-                  "Cannot call this method after the first IborCoupon was created.");
-        usingAtParCoupons_ = false;
-    }
-
     IborCoupon::IborCoupon(const Date& paymentDate,
                            Real nominal,
                            const Date& startDate,
@@ -69,42 +49,17 @@ namespace QuantLib {
                          refPeriodStart, refPeriodEnd,
                          dayCounter, isInArrears, exCouponDate),
       iborIndex_(iborIndex) {
-        constructorWasNotCalled_ = false;
-
         fixingDate_ = fixingDate();
+    }
 
-        const Calendar& fixingCalendar = index_->fixingCalendar();
-        Natural indexFixingDays = index_->fixingDays();
-
-        fixingValueDate_ = fixingCalendar.advance(
-            fixingDate_, indexFixingDays, Days);
-
-        if (usingAtParCoupons_) {
-            if (isInArrears_)
-                fixingEndDate_ = index_->maturityDate(fixingValueDate_);
-            else { // par coupon approximation
-                Date nextFixingDate = fixingCalendar.advance(
-                    accrualEndDate_, -static_cast<Integer>(fixingDays_), Days);
-                fixingEndDate_ = fixingCalendar.advance(
-                    nextFixingDate, indexFixingDays, Days);
-                // make sure the estimation period contains at least one day
-                fixingEndDate_ = std::max(fixingEndDate_, fixingValueDate_ + 1);
-            }
-        } else {
-            fixingEndDate_ = index_->maturityDate(fixingValueDate_);
-        }
-
-        const DayCounter& dc = index_->dayCounter();
-        spanningTime_ = dc.yearFraction(fixingValueDate_,
-                                        fixingEndDate_);
-        QL_REQUIRE(spanningTime_>0.0,
-                   "\n cannot calculate forward rate between " <<
-                   fixingValueDate_ << " and " << fixingEndDate_ <<
-                   ":\n non positive time (" << spanningTime_ <<
-                   ") using " << dc.name() << " daycounter");
+    const Date& IborCoupon::fixingEndDate() const {
+        QL_REQUIRE(pricer_, "IborCoupon: pricer not set");
+        return fixingEndDate_;
     }
 
     Rate IborCoupon::indexFixing() const {
+
+        QL_REQUIRE(pricer_, "IborCoupon: pricer not set");
 
         /* instead of just returning index_->fixing(fixingValueDate_)
            its logic is duplicated here using a specialized iborIndex
@@ -142,6 +97,11 @@ namespace QuantLib {
                                           spanningTime_);
     }
 
+    void IborCoupon::setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
+        cachedDataIsComputed_ = false;
+        FloatingRateCoupon::setPricer(pricer);
+    }
+
     void IborCoupon::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<IborCoupon>*>(&v);
         if (v1 != nullptr)
@@ -155,7 +115,14 @@ namespace QuantLib {
     : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following),
       paymentLag_(0), paymentCalendar_(Calendar()), inArrears_(false), zeroPayments_(false),
       exCouponPeriod_(Period()), exCouponCalendar_(Calendar()), exCouponAdjustment_(Unadjusted),
-      exCouponEndOfMonth_(false) {}
+      exCouponEndOfMonth_(false), useIndexedCoupon_(
+#ifdef QL_USE_INDEXED_COUPON
+                                      true
+#else
+                                      false
+#endif
+                                  ) {
+    }
 
     IborLeg& IborLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);
@@ -258,6 +225,11 @@ namespace QuantLib {
         return *this;
 	}
 
+    IborLeg& IborLeg::useIndexedCoupon(const bool useIndexedCoupon) {
+        useIndexedCoupon_ = useIndexedCoupon;
+        return *this;
+    }
+
     IborLeg::operator Leg() const {
 
         Leg leg = FloatingLeg<IborIndex, IborCoupon, CappedFlooredIborCoupon>(
@@ -267,7 +239,10 @@ namespace QuantLib {
 			             exCouponPeriod_, exCouponCalendar_, exCouponAdjustment_, exCouponEndOfMonth_);
 
         if (caps_.empty() && floors_.empty() && !inArrears_) {
-            ext::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer);
+            ext::shared_ptr<IborCouponPricer> pricer = boost::make_shared<BlackIborCouponPricer>(
+                Handle<OptionletVolatilityStructure>(),
+                BlackIborCouponPricer::TimingAdjustment::Black76,
+                Handle<Quote>(boost::make_shared<SimpleQuote>(1.0)), useIndexedCoupon_);
             setCouponPricer(leg, pricer);
         }
 

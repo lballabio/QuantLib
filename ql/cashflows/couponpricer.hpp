@@ -65,10 +65,19 @@ namespace QuantLib {
     class IborCouponPricer : public FloatingRateCouponPricer {
       public:
         explicit IborCouponPricer(
-            Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>())
-        : capletVol_(std::move(v)) {
+            Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
+            const bool useIndexedCoupon =
+#ifdef QL_USE_IDNDEXED_COUPON
+            true
+#else
+            false
+#endif
+        )
+        : capletVol_(std::move(v)), useIndexedCoupon_(useIndexedCoupon) {
             registerWith(capletVol_);
         }
+
+        bool useIndexedCoupon() const { return useIndexedCoupon_; }
 
         Handle<OptionletVolatilityStructure> capletVolatility() const{
             return capletVol_;
@@ -81,7 +90,23 @@ namespace QuantLib {
             registerWith(capletVol_);
             update();
         }
-      private:
+
+      protected:
+        void initialize(const FloatingRateCoupon& coupon) override;
+        void computeCachedData() const;
+
+        const IborCoupon* coupon_;
+        ext::shared_ptr<IborIndex> index_;
+        Real gearing_;
+        Spread spread_;
+        Time accrualPeriod_;
+        Date fixingDate_;
+        Date fixingValueDate_;
+        Date fixingMaturityDate_;
+        Real spanningTime_;
+        Real spanningTimeIndexMaturity_;
+
+        bool useIndexedCoupon_;
         Handle<OptionletVolatilityStructure> capletVol_;
     };
 
@@ -96,8 +121,15 @@ namespace QuantLib {
         BlackIborCouponPricer(
             const Handle<OptionletVolatilityStructure>& v = Handle<OptionletVolatilityStructure>(),
             const TimingAdjustment timingAdjustment = Black76,
-            Handle<Quote> correlation = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))))
-        : IborCouponPricer(v), timingAdjustment_(timingAdjustment),
+            Handle<Quote> correlation = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))),
+            const bool useIndexedCoupon =
+#ifdef QL_USE_IDNDEXED_COUPON
+            true
+#else
+            false
+#endif
+            )
+        : IborCouponPricer(v, useIndexedCoupon), timingAdjustment_(timingAdjustment),
           correlation_(std::move(correlation)) {
             { // this additional scope seems required to avoid a misleading-indentation warning
                 QL_REQUIRE(timingAdjustment_ == Black76 || timingAdjustment_ == BivariateLognormal,
@@ -119,14 +151,8 @@ namespace QuantLib {
 
         virtual Rate adjustedFixing(Rate fixing = Null<Rate>()) const;
 
-        Real gearing_;
-        Spread spread_;
-        Time accrualPeriod_;
-        ext::shared_ptr<IborIndex> index_;
         Real discount_;
         Real spreadLegValue_;
-
-        const FloatingRateCoupon* coupon_;
 
       private:
         const TimingAdjustment timingAdjustment_;

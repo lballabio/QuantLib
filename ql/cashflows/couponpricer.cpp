@@ -36,28 +36,82 @@
 namespace QuantLib {
 
 //===========================================================================//
+//                              IborCouponPricer                             //
+//===========================================================================//
+
+    void IborCouponPricer::computeCachedData() const {
+        if(coupon_->cachedDataIsComputed_)
+            return;
+
+        coupon_->fixingValueDate_ =
+            index_->fixingCalendar().advance(coupon_->fixingDate_, index_->fixingDays(), Days);
+        coupon_->fixingMaturityDate_ = index_->maturityDate(coupon_->fixingValueDate_);
+
+        if (useIndexedCoupon_) {
+            coupon_->fixingEndDate_ = coupon_->fixingMaturityDate_;
+        } else {
+            if (coupon_->isInArrears_)
+                coupon_->fixingEndDate_ = coupon_->fixingMaturityDate_;
+            else { // par coupon approximation
+                Date nextFixingDate = index_->fixingCalendar().advance(
+                    coupon_->accrualEndDate(), -static_cast<Integer>(coupon_->fixingDays_), Days);
+                coupon_->fixingEndDate_ =
+                    index_->fixingCalendar().advance(nextFixingDate, index_->fixingDays(), Days);
+                // make sure the estimation period contains at least one day
+                coupon_->fixingEndDate_ =
+                    std::max(coupon_->fixingEndDate_, coupon_->fixingValueDate_ + 1);
+            }
+        }
+
+        const DayCounter& dc = index_->dayCounter();
+
+        coupon_->spanningTime_ =
+            index_->dayCounter().yearFraction(coupon_->fixingValueDate_, coupon_->fixingEndDate_);
+
+        QL_REQUIRE(coupon_->spanningTime_ > 0.0,
+                   "\n cannot calculate forward rate between "
+                       << coupon_->fixingValueDate_ << " and " << coupon_->fixingEndDate_
+                       << ":\n non positive time (" << coupon_->spanningTime_ << ") using "
+                       << index_->dayCounter().name() << " daycounter");
+
+        coupon_->spanningTimeIndexMaturity_ = index_->dayCounter().yearFraction(
+            coupon_->fixingValueDate_, coupon_->fixingMaturityDate_);
+
+        coupon_->cachedDataIsComputed_ = true;
+    }
+
+    void IborCouponPricer::initialize(const FloatingRateCoupon& coupon) {
+        coupon_ = dynamic_cast<const IborCoupon *>(&coupon);
+        QL_REQUIRE(coupon_, "BlackIborCouponPricer: expected IborCoupon");
+        gearing_ = coupon_->gearing();
+        spread_ = coupon_->spread();
+        accrualPeriod_ = coupon_->accrualPeriod();
+        QL_REQUIRE(accrualPeriod_ != 0.0, "null accrual period");
+        index_ = ext::dynamic_pointer_cast<IborIndex>(coupon_->index());
+        if (!index_) {
+            QL_FAIL("IborIndex required");
+        }
+
+        computeCachedData();
+        fixingDate_ = coupon_->fixingDate_;
+        fixingValueDate_ = coupon_->fixingValueDate_;
+        fixingMaturityDate_ = coupon_->fixingMaturityDate_;
+        spanningTime_ = coupon_->spanningTime_;
+        spanningTimeIndexMaturity_ = coupon_->spanningTimeIndexMaturity_;
+    }
+
+
+//===========================================================================//
 //                              BlackIborCouponPricer                        //
 //===========================================================================//
 
     void BlackIborCouponPricer::initialize(const FloatingRateCoupon& coupon) {
 
-        gearing_ = coupon.gearing();
-        spread_ = coupon.spread();
-        accrualPeriod_ = coupon.accrualPeriod();
-        QL_REQUIRE(accrualPeriod_ != 0.0, "null accrual period");
+        IborCouponPricer::initialize(coupon);
 
-        index_ = ext::dynamic_pointer_cast<IborIndex>(coupon.index());
-        if (!index_) {
-            // check if the coupon was right
-            const auto* c = dynamic_cast<const IborCoupon*>(&coupon);
-            QL_REQUIRE(c, "IborCoupon required");
-            // coupon was right, index is not
-            QL_FAIL("IborIndex required");
-        }
-        Handle<YieldTermStructure> rateCurve =
-                                            index_->forwardingTermStructure();
+        Handle<YieldTermStructure> rateCurve = index_->forwardingTermStructure();
 
-        Date paymentDate = coupon.date();
+        Date paymentDate = coupon_->date();
         if (paymentDate > rateCurve->referenceDate())
             discount_ = rateCurve->discount(paymentDate);
         else
@@ -65,13 +119,11 @@ namespace QuantLib {
 
         spreadLegValue_ = spread_ * accrualPeriod_ * discount_;
 
-        coupon_ = &coupon;
     }
 
     Real BlackIborCouponPricer::optionletPrice(Option::Type optionType,
                                                Real effStrike) const {
-        Date fixingDate = coupon_->fixingDate();
-        if (fixingDate <= Settings::instance().evaluationDate()) {
+        if (fixingDate_ <= Settings::instance().evaluationDate()) {
             // the amount is determined
             Real a, b;
             if (optionType==Option::Call) {
@@ -87,7 +139,7 @@ namespace QuantLib {
             QL_REQUIRE(!capletVolatility().empty(),
                        "missing optionlet volatility");
             Real stdDev =
-                std::sqrt(capletVolatility()->blackVariance(fixingDate,
+                std::sqrt(capletVolatility()->blackVariance(fixingDate_,
                                                             effStrike));
             Real shift = capletVolatility()->displacement();
             bool shiftedLn =
@@ -114,9 +166,9 @@ namespace QuantLib {
         // lognormal method is more accurate in this regard.
         if ((!coupon_->isInArrears() && timingAdjustment_ == Black76))
             return fixing;
-        Date d1 = coupon_->fixingDate();
-        Date d2 = index_->valueDate(d1);
-        Date d3 = index_->maturityDate(d2);
+        const Date& d1 = fixingDate_;
+        const Date& d2 = fixingValueDate_;
+        const Date& d3 = fixingMaturityDate_;
         if (coupon_->date() == d3)
             return fixing;
 
@@ -126,7 +178,7 @@ namespace QuantLib {
         // no variance has accumulated, so the convexity is zero
         if (d1 <= referenceDate)
             return fixing;
-        Time tau = index_->dayCounter().yearFraction(d2, d3);
+        const Time& tau = spanningTimeIndexMaturity_;
         Real variance = capletVolatility()->blackVariance(d1, fixing);
 
         Real shift = capletVolatility()->displacement();
@@ -140,8 +192,8 @@ namespace QuantLib {
 
         if (timingAdjustment_ == BivariateLognormal) {
             QL_REQUIRE(!correlation_.empty(), "no correlation given");
-            Date d4 = coupon_->date();
-            Date d5 = d4 >= d3 ? d3 : d2;
+            const Date& d4 = coupon_->date();
+            const Date& d5 = d4 >= d3 ? d3 : d2;
             Time tau2 = index_->dayCounter().yearFraction(d5, d4);
             if (d4 >= d3)
                 adjustment = 0.0;
