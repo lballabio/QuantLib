@@ -239,10 +239,10 @@ namespace QuantLib {
 			             exCouponPeriod_, exCouponCalendar_, exCouponAdjustment_, exCouponEndOfMonth_);
 
         if (caps_.empty() && floors_.empty() && !inArrears_) {
-            ext::shared_ptr<IborCouponPricer> pricer = boost::make_shared<BlackIborCouponPricer>(
+            ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(
                 Handle<OptionletVolatilityStructure>(),
                 BlackIborCouponPricer::TimingAdjustment::Black76,
-                Handle<Quote>(boost::make_shared<SimpleQuote>(1.0)), useIndexedCoupon_);
+                Handle<Quote>(ext::make_shared<SimpleQuote>(1.0)), useIndexedCoupon_);
             setCouponPricer(leg, pricer);
         }
 
