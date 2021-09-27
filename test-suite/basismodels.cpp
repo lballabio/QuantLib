@@ -211,9 +211,9 @@ namespace {
         // catch large errors.
         Real tol2 =
 #ifdef QL_USE_INDEXED_COUPON
-            tol2 = 0.02;
+        0.02;
 #else
-            tol2 = tol;
+        tol;
 #endif
 
         SwaptionCashFlows singleCurveCashFlows(swaption, proj6mYTS, contTenorSpread);
