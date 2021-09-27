@@ -64,6 +64,7 @@ namespace QuantLib {
         if (pricer_ != nullptr)
             registerWith(pricer_);
         update();
+        pricer_->initialize(*this);
     }
 
     Real FloatingRateCoupon::accruedAmount(const Date& d) const {
@@ -93,7 +94,6 @@ namespace QuantLib {
 
     Rate FloatingRateCoupon::rate() const {
         QL_REQUIRE(pricer_, "pricer not set");
-        pricer_->initialize(*this);
         return pricer_->swapletRate();
     }
 
