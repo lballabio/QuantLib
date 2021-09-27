@@ -59,7 +59,7 @@ namespace QuantLib {
         const Date& fixingMaturityDate() const;
         Real spanningTime() const;
         Real spanningTimeIndexMaturity() const;
-x        //@}
+        //@}
         //! \name FloatingRateCoupon interface
         //@{
         //! Implemented in order to manage the case of par coupon
