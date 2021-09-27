@@ -355,8 +355,8 @@ namespace QuantLib {
                                              dates_[i].month(),
                                              dates_[i].year());
         else if (*rule_ == DateGeneration::ThirdWednesdayInclusive)
-            for (Size i=0; i < dates_.size(); ++i)
-                dates_[i] = Date::nthWeekday(3, Wednesday, dates_[i].month(), dates_[i].year());
+            for (auto& date : dates_)
+                date = Date::nthWeekday(3, Wednesday, date.month(), date.year());
 
         if (*endOfMonth_ && calendar_.isEndOfMonth(seed)) {
             // adjust to end of month
