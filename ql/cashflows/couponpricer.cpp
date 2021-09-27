@@ -39,58 +39,58 @@ namespace QuantLib {
 //                              IborCouponPricer                             //
 //===========================================================================//
 
-    void IborCouponPricer::computeCachedData() const {
-        if(coupon_->cachedDataIsComputed_)
+    void IborCouponPricer::initializeCachedData(const IborCoupon& coupon) const {
+
+        if(coupon.cachedDataIsInitialized_)
             return;
 
-        coupon_->fixingValueDate_ =
-            index_->fixingCalendar().advance(coupon_->fixingDate_, index_->fixingDays(), Days);
-        coupon_->fixingMaturityDate_ = index_->maturityDate(coupon_->fixingValueDate_);
+        coupon.fixingValueDate_ = coupon.iborIndex()->fixingCalendar().advance(
+            coupon.fixingDate_, coupon.iborIndex()->fixingDays(), Days);
+        coupon.fixingMaturityDate_ = coupon.iborIndex()->maturityDate(coupon.fixingValueDate_);
 
         if (useIndexedCoupon_) {
-            coupon_->fixingEndDate_ = coupon_->fixingMaturityDate_;
+            coupon.fixingEndDate_ = coupon.fixingMaturityDate_;
         } else {
-            if (coupon_->isInArrears_)
-                coupon_->fixingEndDate_ = coupon_->fixingMaturityDate_;
+            if (coupon.isInArrears_)
+                coupon.fixingEndDate_ = coupon.fixingMaturityDate_;
             else { // par coupon approximation
-                Date nextFixingDate = index_->fixingCalendar().advance(
-                    coupon_->accrualEndDate(), -static_cast<Integer>(coupon_->fixingDays_), Days);
-                coupon_->fixingEndDate_ =
-                    index_->fixingCalendar().advance(nextFixingDate, index_->fixingDays(), Days);
+                Date nextFixingDate = coupon.iborIndex()->fixingCalendar().advance(
+                    coupon.accrualEndDate(), -static_cast<Integer>(coupon.fixingDays_), Days);
+                coupon.fixingEndDate_ = coupon.iborIndex()->fixingCalendar().advance(
+                    nextFixingDate, coupon.iborIndex()->fixingDays(), Days);
                 // make sure the estimation period contains at least one day
-                coupon_->fixingEndDate_ =
-                    std::max(coupon_->fixingEndDate_, coupon_->fixingValueDate_ + 1);
+                coupon.fixingEndDate_ =
+                    std::max(coupon.fixingEndDate_, coupon.fixingValueDate_ + 1);
             }
         }
 
-        coupon_->spanningTime_ =
-            index_->dayCounter().yearFraction(coupon_->fixingValueDate_, coupon_->fixingEndDate_);
+        coupon.spanningTime_ = coupon.iborIndex()->dayCounter().yearFraction(
+            coupon.fixingValueDate_, coupon.fixingEndDate_);
 
-        QL_REQUIRE(coupon_->spanningTime_ > 0.0,
+        QL_REQUIRE(coupon.spanningTime_ > 0.0,
                    "\n cannot calculate forward rate between "
-                       << coupon_->fixingValueDate_ << " and " << coupon_->fixingEndDate_
-                       << ":\n non positive time (" << coupon_->spanningTime_ << ") using "
-                       << index_->dayCounter().name() << " daycounter");
+                       << coupon.fixingValueDate_ << " and " << coupon.fixingEndDate_
+                       << ":\n non positive time (" << coupon.spanningTime_ << ") using "
+                       << coupon.iborIndex()->dayCounter().name() << " daycounter");
 
-        coupon_->spanningTimeIndexMaturity_ = index_->dayCounter().yearFraction(
-            coupon_->fixingValueDate_, coupon_->fixingMaturityDate_);
+        coupon.spanningTimeIndexMaturity_ = coupon.iborIndex()->dayCounter().yearFraction(
+            coupon.fixingValueDate_, coupon.fixingMaturityDate_);
 
-        coupon_->cachedDataIsComputed_ = true;
+        coupon.cachedDataIsInitialized_ = true;
     }
 
     void IborCouponPricer::initialize(const FloatingRateCoupon& coupon) {
         coupon_ = dynamic_cast<const IborCoupon *>(&coupon);
-        QL_REQUIRE(coupon_, "BlackIborCouponPricer: expected IborCoupon");
+        QL_REQUIRE(coupon_, "IborCouponPricer: expected IborCoupon");
+
+        initializeCachedData(*coupon_);
+
+        index_ = coupon_->iborIndex();
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
         accrualPeriod_ = coupon_->accrualPeriod();
         QL_REQUIRE(accrualPeriod_ != 0.0, "null accrual period");
-        index_ = ext::dynamic_pointer_cast<IborIndex>(coupon_->index());
-        if (!index_) {
-            QL_FAIL("IborIndex required");
-        }
 
-        computeCachedData();
         fixingDate_ = coupon_->fixingDate_;
         fixingValueDate_ = coupon_->fixingValueDate_;
         fixingMaturityDate_ = coupon_->fixingMaturityDate_;

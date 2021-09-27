@@ -76,7 +76,8 @@ namespace QuantLib {
                     ext::shared_ptr<IborIndex> iborIndex,
                     Spread spread,
                     DayCounter floatingDayCount,
-                    boost::optional<BusinessDayConvention> paymentConvention = boost::none);
+                    boost::optional<BusinessDayConvention> paymentConvention = boost::none,
+                    boost::optional<bool> useIndexedCoupon = boost::none);
         //! \name Inspectors
         //@{
         Type type() const;

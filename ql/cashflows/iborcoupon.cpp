@@ -52,14 +52,20 @@ namespace QuantLib {
         fixingDate_ = fixingDate();
     }
 
+    void IborCoupon::initializeCachedData() const {
+        auto p = boost::dynamic_pointer_cast<IborCouponPricer>(pricer_);
+        QL_REQUIRE(p, "IborCoupon: pricer not set or not derived from IborCouponPricer");
+        p->initializeCachedData(*this);
+    }
+
     const Date& IborCoupon::fixingEndDate() const {
-        QL_REQUIRE(pricer_, "IborCoupon: pricer not set");
+        initializeCachedData();
         return fixingEndDate_;
     }
 
     Rate IborCoupon::indexFixing() const {
 
-        QL_REQUIRE(pricer_, "IborCoupon: pricer not set");
+        initializeCachedData();
 
         /* instead of just returning index_->fixing(fixingValueDate_)
            its logic is duplicated here using a specialized iborIndex
@@ -98,7 +104,7 @@ namespace QuantLib {
     }
 
     void IborCoupon::setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
-        cachedDataIsComputed_ = false;
+        cachedDataIsInitialized_ = false;
         FloatingRateCoupon::setPricer(pricer);
     }
 
@@ -115,14 +121,7 @@ namespace QuantLib {
     : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following),
       paymentLag_(0), paymentCalendar_(Calendar()), inArrears_(false), zeroPayments_(false),
       exCouponPeriod_(Period()), exCouponCalendar_(Calendar()), exCouponAdjustment_(Unadjusted),
-      exCouponEndOfMonth_(false), useIndexedCoupon_(
-#ifdef QL_USE_INDEXED_COUPON
-                                      true
-#else
-                                      false
-#endif
-                                  ) {
-    }
+      exCouponEndOfMonth_(false) {}
 
     IborLeg& IborLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);
@@ -225,7 +224,7 @@ namespace QuantLib {
         return *this;
 	}
 
-    IborLeg& IborLeg::useIndexedCoupon(const bool useIndexedCoupon) {
+    IborLeg& IborLeg::useIndexedCoupon(boost::optional<bool> useIndexedCoupon) {
         useIndexedCoupon_ = useIndexedCoupon;
         return *this;
     }

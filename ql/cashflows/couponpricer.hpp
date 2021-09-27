@@ -66,20 +66,16 @@ namespace QuantLib {
       public:
         explicit IborCouponPricer(
             Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
-            const bool useIndexedCoupon =
-#ifdef QL_USE_IDNDEXED_COUPON
-            true
-#else
-            false
-#endif
-        )
-        : capletVol_(std::move(v)), useIndexedCoupon_(useIndexedCoupon) {
+            boost::optional<bool> useIndexedCoupon = boost::none)
+        : capletVol_(std::move(v)),
+          useIndexedCoupon_(useIndexedCoupon ? *useIndexedCoupon :
+                                               Settings::instance().useIndexedCoupon()) {
             registerWith(capletVol_);
         }
 
         bool useIndexedCoupon() const { return useIndexedCoupon_; }
 
-        Handle<OptionletVolatilityStructure> capletVolatility() const{
+        Handle<OptionletVolatilityStructure> capletVolatility() const {
             return capletVol_;
         }
         void setCapletVolatility(
@@ -90,21 +86,22 @@ namespace QuantLib {
             registerWith(capletVol_);
             update();
         }
+        void initialize(const FloatingRateCoupon& coupon) override;
+
+        void initializeCachedData(const IborCoupon& coupon) const;
 
       protected:
-        void initialize(const FloatingRateCoupon& coupon) override;
-        void computeCachedData() const;
 
         const IborCoupon* coupon_;
+
         ext::shared_ptr<IborIndex> index_;
+        Date fixingDate_;
         Real gearing_;
         Spread spread_;
         Time accrualPeriod_;
-        Date fixingDate_;
-        Date fixingValueDate_;
-        Date fixingMaturityDate_;
-        Real spanningTime_;
-        Real spanningTimeIndexMaturity_;
+
+        Date fixingValueDate_, fixingEndDate_, fixingMaturityDate_;
+        Time spanningTime_, spanningTimeIndexMaturity_;
 
         Handle<OptionletVolatilityStructure> capletVol_;
         bool useIndexedCoupon_;
@@ -122,13 +119,7 @@ namespace QuantLib {
             const Handle<OptionletVolatilityStructure>& v = Handle<OptionletVolatilityStructure>(),
             const TimingAdjustment timingAdjustment = Black76,
             Handle<Quote> correlation = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))),
-            const bool useIndexedCoupon =
-#ifdef QL_USE_IDNDEXED_COUPON
-            true
-#else
-            false
-#endif
-            )
+            const boost::optional<bool> useIndexedCoupon = boost::none)
         : IborCouponPricer(v, useIndexedCoupon), timingAdjustment_(timingAdjustment),
           correlation_(std::move(correlation)) {
             { // this additional scope seems required to avoid a misleading-indentation warning

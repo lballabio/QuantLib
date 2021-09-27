@@ -48,11 +48,10 @@ namespace QuantLib {
 
     SavedSettings::SavedSettings()
     : evaluationDate_(Settings::instance().evaluationDate()),
-      includeReferenceDateEvents_(
-                        Settings::instance().includeReferenceDateEvents()),
+      includeReferenceDateEvents_(Settings::instance().includeReferenceDateEvents()),
       includeTodaysCashFlows_(Settings::instance().includeTodaysCashFlows()),
-      enforcesTodaysHistoricFixings_(
-                        Settings::instance().enforcesTodaysHistoricFixings()) {}
+      enforcesTodaysHistoricFixings_(Settings::instance().enforcesTodaysHistoricFixings()),
+      useIndexedCoupon_(Settings::instance().useIndexedCoupon()) {}
 
     SavedSettings::~SavedSettings() {
         try {
@@ -64,6 +63,7 @@ namespace QuantLib {
                 includeTodaysCashFlows_;
             Settings::instance().enforcesTodaysHistoricFixings() =
                 enforcesTodaysHistoricFixings_;
+            Settings::instance().useIndexedCoupon() = useIndexedCoupon_;
         } catch (...) {
             // nothing we can do except bailing out.
         }

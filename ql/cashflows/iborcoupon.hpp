@@ -68,11 +68,13 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
       private:
-        ext::shared_ptr<IborIndex> iborIndex_;
-        // computed by coupon pricer dependingon par coupon flat and stored here
         friend class IborCouponPricer;
-        mutable bool cachedDataIsComputed_ = false;
-        mutable Date fixingDate_, fixingValueDate_, fixingEndDate_, fixingMaturityDate_;
+        ext::shared_ptr<IborIndex> iborIndex_;
+        Date fixingDate_;
+        // computed by coupon pricer dependingon par coupon flat and stored here
+        void initializeCachedData() const;
+        mutable bool cachedDataIsInitialized_ = false;
+        mutable Date fixingValueDate_, fixingEndDate_, fixingMaturityDate_;
         mutable Time spanningTime_, spanningTimeIndexMaturity_;
     };
 
@@ -103,7 +105,7 @@ namespace QuantLib {
                                     const Calendar&,
                                     BusinessDayConvention,
                                     bool endOfMonth = false);
-        IborLeg& useIndexedCoupon(const bool);
+        IborLeg& useIndexedCoupon(boost::optional<bool>);
         operator Leg() const;
 
       private:
@@ -123,7 +125,7 @@ namespace QuantLib {
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_;
         bool exCouponEndOfMonth_;
-        bool useIndexedCoupon_;
+        boost::optional<bool> useIndexedCoupon_;
     };
 
 }
