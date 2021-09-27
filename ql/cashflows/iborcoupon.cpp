@@ -58,9 +58,29 @@ namespace QuantLib {
         p->initializeCachedData(*this);
     }
 
+    const Date& IborCoupon::fixingValueDate() const {
+        initializeCachedData();
+        return fixingValueDate_;
+    }
+
     const Date& IborCoupon::fixingEndDate() const {
         initializeCachedData();
         return fixingEndDate_;
+    }
+
+    const Date& IborCoupon::fixingMaturityDate() const {
+        initializeCachedData();
+        return fixingMaturityDate_;
+    }
+
+    Real IborCoupon::spanningTime() const {
+        initializeCachedData();
+        return spanningTime_;
+    }
+
+    Real IborCoupon::spanningTimeIndexMaturity() const {
+        initializeCachedData();
+        return spanningTimeIndexMaturity_;
     }
 
     Rate IborCoupon::indexFixing() const {
