@@ -789,6 +789,8 @@ void OptionletStripperTest::testSwitchStrike() {
 
     using namespace optionlet_stripper_test;
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     CommonVars vars;
     Settings::instance().evaluationDate() = Date(28, October, 2013);
     vars.setCapFloorTermVolSurface();
@@ -804,7 +806,7 @@ void OptionletStripperTest::testSwitchStrike() {
                                Null< Rate >(), vars.accuracy));
 
     Real expected;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!iborcoupon_settings.usingAtParCoupons())
         expected = 0.02981258;
     else
         expected = 0.02981223;
@@ -821,7 +823,7 @@ void OptionletStripperTest::testSwitchStrike() {
     yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
         0, vars.calendar, 0.05, vars.dayCounter));
 
-    if (!IborCoupon::usingAtParCoupons())
+    if (!iborcoupon_settings.usingAtParCoupons())
         expected = 0.0499381;
     else
         expected = 0.0499371;

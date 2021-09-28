@@ -1506,6 +1506,8 @@ test_suite* PiecewiseYieldCurveTest::suite() {
 
     auto* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     // unstable
     //suite->add(QUANTLIB_TEST_CASE(
     //             &PiecewiseYieldCurveTest::testLogCubicDiscountConsistency));
@@ -1546,7 +1548,7 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testSwapRateHelperSpotDate));
 
-    if (IborCoupon::usingAtParCoupons()) {
+    if (iborcoupon_settings.usingAtParCoupons()) {
         // This regression test didn't work with indexed coupons anyway.
         suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testBadPreviousCurve));

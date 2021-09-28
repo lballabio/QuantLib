@@ -505,12 +505,13 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
 }
 
 test_suite* CashFlowsTest::suite() {
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
     auto* suite = BOOST_TEST_SUITE("Cash flows tests");
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testDefaultSettlementDate));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testExCouponDates));
-    if (IborCoupon::usingAtParCoupons())
+    if (iborcoupon_settings.usingAtParCoupons())
         suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
 
     suite->add(QUANTLIB_TEST_CASE(
