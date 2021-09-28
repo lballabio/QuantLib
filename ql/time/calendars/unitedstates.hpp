@@ -33,7 +33,7 @@
 namespace QuantLib {
 
     //! United States calendars
-    /*! Public holidays (see: http://www.opm.gov/fedhol/):
+    /*! Public holidays (see https://www.opm.gov/policy-data-oversight/pay-leave/federal-holidays):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -44,6 +44,8 @@ namespace QuantLib {
         <li>Presidents' Day (a.k.a. Washington's birthday),
             third Monday in February</li>
         <li>Memorial Day, last Monday in May</li>
+        <li>Juneteenth, June 19th (moved to Monday if Sunday or
+            Friday if Saturday)</li>
         <li>Independence Day, July 4th (moved to Monday if Sunday or
             Friday if Saturday)</li>
         <li>Labor Day, first Monday in September</li>

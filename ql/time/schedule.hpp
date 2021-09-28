@@ -125,7 +125,6 @@ namespace QuantLib {
     */
     class MakeSchedule {
       public:
-        MakeSchedule();
         MakeSchedule& from(const Date& effectiveDate);
         MakeSchedule& to(const Date& terminationDate);
         MakeSchedule& withTenor(const Period&);

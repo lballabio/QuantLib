@@ -147,7 +147,7 @@ namespace QuantLib {
         void update() override;
         //@}
       protected:
-        StochasticProcess();
+        StochasticProcess() = default;
         explicit StochasticProcess(ext::shared_ptr<discretization>);
         ext::shared_ptr<discretization> discretization_;
     };
@@ -222,7 +222,7 @@ namespace QuantLib {
         virtual Real apply(Real x0, Real dx) const;
         //@}
       protected:
-        StochasticProcess1D();
+        StochasticProcess1D() = default;
         explicit StochasticProcess1D(ext::shared_ptr<discretization>);
         ext::shared_ptr<discretization> discretization_;
       private:

@@ -19,30 +19,51 @@
 
 #include "nthorderderivativeop.hpp"
 #include "utilities.hpp"
+
 #include <ql/math/comparison.hpp>
-#include <ql/math/initializers.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/richardsonextrapolation.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
 #include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/nthorderderivativeop.hpp>
+#include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
+#include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
-#include <ql/pricingengines/blackformula.hpp>
+#include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+
+
 #include <numeric>
 #include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-#ifndef QL_NO_UBLAS_SUPPORT
+#include <boost/numeric/ublas/banded.hpp>
+
+#if defined(__clang__) || defined(__GNUC__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-local-typedef"
+#endif
+
+#include <boost/numeric/ublas/operation_sparse.hpp>
+
+#if defined(__clang__) || defined(__GNUC__)
+#pragma clang diagnostic pop
+#endif
+
+#include <boost/numeric/ublas/matrix_proxy.hpp>
 
 void NthOrderDerivativeOpTest::testSparseMatrixApply() {
     BOOST_TEST_MESSAGE("Testing sparse matrix apply...");
@@ -381,56 +402,86 @@ namespace {
         Size nPoints;
         Size tGrid;
         Size yGrid;
+        Size vGrid;
         FdmSchemeDesc scheme;
     };
 
-    class FdmHeatEquationOp : public FdmLinearOpComposite {
+    class FdmHestonNthOrderOp : public FdmLinearOpComposite {
       public:
-        FdmHeatEquationOp(
-            Size nPoints,
-            Volatility vol,
-            const ext::shared_ptr<FdmMesher>& mesher,
-            Size direction = 0)
-        : vol2_(0.5*vol*vol),
-          direction_(direction),
-          map_(ext::make_shared<NthOrderDerivativeOp>(
-              direction, 2, Integer(nPoints), mesher)),
-          preconditioner_(SecondDerivativeOp(direction, mesher)
-              .mult(Array(mesher->layout()->size(), vol2_))) { }
+        FdmHestonNthOrderOp(Size nPoints,
+                            const ext::shared_ptr<HestonProcess>& hestonProcess,
+                            const ext::shared_ptr<FdmMesher>& mesher,
+                            Size direction = 0)
+        : vol2_(0.5 * hestonProcess->theta()),
+          preconditioner_(
+              SecondDerivativeOp(direction, mesher).mult(Array(mesher->layout()->size(), vol2_))) {
 
-        Size size() const override { return 1; }
-        void setTime(Time t1, Time t2) override {}
+            const Array vv(mesher->locations(1));
+            Array varianceValues(0.5*vv);
 
-        Disposable<Array> apply(const Array& r) const override { return vol2_ * map_->apply(r); }
+            ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+            FdmLinearOpIterator endIter = layout->end();
+            for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
+                ++iter) {
+                if (   iter.coordinates()[0] == 0
+                    || iter.coordinates()[0] == layout->dim()[0]-1) {
+                    varianceValues[iter.index()] = 0.0;
+                }
+            }
+            const Size n = mesher->layout()->size();
+
+            using namespace boost::numeric::ublas;
+            banded_matrix<Real> v(n, n), u(n, n), rV(n, n);
+            for (Size i=0; i < n; ++i) {
+                v(i, i) = varianceValues[i];
+                u(i, i) = vv[i];
+                rV(i, i) = varianceValues[i] - 0.5*hestonProcess->theta();
+            }
+
+            const SparseMatrix dx = NthOrderDerivativeOp(0, 1, nPoints, mesher).toMatrix();
+            const SparseMatrix dxx = NthOrderDerivativeOp(0, 2, nPoints, mesher).toMatrix();
+            const SparseMatrix dv = NthOrderDerivativeOp(1, 1, nPoints, mesher).toMatrix();
+            const SparseMatrix dvv = NthOrderDerivativeOp(1, 2, nPoints, mesher).toMatrix();
+
+            const Real kappa = hestonProcess->kappa();
+            const Real theta = hestonProcess->theta();
+            const Real sigma = hestonProcess->sigma();
+            const Real rho = hestonProcess->rho();
+
+            map_ = sparse_prod<SparseMatrix>(-rV, dx)
+                + sparse_prod<SparseMatrix>(v, dxx)
+                + (0.5*rho*sigma)*sparse_prod<SparseMatrix>(
+                    u, sparse_prod<SparseMatrix>(dx, dv)
+                        + sparse_prod<SparseMatrix>(dv, dx))
+                + (0.5*sigma*sigma)*sparse_prod<SparseMatrix>(u, dvv)
+                + kappa*sparse_prod<SparseMatrix>(
+                    theta*identity_matrix<Real>(n) - u, dv);
+        }
+
+        Disposable<SparseMatrix> toMatrix() const override {
+            SparseMatrix tmp(map_);
+            return tmp;
+        }
+
+        Size size() const override { return 2; }
+        void setTime(Time t1, Time t2) override { }
+
+        Disposable<Array> apply(const Array& r) const override {
+            return prod(map_, r);
+        }
 
         Disposable<Array> apply_mixed(const Array& r) const override {
-            Array retVal(r.size(), 0.0);
-            return retVal;
+            QL_FAIL("operator splitting is not supported");
         }
 
-        Disposable<Array> apply_direction(Size direction, const Array& r) const override {
-            if (direction == direction_)
-                return apply(r);
-            else
-                return apply_mixed(r);
+        Disposable<Array> apply_direction(
+            Size direction, const Array& r) const override {
+            QL_FAIL("operator splitting is not supported");
         }
 
-        Disposable<Array> solve_splitting(Size direction, const Array& r, Real dt) const override {
-
-            if (direction == direction_) {
-                BiCGStabResult result =
-                    QuantLib::BiCGstab(
-                        [&](const Array& a){ return solve_apply(a, -dt); },
-                        std::max(Size(10), r.size()), 1e-14,
-                        [&](const Array& a){ return preconditioner(a, dt); })
-                        .solve(r, r);
-
-                return result.x;
-            }
-            else {
-                Array retVal(r);
-                return retVal;
-            }
+        Disposable<Array> solve_splitting(
+            Size direction, const Array& r, Real dt) const override {
+            QL_FAIL("operator splitting is not supported");
         }
 
         Disposable<Array> preconditioner(const Array& r, Real dt) const override {
@@ -442,21 +493,19 @@ namespace {
             return r - dt*apply(r);
         }
 
-
         const Volatility vol2_;
-        const Size direction_;
-        const ext::shared_ptr<FdmLinearOp> map_;
-        const TripleBandLinearOp preconditioner_;
+        SparseMatrix map_;
+        TripleBandLinearOp preconditioner_;
     };
 
 
     class AvgPayoffFct {
       public:
         AvgPayoffFct(ext::shared_ptr<PlainVanillaPayoff> payoff,
-                     Volatility vol,
-                     Time T,
-                     Real growthFactor)
-        : payoff_(std::move(payoff)), vol2_(0.5 * vol * vol * T), growthFactor_(growthFactor) {}
+                     Volatility vol, Time T, Real growthFactor)
+        : payoff_(std::move(payoff)),
+          vol2_(0.5*vol*vol*T),
+          growthFactor_(growthFactor) { }
 
         Real operator()(Real x) const {
             return (*payoff_)(std::exp(x - vol2_)*growthFactor_);
@@ -468,6 +517,36 @@ namespace {
         const Real growthFactor_;
     };
 
+   class MyInnerValueCalculator : public FdmInnerValueCalculator {
+      public:
+        MyInnerValueCalculator(ext::shared_ptr<Payoff> payoff,
+                               ext::shared_ptr<FdmMesher> mesher,
+                               ext::shared_ptr<YieldTermStructure> rTS,
+                               ext::shared_ptr<YieldTermStructure> qTS,
+                               Volatility vol,
+                               Size direction)
+        : payoff_(std::move(std::move(payoff))), mesher_(std::move(std::move(mesher))),
+          rTS_(std::move(std::move(rTS))), qTS_(std::move(std::move(qTS))), vol_(vol),
+          direction_(direction) {}
+
+        Real innerValue(const FdmLinearOpIterator& iter, Time t)  override {
+            const Real g = mesher_->location(iter, direction_);
+            const Real sT = std::exp(g - 0.5*vol_*vol_*t);
+
+            return (*payoff_)(sT);
+        }
+
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
+            return innerValue(iter, t);
+        }
+
+      private:
+        const ext::shared_ptr<Payoff> payoff_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<YieldTermStructure> rTS_, qTS_;
+        const Volatility vol_;
+        const Size direction_;
+    };
 
     Disposable<Array> priceReport(
         const GridSetup& setup, const Array& strikes) {
@@ -480,11 +559,23 @@ namespace {
         const ext::shared_ptr<YieldTermStructure> rTS
             = flatRate(today, 0.05, dc);
         const ext::shared_ptr<YieldTermStructure> qTS
-            = flatRate(today, 0.025, dc);
+            = flatRate(today, 0.0, dc);
 
         const Real S = 100.0;
-
         const Volatility vol = 0.2;
+        const Real v0 = vol*vol;
+        const Real kappa = 1.0;
+        const Real theta = vol*vol;
+        const Real sig = 0.2;
+        const Real rho = -0.75;
+
+        const ext::shared_ptr<HestonProcess> hestonProcess
+            = ext::make_shared<HestonProcess>(
+                  Handle<YieldTermStructure>(rTS),
+                  Handle<YieldTermStructure>(qTS),
+                  Handle<Quote>(ext::make_shared<SimpleQuote>(S)),
+                  v0, kappa, theta, sig, rho);
+
         const Real stdDev = vol * std::sqrt(T);
         const DiscountFactor df
             = qTS->discount(maturity)/rTS->discount(maturity);
@@ -495,6 +586,7 @@ namespace {
         const Real ymax = y + setup.alpha*stdDev;
 
         const Size yGrid = setup.yGrid;
+        const Size vGrid = setup.vGrid;
 
         Array diffs(strikes.size()), fdmPrices(strikes.size());
         for (Size k=0; k < strikes.size(); ++k) {
@@ -519,40 +611,52 @@ namespace {
                     break;
                 }
 
-            const ext::shared_ptr<FdmMesher> mesher =
+            const ext::shared_ptr<FdmMesherComposite> mesher =
                 ext::make_shared<FdmMesherComposite>(
-                    ext::make_shared<Predefined1dMesher>(loc));
+                    ext::make_shared<Predefined1dMesher>(loc),
+                    ext::make_shared<FdmHestonVarianceMesher>(
+                        vGrid, hestonProcess, 1.0)
+            );
 
             const Array g = mesher->locations(0);
             const Array sT = Exp(g - 0.5*vol*vol*T)*df;
 
-            Array rhs(setup.yGrid);
+            Array rhs(mesher->layout()->size());
 
             const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+                ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
 
-            rhs[0] = (*payoff)(sT[0]);
-            rhs[yGrid-1] = (*payoff)(sT[yGrid-1]);
+            const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+            const FdmLinearOpIterator endIter = layout->end();
 
-            for (Size j=1; j < yGrid-1; ++j)
-                if (setup.cellAvg && (
-                         (sT[j] < strike && sT[j+1] >= strike)
-                      || (sT[j-1] < strike && sT[j] >= strike))) {
+            for (FdmLinearOpIterator iter = layout->begin();
+                 iter!=endIter; ++iter) {
+                const Size idx = iter.index();
+                const Size idxm1 = layout->neighbourhood(iter,  0,-1);
+                const Size idxp1 = layout->neighbourhood(iter,  0, 1);
 
-                    const Real gMin = 0.5*(g[j-1]+g[j]);
-                    const Real gMax = 0.5*(g[j+1]+g[j]);
+                const Size nx = iter.coordinates()[0];
+
+                if (nx != 0 && nx != yGrid-1
+                    && setup.cellAvg && (
+                        (sT[idx] < strike && sT[idxp1] >= strike)
+                     || (sT[idxm1] < strike && sT[idx] >= strike))) {
+
+                    const Real gMin = 0.5*(g[idxm1] + g[idx]);
+                    const Real gMax = 0.5*(g[idxp1] + g[idx]);
 
                     const AvgPayoffFct f(payoff, vol, T, df);
 
-                    rhs[j] = GaussLobattoIntegral(1000, 1e-12)(
+                    rhs[idx] = GaussLobattoIntegral(1000, 1e-12)(
                         f, gMin, gMax)/(gMax - gMin);
                 }
                 else
-                    rhs[j] = (*payoff)(sT[j]);
+                    rhs[idx] = (*payoff)(sT[idx]);
+            }
 
-            const ext::shared_ptr<FdmHeatEquationOp> heatEqn =
-                ext::make_shared<FdmHeatEquationOp>(
-                    setup.nPoints, vol, mesher);
+            const ext::shared_ptr<FdmHestonNthOrderOp> heatEqn =
+                ext::make_shared<FdmHestonNthOrderOp>(
+                    setup.nPoints, hestonProcess, mesher);
 
             FdmBackwardSolver solver(
               heatEqn,
@@ -560,17 +664,35 @@ namespace {
               ext::shared_ptr<FdmStepConditionComposite>(),
               setup.scheme);
 
-            solver.rollback(rhs, T, 0.0, setup.tGrid, 0);
+            solver.rollback(rhs, T, 0.0, setup.tGrid, 1);
 
             rhs *= rTS->discount(maturity);
 
-            const Real fdmPrice = MonotonicCubicNaturalSpline(
-                g.begin(), g.end(), rhs.begin())(y);
+            const std::vector<Real>& x =
+                mesher->getFdm1dMeshers()[0]->locations();
+            const std::vector<Real>& v =
+                mesher->getFdm1dMeshers()[1]->locations();
 
-            const Real npv =
-               blackFormula(payoff, S*df, stdDev, rTS->discount(maturity));
+            Matrix resultValues_(layout->dim()[1], layout->dim()[0]);
+            std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
 
-            diffs[k] = npv-fdmPrice;
+            const ext::shared_ptr<BicubicSpline> interpolation =
+                ext::make_shared<BicubicSpline>(
+                    x.begin(), x.end(), v.begin(), v.end(), resultValues_);
+
+            const Real fdmPrice = (*interpolation)(y, hestonProcess->v0());
+
+            VanillaOption option(
+                ext::make_shared<PlainVanillaPayoff>(Option::Put, strike),
+                ext::make_shared<EuropeanExercise>(maturity)
+            );
+            option.setPricingEngine(
+                ext::make_shared<AnalyticHestonEngine>(
+                    ext::make_shared<HestonModel>(hestonProcess), 192)
+            );
+            const Real npv = option.NPV();
+
+            diffs[k] = npv - fdmPrice;
         }
 
         return diffs;
@@ -578,14 +700,17 @@ namespace {
 
     class FdmMispricingCostFunction : public CostFunction {
       public:
-        FdmMispricingCostFunction(const GridSetup& setup, Array strikes)
-        : setup_(setup), strikes_(std::move(strikes)) {}
+        FdmMispricingCostFunction(
+            const GridSetup& setup, Array strikes)
+        : setup_(setup), strikes_(std::move(strikes)) { }
 
         Disposable<Array> values(const Array& x) const override {
             const GridSetup g = {
                 x[0], x[1],
                 setup_.cellAvg, setup_.midPoint,
-                setup_.nPoints, setup_.tGrid, setup_.yGrid, setup_.scheme
+                setup_.nPoints,
+                setup_.tGrid, setup_.yGrid, setup_.vGrid,
+                setup_.scheme
             };
 
             try {
@@ -603,40 +728,46 @@ namespace {
     };
 }
 
-void NthOrderDerivativeOpTest::testHigerOrderBSOptionPricing() {
-    BOOST_TEST_MESSAGE("Testing Black-Scholes option pricing convergence with "
+void NthOrderDerivativeOpTest::testHigherOrderHestonOptionPricing() {
+    BOOST_TEST_MESSAGE("Testing Heston model option pricing convergence with "
             "higher order finite difference operators...");
 
     SavedSettings backup;
 
-    Array strikes = { 50, 75, 90, 100, 110, 125, 150, 200 };
+    const Array strikes = {50, 75, 90, 100, 110, 125, 150, 200};
 
     const GridSetup initSetup = {
-        5.2, 0.1, true, false, 5, 31, 51, FdmSchemeDesc::Douglas()
+        3.87773, 0.043847, true, false,
+        5, 21, 20, 11, FdmSchemeDesc::CrankNicolson()
     };
 
-    Array initialValues = { initSetup.alpha, initSetup.density };
+    const Array initialValues = {initSetup.alpha, initSetup.density};
 
     FdmMispricingCostFunction costFct(initSetup, strikes);
     NoConstraint noConstraint;
 
-    Problem p(costFct, noConstraint, initialValues);
+    Problem prob(costFct, noConstraint, initialValues);
 
     LevenbergMarquardt().minimize(
-        p, EndCriteria(400, 40, 1.0e-6, 1.0e-6, 1.0e-6));
+        prob, EndCriteria(400, 40, 1.0e-4, 1.0e-4, 1.0e-4));
 
     const GridSetup optimalSetup = {
-        p.currentValue()[0], p.currentValue()[1],
+        prob.currentValue()[0], prob.currentValue()[1],
         initSetup.cellAvg, initSetup.midPoint,
         initSetup.nPoints,
-        initSetup.tGrid, initSetup.yGrid/2,
+        initSetup.tGrid,
+        initSetup.yGrid/2,
+        initSetup.vGrid,
         initSetup.scheme
     };
 
     const Array q = priceReport(optimalSetup, strikes);
-    const Real ac = std::sqrt(DotProduct(q,q)/q.size());
+    const Real ac = std::sqrt(DotProduct(q, q)/q.size());
 
-    const Real convergence = std::log(ac/p.functionValue())*M_LOG2E;
+    const Array p = priceReport(initSetup, strikes);
+    const Real ap = std::sqrt(DotProduct(p, p)/p.size());
+
+    const Real convergence = std::log(ac/ap)*M_LOG2E;
 
     if (convergence < 3.6) {
         BOOST_ERROR("convergence order is too low"
@@ -650,28 +781,30 @@ void NthOrderDerivativeOpTest::testHigerOrderBSOptionPricing() {
 namespace {
     Real priceQuality(Real h) {
 
-        Array strikes = { 100 };
+        const Array strikes = {100};
 
         const Size yGrid = Size(1/h);
         const GridSetup setup = {
-             5.20966, 0.00130581,
-             true, false, 5, 801, yGrid, FdmSchemeDesc::Douglas()
+              5.50966, 0.0130581,
+             true, false,
+             5, 401, yGrid, 21,
+             FdmSchemeDesc::CrankNicolson()
         };
 
         return  std::fabs(priceReport(setup, strikes)[0]);
     }
 }
 
-void NthOrderDerivativeOpTest::testHigerOrderAndRichardsonExtrapolationg() {
+void NthOrderDerivativeOpTest::testHigherOrderAndRichardsonExtrapolation() {
     BOOST_TEST_MESSAGE(
-            "Testing Black-Scholes option pricing convergence with "
+            "Testing Heston option pricing convergence with "
             "higher order FDM operators and Richardson Extrapolation...");
 
     SavedSettings backup;
 
-    const Real n1 = priceQuality(1.0/50);
+    const Real n1 = priceQuality(1.0/25);
     const Real n3
-        = std::fabs(RichardsonExtrapolation(priceQuality, 1.0/50, 4.0)(2.0));
+        = std::fabs(RichardsonExtrapolation(priceQuality, 1.0/25, 4.0)(2.0));
 
     const Real r2 = std::log(n1/n3)*M_LOG2E;
 
@@ -683,12 +816,101 @@ void NthOrderDerivativeOpTest::testHigerOrderAndRichardsonExtrapolationg() {
     }
 }
 
-#endif
+void NthOrderDerivativeOpTest::testCompareFirstDerivativeOpNonUniformGrid() {
+    BOOST_TEST_MESSAGE(
+        "Testing with FirstDerivativeOp on a non-uniform grid...");
 
-test_suite* NthOrderDerivativeOpTest::suite() {
+    Array xValues = Exp(Array(7, 0, 0.1));
+
+    const ext::shared_ptr<Fdm1dMesher> m
+        = ext::make_shared<Predefined1dMesher>(
+            std::vector<Real>(xValues.begin(), xValues.end()));
+
+    const ext::shared_ptr<FdmMesher> m1d(
+        ext::make_shared<FdmMesherComposite>(m));
+
+    const ext::shared_ptr<FirstDerivativeOp> fx
+        = ext::make_shared<FirstDerivativeOp>(0, m1d);
+
+    const ext::shared_ptr<NthOrderDerivativeOp> dx
+        = ext::make_shared<NthOrderDerivativeOp>(0, 1, 3, m1d);
+
+    const SparseMatrix fm = fx->toMatrix();
+    const SparseMatrix dm = dx->toMatrix();
+
+    for (Size i=1; i < m->size()-1; ++i) // different boundary conditions
+        for (Size j=0; j < m->size(); ++j)
+            BOOST_CHECK(std::fabs(fm(i, j)- dm(i, j)) < 1e-12);
+}
+
+void NthOrderDerivativeOpTest::testCompareFirstDerivativeOp2dUniformGrid() {
+    BOOST_TEST_MESSAGE(
+        "Testing with FirstDerivativeOp on a 2d uniform grid...");
+
+    const ext::shared_ptr<Fdm1dMesher> m1
+        = ext::make_shared<Uniform1dMesher>(0.0, 0.6, 5);
+    const ext::shared_ptr<Fdm1dMesher> m2
+        = ext::make_shared<Uniform1dMesher>(0.0, 1.6, 6);
+
+    const ext::shared_ptr<FdmMesher> mc(
+        ext::make_shared<FdmMesherComposite>(m1, m2));
+
+    const ext::shared_ptr<FdmLinearOpLayout> layout = mc->layout();
+
+    const Size n = layout->dim()[0];
+    const Size m = layout->dim()[1];
+
+    SparseMatrix fm = FirstDerivativeOp(0, mc).toMatrix();
+    SparseMatrix dm = NthOrderDerivativeOp(0, 1, 3, mc).toMatrix();
+
+    for (Size k=0; k < m; ++k) {
+        const Size idx = k*n;
+        for (Size i=1; i < n-1; ++i)
+            for (Size j=0; j < n*m; ++j)
+                BOOST_CHECK(std::fabs(fm(idx + i, j) - dm(idx + i, j)) < 1e-12);
+    }
+
+    fm = FirstDerivativeOp(1, mc).toMatrix();
+    dm = NthOrderDerivativeOp(1, 1, 3, mc).toMatrix();
+
+    for (Size i=n; i < n*(m-1); ++i)
+        for (Size j=0; j < n*m; ++j)
+            BOOST_CHECK(std::fabs(fm(i, j) - dm(i, j)) < 1e-12);
+}
+
+void NthOrderDerivativeOpTest::testMixedSecondOrder9PointsOnUniformGrid() {
+    BOOST_TEST_MESSAGE(
+            "Testing nine points mixed second order "
+            "derivative operator on a uniform grid...");
+
+    const ext::shared_ptr<Fdm1dMesher> m
+        = ext::make_shared<Uniform1dMesher>(0.0, 0.6, 5);
+
+    const ext::shared_ptr<FdmMesher> mc(
+        ext::make_shared<FdmMesherComposite>(m, m));
+
+    const SparseMatrix cc =
+            prod(NthOrderDerivativeOp(0, 1, 3, mc).toMatrix(),
+                 NthOrderDerivativeOp(1, 1, 3, mc).toMatrix());
+
+    const SparseMatrix mm = SecondOrderMixedDerivativeOp(0,1,mc).toMatrix();
+
+    const Size n = m->size();
+
+    for (Size i=1; i < n-1; ++i)
+        for (Size j=1; j < n-1; ++j) {
+            const Size idx = i*n+j;
+            for (Size k=1; k < n-1; ++k)
+                for (Size l=1; l < n-1; ++l) {
+                    const Size kdx = k*n+l;
+                    BOOST_CHECK(std::fabs(mm(idx,kdx) - cc(idx,kdx)) < 1e-12);
+                }
+        }
+}
+
+
+test_suite* NthOrderDerivativeOpTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("NthOrderDerivativeOp tests");
-
-#ifndef QL_NO_UBLAS_SUPPORT
 
     suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testSparseMatrixApply));
@@ -711,11 +933,17 @@ test_suite* NthOrderDerivativeOpTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
         &NthOrderDerivativeOpTest::testThirdOrder4PointsUniformGrid));
     suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testHigerOrderBSOptionPricing));
+        &NthOrderDerivativeOpTest::testHigherOrderAndRichardsonExtrapolation));
     suite->add(QUANTLIB_TEST_CASE(
-        &NthOrderDerivativeOpTest::testHigerOrderAndRichardsonExtrapolationg));
+        &NthOrderDerivativeOpTest::testCompareFirstDerivativeOpNonUniformGrid));
+    suite->add(QUANTLIB_TEST_CASE(
+        &NthOrderDerivativeOpTest::testCompareFirstDerivativeOp2dUniformGrid));
+    suite->add(QUANTLIB_TEST_CASE(
+        &NthOrderDerivativeOpTest::testMixedSecondOrder9PointsOnUniformGrid));
 
-#endif
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&NthOrderDerivativeOpTest::testHigherOrderHestonOptionPricing));
+    }
 
     return suite;
 }

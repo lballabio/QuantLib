@@ -526,10 +526,13 @@
     <ClInclude Include="ql\cashflows\lineartsrpricer.hpp" />
     <ClInclude Include="ql\cashflows\overnightindexedcoupon.hpp" />
     <ClInclude Include="ql\cashflows\rangeaccrual.hpp" />
+    <ClInclude Include="ql\cashflows\rateaveraging.hpp" />
     <ClInclude Include="ql\cashflows\replication.hpp" />
     <ClInclude Include="ql\cashflows\simplecashflow.hpp" />
+    <ClInclude Include="ql\cashflows\subperiodcoupon.hpp" />
     <ClInclude Include="ql\cashflows\timebasket.hpp" />
     <ClInclude Include="ql\cashflows\yoyinflationcoupon.hpp" />
+    <ClInclude Include="ql\cashflows\zeroinflationcashflow.hpp" />
     <ClInclude Include="ql\currencies\africa.hpp" />
     <ClInclude Include="ql\currencies\all.hpp" />
     <ClInclude Include="ql\currencies\america.hpp" />
@@ -616,7 +619,6 @@
     <ClInclude Include="ql\experimental\coupons\proxyibor.hpp" />
     <ClInclude Include="ql\experimental\coupons\quantocouponpricer.hpp" />
     <ClInclude Include="ql\experimental\coupons\strippedcapflooredcoupon.hpp" />
-    <ClInclude Include="ql\experimental\coupons\subperiodcoupons.hpp" />
     <ClInclude Include="ql\experimental\coupons\swapspreadindex.hpp" />
     <ClInclude Include="ql\experimental\credit\all.hpp" />
     <ClInclude Include="ql\experimental\credit\basecorrelationlossmodel.hpp" />
@@ -849,6 +851,7 @@
     <ClInclude Include="ql\indexes\ibor\chflibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\dkklibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\eonia.hpp" />
+    <ClInclude Include="ql\indexes\ibor\estr.hpp" />
     <ClInclude Include="ql\indexes\ibor\euribor.hpp" />
     <ClInclude Include="ql\indexes\ibor\eurlibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\fedfunds.hpp" />
@@ -957,6 +960,7 @@
     <ClInclude Include="ql\instruments\varianceswap.hpp" />
     <ClInclude Include="ql\instruments\yearonyearinflationswap.hpp" />
     <ClInclude Include="ql\instruments\zerocouponinflationswap.hpp" />
+    <ClInclude Include="ql\instruments\zerocouponswap.hpp" />
     <ClInclude Include="ql\legacy\all.hpp" />
     <ClInclude Include="ql\legacy\libormarketmodels\all.hpp" />
     <ClInclude Include="ql\legacy\libormarketmodels\lfmcovarparam.hpp" />
@@ -1509,6 +1513,7 @@
     <ClInclude Include="ql\pricingengines\credit\integralcdsengine.hpp" />
     <ClInclude Include="ql\pricingengines\credit\isdacdsengine.hpp" />
     <ClInclude Include="ql\pricingengines\credit\midpointcdsengine.hpp" />
+    <ClInclude Include="ql\pricingengines\bond\riskybondengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\all.hpp" />
     <ClInclude Include="ql\pricingengines\forward\forwardengine.hpp" />
     <ClInclude Include="ql\pricingengines\forward\forwardperformanceengine.hpp" />
@@ -1758,6 +1763,7 @@
     <ClInclude Include="ql\time\calendars\botswana.hpp" />
     <ClInclude Include="ql\time\calendars\brazil.hpp" />
     <ClInclude Include="ql\time\calendars\canada.hpp" />
+    <ClInclude Include="ql\time\calendars\chile.hpp" />
     <ClInclude Include="ql\time\calendars\china.hpp" />
     <ClInclude Include="ql\time\calendars\czechrepublic.hpp" />
     <ClInclude Include="ql\time\calendars\denmark.hpp" />
@@ -1899,8 +1905,10 @@
     <ClCompile Include="ql\cashflows\rangeaccrual.cpp" />
     <ClCompile Include="ql\cashflows\replication.cpp" />
     <ClCompile Include="ql\cashflows\simplecashflow.cpp" />
+    <ClCompile Include="ql\cashflows\subperiodcoupon.cpp" />
     <ClCompile Include="ql\cashflows\timebasket.cpp" />
     <ClCompile Include="ql\cashflows\yoyinflationcoupon.cpp" />
+    <ClCompile Include="ql\cashflows\zeroinflationcashflow.cpp" />
     <ClCompile Include="ql\currencies\africa.cpp" />
     <ClCompile Include="ql\currencies\america.cpp" />
     <ClCompile Include="ql\currencies\asia.cpp" />
@@ -1967,7 +1975,6 @@
     <ClCompile Include="ql\experimental\coupons\proxyibor.cpp" />
     <ClCompile Include="ql\experimental\coupons\quantocouponpricer.cpp" />
     <ClCompile Include="ql\experimental\coupons\strippedcapflooredcoupon.cpp" />
-    <ClCompile Include="ql\experimental\coupons\subperiodcoupons.cpp" />
     <ClCompile Include="ql\experimental\coupons\swapspreadindex.cpp" />
     <ClCompile Include="ql\experimental\credit\basecorrelationstructure.cpp" />
     <ClCompile Include="ql\experimental\credit\basket.cpp" />
@@ -2118,6 +2125,7 @@
     <ClCompile Include="ql\indexes\bmaindex.cpp" />
     <ClCompile Include="ql\indexes\ibor\bibor.cpp" />
     <ClCompile Include="ql\indexes\ibor\eonia.cpp" />
+    <ClCompile Include="ql\indexes\ibor\estr.cpp" />
     <ClCompile Include="ql\indexes\ibor\euribor.cpp" />
     <ClCompile Include="ql\indexes\ibor\eurlibor.cpp" />
     <ClCompile Include="ql\indexes\ibor\fedfunds.cpp" />
@@ -2198,6 +2206,7 @@
     <ClCompile Include="ql\instruments\varianceswap.cpp" />
     <ClCompile Include="ql\instruments\yearonyearinflationswap.cpp" />
     <ClCompile Include="ql\instruments\zerocouponinflationswap.cpp" />
+    <ClCompile Include="ql\instruments\zerocouponswap.cpp" />
     <ClCompile Include="ql\legacy\libormarketmodels\lfmcovarparam.cpp" />
     <ClCompile Include="ql\legacy\libormarketmodels\lfmcovarproxy.cpp" />
     <ClCompile Include="ql\legacy\libormarketmodels\lfmhullwhiteparam.cpp" />
@@ -2427,7 +2436,6 @@
     <ClCompile Include="ql\models\marketmodels\evolvers\lognormalfwdrateiballand.cpp" />
     <ClCompile Include="ql\models\marketmodels\evolvers\lognormalfwdrateipc.cpp" />
     <ClCompile Include="ql\models\marketmodels\evolvers\lognormalfwdratepc.cpp" />
-    <ClCompile Include="ql\models\marketmodels\evolvers\marketmodelvolprocess.cpp" />
     <ClCompile Include="ql\models\marketmodels\evolvers\normalfwdratepc.cpp" />
     <ClCompile Include="ql\models\marketmodels\evolvers\svddfwdratepc.cpp" />
     <ClCompile Include="ql\models\marketmodels\evolvers\volprocesses\squarerootandersen.cpp" />
@@ -2450,7 +2458,6 @@
     <ClCompile Include="ql\models\marketmodels\models\piecewiseconstantabcdvariance.cpp" />
     <ClCompile Include="ql\models\marketmodels\models\piecewiseconstantvariance.cpp" />
     <ClCompile Include="ql\models\marketmodels\models\pseudorootfacade.cpp" />
-    <ClCompile Include="ql\models\marketmodels\models\volatilityinterpolationspecifier.cpp" />
     <ClCompile Include="ql\models\marketmodels\models\volatilityinterpolationspecifierabcd.cpp" />
     <ClCompile Include="ql\models\marketmodels\pathwiseaccountingengine.cpp" />
     <ClCompile Include="ql\models\marketmodels\pathwisediscounter.cpp" />
@@ -2551,6 +2558,7 @@
     <ClCompile Include="ql\pricingengines\credit\integralcdsengine.cpp" />
     <ClCompile Include="ql\pricingengines\credit\isdacdsengine.cpp" />
     <ClCompile Include="ql\pricingengines\credit\midpointcdsengine.cpp" />
+    <ClCompile Include="ql\pricingengines\bond\riskybondengine.cpp" />
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanbsengine.cpp" />
     <ClCompile Include="ql\pricingengines\forward\mcforwardeuropeanhestonengine.cpp" />
     <ClCompile Include="ql\pricingengines\greeks.cpp" />
@@ -2714,6 +2722,7 @@
     <ClCompile Include="ql\time\calendars\botswana.cpp" />
     <ClCompile Include="ql\time\calendars\brazil.cpp" />
     <ClCompile Include="ql\time\calendars\canada.cpp" />
+    <ClCompile Include="ql\time\calendars\chile.cpp" />
     <ClCompile Include="ql\time\calendars\china.cpp" />
     <ClCompile Include="ql\time\calendars\czechrepublic.cpp" />
     <ClCompile Include="ql\time\calendars\denmark.cpp" />

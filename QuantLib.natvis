@@ -47,4 +47,17 @@
       </ArrayItems>
     </Expand>
   </Type>
+
+  <Type Name="QuantLib::Period">
+    <DisplayString>{length_} {units_,en}</DisplayString>
+  </Type>
+
+  <Type Name="QuantLib::InterestRate">
+    <DisplayString Condition="freqMakesSense_">{r_*100}% {comp_,en} {(Frequency)freq_,en}</DisplayString>
+    <DisplayString Condition="!freqMakesSense_">{r_*100}% {comp_,en}</DisplayString>
+  </Type>
+
+  <Type Name="QuantLib::InterestRateIndex">
+    <DisplayString>{familyName_} {{{tenor_}}}</DisplayString>
+  </Type>
 </AutoVisualizer>

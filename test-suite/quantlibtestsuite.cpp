@@ -32,15 +32,13 @@
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
 */
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
-
-#ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
-#  define BOOST_LIB_NAME boost_unit_test_framework
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#endif
-
+#  ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+#      define BOOST_LIB_NAME boost_unit_test_framework
+#      include <boost/config/auto_link.hpp>
+#      undef BOOST_LIB_NAME
+#  endif
 #endif
 
 #include "utilities.hpp"
@@ -84,6 +82,7 @@
 #include "creditdefaultswap.hpp"
 #include "creditriskplus.hpp"
 #include "crosscurrencyratehelpers.hpp"
+#include "currency.hpp"
 #include "curvestates.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
@@ -125,6 +124,7 @@
 #include "inflationcpicapfloor.hpp"
 #include "inflationcpiswap.hpp"
 #include "inflationvolatility.hpp"
+#include "inflationzciisinterpolation.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
 #include "interestrates.hpp"
@@ -182,6 +182,7 @@
 #include "squarerootclvmodel.hpp"
 #include "swingoption.hpp"
 #include "stats.hpp"
+#include "subperiodcoupons.hpp"
 #include "swap.hpp"
 #include "swapforwardmappings.hpp"
 #include "swaption.hpp"
@@ -202,6 +203,7 @@
 #include "volatilitymodels.hpp"
 #include "vpp.hpp"
 #include "zabr.hpp"
+#include "zerocouponswap.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -318,11 +320,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     std::ostringstream header;
     header <<
         " Testing "
-        #ifdef BOOST_MSVC
-        QL_LIB_NAME
-        #else
         "QuantLib " QL_VERSION
-        #endif
         "\n  QL_EXTRA_SAFETY_CHECKS "
         #ifdef QL_EXTRA_SAFETY_CHECKS
         "  defined"
@@ -386,6 +384,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CPISwapTest::suite());
     test->add(CreditDefaultSwapTest::suite());
     test->add(CrossCurrencyRateHelpersTest::suite());
+    test->add(CurrencyTest::suite());
     test->add(CurveStatesTest::suite());
     test->add(DateTest::suite(speed));
     test->add(DayCounterTest::suite());
@@ -417,6 +416,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InflationCapFloorTest::suite());
     test->add(InflationCapFlooredCouponTest::suite());
     test->add(InflationCPIBondTest::suite());
+    test->add(InflationZCIISInterpolationTest::suite());
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
@@ -438,7 +438,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MersenneTwisterTest::suite());
     test->add(MoneyTest::suite());
     test->add(NumericalDifferentiationTest::suite());
-    test->add(NthOrderDerivativeOpTest::suite());
+    test->add(NthOrderDerivativeOpTest::suite(speed));
     test->add(ObservableTest::suite());
     test->add(OdeTest::suite());
     test->add(OperatorTest::suite());
@@ -459,8 +459,10 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ScheduleTest::suite());
     test->add(SettingsTest::suite());
     test->add(ShortRateModelTest::suite(speed)); // fails with QL_USE_INDEXED_COUPON
+    test->add(SofrFuturesTest::suite());
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
+    test->add(SubPeriodsCouponTest::suite());
     test->add(SwapTest::suite());
     test->add(SwapForwardMappingsTest::suite());
     test->add(SwaptionTest::suite(speed));
@@ -475,6 +477,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(UltimateForwardTermStructureTest::suite());
     test->add(VarianceSwapTest::suite());
     test->add(VolatilityModelsTest::suite());
+    test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
     test->add(AmortizingBondTest::suite());
@@ -514,7 +517,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(PartialTimeBarrierOptionTest::suite());
     test->add(QuantoOptionTest::experimental());
     test->add(RiskNeutralDensityCalculatorTest::experimental(speed));
-    test->add(SofrFuturesTest::suite());
     test->add(SpreadOptionTest::suite());
     test->add(SquareRootCLVModelTest::experimental());
     test->add(SwingOptionTest::suite(speed));

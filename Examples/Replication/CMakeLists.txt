@@ -1,2 +1,5 @@
 add_executable(Replication Replication.cpp)
-target_link_libraries(Replication ${QL_LINK_LIBRARY})
+target_link_libraries(Replication ql_library ${QL_EXAMPLES_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS Replication RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

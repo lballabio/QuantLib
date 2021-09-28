@@ -59,7 +59,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         IrregularSettlement::Type settlementType() const { return settlementType_; }
-        IrregularSwap::Type type() const { return swap_->type(); }
+        Swap::Type type() const { return swap_->type(); }
         const ext::shared_ptr<IrregularSwap>& underlyingSwap() const {
             return swap_;
         }

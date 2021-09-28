@@ -34,7 +34,7 @@ namespace QuantLib {
 
     class CTSMMCapletCalibration {
       public:
-        virtual ~CTSMMCapletCalibration();
+        virtual ~CTSMMCapletCalibration() = default;
         CTSMMCapletCalibration(
             EvolutionDescription evolution,
             ext::shared_ptr<PiecewiseConstantCorrelation> corr,

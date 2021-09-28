@@ -44,17 +44,13 @@ namespace QuantLib {
         virtual Real calibrationError() = 0;
     };
 
-    /*! \deprecated Renamed to CalibrationHelper.
-                    Deprecated in version 1.18.
-    */
-    QL_DEPRECATED
-    typedef CalibrationHelper CalibrationHelperBase;
-
+    QL_DEPRECATED_DISABLE_WARNING
     //! liquid Black76 market instrument used during calibration
     class BlackCalibrationHelper : public LazyObject, public CalibrationHelper {
       public:
         enum CalibrationErrorType {
                             RelativePriceError, PriceError, ImpliedVolError};
+
         BlackCalibrationHelper(Handle<Quote> volatility,
                                CalibrationErrorType calibrationErrorType = RelativePriceError,
                                const VolatilityType type = ShiftedLognormal,
@@ -62,23 +58,6 @@ namespace QuantLib {
         : volatility_(std::move(volatility)), volatilityType_(type), shift_(shift),
           calibrationErrorType_(calibrationErrorType) {
             registerWith(volatility_);
-        }
-
-        /*! \deprecated Use the other constructor.  It you're
-                        inheriting from BlackCalibrationHelper, move
-                        `termStructure_` to your derived class.
-                        Deprecated in version 1.19.
-        */
-        QL_DEPRECATED
-        BlackCalibrationHelper(Handle<Quote> volatility,
-                               Handle<YieldTermStructure> termStructure,
-                               CalibrationErrorType calibrationErrorType = RelativePriceError,
-                               const VolatilityType type = ShiftedLognormal,
-                               const Real shift = 0.0)
-        : volatility_(std::move(volatility)), termStructure_(std::move(termStructure)),
-          volatilityType_(type), shift_(shift), calibrationErrorType_(calibrationErrorType) {
-            registerWith(volatility_);
-            registerWith(termStructure_);
         }
 
         void performCalculations() const override {
@@ -119,7 +98,12 @@ namespace QuantLib {
       protected:
         mutable Real marketValue_;
         Handle<Quote> volatility_;
-        Handle<YieldTermStructure> termStructure_;
+        /*! \deprecated Don't use this data member.  It you're
+                        inheriting from BlackCalibrationHelper, move
+                        `termStructure_` to your derived class.
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED Handle<YieldTermStructure> termStructure_;
         ext::shared_ptr<PricingEngine> engine_;
         const VolatilityType volatilityType_;
         const Real shift_;
@@ -128,6 +112,7 @@ namespace QuantLib {
         class ImpliedVolatilityHelper;
         const CalibrationErrorType calibrationErrorType_;
     };
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

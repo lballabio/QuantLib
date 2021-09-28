@@ -25,7 +25,7 @@
 
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 
 namespace QuantLib {
 
@@ -115,7 +115,7 @@ namespace QuantLib {
                   const Currency& currency,
                   const ext::shared_ptr<OvernightIndex>& overnightIndex,
                   bool telescopicValueDates = false,
-                  OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
+                  RateAveraging::Type averagingMethod = RateAveraging::Compound);
         //! \name Inspectors
         //@{
         ext::shared_ptr<OvernightIndex> overnightIndex() const;
@@ -128,7 +128,7 @@ namespace QuantLib {
       protected:
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         bool telescopicValueDates_;
-        OvernightAveraging::Type averagingMethod_;
+        RateAveraging::Type averagingMethod_;
         // cache data to avoid swap recreation when the same fixing date
         // is used multiple time to forecast changing fixing
         mutable ext::shared_ptr<OvernightIndexedSwap> lastSwap_;

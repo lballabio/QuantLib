@@ -43,14 +43,9 @@ namespace QuantLib {
         nominal discount factor at time \f$ t \f$, \f$ N \f$ is the
         notional, and \f$ I(t) \f$ is the inflation index value at
         time \f$ t \f$.
-
-        \note These instruments have now been changed to follow
-              typical VanillaSwap type design conventions
-              w.r.t. Schedules etc.
     */
     class YearOnYearInflationSwap : public Swap {
     public:
-        enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class results;
         class engine;
@@ -152,7 +147,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline YearOnYearInflationSwap::Type YearOnYearInflationSwap::type() const {
+    inline Swap::Type YearOnYearInflationSwap::type() const {
         return type_;
     }
 
@@ -199,15 +194,6 @@ namespace QuantLib {
     inline const Leg& YearOnYearInflationSwap::yoyLeg() const {
         return legs_[1];
     }
-
-    std::ostream& operator<<(std::ostream& out,
-                             YearOnYearInflationSwap::Type t);
-
-
-
-
-
-
 
 }
 

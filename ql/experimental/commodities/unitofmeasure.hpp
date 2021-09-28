@@ -43,7 +43,7 @@ namespace QuantLib {
             and must be reassigned to a valid currency before being
             used.
         */
-        UnitOfMeasure();
+        UnitOfMeasure() = default;
         UnitOfMeasure(const std::string& name,
                       const std::string& code,
                       Type unitType);
@@ -101,8 +101,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline UnitOfMeasure::UnitOfMeasure() = default;
 
     inline const std::string& UnitOfMeasure::name() const {
         return data_->name;

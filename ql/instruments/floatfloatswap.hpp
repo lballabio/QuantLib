@@ -46,7 +46,7 @@ namespace QuantLib {
         class results;
         class engine;
         FloatFloatSwap(
-            VanillaSwap::Type type,
+            Swap::Type type,
             Real nominal1,
             Real nominal2,
             const Schedule& schedule1,
@@ -69,7 +69,7 @@ namespace QuantLib {
             const boost::optional<BusinessDayConvention>& paymentConvention2 = boost::none);
 
         FloatFloatSwap(
-            VanillaSwap::Type type,
+            Swap::Type type,
             std::vector<Real> nominal1,
             std::vector<Real> nominal2,
             Schedule schedule1,
@@ -93,7 +93,7 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        VanillaSwap::Type type() const;
+        Swap::Type type() const;
         const std::vector<Real> &nominal1() const;
         const std::vector<Real> &nominal2() const;
 
@@ -135,7 +135,7 @@ namespace QuantLib {
         void init(boost::optional<BusinessDayConvention> paymentConvention1,
                   boost::optional<BusinessDayConvention> paymentConvention2);
         void setupExpired() const override;
-        VanillaSwap::Type type_;
+        Swap::Type type_;
         std::vector<Real> nominal1_, nominal2_;
         Schedule schedule1_, schedule2_;
         ext::shared_ptr<InterestRateIndex> index1_, index2_;
@@ -152,7 +152,7 @@ namespace QuantLib {
     class FloatFloatSwap::arguments : public Swap::arguments {
       public:
         arguments() = default;
-        VanillaSwap::Type type = VanillaSwap::Receiver;
+        Swap::Type type = Swap::Receiver;
         std::vector<Real> nominal1, nominal2;
 
         std::vector<Date> leg1ResetDates, leg1FixingDates, leg1PayDates;
@@ -184,7 +184,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline VanillaSwap::Type FloatFloatSwap::type() const { return type_; }
+    inline Swap::Type FloatFloatSwap::type() const { return type_; }
 
     inline const std::vector<Real> &FloatFloatSwap::nominal1() const {
         return nominal1_;

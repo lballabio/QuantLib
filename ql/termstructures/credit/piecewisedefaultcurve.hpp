@@ -62,6 +62,7 @@ namespace QuantLib {
         typedef Traits traits_type;
         typedef Interpolator interpolator_type;
         typedef Bootstrap<this_curve> bootstrap_type;
+
         //! \name Constructors
         //@{
         PiecewiseDefaultCurve(
@@ -77,6 +78,7 @@ namespace QuantLib {
           bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
+
         PiecewiseDefaultCurve(
                const Date& referenceDate,
                const std::vector<ext::shared_ptr<typename Traits::helper> >&
@@ -89,6 +91,7 @@ namespace QuantLib {
           instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
+
         PiecewiseDefaultCurve(const Date& referenceDate,
                               std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
                               const DayCounter& dayCounter,
@@ -100,43 +103,6 @@ namespace QuantLib {
                      Interpolator()),
           instruments_(std::move(instruments)), accuracy_(1.0e-12),
           bootstrap_(std::move(bootstrap)) {
-            bootstrap_.setup(this);
-        }
-        /*! \deprecated Pass the accuracy inside the bootstrap object
-                        (or don't pass it at all).
-                        Deprecated in version 1.18.
-        */
-        QL_DEPRECATED
-        PiecewiseDefaultCurve(
-               const Date& referenceDate,
-               const std::vector<ext::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               const std::vector<Handle<Quote> >& jumps,
-               const std::vector<Date>& jumpDates,
-               Real accuracy,
-               const Interpolator& i = Interpolator(),
-               const bootstrap_type& bootstrap = bootstrap_type())
-        : base_curve(referenceDate, dayCounter, jumps, jumpDates, i),
-          instruments_(instruments), accuracy_(accuracy), bootstrap_(bootstrap) {
-            bootstrap_.setup(this);
-        }
-        /*! \deprecated Pass the accuracy inside the bootstrap object
-                        (or don't pass it at all).
-                        Deprecated in version 1.18.
-        */
-        QL_DEPRECATED
-        PiecewiseDefaultCurve(
-               const Date& referenceDate,
-               const std::vector<ext::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               Real accuracy,
-               const Interpolator& i = Interpolator(),
-               const bootstrap_type& bootstrap = bootstrap_type())
-        : base_curve(referenceDate, dayCounter,
-                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments), accuracy_(accuracy), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
 
@@ -154,6 +120,7 @@ namespace QuantLib {
           bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
+
         PiecewiseDefaultCurve(
                Natural settlementDays,
                const Calendar& calendar,
@@ -167,6 +134,7 @@ namespace QuantLib {
           instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
+
         PiecewiseDefaultCurve(
                Natural settlementDays,
                const Calendar& calendar,
@@ -178,45 +146,6 @@ namespace QuantLib {
                      std::vector<Handle<Quote> >(), std::vector<Date>(),
                      Interpolator()),
           instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
-            bootstrap_.setup(this);
-        }
-        /*! \deprecated Pass the accuracy inside the bootstrap object
-                        (or don't pass it at all).
-                        Deprecated in version 1.18.
-        */
-        QL_DEPRECATED
-        PiecewiseDefaultCurve(
-               Natural settlementDays,
-               const Calendar& calendar,
-               const std::vector<ext::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               const std::vector<Handle<Quote> >& jumps,
-               const std::vector<Date>& jumpDates,
-               Real accuracy,
-               const Interpolator& i = Interpolator(),
-               const bootstrap_type& bootstrap = bootstrap_type())
-        : base_curve(settlementDays, calendar, dayCounter, jumps, jumpDates, i),
-          instruments_(instruments), accuracy_(accuracy), bootstrap_(bootstrap) {
-            bootstrap_.setup(this);
-        }
-        /*! \deprecated Pass the accuracy inside the bootstrap object
-                        (or don't pass it at all).
-                        Deprecated in version 1.18.
-        */
-        QL_DEPRECATED
-        PiecewiseDefaultCurve(
-               Natural settlementDays,
-               const Calendar& calendar,
-               const std::vector<ext::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               Real accuracy,
-               const Interpolator& i = Interpolator(),
-               const bootstrap_type& bootstrap = bootstrap_type())
-        : base_curve(settlementDays, calendar, dayCounter,
-                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments), accuracy_(accuracy), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
 
@@ -246,29 +175,6 @@ namespace QuantLib {
           instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
-        /*! \deprecated Pass the accuracy inside the bootstrap object
-                        (or don't pass it at all).
-                        Deprecated in version 1.18.
-        */
-        QL_DEPRECATED
-        PiecewiseDefaultCurve(
-            const Date& referenceDate,
-            const std::vector<ext::shared_ptr<typename Traits::helper> >& instruments,
-            const DayCounter& dayCounter,
-            Real accuracy,
-            const ext::shared_ptr<OneFactorAffineModel>& model,
-            const Interpolator& i = Interpolator(),
-            const bootstrap_type& bootstrap = bootstrap_type())
-        : base_curve(referenceDate,
-                     dayCounter,
-                     model,
-                     std::vector<Handle<Quote> >(),
-                     std::vector<Date>(),
-                     i),
-          instruments_(instruments), accuracy_(accuracy), bootstrap_(bootstrap) {
-            bootstrap_.setup(this);
-        }
-
         //@}
         //! \name TermStructure interface
         //@{

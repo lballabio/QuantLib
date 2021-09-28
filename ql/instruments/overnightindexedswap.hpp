@@ -28,7 +28,7 @@
 #define quantlib_overnight_indexed_swap_hpp
 
 #include <ql/instruments/swap.hpp>
-#include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/time/calendar.hpp>
@@ -40,8 +40,7 @@ namespace QuantLib {
 
     //! Overnight indexed swap: fix vs compounded overnight rate
     class OvernightIndexedSwap : public Swap {
-    public:
-        enum Type { Receiver = -1, Payer = 1 };
+      public:
         OvernightIndexedSwap(Type type,
                              Real nominal,
                              const Schedule& schedule,
@@ -53,7 +52,7 @@ namespace QuantLib {
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
                              bool telescopicValueDates = false,
-                             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         OvernightIndexedSwap(Type type,
                              std::vector<Real> nominals,
@@ -66,7 +65,7 @@ namespace QuantLib {
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
                              bool telescopicValueDates = false,
-                             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         //! \name Inspectors
         //@{
@@ -85,7 +84,7 @@ namespace QuantLib {
         const Leg& fixedLeg() const { return legs_[0]; }
         const Leg& overnightLeg() const { return legs_[1]; }
 
-        OvernightAveraging::Type averagingMethod() const { return averagingMethod_; }
+        RateAveraging::Type averagingMethod() const { return averagingMethod_; }
         //@}
 
         //! \name Results
@@ -116,7 +115,7 @@ namespace QuantLib {
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
         bool telescopicValueDates_;
-        OvernightAveraging::Type averagingMethod_;
+        RateAveraging::Type averagingMethod_;
     };
 
 

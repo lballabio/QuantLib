@@ -65,11 +65,11 @@ namespace QuantLib {
     */
     class CPISwap : public Swap {
       public:
-        enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class results;
         class engine;
 
+        /*! In this swap, the type (Payer or Receiver) refers to the floating leg. */
         CPISwap(Type type,
                 Real nominal,
                 bool subtractInflationNominal,
@@ -188,7 +188,7 @@ namespace QuantLib {
     // inline definitions
 
     // inspectors
-    inline  CPISwap::Type CPISwap::type() const { return type_; }
+    inline  Swap::Type CPISwap::type() const { return type_; }
     inline  Real CPISwap::nominal() const { return nominal_; }
     inline  bool CPISwap::subtractInflationNominal() const { return subtractInflationNominal_; }
 
@@ -218,8 +218,6 @@ namespace QuantLib {
     inline const Leg& CPISwap::floatLeg() const {
         return legs_[1];
     }
-
-    std::ostream& operator<<(std::ostream& out, CPISwap::Type t);
 
 }
 

@@ -24,9 +24,9 @@
 #include <ql/errors.hpp>
 #include <ql/experimental/varianceoption/integralhestonvarianceoptionengine.hpp>
 #include <ql/functional.hpp>
-#include <boost/scoped_array.hpp>
 #include <complex>
 #include <utility>
+#include <memory>
 
 namespace QuantLib {
 
@@ -58,14 +58,14 @@ namespace QuantLib {
                       Real v0, Real eprice, Time tau, Real rtax)
     {
         Real ss=0.0;
-        boost::scoped_array<double> xiv(new double[2048*2048+1]);
+        std::unique_ptr<double[]> xiv(new double[2048*2048+1]);
         double nris=0.0;
         int j=0,mm=0;
         double pi=0,pi2=0;
         double dstep=0;
         Real option=0, impart=0;
 
-        boost::scoped_array<Complex> ff(new Complex[2048*2048]);
+        std::unique_ptr<Complex[]> ff(new Complex[2048*2048]);
         Complex xi;
         Complex ui,beta,zita,gamma,csum,vero;
         Complex contrib, caux, caux1,caux2,caux3;
@@ -203,8 +203,8 @@ namespace QuantLib {
                     const ext::function<Real(Real)>& payoff) {
 
         Real ss=0.0;
-        boost::scoped_array<double> xiv(new double[2048*2048+1]);
-        boost::scoped_array<double> ivet(new double[2048 * 2048 + 1]);
+        std::unique_ptr<double[]> xiv(new double[2048*2048+1]);
+        std::unique_ptr<double[]> ivet(new double[2048 * 2048 + 1]);
         double nris=0.0;
         int j=0,mm=0,k=0;
         double pi=0,pi2=0;
@@ -217,7 +217,7 @@ namespace QuantLib {
         Real sumr=0;//,sumi=0;
         Complex dxi,z;
 
-        boost::scoped_array<Complex> ff(new Complex[2048*2048]);
+        std::unique_ptr<Complex[]> ff(new Complex[2048*2048]);
         Complex xi;
         Complex ui,beta,zita,gamma,csum;
         Complex caux,caux1,caux2,caux3;

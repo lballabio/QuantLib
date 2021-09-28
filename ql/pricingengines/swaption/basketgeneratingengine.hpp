@@ -85,7 +85,7 @@ namespace QuantLib {
 
         virtual Real underlyingNpv(const Date& expiry, Real y) const = 0;
 
-        virtual VanillaSwap::Type underlyingType() const = 0;
+        virtual Swap::Type underlyingType() const = 0;
 
         virtual const Date underlyingLastDate() const = 0;
 
@@ -103,7 +103,7 @@ namespace QuantLib {
         friend class MatchHelper;
         class MatchHelper : public CostFunction {
           public:
-            MatchHelper(const VanillaSwap::Type type,
+            MatchHelper(const Swap::Type type,
                         const Real npv,
                         const Real delta,
                         const Real gamma,
@@ -225,7 +225,7 @@ namespace QuantLib {
                 return res;
             }
 
-            const VanillaSwap::Type type_;
+            const Swap::Type type_;
             const ext::shared_ptr<Gaussian1dModel> mdl_;
             const ext::shared_ptr<SwapIndex> indexBase_;
             const Date expiry_;

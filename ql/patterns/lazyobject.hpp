@@ -33,7 +33,7 @@ namespace QuantLib {
     class LazyObject : public virtual Observable,
                        public virtual Observer {
       public:
-        LazyObject();
+        LazyObject() = default;
         ~LazyObject() override = default;
         //! \name Observer interface
         //@{
@@ -111,8 +111,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline LazyObject::LazyObject() = default;
 
     inline void LazyObject::update() {
         // forwards notifications only the first time

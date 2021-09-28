@@ -96,7 +96,8 @@ namespace QuantLib {
         }
 
         Real callValue = optionType == Option::Call ? results_.value : riskFreeDiscount*(F*Nd1-Nd2)*(forward2+strike);
-        results_.theta = (log(riskFreeDiscount)/t)*callValue+riskFreeDiscount*(forward1*sigma)/(2*sqrt(t))*pdf(d1);
+        results_.theta = -((log(riskFreeDiscount)/t)*callValue
+                           + riskFreeDiscount*(forward1*sigma)/(2*sqrt(t))*pdf(d1));
     }
 
 }

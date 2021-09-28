@@ -33,19 +33,13 @@
 namespace QuantLib {
 
     //! American exercise condition.
-    class AmericanCondition :
-        public StandardStepCondition {
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.22.
+    */
+    class QL_DEPRECATED AmericanCondition : public StandardStepCondition {
       public:
         explicit AmericanCondition(const Array& intrinsicValues)
         : impl_(new ArrayImpl(intrinsicValues)) {}
-
-        /*! \deprecated Use the other constructor.
-                        Deprecated in version 1.19.
-        */
-        QL_DEPRECATED
-        AmericanCondition(Option::Type type,
-                          Real strike)
-        : impl_(new PayoffImpl(type, strike)) {}
 
         void applyTo(Array& a, Time) const override {
             //#pragma omp parallel for
@@ -76,15 +70,6 @@ namespace QuantLib {
             explicit ArrayImpl(Array a) : intrinsicValues_(std::move(a)) {}
 
             Real getValue(const Array&, int i) override { return intrinsicValues_[i]; }
-        };
-
-        class PayoffImpl : public Impl {
-          private:
-            ext::shared_ptr<const Payoff> payoff_;
-          public:
-            PayoffImpl(Option::Type type, Real strike)
-            : payoff_(new PlainVanillaPayoff(type, strike)) {};
-            Real getValue(const Array& a, int i) override { return (*payoff_)(std::exp(a[i])); }
         };
     };
 }

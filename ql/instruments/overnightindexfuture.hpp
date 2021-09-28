@@ -27,7 +27,7 @@
 
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/forward.hpp>
-#include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 
 namespace QuantLib {
 
@@ -43,7 +43,7 @@ namespace QuantLib {
             const Date& valueDate,
             const Date& maturityDate,
             Handle<Quote> convexityAdjustment = Handle<Quote>(),
-            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
+            RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         Real convexityAdjustment() const;
         bool isExpired() const override;
@@ -55,7 +55,7 @@ namespace QuantLib {
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Date valueDate_, maturityDate_;
         Handle<Quote> convexityAdjustment_;
-        OvernightAveraging::Type averagingMethod_;
+        RateAveraging::Type averagingMethod_;
     };
 
 }

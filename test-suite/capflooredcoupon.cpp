@@ -92,7 +92,7 @@ namespace capfloored_coupon_test {
             std::vector<Rate> coupons(length, 0.0);
             return FixedRateLeg(schedule)
                 .withNotionals(nominals)
-                .withCouponRates(coupons, Thirty360());
+                .withCouponRates(coupons, Thirty360(Thirty360::BondBasis));
         }
 
         Leg makeFloatingLeg(const Date& startDate,

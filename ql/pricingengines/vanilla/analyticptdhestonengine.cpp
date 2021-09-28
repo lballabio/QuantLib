@@ -404,4 +404,8 @@ namespace QuantLib {
               QL_FAIL("unknown complex log formula");
           }
     }
+ 
+    Size AnalyticPTDHestonEngine::numberOfEvaluations() const {
+        return evaluations_;
+    }
 }

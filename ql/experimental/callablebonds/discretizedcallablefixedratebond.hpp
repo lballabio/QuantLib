@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Allen Kuo
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,16 +25,15 @@
 #ifndef quantlib_discretized_callable_fixed_rate_bond_hpp
 #define quantlib_discretized_callable_fixed_rate_bond_hpp
 
-#include <ql/experimental/callablebonds/callablebond.hpp>
 #include <ql/discretizedasset.hpp>
+#include <ql/experimental/callablebonds/callablebond.hpp>
 
 namespace QuantLib {
 
     class DiscretizedCallableFixedRateBond : public DiscretizedAsset {
       public:
         DiscretizedCallableFixedRateBond(const CallableBond::arguments&,
-                                         const Date& referenceDate,
-                                         const DayCounter& dayCounter);
+                                         const Handle<YieldTermStructure>& termStructure);
         void reset(Size size) override;
         std::vector<Time> mandatoryTimes() const override;
 
@@ -42,10 +42,13 @@ namespace QuantLib {
         void postAdjustValuesImpl() override;
 
       private:
+        enum class CouponAdjustment { pre, post };
         CallableBond::arguments arguments_;
         Time redemptionTime_;
         std::vector<Time> couponTimes_;
+        std::vector<CouponAdjustment> couponAdjustments_;
         std::vector<Time> callabilityTimes_;
+        std::vector<Real> adjustedCallabilityPrices_;
         void applyCallability(Size i);
         void addCoupon(Size i);
     };
@@ -53,4 +56,3 @@ namespace QuantLib {
 }
 
 #endif
-

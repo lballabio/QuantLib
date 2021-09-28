@@ -215,17 +215,5 @@ namespace QuantLib {
         fairSpread = Null<Spread>();
     }
 
-    std::ostream& operator<<(std::ostream& out,
-                             CPISwap::Type t) {
-        switch (t) {
-            case CPISwap::Payer:
-                return out << "Payer";
-            case CPISwap::Receiver:
-                return out << "Receiver";
-            default:
-                QL_FAIL("unknown CPISwap::Type(" << Integer(t) << ")");
-        }
-    }
-
 }
 

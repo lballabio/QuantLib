@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2018 StatPro Italia srl
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +30,7 @@ class CallableBondTest {
     static void testObservability();
     static void testDegenerate();
     static void testCached();
+    static void testSnappingExerciseDate2ClosestCouponDate();
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -189,7 +189,7 @@ namespace QuantLib {
         const Currency& currency,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         bool telescopicValueDates,
-        OvernightAveraging::Type averagingMethod)
+        RateAveraging::Type averagingMethod)
     : SwapIndex(familyName,
                 tenor,
                 settlementDays,

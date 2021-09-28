@@ -72,31 +72,6 @@ namespace QuantLib {
           instruments_(std::move(instruments)), accuracy_(accuracy) {
             bootstrap_.setup(this);
         }
-
-        /*! \deprecated Use the constructor not taking a yield
-                        term structure.
-                        Deprecated in version 1.19.
-        */
-        QL_DEPRECATED
-        PiecewiseZeroInflationCurve(
-               const Date& referenceDate,
-               const Calendar& calendar,
-               const DayCounter& dayCounter,
-               const Period& lag,
-               Frequency frequency,
-               bool indexIsInterpolated,
-               Rate baseZeroRate,
-               const Handle<YieldTermStructure>& nominalTS,
-               const std::vector<ext::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               Real accuracy = 1.0e-12,
-               const Interpolator& i = Interpolator())
-        : base_curve(referenceDate, calendar, dayCounter,
-                     lag, frequency, indexIsInterpolated, baseZeroRate,
-                     nominalTS, i),
-          instruments_(instruments), accuracy_(accuracy) {
-            bootstrap_.setup(this);
-        }
         //@}
 
         //! \name Inflation interface

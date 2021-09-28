@@ -733,7 +733,7 @@ void AssetSwapTest::testImpliedValue() {
     ext::shared_ptr<Bond> cmsBond1(
                           new CmsRateBond(settlementDays, vars.faceAmount,
                                           cmsBondSchedule1,
-                                          vars.swapIndex, Thirty360(),
+                                          vars.swapIndex, Thirty360(Thirty360::BondBasis),
                                           Following, fixingDays,
                                           std::vector<Real>(1,1.0),
                                           std::vector<Spread>(1,0.0),
@@ -777,7 +777,7 @@ void AssetSwapTest::testImpliedValue() {
                               DateGeneration::Backward, false);
     ext::shared_ptr<Bond> cmsBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
-                    vars.swapIndex, Thirty360(),
+                    vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(), std::vector<Rate>(),
@@ -1127,7 +1127,7 @@ void AssetSwapTest::testMarketASWSpread() {
                               DateGeneration::Backward, false);
     ext::shared_ptr<Bond> cmsBond1(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
-                    vars.swapIndex, Thirty360(),
+                    vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
@@ -1180,7 +1180,7 @@ void AssetSwapTest::testMarketASWSpread() {
                               DateGeneration::Backward, false);
     ext::shared_ptr<Bond> cmsBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
-                    vars.swapIndex, Thirty360(),
+                    vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(), std::vector<Rate>(),
@@ -1499,7 +1499,7 @@ void AssetSwapTest::testZSpread() {
                               DateGeneration::Backward, false);
     ext::shared_ptr<Bond> cmsBond1(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
-                    vars.swapIndex, Thirty360(),
+                    vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
@@ -1539,7 +1539,7 @@ void AssetSwapTest::testZSpread() {
                               DateGeneration::Backward, false);
     ext::shared_ptr<Bond> cmsBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
-                    vars.swapIndex, Thirty360(),
+                    vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(), std::vector<Rate>(),
@@ -1878,7 +1878,7 @@ void AssetSwapTest::testGenericBondImplied() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withCaps(0.055)
         .withFloors(0.025)
@@ -1926,7 +1926,7 @@ void AssetSwapTest::testGenericBondImplied() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withGearings(0.84)
         .inArrears(inArrears);
@@ -2307,7 +2307,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withCaps(0.055)
         .withFloors(0.025)
@@ -2366,7 +2366,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withGearings(0.84)
         .inArrears(inArrears);
@@ -2719,7 +2719,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withCaps(0.055)
         .withFloors(0.025)
@@ -2766,7 +2766,7 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withGearings(0.84)
         .inArrears(inArrears);
@@ -3188,7 +3188,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withCaps(0.055)
         .withFloors(0.025)
@@ -3206,7 +3206,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     // equivalent specialized cms bond
     ext::shared_ptr<Bond> cmsSpecializedBond1(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
-                vars.swapIndex, Thirty360(),
+                vars.swapIndex, Thirty360(Thirty360::BondBasis),
                 Following, fixingDays,
                 std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
@@ -3258,7 +3258,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withGearings(0.84)
         .inArrears(inArrears);
@@ -3275,7 +3275,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     // equivalent specialized cms bond
     ext::shared_ptr<Bond> cmsSpecializedBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
-                vars.swapIndex, Thirty360(),
+                vars.swapIndex, Thirty360(Thirty360::BondBasis),
                 Following, fixingDays,
                 std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(), std::vector<Rate>(),
@@ -3890,7 +3890,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withCaps(0.055)
         .withFloors(0.025)
@@ -3908,7 +3908,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     // equivalent specialized cms bond
     ext::shared_ptr<Bond> cmsSpecializedBond1(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
-                vars.swapIndex, Thirty360(),
+                vars.swapIndex, Thirty360(Thirty360::BondBasis),
                 Following, fixingDays,
                 std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
@@ -3993,7 +3993,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withGearings(0.84)
         .inArrears(inArrears);
@@ -4010,7 +4010,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     // equivalent specialized cms bond
     ext::shared_ptr<Bond> cmsSpecializedBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
-                vars.swapIndex, Thirty360(),
+                vars.swapIndex, Thirty360(Thirty360::BondBasis),
                 Following, fixingDays,
                 std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(), std::vector<Rate>(),

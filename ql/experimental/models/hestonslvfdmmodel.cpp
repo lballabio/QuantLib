@@ -43,8 +43,8 @@
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/timegrid.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <functional>
+#include <memory>
 #include <utility>
 
 namespace QuantLib {
@@ -223,7 +223,7 @@ namespace QuantLib {
             void setStep(Time dt) override { scheme_->setStep(dt); }
 
           private:
-            const boost::scoped_ptr<T> scheme_;
+            const std::unique_ptr<T> scheme_;
         };
 
         ext::shared_ptr<FdmScheme> fdmSchemeFactory(
@@ -453,7 +453,7 @@ namespace QuantLib {
 
                 hestonFwdOp = ext::shared_ptr<FdmLinearOpComposite>(
                                 new FdmHestonFwdOp(mesher, hestonProcess,
-                                               trafoType, leverageFct));
+                                               trafoType, leverageFct, mixingFactor_));
             }
 
             Array pn = p;

@@ -39,7 +39,7 @@
 #include <ql/termstructures/volatility/equityfx/andreasenhugelocalvoladapter.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityinterpl.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityadapter.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <cmath>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -869,7 +869,7 @@ void AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample() {
         const Real tol = 0.0005;
         const Real diff = std::fabs(sabrVol - ahVol);
 
-        if (boost::math::isnan(ahVol) || diff > 0.005) {
+        if (std::isnan(ahVol) || diff > 0.005) {
             BOOST_FAIL("failed to reproduce SABR volatility with "
                     "Andreasen-Huge interpolation"
                    << "\n    Andreasen-Huge vol: " << ahVol
@@ -903,7 +903,7 @@ void AndreasenHugeVolatilityInterplTest::testDifferentOptimizers() {
                                            Null<Real>(), optimizationMethod)
                 .calibrationError());
 
-        if (boost::math::isnan(avgError) || avgError > 0.0001) {
+        if (std::isnan(avgError) || avgError > 0.0001) {
             BOOST_FAIL("failed to calibrate Andreasen-Huge "
                     "volatility interpolation with different optimizera"
                    << "\n    calibration error: " << avgError);

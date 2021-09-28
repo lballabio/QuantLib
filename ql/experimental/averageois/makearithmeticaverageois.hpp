@@ -45,7 +45,7 @@ namespace QuantLib {
         operator ext::shared_ptr<ArithmeticAverageOIS>() const;
 
         MakeArithmeticAverageOIS& receiveFixed(bool flag = true);
-        MakeArithmeticAverageOIS& withType(ArithmeticAverageOIS::Type type);
+        MakeArithmeticAverageOIS& withType(Swap::Type type);
         MakeArithmeticAverageOIS& withNominal(Real n);
 
         MakeArithmeticAverageOIS& withSettlementDays(Natural settlementDays);
@@ -88,7 +88,7 @@ namespace QuantLib {
         Real mrs_;
         Real vol_;
 
-        ArithmeticAverageOIS::Type type_;
+        Swap::Type type_;
         Real nominal_;
 
         Spread overnightSpread_;

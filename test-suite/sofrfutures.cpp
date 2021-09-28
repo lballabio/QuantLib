@@ -36,7 +36,7 @@ namespace {
         Month month;
         Year year;
         Real price;
-        OvernightAveraging::Type averagingMethod;
+        RateAveraging::Type averagingMethod;
     };
 
 }
@@ -51,19 +51,19 @@ void SofrFuturesTest::testBootstrap() {
     Settings::instance().evaluationDate() = today;
 
     const SofrQuotes sofrQuotes[] = {
-        {Monthly, Oct, 2018, 97.8175, OvernightAveraging::Simple},
-        {Monthly, Nov, 2018, 97.770, OvernightAveraging::Simple},
-        {Monthly, Dec, 2018, 97.685, OvernightAveraging::Simple},
-        {Monthly, Jan, 2019, 97.595, OvernightAveraging::Simple},
-        {Monthly, Feb, 2019, 97.590, OvernightAveraging::Simple},
-        {Monthly, Mar, 2019, 97.525, OvernightAveraging::Simple},
-        {Quarterly, Mar, 2019, 97.440, OvernightAveraging::Compound},
-        {Quarterly, Jun, 2019, 97.295, OvernightAveraging::Compound},
-        {Quarterly, Sep, 2019, 97.220, OvernightAveraging::Compound},
-        {Quarterly, Dec, 2019, 97.170, OvernightAveraging::Compound},
-        {Quarterly, Mar, 2020, 97.160, OvernightAveraging::Compound},
-        {Quarterly, Jun, 2020, 97.165, OvernightAveraging::Compound},
-        {Quarterly, Sep, 2020, 97.175, OvernightAveraging::Compound},
+        {Monthly, Oct, 2018, 97.8175, RateAveraging::Simple},
+        {Monthly, Nov, 2018, 97.770, RateAveraging::Simple},
+        {Monthly, Dec, 2018, 97.685, RateAveraging::Simple},
+        {Monthly, Jan, 2019, 97.595, RateAveraging::Simple},
+        {Monthly, Feb, 2019, 97.590, RateAveraging::Simple},
+        {Monthly, Mar, 2019, 97.525, RateAveraging::Simple},
+        {Quarterly, Mar, 2019, 97.440, RateAveraging::Compound},
+        {Quarterly, Jun, 2019, 97.295, RateAveraging::Compound},
+        {Quarterly, Sep, 2019, 97.220, RateAveraging::Compound},
+        {Quarterly, Dec, 2019, 97.170, RateAveraging::Compound},
+        {Quarterly, Mar, 2020, 97.160, RateAveraging::Compound},
+        {Quarterly, Jun, 2020, 97.165, RateAveraging::Compound},
+        {Quarterly, Sep, 2020, 97.175, RateAveraging::Compound},
     };
 
     ext::shared_ptr<OvernightIndex> index = ext::make_shared<Sofr>();

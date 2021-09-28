@@ -22,8 +22,6 @@
 
 namespace QuantLib {
 
-    CPICouponPricer::CPICouponPricer() = default;
-
     CPICouponPricer::CPICouponPricer(Handle<YieldTermStructure> nominalTermStructure)
     : nominalTermStructure_(std::move(nominalTermStructure)) {
         registerWith(nominalTermStructure_);
@@ -39,7 +37,7 @@ namespace QuantLib {
 
     void CPICouponPricer::setCapletVolatility(
        const Handle<CPIVolatilitySurface>& capletVol) {
-        QL_REQUIRE(!capletVol.empty(),"empty capletVol handle")
+        QL_REQUIRE(!capletVol.empty(),"empty capletVol handle");
         capletVol_ = capletVol;
         registerWith(capletVol_);
     }
@@ -124,24 +122,26 @@ namespace QuantLib {
         gearing_ = coupon_->fixedRate();
         spread_ = coupon_->spread();
         paymentDate_ = coupon_->date();
+
+        QL_DEPRECATED_DISABLE_WARNING
         rateCurve_ =
             !nominalTermStructure_.empty() ?
             nominalTermStructure_ :
             ext::dynamic_pointer_cast<ZeroInflationIndex>(coupon.index())
             ->zeroInflationTermStructure()
             ->nominalTermStructure();
+        QL_DEPRECATED_ENABLE_WARNING
 
         // past or future fixing is managed in YoYInflationIndex::fixing()
         // use yield curve from index (which sets discount)
 
         discount_ = 1.0;
-        if (paymentDate_ > rateCurve_->referenceDate()) {
-            if (rateCurve_.empty()) {
-                // allow to extract rates, but mark the discount as invalid for prices
-                discount_ = Null<Real>();
-            } else {
+        if (rateCurve_.empty()) {
+            // allow to extract rates, but mark the discount as invalid for prices
+            discount_ = Null<Real>();
+        } else {
+            if (paymentDate_ > rateCurve_->referenceDate())
                 discount_ = rateCurve_->discount(paymentDate_);
-            }
         }
     }
 

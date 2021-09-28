@@ -169,7 +169,7 @@ namespace {
         Schedule floatSchedule(swapStart, swapEnd, Period(6, Months), TARGET(), ModifiedFollowing,
                                ModifiedFollowing, DateGeneration::Backward, false);
         ext::shared_ptr<VanillaSwap> swap(
-            new VanillaSwap(VanillaSwap::Payer, 10000.0, fixedSchedule, 0.03, Thirty360(),
+            new VanillaSwap(Swap::Payer, 10000.0, fixedSchedule, 0.03, Thirty360(Thirty360::BondBasis),
                             floatSchedule, euribor6m, 0.0, euribor6m->dayCounter()));
         swap->setPricingEngine(ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(discYTS)));
         // European exercise and swaption
@@ -337,7 +337,7 @@ void BasismodelsTest::testTenorswaptionvts() {
     {
         ext::shared_ptr<TenorSwaptionVTS> euribor3mSwVTS(
             new TenorSwaptionVTS(euribor6mSwVTS, discYTS, euribor6m, euribor3m, Period(1, Years),
-                                 Period(1, Years), Thirty360(), Thirty360()));
+                                 Period(1, Years), Thirty360(Thirty360::BondBasis), Thirty360(Thirty360::BondBasis)));
         // 6m vols should be slightly larger then 3m vols due to basis
         for (Size i = 0; i < swaptionVTSTerms.size(); ++i) {
             for (Size j = 0; j < swaptionVTSTerms.size(); ++j) {
@@ -356,7 +356,7 @@ void BasismodelsTest::testTenorswaptionvts() {
     {
         ext::shared_ptr<TenorSwaptionVTS> euribor6mSwVTS2(
             new TenorSwaptionVTS(euribor6mSwVTS, discYTS, euribor6m, euribor6m, Period(1, Years),
-                                 Period(1, Years), Thirty360(), Thirty360()));
+                                 Period(1, Years), Thirty360(Thirty360::BondBasis), Thirty360(Thirty360::BondBasis)));
         // 6m vols to 6m vols should yield initiial vols
         for (Size i = 0; i < swaptionVTSTerms.size(); ++i) {
             for (Size j = 0; j < swaptionVTSTerms.size(); ++j) {
@@ -377,10 +377,10 @@ void BasismodelsTest::testTenorswaptionvts() {
     {
         ext::shared_ptr<TenorSwaptionVTS> euribor3mSwVTS(
             new TenorSwaptionVTS(euribor6mSwVTS, discYTS, euribor6m, euribor3m, Period(1, Years),
-                                 Period(1, Years), Thirty360(), Thirty360()));
+                                 Period(1, Years), Thirty360(Thirty360::BondBasis), Thirty360(Thirty360::BondBasis)));
         ext::shared_ptr<TenorSwaptionVTS> euribor6mSwVTS2(new TenorSwaptionVTS(
             RelinkableHandle<SwaptionVolatilityStructure>(euribor3mSwVTS), discYTS, euribor3m,
-            euribor6m, Period(1, Years), Period(1, Years), Thirty360(), Thirty360()));
+            euribor6m, Period(1, Years), Period(1, Years), Thirty360(Thirty360::BondBasis), Thirty360(Thirty360::BondBasis)));
         // 6m vols to 6m vols should yield initiial vols
         for (Size i = 0; i < swaptionVTSTerms.size(); ++i) {
             for (Size j = 0; j < swaptionVTSTerms.size(); ++j) {

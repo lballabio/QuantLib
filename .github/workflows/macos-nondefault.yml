@@ -9,9 +9,14 @@ jobs:
         include:
           - os: [macos-10.15]
             shortname: default
-            cxxflags: "-std=c++11"
           - os: [macos-10.15]
             shortname: stdclasses
+            cxxflags: "-std=c++17"
+            configureflags: --enable-std-classes
+          - os: [macos-11]
+            shortname: default-11
+          - os: [macos-11]
+            shortname: stdclasses-11
             cxxflags: "-std=c++17"
             configureflags: --enable-std-classes
     steps:

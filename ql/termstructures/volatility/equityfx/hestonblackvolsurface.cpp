@@ -27,7 +27,6 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <limits>
 #include <utility>
 
@@ -95,9 +94,8 @@ namespace QuantLib {
         const Real sigma = hestonModel_->sigma();
         const Real v0    = hestonModel_->v0();
 
-        const boost::scoped_ptr<AnalyticHestonEngine> hestonEngine(
-            new AnalyticHestonEngine(
-                hestonModel_.currentLink(), cpxLogFormula_, integration_));
+        AnalyticHestonEngine hestonEngine(
+            hestonModel_.currentLink(), cpxLogFormula_, integration_);
 
         Real npv;
         Size evaluations;
@@ -106,7 +104,7 @@ namespace QuantLib {
             df, div, spotPrice, strike, t,
             kappa, theta, sigma, v0, rho,
             payoff, integration_, cpxLogFormula_,
-            hestonEngine.get(), npv, evaluations);
+            &hestonEngine, npv, evaluations);
 
         if (npv <= 0.0) return std::sqrt(theta);
 

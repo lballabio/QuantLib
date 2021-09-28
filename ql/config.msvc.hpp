@@ -51,11 +51,6 @@
 #  define QL_PATCH_MSVC_2013
 #endif
 
-// prevent auto-link of Boost libs such as serialization
-#ifndef BOOST_ALL_NO_LIB
-#    define BOOST_ALL_NO_LIB
-#endif
-
 // Compilation on the x64 platform throws a lot of warnings assigning
 // QuantLib::Size == size_t (64 bit) to QuantLib::Integer == int (32
 // bit under x64 Windows). We disable this warning until a better
@@ -63,6 +58,12 @@
 #ifdef _M_X64
 #pragma warning(disable : 4267)
 #endif
+
+
+/* suppress C++ code analysis warning C26812 in VS 2019:
+ * Prefer 'enum class' over 'enum' (Enum.3). */
+#pragma warning(disable : 26812)
+
 
 #ifndef _CPPRTTI
 #   error Enable Run-Time Type Info (Property Pages | C/C++ | Language)

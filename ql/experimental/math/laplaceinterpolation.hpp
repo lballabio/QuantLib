@@ -24,8 +24,6 @@
 #ifndef quantlib_laplace_interpolation
 #define quantlib_laplace_interpolation
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/sparsematrix.hpp>
 
@@ -162,5 +160,4 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
 
 } // namespace QuantLib
 
-#endif // QL_NO_UBLAS_SUPPORT
 #endif // include guard

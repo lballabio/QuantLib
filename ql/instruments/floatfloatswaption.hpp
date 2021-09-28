@@ -57,7 +57,7 @@ namespace QuantLib {
         Settlement::Method settlementMethod() const {
             return settlementMethod_;
         }
-        VanillaSwap::Type type() const { return swap_->type(); }
+        Swap::Type type() const { return swap_->type(); }
         const ext::shared_ptr<FloatFloatSwap> &underlyingSwap() const {
             return swap_;
         }

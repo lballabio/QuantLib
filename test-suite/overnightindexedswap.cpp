@@ -113,7 +113,7 @@ namespace overnight_indexed_swap_test {
     struct CommonVars {
         // global data
         Date today, settlement;
-        OvernightIndexedSwap::Type type;
+        Swap::Type type;
         Real nominal;
         Calendar calendar;
         Natural settlementDays;
@@ -141,7 +141,7 @@ namespace overnight_indexed_swap_test {
                  bool telescopicValueDates,
                  Date effectiveDate = Null<Date>(),
                  Natural paymentLag = 0,
-                 OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound) {
+                 RateAveraging::Type averagingMethod = RateAveraging::Compound) {
             return MakeOIS(length, eoniaIndex, fixedRate, 0 * Days)
                 .withEffectiveDate(effectiveDate == Null<Date>() ? settlement : effectiveDate)
                 .withOvernightLegSpread(spread)
@@ -153,7 +153,7 @@ namespace overnight_indexed_swap_test {
         }
 
         CommonVars() {
-            type = OvernightIndexedSwap::Payer;
+            type = Swap::Payer;
             settlementDays = 2;
             nominal = 100.0;
             fixedEoniaConvention = ModifiedFollowing;
@@ -164,7 +164,7 @@ namespace overnight_indexed_swap_test {
             eoniaIndex = ext::make_shared<Eonia>(eoniaTermStructure);
             fixedSwapConvention = ModifiedFollowing;
             fixedSwapFrequency = Annual;
-            fixedSwapDayCount = Thirty360();
+            fixedSwapDayCount = Thirty360(Thirty360::BondBasis);
             swapIndex = ext::shared_ptr<IborIndex>(new Euribor3M(swapTermStructure));
             calendar = eoniaIndex->fixingCalendar();
             today = Date(5, February, 2009);
@@ -302,7 +302,7 @@ void OvernightIndexedSwapTest::testCachedValue() {
 
 namespace overnight_indexed_swap_test {
     void testBootstrap(bool telescopicValueDates,
-                       OvernightAveraging::Type averagingMethod,
+                       RateAveraging::Type averagingMethod,
                        Real tolerance = 1.0e-8) {
 
     CommonVars vars;
@@ -379,18 +379,18 @@ namespace overnight_indexed_swap_test {
 
 void OvernightIndexedSwapTest::testBootstrap() {
     BOOST_TEST_MESSAGE("Testing Eonia-swap curve building with daily compounded ON rates...");
-    overnight_indexed_swap_test::testBootstrap(false, OvernightAveraging::Compound);
+    overnight_indexed_swap_test::testBootstrap(false, RateAveraging::Compound);
 }
 
 void OvernightIndexedSwapTest::testBootstrapWithArithmeticAverage() {
     BOOST_TEST_MESSAGE("Testing Eonia-swap curve building with arithmetic average ON rates...");
-    overnight_indexed_swap_test::testBootstrap(false, OvernightAveraging::Simple);
+    overnight_indexed_swap_test::testBootstrap(false, RateAveraging::Simple);
 }
 
 void OvernightIndexedSwapTest::testBootstrapWithTelescopicDates() {
     BOOST_TEST_MESSAGE(
         "Testing Eonia-swap curve building with telescopic value dates and DCON rates...");
-    overnight_indexed_swap_test::testBootstrap(true, OvernightAveraging::Compound);
+    overnight_indexed_swap_test::testBootstrap(true, RateAveraging::Compound);
 }
 
 void OvernightIndexedSwapTest::testBootstrapWithTelescopicDatesAndArithmeticAverage() {
@@ -399,7 +399,7 @@ void OvernightIndexedSwapTest::testBootstrapWithTelescopicDatesAndArithmeticAver
     // Given that we are using an approximation that omits
     // the required convexity correction, a lower tolerance
     // is needed.
-    overnight_indexed_swap_test::testBootstrap(true, OvernightAveraging::Simple, 1.0e-5);
+    overnight_indexed_swap_test::testBootstrap(true, RateAveraging::Simple, 1.0e-5);
 }
 
 void OvernightIndexedSwapTest::testSeasonedSwaps() {

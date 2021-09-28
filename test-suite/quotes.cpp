@@ -126,7 +126,7 @@ void QuoteTest::testForwardValueQuoteAndImpliedStdevQuote(){
     BOOST_TEST_MESSAGE(
             "Testing forward-value and implied-standard-deviation quotes...");
     Real forwardRate = .05;
-    DayCounter dc = ActualActual();
+    DayCounter dc = ActualActual(ActualActual::ISDA);
     Calendar calendar = TARGET();
     ext::shared_ptr<SimpleQuote> forwardQuote(new SimpleQuote(forwardRate));
     Handle<Quote> forwardHandle(forwardQuote);

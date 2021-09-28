@@ -127,7 +127,7 @@ namespace QuantLib {
 
             //Constructors
             //
-            MultiplicativePriceSeasonality();
+            MultiplicativePriceSeasonality() = default;
 
             MultiplicativePriceSeasonality(const Date& seasonalityBaseDate,
                                            Frequency frequency,

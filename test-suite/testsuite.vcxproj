@@ -673,6 +673,7 @@
     <ClCompile Include="covariance.cpp" />
     <ClCompile Include="creditdefaultswap.cpp" />
     <ClCompile Include="creditriskplus.cpp" />
+    <ClCompile Include="currency.cpp" />
     <ClCompile Include="curvestates.cpp" />
     <ClCompile Include="dates.cpp" />
     <ClCompile Include="daycounters.cpp" />
@@ -714,6 +715,7 @@
     <ClCompile Include="inflationcpicapfloor.cpp" />
     <ClCompile Include="inflationcpiswap.cpp" />
     <ClCompile Include="inflationvolatility.cpp" />
+    <ClCompile Include="inflationzciisinterpolation.cpp" />
     <ClCompile Include="instruments.cpp" />
     <ClCompile Include="integrals.cpp" />
     <ClCompile Include="interestrates.cpp" />
@@ -770,6 +772,7 @@
     <ClCompile Include="spreadoption.cpp" />
     <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
+    <ClCompile Include="subperiodcoupons.cpp" />
     <ClCompile Include="swap.cpp" />
     <ClCompile Include="swapforwardmappings.cpp" />
     <ClCompile Include="swaption.cpp" />
@@ -794,6 +797,7 @@
     <ClCompile Include="crosscurrencyratehelpers.cpp" />
     <ClCompile Include="zabr.cpp" />
     <ClCompile Include="quantlibtestsuite.cpp" />
+    <ClCompile Include="zerocouponswap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="americanoption.hpp" />
@@ -833,6 +837,7 @@
     <ClInclude Include="covariance.hpp" />
     <ClInclude Include="creditdefaultswap.hpp" />
     <ClInclude Include="creditriskplus.hpp" />
+    <ClInclude Include="currency.hpp" />
     <ClInclude Include="curvestates.hpp" />
     <ClInclude Include="dates.hpp" />
     <ClInclude Include="daycounters.hpp" />
@@ -874,6 +879,7 @@
     <ClInclude Include="inflationcpicapfloor.hpp" />
     <ClInclude Include="inflationcpiswap.hpp" />
     <ClInclude Include="inflationvolatility.hpp" />
+    <ClInclude Include="inflationzciisinterpolation.hpp" />
     <ClInclude Include="instruments.hpp" />
     <ClInclude Include="integrals.hpp" />
     <ClInclude Include="interestrates.hpp" />
@@ -932,6 +938,7 @@
     <ClInclude Include="spreadoption.hpp" />
     <ClInclude Include="squarerootclvmodel.hpp" />
     <ClInclude Include="stats.hpp" />
+    <ClInclude Include="subperiodcoupons.hpp" />
     <ClInclude Include="swap.hpp" />
     <ClInclude Include="swapforwardmappings.hpp" />
     <ClInclude Include="swaption.hpp" />
@@ -956,6 +963,7 @@
     <ClInclude Include="vpp.hpp" />
     <ClInclude Include="crosscurrencyratehelpers.hpp" />
     <ClInclude Include="zabr.hpp" />
+    <ClInclude Include="zerocouponswap.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QuantLib.vcxproj">

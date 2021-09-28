@@ -63,7 +63,8 @@ this_include_HEADERS = \
     vanillaswap.hpp \
     varianceswap.hpp \
     yearonyearinflationswap.hpp \
-    zerocouponinflationswap.hpp
+    zerocouponinflationswap.hpp \
+    zerocouponswap.hpp
 
 cpp_files = \
     asianoption.cpp \
@@ -120,7 +121,8 @@ cpp_files = \
     vanillaswingoption.cpp \
     varianceswap.cpp \
     yearonyearinflationswap.cpp \
-    zerocouponinflationswap.cpp
+    zerocouponinflationswap.cpp \
+    zerocouponswap.cpp
 
 if UNITY_BUILD
 

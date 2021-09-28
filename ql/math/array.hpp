@@ -32,7 +32,6 @@
 #include <ql/utilities/disposable.hpp>
 #include <ql/utilities/null.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/type_traits.hpp>
 #include <functional>
 #include <algorithm>
@@ -40,6 +39,7 @@
 #include <vector>
 #include <initializer_list>
 #include <iomanip>
+#include <memory>
 
 namespace QuantLib {
 
@@ -147,7 +147,7 @@ namespace QuantLib {
         //@}
 
       private:
-        boost::scoped_array<Real> data_;
+        std::unique_ptr<Real[]> data_;
         Size n_;
     };
 
@@ -260,7 +260,7 @@ namespace QuantLib {
 
         template <class I>
         inline void _fill_array_(Array& a,
-                                 boost::scoped_array<Real>& data_,
+                                 std::unique_ptr<Real[]>& data_,
                                  Size& n_,
                                  I begin, I end,
                                  const boost::true_type&) {
@@ -277,7 +277,7 @@ namespace QuantLib {
 
         template <class I>
         inline void _fill_array_(Array& a,
-                                 boost::scoped_array<Real>& data_,
+                                 std::unique_ptr<Real[]>& data_,
                                  Size& n_,
                                  I begin, I end,
                                  const boost::false_type&) {

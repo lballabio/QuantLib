@@ -18,7 +18,7 @@
 */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/instruments/vanillaswap.hpp>
@@ -168,9 +168,7 @@ int main(int, char* []) {
         DayCounter fixedLegDayCounter = ActualActual(ActualActual::ISDA);
         DayCounter floatingLegDayCounter = ActualActual(ActualActual::ISDA);
 
-        VanillaSwap::Type swapType = 
-            //VanillaSwap::Receiver ;
-            VanillaSwap::Payer;
+        Swap::Type swapType = Swap::Payer;
         ext::shared_ptr<IborIndex> yieldIndxS(
              new Euribor3M(Handle<YieldTermStructure>(swapTS)));
         std::vector<VanillaSwap> riskySwaps;

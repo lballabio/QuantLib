@@ -188,14 +188,14 @@ namespace piecewise_yield_curve_test {
             settlement = calendar.advance(today,settlementDays,Days);
             fixedLegConvention = Unadjusted;
             fixedLegFrequency = Annual;
-            fixedLegDayCounter = Thirty360();
+            fixedLegDayCounter = Thirty360(Thirty360::BondBasis);
             bondSettlementDays = 3;
-            bondDayCounter = ActualActual();
+            bondDayCounter = ActualActual(ActualActual::ISDA);
             bondConvention = Following;
             bondRedemption = 100.0;
             bmaFrequency = Quarterly;
             bmaConvention = Following;
-            bmaDayCounter = ActualActual();
+            bmaDayCounter = ActualActual(ActualActual::ISDA);
 
             deposits = LENGTH(depositData);
             fras = LENGTH(fraData);
@@ -616,7 +616,7 @@ namespace piecewise_yield_curve_test {
                               .backwards();
 
 
-            BMASwap swap(BMASwap::Payer, 100.0,
+            BMASwap swap(Swap::Payer, 100.0,
                          liborSchedule, 0.75, 0.0,
                          libor3m, libor3m->dayCounter(),
                          bmaSchedule, bma, vars.bmaDayCounter);
@@ -1102,7 +1102,8 @@ void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
     // note that the calendar should be US+UK here actually, but technically it should also work with
     // the US calendar only
     ext::shared_ptr<RateHelper> helper = ext::make_shared<SwapRateHelper>(
-        0.02, 50 * Years, UnitedStates(), Semiannual, ModifiedFollowing, Thirty360(), usdLibor3m);
+        0.02, 50 * Years, UnitedStates(), Semiannual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), usdLibor3m);
 
     PiecewiseYieldCurve<Discount, LogLinear> curve(today, std::vector<ext::shared_ptr<RateHelper> >(1, helper),
                                                    Actual365Fixed());
@@ -1117,7 +1118,8 @@ void PiecewiseYieldCurveTest::testSwapRateHelperSpotDate() {
     ext::shared_ptr<IborIndex> usdLibor3m = ext::make_shared<USDLibor>(3 * Months);
 
     ext::shared_ptr<SwapRateHelper> helper = ext::make_shared<SwapRateHelper>(
-        0.02, 5 * Years, UnitedStates(), Semiannual, ModifiedFollowing, Thirty360(), usdLibor3m);
+        0.02, 5 * Years, UnitedStates(), Semiannual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), usdLibor3m);
 
     Settings::instance().evaluationDate() = Date(11, October, 2019);
 
@@ -1161,7 +1163,8 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     ext::shared_ptr<Euribor> euribor1m(new Euribor1M);
     for (auto& i : data) {
         helpers.push_back(ext::make_shared<SwapRateHelper>(
-            i.rate, Period(i.n, i.units), TARGET(), Monthly, Unadjusted, Thirty360(), euribor1m));
+            i.rate, Period(i.n, i.units), TARGET(), Monthly, Unadjusted,
+            Thirty360(Thirty360::BondBasis), euribor1m));
     }
 
     Date today = Date(12, October, 2017);
@@ -1187,7 +1190,7 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
         Period tenor = i.n * i.units;
 
         VanillaSwap swap = MakeVanillaSwap(tenor, index, 0.0)
-            .withFixedLegDayCount(Thirty360())
+            .withFixedLegDayCount(Thirty360(Thirty360::BondBasis))
             .withFixedLegTenor(Period(1, Months))
             .withFixedLegConvention(Unadjusted);
         swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(h));
@@ -1354,9 +1357,9 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
 
     Size swapTenors[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50};
     for (Size i = 0; i < 19; ++i) {
-        helpers.push_back(ext::make_shared<SwapRateHelper>(refMktRate[13 + i] / 100.0,
-                                                           swapTenors[i] * Years, TARGET(), Annual,
-                                                           ModifiedFollowing, Thirty360(), index));
+        helpers.push_back(ext::make_shared<SwapRateHelper>(
+            refMktRate[13 + i] / 100.0, swapTenors[i] * Years, TARGET(), Annual, ModifiedFollowing,
+            Thirty360(Thirty360::BondBasis), index));
     }
 
     // global bootstrap constraints

@@ -76,7 +76,7 @@ namespace QuantLib {
             void setPoint(const Date& optionDate,
                           const Period& swapTenor,
                           Time optionTime,
-                          Time swapLengths,
+                          Time swapLength,
                           const std::vector<Real>& point);
             void setLayer(Size i,
                           const Matrix& x);
@@ -1029,10 +1029,12 @@ namespace QuantLib {
         points_[i] = x;
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::Cube::setPoint(
-                            const Date& optionDate, const Period& swapTenor,
-                            const Real optionTime, const Time swapLength,
-                            const std::vector<Real>& point)
+    template <class Model>
+    void SwaptionVolCube1x<Model>::Cube::setPoint(const Date& optionDate,
+                                                  const Period& swapTenor,
+                                                  Time optionTime,
+                                                  Time swapLength,
+                                                  const std::vector<Real>& point)
     {
         const bool expandOptionTimes =
             !(std::binary_search(optionTimes_.begin(),optionTimes_.end(),optionTime));

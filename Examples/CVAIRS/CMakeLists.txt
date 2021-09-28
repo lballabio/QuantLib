@@ -1,2 +1,5 @@
 add_executable(CVAIRS CVAIRS.cpp)
-target_link_libraries(CVAIRS ${QL_LINK_LIBRARY})
+target_link_libraries(CVAIRS ql_library ${QL_EXAMPLES_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS CVAIRS RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

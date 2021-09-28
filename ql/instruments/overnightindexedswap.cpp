@@ -21,6 +21,7 @@
 */
 
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
 #include <utility>
 
@@ -37,7 +38,7 @@ namespace QuantLib {
                                                BusinessDayConvention paymentAdjustment,
                                                const Calendar& paymentCalendar,
                                                bool telescopicValueDates, 
-                                               OvernightAveraging::Type averagingMethod)
+                                               RateAveraging::Type averagingMethod)
     : Swap(2), type_(type), nominals_(std::vector<Real>(1, nominal)),
       paymentFrequency_(schedule.tenor().frequency()),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
@@ -59,7 +60,7 @@ namespace QuantLib {
                                                BusinessDayConvention paymentAdjustment,
                                                const Calendar& paymentCalendar,
                                                bool telescopicValueDates, 
-                                               OvernightAveraging::Type averagingMethod)
+                                               RateAveraging::Type averagingMethod)
     : Swap(2), type_(type), nominals_(std::move(nominals)),
       paymentFrequency_(schedule.tenor().frequency()),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),

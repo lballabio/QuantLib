@@ -47,7 +47,7 @@ namespace QuantLib {
         operator ext::shared_ptr<VanillaSwap>() const;
 
         MakeVanillaSwap& receiveFixed(bool flag = true);
-        MakeVanillaSwap& withType(VanillaSwap::Type type);
+        MakeVanillaSwap& withType(Swap::Type type);
         MakeVanillaSwap& withNominal(Real n);
 
         MakeVanillaSwap& withSettlementDays(Natural settlementDays);
@@ -92,7 +92,7 @@ namespace QuantLib {
         Date effectiveDate_, terminationDate_;
         Calendar fixedCalendar_, floatCalendar_;
 
-        VanillaSwap::Type type_;
+        Swap::Type type_;
         Real nominal_;
         Period fixedTenor_, floatTenor_;
         BusinessDayConvention fixedConvention_, fixedTerminationDateConvention_;

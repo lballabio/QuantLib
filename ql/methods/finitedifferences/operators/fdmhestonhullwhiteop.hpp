@@ -77,9 +77,8 @@ namespace QuantLib {
         Disposable<Array> solve_splitting(Size direction, const Array& r, Real s) const override;
         Disposable<Array> preconditioner(const Array& r, Real s) const override;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const override;
-#endif
+
       private:
         const Real v0_, kappa_, theta_, sigma_, rho_;
         const ext::shared_ptr<HullWhite> hwModel_;

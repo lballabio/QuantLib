@@ -105,7 +105,7 @@ void VPPTest::testGemanRoncoroniProcess() {
 
     const Date today = Date(18, December, 2011);
     Settings::instance().evaluationDate() = today;
-    const DayCounter dc = ActualActual();
+    const DayCounter dc = ActualActual(ActualActual::ISDA);
 
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.03, dc);
 
@@ -221,7 +221,7 @@ void VPPTest::testSimpleExtOUStorageEngine() {
 
     Date settlementDate = Date(18, December, 2011);
     Settings::instance().evaluationDate() = settlementDate;
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
     Date maturityDate = settlementDate + Period(12, Months);
 
     std::vector<Date> exerciseDates(1, settlementDate+Period(1, Days));
@@ -272,7 +272,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
     Date settlementDate = Date(18, December, 2011);
     Settings::instance().evaluationDate() = settlementDate;
 
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
     Date maturityDate = settlementDate + Period(1, Years);
     Time maturity = dayCounter.yearFraction(settlementDate, maturityDate);
 
@@ -407,7 +407,7 @@ void VPPTest::testVPPIntrinsicValue() {
     SavedSettings backup;
 
     const Date today = Date(18, December, 2011);
-    const DayCounter dc = ActualActual();
+    const DayCounter dc = ActualActual(ActualActual::ISDA);
     Settings::instance().evaluationDate() = today;
 
     // vpp parameters
@@ -559,7 +559,7 @@ void VPPTest::testVPPPricing() {
     SavedSettings backup;
 
     const Date today = Date(18, December, 2011);
-    const DayCounter dc = ActualActual();
+    const DayCounter dc = ActualActual(ActualActual::ISDA);
     Settings::instance().evaluationDate() = today;
 
     // vpp parameter
@@ -869,7 +869,6 @@ void VPPTest::testVPPPricing() {
 }
 
 void VPPTest::testKlugeExtOUMatrixDecomposition() {
-#ifndef QL_NO_UBLAS_SUPPORT
     BOOST_TEST_MESSAGE("Testing KlugeExtOU matrix decomposition...");
 
     using namespace vpp_test;
@@ -908,7 +907,7 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
 
     const ext::shared_ptr<FdmLinearOpComposite> op(
         new FdmKlugeExtOUOp(mesher, klugeOUProcess,
-                            flatRate(today, 0.0, ActualActual()),
+                            flatRate(today, 0.0, ActualActual(ActualActual::ISDA)),
                             FdmBoundaryConditionSet(), 16));
     op->setTime(0.1, 0.2);
 
@@ -962,7 +961,6 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
             }
         }
     }
-#endif
 }
 
 

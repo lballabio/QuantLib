@@ -126,7 +126,7 @@ namespace QuantLib {
                     const Date& refPeriodEnd,
                     const DayCounter& dayCounter,
                     bool telescopicValueDates, 
-                    OvernightAveraging::Type averagingMethod)
+                    RateAveraging::Type averagingMethod)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
                          overnightIndex->fixingDays(), overnightIndex,
                          gearing, spread,
@@ -196,11 +196,11 @@ namespace QuantLib {
             dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i+1]);
 
         switch (averagingMethod) {
-            case OvernightAveraging::Simple:
+            case RateAveraging::Simple:
                 setPricer(ext::shared_ptr<FloatingRateCouponPricer>(
                     new ArithmeticAveragedOvernightIndexedCouponPricer(telescopicValueDates)));
                 break;
-            case OvernightAveraging::Compound:
+            case RateAveraging::Compound:
                 setPricer(
                     ext::shared_ptr<FloatingRateCouponPricer>(new OvernightIndexedCouponPricer));
                 break;
@@ -228,7 +228,7 @@ namespace QuantLib {
     OvernightLeg::OvernightLeg(const Schedule& schedule, ext::shared_ptr<OvernightIndex> i)
     : schedule_(schedule), overnightIndex_(std::move(i)), paymentCalendar_(schedule.calendar()),
       paymentAdjustment_(Following), paymentLag_(0), telescopicValueDates_(false),
-      averagingMethod_(OvernightAveraging::Compound) {}
+      averagingMethod_(RateAveraging::Compound) {}
 
     OvernightLeg& OvernightLeg::withNotionals(Real notional) {
         notionals_ = vector<Real>(1, notional);
@@ -286,7 +286,7 @@ namespace QuantLib {
         return *this;
     }
 
-    OvernightLeg& OvernightLeg::withAveragingMethod(OvernightAveraging::Type averagingMethod) {
+    OvernightLeg& OvernightLeg::withAveragingMethod(RateAveraging::Type averagingMethod) {
         averagingMethod_ = averagingMethod;
         return *this;
     }

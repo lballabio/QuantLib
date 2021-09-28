@@ -3,6 +3,8 @@
 import sys
 
 inputs = [
+    ("ql.dist.diff", "Some Makefile.am"),
+    ("test-suite.dist.diff", "test-suite/Makefile.am"),
     ("ql.cmake.diff", "ql/CMakeLists.txt"),
     ("test-suite.cmake.diff", "test-suite/CMakeLists.txt"),
     ("ql.vcx.diff", "QuantLib.vcxproj"),
@@ -24,14 +26,25 @@ def format(line):
         return "file %s" % filename
 
 
+CYAN = "\033[96m"
+RED = "\033[91m"
+GREEN = "\033[92m"
+BOLD = "\033[1m"
+RESET = "\033[0m"
+
+print(BOLD + CYAN + "\n=============================== RESULTS ================================\n" + RESET)
+
 for diffs, target in inputs:
     with open(diffs) as f:
         for line in f:
             if line.startswith("< "):
-                print("%s contains extra %s" % (target, format(line)))
+                print(RED + "%s contains extra %s" % (target, format(line)) + RESET)
                 result = 1
             if line.startswith("> "):
-                print("%s doesn't contain %s" % (target, format(line)))
+                print(RED + "%s doesn't contain %s" % (target, format(line)) + RESET)
                 result = 1
+
+if result == 0:
+    print(GREEN + "All clear." + RESET)
 
 sys.exit(result)

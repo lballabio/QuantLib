@@ -73,7 +73,7 @@ namespace QuantLib {
     void InflationIndex::addFixing(const Date& fixingDate, Real fixing, bool forceOverwrite) {
 
         std::pair<Date, Date> lim = inflationPeriod(fixingDate, frequency_);
-        Size n = lim.second - lim.first + 1;
+        Size n = static_cast<QuantLib::Size>(lim.second - lim.first) + 1;
         std::vector<Date> dates(n);
         std::vector<Rate> rates(n);
         for (Size i = 0; i < n; ++i) {
@@ -200,8 +200,8 @@ namespace QuantLib {
     Rate ZeroInflationIndex::forecastFixing(const Date& fixingDate) const {
         // the term structure is relative to the fixing value at the base date.
         Date baseDate = zeroInflation_->baseDate();
-        QL_REQUIRE(!needsForecast(baseDate), name()
-                                                 << " index fixing at base date is not available");
+        QL_REQUIRE(!needsForecast(baseDate),
+                   name() << " index fixing at base date " << baseDate << " is not available");
         Real baseFixing = fixing(baseDate);
         Date effectiveFixingDate;
         QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
@@ -377,4 +377,16 @@ namespace QuantLib {
                                                    availabilityLag(), currency(), h);
     }
 
+
+    CPI::InterpolationType
+    detail::CPI::effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
+                                            const QuantLib::CPI::InterpolationType& type) {
+        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
+        if (type == QuantLib::CPI::AsIndex) {
+            return index->interpolated() ? QuantLib::CPI::Linear : QuantLib::CPI::Flat;
+        } else {
+            return type;
+        }
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
+    }
 }

@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2004 Mike Parker
+ Copyright (C) 2021 Magnus Mencke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -166,7 +167,8 @@ namespace QuantLib {
             SolvingFunction function(lambda, Bb_) ;
             Brent s1d;
             s1d.setMaxEvaluations(1000);
-            Real yb = s1d.solve(function, 1e-6, 0.00, -100.0, 100.0);
+            Real searchBound = std::max(10.0*sigmay_, 1.0);
+            Real yb = s1d.solve(function, 1e-6, 0.00, -searchBound, searchBound);
 
             Real h1 = (yb - muy_)/(sigmay_*txy) -
                 rhoxy_*(x  - mux_)/(sigmax_*txy);
@@ -220,7 +222,7 @@ namespace QuantLib {
         DayCounter dayCounter = termStructure()->dayCounter();
         Time start = dayCounter.yearFraction(settlement,
                                              arguments.floatingResetDates[0]);
-        Real w = (arguments.type==VanillaSwap::Payer ? 1 : -1 );
+        Real w = (arguments.type==Swap::Payer ? 1 : -1 );
 
         std::vector<Time> fixedPayTimes(arguments.fixedPayDates.size());
         for (Size i=0; i<fixedPayTimes.size(); ++i)
@@ -241,4 +243,3 @@ namespace QuantLib {
     }
 
 }
-

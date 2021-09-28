@@ -82,7 +82,7 @@ namespace QuantLib {
     VarianceGammaEngine::VarianceGammaEngine(ext::shared_ptr<VarianceGammaProcess> process,
                                              Real absoluteError)
     : process_(std::move(process)), absErr_(absoluteError) {
-        QL_REQUIRE(absErr_ > 0, "absolute error must be positive")
+        QL_REQUIRE(absErr_ > 0, "absolute error must be positive");
         registerWith(process_);
     }
 

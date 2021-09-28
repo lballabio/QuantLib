@@ -103,7 +103,7 @@ namespace term_structures_test {
                     SwapRateHelper(swapData[i].rate/100,
                                    swapData[i].n*swapData[i].units,
                                    calendar,
-                                   Annual, Unadjusted, Thirty360(),
+                                   Annual, Unadjusted, Thirty360(Thirty360::BondBasis),
                                    index));
             }
             termStructure = ext::shared_ptr<YieldTermStructure>(new

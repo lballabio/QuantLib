@@ -84,7 +84,7 @@ void ShortRateModelTest::testCachedHullWhite() {
         ext::shared_ptr<Quote> vol(new SimpleQuote(i.volatility));
         ext::shared_ptr<BlackCalibrationHelper> helper(
             new SwaptionHelper(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
-                               index, Period(1, Years), Thirty360(), Actual360(), termStructure));
+                               index, Period(1, Years), Thirty360(Thirty360::BondBasis), Actual360(), termStructure));
         helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
@@ -159,7 +159,8 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
         ext::shared_ptr<Quote> vol(new SimpleQuote(i.volatility));
         ext::shared_ptr<BlackCalibrationHelper> helper(
             new SwaptionHelper(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
-                               index, Period(1, Years), Thirty360(), Actual360(), termStructure));
+                               index, Period(1, Years), Thirty360(Thirty360::BondBasis),
+                               Actual360(), termStructure));
         helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
@@ -239,7 +240,8 @@ void ShortRateModelTest::testCachedHullWhite2() {
         ext::shared_ptr<Quote> vol(new SimpleQuote(i.volatility));
         ext::shared_ptr<BlackCalibrationHelper> helper(
             new SwaptionHelper(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
-                               index0, Period(1, Years), Thirty360(), Actual360(), termStructure));
+                               index0, Period(1, Years), Thirty360(Thirty360::BondBasis),
+                               Actual360(), termStructure));
         helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
@@ -371,7 +373,8 @@ void ShortRateModelTest::testSwaps() {
                                    DateGeneration::Forward, false);
             for (double rate : rates) {
 
-                VanillaSwap swap(VanillaSwap::Payer, 1000000.0, fixedSchedule, rate, Thirty360(),
+                VanillaSwap swap(Swap::Payer, 1000000.0, fixedSchedule, rate,
+                                 Thirty360(Thirty360::BondBasis),
                                  floatSchedule, euribor, 0.0, Actual360());
                 swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
                                    new DiscountingSwapEngine(termStructure)));

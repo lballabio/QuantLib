@@ -62,6 +62,9 @@ namespace QuantLib {
             || (d <= 7 && w == Monday && m == August)
             // first Monday of September (Labor Day)
             || (d <= 7 && w == Monday && m == September)
+            // September 30th, possibly moved to Monday
+            // (National Day for Truth and Reconciliation, since 2021)
+            || (((d == 30 && m == September) || (d <= 2 && m == October && w == Monday)) && y >= 2021)
             // second Monday of October (Thanksgiving Day)
             || (d > 7 && d <= 14 && w == Monday && m == October)
             // November 11th (possibly moved to Monday)

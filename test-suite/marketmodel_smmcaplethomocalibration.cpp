@@ -630,14 +630,11 @@ void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
 test_suite* MarketModelSmmCapletHomoCalibrationTest::suite() {
     auto* suite = BOOST_TEST_SUITE("SMM Caplet homogeneous calibration test");
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     suite->add(QUANTLIB_TEST_CASE(
                      &MarketModelSmmCapletHomoCalibrationTest::testFunction));
     suite->add(QUANTLIB_TEST_CASE(
                &MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction));
-    #endif
 
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
                &MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder));
 

@@ -77,9 +77,9 @@ namespace inflation_cpi_capfloor_test {
             Date maturity = iiData[i].date;
             Handle<Quote> quote(ext::shared_ptr<Quote>(
                                 new SimpleQuote(iiData[i].rate/100.0)));
-            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
-                                quote, observationLag, maturity,
-                                calendar, bdc, dc, ii, discountCurve));
+            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(quote, observationLag, maturity,
+                                                                    calendar, bdc, dc, ii,
+                                                                    CPI::AsIndex, discountCurve));
             instruments.push_back(anInstrument);
         }
 
@@ -151,8 +151,8 @@ namespace inflation_cpi_capfloor_test {
             fixingDays = 0;
             settlement = calendar.advance(today,settlementDays,Days);
             startDate = settlement;
-            dcZCIIS = ActualActual();
-            dcNominal = ActualActual();
+            dcZCIIS = ActualActual(ActualActual::ISDA);
+            dcNominal = ActualActual(ActualActual::ISDA);
 
             // uk rpi index
             //      fixing data

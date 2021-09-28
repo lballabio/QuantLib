@@ -20,7 +20,7 @@
 */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/instruments/swaption.hpp>
@@ -121,7 +121,7 @@ int main(int, char* []) {
         BusinessDayConvention floatingLegConvention = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         Frequency floatingLegFrequency = Semiannual;
-        VanillaSwap::Type type = VanillaSwap::Payer;
+        Swap::Type type = Swap::Payer;
         Rate dummyFixedRate = 0.03;
         ext::shared_ptr<IborIndex> indexSixMonths(new
             Euribor6M(rhTermStructure));

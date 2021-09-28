@@ -21,7 +21,6 @@
 
 #include <ql/time/calendars/romania.hpp>
 #include <ql/errors.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 

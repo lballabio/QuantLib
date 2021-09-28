@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Mark Joshi
+ Copyright (C) 2021 Magnus Mencke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,12 +17,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/evolvers/marketmodelvolprocess.hpp>
-namespace QuantLib 
-{
+/*! \file eonia.hpp
+    \brief %ESTR index
+*/
 
-    MarketModelVolProcess::MarketModelVolProcess() = default;
+#ifndef quantlib_estr_hpp
+#define quantlib_estr_hpp
 
-    MarketModelVolProcess::~MarketModelVolProcess() = default;
+#include <ql/indexes/iborindex.hpp>
+
+namespace QuantLib {
+
+    //! %ESTR (Euro Short-Term Rate) rate fixed by the ECB.
+    class Estr : public OvernightIndex {
+      public:
+        explicit Estr(const Handle<YieldTermStructure>& h =
+                      Handle<YieldTermStructure>());
+    };
+
 }
 
+#endif

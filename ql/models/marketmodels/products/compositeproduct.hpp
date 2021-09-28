@@ -35,7 +35,7 @@ namespace QuantLib {
     */
     class MarketModelComposite : public MarketModelMultiProduct {
       public:
-        MarketModelComposite();
+        MarketModelComposite() = default;
         //! \name MarketModelMultiProduct interface
         //@{
         const EvolutionDescription& evolution() const override;

@@ -391,7 +391,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
      Foreign Exchange Option Pricing: A Practitioner’s Guide
     */
 
-    const DayCounter dc = ActualActual();
+    const DayCounter dc = ActualActual(ActualActual::ISDA);
     const Date todaysDate(5, Aug, 2016);
     const Date maturityDate = todaysDate + Period(1, Years);
     const Time maturityTime = dc.yearFraction(todaysDate, maturityDate);

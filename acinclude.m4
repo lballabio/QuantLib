@@ -1,36 +1,30 @@
 
-# QL_CHECK_LONG_LONG
-# ----------------------------------------------
-# Check whether long long is supported.
-AC_DEFUN([QL_CHECK_LONG_LONG],
-[AC_MSG_CHECKING([long long support])
- AC_TRY_COMPILE(
-    [],
-    [long long i;
-     unsigned long long j;
-    ],
-    [AC_MSG_RESULT([yes])
-     AC_DEFINE([QL_HAVE_LONG_LONG],[],
-               [Define this if your compiler supports the long long type.])
-    ],
-    [AC_MSG_RESULT([no])
-    ])
-])
+# QL_CHECK_CPP11
+# --------------------
+# Check whether C++11 features are supported by default.
+# If not (e.g., with Clang on Mac OS) add -std=c++11
+AC_DEFUN([QL_CHECK_CPP11],
+[AC_MSG_CHECKING([for C++11 support])
+ AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+        [[@%:@include <initializer_list>
+          struct S {
+            int i = 3;
+            double x = 3.5;
+          };
 
-# QL_CHECK_ASINH
-# ----------------------------------------------
-# Check whether the asinh function is defined in cmath.
-# It defines QL_HAVE_ASINH if found.
-AC_DEFUN([QL_CHECK_ASINH],
-[AC_MSG_CHECKING([for asinh])
- AC_TRY_COMPILE(
-    [@%:@include<cmath>],
-    [double x = asinh(0.0);],
-    [AC_MSG_RESULT([yes])
-     AC_DEFINE([QL_HAVE_ASINH],[],
-               [Define this if your compiler defines asinh in <cmath>.])
-    ],
-    [AC_MSG_RESULT([no])
+          class C {
+            public:
+              C(int) noexcept;
+              C(std::initializer_list<int>);
+              S f() { return { 2, 1.5 }; }
+          };
+          ]],
+        [[]])],
+    [AC_MSG_RESULT([yes])],
+    [AC_MSG_RESULT([no: adding -std=c++11 to CXXFLAGS])
+     AC_SUBST([CPP11_CXXFLAGS],["-std=c++11"])
+     AC_SUBST([CXXFLAGS],["${CXXFLAGS} -std=c++11"])
     ])
 ])
 
@@ -39,12 +33,13 @@ AC_DEFUN([QL_CHECK_ASINH],
 # Check whether the Boost headers are available
 AC_DEFUN([QL_CHECK_BOOST_DEVEL],
 [AC_MSG_CHECKING([for Boost development files])
- AC_TRY_COMPILE(
-    [@%:@include <boost/version.hpp>
-     @%:@include <boost/shared_ptr.hpp>
-     @%:@include <boost/assert.hpp>
-     @%:@include <boost/current_function.hpp>],
-    [],
+ AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+        [[@%:@include <boost/version.hpp>
+          @%:@include <boost/shared_ptr.hpp>
+          @%:@include <boost/assert.hpp>
+          @%:@include <boost/current_function.hpp>]],
+        [[]])],
     [AC_MSG_RESULT([yes])],
     [AC_MSG_RESULT([no])
      AC_MSG_ERROR([Boost development files not found])
@@ -57,11 +52,12 @@ AC_DEFUN([QL_CHECK_BOOST_DEVEL],
 AC_DEFUN([QL_CHECK_BOOST_VERSION],
 [AC_MSG_CHECKING([for Boost version >= 1.48])
  AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
- AC_TRY_COMPILE(
-    [@%:@include <boost/version.hpp>],
-    [@%:@if BOOST_VERSION < 104800
-     @%:@error too old
-     @%:@endif],
+ AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+        [[@%:@include <boost/version.hpp>]],
+        [[@%:@if BOOST_VERSION < 104800
+          @%:@error too old
+          @%:@endif]])],
     [AC_MSG_RESULT([yes])],
     [AC_MSG_RESULT([no])
      AC_MSG_ERROR([outdated Boost installation])
@@ -74,11 +70,12 @@ AC_DEFUN([QL_CHECK_BOOST_VERSION],
 AC_DEFUN([QL_CHECK_BOOST_VERSION_1_58_OR_HIGHER],
 [AC_MSG_CHECKING([for Boost version >= 1.58])
  AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
- AC_TRY_COMPILE(
-    [@%:@include <boost/version.hpp>],
-    [@%:@if BOOST_VERSION < 105800
-     @%:@error too old
-     @%:@endif],
+ AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+        [[@%:@include <boost/version.hpp>]],
+        [[@%:@if BOOST_VERSION < 105800
+          @%:@error too old
+          @%:@endif]])],
     [AC_MSG_RESULT([yes])],
     [AC_MSG_RESULT([no])
      AC_MSG_ERROR([Boost version 1.58 or higher is required for the thread-safe observer pattern])
@@ -91,38 +88,15 @@ AC_DEFUN([QL_CHECK_BOOST_VERSION_1_58_OR_HIGHER],
 AC_DEFUN([QL_CHECK_BOOST_VERSION_1_59_OR_HIGHER],
 [AC_MSG_CHECKING([for Boost version >= 1.59])
  AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
- AC_TRY_COMPILE(
-    [@%:@include <boost/version.hpp>],
-    [@%:@if BOOST_VERSION < 105900
-     @%:@error too old
-     @%:@endif],
+ AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+        [[@%:@include <boost/version.hpp>]],
+        [[@%:@if BOOST_VERSION < 105900
+          @%:@error too old
+          @%:@endif]])],
     [AC_MSG_RESULT([yes])],
     [AC_MSG_RESULT([no])
      AC_MSG_ERROR([Boost version 1.59 or higher is required for the parallel unit test runner.])
-    ])
-])
-
-
-
-# QL_CHECK_BOOST_UBLAS
-# --------------------
-# Check whether the Boost headers are available
-AC_DEFUN([QL_CHECK_BOOST_UBLAS],
-[AC_MSG_CHECKING([for Boost::uBLAS support])
- AC_TRY_COMPILE(
-    [@%:@include <boost/version.hpp>
-     @%:@if BOOST_VERSION > 106300
-     @%:@include <boost/serialization/array_wrapper.hpp>
-     @%:@endif
-     @%:@include <boost/numeric/ublas/vector_proxy.hpp>
-     @%:@include <boost/numeric/ublas/triangular.hpp>
-     @%:@include <boost/numeric/ublas/lu.hpp>],
-    [],
-    [AC_MSG_RESULT([yes])],
-    [AC_MSG_RESULT([no])
-     AC_MSG_WARN([Some functionality will be disabled.])
-     AC_DEFINE([QL_NO_UBLAS_SUPPORT],[],
-               [Define this if your compiler does not support Boost::uBLAS.])
     ])
 ])
 
@@ -252,6 +226,7 @@ AC_DEFUN([QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM],
  else
      AC_MSG_RESULT([yes])
      AC_SUBST([BOOST_THREAD_LIB],[$boost_thread_lib])
+     AC_SUBST([PTHREAD_CXXFLAGS],["-pthread"])
      AC_SUBST([CXXFLAGS],["${CXXFLAGS} -pthread"])
  fi
 ])
@@ -303,7 +278,6 @@ AC_DEFUN([QL_CHECK_BOOST_TEST_INTERPROCESS],
 AC_DEFUN([QL_CHECK_BOOST],
 [AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
  AC_REQUIRE([QL_CHECK_BOOST_VERSION])
- AC_REQUIRE([QL_CHECK_BOOST_UBLAS])
  AC_REQUIRE([QL_CHECK_BOOST_UNIT_TEST])
 ])
 

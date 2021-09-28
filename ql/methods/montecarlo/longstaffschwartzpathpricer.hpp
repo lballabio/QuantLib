@@ -33,7 +33,11 @@
 #include <ql/methods/montecarlo/earlyexercisepathpricer.hpp>
 #include <ql/methods/montecarlo/pathpricer.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#if !defined(QL_USE_STD_UNIQUE_PTR)
+#include <boost/scoped_array.hpp>
+#endif
 #include <utility>
+#include <memory>
 
 namespace QuantLib {
 
@@ -74,8 +78,13 @@ namespace QuantLib {
 
         mutable QuantLib::IncrementalStatistics exerciseProbability_;
 
+        #if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<Array[]> coeff_;
+        std::unique_ptr<DiscountFactor[]> dF_;
+        #else
         boost::scoped_array<Array> coeff_;
         boost::scoped_array<DiscountFactor> dF_;
+        #endif
 
         mutable std::vector<PathType> paths_;
         const   std::vector<ext::function<Real(StateType)> > v_;

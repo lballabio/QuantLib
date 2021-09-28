@@ -1,6 +1,8 @@
 name: Misspell fixer
 on:
-  - push
+  push:
+    branches:
+      - '**'
 jobs:
   check:
     runs-on: ubuntu-latest

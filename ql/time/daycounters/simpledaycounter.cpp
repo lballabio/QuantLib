@@ -22,7 +22,7 @@
 
 namespace QuantLib {
 
-    namespace { DayCounter fallback = Thirty360(); }
+    namespace { DayCounter fallback = Thirty360(Thirty360::BondBasis); }
 
     Date::serial_type SimpleDayCounter::Impl::dayCount(const Date& d1,
                                                        const Date& d2) const {

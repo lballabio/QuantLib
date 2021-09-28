@@ -32,7 +32,7 @@ namespace QuantLib {
 
     class ExchangeContract {
       public:
-        ExchangeContract();
+        ExchangeContract() = default;
         ExchangeContract(std::string code,
                          Date expirationDate,
                          Date underlyingStartDate,
@@ -48,8 +48,6 @@ namespace QuantLib {
         Date underlyingStartDate_;
         Date underlyingEndDate_;
     };
-
-    inline ExchangeContract::ExchangeContract() = default;
 
     inline ExchangeContract::ExchangeContract(std::string code,
                                               Date expirationDate,

@@ -33,6 +33,7 @@ class SwapTest {
     static void testSpreadDependency();
     static void testInArrears();
     static void testCachedValue();
+    static void testThirdWednesdayAdjustment();
     static boost::unit_test_framework::test_suite* suite();
 };
 

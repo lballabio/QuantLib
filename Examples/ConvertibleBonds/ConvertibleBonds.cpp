@@ -19,7 +19,7 @@
 */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/experimental/convertiblebonds/convertiblebond.hpp>
@@ -86,7 +86,7 @@ int main(int, char* []) {
 
         std::vector<Real> coupons(1, 0.05);
 
-        DayCounter bondDayCount = Thirty360();
+        DayCounter bondDayCount = Thirty360(Thirty360::BondBasis);
 
         Integer callLength[] = { 2, 4 };  // Call dates, years 2, 4.
         Integer putLength[] = { 3 }; // Put dates year 3

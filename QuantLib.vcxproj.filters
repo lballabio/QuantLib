@@ -570,16 +570,25 @@
     <ClInclude Include="ql\cashflows\rangeaccrual.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\rateaveraging.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
     <ClInclude Include="ql\cashflows\replication.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
     <ClInclude Include="ql\cashflows\simplecashflow.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\subperiodcoupon.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
     <ClInclude Include="ql\cashflows\timebasket.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
     <ClInclude Include="ql\cashflows\yoyinflationcoupon.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\cashflows\zeroinflationcashflow.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
     <ClInclude Include="ql\indexes\all.hpp">
@@ -637,6 +646,9 @@
       <Filter>indexes\ibor</Filter>
     </ClInclude>
     <ClInclude Include="ql\indexes\ibor\eonia.hpp">
+      <Filter>indexes\ibor</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\ibor\estr.hpp">
       <Filter>indexes\ibor</Filter>
     </ClInclude>
     <ClInclude Include="ql\indexes\ibor\euribor.hpp">
@@ -2724,6 +2736,9 @@
     <ClInclude Include="ql\time\calendars\canada.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
+    <ClInclude Include="ql\time\calendars\chile.hpp">
+      <Filter>time\calendars</Filter>
+    </ClInclude>
     <ClInclude Include="ql\time\calendars\china.hpp">
       <Filter>time\calendars</Filter>
     </ClInclude>
@@ -3043,9 +3058,6 @@
       <Filter>experimental\coupons</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\coupons\strippedcapflooredcoupon.hpp">
-      <Filter>experimental\coupons</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\coupons\subperiodcoupons.hpp">
       <Filter>experimental\coupons</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\coupons\swapspreadindex.hpp">
@@ -4373,6 +4385,10 @@
     <ClInclude Include="ql\methods\finitedifferences\utilities\fdmescrowedloginnervaluecalculator.hpp">
       <Filter>methods\finitedifferences\utilities</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\zerocouponswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\bond\riskybondengine.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -4474,10 +4490,16 @@
     <ClCompile Include="ql\cashflows\simplecashflow.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
+    <ClCompile Include="ql\cashflows\subperiodcoupon.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
     <ClCompile Include="ql\cashflows\timebasket.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\yoyinflationcoupon.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\cashflows\zeroinflationcashflow.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\indexes\bmaindex.cpp">
@@ -4505,6 +4527,9 @@
       <Filter>indexes\ibor</Filter>
     </ClCompile>
     <ClCompile Include="ql\indexes\ibor\eonia.cpp">
+      <Filter>indexes\ibor</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\indexes\ibor\estr.cpp">
       <Filter>indexes\ibor</Filter>
     </ClCompile>
     <ClCompile Include="ql\indexes\ibor\euribor.cpp">
@@ -5038,9 +5063,6 @@
     <ClCompile Include="ql\models\marketmodels\evolvers\lognormalfwdratepc.cpp">
       <Filter>models\marketmodels\evolvers</Filter>
     </ClCompile>
-    <ClCompile Include="ql\models\marketmodels\evolvers\marketmodelvolprocess.cpp">
-      <Filter>models\marketmodels\evolvers</Filter>
-    </ClCompile>
     <ClCompile Include="ql\models\marketmodels\evolvers\normalfwdratepc.cpp">
       <Filter>models\marketmodels\evolvers</Filter>
     </ClCompile>
@@ -5093,9 +5115,6 @@
       <Filter>models\marketmodels\models</Filter>
     </ClCompile>
     <ClCompile Include="ql\models\marketmodels\models\pseudorootfacade.cpp">
-      <Filter>models\marketmodels\models</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\models\marketmodels\models\volatilityinterpolationspecifier.cpp">
       <Filter>models\marketmodels\models</Filter>
     </ClCompile>
     <ClCompile Include="ql\models\marketmodels\models\volatilityinterpolationspecifierabcd.cpp">
@@ -5845,6 +5864,9 @@
     <ClCompile Include="ql\time\calendars\canada.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
+    <ClCompile Include="ql\time\calendars\chile.cpp">
+      <Filter>time\calendars</Filter>
+    </ClCompile>
     <ClCompile Include="ql\time\calendars\china.cpp">
       <Filter>time\calendars</Filter>
     </ClCompile>
@@ -6104,9 +6126,6 @@
       <Filter>experimental\coupons</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\coupons\strippedcapflooredcoupon.cpp">
-      <Filter>experimental\coupons</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\coupons\subperiodcoupons.cpp">
       <Filter>experimental\coupons</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\coupons\swapspreadindex.cpp">
@@ -7075,5 +7094,9 @@
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmescrowedloginnervaluecalculator.cpp">
       <Filter>methods\finitedifferences\utilities</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\zerocouponswap.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\bond\riskybondengine.cpp" />
   </ItemGroup>
 </Project>

@@ -57,9 +57,8 @@ namespace QuantLib {
         Disposable<Array> solve_splitting(Size direction, const Array& r, Real s) const override;
         Disposable<Array> preconditioner(const Array& r, Real s) const override;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
         Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const override;
-#endif
+
       private:
         const ext::shared_ptr<YieldTermStructure>& rTS_;
         const Size direction_;

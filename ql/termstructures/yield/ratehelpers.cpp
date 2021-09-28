@@ -194,7 +194,7 @@ namespace QuantLib {
                            "end date (" << iborEndDate <<
                            ") must be greater than start date (" <<
                            iborStartDate << ")");
-                latestRelevantDate_ = iborEndDate;
+                maturityDate_ = iborEndDate;
             }
             break;
           default:
@@ -943,15 +943,15 @@ namespace QuantLib {
                           .endOfMonth(iborIndex_->endOfMonth())
                           .backwards();
 
-        swap_ = ext::shared_ptr<BMASwap>(new BMASwap(BMASwap::Payer, 100.0,
-                                                liborSchedule,
-                                                0.75, // arbitrary
-                                                0.0,
-                                                iborIndex_,
-                                                iborIndex_->dayCounter(),
-                                                bmaSchedule,
-                                                clonedIndex,
-                                                bmaDayCount_));
+        swap_ = ext::make_shared<BMASwap>(Swap::Payer, 100.0,
+                                          liborSchedule,
+                                          0.75, // arbitrary
+                                          0.0,
+                                          iborIndex_,
+                                          iborIndex_->dayCounter(),
+                                          bmaSchedule,
+                                          clonedIndex,
+                                          bmaDayCount_);
         swap_->setPricingEngine(ext::shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(iborIndex_->forwardingTermStructure())));
 

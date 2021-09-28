@@ -40,8 +40,6 @@ namespace QuantLib {
         arguments->fixingDates = fixingDates_;
     }
 
-    HimalayaOption::arguments::arguments() = default;
-
     void HimalayaOption::arguments::validate() const {
         MultiAssetOption::arguments::validate();
         QL_REQUIRE(!fixingDates.empty(), "no fixing dates given");

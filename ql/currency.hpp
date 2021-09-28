@@ -34,13 +34,25 @@ namespace QuantLib {
     //! %Currency specification
     class Currency {
       public:
+        //! \name Constructors
+        //@{
         //! default constructor
         /*! Instances built via this constructor have undefined
             behavior. Such instances can only act as placeholders
             and must be reassigned to a valid currency before being
             used.
         */
-        Currency();
+        Currency() = default;
+        Currency(const std::string& name,
+                 const std::string& code,
+                 Integer numericCode,
+                 const std::string& symbol,
+                 const std::string& fractionSymbol,
+                 Integer fractionsPerUnit,
+                 const Rounding& rounding,
+                 const std::string& formatString,
+                 const Currency& triangulationCurrency = Currency());
+        //@}
         //! \name Inspectors
         //@{
         //! currency name, e.g, "U.S. Dollar"
@@ -111,8 +123,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline Currency::Currency() = default;
 
     inline void Currency::checkNonEmpty() const {
         QL_REQUIRE(data_, "no currency data provided");

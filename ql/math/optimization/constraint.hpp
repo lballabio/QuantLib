@@ -191,7 +191,7 @@ namespace QuantLib {
             }
             bool test(const Array& params) const override {
                 QL_ENSURE(params.size()==low_.size(),
-                          "Number of parameters and boundaries sizes are inconsistent.")
+                          "Number of parameters and boundaries sizes are inconsistent.");
                 for (Size i = 0; i < params.size(); i++) {
                     if ((params[i] < low_[i]) || (params[i] > high_[i]))
                         return false;

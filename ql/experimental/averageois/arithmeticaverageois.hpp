@@ -35,7 +35,6 @@ namespace QuantLib {
     //! Arithemtic Average OIS: fix vs arithmetic average of overnight rate
     class ArithmeticAverageOIS : public Swap {
       public:
-        enum Type { Receiver = -1, Payer = 1 };
         ArithmeticAverageOIS(Type type,
                              Real nominal,
                              const Schedule& fixedLegSchedule,

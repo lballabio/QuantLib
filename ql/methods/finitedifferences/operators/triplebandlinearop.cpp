@@ -260,7 +260,6 @@ namespace QuantLib {
         return retVal;
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<SparseMatrix> TripleBandLinearOp::toMatrix() const {
         const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
         const Size n = index->size();
@@ -274,7 +273,6 @@ namespace QuantLib {
 
         return retVal;
     }
-#endif
 
 
     Disposable<Array>

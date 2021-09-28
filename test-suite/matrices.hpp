@@ -42,6 +42,8 @@ class MatricesTest {
     static void testMoorePenroseInverse();
     static void testIterativeSolvers();
     static void testInitializers();
+    static void testSparseMatrixMemory();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -42,11 +42,11 @@ namespace QuantLib {
       rule_(DateGeneration::Backward),
       // any value here for endOfMonth_ would not be actually used
       isDefaultEOM_(true),
-      type_(OvernightIndexedSwap::Payer), nominal_(1.0),
+      type_(Swap::Payer), nominal_(1.0),
       overnightSpread_(0.0),
       fixedDayCount_(overnightIndex->dayCounter()), 
       telescopicValueDates_(false), 
-      averagingMethod_(OvernightAveraging::Compound) {}
+      averagingMethod_(RateAveraging::Compound) {}
 
     MakeOIS::operator OvernightIndexedSwap() const {
         ext::shared_ptr<OvernightIndexedSwap> ois = *this;
@@ -143,11 +143,11 @@ namespace QuantLib {
     }
 
     MakeOIS& MakeOIS::receiveFixed(bool flag) {
-        type_ = flag ? OvernightIndexedSwap::Receiver : OvernightIndexedSwap::Payer ;
+        type_ = flag ? Swap::Receiver : Swap::Payer ;
         return *this;
     }
 
-    MakeOIS& MakeOIS::withType(OvernightIndexedSwap::Type type) {
+    MakeOIS& MakeOIS::withType(Swap::Type type) {
         type_ = type;
         return *this;
     }
@@ -238,7 +238,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeOIS& MakeOIS::withAveragingMethod(OvernightAveraging::Type averagingMethod) {
+    MakeOIS& MakeOIS::withAveragingMethod(RateAveraging::Type averagingMethod) {
         averagingMethod_ = averagingMethod;
         return *this;
     }

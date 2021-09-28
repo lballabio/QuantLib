@@ -33,33 +33,6 @@
 
 namespace QuantLib {
 
-    struct CPI {
-        //! when you observe an index, how do you interpolate between fixings?
-        enum InterpolationType {
-            AsIndex, //!< same interpolation as index
-            Flat,    //!< flat from previous fixing
-            Linear   //!< linearly between bracketing fixings
-        };
-    };
-
-    namespace detail {
-        namespace CPI {
-            // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
-            // CPI::InterpolationType.
-            QuantLib::CPI::InterpolationType effectiveInterpolationType(
-                const ext::shared_ptr<ZeroInflationIndex>& index,
-                const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
-
-
-            // checks whether the combination of index and CPI::InterpolationType results
-            // effectively in CPI::Linear
-            bool
-            isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
-                           const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
-        }
-    }
-
-
     class CPICouponPricer;
 
     //! %Coupon paying the performance of a CPI (zero inflation) index
@@ -242,12 +215,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline bool detail::CPI::isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
-                                            const QuantLib::CPI::InterpolationType& type) {
-        return detail::CPI::effectiveInterpolationType(index, type) == QuantLib::CPI::Linear;
-    }
-
 
     inline Real CPICoupon::fixedRate() const { return fixedRate_; }
 

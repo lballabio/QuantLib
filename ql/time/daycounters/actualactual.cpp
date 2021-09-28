@@ -50,26 +50,53 @@ namespace QuantLib {
                                                    const Schedule& schedule) {
             // Process the schedule into an array of dates.
             Date issueDate = schedule.date(0);
-            Date firstCoupon = schedule.date(1);
-            Date notionalCoupon =
-                schedule.calendar().advance(firstCoupon,
-                                            -schedule.tenor(),
-                                            schedule.businessDayConvention(),
-                                            schedule.endOfMonth());
-
             std::vector<Date> newDates = schedule.dates();
-            newDates[0] = notionalCoupon;
 
-            //long first coupon
-            if (notionalCoupon > issueDate) {
-                Date priorNotionalCoupon =
-                    schedule.calendar().advance(notionalCoupon,
-                                                -schedule.tenor(),
-                                                schedule.businessDayConvention(),
-                                                schedule.endOfMonth());
-                newDates.insert(newDates.begin(),
-                                priorNotionalCoupon); //insert as the first element?
+            if (!schedule.hasIsRegular() || !schedule.isRegular(1))
+            {
+                Date firstCoupon = schedule.date(1);
+
+                Date notionalFirstCoupon =
+                    schedule.calendar().advance(firstCoupon,
+                        -schedule.tenor(),
+                        schedule.businessDayConvention(),
+                        schedule.endOfMonth());
+
+                newDates[0] = notionalFirstCoupon;
+
+                //long first coupon
+                if (notionalFirstCoupon > issueDate) {
+                    Date priorNotionalCoupon =
+                        schedule.calendar().advance(notionalFirstCoupon,
+                                                    -schedule.tenor(),
+                                                    schedule.businessDayConvention(),
+                                                    schedule.endOfMonth());
+                    newDates.insert(newDates.begin(),
+                                    priorNotionalCoupon); //insert as the first element?
+                }
             }
+
+            if (!schedule.hasIsRegular() || !schedule.isRegular(schedule.size() - 1))
+            {
+                Date notionalLastCoupon =
+                    schedule.calendar().advance(schedule.date(schedule.size() - 2),
+                        schedule.tenor(),
+                        schedule.businessDayConvention(),
+                        schedule.endOfMonth());
+
+                newDates[schedule.size() - 1] = notionalLastCoupon;
+
+                if (notionalLastCoupon < schedule.endDate())
+                {
+                    Date nextNotionalCoupon =
+                        schedule.calendar().advance(notionalLastCoupon,
+                                                    schedule.tenor(),
+                                                    schedule.businessDayConvention(),
+                                                    schedule.endOfMonth());
+                    newDates.push_back(nextNotionalCoupon);
+                }
+            }
+
             return newDates;
         }
 
@@ -131,6 +158,13 @@ namespace QuantLib {
 
         std::vector<Date> couponDates =
             getListOfPeriodDatesIncludingQuasiPayments(schedule_);
+
+        Date firstDate = *std::min_element(couponDates.begin(), couponDates.end());
+        Date lastDate = *std::max_element(couponDates.begin(), couponDates.end());
+
+        QL_REQUIRE(d1 >= firstDate && d2 <= lastDate, "Dates out of range of schedule: "
+                       << "date 1: " << d1 << ", date 2: " << d2 << ", first date: "
+                       << firstDate << ", last date: " << lastDate);
 
         Real yearFractionSum = 0.0;
         for (Size i = 0; i < couponDates.size() - 1; i++) {

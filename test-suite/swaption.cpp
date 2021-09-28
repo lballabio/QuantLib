@@ -47,7 +47,7 @@ namespace swaption_test {
     Period lengths[] = { 1*Years, 2*Years, 3*Years,
                          5*Years, 7*Years, 10*Years,
                          15*Years, 20*Years };
-    VanillaSwap::Type type[] = { VanillaSwap::Receiver, VanillaSwap::Payer };
+    Swap::Type type[] = { Swap::Receiver, Swap::Payer };
 
     struct CommonVars {
         // global data
@@ -104,7 +104,7 @@ namespace swaption_test {
             nominal = 1000000.0;
             fixedConvention = Unadjusted;
             fixedFrequency = Annual;
-            fixedDayCount = Thirty360();
+            fixedDayCount = Thirty360(Thirty360::BondBasis);
 
             index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             floatingConvention = index->businessDayConvention();
@@ -159,7 +159,7 @@ void SwaptionTest::testStrikeDependency() {
                     values_cash.push_back(swaption_cash->NPV());
                 }
                 // and check that they go the right way
-                if (k == VanillaSwap::Payer) {
+                if (k == Swap::Payer) {
                     auto it = std::adjacent_find(values.begin(), values.end(), std::less<Real>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
@@ -256,7 +256,7 @@ void SwaptionTest::testSpreadDependency() {
                     values_cash.push_back(swaption_cash->NPV());
                 }
                 // and check that they go the right way
-                if (k == VanillaSwap::Payer) {
+                if (k == Swap::Payer) {
                     auto it =
                         std::adjacent_find(values.begin(), values.end(), std::greater<Real>());
                     if (it != values.end()) {
@@ -511,7 +511,7 @@ void SwaptionTest::testCashSettledSwaptions() {
                                      DateGeneration::Forward, true);
             ext::shared_ptr<VanillaSwap> swap_u360(
                 new VanillaSwap(type[0], vars.nominal,
-                                fixedSchedule_u,strike,Thirty360(),
+                                fixedSchedule_u,strike,Thirty360(Thirty360::BondBasis),
                                 floatSchedule,vars.index,0.0,
                                 vars.index->dayCounter()));
 
@@ -530,7 +530,7 @@ void SwaptionTest::testCashSettledSwaptions() {
                                      DateGeneration::Forward, true);
             ext::shared_ptr<VanillaSwap> swap_a360(
                 new VanillaSwap(type[0],vars.nominal,
-                                fixedSchedule_a,strike,Thirty360(),
+                                fixedSchedule_a,strike,Thirty360(Thirty360::BondBasis),
                                 floatSchedule,vars.index,0.0,
                                 vars.index->dayCounter()));
 
@@ -559,12 +559,12 @@ void SwaptionTest::testCashSettledSwaptions() {
             Handle<YieldTermStructure> termStructure_u360(
                 ext::shared_ptr<YieldTermStructure>(
                     new FlatForward(vars.settlement,swap_u360->fairRate(),
-                                    Thirty360(),Compounded,
+                                    Thirty360(Thirty360::BondBasis),Compounded,
                                     vars.fixedFrequency)));
             Handle<YieldTermStructure> termStructure_a360(
                 ext::shared_ptr<YieldTermStructure>(
                     new FlatForward(vars.settlement,swap_a360->fairRate(),
-                                    Thirty360(),Compounded,
+                                    Thirty360(Thirty360::BondBasis),Compounded,
                                     vars.fixedFrequency)));
             Handle<YieldTermStructure> termStructure_u365(
                 ext::shared_ptr<YieldTermStructure>(
@@ -580,19 +580,19 @@ void SwaptionTest::testCashSettledSwaptions() {
             // Annuity calculated by swap method fixedLegBPS().
             // Fixed leg conventions: Unadjusted, 30/360
             Real annuity_u360 = swap_u360->fixedLegBPS() / 0.0001;
-            annuity_u360 = swap_u360->type()==VanillaSwap::Payer ?
+            annuity_u360 = swap_u360->type()==Swap::Payer ?
                 -annuity_u360 : annuity_u360;
             // Fixed leg conventions: ModifiedFollowing, act/365
             Real annuity_a365 = swap_a365->fixedLegBPS() / 0.0001;
-            annuity_a365 = swap_a365->type()==VanillaSwap::Payer ?
+            annuity_a365 = swap_a365->type()==Swap::Payer ?
                 -annuity_a365 : annuity_a365;
             // Fixed leg conventions: ModifiedFollowing, 30/360
             Real annuity_a360 = swap_a360->fixedLegBPS() / 0.0001;
-            annuity_a360 = swap_a360->type()==VanillaSwap::Payer ?
+            annuity_a360 = swap_a360->type()==Swap::Payer ?
                 -annuity_a360 : annuity_a360;
             // Fixed leg conventions: Unadjusted, act/365
             Real annuity_u365 = swap_u365->fixedLegBPS() / 0.0001;
-            annuity_u365 = swap_u365->type()==VanillaSwap::Payer ?
+            annuity_u365 = swap_u365->type()==Swap::Payer ?
                 -annuity_u365 : annuity_u365;
 
             // Calculation of Modified Annuity (cash settlement)
@@ -939,7 +939,7 @@ void checkSwaptionDelta(bool useBachelierVol)
                             MakeVanillaSwap(length, idx, strike)
                                 .withEffectiveDate(startDate)
                                 .withFixedLegTenor(1 * Years)
-                                .withFixedLegDayCount(Thirty360())
+                                .withFixedLegDayCount(Thirty360(Thirty360::BondBasis))
                                 .withFloatingLegSpread(0.0)
                                 .withType(type[h]);
                         underlying->setPricingEngine(swapEngine);

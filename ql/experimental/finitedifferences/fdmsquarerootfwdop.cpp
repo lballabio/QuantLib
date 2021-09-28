@@ -98,8 +98,8 @@ namespace QuantLib {
             iter != endIter; ++iter) {
             if (iter.coordinates()[direction_] == 0) {
                 const Size idx = iter.index();
-                mapX_->diag()[idx]  = beta  + f*b; //*v(n-1);
-                mapX_->upper()[idx] = gamma + f*c; //*v(n-1);
+                mapX_->diag(idx)  = beta  + f*b; //*v(n-1);
+                mapX_->upper(idx) = gamma + f*c; //*v(n-1);
             }
         }
     }
@@ -120,8 +120,8 @@ namespace QuantLib {
             iter != endIter; ++iter) {
             if (iter.coordinates()[direction_] == n-1) {
                 const Size idx = iter.index();
-                mapX_->diag()[idx] = beta   + f*b; //*v(n+1);
-                mapX_->lower()[idx] = alpha + f*c; //*v(n+1);
+                mapX_->diag(idx) = beta   + f*b; //*v(n+1);
+                mapX_->lower(idx) = alpha + f*c; //*v(n+1);
             }
         }
     }
@@ -332,11 +332,10 @@ namespace QuantLib {
         return solve_splitting(direction_, r, dt);
     }
 
-    #if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> >
     FdmSquareRootFwdOp::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal(1, mapX_->toMatrix());
         return retVal;
     }
-    #endif
+
 }

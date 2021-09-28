@@ -219,7 +219,7 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
         ext::shared_ptr<YieldTermStructure>(
             new DiscountCurve(discountDates, dfs, curveDayCounter)));
 
-    DayCounter dayCounter = Thirty360();
+    DayCounter dayCounter = Thirty360(Thirty360::BondBasis);
     std::vector<Date> dates = {
         evalDate,
         calendar.advance(evalDate, 6, Months, ModifiedFollowing),
@@ -259,7 +259,7 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
         ext::shared_ptr<DefaultProbabilityTermStructure>(
                new InterpolatedHazardRateCurve<BackwardFlat>(dates,
                                                              hazardRates,
-                                                             Thirty360())));
+                                                             Thirty360(Thirty360::BondBasis))));
 
     // Testing credit default swap
 
@@ -624,7 +624,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                                       swap_quotes[i], swap_tenors[i] * Years,
                                       WeekendsOnly(),
                                       Semiannual,
-                                      ModifiedFollowing, Thirty360(), isda_ibor
+                                      ModifiedFollowing, Thirty360(Thirty360::BondBasis), isda_ibor
                                       )
             );
     }

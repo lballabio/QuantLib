@@ -45,7 +45,7 @@ namespace QuantLib {
       settlementDays_(Null<Natural>()),
       fixedCalendar_(index->fixingCalendar()),
       floatCalendar_(index->fixingCalendar()),
-      type_(VanillaSwap::Payer), nominal_(1.0),
+      type_(Swap::Payer), nominal_(1.0),
       floatTenor_(index->tenor()),
       fixedConvention_(ModifiedFollowing),
       fixedTerminationDateConvention_(ModifiedFollowing),
@@ -199,11 +199,11 @@ namespace QuantLib {
     }
 
     MakeVanillaSwap& MakeVanillaSwap::receiveFixed(bool flag) {
-        type_ = flag ? VanillaSwap::Receiver : VanillaSwap::Payer ;
+        type_ = flag ? Swap::Receiver : Swap::Payer ;
         return *this;
     }
 
-    MakeVanillaSwap& MakeVanillaSwap::withType(VanillaSwap::Type type) {
+    MakeVanillaSwap& MakeVanillaSwap::withType(Swap::Type type) {
         type_ = type;
         return *this;
     }

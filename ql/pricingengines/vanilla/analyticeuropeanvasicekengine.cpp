@@ -21,7 +21,6 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanvasicekengine.hpp>
-#include <boost/function.hpp>
 #include <utility>
 
 namespace QuantLib {

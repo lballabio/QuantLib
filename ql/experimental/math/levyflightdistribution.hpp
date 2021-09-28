@@ -26,7 +26,6 @@
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
-#include <boost/config/no_tr1/cmath.hpp>
 #include <boost/random/detail/config.hpp>
 #include <boost/random/detail/operators.hpp>
 #include <boost/random/uniform_01.hpp>

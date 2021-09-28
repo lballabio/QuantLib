@@ -123,7 +123,7 @@ namespace QuantLib {
         QL_REQUIRE(exercise, "no exercise given");
 
         QL_REQUIRE(minExerciseRights <= maxExerciseRights,
-                   "minExerciseRights <= maxExerciseRights")
+                   "minExerciseRights <= maxExerciseRights");
         QL_REQUIRE(exercise->dates().size() >= maxExerciseRights,
                    "number of exercise rights exceeds "
                    "number of exercise dates");
