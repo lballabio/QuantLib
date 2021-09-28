@@ -32,16 +32,6 @@ namespace QuantLib {
 
     YieldTermStructure::YieldTermStructure(const DayCounter& dc) : TermStructure(dc) {}
 
-    YieldTermStructure::YieldTermStructure(const DayCounter& dc,
-                                           std::vector<Handle<Quote> > jumps,
-                                           const std::vector<Date>& jumpDates)
-    : TermStructure(dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
-      jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
-        setJumps(Date());
-        for (Size i=0; i<nJumps_; ++i)
-            registerWith(jumps_[i]);
-    }
-
     YieldTermStructure::YieldTermStructure(const Date& referenceDate,
                                            const Calendar& cal,
                                            const DayCounter& dc,

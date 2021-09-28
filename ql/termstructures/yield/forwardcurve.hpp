@@ -92,17 +92,6 @@ namespace QuantLib {
             const std::vector<Date>& jumpDates = std::vector<Date>(),
             const Interpolator& interpolator = Interpolator());
 
-        /*! \deprecated Passing jumps without a reference date never worked correctly.
-                        Use one of the other constructors instead.
-                        Deprecated in version 1.19.
-        */
-        QL_DEPRECATED
-        InterpolatedForwardCurve(
-            const DayCounter&,
-            const std::vector<Handle<Quote> >& jumps,
-            const std::vector<Date>& jumpDates = std::vector<Date>(),
-            const Interpolator& interpolator = Interpolator());
-
         //! \name ForwardRateStructure implementation
         //@{
         Rate forwardImpl(Time t) const override;
@@ -216,19 +205,6 @@ namespace QuantLib {
                                     const T& interpolator)
     : ForwardRateStructure(settlementDays, calendar, dayCounter, jumps, jumpDates),
       InterpolatedCurve<T>(interpolator) {}
-
-    QL_DEPRECATED_DISABLE_WARNING
-
-    template <class T>
-    InterpolatedForwardCurve<T>::InterpolatedForwardCurve(
-                                    const DayCounter& dayCounter,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates,
-                                    const T& interpolator)
-    : ForwardRateStructure(dayCounter, jumps, jumpDates),
-      InterpolatedCurve<T>(interpolator) {}
-
-    QL_DEPRECATED_ENABLE_WARNING
 
     template <class T>
     InterpolatedForwardCurve<T>::InterpolatedForwardCurve(

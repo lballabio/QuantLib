@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Allen Kuo
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,12 +55,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountCurve =
             tsmodel != nullptr ? tsmodel->termStructure() : termStructure_;
 
-        Date referenceDate = discountCurve->referenceDate();
-        DayCounter dayCounter = discountCurve->dayCounter();
-
-        DiscretizedCallableFixedRateBond callableBond(arguments_,
-                                                      referenceDate,
-                                                      dayCounter);
+        DiscretizedCallableFixedRateBond callableBond(arguments_, discountCurve);
         ext::shared_ptr<Lattice> lattice;
 
         if (lattice_ != nullptr) {
@@ -77,11 +73,13 @@ namespace QuantLib {
             sr->setSpread(s);
         }
 
-        Time redemptionTime =
-            dayCounter.yearFraction(referenceDate,
-                                    arguments_.redemptionDate);
+        auto referenceDate = discountCurve->referenceDate();
+        auto dayCounter = discountCurve->dayCounter();
+        Time redemptionTime = dayCounter.yearFraction(referenceDate, arguments_.redemptionDate);
+
         callableBond.initialize(lattice, redemptionTime);
         callableBond.rollback(0.0);
+
         results_.value = callableBond.presentValue();
 
         DiscountFactor d = discountCurve->discount(arguments_.settlementDate);

@@ -61,10 +61,14 @@ namespace QuantLib {
 
         Handle<YoYInflationTermStructure> yoyTS
         = index()->yoyInflationTermStructure();
+
+        QL_DEPRECATED_DISABLE_WARNING
         Handle<YieldTermStructure> nominalTS =
             !nominalTermStructure_.empty() ?
             nominalTermStructure_ :
             yoyTS->nominalTermStructure();
+        QL_DEPRECATED_ENABLE_WARNING
+
         Date settlement = nominalTS->referenceDate();
 
         for (Size i=0; i<optionlets; ++i) {

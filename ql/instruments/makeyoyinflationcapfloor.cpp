@@ -83,7 +83,9 @@ namespace QuantLib {
                 QL_REQUIRE(!index_->yoyInflationTermStructure().empty(),
                            "no forecasting yoy term structure set for " <<
                            index_->name());
+                QL_DEPRECATED_DISABLE_WARNING
                 fc = index_->yoyInflationTermStructure()->nominalTermStructure();
+                QL_DEPRECATED_ENABLE_WARNING
             }
             strikeVector[0] = CashFlows::atmRate(leg,**fc,
                                                  false, fc->referenceDate());
