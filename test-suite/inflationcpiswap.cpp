@@ -362,9 +362,9 @@ void CPISwapTest::consistency() {
     
     Real max_diff =
 #ifdef QL_USE_INDEXED_COUPON
-        1e-5;
-#else
         3e-5;
+#else
+        1e-5;
 #endif
 
     QL_REQUIRE(diff<max_diff,
