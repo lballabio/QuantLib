@@ -112,7 +112,7 @@ namespace QuantLib {
     class Money::Settings : public Singleton<Money::Settings> {
         friend class Singleton<Money::Settings>;
       private:
-        Settings();
+        Settings() = default;
 
       public:
         const Money::ConversionType & conversionType() const;
@@ -122,7 +122,7 @@ namespace QuantLib {
         Currency & baseCurrency();
 
       private:
-        Money::ConversionType conversionType_;
+        Money::ConversionType conversionType_ = Money::NoConversion;
         Currency baseCurrency_;
     };
 

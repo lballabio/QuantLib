@@ -94,7 +94,7 @@ namespace QuantLib {
     class IborCoupon::Settings : public Singleton<IborCoupon::Settings> {
         friend class Singleton<IborCoupon::Settings>;
       private:
-        Settings();
+        Settings() = default;
 
       public:
         //! When called, IborCoupons are created as indexed coupons instead of par coupons.
@@ -109,7 +109,11 @@ namespace QuantLib {
         bool usingAtParCoupons() const;
 
       private:
-        bool usingAtParCoupons_;
+        #ifndef QL_USE_INDEXED_COUPON
+        bool usingAtParCoupons_ = true;
+        #else
+        bool usingAtParCoupons_ = false;
+        #endif
     };
 
     //! helper class building a sequence of capped/floored ibor-rate coupons
