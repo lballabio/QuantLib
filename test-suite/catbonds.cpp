@@ -209,6 +209,8 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
 
     using namespace catbonds_test;
 
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+
     CommonVars vars;
 
     Date today(22,November,2004);
@@ -269,12 +271,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond1.setPricingEngine(catBondEngine);
     setCouponPricer(catBond1.cashflows(),pricer);
 
-    Real cachedPrice1 =
-#ifdef QL_USE_INDEXED_COUPON
-      99.874645;
-#else
-      99.874646;
-#endif
+    Real cachedPrice1 = usingAtParCoupons ? 99.874646 : 99.874645;
 
     Real price = bond1.cleanPrice();
     Real catPrice = catBond1.cleanPrice();
@@ -317,12 +314,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond2.setPricingEngine(catBondEngine2);
     setCouponPricer(catBond2.cashflows(),pricer);
 
-    Real cachedPrice2 =
-#ifdef QL_USE_INDEXED_COUPON
-        97.955904;
-#else
-        97.955904;
-#endif
+    Real cachedPrice2 = 97.955904;
 
     price = bond2.cleanPrice();
     catPrice = catBond2.cleanPrice();
@@ -366,12 +358,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond3.setPricingEngine(catBondEngine2);
     setCouponPricer(catBond3.cashflows(),pricer);
 
-    Real cachedPrice3 =
-#ifdef QL_USE_INDEXED_COUPON
-        98.495458;
-#else
-        98.495459;
-#endif
+    Real cachedPrice3 = usingAtParCoupons ? 98.495459 : 98.495458;
 
     price = bond3.cleanPrice();
     catPrice = catBond3.cleanPrice();

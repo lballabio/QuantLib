@@ -155,6 +155,7 @@ namespace {
     }
 
     void testSwaptioncfs(bool contTenorSpread) {
+        bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
         // market data and floating rate index
         Handle<YieldTermStructure> discYTS = getYTS(terms, discRates);
         Handle<YieldTermStructure> proj6mYTS = getYTS(terms, proj6mRates);
@@ -209,12 +210,7 @@ namespace {
         // However, if indexed coupons are used the floating leg is not at par,
         // so we need to relax the tolerance to a level at which it will only
         // catch large errors.
-        Real tol2 =
-#ifdef QL_USE_INDEXED_COUPON
-        0.02;
-#else
-        tol;
-#endif
+        Real tol2 = usingAtParCoupons ? tol : 0.02;
 
         SwaptionCashFlows singleCurveCashFlows(swaption, proj6mYTS, contTenorSpread);
         for (Size k = 1; k < singleCurveCashFlows.floatWeights().size() - 1; ++k) {

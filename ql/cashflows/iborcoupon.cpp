@@ -93,7 +93,7 @@ namespace QuantLib {
            1) allows to save date/time recalculations, and
            2) takes into account par coupon needs
         */
-        Date today = Settings::instance().evaluationDate();
+        Date today = QuantLib::Settings::instance().evaluationDate();
 
         if (fixingDate_>today)
             return iborIndex_->forecastFixing(fixingValueDate_,
@@ -101,7 +101,7 @@ namespace QuantLib {
                                               spanningTime_);
 
         if (fixingDate_<today ||
-            Settings::instance().enforcesTodaysHistoricFixings()) {
+            QuantLib::Settings::instance().enforcesTodaysHistoricFixings()) {
             // do not catch exceptions
             Rate result = index_->pastFixing(fixingDate_);
             QL_REQUIRE(result != Null<Real>(),
@@ -136,6 +136,18 @@ namespace QuantLib {
             FloatingRateCoupon::accept(v);
     }
 
+
+    void IborCoupon::Settings::createAtParCoupons() {
+         usingAtParCoupons_ = true;
+    }
+
+    void IborCoupon::Settings::createIndexedCoupons() {
+         usingAtParCoupons_ = false;
+    }
+
+    bool IborCoupon::Settings::usingAtParCoupons() const {
+        return usingAtParCoupons_;
+    }
 
     IborLeg::IborLeg(Schedule schedule, ext::shared_ptr<IborIndex> index)
     : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following),

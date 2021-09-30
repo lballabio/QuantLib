@@ -575,6 +575,8 @@ void CreditDefaultSwapTest::testIsdaEngine() {
     BOOST_TEST_MESSAGE(
         "Testing ISDA engine calculations for credit-default swaps...");
 
+    bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
+
     SavedSettings backup;
 
     Date tradeDate(21, May, 2009);
@@ -665,15 +667,10 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                              795915.9787,
                              -4702034.688,
                              -4042340.999};
-    Real tolerance =
-#ifdef QL_USE_INDEXED_COUPON
-        /* The risk-free curve is a bit off. We might skip the tests
-           altogether and rely on running them with indexed coupons
-           disabled, but leaving them can be useful anyway. */
-        1.0e-3;
-#else
-        1.0e-6;
-#endif
+    /* When using indexes coupons, the risk-free curve is a bit off.
+       We might skip the tests altogether and rely on running them
+       with indexed coupons disabled, but leaving them can be useful anyway. */
+    Real tolerance = usingAtParCoupons ? 1.0e-6 : 1.0e-3;
 
     size_t l = 0;
 

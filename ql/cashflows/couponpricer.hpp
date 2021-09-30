@@ -66,12 +66,7 @@ namespace QuantLib {
       public:
         explicit IborCouponPricer(
             Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
-            boost::optional<bool> useIndexedCoupon = boost::none)
-        : capletVol_(std::move(v)),
-          useIndexedCoupon_(useIndexedCoupon ? *useIndexedCoupon :
-                                               Settings::instance().useIndexedCoupon()) {
-            registerWith(capletVol_);
-        }
+            boost::optional<bool> useIndexedCoupon = boost::none);
 
         bool useIndexedCoupon() const { return useIndexedCoupon_; }
 

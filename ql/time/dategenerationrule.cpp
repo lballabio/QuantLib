@@ -34,6 +34,8 @@ namespace QuantLib {
             return out << "Zero";
           case DateGeneration::ThirdWednesday:
             return out << "ThirdWednesday";
+          case DateGeneration::ThirdWednesdayInclusive:
+            return out << "ThirdWednesdayInclusive";
           case DateGeneration::Twentieth:
             return out << "Twentieth";
           case DateGeneration::TwentiethIMM:

@@ -108,22 +108,11 @@ namespace QuantLib {
         bool& enforcesTodaysHistoricFixings();
         bool enforcesTodaysHistoricFixings() const;
 
-        /*! If false, newly created Ibor coupons will be priced at par if
-            the setting is not overriden in the pricer or coupon creation. */
-        bool& useIndexedCoupon();
-        bool useIndexedCoupon() const;
-
       private:
         DateProxy evaluationDate_;
         bool includeReferenceDateEvents_ = false;
         boost::optional<bool> includeTodaysCashFlows_;
         bool enforcesTodaysHistoricFixings_ = false;
-        bool useIndexedCoupon_ =
-#ifdef QL_USE_INDEXED_COUPON
-            true;
-#else
-            false;
-#endif
     };
 
 
@@ -137,7 +126,6 @@ namespace QuantLib {
         bool includeReferenceDateEvents_;
         boost::optional<bool> includeTodaysCashFlows_;
         bool enforcesTodaysHistoricFixings_;
-        bool useIndexedCoupon_;
     };
 
 
@@ -186,14 +174,6 @@ namespace QuantLib {
 
     inline bool Settings::enforcesTodaysHistoricFixings() const {
         return enforcesTodaysHistoricFixings_;
-    }
-
-    inline bool& Settings::useIndexedCoupon() {
-        return useIndexedCoupon_;
-    }
-
-    inline bool Settings::useIndexedCoupon() const {
-        return useIndexedCoupon_;
     }
 
 }

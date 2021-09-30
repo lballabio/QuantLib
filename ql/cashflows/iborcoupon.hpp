@@ -31,6 +31,7 @@
 
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/patterns/singleton.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
@@ -70,17 +71,60 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
+
       private:
         friend class IborCouponPricer;
         ext::shared_ptr<IborIndex> iborIndex_;
         Date fixingDate_;
-        // computed by coupon pricer dependingon par coupon flat and stored here
+        // computed by coupon pricer (depending on par coupon flag) and stored here
         void initializeCachedData() const;
         mutable bool cachedDataIsInitialized_ = false;
         mutable Date fixingValueDate_, fixingEndDate_, fixingMaturityDate_;
         mutable Time spanningTime_, spanningTimeIndexMaturity_;
+
+      public:
+        // IborCoupon::Settings forward declaration
+        class Settings;
+        /*! \deprecated Use IborCouponSettings::Settings::instance().createAtParCoupons() instead
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED static void createAtParCoupons();
+        /*! \deprecated Use IborCouponSettings::Settings::instance().createIndexedCoupons() instead
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED static void createIndexedCoupons();
+        /*! \deprecated Use IborCouponSettings::Settings::instance().usingAtParCoupons() instead
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED static bool usingAtParCoupons();
     };
 
+
+    //! Per-session settings for IborCoupon class
+    class IborCoupon::Settings : public Singleton<IborCoupon::Settings> {
+        friend class Singleton<IborCoupon::Settings>;
+      private:
+        Settings() = default;
+
+      public:
+        //! When called, IborCoupons are created as indexed coupons instead of par coupons.
+        void createAtParCoupons();
+
+        //! When called, IborCoupons are created as par coupons instead of indexed coupons.
+        void createIndexedCoupons();
+
+        /*! If true the IborCoupons are created as par coupons and vice versa.
+            The default depends on the compiler flag QL_USE_INDEXED_COUPON and can be overwritten by
+            createAtParCoupons() and createIndexedCoupons() */
+        bool usingAtParCoupons() const;
+
+      private:
+        #ifndef QL_USE_INDEXED_COUPON
+        bool usingAtParCoupons_ = true;
+        #else
+        bool usingAtParCoupons_ = false;
+        #endif
+    };
 
     //! helper class building a sequence of capped/floored ibor-rate coupons
     class IborLeg {

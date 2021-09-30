@@ -263,6 +263,8 @@ void CPISwapTest::consistency() {
 
     using namespace inflation_cpi_swap_test;
 
+    bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
+
     // check inflation leg vs calculation directly from inflation TS
     CommonVars common;
 
@@ -360,12 +362,7 @@ void CPISwapTest::consistency() {
 
     Real diff = fabs(1-zisV.NPV()/4191660.0);
     
-    Real max_diff =
-#ifdef QL_USE_INDEXED_COUPON
-        3e-5;
-#else
-        1e-5;
-#endif
+    Real max_diff = usingAtParCoupons ? 1e-5 : 3e-5;
 
     QL_REQUIRE(diff<max_diff,
                "failed stored consistency value test, ratio = " << diff);

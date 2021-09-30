@@ -39,6 +39,16 @@ namespace QuantLib {
 //                              IborCouponPricer                             //
 //===========================================================================//
 
+    IborCouponPricer::IborCouponPricer(
+            Handle<OptionletVolatilityStructure> v,
+            boost::optional<bool> useIndexedCoupon)
+        : capletVol_(std::move(v)),
+          useIndexedCoupon_(useIndexedCoupon ?
+                            *useIndexedCoupon :
+                            !IborCoupon::Settings::instance().usingAtParCoupons()) {
+        registerWith(capletVol_);
+    }
+
     void IborCouponPricer::initializeCachedData(const IborCoupon& coupon) const {
 
         if(coupon.cachedDataIsInitialized_)

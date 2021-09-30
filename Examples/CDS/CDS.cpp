@@ -234,6 +234,8 @@ std::copy(cdsSchedule.begin(), cdsSchedule.end(),
 
     Settings::instance().evaluationDate() = evaluationDate;
 
+    IborCoupon::Settings::instance().createAtParCoupons();
+
     // set up ISDA IR curve helpers
 
     ext::shared_ptr<DepositRateHelper> dp1m =
@@ -447,6 +449,8 @@ void example03() {
 
     Settings::instance().evaluationDate() = tradeDate;
 
+    IborCoupon::Settings::instance().createAtParCoupons();
+
     DayCounter actual360 = Actual360();
     DayCounter thirty360 = Thirty360(Thirty360::BondBasis);
 
@@ -476,7 +480,7 @@ void example03() {
                                               false, actual360);
 
     // this index is probably not important since we are not using
-    // IborCoupon::usingAtParCoupons() == false 
+    // IborCoupon::Settings::instance().usingAtParCoupons() == false
     // - define it "isda compliant" anyway
     ext::shared_ptr<IborIndex> euribor6m = ext::make_shared<IborIndex>(
         "IsdaIbor", 6 * Months, 2, EURCurrency(), WeekendsOnly(),

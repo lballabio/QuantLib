@@ -1546,18 +1546,17 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testSwapRateHelperSpotDate));
 
-#ifndef QL_USE_INDEXED_COUPON
+    if (IborCoupon::Settings::instance().usingAtParCoupons()) {
         // This regression test didn't work with indexed coupons anyway.
-        suite->add(QUANTLIB_TEST_CASE(
-               &PiecewiseYieldCurveTest::testBadPreviousCurve));
-#endif
+        suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testBadPreviousCurve));
+    }
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap));
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLargeRates));
 
-#ifndef QL_USE_INDEXED_COUPON
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testGlobalBootstrap));
-#endif
+    if (IborCoupon::Settings::instance().usingAtParCoupons()) {
+        suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testGlobalBootstrap));
+    }
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testIterativeBootstrapRetries));
 

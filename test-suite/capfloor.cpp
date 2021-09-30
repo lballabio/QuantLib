@@ -575,15 +575,15 @@ void CapFloorTest::testCachedValue() {
                                                             0.03,0.20);
 
     Real cachedCapNPV, cachedFloorNPV ;
-#ifdef QL_USE_INDEXED_COUPON
+    if (!IborCoupon::Settings::instance().usingAtParCoupons()) {
         // index fixing price
         cachedCapNPV   = 6.87630307745,
         cachedFloorNPV = 2.65796764715;
-#else
+    } else {
         // par coupon price
         cachedCapNPV   = 6.87570026732;
         cachedFloorNPV = 2.65812927959;
-#endif
+    }
 
     // test Black cap price against cached value
     if (std::fabs(cap->NPV()-cachedCapNPV) > 1.0e-11)
@@ -626,13 +626,13 @@ void CapFloorTest::testCachedValueFromOptionLets() {
          calculatedFloorletsNPV = 0.0;
 
     Real cachedCapNPV, cachedFloorNPV;
-#ifdef QL_USE_INDEXED_COUPON
-        cachedCapNPV = 6.87630307745;
-        cachedFloorNPV = 2.65796764715;
-#else
+    if (IborCoupon::Settings::instance().usingAtParCoupons()) {
         cachedCapNPV = 6.87570026732;
         cachedFloorNPV = 2.65812927959;
-#endif
+    } else {
+        cachedCapNPV = 6.87630307745;
+        cachedFloorNPV = 2.65796764715;
+    }
 
     // test Black floor price against cached value
     std::vector<Real> capletPrices;

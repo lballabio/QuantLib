@@ -114,6 +114,8 @@ void BermudanSwaptionTest::testCachedValues() {
 
     using namespace bermudan_swaption_test;
 
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+
     CommonVars vars;
 
     vars.today = Date(15, February, 2002);
@@ -150,13 +152,13 @@ void BermudanSwaptionTest::testCachedValues() {
 
     Real itmValue,    atmValue,    otmValue;
     Real itmValueFdm, atmValueFdm, otmValueFdm;
-#ifdef QL_USE_INDEXED_COUPON
-    itmValue = 42.2413, atmValue = 12.8789, otmValue = 2.4759;
-    itmValueFdm = 42.2111, atmValueFdm = 12.8879, otmValueFdm = 2.44443;
-#else
-    itmValue = 42.2470, atmValue = 12.8826, otmValue = 2.4769;
-    itmValueFdm = 42.2091, atmValueFdm = 12.8864, otmValueFdm = 2.4437;
-#endif
+    if (!usingAtParCoupons) {
+        itmValue    = 42.2413,    atmValue = 12.8789,    otmValue = 2.4759;
+        itmValueFdm = 42.2111, atmValueFdm = 12.8879, otmValueFdm = 2.44443;
+    } else {
+        itmValue    = 42.2470,    atmValue = 12.8826,    otmValue = 2.4769;
+        itmValueFdm = 42.2091, atmValueFdm = 12.8864, otmValueFdm = 2.4437;
+    }
 
     Real tolerance = 1.0e-4;
 
@@ -206,11 +208,11 @@ void BermudanSwaptionTest::testCachedValues() {
     exercise =
         ext::shared_ptr<Exercise>(new BermudanExercise(exerciseDates));
 
-#ifdef QL_USE_INDEXED_COUPON
+    if (!usingAtParCoupons) {
         itmValue = 42.1917; atmValue = 12.7788; otmValue = 2.4388;
-#else
+    } else {
         itmValue = 42.1974; atmValue = 12.7825; otmValue = 2.4399;
-#endif
+    }
 
     swaption = Swaption(itmSwap, exercise);
     swaption.setPricingEngine(treeEngine);
@@ -238,6 +240,8 @@ void BermudanSwaptionTest::testCachedG2Values() {
         "Testing Bermudan swaption with G2 model against cached values...");
 
     using namespace bermudan_swaption_test;
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
 
@@ -273,17 +277,17 @@ void BermudanSwaptionTest::testCachedG2Values() {
         ext::make_shared<TreeSwaptionEngine>(g2Model, 50));
 
     Real expectedFdm[5], expectedTree[5];
-#ifdef QL_USE_INDEXED_COUPON
-    Real tmpExpectedFdm[]  = { 103.231, 54.6519, 20.0475, 5.26941, 1.07097 };
-    Real tmpExpectedTree[] = { 103.253, 54.6685, 20.1399, 5.40517, 1.10642 };
-    std::copy(tmpExpectedFdm,  tmpExpectedFdm + 5,  expectedFdm);
-    std::copy(tmpExpectedTree, tmpExpectedTree + 5, expectedTree);
-#else
-    Real tmpExpectedFdm[]  = { 103.227, 54.6502, 20.0469, 5.26924, 1.07093 };
-    Real tmpExpectedTree[] = { 103.256, 54.6726, 20.1429, 5.4064 , 1.10677 };
-    std::copy(tmpExpectedFdm,  tmpExpectedFdm + 5,  expectedFdm);
-    std::copy(tmpExpectedTree, tmpExpectedTree + 5, expectedTree);
-#endif
+    if (!usingAtParCoupons) {
+        Real tmpExpectedFdm[]  = { 103.231, 54.6519, 20.0475, 5.26941, 1.07097 };
+        Real tmpExpectedTree[] = { 103.253, 54.6685, 20.1399, 5.40517, 1.10642 };
+        std::copy(tmpExpectedFdm,  tmpExpectedFdm + 5,  expectedFdm);
+        std::copy(tmpExpectedTree, tmpExpectedTree + 5, expectedTree);
+    } else {
+        Real tmpExpectedFdm[]  = { 103.227, 54.6502, 20.0469, 5.26924, 1.07093 };
+        Real tmpExpectedTree[] = { 103.256, 54.6726, 20.1429, 5.4064 , 1.10677 };
+        std::copy(tmpExpectedFdm,  tmpExpectedFdm + 5,  expectedFdm);
+        std::copy(tmpExpectedTree, tmpExpectedTree + 5, expectedTree);
+    }
 
     const Real tol = 0.005;
     for (Size i=0; i < swaptions.size(); ++i) {

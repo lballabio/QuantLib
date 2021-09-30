@@ -60,6 +60,8 @@ void ShortRateModelTest::testCachedHullWhite() {
 
     using namespace short_rate_models_test;
 
+    bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
+
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
@@ -101,11 +103,11 @@ void ShortRateModelTest::testCachedHullWhite() {
 
     // Check and print out results
     Real cachedA, cachedSigma;
-#ifdef QL_USE_INDEXED_COUPON
+    if (!usingAtParCoupons) {
         cachedA = 0.0463679, cachedSigma = 0.00579831;
-#else
+    } else {
         cachedA = 0.0464041, cachedSigma = 0.00579912;
-#endif
+    }
 
     Real tolerance = 1.0e-5;
     Array xMinCalculated = model->params();
@@ -134,6 +136,8 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration with fixed reversion against cached values...");
 
     using namespace short_rate_models_test;
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -178,11 +182,11 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
 
     // Check and print out results
     Real cachedA, cachedSigma;
-#ifdef QL_USE_INDEXED_COUPON
+    if (!usingAtParCoupons) {
         cachedA = 0.05, cachedSigma = 0.00585835;
-#else
+    } else {
         cachedA = 0.05, cachedSigma = 0.00585858;
-#endif
+    }
 
     Real tolerance = 1.0e-5;
     Array xMinCalculated = model->params();
@@ -213,6 +217,8 @@ void ShortRateModelTest::testCachedHullWhite2() {
                        "values using swaptions without start delay...");
 
     using namespace short_rate_models_test;
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -262,11 +268,10 @@ void ShortRateModelTest::testCachedHullWhite2() {
     // JamshidianEngine not accounting for the delay between option
     // expiry and underlying start
     Real cachedA, cachedSigma;
-#ifdef QL_USE_INDEXED_COUPON
-    cachedA = 0.0481608, cachedSigma = 0.00582493;
-#else
-    cachedA = 0.0482063, cachedSigma = 0.00582687;
-#endif
+    if (!usingAtParCoupons)
+        cachedA = 0.0481608, cachedSigma = 0.00582493;
+    else
+        cachedA = 0.0482063, cachedSigma = 0.00582687;
 
     Real tolerance = 5.0e-6; 
     Array xMinCalculated = model->params();
@@ -293,6 +298,8 @@ void ShortRateModelTest::testCachedHullWhite2() {
 
 void ShortRateModelTest::testSwaps() {
     BOOST_TEST_MESSAGE("Testing Hull-White swap pricing against known values...");
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
@@ -347,12 +354,7 @@ void ShortRateModelTest::testSwaps() {
     ext::shared_ptr<PricingEngine> engine(
                                         new TreeVanillaSwapEngine(model,120));
 
-    Real tolerance =
-#ifdef QL_USE_INDEXED_COUPON
-        4.0e-3;
-#else
-        1.0e-8;
-#endif
+    Real tolerance = usingAtParCoupons ? 1.0e-8 : 4.0e-3;
 
     for (Size i=0; i<LENGTH(start); i++) {
 
