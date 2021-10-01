@@ -55,21 +55,35 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
-        const Date& fixingValueDate() const;
-        const Date& fixingEndDate() const;
-        const Date& fixingMaturityDate() const;
-        Real spanningTime() const;
-        Real spanningTimeIndexMaturity() const;
         //@}
         //! \name FloatingRateCoupon interface
         //@{
-        //! Implemented in order to manage the case of par coupon
+        // implemented in order to manage the case of par coupon
         Rate indexFixing() const override;
         void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>&) override;
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
+        //@}
+        /*! \name Internal calculations
+
+            You won't probably need these methods unless you're implementing
+            a coupon pricer.
+        */
+        //@{
+        //! Start of the deposit period underlying the index fixing
+        const Date& fixingValueDate() const;
+        //! End of the deposit period underlying the index fixing
+        const Date& fixingMaturityDate() const;
+        //! End of the deposit period underlying the coupon fixing
+        /*! This might be not the same as fixingMaturityDate if par coupons are used. */
+        const Date& fixingEndDate() const;
+        //! Period underlying the index fixing, as a year fraction
+        Time spanningTimeIndexMaturity() const;
+        //! Period underlying the coupon fixing, as a year fraction
+        /*! This might be not the same as spanningTimeIndexMaturity if par coupons are used. */
+        Time spanningTime() const;
         //@}
 
       private:

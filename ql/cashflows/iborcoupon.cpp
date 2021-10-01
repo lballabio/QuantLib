@@ -85,12 +85,12 @@ namespace QuantLib {
         return fixingMaturityDate_;
     }
 
-    Real IborCoupon::spanningTime() const {
+    Time IborCoupon::spanningTime() const {
         initializeCachedData();
         return spanningTime_;
     }
 
-    Real IborCoupon::spanningTimeIndexMaturity() const {
+    Time IborCoupon::spanningTimeIndexMaturity() const {
         initializeCachedData();
         return spanningTimeIndexMaturity_;
     }
