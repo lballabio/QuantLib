@@ -77,7 +77,7 @@ namespace QuantLib {
                     Spread spread,
                     DayCounter floatingDayCount,
                     boost::optional<BusinessDayConvention> paymentConvention = boost::none,
-                    boost::optional<bool> useIndexedCoupon = boost::none);
+                    boost::optional<bool> useIndexedCoupons = boost::none);
         //! \name Inspectors
         //@{
         Type type() const;

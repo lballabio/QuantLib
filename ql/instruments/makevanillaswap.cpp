@@ -159,7 +159,7 @@ namespace QuantLib {
             VanillaSwap temp(type_, 100.00, fixedSchedule,
                              0.0, // fixed rate
                              fixedDayCount, floatSchedule, iborIndex_, floatSpread_, floatDayCount_,
-                             boost::none, useIndexedCoupon_);
+                             boost::none, useIndexedCoupons_);
             if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                         iborIndex_->forwardingTermStructure();
@@ -178,7 +178,7 @@ namespace QuantLib {
 
         ext::shared_ptr<VanillaSwap> swap(new VanillaSwap(
             type_, nominal_, fixedSchedule, usedFixedRate, fixedDayCount, floatSchedule, iborIndex_,
-            floatSpread_, floatDayCount_, boost::none, useIndexedCoupon_));
+            floatSpread_, floatDayCount_, boost::none, useIndexedCoupons_));
 
         if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
@@ -353,8 +353,13 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeVanillaSwap& MakeVanillaSwap::useIndexedCoupon(const boost::optional<bool>& b) {
-        useIndexedCoupon_ = b;
+    MakeVanillaSwap& MakeVanillaSwap::withIndexedCoupons(const boost::optional<bool>& b) {
+        useIndexedCoupons_ = b;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withAtParCoupons(bool b) {
+        useIndexedCoupons_ = !b;
         return *this;
     }
 

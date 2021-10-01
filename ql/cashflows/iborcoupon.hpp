@@ -152,7 +152,8 @@ namespace QuantLib {
                                     const Calendar&,
                                     BusinessDayConvention,
                                     bool endOfMonth = false);
-        IborLeg& useIndexedCoupon(boost::optional<bool>);
+        IborLeg& withIndexedCoupons(boost::optional<bool> b = true);
+        IborLeg& withAtParCoupons(bool b = true);
         operator Leg() const;
 
       private:
@@ -172,7 +173,7 @@ namespace QuantLib {
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_;
         bool exCouponEndOfMonth_;
-        boost::optional<bool> useIndexedCoupon_;
+        boost::optional<bool> useIndexedCoupons_;
     };
 
 }

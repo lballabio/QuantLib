@@ -268,8 +268,13 @@ namespace QuantLib {
         return *this;
 	}
 
-    IborLeg& IborLeg::useIndexedCoupon(boost::optional<bool> useIndexedCoupon) {
-        useIndexedCoupon_ = useIndexedCoupon;
+    IborLeg& IborLeg::withIndexedCoupons(boost::optional<bool> b) {
+        useIndexedCoupons_ = b;
+        return *this;
+    }
+
+    IborLeg& IborLeg::withAtParCoupons(bool b) {
+        useIndexedCoupons_ = !b;
         return *this;
     }
 
@@ -285,7 +290,7 @@ namespace QuantLib {
             ext::shared_ptr<IborCouponPricer> pricer = ext::make_shared<BlackIborCouponPricer>(
                 Handle<OptionletVolatilityStructure>(),
                 BlackIborCouponPricer::TimingAdjustment::Black76,
-                Handle<Quote>(ext::make_shared<SimpleQuote>(1.0)), useIndexedCoupon_);
+                Handle<Quote>(ext::make_shared<SimpleQuote>(1.0)), useIndexedCoupons_);
             setCouponPricer(leg, pricer);
         }
 

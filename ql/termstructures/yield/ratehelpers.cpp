@@ -685,13 +685,13 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const boost::optional<bool>& useIndexedCoupon)
+                                   const boost::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), settlementDays_(Null<Natural>()), tenor_(swapIndex->tenor()),
       pillarChoice_(pillarChoice), calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()), spread_(std::move(spread)), endOfMonth_(endOfMonth),
-      fwdStart_(fwdStart), discountHandle_(std::move(discount)), useIndexedCoupon_(useIndexedCoupon) {
+      fwdStart_(fwdStart), discountHandle_(std::move(discount)), useIndexedCoupons_(useIndexedCoupons) {
         // take fixing into account
         iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
         // We want to be notified of changes of fixings, but we don't
@@ -721,13 +721,13 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const boost::optional<bool>& useIndexedCoupon)
+                                   const boost::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
       fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(std::move(discount)),
-      useIndexedCoupon_(useIndexedCoupon) {
+      useIndexedCoupons_(useIndexedCoupons) {
 
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
@@ -752,14 +752,14 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const boost::optional<bool>& useIndexedCoupon)
+                                   const boost::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), settlementDays_(Null<Natural>()), tenor_(swapIndex->tenor()),
       pillarChoice_(pillarChoice), calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
       fixedDayCount_(swapIndex->dayCounter()), spread_(std::move(spread)), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(std::move(discount)),
-      useIndexedCoupon_(useIndexedCoupon) {
+      useIndexedCoupons_(useIndexedCoupons) {
         // take fixing into account
         iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
         // We want to be notified of changes of fixings, but we don't
@@ -789,13 +789,13 @@ namespace QuantLib {
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
                                    bool endOfMonth,
-                                   const boost::optional<bool>& useIndexedCoupon)
+                                   const boost::optional<bool>& useIndexedCoupons)
     : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
       pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
       fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
       fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
       fwdStart_(fwdStart), discountHandle_(std::move(discount)),
-      useIndexedCoupon_(useIndexedCoupon) {
+      useIndexedCoupons_(useIndexedCoupons) {
 
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
@@ -829,7 +829,7 @@ namespace QuantLib {
             .withFixedLegEndOfMonth(endOfMonth_)
             .withFloatingLegCalendar(calendar_)
             .withFloatingLegEndOfMonth(endOfMonth_)
-            .useIndexedCoupon(useIndexedCoupon_);
+            .withIndexedCoupons(useIndexedCoupons_);
 
         earliestDate_ = swap_->startDate();
         maturityDate_ = swap_->maturityDate();

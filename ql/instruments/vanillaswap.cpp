@@ -41,7 +41,7 @@ namespace QuantLib {
                              Spread spread,
                              DayCounter floatingDayCount,
                              boost::optional<BusinessDayConvention> paymentConvention,
-                             boost::optional<bool> useIndexedCoupon)
+                             boost::optional<bool> useIndexedCoupons)
     : Swap(2), type_(type), nominal_(nominal), fixedSchedule_(std::move(fixedSchedule)),
       fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
       floatingSchedule_(std::move(floatSchedule)), iborIndex_(std::move(iborIndex)),
@@ -62,7 +62,7 @@ namespace QuantLib {
             .withPaymentDayCounter(floatingDayCount_)
             .withPaymentAdjustment(paymentConvention_)
             .withSpreads(spread_)
-            .useIndexedCoupon(useIndexedCoupon);
+            .withIndexedCoupons(useIndexedCoupons);
         for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
 
