@@ -33,7 +33,7 @@ namespace QuantLib {
                                                          unsigned long seed)
     : M_(M), rng_(seed), topology_(std::move(topology)), inertia_(std::move(inertia)) {
         Real phi = c1 + c2;
-        QL_ENSURE(phi*phi - 4 * phi, "Invalid phi");
+        QL_ENSURE(phi*phi - 4 * phi != 0.0, "Invalid phi");
         c0_ = 2.0 / std::abs(2.0 - phi - sqrt(phi*phi - 4 * phi));
         c1_ = c0_*c1;
         c2_ = c0_*c2;
