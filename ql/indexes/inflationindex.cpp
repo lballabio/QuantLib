@@ -54,8 +54,7 @@ namespace QuantLib {
                                    const Period& availabilityLag,
                                    Currency currency)
     : familyName_(std::move(familyName)), region_(std::move(region)), revised_(revised),
-      interpolated_(false), frequency_(frequency), availabilityLag_(availabilityLag),
-      currency_(std::move(currency)) {
+      frequency_(frequency), availabilityLag_(availabilityLag), currency_(std::move(currency)) {
         name_ = region_.name() + " " + familyName_;
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
@@ -247,9 +246,8 @@ namespace QuantLib {
                                          const Period& availabilityLag,
                                          const Currency& currency,
                                          Handle<YoYInflationTermStructure> yoyInflation)
-    : InflationIndex(
-          familyName, region, revised, frequency, availabilityLag, currency),
-      ratio_(ratio), yoyInflation_(std::move(yoyInflation)), interpolated_(interpolated) {
+    : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency),
+      interpolated_(interpolated), ratio_(ratio), yoyInflation_(std::move(yoyInflation)) {
         registerWith(yoyInflation_);
     }
 
