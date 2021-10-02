@@ -109,6 +109,7 @@ namespace QuantLib {
     }
     QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
 
+
     Date CPICapFloorTermPriceSurface::cpiOptionDateFromTenor(const Period& p) const
     {
         return calendar().adjust(referenceDate() + p, businessDayConvention());

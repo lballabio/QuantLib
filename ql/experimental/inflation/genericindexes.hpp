@@ -33,7 +33,8 @@ namespace QuantLib {
     class GenericRegion : public Region {
       public:
         GenericRegion() {
-            static ext::shared_ptr<Data> GENERICdata(new Data("Generic", "GENERIC"));
+            static ext::shared_ptr<Data> GENERICdata(
+                                               new Data("Generic","GENERIC"));
             data_ = GENERICdata;
         }
     };
@@ -43,13 +44,13 @@ namespace QuantLib {
     class GenericCPI : public ZeroInflationIndex {
       public:
         QL_DEPRECATED_III_CONSTRUCTOR
-        GenericCPI(
-            Frequency frequency,
-            bool revised,
-            bool interpolated,
-            const Period& lag,
-            const Currency& ccy,
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        GenericCPI(Frequency frequency,
+                   bool revised,
+                   bool interpolated,
+                   const Period &lag,
+                   const Currency &ccy,
+                   const Handle<ZeroInflationTermStructure>& ts =
+                                         Handle<ZeroInflationTermStructure>())
         : GenericCPI(frequency, revised, lag, ccy, ts) {
             QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
             interpolated_ = interpolated;
@@ -69,31 +70,46 @@ namespace QuantLib {
     //! Genuine year-on-year Generic CPI (i.e. not a ratio)
     class YYGenericCPI : public YoYInflationIndex {
       public:
-        YYGenericCPI(
-            Frequency frequency,
-            bool revised,
-            bool interpolated,
-            const Period& lag,
-            const Currency& ccy,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex(
-              "YY_CPI", GenericRegion(), revised, interpolated, false, frequency, lag, ccy, ts) {}
+        YYGenericCPI(Frequency frequency,
+                     bool revised,
+                     bool interpolated,
+                     const Period &lag,
+                     const Currency &ccy,
+                     const Handle<YoYInflationTermStructure>& ts =
+                                          Handle<YoYInflationTermStructure>())
+        : YoYInflationIndex("YY_CPI",
+                            GenericRegion(),
+                            revised,
+                            interpolated,
+                            false,
+                            frequency,
+                            lag,
+                            ccy,
+                            ts) {}
     };
 
     //! Fake year-on-year GenericCPI (i.e. a ratio)
     class YYGenericCPIr : public YoYInflationIndex {
       public:
-        YYGenericCPIr(
-            Frequency frequency,
-            bool revised,
-            bool interpolated,
-            const Period& lag,
-            const Currency& ccy,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
-        : YoYInflationIndex(
-              "YYR_CPI", GenericRegion(), revised, interpolated, true, frequency, lag, ccy, ts) {}
+        YYGenericCPIr(Frequency frequency,
+                      bool revised,
+                      bool interpolated,
+                      const Period &lag,
+                      const Currency &ccy,
+                      const Handle<YoYInflationTermStructure>& ts =
+                                          Handle<YoYInflationTermStructure>())
+        : YoYInflationIndex("YYR_CPI",
+                            GenericRegion(),
+                            revised,
+                            interpolated,
+                            true,
+                            frequency,
+                            lag,
+                            ccy,
+                            ts) {}
     };
 
 }
 
 #endif
+

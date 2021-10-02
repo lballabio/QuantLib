@@ -551,3 +551,5 @@ test_suite* InflationCapFloorTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFloorTest::testCachedValue));
     return suite;
 }
+
+

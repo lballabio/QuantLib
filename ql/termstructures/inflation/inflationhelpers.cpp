@@ -57,7 +57,7 @@ namespace QuantLib {
 
         // check that the observation lag of the swap
         // is compatible with the availability lag of the index AND
-        // its interpolation (assuming the start day is spot)
+        // it's interpolation (assuming the start day is spot)
         if (detail::CPI::effectiveInterpolationType(zii_, observationInterpolation_) == CPI::Linear) {
             Period pShift(zii_->frequency());
             QL_REQUIRE(swapObsLag_ - pShift >= zii_->availabilityLag(),

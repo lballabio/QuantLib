@@ -236,3 +236,4 @@ test_suite* InflationCPIBondTest::suite() {
 
     return suite;
 }
+

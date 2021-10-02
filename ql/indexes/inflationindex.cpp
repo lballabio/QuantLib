@@ -54,8 +54,8 @@ namespace QuantLib {
                                    const Period& availabilityLag,
                                    Currency currency)
     : familyName_(std::move(familyName)), region_(std::move(region)), revised_(revised),
-      frequency_(frequency), availabilityLag_(availabilityLag), currency_(std::move(currency)),
-      interpolated_(false) {
+      interpolated_(false), frequency_(frequency), availabilityLag_(availabilityLag),
+      currency_(std::move(currency)) {
         name_ = region_.name() + " " + familyName_;
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
@@ -70,20 +70,22 @@ namespace QuantLib {
         return c;
     }
 
-    void InflationIndex::addFixing(const Date& fixingDate, Real fixing, bool forceOverwrite) {
+    void InflationIndex::addFixing(const Date& fixingDate,
+                                   Real fixing,
+                                   bool forceOverwrite) {
 
-        std::pair<Date, Date> lim = inflationPeriod(fixingDate, frequency_);
+        std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
         Size n = static_cast<QuantLib::Size>(lim.second - lim.first) + 1;
         std::vector<Date> dates(n);
         std::vector<Rate> rates(n);
-        for (Size i = 0; i < n; ++i) {
+        for (Size i=0; i<n; ++i) {
             dates[i] = lim.first + i;
             rates[i] = fixing;
         }
 
-        Index::addFixings(dates.begin(), dates.end(), rates.begin(), forceOverwrite);
+        Index::addFixings(dates.begin(), dates.end(),
+                          rates.begin(), forceOverwrite);
     }
-
 
     ZeroInflationIndex::ZeroInflationIndex(const std::string& familyName,
                                            const Region& region,
@@ -93,13 +95,8 @@ namespace QuantLib {
                                            const Period& availabilityLag,
                                            const Currency& currency,
                                            Handle<ZeroInflationTermStructure> zeroInflation)
-    : ZeroInflationIndex(familyName,
-                         region,
-                         revised,
-                         frequency,
-                         availabilityLag,
-                         currency,
-                         std::move(zeroInflation)) {
+    : ZeroInflationIndex(
+          familyName, region, revised, frequency, availabilityLag, currency, std::move(zeroInflation)) {
         QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
         interpolated_ = interpolated;
         QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
@@ -117,9 +114,10 @@ namespace QuantLib {
         registerWith(zeroInflation_);
     }
 
-    Rate ZeroInflationIndex::fixing(const Date& aFixingDate, bool /*forecastTodaysFixing*/) const {
+    Rate ZeroInflationIndex::fixing(const Date& aFixingDate,
+                                    bool /*forecastTodaysFixing*/) const {
         if (!needsForecast(aFixingDate)) {
-            std::pair<Date, Date> lim = inflationPeriod(aFixingDate, frequency_);
+            std::pair<Date,Date> lim = inflationPeriod(aFixingDate, frequency_);
             const TimeSeries<Real>& ts = timeSeries();
             Real pastFixing = ts[lim.first];
             QL_REQUIRE(pastFixing != Null<Real>(),
@@ -135,18 +133,16 @@ namespace QuantLib {
                     // we don't actually need the next fixing
                     theFixing = pastFixing;
                 } else {
-                    Real pastFixing2 = ts[lim.second + 1];
+                    Real pastFixing2 = ts[lim.second+1];
                     QL_REQUIRE(pastFixing2 != Null<Real>(),
-                               "Missing " << name() << " fixing for " << lim.second + 1);
+                               "Missing " << name() << " fixing for " << lim.second+1);
 
                     // Use lagged period for interpolation
-                    std::pair<Date, Date> reference_period_lim = inflationPeriod(
-                        aFixingDate + zeroInflationTermStructure()->observationLag(), frequency_);
+                    std::pair<Date, Date> reference_period_lim = inflationPeriod(aFixingDate + zeroInflationTermStructure()->observationLag(), frequency_);
                     // now linearly interpolate
-                    Real daysInPeriod =
-                        reference_period_lim.second + 1 - reference_period_lim.first;
-                    theFixing = pastFixing + (pastFixing2 - pastFixing) *
-                                                 (aFixingDate - lim.first) / daysInPeriod;
+                    Real daysInPeriod = reference_period_lim.second + 1 - reference_period_lim.first;
+                    theFixing = pastFixing
+                        + (pastFixing2 - pastFixing)*(aFixingDate - lim.first) / daysInPeriod;
                 }
             }
             return theFixing;
@@ -168,13 +164,14 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
         Date todayMinusLag = today - availabilityLag_;
 
-        Date historicalFixingKnown = inflationPeriod(todayMinusLag, frequency_).first - 1;
+        Date historicalFixingKnown =
+            inflationPeriod(todayMinusLag, frequency_).first-1;
         Date latestNeededDate = fixingDate;
 
         QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
         if (interpolated_) { // might need the next one too
             QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
-            std::pair<Date, Date> p = inflationPeriod(fixingDate, frequency_);
+            std::pair<Date,Date> p = inflationPeriod(fixingDate, frequency_);
             if (fixingDate > p.first)
                 latestNeededDate += Period(frequency_);
         }
@@ -221,14 +218,14 @@ namespace QuantLib {
         // fixingDate to avoid potential problems at the edges of periods
         Time t = zeroInflation_->dayCounter().yearFraction(baseDate, effectiveFixingDate);
         bool forceLinearInterpolation = false;
-        Rate zero = zeroInflation_->zeroRate(fixingDate, Period(0, Days), forceLinearInterpolation);
+        Rate zero = zeroInflation_->zeroRate(fixingDate, Period(0,Days), forceLinearInterpolation);
         // Annual compounding is the convention for zero inflation rates (or quotes)
         return baseFixing * std::pow(1.0 + zero, t);
     }
 
 
-    ext::shared_ptr<ZeroInflationIndex>
-    ZeroInflationIndex::clone(const Handle<ZeroInflationTermStructure>& h) const {
+    ext::shared_ptr<ZeroInflationIndex> ZeroInflationIndex::clone(
+                          const Handle<ZeroInflationTermStructure>& h) const {
         /* using the new constructor and set interpolated to avoid the deprecated warning and
          * error...  */
         auto clonedIndex = ext::make_shared<ZeroInflationIndex>(
@@ -250,21 +247,23 @@ namespace QuantLib {
                                          const Period& availabilityLag,
                                          const Currency& currency,
                                          Handle<YoYInflationTermStructure> yoyInflation)
-    : InflationIndex(familyName, region, revised, frequency, availabilityLag, currency),
-      ratio_(ratio), yoyInflation_(std::move(yoyInflation)) {
-        interpolated_ = interpolated;
+    : InflationIndex(
+          familyName, region, revised, frequency, availabilityLag, currency),
+      ratio_(ratio), yoyInflation_(std::move(yoyInflation)), interpolated_(interpolated) {
         registerWith(yoyInflation_);
     }
 
-    Rate YoYInflationIndex::fixing(const Date& fixingDate, bool /*forecastTodaysFixing*/) const {
+
+    Rate YoYInflationIndex::fixing(const Date& fixingDate,
+                                   bool /*forecastTodaysFixing*/) const {
 
         Date today = Settings::instance().evaluationDate();
         Date todayMinusLag = today - availabilityLag_;
-        std::pair<Date, Date> lim = inflationPeriod(todayMinusLag, frequency_);
-        Date lastFix = lim.first - 1;
+        std::pair<Date,Date> lim = inflationPeriod(todayMinusLag, frequency_);
+        Date lastFix = lim.first-1;
 
-        Date flatMustForecastOn = lastFix + 1;
-        Date interpMustForecastOn = lastFix + 1 - Period(frequency_);
+        Date flatMustForecastOn = lastFix+1;
+        Date interpMustForecastOn = lastFix+1 - Period(frequency_);
 
 
         if (interpolated() && fixingDate >= interpMustForecastOn) {
@@ -280,79 +279,89 @@ namespace QuantLib {
         const TimeSeries<Real>& ts = timeSeries();
         if (ratio()) {
 
-            if (interpolated()) { // IS ratio, IS interpolated
+            if(interpolated()){ // IS ratio, IS interpolated
 
-                std::pair<Date, Date> lim = inflationPeriod(fixingDate, frequency_);
-                Date fixMinus1Y = NullCalendar().advance(fixingDate, -1 * Years, ModifiedFollowing);
-                std::pair<Date, Date> limBef = inflationPeriod(fixMinus1Y, frequency_);
-                Real dp = lim.second + 1 - lim.first;
-                Real dpBef = limBef.second + 1 - limBef.first;
-                Real dl = fixingDate - lim.first;
+                std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
+                Date fixMinus1Y=NullCalendar().advance(fixingDate, -1*Years, ModifiedFollowing);
+                std::pair<Date,Date> limBef = inflationPeriod(fixMinus1Y, frequency_);
+                Real dp= lim.second + 1 - lim.first;
+                Real dpBef=limBef.second + 1 - limBef.first;
+                Real dl = fixingDate-lim.first;
                 // potentially does not work on 29th Feb
                 Real dlBef = fixMinus1Y - limBef.first;
                 // get the four relevant fixings
                 // recall that they are stored flat for every day
                 Rate limFirstFix = ts[lim.first];
                 QL_REQUIRE(limFirstFix != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << lim.first);
-                Rate limSecondFix = ts[lim.second + 1];
+                            "Missing " << name() << " fixing for "
+                            << lim.first );
+                Rate limSecondFix = ts[lim.second+1];
                 QL_REQUIRE(limSecondFix != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << lim.second + 1);
+                            "Missing " << name() << " fixing for "
+                            << lim.second+1 );
                 Rate limBefFirstFix = ts[limBef.first];
                 QL_REQUIRE(limBefFirstFix != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << limBef.first);
+                            "Missing " << name() << " fixing for "
+                            << limBef.first );
                 Rate limBefSecondFix =
-                    IndexManager::instance().getHistory(name())[limBef.second + 1];
+                IndexManager::instance().getHistory(name())[limBef.second+1];
                 QL_REQUIRE(limBefSecondFix != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << limBef.second + 1);
+                            "Missing " << name() << " fixing for "
+                            << limBef.second+1 );
 
-                Real linearNow = limFirstFix + (limSecondFix - limFirstFix) * dl / dp;
-                Real linearBef =
-                    limBefFirstFix + (limBefSecondFix - limBefFirstFix) * dlBef / dpBef;
+                Real linearNow = limFirstFix + (limSecondFix-limFirstFix)*dl/dp;
+                Real linearBef = limBefFirstFix + (limBefSecondFix-limBefFirstFix)*dlBef/dpBef;
                 Rate wasYES = linearNow / linearBef - 1.0;
 
                 return wasYES;
 
-            } else { // IS ratio, NOT interpolated
+            } else {    // IS ratio, NOT interpolated
                 Rate pastFixing = ts[fixingDate];
                 QL_REQUIRE(pastFixing != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << fixingDate);
-                Date previousDate = fixingDate - 1 * Years;
+                            "Missing " << name() << " fixing for "
+                            << fixingDate);
+                Date previousDate = fixingDate - 1*Years;
                 Rate previousFixing = ts[previousDate];
                 QL_REQUIRE(previousFixing != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << previousDate);
+                           "Missing " << name() << " fixing for "
+                           << previousDate );
 
-                return pastFixing / previousFixing - 1.0;
+                return pastFixing/previousFixing - 1.0;
             }
 
-        } else { // NOT ratio
+        } else {  // NOT ratio
 
             if (interpolated()) { // NOT ratio, IS interpolated
 
-                std::pair<Date, Date> lim = inflationPeriod(fixingDate, frequency_);
-                Real dp = lim.second + 1 - lim.first;
-                Real dl = fixingDate - lim.first;
+                std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
+                Real dp= lim.second + 1 - lim.first;
+                Real dl = fixingDate-lim.first;
                 Rate limFirstFix = ts[lim.first];
                 QL_REQUIRE(limFirstFix != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << lim.first);
-                Rate limSecondFix = ts[lim.second + 1];
+                            "Missing " << name() << " fixing for "
+                            << lim.first );
+                Rate limSecondFix = ts[lim.second+1];
                 QL_REQUIRE(limSecondFix != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << lim.second + 1);
-                Real linearNow = limFirstFix + (limSecondFix - limFirstFix) * dl / dp;
+                            "Missing " << name() << " fixing for "
+                            << lim.second+1 );
+                Real linearNow = limFirstFix + (limSecondFix-limFirstFix)*dl/dp;
 
                 return linearNow;
 
             } else { // NOT ratio, NOT interpolated
-                     // so just flat
+                    // so just flat
 
                 Rate pastFixing = ts[fixingDate];
                 QL_REQUIRE(pastFixing != Null<Rate>(),
-                           "Missing " << name() << " fixing for " << fixingDate);
+                           "Missing " << name() << " fixing for "
+                           << fixingDate);
                 return pastFixing;
+
             }
         }
 
         // QL_FAIL("YoYInflationIndex::fixing, should never get here");
+
     }
 
 
@@ -364,17 +373,18 @@ namespace QuantLib {
         } else {
             // if the value is not interpolated use the starting value
             // by internal convention this will be consistent
-            std::pair<Date, Date> lim = inflationPeriod(fixingDate, frequency_);
+            std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
             d = lim.first;
         }
-        return yoyInflation_->yoyRate(d, 0 * Days);
+        return yoyInflation_->yoyRate(d,0*Days);
     }
 
-    ext::shared_ptr<YoYInflationIndex>
-    YoYInflationIndex::clone(const Handle<YoYInflationTermStructure>& h) const {
-        return ext::make_shared<YoYInflationIndex>(familyName(), region(), revised(),
-                                                   interpolated(), ratio(), frequency(),
-                                                   availabilityLag(), currency(), h);
+    ext::shared_ptr<YoYInflationIndex> YoYInflationIndex::clone(
+                           const Handle<YoYInflationTermStructure>& h) const {
+        return ext::make_shared<YoYInflationIndex>(
+                      familyName_, region_, revised_,
+                                            interpolated_, ratio_, frequency_,
+                                            availabilityLag_, currency_, h);
     }
 
 

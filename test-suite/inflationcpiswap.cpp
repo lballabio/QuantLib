@@ -547,3 +547,4 @@ test_suite* CPISwapTest::suite() {
 
     return suite;
 }
+

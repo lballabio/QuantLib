@@ -2,7 +2,6 @@
 
 /*
  Copyright (C) 2009 Chris Kenyon
- Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,38 +28,32 @@
 
 namespace QuantLib {
 
-    CPICoupon::CPICoupon(Real baseCPI, // user provided
-                         const Date& paymentDate,
-                         Real nominal,
-                         const Date& startDate,
-                         const Date& endDate,
-                         Natural fixingDays,
-                         const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
-                         const Period& observationLag,
-                         CPI::InterpolationType observationInterpolation,
-                         const DayCounter& dayCounter,
-                         Real fixedRate, // aka gearing
-                         Spread spread,
-                         const Date& refPeriodStart,
-                         const Date& refPeriodEnd,
-                         const Date& exCouponDate)
-    : InflationCoupon(paymentDate,
-                      nominal,
-                      startDate,
-                      endDate,
-                      fixingDays,
-                      zeroIndex,
-                      observationLag,
-                      dayCounter,
-                      refPeriodStart,
-                      refPeriodEnd,
-                      exCouponDate),
-      baseCPI_(baseCPI), fixedRate_(fixedRate), spread_(spread),
-      observationInterpolation_(observationInterpolation) {
+    CPICoupon::
+    CPICoupon(
+              Real baseCPI, // user provided
+              const Date& paymentDate,
+              Real nominal,
+              const Date& startDate,
+              const Date& endDate,
+              Natural fixingDays,
+              const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
+              const Period& observationLag,
+              CPI::InterpolationType observationInterpolation,
+              const DayCounter& dayCounter,
+              Real fixedRate, // aka gearing
+              Spread spread,
+              const Date& refPeriodStart,
+              const Date& refPeriodEnd,
+              const Date& exCouponDate)
+    : InflationCoupon(paymentDate, nominal, startDate, endDate,
+                      fixingDays, zeroIndex, observationLag,
+                      dayCounter, refPeriodStart, refPeriodEnd, exCouponDate),
+        baseCPI_(baseCPI), fixedRate_(fixedRate), spread_(spread),
+        observationInterpolation_(observationInterpolation) {
 
-        QL_REQUIRE(std::fabs(baseCPI_) > 1e-16,
-                   "|baseCPI_| < 1e-16, future divide-by-zero problem");
-    }
+            QL_REQUIRE(std::fabs(baseCPI_) > 1e-16,
+                       "|baseCPI_| < 1e-16, future divide-by-zero problem");
+        }
 
 
     void CPICoupon::accept(AcyclicVisitor& v) {
@@ -72,12 +65,14 @@ namespace QuantLib {
     }
 
 
-    bool CPICoupon::checkPricerImpl(const ext::shared_ptr<InflationCouponPricer>& pricer) const {
-        return static_cast<bool>(ext::dynamic_pointer_cast<CPICouponPricer>(pricer));
+    bool CPICoupon::checkPricerImpl(
+            const ext::shared_ptr<InflationCouponPricer>&pricer) const {
+        return static_cast<bool>(
+                        ext::dynamic_pointer_cast<CPICouponPricer>(pricer));
     }
 
 
-    Rate CPICoupon::indexFixing(const Date& d) const {
+    Rate CPICoupon::indexFixing(const Date &d) const {
         // you may want to modify the interpolation of the index
         // this gives you the chance
 
@@ -88,22 +83,23 @@ namespace QuantLib {
 
         } else {
             // work out what it should be
-            std::pair<Date, Date> dd = inflationPeriod(d, cpiIndex()->frequency());
+            std::pair<Date,Date> dd = inflationPeriod(d, cpiIndex()->frequency());
             Real indexStart = cpiIndex()->fixing(dd.first);
             if (observationInterpolation() == CPI::Linear) {
-                Real indexEnd = cpiIndex()->fixing(dd.second + Period(1, Days));
+                Real indexEnd = cpiIndex()->fixing(dd.second+Period(1,Days));
                 // linear interpolation
-                I1 = indexStart +
-                     (indexEnd - indexStart) * (d - dd.first) /
-                         (Real)((dd.second + Period(1, Days)) -
-                                dd.first); // can't get to next period's value within current period
+                I1 = indexStart + (indexEnd - indexStart) * (d - dd.first)
+                / (Real)( (dd.second+Period(1,Days)) - dd.first); // can't get to next period's value within current period
             } else {
                 // no interpolation, i.e. flat = constant, so use start-of-period value
                 I1 = indexStart;
             }
+
         }
         return I1;
     }
+
+
 
 
     Date CPICashFlow::baseDate() const {
@@ -111,35 +107,36 @@ namespace QuantLib {
         QL_FAIL("no base date specified");
     }
 
-    Real CPICashFlow::baseFixing() const { return baseFixing_; }
+    Real CPICashFlow::baseFixing() const {
+        return baseFixing_;
+    }
 
     Real CPICashFlow::amount() const {
         Real I0 = baseFixing();
         Real I1;
 
         // what interpolation do we use? Index / flat / linear
-        if (interpolation() == CPI::AsIndex) {
+        if (interpolation() == CPI::AsIndex ) {
             I1 = index()->fixing(fixingDate());
         } else {
             // work out what it should be
-            // std::cout << fixingDate() << " and " << frequency() << std::endl;
-            // std::pair<Date,Date> dd = inflationPeriod(fixingDate(), frequency());
-            // std::cout << fixingDate() << " and " << dd.first << " " << dd.second << std::endl;
+            //std::cout << fixingDate() << " and " << frequency() << std::endl;
+            //std::pair<Date,Date> dd = inflationPeriod(fixingDate(), frequency());
+            //std::cout << fixingDate() << " and " << dd.first << " " << dd.second << std::endl;
             // work out what it should be
-            std::pair<Date, Date> dd = inflationPeriod(fixingDate(), frequency());
+            std::pair<Date,Date> dd = inflationPeriod(fixingDate(), frequency());
             Real indexStart = index()->fixing(dd.first);
             if (interpolation() == CPI::Linear) {
-                Real indexEnd = index()->fixing(dd.second + Period(1, Days));
+                Real indexEnd = index()->fixing(dd.second+Period(1,Days));
                 // linear interpolation
-                // std::cout << indexStart << " and " << indexEnd << std::endl;
-                I1 = indexStart +
-                     (indexEnd - indexStart) * (fixingDate() - dd.first) /
-                         ((dd.second + Period(1, Days)) -
-                          dd.first); // can't get to next period's value within current period
+                //std::cout << indexStart << " and " << indexEnd << std::endl;
+                I1 = indexStart + (indexEnd - indexStart) * (fixingDate() - dd.first)
+                / ( (dd.second+Period(1,Days)) - dd.first); // can't get to next period's value within current period
             } else {
                 // no interpolation, i.e. flat = constant, so use start-of-period value
                 I1 = indexStart;
             }
+
         }
 
 
@@ -168,17 +165,17 @@ namespace QuantLib {
 
 
     CPILeg& CPILeg::withFixedRates(Real fixedRate) {
-        fixedRates_ = std::vector<Real>(1, fixedRate);
+        fixedRates_ = std::vector<Real>(1,fixedRate);
         return *this;
     }
 
     CPILeg& CPILeg::withFixedRates(const std::vector<Real>& fixedRates) {
-        fixedRates_ = fixedRates;
+        fixedRates_ =   fixedRates;
         return *this;
     }
 
     CPILeg& CPILeg::withNotionals(Real notional) {
-        notionals_ = std::vector<Real>(1, notional);
+        notionals_ = std::vector<Real>(1,notional);
         return *this;
     }
 
@@ -208,7 +205,7 @@ namespace QuantLib {
     }
 
     CPILeg& CPILeg::withFixingDays(Natural fixingDays) {
-        fixingDays_ = std::vector<Natural>(1, fixingDays);
+        fixingDays_ = std::vector<Natural>(1,fixingDays);
         return *this;
     }
 
@@ -218,7 +215,7 @@ namespace QuantLib {
     }
 
     CPILeg& CPILeg::withSpreads(Spread spread) {
-        spreads_ = std::vector<Spread>(1, spread);
+        spreads_ = std::vector<Spread>(1,spread);
         return *this;
     }
 
@@ -228,7 +225,7 @@ namespace QuantLib {
     }
 
     CPILeg& CPILeg::withCaps(Rate cap) {
-        caps_ = std::vector<Rate>(1, cap);
+        caps_ = std::vector<Rate>(1,cap);
         return *this;
     }
 
@@ -238,7 +235,7 @@ namespace QuantLib {
     }
 
     CPILeg& CPILeg::withFloors(Rate floor) {
-        floors_ = std::vector<Rate>(1, floor);
+        floors_ = std::vector<Rate>(1,floor);
         return *this;
     }
 
@@ -247,10 +244,11 @@ namespace QuantLib {
         return *this;
     }
 
-    CPILeg& CPILeg::withExCouponPeriod(const Period& period,
-                                       const Calendar& cal,
-                                       BusinessDayConvention convention,
-                                       bool endOfMonth) {
+    CPILeg& CPILeg::withExCouponPeriod(
+                        const Period& period,
+                        const Calendar& cal,
+                        BusinessDayConvention convention,
+                        bool endOfMonth) {
         exCouponPeriod_ = period;
         exCouponCalendar_ = cal;
         exCouponAdjustment_ = convention;
@@ -262,30 +260,34 @@ namespace QuantLib {
     CPILeg::operator Leg() const {
 
         QL_REQUIRE(!notionals_.empty(), "no notional given");
-        Size n = schedule_.size() - 1;
+        Size n = schedule_.size()-1;
         Leg leg;
-        leg.reserve(n + 1); // +1 for notional, we always have some sort ...
-        if (n > 0) {
-            QL_REQUIRE(!fixedRates_.empty() || !spreads_.empty(), "no fixedRates or spreads given");
+        leg.reserve(n+1);   // +1 for notional, we always have some sort ...
+        if (n>0) {
+            QL_REQUIRE(!fixedRates_.empty() || !spreads_.empty(),
+                       "no fixedRates or spreads given");
 
             Date refStart, start, refEnd, end;
 
-            for (Size i = 0; i < n; ++i) {
+            for (Size i=0; i<n; ++i) {
                 refStart = start = schedule_.date(i);
-                refEnd = end = schedule_.date(i + 1);
+                refEnd   =   end = schedule_.date(i+1);
                 Date paymentDate = paymentCalendar_.adjust(end, paymentAdjustment_);
 
                 Date exCouponDate;
-                if (exCouponPeriod_ != Period()) {
-                    exCouponDate = exCouponCalendar_.advance(
-                        paymentDate, -exCouponPeriod_, exCouponAdjustment_, exCouponEndOfMonth_);
+                if (exCouponPeriod_ != Period())
+                {
+                    exCouponDate = exCouponCalendar_.advance(paymentDate,
+                                                                -exCouponPeriod_,
+                                                                exCouponAdjustment_,
+                                                                exCouponEndOfMonth_);
                 }
 
-                if (i == 0 && schedule_.hasIsRegular() && !schedule_.isRegular(i + 1)) {
+                if (i==0   && schedule_.hasIsRegular() && !schedule_.isRegular(i+1)) {
                     BusinessDayConvention bdc = schedule_.businessDayConvention();
                     refStart = schedule_.calendar().adjust(end - schedule_.tenor(), bdc);
                 }
-                if (i == n - 1 && schedule_.hasIsRegular() && !schedule_.isRegular(i + 1)) {
+                if (i==n-1 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1)) {
                     BusinessDayConvention bdc = schedule_.businessDayConvention();
                     refEnd = schedule_.calendar().adjust(start + schedule_.tenor(), bdc);
                 }

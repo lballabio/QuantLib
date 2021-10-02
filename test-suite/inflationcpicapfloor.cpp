@@ -482,3 +482,4 @@ test_suite* InflationCPICapFloorTest::suite() {
 
     return suite;
 }
+
