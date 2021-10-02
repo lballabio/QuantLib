@@ -136,7 +136,9 @@ configure_file(ql/config.hpp.cfg ql/config.hpp @ONLY)
 configure_file(ql/qldefines.hpp.cfg ql/qldefines.hpp @ONLY)
 configure_file(ql/version.hpp.cfg ql/version.hpp @ONLY)
 configure_file(quantlib-config.in quantlib-config @ONLY)
-install(FILES ${CMAKE_BINARY_DIR}/quantlib-config DESTINATION "${QL_INSTALL_BINDIR}")
+install(FILES ${CMAKE_BINARY_DIR}/quantlib-config
+        PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+        DESTINATION "${QL_INSTALL_BINDIR}")
 
 # Check for library name layout tagging
 if (QL_TAGGED_LAYOUT)
