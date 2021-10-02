@@ -534,7 +534,7 @@ namespace QuantLib {
                           ", error " <<  calibrationResult[5]
                           );
 
-            QL_ENSURE(useMaxError_ ? calibrationResult[6] : calibrationResult[5] < maxErrorTolerance_,
+            QL_ENSURE((useMaxError_ ? calibrationResult[6] : calibrationResult[5]) < maxErrorTolerance_,
                       "section calibration failed: "
                       "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
