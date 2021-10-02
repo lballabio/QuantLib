@@ -43,8 +43,6 @@ namespace QuantLib {
             return out << "Unadjusted";
           case Nearest:
             return out << "Nearest";
-          case IMMWednesday:
-            return out << "IMMWednesday";
           default:
             QL_FAIL("unknown BusinessDayConvention (" << Integer(b) << ")");
         }
