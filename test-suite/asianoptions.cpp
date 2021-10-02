@@ -625,9 +625,9 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
     // 30-day options need wider tolerance due to uncertainty around what "weekly
     // fixing" dates mean over a 30-day month!
     Real tol[] = {
-        4.0e-2, 2.0e-2, 2.0e-2, 3.0e-2, 3.0e-2, 6.0e-2,
-        1.0e-1, 1.0e-2, 2.0e-2, 2.0e-2, 4.0e-2, 6.0e-2,
-        2.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 4.0e-2, 6.0e-2
+        4.0e-2, 2.0e-2, 2.0e-2, 4.0e-2, 4.0e-2, 7.0e-2,
+        1.0e-1, 4.0e-2, 2.0e-2, 2.0e-2, 4.0e-2, 6.0e-2,
+        2.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 4.0e-2, 7.0e-2
     };
 
     DayCounter dc = Actual365Fixed();
@@ -651,7 +651,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
 
     ext::shared_ptr<PricingEngine> engine =
         MakeMCDiscreteGeometricAPHestonEngine<LowDiscrepancy>(hestonProcess)
-        .withSamples(32767)
+        .withSamples(10000)
         .withSeed(43);
 
     testDiscreteGeometricAveragePriceHeston(engine, tol);
@@ -664,9 +664,72 @@ void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
 
     // 30-day options need wider tolerance due to uncertainty around what "weekly
     // fixing" dates mean over a 30-day month!
-    Real tolerance = 0.04;
+
     int days[] =           {30, 90, 180, 360, 720};
     Real strikes[] =       {90, 100, 110};
+
+    Real tol[3][5][2] = {{{
+                              0.04, // strike=90, days=30, k=0
+                              0.04, // strike=90, days=30, k=1
+                          },
+                          {
+                              0.04, // strike=90, days=90, k=0
+                              0.04, // strike=90, days=90, k=1
+                          },
+                          {
+                              0.04, // strike=90, days=180, k=0
+                              0.04, // strike=90, days=180, k=1
+                          },
+                          {
+                              0.05, // strike=90, days=360, k=0
+                              0.04, // strike=90, days=360, k=1
+                          },
+                          {
+                              0.04, // strike=90, days=720, k=0
+                              0.04, // strike=90, days=720, k=1
+                          }},
+
+                         {{
+                              0.04, // strike=100, days=30, k=0
+                              0.04, // strike=100, days=30, k=1
+                          },
+                          {
+                              0.04, // strike=100, days=90, k=0
+                              0.04, // strike=100, days=90, k=1
+                          },
+                          {
+                              0.04, // strike=100, days=180, k=0
+                              0.04, // strike=100, days=180, k=1
+                          },
+                          {
+                              0.06, // strike=100, days=360, k=0
+                              0.06, // strike=100, days=360, k=1
+                          },
+                          {
+                              0.06, // strike=100, days=720, k=0
+                              0.05, // strike=100, days=720, k=1
+                          }},
+
+                         {{
+                              0.04, // strike=110, days=30, k=0
+                              0.04, // strike=110, days=30, k=1
+                          },
+                          {
+                              0.04, // strike=110, days=90, k=0
+                              0.04, // strike=110, days=90, k=1
+                          },
+                          {
+                              0.04, // strike=110, days=180, k=0
+                              0.04, // strike=110, days=180, k=1
+                          },
+                          {
+                              0.05, // strike=110, days=360, k=0
+                              0.04, // strike=110, days=360, k=1
+                          },
+                          {
+                              0.06, // strike=110, days=720, k=0
+                              0.05, // strike=110, days=720, k=1
+                          }}};
 
     DayCounter dc = Actual365Fixed();
     Date today = Settings::instance().evaluationDate();
@@ -692,15 +755,27 @@ void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
 
     ext::shared_ptr<PricingEngine> mcEngine =
         MakeMCDiscreteGeometricAPHestonEngine<LowDiscrepancy>(hestonProcess)
-        .withSamples(32767)
+        .withSamples(10000)
         .withSeed(43);
 
     Option::Type type(Option::Call);
     Average::Type averageType = Average::Geometric;
 
+    auto strike_index = -1;
+
     for (double strike : strikes) {
+
+        strike_index++;
+        auto day_index = -1;
+
         for (int day : days) {
+
+            day_index++;
+            auto k_index = -1;
+
             for (Size k=0; k<2; k++) {
+
+                k_index++;
                 Size futureFixings = int(std::floor(day / 30.0));
                 std::vector<Date> fixingDates(futureFixings);
                 Date expiryDate = today + day*Days;
@@ -730,6 +805,8 @@ void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
 
                 option.setPricingEngine(mcEngine);
                 Real mcPrice = option.NPV();
+
+                auto tolerance = tol[strike_index][day_index][k_index];
 
                 if (std::fabs(analyticPrice-mcPrice) > tolerance) {
                     REPORT_FAILURE("value", averageType, runningAccumulator, pastFixingsCount,
@@ -1050,13 +1127,13 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
         MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
             .withSeed(42)
             .withSteps(180)
-            .withSamples(32767);
+            .withSamples(20000);
 
     ext::shared_ptr<PricingEngine> engine4 =
         MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
             .withSeed(42)
             .withSteps(180)
-            .withSamples(16383)
+            .withSamples(10000)
             .withControlVariate(true);
 
     std::vector<Date> fixingDates(120);

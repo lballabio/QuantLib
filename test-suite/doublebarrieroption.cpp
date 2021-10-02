@@ -621,7 +621,7 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
     tolerance = 0.01;
 
     mcdoublebarrierengine = MakeMCDoubleBarrierEngine<PseudoRandom>(bsmProcess)
-        .withSteps(10000)
+        .withSteps(5000)
         .withAntitheticVariate()
         .withAbsoluteTolerance(tolerance)
         .withSeed(10);
