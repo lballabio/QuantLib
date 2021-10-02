@@ -271,6 +271,8 @@ void CPISwapTest::consistency() {
 
     using namespace inflation_cpi_swap_test;
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     // check inflation leg vs calculation directly from inflation TS
     CommonVars common;
 
@@ -369,7 +371,7 @@ void CPISwapTest::consistency() {
     Real diff = fabs(1-zisV.NPV()/4191660.0);
     
     Real max_diff;
-    if (IborCoupon::usingAtParCoupons())
+    if (iborcoupon_settings.usingAtParCoupons())
         max_diff = 1e-5;
     else
         max_diff = 3e-5;

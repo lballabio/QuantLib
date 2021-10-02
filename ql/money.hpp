@@ -26,6 +26,7 @@
 #define quantlib_money_hpp
 
 #include <ql/currency.hpp>
+#include <ql/patterns/singleton.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -76,14 +77,54 @@ namespace QuantLib {
                                          currency of the first
                                          operand */
         };
-        static ConversionType conversionType;
-        static Currency baseCurrency;
+        // Money::Settings forward declaration
+        class Settings;
         //@}
       private:
         Decimal value_ = 0.0;
         Currency currency_;
+
+        // temporary support for old syntax
+        struct BaseCurrencyProxy {
+          public:
+            BaseCurrencyProxy& operator=(const Currency&);
+            operator Currency() const;
+        };
+
+        struct ConversionTypeProxy {
+          public:
+            ConversionTypeProxy& operator=(Money::ConversionType);
+            operator Money::ConversionType() const;
+        };
+
+      public:
+        /*! \deprecated Use Money::Settings::instance().baseCurrency() instead.
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED static BaseCurrencyProxy baseCurrency;
+        /*! \deprecated Use Money::Settings::instance().conversionType() instead.
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED static ConversionTypeProxy conversionType;
     };
 
+    //! Per-session settings for the Money class
+    class Money::Settings : public Singleton<Money::Settings> {
+        friend class Singleton<Money::Settings>;
+      private:
+        Settings() = default;
+
+      public:
+        const Money::ConversionType & conversionType() const;
+        Money::ConversionType & conversionType();
+
+        const Currency & baseCurrency() const;
+        Currency & baseCurrency();
+
+      private:
+        Money::ConversionType conversionType_ = Money::NoConversion;
+        Currency baseCurrency_;
+    };
 
     // More arithmetics and comparisons
 
