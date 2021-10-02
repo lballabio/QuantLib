@@ -575,6 +575,8 @@ void CreditDefaultSwapTest::testIsdaEngine() {
     BOOST_TEST_MESSAGE(
         "Testing ISDA engine calculations for credit-default swaps...");
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     SavedSettings backup;
 
     Date tradeDate(21, May, 2009);
@@ -666,7 +668,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                              -4702034.688,
                              -4042340.999};
     Real tolerance;
-    if (IborCoupon::usingAtParCoupons()) {
+    if (iborcoupon_settings.usingAtParCoupons()) {
         tolerance = 1.0e-6;
     } else {
         /* The risk-free curve is a bit off. We might skip the tests

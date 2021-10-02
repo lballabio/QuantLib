@@ -59,17 +59,15 @@ namespace swap_test {
         
         // utilities
         ext::shared_ptr<VanillaSwap>
-        makeSwap(Integer length, Rate fixedRate, Spread floatingSpread) const {
+        makeSwap(Integer length, Rate fixedRate, Spread floatingSpread, DateGeneration::Rule rule = DateGeneration::Forward) const {
             Date maturity = calendar.advance(settlement,length,Years,
                                              floatingConvention);
             Schedule fixedSchedule(settlement,maturity,Period(fixedFrequency),
-                                   calendar,fixedConvention,fixedConvention,
-                                   DateGeneration::Forward,false);
+                                   calendar,fixedConvention,fixedConvention, rule, false);
             Schedule floatSchedule(settlement,maturity,
                                    Period(floatingFrequency),
                                    calendar,floatingConvention,
-                                   floatingConvention,
-                                   DateGeneration::Forward,false);
+                                   floatingConvention, rule, false);
             ext::shared_ptr<VanillaSwap> swap(
                 new VanillaSwap(type, nominal,
                                 fixedSchedule, fixedRate, fixedDayCount,
@@ -299,6 +297,8 @@ void SwapTest::testCachedValue() {
 
     using namespace swap_test;
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     CommonVars vars;
 
     vars.today = Date(17,June,2002);
@@ -316,7 +316,7 @@ void SwapTest::testCachedValue() {
                     << "    expected:   " << 2);
 
     Real cachedNPV;  
-    if (IborCoupon::usingAtParCoupons())
+    if (iborcoupon_settings.usingAtParCoupons())
         cachedNPV = -5.872863313209;
     else
         cachedNPV = -5.872342992212;
@@ -328,6 +328,24 @@ void SwapTest::testCachedValue() {
                     << "    expected:   " << cachedNPV);
 }
 
+void SwapTest::testThirdWednesdayAdjustment() {
+
+    BOOST_TEST_MESSAGE("Testing third wednesday adjustment...");
+
+    using namespace swap_test;
+
+    CommonVars vars;
+
+    ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(1, 0.0, -0.001, DateGeneration::ThirdWednesdayInclusive);
+
+    if (swap->floatingSchedule().startDate() != Date(16, September, 2015)) {
+        BOOST_ERROR("Wrong Start Date " << swap->floatingSchedule().startDate());
+    }
+
+     if (swap->floatingSchedule().endDate() != Date(21, September, 2016)) {
+        BOOST_ERROR("Wrong End Date " << swap->floatingSchedule().endDate());
+    }
+}
 
 test_suite* SwapTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Swap tests");
@@ -337,6 +355,7 @@ test_suite* SwapTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testSpreadDependency));
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testInArrears));
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testCachedValue));
+    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testThirdWednesdayAdjustment));
     return suite;
 }
 

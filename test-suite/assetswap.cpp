@@ -512,6 +512,8 @@ void AssetSwapTest::testImpliedValue() {
 
     using namespace asset_swap_test;
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -560,7 +562,7 @@ void AssetSwapTest::testImpliedValue() {
     // directly. The same kind of discrepancy will occur for a multi
     // curve set up, which we do not test here.
     Real tolerance2;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!iborcoupon_settings.usingAtParCoupons())
         tolerance2 = 1.0e-2;
     else
         tolerance2 = 1.0e-13;
@@ -882,6 +884,8 @@ void AssetSwapTest::testMarketASWSpread() {
 
     using namespace asset_swap_test;
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -933,7 +937,7 @@ void AssetSwapTest::testMarketASWSpread() {
 
     // see comment above
     Real tolerance2;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!iborcoupon_settings.usingAtParCoupons())
         tolerance2 = 1.0e-4;
     else
         tolerance2 = 1.0e-13;
@@ -1646,6 +1650,8 @@ void AssetSwapTest::testGenericBondImplied() {
 
     using namespace asset_swap_test;
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -1694,7 +1700,7 @@ void AssetSwapTest::testGenericBondImplied() {
 
     // see comment above
     Real tolerance2;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!iborcoupon_settings.usingAtParCoupons())
         tolerance2 = 1.0e-2;
     else
         tolerance2 = 1.0e-13;
@@ -2039,6 +2045,8 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     using namespace asset_swap_test;
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     CommonVars vars;
 
     Calendar bondCalendar = TARGET();
@@ -2097,7 +2105,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     // see comment above
     Real tolerance2; 
-    if (!IborCoupon::usingAtParCoupons())
+    if (!iborcoupon_settings.usingAtParCoupons())
         tolerance2 = 1.0e-4;
     else
         tolerance2 = 1.0e-13;

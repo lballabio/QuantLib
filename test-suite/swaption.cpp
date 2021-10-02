@@ -379,6 +379,8 @@ void SwaptionTest::testCachedValue() {
 
     using namespace swaption_test;
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     CommonVars vars;
 
     vars.today = Date(13, March, 2002);
@@ -398,7 +400,7 @@ void SwaptionTest::testCachedValue() {
         vars.makeSwaption(swap, exerciseDate, 0.20);
 
     Real cachedNPV;
-    if (IborCoupon::usingAtParCoupons())
+    if (iborcoupon_settings.usingAtParCoupons())
         cachedNPV = 0.036418158579;
     else
         cachedNPV = 0.036421429684;

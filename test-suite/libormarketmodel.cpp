@@ -191,11 +191,13 @@ void LiborMarketModelTest::testCapletPricing() {
 
     using namespace libor_market_model_test;
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     SavedSettings backup;
 
     const Size size = 10;
     Real tolerance;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!iborcoupon_settings.usingAtParCoupons())
         tolerance = 1e-5;
     else
         tolerance = 1e-12;
@@ -352,13 +354,15 @@ void LiborMarketModelTest::testSwaptionPricing() {
 
     using namespace libor_market_model_test;
 
+    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+
     SavedSettings backup;
 
     const Size size  = 10;
     const Size steps = 8*size;
 
     Real tolerance;
-    if (!IborCoupon::usingAtParCoupons())
+    if (!iborcoupon_settings.usingAtParCoupons())
         tolerance = 1e-6;
     else
         tolerance = 1e-12;

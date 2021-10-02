@@ -155,6 +155,7 @@ namespace {
     }
 
     void testSwaptioncfs(bool contTenorSpread) {
+        const auto & iborcoupon_settings = IborCoupon::Settings::instance();
         // market data and floating rate index
         Handle<YieldTermStructure> discYTS = getYTS(terms, discRates);
         Handle<YieldTermStructure> proj6mYTS = getYTS(terms, proj6mRates);
@@ -210,7 +211,7 @@ namespace {
         // so we need to relax the tolerance to a level at which it will only
         // catch large errors.
         Real tol2;
-        if (!IborCoupon::usingAtParCoupons())
+        if (!iborcoupon_settings.usingAtParCoupons())
             tol2 = 0.02;
         else
             tol2 = tol;

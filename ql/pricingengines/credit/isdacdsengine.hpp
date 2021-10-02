@@ -86,7 +86,7 @@ namespace QuantLib {
             specifications.
 
             To be precisely consistent with the ISDA specification
-                static bool IborCoupon::usingAtParCoupons();
+                bool IborCoupon::Settings::usingAtParCoupons();
             must be true. This is not checked in order not to
             kill the engine completely in this case.
 
