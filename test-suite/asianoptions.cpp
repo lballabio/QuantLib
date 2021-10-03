@@ -625,9 +625,9 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
     // 30-day options need wider tolerance due to uncertainty around what "weekly
     // fixing" dates mean over a 30-day month!
     Real tol[] = {
-        4.0e-2, 2.0e-2, 2.0e-2, 4.0e-2, 4.0e-2, 7.0e-2,
-        1.0e-1, 4.0e-2, 2.0e-2, 2.0e-2, 4.0e-2, 6.0e-2,
-        2.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 4.0e-2, 7.0e-2
+        4.0e-2, 2.0e-2, 2.0e-2, 4.0e-2, 8.0e-2, 2.0e-1,
+        1.0e-1, 4.0e-2, 3.0e-2, 2.0e-2, 9.0e-2, 2.0e-1,
+        2.0e-2, 1.0e-2, 2.0e-2, 2.0e-2, 7.0e-2, 2.0e-1
     };
 
     DayCounter dc = Actual365Fixed();
@@ -651,7 +651,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
 
     ext::shared_ptr<PricingEngine> engine =
         MakeMCDiscreteGeometricAPHestonEngine<LowDiscrepancy>(hestonProcess)
-        .withSamples(10000)
+        .withSamples(8191)
         .withSeed(43);
 
     testDiscreteGeometricAveragePriceHeston(engine, tol);
@@ -755,37 +755,28 @@ void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
 
     ext::shared_ptr<PricingEngine> mcEngine =
         MakeMCDiscreteGeometricAPHestonEngine<LowDiscrepancy>(hestonProcess)
-        .withSamples(10000)
+        .withSamples(8191)
         .withSeed(43);
 
     Option::Type type(Option::Call);
     Average::Type averageType = Average::Geometric;
 
-    auto strike_index = -1;
+    for (Size strike_index = 0; strike_index < LENGTH(strikes); strike_index++) {
 
-    for (double strike : strikes) {
-
-        strike_index++;
-        auto day_index = -1;
-
-        for (int day : days) {
-
-            day_index++;
-            auto k_index = -1;
+        for (Size day_index = 0; day_index < LENGTH(days); day_index++) {
 
             for (Size k=0; k<2; k++) {
 
-                k_index++;
-                Size futureFixings = int(std::floor(day / 30.0));
+                Size futureFixings = int(std::floor(days[day_index] / 30.0));
                 std::vector<Date> fixingDates(futureFixings);
-                Date expiryDate = today + day*Days;
+                Date expiryDate = today + days[day_index] * Days;
 
                 for (int i=futureFixings-1; i>=0; i--) {
                     fixingDates[i] = expiryDate - i * 30;
                 }
 
                 ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(expiryDate));
-                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strikes[strike_index]));
 
                 Real runningAccumulator = 1.0;
                 Size pastFixingsCount = 0;
@@ -806,7 +797,7 @@ void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
                 option.setPricingEngine(mcEngine);
                 Real mcPrice = option.NPV();
 
-                auto tolerance = tol[strike_index][day_index][k_index];
+                auto tolerance = tol[strike_index][day_index][k];
 
                 if (std::fabs(analyticPrice-mcPrice) > tolerance) {
                     REPORT_FAILURE("value", averageType, runningAccumulator, pastFixingsCount,
@@ -1133,7 +1124,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
         MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
             .withSeed(42)
             .withSteps(180)
-            .withSamples(10000)
+            .withSamples(8191)
             .withControlVariate(true);
 
     std::vector<Date> fixingDates(120);
