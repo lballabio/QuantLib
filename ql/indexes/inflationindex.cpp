@@ -43,6 +43,10 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
     }
 
+    /* gcc complains in the constructor about the deprecated call of initializing
+     * `bool InflationIndex::interpolated_ = false;` that's why we need to disable the warning here.
+     */
+    QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
     InflationIndex::InflationIndex(std::string familyName,
                                    Region region,
                                    bool revised,
@@ -55,6 +59,7 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
     }
+    QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
 
     bool InflationIndex::interpolated() const {
         QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
