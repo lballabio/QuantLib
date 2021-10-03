@@ -23,6 +23,7 @@
 */
 
 #include <ql/time/calendar.hpp>
+#include <ql/time/imm.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
@@ -101,6 +102,8 @@ namespace QuantLib {
                 return d2;
             else
                 return d1;
+        } else if (c == IMMWednesday) {
+            return IMM::nextDate(Date(1, d.month(), d.year()));
         } else {
             QL_FAIL("unknown business-day convention");
         }

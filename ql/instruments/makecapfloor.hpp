@@ -57,6 +57,7 @@ namespace QuantLib {
         MakeCapFloor& withFirstDate(const Date& d);
         MakeCapFloor& withNextToLastDate(const Date& d);
         MakeCapFloor& withDayCount(const DayCounter& dc);
+        MakeCapFloor& withSettlementDays(Natural SettlementDates);
 
         //! only get last coupon
         MakeCapFloor& asOptionlet(bool b = true);

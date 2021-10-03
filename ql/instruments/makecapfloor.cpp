@@ -141,6 +141,11 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeCapFloor& MakeCapFloor::withSettlementDays(Natural settlementDays) {
+        makeVanillaSwap_.withSettlementDays(settlementDays);
+        return *this;
+    }
+
     MakeCapFloor& MakeCapFloor::asOptionlet(bool b) {
         asOptionlet_ = b;
         return *this;
