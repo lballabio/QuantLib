@@ -43,10 +43,6 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
     }
 
-#if defined(__GNUC__)
-#    pragma GCC diagnostic push
-#    pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
     InflationIndex::InflationIndex(std::string familyName,
                                    Region region,
                                    bool revised,
@@ -59,10 +55,12 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
     }
-#if defined(__GNUC__)
-#    pragma GCC diagnostic pop
-#endif
 
+    bool InflationIndex::interpolated() const {
+        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+        return interpolated_;
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+    }
 
     Calendar InflationIndex::fixingCalendar() const {
         static NullCalendar c;

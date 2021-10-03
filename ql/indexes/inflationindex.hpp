@@ -47,11 +47,11 @@
 
 #define QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR \
     /**/                                              \
-    QL_DEPRECATED_DISABLE_WARNING
+    QL_DEPRECATED_DISABLE_WARNING_III
 
 #define QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR \
     /**/                                             \
-    QL_DEPRECATED_ENABLE_WARNING
+    QL_DEPRECATED_ENABLE_WARNING_III
 
 
 #define QL_DEPRECATED_III_INTERPOLATED_METHOD \
@@ -60,11 +60,11 @@
 
 #define QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD \
     /**/                                                      \
-    QL_DEPRECATED_DISABLE_WARNING
+    QL_DEPRECATED_DISABLE_WARNING_III
 
 #define QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD \
     /**/                                                     \
-    QL_DEPRECATED_ENABLE_WARNING
+    QL_DEPRECATED_ENABLE_WARNING_III
 
 
 #define QL_DEPRECATED_III_INTERPOLATED_MEMBER \
@@ -73,11 +73,11 @@
 
 #define QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER \
     /**/                                                      \
-    QL_DEPRECATED_DISABLE_WARNING
+    QL_DEPRECATED_DISABLE_WARNING_III
 
 #define QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER \
     /**/                                                     \
-    QL_DEPRECATED_ENABLE_WARNING
+    QL_DEPRECATED_ENABLE_WARNING_III
 
 
 namespace QuantLib {
@@ -334,12 +334,6 @@ namespace QuantLib {
 
     inline bool InflationIndex::revised() const {
         return revised_;
-    }
-
-    inline bool InflationIndex::interpolated() const {
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
-        return interpolated_;
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
     }
 
     inline Frequency InflationIndex::frequency() const {
