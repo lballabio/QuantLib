@@ -215,6 +215,7 @@ namespace QuantLib {
 
     inline const std::map<std::string,boost::any>&
     Instrument::additionalResults() const {
+        calculate();
         return additionalResults_;
     }
 
