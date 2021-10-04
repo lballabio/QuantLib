@@ -23,9 +23,6 @@ if (MSVC)
 
     add_compile_options(/wd4267 /wd26812)
 
-    # warning level 3 and all warnings as errors
-    add_compile_options(/W3 /WX)
-
 else()
     # warning level in line with the .github/worksflows/linux.yml compile options
     # for gcc and clang
