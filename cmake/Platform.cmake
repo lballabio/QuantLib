@@ -23,18 +23,13 @@ if (MSVC)
 
     add_compile_options(/wd4267 /wd26812)
 
-    if(NOT QL_MSVC_DISABLE_PARALLEL_BUILDS)
-        # enable parallel builds
-        add_compile_options(/MP)
-    endif()
-
     # warning level 3 and all warnings as errors
-    add_compile_options(/W3 /WX)
+    add_compile_options(/W3)
 
     ### Avoid level 3 warnings for the time being.
     ### However they should be fixed in the long run.
 
-    # caused by ql\time\date.cpp: warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead. 
+    # caused by ql\time\date.cpp: warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead.
     add_compile_definitions(_CRT_SECURE_NO_DEPRECATE)
 
     # caused by macro redefinition 'M_PI' etc. e.g. in ql\methods\finitedifferences\solvers\fdmbackwardsolver.cpp
@@ -44,8 +39,8 @@ if (MSVC)
     if(CMAKE_CXX_STANDARD GREATER 14)
         # caused by the QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
         add_compile_definitions(BOOST_UNORDERED_USE_ALLOCATOR_TRAITS=2)
-        
-        # caused by #include <boost/numeric/ublas/matrix.hpp> 
+
+        # caused by #include <boost/numeric/ublas/matrix.hpp>
         # in e.g. ql\experimental\finitedifferences\fdmdupire1dop.cpp
         add_compile_definitions(_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
 
