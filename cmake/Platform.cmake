@@ -23,7 +23,7 @@ if (MSVC)
 
     add_compile_options(/wd4267 /wd26812)
 
-    # warning level 3 and all warnings as errors
+    # set the same warning level 3 as in the QuantLib.sln
     add_compile_options(/W3)
 
     ### Avoid level 3 warnings for the time being.
