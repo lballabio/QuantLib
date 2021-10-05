@@ -25,6 +25,9 @@ if (MSVC)
     add_compile_definitions(_SCL_SECURE_NO_DEPRECATE)
     add_compile_definitions(_CRT_SECURE_NO_DEPRECATE)
 
+    # caused by macro redefinition 'M_PI' etc. e.g. in ql\methods\finitedifferences\solvers\fdmbackwardsolver.cpp
+    add_compile_options(/wd4005)
+
     # prevent warnings when using /std:c++17
     if(CMAKE_CXX_STANDARD GREATER 14)
         # caused by the QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
@@ -36,9 +39,6 @@ if (MSVC)
 
         # caused by ql/math/functional.hpp (line 271) compiling test-suite\distributions.cpp
         add_compile_definitions(_SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING)
-        
-        # caused by macro redefinition 'M_PI' etc. e.g. in ql\methods\finitedifferences\solvers\fdmbackwardsolver.cpp
-        add_compile_options(/wd4005)
     endif()
     
     # /wd4267
