@@ -26,5 +26,15 @@ if (MSVC)
 else()
     # warning level in line with the .github/worksflows/linux.yml compile options
     # for gcc and clang
-    add_compile_options(-Wall -Wno-unknown-pragmas -Werror)
+    add_compile_options(-Wall -Wno-unknown-pragmas)
+endif()
+
+# Add compiler option to cause the build to fail 
+# when a warning is emitteg
+if(QL_TREAT_WARNINGS_AS_ERRORS)
+    if(MSVC)
+        add_compile_options(/WX)
+    else()
+        add_compile_options(-Werror)
+    endif(MSVC)
 endif()
