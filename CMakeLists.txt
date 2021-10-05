@@ -61,7 +61,6 @@ option(QL_USE_STD_SHARED_PTR "Use standard smart pointers instead of Boost ones"
 option(QL_USE_STD_UNIQUE_PTR "Use std::unique_ptr instead of std::auto_ptr" ON)
 option(QL_USE_STD_FUNCTION "Use std::function and std::bind instead of Boost ones" OFF)
 option(QL_USE_STD_TUPLE "Use std::tuple instead of boost::tuple" OFF)
-option(QL_TREAT_WARNINGS_AS_ERRORS "Treat any c++ warning as an error" OFF)
 
 # Convenience option to activate all STD options
 if (QL_USE_STD_CLASSES)
