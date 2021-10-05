@@ -14,8 +14,6 @@ if (MSVC)
     endif()
 
     add_compile_definitions(NOMINMAX)
-    add_compile_definitions(_SCL_SECURE_NO_DEPRECATE)
-    add_compile_definitions(_CRT_SECURE_NO_DEPRECATE)
 
     # /wd4267
     # Suppress warnings: assignment of 64-bit value to 32-bit QuantLib::Integer (x64)
@@ -24,12 +22,6 @@ if (MSVC)
     # Suppress warnings: "Prefer enum class over enum" (Enum.3)
 
     add_compile_options(/wd4267 /wd26812)
-
-    # warning level 3 and all warnings as errors
-    add_compile_options(/W3 /WX)
-
-    # enable parallel builds
-    add_compile_options(/MP)
 
 else()
     # warning level in line with the .github/worksflows/linux.yml compile options
