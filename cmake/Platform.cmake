@@ -13,8 +13,34 @@ if (MSVC)
         set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
     endif()
 
-    add_compile_definitions(NOMINMAX)
+    if(NOT QL_MSVC_DISABLE_PARALLEL_BUILDS)
+        # enable parallel builds
+        add_compile_options(/MP)
+    endif()
 
+    # warning level 3 and all warnings as errors
+    add_compile_options(/W3 /WX)
+
+    add_compile_definitions(NOMINMAX)
+    add_compile_definitions(_SCL_SECURE_NO_DEPRECATE)
+    add_compile_definitions(_CRT_SECURE_NO_DEPRECATE)
+
+    # prevent warnings when using /std:c++17
+    if(CMAKE_CXX_STANDARD GREATER 14)
+        # caused by the QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
+        add_compile_definitions(BOOST_UNORDERED_USE_ALLOCATOR_TRAITS=2)
+        
+        # caused by #include <boost/numeric/ublas/matrix.hpp> 
+        # in e.g. ql\experimental\finitedifferences\fdmdupire1dop.cpp
+        add_compile_definitions(_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
+
+        # caused by ql/math/functional.hpp (line 271) compiling test-suite\distributions.cpp
+        add_compile_definitions(_SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING)
+        
+        # caused by macro redefinition 'M_PI' etc. e.g. in ql\methods\finitedifferences\solvers\fdmbackwardsolver.cpp
+        add_compile_options(/wd4005)
+    endif()
+    
     # /wd4267
     # Suppress warnings: assignment of 64-bit value to 32-bit QuantLib::Integer (x64)
 
