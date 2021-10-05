@@ -13,6 +13,16 @@ if (MSVC)
         set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
     endif()
 
+    add_compile_definitions(NOMINMAX)
+
+    # /wd4267
+    # Suppress warnings: assignment of 64-bit value to 32-bit QuantLib::Integer (x64)
+
+    # /wd26812
+    # Suppress warnings: "Prefer enum class over enum" (Enum.3)
+
+    add_compile_options(/wd4267 /wd26812)
+
     if(NOT QL_MSVC_DISABLE_PARALLEL_BUILDS)
         # enable parallel builds
         add_compile_options(/MP)
@@ -21,8 +31,10 @@ if (MSVC)
     # warning level 3 and all warnings as errors
     add_compile_options(/W3 /WX)
 
-    add_compile_definitions(NOMINMAX)
-    add_compile_definitions(_SCL_SECURE_NO_DEPRECATE)
+    ### Avoid level 3 warnings for the time being.
+    ### However they should be fixed in the long run.
+
+    # caused by ql\time\date.cpp: warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead. 
     add_compile_definitions(_CRT_SECURE_NO_DEPRECATE)
 
     # caused by macro redefinition 'M_PI' etc. e.g. in ql\methods\finitedifferences\solvers\fdmbackwardsolver.cpp
@@ -40,12 +52,4 @@ if (MSVC)
         # caused by ql/math/functional.hpp (line 271) compiling test-suite\distributions.cpp
         add_compile_definitions(_SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING)
     endif()
-    
-    # /wd4267
-    # Suppress warnings: assignment of 64-bit value to 32-bit QuantLib::Integer (x64)
-
-    # /wd26812
-    # Suppress warnings: "Prefer enum class over enum" (Enum.3)
-
-    add_compile_options(/wd4267 /wd26812)
 endif()
