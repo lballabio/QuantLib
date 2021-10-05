@@ -30,7 +30,7 @@ else()
 endif()
 
 # Add compiler option to cause the build to fail 
-# when a warning is emitteg
+# when a warning is emitted
 if(QL_TREAT_WARNINGS_AS_ERRORS)
     if(MSVC)
         add_compile_options(/WX)
