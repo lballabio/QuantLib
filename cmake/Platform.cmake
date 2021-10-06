@@ -47,4 +47,9 @@ if (MSVC)
         # caused by ql/math/functional.hpp (line 271) compiling test-suite\distributions.cpp
         add_compile_definitions(_SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING)
     endif()
+
+else()
+    # warning level in line with the .github/worksflows/linux.yml compile options
+    # for gcc and clang
+    add_compile_options(-Wall -Wno-unknown-pragmas)
 endif()
