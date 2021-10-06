@@ -47,6 +47,25 @@ if (MSVC)
         # caused by ql/math/functional.hpp (line 271) compiling test-suite\distributions.cpp
         add_compile_definitions(_SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING)
     endif()
+    
+    # Allow per-translation-unit parallel builds when using MSVC
+    # using CMakes approach for their own build system for cmake
+    # see https://github.com/Kitware/CMake/blob/0c606d0c3d2068cbaef4a5e29c1bffdaa2e56139/CompileFlags.cmake#L117-L138 and
+    #     https://gitlab.kitware.com/cmake/cmake/-/issues/17696
+    set(QL_MSVC_PARALLEL ON CACHE STRING "\
+Enables /MP flag for parallel builds using MSVC. Specify an \
+integer value to control the number of threads used (Only \
+works on some older versions of Visual Studio). Setting to \
+ON lets the toolchain decide how many threads to use. Set to \
+OFF to disable /MP completely." )
+
+  if(QL_MSVC_PARALLEL)
+      if(QL_MSVC_PARALLEL GREATER 0)
+          string(APPEND CMAKE_CXX_FLAGS " /MP${QL_MSVC_PARALLEL}")
+      else()
+          string(APPEND CMAKE_CXX_FLAGS " /MP")
+      endif()
+  endif()
 
 else()
     # warning level in line with the .github/worksflows/linux.yml compile options
