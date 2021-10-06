@@ -15,7 +15,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -DBOOST_ROOT=/usr ..
+        cmake -DBOOST_ROOT=/usr .. -L
         make -j 2
     - name: Test
       run: |
@@ -35,7 +35,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -DBOOST_ROOT=/usr -DQL_ENABLE_SESSIONS=ON -DQL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN=ON -DQL_HIGH_RESOLUTION_DATE=ON -DQL_USE_INDEXED_COUPON=ON -DQL_USE_STD_CLASSES=ON -DCMAKE_CXX_STANDARD=17 ..
+        cmake -DBOOST_ROOT=/usr -DQL_ENABLE_SESSIONS=ON -DQL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN=ON -DQL_HIGH_RESOLUTION_DATE=ON -DQL_USE_INDEXED_COUPON=ON -DQL_USE_STD_CLASSES=ON -DCMAKE_CXX_STANDARD=17 .. -L
         make -j 2
     - name: Test
       run: |
@@ -56,7 +56,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake ..
+        cmake .. -L
         cmake --build . --config Release
     - name: Test
       run: |
@@ -77,7 +77,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -DQL_ENABLE_SESSIONS=ON -DQL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN=ON -DQL_HIGH_RESOLUTION_DATE=ON -DQL_USE_INDEXED_COUPON=ON -DQL_USE_STD_CLASSES=ON -DCMAKE_CXX_STANDARD=17 ..
+        cmake -DQL_ENABLE_SESSIONS=ON -DQL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN=ON -DQL_HIGH_RESOLUTION_DATE=ON -DQL_USE_INDEXED_COUPON=ON -DQL_USE_STD_CLASSES=ON -DCMAKE_CXX_STANDARD=17 .. -L
         cmake --build . --config Release
     - name: Test
       run: |
@@ -96,7 +96,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake ..
+        cmake .. -L
         make -j 2
     - name: Test
       run: |
