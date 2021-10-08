@@ -252,4 +252,8 @@ namespace QuantLib {
         return Money::Settings::instance().conversionType();
     }
 
+    Money::BaseCurrencyProxy Money::baseCurrency;
+    Money::ConversionTypeProxy Money::conversionType;
+
+
 }
