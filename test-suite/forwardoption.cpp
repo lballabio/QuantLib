@@ -495,7 +495,7 @@ void ForwardOptionTest::testMCPrices() {
    Real tol[] = {0.002, 0.001, 0.0006, 5e-4, 5e-4};
 
    Size timeSteps = 100;
-   Size numberOfSamples = 10000;
+   Size numberOfSamples = 5000;
    Size mcSeed = 42;
 
    Real q = 0.04;
@@ -535,12 +535,10 @@ void ForwardOptionTest::testMCPrices() {
                         new PlainVanillaPayoff(Option::Call, 0.0));
 
    Real moneyness[] = { 0.8, 0.9, 1.0, 1.1, 1.2 };
-   int moneyness_index = -1;
 
-   for (double& moneynes : moneyness) {
+   for (Size moneyness_index = 0; moneyness_index < LENGTH(moneyness); ++moneyness_index) {
 
-       moneyness_index++;
-       ForwardVanillaOption option(moneynes, reset, payoff, exercise);
+       ForwardVanillaOption option(moneyness[moneyness_index], reset, payoff, exercise);
 
        option.setPricingEngine(analyticEngine);
        Real analyticPrice = option.NPV();
@@ -550,7 +548,7 @@ void ForwardOptionTest::testMCPrices() {
 
        Real error = relativeError(analyticPrice, mcPrice, s);
        if (error > tol[moneyness_index]) {
-           REPORT_FAILURE("testMCPrices", payoff, exercise, s, q, r, today, sigma, moneynes, reset,
+           REPORT_FAILURE("testMCPrices", payoff, exercise, s, q, r, today, sigma, moneyness[moneyness_index], reset,
                           analyticPrice, mcPrice, error, tol[moneyness_index]);
        }
    }
@@ -561,27 +559,34 @@ void ForwardOptionTest::testHestonMCPrices() {
    BOOST_TEST_MESSAGE("Testing forward option Heston MC prices...");
 
    Option::Type optionTypes[] = { Option::Call, Option::Put };
-   Real tol[][6] = {{5e-4,    // Call, moneyness=0.8
-                     5e-4,    // Call, moneyness=0.9
-                     5e-4,    // Call, moneyness=1.0
+   Real mcForwardStartTolerance[][6] = {{7e-4,    // Call, moneyness=0.8
+                                         8e-4,    // Call, moneyness=0.9
+                                         6e-4,    // Call, moneyness=1.0
+                                         5e-4,    // Call, moneyness=1.1
+                                         5e-4},   // Call, moneyness=1.2
+                                        {6e-4,    // Put, moneyness=0.8
+                                         5e-4,    // Put, moneyness=0.9
+                                         6e-4,    // Put, moneyness=1.0
+                                         0.001,   // Put, moneyness=1.1
+                                         0.001}}; // Put, moneyness=1.2
+
+   Real tol[][6] = {{9e-4,    // Call, moneyness=0.8
+                     9e-4,    // Call, moneyness=0.9
+                     6e-4,    // Call, moneyness=1.0
                      5e-4,    // Call, moneyness=1.1
                      5e-4},   // Call, moneyness=1.2
                     {6e-4,    // Put, moneyness=0.8
                      5e-4,    // Put, moneyness=0.9
-                     6e-4,    // Put, moneyness=1.0
-                     0.001,   // Put, moneyness=1.1
-                     0.001}}; // Put, moneyness=1.2
+                     8e-4,    // Put, moneyness=1.0
+                     0.002,   // Put, moneyness=1.1
+                     0.002}}; // Put, moneyness=1.2
 
-   auto option_type_index = -1;
+   for (Size type_index = 0; type_index < LENGTH(optionTypes); ++type_index) {
 
-   for (auto type : optionTypes) {
-       
-       option_type_index++;
-       Real mcForwardStartTolerance = 5e-4;
        Real analyticTolerance = 5e-4;
 
        Size timeSteps = 50;
-       Size numberOfSamples = 5000;
+       Size numberOfSamples = 4095;
        Size mcSeed = 42;
 
        Real q = 0.04;
@@ -603,7 +608,7 @@ void ForwardOptionTest::testHestonMCPrices() {
        Date exDate = today + 1 * Years;
        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
        Date reset = today + 6 * Months;
-       ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, 0.0));
+       ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(optionTypes[type_index], 0.0));
 
        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
@@ -629,12 +634,10 @@ void ForwardOptionTest::testHestonMCPrices() {
                .withSeed(mcSeed);
 
        Real moneyness[] = {0.8, 0.9, 1.0, 1.1, 1.2};
-       auto moneyness_index = -1;
 
-       for (double& moneynes : moneyness) {
+       for (Size moneyness_index = 0; moneyness_index < LENGTH(moneyness); ++moneyness_index) {
 
-           moneyness_index++;
-           ForwardVanillaOption option(moneynes, reset, payoff, exercise);
+           ForwardVanillaOption option(moneyness[moneyness_index], reset, payoff, exercise);
 
            option.setPricingEngine(analyticEngine);
            Real analyticPrice = option.NPV();
@@ -644,14 +647,11 @@ void ForwardOptionTest::testHestonMCPrices() {
 
            Real mcError = relativeError(analyticPrice, mcPrice, s);
 
-           if (mcError > mcForwardStartTolerance) {
-
+           if (mcError > mcForwardStartTolerance[type_index][moneyness_index]) {
                REPORT_FAILURE("testHestonMCForwardStartPrices", payoff, exercise, s, q, r, today,
-                              sigma_bs, moneynes, reset, analyticPrice, mcPrice, mcError,
-                              mcForwardStartTolerance);
+                              sigma_bs, moneyness[moneyness_index], reset, analyticPrice, mcPrice, mcError, mcForwardStartTolerance[type_index][moneyness_index]);
            }
        }
-
 
        // Test 2: Using an arbitrary Heston model, check that prices match semi-analytical
        // Heston prices when reset date is t=0
@@ -680,13 +680,13 @@ void ForwardOptionTest::testHestonMCPrices() {
        ext::shared_ptr<AnalyticHestonForwardEuropeanEngine> analyticForwardHestonEngine(
            new AnalyticHestonForwardEuropeanEngine(hestonProcessSmile));
 
-       for (double& moneynes : moneyness) {
+       for (Size moneyness_index = 0; moneyness_index < LENGTH(moneyness); ++moneyness_index) {
 
-           Real strike = s * moneynes;
-           ext::shared_ptr<StrikedTypePayoff> vanillaPayoff(new PlainVanillaPayoff(type, strike));
+           Real strike = s * moneyness[moneyness_index];
+           ext::shared_ptr<StrikedTypePayoff> vanillaPayoff(new PlainVanillaPayoff(optionTypes[type_index], strike));
 
            VanillaOption vanillaOption(vanillaPayoff, exercise);
-           ForwardVanillaOption forwardOption(moneynes, reset, payoff, exercise);
+           ForwardVanillaOption forwardOption(moneyness[moneyness_index], reset, payoff, exercise);
 
            vanillaOption.setPricingEngine(analyticHestonEngine);
            Real analyticPrice = vanillaOption.NPV();
@@ -695,12 +695,11 @@ void ForwardOptionTest::testHestonMCPrices() {
            Real mcPrice = forwardOption.NPV();
 
            Real mcError = relativeError(analyticPrice, mcPrice, s);
-           auto tolerance = tol[option_type_index][moneyness_index];
+           auto tolerance = tol[type_index][moneyness_index];
 
            if (mcError > tolerance) {
-
                REPORT_FAILURE("testHestonMCPrices", vanillaPayoff, exercise, s, q, r, today,
-                              sigma_bs, moneynes, reset, analyticPrice, mcPrice, mcError,
+                              sigma_bs, moneyness[moneyness_index], reset, analyticPrice, mcPrice, mcError,
                               tolerance);
            }
 
@@ -711,7 +710,7 @@ void ForwardOptionTest::testHestonMCPrices() {
            Real analyticError = relativeError(analyticPrice, hestonAnalyticPrice, s);
            if (analyticError > analyticTolerance) {
                REPORT_FAILURE("testHestonAnalyticForwardStartPrices", vanillaPayoff, exercise, s, q,
-                              r, today, sigma_bs, moneynes, reset, analyticPrice,
+                              r, today, sigma_bs, moneyness[moneyness_index], reset, analyticPrice,
                               hestonAnalyticPrice, analyticError, analyticTolerance);
            }
        }
@@ -731,14 +730,13 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
                      0.001},  // Call, moneyness=1.2, CV:true
                     {0.001,   // Put, moneyness=0.8, CV:false
                      0.001,   // Put, moneyness=0.8, CV:true
-                     0.002,   // Put, moneyness=1.0, CV:false
+                     0.003,   // Put, moneyness=1.0, CV:false
                      0.003,   // Put, moneyness=1.0, CV:true
                      0.003,   // Put, moneyness=1.2, CV:false
                      0.003}}; // Put, moneyness=1.2, CV:true
 
-   int option_type_index = -1; 
-   for (auto type : optionTypes) {
-       option_type_index++;
+   for (Size option_type_index = 0; option_type_index < LENGTH(optionTypes); ++option_type_index) {
+
        Size timeSteps = 50;
        Size numberOfSamples = 5000;
        Size mcSeed = 42;
@@ -761,7 +759,7 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
        Date exDate = today + 1 * Years;
        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
        Date reset = today + 6 * Months;
-       ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, 0.0));
+       ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(optionTypes[option_type_index], 0.0));
 
        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
@@ -789,9 +787,10 @@ void ForwardOptionTest::testHestonAnalyticalVsMCPrices() {
            new AnalyticHestonForwardEuropeanEngine(hestonProcess));
 
       Real moneyness[] = { 0.8, 1.0, 1.2 };
-       int tol_2nd_index = -1; 
-      for (double& m : moneyness) {
-           tol_2nd_index++;
+
+      for (Size tol_2nd_index = 0; tol_2nd_index < LENGTH(moneyness); ++tol_2nd_index) {
+
+          auto m = moneyness[tol_2nd_index];
           ForwardVanillaOption option(m, reset, payoff, exercise);
 
           option.setPricingEngine(analyticEngine);
@@ -843,4 +842,3 @@ test_suite* ForwardOptionTest::suite(SpeedLevel speed) {
 
     return suite;
 }
-

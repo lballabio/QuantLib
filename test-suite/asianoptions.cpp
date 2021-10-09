@@ -1043,7 +1043,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
         ext::shared_ptr<PricingEngine> engine =
             MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
                 .withSeed(42)
-                .withSamples(8191);
+                .withSamples(4095);
 
         DiscreteAveragingAsianOption option(averageType, runningSum,
                                             pastFixings, fixingDates,
@@ -1053,7 +1053,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
         Real calculated = option.NPV();
         Real expected = l.result;
         // Bounds given in paper, "22.48 to 22.52"
-        Real tolerance = 2.0e-2;
+        Real tolerance = 5.0e-2;
 
         if (std::fabs(calculated-expected) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
@@ -1067,14 +1067,14 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
             MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
                 .withSeed(42)
                 .withSteps(48)
-                .withSamples(8191)
+                .withSamples(4095)
                 .withControlVariate(true);
 
         option.setPricingEngine(engine2);
 
         Real calculatedCV = option.NPV();
         Real expectedCV = l.result;
-        tolerance = 2.50e-2;
+        tolerance = 3.0e-2;
 
         if (std::fabs(calculatedCV-expectedCV) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
@@ -1118,7 +1118,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
         MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
             .withSeed(42)
             .withSteps(180)
-            .withSamples(20000);
+            .withSamples(8191);
 
     ext::shared_ptr<PricingEngine> engine4 =
         MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
@@ -1148,7 +1148,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
 
         option.setPricingEngine(engine3);
         Real calculated = option.NPV();
-        Real tolerance = 6.0e-2;
+        Real tolerance = 9.0e-2;
 
         if (std::fabs(calculated-expected) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
