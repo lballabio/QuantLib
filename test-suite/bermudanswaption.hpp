@@ -30,6 +30,7 @@ class BermudanSwaptionTest {
   public:
     static void testCachedValues();
     static void testCachedG2Values();
+    static void testTreeEngineTimeSnapping();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 

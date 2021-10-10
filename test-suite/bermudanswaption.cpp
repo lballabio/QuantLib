@@ -20,17 +20,19 @@
 
 #include "bermudanswaption.hpp"
 #include "utilities.hpp"
-#include <ql/instruments/swaption.hpp>
-#include <ql/pricingengines/swaption/treeswaptionengine.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/pricingengines/swaption/fdhullwhiteswaptionengine.hpp>
-#include <ql/pricingengines/swaption/fdg2swaptionengine.hpp>
-#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
-#include <ql/models/shortrate/twofactormodels/g2.hpp>
 #include <ql/cashflows/coupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
-#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/instruments/makevanillaswap.hpp>
+#include <ql/instruments/swaption.hpp>
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/models/shortrate/twofactormodels/g2.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/pricingengines/swaption/fdg2swaptionengine.hpp>
+#include <ql/pricingengines/swaption/fdhullwhiteswaptionengine.hpp>
+#include <ql/pricingengines/swaption/treeswaptionengine.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>
 
 
@@ -311,16 +313,91 @@ void BermudanSwaptionTest::testCachedG2Values() {
     }
 }
 
+void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
+    BOOST_TEST_MESSAGE("Testing snap of exercise dates for discretized swaption...");
+
+    Date today = Date(8, Jul, 2021);
+    SavedSettings backup;
+    Settings::instance().evaluationDate() = today;
+
+    RelinkableHandle<YieldTermStructure> termStructure;
+    termStructure.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
+
+    auto makeBermudanSwaption = [&termStructure](Date callDate) {
+        auto effectiveDate = Date(15, May, 2025);
+        auto index = ext::make_shared<Euribor3M>(termStructure);
+        ext::shared_ptr<VanillaSwap> swap = MakeVanillaSwap(Period(10, Years), index, 0.05)
+                                                .withEffectiveDate(effectiveDate)
+                                                .withNominal(10000.00)
+                                                .withType(Swap::Type::Payer);
+
+        std::vector<Date> exerciseDates{effectiveDate, callDate};
+        auto bermudanExercise = ext::make_shared<BermudanExercise>(exerciseDates);
+        auto bermudanSwaption = ext::make_shared<Swaption>(swap, bermudanExercise);
+
+        return bermudanSwaption;
+    };
+
+    auto previousNPVTree = 0.0;
+    int intervalOfDaysToTest = 20;
+
+    BOOST_TEST_MESSAGE("Call date\t   FD\t Tree\t Diff");
+    for (int i = -intervalOfDaysToTest; i < intervalOfDaysToTest + 1; i++) {
+        static auto offsetFDvsTree = 0.38;
+        static auto tolerance = 0.1;
+        static auto initialCallDate = Date(15, May, 2030);
+        static auto calendar = Euribor3M().fixingCalendar();
+
+        auto callDate = initialCallDate + i * Days;
+        if (calendar.isBusinessDay(callDate)) {
+            auto bermudanSwaption = makeBermudanSwaption(callDate);
+
+            auto model = ext::make_shared<HullWhite>(termStructure);
+
+            bermudanSwaption->setPricingEngine(ext::make_shared<FdHullWhiteSwaptionEngine>(model));
+            auto npvFD = bermudanSwaption->NPV();
+
+            constexpr auto timesteps = 14 * 4 * 20;
+            bermudanSwaption->setPricingEngine(
+                ext::make_shared<TreeSwaptionEngine>(model, timesteps));
+            auto npvTree = bermudanSwaption->NPV();
+
+            auto npvDiff = npvTree - npvFD;
+
+            BOOST_TEST_MESSAGE(std::fixed << std::setprecision(2) << io::iso_date(callDate)
+                                          << std::setw(5) << "\t" << npvFD << "\t" << npvTree
+                                          << "\t" << npvDiff);
+
+            BOOST_TEST_WARN(previousNPVTree < npvTree,
+                            std::fixed << std::setprecision(2) << std::setw(5) << "At "
+                                       << io::iso_date(callDate)
+                                       << ": The npv is expected to increase compared to the "
+                                          "previous business day but decreased. (previous: "
+                                       << previousNPVTree << ", current: " << npvTree << ")");
+
+            BOOST_TEST_WARN(std::abs(npvDiff - offsetFDvsTree) < tolerance,
+                            std::fixed << std::setprecision(2) << std::setw(5) << "At "
+                                       << io::iso_date(callDate)
+                                       << ": The difference between the npv of the FD and the tree "
+                                          "engine is expected to be "
+                                       << offsetFDvsTree << "+/-" << tolerance << " but was "
+                                       << npvDiff << ". (FD: " << npvFD << ", tree: " << npvTree
+                                       << ")");
+
+            previousNPVTree = npvTree;
+        }
+    }
+}
+
 test_suite* BermudanSwaptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Bermudan swaption tests");
 
     suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedValues));
 
     if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &BermudanSwaptionTest::testCachedG2Values));
+        suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedG2Values));
+        suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testTreeEngineTimeSnapping));
     }
 
     return suite;
 }
-
