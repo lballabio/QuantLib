@@ -420,7 +420,7 @@ void ConvertibleBondTest::testRegression() {
 
     Date issueDate(23, July, 2008);
     Date maturityDate(1, August, 2013);
-    Calendar calendar = UnitedStates();
+    Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
     Schedule schedule = MakeSchedule().from(issueDate)
                                       .to(maturityDate)
                                       .withTenor(6*Months)

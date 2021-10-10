@@ -339,7 +339,7 @@ void DayCounterTest::testActualActualWithSemiannualSchedule() {
 
     using namespace day_counters_test;
 
-    Calendar calendar = UnitedStates();
+    Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
     Date fromDate = Date(10, January, 2017);
     Date firstCoupon = Date(31, August, 2017);
     Date quasiCoupon = Date(28, February, 2017);
@@ -458,7 +458,7 @@ void DayCounterTest::testActualActualWithAnnualSchedule(){
     using namespace day_counters_test;
 
     // Now do an annual schedule
-    Calendar calendar = UnitedStates();
+    Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
     Schedule schedule = MakeSchedule()
         .from(Date(10, January, 2017))
         .withFirstDate(Date(31, August, 2017))
