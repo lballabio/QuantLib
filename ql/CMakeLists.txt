@@ -709,6 +709,7 @@ set(QL_SOURCES
     pricingengines/swaption/basketgeneratingengine.cpp
     pricingengines/swaption/blackswaptionengine.cpp
     pricingengines/swaption/discretizedswaption.cpp
+    pricingengines/swaption/discretizedswaption2.cpp
     pricingengines/swaption/fdg2swaptionengine.cpp
     pricingengines/swaption/fdhullwhiteswaptionengine.cpp
     pricingengines/swaption/gaussian1dfloatfloatswaptionengine.cpp
@@ -1900,6 +1901,7 @@ set(QL_HEADERS
     pricingengines/swaption/basketgeneratingengine.hpp
     pricingengines/swaption/blackswaptionengine.hpp
     pricingengines/swaption/discretizedswaption.hpp
+    pricingengines/swaption/discretizedswaption2.hpp
     pricingengines/swaption/fdg2swaptionengine.hpp
     pricingengines/swaption/fdhullwhiteswaptionengine.hpp
     pricingengines/swaption/g2swaptionengine.hpp

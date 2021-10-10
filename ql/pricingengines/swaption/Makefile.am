@@ -7,6 +7,7 @@ this_include_HEADERS = \
     basketgeneratingengine.hpp \
     blackswaptionengine.hpp \
     discretizedswaption.hpp \
+    discretizedswaption2.hpp \
     gaussian1dfloatfloatswaptionengine.hpp \
     gaussian1djamshidianswaptionengine.hpp \
     gaussian1dnonstandardswaptionengine.hpp \
@@ -21,6 +22,7 @@ cpp_files = \
     basketgeneratingengine.cpp \
     blackswaptionengine.cpp \
     discretizedswaption.cpp \
+    discretizedswaption2.cpp \
     gaussian1dfloatfloatswaptionengine.cpp \
     gaussian1djamshidianswaptionengine.cpp \
     gaussian1dnonstandardswaptionengine.cpp \

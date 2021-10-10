@@ -30,6 +30,7 @@
 #include <ql/math/functional.hpp>
 #include <ql/pricingengines/latticeshortratemodelengine.hpp>
 #include <ql/pricingengines/swaption/discretizedswaption.hpp>
+#include <ql/pricingengines/swaption/discretizedswaption2.hpp>
 #include <utility>
 
 
@@ -76,6 +77,7 @@ namespace QuantLib {
     };
 
     using TreeSwaptionEngine = GenericTreeSwaptionEngine<DiscretizedSwaption>;
+    using TreeSwaptionEngine2 = GenericTreeSwaptionEngine<DiscretizedSwaption2>;
 
     template <class TDiscretizedSwaption>
     GenericTreeSwaptionEngine<TDiscretizedSwaption>::GenericTreeSwaptionEngine(

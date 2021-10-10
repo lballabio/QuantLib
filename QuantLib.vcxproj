@@ -1546,6 +1546,7 @@
     <ClInclude Include="ql\pricingengines\swaption\basketgeneratingengine.hpp" />
     <ClInclude Include="ql\pricingengines\swaption\blackswaptionengine.hpp" />
     <ClInclude Include="ql\pricingengines\swaption\discretizedswaption.hpp" />
+    <ClInclude Include="ql\pricingengines\swaption\discretizedswaption2.hpp" />
     <ClInclude Include="ql\pricingengines\swaption\fdg2swaptionengine.hpp" />
     <ClInclude Include="ql\pricingengines\swaption\fdhullwhiteswaptionengine.hpp" />
     <ClInclude Include="ql\pricingengines\swaption\g2swaptionengine.hpp" />
@@ -2576,6 +2577,7 @@
     <ClCompile Include="ql\pricingengines\swaption\basketgeneratingengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\blackswaptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\discretizedswaption.cpp" />
+    <ClCompile Include="ql\pricingengines\swaption\discretizedswaption2.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\fdg2swaptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\fdhullwhiteswaptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\gaussian1dfloatfloatswaptionengine.cpp" />

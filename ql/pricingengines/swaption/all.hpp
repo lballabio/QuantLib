@@ -4,6 +4,7 @@
 #include <ql/pricingengines/swaption/basketgeneratingengine.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
 #include <ql/pricingengines/swaption/discretizedswaption.hpp>
+#include <ql/pricingengines/swaption/discretizedswaption2.hpp>
 #include <ql/pricingengines/swaption/gaussian1dfloatfloatswaptionengine.hpp>
 #include <ql/pricingengines/swaption/gaussian1djamshidianswaptionengine.hpp>
 #include <ql/pricingengines/swaption/gaussian1dnonstandardswaptionengine.hpp>
