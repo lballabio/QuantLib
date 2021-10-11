@@ -163,53 +163,48 @@
   "buildPresets": [
     {
       "name": "linux-clang-debug",
-      "configurePreset": "linux-clang-debug",
-      "verbose": false
+      "configurePreset": "linux-clang-debug"
     },
     {
       "name": "linux-clang-release",
-      "configurePreset": "linux-clang-release",
-      "verbose": false
+      "configurePreset": "linux-clang-release"
     },
     {
       "name": "linux-gcc-debug",
-      "configurePreset": "linux-gcc-debug",
-      "verbose": false
+      "configurePreset": "linux-gcc-debug"
     },
     {
       "name": "linux-gcc-release",
-      "configurePreset": "linux-gcc-release",
-      "verbose": false
+      "configurePreset": "linux-gcc-release"
     },
     {
       "name": "linux-gcc-release-options",
-      "configurePreset": "linux-gcc-release-options",
-      "verbose": false
+      "configurePreset": "linux-gcc-release-options"
     },
     {
       "name": "windows-clang-x64-debug",
       "configurePreset": "windows-clang-x64-debug",
-      "verbose": false
+      "configuration": "Debug"
     },
     {
       "name": "windows-clang-x64-release",
       "configurePreset": "windows-clang-x64-release",
-      "verbose": false
+      "configuration": "Release"
     },
     {
       "name": "windows-msvc-x64-debug",
       "configurePreset": "windows-msvc-x64-debug",
-      "verbose": false
+      "configuration": "Debug"
     },
     {
       "name": "windows-msvc-x64-release",
       "configurePreset": "windows-msvc-x64-release",
-      "verbose": false
+      "configuration": "Release"
     },
     {
       "name": "windows-msvc-x64-release-options",
       "configurePreset": "windows-msvc-x64-release-options",
-      "verbose": false
+      "configuration": "Release"
     }
   ]
 }
