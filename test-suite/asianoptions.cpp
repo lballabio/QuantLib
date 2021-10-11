@@ -625,9 +625,9 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
     // 30-day options need wider tolerance due to uncertainty around what "weekly
     // fixing" dates mean over a 30-day month!
     Real tol[] = {
-        4.0e-2, 2.0e-2, 2.0e-2, 3.0e-2, 3.0e-2, 6.0e-2,
-        1.0e-1, 1.0e-2, 2.0e-2, 2.0e-2, 4.0e-2, 6.0e-2,
-        2.0e-2, 1.0e-2, 1.0e-2, 1.0e-2, 4.0e-2, 6.0e-2
+        4.0e-2, 2.0e-2, 2.0e-2, 4.0e-2, 8.0e-2, 2.0e-1,
+        1.0e-1, 4.0e-2, 3.0e-2, 2.0e-2, 9.0e-2, 2.0e-1,
+        2.0e-2, 1.0e-2, 2.0e-2, 2.0e-2, 7.0e-2, 2.0e-1
     };
 
     DayCounter dc = Actual365Fixed();
@@ -651,7 +651,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston() {
 
     ext::shared_ptr<PricingEngine> engine =
         MakeMCDiscreteGeometricAPHestonEngine<LowDiscrepancy>(hestonProcess)
-        .withSamples(32767)
+        .withSamples(8191)
         .withSeed(43);
 
     testDiscreteGeometricAveragePriceHeston(engine, tol);
@@ -664,9 +664,72 @@ void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
 
     // 30-day options need wider tolerance due to uncertainty around what "weekly
     // fixing" dates mean over a 30-day month!
-    Real tolerance = 0.04;
+
     int days[] =           {30, 90, 180, 360, 720};
     Real strikes[] =       {90, 100, 110};
+
+    Real tol[3][5][2] = {{{
+                              0.04, // strike=90, days=30, k=0
+                              0.04, // strike=90, days=30, k=1
+                          },
+                          {
+                              0.04, // strike=90, days=90, k=0
+                              0.04, // strike=90, days=90, k=1
+                          },
+                          {
+                              0.04, // strike=90, days=180, k=0
+                              0.04, // strike=90, days=180, k=1
+                          },
+                          {
+                              0.05, // strike=90, days=360, k=0
+                              0.04, // strike=90, days=360, k=1
+                          },
+                          {
+                              0.04, // strike=90, days=720, k=0
+                              0.04, // strike=90, days=720, k=1
+                          }},
+
+                         {{
+                              0.04, // strike=100, days=30, k=0
+                              0.04, // strike=100, days=30, k=1
+                          },
+                          {
+                              0.04, // strike=100, days=90, k=0
+                              0.04, // strike=100, days=90, k=1
+                          },
+                          {
+                              0.04, // strike=100, days=180, k=0
+                              0.04, // strike=100, days=180, k=1
+                          },
+                          {
+                              0.06, // strike=100, days=360, k=0
+                              0.06, // strike=100, days=360, k=1
+                          },
+                          {
+                              0.06, // strike=100, days=720, k=0
+                              0.05, // strike=100, days=720, k=1
+                          }},
+
+                         {{
+                              0.04, // strike=110, days=30, k=0
+                              0.04, // strike=110, days=30, k=1
+                          },
+                          {
+                              0.04, // strike=110, days=90, k=0
+                              0.04, // strike=110, days=90, k=1
+                          },
+                          {
+                              0.04, // strike=110, days=180, k=0
+                              0.04, // strike=110, days=180, k=1
+                          },
+                          {
+                              0.05, // strike=110, days=360, k=0
+                              0.04, // strike=110, days=360, k=1
+                          },
+                          {
+                              0.06, // strike=110, days=720, k=0
+                              0.05, // strike=110, days=720, k=1
+                          }}};
 
     DayCounter dc = Actual365Fixed();
     Date today = Settings::instance().evaluationDate();
@@ -692,25 +755,28 @@ void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
 
     ext::shared_ptr<PricingEngine> mcEngine =
         MakeMCDiscreteGeometricAPHestonEngine<LowDiscrepancy>(hestonProcess)
-        .withSamples(32767)
+        .withSamples(8191)
         .withSeed(43);
 
     Option::Type type(Option::Call);
     Average::Type averageType = Average::Geometric;
 
-    for (double strike : strikes) {
-        for (int day : days) {
+    for (Size strike_index = 0; strike_index < LENGTH(strikes); strike_index++) {
+
+        for (Size day_index = 0; day_index < LENGTH(days); day_index++) {
+
             for (Size k=0; k<2; k++) {
-                Size futureFixings = int(std::floor(day / 30.0));
+
+                Size futureFixings = int(std::floor(days[day_index] / 30.0));
                 std::vector<Date> fixingDates(futureFixings);
-                Date expiryDate = today + day*Days;
+                Date expiryDate = today + days[day_index] * Days;
 
                 for (int i=futureFixings-1; i>=0; i--) {
                     fixingDates[i] = expiryDate - i * 30;
                 }
 
                 ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(expiryDate));
-                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strikes[strike_index]));
 
                 Real runningAccumulator = 1.0;
                 Size pastFixingsCount = 0;
@@ -730,6 +796,8 @@ void AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings() {
 
                 option.setPricingEngine(mcEngine);
                 Real mcPrice = option.NPV();
+
+                auto tolerance = tol[strike_index][day_index][k];
 
                 if (std::fabs(analyticPrice-mcPrice) > tolerance) {
                     REPORT_FAILURE("value", averageType, runningAccumulator, pastFixingsCount,
@@ -975,7 +1043,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
         ext::shared_ptr<PricingEngine> engine =
             MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
                 .withSeed(42)
-                .withSamples(8191);
+                .withSamples(4095);
 
         DiscreteAveragingAsianOption option(averageType, runningSum,
                                             pastFixings, fixingDates,
@@ -985,7 +1053,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
         Real calculated = option.NPV();
         Real expected = l.result;
         // Bounds given in paper, "22.48 to 22.52"
-        Real tolerance = 2.0e-2;
+        Real tolerance = 5.0e-2;
 
         if (std::fabs(calculated-expected) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
@@ -999,14 +1067,14 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
             MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess)
                 .withSeed(42)
                 .withSteps(48)
-                .withSamples(8191)
+                .withSamples(4095)
                 .withControlVariate(true);
 
         option.setPricingEngine(engine2);
 
         Real calculatedCV = option.NPV();
         Real expectedCV = l.result;
-        tolerance = 2.50e-2;
+        tolerance = 3.0e-2;
 
         if (std::fabs(calculatedCV-expectedCV) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
@@ -1050,13 +1118,13 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
         MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
             .withSeed(42)
             .withSteps(180)
-            .withSamples(32767);
+            .withSamples(8191);
 
     ext::shared_ptr<PricingEngine> engine4 =
         MakeMCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>(hestonProcess2)
             .withSeed(42)
             .withSteps(180)
-            .withSamples(16383)
+            .withSamples(8191)
             .withControlVariate(true);
 
     std::vector<Date> fixingDates(120);
@@ -1080,7 +1148,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
 
         option.setPricingEngine(engine3);
         Real calculated = option.NPV();
-        Real tolerance = 6.0e-2;
+        Real tolerance = 9.0e-2;
 
         if (std::fabs(calculated-expected) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
@@ -2039,9 +2107,6 @@ test_suite* AsianOptionTest::suite(SpeedLevel speed) {
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
-    }
-
-    if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston));
         suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston));
     }
@@ -2055,10 +2120,7 @@ test_suite* AsianOptionTest::experimental(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testVecerEngine));
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston));
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings));
-    }
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings));
 
     return suite;
 }
