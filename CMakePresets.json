@@ -1,0 +1,215 @@
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build"
+    },
+    {
+      "name": "debug",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "linux",
+      "hidden": true,
+      "inherits": "base",
+      "generator": "Unix Makefiles"
+    },
+    {
+      "name": "gcc",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "clang",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "windows-x64",
+      "hidden": true,
+      "inherits": "base",
+      "generator": "Visual Studio 16 2019",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": [
+            "Windows"
+          ]
+        }
+      }
+    },
+    {
+      "name": "windows-clang-x64",
+      "hidden": true,
+      "inherits": "windows-x64",
+      "toolset": "ClangCL",
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "intelliSenseMode": "windows-clang-x64"
+        }
+      }
+    },
+    {
+      "name": "windows-msvc-x64",
+      "hidden": true,
+      "inherits": "windows-x64",
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "intelliSenseMode": "windows-msvc-x64"
+        }
+      }
+    },
+    {
+      "name": "linux-clang-debug",
+      "inherits": [
+        "linux",
+        "clang",
+        "debug"
+      ]
+    },
+    {
+      "name": "linux-clang-release",
+      "inherits": [
+        "linux",
+        "clang",
+        "release"
+      ]
+    },
+    {
+      "name": "windows-clang-x64-debug",
+      "inherits": [
+        "windows-clang-x64",
+        "debug"
+      ]
+    },
+    {
+      "name": "windows-clang-x64-release",
+      "inherits": [
+        "windows-clang-x64",
+        "release"
+      ]
+    },
+    {
+      "name": "windows-msvc-x64-debug",
+      "inherits": [
+        "windows-msvc-x64",
+        "debug"
+      ]
+    },
+    {
+      "name": "windows-msvc-x64-release",
+      "inherits": [
+        "windows-msvc-x64",
+        "release"
+      ]
+    },
+    {
+      "name": "options",
+      "hidden": true,
+      "cacheVariables": {
+        "QL_ENABLE_SESSIONS": "ON",
+        "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
+        "QL_HIGH_RESOLUTION_DATE": "ON",
+        "QL_USE_INDEXED_COUPON": "ON",
+        "QL_USE_STD_CLASSES": "ON",
+        "CMAKE_CXX_STANDARD": "17"
+      }
+    },
+    {
+      "name": "linux-gcc-release-options",
+      "inherits": [
+        "linux-gcc-release",
+        "options"
+      ],
+      "cacheVariables": {
+        "BOOST_ROOT": "/usr"
+      },
+      "environment": {
+        "CXXFLAGS": "-O2"
+      }
+    },
+    {
+      "name": "windows-msvc-x64-release-options",
+      "inherits": [
+        "windows-msvc-x64-release",
+        "options"
+      ],
+      "cacheVariables": {
+        "BOOST_ROOT": "/usr"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "linux-clang-debug",
+      "configurePreset": "linux-clang-debug",
+      "verbose": false
+    },
+    {
+      "name": "linux-clang-release",
+      "configurePreset": "linux-clang-release",
+      "verbose": false
+    },
+    {
+      "name": "linux-gcc-debug",
+      "configurePreset": "linux-gcc-debug",
+      "verbose": false
+    },
+    {
+      "name": "linux-gcc-release",
+      "configurePreset": "linux-gcc-release",
+      "verbose": false
+    },
+    {
+      "name": "linux-gcc-release-options",
+      "configurePreset": "linux-gcc-release-options",
+      "verbose": false
+    },
+    {
+      "name": "windows-clang-x64-debug",
+      "configurePreset": "windows-clang-x64-debug",
+      "verbose": false
+    },
+    {
+      "name": "windows-clang-x64-release",
+      "configurePreset": "windows-clang-x64-release",
+      "verbose": false
+    },
+    {
+      "name": "windows-msvc-x64-debug",
+      "configurePreset": "windows-msvc-x64-debug",
+      "verbose": false
+    },
+    {
+      "name": "windows-msvc-x64-release",
+      "configurePreset": "windows-msvc-x64-release",
+      "verbose": false
+    },
+    {
+      "name": "windows-msvc-x64-release-options",
+      "configurePreset": "windows-msvc-x64-release-options",
+      "verbose": false
+    }
+  ]
+}
