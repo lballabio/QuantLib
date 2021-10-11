@@ -191,6 +191,10 @@ namespace QuantLib {
     inline Real AbcdAtmVolCurve::maxError() const {
         return interpolation_->maxError();
     }
+
+    inline EndCriteria::Type AbcdAtmVolCurve::endCriteria() const { 
+        return interpolation_->endCriteria();
+    }
 }
 
 #endif
