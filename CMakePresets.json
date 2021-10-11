@@ -97,6 +97,22 @@
       ]
     },
     {
+      "name": "linux-gcc-debug",
+      "inherits": [
+        "linux",
+        "gcc",
+        "debug"
+      ]
+    },
+    {
+      "name": "linux-gcc-release",
+      "inherits": [
+        "linux",
+        "gcc",
+        "release"
+      ]
+    },
+    {
       "name": "windows-clang-x64-debug",
       "inherits": [
         "windows-clang-x64",
@@ -137,27 +153,27 @@
       }
     },
     {
-      "name": "linux-gcc-release-options",
+      "name": "linux-gcc-release-usr",
       "inherits": [
-        "linux-gcc-release",
-        "options"
+        "linux-gcc-release"
       ],
       "cacheVariables": {
         "BOOST_ROOT": "/usr"
-      },
-      "environment": {
-        "CXXFLAGS": "-O2"
       }
+    },
+    {
+      "name": "linux-gcc-release-options",
+      "inherits": [
+        "linux-gcc-release-usr",
+        "options"
+      ]
     },
     {
       "name": "windows-msvc-x64-release-options",
       "inherits": [
         "windows-msvc-x64-release",
         "options"
-      ],
-      "cacheVariables": {
-        "BOOST_ROOT": "/usr"
-      }
+      ]
     }
   ],
   "buildPresets": [
@@ -176,6 +192,11 @@
     {
       "name": "linux-gcc-release",
       "configurePreset": "linux-gcc-release"
+    },
+    {
+      "name": "linux-gcc-release-usr",
+      "configurePreset": "linux-gcc-release-usr",
+      "verbose": false
     },
     {
       "name": "linux-gcc-release-options",
