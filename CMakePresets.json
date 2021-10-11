@@ -97,6 +97,22 @@
       ]
     },
     {
+      "name": "linux-gcc-debug",
+      "inherits": [
+        "linux",
+        "gcc",
+        "debug"
+      ]
+    },
+    {
+      "name": "linux-gcc-release",
+      "inherits": [
+        "linux",
+        "gcc",
+        "release"
+      ]
+    },
+    {
       "name": "windows-clang-x64-debug",
       "inherits": [
         "windows-clang-x64",
@@ -144,9 +160,6 @@
       ],
       "cacheVariables": {
         "BOOST_ROOT": "/usr"
-      },
-      "environment": {
-        "CXXFLAGS": "-O2"
       }
     },
     {
@@ -154,10 +167,7 @@
       "inherits": [
         "windows-msvc-x64-release",
         "options"
-      ],
-      "cacheVariables": {
-        "BOOST_ROOT": "/usr"
-      }
+      ]
     }
   ],
   "buildPresets": [
