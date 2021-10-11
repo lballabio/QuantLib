@@ -2107,9 +2107,6 @@ test_suite* AsianOptionTest::suite(SpeedLevel speed) {
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
-    }
-
-    if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteGeometricAveragePriceHeston));
         suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston));
     }
@@ -2123,10 +2120,7 @@ test_suite* AsianOptionTest::experimental(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testVecerEngine));
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston));
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings));
-    }
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings));
 
     return suite;
 }
