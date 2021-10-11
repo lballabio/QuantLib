@@ -153,14 +153,20 @@
       }
     },
     {
-      "name": "linux-gcc-release-options",
+      "name": "linux-gcc-release-usr",
       "inherits": [
-        "linux-gcc-release",
-        "options"
+        "linux-gcc-release"
       ],
       "cacheVariables": {
         "BOOST_ROOT": "/usr"
       }
+    },
+    {
+      "name": "linux-gcc-release-options",
+      "inherits": [
+        "linux-gcc-release-usr",
+        "options"
+      ]
     },
     {
       "name": "windows-msvc-x64-release-options",
@@ -189,6 +195,11 @@
     {
       "name": "linux-gcc-release",
       "configurePreset": "linux-gcc-release",
+      "verbose": false
+    },
+    {
+      "name": "linux-gcc-release-usr",
+      "configurePreset": "linux-gcc-release-usr",
       "verbose": false
     },
     {
