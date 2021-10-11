@@ -173,7 +173,15 @@ namespace QuantLib {
                       LiborImpact,    //!< Libor impact calendar
                       FederalReserve  //!< Federal Reserve Bankwire System
         };
-        UnitedStates(Market market = Settlement);
+
+        explicit UnitedStates(Market market);
+
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED
+        UnitedStates()
+        : UnitedStates(Settlement) {}
     };
 
 }

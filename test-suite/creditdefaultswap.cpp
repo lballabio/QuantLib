@@ -170,7 +170,7 @@ void CreditDefaultSwapTest::testCachedMarketValue() {
 
     Settings::instance().evaluationDate() = Date(9,June,2006);
     Date evalDate = Settings::instance().evaluationDate();
-    Calendar calendar = UnitedStates();
+    Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
 
     std::vector<Date> discountDates = {
         evalDate,
