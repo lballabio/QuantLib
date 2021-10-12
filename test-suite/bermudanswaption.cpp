@@ -322,10 +322,10 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
 
     RelinkableHandle<YieldTermStructure> termStructure;
     termStructure.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
+    auto index = ext::make_shared<Euribor3M>(termStructure);
 
-    auto makeBermudanSwaption = [&termStructure](Date callDate) {
+    auto makeBermudanSwaption = [&termStructure, &index](Date callDate) {
         auto effectiveDate = Date(15, May, 2025);
-        auto index = ext::make_shared<Euribor3M>(termStructure);
         ext::shared_ptr<VanillaSwap> swap = MakeVanillaSwap(Period(10, Years), index, 0.05)
                                                 .withEffectiveDate(effectiveDate)
                                                 .withNominal(10000.00)
@@ -339,14 +339,14 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
     };
 
     auto previousNPVTree = 0.0;
-    int intervalOfDaysToTest = 20;
+    int intervalOfDaysToTest = 10;
 
-    BOOST_TEST_MESSAGE("Call date\t   FD\t Tree\t Diff");
+    BOOST_TEST_MESSAGE("Call date\t   FD\t Tree\tTree2\tDiff");
     for (int i = -intervalOfDaysToTest; i < intervalOfDaysToTest + 1; i++) {
         static auto offsetFDvsTree = 0.38;
         static auto tolerance = 0.1;
         static auto initialCallDate = Date(15, May, 2030);
-        static auto calendar = Euribor3M().fixingCalendar();
+        static auto calendar = index->fixingCalendar();
 
         auto callDate = initialCallDate + i * Days;
         if (calendar.isBusinessDay(callDate)) {
@@ -358,33 +358,39 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
             auto npvFD = bermudanSwaption->NPV();
 
             constexpr auto timesteps = 14 * 4 * 20;
+
             bermudanSwaption->setPricingEngine(
-                ext::make_shared<TreeSwaptionEngine2>(model, timesteps));
+                ext::make_shared<TreeSwaptionEngine>(model, timesteps));
             auto npvTree = bermudanSwaption->NPV();
 
-            auto npvDiff = npvTree - npvFD;
+            bermudanSwaption->setPricingEngine(
+                ext::make_shared<TreeSwaptionEngine2>(model, timesteps));
+            auto npvTree2 = bermudanSwaption->NPV();
+
+            auto npvDiff = npvTree2 - npvTree;
 
             BOOST_TEST_MESSAGE(std::fixed << std::setprecision(2) << io::iso_date(callDate)
                                           << std::setw(5) << "\t" << npvFD << "\t" << npvTree
-                                          << "\t" << npvDiff);
+                                          << "\t" << npvTree2 << "\t" << npvDiff);
 
-            BOOST_TEST_WARN(previousNPVTree < npvTree,
-                            std::fixed << std::setprecision(2) << std::setw(5) << "At "
-                                       << io::iso_date(callDate)
-                                       << ": The npv is expected to increase compared to the "
-                                          "previous business day but decreased. (previous: "
-                                       << previousNPVTree << ", current: " << npvTree << ")");
+            // BOOST_TEST_WARN(previousNPVTree < npvTree2,
+            //                std::fixed << std::setprecision(2) << std::setw(5) << "At "
+            //                           << io::iso_date(callDate)
+            //                           << ": The npv is expected to increase compared to the "
+            //                              "previous business day but decreased. (previous: "
+            //                           << previousNPVTree << ", current: " << npvTree2 << ")");
 
-            BOOST_TEST_WARN(std::abs(npvDiff - offsetFDvsTree) < tolerance,
-                            std::fixed << std::setprecision(2) << std::setw(5) << "At "
-                                       << io::iso_date(callDate)
-                                       << ": The difference between the npv of the FD and the tree "
-                                          "engine is expected to be "
-                                       << offsetFDvsTree << "+/-" << tolerance << " but was "
-                                       << npvDiff << ". (FD: " << npvFD << ", tree: " << npvTree
-                                       << ")");
+            // BOOST_TEST_WARN(std::abs(npvDiff - offsetFDvsTree) < tolerance,
+            //                std::fixed << std::setprecision(2) << std::setw(5) << "At "
+            //                           << io::iso_date(callDate)
+            //                           << ": The difference between the npv of the FD and the tree
+            //                           "
+            //                              "engine is expected to be "
+            //                           << offsetFDvsTree << "+/-" << tolerance << " but was "
+            //                           << npvDiff << ". (FD: " << npvFD << ", tree: " << npvTree2
+            //                           << ")");
 
-            previousNPVTree = npvTree;
+            previousNPVTree = npvTree2;
         }
     }
 }

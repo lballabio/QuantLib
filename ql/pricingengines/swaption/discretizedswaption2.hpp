@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2004, 2007 StatPro Italia srl
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,8 +26,8 @@
 #ifndef quantlib_discretized_swaption2_hpp
 #define quantlib_discretized_swaption2_hpp
 
-#include <ql/instruments/swaption.hpp>
 #include <ql/discretizedasset.hpp>
+#include <ql/instruments/swaption.hpp>
 
 namespace QuantLib {
 
@@ -38,12 +39,24 @@ namespace QuantLib {
         void reset(Size size) override;
 
       private:
+        enum class CouponAdjustment { pre, post };
         Swaption::arguments arguments_;
+        std::vector<CouponAdjustment> fixedCouponAdjustments_;
+        std::vector<CouponAdjustment> floatCouponAdjustments_;
+        std::vector<Real> preCouponAdjustments_;
+        std::vector<Real> postCouponAdjustments_;
         Time lastPayment_;
+
+        static void
+        prepareSwaptionWithSnappedDates(const Swaption::arguments& args,
+                                        PricingEngine::arguments& snappedArgs,
+                                        std::vector<CouponAdjustment>& fixedCouponAdjustments,
+                                        std::vector<CouponAdjustment>& floatCouponAdjustments,
+                                        std::vector<Real>& preCouponAdjustments,
+                                        std::vector<Real>& postCouponAdjustments);
     };
 
 }
 
 
 #endif
-
