@@ -324,7 +324,7 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
     termStructure.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
     auto index = ext::make_shared<Euribor3M>(termStructure);
 
-    auto makeBermudanSwaption = [&termStructure, &index](Date callDate) {
+    auto makeBermudanSwaption = [&index](Date callDate) {
         auto effectiveDate = Date(15, May, 2025);
         ext::shared_ptr<VanillaSwap> swap = MakeVanillaSwap(Period(10, Years), index, 0.05)
                                                 .withEffectiveDate(effectiveDate)
@@ -343,8 +343,8 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
 
     BOOST_TEST_MESSAGE("Call date\t   FD\t Tree\tTree2\tDiff");
     for (int i = -intervalOfDaysToTest; i < intervalOfDaysToTest + 1; i++) {
-        static auto offsetFDvsTree = 0.38;
-        static auto tolerance = 0.1;
+        // static auto offsetFDvsTree = 0.38;
+        // static auto tolerance = 0.1;
         static auto initialCallDate = Date(15, May, 2030);
         static auto calendar = index->fixingCalendar();
 
