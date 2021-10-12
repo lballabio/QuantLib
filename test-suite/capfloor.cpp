@@ -561,8 +561,6 @@ void CapFloorTest::testCachedValue() {
 
     using namespace capfloor_test;
 
-    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
-
     CommonVars vars;
 
     Date cachedToday(14,March,2002),
@@ -577,7 +575,7 @@ void CapFloorTest::testCachedValue() {
                                                             0.03,0.20);
 
     Real cachedCapNPV, cachedFloorNPV ;
-    if (!iborcoupon_settings.usingAtParCoupons()) {
+    if (!IborCoupon::Settings::instance().usingAtParCoupons()) {
         // index fixing price
         cachedCapNPV   = 6.87630307745,
         cachedFloorNPV = 2.65796764715;
@@ -609,8 +607,6 @@ void CapFloorTest::testCachedValueFromOptionLets() {
 
     using namespace capfloor_test;
 
-    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
-
     CommonVars vars;
 
     Date cachedToday(14,March,2002),
@@ -630,7 +626,7 @@ void CapFloorTest::testCachedValueFromOptionLets() {
          calculatedFloorletsNPV = 0.0;
 
     Real cachedCapNPV, cachedFloorNPV;
-    if (iborcoupon_settings.usingAtParCoupons()) {
+    if (IborCoupon::Settings::instance().usingAtParCoupons()) {
         cachedCapNPV = 6.87570026732;
         cachedFloorNPV = 2.65812927959;
     } else {

@@ -297,7 +297,7 @@ void SwapTest::testCachedValue() {
 
     using namespace swap_test;
 
-    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
 
@@ -315,11 +315,7 @@ void SwapTest::testCachedValue() {
                     << "    calculated: " << swap->numberOfLegs() << "\n"
                     << "    expected:   " << 2);
 
-    Real cachedNPV;  
-    if (iborcoupon_settings.usingAtParCoupons())
-        cachedNPV = -5.872863313209;
-    else
-        cachedNPV = -5.872342992212;
+    Real cachedNPV = usingAtParCoupons ? -5.872863313209 : -5.872342992212;
 
     if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
         BOOST_ERROR("failed to reproduce cached swap value:\n"

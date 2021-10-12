@@ -155,7 +155,7 @@ namespace {
     }
 
     void testSwaptioncfs(bool contTenorSpread) {
-        const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+        bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
         // market data and floating rate index
         Handle<YieldTermStructure> discYTS = getYTS(terms, discRates);
         Handle<YieldTermStructure> proj6mYTS = getYTS(terms, proj6mRates);
@@ -210,11 +210,7 @@ namespace {
         // However, if indexed coupons are used the floating leg is not at par,
         // so we need to relax the tolerance to a level at which it will only
         // catch large errors.
-        Real tol2;
-        if (!iborcoupon_settings.usingAtParCoupons())
-            tol2 = 0.02;
-        else
-            tol2 = tol;
+        Real tol2 = usingAtParCoupons ? tol : 0.02;
 
         SwaptionCashFlows singleCurveCashFlows(swaption, proj6mYTS, contTenorSpread);
         for (Size k = 1; k < singleCurveCashFlows.floatWeights().size() - 1; ++k) {

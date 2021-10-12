@@ -191,16 +191,12 @@ void LiborMarketModelTest::testCapletPricing() {
 
     using namespace libor_market_model_test;
 
-    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+    bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
 
     const Size size = 10;
-    Real tolerance;
-    if (!iborcoupon_settings.usingAtParCoupons())
-        tolerance = 1e-5;
-    else
-        tolerance = 1e-12;
+    Real tolerance = usingAtParCoupons ? 1e-12 : 1e-5;
 
     ext::shared_ptr<IborIndex> index = makeIndex();
     ext::shared_ptr<LiborForwardModelProcess> process(
@@ -354,18 +350,14 @@ void LiborMarketModelTest::testSwaptionPricing() {
 
     using namespace libor_market_model_test;
 
-    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     SavedSettings backup;
 
     const Size size  = 10;
     const Size steps = 8*size;
 
-    Real tolerance;
-    if (!iborcoupon_settings.usingAtParCoupons())
-        tolerance = 1e-6;
-    else
-        tolerance = 1e-12;
+    Real tolerance = usingAtParCoupons ? 1e-12 : 1e-6;
 
     std::vector<Date> dates = {{4,September,2005}, {4,September,2011}};
     std::vector<Rate> rates = {0.04, 0.08};

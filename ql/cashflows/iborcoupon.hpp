@@ -55,22 +55,46 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
-        //! this is dependent on usingAtParCoupons()
-        const Date& fixingEndDate() const { return fixingEndDate_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
-        //! Implemented in order to manage the case of par coupon
+        // implemented in order to manage the case of par coupon
         Rate indexFixing() const override;
+        void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>&) override;
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
+        /*! \name Internal calculations
+
+            You won't probably need these methods unless you're implementing
+            a coupon pricer.
+        */
+        //@{
+        //! Start of the deposit period underlying the index fixing
+        const Date& fixingValueDate() const;
+        //! End of the deposit period underlying the index fixing
+        const Date& fixingMaturityDate() const;
+        //! End of the deposit period underlying the coupon fixing
+        /*! This might be not the same as fixingMaturityDate if par coupons are used. */
+        const Date& fixingEndDate() const;
+        //! Period underlying the index fixing, as a year fraction
+        Time spanningTimeIndexMaturity() const;
+        //! Period underlying the coupon fixing, as a year fraction
+        /*! This might be not the same as spanningTimeIndexMaturity if par coupons are used. */
+        Time spanningTime() const;
+        //@}
+
       private:
+        friend class IborCouponPricer;
         ext::shared_ptr<IborIndex> iborIndex_;
-        Date fixingDate_, fixingValueDate_, fixingEndDate_;
-        Time spanningTime_;
+        Date fixingDate_;
+        // computed by coupon pricer (depending on par coupon flag) and stored here
+        void initializeCachedData() const;
+        mutable bool cachedDataIsInitialized_ = false;
+        mutable Date fixingValueDate_, fixingEndDate_, fixingMaturityDate_;
+        mutable Time spanningTime_, spanningTimeIndexMaturity_;
 
       public:
         // IborCoupon::Settings forward declaration
@@ -142,6 +166,8 @@ namespace QuantLib {
                                     const Calendar&,
                                     BusinessDayConvention,
                                     bool endOfMonth = false);
+        IborLeg& withIndexedCoupons(boost::optional<bool> b = true);
+        IborLeg& withAtParCoupons(bool b = true);
         operator Leg() const;
 
       private:
@@ -161,6 +187,7 @@ namespace QuantLib {
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_;
         bool exCouponEndOfMonth_;
+        boost::optional<bool> useIndexedCoupons_;
     };
 
 }
