@@ -71,6 +71,12 @@ namespace QuantLib {
         DiscretizedOption::reset(size);
     }
 
+    void DiscretizedSwaption2::preAdjustValuesImpl() {}
+
+    void DiscretizedSwaption2::postAdjustValuesImpl() {}
+
+    void DiscretizedSwaption2::applyCallability(Size i) {}
+
     void DiscretizedSwaption2::prepareSwaptionWithSnappedDates(
         const Swaption::arguments& args,
         PricingEngine::arguments& snappedArgs,

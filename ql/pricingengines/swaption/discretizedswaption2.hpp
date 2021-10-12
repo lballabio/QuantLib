@@ -38,6 +38,10 @@ namespace QuantLib {
                              const DayCounter& dayCounter);
         void reset(Size size) override;
 
+      protected:
+        void preAdjustValuesImpl() override;
+        void postAdjustValuesImpl() override;
+
       private:
         enum class CouponAdjustment { pre, post };
         Swaption::arguments arguments_;
@@ -46,6 +50,7 @@ namespace QuantLib {
         std::vector<Real> preCouponAdjustments_;
         std::vector<Real> postCouponAdjustments_;
         Time lastPayment_;
+        void applyCallability(Size i);
 
         static void
         prepareSwaptionWithSnappedDates(const Swaption::arguments& args,
