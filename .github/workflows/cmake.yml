@@ -13,8 +13,10 @@ jobs:
       env:
         CXXFLAGS: -O2
       run: |
-        cmake --preset linux-gcc-release
-        cmake --build --preset linux-gcc-release -j2
+        mkdir build
+        cd build
+        cmake -DBOOST_ROOT=/usr ..
+        make -j 2
     - name: Test
       run: |
         cd build
@@ -50,8 +52,10 @@ jobs:
       env:
         BOOST_ROOT: C:\local\boost-1.75.0
       run: |
-        cmake --preset windows-msvc-x64-release
-        cmake --build --preset windows-msvc-x64-release
+        mkdir build
+        cd build
+        cmake ..
+        cmake --build . --config Release
     - name: Test
       run: |
         cd build
@@ -69,8 +73,8 @@ jobs:
       env:
         BOOST_ROOT: C:\local\boost-1.75.0
       run: |
-        cmake --preset windows-msvc-x64-release-options
-        cmake --build --preset windows-msvc-x64-release-options
+        cmake --preset windows-msvc-x64-options
+        cmake --build --preset windows-msvc-x64-options-release
     - name: Test
       run: |
         cd build

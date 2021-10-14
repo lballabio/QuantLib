@@ -38,6 +38,22 @@
       }
     },
     {
+      "name": "linux-gcc-release-options",
+      "binaryDir": "${sourceDir}/build",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "BOOST_ROOT": "/usr",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "g++",
+        "CMAKE_CXX_STANDARD": "17",
+        "QL_ENABLE_SESSIONS": "ON",
+        "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
+        "QL_HIGH_RESOLUTION_DATE": "ON",
+        "QL_USE_INDEXED_COUPON": "ON",
+        "QL_USE_STD_CLASSES": "ON"
+      }
+    },
+    {
       "name": "windows-clang-x64",
       "binaryDir": "${sourceDir}/build",
       "generator": "Visual Studio 16 2019",
@@ -71,6 +87,31 @@
           ]
         }
       }
+    },
+    {
+      "name": "windows-msvc-x64-options",
+      "binaryDir": "${sourceDir}/build",
+      "generator": "Visual Studio 16 2019",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "17",
+        "QL_ENABLE_SESSIONS": "ON",
+        "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
+        "QL_HIGH_RESOLUTION_DATE": "ON",
+        "QL_USE_INDEXED_COUPON": "ON",
+        "QL_USE_STD_CLASSES": "ON"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "intelliSenseMode": "windows-msvc-x64",
+          "hostOS": [
+            "Windows"
+          ]
+        }
+      }
     }
   ],
   "buildPresets": [
@@ -91,6 +132,10 @@
       "configurePreset": "linux-gcc-release"
     },
     {
+      "name": "linux-gcc-release-options",
+      "configurePreset": "linux-gcc-release-options"
+    },
+    {
       "name": "windows-clang-x64-debug",
       "configurePreset": "windows-clang-x64",
       "configuration": "Debug"
@@ -108,6 +153,11 @@
     {
       "name": "windows-msvc-x64-release",
       "configurePreset": "windows-msvc-x64",
+      "configuration": "Release"
+    },
+    {
+      "name": "windows-msvc-x64-options-release",
+      "configurePreset": "windows-msvc-x64-options",
       "configuration": "Release"
     }
   ]
