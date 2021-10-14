@@ -38,7 +38,7 @@
       }
     },
     {
-      "name": "linux-gcc-release-options",
+      "name": "linux-gcc-options-release",
       "binaryDir": "${sourceDir}/build",
       "generator": "Unix Makefiles",
       "cacheVariables": {
@@ -132,8 +132,8 @@
       "configurePreset": "linux-gcc-release"
     },
     {
-      "name": "linux-gcc-release-options",
-      "configurePreset": "linux-gcc-release-options"
+      "name": "linux-gcc-options-release",
+      "configurePreset": "linux-gcc-options-release"
     },
     {
       "name": "windows-clang-x64-debug",
