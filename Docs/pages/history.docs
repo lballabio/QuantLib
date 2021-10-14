@@ -28,7 +28,7 @@
     INSTRUMENTS
     - Avoid callable-bond mispricing when a call date is close but not equal
       to a coupon date (thanks to Ralf Konrad for the fix and to GitHub user
-      @aichao for the analysis).
+      aichao for the analysis).
       See <https://github.com/lballabio/QuantLib/issues/930> for details.
     - A new `RiskyBondEngine` is available for bonds (thanks to Lew Wei
       Hao).  It prices bonds based on a risk-free discount cure and a
