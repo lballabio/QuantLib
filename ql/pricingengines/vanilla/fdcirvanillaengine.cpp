@@ -47,8 +47,6 @@ namespace QuantLib {
       quantoHelper_(std::move(quantoHelper)) {}
 
     FdmSolverDesc FdCIRVanillaEngine::getSolverDesc(Real) const {
-        DividendSchedule dividendSchedule = DividendSchedule();
-
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         const Time maturity = bsProcess_->time(arguments_.exercise->lastDate());
@@ -63,7 +61,7 @@ namespace QuantLib {
                 xGrid_, bsProcess_, maturity, payoff->strike(),
                 Null<Real>(), Null<Real>(), 0.0001, 1.5,
                 std::pair<Real, Real>(payoff->strike(), 0.1),
-                dividendSchedule, quantoHelper_,
+                arguments_.cashFlow, quantoHelper_,
                 0.0));
         
         const ext::shared_ptr<FdmMesher> mesher(
