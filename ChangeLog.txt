@@ -1,3 +1,55 @@
+commit 6fb51a741aefcc7317d9f3f414d41c7cd447d9f4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.24 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit b8feb08ea805e14101e121d8433e4423acce08bb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Oct 2021 17:13:47 +0200
+
+    Avoid clang-tidy warnings
+
+ ql/patterns/singleton.hpp | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+commit cf65b67337a4785431791247ac24e839958e40db
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Oct 2021 16:49:37 +0200
+
+    Fix documentation
+
+ Docs/pages/history.docs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit f69b52f74a24eecf2c84c1299b54ce7c0d586717
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 1 Apr 2021 11:28:16 +0200
+
+    Set version to 1.24 rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 834c8f07c2e3661daef8b3678dd16cdd2974669e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Oct 2021 12:09:21 +0200
+
+    Update news, contributor and changelog
+
+ ChangeLog.txt           | 3078 +++++++++++++++++++++++++----------------------
+ Contributors.txt        |    4 +
+ Docs/pages/history.docs |   76 +-
+ News.md                 |  141 ++-
+ 4 files changed, 1770 insertions(+), 1529 deletions(-)
+
 commit 082afc9aab091f96240ffed431dcc314ddc24558
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 12 Oct 2021 17:54:27 +0200
