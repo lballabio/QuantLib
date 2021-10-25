@@ -35,9 +35,9 @@ namespace QuantLib {
     : 
       fraType_(type), notionalAmount_(notionalAmount), index_(index),
       useIndexedCoupon_(useIndexedCoupon), dayCounter_(std::move(index->dayCounter())),
-      calendar_(std::move(index->fixingCalendar())),
+      calendar_(index->fixingCalendar()),
       businessDayConvention_(index->businessDayConvention()), settlementDays_(index->fixingDays()),
-      payoff_(std::move(ext::shared_ptr<Payoff>())), valueDate_(valueDate),
+      payoff_(ext::shared_ptr<Payoff>()), valueDate_(valueDate),
       maturityDate_(maturityDate), discountCurve_(std::move(discountCurve)) {
 
         maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
