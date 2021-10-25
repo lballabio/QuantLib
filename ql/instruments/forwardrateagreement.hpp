@@ -74,7 +74,7 @@ namespace QuantLib {
 
         \ingroup instruments
     */
-    class ForwardRateAgreement: public Forward {
+    class ForwardRateAgreement: public Instrument {
       public:
         ForwardRateAgreement(const Date& valueDate,
                              const Date& maturityDate,
@@ -92,15 +92,39 @@ namespace QuantLib {
         /*! This returns evaluationDate + settlementDays (not FRA
             valueDate).
         */
-        Date settlementDate() const override;
+        Date settlementDate() const;
+        const Calendar& calendar() const;
+        BusinessDayConvention businessDayConvention() const;
+        const DayCounter& dayCounter() const;
+        //! term structure relevant to the contract (e.g. repo curve)
+        Handle<YieldTermStructure> discountCurve() const;
+        //! term structure that discounts the underlying's income cash flows
+        Handle<YieldTermStructure> incomeDiscountCurve() const;
         Date fixingDate() const;
         /*!  Income is zero for a FRA */
-        Real spotIncome(const Handle<YieldTermStructure>& incomeDiscountCurve) const override;
+        Real spotIncome(const Handle<YieldTermStructure>& incomeDiscountCurve) const;
         //! Spot value (NPV) of the underlying loan
         /*! This has always a positive value (asset), even if short the FRA */
-        Real spotValue() const override;
+        Real spotValue() const;
         //! Returns the relevant forward rate associated with the FRA term
         InterestRate forwardRate() const;
+
+        /*! Simple yield calculation based on underlying spot and
+            forward values, taking into account underlying income.
+            When \f$ t>0 \f$, call with:
+            underlyingSpotValue=spotValue(t),
+            forwardValue=strikePrice, to get current yield. For a
+            repo, if \f$ t=0 \f$, impliedYield should reproduce the
+            spot repo rate. For FRA's, this should reproduce the
+            relevant zero rate at the FRA's maturityDate_;
+        */
+        InterestRate impliedYield(Real underlyingSpotValue,
+                                  Real forwardValue,
+                                  Date settlementDate,
+                                  Compounding compoundingConvention,
+                                  const DayCounter& dayCounter);
+
+        virtual Real forwardValue() const;
         //@}
 
       protected:
@@ -115,12 +139,46 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> index_;
         bool useIndexedCoupon_;
 
+        /*! derived classes must set this, typically via spotIncome() */
+        mutable Real underlyingIncome_;
+        /*! derived classes must set this, typically via spotValue() */
+        mutable Real underlyingSpotValue_;
+        DayCounter dayCounter_;
+        Calendar calendar_;
+        BusinessDayConvention businessDayConvention_;
+        Natural settlementDays_;
+        ext::shared_ptr<Payoff> payoff_;
+        /*! valueDate = settlement date (date the fwd contract starts
+            accruing)
+        */
+        Date valueDate_;
+        //! maturityDate of the forward contract or delivery date of underlying
+        Date maturityDate_;
+        Handle<YieldTermStructure> discountCurve_;
+        /*! must set this in derived classes, based on particular underlying */
+        Handle<YieldTermStructure> incomeDiscountCurve_;
+
       private:
         void calculateForwardRate() const;
     };
+
+    inline const Calendar& ForwardRateAgreement::calendar() const { return calendar_; }
+
+    inline BusinessDayConvention ForwardRateAgreement::businessDayConvention() const {
+        return businessDayConvention_;
+    }
+
+    inline const DayCounter& ForwardRateAgreement::dayCounter() const { return dayCounter_; }
+
+    inline Handle<YieldTermStructure> ForwardRateAgreement::discountCurve() const {
+        return discountCurve_;
+    }
+
+    inline Handle<YieldTermStructure> ForwardRateAgreement::incomeDiscountCurve() const {
+        return incomeDiscountCurve_;
+    }
 
 }
 
 
 #endif
-

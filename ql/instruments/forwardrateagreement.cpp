@@ -32,12 +32,18 @@ namespace QuantLib {
                            const ext::shared_ptr<IborIndex>& index,
                            const Handle<YieldTermStructure>& discountCurve,
                            bool useIndexedCoupon)
-    : Forward(index->dayCounter(), index->fixingCalendar(),
-              index->businessDayConvention(),
-              index->fixingDays(), ext::shared_ptr<Payoff>(),
-              valueDate, maturityDate, discountCurve),
+    : dayCounter_(std::move(index->dayCounter())), calendar_(std::move(index->fixingCalendar())),
+      businessDayConvention_(index->businessDayConvention()), settlementDays_(index->fixingDays()),
+      payoff_(std::move(ext::shared_ptr<Payoff>())), valueDate_(valueDate),
+      maturityDate_(maturityDate),
+      discountCurve_(std::move(discountCurve)),
       fraType_(type), notionalAmount_(notionalAmount), index_(index),
       useIndexedCoupon_(useIndexedCoupon) {
+
+        maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
+
+        registerWith(Settings::instance().evaluationDate());
+        registerWith(discountCurve_);
 
         QL_REQUIRE(notionalAmount > 0.0, "notionalAmount must be positive");
 
@@ -94,7 +100,7 @@ namespace QuantLib {
     }
 
     void ForwardRateAgreement::setupExpired() const {
-        Forward::setupExpired();
+        Instrument::setupExpired();
         calculateForwardRate();
     }
 
@@ -102,7 +108,13 @@ namespace QuantLib {
         calculateForwardRate();
         underlyingSpotValue_ = spotValue();
         underlyingIncome_    = 0.0;
-        Forward::performCalculations();
+
+        QL_REQUIRE(!discountCurve_.empty(), "null term structure set to Forward");
+
+        ext::shared_ptr<ForwardTypePayoff> ftpayoff =
+            ext::dynamic_pointer_cast<ForwardTypePayoff>(payoff_);
+        Real fwdValue = forwardValue();
+        NPV_ = (*ftpayoff)(fwdValue)*discountCurve_->discount(maturityDate_);
     }
 
     void ForwardRateAgreement::calculateForwardRate() const {
@@ -117,5 +129,22 @@ namespace QuantLib {
                               1.0) /
                                  index_->dayCounter().yearFraction(valueDate_, maturityDate_),
                              index_->dayCounter(), Simple, Once);
+    }
+
+    Real ForwardRateAgreement::forwardValue() const {
+        calculate();
+        return (underlyingSpotValue_ - underlyingIncome_) / discountCurve_->discount(maturityDate_);
+    }
+
+    InterestRate ForwardRateAgreement::impliedYield(Real underlyingSpotValue,
+                                       Real forwardValue,
+                                       Date settlementDate,
+                                       Compounding comp,
+                                       const DayCounter& dayCounter) {
+
+        Time t = dayCounter.yearFraction(settlementDate, maturityDate_);
+        Real compoundingFactor =
+            forwardValue / (underlyingSpotValue - spotIncome(incomeDiscountCurve_));
+        return InterestRate::impliedRate(compoundingFactor, dayCounter, comp, Annual, t);
     }
 }
