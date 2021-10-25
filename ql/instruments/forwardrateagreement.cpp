@@ -32,13 +32,13 @@ namespace QuantLib {
                            const ext::shared_ptr<IborIndex>& index,
                            const Handle<YieldTermStructure>& discountCurve,
                            bool useIndexedCoupon)
-    : dayCounter_(std::move(index->dayCounter())), calendar_(std::move(index->fixingCalendar())),
+    : 
+      fraType_(type), notionalAmount_(notionalAmount), index_(index),
+      useIndexedCoupon_(useIndexedCoupon), dayCounter_(std::move(index->dayCounter())),
+      calendar_(std::move(index->fixingCalendar())),
       businessDayConvention_(index->businessDayConvention()), settlementDays_(index->fixingDays()),
       payoff_(std::move(ext::shared_ptr<Payoff>())), valueDate_(valueDate),
-      maturityDate_(maturityDate),
-      discountCurve_(std::move(discountCurve)),
-      fraType_(type), notionalAmount_(notionalAmount), index_(index),
-      useIndexedCoupon_(useIndexedCoupon) {
+      maturityDate_(maturityDate), discountCurve_(std::move(discountCurve)) {
 
         maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
 
