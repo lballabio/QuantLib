@@ -38,22 +38,6 @@
       }
     },
     {
-      "name": "linux-gcc-options-release",
-      "binaryDir": "${sourceDir}/build",
-      "generator": "Unix Makefiles",
-      "cacheVariables": {
-        "BOOST_ROOT": "/usr",
-        "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_CXX_COMPILER": "g++",
-        "CMAKE_CXX_STANDARD": "17",
-        "QL_ENABLE_SESSIONS": "ON",
-        "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
-        "QL_HIGH_RESOLUTION_DATE": "ON",
-        "QL_USE_INDEXED_COUPON": "ON",
-        "QL_USE_STD_CLASSES": "ON"
-      }
-    },
-    {
       "name": "windows-clang-x64",
       "binaryDir": "${sourceDir}/build",
       "generator": "Visual Studio 16 2019",
@@ -89,7 +73,23 @@
       }
     },
     {
-      "name": "windows-msvc-x64-options",
+      "name": "linux-ci-build-with-nonstandard-options",
+      "binaryDir": "${sourceDir}/build",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "BOOST_ROOT": "/usr",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "g++",
+        "CMAKE_CXX_STANDARD": "17",
+        "QL_ENABLE_SESSIONS": "ON",
+        "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
+        "QL_HIGH_RESOLUTION_DATE": "ON",
+        "QL_USE_INDEXED_COUPON": "ON",
+        "QL_USE_STD_CLASSES": "ON"
+      }
+    },
+    {
+      "name": "windows-ci-build-with-nonstandard-options",
       "binaryDir": "${sourceDir}/build",
       "generator": "Visual Studio 16 2019",
       "architecture": {
@@ -132,10 +132,6 @@
       "configurePreset": "linux-gcc-release"
     },
     {
-      "name": "linux-gcc-options-release",
-      "configurePreset": "linux-gcc-options-release"
-    },
-    {
       "name": "windows-clang-x64-debug",
       "configurePreset": "windows-clang-x64",
       "configuration": "Debug"
@@ -156,8 +152,12 @@
       "configuration": "Release"
     },
     {
-      "name": "windows-msvc-x64-options-release",
-      "configurePreset": "windows-msvc-x64-options",
+      "name": "linux-ci-build-with-nonstandard-options",
+      "configurePreset": "linux-ci-build-with-nonstandard-options"
+    },
+    {
+      "name": "windows-ci-build-with-nonstandard-options",
+      "configurePreset": "windows-ci-build-with-nonstandard-options",
       "configuration": "Release"
     }
   ]

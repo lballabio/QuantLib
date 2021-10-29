@@ -33,8 +33,8 @@ jobs:
       env:
         CXXFLAGS: -O2
       run: |
-        cmake --preset linux-gcc-options-release
-        cmake --build --preset linux-gcc-options-release -j2
+        cmake --preset linux-ci-build-with-nonstandard-options
+        cmake --build --preset linux-ci-build-with-nonstandard-options -j2
     - name: Test
       run: |
         cd build
@@ -73,8 +73,8 @@ jobs:
       env:
         BOOST_ROOT: C:\local\boost-1.75.0
       run: |
-        cmake --preset windows-msvc-x64-options
-        cmake --build --preset windows-msvc-x64-options-release
+        cmake --preset windows-ci-build-with-nonstandard-options
+        cmake --build --preset windows-ci-build-with-nonstandard-options
     - name: Test
       run: |
         cd build
