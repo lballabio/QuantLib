@@ -50,7 +50,7 @@ namespace QuantLib {
                                   const Handle<Quote>& creditSpread,
                                   DividendSchedule dividends)
         : process_(std::move(process)), timeSteps_(timeSteps),
-          dividends_(std::move(dividends), creditSpread_(creditSpread))
+          dividends_(std::move(dividends)), creditSpread_(creditSpread)
            {
             QL_REQUIRE(timeSteps>0,
                        "timeSteps must be positive, " << timeSteps <<
