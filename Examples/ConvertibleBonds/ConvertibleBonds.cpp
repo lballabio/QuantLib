@@ -193,27 +193,25 @@ int main(int, char* []) {
 
         ext::shared_ptr<PricingEngine> engine(
                   new BinomialConvertibleEngine<JarrowRudd>(stochasticProcess,
-                                                            timeSteps));
+                                                            timeSteps, creditSpread, dividends));
 
         ConvertibleFixedCouponBond europeanBond(
-                            exercise, conversionRatio, dividends, callability,
-                            creditSpread, issueDate, settlementDays,
+                            exercise, conversionRatio, callability,
+                            issueDate, settlementDays,
                             coupons, bondDayCount, schedule, redemption);
         europeanBond.setPricingEngine(engine);
 
         ConvertibleFixedCouponBond americanBond(
-                          amExercise, conversionRatio, dividends, callability,
-                          creditSpread, issueDate, settlementDays,
+                          amExercise, conversionRatio, callability,
+                          issueDate, settlementDays,
                           coupons, bondDayCount, schedule, redemption);
         americanBond.setPricingEngine(engine);
 
         method = "Jarrow-Rudd";
         europeanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                  new BinomialConvertibleEngine<JarrowRudd>(stochasticProcess,
-                                                            timeSteps)));
+                  new BinomialConvertibleEngine<JarrowRudd>(stochasticProcess, timeSteps, creditSpread, dividends)));
         americanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                  new BinomialConvertibleEngine<JarrowRudd>(stochasticProcess,
-                                                            timeSteps)));
+                  new BinomialConvertibleEngine<JarrowRudd>(stochasticProcess, timeSteps, creditSpread, dividends)));
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
@@ -222,11 +220,9 @@ int main(int, char* []) {
 
         method = "Cox-Ross-Rubinstein";
         europeanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
-           new BinomialConvertibleEngine<CoxRossRubinstein>(stochasticProcess,
-                                                            timeSteps)));
+           new BinomialConvertibleEngine<CoxRossRubinstein>(stochasticProcess, timeSteps, creditSpread, dividends)));
         americanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
-           new BinomialConvertibleEngine<CoxRossRubinstein>(stochasticProcess,
-                                                            timeSteps)));
+           new BinomialConvertibleEngine<CoxRossRubinstein>(stochasticProcess, timeSteps, creditSpread, dividends)));
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
@@ -236,12 +232,10 @@ int main(int, char* []) {
         method = "Additive equiprobabilities";
         europeanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
                    new BinomialConvertibleEngine<AdditiveEQPBinomialTree>(
-                                                            stochasticProcess,
-                                                            timeSteps)));
+                                                            stochasticProcess, timeSteps, creditSpread, dividends)));
         americanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
                    new BinomialConvertibleEngine<AdditiveEQPBinomialTree>(
-                                                            stochasticProcess,
-                                                            timeSteps)));
+                                                            stochasticProcess, timeSteps, creditSpread, dividends)));
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
@@ -250,11 +244,9 @@ int main(int, char* []) {
 
         method = "Trigeorgis";
         europeanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                  new BinomialConvertibleEngine<Trigeorgis>(stochasticProcess,
-                                                            timeSteps)));
+                  new BinomialConvertibleEngine<Trigeorgis>(stochasticProcess, timeSteps, creditSpread, dividends)));
         americanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                  new BinomialConvertibleEngine<Trigeorgis>(stochasticProcess,
-                                                            timeSteps)));
+                  new BinomialConvertibleEngine<Trigeorgis>(stochasticProcess, timeSteps, creditSpread, dividends)));
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
@@ -263,11 +255,9 @@ int main(int, char* []) {
 
         method = "Tian";
         europeanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                        new BinomialConvertibleEngine<Tian>(stochasticProcess,
-                                                            timeSteps)));
+                        new BinomialConvertibleEngine<Tian>(stochasticProcess, timeSteps, creditSpread, dividends)));
         americanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                        new BinomialConvertibleEngine<Tian>(stochasticProcess,
-                                                            timeSteps)));
+                        new BinomialConvertibleEngine<Tian>(stochasticProcess, timeSteps, creditSpread, dividends)));
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
@@ -276,11 +266,9 @@ int main(int, char* []) {
 
         method = "Leisen-Reimer";
         europeanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                new BinomialConvertibleEngine<LeisenReimer>(stochasticProcess,
-                                                            timeSteps)));
+                new BinomialConvertibleEngine<LeisenReimer>(stochasticProcess, timeSteps, creditSpread, dividends)));
         americanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                new BinomialConvertibleEngine<LeisenReimer>(stochasticProcess,
-                                                            timeSteps)));
+                new BinomialConvertibleEngine<LeisenReimer>(stochasticProcess, timeSteps, creditSpread, dividends)));
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
@@ -289,11 +277,9 @@ int main(int, char* []) {
 
         method = "Joshi";
         europeanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                      new BinomialConvertibleEngine<Joshi4>(stochasticProcess,
-                                                            timeSteps)));
+                      new BinomialConvertibleEngine<Joshi4>(stochasticProcess, timeSteps, creditSpread, dividends)));
         americanBond.setPricingEngine(ext::shared_ptr<PricingEngine>(
-                      new BinomialConvertibleEngine<Joshi4>(stochasticProcess,
-                                                            timeSteps)));
+                      new BinomialConvertibleEngine<Joshi4>(stochasticProcess, timeSteps, creditSpread, dividends)));
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << europeanBond.NPV()
