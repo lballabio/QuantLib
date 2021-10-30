@@ -26,12 +26,12 @@
 #define quantlib_convertible_bond_hpp
 
 #include <ql/instruments/bond.hpp>
-#include <ql/instruments/oneassetoption.hpp>
-#include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/callabilityschedule.hpp>
-#include <ql/time/schedule.hpp>
-#include <ql/time/daycounter.hpp>
+#include <ql/instruments/dividendschedule.hpp>
+#include <ql/instruments/oneassetoption.hpp>
 #include <ql/quote.hpp>
+#include <ql/time/daycounter.hpp>
+#include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
@@ -41,11 +41,10 @@ namespace QuantLib {
     //! %callability leaving to the holder the possibility to convert
     class SoftCallability : public Callability {
       public:
-        SoftCallability(const Bond::Price& price,
-                        const Date& date,
-                        Real trigger)
+        SoftCallability(const Bond::Price& price, const Date& date, Real trigger)
         : Callability(price, Callability::Call, date), trigger_(trigger) {}
         Real trigger() const { return trigger_; }
+
       private:
         Real trigger_;
     };
@@ -56,15 +55,12 @@ namespace QuantLib {
       public:
         class option;
         Real conversionRatio() const { return conversionRatio_; }
-        const DividendSchedule& dividends() const { return dividends_; }
         const CallabilitySchedule& callability() const { return callability_; }
-        const Handle<Quote>& creditSpread() const { return creditSpread_; }
+
       protected:
         ConvertibleBond(const ext::shared_ptr<Exercise>& exercise,
                         Real conversionRatio,
-                        DividendSchedule dividends,
                         const CallabilitySchedule& callability,
-                        const Handle<Quote>& creditSpread,
                         const Date& issueDate,
                         Natural settlementDays,
                         const Schedule& schedule,
@@ -72,8 +68,6 @@ namespace QuantLib {
         void performCalculations() const override;
         Real conversionRatio_;
         CallabilitySchedule callability_;
-        DividendSchedule dividends_;
-        Handle<Quote> creditSpread_;
         ext::shared_ptr<option> option_;
     };
 
@@ -86,17 +80,14 @@ namespace QuantLib {
     */
     class ConvertibleZeroCouponBond : public ConvertibleBond {
       public:
-        ConvertibleZeroCouponBond(
-                    const ext::shared_ptr<Exercise>& exercise,
-                    Real conversionRatio,
-                    const DividendSchedule& dividends,
-                    const CallabilitySchedule& callability,
-                    const Handle<Quote>& creditSpread,
-                    const Date& issueDate,
-                    Natural settlementDays,
-                    const DayCounter& dayCounter,
-                    const Schedule& schedule,
-                    Real redemption = 100);
+        ConvertibleZeroCouponBond(const ext::shared_ptr<Exercise>& exercise,
+                                  Real conversionRatio,
+                                  const CallabilitySchedule& callability,
+                                  const Date& issueDate,
+                                  Natural settlementDays,
+                                  const DayCounter& dayCounter,
+                                  const Schedule& schedule,
+                                  Real redemption = 100);
     };
 
 
@@ -110,9 +101,7 @@ namespace QuantLib {
       public:
         ConvertibleFixedCouponBond(const ext::shared_ptr<Exercise>& exercise,
                                    Real conversionRatio,
-                                   const DividendSchedule& dividends,
                                    const CallabilitySchedule& callability,
-                                   const Handle<Quote>& creditSpread,
                                    const Date& issueDate,
                                    Natural settlementDays,
                                    const std::vector<Rate>& coupons,
@@ -136,9 +125,7 @@ namespace QuantLib {
       public:
         ConvertibleFloatingRateBond(const ext::shared_ptr<Exercise>& exercise,
                                     Real conversionRatio,
-                                    const DividendSchedule& dividends,
                                     const CallabilitySchedule& callability,
-                                    const Handle<Quote>& creditSpread,
                                     const Date& issueDate,
                                     Natural settlementDays,
                                     const ext::shared_ptr<IborIndex>& index,
@@ -161,9 +148,7 @@ namespace QuantLib {
         option(const ConvertibleBond* bond,
                const ext::shared_ptr<Exercise>& exercise,
                Real conversionRatio,
-               DividendSchedule dividends,
                CallabilitySchedule callability,
-               Handle<Quote> creditSpread,
                Leg cashflows,
                DayCounter dayCounter,
                Schedule schedule,
@@ -177,8 +162,6 @@ namespace QuantLib {
         const ConvertibleBond* bond_;
         Real conversionRatio_;
         CallabilitySchedule callability_;
-        DividendSchedule  dividends_;
-        Handle<Quote> creditSpread_;
         Leg cashflows_;
         DayCounter dayCounter_;
         Date issueDate_;
@@ -188,18 +171,17 @@ namespace QuantLib {
     };
 
 
-    class ConvertibleBond::option::arguments
-        : public OneAssetOption::arguments {
+    class ConvertibleBond::option::arguments : public OneAssetOption::arguments {
       public:
         arguments()
-        : conversionRatio(Null<Real>()), settlementDays(Null<Natural>()),
-          redemption(Null<Real>()) {}
+        : conversionRatio(Null<Real>()), settlementDays(Null<Natural>()), redemption(Null<Real>()) {
+        }
 
         Real conversionRatio;
-        Handle<Quote> creditSpread;
-        DividendSchedule dividends;
-        std::vector<Date> dividendDates;
-        std::vector<Date> callabilityDates;
+        Handle<Quote> creditSpread; //Not being used for calculations in binomailconvertibleengine
+        DividendSchedule dividends; //Not being used for calculations in binomailconvertibleengine
+        std::vector<Date> dividendDates; 
+        std::vector<Date> callabilityDates; 
         std::vector<Callability::Type> callabilityTypes;
         std::vector<Real> callabilityPrices;
         std::vector<Real> callabilityTriggers;
@@ -214,8 +196,7 @@ namespace QuantLib {
     };
 
     class ConvertibleBond::option::engine
-        : public GenericEngine<ConvertibleBond::option::arguments,
-                               ConvertibleBond::option::results> {};
+    : public GenericEngine<ConvertibleBond::option::arguments, ConvertibleBond::option::results> {};
 
 }
 
