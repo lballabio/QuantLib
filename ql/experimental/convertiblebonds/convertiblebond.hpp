@@ -178,9 +178,6 @@ namespace QuantLib {
         }
 
         Real conversionRatio;
-        Handle<Quote> creditSpread; //Not being used for calculations in binomailconvertibleengine
-        DividendSchedule dividends; //Not being used for calculations in binomailconvertibleengine
-        std::vector<Date> dividendDates; 
         std::vector<Date> callabilityDates; 
         std::vector<Callability::Type> callabilityTypes;
         std::vector<Real> callabilityPrices;

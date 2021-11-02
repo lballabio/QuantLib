@@ -124,18 +124,7 @@ namespace QuantLib {
         ext::shared_ptr<Lattice> lattice(new TsiveriotisFernandesLattice<T>(
             tree, riskFreeRate, maturity, timeSteps_, creditSpread, v, q));
 
-        // Setup arguments for convertible
-        arguments_.dividends.clear();
-        arguments_.dividendDates.clear();
-        for (const auto& dividend : dividends_) {
-            if (!dividend->hasOccurred(arguments_.settlementDate, false)) {
-                arguments_.dividends.push_back(dividend);
-                arguments_.dividendDates.push_back(dividend->date());
-            }
-        }
-        arguments_.creditSpread = creditSpread_;
-
-        DiscretizedConvertible convertible(arguments_, bs, TimeGrid(maturity, timeSteps_));
+        DiscretizedConvertible convertible(arguments_, bs, dividends_, creditSpread_, TimeGrid(maturity, timeSteps_));
 
         convertible.initialize(lattice, maturity);
         convertible.rollback(0.0);

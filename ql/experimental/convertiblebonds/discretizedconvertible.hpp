@@ -35,6 +35,8 @@ namespace QuantLib {
       public:
         DiscretizedConvertible(ConvertibleBond::option::arguments,
                                ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                               DividendSchedule dividends,
+                               Handle<Quote> creditSpread,
                                const TimeGrid& grid = TimeGrid());
 
         void reset(Size size) override;
@@ -76,6 +78,9 @@ namespace QuantLib {
         std::vector<Time> callabilityTimes_;
         std::vector<Time> couponTimes_;
         std::vector<Time> dividendTimes_;
+        Handle<Quote> creditSpread_;
+        DividendSchedule dividends_;
+        std::vector<Date> dividendDates_; 
     };
 
 }
