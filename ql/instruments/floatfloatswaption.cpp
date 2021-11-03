@@ -30,7 +30,7 @@ namespace QuantLib {
     : Option(ext::shared_ptr<Payoff>(), exercise), swap_(std::move(swap)),
       settlementType_(delivery), settlementMethod_(settlementMethod) {
         registerWith(swap_);
-        registerWithObservables(swap_);
+        swap_->alwaysForwardNotifications();
     }
 
     bool FloatFloatSwaption::isExpired() const {

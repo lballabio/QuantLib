@@ -269,9 +269,8 @@ namespace QuantLib {
 
     void CapFloor::deepUpdate() {
         for (auto& i : floatingLeg_) {
-            ext::shared_ptr<LazyObject> f = ext::dynamic_pointer_cast<LazyObject>(i);
-            if (f != nullptr)
-                f->update();
+            if(auto lazy = ext::dynamic_pointer_cast<LazyObject>(i))
+                lazy->deepUpdate();
         }
         update();
     }

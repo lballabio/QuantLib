@@ -60,6 +60,15 @@ namespace QuantLib {
                   const ext::shared_ptr<FloatingRateCoupon>& underlying,
                   Rate cap = Null<Rate>(),
                   Rate floor = Null<Rate>());
+        //! \name Observer interface
+        //@{
+        void deepUpdate() override;
+        //@}
+        //! \name LazyObject interface
+        //@{
+        void performCalculations() const override;
+        void alwaysForwardNotifications() override;
+        //@}
         //! \name Coupon interface
         //@{
         Rate rate() const override;
@@ -73,10 +82,6 @@ namespace QuantLib {
         Rate effectiveCap() const;
         //! effective floor of fixing
         Rate effectiveFloor() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update() override;
         //@}
         //! \name Visitability
         //@{

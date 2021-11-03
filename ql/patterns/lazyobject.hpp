@@ -77,12 +77,18 @@ namespace QuantLib {
             recalculation, this object would again forward the first
             notification received.
 
+            The method should be overridden in derived classes which
+            contain nested lazy objects. It should then call the method
+            on itself and the nested lazy objects to ensure that
+            notifications from the nested objects are always forwarded
+            all the way through the observable chain.
+
             \warning Forwarding all notifications will cause a
                      performance hit, and should be used only when
                      discarding notifications cause an incorrect
                      behavior.
         */
-        void alwaysForwardNotifications();
+        virtual void alwaysForwardNotifications();
       protected:
         /*! This method performs all needed calculations by calling
             the <i><b>performCalculations</b></i> method.

@@ -104,6 +104,10 @@ namespace QuantLib {
         //@{
         bool isExpired() const override;
         //@}
+        //! \name LazyObject interface
+        //@{
+        void alwaysForwardNotifications() override;
+        //@}
         //! \name Observable interface
         //@{
         void deepUpdate() override;

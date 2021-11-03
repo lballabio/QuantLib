@@ -115,8 +115,12 @@ namespace QuantLib {
 
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
-            itself. */
-        void registerWithObservables(const ext::shared_ptr<Observer>&);
+            itself.
+
+            \deprecated consider using LazyObject::alwaysForwardNotifications() instead,
+            the registration with the next-level observables was just a workaround for that.
+        */
+        QL_DEPRECATED void registerWithObservables(const ext::shared_ptr<Observer>&);
         Size unregisterWith(const ext::shared_ptr<Observable>&);
         void unregisterWithAll();
 

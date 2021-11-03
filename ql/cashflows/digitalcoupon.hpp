@@ -95,6 +95,15 @@ namespace QuantLib {
                       bool nakedOption = false);
 
         //@}
+        //! \name Obverver interface
+        //@{
+        void deepUpdate() override;
+        //@}
+        //! \name LazyObject interface
+        //@{
+        void performCalculations() const override;
+        void alwaysForwardNotifications() override;
+        //@}
         //! \name Coupon interface
         //@{
         Rate rate() const override;
@@ -121,10 +130,6 @@ namespace QuantLib {
            (multiplied by: nominal*accrualperiod*discount is the NPV of the option)
         */
         Rate putOptionRate() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update() override;
         //@}
         //! \name Visitability
         //@{

@@ -37,7 +37,7 @@ namespace QuantLib {
     /*! This class acts as a base class for the actual
         event implementations.
     */
-    class Event : public Observable {
+    class Event : public virtual Observable {
       public:
         ~Event() override = default;
         //! \name Event interface

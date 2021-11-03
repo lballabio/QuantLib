@@ -136,7 +136,13 @@ namespace QuantLib {
     : Option(ext::shared_ptr<Payoff>(), exercise), swap_(std::move(swap)),
       settlementType_(delivery), settlementMethod_(settlementMethod) {
         registerWith(swap_);
-        registerWithObservables(swap_);
+        // a swaption engine might not calculate the underlying swap
+        swap_->alwaysForwardNotifications();
+    }
+
+    void Swaption::deepUpdate() {
+        swap_->deepUpdate();
+        update();
     }
 
     bool Swaption::isExpired() const {
