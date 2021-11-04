@@ -77,7 +77,7 @@ namespace QuantLib {
         registerWith(zeroInflation_);
     }
 
-    Rate ZeroInflationIndex::fixing(const Date& aFixingDate,
+    Real ZeroInflationIndex::fixing(const Date& aFixingDate,
                                     bool /*forecastTodaysFixing*/) const {
         if (!needsForecast(aFixingDate)) {
             std::pair<Date,Date> lim = inflationPeriod(aFixingDate, frequency_);
@@ -151,7 +151,7 @@ namespace QuantLib {
     }
 
 
-    Rate ZeroInflationIndex::forecastFixing(const Date& fixingDate) const {
+    Real ZeroInflationIndex::forecastFixing(const Date& fixingDate) const {
         // the term structure is relative to the fixing value at the base date.
         Date baseDate = zeroInflation_->baseDate();
         QL_REQUIRE(!needsForecast(baseDate),
