@@ -124,8 +124,7 @@ namespace QuantLib {
         // curveBaseDate and effective fixing date. This means that we should retrieve
         // the input seasonality adjustments when we look at I_{SA}(t) / I_{NSA}(t).
         Date curveBaseDate = iTS.baseDate();
-        Date effectiveFixingDate = iTS.indexIsInterpolated() ? d : 
-            inflationPeriod(d, iTS.frequency()).first;
+        Date effectiveFixingDate = inflationPeriod(d, iTS.frequency()).first;
         
         return seasonalityCorrection(r, effectiveFixingDate, iTS.dayCounter(), curveBaseDate, true);
     }
