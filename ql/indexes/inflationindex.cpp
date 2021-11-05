@@ -77,36 +77,34 @@ namespace QuantLib {
         registerWith(zeroInflation_);
     }
 
-    Real ZeroInflationIndex::fixing(const Date& aFixingDate,
+    Real ZeroInflationIndex::fixing(const Date& fixingDate,
                                     bool /*forecastTodaysFixing*/) const {
-        if (!needsForecast(aFixingDate)) {
-            std::pair<Date,Date> lim = inflationPeriod(aFixingDate, frequency_);
+        if (!needsForecast(fixingDate)) {
+            std::pair<Date,Date> p = inflationPeriod(fixingDate, frequency_);
             const TimeSeries<Real>& ts = timeSeries();
-            Real pastFixing = ts[lim.first];
-            QL_REQUIRE(pastFixing != Null<Real>(),
-                       "Missing " << name() << " fixing for " << lim.first);
-            Real theFixing = pastFixing;
-            if (interpolated_) {
-                // fixings stored on first day of every period
-                if (aFixingDate == lim.first) {
-                    // we don't actually need the next fixing
-                    theFixing = pastFixing;
-                } else {
-                    Real pastFixing2 = ts[lim.second+1];
-                    QL_REQUIRE(pastFixing2 != Null<Real>(),
-                               "Missing " << name() << " fixing for " << lim.second+1);
 
-                    // Use lagged period for interpolation
-                    std::pair<Date, Date> reference_period_lim = inflationPeriod(aFixingDate + zeroInflationTermStructure()->observationLag(), frequency_);
-                    // now linearly interpolate
-                    Real daysInPeriod = reference_period_lim.second + 1 - reference_period_lim.first;
-                    theFixing = pastFixing
-                        + (pastFixing2 - pastFixing)*(aFixingDate - lim.first) / daysInPeriod;
-                }
+            Real I1 = ts[p.first];
+            QL_REQUIRE(I1 != Null<Real>(),
+                       "Missing " << name() << " fixing for " << p.first);
+
+            if (interpolated_ && fixingDate > p.first) {
+                Real I2 = ts[p.second+1];
+                QL_REQUIRE(I2 != Null<Real>(),
+                           "Missing " << name() << " fixing for " << p.second+1);
+
+                // Use non-lagged period for interpolation
+                Date observationDate = fixingDate + zeroInflation_->observationLag();
+                std::pair<Date, Date> p2 = inflationPeriod(observationDate, frequency_);
+                Real daysInPeriod = (p2.second + 1) - p2.first;
+                Real interpolationCoefficient = (observationDate - p2.first) / daysInPeriod;
+
+                return I1 + (I2 - I1) * interpolationCoefficient;
+            } else {
+                // we don't need the next fixing
+                return I1;
             }
-            return theFixing;
         } else {
-            return forecastFixing(aFixingDate);
+            return forecastFixing(fixingDate);
         }
     }
 
@@ -177,9 +175,9 @@ namespace QuantLib {
             Date observationDate = fixingDate + zeroInflation_->observationLag();
             std::pair<Date, Date> p2 = inflationPeriod(observationDate, frequency_);
             Real daysInPeriod = (p2.second + 1) - p2.first;
-            Real coeff = (observationDate - p2.first) / daysInPeriod;
+            Real interpolationCoefficient = (observationDate - p2.first) / daysInPeriod;
 
-            return I1 + (I2 - I1) * coeff;
+            return I1 + (I2 - I1) * interpolationCoefficient;
         } else {
             return I1;
         }
