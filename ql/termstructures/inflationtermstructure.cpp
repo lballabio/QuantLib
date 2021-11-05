@@ -165,16 +165,10 @@ namespace QuantLib {
             Rate z2 = zeroRateImpl(t2);
             zeroRate = z1 + (z2-z1) * (dt/dp);
         } else {
-            if (indexIsInterpolated()) {
-                InflationTermStructure::checkRange(d-useLag, extrapolate);
-                Time t = timeFromReference(d-useLag);
-                zeroRate = zeroRateImpl(t);
-            } else {
-                std::pair<Date,Date> dd = inflationPeriod(d-useLag, frequency());
-                InflationTermStructure::checkRange(dd.first, extrapolate);
-                Time t = timeFromReference(dd.first);
-                zeroRate = zeroRateImpl(t);
-            }
+            std::pair<Date,Date> dd = inflationPeriod(d-useLag, frequency());
+            InflationTermStructure::checkRange(dd.first, extrapolate);
+            Time t = timeFromReference(dd.first);
+            zeroRate = zeroRateImpl(t);
         }
 
         if (hasSeasonality()) {

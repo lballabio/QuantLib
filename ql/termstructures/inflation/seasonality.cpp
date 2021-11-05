@@ -202,7 +202,8 @@ namespace QuantLib {
         if (isZeroRate) {
             Rate factorBase = this->seasonalityFactor(curveBaseDate);
             Real seasonalityAt = factorAt / factorBase;
-            Time timeFromCurveBase = dc.yearFraction(curveBaseDate, atDate);
+            std::pair<Date,Date> p = inflationPeriod(atDate,frequency());
+            Time timeFromCurveBase = dc.yearFraction(curveBaseDate, p.first);
             f = std::pow(seasonalityAt, 1/timeFromCurveBase);
         }
         else {

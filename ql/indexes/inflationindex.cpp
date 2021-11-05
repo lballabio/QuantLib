@@ -157,25 +157,32 @@ namespace QuantLib {
         QL_REQUIRE(!needsForecast(baseDate),
                    name() << " index fixing at base date " << baseDate << " is not available");
         Real baseFixing = fixing(baseDate);
-        Date effectiveFixingDate;
-        if (interpolated()) {
-            effectiveFixingDate = fixingDate;
-        } else {
-            // start of period is the convention
-            // so it's easier to do linear interpolation on fixings
-            effectiveFixingDate = inflationPeriod(fixingDate, frequency()).first;
-        }
 
-        // no observation lag because it is the fixing for the date
-        // but if index is not interpolated then that fixing is constant
-        // for each period, hence the t uses the effectiveFixingDate
-        // However, it's slightly safe to get the zeroRate with the
-        // fixingDate to avoid potential problems at the edges of periods
-        Time t = zeroInflation_->dayCounter().yearFraction(baseDate, effectiveFixingDate);
-        bool forceLinearInterpolation = false;
-        Rate zero = zeroInflation_->zeroRate(fixingDate, Period(0,Days), forceLinearInterpolation);
-        // Annual compounding is the convention for zero inflation rates (or quotes)
-        return baseFixing * std::pow(1.0 + zero, t);
+        std::pair<Date, Date> p = inflationPeriod(fixingDate, frequency_);
+
+        Date firstDateInPeriod = p.first;
+        Rate Z1 = zeroInflation_->zeroRate(firstDateInPeriod, Period(0,Days), false);
+        Time t1 = inflationYearFraction(frequency_, interpolated_, zeroInflation_->dayCounter(),
+                                        baseDate, firstDateInPeriod);
+        Real I1 = baseFixing * std::pow(1.0 + Z1, t1);
+
+        if (interpolated() && fixingDate > firstDateInPeriod) {
+            Date firstDateInNextPeriod = p.second + 1;
+            Rate Z2 = zeroInflation_->zeroRate(firstDateInNextPeriod, Period(0,Days), false);
+            Time t2 = inflationYearFraction(frequency_, interpolated_, zeroInflation_->dayCounter(),
+                                            baseDate, firstDateInNextPeriod);
+            Real I2 = baseFixing * std::pow(1.0 + Z2, t2);
+
+            // // Use non-lagged period for interpolation
+            Date observationDate = fixingDate + zeroInflation_->observationLag();
+            std::pair<Date, Date> p2 = inflationPeriod(observationDate, frequency_);
+            Real daysInPeriod = (p2.second + 1) - p2.first;
+            Real coeff = (observationDate - p2.first) / daysInPeriod;
+
+            return I1 + (I2 - I1) * coeff;
+        } else {
+            return I1;
+        }
     }
 
 
