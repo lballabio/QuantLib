@@ -33,8 +33,8 @@ namespace QuantLib {
                                         const DayCounter& dayCounter,
                                         const ext::shared_ptr<Seasonality> &seasonality)
     : TermStructure(dayCounter),
-      observationLag_(observationLag), frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
-      baseRate_(baseRate) {
+      observationLag_(observationLag), frequency_(frequency),
+      baseRate_(baseRate), indexIsInterpolated_(indexIsInterpolated) {
         setSeasonality(seasonality);
     }
 
@@ -48,9 +48,8 @@ namespace QuantLib {
                                         const DayCounter& dayCounter,
                                         const ext::shared_ptr<Seasonality> &seasonality)
     : TermStructure(referenceDate, calendar, dayCounter),
-      observationLag_(observationLag),
-      frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
-      baseRate_(baseRate) {
+      observationLag_(observationLag), frequency_(frequency),
+      baseRate_(baseRate), indexIsInterpolated_(indexIsInterpolated) {
         setSeasonality(seasonality);
     }
 
@@ -64,9 +63,8 @@ namespace QuantLib {
                                         const DayCounter &dayCounter,
                                         const ext::shared_ptr<Seasonality> &seasonality)
     : TermStructure(settlementDays, calendar, dayCounter),
-      observationLag_(observationLag),
-      frequency_(frequency), indexIsInterpolated_(indexIsInterpolated),
-      baseRate_(baseRate) {
+      observationLag_(observationLag), frequency_(frequency),
+      baseRate_(baseRate), indexIsInterpolated_(indexIsInterpolated) {
         setSeasonality(seasonality);
     }
 

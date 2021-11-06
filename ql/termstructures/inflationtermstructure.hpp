@@ -28,6 +28,7 @@
 #include <ql/termstructures/inflation/seasonality.hpp>
 
 namespace QuantLib {
+
     class InflationIndex;
 
     QL_DEPRECATED_DISABLE_WARNING
@@ -69,8 +70,17 @@ namespace QuantLib {
         //! by default, for the maturity requested assuming this lag.
         virtual Period observationLag() const;
         virtual Frequency frequency() const;
-        virtual bool indexIsInterpolated() const;
         virtual Rate baseRate() const;
+
+        /*! \deprecated Don't use this method.  Inflation indexes no
+                        longer rely on the curve for interpolation.
+                        Coupons that need to interpolate between two
+                        index fixings should do so explicitly.
+                        Curves can return flat rates over an inflation period.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        virtual bool indexIsInterpolated() const;
 
         //! minimum (base) date
         /*! Important in inflation since it starts before nominal
@@ -90,7 +100,7 @@ namespace QuantLib {
                         should be passed one explicitly.
                         Deprecated in version 1.24.
         */
-        QL_DEPRECATED 
+        QL_DEPRECATED
         virtual Handle<YieldTermStructure> nominalTermStructure() const;
 
         //! Functions to set and get seasonality.
@@ -121,8 +131,16 @@ namespace QuantLib {
         ext::shared_ptr<Seasonality> seasonality_;
         Period observationLag_;
         Frequency frequency_;
-        bool indexIsInterpolated_;
         mutable Rate baseRate_;
+        /*! \deprecated Don't use this data member.  Inflation indexes
+                        no longer rely on the curve for interpolation,
+                        and coupons that need to interpolate between two
+                        index fixings should do so explicitly.
+                        Curves can return flat rates over an inflation period.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        bool indexIsInterpolated_;
         /*! \deprecated Don't use this data member.  If you're
                         inheriting from InflationTermStructure, don't
                         have your class take a nominal curve.  Objects
@@ -131,7 +149,7 @@ namespace QuantLib {
                         explicitly.
                         Deprecated in version 1.24.
         */
-        QL_DEPRECATED 
+        QL_DEPRECATED
         Handle<YieldTermStructure> nominalTermStructure_;
     };
 
@@ -254,6 +272,8 @@ namespace QuantLib {
         Rate yoyRate(Time t,
                      bool extrapolate = false) const;
         //@}
+
+        bool indexIsInterpolated() const override;
       protected:
         //! to be defined in derived classes
         virtual Rate yoyRateImpl(Time time) const = 0;
@@ -283,19 +303,21 @@ namespace QuantLib {
     }
 
     inline bool InflationTermStructure::indexIsInterpolated() const {
+        QL_DEPRECATED_DISABLE_WARNING
         return indexIsInterpolated_;
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     inline Rate InflationTermStructure::baseRate() const {
         return baseRate_;
     }
 
-    QL_DEPRECATED_DISABLE_WARNING
     inline Handle<YieldTermStructure>
     InflationTermStructure::nominalTermStructure() const {
+        QL_DEPRECATED_DISABLE_WARNING
         return nominalTermStructure_;
+        QL_DEPRECATED_ENABLE_WARNING
     }
-    QL_DEPRECATED_ENABLE_WARNING
 
     inline ext::shared_ptr<Seasonality> InflationTermStructure::seasonality() const {
         return seasonality_;
@@ -303,6 +325,12 @@ namespace QuantLib {
 
     inline bool InflationTermStructure::hasSeasonality() const {
         return static_cast<bool>(seasonality_);
+    }
+
+    inline bool YoYInflationTermStructure::indexIsInterpolated() const {
+        QL_DEPRECATED_DISABLE_WARNING
+        return indexIsInterpolated_;
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
 }
