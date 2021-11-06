@@ -86,7 +86,14 @@ if (NOT DEFINED Boost_USE_STATIC_RUNTIME)
 endif()
 
 # Boost thread and unit_test_framework needed for tests and benchmark
-find_package(Boost 1.58.0 REQUIRED COMPONENTS thread unit_test_framework)
+if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
+    find_package(Boost 1.58.0 REQUIRED COMPONENTS thread unit_test_framework)
+else()
+    find_package(Boost 1.58.0 REQUIRED COMPONENTS thread)
+endif()
+
+# Do not warn about Boost versions higher than 1.58.0
+set(Boost_NO_WARN_NEW_VERSIONS ON)
 
 # Avoid using Boost auto-linking
 add_compile_definitions(BOOST_ALL_NO_LIB)
