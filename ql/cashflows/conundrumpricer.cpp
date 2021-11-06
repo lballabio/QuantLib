@@ -340,7 +340,7 @@ namespace QuantLib {
 
         // v. HAGAN, Conundrums..., formule 2.17a, 2.18a
         return coupon_->accrualPeriod() * (discount_/annuity_) *
-            ((1 + dFdK) * swaptionPrice + optionType*integralValue);
+            ((1 + dFdK) * swaptionPrice + Integer(optionType) * integralValue);
     }
 
     Real NumericHaganPricer::swapletPrice() const {
@@ -475,13 +475,14 @@ namespace QuantLib {
         const Real dminus12 =  (lnRoverK-.5*variance)/sqrtSigma2T;
 
         CumulativeNormalDistribution cumulativeOfNormal;
-        const Real N32 = cumulativeOfNormal(optionType*d32);
-        const Real N12 = cumulativeOfNormal(optionType*d12);
-        const Real Nminus12 = cumulativeOfNormal(optionType*dminus12);
+        Integer sign = Integer(optionType);
+        const Real N32 = cumulativeOfNormal(sign * d32);
+        const Real N12 = cumulativeOfNormal(sign * d12);
+        const Real Nminus12 = cumulativeOfNormal(sign * dminus12);
 
-        price += optionType * firstDerivativeOfGAtForwardValue * annuity_ *
-            swapRateValue_ * (swapRateValue_ * std::exp(variance) * N32-
-            (swapRateValue_+strike) * N12 + strike * Nminus12);
+        price += sign * firstDerivativeOfGAtForwardValue * annuity_ *
+            swapRateValue_ * (swapRateValue_ * std::exp(variance) * N32 -
+            (swapRateValue_ + strike) * N12 + strike * Nminus12);
         price *= coupon_->accrualPeriod();
         return price;
     }
