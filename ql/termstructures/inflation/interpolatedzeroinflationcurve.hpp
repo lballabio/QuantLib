@@ -120,13 +120,11 @@ namespace QuantLib {
                    "first data date is not in base period, date: "
                        << dates_[0] << " not within [" << lim.first << "," << lim.second << "]");
 
-        // by convention, if the index is not interpolated we pull all the dates
-        // back to the start of their inflationPeriods
+        // by convention, we pull all the dates
+        // back to the start of their inflation periods
         // otherwise the time calculations will be inconsistent
-        if (!indexIsInterpolated_) {
-            for (auto& date : dates_) {
-                date = inflationPeriod(date, frequency).first;
-            }
+        for (auto& date : dates_) {
+            date = inflationPeriod(date, frequency).first;
         }
 
         QL_REQUIRE(this->data_.size() == dates_.size(),
@@ -171,21 +169,13 @@ namespace QuantLib {
 
     template <class T>
     Date InterpolatedZeroInflationCurve<T>::baseDate() const {
-        // if indexIsInterpolated we fixed the dates in the constructor
         return dates_.front();
     }
 
     template <class T>
     Date InterpolatedZeroInflationCurve<T>::maxDate() const {
-        Date d;
-        if (indexIsInterpolated()) {
-            d = dates_.back();
-        } else {
-            d = inflationPeriod(dates_.back(), frequency()).second;
-        }
-        return d;
+        return inflationPeriod(dates_.back(), frequency()).second;
     }
-
 
     template <class T>
     inline Rate InterpolatedZeroInflationCurve<T>::zeroRateImpl(Time t) const {

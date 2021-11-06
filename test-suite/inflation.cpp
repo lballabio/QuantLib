@@ -537,19 +537,10 @@ void InflationTest::testZeroTermStructure() {
 
     pZITSyes->recalculate();
 
-    // For interpolated fixings, the zero rates on the curve match the data only approximately.
+    // For interpolated fixings, the zero rates on the curve no longer match the data.
     // The helpers still give the correct implied rates, of course.
-    Real eps2 = 0.0001;
     forceLinearInterpolation = false;   // still
     for (Size i=0; i<zcData.size(); i++) {
-        BOOST_CHECK_MESSAGE(std::fabs(zcData[i].rate/100.0
-                    - pZITSyes->zeroRate(zcData[i].date, observationLagyes, forceLinearInterpolation)) < eps2,
-                    "ZITS INTERPOLATED zeroRate != instrument "
-                    << pZITSyes->zeroRate(zcData[i].date, observationLagyes, forceLinearInterpolation)
-                    << " date " << zcData[i].date << " observationLagyes " << observationLagyes
-                    << " vs " << zcData[i].rate/100.0
-                    << " interpolation: " << iiyes->interpolated()
-                    << " forceLinearInterpolation " << forceLinearInterpolation);
         BOOST_CHECK_MESSAGE(std::fabs(helpersyes[i]->impliedQuote()
                         - zcData[i].rate/100.0) < eps,
                     "ZITS INTERPOLATED implied quote != instrument "
