@@ -76,7 +76,7 @@ namespace QuantLib {
         QL_REQUIRE(discount>0.0,
                    "discount (" << discount << ") must be positive");
 
-        Integer sign = Integer(optionType);
+        auto sign = Integer(optionType);
 
         if (stdDev == 0.0)
             return std::max((forward-strike) * sign, Real(0.0)) * discount;
@@ -126,7 +126,7 @@ namespace QuantLib {
         QL_REQUIRE(discount>0.0,
                    "discount (" << discount << ") must be positive");
 
-        Integer sign = Integer(optionType);
+        auto sign = Integer(optionType);
 
         if (stdDev == 0.0)
             return sign * std::max(1.0 * boost::math::sign((forward - strike) * sign), 0.0) * discount;
@@ -574,7 +574,7 @@ namespace QuantLib {
                                         Real displacement) {
         checkParameters(strike, forward, displacement);
 
-        Integer sign = Integer(optionType);
+        auto sign = Integer(optionType);
 
         if (stdDev==0.0)
             return (forward * sign > strike * sign ? 1.0 : 0.0);
@@ -605,7 +605,7 @@ namespace QuantLib {
                         Real displacement) {
         checkParameters(strike, forward, displacement);
 
-        Integer sign = Integer(optionType);
+        auto sign = Integer(optionType);
 
         if (stdDev==0.0)
             return (forward * sign < strike * sign ? 1.0 : 0.0);
@@ -749,7 +749,7 @@ namespace QuantLib {
                    "stdDev (" << stdDev << ") must be non-negative");
         QL_REQUIRE(discount>0.0,
                    "discount (" << discount << ") must be positive");
-        Integer sign = Integer(optionType);
+        auto sign = Integer(optionType);
         if (stdDev == 0.0)
             return sign * std::max(1.0 * boost::math::sign((forward - strike) * sign), 0.0) * discount;
         Real d = (forward - strike) * sign, h = d / stdDev;

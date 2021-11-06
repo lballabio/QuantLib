@@ -475,7 +475,7 @@ namespace QuantLib {
         const Real dminus12 =  (lnRoverK-.5*variance)/sqrtSigma2T;
 
         CumulativeNormalDistribution cumulativeOfNormal;
-        Integer sign = Integer(optionType);
+        auto sign = Integer(optionType);
         const Real N32 = cumulativeOfNormal(sign * d32);
         const Real N12 = cumulativeOfNormal(sign * d12);
         const Real Nminus12 = cumulativeOfNormal(sign * dminus12);
