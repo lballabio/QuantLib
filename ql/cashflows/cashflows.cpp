@@ -710,7 +710,7 @@ namespace QuantLib {
             QL_REQUIRE(y.compounding() == Compounded,
                        "compounded rate required");
 
-            return (1.0+y.rate()/y.frequency()) *
+            return (1.0 + y.rate() / static_cast<Rate>(y.frequency())) *
                 modifiedDuration(leg, y,
                                  includeSettlementDateFlows,
                                  settlementDate, npvDate);

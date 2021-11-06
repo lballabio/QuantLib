@@ -71,7 +71,7 @@ namespace QuantLib {
         // if a non knock-out payer option, add front end protection value
         if (arguments_.side == Protection::Buyer && !arguments_.knocksOut) {
             Real frontEndProtection =
-                callPut * arguments_.swap->notional()
+                static_cast<Real>(callPut) * arguments_.swap->notional()
                 * (1.-recoveryRate_)
                 * probability_->defaultProbability(exerciseDate)
                 * termStructure_->discount(exerciseDate);
