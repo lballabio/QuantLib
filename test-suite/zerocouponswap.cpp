@@ -132,7 +132,7 @@ namespace zerocouponswap_test {
 
         auto subPeriodCpn = vars.createSubPeriodsCoupon(start, end);
         Real expectedFloatLegNPV =
-            paymentDate < vars.settlement ? 0.0 : type * discountAtPayment * subPeriodCpn->amount();
+            paymentDate < vars.settlement ? 0.0 : Integer(type) * discountAtPayment * subPeriodCpn->amount();
 
         Real expectedNPV = expectedFloatLegNPV + expectedFixedLegNPV;
 

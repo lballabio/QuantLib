@@ -409,7 +409,7 @@ namespace QuantLib {
                 maxErrors  [j][k] = maxError;
                 endCriteria[j][k] = sabrInterpolation->endCriteria();
 
-                QL_ENSURE(endCriteria[j][k]!=EndCriteria::MaxIterations,
+                QL_ENSURE(endCriteria[j][k] != Integer(EndCriteria::MaxIterations),
                           "global swaptions calibration failed: "
                           "MaxIterations reached: " << "\n" <<
                           "option maturity = " << optionDates[j] << ", \n" <<
@@ -520,7 +520,7 @@ namespace QuantLib {
             calibrationResult[6]=sabrInterpolation->maxError();
             calibrationResult[7]=sabrInterpolation->endCriteria();
 
-            QL_ENSURE(calibrationResult[7]!=EndCriteria::MaxIterations,
+            QL_ENSURE(calibrationResult[7] != Integer(EndCriteria::MaxIterations),
                       "section calibration failed: "
                       "option tenor " << optionDates[j] <<
                       ", swap tenor " << swapTenors[k] <<
