@@ -85,12 +85,39 @@ if (NOT DEFINED Boost_USE_STATIC_RUNTIME)
     set(Boost_USE_STATIC_RUNTIME ${MSVC})
 endif()
 
-# Boost thread and unit_test_framework needed for tests and benchmark
-if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
-    find_package(Boost 1.58.0 REQUIRED COMPONENTS thread unit_test_framework)
-else()
-    find_package(Boost 1.58.0 REQUIRED COMPONENTS thread)
+# Require C++11 or higher
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 11)
+elseif(CMAKE_CXX_STANDARD LESS 11)
+    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 11 or higher")
 endif()
+if (NOT DEFINED CMAKE_CXX_STANDARD_REQUIRED)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
+# Avoid use of compiler language extensions, i.e. -std=c++11 not -std=gnu++11
+if (NOT DEFINED CMAKE_CXX_EXTENSIONS)
+    set(CMAKE_CXX_EXTENSIONS FALSE)
+endif()
+
+if (NOT DEFINED QL_BOOST_VERSION)
+    # Boost 1.75.0 or greater required for compiling with C++20
+    if (CMAKE_CXX_STANDARD GREATER_EQUAL 20)
+        set(QL_BOOST_VERSION 1.75.0)
+    else()
+        set(QL_BOOST_VERSION 1.58.0)
+    endif()
+endif()
+
+if (NOT DEFINED QL_BOOST_COMPONENTS)
+    # Boost thread and unit_test_framework needed for tests and benchmark
+    if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
+        set(QL_BOOST_COMPONENTS thread unit_test_framework)
+    else()
+        set(QL_BOOST_COMPONENTS thread)
+    endif()
+endif()
+
+find_package(Boost ${QL_BOOST_VERSION} REQUIRED COMPONENTS ${QL_BOOST_COMPONENTS})
 
 # Do not warn about Boost versions higher than 1.58.0
 set(Boost_NO_WARN_NEW_VERSIONS ON)
@@ -105,20 +132,6 @@ endif()
 # Parallel test runner needs library rt on *nix for shm_open, etc.
 if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER AND UNIX AND NOT APPLE)
     find_library(RT_LIBRARY rt REQUIRED)
-endif()
-
-# Require C++11 or higher
-if (NOT DEFINED CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 11)
-elseif(CMAKE_CXX_STANDARD LESS 11)
-    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 11 or higher")
-endif()
-if (NOT DEFINED CMAKE_CXX_STANDARD_REQUIRED)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-# Avoid use of compiler language extensions, i.e. -std=c++11 not -std=gnu++11
-if (NOT DEFINED CMAKE_CXX_EXTENSIONS)
-    set(CMAKE_CXX_EXTENSIONS FALSE)
 endif()
 
 # If available, use PIC for shared libs and PIE for executables
