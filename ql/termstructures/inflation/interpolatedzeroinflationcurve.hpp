@@ -45,7 +45,7 @@ namespace QuantLib {
                                        const DayCounter& dayCounter,
                                        const Period& lag,
                                        Frequency frequency,
-                                       std::vector<Date> dates,
+                                       const std::vector<Date>& dates,
                                        const std::vector<Rate>& rates,
                                        const Interpolator& interpolator = Interpolator());
 
@@ -128,11 +128,11 @@ namespace QuantLib {
         const DayCounter& dayCounter,
         const Period& lag,
         Frequency frequency,
-        std::vector<Date> dates,
+        const std::vector<Date>& dates,
         const std::vector<Rate>& rates,
         const Interpolator& interpolator)
-    : InterpolatedZeroInflationCurve(referenceDate, calendar, dayCounter, lag,
-                                     frequency, dates, rates, false) {}
+    : InterpolatedZeroInflationCurve(
+          referenceDate, calendar, dayCounter, lag, frequency, dates, rates, false) {}
 
     template <class Interpolator>
     InterpolatedZeroInflationCurve<Interpolator>::InterpolatedZeroInflationCurve(
