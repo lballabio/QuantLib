@@ -45,6 +45,20 @@ namespace QuantLib {
                                        const DayCounter& dayCounter,
                                        const Period& lag,
                                        Frequency frequency,
+                                       std::vector<Date> dates,
+                                       const std::vector<Rate>& rates,
+                                       const Interpolator& interpolator = Interpolator());
+
+        /*! \deprecated Use the constructor without the
+                        indexIsInterpolated parameter.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        InterpolatedZeroInflationCurve(const Date& referenceDate,
+                                       const Calendar& calendar,
+                                       const DayCounter& dayCounter,
+                                       const Period& lag,
+                                       Frequency frequency,
                                        bool indexIsInterpolated,
                                        std::vector<Date> dates,
                                        const std::vector<Rate>& rates,
@@ -81,10 +95,22 @@ namespace QuantLib {
                                        const DayCounter& dayCounter,
                                        const Period& lag,
                                        Frequency frequency,
+                                       Rate baseZeroRate,
+                                       const Interpolator &interpolator = Interpolator());
+
+        /*! \deprecated Use the constructor without the
+                        indexIsInterpolated parameter.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        InterpolatedZeroInflationCurve(const Date& referenceDate,
+                                       const Calendar& calendar,
+                                       const DayCounter& dayCounter,
+                                       const Period& lag,
+                                       Frequency frequency,
                                        bool indexIsInterpolated,
                                        Rate baseZeroRate,
-                                       const Interpolator &interpolator
-                                                            = Interpolator());
+                                       const Interpolator &interpolator = Interpolator());
     };
 
     typedef InterpolatedZeroInflationCurve<Linear> ZeroInflationCurve;
@@ -92,6 +118,21 @@ namespace QuantLib {
 
 
     // template definitions
+
+    QL_DEPRECATED_DISABLE_WARNING
+
+    template <class Interpolator>
+    InterpolatedZeroInflationCurve<Interpolator>::InterpolatedZeroInflationCurve(
+        const Date& referenceDate,
+        const Calendar& calendar,
+        const DayCounter& dayCounter,
+        const Period& lag,
+        Frequency frequency,
+        std::vector<Date> dates,
+        const std::vector<Rate>& rates,
+        const Interpolator& interpolator)
+    : InterpolatedZeroInflationCurve(referenceDate, calendar, dayCounter, lag,
+                                     frequency, dates, rates, false) {}
 
     template <class Interpolator>
     InterpolatedZeroInflationCurve<Interpolator>::InterpolatedZeroInflationCurve(
@@ -158,6 +199,20 @@ namespace QuantLib {
                                    const DayCounter& dayCounter,
                                    const Period& lag,
                                    Frequency frequency,
+                                   Rate baseZeroRate,
+                                   const Interpolator& interpolator)
+    :  ZeroInflationTermStructure(referenceDate, calendar, dayCounter,
+                                  baseZeroRate, lag, frequency),
+       InterpolatedCurve<Interpolator>(interpolator) {
+    }
+
+    template <class Interpolator>
+    InterpolatedZeroInflationCurve<Interpolator>::
+    InterpolatedZeroInflationCurve(const Date& referenceDate,
+                                   const Calendar& calendar,
+                                   const DayCounter& dayCounter,
+                                   const Period& lag,
+                                   Frequency frequency,
                                    bool indexIsInterpolated,
                                    Rate baseZeroRate,
                                    const Interpolator& interpolator)
@@ -166,6 +221,7 @@ namespace QuantLib {
        InterpolatedCurve<Interpolator>(interpolator) {
     }
 
+    QL_DEPRECATED_ENABLE_WARNING
 
     template <class T>
     Date InterpolatedZeroInflationCurve<T>::baseDate() const {

@@ -397,8 +397,7 @@ void InflationTest::testZeroTermStructure() {
     ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
                         new PiecewiseZeroInflationCurve<Linear>(
                         evaluationDate, calendar, dc, observationLag,
-                        frequency, ii->interpolated(), baseZeroRate,
-                        helpers));
+                        frequency, baseZeroRate, helpers));
     pZITS->recalculate();
 
     // first check that the zero rates on the curve match the data
@@ -532,8 +531,7 @@ void InflationTest::testZeroTermStructure() {
     ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITSyes(
             new PiecewiseZeroInflationCurve<Linear>(
             evaluationDate, calendar, dc, observationLagyes,
-            frequency, iiyes->interpolated(), baseZeroRate,
-            helpersyes));
+            frequency, baseZeroRate, helpersyes));
 
     pZITSyes->recalculate();
 
