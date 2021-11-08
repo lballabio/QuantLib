@@ -17,7 +17,7 @@ quantlib.elc
 quantlib.pc
 QuantLib.spec
 CMakeCache.txt
-CMakeUserPresets.txt
+CMakeUserPresets.json
 Docs/.time-stamp
 Docs/.time-stamp-html
 Docs/.time-stamp-online
