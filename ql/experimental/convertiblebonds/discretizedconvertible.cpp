@@ -28,18 +28,27 @@ namespace QuantLib {
     DiscretizedConvertible::DiscretizedConvertible(
         ConvertibleBond::option::arguments args,
         ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        DividendSchedule dividends,
+        Handle<Quote> creditSpread,
         const TimeGrid& grid)
-    : arguments_(std::move(args)), process_(std::move(process)) {
+    : arguments_(std::move(args)), process_(std::move(process)), creditSpread_(creditSpread) {
 
-        dividendValues_ = Array(arguments_.dividends.size(), 0.0);
+        for (const auto& dividend : dividends) {
+            if (!dividend->hasOccurred(arguments_.settlementDate, false)) {
+                dividends_.push_back(dividend);
+                dividendDates_.push_back(dividend->date());
+            }
+        }
+
+        dividendValues_ = Array(dividends_.size(), 0.0);
 
         Date settlementDate = process_->riskFreeRate()->referenceDate();
-        for (Size i=0; i<arguments_.dividends.size(); i++) {
-            if (arguments_.dividends[i]->date() >= settlementDate) {
+        for (Size i=0; i<dividends.size(); i++) {
+            if (dividends[i]->date() >= settlementDate) {
                 dividendValues_[i] =
-                    arguments_.dividends[i]->amount() *
+                    dividends[i]->amount() *
                     process_->riskFreeRate()->discount(
-                                             arguments_.dividends[i]->date());
+                                             dividends[i]->date());
             }
         }
 
@@ -64,11 +73,11 @@ namespace QuantLib {
                 dayCounter.yearFraction(bondSettlement,
                                         arguments_.couponDates[i]);
 
-        dividendTimes_.resize(arguments_.dividendDates.size());
+        dividendTimes_.resize(dividendDates_.size());
         for (Size i=0; i<dividendTimes_.size(); ++i)
             dividendTimes_[i] =
                 dayCounter.yearFraction(bondSettlement,
-                                        arguments_.dividendDates[i]);
+                                        dividendDates_[i]);
 
         if (!grid.empty()) {
             // adjust times to grid
@@ -99,7 +108,7 @@ namespace QuantLib {
         // this takes care of convertibility and conversion probabilities
         adjustValues();
 
-        Real creditSpread = arguments_.creditSpread->value();
+        Real creditSpread = creditSpread_->value();
 
         Date exercise = arguments_.exercise->lastDate();
 
@@ -217,10 +226,10 @@ namespace QuantLib {
         Time t = time();
         Array grid = method()->grid(t);
         // add back all dividend amounts in the future
-        for (Size i=0; i<arguments_.dividends.size(); i++) {
+        for (Size i=0; i<dividends_.size(); i++) {
             Time dividendTime = dividendTimes_[i];
             if (dividendTime >= t || close(dividendTime,t)) {
-                const ext::shared_ptr<Dividend>& d = arguments_.dividends[i];
+                const ext::shared_ptr<Dividend>& d = dividends_[i];
                 DiscountFactor dividendDiscount =
                     process_->riskFreeRate()->discount(dividendTime) /
                     process_->riskFreeRate()->discount(t);
