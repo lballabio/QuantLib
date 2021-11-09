@@ -146,8 +146,7 @@ namespace QuantLib {
     class ConvertibleBond::arguments : public PricingEngine::arguments {
       public:
         arguments()
-        : conversionRatio(Null<Real>()), settlementDays(Null<Natural>()), redemption(Null<Real>()) {
-        }
+        : conversionRatio(Null<Real>()), settlementDays(Null<Natural>()), redemption(Null<Real>()) {}
 
         ext::shared_ptr<Exercise> exercise;
         Real conversionRatio;
@@ -155,8 +154,7 @@ namespace QuantLib {
         std::vector<Callability::Type> callabilityTypes;
         std::vector<Real> callabilityPrices;
         std::vector<Real> callabilityTriggers;
-        std::vector<Date> couponDates;
-        std::vector<Real> couponAmounts;
+        Leg cashflows;
         Date issueDate;
         Date settlementDate;
 

@@ -185,16 +185,7 @@ namespace QuantLib {
             }
         }
 
-        const Leg& cashflows = this->cashflows();
-
-        args->couponDates.clear();
-        args->couponAmounts.clear();
-        for (Size i = 0; i < cashflows.size() - 1; i++) {
-            if (!cashflows[i]->hasOccurred(settlement, false)) {
-                args->couponDates.push_back(cashflows[i]->date());
-                args->couponAmounts.push_back(cashflows[i]->amount());
-            }
-        }
+        args->cashflows = cashflows();
 
         args->issueDate = issueDate_;
         args->settlementDate = settlement;
@@ -225,8 +216,7 @@ namespace QuantLib {
         QL_REQUIRE(callabilityDates.size() == callabilityTriggers.size(),
                    "different number of callability dates and triggers");
 
-        QL_REQUIRE(couponDates.size() == couponAmounts.size(),
-                   "different number of coupon dates and amounts");
+        QL_REQUIRE(!cashflows.empty(), "no cashflows given");
     }
 
 }

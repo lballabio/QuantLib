@@ -67,11 +67,15 @@ namespace QuantLib {
                 dayCounter.yearFraction(bondSettlement,
                                         arguments_.callabilityDates[i]);
 
-        couponTimes_.resize(arguments_.couponDates.size());
-        for (Size i=0; i<couponTimes_.size(); ++i)
-            couponTimes_[i] =
-                dayCounter.yearFraction(bondSettlement,
-                                        arguments_.couponDates[i]);
+        couponTimes_.clear();
+        couponAmounts_.clear();
+        for (Size i = 0; i < arguments_.cashflows.size() - 1; ++i) {
+            if (!arguments_.cashflows[i]->hasOccurred(bondSettlement, false)) {
+                couponTimes_.push_back(dayCounter.yearFraction(bondSettlement,
+                                                               arguments_.cashflows[i]->date()));
+                couponAmounts_.push_back(arguments_.cashflows[i]->amount());
+            }
+        }
 
         dividendTimes_.resize(dividendDates_.size());
         for (Size i=0; i<dividendTimes_.size(); ++i)
@@ -219,7 +223,7 @@ namespace QuantLib {
     }
 
     void DiscretizedConvertible::addCoupon(Size i) {
-        values_ += arguments_.couponAmounts[i];
+        values_ += couponAmounts_[i];
     }
 
     Disposable<Array> DiscretizedConvertible::adjustedGrid() const {

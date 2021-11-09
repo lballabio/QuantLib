@@ -77,6 +77,7 @@ namespace QuantLib {
         std::vector<Time> stoppingTimes_;
         std::vector<Time> callabilityTimes_;
         std::vector<Time> couponTimes_;
+        std::vector<Real> couponAmounts_;
         std::vector<Time> dividendTimes_;
         Handle<Quote> creditSpread_;
         DividendSchedule dividends_;
