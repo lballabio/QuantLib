@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     DiscretizedConvertible::DiscretizedConvertible(
-        ConvertibleBond::option::arguments args,
+        ConvertibleBond::arguments args,
         ext::shared_ptr<GeneralizedBlackScholesProcess> process,
         DividendSchedule dividends,
         Handle<Quote> creditSpread,
