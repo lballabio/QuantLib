@@ -31,7 +31,8 @@ namespace QuantLib {
         DividendSchedule dividends,
         Handle<Quote> creditSpread,
         const TimeGrid& grid)
-    : arguments_(std::move(args)), process_(std::move(process)), creditSpread_(creditSpread) {
+    : arguments_(std::move(args)), process_(std::move(process)),
+      creditSpread_(std::move(creditSpread)) {
 
         for (const auto& dividend : dividends) {
             if (!dividend->hasOccurred(arguments_.settlementDate, false)) {
