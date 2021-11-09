@@ -67,6 +67,8 @@ namespace QuantLib {
                         const Schedule& schedule,
                         Real redemption);
         void setupArguments(PricingEngine::arguments*) const override;
+
+      private:
         ext::shared_ptr<Exercise> exercise_;
         Real conversionRatio_;
         CallabilitySchedule callability_;
