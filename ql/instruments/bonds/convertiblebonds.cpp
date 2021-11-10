@@ -29,14 +29,14 @@
 
 namespace QuantLib {
 
-    ConvertibleBond::ConvertibleBond(const ext::shared_ptr<Exercise>& exercise,
+    ConvertibleBond::ConvertibleBond(ext::shared_ptr<Exercise> exercise,
                                      Real conversionRatio,
                                      const CallabilitySchedule& callability,
                                      const Date& issueDate,
                                      Natural settlementDays,
                                      const Schedule& schedule,
                                      Real redemption)
-    : Bond(settlementDays, schedule.calendar(), issueDate), exercise_(exercise),
+    : Bond(settlementDays, schedule.calendar(), issueDate), exercise_(std::move(exercise)),
       conversionRatio_(conversionRatio), callability_(callability), redemption_(redemption) {
 
         maturityDate_ = schedule.endDate();
