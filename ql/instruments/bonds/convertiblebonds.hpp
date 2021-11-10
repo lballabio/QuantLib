@@ -59,7 +59,7 @@ namespace QuantLib {
         const CallabilitySchedule& callability() const { return callability_; }
 
       protected:
-        ConvertibleBond(const ext::shared_ptr<Exercise>& exercise,
+        ConvertibleBond(ext::shared_ptr<Exercise> exercise,
                         Real conversionRatio,
                         const CallabilitySchedule& callability,
                         const Date& issueDate,
