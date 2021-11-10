@@ -25,9 +25,9 @@
 #ifndef quantlib_binomial_convertible_engine_hpp
 #define quantlib_binomial_convertible_engine_hpp
 
-#include <ql/experimental/convertiblebonds/convertiblebond.hpp>
-#include <ql/experimental/convertiblebonds/discretizedconvertible.hpp>
-#include <ql/experimental/convertiblebonds/tflattice.hpp>
+#include <ql/instruments/bonds/convertiblebonds.hpp>
+#include <ql/pricingengines/bond/discretizedconvertible.hpp>
+#include <ql/methods/lattices/tflattice.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
@@ -43,7 +43,7 @@ namespace QuantLib {
               checking it against known results in a few corner cases.
     */
     template <class T>
-    class BinomialConvertibleEngine : public ConvertibleBond::option::engine {
+    class BinomialConvertibleEngine : public ConvertibleBond::engine {
       public:
         BinomialConvertibleEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
                                   Size timeSteps,
@@ -109,15 +109,12 @@ namespace QuantLib {
         Handle<BlackVolTermStructure> flatVol(ext::shared_ptr<BlackVolTermStructure>(
             new BlackConstantVol(referenceDate, volcal, v, voldc)));
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "non-plain payoff given");
-
         Time maturity = rfdc.yearFraction(arguments_.settlementDate, maturityDate);
+        Real strike = arguments_.redemption / arguments_.conversionRatio ;
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> bs(
             new GeneralizedBlackScholesProcess(underlying, flatDividends, flatRiskFree, flatVol));
-        ext::shared_ptr<T> tree(new T(bs, maturity, timeSteps_, payoff->strike()));
+        ext::shared_ptr<T> tree(new T(bs, maturity, timeSteps_, strike));
 
         Real creditSpread = creditSpread_->value();
 
@@ -128,7 +125,7 @@ namespace QuantLib {
 
         convertible.initialize(lattice, maturity);
         convertible.rollback(0.0);
-        results_.value = convertible.presentValue();
+        results_.value = results_.settlementValue = convertible.presentValue();
         QL_ENSURE(results_.value < std::numeric_limits<Real>::max(),
                   "floating-point overflow on tree grid");
     }

@@ -23,22 +23,21 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/exercise.hpp>
-#include <ql/experimental/convertiblebonds/convertiblebond.hpp>
-#include <ql/instruments/payoffs.hpp>
+#include <ql/instruments/bonds/convertiblebonds.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
 
 namespace QuantLib {
 
-    ConvertibleBond::ConvertibleBond(const ext::shared_ptr<Exercise>&,
+    ConvertibleBond::ConvertibleBond(ext::shared_ptr<Exercise> exercise,
                                      Real conversionRatio,
                                      const CallabilitySchedule& callability,
                                      const Date& issueDate,
                                      Natural settlementDays,
                                      const Schedule& schedule,
-                                     Real)
-    : Bond(settlementDays, schedule.calendar(), issueDate), conversionRatio_(conversionRatio),
-      callability_(callability) {
+                                     Real redemption)
+    : Bond(settlementDays, schedule.calendar(), issueDate), exercise_(std::move(exercise)),
+      conversionRatio_(conversionRatio), callability_(callability), redemption_(redemption) {
 
         maturityDate_ = schedule.endDate();
 
@@ -48,12 +47,6 @@ namespace QuantLib {
                                                  << ") later than maturity (" << maturityDate_
                                                  << ")");
         }
-    }
-
-    void ConvertibleBond::performCalculations() const {
-        option_->setPricingEngine(engine_);
-        NPV_ = settlementValue_ = option_->NPV();
-        errorEstimate_ = Null<Real>();
     }
 
 
@@ -77,10 +70,6 @@ namespace QuantLib {
 
         // !!! notional forcibly set to 100
         setSingleRedemption(100.0, redemption, maturityDate_);
-
-        option_ = ext::shared_ptr<option>(
-            new option(this, exercise, conversionRatio, callability,
-                       cashflows_, dayCounter, schedule, issueDate, settlementDays, redemption));
     }
 
 
@@ -117,10 +106,6 @@ namespace QuantLib {
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));
 
         QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
-
-        option_ = ext::shared_ptr<option>(
-            new option(this, exercise, conversionRatio, callability,
-                       cashflows_, dayCounter, schedule, issueDate, settlementDays, redemption));
     }
 
 
@@ -162,94 +147,56 @@ namespace QuantLib {
 
         QL_ENSURE(redemptions_.size() == 1, "multiple redemptions created");
 
-        option_ = ext::shared_ptr<option>(
-            new option(this, exercise, conversionRatio, callability,
-                       cashflows_, dayCounter, schedule, issueDate, settlementDays, redemption));
-
         registerWith(index);
     }
 
-    ConvertibleBond::option::option(const ConvertibleBond* bond,
-                                    const ext::shared_ptr<Exercise>& exercise,
-                                    Real conversionRatio,
-                                    CallabilitySchedule callability,
-                                    Leg cashflows,
-                                    DayCounter dayCounter,
-                                    Schedule schedule,
-                                    const Date& issueDate,
-                                    Natural settlementDays,
-                                    Real redemption)
-    : OneAssetOption(
-          ext::shared_ptr<StrikedTypePayoff>(new PlainVanillaPayoff(
-              Option::Call, (bond->notionals()[0]) / 100.0 * redemption / conversionRatio)),
-          exercise),
-      bond_(bond), conversionRatio_(conversionRatio), callability_(std::move(callability)),
-      cashflows_(std::move(cashflows)), dayCounter_(std::move(dayCounter)), issueDate_(issueDate),
-      schedule_(std::move(schedule)), settlementDays_(settlementDays), redemption_(redemption) {
-        registerWith(
-            ext::shared_ptr<ConvertibleBond>(const_cast<ConvertibleBond*>(bond), null_deleter()));
-    }
+    void ConvertibleBond::setupArguments(PricingEngine::arguments* arguments) const {
+        auto* args = dynamic_cast<ConvertibleBond::arguments*>(arguments);
+        QL_REQUIRE(args != nullptr, "wrong argument type");
 
+        args->exercise = exercise_;
+        args->conversionRatio = conversionRatio_;
 
-    void ConvertibleBond::option::setupArguments(PricingEngine::arguments* args) const {
-
-        OneAssetOption::setupArguments(args);
-
-        auto* moreArgs = dynamic_cast<ConvertibleBond::option::arguments*>(args);
-        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
-
-        moreArgs->conversionRatio = conversionRatio_;
-
-        Date settlement = bond_->settlementDate();
+        Date settlement = settlementDate();
 
         Size n = callability_.size();
-        moreArgs->callabilityDates.clear();
-        moreArgs->callabilityTypes.clear();
-        moreArgs->callabilityPrices.clear();
-        moreArgs->callabilityTriggers.clear();
-        moreArgs->callabilityDates.reserve(n);
-        moreArgs->callabilityTypes.reserve(n);
-        moreArgs->callabilityPrices.reserve(n);
-        moreArgs->callabilityTriggers.reserve(n);
+        args->callabilityDates.clear();
+        args->callabilityTypes.clear();
+        args->callabilityPrices.clear();
+        args->callabilityTriggers.clear();
+        args->callabilityDates.reserve(n);
+        args->callabilityTypes.reserve(n);
+        args->callabilityPrices.reserve(n);
+        args->callabilityTriggers.reserve(n);
         for (Size i = 0; i < n; i++) {
             if (!callability_[i]->hasOccurred(settlement, false)) {
-                moreArgs->callabilityTypes.push_back(callability_[i]->type());
-                moreArgs->callabilityDates.push_back(callability_[i]->date());
-                moreArgs->callabilityPrices.push_back(callability_[i]->price().amount());
+                args->callabilityTypes.push_back(callability_[i]->type());
+                args->callabilityDates.push_back(callability_[i]->date());
+                args->callabilityPrices.push_back(callability_[i]->price().amount());
                 if (callability_[i]->price().type() == Bond::Price::Clean)
-                    moreArgs->callabilityPrices.back() +=
-                        bond_->accruedAmount(callability_[i]->date());
+                    args->callabilityPrices.back() +=
+                        accruedAmount(callability_[i]->date());
                 ext::shared_ptr<SoftCallability> softCall =
                     ext::dynamic_pointer_cast<SoftCallability>(callability_[i]);
                 if (softCall != nullptr)
-                    moreArgs->callabilityTriggers.push_back(softCall->trigger());
+                    args->callabilityTriggers.push_back(softCall->trigger());
                 else
-                    moreArgs->callabilityTriggers.push_back(Null<Real>());
+                    args->callabilityTriggers.push_back(Null<Real>());
             }
         }
 
-        const Leg& cashflows = bond_->cashflows();
+        args->cashflows = cashflows();
 
-        moreArgs->couponDates.clear();
-        moreArgs->couponAmounts.clear();
-        for (Size i = 0; i < cashflows.size() - 1; i++) {
-            if (!cashflows[i]->hasOccurred(settlement, false)) {
-                moreArgs->couponDates.push_back(cashflows[i]->date());
-                moreArgs->couponAmounts.push_back(cashflows[i]->amount());
-            }
-        }
-
-        moreArgs->issueDate = issueDate_;
-        moreArgs->settlementDate = settlement;
-        moreArgs->settlementDays = settlementDays_;
-        moreArgs->redemption = redemption_;
+        args->issueDate = issueDate_;
+        args->settlementDate = settlement;
+        args->settlementDays = settlementDays_;
+        args->redemption = redemption_;
     }
 
 
-    void ConvertibleBond::option::arguments::validate() const {
+    void ConvertibleBond::arguments::validate() const {
 
-        OneAssetOption::arguments::validate();
-
+        QL_REQUIRE(exercise, "no exercise given");
         QL_REQUIRE(conversionRatio != Null<Real>(), "null conversion ratio");
         QL_REQUIRE(conversionRatio > 0.0,
                    "positive conversion ratio required: " << conversionRatio << " not allowed");
@@ -269,8 +216,7 @@ namespace QuantLib {
         QL_REQUIRE(callabilityDates.size() == callabilityTriggers.size(),
                    "different number of callability dates and triggers");
 
-        QL_REQUIRE(couponDates.size() == couponAmounts.size(),
-                   "different number of coupon dates and amounts");
+        QL_REQUIRE(!cashflows.empty(), "no cashflows given");
     }
 
 }

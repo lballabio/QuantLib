@@ -26,14 +26,14 @@
 #define quantlib_discretized_convertible_hpp
 
 #include <ql/discretizedasset.hpp>
-#include <ql/experimental/convertiblebonds/convertiblebond.hpp>
+#include <ql/instruments/bonds/convertiblebonds.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
     class DiscretizedConvertible : public DiscretizedAsset {
       public:
-        DiscretizedConvertible(ConvertibleBond::option::arguments,
+        DiscretizedConvertible(ConvertibleBond::arguments,
                                ext::shared_ptr<GeneralizedBlackScholesProcess> process,
                                DividendSchedule dividends,
                                Handle<Quote> creditSpread,
@@ -72,11 +72,12 @@ namespace QuantLib {
         void applyConvertibility();
         void applyCallability(Size, bool convertible);
         void addCoupon(Size);
-        ConvertibleBond::option::arguments arguments_;
+        ConvertibleBond::arguments arguments_;
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         std::vector<Time> stoppingTimes_;
         std::vector<Time> callabilityTimes_;
         std::vector<Time> couponTimes_;
+        std::vector<Real> couponAmounts_;
         std::vector<Time> dividendTimes_;
         Handle<Quote> creditSpread_;
         DividendSchedule dividends_;
