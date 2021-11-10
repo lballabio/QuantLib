@@ -23,7 +23,7 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/exercise.hpp>
-#include <ql/experimental/convertiblebonds/convertiblebond.hpp>
+#include <ql/instruments/bonds/convertiblebonds.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <utility>
 

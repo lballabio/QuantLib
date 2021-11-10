@@ -26,12 +26,15 @@
 #define quantlib_lattices_tf_lattice_hpp
 
 #include <ql/methods/lattices/bsmlattice.hpp>
-#include <ql/experimental/convertiblebonds/discretizedconvertible.hpp>
+#include <ql/pricingengines/bond/discretizedconvertible.hpp>
 
 namespace QuantLib {
 
     //! Binomial lattice approximating the Tsiveriotis-Fernandes model
-    /*! \ingroup lattices */
+    /*! At this time, this lattice only works with the DiscretizedConvertible class.
+
+        \ingroup lattices
+    */
     template <class T>
     class TsiveriotisFernandesLattice : public BlackScholesLattice<T> {
       public:

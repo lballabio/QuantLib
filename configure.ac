@@ -489,7 +489,6 @@ AC_CONFIG_FILES([
     ql/experimental/callablebonds/Makefile
     ql/experimental/catbonds/Makefile
     ql/experimental/commodities/Makefile
-    ql/experimental/convertiblebonds/Makefile
     ql/experimental/coupons/Makefile
     ql/experimental/credit/Makefile
     ql/experimental/exoticoptions/Makefile

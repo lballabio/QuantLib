@@ -26,7 +26,7 @@
 #define quantlib_discretized_convertible_hpp
 
 #include <ql/discretizedasset.hpp>
-#include <ql/experimental/convertiblebonds/convertiblebond.hpp>
+#include <ql/instruments/bonds/convertiblebonds.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {

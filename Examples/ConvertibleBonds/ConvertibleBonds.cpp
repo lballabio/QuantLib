@@ -22,8 +22,8 @@
 #if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
-#include <ql/experimental/convertiblebonds/convertiblebond.hpp>
-#include <ql/experimental/convertiblebonds/binomialconvertibleengine.hpp>
+#include <ql/instruments/bonds/convertiblebonds.hpp>
+#include <ql/pricingengines/bond/binomialconvertibleengine.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>

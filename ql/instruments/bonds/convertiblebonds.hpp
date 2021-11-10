@@ -18,12 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file convertiblebond.hpp
+/*! \file convertiblebonds.hpp
     \brief convertible bond class
 */
 
-#ifndef quantlib_convertible_bond_hpp
-#define quantlib_convertible_bond_hpp
+#ifndef quantlib_convertible_bonds_hpp
+#define quantlib_convertible_bonds_hpp
 
 #include <ql/instruments/bond.hpp>
 #include <ql/instruments/callabilityschedule.hpp>
