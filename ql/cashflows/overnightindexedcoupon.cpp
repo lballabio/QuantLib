@@ -40,7 +40,7 @@ namespace QuantLib {
                 coupon_ = dynamic_cast<const OvernightIndexedCoupon*>(&coupon);
                 QL_ENSURE(coupon_, "wrong coupon type");
             }
-            Rate swapletRate() const override {
+            Rate swapletRate(const Date& date) const override {
 
                 ext::shared_ptr<OvernightIndex> index =
                     ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
@@ -54,8 +54,7 @@ namespace QuantLib {
                 Real compoundFactor = 1.0;
 
                 // already fixed part
-                Date today = Settings::instance().evaluationDate();
-                while (i<n && fixingDates[i]<today) {
+                while (i<n && fixingDates[i]<date) {
                     // rate must have been fixed
                     Rate pastFixing = IndexManager::instance().getHistory(
                                                 index->name())[fixingDates[i]];
@@ -67,7 +66,7 @@ namespace QuantLib {
                 }
 
                 // today is a border case
-                if (i<n && fixingDates[i] == today) {
+                if (i<n && fixingDates[i] == date) {
                     // might have been fixed
                     try {
                         Rate pastFixing = IndexManager::instance().getHistory(
@@ -101,6 +100,11 @@ namespace QuantLib {
 
                 Rate rate = (compoundFactor - 1.0) / coupon_->accrualPeriod();
                 return coupon_->gearing() * rate + coupon_->spread();
+            }
+            Rate swapletRate() const override {
+
+                Date today = Settings::instance().evaluationDate();
+                return swapletRate(today);
             }
 
             Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
@@ -207,6 +211,27 @@ namespace QuantLib {
             default:
                 QL_FAIL("unknown compounding convention (" << Integer(averagingMethod) << ")");
         }
+    }
+
+    Real OvernightIndexedCoupon::accruedAmount(const Date& d) const {
+        if (d <= accrualStartDate_ || d > paymentDate_) {
+            // out of coupon range
+            return 0.0;
+        } else if (tradingExCoupon(d)) {
+            return -nominal() * rate(d) *
+                   dayCounter().yearFraction(d, std::max(d, accrualEndDate_), refPeriodStart_,
+                                             refPeriodEnd_);
+        } else {
+            // usual case
+            return nominal() * rate(d) *
+                   dayCounter().yearFraction(accrualStartDate_, std::min(d, accrualEndDate_),
+                                             refPeriodStart_, refPeriodEnd_);
+        }
+    }
+
+    Rate OvernightIndexedCoupon::rate(const Date& d) const {
+        prepareRate();
+        return pricer_->swapletRate(d);
     }
 
     const vector<Rate>& OvernightIndexedCoupon::indexFixings() const {
