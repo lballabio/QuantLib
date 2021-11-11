@@ -88,6 +88,7 @@ namespace QuantLib {
         Size n_;
         std::vector<Time> dt_;
 
+        using FloatingRateCoupon::rate;
         Rate rate(const Date& date) const;
     };
 
