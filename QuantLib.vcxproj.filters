@@ -262,9 +262,6 @@
     <Filter Include="experimental\commodities">
       <UniqueIdentifier>{aae4b1e6-d6bd-44d9-af3d-4e5efcfd0b57}</UniqueIdentifier>
     </Filter>
-    <Filter Include="experimental\convertiblebonds">
-      <UniqueIdentifier>{c8f5fb33-e14a-4880-b985-6377963a2edf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="experimental\coupons">
       <UniqueIdentifier>{d7d44f55-80bf-4af8-9367-5c903022d99e}</UniqueIdentifier>
     </Filter>
@@ -493,6 +490,9 @@
       <Filter>methods\lattices</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\lattices\lattice2d.hpp">
+      <Filter>methods\lattices</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\lattices\tflattice.hpp">
       <Filter>methods\lattices</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\lattices\tree.hpp">
@@ -913,6 +913,9 @@
       <Filter>instruments\bonds</Filter>
     </ClInclude>
     <ClInclude Include="ql\instruments\bonds\cmsratebond.hpp">
+      <Filter>instruments\bonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\bonds\convertiblebonds.hpp">
       <Filter>instruments\bonds</Filter>
     </ClInclude>
     <ClInclude Include="ql\instruments\bonds\fixedratebond.hpp">
@@ -2604,10 +2607,16 @@
     <ClInclude Include="ql\pricingengines\bond\all.hpp">
       <Filter>pricingengines\bond</Filter>
     </ClInclude>
+    <ClInclude Include="ql\pricingengines\bond\binomialconvertibleengine.hpp">
+      <Filter>pricingengines\bond</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\bond\bondfunctions.hpp">
       <Filter>pricingengines\bond</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\bond\discountingbondengine.hpp">
+      <Filter>pricingengines\bond</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\bond\discretizedconvertible.hpp">
       <Filter>pricingengines\bond</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\swap\all.hpp">
@@ -3608,21 +3617,6 @@
     </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.hpp">
       <Filter>experimental\barrieroption</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\convertiblebonds\all.hpp">
-      <Filter>experimental\convertiblebonds</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\convertiblebonds\binomialconvertibleengine.hpp">
-      <Filter>experimental\convertiblebonds</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\convertiblebonds\convertiblebond.hpp">
-      <Filter>experimental\convertiblebonds</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\convertiblebonds\discretizedconvertible.hpp">
-      <Filter>experimental\convertiblebonds</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\convertiblebonds\tflattice.hpp">
-      <Filter>experimental\convertiblebonds</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\analyticcompoundoptionengine.hpp">
       <Filter>experimental\exoticoptions</Filter>
@@ -4715,6 +4709,9 @@
     <ClCompile Include="ql\instruments\bonds\cmsratebond.cpp">
       <Filter>instruments\bonds</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\bonds\convertiblebonds.cpp">
+      <Filter>instruments\bonds</Filter>
+    </ClCompile>
     <ClCompile Include="ql\instruments\bonds\fixedratebond.cpp">
       <Filter>instruments\bonds</Filter>
     </ClCompile>
@@ -5762,6 +5759,9 @@
     <ClCompile Include="ql\pricingengines\bond\discountingbondengine.cpp">
       <Filter>pricingengines\bond</Filter>
     </ClCompile>
+    <ClCompile Include="ql\pricingengines\bond\discretizedconvertible.cpp">
+      <Filter>pricingengines\bond</Filter>
+    </ClCompile>
     <ClCompile Include="ql\pricingengines\swap\cvaswapengine.cpp">
       <Filter>pricingengines\swap</Filter>
     </ClCompile>
@@ -6535,12 +6535,6 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.cpp">
       <Filter>experimental\barrieroption</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\convertiblebonds\convertiblebond.cpp">
-      <Filter>experimental\convertiblebonds</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\convertiblebonds\discretizedconvertible.cpp">
-      <Filter>experimental\convertiblebonds</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticcompoundoptionengine.cpp">
       <Filter>experimental\exoticoptions</Filter>
