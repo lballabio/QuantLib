@@ -157,8 +157,7 @@ namespace inflation_cpi_bond_test {
             cpiTS.linkTo(ext::shared_ptr<ZeroInflationTermStructure>(
                   new PiecewiseZeroInflationCurve<Linear>(
                          evaluationDate, calendar, dayCounter, observationLag,
-                         ii->frequency(),ii->interpolated(), baseZeroRate,
-                         helpers)));
+                         ii->frequency(), baseZeroRate, helpers)));
         }
 
         // teardown
