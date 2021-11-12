@@ -247,11 +247,6 @@ namespace QuantLib {
       useMaxError_(useMaxError), maxGuesses_(maxGuesses), backwardFlat_(backwardFlat),
       cutoffStrike_(cutoffStrike) {
 
-        // the current implementations are all lognormal, if we have
-        // a normal one, we can move this check to the implementing classes
-        QL_REQUIRE(atmVolStructure->volatilityType() == ShiftedLognormal,
-                   "vol cubes of type 1 require a lognormal atm surface");
-
         if (maxErrorTolerance != Null<Rate>()) {
             maxErrorTolerance_ = maxErrorTolerance;
         } else{
