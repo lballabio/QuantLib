@@ -340,6 +340,9 @@
     <Filter Include="experimental\asian">
       <UniqueIdentifier>{0abb3851-b409-4ea6-8e55-120d00a9fcdb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="experimental\loans">
+      <UniqueIdentifier>{7abd95c5-bb77-451f-9f4e-8fde57b6191a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ql\methods\all.hpp">
@@ -4383,6 +4386,12 @@
       <Filter>instruments</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\bond\riskybondengine.hpp" />
+    <ClInclude Include="ql\experimental\loans\amortizingloans.hpp">
+      <Filter>experimental\loans</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\experimental\loans\loan.hpp">
+      <Filter>experimental\loans</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7092,5 +7101,11 @@
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\bond\riskybondengine.cpp" />
+    <ClCompile Include="ql\experimental\loans\amortizingloans.cpp">
+      <Filter>experimental\loans</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\loans\loan.cpp">
+      <Filter>experimental\loans</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -742,6 +742,8 @@
     <ClInclude Include="ql\experimental\inflation\yoyoptionletstripper.hpp" />
     <ClInclude Include="ql\experimental\lattices\all.hpp" />
     <ClInclude Include="ql\experimental\lattices\extendedbinomialtree.hpp" />
+    <ClInclude Include="ql\experimental\loans\amortizingloans.hpp" />
+    <ClInclude Include="ql\experimental\loans\loan.hpp" />
     <ClInclude Include="ql\experimental\math\all.hpp" />
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\convolvedstudentt.hpp" />
@@ -2061,6 +2063,8 @@
     <ClCompile Include="ql\experimental\inflation\yoycapfloortermpricesurface.cpp" />
     <ClCompile Include="ql\experimental\inflation\yoyoptionlethelpers.cpp" />
     <ClCompile Include="ql\experimental\lattices\extendedbinomialtree.cpp" />
+    <ClCompile Include="ql\experimental\loans\amortizingloans.cpp" />
+    <ClCompile Include="ql\experimental\loans\loan.cpp" />
     <ClCompile Include="ql\experimental\math\convolvedstudentt.cpp" />
     <ClCompile Include="ql\experimental\math\expm.cpp" />
     <ClCompile Include="ql\experimental\math\fireflyalgorithm.cpp" />
