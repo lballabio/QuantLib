@@ -47,6 +47,7 @@ namespace QuantLib {
                     Real yield = price/multiPath[j].front();
                     if (yield >= bestYield) {
                         bestPrice = price;
+                        bestYield = yield;
                         removeAsset = j;
                     }
                 }

@@ -4,13 +4,16 @@ AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    binomialconvertibleengine.hpp \
     bondfunctions.hpp \
     discountingbondengine.hpp \
+    discretizedconvertible.hpp \
 	riskybondengine.hpp
 
 cpp_files = \
     bondfunctions.cpp \
     discountingbondengine.cpp \
+    discretizedconvertible.cpp \
 	riskybondengine.cpp
 
 if UNITY_BUILD

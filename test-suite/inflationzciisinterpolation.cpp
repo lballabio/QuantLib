@@ -160,12 +160,10 @@ namespace ZCIIS {
         auto frequency = Monthly;
 
         Rate baseZeroRate = zcData[0].rate / 100.0;
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
         ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
             new PiecewiseZeroInflationCurve<Linear>(setup.evaluationDate, setup.calendar, setup.dc,
                                                     setup.observationLag, frequency,
-                                                    index->interpolated(), baseZeroRate, helpers));
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
+                                                    baseZeroRate, helpers));
         pZITS->recalculate();
 
         return pZITS;

@@ -107,6 +107,7 @@ namespace QuantLib {
 
         bool& enforcesTodaysHistoricFixings();
         bool enforcesTodaysHistoricFixings() const;
+
       private:
         DateProxy evaluationDate_;
         bool includeReferenceDateEvents_ = false;

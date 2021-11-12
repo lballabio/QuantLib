@@ -156,12 +156,10 @@ namespace QuantLib {
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
-            VanillaSwap temp(type_, 100.00,
-                             fixedSchedule,
+            VanillaSwap temp(type_, 100.00, fixedSchedule,
                              0.0, // fixed rate
-                             fixedDayCount,
-                             floatSchedule, iborIndex_,
-                             floatSpread_, floatDayCount_);
+                             fixedDayCount, floatSchedule, iborIndex_, floatSpread_, floatDayCount_,
+                             boost::none, useIndexedCoupons_);
             if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                         iborIndex_->forwardingTermStructure();
@@ -178,12 +176,9 @@ namespace QuantLib {
             usedFixedRate = temp.fairRate();
         }
 
-        ext::shared_ptr<VanillaSwap> swap(new
-            VanillaSwap(type_, nominal_,
-                        fixedSchedule,
-                        usedFixedRate, fixedDayCount,
-                        floatSchedule,
-                        iborIndex_, floatSpread_, floatDayCount_));
+        ext::shared_ptr<VanillaSwap> swap(new VanillaSwap(
+            type_, nominal_, fixedSchedule, usedFixedRate, fixedDayCount, floatSchedule, iborIndex_,
+            floatSpread_, floatDayCount_, boost::none, useIndexedCoupons_));
 
         if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
@@ -355,6 +350,16 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withFloatingLegSpread(Spread sp) {
         floatSpread_ = sp;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withIndexedCoupons(const boost::optional<bool>& b) {
+        useIndexedCoupons_ = b;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withAtParCoupons(bool b) {
+        useIndexedCoupons_ = !b;
         return *this;
     }
 

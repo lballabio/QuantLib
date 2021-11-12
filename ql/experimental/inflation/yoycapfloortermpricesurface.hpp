@@ -55,11 +55,7 @@ namespace QuantLib {
                                     const Matrix& cPrice,
                                     const Matrix& fPrice);
 
-        //-! inflation term structure interface
-        //-@{
-        //- virtual Date maxDate() { return yoy_->maxDate();}
-        //- virtual Date baseDate() { return yoy_->baseDate();}
-        //-@}
+        bool indexIsInterpolated() const override;
 
         //! atm yoy swaps from put-call parity on cap/floor data
         /*! uses interpolation (on surface price data), yearly maturities. */
@@ -231,6 +227,13 @@ namespace QuantLib {
     };
 
 
+    // inline definitions
+
+    inline bool YoYCapFloorTermPriceSurface::indexIsInterpolated() const {
+        QL_DEPRECATED_DISABLE_WARNING
+        return indexIsInterpolated_;
+        QL_DEPRECATED_ENABLE_WARNING
+    }
 
     // template definitions
 

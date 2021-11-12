@@ -116,40 +116,37 @@ namespace QuantLib {
         registerWith(zeroInflation_);
     }
 
-    Rate ZeroInflationIndex::fixing(const Date& aFixingDate,
+    Real ZeroInflationIndex::fixing(const Date& fixingDate,
                                     bool /*forecastTodaysFixing*/) const {
-        if (!needsForecast(aFixingDate)) {
-            std::pair<Date,Date> lim = inflationPeriod(aFixingDate, frequency_);
+        if (!needsForecast(fixingDate)) {
+            std::pair<Date,Date> p = inflationPeriod(fixingDate, frequency_);
             const TimeSeries<Real>& ts = timeSeries();
-            Real pastFixing = ts[lim.first];
-            QL_REQUIRE(pastFixing != Null<Real>(),
-                       "Missing " << name() << " fixing for " << lim.first);
-            Real theFixing = pastFixing;
+
+            Real I1 = ts[p.first];
+            QL_REQUIRE(I1 != Null<Real>(),
+                       "Missing " << name() << " fixing for " << p.first);
 
             QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
-            if (interpolated_) {
-                QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+            if (interpolated_ && fixingDate > p.first) {
+            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
 
-                // fixings stored on first day of every period
-                if (aFixingDate == lim.first) {
-                    // we don't actually need the next fixing
-                    theFixing = pastFixing;
-                } else {
-                    Real pastFixing2 = ts[lim.second+1];
-                    QL_REQUIRE(pastFixing2 != Null<Real>(),
-                               "Missing " << name() << " fixing for " << lim.second+1);
+                Real I2 = ts[p.second+1];
+                QL_REQUIRE(I2 != Null<Real>(),
+                           "Missing " << name() << " fixing for " << p.second+1);
 
-                    // Use lagged period for interpolation
-                    std::pair<Date, Date> reference_period_lim = inflationPeriod(aFixingDate + zeroInflationTermStructure()->observationLag(), frequency_);
-                    // now linearly interpolate
-                    Real daysInPeriod = reference_period_lim.second + 1 - reference_period_lim.first;
-                    theFixing = pastFixing
-                        + (pastFixing2 - pastFixing)*(aFixingDate - lim.first) / daysInPeriod;
-                }
+                // Use non-lagged period for interpolation
+                Date observationDate = fixingDate + zeroInflation_->observationLag();
+                std::pair<Date, Date> p2 = inflationPeriod(observationDate, frequency_);
+                Real daysInPeriod = (p2.second + 1) - p2.first;
+                Real interpolationCoefficient = (observationDate - p2.first) / daysInPeriod;
+
+                return I1 + (I2 - I1) * interpolationCoefficient;
+            } else {
+                // we don't need the next fixing
+                return I1;
             }
-            return theFixing;
         } else {
-            return forecastFixing(aFixingDate);
+            return forecastFixing(fixingDate);
         }
     }
 
@@ -196,33 +193,42 @@ namespace QuantLib {
     }
 
 
-    Rate ZeroInflationIndex::forecastFixing(const Date& fixingDate) const {
+    Real ZeroInflationIndex::forecastFixing(const Date& fixingDate) const {
         // the term structure is relative to the fixing value at the base date.
         Date baseDate = zeroInflation_->baseDate();
         QL_REQUIRE(!needsForecast(baseDate),
                    name() << " index fixing at base date " << baseDate << " is not available");
         Real baseFixing = fixing(baseDate);
-        Date effectiveFixingDate;
+
+        std::pair<Date, Date> p = inflationPeriod(fixingDate, frequency_);
+
         QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
-        if (interpolated_) {
-            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
-            effectiveFixingDate = fixingDate;
+
+        Date firstDateInPeriod = p.first;
+        Rate Z1 = zeroInflation_->zeroRate(firstDateInPeriod, Period(0,Days), false);
+        Time t1 = inflationYearFraction(frequency_, interpolated_, zeroInflation_->dayCounter(),
+                                        baseDate, firstDateInPeriod);
+        Real I1 = baseFixing * std::pow(1.0 + Z1, t1);
+
+        if (interpolated_ && fixingDate > firstDateInPeriod) {
+            Date firstDateInNextPeriod = p.second + 1;
+            Rate Z2 = zeroInflation_->zeroRate(firstDateInNextPeriod, Period(0,Days), false);
+            Time t2 = inflationYearFraction(frequency_, interpolated_, zeroInflation_->dayCounter(),
+                                            baseDate, firstDateInNextPeriod);
+            Real I2 = baseFixing * std::pow(1.0 + Z2, t2);
+
+            // // Use non-lagged period for interpolation
+            Date observationDate = fixingDate + zeroInflation_->observationLag();
+            std::pair<Date, Date> p2 = inflationPeriod(observationDate, frequency_);
+            Real daysInPeriod = (p2.second + 1) - p2.first;
+            Real interpolationCoefficient = (observationDate - p2.first) / daysInPeriod;
+
+            return I1 + (I2 - I1) * interpolationCoefficient;
         } else {
-            // start of period is the convention
-            // so it's easier to do linear interpolation on fixings
-            effectiveFixingDate = inflationPeriod(fixingDate, frequency()).first;
+            return I1;
         }
 
-        // no observation lag because it is the fixing for the date
-        // but if index is not interpolated then that fixing is constant
-        // for each period, hence the t uses the effectiveFixingDate
-        // However, it's slightly safe to get the zeroRate with the
-        // fixingDate to avoid potential problems at the edges of periods
-        Time t = zeroInflation_->dayCounter().yearFraction(baseDate, effectiveFixingDate);
-        bool forceLinearInterpolation = false;
-        Rate zero = zeroInflation_->zeroRate(fixingDate, Period(0,Days), forceLinearInterpolation);
-        // Annual compounding is the convention for zero inflation rates (or quotes)
-        return baseFixing * std::pow(1.0 + zero, t);
+        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
     }
 
 

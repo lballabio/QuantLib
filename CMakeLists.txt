@@ -5,14 +5,14 @@ cmake_policy(SET CMP0091 NEW)
 
 # Version info
 set(QUANTLIB_VERSION_MAJOR 1)
-set(QUANTLIB_VERSION_MINOR 24)
+set(QUANTLIB_VERSION_MINOR 25)
 set(QUANTLIB_VERSION_PATCH 0)
 set(QUANTLIB_VERSION ${QUANTLIB_VERSION_MAJOR}.${QUANTLIB_VERSION_MINOR}.${QUANTLIB_VERSION_PATCH})
 
 # Project Info
 set(PACKAGE_NAME          "QuantLib")
 set(PACKAGE_VERSION       "${QUANTLIB_VERSION}-dev")
-set(PACKAGE_VERSION_HEX   "0x01240000")
+set(PACKAGE_VERSION_HEX   "0x01250000")
 set(PACKAGE_STRING        "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_TARNAME       "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 set(PACKAGE_BUGREPORT     "https://github.com/lballabio/QuantLib/issues/")
@@ -85,21 +85,6 @@ if (NOT DEFINED Boost_USE_STATIC_RUNTIME)
     set(Boost_USE_STATIC_RUNTIME ${MSVC})
 endif()
 
-# Boost thread and unit_test_framework needed for tests and benchmark
-find_package(Boost 1.58.0 REQUIRED COMPONENTS thread unit_test_framework)
-
-# Avoid using Boost auto-linking
-add_compile_definitions(BOOST_ALL_NO_LIB)
-
-if (QL_ENABLE_OPENMP)
-    find_package(OpenMP REQUIRED)
-endif()
-
-# Parallel test runner needs library rt on *nix for shm_open, etc.
-if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER AND UNIX AND NOT APPLE)
-    find_library(RT_LIBRARY rt REQUIRED)
-endif()
-
 # Require C++11 or higher
 if (NOT DEFINED CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 11)
@@ -112,6 +97,41 @@ endif()
 # Avoid use of compiler language extensions, i.e. -std=c++11 not -std=gnu++11
 if (NOT DEFINED CMAKE_CXX_EXTENSIONS)
     set(CMAKE_CXX_EXTENSIONS FALSE)
+endif()
+
+if (NOT DEFINED QL_BOOST_VERSION)
+    # Boost 1.75.0 or greater required for compiling with C++20
+    if (CMAKE_CXX_STANDARD GREATER_EQUAL 20)
+        set(QL_BOOST_VERSION 1.75.0)
+    else()
+        set(QL_BOOST_VERSION 1.58.0)
+    endif()
+endif()
+
+if (NOT DEFINED QL_BOOST_COMPONENTS)
+    # Boost thread and unit_test_framework needed for tests and benchmark
+    if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
+        set(QL_BOOST_COMPONENTS thread unit_test_framework)
+    else()
+        set(QL_BOOST_COMPONENTS thread)
+    endif()
+endif()
+
+find_package(Boost ${QL_BOOST_VERSION} REQUIRED COMPONENTS ${QL_BOOST_COMPONENTS})
+
+# Do not warn about Boost versions higher than 1.58.0
+set(Boost_NO_WARN_NEW_VERSIONS ON)
+
+# Avoid using Boost auto-linking
+add_compile_definitions(BOOST_ALL_NO_LIB)
+
+if (QL_ENABLE_OPENMP)
+    find_package(OpenMP REQUIRED)
+endif()
+
+# Parallel test runner needs library rt on *nix for shm_open, etc.
+if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER AND UNIX AND NOT APPLE)
+    find_library(RT_LIBRARY rt REQUIRED)
 endif()
 
 # If available, use PIC for shared libs and PIE for executables

@@ -512,7 +512,7 @@ void AssetSwapTest::testImpliedValue() {
 
     using namespace asset_swap_test;
 
-    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
 
@@ -561,11 +561,7 @@ void AssetSwapTest::testImpliedValue() {
     // correct though, only we can not compare it to the bond price
     // directly. The same kind of discrepancy will occur for a multi
     // curve set up, which we do not test here.
-    Real tolerance2;
-    if (!iborcoupon_settings.usingAtParCoupons())
-        tolerance2 = 1.0e-2;
-    else
-        tolerance2 = 1.0e-13;
+    Real tolerance2 = usingAtParCoupons ? 1.0e-13 : 1.0e-2;
 
     Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
 
@@ -884,7 +880,7 @@ void AssetSwapTest::testMarketASWSpread() {
 
     using namespace asset_swap_test;
 
-    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
 
@@ -936,11 +932,7 @@ void AssetSwapTest::testMarketASWSpread() {
     Real fixedBondMktAssetSwapSpread1 = fixedBondMktAssetSwap1.fairSpread();
 
     // see comment above
-    Real tolerance2;
-    if (!iborcoupon_settings.usingAtParCoupons())
-        tolerance2 = 1.0e-4;
-    else
-        tolerance2 = 1.0e-13;
+    Real tolerance2 = usingAtParCoupons ? 1.0e-13 : 1.0e-4;
 
     Real error1 =
         std::fabs(fixedBondMktAssetSwapSpread1-
@@ -1650,7 +1642,7 @@ void AssetSwapTest::testGenericBondImplied() {
 
     using namespace asset_swap_test;
 
-    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
 
@@ -1699,11 +1691,7 @@ void AssetSwapTest::testGenericBondImplied() {
     Real tolerance = 1.0e-13;
 
     // see comment above
-    Real tolerance2;
-    if (!iborcoupon_settings.usingAtParCoupons())
-        tolerance2 = 1.0e-2;
-    else
-        tolerance2 = 1.0e-13;
+    Real tolerance2 = usingAtParCoupons? 1.0e-13 : 1.0e-2;
 
     Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
 
@@ -2045,7 +2033,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     using namespace asset_swap_test;
 
-    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
 
@@ -2104,11 +2092,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
     Real fixedBondMktAssetSwapSpread1 = fixedBondMktAssetSwap1.fairSpread();
 
     // see comment above
-    Real tolerance2; 
-    if (!iborcoupon_settings.usingAtParCoupons())
-        tolerance2 = 1.0e-4;
-    else
-        tolerance2 = 1.0e-13;
+    Real tolerance2 = usingAtParCoupons ? 1.0e-13 : 1.0e-4;
 
     Real error1 =
         std::fabs(fixedBondMktAssetSwapSpread1-

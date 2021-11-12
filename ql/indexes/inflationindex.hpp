@@ -147,7 +147,7 @@ namespace QuantLib {
             publication but the inflation swaps may take as their base
             the index 3 months before.
         */
-        Rate fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override = 0;
+        Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override = 0;
 
         /*! this method creates all the "fixings" for the relevant
             period of the index.  E.g. for monthly indices it will put
@@ -235,7 +235,7 @@ namespace QuantLib {
         /*! \warning the forecastTodaysFixing parameter (required by
                      the Index interface) is currently ignored.
         */
-        Rate fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
+        Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
         //@}
         //! \name Other methods
         //@{
@@ -245,7 +245,7 @@ namespace QuantLib {
         //@}
       private:
         bool needsForecast(const Date& fixingDate) const;
-        Rate forecastFixing(const Date& fixingDate) const;
+        Real forecastFixing(const Date& fixingDate) const;
         Handle<ZeroInflationTermStructure> zeroInflation_;
     };
 

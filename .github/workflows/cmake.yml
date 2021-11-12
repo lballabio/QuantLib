@@ -33,10 +33,8 @@ jobs:
       env:
         CXXFLAGS: -O2
       run: |
-        mkdir build
-        cd build
-        cmake -DBOOST_ROOT=/usr -DQL_ENABLE_SESSIONS=ON -DQL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN=ON -DQL_HIGH_RESOLUTION_DATE=ON -DQL_USE_INDEXED_COUPON=ON -DQL_USE_STD_CLASSES=ON -DCMAKE_CXX_STANDARD=17 ..
-        make -j 2
+        cmake --preset linux-ci-build-with-nonstandard-options
+        cmake --build --preset linux-ci-build-with-nonstandard-options -j2
     - name: Test
       run: |
         cd build
@@ -75,10 +73,8 @@ jobs:
       env:
         BOOST_ROOT: C:\local\boost-1.75.0
       run: |
-        mkdir build
-        cd build
-        cmake -DQL_ENABLE_SESSIONS=ON -DQL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN=ON -DQL_HIGH_RESOLUTION_DATE=ON -DQL_USE_INDEXED_COUPON=ON -DQL_USE_STD_CLASSES=ON -DCMAKE_CXX_STANDARD=17 ..
-        cmake --build . --config Release
+        cmake --preset windows-ci-build-with-nonstandard-options
+        cmake --build --preset windows-ci-build-with-nonstandard-options
     - name: Test
       run: |
         cd build

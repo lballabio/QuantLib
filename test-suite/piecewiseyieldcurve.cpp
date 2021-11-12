@@ -1102,7 +1102,7 @@ void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
     // note that the calendar should be US+UK here actually, but technically it should also work with
     // the US calendar only
     ext::shared_ptr<RateHelper> helper = ext::make_shared<SwapRateHelper>(
-        0.02, 50 * Years, UnitedStates(), Semiannual, ModifiedFollowing,
+        0.02, 50 * Years, UnitedStates(UnitedStates::GovernmentBond), Semiannual, ModifiedFollowing,
         Thirty360(Thirty360::BondBasis), usdLibor3m);
 
     PiecewiseYieldCurve<Discount, LogLinear> curve(today, std::vector<ext::shared_ptr<RateHelper> >(1, helper),
@@ -1118,7 +1118,7 @@ void PiecewiseYieldCurveTest::testSwapRateHelperSpotDate() {
     ext::shared_ptr<IborIndex> usdLibor3m = ext::make_shared<USDLibor>(3 * Months);
 
     ext::shared_ptr<SwapRateHelper> helper = ext::make_shared<SwapRateHelper>(
-        0.02, 5 * Years, UnitedStates(), Semiannual, ModifiedFollowing,
+        0.02, 5 * Years, UnitedStates(UnitedStates::GovernmentBond), Semiannual, ModifiedFollowing,
         Thirty360(Thirty360::BondBasis), usdLibor3m);
 
     Settings::instance().evaluationDate() = Date(11, October, 2019);
@@ -1467,7 +1467,7 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
     for (map<Period, Real>::const_iterator it = arsFwdPoints.begin(); it != arsFwdPoints.end(); ++it) {
         Handle<Quote> arsFwd(ext::make_shared<SimpleQuote>(it->second));
         instruments.push_back(ext::make_shared<FxSwapRateHelper>(arsFwd, arsSpot, it->first, 2,
-            UnitedStates(), Following, false, true, usdYts));
+            UnitedStates(UnitedStates::GovernmentBond), Following, false, true, usdYts));
     }
 
     // Create the ARS in USD curve with the default IterativeBootstrap.
@@ -1505,8 +1505,6 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
 test_suite* PiecewiseYieldCurveTest::suite() {
 
     auto* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
-
-    const auto & iborcoupon_settings = IborCoupon::Settings::instance();
 
     // unstable
     //suite->add(QUANTLIB_TEST_CASE(
@@ -1548,18 +1546,17 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testSwapRateHelperSpotDate));
 
-    if (iborcoupon_settings.usingAtParCoupons()) {
+    if (IborCoupon::Settings::instance().usingAtParCoupons()) {
         // This regression test didn't work with indexed coupons anyway.
-        suite->add(QUANTLIB_TEST_CASE(
-               &PiecewiseYieldCurveTest::testBadPreviousCurve));
+        suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testBadPreviousCurve));
     }
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap));
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLargeRates));
 
-#ifndef QL_USE_INDEXED_COUPON
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testGlobalBootstrap));
-#endif
+    if (IborCoupon::Settings::instance().usingAtParCoupons()) {
+        suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testGlobalBootstrap));
+    }
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testIterativeBootstrapRetries));
 

@@ -572,7 +572,7 @@ void CallableBondTest::testCached() {
 
 void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
 
-    BOOST_TEST_MESSAGE("Testing snap of exercise dates to the closest coupon date...");
+    BOOST_TEST_MESSAGE("Testing snap of callability dates to the closest coupon date...");
 
     /* This is a test case inspired by
      * https://github.com/lballabio/QuantLib/issues/930#issuecomment-853886024 */

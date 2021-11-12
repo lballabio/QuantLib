@@ -25,6 +25,7 @@
 namespace QuantLib {
 
     QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
+
     CPICapFloorTermPriceSurface::CPICapFloorTermPriceSurface(
         Real nominal,
         Real baseRate, // avoids an uncontrolled crash if index has no TS
@@ -108,7 +109,6 @@ namespace QuantLib {
                         "cfStrikes not increasing");
     }
     QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
-
 
     Date CPICapFloorTermPriceSurface::cpiOptionDateFromTenor(const Period& p) const
     {
