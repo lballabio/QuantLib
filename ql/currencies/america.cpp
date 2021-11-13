@@ -77,7 +77,13 @@ namespace QuantLib {
                                                "%3% %1$.0f"));
         data_ = clpData;
     }
-
+    //! Chilean Unidad de Fomento
+    /*! The ISO three-letter code is CLF; the numeric code is 990.*/
+    CLFCurrency::CLFCurrency() {
+        static ext::shared_ptr<Data> clpData(new Data("Chilean Unidad de Fomento", "CLF", 990,
+                                                      "UF", "", 1, Rounding(), "1$.2f %3%"));
+        data_ = clfData;
+    }
     // Colombian peso
     /* The ISO three-letter code is COP; the numeric code is 170.
        It is divided in 100 centavos.

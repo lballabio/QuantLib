@@ -279,7 +279,7 @@ namespace QuantLib {
             independently).  It will fill the notionalSchedule_ and
             notionals_ data members.
         */
-        void calculateNotionalsFromCashflows();
+        virtual void calculateNotionalsFromCashflows();
 
         Natural settlementDays_;
         Calendar calendar_;

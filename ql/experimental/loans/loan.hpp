@@ -19,6 +19,7 @@ namespace QuantLib {
              const Date& issueDate,
              const Leg& cashflows = Leg());
         void calculateNotionalsFromCashflows() override;
+
     };
 
 }
