@@ -190,6 +190,7 @@ namespace QuantLib {
         const Size maxGuesses_;
         const bool backwardFlat_;
         const Real cutoffStrike_;
+        VolatilityType volatilityType_;
 
         class PrivateObserver : public Observer {
           public:
@@ -245,7 +246,7 @@ namespace QuantLib {
       isParameterFixed_(std::move(isParameterFixed)), isAtmCalibrated_(isAtmCalibrated),
       endCriteria_(std::move(endCriteria)), optMethod_(std::move(optMethod)),
       useMaxError_(useMaxError), maxGuesses_(maxGuesses), backwardFlat_(backwardFlat),
-      cutoffStrike_(cutoffStrike) {
+      cutoffStrike_(cutoffStrike), volatilityType_(atmVolStructure->volatilityType()) {
 
         if (maxErrorTolerance != Null<Rate>()) {
             maxErrorTolerance_ = maxErrorTolerance;
@@ -390,7 +391,8 @@ namespace QuantLib {
                                           errorAccept_,
                                           useMaxError_,
                                           maxGuesses_,
-                                          shiftTmp));
+                                          shiftTmp,
+                                          volatilityType_));
                 sabrInterpolation->update();
 
                 Real rmsError = sabrInterpolation->rmsError();
@@ -774,7 +776,7 @@ namespace QuantLib {
             sabrParametersCube(optionTime, swapLength);
         Real shiftTmp = atmVol_->shift(optionTime,swapLength);
         return ext::shared_ptr<SmileSection>(new (typename Model::SmileSection)(
-                          optionTime, sabrParameters[4], sabrParameters,shiftTmp));
+                          optionTime, sabrParameters[4], sabrParameters,shiftTmp, volatilityType_));
     }
 
     template<class Model> ext::shared_ptr<SmileSection>

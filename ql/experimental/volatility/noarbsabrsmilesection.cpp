@@ -28,15 +28,16 @@ namespace QuantLib {
     NoArbSabrSmileSection::NoArbSabrSmileSection(Time timeToExpiry,
                                                  Rate forward,
                                                  std::vector<Real> sabrParams,
-                                                 Real shift)
-    : SmileSection(timeToExpiry, DayCounter()), forward_(forward), params_(std::move(sabrParams)),
+                                                 Real shift,
+                                                 VolatilityType volatilityType)
+    : SmileSection(timeToExpiry, DayCounter(), volatilityType), forward_(forward), params_(std::move(sabrParams)),
       shift_(shift) {
         init();
     }
 
     NoArbSabrSmileSection::NoArbSabrSmileSection(
-        const Date& d, Rate forward, std::vector<Real> sabrParams, const DayCounter& dc, Real shift)
-    : SmileSection(d, dc, Date()), forward_(forward), params_(std::move(sabrParams)),
+        const Date& d, Rate forward, std::vector<Real> sabrParams, const DayCounter& dc, Real shift, VolatilityType volatilityType)
+    : SmileSection(d, dc, Date(), volatilityType), forward_(forward), params_(std::move(sabrParams)),
       shift_(shift) {
         init();
     }
