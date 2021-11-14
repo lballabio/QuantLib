@@ -50,7 +50,7 @@ grep -o -E 'Include=".*\.[hc]p*"' test-suite/testsuite.vcxproj.filters \
 # same with CMakelists
 
 # reference files above align only to autotools build system
-grep -o -E '[a-zA-Z0-9_/\.]*\.[hc]p*' ql/CMakeLists.txt \
+grep -o -E '[a-zA-Z0-9_/\.]*\.[hc]p+' ql/CMakeLists.txt \
 | grep -v '/cmake/' | grep -v 'ql/config\.hpp' | sed -e 's|/ql/||' | sed -e 's|^|ql/|' | sort > ql.cmake.files
 
 grep -o -E '[a-zA-Z0-9_/\.]*\.[hc]pp' test-suite/CMakeLists.txt \
