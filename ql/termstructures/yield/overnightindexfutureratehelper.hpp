@@ -73,6 +73,7 @@ namespace QuantLib {
                              Frequency referenceFreq,
                              const ext::shared_ptr<OvernightIndex>& overnightIndex,
                              const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                             [[deprecated("infer averaging method from frequency")]]
                              RateAveraging::Type averagingMethod = RateAveraging::Compound);
         SofrFutureRateHelper(Real price,
                              Month referenceMonth,
@@ -80,6 +81,7 @@ namespace QuantLib {
                              Frequency referenceFreq,
                              const ext::shared_ptr<OvernightIndex>& overnightIndex,
                              Real convexityAdjustment = 0,
+                             [[deprecated("infer averaging method from frequency")]]
                              RateAveraging::Type averagingMethod = RateAveraging::Compound);
     };
 

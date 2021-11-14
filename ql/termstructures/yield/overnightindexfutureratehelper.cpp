@@ -99,13 +99,15 @@ namespace QuantLib {
         Frequency referenceFreq,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         const Handle<Quote>& convexityAdjustment,
+        [[deprecated("infer averaging method from frequency")]]
         RateAveraging::Type averagingMethod)
     : OvernightIndexFutureRateHelper(price,
                                      getValidSofrStart(referenceMonth, referenceYear, referenceFreq),
                                      getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
                                      overnightIndex,
                                      convexityAdjustment,
-                                     averagingMethod) {
+                                     //averagingMethod
+                                     referenceFreq == Quarterly? RateAveraging::Compound : RateAveraging::Simple) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
                    "only monthly and quarterly SOFR futures accepted");
         if (referenceFreq == Quarterly) {
@@ -122,6 +124,7 @@ namespace QuantLib {
         Frequency referenceFreq,
         const ext::shared_ptr<OvernightIndex>& overnightIndex,
         Real convexityAdjustment,
+        [[deprecated("infer averaging method from frequency")]]
         RateAveraging::Type averagingMethod)
     : OvernightIndexFutureRateHelper(
           Handle<Quote>(ext::make_shared<SimpleQuote>(price)),
@@ -129,7 +132,8 @@ namespace QuantLib {
           getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
           overnightIndex,
           Handle<Quote>(ext::make_shared<SimpleQuote>(convexityAdjustment)),
-          averagingMethod) {
+          //averagingMethod
+          referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
                    "only monthly and quarterly SOFR futures accepted");
         if (referenceFreq == Quarterly) {
