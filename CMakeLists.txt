@@ -35,6 +35,8 @@ set(QL_INSTALL_LIBDIR "lib" CACHE STRING "Installation directory for libraries")
 set(QL_INSTALL_INCLUDEDIR "include" CACHE STRING "Installation directory for headers")
 set(QL_INSTALL_EXAMPLESDIR "lib/QuantLib/examples" CACHE STRING
     "Installation directory for examples")
+set(QL_INSTALL_CMAKEDIR "lib/cmake/${PACKAGE_NAME}-${PACKAGE_VERSION}" CACHE STRING
+    "Installation directory for CMake scripts")
 
 # Options
 option(QL_BUILD_BENCHMARK "Build benchmark" ON)

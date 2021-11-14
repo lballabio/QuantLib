@@ -2316,6 +2316,7 @@ add_library(ql_library
     ${QL_GENERATED_HEADERS})
 
 set_target_properties(ql_library PROPERTIES
+    EXPORT_NAME ${PACKAGE_NAME}
     OUTPUT_NAME ${PACKAGE_NAME}
     VERSION ${QUANTLIB_VERSION}
     SOVERSION ${QUANTLIB_VERSION_MAJOR})
@@ -2327,8 +2328,9 @@ target_compile_options(ql_library PRIVATE
     ${OpenMP_CXX_FLAGS})
 
 target_include_directories(ql_library PUBLIC
-    ${CMAKE_BINARY_DIR}
-    ${CMAKE_SOURCE_DIR}
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${QL_INSTALL_INCLUDEDIR}>
     ${Boost_INCLUDE_DIRS}
     ${OpenMP_CXX_INCLUDE_DIRS})
 
@@ -2338,7 +2340,7 @@ target_link_directories(ql_library PUBLIC
 target_link_libraries(ql_library PUBLIC
     ${OpenMP_CXX_LIBRARIES})
 
-install(TARGETS ql_library
+install(TARGETS ql_library EXPORT QuantLibTargets
     ARCHIVE DESTINATION ${QL_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${QL_INSTALL_LIBDIR})
 
@@ -2359,3 +2361,32 @@ foreach(file ${QL_GENERATED_HEADERS})
     file(RELATIVE_PATH path ${CMAKE_BINARY_DIR} ${dir})
     install(FILES ${file} DESTINATION "${QL_INSTALL_INCLUDEDIR}/${path}")
 endforeach()
+
+# Install config scripts for people using `find_package(QuantLib::QuantLib CONFIG ...)`
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_BINARY_DIR}/cmake/QuantLibConfigVersion.cmake"
+    VERSION ${QL_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+export(EXPORT QuantLibTargets
+    FILE "${CMAKE_BINARY_DIR}/cmake/QuantLibTargets.cmake"
+    NAMESPACE QuantLib::
+)
+configure_file("${PROJECT_SOURCE_DIR}/cmake/QuantLibConfig.cmake.in"
+    "${CMAKE_BINARY_DIR}/cmake/QuantLibConfig.cmake"
+    COPYONLY
+)
+configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/QuantLibConfig.cmake.in"
+    "${CMAKE_BINARY_DIR}/cmake/QuantLibConfig.cmake"
+    INSTALL_DESTINATION "${QL_INSTALL_CMAKEDIR}"
+)
+install(EXPORT QuantLibTargets
+    FILE QuantLibTargets.cmake
+    NAMESPACE QuantLib::
+    DESTINATION "${QL_INSTALL_CMAKEDIR}"
+)
+install(FILES "${CMAKE_BINARY_DIR}/cmake/QuantLibConfig.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/QuantLibConfigVersion.cmake"
+    DESTINATION "${QL_INSTALL_CMAKEDIR}"
+)
