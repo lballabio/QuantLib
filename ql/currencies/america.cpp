@@ -80,7 +80,7 @@ namespace QuantLib {
     //! Chilean Unidad de Fomento
     /*! The ISO three-letter code is CLF; the numeric code is 990.*/
     CLFCurrency::CLFCurrency() {
-        static ext::shared_ptr<Data> clpData(new Data("Chilean Unidad de Fomento", "CLF", 990,
+        static ext::shared_ptr<Data> clfData(new Data("Chilean Unidad de Fomento", "CLF", 990,
                                                       "UF", "", 1, Rounding(), "1$.2f %3%"));
         data_ = clfData;
     }

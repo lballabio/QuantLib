@@ -8,8 +8,9 @@
 */
 
 namespace QuantLib {
-    Loan::Loan(Natural settlementDays, Calendar calendar, const Date& issueDate, const Leg& coupons) : 
-        Bond(settlementDays, std::move(calendar), issueDate) {
+    Loan::Loan(Natural settlementDays, Calendar calendar, Real initialPayment, const Date& issueDate, const Leg& coupons)
+    : Bond(settlementDays, calendar, issueDate){
+        cashflows_ = coupons;
         if (!coupons.empty()) {
             std::sort(cashflows_.begin(), cashflows_.end(),
                       earlier_than<ext::shared_ptr<CashFlow> >());
@@ -22,8 +23,9 @@ namespace QuantLib {
             }
 
             maturityDate_ = coupons.back()->date();
-            //needs to be loan definition.
+            
             addRedemptionsToCashflows();
+            QL_REQUIRE(validateRedemptions(initialPayment), "redemptions must sum 0");
         }
 
         registerWith(Settings::instance().evaluationDate());
@@ -74,5 +76,12 @@ namespace QuantLib {
         QL_REQUIRE(!notionals_.empty(), "no coupons provided");
         notionals_.push_back(0.0);
         notionalSchedule_.push_back(lastPaymentDate);
+    }
+    bool Loan::validateRedemptions(Real initialPayment) {
+        Real amount = -initialPayment;
+        for (auto& redemption: redemptions_) {
+            amount += redemption->amount();
+        }
+        return amount == 0 ? true : false;            
     }
 }

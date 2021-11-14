@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuantLib", "QuantLib.vcxproj", "{AD0A27DA-91DA-46A2-ACBD-296C419ED3AA}"
 EndProject
@@ -45,6 +45,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GlobalOptimizer", "Examples\GlobalOptimizer\GlobalOptimizer.vcxproj", "{ED7AED39-312A-4330-8ADF-DD24F848A754}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{F1820A45-F18D-4C54-90E2-8C4368EAE185}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loans", "Examples\Loans\Loans.vcxproj", "{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -394,6 +396,22 @@ Global
 		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release|Win32.Build.0 = Release|Win32
 		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release|x64.ActiveCfg = Release|x64
 		{ED7AED39-312A-4330-8ADF-DD24F848A754}.Release|x64.Build.0 = Release|x64
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Debug (static runtime)|Win32.ActiveCfg = Debug|Win32
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Debug (static runtime)|Win32.Build.0 = Debug|Win32
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Debug (static runtime)|x64.ActiveCfg = Debug|x64
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Debug (static runtime)|x64.Build.0 = Debug|x64
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Debug|Win32.ActiveCfg = Debug|Win32
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Debug|Win32.Build.0 = Debug|Win32
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Debug|x64.ActiveCfg = Debug|x64
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Debug|x64.Build.0 = Debug|x64
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Release (static runtime)|Win32.ActiveCfg = Release|Win32
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Release (static runtime)|Win32.Build.0 = Release|Win32
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Release (static runtime)|x64.ActiveCfg = Release|x64
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Release (static runtime)|x64.Build.0 = Release|x64
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Release|Win32.ActiveCfg = Release|Win32
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Release|Win32.Build.0 = Release|Win32
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Release|x64.ActiveCfg = Release|x64
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -418,5 +436,9 @@ Global
 		{43A17E5B-EC94-4EB5-9D68-788BF234AE1F} = {F1820A45-F18D-4C54-90E2-8C4368EAE185}
 		{D85EA161-361A-4CAC-8B77-39E174FCFFE2} = {F1820A45-F18D-4C54-90E2-8C4368EAE185}
 		{ED7AED39-312A-4330-8ADF-DD24F848A754} = {F1820A45-F18D-4C54-90E2-8C4368EAE185}
+		{72EA8C58-0BA5-49B6-A7F1-269EC6764CED} = {F1820A45-F18D-4C54-90E2-8C4368EAE185}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {143EE175-6EF6-4DAD-BB23-53B3026A6887}
 	EndGlobalSection
 EndGlobal

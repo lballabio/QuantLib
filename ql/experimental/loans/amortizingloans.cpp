@@ -1,10 +1,12 @@
+#pragma once
+
 #include <ql/experimental/loans/amortizingloans.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/time/schedule.hpp>
 
 #include <ql/math/matrix.hpp>
 #include <ql/math/array.hpp>
-
+#include <iostream>
 
 namespace QuantLib {
     
@@ -24,7 +26,7 @@ namespace QuantLib {
                                        bool exCouponEndOfMonth,
                                        const DayCounter& firstPeriodDayCounter)
     : Loan(settlementDays,
-           paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar,
+           paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar, faceAmount,
            issueDate),
       frequency_(schedule.hasTenor() ? schedule.tenor().frequency() : NoFrequency),
       dayCounter_(accrualDayCounter), firstPeriodDayCounter_(firstPeriodDayCounter) {
@@ -47,7 +49,7 @@ namespace QuantLib {
                                              exCouponEndOfMonth);
 
         addRedemptionsToCashflows();
-
+        QL_ENSURE(validateRedemptions(faceAmount), "redemptions must sum 0");
         QL_ENSURE(!cashflows().empty(), "loan with no cashflows!");
     }
 
@@ -80,9 +82,9 @@ namespace QuantLib {
         K = inverse(A) * B;   
         notionals.clear();
         notionals.push_back(faceAmount);
-        
+        //std::cout << K << std::endl;
         for (size_t i = 0; i < paymentNum; i++) {
-            notionals.push_back(faceAmount - K[i + 1]);            
+            notionals.push_back(notionals[i] - K[i + 1]);            
         }  
     }
 
@@ -101,12 +103,12 @@ namespace QuantLib {
         bool exCouponEndOfMonth,
         const DayCounter& firstPeriodDayCounter)
     : Loan(settlementDays,
-           paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar,
+           paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar, faceAmount,
            issueDate),
       frequency_(schedule.hasTenor() ? schedule.tenor().frequency() : NoFrequency),
       dayCounter_(accrualDayCounter), firstPeriodDayCounter_(firstPeriodDayCounter) {
-        int size = schedule.size();
-        Real redemption = faceAmount / (size - 1);
+        Real size = schedule.size();
+        Real redemption = faceAmount / (size - 1.0);
         std::vector<Real> notionals(size, 0);
         notionals[0] = faceAmount;
         for (size_t i = 1; i < size; i++) {
@@ -123,7 +125,7 @@ namespace QuantLib {
                                              exCouponEndOfMonth);
 
         addRedemptionsToCashflows();
-
+        QL_ENSURE(validateRedemptions(faceAmount), "redemptions must sum 0");
         QL_ENSURE(!cashflows().empty(), "loan with no cashflows!");
     }
 
@@ -142,7 +144,7 @@ namespace QuantLib {
                                              bool exCouponEndOfMonth,
                                              const DayCounter& firstPeriodDayCounter)
     : Loan(settlementDays,
-           paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar,
+           paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar, faceAmount,
            issueDate),
       frequency_(schedule.hasTenor() ? schedule.tenor().frequency() : NoFrequency),
       dayCounter_(accrualDayCounter), firstPeriodDayCounter_(firstPeriodDayCounter) {
@@ -158,6 +160,7 @@ namespace QuantLib {
                                              exCouponEndOfMonth);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));
+        QL_ENSURE(validateRedemptions(faceAmount), "redemptions must sum 0");
         QL_ENSURE(!cashflows().empty(), "loan with no cashflows!");
     }
     

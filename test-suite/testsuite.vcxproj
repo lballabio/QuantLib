@@ -169,6 +169,38 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">QuantLib-test-suite-mt-sgd</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">QuantLib-test-suite-x64-mt-sgd</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0</IncludePath>
+    <LibraryPath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">
+    <IncludePath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0</IncludePath>
+    <LibraryPath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0</IncludePath>
+    <LibraryPath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|Win32'">
+    <IncludePath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0</IncludePath>
+    <LibraryPath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0</IncludePath>
+    <LibraryPath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|x64'">
+    <IncludePath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0</IncludePath>
+    <LibraryPath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0</IncludePath>
+    <LibraryPath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">
+    <IncludePath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0</IncludePath>
+    <LibraryPath>C:\Users\jmelo\Desktop\Desarrollo\c++\boost_1_77_0\libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (static runtime)|Win32'">
     <Midl>
       <TypeLibraryName>.\build\$(PlatformToolset)\$(Platform)\$(Configuration)\testsuite.tlb</TypeLibraryName>
