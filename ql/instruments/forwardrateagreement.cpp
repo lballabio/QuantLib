@@ -25,20 +25,19 @@ namespace QuantLib {
 
     QL_DEPRECATED_DISABLE_WARNING
 
-    ForwardRateAgreement::ForwardRateAgreement(
-                           const Date& valueDate,
-                           const Date& maturityDate,
-                           Position::Type type,
-                           Rate strikeForwardRate,
-                           Real notionalAmount,
-                           const ext::shared_ptr<IborIndex>& index,
-                           const Handle<YieldTermStructure>& discountCurve,
-                           bool useIndexedCoupon)
+    ForwardRateAgreement::ForwardRateAgreement(const Date& valueDate,
+                                               const Date& maturityDate,
+                                               Position::Type type,
+                                               Rate strikeForwardRate,
+                                               Real notionalAmount,
+                                               const ext::shared_ptr<IborIndex>& index,
+                                               const Handle<YieldTermStructure>& discountCurve,
+                                               bool useIndexedCoupon)
     : fraType_(type), notionalAmount_(notionalAmount), index_(index),
-      useIndexedCoupon_(useIndexedCoupon), dayCounter_(std::move(index->dayCounter())),
-      calendar_(index->fixingCalendar()),
-      businessDayConvention_(index->businessDayConvention()), settlementDays_(index->fixingDays()),
-      valueDate_(valueDate), maturityDate_(maturityDate), discountCurve_(std::move(discountCurve)) {
+      useIndexedCoupon_(useIndexedCoupon), dayCounter_(index->dayCounter()),
+      calendar_(index->fixingCalendar()), businessDayConvention_(index->businessDayConvention()),
+      settlementDays_(index->fixingDays()), valueDate_(valueDate), maturityDate_(maturityDate),
+      discountCurve_(discountCurve) {
 
         maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
 
