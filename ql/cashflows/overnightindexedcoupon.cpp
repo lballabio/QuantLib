@@ -42,21 +42,24 @@ namespace QuantLib {
             }
             Rate swapletRate(const Date& date) const override {
 
-                ext::shared_ptr<OvernightIndex> index =
+                const Date today = Settings::instance().evaluationDate();
+
+                const ext::shared_ptr<OvernightIndex> index =
                     ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
 
                 const vector<Date>& fixingDates = coupon_->fixingDates();
+                const vector<Date>& valueDates = coupon_->valueDates();
                 const vector<Time>& dt = coupon_->dt();
 
-                Size n = dt.size(),
-                     i = 0;
+                const Size n = dt.size();
+                Size i = 0;
 
                 Real compoundFactor = 1.0;
 
                 // already fixed part
-                while (i<n && fixingDates[i]<date) {
+                while (i < n && fixingDates[i] < today && date <= fixingDates[i]) {
                     // rate must have been fixed
-                    Rate pastFixing = IndexManager::instance().getHistory(
+                    const Rate pastFixing = IndexManager::instance().getHistory(
                                                 index->name())[fixingDates[i]];
                     QL_REQUIRE(pastFixing != Null<Real>(),
                                "Missing " << index->name() <<
@@ -66,7 +69,7 @@ namespace QuantLib {
                 }
 
                 // today is a border case
-                if (i<n && fixingDates[i] == date) {
+                if (i < n && fixingDates[i] == today && date <= today) {
                     // might have been fixed
                     try {
                         Rate pastFixing = IndexManager::instance().getHistory(
@@ -82,29 +85,32 @@ namespace QuantLib {
                     }
                 }
 
+                auto endIndex = i;
+                while (endIndex < n && date <= valueDates[endIndex])
+                    endIndex++;
+
                 // forward part using telescopic property in order
                 // to avoid the evaluation of multiple forward fixings
-                if (i<n) {
-                    Handle<YieldTermStructure> curve =
+                if (i < endIndex) {
+                    const Handle<YieldTermStructure> curve =
                         index->forwardingTermStructure();
                     QL_REQUIRE(!curve.empty(),
                                "null term structure set to this instance of "<<
                                index->name());
 
-                    const vector<Date>& dates = coupon_->valueDates();
-                    DiscountFactor startDiscount = curve->discount(dates[i]);
-                    DiscountFactor endDiscount = curve->discount(dates[n]);
+                    const DiscountFactor startDiscount = curve->discount(valueDates[i]);
+                    const DiscountFactor endDiscount = curve->discount(valueDates[endIndex]);
 
                     compoundFactor *= startDiscount/endDiscount;
                 }
 
-                Rate rate = (compoundFactor - 1.0) / coupon_->accrualPeriod();
+                const Rate rate = (compoundFactor - 1.0) / coupon_->accrualPeriod();
                 return coupon_->gearing() * rate + coupon_->spread();
             }
             Rate swapletRate() const override {
 
-                Date today = Settings::instance().evaluationDate();
-                return swapletRate(today);
+                const Date accrualEndDate = coupon_->valueDates()[coupon_->dt().size()];
+                return swapletRate(accrualEndDate);
             }
 
             Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
