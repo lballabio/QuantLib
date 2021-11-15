@@ -23,6 +23,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     ForwardRateAgreement::ForwardRateAgreement(
                            const Date& valueDate,
                            const Date& maturityDate,
@@ -32,13 +34,11 @@ namespace QuantLib {
                            const ext::shared_ptr<IborIndex>& index,
                            const Handle<YieldTermStructure>& discountCurve,
                            bool useIndexedCoupon)
-    : 
-      fraType_(type), notionalAmount_(notionalAmount), index_(index),
+    : fraType_(type), notionalAmount_(notionalAmount), index_(index),
       useIndexedCoupon_(useIndexedCoupon), dayCounter_(std::move(index->dayCounter())),
       calendar_(index->fixingCalendar()),
       businessDayConvention_(index->businessDayConvention()), settlementDays_(index->fixingDays()),
-      payoff_(ext::shared_ptr<Payoff>()), valueDate_(valueDate),
-      maturityDate_(maturityDate), discountCurve_(std::move(discountCurve)) {
+      valueDate_(valueDate), maturityDate_(maturityDate), discountCurve_(std::move(discountCurve)) {
 
         maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
 
@@ -53,12 +53,14 @@ namespace QuantLib {
         Real strike = notionalAmount_ *
                       strikeForwardRate_.compoundFactor(valueDate_,
                                                         maturityDate_);
+
         payoff_ = ext::shared_ptr<Payoff>(new ForwardTypePayoff(fraType_,
                                                                   strike));
         // incomeDiscountCurve_ is irrelevant to an FRA
         incomeDiscountCurve_ = discountCurve_;
         // income is irrelevant to FRA - set it to zero
         underlyingIncome_ = 0.0;
+
         registerWith(index_);
     }
 
@@ -67,13 +69,14 @@ namespace QuantLib {
                                  settlementDays_, Days);
     }
 
+    QL_DEPRECATED_ENABLE_WARNING
+
     Date ForwardRateAgreement::fixingDate() const {
-        return calendar_.advance(valueDate_,
-                                 -static_cast<Integer>(settlementDays_), Days);
+        return index_->fixingDate(valueDate_);
     }
 
     bool ForwardRateAgreement::isExpired() const {
-        return detail::simple_event(valueDate_).hasOccurred(settlementDate());
+        return detail::simple_event(valueDate_).hasOccurred();
     }
 
     Real ForwardRateAgreement::spotIncome(
@@ -118,8 +121,10 @@ namespace QuantLib {
 
         NPV_ = amount_ * discount->discount(valueDate_);
 
+        QL_DEPRECATED_DISABLE_WARNING
         underlyingSpotValue_ = spotValue();
         underlyingIncome_    = 0.0;
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     void ForwardRateAgreement::calculateForwardRate() const {
@@ -147,6 +152,8 @@ namespace QuantLib {
         amount_ = notionalAmount_ * sign * (F - K) * T / (1.0 + F * T);
     }
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     Real ForwardRateAgreement::forwardValue() const {
         calculate();
         return (underlyingSpotValue_ - underlyingIncome_) / discountCurve_->discount(maturityDate_);
@@ -164,4 +171,5 @@ namespace QuantLib {
         return InterestRate::impliedRate(compoundingFactor, dayCounter, comp, Annual, t);
     }
 
+    QL_DEPRECATED_ENABLE_WARNING
 }

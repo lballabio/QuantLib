@@ -228,24 +228,6 @@ int main(int, char* []) {
             cout << "FRA market quote: "
                  << io::rate(threeMonthFraQuote[monthsToStart[i]])
                  << endl;
-            cout << "FRA spot value: "
-                 << myFRA.spotValue()
-                 << endl;
-            cout << "FRA forward value: "
-                 << myFRA.forwardValue()
-                 << endl;
-            cout << "FRA implied Yield: "
-                 << myFRA.impliedYield(myFRA.spotValue(),
-                                       myFRA.forwardValue(),
-                                       settlementDate,
-                                       Simple,
-                                       fraDayCounter)
-                 << endl;
-            cout << "market Zero Rate: "
-                 << discountingTermStructure->zeroRate(fraMaturityDate,
-                                                       fraDayCounter,
-                                                       Simple)
-                 << endl;
             cout << "FRA amount [should be zero]: "
                  << myFRA.amount()
                  << endl;
@@ -309,24 +291,6 @@ int main(int, char* []) {
                  << endl;
             cout << "FRA market quote: "
                  << io::rate(threeMonthFraQuote[monthsToStart[i]])
-                 << endl;
-            cout << "FRA spot value: "
-                 << myFRA.spotValue()
-                 << endl;
-            cout << "FRA forward value: "
-                 << myFRA.forwardValue()
-                 << endl;
-            cout << "FRA implied Yield: "
-                 << myFRA.impliedYield(myFRA.spotValue(),
-                                       myFRA.forwardValue(),
-                                       settlementDate,
-                                       Simple,
-                                       fraDayCounter)
-                 << endl;
-            cout << "market Zero Rate: "
-                 << discountingTermStructure->zeroRate(fraMaturityDate,
-                                                       fraDayCounter,
-                                                       Simple)
                  << endl;
             cout << "FRA amount [should be positive]: "
                  << myFRA.amount()

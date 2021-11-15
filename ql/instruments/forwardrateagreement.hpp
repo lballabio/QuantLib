@@ -30,6 +30,8 @@ namespace QuantLib {
 
     class IborIndex;
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     //! %Forward rate agreement (FRA) class
     /*! 1. Unlike the forward contract conventions on carryable
            financial assets (stocks, bonds, commodities), the
@@ -80,41 +82,55 @@ namespace QuantLib {
         bool isExpired() const override;
         //! The payoff on the value date
         Real amount() const;
-        /*! This returns evaluationDate + settlementDays (not FRA
-            valueDate).
+
+        /*! \deprecated This used to be inherited from Forward, but it's not correct for FRAs.
+                        Deprecated in version 1.25.
         */
+        QL_DEPRECATED
         Date settlementDate() const;
+
         const Calendar& calendar() const;
         BusinessDayConvention businessDayConvention() const;
         const DayCounter& dayCounter() const;
         //! term structure relevant to the contract (e.g. repo curve)
         Handle<YieldTermStructure> discountCurve() const;
-        //! term structure that discounts the underlying's income cash flows
+
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
         Handle<YieldTermStructure> incomeDiscountCurve() const;
+
         Date fixingDate() const;
-        /*!  Income is zero for a FRA */
+
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
         Real spotIncome(const Handle<YieldTermStructure>& incomeDiscountCurve) const;
-        //! Spot value (NPV) of the underlying loan
-        /*! This has always a positive value (asset), even if short the FRA */
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
         Real spotValue() const;
+
         //! Returns the relevant forward rate associated with the FRA term
         InterestRate forwardRate() const;
 
-        /*! Simple yield calculation based on underlying spot and
-            forward values, taking into account underlying income.
-            When \f$ t>0 \f$, call with:
-            underlyingSpotValue=spotValue(t),
-            forwardValue=strikePrice, to get current yield. For a
-            repo, if \f$ t=0 \f$, impliedYield should reproduce the
-            spot repo rate. For FRA's, this should reproduce the
-            relevant zero rate at the FRA's maturityDate_;
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
         */
+        QL_DEPRECATED
         InterestRate impliedYield(Real underlyingSpotValue,
                                   Real forwardValue,
                                   Date settlementDate,
                                   Compounding compoundingConvention,
                                   const DayCounter& dayCounter);
 
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
         virtual Real forwardValue() const;
         //@}
 
@@ -130,23 +146,43 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> index_;
         bool useIndexedCoupon_;
 
-        /*! derived classes must set this, typically via spotIncome() */
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
         mutable Real underlyingIncome_;
-        /*! derived classes must set this, typically via spotValue() */
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
         mutable Real underlyingSpotValue_;
+
         DayCounter dayCounter_;
         Calendar calendar_;
         BusinessDayConvention businessDayConvention_;
-        Natural settlementDays_;
-        ext::shared_ptr<Payoff> payoff_;
-        /*! valueDate = settlement date (date the fwd contract starts
-            accruing)
+
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
         */
+        QL_DEPRECATED
+        Natural settlementDays_;
+
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        ext::shared_ptr<Payoff> payoff_;
+
+        //! the valueDate is the date the underlying index starts accruing and the FRA is settled.
         Date valueDate_;
-        //! maturityDate of the forward contract or delivery date of underlying
+        //! maturityDate of the underlying index; not the date the FRA is settled.
         Date maturityDate_;
         Handle<YieldTermStructure> discountCurve_;
-        /*! must set this in derived classes, based on particular underlying */
+
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
         Handle<YieldTermStructure> incomeDiscountCurve_;
 
       private:
@@ -154,6 +190,8 @@ namespace QuantLib {
         void calculateAmount() const;
         mutable Real amount_;
     };
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     inline const Calendar& ForwardRateAgreement::calendar() const { return calendar_; }
 
@@ -168,7 +206,9 @@ namespace QuantLib {
     }
 
     inline Handle<YieldTermStructure> ForwardRateAgreement::incomeDiscountCurve() const {
+        QL_DEPRECATED_DISABLE_WARNING
         return incomeDiscountCurve_;
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
 }
