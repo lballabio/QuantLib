@@ -22,6 +22,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     YoYCapFloorTermPriceSurface::YoYCapFloorTermPriceSurface(
         Natural fixingDays,
         const Period& lag,
@@ -99,6 +101,8 @@ namespace QuantLib {
             QL_REQUIRE( cfStrikes_[i] > cfStrikes_[i-1],
                         "cfStrikes not increasing");
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     Date YoYCapFloorTermPriceSurface::yoyOptionDateFromTenor(const Period& p) const
     {

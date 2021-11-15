@@ -161,7 +161,7 @@ namespace ZCIIS {
         ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
             new PiecewiseZeroInflationCurve<Linear>(setup.evaluationDate, setup.calendar, setup.dc,
                                                     setup.observationLag, frequency,
-                                                    index->interpolated(), baseZeroRate, helpers));
+                                                    baseZeroRate, helpers));
         pZITS->recalculate();
 
         return pZITS;
