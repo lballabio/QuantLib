@@ -17,9 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/forwardrateagreement.hpp>
-#include <ql/indexes/iborindex.hpp>
 #include <ql/event.hpp>
+#include <ql/indexes/iborindex.hpp>
+#include <ql/instruments/forwardrateagreement.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -31,13 +32,13 @@ namespace QuantLib {
                                                Rate strikeForwardRate,
                                                Real notionalAmount,
                                                const ext::shared_ptr<IborIndex>& index,
-                                               const Handle<YieldTermStructure>& discountCurve,
+                                               Handle<YieldTermStructure> discountCurve,
                                                bool useIndexedCoupon)
     : fraType_(type), notionalAmount_(notionalAmount), index_(index),
       useIndexedCoupon_(useIndexedCoupon), dayCounter_(index->dayCounter()),
       calendar_(index->fixingCalendar()), businessDayConvention_(index->businessDayConvention()),
       settlementDays_(index->fixingDays()), valueDate_(valueDate), maturityDate_(maturityDate),
-      discountCurve_(discountCurve) {
+      discountCurve_(std::move(discountCurve)) {
 
         maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
 

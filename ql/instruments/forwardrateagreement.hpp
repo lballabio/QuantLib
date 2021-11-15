@@ -67,15 +67,15 @@ namespace QuantLib {
     */
     class ForwardRateAgreement: public Instrument {
       public:
-        ForwardRateAgreement(const Date& valueDate,
-                             const Date& maturityDate,
-                             Position::Type type,
-                             Rate strikeForwardRate,
-                             Real notionalAmount,
-                             const ext::shared_ptr<IborIndex>& index,
-                             const Handle<YieldTermStructure>& discountCurve =
-                                                 Handle<YieldTermStructure>(),
-                             bool useIndexedCoupon = true);
+        ForwardRateAgreement(
+            const Date& valueDate,
+            const Date& maturityDate,
+            Position::Type type,
+            Rate strikeForwardRate,
+            Real notionalAmount,
+            const ext::shared_ptr<IborIndex>& index,
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
+            bool useIndexedCoupon = true);
         //! \name Calculations
         //@{
         //! A FRA expires/settles on the value date
