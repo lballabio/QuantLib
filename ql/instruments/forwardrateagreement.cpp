@@ -94,6 +94,11 @@ namespace QuantLib {
                discountCurve_->discount(maturityDate_);
     }
 
+    Real ForwardRateAgreement::amount() const {
+        calculate();
+        return amount_;
+    }
+
     InterestRate ForwardRateAgreement::forwardRate() const {
         calculate();
         return forwardRate_;
@@ -101,20 +106,20 @@ namespace QuantLib {
 
     void ForwardRateAgreement::setupExpired() const {
         Instrument::setupExpired();
+
         calculateForwardRate();
     }
 
     void ForwardRateAgreement::performCalculations() const {
-        calculateForwardRate();
+        calculateAmount();
+
+        Handle<YieldTermStructure> discount =
+            discountCurve_.empty() ? index_->forwardingTermStructure() : discountCurve_;
+
+        NPV_ = amount_ * discount->discount(valueDate_);
+
         underlyingSpotValue_ = spotValue();
         underlyingIncome_    = 0.0;
-
-        QL_REQUIRE(!discountCurve_.empty(), "null term structure set to Forward");
-
-        ext::shared_ptr<ForwardTypePayoff> ftpayoff =
-            ext::dynamic_pointer_cast<ForwardTypePayoff>(payoff_);
-        Real fwdValue = forwardValue();
-        NPV_ = (*ftpayoff)(fwdValue)*discountCurve_->discount(maturityDate_);
     }
 
     void ForwardRateAgreement::calculateForwardRate() const {
@@ -129,6 +134,17 @@ namespace QuantLib {
                               1.0) /
                                  index_->dayCounter().yearFraction(valueDate_, maturityDate_),
                              index_->dayCounter(), Simple, Once);
+    }
+
+    void ForwardRateAgreement::calculateAmount() const {
+        calculateForwardRate();
+        Integer sign = fraType_ == Position::Long? 1 : -1;
+
+        Rate F = forwardRate_.rate();
+        Rate K = strikeForwardRate_.rate();
+        Time T = forwardRate_.dayCounter().yearFraction(valueDate_, maturityDate_);
+
+        amount_ = notionalAmount_ * sign * (F - K) * T / (1.0 + F * T);
     }
 
     Real ForwardRateAgreement::forwardValue() const {
@@ -147,4 +163,5 @@ namespace QuantLib {
             forwardValue / (underlyingSpotValue - spotIncome(incomeDiscountCurve_));
         return InterestRate::impliedRate(compoundingFactor, dayCounter, comp, Annual, t);
     }
+
 }

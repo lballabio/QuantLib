@@ -246,6 +246,9 @@ int main(int, char* []) {
                                                        fraDayCounter,
                                                        Simple)
                  << endl;
+            cout << "FRA amount [should be zero]: "
+                 << myFRA.amount()
+                 << endl;
             cout << "FRA NPV [should be zero]: "
                  << myFRA.NPV()
                  << endl
@@ -324,6 +327,9 @@ int main(int, char* []) {
                  << discountingTermStructure->zeroRate(fraMaturityDate,
                                                        fraDayCounter,
                                                        Simple)
+                 << endl;
+            cout << "FRA amount [should be positive]: "
+                 << myFRA.amount()
                  << endl;
             cout << "FRA NPV [should be positive]: "
                  << myFRA.NPV()

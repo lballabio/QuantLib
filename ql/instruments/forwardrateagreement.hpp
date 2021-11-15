@@ -48,23 +48,12 @@ namespace QuantLib {
         3. Choose position type = Short for an "FRA sale" (future short
            loan, long deposit [lender])
 
-        4. If strike is given in the constructor, can calculate the NPV
-           of the contract via NPV().
-
-        5. If forward rate is desired/unknown, it can be obtained via
-           forwardRate(). In this case, the strike variable in the
-           constructor is irrelevant and will be ignored.
-
         <b>Example: </b>
         \link FRA.cpp
         valuation of a forward-rate agreement
         \endlink
 
         \todo Add preconditions and tests
-
-        \todo Should put an instance of ForwardRateAgreement in the
-              FraRateHelper to ensure consistency with the piecewise
-              yield curve.
 
         \todo Differentiate between BBA (British)/AFB (French)
               [assumed here] and ABA (Australian) banker conventions
@@ -87,8 +76,10 @@ namespace QuantLib {
                              bool useIndexedCoupon = true);
         //! \name Calculations
         //@{
-        /*! A FRA expires/settles on the valueDate */
+        //! A FRA expires/settles on the value date
         bool isExpired() const override;
+        //! The payoff on the value date
+        Real amount() const;
         /*! This returns evaluationDate + settlementDays (not FRA
             valueDate).
         */
@@ -160,6 +151,8 @@ namespace QuantLib {
 
       private:
         void calculateForwardRate() const;
+        void calculateAmount() const;
+        mutable Real amount_;
     };
 
     inline const Calendar& ForwardRateAgreement::calendar() const { return calendar_; }
