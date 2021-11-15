@@ -187,7 +187,7 @@ namespace QuantLib {
 
         if (exCouponPeriod_ != Period())
         {
-            exCouponDate = exCouponCalendar_.advance(paymentDate,
+            exCouponDate = exCouponCalendar_.advance(end,
                                                      -exCouponPeriod_,
                                                      exCouponAdjustment_,
                                                      exCouponEndOfMonth_);
@@ -212,7 +212,7 @@ namespace QuantLib {
             Date paymentDate = paymentCalendar_.advance(end, paymentLag_, Days, paymentAdjustment_);
             if (exCouponPeriod_ != Period())
             {
-                exCouponDate = exCouponCalendar_.advance(paymentDate,
+                exCouponDate = exCouponCalendar_.advance(end,
                                                          -exCouponPeriod_,
                                                          exCouponAdjustment_,
                                                          exCouponEndOfMonth_);
@@ -236,7 +236,7 @@ namespace QuantLib {
             Date paymentDate = paymentCalendar_.advance(end, paymentLag_, Days, paymentAdjustment_);
             if (exCouponPeriod_ != Period())
             {
-                exCouponDate = exCouponCalendar_.advance(paymentDate,
+                exCouponDate = exCouponCalendar_.advance(end,
                                                          -exCouponPeriod_,
                                                          exCouponAdjustment_,
                                                          exCouponEndOfMonth_);
