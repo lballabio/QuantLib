@@ -19,7 +19,7 @@ tar xfz QuantLib-*.tar.gz
 rm QuantLib-*.tar.gz
 cd QuantLib-*
 
-find ql -name '*.[hc]pp' -or -name '*.[hc]' \
+find ql -name '*.[hc]pp' \
 | grep -v 'ql/config\.hpp' | sort > ../../ql.dist.files
 find test-suite -name '*.[hc]pp' \
 | grep -v 'quantlibbenchmark' | grep -v '/main\.cpp' \
