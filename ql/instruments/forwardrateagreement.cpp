@@ -64,6 +64,15 @@ namespace QuantLib {
         registerWith(index_);
     }
 
+    ForwardRateAgreement::ForwardRateAgreement(const Date& valueDate,
+                                               Position::Type type,
+                                               Rate strikeForwardRate,
+                                               Real notionalAmount,
+                                               const ext::shared_ptr<IborIndex>& index,
+                                               Handle<YieldTermStructure> discountCurve)
+    : ForwardRateAgreement(valueDate, index->maturityDate(valueDate), type, strikeForwardRate,
+                           notionalAmount, index, std::move(discountCurve), true) {}
+
     Date ForwardRateAgreement::settlementDate() const {
         return calendar_.advance(Settings::instance().evaluationDate(),
                                  settlementDays_, Days);

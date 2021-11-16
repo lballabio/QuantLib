@@ -188,7 +188,6 @@ int main(int, char* []) {
             euribor3m->businessDayConvention();
         Position::Type fraFwdType = Position::Long;
         Real fraNotional = 100.0;
-        const Integer FraTermMonths = 3;
         Integer monthsToStart[] = { 1, 2, 3, 6, 9 };
 
         euriborTermStructure.linkTo(fraTermStructure);
@@ -205,13 +204,9 @@ int main(int, char* []) {
                                        settlementDate,monthsToStart[i],Months,
                                        fraBusinessDayConvention);
 
-            Date fraMaturityDate = fraCalendar.advance(
-                                            fraValueDate,FraTermMonths,Months,
-                                            fraBusinessDayConvention);
-
             Rate fraStrikeRate = threeMonthFraQuote[monthsToStart[i]];
 
-            ForwardRateAgreement myFRA(fraValueDate, fraMaturityDate,
+            ForwardRateAgreement myFRA(fraValueDate,
                                        fraFwdType,fraStrikeRate,
                                        fraNotional, euribor3m,
                                        discountingTermStructure);
@@ -268,14 +263,10 @@ int main(int, char* []) {
                                        settlementDate,monthsToStart[i],Months,
                                        fraBusinessDayConvention);
 
-            Date fraMaturityDate = fraCalendar.advance(
-                                            fraValueDate,FraTermMonths,Months,
-                                            fraBusinessDayConvention);
-
             Rate fraStrikeRate =
                 threeMonthFraQuote[monthsToStart[i]] - BpsShift;
 
-            ForwardRateAgreement myFRA(fraValueDate, fraMaturityDate,
+            ForwardRateAgreement myFRA(fraValueDate,
                                        fraFwdType, fraStrikeRate,
                                        fraNotional, euribor3m,
                                        discountingTermStructure);

@@ -76,6 +76,13 @@ namespace QuantLib {
             const ext::shared_ptr<IborIndex>& index,
             Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
             bool useIndexedCoupon = true);
+        ForwardRateAgreement(
+            const Date& valueDate,
+            Position::Type type,
+            Rate strikeForwardRate,
+            Real notionalAmount,
+            const ext::shared_ptr<IborIndex>& index,
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
         //! \name Calculations
         //@{
         //! A FRA expires/settles on the value date
