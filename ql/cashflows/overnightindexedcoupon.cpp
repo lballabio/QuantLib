@@ -56,8 +56,10 @@ namespace QuantLib {
 
                 Real compoundFactor = 1.0;
 
+                const auto minDate = std::min(today, date);
+
                 // already fixed part
-                while (i < n && fixingDates[i] < today && date <= fixingDates[i]) {
+                while (i < n && fixingDates[i] < minDate) {
                     // rate must have been fixed
                     const Rate pastFixing = IndexManager::instance().getHistory(
                                                 index->name())[fixingDates[i]];
@@ -69,7 +71,7 @@ namespace QuantLib {
                 }
 
                 // today is a border case
-                if (i < n && fixingDates[i] == today && date <= today) {
+                if (i < n && fixingDates[i] == minDate) {
                     // might have been fixed
                     try {
                         Rate pastFixing = IndexManager::instance().getHistory(
@@ -86,8 +88,13 @@ namespace QuantLib {
                 }
 
                 auto endIndex = i;
-                while (endIndex < n && date <= valueDates[endIndex])
-                    endIndex++;
+
+                if (minDate < valueDates[n]) {
+                    while (endIndex < n && minDate <= valueDates[endIndex])
+                        endIndex++;
+                } else {
+                    endIndex = n;
+                }
 
                 // forward part using telescopic property in order
                 // to avoid the evaluation of multiple forward fixings
