@@ -67,22 +67,35 @@ namespace QuantLib {
     */
     class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
       public:
+        QL_DEPRECATED
         SofrFutureRateHelper(const Handle<Quote>& price,
                              Month referenceMonth,
                              Year referenceYear,
                              Frequency referenceFreq,
                              const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-                             [[deprecated("infer averaging method from frequency")]]
-                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                             const Handle<Quote>& convexityAdjustment,
+                             RateAveraging::Type averagingMethod);
+        QL_DEPRECATED
         SofrFutureRateHelper(Real price,
                              Month referenceMonth,
                              Year referenceYear,
                              Frequency referenceFreq,
                              const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                             Real convexityAdjustment = 0,
-                             [[deprecated("infer averaging method from frequency")]]
-                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                             Real convexityAdjustment,
+                             RateAveraging::Type averagingMethod);
+
+        SofrFutureRateHelper(const Handle<Quote>& price,
+            Month referenceMonth,
+            Year referenceYear,
+            Frequency referenceFreq,
+            const ext::shared_ptr<OvernightIndex>& overnightIndex,
+            const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+        SofrFutureRateHelper(Real price,
+            Month referenceMonth,
+            Year referenceYear,
+            Frequency referenceFreq,
+            const ext::shared_ptr<OvernightIndex>& overnightIndex,
+            Real convexityAdjustment = 0);
     };
 
 }

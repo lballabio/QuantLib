@@ -90,7 +90,7 @@ void SofrFuturesTest::testBootstrap() {
     for (const auto& sofrQuote : sofrQuotes) {
         helpers.push_back(ext::make_shared<SofrFutureRateHelper>(
             sofrQuote.price, sofrQuote.month, sofrQuote.year, sofrQuote.freq,
-            index, 0.0, sofrQuote.averagingMethod));
+            index, 0.0));
     }
 
     ext::shared_ptr<PiecewiseYieldCurve<Discount, Linear> > curve =
