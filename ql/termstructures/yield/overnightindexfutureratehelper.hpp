@@ -67,6 +67,9 @@ namespace QuantLib {
     */
     class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
       public:
+        /*! \deprecated Use the constructor without index and averaging method.
+                        Deprecated in version 1.25.
+        */
         QL_DEPRECATED
         SofrFutureRateHelper(const Handle<Quote>& price,
                              Month referenceMonth,
@@ -75,6 +78,10 @@ namespace QuantLib {
                              const ext::shared_ptr<OvernightIndex>& overnightIndex,
                              const Handle<Quote>& convexityAdjustment,
                              RateAveraging::Type averagingMethod);
+
+        /*! \deprecated Use the constructor without index and averaging method.
+                        Deprecated in version 1.25.
+        */
         QL_DEPRECATED
         SofrFutureRateHelper(Real price,
                              Month referenceMonth,
@@ -85,17 +92,16 @@ namespace QuantLib {
                              RateAveraging::Type averagingMethod);
 
         SofrFutureRateHelper(const Handle<Quote>& price,
-            Month referenceMonth,
-            Year referenceYear,
-            Frequency referenceFreq,
-            const ext::shared_ptr<OvernightIndex>& overnightIndex,
-            const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+                             Month referenceMonth,
+                             Year referenceYear,
+                             Frequency referenceFreq,
+                             const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+
         SofrFutureRateHelper(Real price,
-            Month referenceMonth,
-            Year referenceYear,
-            Frequency referenceFreq,
-            const ext::shared_ptr<OvernightIndex>& overnightIndex,
-            Real convexityAdjustment = 0);
+                             Month referenceMonth,
+                             Year referenceYear,
+                             Frequency referenceFreq,
+                             Real convexityAdjustment = 0);
     };
 
 }

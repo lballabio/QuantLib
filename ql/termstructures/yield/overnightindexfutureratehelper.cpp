@@ -19,6 +19,7 @@
 */
 
 #include <ql/termstructures/yield/overnightindexfutureratehelper.hpp>
+#include <ql/indexes/ibor/sofr.hpp>
 #include <ql/utilities/null_deleter.hpp>
 
 namespace QuantLib {
@@ -26,7 +27,7 @@ namespace QuantLib {
     namespace {
 
         Date getValidSofrStart(Month month, Year year, Frequency freq) {
-            return freq == Monthly ? 
+            return freq == Monthly ?
                 UnitedStates(UnitedStates::GovernmentBond).adjust(Date(1, month, year)) :
                 Date::nthWeekday(3, Wednesday, month, year);
         }
@@ -91,8 +92,8 @@ namespace QuantLib {
     Real OvernightIndexFutureRateHelper::convexityAdjustment() const {
         return future_->convexityAdjustment();
     }
-    
-    QL_DEPRECATED
+
+
     SofrFutureRateHelper::SofrFutureRateHelper(
         const Handle<Quote>& price,
         Month referenceMonth,
@@ -115,8 +116,7 @@ namespace QuantLib {
                        "quarterly SOFR futures can only start in Mar,Jun,Sep,Dec");
         }
     }
-    
-    QL_DEPRECATED
+
     SofrFutureRateHelper::SofrFutureRateHelper(
         Real price,
         Month referenceMonth,
@@ -146,12 +146,11 @@ namespace QuantLib {
         Month referenceMonth,
         Year referenceYear,
         Frequency referenceFreq,
-        const ext::shared_ptr<OvernightIndex>& overnightIndex,
         const Handle<Quote>& convexityAdjustment)
-        : OvernightIndexFutureRateHelper(price,
+    : OvernightIndexFutureRateHelper(price,
             getValidSofrStart(referenceMonth, referenceYear, referenceFreq),
             getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
-            overnightIndex,
+            ext::make_shared<Sofr>(),
             convexityAdjustment,
             referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
@@ -168,13 +167,12 @@ namespace QuantLib {
         Month referenceMonth,
         Year referenceYear,
         Frequency referenceFreq,
-        const ext::shared_ptr<OvernightIndex>& overnightIndex,
         Real convexityAdjustment)
-        : OvernightIndexFutureRateHelper(
+    : OvernightIndexFutureRateHelper(
             Handle<Quote>(ext::make_shared<SimpleQuote>(price)),
             getValidSofrStart(referenceMonth, referenceYear, referenceFreq),
             getValidSofrEnd(referenceMonth, referenceYear, referenceFreq),
-            overnightIndex,
+            ext::make_shared<Sofr>(),
             Handle<Quote>(ext::make_shared<SimpleQuote>(convexityAdjustment)),
             referenceFreq == Quarterly ? RateAveraging::Compound : RateAveraging::Simple) {
         QL_REQUIRE(referenceFreq == Quarterly || referenceFreq == Monthly,
