@@ -32,6 +32,9 @@
 #include <ql/interestrate.hpp>
 #include <ql/shared_ptr.hpp>
 
+#include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
+
 namespace QuantLib {
 
     class YieldTermStructure;
@@ -442,9 +445,30 @@ namespace QuantLib {
                            accuracy, maxIterations, guess);
         }
         //@}
-
+        static Rate parRate(const Leg& leg,
+                            Redemption& firstPayment,
+                            const YieldTermStructure& discount,
+                            Real accuracy = 1.0e-10,
+                            Size maxIterations = 100,
+                            Rate guess = 0.0);
     };
+    class ParRateFinder : public AcyclicVisitor,                                                    
+                          public Visitor<FixedRateCoupon>,
+                          public Visitor<CashFlow> {
+      public:
+        ParRateFinder(Leg cashflows, Redemption& firstPayment, const YieldTermStructure& curve);     
+        void visit(FixedRateCoupon& c) override;            
+        void visit(CashFlow& cf) override;        
+        Real operator()(Real y) const;
 
+      private:
+        mutable Leg cf_;
+        
+        std::vector<InterestRate*> couponRates_ptr;
+        Real redemptions = 0;
+        Real discountedFirstPayment = 0;
+        const YieldTermStructure& discountingCurve_;
+    };
 }
 
 #endif

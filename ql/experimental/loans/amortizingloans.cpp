@@ -49,7 +49,7 @@ namespace QuantLib {
                                              exCouponEndOfMonth);
 
         addRedemptionsToCashflows();
-        QL_ENSURE(validateRedemptions(faceAmount), "redemptions must sum 0");
+        QL_ENSURE(validateRedemptions(), "redemptions must sum 0");
         QL_ENSURE(!cashflows().empty(), "loan with no cashflows!");
     }
 
@@ -125,7 +125,7 @@ namespace QuantLib {
                                              exCouponEndOfMonth);
 
         addRedemptionsToCashflows();
-        QL_ENSURE(validateRedemptions(faceAmount), "redemptions must sum 0");
+        QL_ENSURE(validateRedemptions(), "redemptions must sum 0");
         QL_ENSURE(!cashflows().empty(), "loan with no cashflows!");
     }
 
@@ -160,7 +160,7 @@ namespace QuantLib {
                                              exCouponEndOfMonth);
 
         addRedemptionsToCashflows(std::vector<Real>(1, redemption));
-        QL_ENSURE(validateRedemptions(faceAmount), "redemptions must sum 0");
+        QL_ENSURE(validateRedemptions(), "redemptions must sum 0");
         QL_ENSURE(!cashflows().empty(), "loan with no cashflows!");
     }
     

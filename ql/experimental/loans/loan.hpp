@@ -3,6 +3,7 @@
 #include <ql/instruments/bond.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/cashflow.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 
 namespace QuantLib {
     class Loan : public Bond {
@@ -19,11 +20,11 @@ namespace QuantLib {
              const Date& maturityDate,
              const Date& issueDate,
              const Leg& cashflows = Leg());
-
+        Redemption& initialPayment();
      protected:   
-        bool validateRedemptions(Real intialPayment);
+        bool validateRedemptions();
      private:
         void calculateNotionalsFromCashflows() override;
-        
+        Redemption initialPayment_;
     };
 }

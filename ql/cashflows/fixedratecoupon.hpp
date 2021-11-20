@@ -36,7 +36,7 @@
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
-
+    class ParRateSolver;
     //! %Coupon paying a fixed interest rate
     class FixedRateCoupon : public Coupon {
       public:
@@ -77,6 +77,8 @@ namespace QuantLib {
         //@}
       private:
         InterestRate rate_;
+      
+       friend class ParRateFinder;
     };
 
 

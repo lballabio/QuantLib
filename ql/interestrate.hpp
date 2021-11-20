@@ -183,6 +183,8 @@ namespace QuantLib {
         Compounding comp_;
         bool freqMakesSense_;
         Real freq_;
+     
+       
     };
 
     /*! \relates InterestRate */

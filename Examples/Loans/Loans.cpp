@@ -13,8 +13,12 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/experimental/loans/amortizingloans.hpp>
 #include <ql/cashflow.hpp>
+#include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
+
 #include <iostream>
 
 
@@ -39,7 +43,7 @@ void loanExample() {
     Frequency freq = Semiannual;
     
     Settings::instance().evaluationDate() = startDate;
-
+   
     Compounding comp = Simple;
     Calendar calendar = NullCalendar();
     Rate coupon = 0.06;
@@ -54,6 +58,9 @@ void loanExample() {
     std::vector<Real> notionals;
     Real increment = 10;
     Real intialPayment = 10;
+    
+    Redemption cf(intialPayment, startDate);
+
     notionals.push_back(increment);
     for (size_t i = 1; i < loanSchedule.size()-1; i++) {
         if (i <= loanSchedule.size()/2) {
@@ -71,8 +78,7 @@ void loanExample() {
                     .withExCouponPeriod(Period(), Calendar(), Unadjusted, false);
 
 
-    Loan loan(settlementDays, calendar, intialPayment, startDate, loanLeg);
-
+    Loan loan(settlementDays, calendar, intialPayment, startDate, loanLeg);    
     std::cout << "Increasing notional loan cashflows:" << std::endl;
     printLoanCashflows(loan);
 
@@ -90,6 +96,10 @@ void loanExample() {
 
     std::cout << "Loan NPV:" << loan.NPV() << std::endl;
     std::cout << std::endl;
+    Real y = CashFlows::parRate(loan.cashflows(), loan.initialPayment(), *discountingCurve);
+    std::cout << "Loan par rate:" << y << std::endl;
+    std::cout << std::endl;
+    
 }
 /*
         EqualPaymentLoan example.                  
@@ -132,6 +142,9 @@ void equalPaymentLoanExample() {
     loan.setPricingEngine(loanEngine);
 
     std::cout << "Loan NPV:" << loan.NPV() << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "Loan par rate:" << CashFlows::parRate(loan.cashflows(), loan.initialPayment(), *discountingCurve) * 100 << std::endl;
     std::cout << std::endl;
 }
 /*
@@ -176,6 +189,11 @@ void equalRedemptionLoanExample() {
     loan.setPricingEngine(loanEngine);
 
     std::cout << "Loan NPV:" << loan.NPV() << std::endl;
+    std::cout << std::endl;
+    std::cout << "Loan par rate:"
+              << CashFlows::parRate(loan.cashflows(), loan.initialPayment(), *discountingCurve) *
+                     100
+              << std::endl;
     std::cout << std::endl;
 }
 

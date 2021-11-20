@@ -22,6 +22,10 @@
 
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
+
+#include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
+
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
@@ -1245,6 +1249,60 @@ namespace QuantLib {
                                   npv,
                                   dayCounter, compounding, frequency, includeSettlementDateFlows,
                                   settlementDate, npvDate);
+        Real step = 0.01;
+        return solver.solve(objFunction, accuracy, guess, step);
+    }
+  
+    
+   
+    /*
+    * todo: add IborCoupon as an option for iteration.
+    */
+    ParRateFinder::ParRateFinder(Leg cashflows,
+                                Redemption& firstPayment,
+                                const YieldTermStructure& curve)
+    : cf_(cashflows), discountingCurve_(curve) {            
+        discountedFirstPayment = -firstPayment.amount() * discountingCurve_.discount(firstPayment.date());
+        for (auto& cf : cf_) {
+            cf->accept(*this);
+        }
+        redemptions -= firstPayment.amount();
+        QL_REQUIRE(redemptions == 0, "redemptions + first payment must be 0");
+    };
+      
+    void ParRateFinder::visit(FixedRateCoupon& c) {
+        couponRates_ptr.push_back(&c.rate_);                                                
+    }
+    void ParRateFinder::visit(CashFlow& c) { 
+        redemptions += c.amount();
+    }
+       
+    Real ParRateFinder::operator()(Real y) const {
+            
+        for (size_t i = 0; i < couponRates_ptr.size(); i++) {
+                
+            *couponRates_ptr[i] = InterestRate (y, couponRates_ptr[i]->dayCounter(),
+                                                couponRates_ptr[i]->compounding(),
+                                                couponRates_ptr[i]->frequency());
+        }
+        Real npv_ = CashFlows::npv(cf_, discountingCurve_, false);
+        return npv_ + discountedFirstPayment;
+    }
+
+    
+    Rate CashFlows::parRate(const Leg& leg,
+                            Redemption& firstPayment,
+                            const YieldTermStructure& discount,
+                            Real accuracy,
+                            Size maxIterations,
+                            Rate guess) {
+        Date todaysDate = Settings::instance().evaluationDate(); //evaluation date from discountCurve?
+        
+        QL_REQUIRE(firstPayment.date() >= todaysDate, "can't evaluate past payments"); 
+
+        ParRateFinder objFunction(leg, firstPayment, discount);
+        Brent solver;
+        solver.setMaxEvaluations(maxIterations);
         Real step = 0.01;
         return solver.solve(objFunction, accuracy, guess, step);
     }
