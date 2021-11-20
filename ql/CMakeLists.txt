@@ -717,7 +717,6 @@ set(QL_SOURCES
     pricingengines/swaption/gaussian1dnonstandardswaptionengine.cpp
     pricingengines/swaption/gaussian1dswaptionengine.cpp
     pricingengines/swaption/jamshidianswaptionengine.cpp
-    pricingengines/swaption/treeswaptionengine.cpp
     pricingengines/vanilla/analyticbsmhullwhiteengine.cpp
     pricingengines/vanilla/analyticcevengine.cpp
     pricingengines/vanilla/analyticdigitalamericanengine.cpp

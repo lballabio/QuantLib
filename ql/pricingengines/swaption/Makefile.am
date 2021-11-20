@@ -29,8 +29,7 @@ cpp_files = \
     gaussian1dswaptionengine.cpp \
     jamshidianswaptionengine.cpp \
     fdg2swaptionengine.cpp \
-    fdhullwhiteswaptionengine.cpp \
-    treeswaptionengine.cpp
+    fdhullwhiteswaptionengine.cpp
 
 if UNITY_BUILD
 
@@ -65,4 +64,3 @@ all.hpp: Makefile.am
 	subdirs='$(SUBDIRS)'; for i in $$subdirs; do \
 		echo "#include <${subdir}/$$i/all.hpp>" >> ${srcdir}/$@; \
 	done
-
