@@ -27,6 +27,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/utilities/vectors.hpp>
 #include <utility>
+#include <algorithm>
 
 using std::vector;
 
@@ -51,9 +52,15 @@ namespace QuantLib {
                 const vector<Date>& valueDates = coupon_->valueDates();
                 const vector<Time>& dt = coupon_->dt();
 
-                const Size n = dt.size();
                 Size i = 0;
+                auto endDateIterator = valueDates.end();
+                
+                if (date < *endDateIterator) {
+                    endDateIterator = std::lower_bound(valueDates.begin(), valueDates.end(), date);
+                }
 
+                const auto endDate = *endDateIterator;
+                const size_t n = endDateIterator - valueDates.begin();
                 Real compoundFactor = 1.0;
 
                 const auto minDate = std::min(today, date);
@@ -61,8 +68,7 @@ namespace QuantLib {
                 // already fixed part
                 while (i < n && fixingDates[i] < minDate) {
                     // rate must have been fixed
-                    const Rate pastFixing = IndexManager::instance().getHistory(
-                                                index->name())[fixingDates[i]];
+                    const Rate pastFixing = IndexManager::instance().getHistory(index->name())[fixingDates[i]];
                     QL_REQUIRE(pastFixing != Null<Real>(),
                                "Missing " << index->name() <<
                                " fixing for " << fixingDates[i]);
@@ -71,7 +77,7 @@ namespace QuantLib {
                 }
 
                 // today is a border case
-                if (i < n && fixingDates[i] == minDate) {
+                if (i < n && fixingDates[i] == today) {
                     // might have been fixed
                     try {
                         Rate pastFixing = IndexManager::instance().getHistory(
@@ -87,31 +93,20 @@ namespace QuantLib {
                     }
                 }
 
-                auto endIndex = i;
-
-                if (minDate < valueDates[n]) {
-                    while (endIndex < n && minDate <= valueDates[endIndex])
-                        endIndex++;
-                } else {
-                    endIndex = n;
-                }
-
                 // forward part using telescopic property in order
                 // to avoid the evaluation of multiple forward fixings
-                if (i < endIndex) {
-                    const Handle<YieldTermStructure> curve =
-                        index->forwardingTermStructure();
+                if (date > today && valueDates[i] < endDate) {
+                    const Handle<YieldTermStructure> curve = index->forwardingTermStructure();
                     QL_REQUIRE(!curve.empty(),
-                               "null term structure set to this instance of "<<
-                               index->name());
+                               "null term structure set to this instance of " << index->name());
 
                     const DiscountFactor startDiscount = curve->discount(valueDates[i]);
-                    const DiscountFactor endDiscount = curve->discount(valueDates[endIndex]);
+                    const DiscountFactor endDiscount = curve->discount(endDate);
 
-                    compoundFactor *= startDiscount/endDiscount;
+                    compoundFactor *= startDiscount / endDiscount;
                 }
 
-                const Rate rate = (compoundFactor - 1.0) / coupon_->accrualPeriod();
+                const Rate rate = (compoundFactor - 1.0) / coupon_->accruedPeriod(date);
                 return coupon_->gearing() * rate + coupon_->spread();
             }
             Rate swapletRate() const override {
