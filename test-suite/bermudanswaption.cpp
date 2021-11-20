@@ -360,12 +360,12 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
             constexpr auto timesteps = 14 * 4 * 20;
 
             bermudanSwaption->setPricingEngine(
-                ext::make_shared<TreeSwaptionEngine>(model, timesteps));
-            auto npvTree = bermudanSwaption->NPV();
-
-            bermudanSwaption->setPricingEngine(
                 ext::make_shared<TreeSwaptionEngine2>(model, timesteps));
             auto npvTree2 = bermudanSwaption->NPV();
+
+            bermudanSwaption->setPricingEngine(
+                ext::make_shared<TreeSwaptionEngine>(model, timesteps));
+            auto npvTree = bermudanSwaption->NPV();
 
             auto npvDiff = npvTree2 - npvTree;
 

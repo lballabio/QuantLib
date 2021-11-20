@@ -68,7 +68,9 @@ namespace QuantLib {
 
     void DiscretizedSwaption2::reset(Size size) {
         underlying_->initialize(method(), lastPayment_);
-        DiscretizedOption::reset(size);
+        underlying_->partialRollback(time());
+        values_ = underlying_->values();
+        QL_ASSERT(size == values_.size(), "We should have rolled back to the right size by now.");
     }
 
     void DiscretizedSwaption2::preAdjustValuesImpl() {}

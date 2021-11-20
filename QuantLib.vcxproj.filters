@@ -5735,9 +5735,6 @@
     <ClCompile Include="ql\pricingengines\swaption\jamshidianswaptionengine.cpp">
       <Filter>pricingengines\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\pricingengines\swaption\treeswaptionengine.cpp">
-      <Filter>pricingengines\swaption</Filter>
-    </ClCompile>
     <ClCompile Include="ql\pricingengines\cliquet\analyticcliquetengine.cpp">
       <Filter>pricingengines\cliquet</Filter>
     </ClCompile>

@@ -2585,7 +2585,6 @@
     <ClCompile Include="ql\pricingengines\swaption\gaussian1dnonstandardswaptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\gaussian1dswaptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\swaption\jamshidianswaptionengine.cpp" />
-    <ClCompile Include="ql\pricingengines\swaption\treeswaptionengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticbsmhullwhiteengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticcevengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\analyticdigitalamericanengine.cpp" />
