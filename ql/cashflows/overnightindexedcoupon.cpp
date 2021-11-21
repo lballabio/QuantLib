@@ -53,20 +53,12 @@ namespace QuantLib {
                 const vector<Time>& dt = coupon_->dt();
 
                 Size i = 0;
-                auto endDateIterator = valueDates.end();
-                
-                if (date < *endDateIterator) {
-                    endDateIterator = std::lower_bound(valueDates.begin(), valueDates.end(), date);
-                }
-
-                const auto endDate = *endDateIterator;
+                const auto endDateIterator = std::lower_bound(valueDates.begin(), valueDates.end(), date);
                 const size_t n = endDateIterator - valueDates.begin();
                 Real compoundFactor = 1.0;
 
-                const auto minDate = std::min(today, date);
-
                 // already fixed part
-                while (i < n && fixingDates[i] < minDate) {
+                while (i < n && fixingDates[i] < today) {
                     // rate must have been fixed
                     const Rate pastFixing = IndexManager::instance().getHistory(index->name())[fixingDates[i]];
                     QL_REQUIRE(pastFixing != Null<Real>(),
@@ -95,13 +87,13 @@ namespace QuantLib {
 
                 // forward part using telescopic property in order
                 // to avoid the evaluation of multiple forward fixings
-                if (date > today && valueDates[i] < endDate) {
+                if (i<n) {
                     const Handle<YieldTermStructure> curve = index->forwardingTermStructure();
                     QL_REQUIRE(!curve.empty(),
                                "null term structure set to this instance of " << index->name());
 
                     const DiscountFactor startDiscount = curve->discount(valueDates[i]);
-                    const DiscountFactor endDiscount = curve->discount(endDate);
+                    const DiscountFactor endDiscount = curve->discount(*endDateIterator);
 
                     compoundFactor *= startDiscount / endDiscount;
                 }
