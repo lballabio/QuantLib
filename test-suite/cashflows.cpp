@@ -24,6 +24,7 @@
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -32,8 +33,9 @@
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/indexes/ibor/sofr.hpp>
 #include <ql/settings.hpp>
-
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -504,6 +506,115 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
     BOOST_CHECK_EQUAL(lastCpnF3->referencePeriodEnd(), Date(30, Sep, 2020));
 }
 
+void CashFlowsTest::testOvernightIndexedCouponRates() {
+    BOOST_TEST_MESSAGE("Testing rates for overnight-indexed coupons...");
+
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    Settings::instance().evaluationDate() = Date(23, November, 2021);
+
+    Handle<YieldTermStructure> forecastCurve(flatRate(0.0010, Actual360()));
+
+    ext::shared_ptr<OvernightIndex> sofr = ext::make_shared<Sofr>(forecastCurve);
+
+    std::vector<Date> pastDates = {
+        Date(18, October, 2021), Date(19, October, 2021), Date(20, October, 2021),
+        Date(21, October, 2021), Date(22, October, 2021), Date(25, October, 2021),
+        Date(26, October, 2021), Date(27, October, 2021), Date(28, October, 2021),
+        Date(29, October, 2021), Date(1, November, 2021), Date(2, November, 2021),
+        Date(3, November, 2021), Date(4, November, 2021), Date(5, November, 2021),
+        Date(8, November, 2021), Date(9, November, 2021), Date(10, November, 2021),
+        Date(12, November, 2021), Date(15, November, 2021), Date(16, November, 2021),
+        Date(17, November, 2021), Date(18, November, 2021), Date(19, November, 2021),
+        Date(22, November, 2021)
+    };
+    std::vector<Rate> pastRates = {
+        0.0008, 0.0009, 0.0008,
+        0.0010, 0.0012, 0.0011,
+        0.0013, 0.0012, 0.0012,
+        0.0008, 0.0009, 0.0010,
+        0.0011, 0.0014, 0.0013,
+        0.0011, 0.0009, 0.0008,
+        0.0007, 0.0008, 0.0008,
+        0.0007, 0.0009, 0.0010,
+        0.0009
+    };
+
+    sofr->addFixings(pastDates.begin(), pastDates.end(), pastRates.begin());
+
+    // coupon entirely in the past
+
+    Date startDate = Date(18, October, 2021);
+    Date endDate = Date(18, November, 2021);
+    Real notional = 1000000.0;
+
+    OvernightIndexedCoupon pastCoupon(endDate, notional, startDate, endDate, sofr);
+
+    Rate calculated = pastCoupon.rate();
+    Rate expected = 0.000987136104;  // manual calculation based on past dates and rates
+    Rate tolerance = 1e-12;
+    Rate error = std::fabs(calculated-expected);
+
+    if (error > tolerance) {
+        BOOST_ERROR("Failed to reproduce past coupon rate:"
+                    << "\n    expected:   " << std::setprecision(12) << expected
+                    << "\n    calculated: " << std::setprecision(12) << calculated
+                    << "\n    error:      " << std::setprecision(12) << error);
+    }
+
+    // coupon partly in the past, today not fixed
+
+    startDate = Date(10, November, 2021);
+    endDate = Date(10, December, 2021);
+
+    OvernightIndexedCoupon currentCoupon(endDate, notional, startDate, endDate, sofr);
+
+    calculated = currentCoupon.rate();
+    expected = 0.00092670155081;
+    error = std::fabs(calculated-expected);
+
+    if (error > tolerance) {
+        BOOST_ERROR("Failed to reproduce current coupon rate:"
+                    << "\n    expected:   " << std::setprecision(12) << expected
+                    << "\n    calculated: " << std::setprecision(12) << calculated
+                    << "\n    error:      " << std::setprecision(12) << error);
+    }
+
+    // coupon partly in the past, today fixed
+
+    sofr->addFixing(Date(23, November, 2021), 0.0007);
+
+    calculated = currentCoupon.rate();
+    expected = 0.000916700760;
+    error = std::fabs(calculated-expected);
+
+    if (error > tolerance) {
+        BOOST_ERROR("Failed to reproduce current coupon rate:"
+                    << "\n    expected:   " << std::setprecision(12) << expected
+                    << "\n    calculated: " << std::setprecision(12) << calculated
+                    << "\n    error:      " << std::setprecision(12) << error);
+    }
+
+    // coupon entirely in the future
+
+    startDate = Date(10, December, 2021);
+    endDate = Date(10, January, 2022);
+
+    OvernightIndexedCoupon futureCoupon(endDate, notional, startDate, endDate, sofr);
+
+    calculated = futureCoupon.rate();
+    expected = forecastCurve->forwardRate(startDate, endDate, sofr->dayCounter(), Simple);
+    error = std::fabs(calculated-expected);
+
+    if (error > tolerance) {
+        BOOST_ERROR("Failed to reproduce current coupon rate:"
+                    << "\n    expected:   " << std::setprecision(12) << expected
+                    << "\n    calculated: " << std::setprecision(12) << calculated
+                    << "\n    error:      " << std::setprecision(12) << error);
+    }
+}
+    
 test_suite* CashFlowsTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Cash flows tests");
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
@@ -517,6 +628,7 @@ test_suite* CashFlowsTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testPartialScheduleLegConstruction));
+    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testOvernightIndexedCouponRates));
 
     return suite;
 }
