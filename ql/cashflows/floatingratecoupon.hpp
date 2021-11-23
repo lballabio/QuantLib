@@ -108,7 +108,6 @@ namespace QuantLib {
       protected:
         //! convexity adjustment for the given index fixing
         Rate convexityAdjustmentImpl(Rate fixing) const;
-        virtual void prepareRate() const;
         ext::shared_ptr<InterestRateIndex> index_;
         DayCounter dayCounter_;
         Natural fixingDays_;

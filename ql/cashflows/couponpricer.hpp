@@ -49,9 +49,6 @@ namespace QuantLib {
         //@{
         virtual Real swapletPrice() const = 0;
         virtual Rate swapletRate() const = 0;
-        virtual Rate swapletRate(const Date& date) const { 
-            return swapletRate();
-        }
         virtual Real capletPrice(Rate effectiveCap) const = 0;
         virtual Rate capletRate(Rate effectiveCap) const = 0;
         virtual Real floorletPrice(Rate effectiveFloor) const = 0;

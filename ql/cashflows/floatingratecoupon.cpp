@@ -91,13 +91,9 @@ namespace QuantLib {
             -static_cast<Integer>(fixingDays_), Days, Preceding);
     }
 
-    void FloatingRateCoupon::prepareRate() const {
+    Rate FloatingRateCoupon::rate() const {
         QL_REQUIRE(pricer_, "pricer not set");
         pricer_->initialize(*this);
-    }
-
-    Rate FloatingRateCoupon::rate() const {
-        prepareRate();
         return pricer_->swapletRate();
     }
 

@@ -41,7 +41,7 @@ namespace QuantLib {
                 coupon_ = dynamic_cast<const OvernightIndexedCoupon*>(&coupon);
                 QL_ENSURE(coupon_, "wrong coupon type");
             }
-            Rate swapletRate(const Date& date) const override {
+            Rate swapletRate(const Date& date) const {
 
                 const Date today = Settings::instance().evaluationDate();
 
@@ -102,9 +102,7 @@ namespace QuantLib {
                 return coupon_->gearing() * rate + coupon_->spread();
             }
             Rate swapletRate() const override {
-
-                const Date accrualEndDate = coupon_->valueDates()[coupon_->dt().size()];
-                return swapletRate(accrualEndDate);
+                return swapletRate(coupon_->accrualEndDate());
             }
 
             Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
@@ -223,15 +221,18 @@ namespace QuantLib {
                                              refPeriodEnd_);
         } else {
             // usual case
-            return nominal() * rate(d) *
-                   dayCounter().yearFraction(accrualStartDate_, std::min(d, accrualEndDate_),
-                                             refPeriodStart_, refPeriodEnd_);
+            return nominal() * rate(d) * accruedPeriod(d);
         }
     }
 
     Rate OvernightIndexedCoupon::rate(const Date& d) const {
-        prepareRate();
-        return pricer_->swapletRate(d);
+        QL_REQUIRE(pricer_, "pricer not set");
+        pricer_->initialize(*this);
+        const auto overnightIndexPricer = ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer_);
+        if (overnightIndexPricer)
+            return overnightIndexPricer->swapletRate(d);
+
+        return pricer_->swapletRate();
     }
 
     const vector<Rate>& OvernightIndexedCoupon::indexFixings() const {
