@@ -115,6 +115,7 @@ QL_TEST_SRCS = \
 	operators.cpp \
 	optimizers.cpp \
 	optionletstripper.cpp \
+	overnightindexedcoupon.cpp \
 	overnightindexedswap.cpp \
 	pagodaoption.cpp \
 	partialtimebarrieroption.cpp \
@@ -279,6 +280,7 @@ QL_TEST_HDRS = \
 	operators.hpp \
 	optimizers.hpp \
 	optionletstripper.hpp \
+	overnightindexedcoupon.hpp \
 	overnightindexedswap.hpp \
 	pagodaoption.hpp \
 	partialtimebarrieroption.hpp \
