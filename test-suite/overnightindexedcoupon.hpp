@@ -27,6 +27,10 @@ class OvernightIndexedCouponTest {
     static void testPastCouponRate();
     static void testCurrentCouponRate();
     static void testFutureCouponRate();
+    static void testRateWhenTodayIsHoliday();
+    static void testAccruedAmountInThePast();
+    static void testAccruedAmountSpanningToday();
+    static void testAccruedAmountInTheFuture();
     static boost::unit_test_framework::test_suite* suite();
 };
 
