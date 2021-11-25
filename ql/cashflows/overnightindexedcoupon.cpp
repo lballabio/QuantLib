@@ -47,6 +47,7 @@ namespace QuantLib {
 
                 const ext::shared_ptr<OvernightIndex> index =
                     ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
+                const auto& pastFixings = IndexManager::instance().getHistory(index->name());
 
                 const vector<Date>& fixingDates = coupon_->fixingDates();
                 const vector<Date>& valueDates = coupon_->valueDates();
@@ -59,14 +60,14 @@ namespace QuantLib {
                 // already fixed part
                 while (i < n && fixingDates[i] < today) {
                     // rate must have been fixed
-                    const Rate pastFixing = IndexManager::instance().getHistory(index->name())[fixingDates[i]];
-                    QL_REQUIRE(pastFixing != Null<Real>(),
+                    const Rate fixing = pastFixings[fixingDates[i]];
+                    QL_REQUIRE(fixing != Null<Real>(),
                                "Missing " << index->name() <<
                                " fixing for " << fixingDates[i]);
                     Time span = (date >= valueDates[i+1] ?
                                  dt[i] :
                                  index->dayCounter().yearFraction(valueDates[i], date));
-                    compoundFactor *= (1.0 + pastFixing*span);
+                    compoundFactor *= (1.0 + fixing * span);
                     ++i;
                 }
 
@@ -74,13 +75,12 @@ namespace QuantLib {
                 if (i < n && fixingDates[i] == today) {
                     // might have been fixed
                     try {
-                        Rate pastFixing = IndexManager::instance().getHistory(
-                                                index->name())[fixingDates[i]];
-                        if (pastFixing != Null<Real>()) {
+                        Rate fixing = pastFixings[fixingDates[i]];
+                        if (fixing != Null<Real>()) {
                             Time span = (date >= valueDates[i+1] ?
                                          dt[i] :
                                          index->dayCounter().yearFraction(valueDates[i], date));
-                            compoundFactor *= (1.0 + pastFixing*span);
+                            compoundFactor *= (1.0 + fixing * span);
                             ++i;
                         } else {
                             ;   // fall through and forecast
