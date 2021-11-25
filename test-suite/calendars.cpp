@@ -2117,6 +2117,10 @@ void CalendarTest::testDayLists() {
     Calendar germany = Germany();
     Date firstDate = Settings::instance().evaluationDate(), endDate = firstDate + 1 * Years;
 
+    // Test that same day holidayList and businessDayList does not throw an error
+    germany.holidayList(firstDate, firstDate, true);
+    germany.businessDayList(firstDate, firstDate);
+
     std::vector<Date> holidays = germany.holidayList(firstDate, endDate, true);
     std::vector<Date> businessDays = germany.businessDayList(firstDate, endDate);
 
