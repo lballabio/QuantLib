@@ -74,7 +74,6 @@ namespace QuantLib {
         //@}
         //! \name FloatingRateCoupon interface
         //@{
-        using FloatingRateCoupon::rate;
         //! the date when the coupon is fully determined
         Date fixingDate() const override { return fixingDates_.back(); }
         Real accruedAmount(const Date&) const override;
@@ -89,7 +88,7 @@ namespace QuantLib {
         Size n_;
         std::vector<Time> dt_;
 
-        Rate rate(const Date& date) const;
+        Rate averageRate(const Date& date) const;
     };
 
 

@@ -41,7 +41,8 @@ namespace QuantLib {
                 coupon_ = dynamic_cast<const OvernightIndexedCoupon*>(&coupon);
                 QL_ENSURE(coupon_, "wrong coupon type");
             }
-            Rate swapletRate(const Date& date) const {
+
+            Rate averageRate(const Date& date) const {
 
                 const Date today = Settings::instance().evaluationDate();
 
@@ -118,8 +119,9 @@ namespace QuantLib {
                 const Rate rate = (compoundFactor - 1.0) / coupon_->accruedPeriod(date);
                 return coupon_->gearing() * rate + coupon_->spread();
             }
+
             Rate swapletRate() const override {
-                return swapletRate(coupon_->accrualEndDate());
+                return averageRate(coupon_->accrualEndDate());
             }
 
             Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
@@ -160,7 +162,7 @@ namespace QuantLib {
            of valuation dates, a front and back stub will do. However notice
            that if the global evaluation date moves forward it might run past
            the front stub of valuation dates we build here (which incorporates
-           a grace period of 7 business after the evluation date). This will
+           a grace period of 7 business after the evaluation date). This will
            lead to false coupon projections (see the warning the class header). */
 
         if (telescopicValueDates) {
@@ -201,7 +203,7 @@ namespace QuantLib {
         n_ = valueDates_.size()-1;
         if (overnightIndex->fixingDays()==0) {
             fixingDates_ = vector<Date>(valueDates_.begin(),
-                                             valueDates_.end()-1);
+                                        valueDates_.end() - 1);
         } else {
             fixingDates_.resize(n_);
             for (Size i=0; i<n_; ++i)
@@ -233,21 +235,21 @@ namespace QuantLib {
             // out of coupon range
             return 0.0;
         } else if (tradingExCoupon(d)) {
-            return -nominal() * rate(d) *
+            return -nominal() * averageRate(d) *
                    dayCounter().yearFraction(d, std::max(d, accrualEndDate_), refPeriodStart_,
                                              refPeriodEnd_);
         } else {
             // usual case
-            return nominal() * rate(d) * accruedPeriod(d);
+            return nominal() * averageRate(std::min(d, accrualEndDate_)) * accruedPeriod(d);
         }
     }
 
-    Rate OvernightIndexedCoupon::rate(const Date& d) const {
+    Rate OvernightIndexedCoupon::averageRate(const Date& d) const {
         QL_REQUIRE(pricer_, "pricer not set");
         pricer_->initialize(*this);
         const auto overnightIndexPricer = ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer_);
         if (overnightIndexPricer)
-            return overnightIndexPricer->swapletRate(d);
+            return overnightIndexPricer->averageRate(d);
 
         return pricer_->swapletRate();
     }
