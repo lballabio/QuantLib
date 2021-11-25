@@ -53,8 +53,7 @@ namespace QuantLib {
                 const vector<Time>& dt = coupon_->dt();
 
                 Size i = 0;
-                const auto endDateIterator = std::lower_bound(valueDates.begin(), valueDates.end(), date);
-                const size_t n = endDateIterator - valueDates.begin();
+                const size_t n = std::lower_bound(valueDates.begin(), valueDates.end(), date) - valueDates.begin();
                 Real compoundFactor = 1.0;
 
                 // already fixed part
@@ -64,7 +63,10 @@ namespace QuantLib {
                     QL_REQUIRE(pastFixing != Null<Real>(),
                                "Missing " << index->name() <<
                                " fixing for " << fixingDates[i]);
-                    compoundFactor *= (1.0 + pastFixing*dt[i]);
+                    Time span = (date >= valueDates[i+1] ?
+                                 dt[i] :
+                                 index->dayCounter().yearFraction(valueDates[i], date));
+                    compoundFactor *= (1.0 + pastFixing*span);
                     ++i;
                 }
 
@@ -75,7 +77,10 @@ namespace QuantLib {
                         Rate pastFixing = IndexManager::instance().getHistory(
                                                 index->name())[fixingDates[i]];
                         if (pastFixing != Null<Real>()) {
-                            compoundFactor *= (1.0 + pastFixing*dt[i]);
+                            Time span = (date >= valueDates[i+1] ?
+                                         dt[i] :
+                                         index->dayCounter().yearFraction(valueDates[i], date));
+                            compoundFactor *= (1.0 + pastFixing*span);
                             ++i;
                         } else {
                             ;   // fall through and forecast
@@ -93,9 +98,21 @@ namespace QuantLib {
                                "null term structure set to this instance of " << index->name());
 
                     const DiscountFactor startDiscount = curve->discount(valueDates[i]);
-                    const DiscountFactor endDiscount = curve->discount(*endDateIterator);
+                    if (valueDates[n] == date) {
+                        // full telescopic formula
+                        const DiscountFactor endDiscount = curve->discount(valueDates[n]);
+                        compoundFactor *= startDiscount / endDiscount;
+                    } else {
+                        // The last fixing is not used for its full period (the date is between its
+                        // start and end date).  We can use the telescopic formula until the previous
+                        // date, then we'll add the missing bit.
+                        const DiscountFactor endDiscount = curve->discount(valueDates[n-1]);
+                        compoundFactor *= startDiscount / endDiscount;
 
-                    compoundFactor *= startDiscount / endDiscount;
+                        Rate fixing = index->fixing(fixingDates[n-1]);
+                        Time span = index->dayCounter().yearFraction(valueDates[n-1], date);
+                        compoundFactor *= (1.0 + fixing * span);
+                    }
                 }
 
                 const Rate rate = (compoundFactor - 1.0) / coupon_->accruedPeriod(date);

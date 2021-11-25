@@ -147,12 +147,10 @@ void OvernightIndexedCouponTest::testFutureCouponRate() {
 
     // coupon entirely in the future
 
-    Date startDate = Date(10, December, 2021);
-    Date endDate = Date(10, January, 2022);
+    auto futureCoupon = vars.makeCoupon(Date(10, December, 2021),
+                                        Date(10, January, 2022));
 
-    auto futureCoupon = vars.makeCoupon(startDate, endDate);
-
-    Rate expectedRate = vars.forecastCurve->forwardRate(startDate, endDate, vars.sofr->dayCounter(), Simple);
+    Rate expectedRate = 0.001000043057;
     Real expectedAmount = vars.notional * expectedRate * 31.0/360;
     CHECK_OIS_COUPON_RESULT("coupon rate", futureCoupon->rate(), expectedRate, 1e-12);
     CHECK_OIS_COUPON_RESULT("coupon amount", futureCoupon->amount(), expectedAmount, 1e-8);
@@ -228,14 +226,48 @@ void OvernightIndexedCouponTest::testAccruedAmountInTheFuture() {
 
     // coupon entirely in the future
 
-    Date startDate = Date(10, December, 2021);
-    Date endDate = Date(10, March, 2022);
-
-    auto coupon = vars.makeCoupon(startDate, endDate);
+    auto coupon = vars.makeCoupon(Date(10, December, 2021),
+                                  Date(10, March, 2022));
 
     Date accrualDate = Date(10, January, 2022);
-    Rate expectedRate = vars.forecastCurve->forwardRate(startDate, accrualDate, vars.sofr->dayCounter(), Simple);
+    Rate expectedRate = 0.001000043057;
     Real expectedAmount = vars.notional * expectedRate * 31.0/360;
+    CHECK_OIS_COUPON_RESULT("coupon amount", coupon->accruedAmount(accrualDate), expectedAmount, 1e-8);
+}
+
+void OvernightIndexedCouponTest::testAccruedAmountOnPastHoliday() {
+    BOOST_TEST_MESSAGE("Testing accrued amount on a past holiday for overnight-indexed coupon...");
+
+    using namespace overnight_indexed_coupon_tests;
+
+    CommonVars vars;
+
+    // coupon entirely in the past
+
+    auto coupon = vars.makeCoupon(Date(18, October, 2021),
+                                  Date(18, January, 2022));
+
+    Date accrualDate = Date(13, November, 2021);
+    Real expectedAmount = vars.notional * 0.000074724810;
+    CHECK_OIS_COUPON_RESULT("coupon amount", coupon->accruedAmount(accrualDate), expectedAmount, 1e-8);
+}
+
+void OvernightIndexedCouponTest::testAccruedAmountOnFutureHoliday() {
+    BOOST_TEST_MESSAGE("Testing accrued amount on a future holiday for overnight-indexed coupon...");
+
+    using namespace overnight_indexed_coupon_tests;
+
+    CommonVars vars;
+
+    vars.forecastCurve.linkTo(flatRate(0.0010, Actual360()));
+
+    // coupon entirely in the future
+
+    auto coupon = vars.makeCoupon(Date(10, December, 2021),
+                                  Date(10, March, 2022));
+
+    Date accrualDate = Date(15, January, 2022);
+    Real expectedAmount = vars.notional * 0.000100005012;
     CHECK_OIS_COUPON_RESULT("coupon amount", coupon->accruedAmount(accrualDate), expectedAmount, 1e-8);
 }
     
@@ -248,6 +280,8 @@ test_suite* OvernightIndexedCouponTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testAccruedAmountInThePast));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testAccruedAmountSpanningToday));
     suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testAccruedAmountInTheFuture));
+    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testAccruedAmountOnPastHoliday));
+    suite->add(QUANTLIB_TEST_CASE(&OvernightIndexedCouponTest::testAccruedAmountOnFutureHoliday));
 
     return suite;
 }
