@@ -352,15 +352,6 @@ namespace QuantLib {
         redemptions_.push_back(redemption);
     }
 
-    void Bond::deepUpdate() {
-        for (auto& cashflow : cashflows_) {
-            ext::shared_ptr<LazyObject> f = ext::dynamic_pointer_cast<LazyObject>(cashflow);
-            if (f != nullptr)
-                f->update();
-        }
-        update();
-    }
-
     void Bond::calculateNotionalsFromCashflows() {
         notionalSchedule_.clear();
         notionals_.clear();

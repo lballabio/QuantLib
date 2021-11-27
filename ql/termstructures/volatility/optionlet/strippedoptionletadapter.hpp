@@ -58,10 +58,6 @@ namespace QuantLib {
           void performCalculations() const override;
           ext::shared_ptr<OptionletStripper> optionletStripper() const;
           //@}
-          //! \name Observer interface
-          //@{
-          void deepUpdate() override;
-          //@}
 
           VolatilityType volatilityType() const override;
           Real displacement() const override;
@@ -81,11 +77,6 @@ namespace QuantLib {
     inline void StrippedOptionletAdapter::update() {
         TermStructure::update();
         LazyObject::update();
-    }
-
-    inline void StrippedOptionletAdapter::deepUpdate() {
-        optionletStripper_->update();
-        update();
     }
 
     inline ext::shared_ptr< OptionletStripper >

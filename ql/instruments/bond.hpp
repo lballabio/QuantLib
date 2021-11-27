@@ -104,10 +104,6 @@ namespace QuantLib {
         //@{
         bool isExpired() const override;
         //@}
-        //! \name Observable interface
-        //@{
-        void deepUpdate() override;
-        //@}
         //! \name Inspectors
         //@{
         Natural settlementDays() const;

@@ -267,15 +267,6 @@ namespace QuantLib {
         }
     }
 
-    void CapFloor::deepUpdate() {
-        for (auto& i : floatingLeg_) {
-            ext::shared_ptr<LazyObject> f = ext::dynamic_pointer_cast<LazyObject>(i);
-            if (f != nullptr)
-                f->update();
-        }
-        update();
-    }
-
     void CapFloor::arguments::validate() const {
         QL_REQUIRE(endDates.size() == startDates.size(),
                    "number of start dates (" << startDates.size()

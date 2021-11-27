@@ -158,17 +158,6 @@ namespace QuantLib {
         return d;
     }
 
-    void Swap::deepUpdate() {
-        for (auto& leg : legs_) {
-            for (auto& k : leg) {
-                ext::shared_ptr<LazyObject> f = ext::dynamic_pointer_cast<LazyObject>(k);
-                if (f != nullptr)
-                    f->update();
-            }
-        }
-        update();
-    }
-
     void Swap::arguments::validate() const {
         QL_REQUIRE(legs.size() == payer.size(),
                    "number of legs and multipliers differ");

@@ -129,9 +129,8 @@ namespace QuantLib {
 
         /*! This method allows to explicitly update the instance itself
           and nested observers. If notifications are disabled a call to
-          this method ensures an update of such nested observers. It
-          should be implemented in derived classes whenever applicable */
-        virtual void deepUpdate();
+          this method ensures an update of such nested observers. */
+        void deepUpdate();
 
       private:
         set_type observables_;
@@ -238,10 +237,6 @@ namespace QuantLib {
         observables_.clear();
     }
 
-    inline void Observer::deepUpdate() {
-        update();
-    }
-
 }
 
 #else
@@ -292,9 +287,8 @@ namespace QuantLib {
 
         /*! This method allows to explicitly update the instance itself
           and nested observers. If notifications are disabled a call to
-          this method ensures an update of such nested observers. It
-          should be implemented in derived classes whenever applicable */
-        virtual void deepUpdate();
+          this method ensures an update of such nested observers. */
+        void deepUpdate();
 
       private:
 
@@ -556,10 +550,6 @@ namespace QuantLib {
             (*i)->unregisterObserver(proxy_, true);
 
         observables_.clear();
-    }
-
-    inline void Observer::deepUpdate() {
-        update();
     }
 }
 #endif

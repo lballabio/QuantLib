@@ -52,7 +52,6 @@ namespace QuantLib {
         }
     }
 
-
     void Observable::notifyObservers() {
         if (!settings_.updatesEnabled()) {
             // if updates are only deferred, flag this for later notification
@@ -202,3 +201,13 @@ namespace QuantLib {
 }
 
 #endif
+
+namespace QuantLib {
+   void Observer::deepUpdate() {
+        update();
+        for (auto p : observables_) {
+            if (auto o = ext::dynamic_pointer_cast<Observer>(p))
+                o->deepUpdate();
+        }
+    }
+}
