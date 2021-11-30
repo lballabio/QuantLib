@@ -20,9 +20,6 @@
 // TODO: Figure out why tests for options with both continuous and discrete
 // dividends fail.
 
-// TODO: Make the known value test work.  It is slightly off from the
-// answer in Hull probably due to date conventions.
-
 #include "dividendoption.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
@@ -171,10 +168,10 @@ void DividendOptionTest::testEuropeanKnownValue() {
     ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    Date exDate = today + 6*Months;
+    Date exDate = today + 180 * Days;
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-    std::vector<Date> dividendDates = {today + 2*Months, today + 5*Months};
+    std::vector<Date> dividendDates = {today + 2 * 30 * Days, today + 5 * 30 * Days};
     std::vector<Real> dividends = {0.50, 0.50};
 
     ext::shared_ptr<StrikedTypePayoff> payoff(
@@ -1034,8 +1031,7 @@ void DividendOptionTest::testEscrowedDividendModel() {
 test_suite* DividendOptionTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Dividend European option tests");
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanValues));
-    // Doesn't quite work.  Need to deal with date conventions
-    //  suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanKnownValue));
+    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanKnownValue));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanStartLimit));
     // Doesn't quite work.  Need to use discounted values
     //suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));
