@@ -40,6 +40,7 @@ namespace swaption_volatility_cube_test {
         SwaptionMarketConventions conventions;
         AtmVolatility atm;
         RelinkableHandle<SwaptionVolatilityStructure> atmVolMatrix;
+        RelinkableHandle<SwaptionVolatilityStructure> normalVolMatrix;
         VolatilityCube cube;
 
         RelinkableHandle<YieldTermStructure> termStructure;
@@ -125,6 +126,12 @@ namespace swaption_volatility_cube_test {
                                              atm.tenors.swaps,
                                              atm.volsHandle,
                                              conventions.dayCounter)));
+
+            normalVolMatrix = RelinkableHandle<SwaptionVolatilityStructure>(
+                ext::shared_ptr<SwaptionVolatilityStructure>(new SwaptionVolatilityMatrix(
+                    conventions.calendar, conventions.optionBdc, atm.tenors.options,
+                    atm.tenors.swaps, atm.volsHandle, conventions.dayCounter, false, VolatilityType::Normal)));
+
             // Swaptionvolcube
             cube.setMarketData();
 
@@ -141,6 +148,32 @@ namespace swaption_volatility_cube_test {
 
 }
 
+void SwaptionVolatilityCubeTest::testSabrNormalVolatility() {
+
+    BOOST_TEST_MESSAGE("Testing sabr normal volatility...");
+
+    using namespace swaption_volatility_cube_test;
+
+    CommonVars vars;
+
+    std::vector<std::vector<Handle<Quote> > > parametersGuess(vars.cube.tenors.options.size() *
+                                                              vars.cube.tenors.swaps.size());
+    for (Size i = 0; i < vars.cube.tenors.options.size() * vars.cube.tenors.swaps.size(); i++) {
+        parametersGuess[i] = std::vector<Handle<Quote> >(4);
+        parametersGuess[i][0] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
+        parametersGuess[i][1] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
+        parametersGuess[i][2] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
+        parametersGuess[i][3] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
+    }
+    std::vector<bool> isParameterFixed(4, false);
+
+    SwaptionVolCube1 volCube(vars.normalVolMatrix, vars.cube.tenors.options, vars.cube.tenors.swaps,
+                             vars.cube.strikeSpreads, vars.cube.volSpreadsHandle,
+                             vars.swapIndexBase, vars.shortSwapIndexBase, vars.vegaWeighedSmileFit,
+                             parametersGuess, isParameterFixed, true);
+    Real tolerance = 7.0e-4;
+    vars.makeAtmVolTest(volCube, tolerance);
+}
 
 void SwaptionVolatilityCubeTest::testAtmVols() {
 
@@ -556,6 +589,7 @@ void SwaptionVolatilityCubeTest::testSabrParameters() {
 test_suite* SwaptionVolatilityCubeTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
 
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testSabrNormalVolatility));
     // SwaptionVolCubeByLinear reproduces ATM vol with machine precision
     suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testAtmVols));
     // SwaptionVolCubeByLinear reproduces smile spreads with machine precision

@@ -29,10 +29,11 @@
 #define quantlib_sabr_hpp
 
 #include <ql/types.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
-    Real unsafeSabrVolatility(Rate strike,
+    Real unsafeSabrLogNormalVolatility(Rate strike,
                               Rate forward,
                               Time expiryTime,
                               Real alpha,
@@ -47,7 +48,28 @@ namespace QuantLib {
                               Real beta,
                               Real nu,
                               Real rho,
-                              Real shift);
+                              Real shift,
+                              VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
+
+    /* Normal SABR implemented according to
+       https://www2.deloitte.com/content/dam/Deloitte/global/Documents/Financial-Services/be-aers-fsi-sabr-sensitivities.pdf
+    */
+    Real unsafeSabrNormalVolatility(Rate strike,
+                                    Rate forward,
+                                    Time expiryTime,
+                                    Real alpha,
+                                    Real beta,
+                                    Real nu,
+                                    Real rho);
+
+    Real unsafeSabrVolatility(Rate strike,
+                              Rate forward,
+                              Time expiryTime,
+                              Real alpha,
+                              Real beta,
+                              Real nu,
+                              Real rho,
+                              VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
 
     Real sabrVolatility(Rate strike,
                         Rate forward,
@@ -55,7 +77,8 @@ namespace QuantLib {
                         Real alpha,
                         Real beta,
                         Real nu,
-                        Real rho);
+                        Real rho,
+                        VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
 
     Real shiftedSabrVolatility(Rate strike,
                                  Rate forward,
@@ -64,7 +87,8 @@ namespace QuantLib {
                                  Real beta,
                                  Real nu,
                                  Real rho,
-                                 Real shift);
+                                 Real shift,
+                                 VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
 
     Real sabrFlochKennedyVolatility(Rate strike,
                                     Rate forward,

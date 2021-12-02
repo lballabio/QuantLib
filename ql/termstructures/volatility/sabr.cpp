@@ -26,10 +26,12 @@
 #include <ql/math/comparison.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/errors.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
-    Real unsafeSabrVolatility(Rate strike,
+    Real unsafeSabrLogNormalVolatility(
+                              Rate strike,
                               Rate forward,
                               Time expiryTime,
                               Real alpha,
@@ -76,12 +78,69 @@ namespace QuantLib {
                               Real beta,
                               Real nu,
                               Real rho,
-                              Real shift) {
-
-        return unsafeSabrVolatility(strike+shift,forward+shift,expiryTime,
-                                    alpha,beta,nu,rho);
-
+                              Real shift,
+                              VolatilityType volatilityType) {
+        if (volatilityType == VolatilityType::Normal) {
+            return unsafeSabrNormalVolatility(strike + shift, forward + shift, expiryTime, alpha, beta, nu, rho);
+        } else {
+            return unsafeSabrLogNormalVolatility(strike + shift, forward + shift, expiryTime, alpha, beta, nu, rho);
+        }
     }
+
+    Real unsafeSabrNormalVolatility(
+        Rate strike, Rate forward, Time expiryTime, Real alpha, Real beta, Real nu, Real rho) {
+        const Real oneMinusBeta = 1.0 - beta;
+        const Real minusBeta = -1.0 * beta;
+        const Real A = std::pow(forward * strike, oneMinusBeta);
+        const Real sqrtA = std::sqrt(A);
+        Real logM;
+        if (!close(forward, strike))
+            logM = std::log(forward / strike);
+        else {
+            const Real epsilon = (forward - strike) / strike;
+            logM = epsilon - .5 * epsilon * epsilon;
+        }
+        const Real z = (nu / alpha) * sqrtA * logM;
+        const Real B = 1.0 - 2.0 * rho * z + z * z;
+        const Real C = oneMinusBeta * oneMinusBeta * logM * logM;
+        const Real D = logM * logM;
+        const Real tmp = (std::sqrt(B) + z - rho) / (1.0 - rho);
+        const Real xx = std::log(tmp);
+        const Real E_1 = (1.0 + D / 24.0 + D * D / 1920.0);
+        const Real E_2 = (1.0 + C / 24.0 + C * C / 1920.0);
+        const Real E = E_1 / E_2;
+        const Real d = 1.0 + expiryTime * (minusBeta * (2 - beta) * alpha * alpha / (24.0 * A) +
+                                0.25 * rho * beta * nu * alpha / sqrtA +
+                                (2.0 - 3.0 * rho * rho) * (nu * nu / 24.0));
+
+        Real multiplier;
+        // computations become precise enough if the square of z worth
+        // slightly more than the precision machine (hence the m)
+        static const Real m = 10;
+        if (std::fabs(z * z) > QL_EPSILON * m)
+            multiplier = z / xx;
+        else {
+            multiplier = 1.0 - 0.5 * rho * z - (3.0 * rho * rho - 2.0) * z * z / 12.0;
+        }
+        const Real F = alpha * std::pow(forward * strike, beta / 2.0);
+
+       return F * E * multiplier * d;
+    }
+
+     Real unsafeSabrVolatility(Rate strike,
+                              Rate forward,
+                              Time expiryTime,
+                              Real alpha,
+                              Real beta,
+                              Real nu,
+                              Real rho,
+                              VolatilityType volatilityType) {
+        if (volatilityType == VolatilityType::Normal) {
+            return unsafeSabrNormalVolatility(strike, forward, expiryTime, alpha, beta, nu, rho);
+        } else {
+            return unsafeSabrLogNormalVolatility(strike, forward, expiryTime, alpha, beta, nu, rho);
+        }
+     }
 
     void validateSabrParameters(Real alpha,
                                 Real beta,
@@ -103,7 +162,8 @@ namespace QuantLib {
                         Real alpha,
                         Real beta,
                         Real nu,
-                        Real rho) {
+                        Real rho,
+                        VolatilityType volatilityType) {
         QL_REQUIRE(strike>0.0, "strike must be positive: "
                                << io::rate(strike) << " not allowed");
         QL_REQUIRE(forward>0.0, "at the money forward rate must be "
@@ -111,8 +171,8 @@ namespace QuantLib {
         QL_REQUIRE(expiryTime>=0.0, "expiry time must be non-negative: "
                                    << expiryTime << " not allowed");
         validateSabrParameters(alpha, beta, nu, rho);
-        return unsafeSabrVolatility(strike, forward, expiryTime,
-                                    alpha, beta, nu, rho);
+        return unsafeSabrVolatility(strike, forward, expiryTime, alpha, beta, nu, rho,
+                                             volatilityType);
     }
 
     Real shiftedSabrVolatility(Rate strike,
@@ -122,7 +182,8 @@ namespace QuantLib {
                                Real beta,
                                Real nu,
                                Real rho,
-                               Real shift) {
+                               Real shift,
+                               VolatilityType volatilityType) {
         QL_REQUIRE(strike + shift > 0.0, "strike+shift must be positive: "
                    << io::rate(strike) << "+" << io::rate(shift) << " not allowed");
         QL_REQUIRE(forward + shift > 0.0, "at the money forward rate + shift must be "
@@ -131,7 +192,7 @@ namespace QuantLib {
                                    << expiryTime << " not allowed");
         validateSabrParameters(alpha, beta, nu, rho);
         return unsafeShiftedSabrVolatility(strike, forward, expiryTime,
-                                             alpha, beta, nu, rho,shift);
+                                             alpha, beta, nu, rho,shift, volatilityType);
     }
 
     namespace {
