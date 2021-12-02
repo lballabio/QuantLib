@@ -51,6 +51,9 @@ namespace QuantLib {
                               Real shift,
                               VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
 
+    /* Normal SABR implemented according to
+       https://www2.deloitte.com/content/dam/Deloitte/global/Documents/Financial-Services/be-aers-fsi-sabr-sensitivities.pdf
+    */
     Real unsafeSabrNormalVolatility(Rate strike,
                                     Rate forward,
                                     Time expiryTime,
