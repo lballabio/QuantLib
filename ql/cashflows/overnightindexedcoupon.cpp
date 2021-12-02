@@ -235,9 +235,7 @@ namespace QuantLib {
             // out of coupon range
             return 0.0;
         } else if (tradingExCoupon(d)) {
-            return -nominal() * averageRate(d) *
-                   dayCounter().yearFraction(d, std::max(d, accrualEndDate_), refPeriodStart_,
-                                             refPeriodEnd_);
+            return nominal() * averageRate(d) * accruedPeriod(d);
         } else {
             // usual case
             return nominal() * averageRate(std::min(d, accrualEndDate_)) * accruedPeriod(d);
