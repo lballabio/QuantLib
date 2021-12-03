@@ -63,7 +63,6 @@ namespace convertible_bonds_test {
         RelinkableHandle<Quote> creditSpread;
 
         CallabilitySchedule no_callability;
-        DividendSchedule no_dividends;
 
         Real faceAmount, redemption, conversionRatio;
 
@@ -131,8 +130,7 @@ void ConvertibleBondTest::testBond() {
     ext::shared_ptr<PricingEngine> engine =
         ext::make_shared<BinomialConvertibleEngine<CoxRossRubinstein> >(vars.process,
             timeSteps, 
-            vars.creditSpread,
-            vars.no_dividends);
+            vars.creditSpread);
 
     Handle<YieldTermStructure> discountCurve(
          ext::make_shared<ForwardSpreadedTermStructure>(vars.riskFreeRate,
@@ -317,7 +315,7 @@ void ConvertibleBondTest::testOption() {
     Size timeSteps = 2001;
     ext::shared_ptr<PricingEngine> engine =
         ext::make_shared<BinomialConvertibleEngine<CoxRossRubinstein> >(
-            vars.process, timeSteps, vars.creditSpread, vars.no_dividends);
+            vars.process, timeSteps, vars.creditSpread);
     ext::shared_ptr<PricingEngine> vanillaEngine =
         ext::make_shared<BinomialVanillaEngine<CoxRossRubinstein> >(
             vars.process, timeSteps);

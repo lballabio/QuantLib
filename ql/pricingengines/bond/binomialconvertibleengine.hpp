@@ -48,7 +48,7 @@ namespace QuantLib {
         BinomialConvertibleEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
                                   Size timeSteps,
                                   const Handle<Quote>& creditSpread,
-                                  DividendSchedule dividends)
+                                  DividendSchedule dividends = DividendSchedule())
         : process_(std::move(process)), timeSteps_(timeSteps),
           dividends_(std::move(dividends)), creditSpread_(creditSpread)
            {
