@@ -76,8 +76,8 @@ namespace QuantLib {
                              Year referenceYear,
                              Frequency referenceFreq,
                              const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                             const Handle<Quote>& convexityAdjustment,
-                             RateAveraging::Type averagingMethod);
+                             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         /*! \deprecated Use the constructor without index and averaging method.
                         Deprecated in version 1.25.
@@ -88,8 +88,8 @@ namespace QuantLib {
                              Year referenceYear,
                              Frequency referenceFreq,
                              const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                             Real convexityAdjustment,
-                             RateAveraging::Type averagingMethod);
+                             Real convexityAdjustment = 0.0,
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         SofrFutureRateHelper(const Handle<Quote>& price,
                              Month referenceMonth,
@@ -101,7 +101,7 @@ namespace QuantLib {
                              Month referenceMonth,
                              Year referenceYear,
                              Frequency referenceFreq,
-                             Real convexityAdjustment = 0);
+                             Real convexityAdjustment = 0.0);
     };
 
 }
