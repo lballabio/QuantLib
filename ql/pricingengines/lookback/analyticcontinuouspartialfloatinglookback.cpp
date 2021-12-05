@@ -123,7 +123,7 @@ namespace QuantLib {
 
         Real l1 = std::log(lambda()) / vol;
         Real g1 = l1 / std::sqrt(residualTime());
-        
+
         Real n1 = f_(eta*(d1 - g1));
         Real n2 = f_(eta*(d2 - g1));
 
