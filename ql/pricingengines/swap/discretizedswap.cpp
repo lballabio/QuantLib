@@ -63,21 +63,42 @@ namespace QuantLib {
                 dayCounter.yearFraction(referenceDate,
                                         args.floatingPayDates[i]);
 
-        originalFixedPayTimes_.resize(args.originalFixedPayDates.size());
-        for (Size i = 0; i < originalFixedPayTimes_.size(); ++i)
-            originalFixedPayTimes_[i] =
-                dayCounter.yearFraction(referenceDate, args.originalFixedPayDates[i]);
-
-        originalFixedResetTimes_.resize(args.originalFixedResetDates.size());
-        for (Size i = 0; i < originalFixedResetTimes_.size(); ++i)
-            originalFixedResetTimes_[i] =
-                dayCounter.yearFraction(referenceDate, args.originalFixedResetDates[i]);
-
-        originalFloatingResetTimes_.resize(args.originalFloatingResetDates.size());
-        for (Size i = 0; i < originalFloatingResetTimes_.size(); ++i)
-            originalFloatingResetTimes_[i] =
-                dayCounter.yearFraction(referenceDate, args.originalFloatingResetDates[i]);
-   
+        if (args.originalFixedPayDates.size() > 0) {
+            originalFixedPayTimes_.resize(args.originalFixedPayDates.size());
+            for (Size i = 0; i < originalFixedPayTimes_.size(); ++i)
+                originalFixedPayTimes_[i] =
+                    dayCounter.yearFraction(referenceDate, args.originalFixedPayDates[i]);
+        } else {
+            originalFixedPayTimes_.resize(args.fixedPayDates.size());
+            for (Size i = 0; i < originalFixedPayTimes_.size(); ++i)
+                originalFixedPayTimes_[i] =
+                    dayCounter.yearFraction(referenceDate, args.fixedPayDates[i]);
+        }
+        
+        if (args.originalFixedResetDates.size() > 0) {
+            originalFixedResetTimes_.resize(args.originalFixedResetDates.size());
+            for (Size i = 0; i < originalFixedResetTimes_.size(); ++i)
+                originalFixedResetTimes_[i] =
+                    dayCounter.yearFraction(referenceDate, args.originalFixedResetDates[i]);
+        } else {
+            originalFixedResetTimes_.resize(args.fixedResetDates.size());
+            for (Size i = 0; i < originalFixedResetTimes_.size(); ++i)
+                originalFixedResetTimes_[i] =
+                    dayCounter.yearFraction(referenceDate, args.fixedResetDates[i]);
+        }
+        
+        if (args.originalFloatingResetDates.size() > 0) {
+            originalFloatingResetTimes_.resize(args.originalFloatingResetDates.size());
+            for (Size i = 0; i < originalFloatingResetTimes_.size(); ++i)
+                originalFloatingResetTimes_[i] =
+                    dayCounter.yearFraction(referenceDate, args.originalFloatingResetDates[i]);
+        } else {
+            originalFloatingResetTimes_.resize(args.floatingResetDates.size());
+            for (Size i = 0; i < originalFloatingResetTimes_.size(); ++i)
+                originalFloatingResetTimes_[i] =
+                    dayCounter.yearFraction(referenceDate, args.floatingResetDates[i]);
+        }
+        
     }
 
     void DiscretizedSwap::reset(Size size) {
