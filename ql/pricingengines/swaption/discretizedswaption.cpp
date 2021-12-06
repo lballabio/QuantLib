@@ -49,6 +49,11 @@ namespace QuantLib {
                 dayCounter.yearFraction(referenceDate,
                                         arguments_.exercise->date(i));
 
+        // Backup dates before snapping
+        arguments_.originalFixedPayDates = arguments_.fixedPayDates;
+        arguments_.originalFixedResetDates = arguments_.fixedResetDates;
+        arguments_.originalFloatingResetDates = arguments_.floatingResetDates;
+
         // Date adjustments can get time vectors out of synch.
         // Here, we try and collapse similar dates which could cause
         // a mispricing.

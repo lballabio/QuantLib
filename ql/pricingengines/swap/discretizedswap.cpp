@@ -62,6 +62,22 @@ namespace QuantLib {
             floatingPayTimes_[i] =
                 dayCounter.yearFraction(referenceDate,
                                         args.floatingPayDates[i]);
+
+        originalFixedPayTimes_.resize(args.originalFixedPayDates.size());
+        for (Size i = 0; i < originalFixedPayTimes_.size(); ++i)
+            originalFixedPayTimes_[i] =
+                dayCounter.yearFraction(referenceDate, args.originalFixedPayDates[i]);
+
+        originalFixedResetTimes_.resize(args.originalFixedResetDates.size());
+        for (Size i = 0; i < originalFixedResetTimes_.size(); ++i)
+            originalFixedResetTimes_[i] =
+                dayCounter.yearFraction(referenceDate, args.originalFixedResetDates[i]);
+
+        originalFloatingResetTimes_.resize(args.originalFloatingResetDates.size());
+        for (Size i = 0; i < originalFloatingResetTimes_.size(); ++i)
+            originalFloatingResetTimes_[i] =
+                dayCounter.yearFraction(referenceDate, args.originalFloatingResetDates[i]);
+   
     }
 
     void DiscretizedSwap::reset(Size size) {
@@ -92,8 +108,8 @@ namespace QuantLib {
 
     void DiscretizedSwap::preAdjustValuesImpl() {
         // floating payments
-        for (Size i=0; i<floatingResetTimes_.size(); i++) {
-            Time t = floatingResetTimes_[i];
+        for (Size i=0; i<originalFloatingResetTimes_.size(); i++) {
+            Time t = originalFloatingResetTimes_[i];
             if (t >= 0.0 && isOnTime(t)) {
                 DiscretizedDiscountBond bond;
                 bond.initialize(method(), floatingPayTimes_[i]);
@@ -114,11 +130,11 @@ namespace QuantLib {
             }
         }
         // fixed payments
-        for (Size i=0; i<fixedResetTimes_.size(); i++) {
-            Time t = fixedResetTimes_[i];
+        for (Size i=0; i<originalFixedResetTimes_.size(); i++) {
+            Time t = originalFixedResetTimes_[i];
             if (t >= 0.0 && isOnTime(t)) {
                 DiscretizedDiscountBond bond;
-                bond.initialize(method(), fixedPayTimes_[i]);
+                bond.initialize(method(), originalFixedPayTimes_[i]);
                 bond.rollback(time_);
 
                 Real fixedCoupon = arguments_.fixedCoupons[i];
@@ -136,9 +152,9 @@ namespace QuantLib {
     void DiscretizedSwap::postAdjustValuesImpl() {
         // fixed coupons whose reset time is in the past won't be managed
         // in preAdjustValues()
-        for (Size i=0; i<fixedPayTimes_.size(); i++) {
-            Time t = fixedPayTimes_[i];
-            Time reset = fixedResetTimes_[i];
+        for (Size i=0; i<originalFixedPayTimes_.size(); i++) {
+            Time t = originalFixedPayTimes_[i];
+            Time reset = originalFixedResetTimes_[i];
             if (useCouponInPostAdjust(reset, t, includeTodaysCashFlows_) && isOnTime(t)) {
                 Real fixedCoupon = arguments_.fixedCoupons[i];
                 if (arguments_.type==Swap::Payer)
@@ -151,7 +167,7 @@ namespace QuantLib {
         // the same applies to floating payments whose rate is already fixed
         for (Size i=0; i<floatingPayTimes_.size(); i++) {
             Time t = floatingPayTimes_[i];
-            Time reset = floatingResetTimes_[i];
+            Time reset = originalFloatingResetTimes_[i];
             if (useCouponInPostAdjust(reset, t, includeTodaysCashFlows_) && isOnTime(t)) {
                 Real currentFloatingCoupon = arguments_.floatingCoupons[i];
                 QL_REQUIRE(currentFloatingCoupon != Null<Real>(),

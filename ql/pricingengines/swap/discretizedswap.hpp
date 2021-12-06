@@ -48,6 +48,9 @@ namespace QuantLib {
         std::vector<Time> fixedPayTimes_;
         std::vector<Time> floatingResetTimes_;
         std::vector<Time> floatingPayTimes_;
+        std::vector<Time> originalFixedResetTimes_;
+        std::vector<Time> originalFloatingResetTimes_;
+        std::vector<Time> originalFixedPayTimes_;
         bool includeTodaysCashFlows_;
     };
 

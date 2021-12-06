@@ -144,6 +144,10 @@ namespace QuantLib {
         std::vector<Date> floatingFixingDates;
         std::vector<Date> floatingPayDates;
 
+        std::vector<Date> originalFixedResetDates;
+        std::vector<Date> originalFloatingResetDates;
+        std::vector<Date> originalFixedPayDates;
+
         std::vector<Real> fixedCoupons;
         std::vector<Spread> floatingSpreads;
         std::vector<Real> floatingCoupons;
