@@ -118,7 +118,7 @@ void BermudanSwaptionTest::testValuesCloseToExerciseDate() {
     RelinkableHandle<YieldTermStructure> termStructure;
     termStructure.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
 
-    auto makeBermudanSwaption = [&today, &termStructure](Date callDate) {
+    auto makeBermudanSwaption = [&termStructure](Date callDate) {
         auto effectiveDate = Date(15, May, 2025);
         auto index = ext::make_shared<Euribor3M>(termStructure);
         ext::shared_ptr<VanillaSwap> swap = MakeVanillaSwap(Period(10, Years), index, 0.05)
