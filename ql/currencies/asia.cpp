@@ -287,5 +287,61 @@ namespace QuantLib {
         data_ = twdData;
     }
 
+    // Qatari riyal
+    QARCurrency::QARCurrency() {
+        static ext::shared_ptr<Data> qarData(
+            new Data("Qatari riyal", "QAR", 634, "QAR", "", 100, Rounding(), "1$.2f %3%"));
+        data_ = qarData;
+    }
+
+    // Bahraini dinar
+    BHDCurrency::BHDCurrency() {
+        static ext::shared_ptr<Data> bhdData(
+            new Data("Bahraini dinar", "BHD", 48, "BHD", "", 1000, Rounding(), "1$.2f %3%"));
+        data_ = bhdData;
+    }
+
+    // Omani rial
+    OMRCurrency::OMRCurrency() {
+        static ext::shared_ptr<Data> omrData(
+            new Data("Omani rial", "OMR", 512, "OMR", "", 1000, Rounding(), "1$.2f %3%"));
+        data_ = omrData;
+    }
+
+    // Jordanian dinar
+    JODCurrency::JODCurrency() {
+        static ext::shared_ptr<Data> jodData(
+            new Data("Jordanian dinar", "JOD", 400, "JOD", "", 1000, Rounding(), "1$.2f %3%"));
+        data_ = jodData;
+    }
+
+    // United Arab Emirates dirham
+    AEDCurrency::AEDCurrency() {
+        static ext::shared_ptr<Data> aedData(new Data("United Arab Emirates dirham", "AED", 784,
+                                                        "AED", "", 100, Rounding(), "1$.2f %3%"));
+        data_ = aedData;
+    }
+
+    // Philippine peso
+    PHPCurrency::PHPCurrency() {
+        static ext::shared_ptr<Data> phpData(
+            new Data("Philippine peso", "PHP", 608, "PHP", "", 100, Rounding(), "1$.2f %3%"));
+        data_ = phpData;
+    }
+
+    // Chinese yuan (Hong Kong)
+    CNHCurrency::CNHCurrency() {
+        static ext::shared_ptr<Data> cnhData(new Data("Chinese yuan (Hong Kong)", "CNH", 156,
+                                                        "CNH", "", 100, Rounding(), "%3% %1$.2f"));
+        data_ = cnhData;
+    }
+
+    // Sri Lankan rupee
+    LKRCurrency::LKRCurrency() {
+        static ext::shared_ptr<Data> lkrData(
+            new Data("Sri Lankan rupee", "LKR", 144, "LKR", "", 100, Rounding(), "1$.2f %3%"));
+        data_ = lkrData;
+    }
+
 }
 

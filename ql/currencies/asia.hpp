@@ -250,6 +250,86 @@ namespace QuantLib {
         VNDCurrency();
     };
 
+    //! Qatari riyal
+    /*! The ISO three-letter code is QAR; the numeric code is 634.
+     It is divided into 100 diram.
+     \ingroup currencies
+    */
+    class QARCurrency : public Currency {
+      public:
+        QARCurrency();
+    };
+
+    //! Bahraini dinar
+    /*! The ISO three-letter code is BHD; the numeric code is 048.
+     It is divided into 1000 fils.
+     \ingroup currencies
+    */
+    class BHDCurrency : public Currency {
+      public:
+        BHDCurrency();
+    };
+
+    //! Omani rial
+    /*! The ISO three-letter code is OMR; the numeric code is 512.
+     It is divided into 1000 baisa.
+     \ingroup currencies
+     */
+    class OMRCurrency : public Currency {
+      public:
+        OMRCurrency();
+    };
+
+    //! Jordanian dinar
+    /*! The ISO three-letter code is JOD; the numeric code is 400.
+     It is divided into 100 qirshes.
+     \ingroup currencies
+     */
+    class JODCurrency : public Currency {
+      public:
+        JODCurrency();
+    };
+
+    //! United Arab Emirates dirham
+    /*! The ISO three-letter code is AED; the numeric code is 784.
+     It is divided into 100 fils.
+     \ingroup currencies
+     */
+    class AEDCurrency : public Currency {
+      public:
+        AEDCurrency();
+    };
+
+    //! Philippine peso
+    /*! The ISO three-letter code is PHP; the numeric code is 608.
+     It is divided into 100 centavo.
+     \ingroup currencies
+     */
+    class PHPCurrency : public Currency {
+      public:
+        PHPCurrency();
+    };
+
+    //! Chinese yuan (Hong Kong)
+    /*! The ISO three-letter code is CNH; there is no numeric code.
+     It is divided in 100 fen.
+     \ingroup currencies
+    */
+    class CNHCurrency : public Currency {
+      public:
+        CNHCurrency();
+    };
+
+    //! Sri Lankan rupee
+    /*! The ISO three-letter code is LKR; there numeric code is 144.
+     It is divided into 100 cents.
+     \ingroup currencies
+    */
+    class LKRCurrency : public Currency {
+      public:
+        LKRCurrency();
+    };
+
 }
 
 #if defined(QL_PATCH_MSVC)
