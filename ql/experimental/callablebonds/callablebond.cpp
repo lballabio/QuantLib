@@ -378,8 +378,8 @@ namespace QuantLib {
     : CallableBond(settlementDays, schedule, accrualDayCounter,
                    issueDate, putCallSchedule) {
 
-       frequency_ = schedule.hasTenor() ? schedule.tenor().frequency() : NoFrequency;
-     
+       frequency_(schedule.hasTenor() ? schedule.tenor().frequency() : NoFrequency);
+
         bool isZeroCouponBond = (coupons.size() == 1 && close(coupons[0], 0.0));
 
         if (!isZeroCouponBond) {
