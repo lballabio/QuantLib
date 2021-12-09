@@ -34,89 +34,8 @@ namespace QuantLib {
     template <class array_type>
     class StepCondition {
       public:
-        virtual ~StepCondition() {}
+        virtual ~StepCondition() = default;
         virtual void applyTo(array_type& a, Time t) const = 0;
-    };
-
-    /*  */
-    /*! Abstract base class which allows step conditions to use both
-        payoff and array functions.
-
-        \deprecated Inherit from StepCondition directly instead.
-                    Deprecated in version 1.19.
-    */
-    template <class array_type>
-    class QL_DEPRECATED CurveDependentStepCondition :
-        public StepCondition<array_type> {
-      public:
-        void applyTo(Array &a, Time) const {
-            //#pragma omp parallel for
-            for (Size i = 0; i < a.size(); i++) {
-                a[i] =
-                    applyToValue(a[i], getValue(a,i));
-            }
-        }
-      protected:
-
-#if defined(QL_PATCH_MSVC)
-#pragma warning(push)
-#pragma warning(disable:4996)
-#endif
-
-        CurveDependentStepCondition(Option::Type type, Real strike)
-            : curveItem_(new PayoffWrapper(type, strike)) {};
-        CurveDependentStepCondition(const Payoff *p)
-            : curveItem_(new PayoffWrapper(p)) {};
-        CurveDependentStepCondition(const array_type & a)
-            : curveItem_(new ArrayWrapper(a)) {};
-
-#if defined(QL_PATCH_MSVC)
-#pragma warning(pop)
-#endif
-
-        class CurveWrapper;
-
-        ext::shared_ptr<CurveWrapper> curveItem_;
-        Real getValue(const array_type &a, Size index) const {
-            return curveItem_->getValue(a, index);
-        }
-
-        virtual Real applyToValue(Real, Real) const {
-            QL_FAIL("not yet implemented");
-        }
-
-        class CurveWrapper {
-          public:
-            virtual ~CurveWrapper() {}
-            virtual Real getValue(const array_type &a,
-                                  int i) = 0;
-        };
-
-        class ArrayWrapper : public CurveWrapper {
-          private:
-            array_type value_;
-          public:
-            ArrayWrapper (const array_type &a)
-            : value_(a) {}
-
-            Real getValue(const array_type&, int i) {
-                return value_[i];
-            }
-        };
-
-        class PayoffWrapper : public CurveWrapper {
-          private:
-            ext::shared_ptr<const Payoff> payoff_;
-          public:
-            PayoffWrapper (const Payoff * p)
-                : payoff_(p) {};
-            PayoffWrapper (Option::Type type, Real strike)
-                : payoff_(new PlainVanillaPayoff(type, strike)) {};
-            Real getValue(const array_type &a,
-                          int i) {
-                return (*payoff_)(a[i]);
-            }
-        };
     };
 
 
@@ -125,7 +44,7 @@ namespace QuantLib {
     template <class array_type>
     class NullCondition : public StepCondition<array_type> {
       public:
-        void applyTo(array_type&, Time) const {}
+        void applyTo(array_type&, Time) const override {}
     };
 
 }

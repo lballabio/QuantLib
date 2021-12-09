@@ -24,10 +24,9 @@
 #ifndef quantlib_svi_interpolation_hpp
 #define quantlib_svi_interpolation_hpp
 
-#include <ql/math/interpolations/xabrinterpolation.hpp>
 #include <ql/experimental/volatility/svismilesection.hpp>
-
-#include <boost/assign/list_of.hpp>
+#include <ql/math/interpolations/xabrinterpolation.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -162,9 +161,8 @@ class SviInterpolation : public Interpolation {
         impl_ = ext::shared_ptr<Interpolation::Impl>(
             new detail::XABRInterpolationImpl<I1, I2, detail::SviSpecs>(
                 xBegin, xEnd, yBegin, t, forward,
-                boost::assign::list_of(a)(b)(sigma)(rho)(m),
-                boost::assign::list_of(aIsFixed)(bIsFixed)(sigmaIsFixed)(
-                    rhoIsFixed)(mIsFixed),
+                {a, b, sigma, rho, m},
+                {aIsFixed, bIsFixed, sigmaIsFixed, rhoIsFixed, mIsFixed},
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses));
         coeffs_ = ext::dynamic_pointer_cast<
@@ -204,16 +202,15 @@ class Svi {
         bool rhoIsFixed,
         bool mIsFixed,
         bool vegaWeighted = false,
-        const ext::shared_ptr<EndCriteria>& endCriteria = ext::shared_ptr<EndCriteria>(),
-        const ext::shared_ptr<OptimizationMethod>& optMethod =
-            ext::shared_ptr<OptimizationMethod>(),
+        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+        ext::shared_ptr<OptimizationMethod> optMethod = ext::shared_ptr<OptimizationMethod>(),
         const Real errorAccept = 0.0020,
         const bool useMaxError = false,
         const Size maxGuesses = 50)
     : t_(t), forward_(forward), a_(a), b_(b), sigma_(sigma), rho_(rho), m_(m), aIsFixed_(aIsFixed),
       bIsFixed_(bIsFixed), sigmaIsFixed_(sigmaIsFixed), rhoIsFixed_(rhoIsFixed),
-      mIsFixed_(mIsFixed), vegaWeighted_(vegaWeighted), endCriteria_(endCriteria),
-      optMethod_(optMethod), errorAccept_(errorAccept), useMaxError_(useMaxError),
+      mIsFixed_(mIsFixed), vegaWeighted_(vegaWeighted), endCriteria_(std::move(endCriteria)),
+      optMethod_(std::move(optMethod)), errorAccept_(errorAccept), useMaxError_(useMaxError),
       maxGuesses_(maxGuesses) {}
     template <class I1, class I2>
     Interpolation interpolate(const I1 &xBegin, const I1 &xEnd,

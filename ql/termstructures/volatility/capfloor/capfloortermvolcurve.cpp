@@ -139,8 +139,8 @@ namespace QuantLib {
 
     void CapFloorTermVolCurve::registerWithMarketData()
     {
-        for (Size i=0; i<volHandles_.size(); ++i)
-            registerWith(volHandles_[i]);
+        for (auto& volHandle : volHandles_)
+            registerWith(volHandle);
     }
 
     void CapFloorTermVolCurve::interpolate()

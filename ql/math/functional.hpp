@@ -27,6 +27,7 @@
 #include <ql/types.hpp>
 #include <ql/utilities/null.hpp>
 #include <cmath>
+#include <utility>
 
 namespace QuantLib {
 
@@ -248,7 +249,7 @@ namespace QuantLib {
       public:
         typedef typename G::argument_type argument_type;
         typedef typename F::result_type result_type;
-        composed_function(const F& f, const G& g) : f_(f), g_(g) {}
+        composed_function(const F& f, G g) : f_(f), g_(std::move(g)) {}
         result_type operator()(const argument_type& x) const {
             return f_(g_(x));
         }

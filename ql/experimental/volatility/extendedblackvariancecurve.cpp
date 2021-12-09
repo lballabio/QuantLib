@@ -19,18 +19,17 @@
 
 #include <ql/experimental/volatility/extendedblackvariancecurve.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    ExtendedBlackVarianceCurve::ExtendedBlackVarianceCurve(
-                              const Date& referenceDate,
-                              const std::vector<Date>& dates,
-                              const std::vector<Handle<Quote> >& volatilities,
-                              const DayCounter& dayCounter,
-                              bool forceMonotoneVariance)
-    : BlackVarianceTermStructure(referenceDate),
-      dayCounter_(dayCounter), maxDate_(dates.back()),
-      volatilities_(volatilities),
+    ExtendedBlackVarianceCurve::ExtendedBlackVarianceCurve(const Date& referenceDate,
+                                                           const std::vector<Date>& dates,
+                                                           std::vector<Handle<Quote> > volatilities,
+                                                           DayCounter dayCounter,
+                                                           bool forceMonotoneVariance)
+    : BlackVarianceTermStructure(referenceDate), dayCounter_(std::move(dayCounter)),
+      maxDate_(dates.back()), volatilities_(std::move(volatilities)),
       forceMonotoneVariance_(forceMonotoneVariance) {
         QL_REQUIRE(dates.size() == volatilities_.size(),
                    "size mismatch between dates and volatilities");
@@ -51,8 +50,8 @@ namespace QuantLib {
         setVariances();
         setInterpolation<Linear>();
 
-        for (Size j=0; j<volatilities_.size(); ++j)
-            registerWith(volatilities_[j]);
+        for (auto& volatilitie : volatilities_)
+            registerWith(volatilitie);
     }
 
     void ExtendedBlackVarianceCurve::setVariances() {

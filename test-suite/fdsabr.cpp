@@ -19,23 +19,21 @@
 
 #include "fdsabr.hpp"
 #include "utilities.hpp"
-
 #include <ql/functional.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/termstructures/volatility/sabr.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
+#include <ql/math/richardsonextrapolation.hpp>
 #include <ql/math/statistics/generalstatistics.hpp>
+#include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
 #include <ql/pricingengines/vanilla/analyticcevengine.hpp>
 #include <ql/pricingengines/vanilla/fdsabrvanillaengine.hpp>
-
-#include <ql/math/richardsonextrapolation.hpp>
-#include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
-#include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
-
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/sabr.hpp>
 #include <boost/make_shared.hpp>
+#include <utility>
 
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;
@@ -43,12 +41,15 @@ using boost::unit_test_framework::test_suite;
 namespace {
     class SabrMonteCarloPricer {
       public:
-        SabrMonteCarloPricer(
-            Real f0, Time maturity,
-            const ext::shared_ptr<Payoff>& payoff,
-            Real alpha, Real beta, Real nu, Real rho)
-        : f0_(f0), maturity_(maturity), payoff_(payoff),
-          alpha_(alpha), beta_(beta), nu_(nu), rho_(rho) { }
+        SabrMonteCarloPricer(Real f0,
+                             Time maturity,
+                             ext::shared_ptr<Payoff> payoff,
+                             Real alpha,
+                             Real beta,
+                             Real nu,
+                             Real rho)
+        : f0_(f0), maturity_(maturity), payoff_(std::move(payoff)), alpha_(alpha), beta_(beta),
+          nu_(nu), rho_(rho) {}
 
         Real operator()(Real dt) const {
             const Size nSims = 64*1024;
@@ -143,13 +144,10 @@ void FdSabrTest::testFdmSabrOp() {
             Handle<Quote>(ext::make_shared<SimpleQuote>(f0)),
             rTS, rTS, Handle<BlackVolTermStructure>(flatVol(0.2, dc)));
 
-    for (Size j=0; j < LENGTH(betas); ++j) {
-
-        const Real beta = betas[j];
+    for (double beta : betas) {
 
         const ext::shared_ptr<PricingEngine> pdeEngine =
-            ext::make_shared<FdSabrVanillaEngine>(
-                f0, alpha, beta, nu, rho, rTS, 100, 400, 100);
+            ext::make_shared<FdSabrVanillaEngine>(f0, alpha, beta, nu, rho, rTS, 100, 400, 100);
 
         optionPut.setPricingEngine(pdeEngine);
         const Real pdePut = optionPut.NPV();
@@ -231,20 +229,14 @@ void FdSabrTest::testFdmSabrCevPricing() {
 
     const Real tol = 5e-5;
 
-    for (Size i=0; i < LENGTH(optionTypes); ++i) {
-        const Option::Type optionType = optionTypes[i];
-
-        for (Size j=0; j < LENGTH(strikes); ++j) {
-            const Real strike = strikes[j];
-
+    for (auto optionType : optionTypes) {
+        for (double strike : strikes) {
             const ext::shared_ptr<PlainVanillaPayoff> payoff =
                 ext::make_shared<PlainVanillaPayoff>(optionType, strike);
 
             VanillaOption option(payoff, exercise);
 
-            for (Size k=0; k < LENGTH(betas); ++k) {
-                const Real beta = betas[k];
-
+            for (double beta : betas) {
                 option.setPricingEngine(ext::make_shared<FdSabrVanillaEngine>(
                     f0, alpha, beta, nu, rho, rTS, 100, 400, 3));
 
@@ -304,14 +296,10 @@ void FdSabrTest::testFdmSabrVsVolApproximation() {
     const Option::Type optionTypes[] = {Option::Put, Option::Call};
 
     const Real tol = 2.5e-3;
-    for (Size i=0; i < LENGTH(optionTypes); ++i) {
-        const Option::Type optionType = optionTypes[i];
-        for (Size j=0; j < LENGTH(strikes); ++j) {
-            const Real strike = strikes[j];
-
-            VanillaOption option(
-                ext::make_shared<PlainVanillaPayoff>(optionType, strike),
-                ext::make_shared<EuropeanExercise>(maturityDate));
+    for (auto optionType : optionTypes) {
+        for (double strike : strikes) {
+            VanillaOption option(ext::make_shared<PlainVanillaPayoff>(optionType, strike),
+                                 ext::make_shared<EuropeanExercise>(maturityDate));
 
             option.setPricingEngine(ext::make_shared<FdSabrVanillaEngine>(
                 f0, alpha, beta, nu, rho, rTS, 25, 100, 50));
@@ -531,13 +519,16 @@ void FdSabrTest::testBenchOpSabrCase() {
 }
 
 test_suite* FdSabrTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Finite Difference SABR tests");
+    auto* suite = BOOST_TEST_SUITE("Finite Difference SABR tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&FdSabrTest::testFdmSabrOp));
     suite->add(QUANTLIB_TEST_CASE(&FdSabrTest::testFdmSabrCevPricing));
     suite->add(QUANTLIB_TEST_CASE(&FdSabrTest::testFdmSabrVsVolApproximation));
     suite->add(QUANTLIB_TEST_CASE(&FdSabrTest::testOosterleeTestCaseIV));
     suite->add(QUANTLIB_TEST_CASE(&FdSabrTest::testBenchOpSabrCase));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&FdSabrTest::testFdmSabrOp));
+    }
 
     return suite;
 }

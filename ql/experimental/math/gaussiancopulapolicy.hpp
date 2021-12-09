@@ -22,7 +22,6 @@
 
 #include <ql/utilities/disposable.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/functional.hpp>
 #include <vector>
 #include <numeric>
 #include <algorithm>
@@ -45,11 +44,9 @@ namespace QuantLib {
         : numFactors_(factorWeights.size() + factorWeights[0].size())
         {
             /* check factors in LM are normalized. */
-            for(Size iLVar=0; iLVar<factorWeights.size(); iLVar++) {
-                Real factorsNorm = 
-                    std::inner_product(factorWeights[iLVar].begin(), 
-                        factorWeights[iLVar].end(), 
-                        factorWeights[iLVar].begin(), 0.);
+            for (const auto& factorWeight : factorWeights) {
+                Real factorsNorm = std::inner_product(factorWeight.begin(), factorWeight.end(),
+                                                      factorWeight.begin(), 0.);
                 QL_REQUIRE(factorsNorm < 1., 
                     "Non normal random factor combination.");
             }
@@ -87,10 +84,8 @@ namespace QuantLib {
           depending on those values.
         */
         Probability density(const std::vector<Real>& m) const {
-            using namespace ext::placeholders;
-            return std::accumulate(m.begin(), m.end(), Real(1.), 
-                ext::bind(std::multiplies<Real>(), _1, 
-                    ext::bind(density_, _2)));
+            return std::accumulate(m.begin(), m.end(), Real(1.),
+                                   [&](Real x, Real y){ return x*density_(y); });
         }
         /*! Returns the inverse of the cumulative distribution of the (modelled) 
           latent variable (as indexed by iVariable). The normal stability avoids
@@ -115,11 +110,10 @@ namespace QuantLib {
         //to use this (by default) version, the generator must be a uniform one.
         Disposable<std::vector<Real> > 
             allFactorCumulInverter(const std::vector<Real>& probs) const {
-            using namespace ext::placeholders;
             std::vector<Real> result;
             result.resize(probs.size());
-            std::transform(probs.begin(), probs.end(), result.begin(), 
-                ext::bind(&InverseCumulativeNormal::standard_value, _1));
+            std::transform(probs.begin(), probs.end(), result.begin(),
+                           [&](Real p){ return InverseCumulativeNormal::standard_value(p); });
             return result;
         }
     private:

@@ -38,10 +38,9 @@ namespace QuantLib {
     class LineSearch {
       public:
         //! Default constructor
-        explicit LineSearch(Real = 0.0)
-        : qt_(0.0), qpt_(0.0), succeed_(true) {}
+        explicit LineSearch(Real = 0.0) {}
         //! Destructor
-        virtual ~LineSearch() {}
+        virtual ~LineSearch() = default;
 
         //! return last x value
         const Array& lastX() { return xtd_; }
@@ -73,10 +72,9 @@ namespace QuantLib {
         //! new x and its gradient
         Array xtd_, gradient_;
         //! cost function value and gradient norm corresponding to xtd_
-        Real qt_, qpt_;
+        Real qt_ = 0.0, qpt_ = 0.0;
         //! flag to know if linesearch succeed
-        bool succeed_;
-
+        bool succeed_ = true;
     };
 }
 

@@ -43,7 +43,7 @@ namespace QuantLib {
         // a Size would mess up integer division in distance_to
         BigInteger step_;
       public:
-        step_iterator() {}
+        step_iterator() = default;
         explicit step_iterator(const Iterator& base, Size step)
         : super_t(base), step_(static_cast<BigInteger>(step)) {}
         template <class OtherIterator>

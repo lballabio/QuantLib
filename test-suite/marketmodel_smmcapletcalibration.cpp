@@ -61,9 +61,6 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-#define BEGIN(x) (x+0)
-#define END(x) (x+LENGTH(x))
-
 namespace market_model_smm_caplet_calibration_test {
 
     Date todaysDate_, startDate_, endDate_;
@@ -342,10 +339,9 @@ void MarketModelSmmCapletCalibrationTest::testFunction() {
 
 // --- Call the desired tests
 test_suite* MarketModelSmmCapletCalibrationTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("SMM Caplet calibration test");
-    #if !defined(QL_NO_UBLAS_SUPPORT)
-    suite->add(QUANTLIB_TEST_CASE(
-                         &MarketModelSmmCapletCalibrationTest::testFunction));
-    #endif
+    auto* suite = BOOST_TEST_SUITE("SMM Caplet calibration test");
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelSmmCapletCalibrationTest::testFunction));
+
     return suite;
 }

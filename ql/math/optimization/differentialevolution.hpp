@@ -75,30 +75,24 @@ namespace QuantLib {
 
         struct Candidate {
             Array values;
-            Real cost;
-            Candidate(Size size = 0) : values(size, 0.0), cost(0.0) {}
+            Real cost = 0.0;
+            Candidate(Size size = 0) : values(size, 0.0) {}
         };
 
         class Configuration {
           public:
-            Strategy strategy;
-            CrossoverType crossoverType;
-            Size populationMembers;
-            Real stepsizeWeight, crossoverProbability;
-            unsigned long seed;
-            bool applyBounds, crossoverIsAdaptive;
+            Strategy strategy = BestMemberWithJitter;
+            CrossoverType crossoverType = Normal;
+            Size populationMembers = 100;
+            Real stepsizeWeight = 0.2, crossoverProbability = 0.9;
+            unsigned long seed = 0;
+            bool applyBounds = true, crossoverIsAdaptive = false;
             std::vector<Array> initialPopulation;
             Array upperBound, lowerBound;
 
-            Configuration()
-            : strategy(BestMemberWithJitter),
-              crossoverType(Normal),
-              populationMembers(100),
-              stepsizeWeight(0.2),
-              crossoverProbability(0.9),
-              seed(0),
-              applyBounds(true),
-              crossoverIsAdaptive(false) {}
+            // Clang seems to have problems if we use '= default' here.
+            // NOLINTNEXTLINE(modernize-use-equals-default)
+            Configuration() {}
 
             Configuration& withBounds(bool b = true) {
                 applyBounds = b;
@@ -169,8 +163,7 @@ namespace QuantLib {
         DifferentialEvolution(const Configuration& configuration = Configuration())
         : configuration_(configuration), rng_(configuration.seed) {}
 
-        virtual EndCriteria::Type minimize(Problem& p,
-                                           const EndCriteria& endCriteria);
+        EndCriteria::Type minimize(Problem& p, const EndCriteria& endCriteria) override;
 
         const Configuration& configuration() const {
             return configuration_;

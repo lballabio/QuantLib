@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2000-2003 RiskMap srl
  Copyright (C) 2003 Kawanishi Tomoya
- Copyright (C) 2016, 2019 Eisuke Tani
+ Copyright (C) 2016, 2019, 2020 Eisuke Tani
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -88,16 +88,20 @@ namespace QuantLib {
             // Marine Day (3rd Monday in July),
             // was July 20th until 2003, not a holiday before 1996,
             // July 23rd in 2020 due to Olympics games
+            // July 22nd in 2021 due to Olympics games
             || (w == Monday && (d >= 15 && d <= 21) && m == July
-                && ((y >= 2003 && y < 2020) || y >= 2021))
+                && ((y >= 2003 && y < 2020) || y >= 2022))
             || ((d == 20 || (d == 21 && w == Monday)) && m == July
                 && y >= 1996 && y < 2003)
             || (d == 23 && m == July && y == 2020)
+            || (d == 22 && m == July && y == 2021)
             // Mountain Day
             // (moved in 2020 due to Olympics games)
+            // (moved in 2021 due to Olympics games)
             || ((d == 11 || (d == 12 && w == Monday)) && m == August
-                && ((y >= 2016 && y < 2020) || y >= 2021))
+                && ((y >= 2016 && y < 2020) || y >= 2022))
             || (d == 10 && m == August && y == 2020)
+            || (d == 9 && m == August && y == 2021)
             // Respect for the Aged Day (3rd Monday in September),
             // was September 15th until 2003
             || (w == Monday && (d >= 15 && d <= 21) && m == September
@@ -113,11 +117,13 @@ namespace QuantLib {
             // Health and Sports Day (2nd Monday in October),
             // was October 10th until 2000,
             // July 24th in 2020 due to Olympics games
+            // July 23rd in 2021 due to Olympics games
             || (w == Monday && (d >= 8 && d <= 14) && m == October
-                && ((y >= 2000 && y < 2020) || y >= 2021))
+                && ((y >= 2000 && y < 2020) || y >= 2022))
             || ((d == 10 || (d == 11 && w == Monday)) && m == October
                 && y < 2000)
             || (d == 24 && m == July && y == 2020)
+            || (d == 23 && m == July && y == 2021)
             // National Culture Day
             || ((d == 3  || (d == 4 && w == Monday)) && m == November)
             // Labor Thanksgiving Day

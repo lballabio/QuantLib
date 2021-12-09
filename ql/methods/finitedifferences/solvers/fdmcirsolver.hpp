@@ -41,9 +41,9 @@ namespace QuantLib {
 
     class FdmCIRSolver : public LazyObject {
       public:
-        FdmCIRSolver(const Handle<CoxIngersollRossProcess>& process,
-                     const Handle<GeneralizedBlackScholesProcess>& bsProcess,
-                     const FdmSolverDesc& solverDesc,
+        FdmCIRSolver(Handle<CoxIngersollRossProcess> process,
+                     Handle<GeneralizedBlackScholesProcess> bsProcess,
+                     FdmSolverDesc solverDesc,
                      const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
                      Real rho = 1.0,
                      Real strike = 1.0);
@@ -54,8 +54,8 @@ namespace QuantLib {
         Real thetaAt(Real s, Real v) const;
 
       protected:
-        void performCalculations() const;
-        
+        void performCalculations() const override;
+
       private:
         const Handle<GeneralizedBlackScholesProcess> bsProcess_;
         const Handle<CoxIngersollRossProcess> cirProcess_;

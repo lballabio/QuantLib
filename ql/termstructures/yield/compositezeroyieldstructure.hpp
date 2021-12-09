@@ -28,33 +28,35 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
     template <class BinaryFunction>
     class CompositeZeroYieldStructure : public ZeroYieldStructure {
       public:
-          CompositeZeroYieldStructure(const Handle<YieldTermStructure>& h1,
-                                      const Handle<YieldTermStructure>& h2,
-                                      const BinaryFunction& f,
-                                      Compounding comp = Continuous,
-                                      Frequency freq = NoFrequency);
+        CompositeZeroYieldStructure(Handle<YieldTermStructure> h1,
+                                    Handle<YieldTermStructure> h2,
+                                    const BinaryFunction& f,
+                                    Compounding comp = Continuous,
+                                    Frequency freq = NoFrequency);
 
-          //! \name YieldTermStructure interface
-          //@{
-          DayCounter dayCounter() const;
-          Calendar calendar() const;
-          Natural settlementDays() const;
-          const Date& referenceDate() const;
-          Date maxDate() const;
-          Time maxTime() const;
-          //@}
-          //! \name Observer interface
-          //@{
-          void update();
-          //@}
+        //! \name YieldTermStructure interface
+        //@{
+        DayCounter dayCounter() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
+        const Date& referenceDate() const override;
+        Date maxDate() const override;
+        Time maxTime() const override;
+        //@}
+        //! \name Observer interface
+        //@{
+        void update() override;
+        //@}
       protected:
         //! returns the composite zero yield rate
-        Rate zeroYieldImpl(Time) const;
+        Rate zeroYieldImpl(Time) const override;
+
       private:
         Handle<YieldTermStructure> curve1_;
         Handle<YieldTermStructure> curve2_;
@@ -67,12 +69,12 @@ namespace QuantLib {
 
     template <class BinaryFunction>
     inline CompositeZeroYieldStructure<BinaryFunction>::CompositeZeroYieldStructure(
-        const Handle<YieldTermStructure>& h1, 
-        const Handle<YieldTermStructure>& h2, 
+        Handle<YieldTermStructure> h1,
+        Handle<YieldTermStructure> h2,
         const BinaryFunction& f,
-        Compounding comp, 
+        Compounding comp,
         Frequency freq)
-    : curve1_(h1), curve2_(h2), f_(f), comp_(comp), freq_(freq) {
+    : curve1_(std::move(h1)), curve2_(std::move(h2)), f_(f), comp_(comp), freq_(freq) {
         if (!curve1_.empty() && !curve2_.empty())
             enableExtrapolation(curve1_->allowsExtrapolation() && curve2_->allowsExtrapolation());
 

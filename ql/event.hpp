@@ -39,7 +39,7 @@ namespace QuantLib {
     */
     class Event : public Observable {
       public:
-        virtual ~Event() {}
+        ~Event() override = default;
         //! \name Event interface
         //@{
         //! returns the date at which the event occurs
@@ -69,7 +69,8 @@ namespace QuantLib {
         class simple_event : public Event {
           public:
             explicit simple_event(const Date& date) : date_(date) {}
-            Date date() const { return date_; }
+            Date date() const override { return date_; }
+
           private:
             Date date_;
         };

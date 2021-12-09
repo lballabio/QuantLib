@@ -57,11 +57,8 @@ namespace QuantLib {
         fixedDrifts_.reserve(steps);
         for (Size j=0; j<steps; ++j) {
             const Matrix& A = marketModel_->pseudoRoot(j);
-            calculators_.push_back(SMMDriftCalculator(A,
-                                                      displacements_,
-                                                      marketModel->evolution().rateTaus(),
-                                                      numeraires[j],
-                                                      alive_[j]));
+            calculators_.emplace_back(A, displacements_, marketModel->evolution().rateTaus(),
+                                      numeraires[j], alive_[j]);
             std::vector<Real> fixed(numberOfRates_);
             for (Size k=0; k<numberOfRates_; ++k) {
                 Real variance =
@@ -92,7 +89,7 @@ namespace QuantLib {
 
     void LogNormalCotSwapRatePc::setInitialState(const CurveState& cs) {
         // why??
-        const CoterminalSwapCurveState* cotcs = dynamic_cast<const CoterminalSwapCurveState*>(&cs);
+        const auto* cotcs = dynamic_cast<const CoterminalSwapCurveState*>(&cs);
         const std::vector<Real>& swapRates = cotcs->coterminalSwapRates();
         setCoterminalSwapRates(swapRates);
     }

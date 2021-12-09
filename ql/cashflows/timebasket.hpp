@@ -37,7 +37,7 @@ namespace QuantLib {
         // this is needed for Visual C++ 6
         typedef std::map<Date,Real> super;
       public:
-        TimeBasket() {}
+        TimeBasket() = default;
         TimeBasket(const std::vector<Date>& dates,
                    const std::vector<Real>& values);
         //! \name Map interface
@@ -74,21 +74,21 @@ namespace QuantLib {
     // inline definitions
 
     inline bool TimeBasket::hasDate(const Date& d) const {
-        const_iterator i = find(d);
+        auto i = find(d);
         return i != end();
     }
 
     inline TimeBasket& TimeBasket::operator+=(const TimeBasket& other) {
         super& self = *this;
-        for (const_iterator j = other.begin(); j != other.end(); ++j)
-            self[j->first] += j->second;
+        for (auto j : other)
+            self[j.first] += j.second;
         return *this;
     }
 
     inline TimeBasket& TimeBasket::operator-=(const TimeBasket& other) {
         super& self = *this;
-        for (const_iterator j = other.begin(); j != other.end(); ++j)
-            self[j->first] -= j->second;
+        for (auto j : other)
+            self[j.first] -= j.second;
         return *this;
     }
 

@@ -28,7 +28,10 @@
 #define quantlib_triple_band_linear_op_hpp
 
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
+#if !defined(QL_USE_STD_UNIQUE_PTR)
 #include <boost/shared_array.hpp>
+#endif
+#include <memory>
 
 namespace QuantLib {
 
@@ -40,11 +43,17 @@ namespace QuantLib {
                            const ext::shared_ptr<FdmMesher>& mesher);
 
         TripleBandLinearOp(const TripleBandLinearOp& m);
+        TripleBandLinearOp(TripleBandLinearOp&& m) QL_NOEXCEPT;
+        #ifdef QL_USE_DISPOSABLE
         TripleBandLinearOp(const Disposable<TripleBandLinearOp>& m);
+        #endif
         TripleBandLinearOp& operator=(const TripleBandLinearOp& m);
+        TripleBandLinearOp& operator=(TripleBandLinearOp&& m) QL_NOEXCEPT;
+        #ifdef QL_USE_DISPOSABLE
         TripleBandLinearOp& operator=(const Disposable<TripleBandLinearOp>& m);
+        #endif
 
-        Disposable<Array> apply(const Array& r) const;
+        Disposable<Array> apply(const Array& r) const override;
         Disposable<Array> solve_splitting(const Array& r, Real a,
                                           Real b = 1.0) const;
 
@@ -61,20 +70,41 @@ namespace QuantLib {
 
         void swap(TripleBandLinearOp& m);
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        Disposable<SparseMatrix> toMatrix() const;
-#endif
+        Disposable<SparseMatrix> toMatrix() const override;
 
       protected:
-        TripleBandLinearOp() {}
+        TripleBandLinearOp() = default;
 
         Size direction_;
+        #if !defined(QL_USE_STD_UNIQUE_PTR)
         boost::shared_array<Size> i0_, i2_;
         boost::shared_array<Size> reverseIndex_;
         boost::shared_array<Real> lower_, diag_, upper_;
+        #else
+        std::unique_ptr<Size[]> i0_, i2_;
+        std::unique_ptr<Size[]> reverseIndex_;
+        std::unique_ptr<Real[]> lower_, diag_, upper_;
+        #endif
 
         ext::shared_ptr<FdmMesher> mesher_;
     };
+
+
+    inline TripleBandLinearOp::TripleBandLinearOp(TripleBandLinearOp&& m) QL_NOEXCEPT {
+        swap(m);
+    }
+
+    inline TripleBandLinearOp& TripleBandLinearOp::operator=(const TripleBandLinearOp& m) {
+        TripleBandLinearOp tmp(m);
+        swap(tmp);
+        return *this;
+    }
+
+    inline TripleBandLinearOp& TripleBandLinearOp::operator=(TripleBandLinearOp&& m) QL_NOEXCEPT {
+        swap(m);
+        return *this;
+    }
+
 }
 
 #endif

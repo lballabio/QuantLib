@@ -38,12 +38,6 @@ namespace QuantLib {
     //! %instrument callability
     class Callability : public Event {
       public:
-        //! amount to be paid upon callability
-        /*! \deprecated Use Bond::Price instead.
-                        Deprecated in version 1.17.
-        */
-        QL_DEPRECATED
-        typedef Bond::Price Price;
         //! type of the callability
         enum Type { Call, Put };
 
@@ -56,11 +50,11 @@ namespace QuantLib {
         Type type() const { return type_; }
         //! \name Event interface
         //@{
-        Date date() const { return date_; }
+        Date date() const override { return date_; }
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
         boost::optional<Bond::Price> price_;
@@ -69,8 +63,8 @@ namespace QuantLib {
     };
 
     inline void Callability::accept(AcyclicVisitor& v){
-        Visitor<Callability>* v1 = dynamic_cast<Visitor<Callability>*>(&v);
-        if(v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<Callability>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             Event::accept(v);

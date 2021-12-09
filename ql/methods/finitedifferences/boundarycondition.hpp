@@ -40,7 +40,7 @@ namespace QuantLib {
         //! \todo Generalize for n-dimensional conditions
         enum Side { None, Upper, Lower };
         // destructor
-        virtual ~BoundaryCondition() {}
+        virtual ~BoundaryCondition() = default;
         // interface
         /*! This method modifies an operator \f$ L \f$ before it is
             applied to an array \f$ u \f$ so that \f$ v = Lu \f$ will
@@ -77,11 +77,12 @@ namespace QuantLib {
       public:
         NeumannBC(Real value, Side side);
         // interface
-        void applyBeforeApplying(TridiagonalOperator&) const;
-        void applyAfterApplying(Array&) const;
-        void applyBeforeSolving(TridiagonalOperator&, Array& rhs) const;
-        void applyAfterSolving(Array&) const;
-        void setTime(Time) {}
+        void applyBeforeApplying(TridiagonalOperator&) const override;
+        void applyAfterApplying(Array&) const override;
+        void applyBeforeSolving(TridiagonalOperator&, Array& rhs) const override;
+        void applyAfterSolving(Array&) const override;
+        void setTime(Time) override {}
+
       private:
         Real value_;
         Side side_;
@@ -96,11 +97,12 @@ namespace QuantLib {
       public:
         DirichletBC(Real value, Side side);
         // interface
-        void applyBeforeApplying(TridiagonalOperator&) const;
-        void applyAfterApplying(Array&) const;
-        void applyBeforeSolving(TridiagonalOperator&, Array& rhs) const;
-        void applyAfterSolving(Array&) const;
-        void setTime(Time) {}
+        void applyBeforeApplying(TridiagonalOperator&) const override;
+        void applyAfterApplying(Array&) const override;
+        void applyBeforeSolving(TridiagonalOperator&, Array& rhs) const override;
+        void applyAfterSolving(Array&) const override;
+        void setTime(Time) override {}
+
       private:
         Real value_;
         Side side_;

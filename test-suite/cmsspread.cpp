@@ -219,9 +219,9 @@ void CmsSpreadTest::testCouponPricing() {
     cpn1->setPricer(d.cmsspPricerLn);
 
 #ifndef __FAST_MATH__
-    const Real eqTol = 100*QL_EPSILON;
+    QL_CONSTEXPR Real eqTol = 100*QL_EPSILON;
 #else
-    const Real eqTol = 1e-13;
+    QL_CONSTEXPR Real eqTol = 1e-13;
 #endif
     BOOST_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
     cms10y->addFixing(d.refDate, 0.05);
@@ -351,7 +351,7 @@ void CmsSpreadTest::testCouponPricing() {
 }
 
 test_suite* CmsSpreadTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("CmsSpreadTest");
+    auto* suite = BOOST_TEST_SUITE("CmsSpreadTest");
     suite->add(QUANTLIB_TEST_CASE(&CmsSpreadTest::testFixings));
     suite->add(QUANTLIB_TEST_CASE(&CmsSpreadTest::testCouponPricing));
     return suite;

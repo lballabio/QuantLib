@@ -26,6 +26,7 @@
 
 #include <ql/time/calendar.hpp>
 #include <map>
+#include <utility>
 
 namespace QuantLib {
 
@@ -33,7 +34,7 @@ namespace QuantLib {
       public:
         enum EventType { TradeDate, PricingDate };
 
-        PaymentTerm();
+        PaymentTerm() = default;
         PaymentTerm(const std::string& name,
                     EventType eventType,
                     Integer offsetDays,
@@ -59,8 +60,7 @@ namespace QuantLib {
             Integer offsetDays;
             Calendar calendar;
 
-            Data(const std::string& name, EventType eventType, Integer offsetDays,
-                 const Calendar& calendar);
+            Data(std::string name, EventType eventType, Integer offsetDays, Calendar calendar);
         };
 
         static std::map<std::string, ext::shared_ptr<Data> > paymentTerms_;
@@ -79,14 +79,12 @@ namespace QuantLib {
                              const PaymentTerm&);
 
 
-    inline PaymentTerm::Data::Data(const std::string& name,
+    inline PaymentTerm::Data::Data(std::string name,
                                    PaymentTerm::EventType eventType,
                                    Integer offsetDays,
-                                   const Calendar& calendar)
-    : name(name), eventType(eventType),
-      offsetDays(offsetDays), calendar(calendar) {}
-
-    inline PaymentTerm::PaymentTerm() {}
+                                   Calendar calendar)
+    : name(std::move(name)), eventType(eventType), offsetDays(offsetDays),
+      calendar(std::move(calendar)) {}
 
     inline const std::string& PaymentTerm::name() const {
         return data_->name;

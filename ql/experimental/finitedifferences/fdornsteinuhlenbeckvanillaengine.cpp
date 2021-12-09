@@ -18,35 +18,35 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/methods/finitedifferences/solvers/fdm1dimsolver.hpp>
+#include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/fdmornsteinuhlenbeckop.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/solvers/fdm1dimsolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-#include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     namespace {
         class FdmOUInnerValue : public FdmInnerValueCalculator {
           public:
-            FdmOUInnerValue(
-                const ext::shared_ptr<Payoff>& payoff,
-                const ext::shared_ptr<FdmMesher>& mesher,
-                Size direction)
-          : payoff_(payoff), mesher_(mesher), direction_ (direction) { }
+            FdmOUInnerValue(ext::shared_ptr<Payoff> payoff,
+                            ext::shared_ptr<FdmMesher> mesher,
+                            Size direction)
+            : payoff_(std::move(payoff)), mesher_(std::move(mesher)), direction_(direction) {}
 
 
-            Real innerValue(const FdmLinearOpIterator& iter, Time t) {
+            Real innerValue(const FdmLinearOpIterator& iter, Time t) override {
                 const Real s = mesher_->location(iter, direction_);
                 return (*payoff_)(s);
             }
 
-            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
                 return innerValue(iter, t);
             }
 
@@ -58,16 +58,15 @@ namespace QuantLib {
     }
 
     FdOrnsteinUhlenbeckVanillaEngine::FdOrnsteinUhlenbeckVanillaEngine(
-            const ext::shared_ptr<OrnsteinUhlenbeckProcess>& process,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            Size tGrid, Size xGrid, Size dampingSteps,
-            Real epsilon,
-            const FdmSchemeDesc& schemeDesc)
-    : process_(process),
-      rTS_(rTS),
-      tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
-      epsilon_(epsilon),
-      schemeDesc_(schemeDesc) {
+        ext::shared_ptr<OrnsteinUhlenbeckProcess> process,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
+        Size tGrid,
+        Size xGrid,
+        Size dampingSteps,
+        Real epsilon,
+        const FdmSchemeDesc& schemeDesc)
+    : process_(std::move(process)), rTS_(rTS), tGrid_(tGrid), xGrid_(xGrid),
+      dampingSteps_(dampingSteps), epsilon_(epsilon), schemeDesc_(schemeDesc) {
         registerWith(process_);
         registerWith(rTS);
     }

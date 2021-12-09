@@ -39,15 +39,13 @@ namespace QuantLib {
 
     class FdmBlackScholesSolver : public LazyObject {
       public:
-        FdmBlackScholesSolver(
-            const Handle<GeneralizedBlackScholesProcess>& process,
-            Real strike,
-            const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
-            bool localVol = false,
-            Real illegalLocalVolOverwrite = -Null<Real>(),
-            const Handle<FdmQuantoHelper>& quantoHelper
-                 = Handle<FdmQuantoHelper>());
+        FdmBlackScholesSolver(Handle<GeneralizedBlackScholesProcess> process,
+                              Real strike,
+                              FdmSolverDesc solverDesc,
+                              const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+                              bool localVol = false,
+                              Real illegalLocalVolOverwrite = -Null<Real>(),
+                              Handle<FdmQuantoHelper> quantoHelper = Handle<FdmQuantoHelper>());
 
         Real valueAt(Real s) const;
         Real deltaAt(Real s) const;
@@ -55,7 +53,7 @@ namespace QuantLib {
         Real thetaAt(Real s) const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         Handle<GeneralizedBlackScholesProcess> process_;

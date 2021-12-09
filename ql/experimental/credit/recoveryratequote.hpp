@@ -40,9 +40,9 @@ namespace QuantLib {
                           Seniority seniority = NoSeniority);
         //! \name Quote interface
         //@{
-        Real value() const;
+        Real value() const override;
         Seniority seniority() const;
-        bool isValid() const;
+        bool isValid() const override;
         //@}
         //! \name Modifiers
         //@{
@@ -96,7 +96,7 @@ namespace QuantLib {
         // TO DO: check Reals are valid, i.e. non Null and within [0-1] range
         std::map<Seniority, Real> isdaMap;
         for(Size i=0; i<N; i++) {
-            Seniority isdaType = Seniority(i);//compiler dependent?
+            auto isdaType = Seniority(i); // compiler dependent?
             isdaMap[isdaType] = arrayIsdaRR[i];
         }
         return isdaMap;

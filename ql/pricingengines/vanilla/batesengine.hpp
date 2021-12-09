@@ -111,7 +111,7 @@ namespace QuantLib {
                     Real relTolerance, Size maxEvaluations);
 
       protected:
-        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const override;
     };
 
 
@@ -123,7 +123,7 @@ namespace QuantLib {
                            Real relTolerance, Size maxEvaluations);
 
       protected:
-        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const override;
     };
 
 
@@ -137,7 +137,7 @@ namespace QuantLib {
             Real relTolerance, Size maxEvaluations);
 
       protected:
-        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const override;
     };
 
 
@@ -151,7 +151,7 @@ namespace QuantLib {
             Real relTolerance, Size maxEvaluations);
 
       protected:
-        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const override;
     };
 
 }

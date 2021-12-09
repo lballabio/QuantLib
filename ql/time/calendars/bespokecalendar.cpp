@@ -19,11 +19,11 @@
 
 #include <ql/time/calendars/bespokecalendar.hpp>
 #include <sstream>
+#include <utility>
 
 namespace QuantLib {
 
-    BespokeCalendar::Impl::Impl(const std::string& name)
-    : name_(name) {}
+    BespokeCalendar::Impl::Impl(std::string name) : name_(std::move(name)) {}
 
     std::string BespokeCalendar::Impl::name() const {
         return name_;

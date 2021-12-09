@@ -24,7 +24,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/exercise.hpp>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -53,7 +53,7 @@ namespace QuantLib {
             detail::ImpliedVolatilityHelper::clone(process, volQuote);
 
         // engines are built-in for the time being
-        boost::scoped_ptr<PricingEngine> engine;
+        std::unique_ptr<PricingEngine> engine;
         switch (exercise_->type()) {
           case Exercise::European:
             engine.reset(new AnalyticDividendEuropeanEngine(newProcess));
@@ -82,9 +82,8 @@ namespace QuantLib {
                                        PricingEngine::arguments* args) const {
         OneAssetOption::setupArguments(args);
 
-        DividendVanillaOption::arguments* arguments =
-            dynamic_cast<DividendVanillaOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong engine type");
+        auto* arguments = dynamic_cast<DividendVanillaOption::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong engine type");
 
         arguments->cashFlow = cashFlow_;
     }

@@ -33,21 +33,20 @@ namespace QuantLib {
     //! Energy basis swap
     class EnergyBasisSwap : public EnergySwap {
       public:
-        EnergyBasisSwap(
-                    const Calendar& calendar,
-                    const ext::shared_ptr<CommodityIndex>& spreadIndex,
-                    const ext::shared_ptr<CommodityIndex>& payIndex,
-                    const ext::shared_ptr<CommodityIndex>& receiveIndex,
-                    bool spreadToPayLeg,
-                    const Currency& payCurrency,
-                    const Currency& receiveCurrency,
-                    const PricingPeriods& pricingPeriods,
-                    const CommodityUnitCost& basis,
-                    const CommodityType& commodityType,
-                    const ext::shared_ptr<SecondaryCosts>& secondaryCosts,
-                    const Handle<YieldTermStructure>& payLegTermStructure,
-                    const Handle<YieldTermStructure>& receiveLegTermStructure,
-                    const Handle<YieldTermStructure>& discountTermStructure);
+        EnergyBasisSwap(const Calendar& calendar,
+                        ext::shared_ptr<CommodityIndex> spreadIndex,
+                        ext::shared_ptr<CommodityIndex> payIndex,
+                        ext::shared_ptr<CommodityIndex> receiveIndex,
+                        bool spreadToPayLeg,
+                        const Currency& payCurrency,
+                        const Currency& receiveCurrency,
+                        const PricingPeriods& pricingPeriods,
+                        CommodityUnitCost basis,
+                        const CommodityType& commodityType,
+                        const ext::shared_ptr<SecondaryCosts>& secondaryCosts,
+                        Handle<YieldTermStructure> payLegTermStructure,
+                        Handle<YieldTermStructure> receiveLegTermStructure,
+                        Handle<YieldTermStructure> discountTermStructure);
 
         const ext::shared_ptr<CommodityIndex>& payIndex() const {
             return payIndex_;
@@ -58,7 +57,7 @@ namespace QuantLib {
         const CommodityUnitCost& basis() const { return basis_; }
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
         ext::shared_ptr<CommodityIndex> spreadIndex_;
         ext::shared_ptr<CommodityIndex> payIndex_;

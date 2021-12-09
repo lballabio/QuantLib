@@ -24,8 +24,9 @@
 #ifndef quantlib_randomized_lds_hpp
 #define quantlib_randomized_lds_hpp
 
-#include <ql/math/randomnumbers/randomsequencegenerator.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/randomnumbers/randomsequencegenerator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -58,8 +59,7 @@ namespace QuantLib {
     class RandomizedLDS {
       public:
         typedef Sample<std::vector<Real> > sample_type;
-        RandomizedLDS(const LDS& ldsg,
-                      const PRS& prsg);
+        RandomizedLDS(const LDS& ldsg, PRS prsg);
         RandomizedLDS(const LDS& ldsg);
         RandomizedLDS(Size dimensionality,
                       BigNatural ldsSeed = 0,
@@ -84,18 +84,16 @@ namespace QuantLib {
     };
 
     template <class LDS, class PRS>
-    RandomizedLDS<LDS, PRS>::RandomizedLDS(const LDS& ldsg, const PRS& prsg)
-    : ldsg_(ldsg), pristineldsg_(ldsg),
-      prsg_(prsg), dimension_(ldsg_.dimension()),
-      x(std::vector<Real> (dimension_), 1.0), randomizer_(std::vector<Real> (dimension_), 1.0) {
+    RandomizedLDS<LDS, PRS>::RandomizedLDS(const LDS& ldsg, PRS prsg)
+    : ldsg_(ldsg), pristineldsg_(ldsg), prsg_(std::move(prsg)), dimension_(ldsg_.dimension()),
+      x(std::vector<Real>(dimension_), 1.0), randomizer_(std::vector<Real>(dimension_), 1.0) {
 
         QL_REQUIRE(prsg_.dimension()==dimension_,
                    "generator mismatch: "
                    << dimension_ << "-dim low discrepancy "
-                   << "and " << prsg_.dimension() << "-dim pseudo random")
+                   << "and " << prsg_.dimension() << "-dim pseudo random");
 
         randomizer_ = prsg_.nextSequence();
-
     }
 
     template <class LDS, class PRS>

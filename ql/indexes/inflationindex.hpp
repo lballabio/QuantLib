@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,6 +36,16 @@ namespace QuantLib {
     class ZeroInflationTermStructure;
     class YoYInflationTermStructure;
 
+    struct CPI {
+        //! when you observe an index, how do you interpolate between fixings?
+        enum InterpolationType {
+            AsIndex, //!< same interpolation as index
+            Flat,    //!< flat from previous fixing
+            Linear   //!< linearly between bracketing fixings
+        };
+    };
+
+
     //! Base class for inflation-rate indexes,
     class InflationIndex : public Index, public Observer {
       public:
@@ -48,24 +59,24 @@ namespace QuantLib {
          give the previous period's value)
          and enables storage of the most recent uninterpolated value.
          */
-        InflationIndex(const std::string& familyName,
-                       const Region& region,
+        InflationIndex(std::string familyName,
+                       Region region,
                        bool revised,
                        bool interpolated,
                        Frequency frequency,
                        const Period& availabilitiyLag,
-                       const Currency& currency);
+                       Currency currency);
         //! \name Index interface
         //@{
-        std::string name() const;
+        std::string name() const override;
 
         /*! Inflation indices do not have fixing calendars.  An
             inflation index value is valid for every day (including
             weekends) of a calendar period.  I.e. it uses the
             NullCalendar as its fixing calendar.
         */
-        Calendar fixingCalendar() const;
-        bool isValidFixingDate(const Date&) const { return true; }
+        Calendar fixingCalendar() const override;
+        bool isValidFixingDate(const Date&) const override { return true; }
 
         /*! Forecasting index values requires an inflation term
             structure.  The inflation term structure (ITS) defines the
@@ -78,21 +89,18 @@ namespace QuantLib {
             publication but the inflation swaps may take as their base
             the index 3 months before.
         */
-        Rate fixing(const Date& fixingDate,
-                    bool forecastTodaysFixing = false) const = 0;
+        Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override = 0;
 
         /*! this method creates all the "fixings" for the relevant
             period of the index.  E.g. for monthly indices it will put
             the same value in every calendar day in the month.
         */
-        void addFixing(const Date& fixingDate,
-                       Rate fixing,
-                       bool forceOverwrite = false);
+        void addFixing(const Date& fixingDate, Rate fixing, bool forceOverwrite = false) override;
         //@}
 
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
 
         //! \name Inspectors
@@ -137,23 +145,22 @@ namespace QuantLib {
     class ZeroInflationIndex : public InflationIndex {
       public:
         //! Always use the evaluation date as the reference date
-        ZeroInflationIndex(const std::string& familyName,
-                           const Region& region,
-                           bool revised,
-                           bool interpolated,
-                           Frequency frequency,
-                           const Period& availabilityLag,
-                           const Currency& currency,
-                           const Handle<ZeroInflationTermStructure>& ts =
-                                        Handle<ZeroInflationTermStructure>());
+        ZeroInflationIndex(
+            const std::string& familyName,
+            const Region& region,
+            bool revised,
+            bool interpolated,
+            Frequency frequency,
+            const Period& availabilityLag,
+            const Currency& currency,
+            Handle<ZeroInflationTermStructure> ts = Handle<ZeroInflationTermStructure>());
 
         //! \name Index interface
         //@{
         /*! \warning the forecastTodaysFixing parameter (required by
                      the Index interface) is currently ignored.
         */
-        Rate fixing(const Date& fixingDate,
-                    bool forecastTodaysFixing = false) const;
+        Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
         //@}
         //! \name Other methods
         //@{
@@ -163,7 +170,7 @@ namespace QuantLib {
         //@}
       private:
         bool needsForecast(const Date& fixingDate) const;
-        Rate forecastFixing(const Date& fixingDate) const;
+        Real forecastFixing(const Date& fixingDate) const;
         Handle<ZeroInflationTermStructure> zeroInflation_;
     };
 
@@ -174,23 +181,22 @@ namespace QuantLib {
     */
     class YoYInflationIndex : public InflationIndex {
       public:
-        YoYInflationIndex(const std::string& familyName,
-                          const Region& region,
-                          bool revised,
-                          bool interpolated,
-                          bool ratio, // is this one a genuine index or a ratio?
-                          Frequency frequency,
-                          const Period& availabilityLag,
-                          const Currency& currency,
-                          const Handle<YoYInflationTermStructure>& ts =
-                                Handle<YoYInflationTermStructure>());
+        YoYInflationIndex(
+            const std::string& familyName,
+            const Region& region,
+            bool revised,
+            bool interpolated,
+            bool ratio, // is this one a genuine index or a ratio?
+            Frequency frequency,
+            const Period& availabilityLag,
+            const Currency& currency,
+            Handle<YoYInflationTermStructure> ts = Handle<YoYInflationTermStructure>());
         //! \name Index interface
         //@{
         /*! \warning the forecastTodaysFixing parameter (required by
                      the Index interface) is currently ignored.
         */
-        Rate fixing(const Date& fixingDate,
-                    bool forecastTodaysFixing = false) const;
+        Rate fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
 
         //@}
         //! \name Other methods
@@ -206,6 +212,25 @@ namespace QuantLib {
         bool ratio_;
         Handle<YoYInflationTermStructure> yoyInflation_;
     };
+
+
+    namespace detail {
+        namespace CPI {
+            // Returns either CPI::Flat or CPI::Linear depending on the combination of index and
+            // CPI::InterpolationType.
+            QuantLib::CPI::InterpolationType effectiveInterpolationType(
+                const ext::shared_ptr<ZeroInflationIndex>& index,
+                const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
+
+
+            // checks whether the combination of index and CPI::InterpolationType results
+            // effectively in CPI::Linear
+            bool
+            isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
+                           const QuantLib::CPI::InterpolationType& type = QuantLib::CPI::AsIndex);
+        }
+    }
+
 
     // inline
 
@@ -257,6 +282,11 @@ namespace QuantLib {
     inline Handle<YoYInflationTermStructure>
     YoYInflationIndex::yoyInflationTermStructure() const {
         return yoyInflation_;
+    }
+
+    inline bool detail::CPI::isInterpolated(const ext::shared_ptr<ZeroInflationIndex>& index,
+                                            const QuantLib::CPI::InterpolationType& type) {
+        return detail::CPI::effectiveInterpolationType(index, type) == QuantLib::CPI::Linear;
     }
 }
 

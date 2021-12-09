@@ -33,8 +33,7 @@ namespace garch_test {
 
     class DummyOptimizationMethod : public OptimizationMethod {
       public:
-        virtual EndCriteria::Type minimize(Problem& P,
-                                           const EndCriteria& endCriteria) {
+        EndCriteria::Type minimize(Problem& P, const EndCriteria& endCriteria) override {
             P.setFunctionValue(P.value(P.currentValue()));
             return EndCriteria::None;
         }
@@ -190,7 +189,7 @@ void GARCHTest::testCalculation() {
 }
 
 test_suite* GARCHTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("GARCH model tests");
+    auto* suite = BOOST_TEST_SUITE("GARCH model tests");
     suite->add(QUANTLIB_TEST_CASE(&GARCHTest::testCalibration));
     suite->add(QUANTLIB_TEST_CASE(&GARCHTest::testCalculation));
     return suite;

@@ -49,23 +49,26 @@ namespace QuantLib {
 
         // Constructor
         explicit FdBlackScholesVanillaEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
-            Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+            ext::shared_ptr<GeneralizedBlackScholesProcess>,
+            Size tGrid = 100,
+            Size xGrid = 100,
+            Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
             bool localVol = false,
             Real illegalLocalVolOverwrite = -Null<Real>(),
             CashDividendModel cashDividendModel = Spot);
 
-        FdBlackScholesVanillaEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
-            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
-            Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
-            bool localVol = false,
-            Real illegalLocalVolOverwrite = -Null<Real>(),
-            CashDividendModel cashDividendModel = Spot);
+        FdBlackScholesVanillaEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>,
+                                    ext::shared_ptr<FdmQuantoHelper> quantoHelper,
+                                    Size tGrid = 100,
+                                    Size xGrid = 100,
+                                    Size dampingSteps = 0,
+                                    const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+                                    bool localVol = false,
+                                    Real illegalLocalVolOverwrite = -Null<Real>(),
+                                    CashDividendModel cashDividendModel = Spot);
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
@@ -81,7 +84,7 @@ namespace QuantLib {
     class MakeFdBlackScholesVanillaEngine {
       public:
         explicit MakeFdBlackScholesVanillaEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
 
         MakeFdBlackScholesVanillaEngine& withQuantoHelper(
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper);

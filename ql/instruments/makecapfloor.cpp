@@ -52,7 +52,7 @@ namespace QuantLib {
 
         // only leaves the last coupon
         if (asOptionlet_ && leg.size() > 1) {
-            Leg::iterator end = leg.end();  // Sun Studio needs an lvalue
+            auto end = leg.end(); // Sun Studio needs an lvalue
             leg.erase(leg.begin(), --end);
         }
 

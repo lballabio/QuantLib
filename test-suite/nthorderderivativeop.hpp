@@ -21,6 +21,7 @@
 #define quantlib_test_nth_order_derivative_op_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 class NthOrderDerivativeOpTest {
    public:
@@ -34,10 +35,13 @@ class NthOrderDerivativeOpTest {
     static void testSecondOrder3PointsNonUniformGrid();
     static void testSecondOrder4PointsNonUniformGrid();
     static void testThirdOrder4PointsUniformGrid();
-    static void testHigerOrderBSOptionPricing();
-    static void testHigerOrderAndRichardsonExtrapolationg();
+    static void testHigherOrderHestonOptionPricing();
+    static void testHigherOrderAndRichardsonExtrapolation();
+    static void testCompareFirstDerivativeOpNonUniformGrid();
+    static void testCompareFirstDerivativeOp2dUniformGrid();
+    static void testMixedSecondOrder9PointsOnUniformGrid();
 
-    static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 #endif

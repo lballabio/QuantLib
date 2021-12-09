@@ -42,12 +42,11 @@ namespace QuantLib {
                   BusinessDayConvention convention,
                   bool endOfMonth,
                   const DayCounter& dayCounter,
-                  const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+                  Handle<YieldTermStructure> h = Handle<YieldTermStructure>());
         //! \name InterestRateIndex interface
         //@{
-        Date maturityDate(const Date& valueDate) const;
-        Rate forecastFixing(const Date& fixingDate) const;
+        Date maturityDate(const Date& valueDate) const override;
+        Rate forecastFixing(const Date& fixingDate) const override;
         // @}
         //! \name Inspectors
         //@{
@@ -96,8 +95,7 @@ namespace QuantLib {
                        const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
         //! returns a copy of itself linked to a different forwarding curve
-        ext::shared_ptr<IborIndex> clone(
-                                   const Handle<YieldTermStructure>& h) const;
+        ext::shared_ptr<IborIndex> clone(const Handle<YieldTermStructure>& h) const override;
     };
 
 

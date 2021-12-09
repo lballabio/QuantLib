@@ -56,6 +56,7 @@ libPricingEngines_la_LIBADD = \
     capfloor/libCapFloorEngines.la \
     cliquet/libCliquetEngines.la \
     credit/libCreditEngines.la \
+    forward/libForwardEngines.la \
     inflation/libInflationEngines.la \
     lookback/libLookbackEngines.la \
     swap/libSwapEngines.la \

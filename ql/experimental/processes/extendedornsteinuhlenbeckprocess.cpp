@@ -17,9 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -29,8 +30,7 @@ namespace QuantLib {
             ext::function<Real (Real)> b;
             Real speed;
           public:
-            integrand(const ext::function<Real (Real)>& b, Real speed)
-            : b(b), speed(speed) {}
+            integrand(ext::function<Real(Real)> b, Real speed) : b(std::move(b)), speed(speed) {}
             Real operator()(Real x) const {
                 return b(x) * std::exp(speed*x);
             }
@@ -39,16 +39,14 @@ namespace QuantLib {
     }
 
     ExtendedOrnsteinUhlenbeckProcess::ExtendedOrnsteinUhlenbeckProcess(
-                                        Real speed, Volatility vol, Real x0,
-                                        const ext::function<Real (Real)>& b,
-                                        Discretization discretization,
-                                        Real intEps)
-    : speed_    (speed),
-      vol_      (vol),
-      b_        (b),
-      intEps_   (intEps),
-      ouProcess_(new OrnsteinUhlenbeckProcess(speed, vol, x0)),
-      discretization_(discretization) {
+        Real speed,
+        Volatility vol,
+        Real x0,
+        ext::function<Real(Real)> b,
+        Discretization discretization,
+        Real intEps)
+    : speed_(speed), vol_(vol), b_(std::move(b)), intEps_(intEps),
+      ouProcess_(new OrnsteinUhlenbeckProcess(speed, vol, x0)), discretization_(discretization) {
         QL_REQUIRE(speed_ >= 0.0, "negative a given");
         QL_REQUIRE(vol_ >= 0.0, "negative volatility given");
     }

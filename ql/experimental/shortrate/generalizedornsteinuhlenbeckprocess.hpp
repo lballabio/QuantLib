@@ -42,21 +42,20 @@ namespace QuantLib {
     */
     class GeneralizedOrnsteinUhlenbeckProcess : public StochasticProcess1D {
       public:
-        GeneralizedOrnsteinUhlenbeckProcess(
-              const ext::function<Real (Time)>& speed,
-              const ext::function<Real (Time)>& vol,
-              Real x0 = 0.0,
-              Real level = 0.0);
+        GeneralizedOrnsteinUhlenbeckProcess(ext::function<Real(Time)> speed,
+                                            ext::function<Real(Time)> vol,
+                                            Real x0 = 0.0,
+                                            Real level = 0.0);
         //! \name StochasticProcess1D interface
         //@{
-        Real x0() const;
+        Real x0() const override;
 
-        Real drift(Time t, Real x) const;
-        Real diffusion(Time t, Real x) const;
+        Real drift(Time t, Real x) const override;
+        Real diffusion(Time t, Real x) const override;
 
-        Real expectation(Time t0, Real x0, Time dt) const;
-        Real stdDeviation(Time t0, Real x0, Time dt) const;
-        Real variance(Time t0, Real x0, Time dt) const;
+        Real expectation(Time t0, Real x0, Time dt) const override;
+        Real stdDeviation(Time t0, Real x0, Time dt) const override;
+        Real variance(Time t0, Real x0, Time dt) const override;
         //@}
 
         Real speed(Time t) const;

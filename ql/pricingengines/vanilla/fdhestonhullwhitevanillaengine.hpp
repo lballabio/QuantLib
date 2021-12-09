@@ -49,18 +49,20 @@ namespace QuantLib {
         // Constructor
         FdHestonHullWhiteVanillaEngine(
             const ext::shared_ptr<HestonModel>& model,
-            const ext::shared_ptr<HullWhiteProcess>& hwProcess,
+            ext::shared_ptr<HullWhiteProcess> hwProcess,
             Real corrEquityShortRate,
-            Size tGrid = 50, Size xGrid = 100, 
-            Size vGrid = 40, Size rGrid = 20,
+            Size tGrid = 50,
+            Size xGrid = 100,
+            Size vGrid = 40,
+            Size rGrid = 20,
             Size dampingSteps = 0,
             bool controlVariate = true,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
-        void calculate() const;
+        void calculate() const override;
 
         // multiple strikes caching engine
-        void update();
+        void update() override;
         void enableMultipleStrikesCaching(const std::vector<Real>& strikes);
         
       private:

@@ -53,7 +53,7 @@ class InterpolatedSimpleZeroCurve : public YieldTermStructure, protected Interpo
                                 const DayCounter &dayCounter, const Interpolator &interpolator);
     //! \name TermStructure interface
     //@{
-    Date maxDate() const;
+    Date maxDate() const override;
     //@}
     //! \name other inspectors
     //@{
@@ -75,18 +75,9 @@ class InterpolatedSimpleZeroCurve : public YieldTermStructure, protected Interpo
                                 const std::vector<Date> &jumpDates = std::vector<Date>(),
                                 const Interpolator &interpolator = Interpolator());
 
-    /*! \deprecated Passing jumps without a reference date never worked correctly.
-                    Use one of the other constructors instead.
-                    Deprecated in version 1.19.
-    */
-    QL_DEPRECATED
-    explicit InterpolatedSimpleZeroCurve(const DayCounter &,
-                                         const std::vector<Handle<Quote> > &jumps,
-                                         const std::vector<Date> &jumpDates = std::vector<Date>(),
-                                         const Interpolator &interpolator = Interpolator());
     //! \name YieldTermStructure implementation
     //@{
-    DiscountFactor discountImpl(Time t) const;
+    DiscountFactor discountImpl(Time t) const override;
     //@}
     mutable std::vector<Date> dates_;
 
@@ -154,36 +145,6 @@ InterpolatedSimpleZeroCurve<T>::InterpolatedSimpleZeroCurve(Natural settlementDa
                                                             const std::vector<Handle<Quote> > &jumps,
                                                             const std::vector<Date> &jumpDates, const T &interpolator)
     : YieldTermStructure(settlementDays, calendar, dayCounter, jumps, jumpDates), InterpolatedCurve<T>(interpolator) {}
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#if defined(QL_PATCH_MSVC)
-#pragma warning(push)
-#pragma warning(disable:4996)
-#endif
-
-template <class T>
-InterpolatedSimpleZeroCurve<T>::InterpolatedSimpleZeroCurve(const DayCounter &dayCounter,
-                                                            const std::vector<Handle<Quote> > &jumps,
-                                                            const std::vector<Date> &jumpDates,
-                                                            const T &interpolator)
-    : YieldTermStructure(dayCounter, jumps, jumpDates), InterpolatedCurve<T>(interpolator) {}
-
-#if defined(QL_PATCH_MSVC)
-#pragma warning(pop)
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif
 
 template <class T>
 InterpolatedSimpleZeroCurve<T>::InterpolatedSimpleZeroCurve(const std::vector<Date> &dates,

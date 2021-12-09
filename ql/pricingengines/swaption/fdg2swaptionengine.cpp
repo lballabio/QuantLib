@@ -17,9 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdg2swaptionengine.cpp
-*/
-
 #include <ql/exercise.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
@@ -31,8 +28,6 @@
 #include <ql/methods/finitedifferences/solvers/fdmg2solver.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmaffinemodelswapinnervalue.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-
-#include <boost/scoped_ptr.hpp>
 
 namespace QuantLib {
 
@@ -80,11 +75,11 @@ namespace QuantLib {
         const std::vector<Date>& exerciseDates = arguments_.exercise->dates();
         std::map<Time, Date> t2d;
 
-        for (Size i=0; i < exerciseDates.size(); ++i) {
-            const Time t = dc.yearFraction(referenceDate, exerciseDates[i]);
+        for (auto exerciseDate : exerciseDates) {
+            const Time t = dc.yearFraction(referenceDate, exerciseDate);
             QL_REQUIRE(t >= 0, "exercise dates must not contain past date");
 
-            t2d[t] = exerciseDates[i];
+            t2d[t] = exerciseDate;
         }
 
         const Handle<YieldTermStructure> disTs = model_->termStructure();
@@ -119,9 +114,8 @@ namespace QuantLib {
                                      calculator, maturity,
                                      tGrid_, dampingSteps_ };
 
-        const boost::scoped_ptr<FdmG2Solver> solver(
-            new FdmG2Solver(model_, solverDesc, schemeDesc_));
+        FdmG2Solver solver(model_, solverDesc, schemeDesc_);
 
-        results_.value = solver->valueAt(0.0, 0.0);
+        results_.value = solver.valueAt(0.0, 0.0);
     }
 }

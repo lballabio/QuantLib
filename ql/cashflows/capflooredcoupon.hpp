@@ -62,8 +62,8 @@ namespace QuantLib {
                   Rate floor = Null<Rate>());
         //! \name Coupon interface
         //@{
-        Rate rate() const;
-        Rate convexityAdjustment() const;
+        Rate rate() const override;
+        Rate convexityAdjustment() const override;
         //@}
         //! cap
         Rate cap() const;
@@ -76,17 +76,16 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
 
         bool isCapped() const {return isCapped_;}
         bool isFloored() const {return isFloored_;}
 
-        void setPricer(
-                   const ext::shared_ptr<FloatingRateCouponPricer>& pricer);
+        void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) override;
 
         ext::shared_ptr<FloatingRateCoupon> underlying() { return underlying_; }
 
@@ -120,10 +119,9 @@ namespace QuantLib {
                        index, gearing, spread, refPeriodStart, refPeriodEnd,
                        dayCounter, isInArrears, exCouponDate)), cap, floor) {}
 
-        virtual void accept(AcyclicVisitor& v) {
-            Visitor<CappedFlooredIborCoupon>* v1 =
-                dynamic_cast<Visitor<CappedFlooredIborCoupon>*>(&v);
-            if (v1 != 0)
+        void accept(AcyclicVisitor& v) override {
+            auto* v1 = dynamic_cast<Visitor<CappedFlooredIborCoupon>*>(&v);
+            if (v1 != nullptr)
                 v1->visit(*this);
             else
                 CappedFlooredCoupon::accept(v);
@@ -153,10 +151,9 @@ namespace QuantLib {
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
                       dayCounter, isInArrears, exCouponDate)), cap, floor) {}
 
-        virtual void accept(AcyclicVisitor& v) {
-            Visitor<CappedFlooredCmsCoupon>* v1 =
-                dynamic_cast<Visitor<CappedFlooredCmsCoupon>*>(&v);
-            if (v1 != 0)
+        void accept(AcyclicVisitor& v) override {
+            auto* v1 = dynamic_cast<Visitor<CappedFlooredCmsCoupon>*>(&v);
+            if (v1 != nullptr)
                 v1->visit(*this);
             else
                 CappedFlooredCoupon::accept(v);

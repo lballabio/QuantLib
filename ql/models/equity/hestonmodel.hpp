@@ -59,7 +59,7 @@ namespace QuantLib {
 
         class FellerConstraint;
       protected:
-        void generateArguments();
+        void generateArguments() override;
         ext::shared_ptr<HestonProcess> process_;
     };
 
@@ -67,7 +67,7 @@ namespace QuantLib {
       private:
         class Impl : public Constraint::Impl {
           public:
-            bool test(const Array& params) const {
+            bool test(const Array& params) const override {
                 const Real theta = params[0];
                 const Real kappa = params[1];
                 const Real sigma = params[2];

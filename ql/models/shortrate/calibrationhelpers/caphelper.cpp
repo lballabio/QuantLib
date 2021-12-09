@@ -18,33 +18,32 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
-#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/discretizedcapfloor.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/time/schedule.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/time/schedule.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     CapHelper::CapHelper(const Period& length,
                          const Handle<Quote>& volatility,
-                         const ext::shared_ptr<IborIndex>& index,
+                         ext::shared_ptr<IborIndex> index,
                          Frequency fixedLegFrequency,
-                         const DayCounter& fixedLegDayCounter,
+                         DayCounter fixedLegDayCounter,
                          bool includeFirstSwaplet,
-                         const Handle<YieldTermStructure>& termStructure,
+                         Handle<YieldTermStructure> termStructure,
                          BlackCalibrationHelper::CalibrationErrorType errorType,
                          const VolatilityType type,
                          const Real shift)
-    : BlackCalibrationHelper(volatility, errorType, type, shift),
-      length_(length), index_(index), termStructure_(termStructure),
-      fixedLegFrequency_(fixedLegFrequency),
-      fixedLegDayCounter_(fixedLegDayCounter),
-      includeFirstSwaplet_(includeFirstSwaplet)
-    {
+    : BlackCalibrationHelper(volatility, errorType, type, shift), length_(length),
+      index_(std::move(index)), termStructure_(std::move(termStructure)),
+      fixedLegFrequency_(fixedLegFrequency), fixedLegDayCounter_(std::move(fixedLegDayCounter)),
+      includeFirstSwaplet_(includeFirstSwaplet) {
         registerWith(index_);
         registerWith(termStructure_);
     }

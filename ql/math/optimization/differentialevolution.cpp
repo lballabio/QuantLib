@@ -19,10 +19,8 @@
 */
 
 #include <ql/math/optimization/differentialevolution.hpp>
-
-#include <boost/math/special_functions/fpclassify.hpp>
-
 #include <algorithm>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -140,8 +138,8 @@ namespace QuantLib {
               Array jitter(population[0].values.size(), 0.0);
 
               for (Size popIter = 0; popIter < population.size(); popIter++) {
-                  for (Size jitterIter = 0; jitterIter < jitter.size(); jitterIter++) {
-                      jitter[jitterIter] = rng_.nextReal();
+                  for (double& jitterIter : jitter) {
+                      jitterIter = rng_.nextReal();
                   }
                   population[popIter].values = bestMemberEver_.values
                       + (shuffledPop1[popIter].values - population[popIter].values)
@@ -176,9 +174,9 @@ namespace QuantLib {
               randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
               Array FWeight = Array(population.front().values.size(), 0.0);
-              for (Size fwIter = 0; fwIter < FWeight.size(); fwIter++)
-                  FWeight[fwIter] = (1.0 - configuration().stepsizeWeight)
-                      * rng_.nextReal() + configuration().stepsizeWeight;
+              for (double& fwIter : FWeight)
+                  fwIter = (1.0 - configuration().stepsizeWeight) * rng_.nextReal() +
+                           configuration().stepsizeWeight;
               for (Size popIter = 0; popIter < population.size(); popIter++) {
                   population[popIter].values = population[popIter].values
                       + FWeight * (shuffledPop1[popIter].values - shuffledPop2[popIter].values);
@@ -301,7 +299,7 @@ namespace QuantLib {
             } catch (Error&) {
                 population[popIter].cost = QL_MAX_REAL;
             }
-            if(!boost::math::isfinite(population[popIter].cost))
+            if (!std::isfinite(population[popIter].cost))
                 population[popIter].cost = QL_MAX_REAL;
 
         }
@@ -363,17 +361,17 @@ namespace QuantLib {
          // [=tau1] A Comparative Study on Numerical Benchmark
          // Problems." page 649 for reference
         Real sizeWeightChangeProb = 0.1;
-        for (Size coIter = 0;coIter < currGenSizeWeights_.size(); coIter++){
+        for (double& currGenSizeWeight : currGenSizeWeights_) {
             if (rng_.nextReal() < sizeWeightChangeProb)
-                currGenSizeWeights_[coIter] = sizeWeightLowerBound + rng_.nextReal() * sizeWeightUpperBound;
+                currGenSizeWeight = sizeWeightLowerBound + rng_.nextReal() * sizeWeightUpperBound;
         }
     }
 
     void DifferentialEvolution::adaptCrossover() const {
         Real crossoverChangeProb = 0.1; // [=tau2]
-        for (Size coIter = 0;coIter < currGenCrossover_.size(); coIter++){
+        for (double& coIter : currGenCrossover_) {
             if (rng_.nextReal() < crossoverChangeProb)
-                currGenCrossover_[coIter] = rng_.nextReal();
+                coIter = rng_.nextReal();
         }
     }
 
@@ -391,7 +389,7 @@ namespace QuantLib {
                 population[j].values[i] = l + (u-l)*rng_.nextReal();
             }
             population[j].cost = p.costFunction().value(population[j].values);
-            if(!boost::math::isfinite(population[j].cost))
+            if (!std::isfinite(population[j].cost))
                 population[j].cost = QL_MAX_REAL;
         }
     }

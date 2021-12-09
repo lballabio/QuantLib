@@ -41,16 +41,15 @@ namespace QuantLib {
     //! w.r.t. an existing interpolated price surface.
     class InterpolatingCPICapFloorEngine : public CPICapFloor::engine {
         public:
-        explicit InterpolatingCPICapFloorEngine(
-                                  const Handle<CPICapFloorTermPriceSurface>&);
+          explicit InterpolatingCPICapFloorEngine(Handle<CPICapFloorTermPriceSurface>);
 
-        virtual void calculate() const;
-        virtual std::string name() const { return "InterpolatingCPICapFloorEngine"; }
+          void calculate() const override;
+          virtual std::string name() const { return "InterpolatingCPICapFloorEngine"; }
 
-        virtual ~InterpolatingCPICapFloorEngine() {}
+          ~InterpolatingCPICapFloorEngine() override = default;
 
-    protected:
-        Handle<CPICapFloorTermPriceSurface> priceSurf_;
+        protected:
+          Handle<CPICapFloorTermPriceSurface> priceSurf_;
     };
 
 

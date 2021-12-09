@@ -20,47 +20,45 @@
 #include "piecewiseyieldcurve.hpp"
 #include "utilities.hpp"
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/indexes/bmaindex.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/indexes/ibor/jpylibor.hpp>
+#include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/indexes/indexmanager.hpp>
+#include <ql/instruments/forwardrateagreement.hpp>
+#include <ql/instruments/makevanillaswap.hpp>
+#include <ql/math/comparison.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
+#include <ql/math/interpolations/convexmonotoneinterpolation.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolations/loginterpolation.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/globalbootstrap.hpp>
-#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
-#include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/termstructures/yield/bondhelpers.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/time/calendars/target.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/time/asx.hpp>
 #include <ql/time/calendars/japan.hpp>
-#include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/imm.hpp>
-#include <ql/time/asx.hpp>
-#include <ql/indexes/ibor/euribor.hpp>
-#include <ql/indexes/ibor/usdlibor.hpp>
-#include <ql/indexes/ibor/jpylibor.hpp>
-#include <ql/indexes/bmaindex.hpp>
-#include <ql/indexes/indexmanager.hpp>
-#include <ql/instruments/forwardrateagreement.hpp>
-#include <ql/instruments/makevanillaswap.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/math/interpolations/loginterpolation.hpp>
-#include <ql/math/interpolations/backwardflatinterpolation.hpp>
-#include <ql/math/interpolations/cubicinterpolation.hpp>
-#include <ql/math/interpolations/convexmonotoneinterpolation.hpp>
-#include <ql/math/comparison.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/pricingengines/bond/discountingbondengine.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <iomanip>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
-#include <boost/assign/list_of.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using boost::assign::list_of;
-using boost::assign::map_list_of;
 using std::map;
 using std::vector;
 using std::string;
@@ -190,14 +188,14 @@ namespace piecewise_yield_curve_test {
             settlement = calendar.advance(today,settlementDays,Days);
             fixedLegConvention = Unadjusted;
             fixedLegFrequency = Annual;
-            fixedLegDayCounter = Thirty360();
+            fixedLegDayCounter = Thirty360(Thirty360::BondBasis);
             bondSettlementDays = 3;
-            bondDayCounter = ActualActual();
+            bondDayCounter = ActualActual(ActualActual::ISDA);
             bondConvention = Following;
             bondRedemption = 100.0;
             bmaFrequency = Quarterly;
             bmaConvention = Following;
-            bmaDayCounter = ActualActual();
+            bmaDayCounter = ActualActual(ActualActual::ISDA);
 
             deposits = LENGTH(depositData);
             fras = LENGTH(fraData);
@@ -618,7 +616,7 @@ namespace piecewise_yield_curve_test {
                               .backwards();
 
 
-            BMASwap swap(BMASwap::Payer, 100.0,
+            BMASwap swap(Swap::Payer, 100.0,
                          liborSchedule, 0.75, 0.0,
                          libor3m, libor3m->dayCounter(),
                          bmaSchedule, bma, vars.bmaDayCounter);
@@ -642,7 +640,7 @@ namespace piecewise_yield_curve_test {
     // Used to check that the exception message contains the expected message string, expMsg.
     struct ExpErrorPred {
 
-        explicit ExpErrorPred(const string& msg) : expMsg(msg) {}
+        explicit ExpErrorPred(string msg) : expMsg(std::move(msg)) {}
 
         bool operator()(const Error& ex) const {
             string errMsg(ex.what());
@@ -1043,8 +1041,8 @@ namespace piecewise_yield_curve_test {
             BOOST_ERROR("failed to link original and copied curve");
         }
 
-        for (Size i=0; i<vars.rates.size(); ++i) {
-            vars.rates[i]->setValue(vars.rates[i]->value() + 0.001);
+        for (auto& rate : vars.rates) {
+            rate->setValue(rate->value() + 0.001);
         }
 
         // now the original curve should have changed; the copied
@@ -1104,7 +1102,8 @@ void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
     // note that the calendar should be US+UK here actually, but technically it should also work with
     // the US calendar only
     ext::shared_ptr<RateHelper> helper = ext::make_shared<SwapRateHelper>(
-        0.02, 50 * Years, UnitedStates(), Semiannual, ModifiedFollowing, Thirty360(), usdLibor3m);
+        0.02, 50 * Years, UnitedStates(UnitedStates::GovernmentBond), Semiannual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), usdLibor3m);
 
     PiecewiseYieldCurve<Discount, LogLinear> curve(today, std::vector<ext::shared_ptr<RateHelper> >(1, helper),
                                                    Actual365Fixed());
@@ -1119,7 +1118,8 @@ void PiecewiseYieldCurveTest::testSwapRateHelperSpotDate() {
     ext::shared_ptr<IborIndex> usdLibor3m = ext::make_shared<USDLibor>(3 * Months);
 
     ext::shared_ptr<SwapRateHelper> helper = ext::make_shared<SwapRateHelper>(
-        0.02, 5 * Years, UnitedStates(), Semiannual, ModifiedFollowing, Thirty360(), usdLibor3m);
+        0.02, 5 * Years, UnitedStates(UnitedStates::GovernmentBond), Semiannual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), usdLibor3m);
 
     Settings::instance().evaluationDate() = Date(11, October, 2019);
 
@@ -1161,12 +1161,10 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
     ext::shared_ptr<Euribor> euribor1m(new Euribor1M);
-    for (Size i=0; i<LENGTH(data); ++i) {
-        helpers.push_back(
-           ext::make_shared<SwapRateHelper>(data[i].rate,
-                                              Period(data[i].n, data[i].units),
-                                              TARGET(), Monthly, Unadjusted,
-                                              Thirty360(), euribor1m));
+    for (auto& i : data) {
+        helpers.push_back(ext::make_shared<SwapRateHelper>(
+            i.rate, Period(i.n, i.units), TARGET(), Monthly, Unadjusted,
+            Thirty360(Thirty360::BondBasis), euribor1m));
     }
 
     Date today = Date(12, October, 2017);
@@ -1188,17 +1186,16 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
     h.linkTo(curve);
 
     ext::shared_ptr<Euribor1M> index = ext::make_shared<Euribor1M>(h);
-    for (Size i=0; i<LENGTH(data); i++) {
-        Period tenor = data[i].n*data[i].units;
+    for (auto& i : data) {
+        Period tenor = i.n * i.units;
 
         VanillaSwap swap = MakeVanillaSwap(tenor, index, 0.0)
-            .withFixedLegDayCount(Thirty360())
+            .withFixedLegDayCount(Thirty360(Thirty360::BondBasis))
             .withFixedLegTenor(Period(1, Months))
             .withFixedLegConvention(Unadjusted);
         swap.setPricingEngine(ext::make_shared<DiscountingSwapEngine>(h));
 
-        Rate expectedRate = data[i].rate,
-             estimatedRate = swap.fairRate();
+        Rate expectedRate = i.rate, estimatedRate = swap.fairRate();
         Spread error = std::fabs(expectedRate-estimatedRate);
         Real tolerance = 1.0e-9;
         if (error > tolerance) {
@@ -1254,12 +1251,9 @@ void PiecewiseYieldCurveTest::testLargeRates() {
     };
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
-    for (Size i=0; i<LENGTH(data); ++i) {
-        helpers.push_back(
-           ext::make_shared<DepositRateHelper>(data[i].rate,
-                                               Period(data[i].n, data[i].units),
-                                               0, WeekendsOnly(), Following,
-                                               false, Actual360()));
+    for (auto& i : data) {
+        helpers.push_back(ext::make_shared<DepositRateHelper>(
+            i.rate, Period(i.n, i.units), 0, WeekendsOnly(), Following, false, Actual360()));
     }
 
     Date today = Date(12, October, 2017);
@@ -1287,9 +1281,8 @@ namespace piecewise_yield_curve_test {
     // functor returning the additional error terms for the cost function
     struct additionalErrors {
         explicit additionalErrors(
-            const std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > >&
-                additionalHelpers)
-        : additionalHelpers(additionalHelpers) {}
+            std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers)
+        : additionalHelpers(std::move(additionalHelpers)) {}
         std::vector<ext::shared_ptr<BootstrapHelper<YieldTermStructure> > > additionalHelpers;
         Array operator()() {
             Array errors(5);
@@ -1364,9 +1357,9 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
 
     Size swapTenors[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50};
     for (Size i = 0; i < 19; ++i) {
-        helpers.push_back(ext::make_shared<SwapRateHelper>(refMktRate[13 + i] / 100.0,
-                                                           swapTenors[i] * Years, TARGET(), Annual,
-                                                           ModifiedFollowing, Thirty360(), index));
+        helpers.push_back(ext::make_shared<SwapRateHelper>(
+            refMktRate[13 + i] / 100.0, swapTenors[i] * Years, TARGET(), Annual, ModifiedFollowing,
+            Thirty360(Thirty360::BondBasis), index));
     }
 
     // global bootstrap constraints
@@ -1415,63 +1408,66 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
     Actual365Fixed tsDayCounter;
 
     // USD discount curve built out of FedFunds OIS swaps.
-    vector<Date> usdCurveDates = list_of
-        (Date(25, Sep, 2019))
-        (Date(26, Sep, 2019))
-        (Date(8, Oct, 2019))
-        (Date(16, Oct, 2019))
-        (Date(22, Oct, 2019))
-        (Date(30, Oct, 2019))
-        (Date(2, Dec, 2019))
-        (Date(31, Dec, 2019))
-        (Date(29, Jan, 2020))
-        (Date(2, Mar, 2020))
-        (Date(31, Mar, 2020))
-        (Date(29, Apr, 2020))
-        (Date(29, May, 2020))
-        (Date(1, Jul, 2020))
-        (Date(29, Jul, 2020))
-        (Date(31, Aug, 2020))
-        (Date(30, Sep, 2020));
+    vector<Date> usdCurveDates = {
+        Date(25, Sep, 2019),
+        Date(26, Sep, 2019),
+        Date(8, Oct, 2019),
+        Date(16, Oct, 2019),
+        Date(22, Oct, 2019),
+        Date(30, Oct, 2019),
+        Date(2, Dec, 2019),
+        Date(31, Dec, 2019),
+        Date(29, Jan, 2020),
+        Date(2, Mar, 2020),
+        Date(31, Mar, 2020),
+        Date(29, Apr, 2020),
+        Date(29, May, 2020),
+        Date(1, Jul, 2020),
+        Date(29, Jul, 2020),
+        Date(31, Aug, 2020),
+        Date(30, Sep, 2020)
+    };
 
-    vector<DiscountFactor> usdCurveDfs = list_of
-        (1.000000000)
-        (0.999940837)
-        (0.999309357)
-        (0.998894646)
-        (0.998574816)
-        (0.998162528)
-        (0.996552511)
-        (0.995197584)
-        (0.993915264)
-        (0.992530008)
-        (0.991329696)
-        (0.990179606)
-        (0.989005698)
-        (0.987751691)
-        (0.986703371)
-        (0.985495036)
-        (0.984413446);
+    vector<DiscountFactor> usdCurveDfs = {
+        1.000000000,
+        0.999940837,
+        0.999309357,
+        0.998894646,
+        0.998574816,
+        0.998162528,
+        0.996552511,
+        0.995197584,
+        0.993915264,
+        0.992530008,
+        0.991329696,
+        0.990179606,
+        0.989005698,
+        0.987751691,
+        0.986703371,
+        0.985495036,
+        0.984413446
+    };
 
     Handle<YieldTermStructure> usdYts(ext::make_shared<InterpolatedDiscountCurve<LogLinear> >(
         usdCurveDates, usdCurveDfs, tsDayCounter));
 
     // USD/ARS forward points
     Handle<Quote> arsSpot(ext::make_shared<SimpleQuote>(56.881));
-    map<Period, Real> arsFwdPoints = map_list_of
-        (1 * Months, 8.5157)
-        (2 * Months, 12.7180)
-        (3 * Months, 17.8310)
-        (6 * Months, 30.3680)
-        (9 * Months, 45.5520)
-        (1 * Years, 60.7370);
+    map<Period, Real> arsFwdPoints = {
+        {1 * Months, 8.5157},
+        {2 * Months, 12.7180},
+        {3 * Months, 17.8310},
+        {6 * Months, 30.3680},
+        {9 * Months, 45.5520},
+        {1 * Years, 60.7370}
+    };
 
     // Create the FX swap rate helpers for the ARS in USD curve.
     vector<ext::shared_ptr<RateHelper> > instruments;
     for (map<Period, Real>::const_iterator it = arsFwdPoints.begin(); it != arsFwdPoints.end(); ++it) {
         Handle<Quote> arsFwd(ext::make_shared<SimpleQuote>(it->second));
         instruments.push_back(ext::make_shared<FxSwapRateHelper>(arsFwd, arsSpot, it->first, 2,
-            UnitedStates(), Following, false, true, usdYts));
+            UnitedStates(UnitedStates::GovernmentBond), Following, false, true, usdYts));
     }
 
     // Create the ARS in USD curve with the default IterativeBootstrap.
@@ -1508,7 +1504,7 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
 
 test_suite* PiecewiseYieldCurveTest::suite() {
 
-    test_suite* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
+    auto* suite = BOOST_TEST_SUITE("Piecewise yield curve tests");
 
     // unstable
     //suite->add(QUANTLIB_TEST_CASE(
@@ -1550,18 +1546,17 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testSwapRateHelperSpotDate));
 
-    if (IborCoupon::usingAtParCoupons()) {
+    if (IborCoupon::Settings::instance().usingAtParCoupons()) {
         // This regression test didn't work with indexed coupons anyway.
-        suite->add(QUANTLIB_TEST_CASE(
-               &PiecewiseYieldCurveTest::testBadPreviousCurve));
+        suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testBadPreviousCurve));
     }
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap));
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLargeRates));
 
-#ifndef QL_USE_INDEXED_COUPON
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testGlobalBootstrap));
-#endif
+    if (IborCoupon::Settings::instance().usingAtParCoupons()) {
+        suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testGlobalBootstrap));
+    }
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testIterativeBootstrapRetries));
 

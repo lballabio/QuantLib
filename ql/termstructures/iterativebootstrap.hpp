@@ -115,7 +115,7 @@ namespace detail {
         Size n_;
         Brent firstSolver_;
         FiniteDifferenceNewtonSafe solver_;
-        mutable bool initialized_, validCurve_, loopRequired_;
+        mutable bool initialized_ = false, validCurve_ = false, loopRequired_;
         mutable Size firstAliveHelper_, alive_;
         mutable std::vector<Real> previousData_;
         mutable std::vector<ext::shared_ptr<BootstrapError<Curve> > > errors_;
@@ -125,12 +125,17 @@ namespace detail {
     // template definitions
 
     template <class Curve>
-    IterativeBootstrap<Curve>::IterativeBootstrap(Real accuracy, Real minValue, Real maxValue,
-        Size maxAttempts, Real maxFactor, Real minFactor, bool dontThrow, Size dontThrowSteps)
-    : accuracy_(accuracy), minValue_(minValue), maxValue_(maxValue),
-      maxAttempts_(maxAttempts), maxFactor_(maxFactor), minFactor_(minFactor), dontThrow_(dontThrow),
-      dontThrowSteps_(dontThrowSteps), ts_(0), initialized_(false), validCurve_(false),
-      loopRequired_(Interpolator::global) {
+    IterativeBootstrap<Curve>::IterativeBootstrap(Real accuracy,
+                                                  Real minValue,
+                                                  Real maxValue,
+                                                  Size maxAttempts,
+                                                  Real maxFactor,
+                                                  Real minFactor,
+                                                  bool dontThrow,
+                                                  Size dontThrowSteps)
+    : accuracy_(accuracy), minValue_(minValue), maxValue_(maxValue), maxAttempts_(maxAttempts),
+      maxFactor_(maxFactor), minFactor_(minFactor), dontThrow_(dontThrow),
+      dontThrowSteps_(dontThrowSteps), ts_(nullptr), loopRequired_(Interpolator::global) {
         QL_REQUIRE(maxFactor_ >= 1.0, "Expected that maxFactor would be at least 1.0 but got " << maxFactor_);
         QL_REQUIRE(minFactor_ >= 1.0, "Expected that minFactor would be at least 1.0 but got " << minFactor_);
     }
@@ -139,7 +144,7 @@ namespace detail {
     void IterativeBootstrap<Curve>::setup(Curve* ts) {
         ts_ = ts;
         n_ = ts_->instruments_.size();
-        QL_REQUIRE(n_ > 0, "no bootstrap helpers given")
+        QL_REQUIRE(n_ > 0, "no bootstrap helpers given");
         for (Size j=0; j<n_; ++j)
             ts_->registerWith(ts_->instruments_[j]);
 

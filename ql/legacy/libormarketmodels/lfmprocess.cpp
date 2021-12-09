@@ -17,33 +17,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/legacy/libormarketmodels/lfmprocess.hpp>
-#include <ql/time/schedule.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/cashflows/floatingratecoupon.hpp>
-#include <ql/processes/eulerdiscretization.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/legacy/libormarketmodels/lfmprocess.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/processes/eulerdiscretization.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/time/schedule.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    LiborForwardModelProcess::LiborForwardModelProcess(
-                                        Size size,
-                                        const ext::shared_ptr<IborIndex>& index)
-    : StochasticProcess(ext::shared_ptr<discretization>(
-                                                    new EulerDiscretization)),
-      size_             (size),
-      index_            (index),
-      initialValues_    (size_),
-      fixingTimes_      (size_),
-      fixingDates_      (size_),
-      accrualStartTimes_(size),
-      accrualEndTimes_  (size),
-      accrualPeriod_    (size_),
-      m1(size_), m2(size_) {
+    LiborForwardModelProcess::LiborForwardModelProcess(Size size, ext::shared_ptr<IborIndex> index)
+    : StochasticProcess(ext::shared_ptr<discretization>(new EulerDiscretization)), size_(size),
+      index_(std::move(index)), initialValues_(size_), fixingTimes_(size_), fixingDates_(size_),
+      accrualStartTimes_(size), accrualEndTimes_(size), accrualPeriod_(size_), m1(size_),
+      m2(size_) {
 
         const DayCounter dayCounter = index_->dayCounter();
         const Leg flows = cashFlows();

@@ -34,14 +34,13 @@ namespace QuantLib {
 
     class FdmBermudanStepCondition : public StepCondition<Array> {
       public:
-        FdmBermudanStepCondition(
-            const std::vector<Date> & exerciseDates,
-            const Date& referenceDate,
-            const DayCounter& dayCounter,
-            const ext::shared_ptr<FdmMesher> & mesher,
-            const ext::shared_ptr<FdmInnerValueCalculator> & calculator);
+        FdmBermudanStepCondition(const std::vector<Date>& exerciseDates,
+                                 const Date& referenceDate,
+                                 const DayCounter& dayCounter,
+                                 ext::shared_ptr<FdmMesher> mesher,
+                                 ext::shared_ptr<FdmInnerValueCalculator> calculator);
 
-        void applyTo(Array& a, Time t) const;
+        void applyTo(Array& a, Time t) const override;
         const std::vector<Time>& exerciseTimes() const;
 
       private:

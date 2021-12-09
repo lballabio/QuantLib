@@ -61,13 +61,13 @@ namespace QuantLib {
                                    Unadjusted, DateGeneration::Backward, false);
         // and swaps
         ext::shared_ptr<VanillaSwap> baseSwap(new VanillaSwap(
-            VanillaSwap::Payer, 1.0, baseFixedSchedule, 1.0, volTS.baseFixedDC_, baseFloatSchedule,
+            Swap::Payer, 1.0, baseFixedSchedule, 1.0, volTS.baseFixedDC_, baseFloatSchedule,
             volTS.baseIndex_, 0.0, volTS.baseIndex_->dayCounter()));
         ext::shared_ptr<VanillaSwap> targSwap(new VanillaSwap(
-            VanillaSwap::Payer, 1.0, baseFixedSchedule, 1.0, volTS.baseFixedDC_, targFloatSchedule,
+            Swap::Payer, 1.0, baseFixedSchedule, 1.0, volTS.baseFixedDC_, targFloatSchedule,
             volTS.targIndex_, 0.0, volTS.targIndex_->dayCounter()));
         ext::shared_ptr<VanillaSwap> finlSwap(new VanillaSwap(
-            VanillaSwap::Payer, 1.0, finlFixedSchedule, 1.0, volTS.targFixedDC_, targFloatSchedule,
+            Swap::Payer, 1.0, finlFixedSchedule, 1.0, volTS.targFixedDC_, targFloatSchedule,
             volTS.targIndex_, 0.0, volTS.targIndex_->dayCounter()));
         // adding engines
         baseSwap->setPricingEngine(
@@ -91,8 +91,8 @@ namespace QuantLib {
         // calculate affine TSR model u and v
         // Sum tau_j   (fixed leg)
         Real sumTauj = 0.0;
-        for (Size k = 0; k < cfs.annuityWeights().size(); ++k)
-            sumTauj += cfs.annuityWeights()[k];
+        for (double k : cfs.annuityWeights())
+            sumTauj += k;
         // Sum tau_j (T_M - T_j)   (fixed leg)
         Real sumTaujDeltaT = 0.0;
         for (Size k = 0; k < cfs.annuityWeights().size(); ++k)
@@ -100,8 +100,8 @@ namespace QuantLib {
                 cfs.annuityWeights()[k] * (cfs.fixedTimes().back() - cfs.fixedTimes()[k]);
         // Sum w_i   (float leg)
         Real sumWi = 0.0;
-        for (Size k = 0; k < cfs.floatWeights().size(); ++k)
-            sumWi += cfs.floatWeights()[k];
+        for (double k : cfs.floatWeights())
+            sumWi += k;
         // Sum w_i (T_N - T_i)    (float leg)
         Real sumWiDeltaT = 0.0;
         for (Size k = 0; k < cfs.floatWeights().size(); ++k)

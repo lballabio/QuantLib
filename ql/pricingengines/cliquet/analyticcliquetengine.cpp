@@ -17,15 +17,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/cliquet/analyticcliquetengine.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/exercise.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/cliquet/analyticcliquetengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticCliquetEngine::AnalyticCliquetEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 

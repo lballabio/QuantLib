@@ -19,44 +19,40 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/fdmblackscholesop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdmBlackScholesOp::FdmBlackScholesOp(
         const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> & bsProcess,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
         Real strike,
         bool localVol,
         Real illegalLocalVolOverwrite,
         Size direction,
-        const ext::shared_ptr<FdmQuantoHelper>& quantoHelper)
-    : mesher_(mesher),
-      rTS_   (bsProcess->riskFreeRate().currentLink()),
-      qTS_   (bsProcess->dividendYield().currentLink()),
-      volTS_ (bsProcess->blackVolatility().currentLink()),
-      localVol_((localVol) ? bsProcess->localVolatility().currentLink()
-                           : ext::shared_ptr<LocalVolTermStructure>()),
-      x_     ((localVol) ? Array(Exp(mesher->locations(direction))) : Array()),
-      dxMap_ (FirstDerivativeOp(direction, mesher)),
-      dxxMap_(SecondDerivativeOp(direction, mesher)),
-      mapT_  (direction, mesher),
-      strike_(strike),
-      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
-      direction_(direction),
-      quantoHelper_(quantoHelper) {
-    }
+        ext::shared_ptr<FdmQuantoHelper> quantoHelper)
+    : mesher_(mesher), rTS_(bsProcess->riskFreeRate().currentLink()),
+      qTS_(bsProcess->dividendYield().currentLink()),
+      volTS_(bsProcess->blackVolatility().currentLink()),
+      localVol_((localVol) ? bsProcess->localVolatility().currentLink() :
+                             ext::shared_ptr<LocalVolTermStructure>()),
+      x_((localVol) ? Array(Exp(mesher->locations(direction))) : Array()),
+      dxMap_(FirstDerivativeOp(direction, mesher)), dxxMap_(SecondDerivativeOp(direction, mesher)),
+      mapT_(direction, mesher), strike_(strike),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite), direction_(direction),
+      quantoHelper_(std::move(quantoHelper)) {}
 
     void FdmBlackScholesOp::setTime(Time t1, Time t2) {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
         const Rate q = qTS_->forwardRate(t1, t2, Continuous).rate();
 
-        if (localVol_ != 0) {
+        if (localVol_ != nullptr) {
             const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
             const FdmLinearOpIterator endIter = layout->end();
 
@@ -80,21 +76,19 @@ namespace QuantLib {
                 }
             }
 
-            if (quantoHelper_ != 0) {
+            if (quantoHelper_ != nullptr) {
                 mapT_.axpyb(r - q - 0.5*v
                     - quantoHelper_->quantoAdjustment(Sqrt(v), t1, t2),
                     dxMap_, dxxMap_.mult(0.5*v), Array(1, -r));
-            }
-            else {
+            } else {
                 mapT_.axpyb(r - q - 0.5*v, dxMap_,
                             dxxMap_.mult(0.5*v), Array(1, -r));
             }
-        }
-        else {
+        } else {
             const Real v
                 = volTS_->blackForwardVariance(t1, t2, strike_)/(t2-t1);
 
-            if (quantoHelper_ != 0) {
+            if (quantoHelper_ != nullptr) {
                 mapT_.axpyb(
                     Array(1, r - q - 0.5*v)
                         - quantoHelper_->quantoAdjustment(
@@ -102,8 +96,7 @@ namespace QuantLib {
                     dxMap_,
                     dxxMap_.mult(0.5*Array(mesher_->layout()->size(), v)),
                     Array(1, -r));
-            }
-            else {
+            } else {
                 mapT_.axpyb(Array(1, r - q - 0.5*v), dxMap_,
                     dxxMap_.mult(0.5*Array(mesher_->layout()->size(), v)),
                     Array(1, -r));
@@ -147,11 +140,10 @@ namespace QuantLib {
         return solve_splitting(direction_, r, dt);
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> >
     FdmBlackScholesOp::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal(1, mapT_.toMatrix());
         return retVal;
     }
-#endif
+
 }

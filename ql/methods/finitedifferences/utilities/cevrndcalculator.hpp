@@ -46,9 +46,9 @@ namespace QuantLib {
 
         Real massAtZero(Time t) const;
 
-        Real pdf(Real f, Time t) const;
-        Real cdf(Real f, Time t) const;
-        Real invcdf(Real q, Time t) const;
+        Real pdf(Real f, Time t) const override;
+        Real cdf(Real f, Time t) const override;
+        Real invcdf(Real q, Time t) const override;
 
       private:
         Real X(Real f) const;

@@ -279,17 +279,16 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
     ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*360+0.5);
+    for (auto& value : values) {
+        Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q); 
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new
-            PlainVanillaPayoff(values[i].type, values[i].strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
 
         ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
@@ -297,13 +296,9 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
 
-        DoubleBarrierOption opt(
-                values[i].barrierType,
-                values[i].barrierlo,
-                values[i].barrierhi,
-                0,   // no rebate
-                payoff,
-                exercise);
+        DoubleBarrierOption opt(value.barrierType, value.barrierlo, value.barrierhi,
+                                0, // no rebate
+                                payoff, exercise);
 
         // Ikeda/Kunitomo engine
         ext::shared_ptr<PricingEngine> engine(
@@ -311,13 +306,12 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
         opt.setPricingEngine(engine);
 
         Real calculated = opt.NPV();
-        Real expected = values[i].result;
+        Real expected = value.result;
         Real error = std::fabs(calculated-expected);
-        if (error>values[i].tol) {
-            REPORT_FAILURE("Ikeda/Kunitomo value", values[i].barrierType, values[i].barrierlo,
-                           values[i].barrierhi, payoff, exercise, values[i].s,
-                           values[i].q, values[i].r, today, values[i].v,
-                           expected, calculated, error, values[i].tol);
+        if (error > value.tol) {
+            REPORT_FAILURE("Ikeda/Kunitomo value", value.barrierType, value.barrierlo,
+                           value.barrierhi, payoff, exercise, value.s, value.q, value.r, today,
+                           value.v, expected, calculated, error, value.tol);
         }
 
         // Wulin Suo/Yong Wang engine
@@ -326,13 +320,12 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
         opt.setPricingEngine(engine);
 
         calculated = opt.NPV();
-        expected = values[i].result;
+        expected = value.result;
         error = std::fabs(calculated-expected);
-        if (error>values[i].tol) {
-            REPORT_FAILURE("Wulin/Yong value", values[i].barrierType, values[i].barrierlo,
-                           values[i].barrierhi, payoff, exercise, values[i].s,
-                           values[i].q, values[i].r, today, values[i].v,
-                           expected, calculated, error, values[i].tol);
+        if (error > value.tol) {
+            REPORT_FAILURE("Wulin/Yong value", value.barrierType, value.barrierlo, value.barrierhi,
+                           payoff, exercise, value.s, value.q, value.r, today, value.v, expected,
+                           calculated, error, value.tol);
         }
 
         engine = ext::shared_ptr<PricingEngine>(
@@ -341,15 +334,13 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
                                                                  300));
         opt.setPricingEngine(engine);
         calculated = opt.NPV();
-        expected = values[i].result;
+        expected = value.result;
         error = std::fabs(calculated-expected);
         double tol = 0.28;
         if (error>tol) {
-            REPORT_FAILURE("Binomial value", values[i].barrierType, 
-                           values[i].barrierlo, values[i].barrierhi, payoff, 
-                           exercise, values[i].s, values[i].q, values[i].r, 
-                           today, values[i].v, expected, calculated, error, 
-                           tol);
+            REPORT_FAILURE("Binomial value", value.barrierType, value.barrierlo, value.barrierhi,
+                           payoff, exercise, value.s, value.q, value.r, today, value.v, expected,
+                           calculated, error, tol);
         }
 
         engine = ext::shared_ptr<PricingEngine>(
@@ -358,18 +349,16 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
                                                 stochProcess, 300));
         opt.setPricingEngine(engine);
         calculated = opt.NPV();
-        expected = values[i].result;
+        expected = value.result;
         error = std::fabs(calculated-expected);
         tol = 0.033; // error one order of magnitude lower than plain binomial
         if (error>tol) {
-            REPORT_FAILURE("Binomial (Derman) value", values[i].barrierType, 
-                           values[i].barrierlo, values[i].barrierhi, payoff, 
-                           exercise, values[i].s, values[i].q, values[i].r, 
-                           today, values[i].v, expected, calculated, error, 
-                           tol);
+            REPORT_FAILURE("Binomial (Derman) value", value.barrierType, value.barrierlo,
+                           value.barrierhi, payoff, exercise, value.s, value.q, value.r, today,
+                           value.v, expected, calculated, error, tol);
         }
 
-        if (values[i].barrierType == DoubleBarrier::KnockOut) {
+        if (value.barrierType == DoubleBarrier::KnockOut) {
             engine = ext::make_shared<FdHestonDoubleBarrierEngine>(
                 ext::make_shared<HestonModel>(
                     ext::make_shared<HestonProcess>(
@@ -381,16 +370,14 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
 
             opt.setPricingEngine(engine);
             calculated = opt.NPV();
-            expected = values[i].result;
+            expected = value.result;
             error = std::fabs(calculated-expected);
 
             tol = 0.025; // error one order of magnitude lower than plain binomial
             if (error>tol) {
-                REPORT_FAILURE("Heston value", values[i].barrierType,
-                               values[i].barrierlo, values[i].barrierhi, payoff,
-                               exercise, values[i].s, values[i].q, values[i].r,
-                               today, values[i].v, expected, calculated, error,
-                               tol);
+                REPORT_FAILURE("Heston value", value.barrierType, value.barrierlo, value.barrierhi,
+                               payoff, exercise, value.s, value.q, value.r, today, value.v,
+                               expected, calculated, error, tol);
             }
         }
     }
@@ -447,60 +434,46 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
     ext::shared_ptr<SimpleQuote> volAtm = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<SimpleQuote> vol25Call = ext::make_shared<SimpleQuote>(0.0);
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (auto& value : values) {
 
         for (Size j=0; j<=1; j++) {
 
-           DoubleBarrier::Type barrierType = static_cast<DoubleBarrier::Type>(j);
+            auto barrierType = static_cast<DoubleBarrier::Type>(j);
 
-            spot->setValue(values[i].s);
-            qRate->setValue(values[i].q);
-            rRate->setValue(values[i].r);
-            vol25Put->setValue(values[i].vol25Put);
-            volAtm->setValue(values[i].volAtm);
-            vol25Call->setValue(values[i].vol25Call);
+            spot->setValue(value.s);
+            qRate->setValue(value.q);
+            rRate->setValue(value.r);
+            vol25Put->setValue(value.vol25Put);
+            volAtm->setValue(value.volAtm);
+            vol25Call->setValue(value.vol25Call);
 
             ext::shared_ptr<StrikedTypePayoff> payoff =
-                ext::make_shared<PlainVanillaPayoff>(values[i].type,
-                                                       values[i].strike);
+                ext::make_shared<PlainVanillaPayoff>(value.type, value.strike);
 
-            Date exDate = today + Integer(values[i].t*365+0.5);
+            Date exDate = today + timeToDays(value.t, 365);
             ext::shared_ptr<Exercise> exercise =
                 ext::make_shared<EuropeanExercise>(exDate);
 
             Handle<DeltaVolQuote> volAtmQuote = Handle<DeltaVolQuote>(
-                        ext::make_shared<DeltaVolQuote>(
-                            Handle<Quote>(volAtm),
-                            DeltaVolQuote::Fwd,
-                            values[i].t,
-                            DeltaVolQuote::AtmDeltaNeutral));
+                ext::make_shared<DeltaVolQuote>(Handle<Quote>(volAtm), DeltaVolQuote::Fwd, value.t,
+                                                DeltaVolQuote::AtmDeltaNeutral));
 
-                                //always delta neutral atm
-            Handle<DeltaVolQuote> vol25PutQuote(Handle<DeltaVolQuote>(
-                            ext::make_shared<DeltaVolQuote>(
-                                -0.25,
-                                Handle<Quote>(vol25Put),
-                                values[i].t,
-                                DeltaVolQuote::Fwd)));
+            // always delta neutral atm
+            Handle<DeltaVolQuote> vol25PutQuote(
+                Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(
+                    -0.25, Handle<Quote>(vol25Put), value.t, DeltaVolQuote::Fwd)));
 
-            Handle<DeltaVolQuote> vol25CallQuote(Handle<DeltaVolQuote>(
-                            ext::make_shared<DeltaVolQuote>(
-                                0.25,
-                                Handle<Quote>(vol25Call),
-                                values[i].t,
-                                DeltaVolQuote::Fwd)));
+            Handle<DeltaVolQuote> vol25CallQuote(
+                Handle<DeltaVolQuote>(ext::make_shared<DeltaVolQuote>(
+                    0.25, Handle<Quote>(vol25Call), value.t, DeltaVolQuote::Fwd)));
 
-            DoubleBarrierOption doubleBarrierOption(barrierType,
-                                                    values[i].barrier1,
-                                                    values[i].barrier2,
-                                                    values[i].rebate,
-                                                    payoff,
-                                                    exercise);
+            DoubleBarrierOption doubleBarrierOption(barrierType, value.barrier1, value.barrier2,
+                                                    value.rebate, payoff, exercise);
 
             Real bsVanillaPrice =
-                blackFormula(values[i].type, values[i].strike,
-                             spot->value()*qTS->discount(values[i].t)/rTS->discount(values[i].t),
-                             values[i].v * sqrt(values[i].t), rTS->discount(values[i].t));
+                blackFormula(value.type, value.strike,
+                             spot->value() * qTS->discount(value.t) / rTS->discount(value.t),
+                             value.v * sqrt(value.t), rTS->discount(value.t));
             ext::shared_ptr<PricingEngine> vannaVolgaEngine =
                 ext::make_shared<VannaVolgaDoubleBarrierEngine<WulinYongDoubleBarrierEngine> >(
                                 volAtmQuote,
@@ -516,20 +489,17 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
             // Expected result for KO is given in array, for KI is evaluated as vanilla - KO
             Real expected = 0;
             if (barrierType == DoubleBarrier::KnockOut)
-               expected = values[i].result;
+                expected = value.result;
             else if (barrierType == DoubleBarrier::KnockIn)
-               expected = (bsVanillaPrice - values[i].result);
-           
+                expected = (bsVanillaPrice - value.result);
+
             Real calculated = doubleBarrierOption.NPV();
             Real error = std::fabs(calculated-expected);
-            if (error>values[i].tol) {
-                REPORT_FAILURE_VANNAVOLGA(
-                    "value", barrierType,
-                    values[i].barrier1, values[i].barrier2,
-                    values[i].rebate, payoff, exercise, values[i].s,
-                    values[i].q, values[i].r, today, values[i].vol25Put,
-                    values[i].volAtm, values[i].vol25Call, values[i].v,
-                    expected, calculated, error, values[i].tol);
+            if (error > value.tol) {
+                REPORT_FAILURE_VANNAVOLGA("value", barrierType, value.barrier1, value.barrier2,
+                                          value.rebate, payoff, exercise, value.s, value.q, value.r,
+                                          today, value.vol25Put, value.volAtm, value.vol25Call,
+                                          value.v, expected, calculated, error, value.tol);
             }
 
             vannaVolgaEngine =
@@ -548,16 +518,12 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
             error = std::fabs(calculated-expected);
             Real maxtol = 5.0e-3; // different engines have somewhat different results
             if (error>maxtol) {
-                REPORT_FAILURE_VANNAVOLGA(
-                    "value", barrierType,
-                    values[i].barrier1, values[i].barrier2,
-                    values[i].rebate, payoff, exercise, values[i].s,
-                    values[i].q, values[i].r, today, values[i].vol25Put,
-                    values[i].volAtm, values[i].vol25Call, values[i].v,
-                    expected, calculated, error, values[i].tol);
+                REPORT_FAILURE_VANNAVOLGA("value", barrierType, value.barrier1, value.barrier2,
+                                          value.rebate, payoff, exercise, value.s, value.q, value.r,
+                                          today, value.vol25Put, value.volAtm, value.vol25Call,
+                                          value.v, expected, calculated, error, value.tol);
             }
         }
-
     }
 }
 
@@ -629,7 +595,7 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
 
     ext::shared_ptr<PricingEngine> mcdoublebarrierengine;
     mcdoublebarrierengine = MakeMCDoubleBarrierEngine<PseudoRandom>(bsmProcess)
-        .withSteps(10000)
+        .withSteps(5000)
         .withAntitheticVariate()
         .withAbsoluteTolerance(0.5)
         .withSeed(1);
@@ -652,38 +618,41 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
     knockOutDoubleBarrierOption.setPricingEngine(analyticdoublebarrierengine);
     analytical = knockOutDoubleBarrierOption.NPV();
 
+    tolerance = 0.01;
+
     mcdoublebarrierengine = MakeMCDoubleBarrierEngine<PseudoRandom>(bsmProcess)
-        .withSteps(10000)
+        .withSteps(5000)
         .withAntitheticVariate()
-        .withAbsoluteTolerance(0.005)
-        .withSeed(3);
+        .withAbsoluteTolerance(tolerance)
+        .withSeed(10);
     knockOutDoubleBarrierOption.setPricingEngine(mcdoublebarrierengine);
     monteCarlo = knockOutDoubleBarrierOption.NPV();
 
-    percentageDiff = std::abs(analytical - monteCarlo) / analytical;
+    Real diff = std::abs(analytical - monteCarlo);
 
-    if (percentageDiff > tolerance){
-        REPORT_FAILURE_DOUBLE_BARRIER_MC(analytical, monteCarlo, percentageDiff);
+    if (diff > tolerance){
+        REPORT_FAILURE_DOUBLE_BARRIER_MC(analytical, monteCarlo, diff);
     }
 
 }
 
 test_suite* DoubleBarrierOptionTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("DoubleBarrier");
+    auto* suite = BOOST_TEST_SUITE("DoubleBarrier");
 
     if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &DoubleBarrierOptionTest::testEuropeanHaugValues));
+        suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testEuropeanHaugValues));
     }
 
     return suite;
 }
 
-test_suite* DoubleBarrierOptionTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("DoubleBarrier_experimental");
-    suite->add(QUANTLIB_TEST_CASE(
-                      &DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues));
-    suite->add(QUANTLIB_TEST_CASE(
-                   &DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical));
+test_suite* DoubleBarrierOptionTest::experimental(SpeedLevel speed) {
+    auto* suite = BOOST_TEST_SUITE("DoubleBarrier_experimental");
+    suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical));
+    }
+
     return suite;
 }

@@ -95,11 +95,11 @@ void FunctionsTest::testGammaValues() {
             {-21.5, 1.318444918321553e-20, 1e6}
     };
 
-    for (Size i=0; i < LENGTH(tasks); ++i) {
-        const Real x = tasks[i][0];
-        const Real expected = tasks[i][1];
+    for (auto& task : tasks) {
+        const Real x = task[0];
+        const Real expected = task[1];
         const Real calculated = GammaFunction().value(x);
-        const Real tol = tasks[i][2] * QL_EPSILON*std::fabs(expected);
+        const Real tol = task[2] * QL_EPSILON * std::fabs(expected);
 
         if (std::fabs(calculated - expected) > tol) {
             BOOST_ERROR("GammaFunction(" << x << ")\n"
@@ -129,11 +129,11 @@ void FunctionsTest::testModifiedBesselFunctions() {
         {-10.0001, 1.1, 13857.7715614282552, 69288858.9474423379}
     };
 
-    for (Size i=0; i < LENGTH(r); ++i) {
-        const Real nu = r[i][0];
-        const Real x  = r[i][1];
-        const Real expected_i = r[i][2];
-        const Real expected_k = r[i][3];
+    for (auto& i : r) {
+        const Real nu = i[0];
+        const Real x = i[1];
+        const Real expected_i = i[2];
+        const Real expected_k = i[3];
         const Real tol_i = 5e4 * QL_EPSILON*std::fabs(expected_i);
         const Real tol_k = 5e4 * QL_EPSILON*std::fabs(expected_k);
 
@@ -193,13 +193,11 @@ void FunctionsTest::testModifiedBesselFunctions() {
                         -4.480795479964915e-05, -3.489034389148745e-08}
     };
 
-    for (Size i=0; i < LENGTH(c); ++i) {
-        const Real nu = c[i][0];
-        const std::complex<Real> z  = std::complex<Real>(c[i][1], c[i][2]);
-        const std::complex<Real> expected_i
-            = std::complex<Real>(c[i][3],c[i][4]);
-        const std::complex<Real> expected_k
-            = std::complex<Real>(c[i][5],c[i][6]);
+    for (auto& i : c) {
+        const Real nu = i[0];
+        const std::complex<Real> z = std::complex<Real>(i[1], i[2]);
+        const std::complex<Real> expected_i = std::complex<Real>(i[3], i[4]);
+        const std::complex<Real> expected_k = std::complex<Real>(i[5], i[6]);
 
         const Real tol_i = 5e4*QL_EPSILON*std::abs(expected_i);
         const Real tol_k = 1e6*QL_EPSILON*std::abs(expected_k);
@@ -310,7 +308,7 @@ void FunctionsTest::testWeightedModifiedBesselFunctions() {
 }
 
 test_suite* FunctionsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Factorial tests");
+    auto* suite = BOOST_TEST_SUITE("Factorial tests");
     suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testFactorial));
     suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testGammaFunction));
     suite->add(QUANTLIB_TEST_CASE(&FunctionsTest::testGammaValues));

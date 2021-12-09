@@ -40,7 +40,7 @@ namespace QuantLib {
         };
         //! \name Constructors
         //@{
-        UnitOfMeasureConversion();
+        UnitOfMeasureConversion() = default;
         /*! the conversionFactor \f$ r \f$ is given with the
             convention that a unit of the source is worth \f$ r \f$
             units of the target.
@@ -104,8 +104,6 @@ namespace QuantLib {
     };
 
     // inline definitions
-
-    inline UnitOfMeasureConversion::UnitOfMeasureConversion() {}
 
     inline const CommodityType& UnitOfMeasureConversion::commodityType() const {
         return data_->commodityType;

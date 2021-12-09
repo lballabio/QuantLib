@@ -41,17 +41,17 @@ namespace QuantLib {
           \param payoff2    The payoff of the extended option
           \param exercise2  The second exercise date
         */
-        WriterExtensibleOption(
-            const ext::shared_ptr<PlainVanillaPayoff>& payoff1,
-            const ext::shared_ptr<Exercise>& exercise1,
-            const ext::shared_ptr<PlainVanillaPayoff>& payoff2,
-            const ext::shared_ptr<Exercise>& exercise2);
+        WriterExtensibleOption(const ext::shared_ptr<PlainVanillaPayoff>& payoff1,
+                               const ext::shared_ptr<Exercise>& exercise1,
+                               const ext::shared_ptr<PlainVanillaPayoff>& payoff2,
+                               ext::shared_ptr<Exercise> exercise2);
         // inspectors
         ext::shared_ptr<Payoff> payoff2() { return payoff2_; }
         ext::shared_ptr<Exercise> exercise2() { return exercise2_; };
         // Instrument interface
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
+
       private:
         ext::shared_ptr<StrikedTypePayoff> payoff2_;
         ext::shared_ptr<Exercise> exercise2_;
@@ -61,7 +61,7 @@ namespace QuantLib {
     class WriterExtensibleOption::arguments
         : public OneAssetOption::arguments {
       public:
-        void validate() const;
+        void validate() const override;
         ext::shared_ptr<Payoff> payoff2;
         ext::shared_ptr<Exercise> exercise2;
     };

@@ -75,9 +75,9 @@ namespace inflation_cpi_capfloor_test {
             Date maturity = iiData[i].date;
             Handle<Quote> quote(ext::shared_ptr<Quote>(
                                 new SimpleQuote(iiData[i].rate/100.0)));
-            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
-                                quote, observationLag, maturity,
-                                calendar, bdc, dc, ii, discountCurve));
+            ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(quote, observationLag, maturity,
+                                                                    calendar, bdc, dc, ii,
+                                                                    CPI::AsIndex, discountCurve));
             instruments.push_back(anInstrument);
         }
 
@@ -144,8 +144,8 @@ namespace inflation_cpi_capfloor_test {
             fixingDays = 0;
             settlement = calendar.advance(today,settlementDays,Days);
             startDate = settlement;
-            dcZCIIS = ActualActual();
-            dcNominal = ActualActual();
+            dcZCIIS = ActualActual(ActualActual::ISDA);
+            dcNominal = ActualActual(ActualActual::ISDA);
 
             // uk rpi index
             //      fixing data
@@ -208,18 +208,15 @@ namespace inflation_cpi_capfloor_test {
                 { Date( 2, June, 2070), 3.757542 },
                 { Date( 3, June, 2080), 3.651379 }
             };
-            const Size nominalDataLength = 33-1;
 
             std::vector<Date> nomD;
             std::vector<Rate> nomR;
-            for (Size i = 0; i < nominalDataLength; i++) {
-                nomD.push_back(nominalData[i].date);
-                nomR.push_back(nominalData[i].rate/100.0);
+            for (auto& i : nominalData) {
+                nomD.push_back(i.date);
+                nomR.push_back(i.rate / 100.0);
             }
-            ext::shared_ptr<YieldTermStructure>   nominalTS
-            =   ext::make_shared<InterpolatedZeroCurve<Linear>
-            >(nomD,nomR,dcNominal);
-
+            ext::shared_ptr<YieldTermStructure> nominalTS =
+                ext::make_shared<InterpolatedZeroCurve<Linear>>(nomD,nomR,dcNominal);
 
             nominalUK.linkTo(nominalTS);
 
@@ -268,8 +265,7 @@ namespace inflation_cpi_capfloor_test {
             ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pCPIts(
                                 new PiecewiseZeroInflationCurve<Linear>(
                                     evaluationDate, calendar, dcZCIIS, observationLag,
-                                    ii->frequency(),ii->interpolated(), baseZeroRate,
-                                    helpers));
+                                    ii->frequency(), baseZeroRate, helpers));
             pCPIts->recalculate();
             cpiUK.linkTo(pCPIts);
             hii.linkTo(ii);
@@ -461,7 +457,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
 
 
 test_suite* InflationCPICapFloorTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("CPIswaption tests");
+    auto* suite = BOOST_TEST_SUITE("CPIswaption tests");
 
     suite->add(QUANTLIB_TEST_CASE(&InflationCPICapFloorTest::cpicapfloorpricesurface));
     suite->add(QUANTLIB_TEST_CASE(&InflationCPICapFloorTest::cpicapfloorpricer));

@@ -22,26 +22,26 @@
 */
 
 
-#include <ql/instruments/basketoption.hpp>
-#include <ql/instruments/vanillaswingoption.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/experimental/processes/klugeextouprocess.hpp>
-#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
-#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
 #include <ql/experimental/finitedifferences/fdmklugeextousolver.hpp>
-#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmvppstepconditionfactory.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleklugeextouvppengine.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
+#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
+#include <ql/experimental/processes/klugeextouprocess.hpp>
+#include <ql/instruments/basketoption.hpp>
+#include <ql/instruments/vanillaswingoption.hpp>
+#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
-
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <list>
+#include <utility>
 
 namespace QuantLib {
 
@@ -49,22 +49,20 @@ namespace QuantLib {
         class FdmSparkSpreadInnerValue : public FdmInnerValueCalculator {
 
           public:
-            FdmSparkSpreadInnerValue(
-                const ext::shared_ptr<BasketPayoff>& basketPayoff,
-                const ext::shared_ptr<FdmInnerValueCalculator>& fuelPrice,
-                const ext::shared_ptr<FdmInnerValueCalculator>& powerPrice)
-            : basketPayoff_(basketPayoff),
-              fuelPrice_(fuelPrice),
-              powerPrice_(powerPrice) { }
+            FdmSparkSpreadInnerValue(ext::shared_ptr<BasketPayoff> basketPayoff,
+                                     ext::shared_ptr<FdmInnerValueCalculator> fuelPrice,
+                                     ext::shared_ptr<FdmInnerValueCalculator> powerPrice)
+            : basketPayoff_(std::move(basketPayoff)), fuelPrice_(std::move(fuelPrice)),
+              powerPrice_(std::move(powerPrice)) {}
 
-            Real innerValue(const FdmLinearOpIterator& iter, Time t) {
+            Real innerValue(const FdmLinearOpIterator& iter, Time t) override {
                 Array s(2);
                 s[0] = powerPrice_->innerValue(iter, t);
                 s[1] = fuelPrice_->innerValue(iter, t);
 
                 return (*basketPayoff_)(s);
             }
-            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
                 return innerValue(iter, t);
             }
 
@@ -77,24 +75,19 @@ namespace QuantLib {
 
 
     FdSimpleKlugeExtOUVPPEngine::FdSimpleKlugeExtOUVPPEngine(
-        const ext::shared_ptr<KlugeExtOUProcess>& process,
-        const ext::shared_ptr<YieldTermStructure>& rTS,
-        const ext::shared_ptr<Shape>& fuelShape,
-        const ext::shared_ptr<Shape>& powerShape,
+        ext::shared_ptr<KlugeExtOUProcess> process,
+        ext::shared_ptr<YieldTermStructure> rTS,
+        ext::shared_ptr<Shape> fuelShape,
+        ext::shared_ptr<Shape> powerShape,
         Real fuelCostAddon,
-        Size tGrid, Size xGrid, Size yGrid, Size gGrid,
+        Size tGrid,
+        Size xGrid,
+        Size yGrid,
+        Size gGrid,
         const FdmSchemeDesc& schemeDesc)
-    : process_      (process),
-      rTS_          (rTS),
-      fuelCostAddon_(fuelCostAddon),
-      fuelShape_     (fuelShape),
-      powerShape_   (powerShape),
-      tGrid_        (tGrid),
-      xGrid_        (xGrid),
-      yGrid_        (yGrid),
-      gGrid_        (gGrid),
-      schemeDesc_   (schemeDesc) {
-    }
+    : process_(std::move(process)), rTS_(std::move(rTS)), fuelCostAddon_(fuelCostAddon),
+      fuelShape_(std::move(fuelShape)), powerShape_(std::move(powerShape)), tGrid_(tGrid),
+      xGrid_(xGrid), yGrid_(yGrid), gGrid_(gGrid), schemeDesc_(schemeDesc) {}
 
     void FdSimpleKlugeExtOUVPPEngine::calculate() const {
 

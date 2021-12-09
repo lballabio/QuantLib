@@ -1,6 +1,8 @@
 name: Update copyright list
 on:
-  - push
+  push:
+    branches:
+      - '**'
 jobs:
   copyrights:
     runs-on: ubuntu-latest
@@ -9,9 +11,11 @@ jobs:
     - name: Check
       run: |
         ./tools/check_copyrights.sh
-    - uses: peter-evans/create-pull-request@v2
+    - uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: update-copyright-list-${{ github.ref }}
+        delete-branch: true
         commit-message: 'Update copyright list in license'
         title: 'Update copyright list in license'
+        author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>

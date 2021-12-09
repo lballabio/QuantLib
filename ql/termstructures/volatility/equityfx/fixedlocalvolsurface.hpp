@@ -40,37 +40,32 @@ namespace QuantLib {
         FixedLocalVolSurface(const Date& referenceDate,
                              const std::vector<Date>& dates,
                              const std::vector<Real>& strikes,
-                             const ext::shared_ptr<Matrix>& localVolMatrix,
+                             ext::shared_ptr<Matrix> localVolMatrix,
                              const DayCounter& dayCounter,
-                             Extrapolation lowerExtrapolation =
-                                 ConstantExtrapolation,
-                             Extrapolation upperExtrapolation =
-                                 ConstantExtrapolation);
+                             Extrapolation lowerExtrapolation = ConstantExtrapolation,
+                             Extrapolation upperExtrapolation = ConstantExtrapolation);
 
         FixedLocalVolSurface(const Date& referenceDate,
                              const std::vector<Time>& times,
                              const std::vector<Real>& strikes,
-                             const ext::shared_ptr<Matrix>& localVolMatrix,
+                             ext::shared_ptr<Matrix> localVolMatrix,
                              const DayCounter& dayCounter,
-                             Extrapolation lowerExtrapolation =
-                                 ConstantExtrapolation,
-                             Extrapolation upperExtrapolation =
-                                 ConstantExtrapolation);
+                             Extrapolation lowerExtrapolation = ConstantExtrapolation,
+                             Extrapolation upperExtrapolation = ConstantExtrapolation);
 
-        FixedLocalVolSurface(
-            const Date& referenceDate,
-            const std::vector<Time>& times,
-            const std::vector<ext::shared_ptr<std::vector<Real> > > & strikes,
-            const ext::shared_ptr<Matrix>& localVolMatrix,
-            const DayCounter& dayCounter,
-            Extrapolation lowerExtrapolation = ConstantExtrapolation,
-            Extrapolation upperExtrapolation = ConstantExtrapolation);
+        FixedLocalVolSurface(const Date& referenceDate,
+                             const std::vector<Time>& times,
+                             const std::vector<ext::shared_ptr<std::vector<Real> > >& strikes,
+                             ext::shared_ptr<Matrix> localVolMatrix,
+                             const DayCounter& dayCounter,
+                             Extrapolation lowerExtrapolation = ConstantExtrapolation,
+                             Extrapolation upperExtrapolation = ConstantExtrapolation);
 
 
-        Date maxDate() const;
-        Time maxTime() const;
-        Real minStrike() const;
-        Real maxStrike() const;
+        Date maxDate() const override;
+        Time maxTime() const override;
+        Real minStrike() const override;
+        Real maxStrike() const override;
 
         template <class Interpolator>
         void setInterpolation(const Interpolator& i = Interpolator()) {
@@ -83,7 +78,7 @@ namespace QuantLib {
         }
 
       protected:
-        Volatility localVolImpl(Time t, Real strike) const;
+        Volatility localVolImpl(Time t, Real strike) const override;
 
         const Date maxDate_;
         std::vector<Time> times_;

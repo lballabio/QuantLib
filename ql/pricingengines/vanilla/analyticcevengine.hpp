@@ -61,11 +61,9 @@ namespace QuantLib {
 
     class AnalyticCEVEngine : public VanillaOption::engine {
       public:
-        AnalyticCEVEngine(
-            Real f0, Real alpha, Real beta,
-            const Handle<YieldTermStructure>& discountCurve);
+        AnalyticCEVEngine(Real f0, Real alpha, Real beta, Handle<YieldTermStructure> discountCurve);
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const ext::shared_ptr<CEVCalculator> calculator_;

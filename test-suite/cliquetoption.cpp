@@ -141,121 +141,115 @@ namespace {
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-        for (Size i=0; i<LENGTH(types); i++) {
-          for (Size j=0; j<LENGTH(moneyness); j++) {
-            for (Size k=0; k<LENGTH(lengths); k++) {
-              for (Size kk=0; kk<LENGTH(frequencies); kk++) {
+        for (auto& type : types) {
+            for (double moneynes : moneyness) {
+                for (int length : lengths) {
+                    for (auto& frequencie : frequencies) {
 
-                ext::shared_ptr<EuropeanExercise> maturity(
-                              new EuropeanExercise(today + lengths[k]*Years));
+                        ext::shared_ptr<EuropeanExercise> maturity(
+                            new EuropeanExercise(today + length * Years));
 
-                ext::shared_ptr<PercentageStrikePayoff> payoff(
-                          new PercentageStrikePayoff(types[i], moneyness[j]));
+                        ext::shared_ptr<PercentageStrikePayoff> payoff(
+                            new PercentageStrikePayoff(type, moneynes));
 
-                std::vector<Date> reset;
-                for (Date d = today + Period(frequencies[kk]);
-                     d < maturity->lastDate();
-                     d += Period(frequencies[kk]))
-                    reset.push_back(d);
+                        std::vector<Date> reset;
+                        for (Date d = today + Period(frequencie); d < maturity->lastDate();
+                             d += Period(frequencie))
+                            reset.push_back(d);
 
-                ext::shared_ptr<PricingEngine> engine(new T(process));
+                        ext::shared_ptr<PricingEngine> engine(new T(process));
 
-                CliquetOption option(payoff, maturity, reset);
-                option.setPricingEngine(engine);
+                        CliquetOption option(payoff, maturity, reset);
+                        option.setPricingEngine(engine);
 
-                for (Size l=0; l<LENGTH(underlyings); l++) {
-                  for (Size m=0; m<LENGTH(qRates); m++) {
-                    for (Size n=0; n<LENGTH(rRates); n++) {
-                      for (Size p=0; p<LENGTH(vols); p++) {
+                        for (double u : underlyings) {
+                            for (double m : qRates) {
+                                for (double n : rRates) {
+                                    for (double v : vols) {
 
-                        Real u = underlyings[l];
-                        Rate q = qRates[m],
-                             r = rRates[n];
-                        Volatility v = vols[p];
-                        spot->setValue(u);
-                        qRate->setValue(q);
-                        rRate->setValue(r);
-                        vol->setValue(v);
+                                        Rate q = m, r = n;
+                                        spot->setValue(u);
+                                        qRate->setValue(q);
+                                        rRate->setValue(r);
+                                        vol->setValue(v);
 
-                        Real value = option.NPV();
-                        calculated["delta"]  = option.delta();
-                        calculated["gamma"]  = option.gamma();
-                        calculated["theta"]  = option.theta();
-                        calculated["rho"]    = option.rho();
-                        calculated["divRho"] = option.dividendRho();
-                        calculated["vega"]   = option.vega();
+                                        Real value = option.NPV();
+                                        calculated["delta"] = option.delta();
+                                        calculated["gamma"] = option.gamma();
+                                        calculated["theta"] = option.theta();
+                                        calculated["rho"] = option.rho();
+                                        calculated["divRho"] = option.dividendRho();
+                                        calculated["vega"] = option.vega();
 
-                        if (value > spot->value()*1.0e-5) {
-                          // perturb spot and get delta and gamma
-                          Real du = u*1.0e-4;
-                          spot->setValue(u+du);
-                          Real value_p = option.NPV(),
-                               delta_p = option.delta();
-                          spot->setValue(u-du);
-                          Real value_m = option.NPV(),
-                               delta_m = option.delta();
-                          spot->setValue(u);
-                          expected["delta"] = (value_p - value_m)/(2*du);
-                          expected["gamma"] = (delta_p - delta_m)/(2*du);
+                                        if (value > spot->value() * 1.0e-5) {
+                                            // perturb spot and get delta and gamma
+                                            Real du = u * 1.0e-4;
+                                            spot->setValue(u + du);
+                                            Real value_p = option.NPV(), delta_p = option.delta();
+                                            spot->setValue(u - du);
+                                            Real value_m = option.NPV(), delta_m = option.delta();
+                                            spot->setValue(u);
+                                            expected["delta"] = (value_p - value_m) / (2 * du);
+                                            expected["gamma"] = (delta_p - delta_m) / (2 * du);
 
-                          // perturb rates and get rho and dividend rho
-                          Spread dr = r*1.0e-4;
-                          rRate->setValue(r+dr);
-                          value_p = option.NPV();
-                          rRate->setValue(r-dr);
-                          value_m = option.NPV();
-                          rRate->setValue(r);
-                          expected["rho"] = (value_p - value_m)/(2*dr);
+                                            // perturb rates and get rho and dividend rho
+                                            Spread dr = r * 1.0e-4;
+                                            rRate->setValue(r + dr);
+                                            value_p = option.NPV();
+                                            rRate->setValue(r - dr);
+                                            value_m = option.NPV();
+                                            rRate->setValue(r);
+                                            expected["rho"] = (value_p - value_m) / (2 * dr);
 
-                          Spread dq = q*1.0e-4;
-                          qRate->setValue(q+dq);
-                          value_p = option.NPV();
-                          qRate->setValue(q-dq);
-                          value_m = option.NPV();
-                          qRate->setValue(q);
-                          expected["divRho"] = (value_p - value_m)/(2*dq);
+                                            Spread dq = q * 1.0e-4;
+                                            qRate->setValue(q + dq);
+                                            value_p = option.NPV();
+                                            qRate->setValue(q - dq);
+                                            value_m = option.NPV();
+                                            qRate->setValue(q);
+                                            expected["divRho"] = (value_p - value_m) / (2 * dq);
 
-                          // perturb volatility and get vega
-                          Volatility dv = v*1.0e-4;
-                          vol->setValue(v+dv);
-                          value_p = option.NPV();
-                          vol->setValue(v-dv);
-                          value_m = option.NPV();
-                          vol->setValue(v);
-                          expected["vega"] = (value_p - value_m)/(2*dv);
+                                            // perturb volatility and get vega
+                                            Volatility dv = v * 1.0e-4;
+                                            vol->setValue(v + dv);
+                                            value_p = option.NPV();
+                                            vol->setValue(v - dv);
+                                            value_m = option.NPV();
+                                            vol->setValue(v);
+                                            expected["vega"] = (value_p - value_m) / (2 * dv);
 
-                          // perturb date and get theta
-                          Time dT = dc.yearFraction(today-1, today+1);
-                          Settings::instance().evaluationDate() = today-1;
-                          value_m = option.NPV();
-                          Settings::instance().evaluationDate() = today+1;
-                          value_p = option.NPV();
-                          Settings::instance().evaluationDate() = today;
-                          expected["theta"] = (value_p - value_m)/dT;
+                                            // perturb date and get theta
+                                            Time dT = dc.yearFraction(today - 1, today + 1);
+                                            Settings::instance().evaluationDate() = today - 1;
+                                            value_m = option.NPV();
+                                            Settings::instance().evaluationDate() = today + 1;
+                                            value_p = option.NPV();
+                                            Settings::instance().evaluationDate() = today;
+                                            expected["theta"] = (value_p - value_m) / dT;
 
-                          // compare
-                          std::map<std::string,Real>::iterator it;
-                          for (it = calculated.begin();
-                               it != calculated.end(); ++it) {
-                              std::string greek = it->first;
-                              Real expct = expected  [greek],
-                                   calcl = calculated[greek],
-                                   tol   = tolerance [greek];
-                              Real error = relativeError(expct,calcl,u);
-                              if (error>tol) {
-                                  REPORT_FAILURE(greek, payoff, maturity,
-                                                 u, q, r, today, v,
-                                                 expct, calcl, error, tol);
-                              }
-                          }
+                                            // compare
+                                            std::map<std::string, Real>::iterator it;
+                                            for (it = calculated.begin(); it != calculated.end();
+                                                 ++it) {
+                                                std::string greek = it->first;
+                                                Real expct = expected[greek],
+                                                     calcl = calculated[greek],
+                                                     tol = tolerance[greek];
+                                                Real error = relativeError(expct, calcl, u);
+                                                if (error > tol) {
+                                                    REPORT_FAILURE(greek, payoff, maturity, u, q, r,
+                                                                   today, v, expct, calcl, error,
+                                                                   tol);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                      }
                     }
-                  }
                 }
-              }
             }
-          }
         }
     }
 
@@ -305,74 +299,69 @@ void CliquetOptionTest::testMcPerformance() {
                             new BlackScholesMertonProcess(Handle<Quote>(spot),
                                                           qTS, rTS, volTS));
 
-    for (Size i=0; i<LENGTH(types); i++) {
-      for (Size j=0; j<LENGTH(moneyness); j++) {
-        for (Size k=0; k<LENGTH(lengths); k++) {
-          for (Size kk=0; kk<LENGTH(frequencies); kk++) {
+    for (auto& type : types) {
+        for (double moneynes : moneyness) {
+            for (int length : lengths) {
+                for (auto& frequencie : frequencies) {
 
-              Period tenor = Period(frequencies[kk]);
-              ext::shared_ptr<EuropeanExercise> maturity(
-                              new EuropeanExercise(today + lengths[k]*tenor));
+                    Period tenor = Period(frequencie);
+                    ext::shared_ptr<EuropeanExercise> maturity(
+                        new EuropeanExercise(today + length * tenor));
 
-              ext::shared_ptr<PercentageStrikePayoff> payoff(
-                          new PercentageStrikePayoff(types[i], moneyness[j]));
+                    ext::shared_ptr<PercentageStrikePayoff> payoff(
+                        new PercentageStrikePayoff(type, moneynes));
 
-              std::vector<Date> reset;
-              for (Date d = today + tenor; d < maturity->lastDate(); d += tenor)
-                  reset.push_back(d);
+                    std::vector<Date> reset;
+                    for (Date d = today + tenor; d < maturity->lastDate(); d += tenor)
+                        reset.push_back(d);
 
-              CliquetOption option(payoff, maturity, reset);
+                    CliquetOption option(payoff, maturity, reset);
 
-              ext::shared_ptr<PricingEngine> refEngine(
-                                      new AnalyticPerformanceEngine(process));
+                    ext::shared_ptr<PricingEngine> refEngine(
+                        new AnalyticPerformanceEngine(process));
 
-              ext::shared_ptr<PricingEngine> mcEngine =
-                  MakeMCPerformanceEngine<PseudoRandom>(process)
-                  .withBrownianBridge()
-                  .withAbsoluteTolerance(5.0e-3)
-                  .withSeed(42);
+                    ext::shared_ptr<PricingEngine> mcEngine =
+                        MakeMCPerformanceEngine<PseudoRandom>(process)
+                            .withBrownianBridge()
+                            .withAbsoluteTolerance(5.0e-3)
+                            .withSeed(42);
 
-              for (Size l=0; l<LENGTH(underlyings); l++) {
-                for (Size m=0; m<LENGTH(qRates); m++) {
-                  for (Size n=0; n<LENGTH(rRates); n++) {
-                    for (Size p=0; p<LENGTH(vols); p++) {
+                    for (double u : underlyings) {
+                        for (double m : qRates) {
+                            for (double n : rRates) {
+                                for (double v : vols) {
 
-                      Real u = underlyings[l];
-                      Rate q = qRates[m],
-                           r = rRates[n];
-                      Volatility v = vols[p];
-                      spot->setValue(u);
-                      qRate->setValue(q);
-                      rRate->setValue(r);
-                      vol->setValue(v);
+                                    Rate q = m, r = n;
+                                    spot->setValue(u);
+                                    qRate->setValue(q);
+                                    rRate->setValue(r);
+                                    vol->setValue(v);
 
-                      option.setPricingEngine(refEngine);
-                      Real refValue = option.NPV();
+                                    option.setPricingEngine(refEngine);
+                                    Real refValue = option.NPV();
 
-                      option.setPricingEngine(mcEngine);
-                      Real value = option.NPV();
+                                    option.setPricingEngine(mcEngine);
+                                    Real value = option.NPV();
 
-                      Real error = std::fabs(refValue-value);
-                      Real tolerance = 1.5e-2;
-                      if (error > tolerance) {
-                          REPORT_FAILURE("value", payoff, maturity,
-                                         u, q, r, today, v,
-                                         refValue, value,
-                                         error, tolerance);
-                      }
+                                    Real error = std::fabs(refValue - value);
+                                    Real tolerance = 1.5e-2;
+                                    if (error > tolerance) {
+                                        REPORT_FAILURE("value", payoff, maturity, u, q, r, today, v,
+                                                       refValue, value, error, tolerance);
+                                    }
+                                }
+                            }
+                        }
                     }
-                  }
                 }
-              }
-          }
+            }
         }
-      }
     }
 }
 
 
 test_suite* CliquetOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Cliquet option tests");
+    auto* suite = BOOST_TEST_SUITE("Cliquet option tests");
     suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testValues));
     suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testGreeks));
     suite->add(QUANTLIB_TEST_CASE(&CliquetOptionTest::testPerformanceGreeks));

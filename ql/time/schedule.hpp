@@ -45,25 +45,25 @@ namespace QuantLib {
             checked for plausibility in any sense. */
         Schedule(
             const std::vector<Date>&,
-            const Calendar& calendar = NullCalendar(),
+            Calendar calendar = NullCalendar(),
             BusinessDayConvention convention = Unadjusted,
             const boost::optional<BusinessDayConvention>& terminationDateConvention = boost::none,
             const boost::optional<Period>& tenor = boost::none,
             const boost::optional<DateGeneration::Rule>& rule = boost::none,
             const boost::optional<bool>& endOfMonth = boost::none,
-            const std::vector<bool>& isRegular = std::vector<bool>(0));
+            std::vector<bool> isRegular = std::vector<bool>(0));
         /*! rule based constructor */
         Schedule(Date effectiveDate,
                  const Date& terminationDate,
                  const Period& tenor,
-                 const Calendar& calendar,
+                 Calendar calendar,
                  BusinessDayConvention convention,
                  BusinessDayConvention terminationDateConvention,
                  DateGeneration::Rule rule,
                  bool endOfMonth,
                  const Date& firstDate = Date(),
                  const Date& nextToLastDate = Date());
-        Schedule() {}
+        Schedule() = default;
         //! \name Date access
         //@{
         Size size() const { return dates_.size(); }
@@ -125,7 +125,6 @@ namespace QuantLib {
     */
     class MakeSchedule {
       public:
-        MakeSchedule();
         MakeSchedule& from(const Date& effectiveDate);
         MakeSchedule& to(const Date& terminationDate);
         MakeSchedule& withTenor(const Period&);
@@ -146,12 +145,15 @@ namespace QuantLib {
         boost::optional<Period> tenor_;
         boost::optional<BusinessDayConvention> convention_;
         boost::optional<BusinessDayConvention> terminationDateConvention_;
-        DateGeneration::Rule rule_;
-        bool endOfMonth_;
+        DateGeneration::Rule rule_ = DateGeneration::Backward;
+        bool endOfMonth_ = false;
         Date firstDate_, nextToLastDate_;
     };
 
-
+    /*! Helper function for returning the date on or before date \p d that is the 20th of the month and obeserves the 
+        given date generation \p rule if it is relevant.
+    */
+    Date previousTwentieth(const Date& d, DateGeneration::Rule rule);
 
     // inline definitions
 

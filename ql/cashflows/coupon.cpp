@@ -57,6 +57,9 @@ namespace QuantLib {
     Time Coupon::accruedPeriod(const Date& d) const {
         if (d <= accrualStartDate_ || d > paymentDate_) {
             return 0.0;
+        } else if (tradingExCoupon(d)) {
+            return -dayCounter().yearFraction(d, std::max(d, accrualEndDate_),
+                                              refPeriodStart_, refPeriodEnd_);
         } else {
             return dayCounter().yearFraction(accrualStartDate_,
                                              std::min(d, accrualEndDate_),
@@ -75,8 +78,8 @@ namespace QuantLib {
     }
 
     void Coupon::accept(AcyclicVisitor& v) {
-        Visitor<Coupon>* v1 = dynamic_cast<Visitor<Coupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<Coupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             CashFlow::accept(v);

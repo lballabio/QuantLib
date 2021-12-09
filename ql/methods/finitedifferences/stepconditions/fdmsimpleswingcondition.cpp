@@ -19,22 +19,20 @@
 
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsimpleswingcondition.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdmSimpleSwingCondition::FdmSimpleSwingCondition(
-            const std::vector<Time> & exerciseTimes,
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<FdmInnerValueCalculator>& calculator,
-            Size swingDirection,
-            Size minExercises)
-    : exerciseTimes_ (exerciseTimes),
-      mesher_        (mesher),
-      calculator_    (calculator),
-      minExercises_  (minExercises),
-      swingDirection_(swingDirection) {
-    }
-    
+        std::vector<Time> exerciseTimes,
+        ext::shared_ptr<FdmMesher> mesher,
+        ext::shared_ptr<FdmInnerValueCalculator> calculator,
+        Size swingDirection,
+        Size minExercises)
+    : exerciseTimes_(std::move(exerciseTimes)), mesher_(std::move(mesher)),
+      calculator_(std::move(calculator)), minExercises_(minExercises),
+      swingDirection_(swingDirection) {}
+
     void FdmSimpleSwingCondition::applyTo(Array& a, Time t) const {
 
         const std::vector<Time>::const_iterator iter

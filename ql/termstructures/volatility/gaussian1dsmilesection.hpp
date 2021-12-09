@@ -41,13 +41,13 @@ namespace QuantLib {
 class Gaussian1dSmileSection : public SmileSection {
   public:
     Gaussian1dSmileSection(const Date& fixingDate,
-                           const ext::shared_ptr<SwapIndex>& swapIndex,
+                           ext::shared_ptr<SwapIndex> swapIndex,
                            const ext::shared_ptr<Gaussian1dModel>& model,
                            const DayCounter& dc,
                            const ext::shared_ptr<Gaussian1dSwaptionEngine>& swaptionEngine =
                                ext::shared_ptr<Gaussian1dSwaptionEngine>());
     Gaussian1dSmileSection(const Date& fixingDate,
-                           const ext::shared_ptr<IborIndex>& swapIndex,
+                           ext::shared_ptr<IborIndex> swapIndex,
                            const ext::shared_ptr<Gaussian1dModel>& model,
                            const DayCounter& dc,
                            const ext::shared_ptr<Gaussian1dCapFloorEngine>& capEngine =
@@ -55,15 +55,14 @@ class Gaussian1dSmileSection : public SmileSection {
 
     // the minimum strike is zero only because we are
     // returning a lognormal section
-    Real minStrike() const { return 0.0; }
-    Real maxStrike() const { return QL_MAX_REAL; }
+    Real minStrike() const override { return 0.0; }
+    Real maxStrike() const override { return QL_MAX_REAL; }
 
-    Real atmLevel() const;
-    Real optionPrice(Rate strike, Option::Type = Option::Call,
-                     Real discount = 1.0) const;
+    Real atmLevel() const override;
+    Real optionPrice(Rate strike, Option::Type = Option::Call, Real discount = 1.0) const override;
 
   protected:
-    Real volatilityImpl(Rate strike) const;
+    Real volatilityImpl(Rate strike) const override;
 
   private:
     Real atm_, annuity_;

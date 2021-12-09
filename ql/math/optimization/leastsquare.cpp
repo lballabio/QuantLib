@@ -18,9 +18,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/leastsquare.hpp>
 #include <ql/math/optimization/problem.hpp>
-#include <ql/math/optimization/conjugategradient.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -86,8 +87,8 @@ namespace QuantLib {
     NonLinearLeastSquare::NonLinearLeastSquare(Constraint& c,
                                                Real accuracy,
                                                Size maxiter,
-                                               const ext::shared_ptr<OptimizationMethod>& om)
-    : exitFlag_(-1), accuracy_(accuracy), maxIterations_(maxiter), om_(om), c_(c) {}
+                                               ext::shared_ptr<OptimizationMethod> om)
+    : exitFlag_(-1), accuracy_(accuracy), maxIterations_(maxiter), om_(std::move(om)), c_(c) {}
 
     Array& NonLinearLeastSquare::perform(LeastSquareProblem& lsProblem) {
         Real eps = accuracy_;

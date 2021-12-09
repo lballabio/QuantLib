@@ -24,8 +24,6 @@
 
 namespace QuantLib {
 
-    BSMOperator::BSMOperator() {}
-
     BSMOperator::BSMOperator(Size size, Real dx, Rate r,
                              Rate q, Volatility sigma)
     : TridiagonalOperator(size) {

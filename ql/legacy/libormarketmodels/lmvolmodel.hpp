@@ -33,7 +33,7 @@ namespace QuantLib {
     class LmVolatilityModel {
       public:
         LmVolatilityModel(Size size, Size nArguments);
-        virtual ~LmVolatilityModel() {}
+        virtual ~LmVolatilityModel() = default;
 
         Size size() const;
 

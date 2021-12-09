@@ -18,7 +18,6 @@
 */
 
 #include <ql/experimental/math/tcopulapolicy.hpp>
-#include <ql/functional.hpp>
 #include <numeric>
 #include <algorithm>
 
@@ -28,45 +27,38 @@ namespace QuantLib {
         const std::vector<std::vector<Real> >& factorWeights, 
         const initTraits& vals)
     {
-        for(Size iFactor=0; iFactor<vals.tOrders.size(); iFactor++) {
+        for (int tOrder : vals.tOrders) {
             // require no T is of order 2 (finite variance)
-            QL_REQUIRE(vals.tOrders[iFactor] > 2, 
-                "Non finite variance T in latent model.");
+            QL_REQUIRE(tOrder > 2, "Non finite variance T in latent model.");
 
-            distributions_.push_back(boost::math::students_t_distribution<>(
-                vals.tOrders[iFactor]));
+            distributions_.emplace_back(tOrder);
             // inverses T variaces used in normalization of the random factors
             // For low values of the T order this number is very close to zero 
             // and it enters the expressions dividing them, which introduces 
             // numerical errors.
-            varianceFactors_.push_back(std::sqrt(
-                (vals.tOrders[iFactor]-2.)/vals.tOrders[iFactor]));
+            varianceFactors_.push_back(std::sqrt((tOrder - 2.) / tOrder));
         }
 
-        for(Size iLVar=0; iLVar<factorWeights.size(); iLVar++) {
+        for (const auto& factorWeight : factorWeights) {
             // This ensures the latent model is 'canonical'
-            QL_REQUIRE(vals.tOrders.size() == factorWeights[iLVar].size()+1, 
-                // num factors plus one
-                "Incompatible number of T functions and number of factors."); 
+            QL_REQUIRE(vals.tOrders.size() == factorWeight.size() + 1,
+                       // num factors plus one
+                       "Incompatible number of T functions and number of factors.");
 
-            Real factorsNorm = std::inner_product(factorWeights[iLVar].begin(), 
-                factorWeights[iLVar].end(), factorWeights[iLVar].begin(), 0.);
+            Real factorsNorm = std::inner_product(factorWeight.begin(), factorWeight.end(),
+                                                  factorWeight.begin(), 0.);
             QL_REQUIRE(factorsNorm < 1., 
                 "Non normal random factor combination.");
             Real idiosyncFctr = std::sqrt(1.-factorsNorm);
 
             // linear comb factors ajusted for the variance renormalization:
             std::vector<Real> normFactorWeights;
-            for(Size iFactor=0; iFactor<factorWeights[iLVar].size(); iFactor++)
-                normFactorWeights.push_back(factorWeights[iLVar][iFactor] * 
-                    varianceFactors_[iFactor]);
+            for (Size iFactor = 0; iFactor < factorWeight.size(); iFactor++)
+                normFactorWeights.push_back(factorWeight[iFactor] * varianceFactors_[iFactor]);
             // idiosincratic term, all Z factors are assumed identical.
             normFactorWeights.push_back(idiosyncFctr * varianceFactors_.back());
-            latentVarsCumul_.push_back( 
-                CumulativeBehrensFisher(vals.tOrders, normFactorWeights));
-            latentVarsInverters_.push_back(
-                InverseCumulativeBehrensFisher(vals.tOrders, 
-                    normFactorWeights));
+            latentVarsCumul_.emplace_back(vals.tOrders, normFactorWeights);
+            latentVarsInverters_.emplace_back(vals.tOrders, normFactorWeights);
         }
     }
 
@@ -80,17 +72,14 @@ namespace QuantLib {
             "Incompatible sample and latent model sizes");
     #endif
 
-        using namespace ext::placeholders;
-
         std::vector<Real> result(probs.size());
         Size indexSystemic = 0;
         std::transform(probs.begin(), probs.begin() + varianceFactors_.size()-1,
-            result.begin(), 
-            ext::bind(&TCopulaPolicy::inverseCumulativeDensity, 
-                                this, _1, indexSystemic++));
+                       result.begin(),
+                       [&](Probability p) { return inverseCumulativeDensity(p, indexSystemic++); });
         std::transform(probs.begin() + varianceFactors_.size()-1, probs.end(),
-            result.begin()+ varianceFactors_.size()-1,
-            ext::bind(&TCopulaPolicy::inverseCumulativeZ, this, _1));
+                       result.begin()+ varianceFactors_.size()-1,
+                       [&](Probability p) { return inverseCumulativeZ(p); });
         return result;
     }
 

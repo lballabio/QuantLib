@@ -49,7 +49,7 @@ namespace QuantLib {
                      const Date& maturityDate);
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
+        bool isExpired() const override;
         //@}
         //! \name Additional interface
         //@{
@@ -63,10 +63,11 @@ namespace QuantLib {
         Real variance() const;
         //@}
         // other
-        void setupArguments(PricingEngine::arguments* args) const;
-        void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments* args) const override;
+        void fetchResults(const PricingEngine::results*) const override;
+
       protected:
-        void setupExpired() const;
+        void setupExpired() const override;
         // data members
         Position::Type position_;
         Real strike_;
@@ -81,7 +82,7 @@ namespace QuantLib {
     class VarianceSwap::arguments : public virtual PricingEngine::arguments {
       public:
         arguments() : strike(Null<Real>()), notional(Null<Real>()) {}
-        void validate() const;
+        void validate() const override;
         Position::Type position;
         Real strike;
         Real notional;
@@ -94,7 +95,7 @@ namespace QuantLib {
     class VarianceSwap::results : public Instrument::results {
       public:
         Real variance;
-        void reset() {
+        void reset() override {
             Instrument::results::reset();
             variance = Null<Real>();
         }

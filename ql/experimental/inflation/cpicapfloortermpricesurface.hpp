@@ -67,24 +67,26 @@ namespace QuantLib {
     */
     class CPICapFloorTermPriceSurface : public InflationTermStructure {
       public:
-        CPICapFloorTermPriceSurface(Real nominal,
-                                    Real baseRate,  // avoids an uncontrolled crash if index has no TS
-                                    const Period &observationLag,
-                                    const Calendar &cal, // calendar in index may not be useful
-                                    const BusinessDayConvention &bdc,
-                                    const DayCounter &dc,
-                                    const Handle<ZeroInflationIndex>& zii,
-                                    const Handle<YieldTermStructure>& yts,
-                                    const std::vector<Rate> &cStrikes,
-                                    const std::vector<Rate> &fStrikes,
-                                    const std::vector<Period> &cfMaturities,
-                                    const Matrix &cPrice,
-                                    const Matrix &fPrice);
+        CPICapFloorTermPriceSurface(
+            Real nominal,
+            Real baseRate, // avoids an uncontrolled crash if index has no TS
+            const Period& observationLag,
+            const Calendar& cal, // calendar in index may not be useful
+            const BusinessDayConvention& bdc,
+            const DayCounter& dc,
+            const Handle<ZeroInflationIndex>& zii,
+            Handle<YieldTermStructure> yts,
+            const std::vector<Rate>& cStrikes,
+            const std::vector<Rate>& fStrikes,
+            const std::vector<Period>& cfMaturities,
+            const Matrix& cPrice,
+            const Matrix& fPrice);
 
         //! \name InflationTermStructure interface
         //@{
-        Period observationLag() const;
-        Date baseDate() const;
+        Period observationLag() const override;
+        Date baseDate() const override;
+        bool indexIsInterpolated() const override;
         //@}
 
         //! is based on
@@ -123,7 +125,7 @@ namespace QuantLib {
         virtual Rate minStrike() const {return cfStrikes_.front();};
         virtual Rate maxStrike() const {return cfStrikes_.back();};
         virtual Date minDate() const {return referenceDate()+cfMaturities_.front();}// \TODO deal with index interpolation
-        virtual Date maxDate() const {return referenceDate()+cfMaturities_.back();}
+        Date maxDate() const override { return referenceDate() + cfMaturities_.back(); }
         //@}
 
 
@@ -190,9 +192,9 @@ namespace QuantLib {
 
             //! remember that the strikes use the quoting convention
             //@{
-            virtual Real price(const Date &d, Rate k) const;
-            virtual Real capPrice(const Date &d, Rate k) const;
-            virtual Real floorPrice(const Date &d, Rate k) const;
+            Real price(const Date& d, Rate k) const override;
+            Real capPrice(const Date& d, Rate k) const override;
+            Real floorPrice(const Date& d, Rate k) const override;
             //@}
 
         protected:
@@ -203,7 +205,6 @@ namespace QuantLib {
             mutable Interpolation2D capPrice_, floorPrice_;
             mutable Interpolator2D interpolator2d_;
     };
-
 
 
     // template definitions, for some reason DOXYGEN doesn't like the first one
@@ -349,7 +350,7 @@ namespace QuantLib {
         return floorPrice_(t,k);
     }
 
-    // inline
+    // inline definitions
 
     inline Period CPICapFloorTermPriceSurface::observationLag() const {
         return zeroInflationIndex()->zeroInflationTermStructure()->observationLag();
@@ -366,6 +367,12 @@ namespace QuantLib {
     inline BusinessDayConvention
     CPICapFloorTermPriceSurface::businessDayConvention() const {
         return bdc_;
+    }
+
+    inline bool CPICapFloorTermPriceSurface::indexIsInterpolated() const {
+        QL_DEPRECATED_DISABLE_WARNING
+        return indexIsInterpolated_;
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
 }

@@ -18,21 +18,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/swaption/gaussian1djamshidianswaptionengine.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/pricingengines/swaption/gaussian1djamshidianswaptionengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     class Gaussian1dJamshidianSwaptionEngine::rStarFinder {
       public:
-        rStarFinder(const ext::shared_ptr<Gaussian1dModel> &model,
-                    Real nominal, const Date &maturityDate,
-                    const Date &valueDate,
-                    const std::vector<Date> &fixedPayDates,
-                    const std::vector<Real> &amounts, const Size startIndex)
-            : strike_(nominal), maturityDate_(maturityDate),
-              valueDate_(valueDate), startIndex_(startIndex),
-              times_(fixedPayDates), amounts_(amounts), model_(model) {}
+        rStarFinder(const ext::shared_ptr<Gaussian1dModel>& model,
+                    Real nominal,
+                    const Date& maturityDate,
+                    const Date& valueDate,
+                    std::vector<Date> fixedPayDates,
+                    const std::vector<Real>& amounts,
+                    const Size startIndex)
+        : strike_(nominal), maturityDate_(maturityDate), valueDate_(valueDate),
+          startIndex_(startIndex), times_(std::move(fixedPayDates)), amounts_(amounts),
+          model_(model) {}
 
         Real operator()(Rate y) const {
             Real value = strike_;
@@ -97,7 +100,7 @@ namespace QuantLib {
                                maxStrike); // this is actually yStar
 
         Option::Type w =
-            arguments_.type == VanillaSwap::Payer ? Option::Put : Option::Call;
+            arguments_.type == Swap::Payer ? Option::Put : Option::Call;
         Size size = arguments_.fixedCoupons.size();
 
         Real value = 0.0;

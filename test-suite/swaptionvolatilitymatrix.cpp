@@ -375,7 +375,7 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
 }
 
 test_suite* SwaptionVolatilityMatrixTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Matrix tests");
+    auto* suite = BOOST_TEST_SUITE("Swaption Volatility Matrix tests");
 
     suite->add(QUANTLIB_TEST_CASE(
               &SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence));

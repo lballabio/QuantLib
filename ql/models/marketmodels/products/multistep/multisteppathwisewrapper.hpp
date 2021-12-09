@@ -40,21 +40,20 @@ namespace QuantLib
     {
       public:
         MultiProductPathwiseWrapper(const MarketModelPathwiseMultiProduct& innerProduct_);
-        std::vector<Time> possibleCashFlowTimes() const;
-        Size numberOfProducts() const;
-        Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset();
-        bool nextTimeStep(
-                     const CurveState& currentState,
-                     std::vector<Size>& numberCashFlowsThisStep,
-                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-        #if defined(QL_USE_STD_UNIQUE_PTR)
-        std::unique_ptr<MarketModelMultiProduct> clone() const;
-        #else
+        std::vector<Time> possibleCashFlowTimes() const override;
+        Size numberOfProducts() const override;
+        Size maxNumberOfCashFlowsPerProductPerStep() const override;
+        void reset() override;
+        bool nextTimeStep(const CurveState& currentState,
+                          std::vector<Size>& numberCashFlowsThisStep,
+                          std::vector<std::vector<CashFlow> >& cashFlowsGenerated) override;
+#if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<MarketModelMultiProduct> clone() const override;
+#else
         std::auto_ptr<MarketModelMultiProduct> clone() const;
         #endif
-        std::vector<Size> suggestedNumeraires() const;
-        const EvolutionDescription& evolution() const;
+        std::vector<Size> suggestedNumeraires() const override;
+        const EvolutionDescription& evolution() const override;
 
       private:
           Clone<MarketModelPathwiseMultiProduct> innerProduct_;

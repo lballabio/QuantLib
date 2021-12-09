@@ -34,17 +34,14 @@ namespace QuantLib {
 
     class LfmCovarianceProxy : public LfmCovarianceParameterization {
       public:
-        LfmCovarianceProxy(
-                      const ext::shared_ptr<LmVolatilityModel>& volaModel,
-                      const ext::shared_ptr<LmCorrelationModel>& corrModel);
+        LfmCovarianceProxy(ext::shared_ptr<LmVolatilityModel> volaModel,
+                           const ext::shared_ptr<LmCorrelationModel>& corrModel);
 
         ext::shared_ptr<LmVolatilityModel>  volatilityModel() const;
         ext::shared_ptr<LmCorrelationModel> correlationModel() const;
 
-        Disposable<Matrix> diffusion(
-            Time t, const Array& x = Null<Array>()) const;
-        Disposable<Matrix> covariance(
-            Time t, const Array& x = Null<Array>()) const;
+        Disposable<Matrix> diffusion(Time t, const Array& x = Null<Array>()) const override;
+        Disposable<Matrix> covariance(Time t, const Array& x = Null<Array>()) const override;
 
         using LfmCovarianceParameterization::integratedCovariance;
         virtual Real integratedCovariance(

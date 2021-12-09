@@ -44,7 +44,7 @@ namespace swap_test {
     struct CommonVars {
         // global data
         Date today, settlement;
-        VanillaSwap::Type type;
+        Swap::Type type;
         Real nominal;
         Calendar calendar;
         BusinessDayConvention fixedConvention, floatingConvention;
@@ -59,17 +59,15 @@ namespace swap_test {
         
         // utilities
         ext::shared_ptr<VanillaSwap>
-        makeSwap(Integer length, Rate fixedRate, Spread floatingSpread) const {
+        makeSwap(Integer length, Rate fixedRate, Spread floatingSpread, DateGeneration::Rule rule = DateGeneration::Forward) const {
             Date maturity = calendar.advance(settlement,length,Years,
                                              floatingConvention);
             Schedule fixedSchedule(settlement,maturity,Period(fixedFrequency),
-                                   calendar,fixedConvention,fixedConvention,
-                                   DateGeneration::Forward,false);
+                                   calendar,fixedConvention,fixedConvention, rule, false);
             Schedule floatSchedule(settlement,maturity,
                                    Period(floatingFrequency),
                                    calendar,floatingConvention,
-                                   floatingConvention,
-                                   DateGeneration::Forward,false);
+                                   floatingConvention, rule, false);
             ext::shared_ptr<VanillaSwap> swap(
                 new VanillaSwap(type, nominal,
                                 fixedSchedule, fixedRate, fixedDayCount,
@@ -81,14 +79,14 @@ namespace swap_test {
         }
 
         CommonVars() {
-            type = VanillaSwap::Payer;
+            type = Swap::Payer;
             settlementDays = 2;
             nominal = 100.0;
             fixedConvention = Unadjusted;
             floatingConvention = ModifiedFollowing;
             fixedFrequency = Annual;
             floatingFrequency = Semiannual;
-            fixedDayCount = Thirty360();
+            fixedDayCount = Thirty360(Thirty360::BondBasis);
             index = ext::shared_ptr<IborIndex>(new
                 Euribor(Period(floatingFrequency), termStructure));
             calendar = index->fixingCalendar();
@@ -112,18 +110,15 @@ void SwapTest::testFairRate() {
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
 
-    for (Size i=0; i<LENGTH(lengths); i++) {
-        for (Size j=0; j<LENGTH(spreads); j++) {
+    for (int& length : lengths) {
+        for (double spread : spreads) {
 
-            ext::shared_ptr<VanillaSwap> swap =
-                vars.makeSwap(lengths[i],0.0,spreads[j]);
-            swap = vars.makeSwap(lengths[i],swap->fairRate(),spreads[j]);
+            ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(length, 0.0, spread);
+            swap = vars.makeSwap(length, swap->fairRate(), spread);
             if (std::fabs(swap->NPV()) > 1.0e-10) {
                 BOOST_ERROR("recalculating with implied rate:\n"
-                            << std::setprecision(2)
-                            << "    length: " << lengths[i] << " years\n"
-                            << "    floating spread: "
-                            << io::rate(spreads[j]) << "\n"
+                            << std::setprecision(2) << "    length: " << length << " years\n"
+                            << "    floating spread: " << io::rate(spread) << "\n"
                             << "    swap value: " << swap->NPV());
             }
         }
@@ -142,17 +137,15 @@ void SwapTest::testFairSpread() {
     Integer lengths[] = { 1, 2, 5, 10, 20 };
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
 
-    for (Size i=0; i<LENGTH(lengths); i++) {
-        for (Size j=0; j<LENGTH(rates); j++) {
+    for (int& length : lengths) {
+        for (double j : rates) {
 
-            ext::shared_ptr<VanillaSwap> swap =
-                vars.makeSwap(lengths[i],rates[j],0.0);
-            swap = vars.makeSwap(lengths[i],rates[j],swap->fairSpread());
+            ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(length, j, 0.0);
+            swap = vars.makeSwap(length, j, swap->fairSpread());
             if (std::fabs(swap->NPV()) > 1.0e-10) {
                 BOOST_ERROR("recalculating with implied spread:\n"
-                            << std::setprecision(2)
-                            << "    length: " << lengths[i] << " years\n"
-                            << "    fixed rate: " << io::rate(rates[j]) << "\n"
+                            << std::setprecision(2) << "    length: " << length << " years\n"
+                            << "    fixed rate: " << io::rate(j) << "\n"
                             << "    swap value: " << swap->NPV());
             }
         }
@@ -171,28 +164,24 @@ void SwapTest::testRateDependency() {
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
     Rate rates[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
-    for (Size i=0; i<LENGTH(lengths); i++) {
-        for (Size j=0; j<LENGTH(spreads); j++) {
+    for (int& length : lengths) {
+        for (double spread : spreads) {
             // store the results for different rates...
             std::vector<Real> swap_values;
-            for (Size k=0; k<LENGTH(rates); k++) {
-                ext::shared_ptr<VanillaSwap> swap =
-                    vars.makeSwap(lengths[i],rates[k],spreads[j]);
+            for (double rate : rates) {
+                ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(length, rate, spread);
                 swap_values.push_back(swap->NPV());
             }
             // and check that they go the right way
-            std::vector<Real>::iterator it =
-                std::adjacent_find(swap_values.begin(),swap_values.end(),
-                                   std::less<Real>());
+            auto it = std::adjacent_find(swap_values.begin(), swap_values.end(), std::less<Real>());
             if (it != swap_values.end()) {
                 Size n = it - swap_values.begin();
-                BOOST_ERROR(
-                    "NPV is increasing with the fixed rate in a swap: \n"
-                    << "    length: " << lengths[i] << " years\n"
-                    << "    value:  " << swap_values[n]
-                    << " paying fixed rate: " << io::rate(rates[n]) << "\n"
-                    << "    value:  " << swap_values[n+1]
-                    << " paying fixed rate: " << io::rate(rates[n+1]));
+                BOOST_ERROR("NPV is increasing with the fixed rate in a swap: \n"
+                            << "    length: " << length << " years\n"
+                            << "    value:  " << swap_values[n]
+                            << " paying fixed rate: " << io::rate(rates[n]) << "\n"
+                            << "    value:  " << swap_values[n + 1]
+                            << " paying fixed rate: " << io::rate(rates[n + 1]));
             }
         }
     }
@@ -210,28 +199,25 @@ void SwapTest::testSpreadDependency() {
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
     Spread spreads[] = { -0.01, -0.002, -0.001, 0.0, 0.001, 0.002, 0.01 };
 
-    for (Size i=0; i<LENGTH(lengths); i++) {
-        for (Size j=0; j<LENGTH(rates); j++) {
+    for (int& length : lengths) {
+        for (double j : rates) {
             // store the results for different spreads...
             std::vector<Real> swap_values;
-            for (Size k=0; k<LENGTH(spreads); k++) {
-                ext::shared_ptr<VanillaSwap> swap =
-                    vars.makeSwap(lengths[i],rates[j],spreads[k]);
+            for (double spread : spreads) {
+                ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(length, j, spread);
                 swap_values.push_back(swap->NPV());
             }
             // and check that they go the right way
-            std::vector<Real>::iterator it =
-                std::adjacent_find(swap_values.begin(),swap_values.end(),
-                                   std::greater<Real>());
+            auto it =
+                std::adjacent_find(swap_values.begin(), swap_values.end(), std::greater<Real>());
             if (it != swap_values.end()) {
                 Size n = it - swap_values.begin();
-                BOOST_ERROR(
-                    "NPV is decreasing with the floating spread in a swap: \n"
-                    << "    length: " << lengths[i] << " years\n"
-                    << "    value:  " << swap_values[n]
-                    << " receiving spread: " << io::rate(spreads[n]) << "\n"
-                    << "    value:  " << swap_values[n+1]
-                    << " receiving spread: " << io::rate(spreads[n+1]));
+                BOOST_ERROR("NPV is decreasing with the floating spread in a swap: \n"
+                            << "    length: " << length << " years\n"
+                            << "    value:  " << swap_values[n]
+                            << " receiving spread: " << io::rate(spreads[n]) << "\n"
+                            << "    value:  " << swap_values[n + 1]
+                            << " receiving spread: " << io::rate(spreads[n + 1]));
             }
         }
     }
@@ -311,6 +297,8 @@ void SwapTest::testCachedValue() {
 
     using namespace swap_test;
 
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+
     CommonVars vars;
 
     vars.today = Date(17,June,2002);
@@ -321,11 +309,13 @@ void SwapTest::testCachedValue() {
 
     ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(10, 0.06, 0.001);
 
-    Real cachedNPV;  
-    if (IborCoupon::usingAtParCoupons())
-        cachedNPV = -5.872863313209;
-    else
-        cachedNPV = -5.872342992212;
+    if (swap->numberOfLegs() != 2)
+        BOOST_ERROR("failed to return correct number of legs:\n"
+                    << std::fixed << std::setprecision(12)
+                    << "    calculated: " << swap->numberOfLegs() << "\n"
+                    << "    expected:   " << 2);
+
+    Real cachedNPV = usingAtParCoupons ? -5.872863313209 : -5.872342992212;
 
     if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
         BOOST_ERROR("failed to reproduce cached swap value:\n"
@@ -334,15 +324,34 @@ void SwapTest::testCachedValue() {
                     << "    expected:   " << cachedNPV);
 }
 
+void SwapTest::testThirdWednesdayAdjustment() {
+
+    BOOST_TEST_MESSAGE("Testing third-Wednesday adjustment...");
+
+    using namespace swap_test;
+
+    CommonVars vars;
+
+    ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(1, 0.0, -0.001, DateGeneration::ThirdWednesdayInclusive);
+
+    if (swap->floatingSchedule().startDate() != Date(16, September, 2015)) {
+        BOOST_ERROR("Wrong Start Date " << swap->floatingSchedule().startDate());
+    }
+
+     if (swap->floatingSchedule().endDate() != Date(21, September, 2016)) {
+        BOOST_ERROR("Wrong End Date " << swap->floatingSchedule().endDate());
+    }
+}
 
 test_suite* SwapTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Swap tests");
+    auto* suite = BOOST_TEST_SUITE("Swap tests");
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testFairRate));
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testFairSpread));
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testRateDependency));
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testSpreadDependency));
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testInArrears));
     suite->add(QUANTLIB_TEST_CASE(&SwapTest::testCachedValue));
+    suite->add(QUANTLIB_TEST_CASE(&SwapTest::testThirdWednesdayAdjustment));
     return suite;
 }
 

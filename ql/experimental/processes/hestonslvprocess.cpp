@@ -22,20 +22,19 @@
     \brief Heston stochastic local volatility process
 */
 
-#include <ql/math/functional.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/experimental/processes/hestonslvprocess.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    HestonSLVProcess::HestonSLVProcess(
-        const ext::shared_ptr<HestonProcess>& hestonProcess,
-        const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
-        const Real mixingFactor)
-    : mixingFactor_(mixingFactor),
-      hestonProcess_(hestonProcess),
-      leverageFct_(leverageFct) {
+    HestonSLVProcess::HestonSLVProcess(const ext::shared_ptr<HestonProcess>& hestonProcess,
+                                       ext::shared_ptr<LocalVolTermStructure> leverageFct,
+                                       const Real mixingFactor)
+    : mixingFactor_(mixingFactor), hestonProcess_(hestonProcess),
+      leverageFct_(std::move(leverageFct)) {
         registerWith(hestonProcess);
         update();
     };

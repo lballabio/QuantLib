@@ -14467,7 +14467,7 @@ void LatticeRule::getRule(type name, std::vector<Real>& Z, Integer N)
     // put in check that N is a power of 2
 
 
-    const Real* dumbPointer=0;
+    const Real* dumbPointer = nullptr;
 
     switch (name)
     {
@@ -14485,7 +14485,7 @@ void LatticeRule::getRule(type name, std::vector<Real>& Z, Integer N)
 
     }
 
-    QL_REQUIRE(dumbPointer!=0, "unknown lattice rule requested");
+    QL_REQUIRE(dumbPointer != nullptr, "unknown lattice rule requested");
 
 
     std::copy(dumbPointer, dumbPointer+ruleLength,Z.begin());

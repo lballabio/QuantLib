@@ -21,13 +21,12 @@
 /*! \file lsmbasissystem.cpp
     \brief utility classes for longstaff schwartz early exercise Monte Carlo
 */
-// lsmbasissystem.hpp
 
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
-#include <ql/functional.hpp>
-#include <set>
 #include <numeric>
+#include <set>
+#include <utility>
 
 namespace QuantLib {
     namespace {
@@ -36,8 +35,6 @@ namespace QuantLib {
         typedef std::vector<ext::function<Real(Real)> > VF_R;
         typedef std::vector<ext::function<Real(Array)> > VF_A;
         typedef std::vector<std::vector<Size> > VV;
-        Real (GaussianOrthogonalPolynomial::*ptr_w)(Size, Real) const =
-            &GaussianOrthogonalPolynomial::weightedValue;
 
         // pow(x, order)
         class MonomialFct {
@@ -57,7 +54,7 @@ namespace QuantLib {
            to create [Array -> Real] functor */
         class MultiDimFct {
           public:
-            explicit MultiDimFct(const VF_R& b): b_(b) {
+            explicit MultiDimFct(VF_R b) : b_(std::move(b)) {
                 QL_REQUIRE(!b_.empty(), "zero size basis");
             }
             inline Real operator()(const Array& a) const {
@@ -75,10 +72,9 @@ namespace QuantLib {
 
         // check size and order of tuples
         void check_tuples(const VV& v, Size dim, Size order) {
-            for(Size i=0; i<v.size(); ++i) {
-                QL_REQUIRE(dim==v[i].size(), "wrong tuple size");
-                QL_REQUIRE(order == std::accumulate(v[i].begin(), v[i].end(), 0UL),
-                           "wrong tuple order");
+            for (const auto& i : v) {
+                QL_REQUIRE(dim == i.size(), "wrong tuple size");
+                QL_REQUIRE(order == std::accumulate(i.begin(), i.end(), 0UL), "wrong tuple order");
             }
         }
 
@@ -94,8 +90,8 @@ namespace QuantLib {
             std::vector<Size> x;
             for(Size i=0; i<dim; ++i) {
                 // increase i-th value in every tuple by 1
-                for(Size j=0; j<v.size(); ++j) {
-                    x = v[j];
+                for (const auto& j : v) {
+                    x = j;
                     x[i] += 1;
                     tuples.insert(x);
                 }
@@ -109,7 +105,6 @@ namespace QuantLib {
     // LsmBasisSystem static methods
 
     VF_R LsmBasisSystem::pathBasisSystem(Size order, PolynomType polyType) {
-        using namespace ext::placeholders;
         VF_R ret(order+1);
         for (Size i=0; i<=order; ++i) {
             switch (polyType) {
@@ -117,22 +112,40 @@ namespace QuantLib {
                 ret[i] = MonomialFct(i);
                 break;
               case Laguerre:
-                ret[i] = ext::bind(ptr_w, GaussLaguerrePolynomial(), i, _1);
+                {
+                  GaussLaguerrePolynomial p;
+                  ret[i] = [=](Real x){ return p.weightedValue(i, x); };
+                }
                 break;
               case Hermite:
-                ret[i] = ext::bind(ptr_w, GaussHermitePolynomial(), i, _1);
+                {
+                  GaussHermitePolynomial p;
+                  ret[i] = [=](Real x){ return p.weightedValue(i, x); };
+                }
                 break;
               case Hyperbolic:
-                ret[i] = ext::bind(ptr_w, GaussHyperbolicPolynomial(), i, _1);
+                {
+                  GaussHyperbolicPolynomial p;
+                  ret[i] = [=](Real x){ return p.weightedValue(i, x); };
+                }
                 break;
               case Legendre:
-                ret[i] = ext::bind(ptr_w, GaussLegendrePolynomial(), i, _1);
+                {
+                  GaussLegendrePolynomial p;
+                  ret[i] = [=](Real x){ return p.weightedValue(i, x); };
+                }
                 break;
               case Chebyshev:
-                ret[i] = ext::bind(ptr_w, GaussChebyshevPolynomial(), i, _1);
+                {
+                  GaussChebyshevPolynomial p;
+                  ret[i] = [=](Real x){ return p.weightedValue(i, x); };
+                }
                 break;
               case Chebyshev2nd:
-                ret[i] = ext::bind(ptr_w,GaussChebyshev2ndPolynomial(),i, _1);
+                {
+                  GaussChebyshev2ndPolynomial p;
+                  ret[i] = [=](Real x){ return p.weightedValue(i, x); };
+                }
                 break;
               default:
                 QL_FAIL("unknown regression type");
@@ -157,9 +170,9 @@ namespace QuantLib {
             tuples = next_order_tuples(tuples);
             // now we have all tuples of order i
             // for each tuple add the corresponding term
-            for(Size j=0; j<tuples.size(); ++j) {
+            for (auto& tuple : tuples) {
                 for(Size k=0; k<dim; ++k)
-                    term[k] = pathBasis[tuples[j][k]];
+                    term[k] = pathBasis[tuple[k]];
                 ret.push_back(MultiDimFct(term));
             }
         }

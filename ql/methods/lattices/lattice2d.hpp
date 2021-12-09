@@ -25,9 +25,10 @@
 #ifndef quantlib_tree_lattice_2d_hpp
 #define quantlib_tree_lattice_2d_hpp
 
+#include <ql/math/matrix.hpp>
 #include <ql/methods/lattices/lattice.hpp>
 #include <ql/methods/lattices/trinomialtree.hpp>
-#include <ql/math/matrix.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -40,9 +41,7 @@ namespace QuantLib {
     template <class Impl, class T = TrinomialTree>
     class TreeLattice2D : public TreeLattice<Impl> {
       public:
-        TreeLattice2D(const ext::shared_ptr<T>& tree1,
-                      const ext::shared_ptr<T>& tree2,
-                      Real correlation);
+        TreeLattice2D(const ext::shared_ptr<T>& tree1, ext::shared_ptr<T> tree2, Real correlation);
 
         Size size(Size i) const;
         Size descendant(Size i, Size index, Size branch) const;
@@ -50,7 +49,8 @@ namespace QuantLib {
       protected:
         ext::shared_ptr<T> tree1_, tree2_;
         // smelly
-        Disposable<Array> grid(Time) const { QL_FAIL("not implemented"); }
+        Disposable<Array> grid(Time) const override { QL_FAIL("not implemented"); }
+
       private:
         Matrix m_;
         Real rho_;
@@ -68,12 +68,11 @@ namespace QuantLib {
     // template definitions
 
     template <class Impl, class T>
-    TreeLattice2D<Impl,T>::TreeLattice2D(const ext::shared_ptr<T>& tree1,
-                                         const ext::shared_ptr<T>& tree2,
-                                         Real correlation)
-    : TreeLattice<Impl>(tree1->timeGrid(), T::branches*T::branches),
-      tree1_(tree1), tree2_(tree2), m_(T::branches,T::branches),
-      rho_(std::fabs(correlation)) {
+    TreeLattice2D<Impl, T>::TreeLattice2D(const ext::shared_ptr<T>& tree1,
+                                          ext::shared_ptr<T> tree2,
+                                          Real correlation)
+    : TreeLattice<Impl>(tree1->timeGrid(), T::branches * T::branches), tree1_(tree1),
+      tree2_(std::move(tree2)), m_(T::branches, T::branches), rho_(std::fabs(correlation)) {
 
         // what happens here?
         if (correlation < 0.0 && T::branches == 3) {

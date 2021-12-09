@@ -8,13 +8,14 @@ regex1 = re.compile(r"Copyright \(C\) ([0-9]{4}-[0-9]{4}) (.+)$")
 regex2 = re.compile(r"Copyright \(C\) (([0-9]{4})(, [0-9]{4})*) (.+)$")
 
 copyrights = {}
+errors = False
 
 for line in sys.stdin:
     m1 = regex1.search(line)
     m2 = regex2.search(line)
     if m1 is None and m2 is None:
         sys.stderr.write("Could not parse '%s'\n" % line.strip())
-        continue
+        errors = True
     if m1:
         first, last = [int(y) for y in m1.groups()[0].split("-")]
         years = range(first, last + 1)
@@ -26,6 +27,9 @@ for line in sys.stdin:
     for y in years:
         s.add(y)
     copyrights[owner] = s
+
+if errors:
+    exit(1)
 
 for owner in copyrights:
     s = copyrights[owner]

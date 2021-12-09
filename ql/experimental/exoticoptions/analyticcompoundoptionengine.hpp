@@ -42,8 +42,8 @@ namespace QuantLib {
     class AnalyticCompoundOptionEngine : public CompoundOption::engine {
       public:
         explicit AnalyticCompoundOptionEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
-        void calculate() const;
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        void calculate() const override;
 
       private:
         CumulativeNormalDistribution N_;

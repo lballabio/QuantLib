@@ -18,53 +18,50 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include <ql/time/schedule.hpp>
-#include <ql/cashflows/fixedratecoupon.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/simplecashflow.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/couponpricer.hpp>
-#include <ql/indexes/inflationindex.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-
-#include <ql/instruments/cpiswap.hpp>
 #include <ql/cashflows/cpicoupon.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
+#include <ql/indexes/inflationindex.hpp>
+#include <ql/instruments/cpiswap.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/time/schedule.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     // accrual adjustment is already in the schedules, as are calendars
-    CPISwap::
-    CPISwap(Type type,
-            Real nominal,
-            bool subtractInflationNominal,
-            // float + spread leg
-            Spread spread,
-            const DayCounter& floatDayCount,
-            const Schedule& floatSchedule,
-            const BusinessDayConvention& floatPaymentRoll,
-            Natural fixingDays,
-            const ext::shared_ptr<IborIndex>& floatIndex,
-            // fixed x inflation leg
-            Rate fixedRate,
-            Real baseCPI,
-            const DayCounter& fixedDayCount,
-            const Schedule& fixedSchedule,
-            const BusinessDayConvention& fixedPaymentRoll,
-            const Period& observationLag,
-            const ext::shared_ptr<ZeroInflationIndex>& fixedIndex,
-            CPI::InterpolationType observationInterpolation,
-            Real inflationNominal
-            )
+    CPISwap::CPISwap(Type type,
+                     Real nominal,
+                     bool subtractInflationNominal,
+                     // float + spread leg
+                     Spread spread,
+                     DayCounter floatDayCount,
+                     Schedule floatSchedule,
+                     const BusinessDayConvention& floatPaymentRoll,
+                     Natural fixingDays,
+                     ext::shared_ptr<IborIndex> floatIndex,
+                     // fixed x inflation leg
+                     Rate fixedRate,
+                     Real baseCPI,
+                     DayCounter fixedDayCount,
+                     Schedule fixedSchedule,
+                     const BusinessDayConvention& fixedPaymentRoll,
+                     const Period& observationLag,
+                     ext::shared_ptr<ZeroInflationIndex> fixedIndex,
+                     CPI::InterpolationType observationInterpolation,
+                     Real inflationNominal)
     : Swap(2), type_(type), nominal_(nominal), subtractInflationNominal_(subtractInflationNominal),
-    spread_(spread), floatDayCount_(floatDayCount), floatSchedule_(floatSchedule),
-    floatPaymentRoll_(floatPaymentRoll), fixingDays_(fixingDays),
-    floatIndex_(floatIndex),
-    fixedRate_(fixedRate), baseCPI_(baseCPI), fixedDayCount_(fixedDayCount), fixedSchedule_(fixedSchedule),
-    fixedPaymentRoll_(fixedPaymentRoll), fixedIndex_(fixedIndex),
-    observationLag_(observationLag),
-    observationInterpolation_(observationInterpolation)
-    {
+      spread_(spread), floatDayCount_(std::move(floatDayCount)),
+      floatSchedule_(std::move(floatSchedule)), floatPaymentRoll_(floatPaymentRoll),
+      fixingDays_(fixingDays), floatIndex_(std::move(floatIndex)), fixedRate_(fixedRate),
+      baseCPI_(baseCPI), fixedDayCount_(std::move(fixedDayCount)),
+      fixedSchedule_(std::move(fixedSchedule)), fixedPaymentRoll_(fixedPaymentRoll),
+      fixedIndex_(std::move(fixedIndex)), observationLag_(observationLag),
+      observationInterpolation_(observationInterpolation) {
         QL_REQUIRE(!floatSchedule_.empty(), "empty float schedule");
         QL_REQUIRE(!fixedSchedule_.empty(), "empty fixed schedule");
         // \todo if roll!=unadjusted then need calendars ...
@@ -130,9 +127,7 @@ namespace QuantLib {
             payer_[0] = -1.0;
             payer_[1] = 1.0;
         }
-
     }
-
 
 
     //! for simple case sufficient to copy base class
@@ -140,10 +135,9 @@ namespace QuantLib {
 
         Swap::setupArguments(args);
 
-        CPISwap::arguments* arguments =
-        dynamic_cast<CPISwap::arguments*>(args);
+        auto* arguments = dynamic_cast<CPISwap::arguments*>(args);
 
-        if (arguments == 0)
+        if (arguments == nullptr)
             return; // it's a swap engine...
     }
 
@@ -189,8 +183,8 @@ namespace QuantLib {
 
         Swap::fetchResults(r);
 
-        const CPISwap::results* results = dynamic_cast<const CPISwap::results*>(r);
-        if (results != 0) { // might be a swap engine, so no error is thrown
+        const auto* results = dynamic_cast<const CPISwap::results*>(r);
+        if (results != nullptr) { // might be a swap engine, so no error is thrown
             fairRate_ = results->fairRate;
             fairSpread_ = results->fairSpread;
         } else {
@@ -219,18 +213,6 @@ namespace QuantLib {
         Swap::results::reset();
         fairRate = Null<Rate>();
         fairSpread = Null<Spread>();
-    }
-
-    std::ostream& operator<<(std::ostream& out,
-                             CPISwap::Type t) {
-        switch (t) {
-            case CPISwap::Payer:
-                return out << "Payer";
-            case CPISwap::Receiver:
-                return out << "Receiver";
-            default:
-                QL_FAIL("unknown CPISwap::Type(" << Integer(t) << ")");
-        }
     }
 
 }

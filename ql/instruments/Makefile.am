@@ -48,6 +48,7 @@ this_include_HEADERS = \
     nonstandardswaption.hpp \
     oneassetoption.hpp \
     overnightindexedswap.hpp \
+    overnightindexfuture.hpp \
     payoffs.hpp \
     quantobarrieroption.hpp \
     quantoforwardvanillaoption.hpp \
@@ -62,7 +63,8 @@ this_include_HEADERS = \
     vanillaswap.hpp \
     varianceswap.hpp \
     yearonyearinflationswap.hpp \
-    zerocouponinflationswap.hpp
+    zerocouponinflationswap.hpp \
+    zerocouponswap.hpp
 
 cpp_files = \
     asianoption.cpp \
@@ -105,6 +107,7 @@ cpp_files = \
     nonstandardswaption.cpp \
     oneassetoption.cpp \
     overnightindexedswap.cpp \
+    overnightindexfuture.cpp \
     payoffs.cpp \
     quantobarrieroption.cpp \
     quantoforwardvanillaoption.cpp \
@@ -118,7 +121,8 @@ cpp_files = \
     vanillaswingoption.cpp \
     varianceswap.cpp \
     yearonyearinflationswap.cpp \
-    zerocouponinflationswap.cpp
+    zerocouponinflationswap.cpp \
+    zerocouponswap.cpp
 
 if UNITY_BUILD
 

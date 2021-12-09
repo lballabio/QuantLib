@@ -1,15 +1,19 @@
 name: Misspell fixer
 on:
-  - push
+  push:
+    branches:
+      - '**'
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: sobolevn/misspell-fixer-action@master
-    - uses: peter-evans/create-pull-request@v2
+    - uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: misspell-fixes-${{ github.ref }}
+        delete-branch: true
         commit-message: 'Fixes by misspell-fixer'
         title: 'Typos fixed by misspell-fixer'
+        author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>

@@ -29,13 +29,15 @@
 #define quantlib_overnight_indexed_coupon_hpp
 
 #include <ql/cashflows/floatingratecoupon.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
 
     //! overnight coupon
-    /*! %Coupon paying the compounded interest due to daily overnight fixings.
+    /*! %Coupon paying the interest, depending on the averaging convention,
+        due to daily overnight fixings.
 
         \warning telescopicValueDates optimizes the schedule for calculation speed,
         but might fail to produce correct results if the coupon ages by more than
@@ -57,7 +59,8 @@ namespace QuantLib {
                     const Date& refPeriodStart = Date(),
                     const Date& refPeriodEnd = Date(),
                     const DayCounter& dayCounter = DayCounter(),
-                    bool telescopicValueDates = false);
+                    bool telescopicValueDates = false,
+                    RateAveraging::Type averagingMethod = RateAveraging::Compound);
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -72,25 +75,27 @@ namespace QuantLib {
         //! \name FloatingRateCoupon interface
         //@{
         //! the date when the coupon is fully determined
-        Date fixingDate() const { return fixingDates_.back(); }
+        Date fixingDate() const override { return fixingDates_.back(); }
+        Real accruedAmount(const Date&) const override;
         //@}
         //! \name Visitability
         //@{
-        void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
         std::vector<Date> valueDates_, fixingDates_;
         mutable std::vector<Rate> fixings_;
         Size n_;
         std::vector<Time> dt_;
+
+        Rate averageRate(const Date& date) const;
     };
 
 
     //! helper class building a sequence of overnight coupons
     class OvernightLeg {
       public:
-        OvernightLeg(const Schedule& schedule,
-                     const ext::shared_ptr<OvernightIndex>& overnightIndex);
+        OvernightLeg(const Schedule& schedule, ext::shared_ptr<OvernightIndex> overnightIndex);
         OvernightLeg& withNotionals(Real notional);
         OvernightLeg& withNotionals(const std::vector<Real>& notionals);
         OvernightLeg& withPaymentDayCounter(const DayCounter&);
@@ -102,6 +107,7 @@ namespace QuantLib {
         OvernightLeg& withSpreads(Spread spread);
         OvernightLeg& withSpreads(const std::vector<Spread>& spreads);
         OvernightLeg& withTelescopicValueDates(bool telescopicValueDates);
+        OvernightLeg& withAveragingMethod(RateAveraging::Type averagingMethod);
         operator Leg() const;
       private:
         Schedule schedule_;
@@ -114,6 +120,7 @@ namespace QuantLib {
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
         bool telescopicValueDates_;
+        RateAveraging::Type averagingMethod_;
     };
 
 }

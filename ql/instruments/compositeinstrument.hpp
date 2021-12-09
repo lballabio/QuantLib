@@ -54,13 +54,14 @@ namespace QuantLib {
                       Real multiplier = 1.0);
         //! \name Observer interface
         //@{
-        void deepUpdate();
+        void deepUpdate() override;
         //@}
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
+        bool isExpired() const override;
+
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
         //@}
       private:
         std::list<component> components_;

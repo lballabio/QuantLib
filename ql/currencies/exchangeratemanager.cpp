@@ -194,11 +194,8 @@ namespace QuantLib {
                                                    const Currency& target,
                                                    const Date& date) const {
         const std::list<Entry>& rates = data_[hash(source,target)];
-        std::list<Entry>::const_iterator i =
-            std::find_if(rates.begin(), rates.end(), valid_at(date));
-        return i == rates.end() ?
-            (const ExchangeRate*) 0 :
-            &(i->rate);
+        auto i = std::find_if(rates.begin(), rates.end(), valid_at(date));
+        return i == rates.end() ? (const ExchangeRate*)nullptr : &(i->rate);
     }
 
 }

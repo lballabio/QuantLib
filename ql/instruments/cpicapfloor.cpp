@@ -18,40 +18,39 @@
  */
 
 
-#include <ql/time/schedule.hpp>
-#include <ql/cashflows/fixedratecoupon.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/simplecashflow.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/indexes/inflationindex.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-
 #include <ql/instruments/cpicapfloor.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/time/schedule.hpp>
+#include <utility>
 
 
 namespace QuantLib {
 
     CPICapFloor::CPICapFloor(Option::Type type,
-                Real nominal,
-                const Date& startDate,   // start date of contract (only)
-                Real baseCPI,
-                const Date& maturity,    // this is pre-adjustment!
-                const Calendar& fixCalendar,
-                BusinessDayConvention fixConvention,
-                const Calendar& payCalendar,
-                BusinessDayConvention payConvention,
-                Rate strike,
-                const Handle<ZeroInflationIndex> &infIndex,
-                const Period& observationLag,
+                             Real nominal,
+                             const Date& startDate, // start date of contract (only)
+                             Real baseCPI,
+                             const Date& maturity, // this is pre-adjustment!
+                             Calendar fixCalendar,
+                             BusinessDayConvention fixConvention,
+                             Calendar payCalendar,
+                             BusinessDayConvention payConvention,
+                             Rate strike,
+                             Handle<ZeroInflationIndex> infIndex,
+                             const Period& observationLag,
                              CPI::InterpolationType observationInterpolation)
-    : type_(type), nominal_(nominal), startDate_(startDate), baseCPI_(baseCPI),
-    maturity_(maturity), fixCalendar_(fixCalendar), fixConvention_(fixConvention),
-    payCalendar_(payCalendar), payConvention_(payConvention),
-    strike_(strike), infIndex_(infIndex), observationLag_(observationLag),
-    observationInterpolation_(observationInterpolation)
-    {
+    : type_(type), nominal_(nominal), startDate_(startDate), baseCPI_(baseCPI), maturity_(maturity),
+      fixCalendar_(std::move(fixCalendar)), fixConvention_(fixConvention),
+      payCalendar_(std::move(payCalendar)), payConvention_(payConvention), strike_(strike),
+      infIndex_(std::move(infIndex)), observationLag_(observationLag),
+      observationInterpolation_(observationInterpolation) {
         QL_REQUIRE(fixCalendar_ != Calendar(),"CPICapFloor: fixing calendar may not be null.");
         QL_REQUIRE(payCalendar_ != Calendar(),"CPICapFloor: payment calendar may not be null.");
 
@@ -98,8 +97,8 @@ namespace QuantLib {
     void CPICapFloor::setupArguments(PricingEngine::arguments* args) const {
 
         // correct PricingEngine?
-        CPICapFloor::arguments* arguments = dynamic_cast<CPICapFloor::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type, not CPICapFloor::arguments*");
+        auto* arguments = dynamic_cast<CPICapFloor::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type, not CPICapFloor::arguments*");
 
         // data move
         arguments->type = type_;

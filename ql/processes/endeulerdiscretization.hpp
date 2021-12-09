@@ -38,35 +38,32 @@ namespace QuantLib {
         /*! Returns an approximation of the drift defined as
             \f$ \mu(t_0 + \Delta t, \mathbf{x}_0) \Delta t \f$.
         */
-        Disposable<Array> drift(const StochasticProcess&,
-                                Time t0, const Array& x0, Time dt) const;
+        Disposable<Array>
+        drift(const StochasticProcess&, Time t0, const Array& x0, Time dt) const override;
         /*! Returns an approximation of the drift defined as
             \f$ \mu(t_0 + \Delta t, x_0) \Delta t \f$.
         */
-        Real drift(const StochasticProcess1D&,
-                   Time t0, Real x0, Time dt) const;
+        Real drift(const StochasticProcess1D&, Time t0, Real x0, Time dt) const override;
 
         /*! Returns an approximation of the diffusion defined as
             \f$ \sigma(t_0 + \Delta t, \mathbf{x}_0) \sqrt{\Delta t} \f$.
         */
-        Disposable<Matrix> diffusion(const StochasticProcess&,
-                                     Time t0, const Array& x0, Time dt) const;
+        Disposable<Matrix>
+        diffusion(const StochasticProcess&, Time t0, const Array& x0, Time dt) const override;
         /*! Returns an approximation of the diffusion defined as
             \f$ \sigma(t_0 + \Delta t, x_0) \sqrt{\Delta t} \f$.
         */
-        Real diffusion(const StochasticProcess1D&,
-                       Time t0, Real x0, Time dt) const;
+        Real diffusion(const StochasticProcess1D&, Time t0, Real x0, Time dt) const override;
 
         /*! Returns an approximation of the covariance defined as
             \f$ \sigma(t_0 + \Delta t, \mathbf{x}_0)^2 \Delta t \f$.
         */
-        Disposable<Matrix> covariance(const StochasticProcess&,
-                                      Time t0, const Array& x0, Time dt) const;
+        Disposable<Matrix>
+        covariance(const StochasticProcess&, Time t0, const Array& x0, Time dt) const override;
         /*! Returns an approximation of the variance defined as
             \f$ \sigma(t_0 + \Delta t, x_0)^2 \Delta t \f$.
         */
-        Real variance(const StochasticProcess1D&,
-                      Time t0, Real x0, Time dt) const;
+        Real variance(const StochasticProcess1D&, Time t0, Real x0, Time dt) const override;
     };
 
 }

@@ -32,9 +32,9 @@ namespace QuantLib {
         PiecewiseConstantAbcdVariance(Real a, Real b, Real c, Real d,
                                       Size resetIndex,
                                       const std::vector<Time>& rateTimes);
-        const std::vector<Real>& variances() const;
-        const std::vector<Real>& volatilities() const;
-        const std::vector<Time>& rateTimes() const;
+        const std::vector<Real>& variances() const override;
+        const std::vector<Real>& volatilities() const override;
+        const std::vector<Time>& rateTimes() const override;
         void getABCD(Real& a, Real& b, Real& c, Real& d) const;
       private:
         std::vector<Real> variances_;

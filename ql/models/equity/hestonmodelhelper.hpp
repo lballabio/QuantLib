@@ -34,7 +34,7 @@ namespace QuantLib {
     class HestonModelHelper : public BlackCalibrationHelper {
       public:
         HestonModelHelper(const Period& maturity,
-                          const Calendar& calendar,
+                          Calendar calendar,
                           Real s0,
                           Real strikePrice,
                           const Handle<Quote>& volatility,
@@ -44,7 +44,7 @@ namespace QuantLib {
                               BlackCalibrationHelper::RelativePriceError);
 
         HestonModelHelper(const Period& maturity,
-                          const Calendar& calendar,
+                          Calendar calendar,
                           const Handle<Quote>& s0,
                           Real strikePrice,
                           const Handle<Quote>& volatility,
@@ -53,10 +53,10 @@ namespace QuantLib {
                           BlackCalibrationHelper::CalibrationErrorType errorType =
                               BlackCalibrationHelper::RelativePriceError);
 
-        void addTimesTo(std::list<Time>&) const {}
-        void performCalculations() const;
-        Real modelValue() const;
-        Real blackPrice(Real volatility) const;
+        void addTimesTo(std::list<Time>&) const override {}
+        void performCalculations() const override;
+        Real modelValue() const override;
+        Real blackPrice(Real volatility) const override;
         Time maturity() const  { calculate(); return tau_; }
       private:
         const Period maturity_;

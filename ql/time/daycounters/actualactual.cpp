@@ -19,6 +19,7 @@
 
 #include <ql/time/daycounters/actualactual.hpp>
 #include <algorithm>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -30,8 +31,8 @@ namespace QuantLib {
         Integer findCouponsPerYear(const T& impl,
                                    Date refStart, Date refEnd) {
             // This will only work for day counts longer than 15 days.
-            Integer months = Integer(0.5 + 12 * Real(impl.dayCount(refStart, refEnd))/365.0);
-            return (Integer)(0.5 + 12.0 / Real(months));
+            auto months = (Integer)std::lround(12 * Real(impl.dayCount(refStart, refEnd)) / 365.0);
+            return (Integer)std::lround(12.0 / Real(months));
         }
 
         /* An ISMA day counter either needs a schedule or to have
@@ -49,26 +50,53 @@ namespace QuantLib {
                                                    const Schedule& schedule) {
             // Process the schedule into an array of dates.
             Date issueDate = schedule.date(0);
-            Date firstCoupon = schedule.date(1);
-            Date notionalCoupon =
-                schedule.calendar().advance(firstCoupon,
-                                            -schedule.tenor(),
-                                            schedule.businessDayConvention(),
-                                            schedule.endOfMonth());
-
             std::vector<Date> newDates = schedule.dates();
-            newDates[0] = notionalCoupon;
 
-            //long first coupon
-            if (notionalCoupon > issueDate) {
-                Date priorNotionalCoupon =
-                    schedule.calendar().advance(notionalCoupon,
-                                                -schedule.tenor(),
-                                                schedule.businessDayConvention(),
-                                                schedule.endOfMonth());
-                newDates.insert(newDates.begin(),
-                                priorNotionalCoupon); //insert as the first element?
+            if (!schedule.hasIsRegular() || !schedule.isRegular(1))
+            {
+                Date firstCoupon = schedule.date(1);
+
+                Date notionalFirstCoupon =
+                    schedule.calendar().advance(firstCoupon,
+                        -schedule.tenor(),
+                        schedule.businessDayConvention(),
+                        schedule.endOfMonth());
+
+                newDates[0] = notionalFirstCoupon;
+
+                //long first coupon
+                if (notionalFirstCoupon > issueDate) {
+                    Date priorNotionalCoupon =
+                        schedule.calendar().advance(notionalFirstCoupon,
+                                                    -schedule.tenor(),
+                                                    schedule.businessDayConvention(),
+                                                    schedule.endOfMonth());
+                    newDates.insert(newDates.begin(),
+                                    priorNotionalCoupon); //insert as the first element?
+                }
             }
+
+            if (!schedule.hasIsRegular() || !schedule.isRegular(schedule.size() - 1))
+            {
+                Date notionalLastCoupon =
+                    schedule.calendar().advance(schedule.date(schedule.size() - 2),
+                        schedule.tenor(),
+                        schedule.businessDayConvention(),
+                        schedule.endOfMonth());
+
+                newDates[schedule.size() - 1] = notionalLastCoupon;
+
+                if (notionalLastCoupon < schedule.endDate())
+                {
+                    Date nextNotionalCoupon =
+                        schedule.calendar().advance(notionalLastCoupon,
+                                                    schedule.tenor(),
+                                                    schedule.businessDayConvention(),
+                                                    schedule.endOfMonth());
+                    newDates.push_back(nextNotionalCoupon);
+                }
+            }
+
             return newDates;
         }
 
@@ -131,6 +159,13 @@ namespace QuantLib {
         std::vector<Date> couponDates =
             getListOfPeriodDatesIncludingQuasiPayments(schedule_);
 
+        Date firstDate = *std::min_element(couponDates.begin(), couponDates.end());
+        Date lastDate = *std::max_element(couponDates.begin(), couponDates.end());
+
+        QL_REQUIRE(d1 >= firstDate && d2 <= lastDate, "Dates out of range of schedule: "
+                       << "date 1: " << d1 << ", date 2: " << d2 << ", first date: "
+                       << firstDate << ", last date: " << lastDate);
+
         Real yearFractionSum = 0.0;
         for (Size i = 0; i < couponDates.size() - 1; i++) {
             Date startReferencePeriod = couponDates[i];
@@ -171,8 +206,7 @@ namespace QuantLib {
                    << ", reference period end: " << refPeriodEnd);
 
         // estimate roughly the length in months of a period
-        Integer months =
-            Integer(0.5+12*Real(refPeriodEnd-refPeriodStart)/365);
+        auto months = (Integer)std::lround(12 * Real(refPeriodEnd - refPeriodStart) / 365);
 
         // for short periods...
         if (months == 0) {

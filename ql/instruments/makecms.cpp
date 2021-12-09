@@ -137,7 +137,7 @@ namespace QuantLib {
             .withSpreads(cmsSpread_)
             .withCaps(cmsCap_)
             .withFloors(cmsFloor_);
-        if (couponPricer_ != 0)
+        if (couponPricer_ != nullptr)
             setCouponPricer(cmsLeg, couponPricer_);
 
         Rate usedSpread = iborSpread_;

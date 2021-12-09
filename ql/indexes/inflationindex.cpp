@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2007 Chris Kenyon
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,20 +21,20 @@
 #include <ql/indexes/inflationindex.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    InflationIndex::InflationIndex(const std::string& familyName,
-                                   const Region& region,
+    InflationIndex::InflationIndex(std::string familyName,
+                                   Region region,
                                    bool revised,
                                    bool interpolated,
                                    Frequency frequency,
                                    const Period& availabilityLag,
-                                   const Currency& currency)
-    : familyName_(familyName), region_(region),
-      revised_(revised), interpolated_(interpolated),
-      frequency_(frequency), availabilityLag_(availabilityLag),
-      currency_(currency) {
+                                   Currency currency)
+    : familyName_(std::move(familyName)), region_(std::move(region)), revised_(revised),
+      interpolated_(interpolated), frequency_(frequency), availabilityLag_(availabilityLag),
+      currency_(std::move(currency)) {
         name_ = region_.name() + " " + familyName_;
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
@@ -50,7 +51,7 @@ namespace QuantLib {
                                    bool forceOverwrite) {
 
         std::pair<Date,Date> lim = inflationPeriod(fixingDate, frequency_);
-        Size n = lim.second - lim.first + 1;
+        Size n = static_cast<QuantLib::Size>(lim.second - lim.first) + 1;
         std::vector<Date> dates(n);
         std::vector<Rate> rates(n);
         for (Size i=0; i<n; ++i) {
@@ -62,51 +63,48 @@ namespace QuantLib {
                           rates.begin(), forceOverwrite);
     }
 
-    ZeroInflationIndex::ZeroInflationIndex(
-                      const std::string& familyName,
-                      const Region& region,
-                      bool revised,
-                      bool interpolated,
-                      Frequency frequency,
-                      const Period& availabilityLag,
-                      const Currency& currency,
-                      const Handle<ZeroInflationTermStructure>& zeroInflation)
-    : InflationIndex(familyName, region, revised, interpolated,
-                     frequency, availabilityLag, currency),
-      zeroInflation_(zeroInflation) {
+    ZeroInflationIndex::ZeroInflationIndex(const std::string& familyName,
+                                           const Region& region,
+                                           bool revised,
+                                           bool interpolated,
+                                           Frequency frequency,
+                                           const Period& availabilityLag,
+                                           const Currency& currency,
+                                           Handle<ZeroInflationTermStructure> zeroInflation)
+    : InflationIndex(
+          familyName, region, revised, interpolated, frequency, availabilityLag, currency),
+      zeroInflation_(std::move(zeroInflation)) {
         registerWith(zeroInflation_);
     }
 
-    Rate ZeroInflationIndex::fixing(const Date& aFixingDate,
+    Real ZeroInflationIndex::fixing(const Date& fixingDate,
                                     bool /*forecastTodaysFixing*/) const {
-        if (!needsForecast(aFixingDate)) {
-            std::pair<Date,Date> lim = inflationPeriod(aFixingDate, frequency_);
+        if (!needsForecast(fixingDate)) {
+            std::pair<Date,Date> p = inflationPeriod(fixingDate, frequency_);
             const TimeSeries<Real>& ts = timeSeries();
-            Real pastFixing = ts[lim.first];
-            QL_REQUIRE(pastFixing != Null<Real>(),
-                       "Missing " << name() << " fixing for " << lim.first);
-            Real theFixing = pastFixing;
-            if (interpolated_) {
-                // fixings stored on first day of every period
-                if (aFixingDate == lim.first) {
-                    // we don't actually need the next fixing
-                    theFixing = pastFixing;
-                } else {
-                    Real pastFixing2 = ts[lim.second+1];
-                    QL_REQUIRE(pastFixing2 != Null<Real>(),
-                               "Missing " << name() << " fixing for " << lim.second+1);
 
-                    // Use lagged period for interpolation
-                    std::pair<Date, Date> reference_period_lim = inflationPeriod(aFixingDate + zeroInflationTermStructure()->observationLag(), frequency_);
-                    // now linearly interpolate
-                    Real daysInPeriod = reference_period_lim.second + 1 - reference_period_lim.first;
-                    theFixing = pastFixing
-                        + (pastFixing2 - pastFixing)*(aFixingDate - lim.first) / daysInPeriod;
-                }
+            Real I1 = ts[p.first];
+            QL_REQUIRE(I1 != Null<Real>(),
+                       "Missing " << name() << " fixing for " << p.first);
+
+            if (interpolated_ && fixingDate > p.first) {
+                Real I2 = ts[p.second+1];
+                QL_REQUIRE(I2 != Null<Real>(),
+                           "Missing " << name() << " fixing for " << p.second+1);
+
+                // Use non-lagged period for interpolation
+                Date observationDate = fixingDate + zeroInflation_->observationLag();
+                std::pair<Date, Date> p2 = inflationPeriod(observationDate, frequency_);
+                Real daysInPeriod = (p2.second + 1) - p2.first;
+                Real interpolationCoefficient = (observationDate - p2.first) / daysInPeriod;
+
+                return I1 + (I2 - I1) * interpolationCoefficient;
+            } else {
+                // we don't need the next fixing
+                return I1;
             }
-            return theFixing;
         } else {
-            return forecastFixing(aFixingDate);
+            return forecastFixing(fixingDate);
         }
     }
 
@@ -151,31 +149,38 @@ namespace QuantLib {
     }
 
 
-    Rate ZeroInflationIndex::forecastFixing(const Date& fixingDate) const {
+    Real ZeroInflationIndex::forecastFixing(const Date& fixingDate) const {
         // the term structure is relative to the fixing value at the base date.
         Date baseDate = zeroInflation_->baseDate();
         QL_REQUIRE(!needsForecast(baseDate),
-                   name() << " index fixing at base date is not available");
+                   name() << " index fixing at base date " << baseDate << " is not available");
         Real baseFixing = fixing(baseDate);
-        Date effectiveFixingDate;
-        if (interpolated()) {
-            effectiveFixingDate = fixingDate;
-        } else {
-            // start of period is the convention
-            // so it's easier to do linear interpolation on fixings
-            effectiveFixingDate = inflationPeriod(fixingDate, frequency()).first;
-        }
 
-        // no observation lag because it is the fixing for the date
-        // but if index is not interpolated then that fixing is constant
-        // for each period, hence the t uses the effectiveFixingDate
-        // However, it's slightly safe to get the zeroRate with the
-        // fixingDate to avoid potential problems at the edges of periods
-        Time t = zeroInflation_->dayCounter().yearFraction(baseDate, effectiveFixingDate);
-        bool forceLinearInterpolation = false;
-        Rate zero = zeroInflation_->zeroRate(fixingDate, Period(0,Days), forceLinearInterpolation);
-        // Annual compounding is the convention for zero inflation rates (or quotes)
-        return baseFixing * std::pow(1.0 + zero, t);
+        std::pair<Date, Date> p = inflationPeriod(fixingDate, frequency_);
+
+        Date firstDateInPeriod = p.first;
+        Rate Z1 = zeroInflation_->zeroRate(firstDateInPeriod, Period(0,Days), false);
+        Time t1 = inflationYearFraction(frequency_, interpolated_, zeroInflation_->dayCounter(),
+                                        baseDate, firstDateInPeriod);
+        Real I1 = baseFixing * std::pow(1.0 + Z1, t1);
+
+        if (interpolated() && fixingDate > firstDateInPeriod) {
+            Date firstDateInNextPeriod = p.second + 1;
+            Rate Z2 = zeroInflation_->zeroRate(firstDateInNextPeriod, Period(0,Days), false);
+            Time t2 = inflationYearFraction(frequency_, interpolated_, zeroInflation_->dayCounter(),
+                                            baseDate, firstDateInNextPeriod);
+            Real I2 = baseFixing * std::pow(1.0 + Z2, t2);
+
+            // // Use non-lagged period for interpolation
+            Date observationDate = fixingDate + zeroInflation_->observationLag();
+            std::pair<Date, Date> p2 = inflationPeriod(observationDate, frequency_);
+            Real daysInPeriod = (p2.second + 1) - p2.first;
+            Real interpolationCoefficient = (observationDate - p2.first) / daysInPeriod;
+
+            return I1 + (I2 - I1) * interpolationCoefficient;
+        } else {
+            return I1;
+        }
     }
 
 
@@ -189,19 +194,18 @@ namespace QuantLib {
 
     // these still need to be fixed to latest versions
 
-    YoYInflationIndex::YoYInflationIndex(
-            const std::string& familyName,
-            const Region& region,
-            bool revised,
-            bool interpolated,
-            bool ratio,
-            Frequency frequency,
-            const Period& availabilityLag,
-            const Currency& currency,
-            const Handle<YoYInflationTermStructure>& yoyInflation)
-    : InflationIndex(familyName, region, revised, interpolated,
-                     frequency, availabilityLag, currency),
-      ratio_(ratio), yoyInflation_(yoyInflation) {
+    YoYInflationIndex::YoYInflationIndex(const std::string& familyName,
+                                         const Region& region,
+                                         bool revised,
+                                         bool interpolated,
+                                         bool ratio,
+                                         Frequency frequency,
+                                         const Period& availabilityLag,
+                                         const Currency& currency,
+                                         Handle<YoYInflationTermStructure> yoyInflation)
+    : InflationIndex(
+          familyName, region, revised, interpolated, frequency, availabilityLag, currency),
+      ratio_(ratio), yoyInflation_(std::move(yoyInflation)) {
         registerWith(yoyInflation_);
     }
 
@@ -339,4 +343,14 @@ namespace QuantLib {
                                             availabilityLag_, currency_, h);
     }
 
+
+    CPI::InterpolationType
+    detail::CPI::effectiveInterpolationType(const ext::shared_ptr<ZeroInflationIndex>& index,
+                                            const QuantLib::CPI::InterpolationType& type) {
+        if (type == QuantLib::CPI::AsIndex) {
+            return index->interpolated() ? QuantLib::CPI::Linear : QuantLib::CPI::Flat;
+        } else {
+            return type;
+        }
+    }
 }

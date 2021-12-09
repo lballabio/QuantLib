@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2004 Mike Parker
+ Copyright (C) 2021 Magnus Mencke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,11 +19,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/shortrate/twofactormodels/g2.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
-#include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/models/shortrate/twofactormodels/g2.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -108,14 +110,19 @@ namespace QuantLib {
 
     class G2::SwaptionPricingFunction {
       public:
-        SwaptionPricingFunction(Real a, Real sigma,
-                                Real b, Real eta, Real rho,
-                                Real w, Real start,
-                                const std::vector<Time>& payTimes,
-                                Rate fixedRate, const G2& model)
-        : a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho), w_(w),
-          T_(start), t_(payTimes), rate_(fixedRate), size_(t_.size()),
-          A_(size_), Ba_(size_), Bb_(size_) {
+        SwaptionPricingFunction(Real a,
+                                Real sigma,
+                                Real b,
+                                Real eta,
+                                Real rho,
+                                Real w,
+                                Real start,
+                                std::vector<Time> payTimes,
+                                Rate fixedRate,
+                                const G2& model)
+        : a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho), w_(w), T_(start),
+          t_(std::move(payTimes)), rate_(fixedRate), size_(t_.size()), A_(size_), Ba_(size_),
+          Bb_(size_) {
 
 
             sigmax_ = sigma_*std::sqrt(0.5*(1.0-std::exp(-2.0*a_*T_))/a_);
@@ -160,7 +167,8 @@ namespace QuantLib {
             SolvingFunction function(lambda, Bb_) ;
             Brent s1d;
             s1d.setMaxEvaluations(1000);
-            Real yb = s1d.solve(function, 1e-6, 0.00, -100.0, 100.0);
+            Real searchBound = std::max(10.0*sigmay_, 1.0);
+            Real yb = s1d.solve(function, 1e-6, 0.00, -searchBound, searchBound);
 
             Real h1 = (yb - muy_)/(sigmay_*txy) -
                 rhoxy_*(x  - mux_)/(sigmax_*txy);
@@ -214,7 +222,7 @@ namespace QuantLib {
         DayCounter dayCounter = termStructure()->dayCounter();
         Time start = dayCounter.yearFraction(settlement,
                                              arguments.floatingResetDates[0]);
-        Real w = (arguments.type==VanillaSwap::Payer ? 1 : -1 );
+        Real w = (arguments.type==Swap::Payer ? 1 : -1 );
 
         std::vector<Time> fixedPayTimes(arguments.fixedPayDates.size());
         for (Size i=0; i<fixedPayTimes.size(); ++i)
@@ -235,4 +243,3 @@ namespace QuantLib {
     }
 
 }
-

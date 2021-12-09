@@ -28,6 +28,7 @@
 class IndexTest {
   public:
     static void testFixingObservability();
+    static void testFixingHasHistoricalFixing();
     static boost::unit_test_framework::test_suite* suite();
 };
 

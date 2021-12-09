@@ -44,8 +44,9 @@ namespace QuantLib {
                       const ext::shared_ptr<StrikedTypePayoff>& payoff,
                       const ext::shared_ptr<Exercise>& exercise);
 
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
+
       protected:
         // arguments
         Barrier::Type barrierType_;
@@ -59,7 +60,7 @@ namespace QuantLib {
         arguments();
         Barrier::Type barrierType;
         Real barrier;
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Two-asset barrier-option %engine base class

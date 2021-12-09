@@ -40,6 +40,7 @@ namespace swaption_volatility_cube_test {
         SwaptionMarketConventions conventions;
         AtmVolatility atm;
         RelinkableHandle<SwaptionVolatilityStructure> atmVolMatrix;
+        RelinkableHandle<SwaptionVolatilityStructure> normalVolMatrix;
         VolatilityCube cube;
 
         RelinkableHandle<YieldTermStructure> termStructure;
@@ -54,28 +55,22 @@ namespace swaption_volatility_cube_test {
         void makeAtmVolTest(const SwaptionVolatilityCube& volCube,
                             Real tolerance) {
 
-            for (Size i=0; i<atm.tenors.options.size(); i++) {
-              for (Size j=0; j<atm.tenors.swaps.size(); j++) {
-                Rate strike = volCube.atmStrike(atm.tenors.options[i],
-                                                atm.tenors.swaps[j]);
-                Volatility expVol =
-                    atmVolMatrix->volatility(atm.tenors.options[i],
-                                             atm.tenors.swaps[j],
-                                             strike, true);
-                Volatility actVol = volCube.volatility(atm.tenors.options[i],
-                                                       atm.tenors.swaps[j],
-                                                       strike, true);
-                Volatility error = std::abs(expVol-actVol);
-                if (error>tolerance)
-                  BOOST_ERROR("\nrecovery of atm vols failed:"
-                              "\nexpiry time = " << atm.tenors.options[i] <<
-                              "\nswap length = " << atm.tenors.swaps[j] <<
-                              "\n atm strike = " << io::rate(strike) <<
-                              "\n   exp. vol = " << io::volatility(expVol) <<
-                              "\n actual vol = " << io::volatility(actVol) <<
-                              "\n      error = " << io::volatility(error) <<
-                              "\n  tolerance = " << tolerance);
-              }
+            for (auto& option : atm.tenors.options) {
+                for (auto& swap : atm.tenors.swaps) {
+                    Rate strike = volCube.atmStrike(option, swap);
+                    Volatility expVol = atmVolMatrix->volatility(option, swap, strike, true);
+                    Volatility actVol = volCube.volatility(option, swap, strike, true);
+                    Volatility error = std::abs(expVol - actVol);
+                    if (error > tolerance)
+                        BOOST_ERROR("\nrecovery of atm vols failed:"
+                                    "\nexpiry time = "
+                                    << option << "\nswap length = " << swap
+                                    << "\n atm strike = " << io::rate(strike)
+                                    << "\n   exp. vol = " << io::volatility(expVol)
+                                    << "\n actual vol = " << io::volatility(actVol)
+                                    << "\n      error = " << io::volatility(error)
+                                    << "\n  tolerance = " << tolerance);
+                }
             }
         }
 
@@ -131,6 +126,12 @@ namespace swaption_volatility_cube_test {
                                              atm.tenors.swaps,
                                              atm.volsHandle,
                                              conventions.dayCounter)));
+
+            normalVolMatrix = RelinkableHandle<SwaptionVolatilityStructure>(
+                ext::shared_ptr<SwaptionVolatilityStructure>(new SwaptionVolatilityMatrix(
+                    conventions.calendar, conventions.optionBdc, atm.tenors.options,
+                    atm.tenors.swaps, atm.volsHandle, conventions.dayCounter, false, VolatilityType::Normal)));
+
             // Swaptionvolcube
             cube.setMarketData();
 
@@ -147,6 +148,32 @@ namespace swaption_volatility_cube_test {
 
 }
 
+void SwaptionVolatilityCubeTest::testSabrNormalVolatility() {
+
+    BOOST_TEST_MESSAGE("Testing sabr normal volatility...");
+
+    using namespace swaption_volatility_cube_test;
+
+    CommonVars vars;
+
+    std::vector<std::vector<Handle<Quote> > > parametersGuess(vars.cube.tenors.options.size() *
+                                                              vars.cube.tenors.swaps.size());
+    for (Size i = 0; i < vars.cube.tenors.options.size() * vars.cube.tenors.swaps.size(); i++) {
+        parametersGuess[i] = std::vector<Handle<Quote> >(4);
+        parametersGuess[i][0] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.2)));
+        parametersGuess[i][1] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.5)));
+        parametersGuess[i][2] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.4)));
+        parametersGuess[i][3] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
+    }
+    std::vector<bool> isParameterFixed(4, false);
+
+    SwaptionVolCube1 volCube(vars.normalVolMatrix, vars.cube.tenors.options, vars.cube.tenors.swaps,
+                             vars.cube.strikeSpreads, vars.cube.volSpreadsHandle,
+                             vars.swapIndexBase, vars.shortSwapIndexBase, vars.vegaWeighedSmileFit,
+                             parametersGuess, isParameterFixed, true);
+    Real tolerance = 7.0e-4;
+    vars.makeAtmVolTest(volCube, tolerance);
+}
 
 void SwaptionVolatilityCubeTest::testAtmVols() {
 
@@ -280,10 +307,11 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                 volCube->smileSection(vars.cube.tenors.options[i], vars.cube.tenors.swaps[j]);
             ext::shared_ptr<SmileSection> smileSectionBySpreadedCube =
                 spreadedVolCube->smileSection(vars.cube.tenors.options[i], vars.cube.tenors.swaps[j]);
-            for (Size k=0; k<strikes.size(); k++) {
-                Real strike = strikes[k];
-                Real diff = spreadedVolCube->volatility(vars.cube.tenors.options[i], vars.cube.tenors.swaps[j], strike)
-                            - volCube->volatility(vars.cube.tenors.options[i], vars.cube.tenors.swaps[j], strike);
+            for (double strike : strikes) {
+                Real diff = spreadedVolCube->volatility(vars.cube.tenors.options[i],
+                                                        vars.cube.tenors.swaps[j], strike) -
+                            volCube->volatility(vars.cube.tenors.options[i],
+                                                vars.cube.tenors.swaps[j], strike);
                 if (std::fabs(diff-spread->value())>1e-16)
                     BOOST_ERROR("\ndiff!=spread in volatility method:"
                                 "\nexpiry time = " << vars.cube.tenors.options[i] <<
@@ -301,7 +329,6 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                                 "\n atm strike = " << io::rate(strike) <<
                                 "\ndiff = " << diff <<
                                 "\nspread = " << spread->value());
-
             }
         }
     }
@@ -560,8 +587,9 @@ void SwaptionVolatilityCubeTest::testSabrParameters() {
 
 
 test_suite* SwaptionVolatilityCubeTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
+    auto* suite = BOOST_TEST_SUITE("Swaption Volatility Cube tests");
 
+    suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testSabrNormalVolatility));
     // SwaptionVolCubeByLinear reproduces ATM vol with machine precision
     suite->add(QUANTLIB_TEST_CASE(&SwaptionVolatilityCubeTest::testAtmVols));
     // SwaptionVolCubeByLinear reproduces smile spreads with machine precision

@@ -30,10 +30,9 @@ namespace QuantLib
         numberOfProducts_(innerProduct.numberOfProducts())
     {
 
-        for (Size i=0; i < cashFlowsGenerated_.size(); ++i)
-            for (Size j=0; j < cashFlowsGenerated_[i].size(); ++j)
-                    cashFlowsGenerated_[i][j].amount.resize(1+innerProduct.evolution().numberOfRates());
-        
+        for (auto& i : cashFlowsGenerated_)
+            for (auto& j : i)
+                j.amount.resize(1 + innerProduct.evolution().numberOfRates());
     }
 
         std::vector<Time>  MultiProductPathwiseWrapper::possibleCashFlowTimes() const

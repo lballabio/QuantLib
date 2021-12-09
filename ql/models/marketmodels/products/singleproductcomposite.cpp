@@ -29,8 +29,8 @@ namespace QuantLib {
 
     Size SingleProductComposite::maxNumberOfCashFlowsPerProductPerStep() const {
         Size result = 0;
-        for (const_iterator i=components_.begin(); i!=components_.end(); ++i)
-            result += i->product->maxNumberOfCashFlowsPerProductPerStep();
+        for (const auto& component : components_)
+            result += component.product->maxNumberOfCashFlowsPerProductPerStep();
         return result;
     }
 
@@ -43,7 +43,7 @@ namespace QuantLib {
         bool done = true;
         Size n = 0, totalCashflows = 0;
         // for each sub-product...
-        for (iterator i=components_.begin(); i!=components_.end(); ++i, ++n) {
+        for (auto i = components_.begin(); i != components_.end(); ++i, ++n) {
             if (isInSubset_[n][currentIndex_] && !i->done) {
                 // ...make it evolve...
                 bool thisDone = i->product->nextTimeStep(currentState,

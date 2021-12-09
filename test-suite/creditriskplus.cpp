@@ -120,7 +120,7 @@ void CreditRiskPlusTest::testReferenceValues() {
 }
 
 test_suite *CreditRiskPlusTest::suite() {
-    test_suite *suite = BOOST_TEST_SUITE("Credit risk plus tests");
+    auto* suite = BOOST_TEST_SUITE("Credit risk plus tests");
     suite->add(QUANTLIB_TEST_CASE(&CreditRiskPlusTest::testReferenceValues));
     return suite;
 }

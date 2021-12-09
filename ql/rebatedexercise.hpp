@@ -43,12 +43,12 @@ namespace QuantLib {
         RebatedExercise(const Exercise& exercise,
                         Real rebate = 0.0,
                         Natural rebateSettlementDays = 0,
-                        const Calendar& rebatePaymentCalendar = NullCalendar(),
+                        Calendar rebatePaymentCalendar = NullCalendar(),
                         BusinessDayConvention rebatePaymentConvention = Following);
         RebatedExercise(const Exercise& exercise,
                         const std::vector<Real>& rebates,
                         Natural rebateSettlementDays = 0,
-                        const Calendar& rebatePaymentCalendar = NullCalendar(),
+                        Calendar rebatePaymentCalendar = NullCalendar(),
                         BusinessDayConvention rebatePaymentConvention = Following);
         Real rebate(Size index) const;
         Date rebatePaymentDate(Size index) const;

@@ -45,12 +45,13 @@ namespace QuantLib {
         //! Currency of the bond and protection leg payment.
         Currency obligationCurrency_;
         //! Reference bonds seniority.
-        Seniority seniority_;
+        Seniority seniority_ = NoSeniority;
+
       public:
         DefaultProbKey();
 
-        DefaultProbKey(const std::vector<ext::shared_ptr<DefaultType> >& eventTypes,
-                       const Currency& cur,
+        DefaultProbKey(std::vector<ext::shared_ptr<DefaultType> > eventTypes,
+                       Currency cur,
                        Seniority sen);
 
         const Currency& currency() const {return obligationCurrency_;}

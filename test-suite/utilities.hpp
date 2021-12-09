@@ -34,12 +34,14 @@
 #else
 #include <boost/test/tools/floating_point_comparison.hpp>
 #endif
-#include <vector>
-#include <string>
-#include <numeric>
+#include <cmath>
 #include <iomanip>
+#include <numeric>
+#include <string>
+#include <utility>
+#include <vector>
 
-// This makes it easier to use array literals (alas, no std::vector literals)
+// This makes it easier to use array literals (for new code, use std::vector though)
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 #define QUANTLIB_TEST_CASE(f) BOOST_TEST_CASE(QuantLib::detail::quantlib_test_case(f))
@@ -126,13 +128,14 @@ namespace QuantLib {
 
     class Flag : public QuantLib::Observer {
       private:
-        bool up_;
+        bool up_ = false;
+
       public:
-        Flag() : up_(false) {}
+        Flag() = default;
         void raise() { up_ = true; }
         void lower() { up_ = false; }
         bool isUp() const { return up_; }
-        void update() { raise(); }
+        void update() override { raise(); }
     };
 
     template<class Iterator>
@@ -148,10 +151,15 @@ namespace QuantLib {
     }
 
 
+    inline Integer timeToDays(Time t, Integer daysPerYear = 360) {
+        return Integer(std::lround(t * daysPerYear));
+    }
+
+
     // this cleans up index-fixing histories when destroyed
     class IndexHistoryCleaner {
       public:
-        IndexHistoryCleaner();
+        IndexHistoryCleaner() = default;
         ~IndexHistoryCleaner();
     };
 
@@ -166,7 +174,7 @@ namespace QuantLib {
 
     template <class T>
     struct vector_streamer {
-        explicit vector_streamer(const std::vector<T>& v) : v(v) {}
+        explicit vector_streamer(std::vector<T> v) : v(std::move(v)) {}
         std::vector<T> v;
     };
 

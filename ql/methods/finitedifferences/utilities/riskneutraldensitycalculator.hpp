@@ -34,7 +34,7 @@ namespace QuantLib {
         virtual Real cdf(Real x, Time t) const = 0;
         virtual Real invcdf(Real p, Time t) const = 0;
 
-        virtual ~RiskNeutralDensityCalculator() {}
+        virtual ~RiskNeutralDensityCalculator() = default;
 
       protected:
         class InvCDFHelper {

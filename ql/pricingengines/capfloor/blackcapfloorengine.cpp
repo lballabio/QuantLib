@@ -21,44 +21,42 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    BlackCapFloorEngine::BlackCapFloorEngine(
-                              const Handle<YieldTermStructure>& discountCurve,
-                              Volatility v,
-                              const DayCounter& dc,
-                              Real displacement)
-    : discountCurve_(discountCurve),
-      vol_(ext::shared_ptr<OptionletVolatilityStructure>(new
-          ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))),
+    BlackCapFloorEngine::BlackCapFloorEngine(Handle<YieldTermStructure> discountCurve,
+                                             Volatility v,
+                                             const DayCounter& dc,
+                                             Real displacement)
+    : discountCurve_(std::move(discountCurve)),
+      vol_(ext::shared_ptr<OptionletVolatilityStructure>(
+          new ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))),
       displacement_(displacement) {
         registerWith(discountCurve_);
     }
 
-    BlackCapFloorEngine::BlackCapFloorEngine(
-                              const Handle<YieldTermStructure>& discountCurve,
-                              const Handle<Quote>& v,
-                              const DayCounter& dc,
-                              Real displacement)
-    : discountCurve_(discountCurve),
-      vol_(ext::shared_ptr<OptionletVolatilityStructure>(new
-          ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))),
+    BlackCapFloorEngine::BlackCapFloorEngine(Handle<YieldTermStructure> discountCurve,
+                                             const Handle<Quote>& v,
+                                             const DayCounter& dc,
+                                             Real displacement)
+    : discountCurve_(std::move(discountCurve)),
+      vol_(ext::shared_ptr<OptionletVolatilityStructure>(
+          new ConstantOptionletVolatility(0, NullCalendar(), Following, v, dc))),
       displacement_(displacement) {
         registerWith(discountCurve_);
         registerWith(vol_);
     }
 
-    BlackCapFloorEngine::BlackCapFloorEngine(
-        const Handle< YieldTermStructure > &discountCurve,
-        const Handle< OptionletVolatilityStructure > &volatility,
-        Real displacement)
-        : discountCurve_(discountCurve), vol_(volatility) {
+    BlackCapFloorEngine::BlackCapFloorEngine(Handle<YieldTermStructure> discountCurve,
+                                             Handle<OptionletVolatilityStructure> volatility,
+                                             Real displacement)
+    : discountCurve_(std::move(discountCurve)), vol_(std::move(volatility)) {
         QL_REQUIRE(
             vol_->volatilityType() == ShiftedLognormal,
             "BlackCapFloorEngine should only be used for vol surfaces stripped "
@@ -134,7 +132,7 @@ namespace QuantLib {
                         floorletVega = blackFormulaStdDevDerivative(strike,
                             forward, stdDevs[i], discountedAccrual, displacement_) 
                             * sqrtTime;
-                        floorletDelta = Option::Put * blackFormulaAssetItmProbability(
+                        floorletDelta = Integer(Option::Put) * blackFormulaAssetItmProbability(
                                                         Option::Put, strike, forward, 
                                                         stdDevs[i], displacement_);
                     }

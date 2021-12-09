@@ -17,25 +17,26 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/errors.hpp>
 #include <ql/experimental/variancegamma/variancegammaprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
-#include <ql/errors.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    VarianceGammaProcess::VarianceGammaProcess(
-        const Handle<Quote>& s0,
-        const Handle<YieldTermStructure>& dividendYield,
-        const Handle<YieldTermStructure>& riskFreeRate,
-        Real sigma, Real nu, Real theta)
-        : StochasticProcess1D(ext::shared_ptr<discretization>(
-            new EulerDiscretization)),
-        s0_(s0), dividendYield_(dividendYield), riskFreeRate_(riskFreeRate), 
-        sigma_(sigma), nu_(nu), theta_(theta) {
-            registerWith(riskFreeRate_);
-            registerWith(dividendYield_);
-            registerWith(s0_);
+    VarianceGammaProcess::VarianceGammaProcess(Handle<Quote> s0,
+                                               Handle<YieldTermStructure> dividendYield,
+                                               Handle<YieldTermStructure> riskFreeRate,
+                                               Real sigma,
+                                               Real nu,
+                                               Real theta)
+    : StochasticProcess1D(ext::shared_ptr<discretization>(new EulerDiscretization)),
+      s0_(std::move(s0)), dividendYield_(std::move(dividendYield)),
+      riskFreeRate_(std::move(riskFreeRate)), sigma_(sigma), nu_(nu), theta_(theta) {
+        registerWith(riskFreeRate_);
+        registerWith(dividendYield_);
+        registerWith(s0_);
     }
 
     Real VarianceGammaProcess::x0() const

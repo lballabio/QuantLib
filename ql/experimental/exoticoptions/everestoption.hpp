@@ -38,8 +38,9 @@ namespace QuantLib {
                       const ext::shared_ptr<Exercise>&);
         Rate yield() const;
 
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results*) const override;
+
       private :
         Real notional_;
         Rate guarantee_;
@@ -49,7 +50,7 @@ namespace QuantLib {
     class EverestOption::arguments : public MultiAssetOption::arguments {
       public:
         arguments();
-        void validate() const;
+        void validate() const override;
 
         Real notional;
         Rate guarantee;
@@ -57,7 +58,7 @@ namespace QuantLib {
 
     class EverestOption::results : public MultiAssetOption::results {
       public:
-        void reset();
+        void reset() override;
 
         Rate yield;
     };

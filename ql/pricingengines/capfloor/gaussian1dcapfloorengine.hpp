@@ -25,8 +25,9 @@
 #define quantlib_pricers_gaussian1d_capfloor_hpp
 
 #include <ql/instruments/capfloor.hpp>
-#include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
+#include <ql/pricingengines/genericmodelengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -39,19 +40,17 @@ namespace QuantLib {
                                     CapFloor::results> {
       public:
         Gaussian1dCapFloorEngine(
-            const ext::shared_ptr<Gaussian1dModel> &model,
-            const int integrationPoints = 64, const Real stddevs = 7.0,
+            const ext::shared_ptr<Gaussian1dModel>& model,
+            const int integrationPoints = 64,
+            const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
-            const Handle<YieldTermStructure> &discountCurve =
-                Handle<YieldTermStructure>())
-            : GenericModelEngine<Gaussian1dModel, CapFloor::arguments,
-                                 CapFloor::results>(model),
-              integrationPoints_(integrationPoints), stddevs_(stddevs),
-              extrapolatePayoff_(extrapolatePayoff),
-              flatPayoffExtrapolation_(flatPayoffExtrapolation),
-              discountCurve_(discountCurve) {}
-        void calculate() const;
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>())
+        : GenericModelEngine<Gaussian1dModel, CapFloor::arguments, CapFloor::results>(model),
+          integrationPoints_(integrationPoints), stddevs_(stddevs),
+          extrapolatePayoff_(extrapolatePayoff), flatPayoffExtrapolation_(flatPayoffExtrapolation),
+          discountCurve_(std::move(discountCurve)) {}
+        void calculate() const override;
 
       private:
         const int integrationPoints_;

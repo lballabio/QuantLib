@@ -197,21 +197,12 @@ namespace QuantLib {
 
         Real R,S,P,Q,s,y,z,r, ax;
 
-        /* not portable!
-
-        // The finite() function returns a non-zero value if value is
-        // neither infinite nor a "not-a-number" (NaN) value,
-        // and 0 otherwise.
-        if (!_finite(x)) {
-            //  The isnan() function returns a non-zero value if value is
-            // "not-a-number" (NaN), and 0 otherwise.
-            if (_isnan(x))
+        if (!std::isfinite(x)) {
+            if (std::isnan(x))
                 return x;
             else
-                return   ( x > 0 ? 1 : -1);
+                return ( x > 0 ? 1 : -1);
         }
-
-        */
 
         ax = std::fabs(x);
 

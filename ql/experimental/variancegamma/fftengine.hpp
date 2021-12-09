@@ -47,12 +47,11 @@ namespace QuantLib {
     class FFTEngine :
         public VanillaOption::engine {
     public:
-        FFTEngine(
-            const ext::shared_ptr<StochasticProcess1D>&process, Real logStrikeSpacing);
-        void calculate() const;
-        void update();
+      FFTEngine(ext::shared_ptr<StochasticProcess1D> process, Real logStrikeSpacing);
+      void calculate() const override;
+      void update() override;
 
-        void precalculate(const std::vector<ext::shared_ptr<Instrument> >& optionList);
+      void precalculate(const std::vector<ext::shared_ptr<Instrument> >& optionList);
         #if defined(QL_USE_STD_UNIQUE_PTR)
         virtual std::unique_ptr<FFTEngine> clone() const = 0;
         #else

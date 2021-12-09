@@ -19,40 +19,40 @@
 
 #include "vpp.hpp"
 #include "utilities.hpp"
-
-#include <ql/math/functional.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/experimental/finitedifferences/dynprogvppintrinsicvalueengine.hpp>
+#include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
+#include <ql/experimental/finitedifferences/fdmklugeextouop.hpp>
+#include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
+#include <ql/experimental/finitedifferences/fdmvppstepconditionfactory.hpp>
+#include <ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp>
+#include <ql/experimental/finitedifferences/fdsimpleklugeextouvppengine.hpp>
+#include <ql/experimental/finitedifferences/vanillavppoption.hpp>
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
+#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
+#include <ql/experimental/processes/gemanroncoroniprocess.hpp>
+#include <ql/experimental/processes/klugeextouprocess.hpp>
 #include <ql/instruments/basketoption.hpp>
-#include <ql/instruments/vanillaswingoption.hpp>
 #include <ql/instruments/vanillastorageoption.hpp>
-#include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/instruments/vanillaswingoption.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/generallinearleastsquares.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/statistics/generalstatistics.hpp>
-#include <ql/termstructures/yield/zerocurve.hpp>
-#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/methods/montecarlo/multipathgenerator.hpp>
-#include <ql/experimental/processes/gemanroncoroniprocess.hpp>
-#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
-#include <ql/experimental/processes/klugeextouprocess.hpp>
-#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/experimental/finitedifferences/vanillavppoption.hpp>
-#include <ql/experimental/finitedifferences/fdmklugeextouop.hpp>
-#include <ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp>
-#include <ql/experimental/finitedifferences/fdklugeextouspreadengine.hpp>
-#include <ql/experimental/finitedifferences/fdmvppstepconditionfactory.hpp>
-#include <ql/experimental/finitedifferences/fdsimpleklugeextouvppengine.hpp>
-#include <ql/experimental/finitedifferences/dynprogvppintrinsicvalueengine.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/experimental/finitedifferences/fdmspreadpayoffinnervalue.hpp>
+#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
 #include <deque>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -105,7 +105,7 @@ void VPPTest::testGemanRoncoroniProcess() {
 
     const Date today = Date(18, December, 2011);
     Settings::instance().evaluationDate() = today;
-    const DayCounter dc = ActualActual();
+    const DayCounter dc = ActualActual(ActualActual::ISDA);
 
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.03, dc);
 
@@ -145,9 +145,7 @@ void VPPTest::testGemanRoncoroniProcess() {
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
                            ExtendedOrnsteinUhlenbeckProcess::Trapezodial));
 
-    std::vector<ext::shared_ptr<StochasticProcess1D> > processes;
-    processes.push_back(grProcess);
-    processes.push_back(eouProcess);
+    std::vector<ext::shared_ptr<StochasticProcess1D> > processes = {grProcess, eouProcess};
 
     Matrix correlation(2, 2, 1.0);
     correlation[0][1] = correlation[1][0] = 0.25;
@@ -223,7 +221,7 @@ void VPPTest::testSimpleExtOUStorageEngine() {
 
     Date settlementDate = Date(18, December, 2011);
     Settings::instance().evaluationDate() = settlementDate;
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
     Date maturityDate = settlementDate + Period(12, Months);
 
     std::vector<Date> exerciseDates(1, settlementDate+Period(1, Days));
@@ -274,7 +272,7 @@ void VPPTest::testKlugeExtOUSpreadOption() {
     Date settlementDate = Date(18, December, 2011);
     Settings::instance().evaluationDate() = settlementDate;
 
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
     Date maturityDate = settlementDate + Period(1, Years);
     Time maturity = dayCounter.yearFraction(settlementDate, maturityDate);
 
@@ -353,7 +351,8 @@ void VPPTest::testKlugeExtOUSpreadOption() {
 namespace vpp_test {
     // for a "real" gas and power forward curve
     // please see. e.g. http://www.kyos.com/?content=64
-    const Real fuelPrices[] = {20.74,21.65,20.78,21.58,21.43,20.82,22.02,21.52,
+    const std::vector<Real> fuelPrices = {
+                              20.74,21.65,20.78,21.58,21.43,20.82,22.02,21.52,
                               21.02,21.46,21.75,20.69,22.16,20.38,20.82,20.68,
                               20.57,21.92,22.04,20.45,20.75,21.92,20.53,20.67,
                               20.88,21.02,20.82,21.67,21.82,22.12,20.45,20.74,
@@ -375,7 +374,8 @@ namespace vpp_test {
                               20.70,21.84,21.82,21.68,21.24,22.36,20.83,20.64,
                               21.03,20.57,22.34,20.96,21.54,21.26,21.43,22.39};
 
-    const Real powerPrices[]={40.40,36.71,31.87,25.81,31.61,35.00,46.22,60.68,
+    const std::vector<Real> powerPrices = {
+                              40.40,36.71,31.87,25.81,31.61,35.00,46.22,60.68,
                               42.45,38.01,33.84,29.79,31.84,38.53,49.23,59.92,
                               43.85,37.47,34.89,29.99,30.85,29.19,29.25,38.67,
                               36.90,25.93,22.12,20.19,17.19,19.29,13.51,18.14,
@@ -407,7 +407,7 @@ void VPPTest::testVPPIntrinsicValue() {
     SavedSettings backup;
 
     const Date today = Date(18, December, 2011);
-    const DayCounter dc = ActualActual();
+    const DayCounter dc = ActualActual(ActualActual::ISDA);
     Settings::instance().evaluationDate() = today;
 
     // vpp parameters
@@ -436,10 +436,8 @@ void VPPTest::testVPPIntrinsicValue() {
                                 startUpFuel, startUpFixCost, exercise);
 
         option.setPricingEngine(ext::shared_ptr<PricingEngine>(
-            new DynProgVPPIntrinsicValueEngine(
-                std::vector<Real>(fuelPrices,fuelPrices+LENGTH(fuelPrices)),
-                std::vector<Real>(powerPrices,powerPrices+LENGTH(powerPrices)),
-                fuelCostAddon, flatRate(0.0, dc))));
+            new DynProgVPPIntrinsicValueEngine(fuelPrices, powerPrices,
+                                               fuelCostAddon, flatRate(0.0, dc))));
 
         const Real calculated = option.NPV();
 
@@ -458,12 +456,10 @@ namespace vpp_test {
       public:
         typedef FdSimpleKlugeExtOUVPPEngine::Shape Shape;
 
-        PathFuelPrice(
-            const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
-            const ext::shared_ptr<Shape>& shape)
-        : path_(path),
-          shape_(shape) {}
-        Real innerValue(const FdmLinearOpIterator&, Time t) {
+        PathFuelPrice(const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
+                      ext::shared_ptr<Shape> shape)
+        : path_(path), shape_(std::move(shape)) {}
+        Real innerValue(const FdmLinearOpIterator&, Time t) override {
             QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  shape_->back().first,
                         "invalid time");
 
@@ -473,9 +469,10 @@ namespace vpp_test {
 
             return std::exp(path_[2][i] + f);
         }
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
             return innerValue(iter, t);
         }
+
       private:
         const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path_;
         const ext::shared_ptr<Shape> shape_;
@@ -485,17 +482,14 @@ namespace vpp_test {
       public:
         typedef FdSimpleKlugeExtOUVPPEngine::Shape Shape;
 
-        PathSparkSpreadPrice(
-            Real heatRate,
-            const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
-            const ext::shared_ptr<Shape>& fuelShape,
-            const ext::shared_ptr<Shape>& powerShape)
-        : heatRate_(heatRate),
-          path_(path),
-          fuelShape_(fuelShape),
-          powerShape_(powerShape) {}
+        PathSparkSpreadPrice(Real heatRate,
+                             const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path,
+                             ext::shared_ptr<Shape> fuelShape,
+                             ext::shared_ptr<Shape> powerShape)
+        : heatRate_(heatRate), path_(path), fuelShape_(std::move(fuelShape)),
+          powerShape_(std::move(powerShape)) {}
 
-        Real innerValue(const FdmLinearOpIterator&, Time t) {
+        Real innerValue(const FdmLinearOpIterator&, Time t) override {
             QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  powerShape_->back().first,
                         "invalid time");
 
@@ -510,9 +504,10 @@ namespace vpp_test {
             return std::exp(f + path_[0][i]+path_[1][i])
                     - heatRate_*std::exp(g + path_[2][i]);
         }
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
             return innerValue(iter, t);
         }
+
       private:
         const Real heatRate_;
         const MultiPathGenerator<PseudoRandom>::sample_type::value_type& path_;
@@ -548,7 +543,7 @@ namespace vpp_test {
             new ExtendedOrnsteinUhlenbeckProcess(kappa, volatility_u, u,
                                                  constant<Real, Real>(u)));
 
-        const ext::shared_ptr<KlugeExtOUProcess> klugeOUProcess(
+        ext::shared_ptr<KlugeExtOUProcess> klugeOUProcess(
             new KlugeExtOUProcess(rho, lnPowerProcess, lnGasProcess));
 
         return klugeOUProcess;
@@ -564,7 +559,7 @@ void VPPTest::testVPPPricing() {
     SavedSettings backup;
 
     const Date today = Date(18, December, 2011);
-    const DayCounter dc = ActualActual();
+    const DayCounter dc = ActualActual(ActualActual::ISDA);
     Settings::instance().evaluationDate() = today;
 
     // vpp parameter
@@ -604,7 +599,7 @@ void VPPTest::testVPPPricing() {
     const ext::shared_ptr<YieldTermStructure> rTS
         = flatRate(today, irRate, dc);
 
-    const Size nHours = LENGTH(powerPrices);
+    const Size nHours = powerPrices.size();
 
     typedef FdSimpleKlugeExtOUVPPEngine::Shape Shape;
     ext::shared_ptr<Shape> fuelShape(new Shape(nHours));
@@ -628,10 +623,8 @@ void VPPTest::testVPPPricing() {
 
     // Test: intrinsic value
     vppOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
-        new DynProgVPPIntrinsicValueEngine(
-            std::vector<Real>(fuelPrices, fuelPrices+nHours),
-            std::vector<Real>(powerPrices, powerPrices+nHours),
-            fuelCostAddon, flatRate(0.0, dc))));
+        new DynProgVPPIntrinsicValueEngine(fuelPrices, powerPrices,
+                                           fuelCostAddon, flatRate(0.0, dc))));
 
     const Real intrinsic = vppOption.NPV();
     const Real expectedIntrinsic = 2056.04;
@@ -876,7 +869,6 @@ void VPPTest::testVPPPricing() {
 }
 
 void VPPTest::testKlugeExtOUMatrixDecomposition() {
-#ifndef QL_NO_UBLAS_SUPPORT
     BOOST_TEST_MESSAGE("Testing KlugeExtOU matrix decomposition...");
 
     using namespace vpp_test;
@@ -915,15 +907,15 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
 
     const ext::shared_ptr<FdmLinearOpComposite> op(
         new FdmKlugeExtOUOp(mesher, klugeOUProcess,
-                            flatRate(today, 0.0, ActualActual()),
+                            flatRate(today, 0.0, ActualActual(ActualActual::ISDA)),
                             FdmBoundaryConditionSet(), 16));
     op->setTime(0.1, 0.2);
 
     Array x(mesher->layout()->size());
 
     PseudoRandom::rng_type rng(PseudoRandom::urng_type(12345UL));
-    for (Size i=0; i < x.size(); ++i) {
-        x[i] = rng.next().value;
+    for (double& i : x) {
+        i = rng.next().value;
     }
 
     const Real tol = 1e-9;
@@ -969,12 +961,11 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
             }
         }
     }
-#endif
 }
 
 
 test_suite* VPPTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("VPP Test");
+    auto* suite = BOOST_TEST_SUITE("VPP Test");
 
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testGemanRoncoroniProcess));
     suite->add(QUANTLIB_TEST_CASE(&VPPTest::testSimpleExtOUStorageEngine));

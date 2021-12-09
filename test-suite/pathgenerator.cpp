@@ -291,7 +291,7 @@ void PathGeneratorTest::testMultiPathGenerator() {
 
 
 test_suite* PathGeneratorTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Path generation tests");
+    auto* suite = BOOST_TEST_SUITE("Path generation tests");
     suite->add(QUANTLIB_TEST_CASE(&PathGeneratorTest::testPathGenerator));
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&PathGeneratorTest::testMultiPathGenerator));

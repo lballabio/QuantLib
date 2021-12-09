@@ -1,2 +1,5 @@
 add_executable(GlobalOptimizer GlobalOptimizer.cpp)
-target_link_libraries(GlobalOptimizer ${QL_LINK_LIBRARY})
+target_link_libraries(GlobalOptimizer ql_library ${QL_EXAMPLES_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS GlobalOptimizer RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

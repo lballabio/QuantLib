@@ -31,9 +31,9 @@ namespace QuantLib {
 
         class IdenticalPayoff : public Payoff {
           public:
-            std::string name() const { return "IdenticalPayoff"; }
-            std::string description() const { return name(); }
-            Real operator()(Real price) const { return price; }
+            std::string name() const override { return "IdenticalPayoff"; }
+            std::string description() const override { return name(); }
+            Real operator()(Real price) const override { return price; }
         };
     }
 
@@ -70,9 +70,8 @@ namespace QuantLib {
 
         MultiAssetOption::setupArguments(args);
 
-        VanillaVPPOption::arguments* arguments =
-            dynamic_cast<VanillaVPPOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<VanillaVPPOption::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->heatRate       = heatRate_;
         arguments->pMin           = pMin_;

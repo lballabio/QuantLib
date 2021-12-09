@@ -21,24 +21,20 @@
     \brief Analytic engine for arbitrary European payoffs under the Heston model
 */
 
+#include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
-#include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
-#include <ql/functional.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    AnalyticPDFHestonEngine::AnalyticPDFHestonEngine(
-        const ext::shared_ptr<HestonModel>& model,
-        Real integrationEps_,
-        Size maxIntegrationIterations)
-    : maxIntegrationIterations_(maxIntegrationIterations),
-      integrationEps_(integrationEps_),
-      model_(model) {  }
+    AnalyticPDFHestonEngine::AnalyticPDFHestonEngine(ext::shared_ptr<HestonModel> model,
+                                                     Real integrationEps_,
+                                                     Size maxIntegrationIterations)
+    : maxIntegrationIterations_(maxIntegrationIterations), integrationEps_(integrationEps_),
+      model_(std::move(model)) {}
 
     void AnalyticPDFHestonEngine::calculate() const {
-        using namespace ext::placeholders;
-
         // this is an European option pricer
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
@@ -57,10 +53,9 @@ namespace QuantLib {
 
         const Real drift = x0 + std::log(rD/qD);
 
-        results_.value = GaussLobattoIntegral(
-            maxIntegrationIterations_, integrationEps_)(
-            ext::bind(&AnalyticPDFHestonEngine::weightedPayoff, this,_1, t),
-                         -xMax+drift, xMax+drift);
+        results_.value = GaussLobattoIntegral(maxIntegrationIterations_, integrationEps_)(
+            [&](Real _x){ return weightedPayoff(_x, t); },
+            -xMax+drift, xMax+drift);
     }
 
     Real AnalyticPDFHestonEngine::Pv(Real x_t, Time t) const {

@@ -281,9 +281,8 @@ namespace QuantLib {
 
     void DigitalCoupon::accept(AcyclicVisitor& v) {
         typedef FloatingRateCoupon super;
-        Visitor<DigitalCoupon>* v1 =
-            dynamic_cast<Visitor<DigitalCoupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<DigitalCoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             super::accept(v);

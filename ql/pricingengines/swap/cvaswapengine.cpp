@@ -128,9 +128,8 @@ namespace QuantLib {
 
     // Compute fair spread for strike value:
     // copy args into the non risky engine
-    Swap::arguments * noCVAArgs = dynamic_cast<Swap::arguments*>(
-      baseSwapEngine_->getArguments());
-    QL_REQUIRE(noCVAArgs != 0, "wrong argument type");
+    auto* noCVAArgs = dynamic_cast<Swap::arguments*>(baseSwapEngine_->getArguments());
+    QL_REQUIRE(noCVAArgs != nullptr, "wrong argument type");
 
     noCVAArgs->legs = this->arguments_.legs;
     noCVAArgs->payer = this->arguments_.payer;
@@ -141,16 +140,14 @@ namespace QuantLib {
     QL_REQUIRE(coupon,"dynamic cast of fixed leg coupon failed.");
     Rate baseSwapRate = coupon->rate();
 
-    const Swap::results * vSResults =  
-        dynamic_cast<const Swap::results *>(baseSwapEngine_->getResults());
-    QL_REQUIRE(vSResults != 0, "wrong result type");
+    const auto* vSResults = dynamic_cast<const Swap::results*>(baseSwapEngine_->getResults());
+    QL_REQUIRE(vSResults != nullptr, "wrong result type");
 
     Rate baseSwapFairRate = -baseSwapRate * vSResults->legNPV[1] / 
         vSResults->legNPV[0];
     Real baseSwapNPV = vSResults->value;
 
-    VanillaSwap::Type reversedType = arguments_.type == VanillaSwap::Payer ? 
-        VanillaSwap::Receiver : VanillaSwap::Payer;
+    Swap::Type reversedType = arguments_.type == Swap::Payer ? Swap::Receiver : Swap::Payer;
 
     // Swaplet options summatory:
     while(nextFD != arguments_.fixedPayDates.end()) {

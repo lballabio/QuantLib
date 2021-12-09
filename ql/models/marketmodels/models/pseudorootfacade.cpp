@@ -18,9 +18,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
-#include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -32,19 +33,15 @@ namespace QuantLib {
       evolution_(c->curveState()->rateTimes()), covariancePseudoRoots_(c->swapPseudoRoots()) {}
 
 
-    PseudoRootFacade::PseudoRootFacade(
-            const std::vector<Matrix>& covariancePseudoRoots,
-            const std::vector<Rate>& rateTimes,
-            const std::vector<Rate>& initialRates,
-            const std::vector<Spread>& displacements)
+    PseudoRootFacade::PseudoRootFacade(const std::vector<Matrix>& covariancePseudoRoots,
+                                       const std::vector<Rate>& rateTimes,
+                                       std::vector<Rate> initialRates,
+                                       const std::vector<Spread>& displacements)
     : numberOfFactors_(covariancePseudoRoots.front().columns()),
       numberOfRates_(covariancePseudoRoots.front().rows()),
-      numberOfSteps_(covariancePseudoRoots.size()),
-      initialRates_(initialRates),
-      displacements_(displacements),
-      evolution_(rateTimes),
-      covariancePseudoRoots_(covariancePseudoRoots)
-    {
+      numberOfSteps_(covariancePseudoRoots.size()), initialRates_(std::move(initialRates)),
+      displacements_(displacements), evolution_(rateTimes),
+      covariancePseudoRoots_(covariancePseudoRoots) {
         checkIncreasingTimes(rateTimes);
         QL_REQUIRE(rateTimes.size()>1,
                    "Rate times must contain at least two values");
@@ -79,5 +76,4 @@ namespace QuantLib {
                        << " instead of " << numberOfFactors_);
         }
     }
-
 }

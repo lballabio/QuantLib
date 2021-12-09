@@ -171,71 +171,61 @@ namespace {
         ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
         ext::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
 
-        for (Size i=0; i<LENGTH(types); i++) {
-          for (Size j=0; j<LENGTH(strikes); j++) {
-            for (Size k=0; k<LENGTH(lengths); k++) {
-              Date exDate = today + lengths[k]*360;
-              ext::shared_ptr<Exercise> exercise(
-                                                new EuropeanExercise(exDate));
-              ext::shared_ptr<StrikedTypePayoff> payoff(new
-                                    PlainVanillaPayoff(types[i], strikes[j]));
-              // reference option
-              ext::shared_ptr<VanillaOption> refOption =
-                  makeOption(payoff, exercise, spot, qTS, rTS, volTS,
-                             Analytic, Null<Size>());
-              // option to check
-              ext::shared_ptr<VanillaOption> option =
-                  makeOption(payoff, exercise, spot, qTS, rTS, volTS,
-                             engine, binomialSteps);
+        for (auto& type : types) {
+            for (double strike : strikes) {
+                for (int length : lengths) {
+                    Date exDate = today + length * 360;
+                    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                    ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                    // reference option
+                    ext::shared_ptr<VanillaOption> refOption =
+                        makeOption(payoff, exercise, spot, qTS, rTS, volTS, Analytic, Null<Size>());
+                    // option to check
+                    ext::shared_ptr<VanillaOption> option =
+                        makeOption(payoff, exercise, spot, qTS, rTS, volTS, engine, binomialSteps);
 
-              for (Size l=0; l<LENGTH(underlyings); l++) {
-                for (Size m=0; m<LENGTH(qRates); m++) {
-                  for (Size n=0; n<LENGTH(rRates); n++) {
-                    for (Size p=0; p<LENGTH(vols); p++) {
-                      Real u = underlyings[l];
-                      Rate q = qRates[m],
-                           r = rRates[n];
-                      Volatility v = vols[p];
-                      spot->setValue(u);
-                      qRate->setValue(q);
-                      rRate->setValue(r);
-                      vol->setValue(v);
+                    for (double u : underlyings) {
+                        for (double m : qRates) {
+                            for (double n : rRates) {
+                                for (double v : vols) {
+                                    Rate q = m, r = n;
+                                    spot->setValue(u);
+                                    qRate->setValue(q);
+                                    rRate->setValue(r);
+                                    vol->setValue(v);
 
-                      expected.clear();
-                      calculated.clear();
+                                    expected.clear();
+                                    calculated.clear();
 
-                      // FLOATING_POINT_EXCEPTION
-                      expected["value"] = refOption->NPV();
-                      calculated["value"] = option->NPV();
+                                    // FLOATING_POINT_EXCEPTION
+                                    expected["value"] = refOption->NPV();
+                                    calculated["value"] = option->NPV();
 
-                      if (option->NPV() > spot->value()*1.0e-5) {
-                           expected["delta"] = refOption->delta();
-                           expected["gamma"] = refOption->gamma();
-                           expected["theta"] = refOption->theta();
-                           calculated["delta"] = option->delta();
-                           calculated["gamma"] = option->gamma();
-                           calculated["theta"] = option->theta();
-                      }
-                      std::map<std::string,Real>::iterator it;
-                      for (it = calculated.begin();
-                           it != calculated.end(); ++it) {
-                          std::string greek = it->first;
-                          Real expct = expected  [greek],
-                               calcl = calculated[greek],
-                               tol   = tolerance [greek];
-                          Real error = relativeError(expct,calcl,u);
-                          if (error > tol) {
-                              REPORT_FAILURE(greek, payoff, exercise,
-                                             u, q, r, today, v,
-                                             expct, calcl, error, tol);
-                          }
-                      }
+                                    if (option->NPV() > spot->value() * 1.0e-5) {
+                                        expected["delta"] = refOption->delta();
+                                        expected["gamma"] = refOption->gamma();
+                                        expected["theta"] = refOption->theta();
+                                        calculated["delta"] = option->delta();
+                                        calculated["gamma"] = option->gamma();
+                                        calculated["theta"] = option->theta();
+                                    }
+                                    std::map<std::string, Real>::iterator it;
+                                    for (it = calculated.begin(); it != calculated.end(); ++it) {
+                                        std::string greek = it->first;
+                                        Real expct = expected[greek], calcl = calculated[greek],
+                                             tol = tolerance[greek];
+                                        Real error = relativeError(expct, calcl, u);
+                                        if (error > tol) {
+                                            REPORT_FAILURE(greek, payoff, exercise, u, q, r, today,
+                                                           v, expct, calcl, error, tol);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                  }
                 }
-              }
             }
-          }
         }
     }
 
@@ -376,7 +366,7 @@ void ExtendedTreesTest::testJOSHIBinomialEngines() {
 }
 
 test_suite* ExtendedTreesTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("European option extended trees tests");
+    auto* suite = BOOST_TEST_SUITE("European option extended trees tests");
 
     suite->add(QUANTLIB_TEST_CASE(&ExtendedTreesTest::testJRBinomialEngines));
     suite->add(QUANTLIB_TEST_CASE(&ExtendedTreesTest::testCRRBinomialEngines));

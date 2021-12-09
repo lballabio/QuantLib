@@ -20,10 +20,11 @@
 #ifndef quantlib_mc_performance_engine_hpp
 #define quantlib_mc_performance_engine_hpp
 
+#include <ql/exercise.hpp>
 #include <ql/instruments/cliquetoption.hpp>
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -40,15 +41,14 @@ namespace QuantLib {
         typedef typename McSimulation<SingleVariate,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCPerformanceEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             bool brownianBridge,
-             bool antitheticVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed);
-        void calculate() const {
+        MCPerformanceEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                            bool brownianBridge,
+                            bool antitheticVariate,
+                            Size requiredSamples,
+                            Real requiredTolerance,
+                            Size maxSamples,
+                            BigNatural seed);
+        void calculate() const override {
             McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
                                                          requiredSamples_,
                                                          maxSamples_);
@@ -57,10 +57,11 @@ namespace QuantLib {
             results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
         }
+
       protected:
         // McSimulation implementation
-        TimeGrid timeGrid() const;
-        ext::shared_ptr<path_generator_type> pathGenerator() const {
+        TimeGrid timeGrid() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
 
             TimeGrid grid = this->timeGrid();
             typename RNG::rsg_type gen =
@@ -69,7 +70,7 @@ namespace QuantLib {
                          new path_generator_type(process_, grid,
                                                  gen, brownianBridge_));
         }
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size requiredSamples_, maxSamples_;
@@ -83,8 +84,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCPerformanceEngine {
       public:
-        MakeMCPerformanceEngine(
-                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
+        MakeMCPerformanceEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         // named parameters
         MakeMCPerformanceEngine& withBrownianBridge(bool b = true);
         MakeMCPerformanceEngine& withAntitheticVariate(bool b = true);
@@ -106,10 +106,11 @@ namespace QuantLib {
 
     class PerformanceOptionPathPricer : public PathPricer<Path> {
       public:
-        PerformanceOptionPathPricer(
-                                Option::Type type, Real strike,
-                                const std::vector<DiscountFactor>& discounts);
-        Real operator()(const Path& path) const;
+        PerformanceOptionPathPricer(Option::Type type,
+                                    Real strike,
+                                    std::vector<DiscountFactor> discounts);
+        Real operator()(const Path& path) const override;
+
       private:
         Real strike_;
         Option::Type type_;
@@ -119,20 +120,18 @@ namespace QuantLib {
 
     // template definitions
 
-    template<class RNG, class S>
-    inline
-    MCPerformanceEngine<RNG,S>::MCPerformanceEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             bool brownianBridge,
-             bool antitheticVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed)
-    : McSimulation<SingleVariate,RNG,S>(antitheticVariate, false),
-      process_(process), requiredSamples_(requiredSamples),
-      maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge), seed_(seed) {
+    template <class RNG, class S>
+    inline MCPerformanceEngine<RNG, S>::MCPerformanceEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        bool brownianBridge,
+        bool antitheticVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        BigNatural seed)
+    : McSimulation<SingleVariate, RNG, S>(antitheticVariate, false), process_(std::move(process)),
+      requiredSamples_(requiredSamples), maxSamples_(maxSamples),
+      requiredTolerance_(requiredTolerance), brownianBridge_(brownianBridge), seed_(seed) {
         registerWith(process_);
     }
 
@@ -182,11 +181,10 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline MakeMCPerformanceEngine<RNG,S>::MakeMCPerformanceEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), brownianBridge_(false), antithetic_(false),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+    inline MakeMCPerformanceEngine<RNG, S>::MakeMCPerformanceEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), brownianBridge_(false), antithetic_(false),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCPerformanceEngine<RNG,S>&

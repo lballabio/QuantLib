@@ -41,7 +41,7 @@ namespace QuantLib {
       byApprox_(false),
       mrs_(0.03),
       vol_(0.00),
-      type_(ArithmeticAverageOIS::Payer), nominal_(1.0),
+      type_(Swap::Payer), nominal_(1.0),
       overnightSpread_(0.0),
       fixedDayCount_(overnightIndex->dayCounter()) {}
 
@@ -110,7 +110,7 @@ namespace QuantLib {
                                       overnightLegSchedule,
                                       overnightSpread_,
                                       mrs_, vol_, byApprox_);
-            if (engine_ == 0) {
+            if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                     overnightIndex_->forwardingTermStructure();
                 QL_REQUIRE(!disc.empty(),
@@ -135,7 +135,7 @@ namespace QuantLib {
                                  overnightSpread_,
                                  mrs_, vol_, byApprox_));
 
-        if (engine_ == 0) {
+        if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
                                 overnightIndex_->forwardingTermStructure();
             bool includeSettlementDateFlows = false;
@@ -149,11 +149,11 @@ namespace QuantLib {
     }
 
     MakeArithmeticAverageOIS& MakeArithmeticAverageOIS::receiveFixed(bool flag) {
-        type_ = flag ? ArithmeticAverageOIS::Receiver : ArithmeticAverageOIS::Payer;
+        type_ = flag ? Swap::Receiver : Swap::Payer;
         return *this;
     }
 
-    MakeArithmeticAverageOIS& MakeArithmeticAverageOIS::withType(ArithmeticAverageOIS::Type type) {
+    MakeArithmeticAverageOIS& MakeArithmeticAverageOIS::withType(Swap::Type type) {
         type_ = type;
         return *this;
     }

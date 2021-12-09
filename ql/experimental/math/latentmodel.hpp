@@ -25,7 +25,6 @@
 #include <ql/experimental/math/multidimintegrator.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
-// for template spezs
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
@@ -33,7 +32,6 @@
 #include <ql/experimental/math/polarstudenttrng.hpp>
 #include <ql/handle.hpp>
 #include <ql/quote.hpp>
-#include <ql/functional.hpp>
 #include <vector>
 
 /*! \file latentmodel.hpp
@@ -86,7 +84,7 @@ namespace QuantLib {
             const std::vector<Real>& arg)>& f) const {
             QL_FAIL("No vector integration provided");
         }
-        virtual ~LMIntegration() {}
+        virtual ~LMIntegration() = default;
     };
 
     //CRTP-ish for joining the integrations, class above to have the factory
@@ -95,8 +93,8 @@ namespace QuantLib {
         public I_T, public LMIntegration {// diamond on 'integrate'
      // this class template always to be fully specialized:
      private:
-         IntegrationBase() {}
-     virtual ~IntegrationBase() {} 
+       IntegrationBase() = default;
+       ~IntegrationBase() override = default;
     };
     //@}
     
@@ -122,17 +120,15 @@ namespace QuantLib {
     public:
         IntegrationBase(Size dimension, Size order) 
         : GaussianQuadMultidimIntegrator(dimension, order) {}
-        Real integrate(const ext::function<Real (
-            const std::vector<Real>& arg)>& f) const {
-                return GaussianQuadMultidimIntegrator::integrate<Real>(f);
+        Real integrate(const ext::function<Real(const std::vector<Real>& arg)>& f) const override {
+            return GaussianQuadMultidimIntegrator::integrate<Real>(f);
         }
         Disposable<std::vector<Real> > integrateV(
-            const ext::function<Disposable<std::vector<Real> >  (
-                const std::vector<Real>& arg)>& f) const {
-                return GaussianQuadMultidimIntegrator::
-                    integrate<Disposable<std::vector<Real> > >(f);
+            const ext::function<Disposable<std::vector<Real> >(const std::vector<Real>& arg)>& f)
+            const override {
+            return GaussianQuadMultidimIntegrator::integrate<Disposable<std::vector<Real> > >(f);
         }
-        virtual ~IntegrationBase() {}
+        ~IntegrationBase() override = default;
     };
 
     #endif
@@ -145,12 +141,11 @@ namespace QuantLib {
             Real a, Real b) 
         : MultidimIntegral(integrators), 
           a_(integrators.size(),a), b_(integrators.size(),b) {}
-        Real integrate(const ext::function<Real (
-            const std::vector<Real>& arg)>& f) const {
-                return MultidimIntegral::operator ()(f, a_, b_);
+        Real integrate(const ext::function<Real(const std::vector<Real>& arg)>& f) const override {
+            return MultidimIntegral::operator()(f, a_, b_);
         }
         // disposable vector version here....
-        virtual ~IntegrationBase() {}
+        ~IntegrationBase() override = default;
         const std::vector<Real> a_, b_;
     };
 
@@ -288,15 +283,15 @@ namespace QuantLib {
         : public virtual Observer , public virtual Observable 
     {//observer if factors as quotes
     public:
-        void update();
-        //! \name Copula interface.
-        //@{
-        typedef copulaPolicyImpl copulaType;
-        /*! Cumulative probability of the \f$ Y_i \f$ modelled latent random 
-            variable to take a given value.
-        */
-        Probability cumulativeY(Real val, Size iVariable) const {
-            return copula_.cumulativeY(val, iVariable);
+      void update() override;
+      //! \name Copula interface.
+      //@{
+      typedef copulaPolicyImpl copulaType;
+      /*! Cumulative probability of the \f$ Y_i \f$ modelled latent random
+          variable to take a given value.
+      */
+      Probability cumulativeY(Real val, Size iVariable) const {
+          return copula_.cumulativeY(val, iVariable);
         }
         //! Cumulative distribution of Z, the idiosyncratic/error factors.
         Probability cumulativeZ(Real z) const {
@@ -500,7 +495,7 @@ namespace QuantLib {
                 }
             }
         private:
-            IntegrationFactory() {}
+          IntegrationFactory() = default;
         };
         //@}
 
@@ -591,31 +586,21 @@ namespace QuantLib {
         */
         Real integratedExpectedValue(
             const ext::function<Real(const std::vector<Real>& v1)>& f) const {
-
             // function composition: composes the integrand with the density 
             //   through a product.
-            return 
-                integration()->integrate(
-                    ext::bind(std::multiplies<Real>(), 
-                    ext::bind(&copulaPolicyImpl::density, copula_,
-                              ext::placeholders::_1),
-                              ext::bind(ext::cref(f),
-                                        ext::placeholders::_1)));   
+            return integration()->integrate(
+                [&](const std::vector<Real>& x){ return copula_.density(x) * f(x); });
         }
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).
         */
-        Disposable<std::vector<Real> > integratedExpectedValue(
+        Disposable<std::vector<Real> > integratedExpectedValueV(
             // const ext::function<std::vector<Real>(
             const ext::function<Disposable<std::vector<Real> >(
                 const std::vector<Real>& v1)>& f ) const {
-            return 
-                integration()->integrateV(//see note in LMIntegrators base class
-                    ext::bind<Disposable<std::vector<Real> > >(
-                        detail::multiplyV(),
-                        ext::bind(&copulaPolicyImpl::density, copula_,
-                                  ext::placeholders::_1),
-                        ext::bind(ext::cref(f), ext::placeholders::_1)));
+            detail::multiplyV M;
+            return integration()->integrateV(//see note in LMIntegrators base class
+                [&](const std::vector<Real>& x){ return M(copula_.density(x), f(x)); });
         }
     protected:
         // Integrable models must provide their integrator.
@@ -688,12 +673,10 @@ namespace QuantLib {
     : nFactors_(1),
       nVariables_(factorWeights.size())
     {
-        for(Size iName=0; iName < factorWeights.size(); iName++)
-            factorWeights_.push_back(std::vector<Real>(1, 
-                factorWeights[iName]));
-        for(Size iName=0; iName < factorWeights.size(); iName++)
-            idiosyncFctrs_.push_back(std::sqrt(1. - 
-                factorWeights[iName]*factorWeights[iName]));
+        for (double factorWeight : factorWeights)
+            factorWeights_.emplace_back(1, factorWeight);
+        for (double factorWeight : factorWeights)
+            idiosyncFctrs_.push_back(std::sqrt(1. - factorWeight * factorWeight));
         //convert row to column vector....
         copula_ = copulaType(factorWeights_, ini);
     }
@@ -800,9 +783,8 @@ namespace QuantLib {
           urng_(seed) {
             // 1 == urng.dimension() is enforced by the sample type
             const std::vector<Real>& varF = copula.varianceFactors();
-            for(Size i=0; i<varF.size(); i++)// ...use back inserter lambda
-                trng_.push_back(
-                    PolarStudentTRng<urng_type>(2./(1.-varF[i]*varF[i]), urng_));
+            for (double i : varF) // ...use back inserter lambda
+                trng_.push_back(PolarStudentTRng<urng_type>(2. / (1. - i * i), urng_));
         }
         const sample_type& nextSequence() const {
             Size i=0;

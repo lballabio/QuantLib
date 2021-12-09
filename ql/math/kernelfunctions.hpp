@@ -35,7 +35,7 @@ namespace QuantLib {
     */
     class KernelFunction {
       public:
-        virtual ~KernelFunction() {}
+        virtual ~KernelFunction() = default;
         virtual Real operator()(Real x) const = 0;
     };
 
@@ -47,9 +47,7 @@ namespace QuantLib {
         : nd_(average,sigma), cnd_(average,sigma),
           normFact_(M_SQRT2*M_SQRTPI) {} // normFact is \sqrt{2*\pi}.
 
-        Real operator()(Real x) const{
-            return nd_(x)*normFact_;
-        }
+        Real operator()(Real x) const override { return nd_(x) * normFact_; }
 
         Real derivative(Real x) const{
             return nd_.derivative(x)*normFact_;

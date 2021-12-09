@@ -118,20 +118,20 @@ namespace QuantLib {
                                       premium period; if larger than premium
                                       period length, a single step is taken
         */
-        CDO (Real attachment,
-             Real detachment,
-             const std::vector<Real>& nominals,
-             const std::vector<Handle<DefaultProbabilityTermStructure> >& basket,
-             const Handle<OneFactorCopula>& copula,
-             bool protectionSeller,
-             const Schedule& premiumSchedule,
-             Rate premiumRate,
-             const DayCounter& dayCounter,
-             Rate recoveryRate,
-             Rate upfrontPremiumRate,
-             const Handle<YieldTermStructure>& yieldTS,
-             Size nBuckets,
-             const Period& integrationStep = Period(10, Years));
+        CDO(Real attachment,
+            Real detachment,
+            std::vector<Real> nominals,
+            const std::vector<Handle<DefaultProbabilityTermStructure> >& basket,
+            Handle<OneFactorCopula> copula,
+            bool protectionSeller,
+            Schedule premiumSchedule,
+            Rate premiumRate,
+            DayCounter dayCounter,
+            Rate recoveryRate,
+            Rate upfrontPremiumRate,
+            Handle<YieldTermStructure> yieldTS,
+            Size nBuckets,
+            const Period& integrationStep = Period(10, Years));
 
         Real nominal() const { return nominal_; }
         Real lgd() const { return lgd_; }
@@ -140,15 +140,15 @@ namespace QuantLib {
         std::vector<Real> nominals() { return nominals_; }
         Size size() { return basket_.size(); }
 
-        bool isExpired () const;
+        bool isExpired() const override;
         Rate fairPremium() const;
         Rate premiumValue () const;
         Rate protectionValue () const;
         Size error () const;
 
       private:
-        void setupExpired() const;
-        void performCalculations() const;
+        void setupExpired() const override;
+        void performCalculations() const override;
         Real expectedTrancheLoss (Date d) const;
 
         Real attachment_;

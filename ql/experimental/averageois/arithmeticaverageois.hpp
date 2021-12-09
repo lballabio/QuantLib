@@ -35,25 +35,23 @@ namespace QuantLib {
     //! Arithemtic Average OIS: fix vs arithmetic average of overnight rate
     class ArithmeticAverageOIS : public Swap {
       public:
-        enum Type { Receiver = -1, Payer = 1 };
-        ArithmeticAverageOIS(
-                    Type type,
-                    Real nominal,
-                    const Schedule& fixedLegSchedule,
-                    Rate fixedRate,
-                    const DayCounter& fixedDC,
-                    const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                    const Schedule& overnightLegSchedule,
-                    Spread spread = 0.0,
-                    Real meanReversionSpeed = 0.03,
-                    Real volatility = 0.00, // NO convexity adjustment by default
-                    bool byApprox = false); // TRUE to use Katsumi Takada approximation
         ArithmeticAverageOIS(Type type,
-                             const std::vector<Real>& nominals,
+                             Real nominal,
                              const Schedule& fixedLegSchedule,
                              Rate fixedRate,
-                             const DayCounter& fixedDC,
-                             const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                             DayCounter fixedDC,
+                             ext::shared_ptr<OvernightIndex> overnightIndex,
+                             const Schedule& overnightLegSchedule,
+                             Spread spread = 0.0,
+                             Real meanReversionSpeed = 0.03,
+                             Real volatility = 0.00, // NO convexity adjustment by default
+                             bool byApprox = false); // TRUE to use Katsumi Takada approximation
+        ArithmeticAverageOIS(Type type,
+                             std::vector<Real> nominals,
+                             const Schedule& fixedLegSchedule,
+                             Rate fixedRate,
+                             DayCounter fixedDC,
+                             ext::shared_ptr<OvernightIndex> overnightIndex,
                              const Schedule& overnightLegSchedule,
                              Spread spread = 0.0,
                              Real meanReversionSpeed = 0.03,

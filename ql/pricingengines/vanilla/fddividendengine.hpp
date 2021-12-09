@@ -50,9 +50,8 @@ namespace QuantLib {
         virtual void setGridLimits() const = 0;
         virtual void executeIntermediateStep(Size step) const = 0;
         Real getDividendAmount(Size i) const {
-            const Dividend *dividend =
-                dynamic_cast<const Dividend *>(this->events_[i].get());
-            if (dividend != 0) {
+            const auto* dividend = dynamic_cast<const Dividend*>(this->events_[i].get());
+            if (dividend != nullptr) {
                 return dividend->amount();
             } else {
                 return 0.0;
@@ -140,8 +139,7 @@ namespace QuantLib {
     template <template <class> class Scheme>
     void FDDividendEngineBase<Scheme>::setupArguments(
                                     const PricingEngine::arguments *a) const {
-        const DividendVanillaOption::arguments *args =
-            dynamic_cast<const DividendVanillaOption::arguments *>(a);
+        const auto* args = dynamic_cast<const DividendVanillaOption::arguments*>(a);
         QL_REQUIRE(args, "incorrect argument type");
         std::vector<ext::shared_ptr<Event> > events(args->cashFlow.size());
         std::copy(args->cashFlow.begin(), args->cashFlow.end(),
@@ -211,9 +209,8 @@ namespace QuantLib {
     void FDDividendEngineShiftScale<Scheme>::setGridLimits() const {
         Real underlying = this->process_->stateVariable()->value();
         for (Size i=0; i<this->events_.size(); i++) {
-            const Dividend *dividend =
-                dynamic_cast<const Dividend *>(this->events_[i].get());
-            if (dividend == 0)
+            const auto* dividend = dynamic_cast<const Dividend*>(this->events_[i].get());
+            if (dividend == nullptr)
                 continue;
             if (this->getDividendTime(i) < 0.0) continue;
             underlying -= dividend->amount(underlying);
@@ -227,9 +224,8 @@ namespace QuantLib {
     template <template <class> class Scheme>
     void FDDividendEngineShiftScale<Scheme>::executeIntermediateStep(
                                                              Size step) const{
-        const Dividend *dividend =
-            dynamic_cast<const Dividend *>(this->events_[step].get());
-        if (dividend == 0)
+        const auto* dividend = dynamic_cast<const Dividend*>(this->events_[step].get());
+        if (dividend == nullptr)
             return;
         detail::DividendAdder adder(dividend);
         this->sMin_ = adder(this->sMin_);

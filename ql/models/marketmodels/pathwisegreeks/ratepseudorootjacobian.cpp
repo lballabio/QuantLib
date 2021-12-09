@@ -21,6 +21,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 
 #include <ql/models/marketmodels/pathwisegreeks/ratepseudorootjacobian.hpp>
+#include <utility>
 
 namespace QuantLib
 {
@@ -65,11 +66,7 @@ namespace QuantLib
             Matrix pseudo(pseudoRoot_);
             pseudo += pseudoBumps[i];
             pseudoBumped_.push_back(pseudo);
-            driftsComputers_.push_back(LMMDriftCalculator(pseudo,
-                displacements,
-                taus,
-                numeraire,
-                aliveIndex));
+            driftsComputers_.emplace_back(pseudo, displacements, taus, numeraire, aliveIndex);
         }
 
     }
@@ -121,23 +118,16 @@ namespace QuantLib
     }
 
     RatePseudoRootJacobian::RatePseudoRootJacobian(const Matrix& pseudoRoot,
-        Size aliveIndex,
-        Size numeraire,
-        const std::vector<Time>& taus,
-        const std::vector<Matrix>& pseudoBumps,
-        const std::vector<Spread>& displacements)
-        :
-    pseudoRoot_(pseudoRoot),
-        aliveIndex_(aliveIndex),
-        taus_(taus),
-        pseudoBumps_(pseudoBumps),
-        displacements_(displacements),
-        numberBumps_(pseudoBumps.size()),
-        factors_(pseudoRoot.columns()),
-     //   bumpedRates_(taus.size()),
-        e_(pseudoRoot.rows(), pseudoRoot.columns()),
-        ratios_(taus_.size())
-    {
+                                                   Size aliveIndex,
+                                                   Size numeraire,
+                                                   const std::vector<Time>& taus,
+                                                   const std::vector<Matrix>& pseudoBumps,
+                                                   std::vector<Spread> displacements)
+    : pseudoRoot_(pseudoRoot), aliveIndex_(aliveIndex), taus_(taus), pseudoBumps_(pseudoBumps),
+      displacements_(std::move(displacements)), numberBumps_(pseudoBumps.size()),
+      factors_(pseudoRoot.columns()),
+      //   bumpedRates_(taus.size()),
+      e_(pseudoRoot.rows(), pseudoRoot.columns()), ratios_(taus_.size()) {
         Size numberRates= taus.size();
 
         QL_REQUIRE(aliveIndex == numeraire,
@@ -165,10 +155,8 @@ namespace QuantLib
 
         for (Size i=0; i < numberRates; ++i)
         {
-            allDerivatives_.push_back(Matrix(numberRates,factors_));
+            allDerivatives_.emplace_back(numberRates, factors_);
         }
-
-
     }
 
 
@@ -242,21 +230,16 @@ namespace QuantLib
 
     }
 
-    RatePseudoRootJacobianAllElements::RatePseudoRootJacobianAllElements(const Matrix& pseudoRoot,
+    RatePseudoRootJacobianAllElements::RatePseudoRootJacobianAllElements(
+        const Matrix& pseudoRoot,
         Size aliveIndex,
         Size numeraire,
         const std::vector<Time>& taus,
-        const std::vector<Spread>& displacements)
-        :
-    pseudoRoot_(pseudoRoot),
-        aliveIndex_(aliveIndex),
-        taus_(taus),
-        displacements_(displacements),
-        factors_(pseudoRoot.columns()),
-     //   bumpedRates_(taus.size()),
-        e_(pseudoRoot.rows(), pseudoRoot.columns()),
-        ratios_(taus_.size())
-    {
+        std::vector<Spread> displacements)
+    : pseudoRoot_(pseudoRoot), aliveIndex_(aliveIndex), taus_(taus),
+      displacements_(std::move(displacements)), factors_(pseudoRoot.columns()),
+      //   bumpedRates_(taus.size()),
+      e_(pseudoRoot.rows(), pseudoRoot.columns()), ratios_(taus_.size()) {
         Size numberRates= taus.size();
 
         QL_REQUIRE(aliveIndex == numeraire,
@@ -267,7 +250,6 @@ namespace QuantLib
 
         QL_REQUIRE(displacements_.size()==numberRates,
             "displacements_.size()<> taus.size()");
-
     }
 
 
@@ -280,22 +262,22 @@ namespace QuantLib
           Size numberRates = taus_.size();
 
            QL_REQUIRE(B.size() == numberRates, "we need B.size() which is " << B.size() << " to equal numberRates which is "  << numberRates);
-           for (Size j=0; j < B.size(); ++j)
-                      QL_REQUIRE(B[j].columns() == factors_ && B[j].rows() == numberRates , "we need B[j].rows() which is " << B[j].rows() << " to equal numberRates which is "  << numberRates << 
-                      " and B[j].columns() which is " << B[j].columns() << " to be equal to factors which is " << factors_);
+           for (auto& j : B)
+               QL_REQUIRE(j.columns() == factors_ && j.rows() == numberRates,
+                          "we need B[j].rows() which is "
+                              << j.rows() << " to equal numberRates which is " << numberRates
+                              << " and B[j].columns() which is " << j.columns()
+                              << " to be equal to factors which is " << factors_);
 
 
+           for (Size j = aliveIndex_; j < numberRates; ++j)
+               ratios_[j] = (oldRates[j] + displacements_[j]) * discountRatios[j + 1];
 
+           for (Size f = 0; f < factors_; ++f) {
+               e_[aliveIndex_][f] = 0;
 
-        for (Size j=aliveIndex_; j < numberRates; ++j)
-            ratios_[j] = (oldRates[j] + displacements_[j])*discountRatios[j+1];
-
-        for (Size f=0; f < factors_; ++f)
-        {
-            e_[aliveIndex_][f] = 0;
-
-            for (Size j= aliveIndex_+1; j < numberRates; ++j)
-                e_[j][f] = e_[j-1][f] + ratios_[j-1]*pseudoRoot_[j-1][f];
+               for (Size j = aliveIndex_ + 1; j < numberRates; ++j)
+                   e_[j][f] = e_[j - 1][f] + ratios_[j - 1] * pseudoRoot_[j - 1][f];
         }
 
         // nullify B for rates that have already reset

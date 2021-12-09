@@ -17,17 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
 #include <ql/experimental/barrieroption/wulinyongdoublebarrierengine.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     WulinYongDoubleBarrierEngine::WulinYongDoubleBarrierEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            int series)
-    : process_(process), series_(series) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process, int series)
+    : process_(std::move(process)), series_(series) {
         registerWith(process_);
     }
 

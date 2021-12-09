@@ -30,6 +30,8 @@ namespace QuantLib {
 
     class IborIndex;
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     //! %Forward rate agreement (FRA) class
     /*! 1. Unlike the forward contract conventions on carryable
            financial assets (stocks, bonds, commodities), the
@@ -48,23 +50,12 @@ namespace QuantLib {
         3. Choose position type = Short for an "FRA sale" (future short
            loan, long deposit [lender])
 
-        4. If strike is given in the constructor, can calculate the NPV
-           of the contract via NPV().
-
-        5. If forward rate is desired/unknown, it can be obtained via
-           forwardRate(). In this case, the strike variable in the
-           constructor is irrelevant and will be ignored.
-
         <b>Example: </b>
         \link FRA.cpp
         valuation of a forward-rate agreement
         \endlink
 
         \todo Add preconditions and tests
-
-        \todo Should put an instance of ForwardRateAgreement in the
-              FraRateHelper to ensure consistency with the piecewise
-              yield curve.
 
         \todo Differentiate between BBA (British)/AFB (French)
               [assumed here] and ABA (Australian) banker conventions
@@ -74,39 +65,85 @@ namespace QuantLib {
 
         \ingroup instruments
     */
-    class ForwardRateAgreement: public Forward {
+    class ForwardRateAgreement: public Instrument {
       public:
-        ForwardRateAgreement(const Date& valueDate,
-                             const Date& maturityDate,
-                             Position::Type type,
-                             Rate strikeForwardRate,
-                             Real notionalAmount,
-                             const ext::shared_ptr<IborIndex>& index,
-                             const Handle<YieldTermStructure>& discountCurve =
-                                                 Handle<YieldTermStructure>(),
-                             bool useIndexedCoupon = true);
+        ForwardRateAgreement(
+            const Date& valueDate,
+            const Date& maturityDate,
+            Position::Type type,
+            Rate strikeForwardRate,
+            Real notionalAmount,
+            const ext::shared_ptr<IborIndex>& index,
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
+            bool useIndexedCoupon = true);
+        ForwardRateAgreement(
+            const Date& valueDate,
+            Position::Type type,
+            Rate strikeForwardRate,
+            Real notionalAmount,
+            const ext::shared_ptr<IborIndex>& index,
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
         //! \name Calculations
         //@{
-        /*! A FRA expires/settles on the valueDate */
-        bool isExpired() const;
-        /*! This returns evaluationDate + settlementDays (not FRA
-            valueDate).
+        //! A FRA expires/settles on the value date
+        bool isExpired() const override;
+        //! The payoff on the value date
+        Real amount() const;
+
+        /*! \deprecated This used to be inherited from Forward, but it's not correct for FRAs.
+                        Deprecated in version 1.25.
         */
+        QL_DEPRECATED
         Date settlementDate() const;
+
+        const Calendar& calendar() const;
+        BusinessDayConvention businessDayConvention() const;
+        const DayCounter& dayCounter() const;
+        //! term structure relevant to the contract (e.g. repo curve)
+        Handle<YieldTermStructure> discountCurve() const;
+
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        Handle<YieldTermStructure> incomeDiscountCurve() const;
+
         Date fixingDate() const;
-        /*!  Income is zero for a FRA */
-        Real spotIncome(const Handle<YieldTermStructure>& incomeDiscountCurve)
-            const;
-        //! Spot value (NPV) of the underlying loan
-        /*! This has always a positive value (asset), even if short the FRA */
+
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        Real spotIncome(const Handle<YieldTermStructure>& incomeDiscountCurve) const;
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
         Real spotValue() const;
+
         //! Returns the relevant forward rate associated with the FRA term
         InterestRate forwardRate() const;
+
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        InterestRate impliedYield(Real underlyingSpotValue,
+                                  Real forwardValue,
+                                  Date settlementDate,
+                                  Compounding compoundingConvention,
+                                  const DayCounter& dayCounter);
+
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        virtual Real forwardValue() const;
         //@}
 
       protected:
-        void setupExpired() const;
-        void performCalculations() const;
+        void setupExpired() const override;
+        void performCalculations() const override;
         Position::Type fraType_;
         //! aka FRA rate (the market forward rate)
         mutable InterestRate forwardRate_;
@@ -116,12 +153,72 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> index_;
         bool useIndexedCoupon_;
 
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        mutable Real underlyingIncome_;
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        mutable Real underlyingSpotValue_;
+
+        DayCounter dayCounter_;
+        Calendar calendar_;
+        BusinessDayConvention businessDayConvention_;
+
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        Natural settlementDays_;
+
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        ext::shared_ptr<Payoff> payoff_;
+
+        //! the valueDate is the date the underlying index starts accruing and the FRA is settled.
+        Date valueDate_;
+        //! maturityDate of the underlying index; not the date the FRA is settled.
+        Date maturityDate_;
+        Handle<YieldTermStructure> discountCurve_;
+
+        /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
+        Handle<YieldTermStructure> incomeDiscountCurve_;
+
       private:
         void calculateForwardRate() const;
+        void calculateAmount() const;
+        mutable Real amount_;
     };
+
+    QL_DEPRECATED_ENABLE_WARNING
+
+    inline const Calendar& ForwardRateAgreement::calendar() const { return calendar_; }
+
+    inline BusinessDayConvention ForwardRateAgreement::businessDayConvention() const {
+        return businessDayConvention_;
+    }
+
+    inline const DayCounter& ForwardRateAgreement::dayCounter() const { return dayCounter_; }
+
+    inline Handle<YieldTermStructure> ForwardRateAgreement::discountCurve() const {
+        return discountCurve_;
+    }
+
+    inline Handle<YieldTermStructure> ForwardRateAgreement::incomeDiscountCurve() const {
+        QL_DEPRECATED_DISABLE_WARNING
+        return incomeDiscountCurve_;
+        QL_DEPRECATED_ENABLE_WARNING
+    }
 
 }
 
 
 #endif
-

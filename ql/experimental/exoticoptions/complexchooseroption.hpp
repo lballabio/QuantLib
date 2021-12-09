@@ -39,7 +39,8 @@ namespace QuantLib{
                              Real strikePut,
                              const ext::shared_ptr<Exercise>& exerciseCall,
                              const ext::shared_ptr<Exercise>& exercisePut);
-        void setupArguments(PricingEngine::arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+
       protected:
         Date choosingDate_;
         Real strikeCall_;
@@ -50,7 +51,7 @@ namespace QuantLib{
 
     class ComplexChooserOption::arguments : public OneAssetOption::arguments {
       public:
-        void validate() const;
+        void validate() const override;
         Date choosingDate;
         Real strikeCall;
         Real strikePut;

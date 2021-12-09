@@ -29,19 +29,19 @@ namespace QuantLib {
       public:
         //! \todo use Payoff
         NothingExerciseValue(const std::vector<Time>& rateTimes,
-                             const std::valarray<bool>& isExerciseTime = std::valarray<bool>());
-        Size numberOfExercises() const;
+                             std::valarray<bool> isExerciseTime = std::valarray<bool>());
+        Size numberOfExercises() const override;
         // including any time at which state should be updated
-        const EvolutionDescription& evolution() const;
-        std::vector<Time> possibleCashFlowTimes() const;
-        void nextStep(const CurveState&);
-        void reset();
+        const EvolutionDescription& evolution() const override;
+        std::vector<Time> possibleCashFlowTimes() const override;
+        void nextStep(const CurveState&) override;
+        void reset() override;
         // whether or not evolution times are exercise times
-        std::valarray<bool> isExerciseTime() const;
-        MarketModelMultiProduct::CashFlow value(const CurveState&) const;
-        #if defined(QL_USE_STD_UNIQUE_PTR)
-        std::unique_ptr<MarketModelExerciseValue> clone() const;
-        #else
+        std::valarray<bool> isExerciseTime() const override;
+        MarketModelMultiProduct::CashFlow value(const CurveState&) const override;
+#if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<MarketModelExerciseValue> clone() const override;
+#else
         std::auto_ptr<MarketModelExerciseValue> clone() const;
         #endif
       private:

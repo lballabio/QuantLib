@@ -18,14 +18,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
-#include <ql/pricingengines/bond/bondfunctions.hpp>
-#include <ql/math/optimization/simplex.hpp>
-#include <ql/math/optimization/costfunction.hpp>
-#include <ql/math/optimization/constraint.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/utilities/dataformatters.hpp>
+#include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/costfunction.hpp>
+#include <ql/math/optimization/simplex.hpp>
+#include <ql/pricingengines/bond/bondfunctions.hpp>
+#include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <utility>
 
 using std::vector;
 
@@ -37,56 +38,48 @@ namespace QuantLib {
       public:
         explicit FittingCost(
                        FittedBondDiscountCurve::FittingMethod* fittingMethod);
-        Real value(const Array& x) const;
-        Disposable<Array> values(const Array& x) const;
+        Real value(const Array& x) const override;
+        Disposable<Array> values(const Array& x) const override;
+
       private:
         FittedBondDiscountCurve::FittingMethod* fittingMethod_;
     };
 
 
-    FittedBondDiscountCurve::FittedBondDiscountCurve (
-                 Natural settlementDays,
-                 const Calendar& calendar,
-                 const vector<ext::shared_ptr<BondHelper> >& bondHelpers,
-                 const DayCounter& dayCounter,
-                 const FittingMethod& fittingMethod,
-                 Real accuracy,
-                 Size maxEvaluations,
-                 const Array& guess,
-                 Real simplexLambda,
-                 Size maxStationaryStateIterations)
-    : YieldTermStructure(settlementDays, calendar, dayCounter),
-      accuracy_(accuracy),
-      maxEvaluations_(maxEvaluations),
-      simplexLambda_(simplexLambda),
-      maxStationaryStateIterations_(maxStationaryStateIterations),
-      guessSolution_(guess),
-      bondHelpers_(bondHelpers),
-      fittingMethod_(fittingMethod) {
-
+    FittedBondDiscountCurve::FittedBondDiscountCurve(
+        Natural settlementDays,
+        const Calendar& calendar,
+        vector<ext::shared_ptr<BondHelper> > bondHelpers,
+        const DayCounter& dayCounter,
+        const FittingMethod& fittingMethod,
+        Real accuracy,
+        Size maxEvaluations,
+        Array guess,
+        Real simplexLambda,
+        Size maxStationaryStateIterations)
+    : YieldTermStructure(settlementDays, calendar, dayCounter), accuracy_(accuracy),
+      maxEvaluations_(maxEvaluations), simplexLambda_(simplexLambda),
+      maxStationaryStateIterations_(maxStationaryStateIterations), guessSolution_(std::move(guess)),
+      bondHelpers_(std::move(bondHelpers)), fittingMethod_(fittingMethod) {
         fittingMethod_->curve_ = this;
         setup();
     }
 
 
-    FittedBondDiscountCurve::FittedBondDiscountCurve (
-                 const Date& referenceDate,
-                 const vector<ext::shared_ptr<BondHelper> >& bondHelpers,
-                 const DayCounter& dayCounter,
-                 const FittingMethod& fittingMethod,
-                 Real accuracy,
-                 Size maxEvaluations,
-                 const Array& guess,
-                 Real simplexLambda,
-                 Size maxStationaryStateIterations)
-    : YieldTermStructure(referenceDate, Calendar(), dayCounter),
-      accuracy_(accuracy),
-      maxEvaluations_(maxEvaluations),
-      simplexLambda_(simplexLambda),
-      maxStationaryStateIterations_(maxStationaryStateIterations),
-      guessSolution_(guess),
-      bondHelpers_(bondHelpers),
-      fittingMethod_(fittingMethod) {
+    FittedBondDiscountCurve::FittedBondDiscountCurve(
+        const Date& referenceDate,
+        vector<ext::shared_ptr<BondHelper> > bondHelpers,
+        const DayCounter& dayCounter,
+        const FittingMethod& fittingMethod,
+        Real accuracy,
+        Size maxEvaluations,
+        Array guess,
+        Real simplexLambda,
+        Size maxStationaryStateIterations)
+    : YieldTermStructure(referenceDate, Calendar(), dayCounter), accuracy_(accuracy),
+      maxEvaluations_(maxEvaluations), simplexLambda_(simplexLambda),
+      maxStationaryStateIterations_(maxStationaryStateIterations), guessSolution_(std::move(guess)),
+      bondHelpers_(std::move(bondHelpers)), fittingMethod_(fittingMethod) {
 
         fittingMethod_->curve_ = this;
         setup();
@@ -127,12 +120,12 @@ namespace QuantLib {
     FittedBondDiscountCurve::FittingMethod::FittingMethod(
         bool constrainAtZero,
         const Array& weights,
-        const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
-        const Array& l2,
+        ext::shared_ptr<OptimizationMethod> optimizationMethod,
+        Array l2,
         const Real minCutoffTime,
         const Real maxCutoffTime)
-    : constrainAtZero_(constrainAtZero), weights_(weights), l2_(l2),
-      calculateWeights_(weights.empty()), optimizationMethod_(optimizationMethod),
+    : constrainAtZero_(constrainAtZero), weights_(weights), l2_(std::move(l2)),
+      calculateWeights_(weights.empty()), optimizationMethod_(std::move(optimizationMethod)),
       minCutoffTime_(minCutoffTime), maxCutoffTime_(maxCutoffTime) {}
 
     void FittedBondDiscountCurve::FittingMethod::init() {
@@ -144,8 +137,8 @@ namespace QuantLib {
         Size n = curve_->bondHelpers_.size();
         costFunction_ = ext::make_shared<FittingCost>(this);
 
-        for (Size i=0; i<curve_->bondHelpers_.size(); ++i) {
-            curve_->bondHelpers_[i]->setTermStructure(curve_);
+        for (auto& bondHelper : curve_->bondHelpers_) {
+            bondHelper->setTermStructure(curve_);
         }
 
         if (calculateWeights_) {
@@ -207,6 +200,7 @@ namespace QuantLib {
 
             numberOfIterations_ = 0;
             costValue_ = costFunction.value(solution_);
+            errorCode_ = EndCriteria::None;
 
             return;
         }
@@ -228,7 +222,7 @@ namespace QuantLib {
                                 functionEpsilon,
                                 gradientNormEpsilon);
 
-        optimization->minimize(problem,endCriteria);
+        errorCode_ = optimization->minimize(problem,endCriteria);
         solution_ = problem.currentValue();
 
         numberOfIterations_ = problem.functionEvaluation();
@@ -248,8 +242,8 @@ namespace QuantLib {
                                                        const Array& x) const {
         Real squaredError = 0.0;
         Array vals = values(x);
-        for (Size i = 0; i<vals.size(); ++i) {
-            squaredError += vals[i];
+        for (double val : vals) {
+            squaredError += val;
         }
         return squaredError;
     }

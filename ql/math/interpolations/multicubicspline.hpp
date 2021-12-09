@@ -26,7 +26,9 @@
 
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
+#include <algorithm>
 #include <functional>
+#include <utility>
 #include <vector>
 
 namespace QuantLib {
@@ -44,15 +46,15 @@ namespace QuantLib {
         struct EmptyDim {};  // size_t termination marker
 
         template<class X> struct DataTable {
-            DataTable<X>(const std::vector<Size>::const_iterator &i) {
+            DataTable(const std::vector<Size>::const_iterator &i) {
                 std::vector<X> temp(*i, X(i + 1));
                 data_table_.swap(temp);
             }
-            DataTable<X>(const SplineGrid::const_iterator &i) {
+            DataTable(const SplineGrid::const_iterator &i) {
                 std::vector<X> temp(i->size(), X(i + 1));
                 data_table_.swap(temp);
             }
-            template<class U> DataTable<X>(const std::vector<U> &v) {
+            template<class U> DataTable(const std::vector<U> &v) {
                 DataTable temp(v.begin());
                 data_table_.swap(temp.data_table_);
             }
@@ -65,12 +67,12 @@ namespace QuantLib {
         };
 
         template<> struct DataTable<Real> {
-            DataTable<Real>(Size n) : data_table_(n) {}
-            DataTable<Real>(const std::vector<Size>::const_iterator& i)
+            DataTable(Size n) : data_table_(n) {}
+            DataTable(const std::vector<Size>::const_iterator& i)
             : data_table_(*i) {}
-            DataTable<Real>(const SplineGrid::const_iterator &i)
+            DataTable(const SplineGrid::const_iterator &i)
             : data_table_(i->size()) {}
-            template<class U> DataTable<Real>(const std::vector<U> &v) {
+            template<class U> DataTable(const std::vector<U> &v) {
                 DataTable temp(v.begin());
                 data_table_.swap(temp.data_table_);
             }
@@ -85,11 +87,11 @@ namespace QuantLib {
         typedef DataTable<Real> base_data_table;
 
         template<class X, class Y> struct Data {
-            Data<X, Y>()
+            Data()
             : first(X()), second(Y()) {}
-            Data<X, Y>(const SplineGrid::const_iterator &i)
+            Data(const SplineGrid::const_iterator &i)
             : first(*i), second(i + 1) {}
-            Data<X, Y>(const SplineGrid &v)
+            Data(const SplineGrid &v)
             : first(v[0]), second(v.begin()+1) {}
             void swap(Data<X, Y> &d) {
                 first.swap(d.first);
@@ -100,14 +102,13 @@ namespace QuantLib {
         };
 
         template<> struct Data<std::vector<Real>, EmptyArg> {
-            Data<std::vector<Real>, EmptyArg>()
+            Data()
             : first(std::vector<Real>()) {}
-            Data<std::vector<Real>, EmptyArg>(const SplineGrid::const_iterator &i)
+            Data(const SplineGrid::const_iterator &i)
             : first(*i) {}
-            Data<std::vector<Real>, EmptyArg>(const SplineGrid &v)
+            Data(const SplineGrid &v)
             : first(v[0]) {}
-            Data<std::vector<Real>, EmptyArg>(const std::vector<Real> &v)
-            : first(v) {}
+            Data(std::vector<Real> v) : first(std::move(v)) {}
             void swap(Data<std::vector<Real>, EmptyArg> &d) {
                 first.swap(d.first);
             }
@@ -121,15 +122,15 @@ namespace QuantLib {
 
         template<class X, class Y> struct Point {
             typedef X data_type;
-            Point<X, Y>()
+            Point()
             : first(data_type()), second(Y()) {}
-            Point<X, Y>(const std::vector<Real>::const_iterator &i)
+            Point(const std::vector<Real>::const_iterator &i)
             : first(*i), second(i + 1) {}
-            Point<X, Y>(const std::vector<Real> &v)
+            Point(const std::vector<Real> &v)
             : first(v[0]), second(v.begin()+1) {}
-            Point<X, Y>(const SplineGrid::const_iterator &i)
+            Point(const SplineGrid::const_iterator &i)
             : first(i->size()), second(i + 1) {}
-            Point<X, Y>(const SplineGrid &grid)
+            Point(const SplineGrid &grid)
             : first(grid[0].size()), second(grid.begin()+1) {}
             operator data_type() const {
                 return first;
@@ -142,11 +143,11 @@ namespace QuantLib {
 
         template<> struct Point<Real, EmptyArg> {
             typedef Real data_type;
-            Point<Real, EmptyArg>(data_type s)
+            Point(data_type s)
             : first(s) {}
-            Point<Real, EmptyArg>(const std::vector<Real>::const_iterator &i)
+            Point(const std::vector<Real>::const_iterator &i)
             : first(*i) {}
-            Point<Real, EmptyArg>(const std::vector<Real> &v)
+            Point(const std::vector<Real> &v)
             : first(v[0]) {}
             operator data_type() const {return first;}
             data_type operator[](Size n) const {
@@ -165,9 +166,9 @@ namespace QuantLib {
 
         template<> struct Point<Real, EmptyRes> {
             typedef Real data_type;
-            Point<Real, EmptyRes>()
+            Point()
             : first(data_type()) {}
-            Point<Real, EmptyRes>(data_type s)
+            Point(data_type s)
             : first(s) {}
             operator data_type() const {return first;}
             const data_type &operator[](Size n) const {
@@ -186,9 +187,9 @@ namespace QuantLib {
 
         template<> struct Point<Size, EmptyDim> {
             typedef Size data_type;
-            Point<Size, EmptyDim>()
+            Point()
             : first(data_type()) {}
-            Point<Size, EmptyDim>(data_type s)
+            Point(data_type s)
             : first(s) {}
             operator data_type() const {return first;}
             data_type operator[](Size n) const {
@@ -207,11 +208,10 @@ namespace QuantLib {
 
         template<> struct Point<base_data_table, EmptyRes> {
             typedef base_data_table data_type;
-            Point<base_data_table, EmptyRes>(const data_type& s)
-            : first(s) {}
-            Point<base_data_table, EmptyRes>(const SplineGrid::const_iterator &i)
+            Point(data_type s) : first(std::move(s)) {}
+            Point(const SplineGrid::const_iterator &i)
             : first(i->size()) {}
-            Point<base_data_table, EmptyRes>(const SplineGrid &grid)
+            Point(const SplineGrid &grid)
             : first(grid[0].size()) {}
             Real operator[](Size n) const {return first[n];}
             Real& operator[](Size n) {return first[n];}
@@ -267,7 +267,8 @@ namespace QuantLib {
                 for(Size j = 0, dim = y_.size();  j < dim; ++j)
                     X(d_.second, d2_.second, y_[j], y2_[j], v_.second);
             }
-            ~n_cubic_spline(){}
+            ~n_cubic_spline() = default;
+
           private:
             const data &d_, &d2_;
             const data_table &y_;
@@ -326,7 +327,8 @@ namespace QuantLib {
                                   v1_.first.first, v2_.first.first,
                                   v_.first, v1_.first, v2_.first, r);
             }
-            ~n_cubic_splint(){}
+            ~n_cubic_splint() = default;
+
           private:
             const return_type &a_, &b_, &a2_, &b2_;
             const dimensions &i_;

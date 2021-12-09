@@ -151,7 +151,7 @@ namespace QuantLib {
                 s+=sn*nn;
 
                 if ((n & 1) != 0U)
-                    nn += 1/(2.0*(n/2) + 1);
+                    nn += 1/(2.0*(n/2) + 1); // NOLINT(bugprone-integer-division)
 
                 sn *= -z / Real(2*n);
             }

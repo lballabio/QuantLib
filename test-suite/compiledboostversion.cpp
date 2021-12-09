@@ -37,7 +37,7 @@ void CompiledBoostVersionTest::test() {
 
 
 test_suite* CompiledBoostVersionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Compiled boost version test");
+    auto* suite = BOOST_TEST_SUITE("Compiled boost version test");
     suite->add(QUANTLIB_TEST_CASE(&CompiledBoostVersionTest::test));
     return suite;
 }

@@ -31,28 +31,25 @@
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 #include <boost/multi_array.hpp>
+#include <utility>
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
+#    pragma GCC diagnostic pop
 #endif
 
 namespace QuantLib {
     HestonSLVMCModel::HestonSLVMCModel(
-        const Handle<LocalVolTermStructure>& localVol,
-        const Handle<HestonModel>& hestonModel,
-        const ext::shared_ptr<BrownianGeneratorFactory>& brownianGeneratorFactory,
+        Handle<LocalVolTermStructure> localVol,
+        Handle<HestonModel> hestonModel,
+        ext::shared_ptr<BrownianGeneratorFactory> brownianGeneratorFactory,
         const Date& endDate,
         Size timeStepsPerYear,
         Size nBins,
         Size calibrationPaths,
         const std::vector<Date>& mandatoryDates,
         const Real mixingFactor)
-    : localVol_(localVol),
-      hestonModel_(hestonModel),
-      brownianGeneratorFactory_(brownianGeneratorFactory),
-      endDate_(endDate),
-      nBins_(nBins),
-      calibrationPaths_(calibrationPaths),
-      mixingFactor_(mixingFactor) {
+    : localVol_(std::move(localVol)), hestonModel_(std::move(hestonModel)),
+      brownianGeneratorFactory_(std::move(brownianGeneratorFactory)), endDate_(endDate),
+      nBins_(nBins), calibrationPaths_(calibrationPaths), mixingFactor_(mixingFactor) {
 
         registerWith(localVol_);
         registerWith(hestonModel_);
@@ -62,9 +59,8 @@ namespace QuantLib {
 
         std::vector<Time> gridTimes;
         gridTimes.reserve(mandatoryDates.size()+1);
-        for (Size i=0; i < mandatoryDates.size(); ++i) {
-            gridTimes.push_back(dc.yearFraction(refDate, mandatoryDates[i]));
-
+        for (auto mandatoryDate : mandatoryDates) {
+            gridTimes.push_back(dc.yearFraction(refDate, mandatoryDate));
         }
         gridTimes.push_back(dc.yearFraction(refDate, endDate));
 

@@ -22,34 +22,32 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/pricingengines/vanilla/analyticcevengine.hpp>
-#include <ql/pricingengines/vanilla/fdcevvanillaengine.hpp>
-#include <ql/methods/finitedifferences/solvers/fdm1dimsolver.hpp>
+#include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmcev1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/operators/fdmcevop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
+#include <ql/methods/finitedifferences/solvers/fdm1dimsolver.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdiscountdirichletboundary.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmtimedepdirichletboundary.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmdiscountdirichletboundary.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/pricingengines/vanilla/analyticcevengine.hpp>
+#include <ql/pricingengines/vanilla/fdcevvanillaengine.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     namespace {
         class PriceAtBoundary {
           public:
-            PriceAtBoundary(
-                Time maturityTime,
-                const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                const ext::shared_ptr<YieldTermStructure>& rTS,
-                const ext::shared_ptr<CEVCalculator>& calculator)
-            : maturityTime_(maturityTime),
-              payoff_(payoff),
-              calculator_(calculator),
-              rTS_(rTS) { }
+            PriceAtBoundary(Time maturityTime,
+                            ext::shared_ptr<StrikedTypePayoff> payoff,
+                            ext::shared_ptr<YieldTermStructure> rTS,
+                            ext::shared_ptr<CEVCalculator> calculator)
+            : maturityTime_(maturityTime), payoff_(std::move(payoff)),
+              calculator_(std::move(calculator)), rTS_(std::move(rTS)) {}
 
             Real operator()(Real t) const {
                 const Time time2Expiry = std::max(1/365., maturityTime_ - t);
@@ -68,21 +66,18 @@ namespace QuantLib {
         };
     }
 
-    FdCEVVanillaEngine::FdCEVVanillaEngine(
-        Real f0, Real alpha, Real beta,
-        const Handle<YieldTermStructure>& discountCurve,
-        Size tGrid, Size xGrid, Size dampingSteps,
-        Real scalingFactor, Real eps,
-        const FdmSchemeDesc& schemeDesc)
-    : f0_(f0),
-      alpha_(alpha),
-      beta_(beta),
-      discountCurve_(discountCurve),
-      tGrid_(tGrid),
-      xGrid_(xGrid),
-      dampingSteps_(dampingSteps),
-      scalingFactor_(scalingFactor),
-      eps_(eps),
+    FdCEVVanillaEngine::FdCEVVanillaEngine(Real f0,
+                                           Real alpha,
+                                           Real beta,
+                                           Handle<YieldTermStructure> discountCurve,
+                                           Size tGrid,
+                                           Size xGrid,
+                                           Size dampingSteps,
+                                           Real scalingFactor,
+                                           Real eps,
+                                           const FdmSchemeDesc& schemeDesc)
+    : f0_(f0), alpha_(alpha), beta_(beta), discountCurve_(std::move(discountCurve)), tGrid_(tGrid),
+      xGrid_(xGrid), dampingSteps_(dampingSteps), scalingFactor_(scalingFactor), eps_(eps),
       schemeDesc_(schemeDesc) {
         registerWith(discountCurve_);
     }

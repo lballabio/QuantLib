@@ -38,13 +38,15 @@ namespace QuantLib {
       public:
         // Constructor
         FdOrnsteinUhlenbeckVanillaEngine(
-            const ext::shared_ptr<OrnsteinUhlenbeckProcess>&,
+            ext::shared_ptr<OrnsteinUhlenbeckProcess>,
             const ext::shared_ptr<YieldTermStructure>& rTS,
-            Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+            Size tGrid = 100,
+            Size xGrid = 100,
+            Size dampingSteps = 0,
             Real epsilon = 0.0001,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const ext::shared_ptr<OrnsteinUhlenbeckProcess> process_;

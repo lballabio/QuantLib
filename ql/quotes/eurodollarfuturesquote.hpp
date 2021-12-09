@@ -35,20 +35,20 @@ namespace QuantLib {
     class EurodollarFuturesImpliedStdDevQuote : public Quote,
                                                 public LazyObject {
       public:
-        EurodollarFuturesImpliedStdDevQuote(const Handle<Quote>& forward,
-                                            const Handle<Quote>& callPrice,
-                                            const Handle<Quote>& putPrice,
+        EurodollarFuturesImpliedStdDevQuote(Handle<Quote> forward,
+                                            Handle<Quote> callPrice,
+                                            Handle<Quote> putPrice,
                                             Real strike,
                                             Real guess = .15,
                                             Real accuracy = 1.0e-6,
                                             Natural maxIter = 100);
         //! \name Quote interface
         //@{
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
         //@}
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
         mutable Real impliedStdev_;
         Real strike_;
         Real accuracy_;

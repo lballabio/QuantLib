@@ -43,12 +43,12 @@ namespace QuantLib {
     // Computes the size of the simplex
         Real computeSimplexSize (const std::vector<Array>& vertices) {
             Array center(vertices.front().size(),0);
-            for (Size i=0; i<vertices.size(); ++i)
-                center += vertices[i];
+            for (const auto& vertice : vertices)
+                center += vertice;
             center *=1/Real(vertices.size());
             Real result = 0;
-            for (Size i=0; i<vertices.size(); ++i) {
-                Array temp = vertices[i] - center;
+            for (const auto& vertice : vertices) {
+                Array temp = vertice - center;
                 result += Norm2(temp);
             }
             return result/Real(vertices.size());
@@ -102,20 +102,24 @@ namespace QuantLib {
             = endCriteria.maxStationaryStateIterations();
         EndCriteria::Type ecType = EndCriteria::None;
         P.reset();
+
         Array x_ = P.currentValue();
+        if (!P.constraint().test(x_))
+            QL_FAIL("Initial guess " << x_ << " is not in the feasible region.");
+
         Integer iterationNumber_=0;
 
         // Initialize vertices of the simplex
-        Size n = x_.size(), i;
+        Size n = x_.size();
         vertices_ = std::vector<Array>(n+1, x_);
-        for (i=0; i<n; i++) {
+        for (Size i=0; i<n; ++i) {
             Array direction(n, 0.0);
             direction[i] = 1.0;
             P.constraint().update(vertices_[i+1], direction, lambda_);
         }
         // Initialize function values at the vertices of the simplex
         values_ = Array(n+1, 0.0);
-        for (i=0; i<=n; i++)
+        for (Size i=0; i<=n; ++i)
             values_[i] = P.value(vertices_[i]);
         // Loop looking for minimum
         do {

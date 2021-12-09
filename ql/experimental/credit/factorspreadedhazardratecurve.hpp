@@ -24,8 +24,9 @@
 #ifndef quantlib_factor_spreaded_hazard_rate_curve_hpp
 #define quantlib_factor_spreaded_hazard_rate_curve_hpp
 
-#include <ql/termstructures/credit/hazardratestructure.hpp>
 #include <ql/quote.hpp>
+#include <ql/termstructures/credit/hazardratestructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,20 +39,20 @@ namespace QuantLib {
     */
     class FactorSpreadedHazardRateCurve : public HazardRateStructure {
       public:
-        FactorSpreadedHazardRateCurve(
-                 const Handle<DefaultProbabilityTermStructure>& originalCurve,
-                 const Handle<Quote>& spread);
+        FactorSpreadedHazardRateCurve(Handle<DefaultProbabilityTermStructure> originalCurve,
+                                      Handle<Quote> spread);
         //! \name DefaultTermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Calendar calendar() const;
-        const Date& referenceDate() const;
-        Date maxDate() const;
-        Time maxTime() const;
+        DayCounter dayCounter() const override;
+        Calendar calendar() const override;
+        const Date& referenceDate() const override;
+        Date maxDate() const override;
+        Time maxTime() const override;
         //@}
       protected:
-        Real hazardRateImpl(Time t) const;
-    private:
+        Real hazardRateImpl(Time t) const override;
+
+      private:
         Handle<DefaultProbabilityTermStructure> originalCurve_;
         Handle<Quote> spread_;
     };
@@ -60,9 +61,8 @@ namespace QuantLib {
     // inline definitions
 
     inline FactorSpreadedHazardRateCurve::FactorSpreadedHazardRateCurve(
-                             const Handle<DefaultProbabilityTermStructure>& h,
-                             const Handle<Quote>& spread)
-    : originalCurve_(h), spread_(spread) {
+        Handle<DefaultProbabilityTermStructure> h, Handle<Quote> spread)
+    : originalCurve_(std::move(h)), spread_(std::move(spread)) {
         registerWith(originalCurve_);
         registerWith(spread_);
     }

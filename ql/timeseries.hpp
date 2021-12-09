@@ -55,7 +55,7 @@ namespace QuantLib {
         mutable Container values_;
       public:
         /*! Default constructor */
-        TimeSeries() {}
+        TimeSeries() = default;
         /*! This constructor initializes the history with a set of
             values passed as two sequences, the first containing dates
             and the second containing corresponding values.

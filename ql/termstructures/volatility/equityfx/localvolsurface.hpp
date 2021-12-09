@@ -45,30 +45,31 @@ namespace QuantLib {
     class LocalVolSurface : public LocalVolTermStructure {
       public:
         LocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
-                        const Handle<YieldTermStructure>& riskFreeTS,
-                        const Handle<YieldTermStructure>& dividendTS,
-                        const Handle<Quote>& underlying);
+                        Handle<YieldTermStructure> riskFreeTS,
+                        Handle<YieldTermStructure> dividendTS,
+                        Handle<Quote> underlying);
         LocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
-                        const Handle<YieldTermStructure>& riskFreeTS,
-                        const Handle<YieldTermStructure>& dividendTS,
+                        Handle<YieldTermStructure> riskFreeTS,
+                        Handle<YieldTermStructure> dividendTS,
                         Real underlying);
         //! \name TermStructure interface
         //@{
-        const Date& referenceDate() const;
-        DayCounter dayCounter() const;
-        Date maxDate() const;
+        const Date& referenceDate() const override;
+        DayCounter dayCounter() const override;
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
-        Volatility localVolImpl(Time, Real) const;
+        Volatility localVolImpl(Time, Real) const override;
+
       private:
         Handle<BlackVolTermStructure> blackTS_;
         Handle<YieldTermStructure> riskFreeTS_, dividendTS_;

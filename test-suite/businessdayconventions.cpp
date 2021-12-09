@@ -18,23 +18,24 @@
 #include "businessdayconventions.hpp"
 #include "utilities.hpp"
 #include <ql/time/businessdayconvention.hpp>
-#include <ql/time/daycounter.hpp>
 #include <ql/time/calendars/southafrica.hpp>
+#include <ql/time/daycounter.hpp>
 #include <ql/time/period.hpp>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 namespace business_day_conventions_test {
     struct SingleCase {
-        SingleCase(const Calendar& calendar,
+        SingleCase(Calendar calendar,
                    const BusinessDayConvention& convention,
                    const Date& start,
                    const Period& period,
                    const bool endOfMonth,
                    Date result)
-        : calendar(calendar), convention(convention), start(start), 
-          period(period), endOfMonth(endOfMonth), result(result) {}
+        : calendar(std::move(calendar)), convention(convention), start(start), period(period),
+          endOfMonth(endOfMonth), result(result) {}
         Calendar calendar;
         BusinessDayConvention convention;
         Date start;
@@ -122,7 +123,7 @@ void BusinessDayConventionTest::testConventions() {
 }
 
 test_suite* BusinessDayConventionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Business day convention tests");
+    auto* suite = BOOST_TEST_SUITE("Business day convention tests");
     suite->add(QUANTLIB_TEST_CASE(&BusinessDayConventionTest::testConventions));
     return suite;
 }

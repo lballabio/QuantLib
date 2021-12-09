@@ -18,34 +18,32 @@
  */
 
 #include <ql/cashflows/inflationcouponpricer.hpp>
-#include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     void setCouponPricer(const Leg& leg,
                          const ext::shared_ptr<InflationCouponPricer>& p) {
-        for (Size i=0; i<leg.size(); ++i) {
-            ext::shared_ptr<InflationCoupon> c =
-                ext::dynamic_pointer_cast<InflationCoupon>(leg[i]);
-            if (c != 0)
+        for (const auto& i : leg) {
+            ext::shared_ptr<InflationCoupon> c = ext::dynamic_pointer_cast<InflationCoupon>(i);
+            if (c != nullptr)
                 c->setPricer(p);
         }
     }
 
 
-    YoYInflationCouponPricer::YoYInflationCouponPricer() {}
-
     YoYInflationCouponPricer::YoYInflationCouponPricer(
-                       const Handle<YieldTermStructure>& nominalTermStructure)
-    : nominalTermStructure_(nominalTermStructure) {
+        Handle<YieldTermStructure> nominalTermStructure)
+    : nominalTermStructure_(std::move(nominalTermStructure)) {
         registerWith(nominalTermStructure_);
     }
 
     YoYInflationCouponPricer::YoYInflationCouponPricer(
-                       const Handle<YoYOptionletVolatilitySurface>& capletVol,
-                       const Handle<YieldTermStructure>& nominalTermStructure)
-    : capletVol_(capletVol), nominalTermStructure_(nominalTermStructure) {
+        Handle<YoYOptionletVolatilitySurface> capletVol,
+        Handle<YieldTermStructure> nominalTermStructure)
+    : capletVol_(std::move(capletVol)), nominalTermStructure_(std::move(nominalTermStructure)) {
         registerWith(capletVol_);
         registerWith(nominalTermStructure_);
     }
@@ -53,7 +51,7 @@ namespace QuantLib {
 
     void YoYInflationCouponPricer::setCapletVolatility(
        const Handle<YoYOptionletVolatilitySurface>& capletVol) {
-        QL_REQUIRE(!capletVol.empty(),"empty capletVol handle")
+        QL_REQUIRE(!capletVol.empty(),"empty capletVol handle");
         capletVol_ = capletVol;
         registerWith(capletVol_);
     }
@@ -140,24 +138,26 @@ namespace QuantLib {
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
         paymentDate_ = coupon_->date();
+
+        QL_DEPRECATED_DISABLE_WARNING
         rateCurve_ =
             !nominalTermStructure_.empty() ?
             nominalTermStructure_ :
             ext::dynamic_pointer_cast<YoYInflationIndex>(coupon.index())
             ->yoyInflationTermStructure()
             ->nominalTermStructure();
+        QL_DEPRECATED_ENABLE_WARNING
 
         // past or future fixing is managed in YoYInflationIndex::fixing()
         // use yield curve from index (which sets discount)
 
         discount_ = 1.0;
-        if (paymentDate_ > rateCurve_->referenceDate()) {
-            if (rateCurve_.empty()) {
-                // allow to extract rates, but mark the discount as invalid for prices
-                discount_ = Null<Real>();
-            } else {
+        if (rateCurve_.empty()) {
+            // allow to extract rates, but mark the discount as invalid for prices
+            discount_ = Null<Real>();
+        } else {
+            if (paymentDate_ > rateCurve_->referenceDate())
                 discount_ = rateCurve_->discount(paymentDate_);
-            }
         }
     }
 

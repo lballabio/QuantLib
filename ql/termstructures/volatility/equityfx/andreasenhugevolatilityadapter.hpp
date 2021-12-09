@@ -33,20 +33,19 @@ namespace QuantLib {
     class AndreasenHugeVolatilityAdapter : public BlackVarianceTermStructure {
       public:
         explicit AndreasenHugeVolatilityAdapter(
-            const ext::shared_ptr<AndreasenHugeVolatilityInterpl>& volInterpl,
-            Real eps = 1e-6);
+            ext::shared_ptr<AndreasenHugeVolatilityInterpl> volInterpl, Real eps = 1e-6);
 
-        Date maxDate() const;
-        Real minStrike() const;
-        Real maxStrike() const;
+        Date maxDate() const override;
+        Real minStrike() const override;
+        Real maxStrike() const override;
 
-        Calendar calendar() const;
-        DayCounter dayCounter() const;
-        Natural settlementDays() const;
-        const Date& referenceDate() const;
+        Calendar calendar() const override;
+        DayCounter dayCounter() const override;
+        Natural settlementDays() const override;
+        const Date& referenceDate() const override;
 
       protected:
-        Real blackVarianceImpl(Time t, Real strike) const;
+        Real blackVarianceImpl(Time t, Real strike) const override;
 
       private:
         const Real eps_;

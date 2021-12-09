@@ -19,20 +19,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/credit/integralcdsengine.hpp>
-#include <ql/instruments/claim.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/instruments/claim.hpp>
+#include <ql/pricingengines/credit/integralcdsengine.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     IntegralCdsEngine::IntegralCdsEngine(const Period& step,
-                                         const Handle<DefaultProbabilityTermStructure>& probability,
+                                         Handle<DefaultProbabilityTermStructure> probability,
                                          Real recoveryRate,
-                                         const Handle<YieldTermStructure>& discountCurve,
+                                         Handle<YieldTermStructure> discountCurve,
                                          const boost::optional<bool>& includeSettlementDateFlows)
-    : integrationStep_(step), probability_(probability), recoveryRate_(recoveryRate),
-      discountCurve_(discountCurve), includeSettlementDateFlows_(includeSettlementDateFlows) {
+    : integrationStep_(step), probability_(std::move(probability)), recoveryRate_(recoveryRate),
+      discountCurve_(std::move(discountCurve)),
+      includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(probability_);
         registerWith(discountCurve_);
     }
@@ -48,39 +50,23 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
         Date settlementDate = discountCurve_->referenceDate();
 
-        // Upfront Flow NPV. Either we are on-the-run (no flow)
-        // or we are forward start
-
-        // date determining the probability survival so we have to pay
-        //   the upfront flows (did not knock out)
-        Date effectiveProtectionStart =
-            arguments_.protectionStart > probability_->referenceDate() ?
-                arguments_.protectionStart : probability_->referenceDate();
-
-        Probability nonKnockOut =
-            probability_->survivalProbability(effectiveProtectionStart);
-
+        // Upfront amount.
         Real upfPVO1 = 0.0;
         results_.upfrontNPV = 0.0;
-        if (arguments_.upfrontPayment->amount() != 0.0 &&
-            !arguments_.upfrontPayment->hasOccurred(
-                                               settlementDate,
-                                               includeSettlementDateFlows_)) {
-            upfPVO1 =
-                nonKnockOut *
-                discountCurve_->discount(arguments_.upfrontPayment->date());
-            results_.upfrontNPV =
-                upfPVO1 * arguments_.upfrontPayment->amount();
+        if (!arguments_.upfrontPayment->hasOccurred(
+            settlementDate, includeSettlementDateFlows_)) {
+            upfPVO1 = discountCurve_->discount(arguments_.upfrontPayment->date());
+            results_.upfrontNPV = upfPVO1 * arguments_.upfrontPayment->amount();
         }
 
+        // Accrual rebate.
         results_.accrualRebateNPV = 0.;
         // NOLINTNEXTLINE(readability-implicit-bool-conversion)
-        if (arguments_.accrualRebate && arguments_.accrualRebate->amount() != 0. &&
+        if (arguments_.accrualRebate &&
             !arguments_.accrualRebate->hasOccurred(settlementDate, includeSettlementDateFlows_)) {
-            results_.accrualRebateNPV = nonKnockOut *
+            results_.accrualRebateNPV =
                 discountCurve_->discount(arguments_.accrualRebate->date()) *
                 arguments_.accrualRebate->amount();
-
         }
 
         results_.couponLegNPV = 0.0;
@@ -156,7 +142,7 @@ namespace QuantLib {
         switch (arguments_.side) {
           case Protection::Seller:
             results_.defaultLegNPV *= -1.0;
-			results_.accrualRebateNPV *= -1.0;
+            results_.accrualRebateNPV *= -1.0;
             break;
           case Protection::Buyer:
             results_.couponLegNPV *= -1.0;
@@ -174,18 +160,17 @@ namespace QuantLib {
 
         if (results_.couponLegNPV != 0.0) {
             results_.fairSpread =
-				-results_.defaultLegNPV*arguments_.spread
+                -results_.defaultLegNPV*arguments_.spread
                     /(results_.couponLegNPV + results_.accrualRebateNPV);
         } else {
             results_.fairSpread = Null<Rate>();
         }
 
-        Real upfrontSensitivity = upfPVO1 * arguments_.notional;
-        if (upfrontSensitivity != 0.0) {
+        if (upfPVO1 > 0.0) {
             results_.fairUpfront =
                 -upfrontSign*(results_.defaultLegNPV + results_.couponLegNPV +
                     results_.accrualRebateNPV)
-                / upfrontSensitivity;
+                / (upfPVO1 * arguments_.notional);
         } else {
             results_.fairUpfront = Null<Rate>();
         }

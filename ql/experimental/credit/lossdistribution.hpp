@@ -36,35 +36,34 @@ namespace QuantLib {
     */ 
     class LossDist {
     public:
-        LossDist() {}
-        virtual ~LossDist() {}
+      LossDist() = default;
+      virtual ~LossDist() = default;
 
-        virtual Distribution operator()(const std::vector<Real>& volumes, 
-                             const std::vector<Real>& probabilities) const = 0;
-        virtual Size buckets () const = 0;
-        virtual Real maximum () const = 0;
+      virtual Distribution operator()(const std::vector<Real>& volumes,
+                                      const std::vector<Real>& probabilities) const = 0;
+      virtual Size buckets() const = 0;
+      virtual Real maximum() const = 0;
 
-        /*! Binomial probability of n defaults using prob[0]
-         */ 
-        static Real binomialProbabilityOfNEvents(int n, std::vector<Real>& p);
-  
-        /*! Binomial probability of at least n defaults using prob[0]
-         */ 
-        static Real binomialProbabilityOfAtLeastNEvents(int n, 
-                                                        std::vector<Real>& p);
-        /*! Probability of exactly n default events
-          Xiaofong Ma, "Numerical Methods for the Valuation of Synthetic
-          Collateralized Debt Obligations", PhD Thesis, 
-          Graduate Department of Computer Science, University of Toronto, 2007  
-          http://www.cs.toronto.edu/pub/reports/na/ma-07-phd.pdf (formula 2.1)
-        */
-        static std::vector<Real> probabilityOfNEvents(std::vector<Real>& p);
+      /*! Binomial probability of n defaults using prob[0]
+       */
+      static Real binomialProbabilityOfNEvents(int n, std::vector<Real>& p);
 
-        static Real probabilityOfNEvents(int n, std::vector<Real>& p);
-  
-        /*! Probability of at least n defaults
-         */ 
-        static Real probabilityOfAtLeastNEvents(int n, std::vector<Real>& p);
+      /*! Binomial probability of at least n defaults using prob[0]
+       */
+      static Real binomialProbabilityOfAtLeastNEvents(int n, std::vector<Real>& p);
+      /*! Probability of exactly n default events
+        Xiaofong Ma, "Numerical Methods for the Valuation of Synthetic
+        Collateralized Debt Obligations", PhD Thesis,
+        Graduate Department of Computer Science, University of Toronto, 2007
+        http://www.cs.toronto.edu/pub/reports/na/ma-07-phd.pdf (formula 2.1)
+      */
+      static std::vector<Real> probabilityOfNEvents(std::vector<Real>& p);
+
+      static Real probabilityOfNEvents(int n, std::vector<Real>& p);
+
+      /*! Probability of at least n defaults
+       */
+      static Real probabilityOfAtLeastNEvents(int n, std::vector<Real>& p);
     }; 
 
     //! Probability of N events 
@@ -103,11 +102,11 @@ namespace QuantLib {
     public:
         LossDistBinomial (Size nBuckets, Real maximum)
             : nBuckets_(nBuckets), maximum_(maximum) {}
-        Distribution operator()(Size n, Real volume, Real probability) const; 
-        Distribution operator()(const std::vector<Real>& volumes, 
-                                const std::vector<Real>& probabilities) const;
-        Size buckets () const { return nBuckets_; }
-        Real maximum () const { return maximum_; }
+        Distribution operator()(Size n, Real volume, Real probability) const;
+        Distribution operator()(const std::vector<Real>& volumes,
+                                const std::vector<Real>& probabilities) const override;
+        Size buckets() const override { return nBuckets_; }
+        Real maximum() const override { return maximum_; }
         Real volume() const { return volume_; }
         Size size () const { return n_; }
         std::vector<Real> probability() const { return probability_; }
@@ -151,10 +150,10 @@ namespace QuantLib {
               n_(0), volume_(0.0) {}
         Distribution operator()(Real volume, 
                                 const std::vector<Real>& probabilities) const;
-        Distribution operator()(const std::vector<Real>& volumes, 
-                                const std::vector<Real>& probabilities) const;
-        Size buckets () const { return nBuckets_; }
-        Real maximum () const { return maximum_; }
+        Distribution operator()(const std::vector<Real>& volumes,
+                                const std::vector<Real>& probabilities) const override;
+        Size buckets() const override { return nBuckets_; }
+        Real maximum() const override { return maximum_; }
         Size size () const { return n_; }
         Real volume() const { return volume_; }
         std::vector<Real> probability() const { return probability_; }
@@ -186,11 +185,12 @@ namespace QuantLib {
         LossDistBucketing (Size nBuckets, Real maximum, 
                            Real epsilon = 1e-6)
             : nBuckets_(nBuckets), maximum_(maximum), epsilon_(epsilon) {}
-        Distribution operator()(const std::vector<Real>& volumes, 
-                                const std::vector<Real>& probabilities) const;
-        Size buckets () const { return nBuckets_; }
-        Real maximum () const { return maximum_; }
-    private:
+        Distribution operator()(const std::vector<Real>& volumes,
+                                const std::vector<Real>& probabilities) const override;
+        Size buckets() const override { return nBuckets_; }
+        Real maximum() const override { return maximum_; }
+
+      private:
         int locateTargetBucket (Real loss, Size i0 = 0) const;
 
         Size nBuckets_;
@@ -211,11 +211,12 @@ namespace QuantLib {
                             long seed = 42, Real epsilon = 1e-6)
             : nBuckets_(nBuckets), maximum_(maximum), 
               simulations_(simulations), seed_(seed), epsilon_(epsilon) {}
-        Distribution operator()(const std::vector<Real>& volumes, 
-                                const std::vector<Real>& probabilities) const;
-        Size buckets () const { return nBuckets_; }
-        Real maximum () const { return maximum_; }
-    private:
+        Distribution operator()(const std::vector<Real>& volumes,
+                                const std::vector<Real>& probabilities) const override;
+        Size buckets() const override { return nBuckets_; }
+        Real maximum() const override { return maximum_; }
+
+      private:
         Size nBuckets_;
         Real maximum_;
         Size simulations_;

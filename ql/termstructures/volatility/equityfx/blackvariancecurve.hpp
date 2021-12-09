@@ -49,17 +49,17 @@ namespace QuantLib {
         BlackVarianceCurve(const Date& referenceDate,
                            const std::vector<Date>& dates,
                            const std::vector<Volatility>& blackVolCurve,
-                           const DayCounter& dayCounter,
+                           DayCounter dayCounter,
                            bool forceMonotoneVariance = true);
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const { return dayCounter_; }
-        Date maxDate() const;
+        DayCounter dayCounter() const override { return dayCounter_; }
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
         //! \name Modifiers
         //@{
@@ -73,10 +73,11 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
-        virtual Real blackVarianceImpl(Time t, Real) const;
+        Real blackVarianceImpl(Time t, Real) const override;
+
       private:
         DayCounter dayCounter_;
         Date maxDate_;
@@ -101,9 +102,8 @@ namespace QuantLib {
     }
 
     inline void BlackVarianceCurve::accept(AcyclicVisitor& v) {
-        Visitor<BlackVarianceCurve>* v1 =
-            dynamic_cast<Visitor<BlackVarianceCurve>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<BlackVarianceCurve>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             BlackVarianceTermStructure::accept(v);

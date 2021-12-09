@@ -62,19 +62,7 @@ namespace {
 void BrownianBridgeTest::testVariates() {
     BOOST_TEST_MESSAGE("Testing Brownian-bridge variates...");
 
-    std::vector<Time> times;
-    times.push_back(0.1);
-    times.push_back(0.2);
-    times.push_back(0.3);
-    times.push_back(0.4);
-    times.push_back(0.5);
-    times.push_back(0.6);
-    times.push_back(0.7);
-    times.push_back(0.8);
-    times.push_back(0.9);
-    times.push_back(1.0);
-    times.push_back(2.0);
-    times.push_back(5.0);
+    std::vector<Time> times = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0, 5.0};
 
     Size N = times.size();
 
@@ -179,28 +167,13 @@ void BrownianBridgeTest::testVariates() {
 void BrownianBridgeTest::testPathGeneration() {
     BOOST_TEST_MESSAGE("Testing Brownian-bridge path generation...");
 
-    std::vector<Time> times;
-    times.push_back(0.1);
-    times.push_back(0.2);
-    times.push_back(0.3);
-    times.push_back(0.4);
-    times.push_back(0.5);
-    times.push_back(0.6);
-    times.push_back(0.7);
-    times.push_back(0.8);
-    times.push_back(0.9);
-    times.push_back(1.0);
-    times.push_back(2.0);
-    times.push_back(5.0);
-    times.push_back(7.0);
-    times.push_back(9.0);
-    times.push_back(10.0);
+    std::vector<Time> times = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 2.0, 5.0, 7.0, 9.0, 10.0};
 
     TimeGrid grid(times.begin(), times.end());
 
     Size N = times.size();
 
-    Size samples = 262143;
+    Size samples = 131071;
     unsigned long seed = 42;
     SobolRsg sobol(N, seed);
     InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal> gsg(sobol);
@@ -245,7 +218,7 @@ void BrownianBridgeTest::testPathGeneration() {
     std::vector<Real> mean = stats2.mean();
     Matrix covariance = stats2.covariance();
 
-    Real meanTolerance = 1.5e-5;
+    Real meanTolerance = 3.0e-5;
     Real covTolerance = 3.0e-3;
 
     Real maxMeanError = maxRelDiff(mean.begin(), mean.end(),
@@ -272,7 +245,7 @@ void BrownianBridgeTest::testPathGeneration() {
 }
 
 test_suite* BrownianBridgeTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Brownian bridge tests");
+    auto* suite = BOOST_TEST_SUITE("Brownian bridge tests");
     suite->add(QUANTLIB_TEST_CASE(&BrownianBridgeTest::testVariates));
     suite->add(QUANTLIB_TEST_CASE(&BrownianBridgeTest::testPathGeneration));
     return suite;

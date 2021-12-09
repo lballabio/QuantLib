@@ -78,8 +78,8 @@ namespace QuantLib {
     }
 
     Size TimeGrid::closestIndex(Time t) const {
-        const_iterator begin = times_.begin(), end = times_.end();
-        const_iterator result = std::lower_bound(begin, end, t);
+        auto begin = times_.begin(), end = times_.end();
+        auto result = std::lower_bound(begin, end, t);
         if (result == begin) {
             return 0;
         } else if (result == end) {

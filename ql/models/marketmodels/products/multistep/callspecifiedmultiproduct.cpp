@@ -17,22 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/products/multistep/callspecifiedmultiproduct.hpp>
 #include <ql/models/marketmodels/products/multistep/cashrebate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
-#include <ql/auto_ptr.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     CallSpecifiedMultiProduct::CallSpecifiedMultiProduct(
-                         const Clone<MarketModelMultiProduct>& underlying,
-                         const Clone<ExerciseStrategy<CurveState> >& strategy,
-                         const Clone<MarketModelMultiProduct>& rebate)
-                    : underlying_(underlying), 
-                    strategy_(strategy), 
-                    rebate_(rebate),
-                    callable_(true) 
-    {
+        const Clone<MarketModelMultiProduct>& underlying,
+        const Clone<ExerciseStrategy<CurveState> >& strategy,
+        Clone<MarketModelMultiProduct> rebate)
+    : underlying_(underlying), strategy_(strategy), rebate_(std::move(rebate)), callable_(true) {
 
         Size products = underlying_->numberOfProducts();
         EvolutionDescription d1 = underlying->evolution();

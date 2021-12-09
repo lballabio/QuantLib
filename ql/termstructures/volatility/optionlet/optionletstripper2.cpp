@@ -18,16 +18,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/optionlet/optionletstripper2.hpp>
-#include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
-#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
-#include <ql/termstructures/volatility/optionlet/spreadedoptionletvol.hpp>
-#include <ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/math/solvers1d/brent.hpp>
-#include <ql/instruments/makecapfloor.hpp>
-#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/instruments/makecapfloor.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/capfloor/capfloortermvolcurve.hpp>
+#include <ql/termstructures/volatility/optionlet/optionletstripper1.hpp>
+#include <ql/termstructures/volatility/optionlet/optionletstripper2.hpp>
+#include <ql/termstructures/volatility/optionlet/spreadedoptionletvol.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
+#include <utility>
 
 
 namespace QuantLib {
@@ -158,12 +159,10 @@ namespace QuantLib {
 //==========================================================================//
 
     OptionletStripper2::ObjectiveFunction::ObjectiveFunction(
-            const ext::shared_ptr<OptionletStripper1>& optionletStripper1,
-            const ext::shared_ptr<CapFloor>& cap,
-            Real targetValue)
-    : cap_(cap),
-      targetValue_(targetValue)
-    {
+        const ext::shared_ptr<OptionletStripper1>& optionletStripper1,
+        ext::shared_ptr<CapFloor> cap,
+        Real targetValue)
+    : cap_(std::move(cap)), targetValue_(targetValue) {
         ext::shared_ptr<OptionletVolatilityStructure> adapter(new
             StrippedOptionletAdapter(optionletStripper1));
         adapter->enableExtrapolation();

@@ -51,9 +51,8 @@ namespace QuantLib {
       public:
         explicit SegmentIntegral(Size intervals);
       protected:
-        virtual Real integrate(const ext::function<Real (Real)>& f,
-                               Real a,
-                               Real b) const;
+        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b) const override;
+
       private:
         Size intervals_;
     };

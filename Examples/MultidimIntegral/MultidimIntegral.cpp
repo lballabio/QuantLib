@@ -18,7 +18,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/experimental/math/multidimintegrator.hpp>
@@ -37,7 +37,7 @@ using namespace std;
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
 
-    ThreadKey sessionId() { return 0; }
+    ThreadKey sessionId() { return {}; }
 
 }
 #endif
@@ -46,8 +46,8 @@ namespace QuantLib {
 struct integrand {
     Real operator()(const std::vector<Real>& arg) const {
         Real sum = 1.;
-        for(Size i=0; i<arg.size(); i++) 
-            sum *= std::exp(-arg[i]*arg[i]) * std::cos(arg[i]);
+        for (double i : arg)
+            sum *= std::exp(-i * i) * std::cos(i);
         return sum;
     }
 };

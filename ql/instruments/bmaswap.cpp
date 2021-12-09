@@ -56,8 +56,8 @@ namespace QuantLib {
             .withPaymentAdjustment(bmaSchedule.businessDayConvention());
 
         for (Size j=0; j<2; ++j) {
-            for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
-                registerWith(*i);
+            for (auto& i : legs_[j])
+                registerWith(i);
         }
 
         switch (type_) {
@@ -86,7 +86,7 @@ namespace QuantLib {
         return nominal_;
     }
 
-    BMASwap::Type BMASwap::type() const {
+    Swap::Type BMASwap::type() const {
         return type_;
     }
 

@@ -17,21 +17,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/commodities/energyfuture.hpp>
 #include <ql/experimental/commodities/commoditysettings.hpp>
+#include <ql/experimental/commodities/energyfuture.hpp>
 #include <ql/settings.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    EnergyFuture::EnergyFuture(
-                      Integer buySell, const Quantity& quantity,
-                      const CommodityUnitCost& tradePrice,
-                      const ext::shared_ptr<CommodityIndex>& index,
-                      const CommodityType& commodityType,
-                      const ext::shared_ptr<SecondaryCosts>& secondaryCosts)
-    : EnergyCommodity(commodityType, secondaryCosts),
-      buySell_(buySell), quantity_(quantity), tradePrice_(tradePrice),
-      index_(index) {
+    EnergyFuture::EnergyFuture(Integer buySell,
+                               Quantity quantity,
+                               CommodityUnitCost tradePrice,
+                               ext::shared_ptr<CommodityIndex> index,
+                               const CommodityType& commodityType,
+                               const ext::shared_ptr<SecondaryCosts>& secondaryCosts)
+    : EnergyCommodity(commodityType, secondaryCosts), buySell_(buySell),
+      quantity_(std::move(quantity)), tradePrice_(std::move(tradePrice)), index_(std::move(index)) {
         registerWith(Settings::instance().evaluationDate());
         registerWith(index_);
     }

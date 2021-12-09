@@ -32,16 +32,18 @@
 #ifndef ql_xabr_interpolation_hpp
 #define ql_xabr_interpolation_hpp
 
-#include <ql/utilities/null.hpp>
-#include <ql/utilities/dataformatters.hpp>
 #include <ql/math/interpolation.hpp>
-#include <ql/math/optimization/method.hpp>
-#include <ql/math/optimization/simplex.hpp>
-#include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/math/optimization/projectedcostfunction.hpp>
 #include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/method.hpp>
+#include <ql/math/optimization/projectedcostfunction.hpp>
+#include <ql/math/optimization/simplex.hpp>
 #include <ql/math/randomnumbers/haltonrsg.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/utilities/null.hpp>
+#include <utility>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
@@ -49,15 +51,14 @@ namespace detail {
 
 template <typename Model> class XABRCoeffHolder {
   public:
-    XABRCoeffHolder(const Time t, const Real &forward,
+    XABRCoeffHolder(const Time t,
+                    const Real& forward,
                     const std::vector<Real>& params,
                     const std::vector<bool>& paramIsFixed,
-                    const std::vector<Real>& addParams)
-        : t_(t), forward_(forward), params_(params),
-          paramIsFixed_(paramIsFixed.size(), false),
-          weights_(std::vector<Real>()), error_(Null<Real>()),
-          maxError_(Null<Real>()), XABREndCriteria_(EndCriteria::None),
-          addParams_(addParams) {
+                    std::vector<Real> addParams)
+    : t_(t), forward_(forward), params_(params), paramIsFixed_(paramIsFixed.size(), false),
+      weights_(std::vector<Real>()), error_(Null<Real>()), maxError_(Null<Real>()),
+      XABREndCriteria_(EndCriteria::None), addParams_(std::move(addParams)) {
         QL_REQUIRE(t > 0.0, "expiry time must be positive: " << t
                                                              << " not allowed");
         QL_REQUIRE(params.size() == Model().dimension(),
@@ -76,7 +77,7 @@ template <typename Model> class XABRCoeffHolder {
         Model().defaultValues(params_, paramIsFixed_, forward_, t_, addParams_);
         updateModelInstance();
     }
-    virtual ~XABRCoeffHolder() {}
+    virtual ~XABRCoeffHolder() = default;
 
     void updateModelInstance() {
         modelInstance_ = Model().instance(t_, forward_, params_, addParams_);
@@ -102,19 +103,26 @@ template <class I1, class I2, typename Model>
 class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
                               public XABRCoeffHolder<Model> {
   public:
-    XABRInterpolationImpl(
-        const I1 &xBegin, const I1 &xEnd, const I2 &yBegin, Time t,
-        const Real &forward, const std::vector<Real>& params,
-        const std::vector<bool>& paramIsFixed, bool vegaWeighted,
-        const ext::shared_ptr<EndCriteria> &endCriteria,
-        const ext::shared_ptr<OptimizationMethod> &optMethod,
-        const Real errorAccept, const bool useMaxError, const Size maxGuesses,
-        const std::vector<Real>& addParams = std::vector<Real>())
-        : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin, 1),
-          XABRCoeffHolder<Model>(t, forward, params, paramIsFixed, addParams),
-          endCriteria_(endCriteria), optMethod_(optMethod),
-          errorAccept_(errorAccept), useMaxError_(useMaxError),
-          maxGuesses_(maxGuesses), vegaWeighted_(vegaWeighted) {
+    XABRInterpolationImpl(const I1& xBegin,
+                          const I1& xEnd,
+                          const I2& yBegin,
+                          Time t,
+                          const Real& forward,
+                          const std::vector<Real>& params,
+                          const std::vector<bool>& paramIsFixed,
+                          bool vegaWeighted,
+                          ext::shared_ptr<EndCriteria> endCriteria,
+                          ext::shared_ptr<OptimizationMethod> optMethod,
+                          const Real errorAccept,
+                          const bool useMaxError,
+                          const Size maxGuesses,
+                          const std::vector<Real>& addParams = std::vector<Real>(),
+                          VolatilityType volatilityType = VolatilityType::ShiftedLognormal)
+    : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin, 1),
+      XABRCoeffHolder<Model>(t, forward, params, paramIsFixed, addParams),
+      endCriteria_(std::move(endCriteria)), optMethod_(std::move(optMethod)),
+      errorAccept_(errorAccept), useMaxError_(useMaxError), maxGuesses_(maxGuesses),
+      vegaWeighted_(vegaWeighted), volatilityType_(volatilityType) {
         // if no optimization method or endCriteria is provided, we provide one
         if (!optMethod_)
             optMethod_ = ext::shared_ptr<OptimizationMethod>(
@@ -129,7 +137,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             std::vector<Real>(xEnd - xBegin, 1.0 / (xEnd - xBegin));
     }
 
-    void update() {
+    void update() override {
 
         this->updateModelInstance();
 
@@ -149,7 +157,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
                 weightsSum += this->weights_.back();
             }
             // weight normalization
-            std::vector<Real>::iterator w = this->weights_.begin();
+            auto w = this->weights_.begin();
             for (; w != this->weights_.end(); ++w)
                 *w /= weightsSum;
         }
@@ -231,22 +239,18 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         }
     }
 
-    Real value(Real x) const {
-        return this->modelInstance_->volatility(x);
-    }
+    Real value(Real x) const override { return this->modelInstance_->volatility(x, volatilityType_); }
 
-    Real primitive(Real) const { QL_FAIL("XABR primitive not implemented"); }
-    Real derivative(Real) const { QL_FAIL("XABR derivative not implemented"); }
-    Real secondDerivative(Real) const {
-        QL_FAIL("XABR secondDerivative not implemented");
-    }
+    Real primitive(Real) const override { QL_FAIL("XABR primitive not implemented"); }
+    Real derivative(Real) const override { QL_FAIL("XABR derivative not implemented"); }
+    Real secondDerivative(Real) const override { QL_FAIL("XABR secondDerivative not implemented"); }
 
     // calculate total squared weighted difference (L2 norm)
     Real interpolationSquaredError() const {
         Real error, totalError = 0.0;
         I1 x = this->xBegin_;
         I2 y = this->yBegin_;
-        std::vector<Real>::const_iterator w = this->weights_.begin();
+        auto w = this->weights_.begin();
         for (; x != this->xEnd_; ++x, ++y, ++w) {
             error = (value(*x) - *y);
             totalError += error * error * (*w);
@@ -260,7 +264,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         I1 x = this->xBegin_;
         Array::iterator r = results.begin();
         I2 y = this->yBegin_;
-        std::vector<Real>::const_iterator w = this->weights_.begin();
+        auto w = this->weights_.begin();
         for (; x != this->xEnd_; ++x, ++r, ++w, ++y) {
             *r = (value(*x) - *y) * std::sqrt(*w);
         }
@@ -289,7 +293,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
       public:
         explicit XABRError(XABRInterpolationImpl *xabr) : xabr_(xabr) {}
 
-        Real value(const Array &x) const {
+        Real value(const Array& x) const override {
             const Array y = Model().direct(x, xabr_->paramIsFixed_,
                                            xabr_->params_, xabr_->forward_);
             for (Size i = 0; i < xabr_->params_.size(); ++i)
@@ -298,7 +302,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             return xabr_->interpolationSquaredError();
         }
 
-        Disposable<Array> values(const Array &x) const {
+        Disposable<Array> values(const Array& x) const override {
             const Array y = Model().direct(x, xabr_->paramIsFixed_,
                                            xabr_->params_, xabr_->forward_);
             for (Size i = 0; i < xabr_->params_.size(); ++i)
@@ -317,6 +321,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
     const Size maxGuesses_;
     bool vegaWeighted_;
     NoConstraint constraint_;
+    VolatilityType volatilityType_;
 };
 
 } // namespace detail

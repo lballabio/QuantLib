@@ -44,24 +44,23 @@ namespace QuantLib {
         class results;
         class engine;
 
-        bool isExpired() const;
+        bool isExpired() const override;
 
-        void setupArguments(PricingEngine::arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
 
         virtual ext::shared_ptr<PathPayoff> pathPayoff()  const = 0;
         virtual std::vector<Date>             fixingDates() const = 0;
 
       protected:
-        void setupExpired() const;
-
+        void setupExpired() const override;
     };
 
     //! %Arguments for multi-asset option calculation
     class PathMultiAssetOption::arguments
         : public virtual PricingEngine::arguments {
       public:
-        arguments() {}
-        void validate() const;
+        arguments() = default;
+        void validate() const override;
 
         ext::shared_ptr<PathPayoff>        payoff;
         std::vector<Date>                    fixingDates;
@@ -70,9 +69,7 @@ namespace QuantLib {
     //! %Results from multi-asset option calculation
     class PathMultiAssetOption::results : public Instrument::results {
       public:
-        void reset() {
-            Instrument::results::reset();
-        }
+        void reset() override { Instrument::results::reset(); }
     };
 
     class PathMultiAssetOption::engine

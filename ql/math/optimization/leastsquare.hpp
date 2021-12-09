@@ -37,7 +37,7 @@ namespace QuantLib {
     //! Base class for least square problem
     class LeastSquareProblem {
       public:
-        virtual ~LeastSquareProblem() {}
+        virtual ~LeastSquareProblem() = default;
         //! size of the problem ie size of target vector
         virtual Size size() = 0;
         //! compute the target vector and the values of the function to fit
@@ -62,16 +62,16 @@ namespace QuantLib {
         //! Default constructor
         LeastSquareFunction(LeastSquareProblem& lsp) : lsp_(lsp) {}
         //! Destructor
-        virtual ~LeastSquareFunction() {}
+        ~LeastSquareFunction() override = default;
 
         //! compute value of the least square function
-        virtual Real value(const Array& x) const;
-        virtual Disposable<Array> values(const Array&) const;
+        Real value(const Array& x) const override;
+        Disposable<Array> values(const Array&) const override;
         //! compute vector of derivatives of the least square function
-        virtual void gradient(Array& grad_f, const Array& x) const;
+        void gradient(Array& grad_f, const Array& x) const override;
         //! compute value and gradient of the least square function
-        virtual Real valueAndGradient(Array& grad_f,
-                                      const Array& x) const;
+        Real valueAndGradient(Array& grad_f, const Array& x) const override;
+
       protected:
         //! least square problem
         LeastSquareProblem &lsp_;
@@ -104,9 +104,9 @@ namespace QuantLib {
         NonLinearLeastSquare(Constraint& c,
                              Real accuracy,
                              Size maxiter,
-                             const ext::shared_ptr<OptimizationMethod>& om);
+                             ext::shared_ptr<OptimizationMethod> om);
         //! Destructor
-        ~NonLinearLeastSquare() {}
+        ~NonLinearLeastSquare() = default;
 
         //! Solve least square problem using numerix solver
         Array& perform(LeastSquareProblem& lsProblem);

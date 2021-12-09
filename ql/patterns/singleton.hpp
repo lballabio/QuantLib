@@ -26,83 +26,48 @@
 
 #include <ql/qldefines.hpp>
 
-#ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-    #if defined(QL_ENABLE_SESSIONS)
-        #ifdef BOOST_MSVC
-            #pragma message(\
-                "Thread-safe singleton initialization not supported "  \
-                "when sessions are enabled.")
-        #else
-            #warning \
-                Thread-safe singleton initialization not supported \
-                when sessions are enabled.
-        #endif
-    #else
-        #include <boost/atomic.hpp>
-        #include <boost/thread/mutex.hpp>
-        #if !defined(BOOST_ATOMIC_ADDRESS_LOCK_FREE)
-            #ifdef BOOST_MSVC
-                #pragma message(\
-                    "Thread-safe singleton initialization "  \
-                    "may degrade performances.")
-            #else
-                #warning \
-                    Thread-safe singleton initialization \
-                    may degrade performances.
-            #endif
-        #endif
-        #define QL_SINGLETON_THREAD_SAFE_INIT
-    #endif
-#endif
-
-#include <ql/types.hpp>
-#include <ql/shared_ptr.hpp>
-#if defined(QL_PATCH_MSVC)
-    #pragma managed(push, off)
-#endif
-#include <boost/noncopyable.hpp>
-#if defined(QL_PATCH_MSVC)
-    #pragma managed(pop)
-#endif
-#include <map>
-
-
-#if (_MANAGED == 1) || (_M_CEE == 1)
-// One of the Visual C++ /clr modes. In this case, the global instance
-// map must be declared as a static data member of the class.
-#define QL_MANAGED 1
+#ifdef QL_ENABLE_SESSIONS
+#    include <boost/thread/locks.hpp>
+#    include <boost/thread/shared_mutex.hpp>
 #else
-// Every other configuration. The map can be declared as a static
-// variable inside the creation method.
-#define QL_MANAGED 0
+#    ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
+#        include <boost/atomic.hpp>
+#        include <boost/thread/mutex.hpp>
+#        if !defined(BOOST_ATOMIC_ADDRESS_LOCK_FREE)
+#            ifdef BOOST_MSVC
+#                pragma message("Thread-safe singleton initialization may degrade performances.")
+#            else
+#                warning Thread-safe singleton initialization may degrade performances.
+#            endif
+#        endif
+#    endif
 #endif
+
+#include <ql/shared_ptr.hpp>
+#include <ql/types.hpp>
+#include <map>
 
 namespace QuantLib {
 
-    // This allows to define a different type if needed, while keeping
-    // backwards compatibility with the current implementation.
-    // For instance, one might create a file threadkey.hpp with:
-    //
-    // #include <pthread.h>
-    // #define QL_THREAD_KEY pthread_t
-    //
-    // and then compile QuantLib with the option -DQL_INCLUDE_FIRST=threadkey.hpp
-    // to have that file included by qldefines.hpp and thus this one.
-    #if defined(QL_THREAD_KEY)
+// This allows to define a different type if needed, while keeping
+// backwards compatibility with the current implementation.
+// For instance, one might create a file threadkey.hpp with:
+//
+// #include <pthread.h>
+// #define QL_THREAD_KEY pthread_t
+//
+// and then compile QuantLib with the option -DQL_INCLUDE_FIRST=threadkey.hpp
+// to have that file included by qldefines.hpp and thus this one.
+#if defined(QL_THREAD_KEY)
     typedef QL_THREAD_KEY ThreadKey;
-    #else
+#else
     typedef Integer ThreadKey;
-    #endif
+#endif
 
-    #if defined(QL_ENABLE_SESSIONS)
+#if defined(QL_ENABLE_SESSIONS)
     // definition must be provided by the user
     ThreadKey sessionId();
-    #endif
-
-    // this is required on VC++ when CLR support is enabled
-    #if defined(QL_PATCH_MSVC)
-        #pragma managed(push, off)
-    #endif
+#endif
 
     //! Basic support for the singleton pattern.
     /*! The typical use of this class is:
@@ -120,87 +85,99 @@ namespace QuantLib {
         as a single implemementation point should synchronization
         features be added.
 
+        Global can be used to distinguish Singletons that are local to a session
+        (Global = false) or that are global across all sessions (B = true).
+        This is only relevant if QL_ENABLE_SESSIONS is enabled.
+
         \ingroup patterns
     */
-    template <class T>
-    class Singleton : private boost::noncopyable {
-    #if (QL_MANAGED == 1) && !defined(QL_SINGLETON_THREAD_SAFE_INIT)
-      private:
-        static std::map<ThreadKey, ext::shared_ptr<T> > instances_;
-    #endif
-
-    #if defined(QL_SINGLETON_THREAD_SAFE_INIT)
-      private:
-        static boost::atomic<T*> instance_;
-        static boost::mutex mutex_;
-    #endif
-
+    template <class T, class Global = std::integral_constant<bool, false> >
+    class Singleton {
       public:
+        // disable copy/move
+        Singleton(const Singleton&) = delete;
+        Singleton(Singleton&&) = delete;
+        Singleton& operator=(const Singleton&) = delete;
+        Singleton& operator=(Singleton&&) = delete;
+
         //! access to the unique instance
         static T& instance();
+
       protected:
-        Singleton() {}
+        Singleton() = default;
+
+      private:
+#ifdef QL_ENABLE_SESSIONS
+        // construct on first use to avoid static initialization order fiasco
+        static std::map<ThreadKey, ext::shared_ptr<T> >& m_instances() {
+            static std::map<ThreadKey, ext::shared_ptr<T> > instances;
+            return instances;
+        }
+        static boost::shared_mutex& m_mutex() {
+            static boost::shared_mutex mutex;
+            return mutex;
+        }
+#else
+#    ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
+        static boost::atomic<T*>& m_instance() {
+            static boost::atomic<T*> instance;
+            return instance;
+        }
+        static boost::mutex& m_mutex() {
+            static boost::mutex mutex;
+            return mutex;
+        }
+#    else
+        static ext::shared_ptr<T>& m_instance() {
+            static ext::shared_ptr<T> instance;
+            return instance;
+        }
+#    endif
+#endif
     };
 
-    // static member definitions
-    
-    #if (QL_MANAGED == 1) && !defined(QL_SINGLETON_THREAD_SAFE_INIT)
-    template <class T>
-    std::map<ThreadKey, ext::shared_ptr<T> > Singleton<T>::instances_;
-    #endif
-
-    #if defined(QL_SINGLETON_THREAD_SAFE_INIT) 
-    template <class T>  boost::atomic<T*> Singleton<T>::instance_;
-    template <class T> boost::mutex Singleton<T>::mutex_;
-    #endif
-    
     // template definitions
 
-    template <class T>
-    T& Singleton<T>::instance() {
+    template <class T, class Global>
+    T& Singleton<T, Global>::instance() {
 
-        #if (QL_MANAGED == 0) && !defined(QL_SINGLETON_THREAD_SAFE_INIT)
-        static std::map<ThreadKey, ext::shared_ptr<T> > instances_;
-        #endif
-
+#ifdef QL_ENABLE_SESSIONS
+        ThreadKey id = sessionId();
+        {
+            boost::shared_lock<boost::shared_mutex> shared_lock(m_mutex());
+            auto instance = Global() ? m_instances().begin() : m_instances().find(id);
+            if (instance != m_instances().end())
+                return *instance->second;
+        }
+        {
+            boost::unique_lock<boost::shared_mutex> uniqueLock(m_mutex());
+            auto instance = Global() ? m_instances().begin() : m_instances().find(id);
+            if (instance != m_instances().end())
+                return *instance->second;
+            auto tmp = ext::shared_ptr<T>(new T);
+            m_instances()[id] = tmp;
+            return *tmp;
+        }
+#else
+#    ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
         // thread safe double checked locking pattern with atomic memory calls
-        #if defined(QL_SINGLETON_THREAD_SAFE_INIT) 
-
-        T* instance =  instance_.load(boost::memory_order_consume);
-        
+        T* instance = m_instance().load(boost::memory_order_consume);
         if (!instance) {
-            boost::mutex::scoped_lock guard(mutex_);
-            instance = instance_.load(boost::memory_order_consume);
+            boost::mutex::scoped_lock guard(m_mutex());
+            instance = m_instance().load(boost::memory_order_consume);
             if (!instance) {
                 instance = new T();
-                instance_.store(instance, boost::memory_order_release);
+                m_instance().store(instance, boost::memory_order_release);
             }
         }
-
-        #else //this is not thread safe
-
-        #if defined(QL_ENABLE_SESSIONS)
-        ThreadKey id = sessionId();
-        #else
-        ThreadKey id = 0;
-        #endif
-
-        ext::shared_ptr<T>& instance = instances_[id];
-        if (!instance)
-            instance = ext::shared_ptr<T>(new T);
-
-        #endif
-
         return *instance;
+#    else
+        if (m_instance() == nullptr)
+            m_instance() = ext::shared_ptr<T>(new T);
+        return *m_instance();
+#    endif
+#endif
     }
-
-    // reverts the change above
-    #if defined(QL_PATCH_MSVC)
-        #pragma managed(pop)
-    #endif
-
 }
-
-#undef QL_MANAGED
 
 #endif

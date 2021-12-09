@@ -42,9 +42,9 @@ namespace QuantLib {
     class WulinYongDoubleBarrierEngine : public DoubleBarrierOption::engine {
       public:
         explicit WulinYongDoubleBarrierEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            int series = 5);
-        void calculate() const;
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process, int series = 5);
+        void calculate() const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         const int series_;

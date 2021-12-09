@@ -1,2 +1,5 @@
 add_executable(DiscreteHedging DiscreteHedging.cpp)
-target_link_libraries(DiscreteHedging ${QL_LINK_LIBRARY})
+target_link_libraries(DiscreteHedging ql_library ${QL_EXAMPLES_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS DiscreteHedging RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

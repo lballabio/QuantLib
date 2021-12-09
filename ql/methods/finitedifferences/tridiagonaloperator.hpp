@@ -68,8 +68,16 @@ namespace QuantLib {
         TridiagonalOperator(const Array& low,
                             const Array& mid,
                             const Array& high);
+        TridiagonalOperator(const TridiagonalOperator&) = default;
+        TridiagonalOperator(TridiagonalOperator&&) QL_NOEXCEPT;
+        #ifdef QL_USE_DISPOSABLE
         TridiagonalOperator(const Disposable<TridiagonalOperator>&);
+        #endif
+        TridiagonalOperator& operator=(const TridiagonalOperator&);
+        TridiagonalOperator& operator=(TridiagonalOperator&&) QL_NOEXCEPT;
+        #ifdef QL_USE_DISPOSABLE
         TridiagonalOperator& operator=(const Disposable<TridiagonalOperator>&);
+        #endif
         //! \name Operator interface
         //@{
         //! apply operator to a given array
@@ -111,7 +119,7 @@ namespace QuantLib {
         //! encapsulation of time-setting logic
         class TimeSetter {
           public:
-            virtual ~TimeSetter() {}
+            virtual ~TimeSetter() = default;
             virtual void setTime(Time t,
                                  TridiagonalOperator& L) const = 0;
         };
@@ -128,11 +136,37 @@ namespace QuantLib {
 
     // inline definitions
 
+    inline TridiagonalOperator::TridiagonalOperator(TridiagonalOperator&& from) QL_NOEXCEPT {
+        swap(from);
+    }
+
+    #ifdef QL_USE_DISPOSABLE
+    inline TridiagonalOperator::TridiagonalOperator(
+                                const Disposable<TridiagonalOperator>& from) {
+        swap(const_cast<Disposable<TridiagonalOperator>&>(from));
+    }
+    #endif
+
+    inline TridiagonalOperator& TridiagonalOperator::operator=(
+                                const TridiagonalOperator& from) {
+        TridiagonalOperator temp(from);
+        swap(temp);
+        return *this;
+    }
+
+    inline TridiagonalOperator&
+    TridiagonalOperator::operator=(TridiagonalOperator&& from) QL_NOEXCEPT {
+        swap(from);
+        return *this;
+    }
+
+    #ifdef QL_USE_DISPOSABLE
     inline TridiagonalOperator& TridiagonalOperator::operator=(
                                 const Disposable<TridiagonalOperator>& from) {
         swap(const_cast<Disposable<TridiagonalOperator>&>(from));
         return *this;
     }
+    #endif
 
     inline void TridiagonalOperator::setFirstRow(Real valB,
                                                  Real valC) {
@@ -168,7 +202,7 @@ namespace QuantLib {
     }
 
     inline void TridiagonalOperator::setTime(Time t) {
-        if (timeSetter_ != 0)
+        if (timeSetter_ != nullptr)
             timeSetter_->setTime(t, *this);
     }
 

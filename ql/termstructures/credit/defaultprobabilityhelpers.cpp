@@ -20,59 +20,64 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/credit/defaultprobabilityhelpers.hpp>
-#include <ql/pricingengines/credit/midpointcdsengine.hpp>
 #include <ql/pricingengines/credit/isdacdsengine.hpp>
+#include <ql/pricingengines/credit/midpointcdsengine.hpp>
+#include <ql/termstructures/credit/defaultprobabilityhelpers.hpp>
 #include <ql/utilities/null_deleter.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    CdsHelper::CdsHelper(const Handle<Quote> &quote, const Period &tenor,
-                         Integer settlementDays, const Calendar &calendar,
+    CdsHelper::CdsHelper(const Handle<Quote>& quote,
+                         const Period& tenor,
+                         Integer settlementDays,
+                         Calendar calendar,
                          Frequency frequency,
                          BusinessDayConvention paymentConvention,
                          DateGeneration::Rule rule,
-                         const DayCounter &dayCounter, Real recoveryRate,
-                         const Handle<YieldTermStructure> &discountCurve,
-                         bool settlesAccrual, bool paysAtDefaultTime,
+                         DayCounter dayCounter,
+                         Real recoveryRate,
+                         const Handle<YieldTermStructure>& discountCurve,
+                         bool settlesAccrual,
+                         bool paysAtDefaultTime,
                          const Date& startDate,
-                         const DayCounter &lastPeriodDayCounter,
+                         DayCounter lastPeriodDayCounter,
                          const bool rebatesAccrual,
                          const CreditDefaultSwap::PricingModel model)
-        : RelativeDateDefaultProbabilityHelper(quote), tenor_(tenor),
-          settlementDays_(settlementDays), calendar_(calendar),
-          frequency_(frequency), paymentConvention_(paymentConvention),
-          rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
-          discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
-          paysAtDefaultTime_(paysAtDefaultTime), lastPeriodDC_(lastPeriodDayCounter),
-          rebatesAccrual_(rebatesAccrual),
-          model_(model), startDate_(startDate) {
+    : RelativeDateDefaultProbabilityHelper(quote), tenor_(tenor), settlementDays_(settlementDays),
+      calendar_(std::move(calendar)), frequency_(frequency), paymentConvention_(paymentConvention),
+      rule_(rule), dayCounter_(std::move(dayCounter)), recoveryRate_(recoveryRate),
+      discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
+      paysAtDefaultTime_(paysAtDefaultTime), lastPeriodDC_(std::move(lastPeriodDayCounter)),
+      rebatesAccrual_(rebatesAccrual), model_(model), startDate_(startDate) {
 
         CdsHelper::initializeDates();
 
         registerWith(discountCurve);
     }
 
-    CdsHelper::CdsHelper(Rate quote, const Period &tenor,
-                         Integer settlementDays, const Calendar &calendar,
+    CdsHelper::CdsHelper(Rate quote,
+                         const Period& tenor,
+                         Integer settlementDays,
+                         Calendar calendar,
                          Frequency frequency,
                          BusinessDayConvention paymentConvention,
                          DateGeneration::Rule rule,
-                         const DayCounter &dayCounter, Real recoveryRate,
-                         const Handle<YieldTermStructure> &discountCurve,
-                         bool settlesAccrual, bool paysAtDefaultTime,
+                         DayCounter dayCounter,
+                         Real recoveryRate,
+                         const Handle<YieldTermStructure>& discountCurve,
+                         bool settlesAccrual,
+                         bool paysAtDefaultTime,
                          const Date& startDate,
-                         const DayCounter &lastPeriodDayCounter,
+                         DayCounter lastPeriodDayCounter,
                          const bool rebatesAccrual,
                          const CreditDefaultSwap::PricingModel model)
-        : RelativeDateDefaultProbabilityHelper(quote), tenor_(tenor),
-          settlementDays_(settlementDays), calendar_(calendar),
-          frequency_(frequency), paymentConvention_(paymentConvention),
-          rule_(rule), dayCounter_(dayCounter), recoveryRate_(recoveryRate),
-          discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
-          paysAtDefaultTime_(paysAtDefaultTime),
-          lastPeriodDC_(lastPeriodDayCounter), rebatesAccrual_(rebatesAccrual),
-          model_(model), startDate_(startDate){
+    : RelativeDateDefaultProbabilityHelper(quote), tenor_(tenor), settlementDays_(settlementDays),
+      calendar_(std::move(calendar)), frequency_(frequency), paymentConvention_(paymentConvention),
+      rule_(rule), dayCounter_(std::move(dayCounter)), recoveryRate_(recoveryRate),
+      discountCurve_(discountCurve), settlesAccrual_(settlesAccrual),
+      paysAtDefaultTime_(paysAtDefaultTime), lastPeriodDC_(std::move(lastPeriodDayCounter)),
+      rebatesAccrual_(rebatesAccrual), model_(model), startDate_(startDate) {
 
         CdsHelper::initializeDates();
 
@@ -95,25 +100,25 @@ namespace QuantLib {
     }
 
     void CdsHelper::initializeDates() {
-        protectionStart_ = evaluationDate_ + settlementDays_;
-        Date startDate, endDate;
-        if(startDate_ == Date()) {
-            startDate = calendar_.adjust(protectionStart_,
-                                         paymentConvention_);
-            if (rule_ == DateGeneration::CDS || rule_ == DateGeneration::CDS2015) { // for standard CDS ..
-                // .. the start date is not adjusted
-                startDate = protectionStart_;
-            }
-            // .. and (in any case) the end date rolls by 3 month as
-            //  soon as the trade date falls on an IMM date,
-            // or the March or September IMM date in case of the CDS2015 rule.
-            endDate = protectionStart_ + tenor_;
 
-        } else {
-            if(!schedule_.empty()) return; //no need to update schedule
-            startDate = calendar_.adjust(startDate_, paymentConvention_);
-            endDate = startDate_ + settlementDays_ + tenor_;
+        protectionStart_ = evaluationDate_ + settlementDays_;
+
+        Date startDate = startDate_ == Date() ? protectionStart_ : startDate_;
+        // Only adjust start date if rule is not CDS or CDS2015. Unsure about OldCDS.
+        if (rule_ != DateGeneration::CDS && rule_ != DateGeneration::CDS2015) {
+            startDate = calendar_.adjust(startDate, paymentConvention_);
         }
+
+        Date endDate;
+        if (rule_ == DateGeneration::CDS2015 || rule_ == DateGeneration::CDS || rule_ == DateGeneration::OldCDS) {
+            Date refDate = startDate_ == Date() ? evaluationDate_ : startDate_;
+            endDate = cdsMaturity(refDate, tenor_, rule_);
+        } else {
+            // Keep the old logic here
+            Date refDate = startDate_ == Date() ? protectionStart_ : startDate_ + settlementDays_;
+            endDate = refDate + tenor_;
+        }
+
         schedule_ =
             MakeSchedule().from(startDate)
                           .to(endDate)
@@ -182,7 +187,7 @@ namespace QuantLib {
         swap_ = ext::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
             Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
             dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
-            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
+            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_, evaluationDate_));
 
         switch (model_) {
           case CreditDefaultSwap::ISDA:
@@ -257,7 +262,6 @@ namespace QuantLib {
     }
 
     void UpfrontCdsHelper::initializeDates() {
-        CdsHelper::initializeDates();
         upfrontDate_ = calendar_.advance(evaluationDate_,
                                          upfrontSettlementDays_, Days,
                                          paymentConvention_);
@@ -268,7 +272,9 @@ namespace QuantLib {
             Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_,
             paymentConvention_, dayCounter_, settlesAccrual_,
             paysAtDefaultTime_, protectionStart_, upfrontDate_,
-            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
+            ext::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_,
+            evaluationDate_));
+
         switch (model_) {
           case CreditDefaultSwap::ISDA:
             swap_->setPricingEngine(ext::make_shared<IsdaCdsEngine>(

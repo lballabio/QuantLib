@@ -19,21 +19,16 @@
 
 #include <ql/math/ode/adaptiverungekutta.hpp>
 #include <ql/methods/finitedifferences/schemes/methodoflinesscheme.hpp>
-#include <ql/functional.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    MethodOfLinesScheme::MethodOfLinesScheme(
-        const Real eps,
-        const Real relInitStepSize,
-        const ext::shared_ptr<FdmLinearOpComposite> & map,
-        const bc_set& bcSet)
-    : dt_(Null<Real>()),
-      eps_(eps),
-      relInitStepSize_(relInitStepSize),
-      map_(map),
-      bcSet_(bcSet) {
-    }
+    MethodOfLinesScheme::MethodOfLinesScheme(const Real eps,
+                                             const Real relInitStepSize,
+                                             ext::shared_ptr<FdmLinearOpComposite> map,
+                                             const bc_set& bcSet)
+    : dt_(Null<Real>()), eps_(eps), relInitStepSize_(relInitStepSize), map_(std::move(map)),
+      bcSet_(bcSet) {}
 
 
     Disposable<std::vector<Real> >
@@ -48,12 +43,11 @@ namespace QuantLib {
     }
 
     void MethodOfLinesScheme::step(array_type& a, Time t) {
-        using namespace ext::placeholders;
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
 
         const std::vector<Real> v =
            AdaptiveRungeKutta<Real>(eps_, relInitStepSize_*dt_)(
-               ext::bind(&MethodOfLinesScheme::apply, this, _1, _2),
+               [&](Time _t, const std::vector<Real>& _u){ return apply(_t, _u); },
                std::vector<Real>(a.begin(), a.end()),
                t, std::max(0.0, t-dt_));
 

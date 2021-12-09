@@ -33,6 +33,7 @@ class CreditDefaultSwapTest {
     static void testFairSpread();
     static void testFairUpfront();
     static void testIsdaEngine();
+    static void testAccrualRebateAmounts();
     static boost::unit_test_framework::test_suite* suite();
 };
 

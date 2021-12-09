@@ -19,24 +19,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include <ql/instruments/makeyoyinflationcapfloor.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/instruments/makeyoyinflationcapfloor.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    MakeYoYInflationCapFloor::MakeYoYInflationCapFloor(
-                                YoYInflationCapFloor::Type capFloorType,
-                                const ext::shared_ptr<YoYInflationIndex>& index,
-                                const Size& length, const Calendar& cal,
-                                const Period& observationLag)
-    : capFloorType_(capFloorType), length_(length),
-      calendar_(cal), index_(index), observationLag_(observationLag),
-      strike_(Null<Rate>()), firstCapletExcluded_(false),
-      asOptionlet_(false), effectiveDate_(Date()),
-      dayCounter_(Thirty360()), roll_(ModifiedFollowing), fixingDays_(0),
-      nominal_(1000000.0)
-     {}
+    MakeYoYInflationCapFloor::MakeYoYInflationCapFloor(YoYInflationCapFloor::Type capFloorType,
+                                                       ext::shared_ptr<YoYInflationIndex> index,
+                                                       const Size& length,
+                                                       Calendar cal,
+                                                       const Period& observationLag)
+    : capFloorType_(capFloorType), length_(length), calendar_(std::move(cal)),
+      index_(std::move(index)), observationLag_(observationLag), strike_(Null<Rate>()),
+      firstCapletExcluded_(false), asOptionlet_(false), effectiveDate_(Date()),
+      dayCounter_(Thirty360(Thirty360::BondBasis)), roll_(ModifiedFollowing), fixingDays_(0), nominal_(1000000.0) {}
 
     MakeYoYInflationCapFloor::operator YoYInflationCapFloor() const {
         ext::shared_ptr<YoYInflationCapFloor> capfloor = *this;
@@ -71,7 +69,7 @@ namespace QuantLib {
 
         // only leaves the last coupon
         if (asOptionlet_ && leg.size() > 1) {
-            Leg::iterator end = leg.end();  // Sun Studio needs an lvalue
+            auto end = leg.end(); // Sun Studio needs an lvalue
             leg.erase(leg.begin(), --end);
         }
 
@@ -85,7 +83,9 @@ namespace QuantLib {
                 QL_REQUIRE(!index_->yoyInflationTermStructure().empty(),
                            "no forecasting yoy term structure set for " <<
                            index_->name());
+                QL_DEPRECATED_DISABLE_WARNING
                 fc = index_->yoyInflationTermStructure()->nominalTermStructure();
+                QL_DEPRECATED_ENABLE_WARNING
             }
             strikeVector[0] = CashFlows::atmRate(leg,**fc,
                                                  false, fc->referenceDate());

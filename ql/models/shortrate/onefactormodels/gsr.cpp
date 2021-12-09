@@ -19,88 +19,86 @@
 
 #include <ql/models/shortrate/onefactormodels/gsr.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
-         const std::vector<Date> &volstepdates,
-         const std::vector<Real> &volatilities, const Real reversion,
-         const Real T)
-    : Gaussian1dModel(termStructure), CalibratedModel(2),
-      reversion_(arguments_[0]), sigma_(arguments_[1]),
-      volstepdates_(volstepdates) {
+    Gsr::Gsr(const Handle<YieldTermStructure>& termStructure,
+             std::vector<Date> volstepdates,
+             const std::vector<Real>& volatilities,
+             const Real reversion,
+             const Real T)
+    : Gaussian1dModel(termStructure), CalibratedModel(2), reversion_(arguments_[0]),
+      sigma_(arguments_[1]), volstepdates_(std::move(volstepdates)) {
 
-    QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
+        QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
 
-    volatilities_.resize(volatilities.size());
-    for (Size i = 0; i < volatilities.size(); ++i)
-        volatilities_[i] =
-            Handle<Quote>(ext::make_shared<SimpleQuote>(volatilities[i]));
-    reversions_.resize(1);
-    reversions_[0] = Handle<Quote>(ext::make_shared<SimpleQuote>(reversion));
+        volatilities_.resize(volatilities.size());
+        for (Size i = 0; i < volatilities.size(); ++i)
+            volatilities_[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(volatilities[i]));
+        reversions_.resize(1);
+        reversions_[0] = Handle<Quote>(ext::make_shared<SimpleQuote>(reversion));
 
-    initialize(T);
-}
+        initialize(T);
+    }
 
-Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
-         const std::vector<Date> &volstepdates,
-         const std::vector<Real> &volatilities,
-         const std::vector<Real> &reversions, const Real T)
-    : Gaussian1dModel(termStructure), CalibratedModel(2),
-      reversion_(arguments_[0]), sigma_(arguments_[1]),
-      volstepdates_(volstepdates) {
+    Gsr::Gsr(const Handle<YieldTermStructure>& termStructure,
+             std::vector<Date> volstepdates,
+             const std::vector<Real>& volatilities,
+             const std::vector<Real>& reversions,
+             const Real T)
+    : Gaussian1dModel(termStructure), CalibratedModel(2), reversion_(arguments_[0]),
+      sigma_(arguments_[1]), volstepdates_(std::move(volstepdates)) {
 
-    QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
+        QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
 
-    volatilities_.resize(volatilities.size());
-    for (Size i = 0; i < volatilities.size(); ++i)
-        volatilities_[i] =
-            Handle<Quote>(ext::make_shared<SimpleQuote>(volatilities[i]));
-    reversions_.resize(reversions.size());
-    for (Size i = 0; i < reversions.size(); ++i)
-        reversions_[i] =
-            Handle<Quote>(ext::make_shared<SimpleQuote>(reversions[i]));
+        volatilities_.resize(volatilities.size());
+        for (Size i = 0; i < volatilities.size(); ++i)
+            volatilities_[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(volatilities[i]));
+        reversions_.resize(reversions.size());
+        for (Size i = 0; i < reversions.size(); ++i)
+            reversions_[i] = Handle<Quote>(ext::make_shared<SimpleQuote>(reversions[i]));
 
-    initialize(T);
-}
+        initialize(T);
+    }
 
-Gsr::Gsr(const Handle<YieldTermStructure>& termStructure,
-         const std::vector<Date>& volstepdates,
-         const std::vector<Handle<Quote> >& volatilities,
-         const Handle<Quote>& reversion,
-         const Real T)
-: Gaussian1dModel(termStructure), CalibratedModel(2), reversion_(arguments_[0]),
-  sigma_(arguments_[1]), volatilities_(volatilities),
-  reversions_(std::vector<Handle<Quote> >(1, reversion)), volstepdates_(volstepdates) {
+    Gsr::Gsr(const Handle<YieldTermStructure>& termStructure,
+             std::vector<Date> volstepdates,
+             std::vector<Handle<Quote> > volatilities,
+             const Handle<Quote>& reversion,
+             const Real T)
+    : Gaussian1dModel(termStructure), CalibratedModel(2), reversion_(arguments_[0]),
+      sigma_(arguments_[1]), volatilities_(std::move(volatilities)),
+      reversions_(std::vector<Handle<Quote> >(1, reversion)),
+      volstepdates_(std::move(volstepdates)) {
 
-    QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
-    initialize(T);
-}
+        QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
+        initialize(T);
+    }
 
-Gsr::Gsr(const Handle<YieldTermStructure> &termStructure,
-         const std::vector<Date> &volstepdates,
-         const std::vector<Handle<Quote> > &volatilities,
-         const std::vector<Handle<Quote> > &reversions, const Real T)
-    : Gaussian1dModel(termStructure), CalibratedModel(2),
-      reversion_(arguments_[0]), sigma_(arguments_[1]),
-      volatilities_(volatilities), reversions_(reversions),
-      volstepdates_(volstepdates) {
+    Gsr::Gsr(const Handle<YieldTermStructure>& termStructure,
+             std::vector<Date> volstepdates,
+             std::vector<Handle<Quote> > volatilities,
+             std::vector<Handle<Quote> > reversions,
+             const Real T)
+    : Gaussian1dModel(termStructure), CalibratedModel(2), reversion_(arguments_[0]),
+      sigma_(arguments_[1]), volatilities_(std::move(volatilities)),
+      reversions_(std::move(reversions)), volstepdates_(std::move(volstepdates)) {
 
-    QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
-    initialize(T);
-}
+        QL_REQUIRE(!termStructure.empty(), "yield term structure handle is empty");
+        initialize(T);
+    }
 
-void Gsr::update() { 
-	if (stateProcess_ != NULL)
+void Gsr::update() {
+    if (stateProcess_ != nullptr)
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
-	LazyObject::update();
+    LazyObject::update();
 }
 
 void Gsr::updateTimes() const {
     volsteptimes_.clear();
     int j = 0;
-    for (std::vector<Date>::const_iterator i = volstepdates_.begin();
-         i != volstepdates_.end(); ++i, ++j) {
+    for (auto i = volstepdates_.begin(); i != volstepdates_.end(); ++i, ++j) {
         volsteptimes_.push_back(termStructure()->timeFromReference(*i));
         volsteptimesArray_[j] = volsteptimes_[j];
         if (j == 0)
@@ -112,7 +110,7 @@ void Gsr::updateTimes() const {
                            << volsteptimes_[j - 1] << "@" << (j - 1) << ", "
                            << volsteptimes_[j] << "@" << j << ")");
     }
-    if (stateProcess_ != NULL)
+    if (stateProcess_ != nullptr)
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
 }
 
@@ -172,11 +170,11 @@ void Gsr::initialize(Real T) {
     volatilityObserver_ = ext::make_shared<VolatilityObserver>(this);
     reversionObserver_ = ext::make_shared<ReversionObserver>(this);
 
-    for (Size i = 0; i < reversions_.size(); ++i)
-        reversionObserver_->registerWith(reversions_[i]);
+    for (auto& reversion : reversions_)
+        reversionObserver_->registerWith(reversion);
 
-    for (Size i = 0; i < volatilities_.size(); ++i)
-        volatilityObserver_->registerWith(volatilities_[i]);
+    for (auto& volatilitie : volatilities_)
+        volatilityObserver_->registerWith(volatilitie);
 }
 
 Real Gsr::zerobondImpl(const Time T, const Time t, const Real y,

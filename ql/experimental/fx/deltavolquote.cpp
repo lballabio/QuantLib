@@ -18,28 +18,24 @@
 */
 
 #include <ql/experimental/fx/deltavolquote.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    DeltaVolQuote::DeltaVolQuote(Real delta,
-                                 const Handle<Quote>& vol,
-                                 Time maturity,
-                                 DeltaType deltaType)
-    : delta_(delta), vol_(vol), deltaType_(deltaType), maturity_(maturity),
+    DeltaVolQuote::DeltaVolQuote(Real delta, Handle<Quote> vol, Time maturity, DeltaType deltaType)
+    : delta_(delta), vol_(std::move(vol)), deltaType_(deltaType), maturity_(maturity),
       atmType_(DeltaVolQuote::AtmNull) {
 
         registerWith(vol_); // observe vol
-
     }
 
-    DeltaVolQuote::DeltaVolQuote(const Handle<Quote>& vol,
+    DeltaVolQuote::DeltaVolQuote(Handle<Quote> vol,
                                  DeltaType deltaType,
                                  Time maturity,
                                  AtmType atmType)
-    : vol_(vol), deltaType_(deltaType), maturity_(maturity), atmType_(atmType) {
+    : vol_(std::move(vol)), deltaType_(deltaType), maturity_(maturity), atmType_(atmType) {
 
         registerWith(vol_);
-
     }
 
     Real DeltaVolQuote::value() const {

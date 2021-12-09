@@ -19,17 +19,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/creditdefaultswap.hpp>
-#include <ql/instruments/claim.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/termstructures/credit/flathazardrate.hpp>
-#include <ql/pricingengines/credit/midpointcdsengine.hpp>
-#include <ql/pricingengines/credit/isdacdsengine.hpp>
-#include <ql/quotes/simplequote.hpp>
+#include <ql/instruments/claim.hpp>
+#include <ql/instruments/creditdefaultswap.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/pricingengines/credit/isdacdsengine.hpp>
+#include <ql/pricingengines/credit/midpointcdsengine.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
+#include <ql/time/schedule.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -42,50 +44,18 @@ namespace QuantLib {
                                          bool settlesAccrual,
                                          bool paysAtDefaultTime,
                                          const Date& protectionStart,
-                                         const ext::shared_ptr<Claim>& claim,
+                                         ext::shared_ptr<Claim> claim,
                                          const DayCounter& lastPeriodDayCounter,
-                                         const bool rebatesAccrual)
-    : side_(side), notional_(notional), upfront_(boost::none),
-      runningSpread_(spread), settlesAccrual_(settlesAccrual),
-      paysAtDefaultTime_(paysAtDefaultTime), claim_(claim),
-      protectionStart_(protectionStart == Null<Date>() ? schedule[0] :
-                                                         protectionStart) {
-        QL_REQUIRE((protectionStart_ <= schedule[0]) ||
-                   (schedule.rule() == DateGeneration::CDS) ||
-                   (schedule.rule() == DateGeneration::CDS2015),
-                   "protection can not start after accrual");
+                                         const bool rebatesAccrual,
+                                         const Date& tradeDate,
+                                         Natural cashSettlementDays)
+    : side_(side), notional_(notional), upfront_(boost::none), runningSpread_(spread),
+      settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
+      claim_(std::move(claim)),
+      protectionStart_(protectionStart == Null<Date>() ? schedule[0] : protectionStart),
+      tradeDate_(tradeDate), cashSettlementDays_(cashSettlementDays) {
 
-        leg_ = FixedRateLeg(schedule)
-            .withNotionals(notional)
-            .withCouponRates(spread, dayCounter)
-            .withPaymentAdjustment(convention)
-            .withLastPeriodDayCounter(lastPeriodDayCounter);
-
-        Date effectiveUpfrontDate = schedule.calendar().advance(
-            protectionStart_ - 1, 3, Days, convention);
-        // the upfront valuation date is trade_date + 3 (using calendar) and
-        // protection start is assumed to be T+1 (independent of the calendar)
-
-        if(rebatesAccrual) {
-            Size i = 0;
-            while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
-            ext::shared_ptr<FixedRateCoupon> coupon =
-                ext::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
-            QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
-                       "contract cannot start before accrual");
-            const Date& rebateDate = effectiveUpfrontDate;
-            accrualRebate_ = ext::make_shared<SimpleCashFlow>(
-                coupon->accruedAmount(protectionStart_),
-                rebateDate);
-        }
-
-        upfrontPayment_ = ext::make_shared<SimpleCashFlow>(0.0, effectiveUpfrontDate);
-        if (!claim_)
-            claim_ = ext::make_shared<FaceValueClaim>();
-        registerWith(claim_);
-
-
-        maturity_ = schedule.dates().back();
+        init(schedule, convention, dayCounter, lastPeriodDayCounter, rebatesAccrual);
     }
 
     CreditDefaultSwap::CreditDefaultSwap(Protection::Side side,
@@ -99,55 +69,104 @@ namespace QuantLib {
                                          bool paysAtDefaultTime,
                                          const Date& protectionStart,
                                          const Date& upfrontDate,
-                                         const ext::shared_ptr<Claim>& claim,
+                                         ext::shared_ptr<Claim> claim,
                                          const DayCounter& lastPeriodDayCounter,
-                                         const bool rebatesAccrual)
-    : side_(side), notional_(notional), upfront_(upfront),
-      runningSpread_(runningSpread), settlesAccrual_(settlesAccrual),
-      paysAtDefaultTime_(paysAtDefaultTime), claim_(claim),
-      protectionStart_(protectionStart == Null<Date>() ? schedule[0] :
-                                                         protectionStart) {
-        QL_REQUIRE((protectionStart_ <= schedule[0])
-            || (schedule.rule() == DateGeneration::CDS)
-            || (schedule.rule() == DateGeneration::CDS2015),
-                   "protection can not start after accrual");
+                                         const bool rebatesAccrual,
+                                         const Date& tradeDate,
+                                         Natural cashSettlementDays)
+    : side_(side), notional_(notional), upfront_(upfront), runningSpread_(runningSpread),
+      settlesAccrual_(settlesAccrual), paysAtDefaultTime_(paysAtDefaultTime),
+      claim_(std::move(claim)),
+      protectionStart_(protectionStart == Null<Date>() ? schedule[0] : protectionStart),
+      tradeDate_(tradeDate), cashSettlementDays_(cashSettlementDays) {
+
+        init(schedule, convention, dayCounter, lastPeriodDayCounter, rebatesAccrual, upfrontDate);
+    }
+
+    void CreditDefaultSwap::init(const Schedule& schedule, BusinessDayConvention paymentConvention,
+        const DayCounter& dayCounter, const DayCounter& lastPeriodDayCounter,
+        bool rebatesAccrual, const Date& upfrontDate) {
+
+        QL_REQUIRE(!schedule.empty(), "CreditDefaultSwap needs a non-empty schedule.");
+
+        bool postBigBang = false;
+        if (schedule.hasRule()) {
+            DateGeneration::Rule rule = schedule.rule();
+            postBigBang = rule == DateGeneration::CDS || rule == DateGeneration::CDS2015;
+        }
+
+        if (!postBigBang) {
+            QL_REQUIRE(protectionStart_ <= schedule[0], "protection can not start after accrual");
+        }
 
         leg_ = FixedRateLeg(schedule)
-            .withNotionals(notional)
-            .withCouponRates(runningSpread, dayCounter)
-            .withPaymentAdjustment(convention)
+            .withNotionals(notional_)
+            .withCouponRates(runningSpread_, dayCounter)
+            .withPaymentAdjustment(paymentConvention)
             .withLastPeriodDayCounter(lastPeriodDayCounter);
 
-        // If empty, adjust to T+3 standard settlement, alternatively add
-        //  an arbitrary date to the constructor
-        Date effectiveUpfrontDate = upfrontDate == Null<Date>() ?
-            schedule.calendar().advance(protectionStart_ -1 , 3, Days, convention) :
-            upfrontDate;
-        // protection start is assumed to be on trade_date + 1 (no calendar adjustment)
-        upfrontPayment_ = ext::make_shared<SimpleCashFlow>(notional*upfront,
-            effectiveUpfrontDate);
+        // Deduce the trade date if not given.
+        if (tradeDate_ == Date()) {
+            if (postBigBang) {
+                tradeDate_ = protectionStart_;
+            } else {
+                tradeDate_ = protectionStart_ - 1;
+            }
+        }
 
-        QL_REQUIRE(effectiveUpfrontDate >= protectionStart_,
-                   "upfront can not be due before contract start");
+        // Deduce the cash settlement date if not given.
+        Date effectiveUpfrontDate = upfrontDate;
+        if (effectiveUpfrontDate == Date()) {
+            effectiveUpfrontDate = schedule.calendar().advance(tradeDate_,
+                cashSettlementDays_, Days, paymentConvention);
+        }
+        QL_REQUIRE(effectiveUpfrontDate >= protectionStart_, "The cash settlement date must not " <<
+            "be before the protection start date.");
 
-        if(rebatesAccrual) {
-            Size i = 0;
-            while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
-            ext::shared_ptr<FixedRateCoupon> coupon =
-                ext::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
-            QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
-                       "contract cannot start before accrual");
-            const Date& rebateDate = effectiveUpfrontDate;
-            accrualRebate_ = ext::make_shared<SimpleCashFlow>(
-                coupon->accruedAmount(protectionStart_),
-                rebateDate);
+        // Create the upfront payment, if one is provided.
+        Real upfrontAmount = 0.0;
+        if (upfront_) // NOLINT(readability-implicit-bool-conversion)
+            upfrontAmount = *upfront_ * notional_;
+        upfrontPayment_ = ext::make_shared<SimpleCashFlow>(upfrontAmount, effectiveUpfrontDate);
+
+        // Set the maturity date.
+        maturity_ = schedule.dates().back();
+
+        // Deal with the accrual rebate. We use the standard conventions for accrual calculation introduced with the 
+        // CDS Big Bang in 2009.
+        if (rebatesAccrual) {
+
+            Real rebateAmount = 0.0;
+            Date refDate = tradeDate_ + 1;
+
+            if (tradeDate_ >= schedule.dates().front()) {
+                for (Size i = 0; i < leg_.size(); ++i) {
+                    const ext::shared_ptr<CashFlow>& cf = leg_[i];
+                    if (refDate < cf->date()) {
+                        // Calculate the accrual. The most likely scenario.
+                        ext::shared_ptr<FixedRateCoupon> frc = ext::dynamic_pointer_cast<FixedRateCoupon>(cf);
+                        rebateAmount = frc->accruedAmount(refDate);
+                        break;
+                    } else if (refDate == cf->date() && i < leg_.size() - 1) {
+                        // If not the last coupon and trade date + 1 is the next coupon payment date, 
+                        // the accrual is 0 so do nothing.
+                        break;
+                    } else {
+                        // Must have trade date + 1 >= last coupon's payment date. '>' here probably does not make
+                        // sense - should possibly have an exception above if trade date >= last coupon's date.
+                        ext::shared_ptr<FixedRateCoupon> frc = ext::dynamic_pointer_cast<FixedRateCoupon>(cf);
+                        rebateAmount = frc->amount();
+                        break;
+                    }
+                }
+            }
+
+            accrualRebate_ = ext::make_shared<SimpleCashFlow>(rebateAmount, effectiveUpfrontDate);
         }
 
         if (!claim_)
             claim_ = ext::make_shared<FaceValueClaim>();
         registerWith(claim_);
-
-        maturity_ = schedule.dates().back();
     }
 
     Protection::Side CreditDefaultSwap::side() const {
@@ -180,8 +199,7 @@ namespace QuantLib {
 
 
     bool CreditDefaultSwap::isExpired() const {
-        for (Leg::const_reverse_iterator i = leg_.rbegin();
-                                         i != leg_.rend(); ++i) {
+        for (auto i = leg_.rbegin(); i != leg_.rend(); ++i) {
             if (!(*i)->hasOccurred())
                 return false;
         }
@@ -197,9 +215,8 @@ namespace QuantLib {
 
     void CreditDefaultSwap::setupArguments(
                                        PricingEngine::arguments* args) const {
-        CreditDefaultSwap::arguments* arguments =
-            dynamic_cast<CreditDefaultSwap::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<CreditDefaultSwap::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->side = side_;
         arguments->notional = notional_;
@@ -220,9 +237,8 @@ namespace QuantLib {
                                       const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
 
-        const CreditDefaultSwap::results* results =
-            dynamic_cast<const CreditDefaultSwap::results*>(r);
-        QL_REQUIRE(results != 0, "wrong result type");
+        const auto* results = dynamic_cast<const CreditDefaultSwap::results*>(r);
+        QL_REQUIRE(results != nullptr, "wrong result type");
 
         fairSpread_ = results->fairSpread;
         fairUpfront_ = results->fairUpfront;
@@ -349,9 +365,7 @@ namespace QuantLib {
         }
 
         setupArguments(engine->getArguments());
-        const CreditDefaultSwap::results* results =
-            dynamic_cast<const CreditDefaultSwap::results*>(
-                engine->getResults());
+        const auto* results = dynamic_cast<const CreditDefaultSwap::results*>(engine->getResults());
 
         ObjectiveFunction f(targetNPV, *flatRate, *engine, results);
         //very close guess if targetNPV = 0.
@@ -392,9 +406,7 @@ namespace QuantLib {
         }
 
         setupArguments(engine->getArguments());
-        const CreditDefaultSwap::results* results =
-            dynamic_cast<const CreditDefaultSwap::results*>(
-                engine->getResults());
+        const auto* results = dynamic_cast<const CreditDefaultSwap::results*>(engine->getResults());
 
         ObjectiveFunction f(0., *flatRate, *engine, results);
         Rate guess = runningSpread_ / (1 - conventionalRecovery) * 365./360.;
@@ -414,6 +426,21 @@ namespace QuantLib {
             ->accrualEndDate();
     }
 
+    const ext::shared_ptr<SimpleCashFlow>& CreditDefaultSwap::upfrontPayment() const {
+        return upfrontPayment_;
+    }
+
+    const ext::shared_ptr<SimpleCashFlow>& CreditDefaultSwap::accrualRebate() const {
+        return accrualRebate_;
+    }
+
+    const Date& CreditDefaultSwap::tradeDate() const {
+        return tradeDate_;
+    }
+
+    Natural CreditDefaultSwap::cashSettlementDays() const {
+        return cashSettlementDays_;
+    }
 
     CreditDefaultSwap::arguments::arguments()
     : side(Protection::Side(-1)), notional(Null<Real>()),
@@ -443,6 +470,35 @@ namespace QuantLib {
         upfrontBPS = Null<Real>();
         upfrontNPV = Null<Real>();
         accrualRebateNPV = Null<Real>();
+    }
+
+    Date cdsMaturity(const Date& tradeDate, const Period& tenor, DateGeneration::Rule rule) {
+
+        QL_REQUIRE(rule == DateGeneration::CDS2015 || rule == DateGeneration::CDS || rule == DateGeneration::OldCDS,
+            "cdsMaturity should only be used with date generation rule CDS2015, CDS or OldCDS");
+
+        QL_REQUIRE(tenor.units() == Years || (tenor.units() == Months && tenor.length() % 3 == 0),
+            "cdsMaturity expects a tenor that is a multiple of 3 months.");
+
+        if (rule == DateGeneration::OldCDS) {
+            QL_REQUIRE(tenor != 0 * Months, "A tenor of 0M is not supported for OldCDS.");
+        }
+
+        Date anchorDate = previousTwentieth(tradeDate, rule);
+        if (rule == DateGeneration::CDS2015 && (anchorDate == Date(20, Dec, anchorDate.year()) ||
+            anchorDate == Date(20, Jun, anchorDate.year()))) {
+            if (tenor.length() == 0) {
+                return Null<Date>();
+            } else {
+                anchorDate -= 3 * Months;
+            }
+        }
+
+        Date maturity = anchorDate + tenor + 3 * Months;
+        QL_REQUIRE(maturity > tradeDate, "error calculating CDS maturity. Tenor is " << tenor << ", trade date is " <<
+            io::iso_date(tradeDate) << " generating a maturity of " << io::iso_date(maturity) << " <= trade date.");
+
+        return maturity;
     }
 
 }

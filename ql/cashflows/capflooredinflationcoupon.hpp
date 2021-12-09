@@ -96,7 +96,7 @@ namespace QuantLib {
         //! \name augmented Coupon interface
         //@{
         //! swap(let) rate
-        Rate rate() const;
+        Rate rate() const override;
         //! cap
         Rate cap() const;
         //! floor
@@ -109,12 +109,12 @@ namespace QuantLib {
 
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
 
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor& v);
+        void accept(AcyclicVisitor& v) override;
         //@}
 
         bool isCapped() const { return isCapped_; }

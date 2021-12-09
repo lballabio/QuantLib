@@ -74,19 +74,10 @@ namespace cms_test {
                                           Actual365Fixed()));
 
             // ATM Volatility structure
-            std::vector<Period> atmOptionTenors;
-            atmOptionTenors.push_back(Period(1, Months));
-            atmOptionTenors.push_back(Period(6, Months));
-            atmOptionTenors.push_back(Period(1, Years));
-            atmOptionTenors.push_back(Period(5, Years));
-            atmOptionTenors.push_back(Period(10, Years));
-            atmOptionTenors.push_back(Period(30, Years));
+            std::vector<Period> atmOptionTenors = {1 * Months, 6 * Months, 1 * Years,
+                                                   5 * Years,  10 * Years, 30 * Years};
 
-            std::vector<Period> atmSwapTenors;
-            atmSwapTenors.push_back(Period(1, Years));
-            atmSwapTenors.push_back(Period(5, Years));
-            atmSwapTenors.push_back(Period(10, Years));
-            atmSwapTenors.push_back(Period(30, Years));
+            std::vector<Period> atmSwapTenors = {1 * Years, 5 * Years, 10 * Years, 30 * Years};
 
             Matrix m(atmOptionTenors.size(), atmSwapTenors.size());
             m[0][0]=0.1300; m[0][1]=0.1560; m[0][2]=0.1390; m[0][3]=0.1220;
@@ -106,22 +97,9 @@ namespace cms_test {
                                              Actual365Fixed())));
 
             // Vol cubes
-            std::vector<Period> optionTenors;
-            optionTenors.push_back(Period(1, Years));
-            optionTenors.push_back(Period(10, Years));
-            optionTenors.push_back(Period(30, Years));
-
-            std::vector<Period> swapTenors;
-            swapTenors.push_back(Period(2, Years));
-            swapTenors.push_back(Period(10, Years));
-            swapTenors.push_back(Period(30, Years));
-
-            std::vector<Spread> strikeSpreads;
-            strikeSpreads.push_back(-0.020);
-            strikeSpreads.push_back(-0.005);
-            strikeSpreads.push_back(+0.000);
-            strikeSpreads.push_back(+0.005);
-            strikeSpreads.push_back(+0.020);
+            std::vector<Period> optionTenors = {{1, Years}, {10, Years}, {30, Years}};
+            std::vector<Period> swapTenors = {{2, Years}, {10, Years}, {30, Years}};
+            std::vector<Spread> strikeSpreads = {-0.020, -0.005, 0.000, 0.005, 0.020};
 
             Size nRows = optionTenors.size()*swapTenors.size();
             Size nCols = strikeSpreads.size();
@@ -241,14 +219,13 @@ namespace cms_test {
                                      isAtmCalibrated)));
             SabrVolCube1->enableExtrapolation();
 
-            yieldCurveModels.clear();
-            yieldCurveModels.push_back(GFunctionFactory::Standard);
-            yieldCurveModels.push_back(GFunctionFactory::ExactYield);
-            yieldCurveModels.push_back(GFunctionFactory::ParallelShifts);
-            yieldCurveModels.push_back(GFunctionFactory::NonParallelShifts);
-            yieldCurveModels.push_back(GFunctionFactory::NonParallelShifts); // for linear tsr model
+            yieldCurveModels = {GFunctionFactory::Standard,
+                                GFunctionFactory::ExactYield,
+                                GFunctionFactory::ParallelShifts,
+                                GFunctionFactory::NonParallelShifts,
+                                GFunctionFactory::NonParallelShifts};
 
-            Handle<Quote> zeroMeanRev(ext::shared_ptr<Quote>(new SimpleQuote(0.0)));
+            Handle<Quote> zeroMeanRev(ext::make_shared<SimpleQuote>(0.0));
 
             numericalPricers.clear();
             analyticPricers.clear();
@@ -358,11 +335,7 @@ void CmsTest::testCmsSwap() {
     //ext::shared_ptr<SwapIndex> swapIndex(new
     //    EuriborSwapIsdaFixA(10*Years, vars.iborIndex->termStructure()));
     Spread spread = 0.0;
-    std::vector<Size> swapLengths;
-    swapLengths.push_back(1);
-    swapLengths.push_back(5);
-    swapLengths.push_back(6);
-    swapLengths.push_back(10);
+    std::vector<Size> swapLengths = {1, 5, 6, 10};
     Size n = swapLengths.size();
     std::vector<ext::shared_ptr<Swap> > cms(n);
     for (Size i=0; i<n; ++i)
@@ -412,10 +385,8 @@ void CmsTest::testParity() {
 
     CommonVars vars;
 
-    std::vector<Handle<SwaptionVolatilityStructure> > swaptionVols;
-    swaptionVols.push_back(vars.atmVol);
-    swaptionVols.push_back(vars.SabrVolCube1);
-    swaptionVols.push_back(vars.SabrVolCube2);
+    std::vector<Handle<SwaptionVolatilityStructure> > swaptionVols = {
+                           vars.atmVol, vars.SabrVolCube1, vars.SabrVolCube2};
 
     ext::shared_ptr<SwapIndex> swapIndex(new
         EuriborSwapIsdaFixA(10*Years,
@@ -455,10 +426,10 @@ void CmsTest::testParity() {
                                         startDate, endDate,
                                         vars.iborIndex->dayCounter());
 
-        for (Size i=0; i<swaptionVols.size(); ++i) {
+        for (auto& swaptionVol : swaptionVols) {
             for (Size j=0; j<vars.yieldCurveModels.size(); ++j) {
-                vars.numericalPricers[j]->setSwaptionVolatility(swaptionVols[i]);
-                vars.analyticPricers[j]->setSwaptionVolatility(swaptionVols[i]);
+                vars.numericalPricers[j]->setSwaptionVolatility(swaptionVol);
+                vars.analyticPricers[j]->setSwaptionVolatility(swaptionVol);
                 std::vector<ext::shared_ptr<CmsCouponPricer> > pricers(2);
                 pricers[0] = vars.numericalPricers[j];
                 pricers[1] = vars.analyticPricers[j];
@@ -499,7 +470,7 @@ void CmsTest::testParity() {
 }
 
 test_suite* CmsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Cms tests");
+    auto* suite = BOOST_TEST_SUITE("Cms tests");
     suite->add(QUANTLIB_TEST_CASE(&CmsTest::testFairRate));
     suite->add(QUANTLIB_TEST_CASE(&CmsTest::testCmsSwap));
     suite->add(QUANTLIB_TEST_CASE(&CmsTest::testParity));

@@ -24,11 +24,12 @@
 #ifndef quantlib_mc_heston_hull_white_engine_hpp
 #define quantlib_mc_heston_hull_white_engine_hpp
 
+#include <ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp>
+#include <ql/pricingengines/vanilla/mcvanillaengine.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
-#include <ql/pricingengines/vanilla/mcvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/analytichestonhullwhiteengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -53,25 +54,24 @@ namespace QuantLib {
                Size maxSamples,
                BigNatural seed);
 
-        void calculate() const;
-        
+        void calculate() const override;
+
       protected:
         // just to avoid upcasting
         ext::shared_ptr<HybridHestonHullWhiteProcess> process_;
 
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
 
-        ext::shared_ptr<path_pricer_type>    controlPathPricer() const;
-        ext::shared_ptr<PricingEngine>       controlPricingEngine() const;
-        ext::shared_ptr<path_generator_type> controlPathGenerator() const;
+        ext::shared_ptr<path_pricer_type> controlPathPricer() const override;
+        ext::shared_ptr<PricingEngine> controlPricingEngine() const override;
+        ext::shared_ptr<path_generator_type> controlPathGenerator() const override;
     };
 
     //! Monte Carlo Heston/Hull-White engine factory
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCHestonHullWhiteEngine {
       public:
-        explicit MakeMCHestonHullWhiteEngine(
-                    const ext::shared_ptr<HybridHestonHullWhiteProcess>&);
+        explicit MakeMCHestonHullWhiteEngine(ext::shared_ptr<HybridHestonHullWhiteProcess>);
         // named parameters
         MakeMCHestonHullWhiteEngine& withSteps(Size steps);
         MakeMCHestonHullWhiteEngine& withStepsPerYear(Size steps);
@@ -94,12 +94,11 @@ namespace QuantLib {
 
     class HestonHullWhitePathPricer : public PathPricer<MultiPath> {
       public:
-        HestonHullWhitePathPricer(
-             Time exerciseTime,
-             const ext::shared_ptr<Payoff> & payoff,
-             const ext::shared_ptr<HybridHestonHullWhiteProcess> & process);
+        HestonHullWhitePathPricer(Time exerciseTime,
+                                  ext::shared_ptr<Payoff> payoff,
+                                  ext::shared_ptr<HybridHestonHullWhiteProcess> process);
 
-        Real operator()(const MultiPath& path) const;
+        Real operator()(const MultiPath& path) const override;
 
       private:
         Time exerciseTime_;
@@ -222,12 +221,10 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline MakeMCHestonHullWhiteEngine<RNG,S>::MakeMCHestonHullWhiteEngine(
-             const ext::shared_ptr<HybridHestonHullWhiteProcess>& process)
-    : process_(process),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      antithetic_(false), controlVariate_(false),
+    inline MakeMCHestonHullWhiteEngine<RNG, S>::MakeMCHestonHullWhiteEngine(
+        ext::shared_ptr<HybridHestonHullWhiteProcess> process)
+    : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), antithetic_(false), controlVariate_(false),
       tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG, class S>

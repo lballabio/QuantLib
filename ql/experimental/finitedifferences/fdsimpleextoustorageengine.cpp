@@ -22,40 +22,42 @@
     \brief Finite Differences extended OU engine for simple storage options
 */
 
-#include <ql/math/comparison.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
+#include <ql/experimental/finitedifferences/fdmsimple2dextousolver.hpp>
+#include <ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
-#include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
+#include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsimplestoragecondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-#include <ql/experimental/finitedifferences/fdsimpleextoustorageengine.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
-#include <ql/experimental/finitedifferences/fdmsimple2dextousolver.hpp>
-#include <ql/experimental/finitedifferences/fdmexpextouinnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     namespace {
         class FdmStorageValue : public FdmInnerValueCalculator {
           public:
-            explicit FdmStorageValue(const ext::shared_ptr<FdmMesher>& mesher)
-            : mesher_(mesher) { }
+            explicit FdmStorageValue(ext::shared_ptr<FdmMesher> mesher)
+            : mesher_(std::move(mesher)) {}
 
-            Real innerValue(const FdmLinearOpIterator& iter, Time) {
+            Real innerValue(const FdmLinearOpIterator& iter, Time) override {
                 const Real s = std::exp(mesher_->location(iter, 0));
                 const Real v = mesher_->location(iter, 1);
                 return s*v;
             }
-            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
                 return innerValue(iter, t);
             }
+
           private:
             const ext::shared_ptr<FdmMesher> mesher_;
 
@@ -70,19 +72,15 @@ namespace QuantLib {
     }
 
     FdSimpleExtOUStorageEngine::FdSimpleExtOUStorageEngine(
-            const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            Size tGrid, Size xGrid, Size yGrid,
-            const ext::shared_ptr<Shape>& shape,
-            const FdmSchemeDesc& schemeDesc)
-    : process_(process),
-      rTS_  (rTS),
-      tGrid_(tGrid),
-      xGrid_(xGrid),
-      yGrid_(yGrid),
-      shape_(shape),
-      schemeDesc_(schemeDesc) {
-    }
+        ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process,
+        ext::shared_ptr<YieldTermStructure> rTS,
+        Size tGrid,
+        Size xGrid,
+        Size yGrid,
+        ext::shared_ptr<Shape> shape,
+        const FdmSchemeDesc& schemeDesc)
+    : process_(std::move(process)), rTS_(std::move(rTS)), tGrid_(tGrid), xGrid_(xGrid),
+      yGrid_(yGrid), shape_(std::move(shape)), schemeDesc_(schemeDesc) {}
 
     void FdSimpleExtOUStorageEngine::calculate() const {
 
@@ -138,10 +136,8 @@ namespace QuantLib {
 
         // 4.1 Bermudan step conditions
         std::vector<Time> exerciseTimes;
-        for (Size i=0; i<arguments_.exercise->dates().size(); ++i) {
-            const Time t = rTS_->dayCounter()
-                           .yearFraction(rTS_->referenceDate(),
-                                         arguments_.exercise->dates()[i]);
+        for (auto i : arguments_.exercise->dates()) {
+            const Time t = rTS_->dayCounter().yearFraction(rTS_->referenceDate(), i);
 
             QL_REQUIRE(t >= 0, "exercise dates must not contain past date");
             exerciseTimes.push_back(t);

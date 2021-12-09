@@ -58,25 +58,25 @@ namespace QuantLib {
             Size vGrid = 50,
             Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct =
+            ext::shared_ptr<LocalVolTermStructure> leverageFct =
                 ext::shared_ptr<LocalVolTermStructure>(),
             Real mixingFactor = 1.0);
 
         FdHestonVanillaEngine(const ext::shared_ptr<HestonModel>& model,
-                              const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
+                              ext::shared_ptr<FdmQuantoHelper> quantoHelper,
                               Size tGrid = 100,
                               Size xGrid = 100,
                               Size vGrid = 50,
                               Size dampingSteps = 0,
                               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                              const ext::shared_ptr<LocalVolTermStructure>& leverageFct =
+                              ext::shared_ptr<LocalVolTermStructure> leverageFct =
                                   ext::shared_ptr<LocalVolTermStructure>(),
                               Real mixingFactor = 1.0);
 
-        void calculate() const;
-        
+        void calculate() const override;
+
         // multiple strikes caching engine
-        void update();
+        void update() override;
         void enableMultipleStrikesCaching(const std::vector<Real>& strikes);
         
         // helper method for Heston like engines
@@ -97,8 +97,7 @@ namespace QuantLib {
 
     class MakeFdHestonVanillaEngine {
       public:
-        explicit MakeFdHestonVanillaEngine(
-            const ext::shared_ptr<HestonModel>& hestonModel);
+        explicit MakeFdHestonVanillaEngine(ext::shared_ptr<HestonModel> hestonModel);
 
         MakeFdHestonVanillaEngine& withQuantoHelper(
             const ext::shared_ptr<FdmQuantoHelper>& quantoHelper);

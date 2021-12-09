@@ -67,12 +67,8 @@ namespace QuantLib {
         for (Size j=0; j<steps; ++j) 
         {
             const Matrix& A = marketModel_->pseudoRoot(j);
-            calculators_.push_back(
-                LMMDriftCalculator(A,
-                                   displacements_,
-                                   marketModel->evolution().rateTaus(),
-                                   numeraires[j],
-                                   alive_[j]));
+            calculators_.emplace_back(A, displacements_, marketModel->evolution().rateTaus(),
+                                      numeraires[j], alive_[j]);
             std::vector<Real> fixed(numberOfRates_);
             for (Size k=0; k<numberOfRates_; ++k) 
             {

@@ -49,27 +49,22 @@ namespace QuantLib {
         QL_REQUIRE(S > 0.0, "negative or null underlying given");
 
         std::vector<std::pair<Time, Real> > intermediateSteps;
-        for (Size i=0; i < dividendSchedule.size(); ++i) {
-            const Time t = process->time(dividendSchedule[i]->date());
+        for (const auto& i : dividendSchedule) {
+            const Time t = process->time(i->date());
             if (t <= maturity && t >= 0.0)
-                intermediateSteps.push_back(
-                    std::make_pair(
-                        process->time(dividendSchedule[i]->date()),
-                        dividendSchedule[i]->amount()
-                    ) );
+                intermediateSteps.emplace_back(process->time(i->date()), i->amount());
         }
 
         const Size intermediateTimeSteps = std::max<Size>(2, Size(24.0*maturity));
         for (Size i=0; i < intermediateTimeSteps; ++i)
-            intermediateSteps.push_back(
-                std::make_pair((i+1)*(maturity/intermediateTimeSteps), 0.0));
+            intermediateSteps.emplace_back((i + 1) * (maturity / intermediateTimeSteps), 0.0);
 
         std::sort(intermediateSteps.begin(), intermediateSteps.end());
 
         const Handle<YieldTermStructure> rTS = process->riskFreeRate();
 
         const Handle<YieldTermStructure> qTS =
-            (fdmQuantoHelper) != 0 ?
+            (fdmQuantoHelper) != nullptr ?
                 Handle<YieldTermStructure>(ext::make_shared<QuantoTermStructure>(
                     process->dividendYield(), process->riskFreeRate(),
                     Handle<YieldTermStructure>(fdmQuantoHelper->fTS_), process->blackVolatility(),
@@ -81,9 +76,9 @@ namespace QuantLib {
         Real fwd = S + spotAdjustment;
         Real mi = fwd, ma = fwd;
 
-        for (Size i=0; i < intermediateSteps.size(); ++i) {
-            const Time divTime = intermediateSteps[i].first;
-            const Real divAmount = intermediateSteps[i].second;
+        for (auto& intermediateStep : intermediateSteps) {
+            const Time divTime = intermediateStep.first;
+            const Real divAmount = intermediateStep.second;
 
             fwd = fwd / rTS->discount(divTime) * rTS->discount(lastDivTime)
                       * qTS->discount(divTime) / qTS->discount(lastDivTime);

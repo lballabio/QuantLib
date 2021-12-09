@@ -17,21 +17,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/swaption/gaussian1dswaptionvolatility.hpp>
-#include <ql/termstructures/volatility/gaussian1dsmilesection.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
+#include <ql/termstructures/volatility/gaussian1dsmilesection.hpp>
+#include <ql/termstructures/volatility/swaption/gaussian1dswaptionvolatility.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     Gaussian1dSwaptionVolatility::Gaussian1dSwaptionVolatility(
         const Calendar& cal,
         BusinessDayConvention bdc,
-        const ext::shared_ptr<SwapIndex>& indexBase,
+        ext::shared_ptr<SwapIndex> indexBase,
         const ext::shared_ptr<Gaussian1dModel>& model,
         const DayCounter& dc,
-        const ext::shared_ptr<Gaussian1dSwaptionEngine>& swaptionEngine)
+        ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine)
     : SwaptionVolatilityStructure(model->termStructure()->referenceDate(), cal, bdc, dc),
-      indexBase_(indexBase), model_(model), engine_(swaptionEngine), maxSwapTenor_(100 * Years) {}
+      indexBase_(std::move(indexBase)), model_(model), engine_(std::move(swaptionEngine)),
+      maxSwapTenor_(100 * Years) {}
 
     ext::shared_ptr<SmileSection>
     Gaussian1dSwaptionVolatility::smileSectionImpl(const Date& d, const Period& tenor) const {

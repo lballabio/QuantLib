@@ -46,15 +46,15 @@ namespace QuantLib {
         class results;
         class engine;
         FloatFloatSwap(
-            VanillaSwap::Type type,
+            Swap::Type type,
             Real nominal1,
             Real nominal2,
             const Schedule& schedule1,
-            const ext::shared_ptr<InterestRateIndex>& index1,
-            const DayCounter& dayCount1,
+            ext::shared_ptr<InterestRateIndex> index1,
+            DayCounter dayCount1,
             const Schedule& schedule2,
-            const ext::shared_ptr<InterestRateIndex>& index2,
-            const DayCounter& dayCount2,
+            ext::shared_ptr<InterestRateIndex> index2,
+            DayCounter dayCount2,
             bool intermediateCapitalExchange = false,
             bool finalCapitalExchange = false,
             Real gearing1 = 1.0,
@@ -69,31 +69,31 @@ namespace QuantLib {
             const boost::optional<BusinessDayConvention>& paymentConvention2 = boost::none);
 
         FloatFloatSwap(
-            VanillaSwap::Type type,
-            const std::vector<Real>& nominal1,
-            const std::vector<Real>& nominal2,
-            const Schedule& schedule1,
-            const ext::shared_ptr<InterestRateIndex>& index1,
-            const DayCounter& dayCount1,
-            const Schedule& schedule2,
-            const ext::shared_ptr<InterestRateIndex>& index2,
-            const DayCounter& dayCount2,
+            Swap::Type type,
+            std::vector<Real> nominal1,
+            std::vector<Real> nominal2,
+            Schedule schedule1,
+            ext::shared_ptr<InterestRateIndex> index1,
+            DayCounter dayCount1,
+            Schedule schedule2,
+            ext::shared_ptr<InterestRateIndex> index2,
+            DayCounter dayCount2,
             bool intermediateCapitalExchange = false,
             bool finalCapitalExchange = false,
-            const std::vector<Real>& gearing1 = std::vector<Real>(),
-            const std::vector<Real>& spread1 = std::vector<Real>(),
-            const std::vector<Real>& cappedRate1 = std::vector<Real>(),
-            const std::vector<Real>& flooredRate1 = std::vector<Real>(),
-            const std::vector<Real>& gearing2 = std::vector<Real>(),
-            const std::vector<Real>& spread2 = std::vector<Real>(),
-            const std::vector<Real>& cappedRate2 = std::vector<Real>(),
-            const std::vector<Real>& flooredRate2 = std::vector<Real>(),
+            std::vector<Real> gearing1 = std::vector<Real>(),
+            std::vector<Real> spread1 = std::vector<Real>(),
+            std::vector<Real> cappedRate1 = std::vector<Real>(),
+            std::vector<Real> flooredRate1 = std::vector<Real>(),
+            std::vector<Real> gearing2 = std::vector<Real>(),
+            std::vector<Real> spread2 = std::vector<Real>(),
+            std::vector<Real> cappedRate2 = std::vector<Real>(),
+            std::vector<Real> flooredRate2 = std::vector<Real>(),
             const boost::optional<BusinessDayConvention>& paymentConvention1 = boost::none,
             const boost::optional<BusinessDayConvention>& paymentConvention2 = boost::none);
 
         //! \name Inspectors
         //@{
-        VanillaSwap::Type type() const;
+        Swap::Type type() const;
         const std::vector<Real> &nominal1() const;
         const std::vector<Real> &nominal2() const;
 
@@ -128,14 +128,14 @@ namespace QuantLib {
         //@{
         //@}
         // other
-        void setupArguments(PricingEngine::arguments *args) const;
-        void fetchResults(const PricingEngine::results *) const;
+        void setupArguments(PricingEngine::arguments* args) const override;
+        void fetchResults(const PricingEngine::results*) const override;
 
       private:
         void init(boost::optional<BusinessDayConvention> paymentConvention1,
                   boost::optional<BusinessDayConvention> paymentConvention2);
-        void setupExpired() const;
-        VanillaSwap::Type type_;
+        void setupExpired() const override;
+        Swap::Type type_;
         std::vector<Real> nominal1_, nominal2_;
         Schedule schedule1_, schedule2_;
         ext::shared_ptr<InterestRateIndex> index1_, index2_;
@@ -151,8 +151,8 @@ namespace QuantLib {
     //! %Arguments for float float swap calculation
     class FloatFloatSwap::arguments : public Swap::arguments {
       public:
-        arguments() : type(VanillaSwap::Receiver) {}
-        VanillaSwap::Type type;
+        arguments() = default;
+        Swap::Type type = Swap::Receiver;
         std::vector<Real> nominal1, nominal2;
 
         std::vector<Date> leg1ResetDates, leg1FixingDates, leg1PayDates;
@@ -169,13 +169,13 @@ namespace QuantLib {
 
         std::vector<bool> leg1IsRedemptionFlow, leg2IsRedemptionFlow;
 
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Results from float float swap calculation
     class FloatFloatSwap::results : public Swap::results {
       public:
-        void reset();
+        void reset() override;
     };
 
     class FloatFloatSwap::engine
@@ -184,7 +184,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline VanillaSwap::Type FloatFloatSwap::type() const { return type_; }
+    inline Swap::Type FloatFloatSwap::type() const { return type_; }
 
     inline const std::vector<Real> &FloatFloatSwap::nominal1() const {
         return nominal1_;

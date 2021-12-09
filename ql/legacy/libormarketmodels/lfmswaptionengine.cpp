@@ -18,18 +18,16 @@
 */
 
 #include <ql/legacy/libormarketmodels/lfmswaptionengine.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    LfmSwaptionEngine::LfmSwaptionEngine(
-                            const ext::shared_ptr<LiborForwardModel>& model,
-                            const Handle<YieldTermStructure>& discountCurve)
-    : GenericModelEngine<LiborForwardModel,
-                         Swaption::arguments,
-                         Swaption::results>(model),
-      discountCurve_(discountCurve) {
+    LfmSwaptionEngine::LfmSwaptionEngine(const ext::shared_ptr<LiborForwardModel>& model,
+                                         Handle<YieldTermStructure> discountCurve)
+    : GenericModelEngine<LiborForwardModel, Swaption::arguments, Swaption::results>(model),
+      discountCurve_(std::move(discountCurve)) {
         registerWith(discountCurve_);
     }
 
@@ -64,8 +62,7 @@ namespace QuantLib {
             - dayCounter.yearFraction(referenceDate,
                                       arguments_.fixedResetDates[0]);
 
-        Option::Type w = arguments_.type==VanillaSwap::Payer ?
-                                                Option::Call : Option::Put;
+        Option::Type w = arguments_.type==Swap::Payer ? Option::Call : Option::Put;
         Volatility vol = volatility->volatility(exercise, swapLength,
                                                 fairRate, true);
         results_.value = (swap.fixedLegBPS()/basisPoint) *

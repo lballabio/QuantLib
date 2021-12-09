@@ -24,11 +24,12 @@
 #ifndef quantlib_mc_everest_engine_hpp
 #define quantlib_mc_everest_engine_hpp
 
+#include <ql/exercise.hpp>
 #include <ql/experimental/exoticoptions/everestoption.hpp>
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -42,7 +43,7 @@ namespace QuantLib {
             path_pricer_type;
         typedef typename McSimulation<MultiVariate,RNG,S>::stats_type
             stats_type;
-        MCEverestEngine(const ext::shared_ptr<StochasticProcessArray>&,
+        MCEverestEngine(ext::shared_ptr<StochasticProcessArray>,
                         Size timeSteps,
                         Size timeStepsPerYear,
                         bool brownianBridge,
@@ -51,7 +52,7 @@ namespace QuantLib {
                         Real requiredTolerance,
                         Size maxSamples,
                         BigNatural seed);
-        void calculate() const {
+        void calculate() const override {
 
             McSimulation<MultiVariate,RNG,S>::calculate(requiredTolerance_,
                                                         requiredSamples_,
@@ -67,11 +68,12 @@ namespace QuantLib {
             DiscountFactor discount = endDiscount();
             results_.yield = results_.value/(notional * discount) - 1.0;
         }
+
       private:
         DiscountFactor endDiscount() const;
         // McEverest implementation
-        TimeGrid timeGrid() const;
-        ext::shared_ptr<path_generator_type> pathGenerator() const {
+        TimeGrid timeGrid() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size numAssets = processes_->size();
 
@@ -83,7 +85,7 @@ namespace QuantLib {
                          new path_generator_type(processes_,
                                                  grid, gen, brownianBridge_));
         }
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
 
         // data members
         ext::shared_ptr<StochasticProcessArray> processes_;
@@ -100,8 +102,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCEverestEngine {
       public:
-        explicit MakeMCEverestEngine(
-                            const ext::shared_ptr<StochasticProcessArray>&);
+        explicit MakeMCEverestEngine(ext::shared_ptr<StochasticProcessArray>);
         // named parameters
         MakeMCEverestEngine& withSteps(Size steps);
         MakeMCEverestEngine& withStepsPerYear(Size steps);
@@ -127,7 +128,8 @@ namespace QuantLib {
         explicit EverestMultiPathPricer(Real notional,
                                         Rate guarantee,
                                         DiscountFactor discount);
-        Real operator()(const MultiPath& multiPath) const;
+        Real operator()(const MultiPath& multiPath) const override;
+
       private:
         Real notional_;
         Rate guarantee_;
@@ -137,23 +139,21 @@ namespace QuantLib {
 
     // template definitions
 
-    template<class RNG, class S>
-    inline MCEverestEngine<RNG,S>::MCEverestEngine(
-                   const ext::shared_ptr<StochasticProcessArray>& processes,
-                   Size timeSteps,
-                   Size timeStepsPerYear,
-                   bool brownianBridge,
-                   bool antitheticVariate,
-                   Size requiredSamples,
-                   Real requiredTolerance,
-                   Size maxSamples,
-                   BigNatural seed)
-    : McSimulation<MultiVariate,RNG,S>(antitheticVariate, false),
-      processes_(processes), timeSteps_(timeSteps),
-      timeStepsPerYear_(timeStepsPerYear),
+    template <class RNG, class S>
+    inline MCEverestEngine<RNG, S>::MCEverestEngine(
+        ext::shared_ptr<StochasticProcessArray> processes,
+        Size timeSteps,
+        Size timeStepsPerYear,
+        bool brownianBridge,
+        bool antitheticVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        BigNatural seed)
+    : McSimulation<MultiVariate, RNG, S>(antitheticVariate, false),
+      processes_(std::move(processes)), timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
-      requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge), seed_(seed) {
+      requiredTolerance_(requiredTolerance), brownianBridge_(brownianBridge), seed_(seed) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
                    timeStepsPerYear != Null<Size>(),
                    "no time steps provided");
@@ -207,12 +207,11 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline MakeMCEverestEngine<RNG,S>::MakeMCEverestEngine(
-                     const ext::shared_ptr<StochasticProcessArray>& process)
-    : process_(process), brownianBridge_(false), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+    inline MakeMCEverestEngine<RNG, S>::MakeMCEverestEngine(
+        ext::shared_ptr<StochasticProcessArray> process)
+    : process_(std::move(process)), brownianBridge_(false), antithetic_(false),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCEverestEngine<RNG,S>&

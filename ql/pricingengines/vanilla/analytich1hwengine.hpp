@@ -69,14 +69,14 @@ namespace QuantLib {
       public:
         AnalyticH1HWEngine(const ext::shared_ptr<HestonModel>& model,
                            const ext::shared_ptr<HullWhite>& hullWhiteModel,
-                           Real rhoXV, Size integrationOrder = 144);
+                           Real rhoSr, Size integrationOrder = 144);
 
         AnalyticH1HWEngine(const ext::shared_ptr<HestonModel>& model,
                            const ext::shared_ptr<HullWhite>& hullWhiteModel,
                            Real rhoSr, Real relTolerance, Size maxEvaluations);
 
       protected:
-        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const;
+        std::complex<Real> addOnTerm(Real phi, Time t, Size j) const override;
 
       private:
         class Fj_Helper;

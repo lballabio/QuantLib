@@ -67,7 +67,7 @@ namespace QuantLib {
             ControlVariate cv = OptimalCV,
             Real scaling = Null<Real>());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const ControlVariate cv_;

@@ -76,7 +76,7 @@ namespace QuantLib {
                      Derived classes should override it if a more efficient
                      implementation is available.
         */
-        Real defaultDensityImpl(Time) const;
+        Real defaultDensityImpl(Time) const override;
         //@}
     };
 

@@ -23,16 +23,12 @@
 #include <ql/pricingengines/vanilla/integralengine.hpp>
 #include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
-#include <ql/pricingengines/vanilla/fdamericanengine.hpp>
 #include <ql/pricingengines/vanilla/fdbatesvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/fdbermudanengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesshoutengine.hpp>
 #include <ql/pricingengines/vanilla/fdcevvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/fddividendamericanengine.hpp>
 #include <ql/pricingengines/vanilla/fddividendengine.hpp>
-#include <ql/pricingengines/vanilla/fddividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fddividendshoutengine.hpp>
-#include <ql/pricingengines/vanilla/fdeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdcirvanillaengine.hpp>

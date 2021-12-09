@@ -24,18 +24,17 @@
 */
 
 #include <ql/functional.hpp>
-#include <ql/math/solvers1d/brent.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
-#include <ql/math/integrals/kronrodintegral.hpp>
-#include <ql/math/integrals/trapezoidintegral.hpp>
-#include <ql/math/integrals/discreteintegrals.hpp>
-#include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/math/integrals/exponentialintegrals.hpp>
-
 #include <ql/instruments/payoffs.hpp>
+#include <ql/math/integrals/discreteintegrals.hpp>
+#include <ql/math/integrals/exponentialintegrals.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/integrals/kronrodintegral.hpp>
+#include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/math/integrals/trapezoidintegral.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
+#include <utility>
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
@@ -50,8 +49,7 @@ namespace QuantLib {
             const Real c_inf_;
             const ext::function<Real(Real)> f_;
           public:
-            integrand1(Real c_inf, const ext::function<Real(Real)>& f)
-            : c_inf_(c_inf), f_(f) {}
+            integrand1(Real c_inf, ext::function<Real(Real)> f) : c_inf_(c_inf), f_(std::move(f)) {}
             Real operator()(Real x) const {
                 if ((1.0-x)*c_inf_ > QL_EPSILON)
                     return f_(-std::log(0.5-0.5*x)/c_inf_)/((1.0-x)*c_inf_);
@@ -65,8 +63,7 @@ namespace QuantLib {
             const Real c_inf_;
             const ext::function<Real(Real)> f_;
           public:
-            integrand2(Real c_inf, const ext::function<Real(Real)>& f)
-            : c_inf_(c_inf), f_(f) {}
+            integrand2(Real c_inf, ext::function<Real(Real)> f) : c_inf_(c_inf), f_(std::move(f)) {}
             Real operator()(Real x) const {
                 if (x*c_inf_ > QL_EPSILON) {
                     return f_(-std::log(x)/c_inf_)/(x*c_inf_);
@@ -232,32 +229,21 @@ namespace QuantLib {
     {
     }
 
-    AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa, Real theta,
-        Real sigma, Real v0, Real s0, Real rho,
-        ComplexLogFormula cpxLog,
-        Time term,
-        Real strike,
-        Real ratio,
-        Size j)
-        :
-        j_(j),
-        kappa_(kappa),
-        theta_(theta),
-        sigma_(sigma),
-        v0_(v0),
-        cpxLog_(cpxLog),
-        term_(term),
-        x_(std::log(s0)),
-        sx_(std::log(strike)),
-        dd_(x_-std::log(ratio)),
-        sigma2_(sigma_*sigma_),
-        rsigma_(rho*sigma_),
-        t0_(kappa - ((j== 1)? rho*sigma : 0)),
-        b_(0),
-        g_km1_(0),
-        engine_(0)
-    {
-    }
+    AnalyticHestonEngine::Fj_Helper::Fj_Helper(Real kappa,
+                                               Real theta,
+                                               Real sigma,
+                                               Real v0,
+                                               Real s0,
+                                               Real rho,
+                                               ComplexLogFormula cpxLog,
+                                               Time term,
+                                               Real strike,
+                                               Real ratio,
+                                               Size j)
+    : j_(j), kappa_(kappa), theta_(theta), sigma_(sigma), v0_(v0), cpxLog_(cpxLog), term_(term),
+      x_(std::log(s0)), sx_(std::log(strike)), dd_(x_ - std::log(ratio)), sigma2_(sigma_ * sigma_),
+      rsigma_(rho * sigma_), t0_(kappa - ((j == 1) ? rho * sigma : 0)), b_(0), g_km1_(0),
+      engine_(nullptr) {}
 
 
     Real AnalyticHestonEngine::Fj_Helper::operator()(Real phi) const
@@ -270,7 +256,7 @@ namespace QuantLib {
                       *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
         const std::complex<Real> ex = std::exp(-d*term_);
         const std::complex<Real> addOnTerm =
-            engine_ != 0 ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
+            engine_ != nullptr ? engine_->addOnTerm(phi, term_, j_) : Real(0.0);
 
         if (cpxLog_ == Gatheral) {
             if (phi != 0.0) {
@@ -387,7 +373,7 @@ namespace QuantLib {
       freq_(std::log(fwd/strike)),
       cpxLog_(cpxLog),
       enginePtr_(enginePtr) {
-        QL_REQUIRE(enginePtr != 0, "pricing engine required");
+        QL_REQUIRE(enginePtr != nullptr, "pricing engine required");
 
         const Real v0    = enginePtr->model_->v0();
         const Real kappa = enginePtr->model_->kappa();
@@ -646,9 +632,9 @@ namespace QuantLib {
             const Real epsilon = enginePtr->andersenPiterbargEpsilon_
                 *M_PI/(std::sqrt(strikePrice*fwdPrice)*riskFreeDiscount);
 
-            const ext::function<Real()> uM = ext::bind(
-                Integration::andersenPiterbargIntegrationLimit,
-                    c_inf, epsilon, v0, term);
+            const ext::function<Real()> uM = [&](){
+                return Integration::andersenPiterbargIntegrationLimit(c_inf, epsilon, v0, term);
+            };
 
             AP_Helper cvHelper(term, fwdPrice, strikePrice,
                 (cpxLog == OptimalCV)
@@ -725,17 +711,13 @@ namespace QuantLib {
     }
 
 
-    AnalyticHestonEngine::Integration::Integration(
-            Algorithm intAlgo,
-            const ext::shared_ptr<Integrator>& integrator)
-    : intAlgo_(intAlgo),
-      integrator_(integrator) { }
+    AnalyticHestonEngine::Integration::Integration(Algorithm intAlgo,
+                                                   ext::shared_ptr<Integrator> integrator)
+    : intAlgo_(intAlgo), integrator_(std::move(integrator)) {}
 
     AnalyticHestonEngine::Integration::Integration(
-            Algorithm intAlgo,
-            const ext::shared_ptr<GaussianQuadrature>& gaussianQuadrature)
-    : intAlgo_(intAlgo),
-      gaussianQuadrature_(gaussianQuadrature) { }
+        Algorithm intAlgo, ext::shared_ptr<GaussianQuadrature> gaussianQuadrature)
+    : intAlgo_(intAlgo), gaussianQuadrature_(std::move(gaussianQuadrature)) {}
 
     AnalyticHestonEngine::Integration
     AnalyticHestonEngine::Integration::gaussLobatto(Real relTolerance,
@@ -820,12 +802,11 @@ namespace QuantLib {
     }
 
     Size AnalyticHestonEngine::Integration::numberOfEvaluations() const {
-        if (integrator_ != 0) {
+        if (integrator_ != nullptr) {
             return integrator_->numberOfEvaluations();
-        } else if (gaussianQuadrature_ != 0) {
+        } else if (gaussianQuadrature_ != nullptr) {
             return gaussianQuadrature_->order();
-        }
-        else {
+        } else {
             QL_FAIL("neither Integrator nor GaussianQuadrature given");
         }
     }
@@ -857,14 +838,14 @@ namespace QuantLib {
           case Trapezoid:
           case GaussLobatto:
           case GaussKronrod:
-              if (maxBound != 0 && maxBound() != Null<Real>())
+              if (!(maxBound == QL_NULL_FUNCTION) && maxBound() != Null<Real>())
                   retVal = (*integrator_)(f, 0.0, maxBound());
               else
                   retVal = (*integrator_)(integrand2(c_inf, f), 0.0, 1.0);
               break;
           case DiscreteTrapezoid:
           case DiscreteSimpson:
-              if (maxBound != 0 && maxBound() != Null<Real>())
+              if (!(maxBound == QL_NULL_FUNCTION) && maxBound() != Null<Real>())
                   retVal = (*integrator_)(f, 0.0, maxBound());
               else
                   retVal = (*integrator_)(integrand3(c_inf, f), 0.0, 1.0);
@@ -882,9 +863,7 @@ namespace QuantLib {
         Real maxBound) const {
 
         return AnalyticHestonEngine::Integration::calculate(
-            c_inf, f,
-            ext::bind(&constant<Real, Real>::operator(),
-                constant<Real, Real>(maxBound), 1.0));
+            c_inf, f, [=](){ return maxBound; });
     }
 
     Real AnalyticHestonEngine::Integration::andersenPiterbargIntegrationLimit(

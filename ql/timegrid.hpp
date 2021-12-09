@@ -29,7 +29,9 @@
 #include <ql/math/comparison.hpp>
 #include <vector>
 #include <algorithm>
+#include <iterator>
 #include <numeric>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -42,7 +44,7 @@ namespace QuantLib {
       public:
         //! \name Constructors
         //@{
-        TimeGrid() {}
+        TimeGrid() = default;
         //! Regularly spaced time-grid
         TimeGrid(Time end, Size steps);
         //! Time grid with mandatory time points
@@ -59,9 +61,8 @@ namespace QuantLib {
             // (even though I'm not sure that I agree.)
             QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
                        "negative times not allowed");
-            std::vector<Time>::iterator e =
-                std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end(),
-                            static_cast<bool (*)(Real, Real)>(close_enough));
+            auto e = std::unique(mandatoryTimes_.begin(), mandatoryTimes_.end(),
+                                 static_cast<bool (*)(Real, Real)>(close_enough));
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
             if (mandatoryTimes_[0] > 0.0)
@@ -91,9 +92,8 @@ namespace QuantLib {
             // (even though I'm not sure that I agree.)
             QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
                        "negative times not allowed");
-            std::vector<Time>::iterator e =
-                std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end(),
-                            static_cast<bool (*)(Real, Real)>(close_enough));
+            auto e = std::unique(mandatoryTimes_.begin(), mandatoryTimes_.end(),
+                                 static_cast<bool (*)(Real, Real)>(close_enough));
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
             Time last = mandatoryTimes_.back();
@@ -121,7 +121,7 @@ namespace QuantLib {
                 Time periodEnd = *t;
                 if (periodEnd != 0.0) {
                     // the nearest integer, at least 1
-                    Size nSteps = std::max(Size((periodEnd - periodBegin)/dtMax+0.5), Size(1));
+                    Size nSteps = std::max(Size(std::lround((periodEnd - periodBegin)/dtMax)), Size(1));
                     Time dt = (periodEnd - periodBegin)/nSteps;
                     for (Size n=1; n<=nSteps; ++n)
                         times_.push_back(periodBegin + n*dt);
@@ -133,6 +133,10 @@ namespace QuantLib {
             std::adjacent_difference(times_.begin()+1,times_.end(),
                                      std::back_inserter(dt_));
         }
+        TimeGrid(std::initializer_list<Time> times)
+        : TimeGrid(times.begin(), times.end()) {}
+        TimeGrid(std::initializer_list<Time> times, Size steps)
+        : TimeGrid(times.begin(), times.end(), steps) {}
         //@}
         //! \name Time grid interface
         //@{

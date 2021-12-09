@@ -19,28 +19,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/methods/finitedifferences/solvers/fdm1dimsolver.hpp>
 #include <ql/methods/finitedifferences/operators/fdmblackscholesop.hpp>
+#include <ql/methods/finitedifferences/solvers/fdm1dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmBlackScholesSolver::FdmBlackScholesSolver(
-        const Handle<GeneralizedBlackScholesProcess>& process,
-        Real strike,
-        const FdmSolverDesc& solverDesc,
-        const FdmSchemeDesc& schemeDesc,
-        bool localVol,
-        Real illegalLocalVolOverwrite,
-        const Handle<FdmQuantoHelper>& quantoHelper)
-    : process_(process),
-      strike_(strike),
-      solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc),
-      localVol_(localVol),
-      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
-      quantoHelper_(quantoHelper) {
+    FdmBlackScholesSolver::FdmBlackScholesSolver(Handle<GeneralizedBlackScholesProcess> process,
+                                                 Real strike,
+                                                 FdmSolverDesc solverDesc,
+                                                 const FdmSchemeDesc& schemeDesc,
+                                                 bool localVol,
+                                                 Real illegalLocalVolOverwrite,
+                                                 Handle<FdmQuantoHelper> quantoHelper)
+    : process_(std::move(process)), strike_(strike), solverDesc_(std::move(solverDesc)),
+      schemeDesc_(schemeDesc), localVol_(localVol),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite), quantoHelper_(std::move(quantoHelper)) {
 
         registerWith(process_);
         registerWith(quantoHelper_);

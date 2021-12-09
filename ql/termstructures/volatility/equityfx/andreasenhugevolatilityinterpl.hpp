@@ -64,18 +64,17 @@ namespace QuantLib {
 
         AndreasenHugeVolatilityInterpl(
             const CalibrationSet& calibrationSet,
-            const Handle<Quote>& spot,
-            const Handle<YieldTermStructure>& rTS,
-            const Handle<YieldTermStructure>& qTS,
+            Handle<Quote> spot,
+            Handle<YieldTermStructure> rTS,
+            Handle<YieldTermStructure> qTS,
             InterpolationType interpolationType = CubicSpline,
             CalibrationType calibrationType = Call,
             Size nGridPoints = 500,
             Real minStrike = Null<Real>(),
             Real maxStrike = Null<Real>(),
-            const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
+            ext::shared_ptr<OptimizationMethod> optimizationMethod =
                 ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt),
-            const EndCriteria& endCriteria =
-                EndCriteria(500, 100, 1e-12, 1e-10, 1e-10));
+            const EndCriteria& endCriteria = EndCriteria(500, 100, 1e-12, 1e-10, 1e-10));
 
         Date maxDate() const;
         Real minStrike() const;
@@ -94,7 +93,7 @@ namespace QuantLib {
         Volatility localVol(Time t, Real strike) const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         typedef std::map<Time,

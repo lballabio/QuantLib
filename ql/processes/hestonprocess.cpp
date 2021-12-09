@@ -17,34 +17,35 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/distributions/chisquaredistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/math/modifiedbessel.hpp>
-#include <ql/math/solvers1d/brent.hpp>
-#include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/distributions/chisquaredistribution.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/processes/hestonprocess.hpp>
+#include <ql/math/integrals/segmentintegral.hpp>
+#include <ql/math/modifiedbessel.hpp>
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
-#include <ql/functional.hpp>
+#include <ql/processes/hestonprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 #include <complex>
+#include <utility>
 
 namespace QuantLib {
 
-    HestonProcess::HestonProcess(
-                              const Handle<YieldTermStructure>& riskFreeRate,
-                              const Handle<YieldTermStructure>& dividendYield,
-                              const Handle<Quote>& s0,
-                              Real v0, Real kappa,
-                              Real theta, Real sigma, Real rho,
-                              Discretization d)
-    : StochasticProcess(ext::shared_ptr<discretization>(
-                                                    new EulerDiscretization)),
-      riskFreeRate_(riskFreeRate), dividendYield_(dividendYield), s0_(s0),
-      v0_(v0), kappa_(kappa), theta_(theta), sigma_(sigma), rho_(rho),
+    HestonProcess::HestonProcess(Handle<YieldTermStructure> riskFreeRate,
+                                 Handle<YieldTermStructure> dividendYield,
+                                 Handle<Quote> s0,
+                                 Real v0,
+                                 Real kappa,
+                                 Real theta,
+                                 Real sigma,
+                                 Real rho,
+                                 Discretization d)
+    : StochasticProcess(ext::shared_ptr<discretization>(new EulerDiscretization)),
+      riskFreeRate_(std::move(riskFreeRate)), dividendYield_(std::move(dividendYield)),
+      s0_(std::move(s0)), v0_(v0), kappa_(kappa), theta_(theta), sigma_(sigma), rho_(rho),
       discretization_(d) {
 
         registerWith(riskFreeRate_);
@@ -175,7 +176,6 @@ namespace QuantLib {
 
         Real int_ph(const HestonProcess& process,
                     Real a, Real x, Real y, Real nu_0, Real nu_t, Time t) {
-            using namespace ext::placeholders;
             static const GaussLaguerreIntegration gaussLaguerreIntegration(128);
 
             const Real rho   = process.rho();
@@ -184,8 +184,7 @@ namespace QuantLib {
             const Real x0    = std::log(process.s0()->value());
 
             return gaussLaguerreIntegration(
-                ext::bind(&ph, process, y,
-                            _1, nu_0, nu_t, t))
+                [&](Real u){ return ph(process, y, u, nu_0, nu_t, t); })
                 / std::sqrt(2*M_PI*(1-rho*rho)*y)
                 * std::exp(-0.5*square<Real>()(  x - x0 - a
                                                + y*(0.5-rho*kappa/sigma))
@@ -295,7 +294,6 @@ namespace QuantLib {
         Real cdf_nu_ds(const HestonProcess& process,
                        Real x, Real nu_0, Real nu_t, Time dt,
                        HestonProcess::Discretization discretization) {
-            using namespace ext::placeholders;
             const Real eps = 1e-4;
             const Real u_eps = std::min(100.0,
                 std::max(0.1, cornishFisherEps(process, nu_0, nu_t, dt, eps)));
@@ -314,8 +312,7 @@ namespace QuantLib {
                 return (x < upper)
                     ? std::max(0.0, std::min(1.0,
                         gaussLaguerreIntegration(
-                            ext::bind(&ch, process, x,
-                                        _1, nu_0, nu_t, dt))))
+                            [&](Real u){ return ch(process, x, u, nu_0, nu_t, dt); })))
                     : 1.0;
               }
               case HestonProcess::BroadieKayaExactSchemeLobatto:
@@ -328,8 +325,7 @@ namespace QuantLib {
                 return (x < upper)
                     ? std::max(0.0, std::min(1.0,
                         GaussLobattoIntegral(Null<Size>(), eps)(
-                            ext::bind(&ch, process, x,
-                                        _1, nu_0, nu_t, dt),
+                            [&](Real xi){ return ch(process, x, xi, nu_0, nu_t, dt); },
                             QL_EPSILON, upper)))
                     : 1.0;
               }
@@ -368,7 +364,6 @@ namespace QuantLib {
     }
 
     Real HestonProcess::pdf(Real x, Real v, Time t, Real eps) const {
-         using namespace ext::placeholders;
          const Real k = sigma_*sigma_*(1-std::exp(-kappa_*t))/(4*kappa_);
          const Real a = std::log(  dividendYield_->discount(t)
                                    / riskFreeRate_->discount(t))
@@ -394,8 +389,7 @@ namespace QuantLib {
          upper = 2.0*cornishFisherEps(*this, v0_, v, t,1e-3);
 
          return SegmentIntegral(100)(
-             ext::bind(&int_ph, *this, a, x,
-                         _1, v0_, v, t),
+               [&](Real xi){ return int_ph(*this, a, x, xi, v0_, v, t); },
                QL_EPSILON, upper)
                * boost::math::pdf(
                      boost::math::non_central_chi_squared_distribution<Real>(
@@ -407,8 +401,6 @@ namespace QuantLib {
 
     Disposable<Array> HestonProcess::evolve(Time t0, const Array& x0,
                                             Time dt, const Array& dw) const {
-        using namespace ext::placeholders;
-
         Array retVal(2);
         Real vol, vol2, mu, nu, dy;
 
@@ -539,8 +531,7 @@ namespace QuantLib {
                 std::max(0.0, CumulativeNormalDistribution()(dw[2])));
 
             const Real vds = Brent().solve(
-                ext::bind(&cdf_nu_ds_minus_x, *this, _1,
-                            nu_0, nu_t, dt, discretization_, x),
+                [&](Real xi){ return cdf_nu_ds_minus_x(*this, xi, nu_0, nu_t, dt, discretization_, x); },
                 1e-5, theta_*dt, 0.1*theta_*dt);
 
             const Real vdw

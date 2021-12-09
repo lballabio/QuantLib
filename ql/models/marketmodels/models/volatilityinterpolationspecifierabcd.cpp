@@ -70,10 +70,6 @@ namespace QuantLib
 
     }
 
-    VolatilityInterpolationSpecifierabcd::~VolatilityInterpolationSpecifierabcd()
-    {
-    }
-
     void VolatilityInterpolationSpecifierabcd::setScalingFactors(const std::vector<Real>& scales)
     {
         QL_REQUIRE(scalingFactors_.size() == scales.size(), "inappropriate number of scales passed in to VolatilityInterpolationSpecifierabcd::setScalingFactors ");

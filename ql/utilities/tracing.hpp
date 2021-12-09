@@ -36,9 +36,9 @@ namespace QuantLib {
 
         class Tracing : public Singleton<Tracing> {
             friend class QuantLib::Singleton<Tracing>;
-        private:
-            Tracing();
-        public:
+          private:
+            Tracing();  // NOLINT(modernize-use-equals-delete)
+          public:
             void enable() {
                 #if defined(QL_ENABLE_TRACING)
                 enabled_ = true;
@@ -53,10 +53,10 @@ namespace QuantLib {
             Integer depth() const { return depth_; }
             void down() { depth_++; }
             void up() { depth_--; }
-        private:
+          private:
             std::ostream* out_;
-            bool enabled_;
-            Integer depth_;
+            bool enabled_ = false;
+            Integer depth_ = 0;
         };
 
     }

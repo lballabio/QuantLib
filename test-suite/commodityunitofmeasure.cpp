@@ -134,7 +134,7 @@ void CommodityUnitOfMeasureTest::testDirect() {
 }
 
 test_suite* CommodityUnitOfMeasureTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Commodity Unit Of Measure tests");
+    auto* suite = BOOST_TEST_SUITE("Commodity Unit Of Measure tests");
     suite->add(QUANTLIB_TEST_CASE(&CommodityUnitOfMeasureTest::testDirect));
     return suite;
 }

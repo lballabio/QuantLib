@@ -57,8 +57,7 @@ namespace QuantLib {
         return npvs(expiry, y, true).second;
     }
 
-    VanillaSwap::Type
-    Gaussian1dFloatFloatSwaptionEngine::underlyingType() const {
+    Swap::Type Gaussian1dFloatFloatSwaptionEngine::underlyingType() const {
         return arguments_.swap->type();
     }
 
@@ -124,23 +123,21 @@ namespace QuantLib {
                       arguments_.leg2FixingDates.end());
         std::sort(events.begin(), events.end());
 
-        std::vector<Date>::iterator it =
-            std::unique(events.begin(), events.end());
+        auto it = std::unique(events.begin(), events.end());
         events.resize(std::distance(events.begin(), it));
 
         // only events on or after expiry are of interest by definition of the
         // deal part that is exericsed into.
 
-        std::vector<Date>::iterator filit =
-            std::upper_bound(events.begin(), events.end(),
-                             expiry - (includeExerciseOnExpiry ? 1 : 0));
+        auto filit = std::upper_bound(events.begin(), events.end(),
+                                      expiry - (includeExerciseOnExpiry ? 1 : 0));
         events.erase(events.begin(), filit);
 
         int idx = events.size() - 1;
 
         FloatFloatSwap swap = *arguments_.swap;
         Option::Type type =
-            arguments_.type == VanillaSwap::Payer ? Option::Call : Option::Put;
+            arguments_.type == Swap::Payer ? Option::Call : Option::Put;
 
         Array npv0(2 * integrationPoints_ + 1, 0.0),
             npv1(2 * integrationPoints_ + 1, 0.0); // arrays for npvs of the
@@ -186,9 +183,9 @@ namespace QuantLib {
         ext::shared_ptr<SwapSpreadIndex> cmsspread2 =
             ext::dynamic_pointer_cast<SwapSpreadIndex>(arguments_.index2);
 
-        QL_REQUIRE(ibor1 != NULL || cms1 != NULL || cmsspread1 != NULL,
+        QL_REQUIRE(ibor1 != nullptr || cms1 != nullptr || cmsspread1 != nullptr,
                    "index1 must be ibor or swap or swap spread index");
-        QL_REQUIRE(ibor2 != NULL || cms2 != NULL || cmsspread2 != NULL,
+        QL_REQUIRE(ibor2 != nullptr || cms2 != nullptr || cmsspread2 != nullptr,
                    "index2 must be ibor or swap or swap spread index");
 
         do {
@@ -460,17 +457,17 @@ namespace QuantLib {
                                 amount = arguments_.leg1Coupons[j];
                             } else {
                                 Real estFixing = 0.0;
-                                if(ibor1 != NULL) {
+                                if (ibor1 != nullptr) {
                                     estFixing = model_->forwardRate(
                                         arguments_.leg1FixingDates[j], event0,
                                         zk, ibor1);
                                 }
-                                if(cms1 != NULL) {
+                                if (cms1 != nullptr) {
                                     estFixing = model_->swapRate(
                                         arguments_.leg1FixingDates[j],
                                         cms1->tenor(), event0, zk, cms1);
                                 }
-                                if (cmsspread1 != NULL)
+                                if (cmsspread1 != nullptr)
                                     estFixing =
                                         cmsspread1->gearing1() *
                                             model_->swapRate(
@@ -544,11 +541,11 @@ namespace QuantLib {
                                 amount = arguments_.leg2Coupons[j];
                             } else {
                                 Real estFixing = 0.0;
-                                if(ibor2 != NULL)
+                                if (ibor2 != nullptr)
                                     estFixing = model_->forwardRate(arguments_.leg2FixingDates[j],event0,zk,ibor2);
-                                if(cms2 != NULL)
+                                if (cms2 != nullptr)
                                     estFixing = model_->swapRate(arguments_.leg2FixingDates[j],cms2->tenor(),event0,zk,cms2);
-                                if (cmsspread2 != NULL)
+                                if (cmsspread2 != nullptr)
                                     estFixing =
                                         cmsspread2->gearing1() *
                                             model_->swapRate(
@@ -604,7 +601,7 @@ namespace QuantLib {
                         Real rebate = 0.0;
                         Real zSpreadDf = 1.0;
                         Date rebateDate = event0;
-                        if (rebatedExercise_ != NULL) {
+                        if (rebatedExercise_ != nullptr) {
                             rebate = rebatedExercise_->rebate(j);
                             rebateDate = rebatedExercise_->rebatePaymentDate(j);
                             zSpreadDf =

@@ -45,14 +45,15 @@ namespace QuantLib {
 
         enum Scheme { Central, Backward, Forward };
 
-        NumericalDifferentiation(
-            const ext::function<Real(Real)>& f,
-            Size orderOfDerivative, const Array& x_offsets);
+        NumericalDifferentiation(ext::function<Real(Real)> f,
+                                 Size orderOfDerivative,
+                                 Array x_offsets);
 
-        NumericalDifferentiation(
-            const ext::function<Real(Real)>& f,
-            Size orderOfDerivative,
-            Real stepSize, Size steps, Scheme scheme);
+        NumericalDifferentiation(ext::function<Real(Real)> f,
+                                 Size orderOfDerivative,
+                                 Real stepSize,
+                                 Size steps,
+                                 Scheme scheme);
 
         Real operator()(Real x) const;
         const Array& offsets() const;

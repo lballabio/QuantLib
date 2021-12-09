@@ -95,16 +95,12 @@ void DigitalCouponTest::testAssetOrNothing() {
                         with black formula result */
     ext::shared_ptr<DigitalReplication>
         replication(new DigitalReplication(Replication::Central, gap));
-    for (Size i = 0; i< LENGTH(vols); i++) {
-            Volatility capletVol = vols[i];
-            RelinkableHandle<OptionletVolatilityStructure> vol;
-            vol.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new
-                ConstantOptionletVolatility(vars.today,
-                                            vars.calendar, Following,
-                                            capletVol, Actual360())));
-        for (Size j=0; j<LENGTH(strikes); j++) {
-            Rate strike = strikes[j];
-            for (Size k=9; k<10; k++) {
+    for (double capletVol : vols) {
+        RelinkableHandle<OptionletVolatilityStructure> vol;
+        vol.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new ConstantOptionletVolatility(
+            vars.today, vars.calendar, Following, capletVol, Actual360())));
+        for (double strike : strikes) {
+            for (Size k = 9; k < 10; k++) {
                 Date startDate = vars.calendar.advance(vars.settlement,(k+1)*Years);
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
@@ -514,16 +510,12 @@ void DigitalCouponTest::testCashOrNothing() {
     ext::shared_ptr<DigitalReplication> replication(new
         DigitalReplication(Replication::Central, gap));
 
-    for (Size i = 0; i< LENGTH(vols); i++) {
-            Volatility capletVol = vols[i];
-            RelinkableHandle<OptionletVolatilityStructure> vol;
-            vol.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new
-                ConstantOptionletVolatility(vars.today,
-                                            vars.calendar, Following,
-                                            capletVol, Actual360())));
-        for (Size j = 0; j< LENGTH(strikes); j++) {
-            Rate strike = strikes[j];
-            for (Size k = 0; k<10; k++) {
+    for (double capletVol : vols) {
+        RelinkableHandle<OptionletVolatilityStructure> vol;
+        vol.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new ConstantOptionletVolatility(
+            vars.today, vars.calendar, Following, capletVol, Actual360())));
+        for (double strike : strikes) {
+            for (Size k = 0; k < 10; k++) {
                 Date startDate = vars.calendar.advance(vars.settlement,(k+1)*Years);
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
@@ -888,15 +880,13 @@ void DigitalCouponTest::testCallPutParity() {
     ext::shared_ptr<DigitalReplication> replication(new
         DigitalReplication(Replication::Central, gap));
 
-    for (Size i = 0; i< LENGTH(vols); i++) {
-            Volatility capletVolatility = vols[i];
-            RelinkableHandle<OptionletVolatilityStructure> volatility;
-            volatility.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new
-                ConstantOptionletVolatility(vars.today, vars.calendar, Following,
-                                            capletVolatility, Actual360())));
-        for (Size j = 0; j< LENGTH(strikes); j++) {
-            Rate strike = strikes[j];
-            for (Size k = 0; k<10; k++) {
+    for (double capletVolatility : vols) {
+        RelinkableHandle<OptionletVolatilityStructure> volatility;
+        volatility.linkTo(
+            ext::shared_ptr<OptionletVolatilityStructure>(new ConstantOptionletVolatility(
+                vars.today, vars.calendar, Following, capletVolatility, Actual360())));
+        for (double strike : strikes) {
+            for (Size k = 0; k < 10; k++) {
                 Date startDate = vars.calendar.advance(vars.settlement,(k+1)*Years);
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
@@ -997,15 +987,13 @@ void DigitalCouponTest::testReplicationType() {
     ext::shared_ptr<DigitalReplication> superReplication(new
         DigitalReplication(Replication::Super, gap));
 
-    for (Size i = 0; i< LENGTH(vols); i++) {
-        Volatility capletVolatility = vols[i];
+    for (double capletVolatility : vols) {
         RelinkableHandle<OptionletVolatilityStructure> volatility;
         volatility.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new
         ConstantOptionletVolatility(vars.today, vars.calendar, Following,
                                     capletVolatility, Actual360())));
-        for (Size j = 0; j< LENGTH(strikes); j++) {
-            Rate strike = strikes[j];
-            for (Size k = 0; k<10; k++) {
+        for (double strike : strikes) {
+            for (Size k = 0; k < 10; k++) {
                 Date startDate = vars.calendar.advance(vars.settlement,(k+1)*Years);
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
@@ -1156,7 +1144,7 @@ void DigitalCouponTest::testReplicationType() {
 
 
 test_suite* DigitalCouponTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Digital coupon tests");
+    auto* suite = BOOST_TEST_SUITE("Digital coupon tests");
     suite->add(QUANTLIB_TEST_CASE(&DigitalCouponTest::testAssetOrNothing));
     suite->add(QUANTLIB_TEST_CASE(
                        &DigitalCouponTest::testAssetOrNothingDeepInTheMoney));

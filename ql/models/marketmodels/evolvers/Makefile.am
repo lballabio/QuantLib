@@ -26,7 +26,6 @@ cpp_files = \
 	lognormalfwdrateiballand.cpp \
 	lognormalfwdrateipc.cpp \
 	lognormalfwdratepc.cpp \
-	marketmodelvolprocess.cpp \
 	normalfwdratepc.cpp \
 	svddfwdratepc.cpp
 

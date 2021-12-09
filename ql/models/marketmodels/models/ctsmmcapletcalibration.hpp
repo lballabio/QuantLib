@@ -34,15 +34,13 @@ namespace QuantLib {
 
     class CTSMMCapletCalibration {
       public:
-        virtual ~CTSMMCapletCalibration();
+        virtual ~CTSMMCapletCalibration() = default;
         CTSMMCapletCalibration(
-            const EvolutionDescription& evolution,
-            const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
-            const std::vector<ext::shared_ptr<
-                        PiecewiseConstantVariance> >&
-                                    displacedSwapVariances,
-            const std::vector<Volatility>& mktCapletVols, // displaced??
-            const ext::shared_ptr<CurveState>& cs,
+            EvolutionDescription evolution,
+            ext::shared_ptr<PiecewiseConstantCorrelation> corr,
+            std::vector<ext::shared_ptr<PiecewiseConstantVariance> > displacedSwapVariances,
+            std::vector<Volatility> mktCapletVols, // displaced??
+            ext::shared_ptr<CurveState> cs,
             Spread displacement); // ??
         // modifiers
         bool calibrate(Natural numberOfFactors,

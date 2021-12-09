@@ -17,16 +17,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticDoubleBarrierEngine::AnalyticDoubleBarrierEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            int series)
-    : process_(process), series_(series) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process, int series)
+    : process_(std::move(process)), series_(series) {
         registerWith(process_);
     }
 

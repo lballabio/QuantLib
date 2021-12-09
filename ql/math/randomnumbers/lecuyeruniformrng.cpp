@@ -80,7 +80,7 @@ namespace QuantLib {
         // users don't expect endpoint values
         if (result > maxRandom)
             result = (double) maxRandom;
-        return sample_type(result,1.0);
+        return {result, 1.0};
     }
 
 }

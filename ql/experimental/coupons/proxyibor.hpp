@@ -39,12 +39,13 @@ namespace QuantLib {
                   BusinessDayConvention convention,
                   bool endOfMonth,
                   const DayCounter& dayCounter,
-                  const Handle<Quote>& gearing,
-                  const ext::shared_ptr<IborIndex>& iborIndex,
-                  const Handle<Quote>& spread);
+                  Handle<Quote> gearing,
+                  ext::shared_ptr<IborIndex> iborIndex,
+                  Handle<Quote> spread);
+
       private:
         // overload
-        Rate forecastFixing(const Date& fixingDate) const;
+        Rate forecastFixing(const Date& fixingDate) const override;
 
         Handle<Quote> gearing_;
         ext::shared_ptr<IborIndex> iborIndex_;

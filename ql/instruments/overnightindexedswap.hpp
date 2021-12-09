@@ -28,6 +28,7 @@
 #define quantlib_overnight_indexed_swap_hpp
 
 #include <ql/instruments/swap.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/businessdayconvention.hpp>
 #include <ql/time/calendar.hpp>
@@ -39,31 +40,32 @@ namespace QuantLib {
 
     //! Overnight indexed swap: fix vs compounded overnight rate
     class OvernightIndexedSwap : public Swap {
-    public:
-        enum Type { Receiver = -1, Payer = 1 };
+      public:
         OvernightIndexedSwap(Type type,
                              Real nominal,
                              const Schedule& schedule,
                              Rate fixedRate,
-                             const DayCounter& fixedDC,
-                             const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                             DayCounter fixedDC,
+                             ext::shared_ptr<OvernightIndex> overnightIndex,
                              Spread spread = 0.0,
                              Natural paymentLag = 0,
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
-                             bool telescopicValueDates = false);
+                             bool telescopicValueDates = false,
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         OvernightIndexedSwap(Type type,
-                             const std::vector<Real>& nominals,
+                             std::vector<Real> nominals,
                              const Schedule& schedule,
                              Rate fixedRate,
-                             const DayCounter& fixedDC,
-                             const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                             DayCounter fixedDC,
+                             ext::shared_ptr<OvernightIndex> overnightIndex,
                              Spread spread = 0.0,
                              Natural paymentLag = 0,
                              BusinessDayConvention paymentAdjustment = Following,
                              const Calendar& paymentCalendar = Calendar(),
-                             bool telescopicValueDates = false);
+                             bool telescopicValueDates = false,
+                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         //! \name Inspectors
         //@{
@@ -71,17 +73,18 @@ namespace QuantLib {
         Real nominal() const;
         std::vector<Real> nominals() const { return nominals_; }
 
-        //const Schedule& schedule() { return schedule_; }
-        Frequency paymentFrequency() { return paymentFrequency_; }
+        Frequency paymentFrequency() const { return paymentFrequency_; }
 
         Rate fixedRate() const { return fixedRate_; }
-        const DayCounter& fixedDayCount() { return fixedDC_; }
+        const DayCounter& fixedDayCount() const { return fixedDC_; }
 
-        const ext::shared_ptr<OvernightIndex>& overnightIndex() { return overnightIndex_; }
+        const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
         Spread spread() const { return spread_; }
 
         const Leg& fixedLeg() const { return legs_[0]; }
         const Leg& overnightLeg() const { return legs_[1]; }
+
+        RateAveraging::Type averagingMethod() const { return averagingMethod_; }
         //@}
 
         //! \name Results
@@ -112,6 +115,7 @@ namespace QuantLib {
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         Spread spread_;
         bool telescopicValueDates_;
+        RateAveraging::Type averagingMethod_;
     };
 
 

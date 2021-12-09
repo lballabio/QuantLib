@@ -65,7 +65,7 @@ namespace QuantLib {
       public:
         typedef typename EarlyExerciseTraits<PathType>::StateType StateType;
 
-        virtual ~EarlyExercisePathPricer() {}
+        virtual ~EarlyExercisePathPricer() = default;
         virtual ValueType operator()(const PathType& path,
                                      TimeType t) const = 0;
 

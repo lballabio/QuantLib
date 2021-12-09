@@ -16,26 +16,25 @@
  or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details. */
 
 #include <ql/experimental/coupons/swapspreadindex.hpp>
-
-#include <sstream>
 #include <iomanip>
+#include <sstream>
+#include <utility>
 
 namespace QuantLib {
 
-    SwapSpreadIndex::SwapSpreadIndex(
-        const std::string &familyName,
-        const ext::shared_ptr<SwapIndex> &swapIndex1,
-        const ext::shared_ptr<SwapIndex> &swapIndex2, const Real gearing1,
-        const Real gearing2)
-        : InterestRateIndex(
-              familyName,
-              swapIndex1
-                  ->tenor(), // does not make sense, but we have to provide one
-              swapIndex1->fixingDays(),
-              swapIndex1->currency(), swapIndex1->fixingCalendar(),
-              swapIndex1->dayCounter()),
-          swapIndex1_(swapIndex1), swapIndex2_(swapIndex2), gearing1_(gearing1),
-          gearing2_(gearing2) {
+    SwapSpreadIndex::SwapSpreadIndex(const std::string& familyName,
+                                     const ext::shared_ptr<SwapIndex>& swapIndex1,
+                                     ext::shared_ptr<SwapIndex> swapIndex2,
+                                     const Real gearing1,
+                                     const Real gearing2)
+    : InterestRateIndex(familyName,
+                        swapIndex1->tenor(), // does not make sense, but we have to provide one
+                        swapIndex1->fixingDays(),
+                        swapIndex1->currency(),
+                        swapIndex1->fixingCalendar(),
+                        swapIndex1->dayCounter()),
+      swapIndex1_(swapIndex1), swapIndex2_(std::move(swapIndex2)), gearing1_(gearing1),
+      gearing2_(gearing2) {
 
         registerWith(swapIndex1_);
         registerWith(swapIndex2_);

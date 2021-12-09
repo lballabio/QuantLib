@@ -58,16 +58,14 @@ namespace QuantLib {
         class arguments;
         class engine;
         YoYInflationCapFloor(Type type,
-                 const Leg& yoyLeg,
-                 const std::vector<Rate>& capRates,
-                 const std::vector<Rate>& floorRates);
-        YoYInflationCapFloor(Type type,
-                 const Leg& yoyLeg,
-                 const std::vector<Rate>& strikes);
+                             Leg yoyLeg,
+                             std::vector<Rate> capRates,
+                             std::vector<Rate> floorRates);
+        YoYInflationCapFloor(Type type, Leg yoyLeg, const std::vector<Rate>& strikes);
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
         //@}
         //! \name Inspectors
         //@{
@@ -148,7 +146,7 @@ namespace QuantLib {
         std::vector<Real> gearings;
         std::vector<Real> spreads;
         std::vector<Real> nominals;
-        void validate() const;
+        void validate() const override;
     };
 
     //! base class for cap/floor engines

@@ -31,6 +31,7 @@
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
 #include <ql/timegrid.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -47,7 +48,7 @@ namespace QuantLib {
         typedef typename McSimulation<MultiVariate,RNG,S>::stats_type
                                                                    stats_type;
         // constructor
-        MCPathBasketEngine(const ext::shared_ptr<StochasticProcessArray>&,
+        MCPathBasketEngine(ext::shared_ptr<StochasticProcessArray>,
                            Size timeSteps,
                            Size timeStepsPerYear,
                            bool brownianBridge,
@@ -58,7 +59,7 @@ namespace QuantLib {
                            Size maxSamples,
                            BigNatural seed);
 
-        void calculate() const {
+        void calculate() const override {
             McSimulation<MultiVariate,RNG,S>::calculate(requiredTolerance_,
                                                         requiredSamples_,
                                                         maxSamples_);
@@ -89,11 +90,12 @@ namespace QuantLib {
 
     class EuropeanPathMultiPathPricer : public PathPricer<MultiPath> {
       public:
-        EuropeanPathMultiPathPricer(ext::shared_ptr<PathPayoff> & payoff,
-                                    const std::vector<Size> & timePositions,
-                                    const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
-                                    const Array & discounts);
-        Real operator()(const MultiPath& multiPath) const;
+        EuropeanPathMultiPathPricer(ext::shared_ptr<PathPayoff>& payoff,
+                                    std::vector<Size> timePositions,
+                                    std::vector<Handle<YieldTermStructure> > forwardTermStructures,
+                                    Array discounts);
+        Real operator()(const MultiPath& multiPath) const override;
+
       private:
         ext::shared_ptr<PathPayoff> payoff_;
         std::vector<Size> timePositions_;
@@ -104,23 +106,22 @@ namespace QuantLib {
 
     // template definitions
 
-    template<class RNG, class S>
-    inline MCPathBasketEngine<RNG,S>::MCPathBasketEngine(
-             const ext::shared_ptr<StochasticProcessArray>& process,
-             Size timeSteps,
-             Size timeStepsPerYear,
-             bool brownianBridge,
-             bool antitheticVariate,
-             bool controlVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed)
-    : McSimulation<MultiVariate,RNG,S>(antitheticVariate, controlVariate),
-      process_(process), timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
+    template <class RNG, class S>
+    inline MCPathBasketEngine<RNG, S>::MCPathBasketEngine(
+        ext::shared_ptr<StochasticProcessArray> process,
+        Size timeSteps,
+        Size timeStepsPerYear,
+        bool brownianBridge,
+        bool antitheticVariate,
+        bool controlVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        BigNatural seed)
+    : McSimulation<MultiVariate, RNG, S>(antitheticVariate, controlVariate),
+      process_(std::move(process)), timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
-      requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge), seed_(seed) {
+      requiredTolerance_(requiredTolerance), brownianBridge_(brownianBridge), seed_(seed) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
                    timeStepsPerYear != Null<Size>(),
                    "no time steps provided");
@@ -221,8 +222,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCPathBasketEngine {
       public:
-        explicit MakeMCPathBasketEngine(
-                            const ext::shared_ptr<StochasticProcessArray>&);
+        explicit MakeMCPathBasketEngine(ext::shared_ptr<StochasticProcessArray>);
         // named parameters
         MakeMCPathBasketEngine& withSteps(Size steps);
         MakeMCPathBasketEngine& withStepsPerYear(Size steps);
@@ -245,13 +245,11 @@ namespace QuantLib {
     };
 
     template <class RNG, class S>
-    inline MakeMCPathBasketEngine<RNG,S>::MakeMCPathBasketEngine(
-        const ext::shared_ptr<StochasticProcessArray>& process)
-    : process_(process),
-      antithetic_(false), controlVariate_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
+    inline MakeMCPathBasketEngine<RNG, S>::MakeMCPathBasketEngine(
+        ext::shared_ptr<StochasticProcessArray> process)
+    : process_(std::move(process)), antithetic_(false), controlVariate_(false),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCPathBasketEngine<RNG,S>&

@@ -35,6 +35,13 @@ class ScheduleTest {
     static void testBackwardDatesWithEomAdjustment();
     static void testDoubleFirstDateWithEomAdjustment();
     static void testCDS2015Convention();
+    static void testCDS2015ConventionGrid();
+    static void testCDSConventionGrid();
+    static void testOldCDSConventionGrid();
+    static void testCDS2015ConventionSampleDates();
+    static void testCDSConventionSampleDates();
+    static void testOldCDSConventionSampleDates();
+    static void testCDS2015ZeroMonthsMatured();
     static void testDateConstructor();
     static void testFourWeeksTenor();
     static void testScheduleAlwaysHasAStartDate();

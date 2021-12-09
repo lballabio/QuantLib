@@ -1,0 +1,20 @@
+name: Check doc generation
+on: [push, pull_request]
+jobs:
+  docs:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup
+      run: |
+        rm -f /usr/local/bin/2to3
+        brew update
+        brew install automake boost doxygen graphviz
+        ./autogen.sh
+        ./configure
+    - name: Doxygen version
+      run: |
+        doxygen --version
+    - name: Check
+      run: |
+        make docs

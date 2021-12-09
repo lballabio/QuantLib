@@ -38,32 +38,31 @@ namespace QuantLib {
     */
     class SabrVolSurface : public InterestRateVolSurface {
       public:
-        SabrVolSurface(
-                const ext::shared_ptr<InterestRateIndex>&,
-                const Handle<BlackAtmVolCurve>&,
-                const std::vector<Period>& optionTenors,
-                const std::vector<Spread>& atmRateSpreads,
-                const std::vector<std::vector<Handle<Quote> > >& volSpreads);
+        SabrVolSurface(const ext::shared_ptr<InterestRateIndex>&,
+                       Handle<BlackAtmVolCurve>,
+                       const std::vector<Period>& optionTenors,
+                       std::vector<Spread> atmRateSpreads,
+                       std::vector<std::vector<Handle<Quote> > > volSpreads);
         //@}
         // All virtual methods of base classes must be forwarded
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Date maxDate() const;
-        Time maxTime() const;
-        const Date& referenceDate() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
+        DayCounter dayCounter() const override;
+        Date maxDate() const override;
+        Time maxTime() const override;
+        const Date& referenceDate() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
         const Handle<BlackAtmVolCurve>& atmCurve() const;
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
         std::vector<Volatility> volatilitySpreads(const Period&) const;
         std::vector<Volatility> volatilitySpreads(const Date&) const;
@@ -73,14 +72,14 @@ namespace QuantLib {
         //@}
         //! \name BlackVolSurface interface
         //@{
-        ext::shared_ptr<SmileSection> smileSectionImpl(Time) const;
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time) const override;
         //@}
       protected:
         //@}
         //! \name LazyObject interface
         //@{
         void performCalculations () const;
-        virtual void update();
+        void update() override;
         //@}
       private:
         void registerWithMarketData();

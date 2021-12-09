@@ -35,24 +35,24 @@ namespace QuantLib {
     class ForwardSwapQuote : public Quote,
                              public LazyObject {
       public:
-        ForwardSwapQuote(const ext::shared_ptr<SwapIndex>& swapIndex,
-                         const Handle<Quote>& spread,
+        ForwardSwapQuote(ext::shared_ptr<SwapIndex> swapIndex,
+                         Handle<Quote> spread,
                          const Period& fwdStart);
         //! \name Quote interface
         //@{
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
         const Date& valueDate() const;
         const Date& startDate() const;
         const Date& fixingDate() const;
       protected:
         void initializeDates();
-        void performCalculations() const;
+        void performCalculations() const override;
 
         ext::shared_ptr<SwapIndex> swapIndex_;
         Handle<Quote> spread_;

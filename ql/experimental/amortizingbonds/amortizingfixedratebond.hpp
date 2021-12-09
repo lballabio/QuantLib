@@ -26,6 +26,7 @@
 
 #include <ql/instruments/bond.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/interestrate.hpp>
 
 namespace QuantLib {
 
@@ -60,6 +61,17 @@ namespace QuantLib {
                                 const DayCounter& accrualDayCounter,
                                 BusinessDayConvention paymentConvention = Following,
                                 const Date& issueDate = Date());
+        AmortizingFixedRateBond(Natural settlementDays,
+                                const std::vector<Real>& notionals,
+                                const Schedule& schedule,
+                                const std::vector<InterestRate>& coupons,
+                                BusinessDayConvention paymentConvention = Following,
+                                const Date& issueDate = Date(),
+                                const Calendar& paymentCalendar = Calendar(),
+                                const Period& exCouponPeriod = Period(),
+                                const Calendar& exCouponCalendar = Calendar(),
+                                BusinessDayConvention exCouponConvention = Unadjusted,
+                                bool exCouponEndOfMonth = false);
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
       protected:

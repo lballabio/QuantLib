@@ -32,16 +32,16 @@ namespace QuantLib {
                          Size doneIndex = 0);
         //! \name MarketModelMultiProduct interface
         //@{
-        std::vector<Time> possibleCashFlowTimes() const;
-        Size numberOfProducts() const;
-        Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset();
+        std::vector<Time> possibleCashFlowTimes() const override;
+        Size numberOfProducts() const override;
+        Size maxNumberOfCashFlowsPerProductPerStep() const override;
+        void reset() override;
         bool nextTimeStep(const CurveState&,
                           std::vector<Size>&,
-                          std::vector<std::vector<CashFlow> >&);
-        #if defined(QL_USE_STD_UNIQUE_PTR)
-        std::unique_ptr<MarketModelMultiProduct> clone() const;
-        #else
+                          std::vector<std::vector<CashFlow> >&) override;
+#if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<MarketModelMultiProduct> clone() const override;
+#else
         std::auto_ptr<MarketModelMultiProduct> clone() const;
         #endif
         //@}

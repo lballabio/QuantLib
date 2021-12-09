@@ -71,23 +71,19 @@ namespace QuantLib {
 
     std::vector<Time> DiscretizedSwap::mandatoryTimes() const {
         std::vector<Time> times;
-        for (Size i=0; i<fixedResetTimes_.size(); i++) {
-            Time t = fixedResetTimes_[i];
+        for (double t : fixedResetTimes_) {
             if (t >= 0.0)
                 times.push_back(t);
         }
-        for (Size i=0; i<fixedPayTimes_.size(); i++) {
-            Time t = fixedPayTimes_[i];
+        for (double t : fixedPayTimes_) {
             if (t >= 0.0)
                 times.push_back(t);
         }
-        for (Size i=0; i<floatingResetTimes_.size(); i++) {
-            Time t = floatingResetTimes_[i];
+        for (double t : floatingResetTimes_) {
             if (t >= 0.0)
                 times.push_back(t);
         }
-        for (Size i=0; i<floatingPayTimes_.size(); i++) {
-            Time t = floatingPayTimes_[i];
+        for (double t : floatingPayTimes_) {
             if (t >= 0.0)
                 times.push_back(t);
         }
@@ -110,7 +106,7 @@ namespace QuantLib {
                 for (Size j=0; j<values_.size(); j++) {
                     Real coupon = nominal * (1.0 - bond.values()[j])
                                 + accruedSpread * bond.values()[j];
-                    if (arguments_.type == VanillaSwap::Payer)
+                    if (arguments_.type == Swap::Payer)
                         values_[j] += coupon;
                     else
                         values_[j] -= coupon;
@@ -128,7 +124,7 @@ namespace QuantLib {
                 Real fixedCoupon = arguments_.fixedCoupons[i];
                 for (Size j=0; j<values_.size(); j++) {
                     Real coupon = fixedCoupon*bond.values()[j];
-                    if (arguments_.type == VanillaSwap::Payer)
+                    if (arguments_.type == Swap::Payer)
                         values_[j] -= coupon;
                     else
                         values_[j] += coupon;
@@ -145,7 +141,7 @@ namespace QuantLib {
             Time reset = fixedResetTimes_[i];
             if (useCouponInPostAdjust(reset, t, includeTodaysCashFlows_) && isOnTime(t)) {
                 Real fixedCoupon = arguments_.fixedCoupons[i];
-                if (arguments_.type==VanillaSwap::Payer)
+                if (arguments_.type==Swap::Payer)
                     values_ -= fixedCoupon;
                 else
                     values_ += fixedCoupon;
@@ -160,7 +156,7 @@ namespace QuantLib {
                 Real currentFloatingCoupon = arguments_.floatingCoupons[i];
                 QL_REQUIRE(currentFloatingCoupon != Null<Real>(),
                            "current floating coupon not given");
-                if (arguments_.type == VanillaSwap::Payer)
+                if (arguments_.type == Swap::Payer)
                     values_ += currentFloatingCoupon;
                 else
                     values_ -= currentFloatingCoupon;

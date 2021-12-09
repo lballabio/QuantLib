@@ -34,12 +34,10 @@
 #include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 #include <ql/instruments/makecapfloor.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <boost/assign/std/vector.hpp>
 #include <algorithm>
 #include <iterator>
 
 using namespace QuantLib;
-using namespace boost::assign;
 using namespace boost::unit_test_framework;
 
 namespace optionlet_stripper_test {
@@ -95,25 +93,26 @@ struct CommonVars {
             calendar = TARGET();
             dayCounter = Actual365Fixed();
 
-            std::vector< int > datesTmp;
-            std::vector< Date > dates;
-            std::vector< Rate > rates;
-
-            datesTmp += 42124, 42129, 42143, 42221, 42254, 42282, 42313, 42345,
+            std::vector< int > datesTmp = {
+                42124, 42129, 42143, 42221, 42254, 42282, 42313, 42345,
                 42374, 42405, 42465, 42495, 42587, 42681, 42772, 42860, 43227,
                 43956, 44321, 44686, 45051, 45418, 45782, 46147, 46512, 47609,
-                49436, 51263, 53087, 56739, 60392;
+                49436, 51263, 53087, 56739, 60392
+            };
 
-            for (std::vector< int >::iterator it = datesTmp.begin();
-                 it != datesTmp.end(); ++it)
-                dates.push_back(Date(*it));
+            std::vector< Date > dates;
+            dates.reserve(datesTmp.size());
+            for (int& it : datesTmp)
+                dates.emplace_back(it);
 
-            rates += -0.00292, -0.00292, -0.001441, -0.00117, -0.001204,
+            std::vector< Rate > rates = {
+                -0.00292, -0.00292, -0.001441, -0.00117, -0.001204,
                 -0.001212, -0.001223, -0.001236, -0.001221, -0.001238,
                 -0.001262, -0.00125, -0.001256, -0.001233, -0.00118, -0.001108,
                 -0.000619, 0.000833, 0.001617, 0.002414, 0.003183, 0.003883,
                 0.004514, 0.005074, 0.005606, 0.006856, 0.00813, 0.008709,
-                0.009136, 0.009601, 0.009384;
+                0.009136, 0.009601, 0.009384
+            };
 
             discountingYTS.linkTo(
                 ext::make_shared< InterpolatedZeroCurve< Linear > >(
@@ -124,28 +123,30 @@ struct CommonVars {
             dates.clear();
             rates.clear();
 
-            datesTmp += 42124, 42313, 42436, 42556, 42618, 42800, 42830, 42860,
+            datesTmp = {
+                42124, 42313, 42436, 42556, 42618, 42800, 42830, 42860,
                 43227, 43591, 43956, 44321, 44686, 45051, 45418, 45782, 46147,
                 46512, 46878, 47245, 47609, 47973, 48339, 48704, 49069, 49436,
                 49800, 50165, 50530, 50895, 51263, 51627, 51991, 52356, 52722,
-                53087, 54913, 56739, 60392, 64045;
+                53087, 54913, 56739, 60392, 64045
+            };
 
-            for (std::vector< int >::iterator it = datesTmp.begin();
-                 it != datesTmp.end(); ++it)
-                dates.push_back(Date(*it));
+            for (int& it : datesTmp)
+                dates.emplace_back(it);
 
-            rates += 0.000649, 0.000649, 0.000684, 0.000717, 0.000745, 0.000872,
+            rates = {
+                0.000649, 0.000649, 0.000684, 0.000717, 0.000745, 0.000872,
                 0.000905, 0.000954, 0.001532, 0.002319, 0.003147, 0.003949,
                 0.004743, 0.00551, 0.006198, 0.006798, 0.007339, 0.007832,
                 0.008242, 0.008614, 0.008935, 0.009205, 0.009443, 0.009651,
                 0.009818, 0.009952, 0.010054, 0.010146, 0.010206, 0.010266,
                 0.010315, 0.010365, 0.010416, 0.010468, 0.010519, 0.010571,
-                0.010757, 0.010806, 0.010423, 0.010217;
+                0.010757, 0.010806, 0.010423, 0.010217
+            };
 
             forwardingYTS.linkTo(
                 ext::make_shared< InterpolatedZeroCurve< Linear > >(
-                    dates, rates,
-                                                        dayCounter, calendar));
+                    dates, rates, dayCounter, calendar));
         }
 
         void setFlatTermVolCurve() {
@@ -194,42 +195,45 @@ struct CommonVars {
           setTermStructure();
 
           //atm cap volatility curve
-          optionTenors = std::vector<Period>();
-          optionTenors.push_back(Period(1, Years));
-          optionTenors.push_back(Period(18, Months));
-          optionTenors.push_back(Period(2, Years));
-          optionTenors.push_back(Period(3, Years));
-          optionTenors.push_back(Period(4, Years));
-          optionTenors.push_back(Period(5, Years));
-          optionTenors.push_back(Period(6, Years));
-          optionTenors.push_back(Period(7, Years));
-          optionTenors.push_back(Period(8, Years));
-          optionTenors.push_back(Period(9, Years));
-          optionTenors.push_back(Period(10, Years));
-          optionTenors.push_back(Period(12, Years));
-          optionTenors.push_back(Period(15, Years));
-          optionTenors.push_back(Period(20, Years));
-          optionTenors.push_back(Period(25, Years));
-          optionTenors.push_back(Period(30, Years));
+          optionTenors = {
+              {1, Years},
+              {18, Months},
+              {2, Years},
+              {3, Years},
+              {4, Years},
+              {5, Years},
+              {6, Years},
+              {7, Years},
+              {8, Years},
+              {9, Years},
+              {10, Years},
+              {12, Years},
+              {15, Years},
+              {20, Years},
+              {25, Years},
+              {30, Years}
+          };
 
           //atm capfloor vols from mkt vol matrix using flat yield curve
-          atmTermV = std::vector<Volatility>();
-          atmTermV.push_back(0.090304);
-          atmTermV.push_back(0.12180);
-          atmTermV.push_back(0.13077);
-          atmTermV.push_back(0.14832);
-          atmTermV.push_back(0.15570);
-          atmTermV.push_back(0.15816);
-          atmTermV.push_back(0.15932);
-          atmTermV.push_back(0.16035);
-          atmTermV.push_back(0.15951);
-          atmTermV.push_back(0.15855);
-          atmTermV.push_back(0.15754);
-          atmTermV.push_back(0.15459);
-          atmTermV.push_back(0.15163);
-          atmTermV.push_back(0.14575);
-          atmTermV.push_back(0.14175);
-          atmTermV.push_back(0.13889);
+          atmTermV = {
+              0.090304,
+              0.12180,
+              0.13077,
+              0.14832,
+              0.15570,
+              0.15816,
+              0.15932,
+              0.16035,
+              0.15951,
+              0.15855,
+              0.15754,
+              0.15459,
+              0.15163,
+              0.14575,
+              0.14175,
+              0.13889
+          };
+
           atmTermVolHandle.resize(optionTenors.size());
           for (Size i=0; i<optionTenors.size(); ++i) {
             atmTermVolHandle[i] = Handle<Quote>(ext::shared_ptr<Quote>(new
@@ -248,38 +252,40 @@ struct CommonVars {
             setTermStructure();
 
             //cap volatility smile matrix
-            optionTenors = std::vector<Period>();
-            optionTenors.push_back(Period(1, Years));
-            optionTenors.push_back(Period(18, Months));
-            optionTenors.push_back(Period(2, Years));
-            optionTenors.push_back(Period(3, Years));
-            optionTenors.push_back(Period(4, Years));
-            optionTenors.push_back(Period(5, Years));
-            optionTenors.push_back(Period(6, Years));
-            optionTenors.push_back(Period(7, Years));
-            optionTenors.push_back(Period(8, Years));
-            optionTenors.push_back(Period(9, Years));
-            optionTenors.push_back(Period(10, Years));
-            optionTenors.push_back(Period(12, Years));
-            optionTenors.push_back(Period(15, Years));
-            optionTenors.push_back(Period(20, Years));
-            optionTenors.push_back(Period(25, Years));
-            optionTenors.push_back(Period(30, Years));
+            optionTenors = {
+                {1, Years},
+                {18, Months},
+                {2, Years},
+                {3, Years},
+                {4, Years},
+                {5, Years},
+                {6, Years},
+                {7, Years},
+                {8, Years},
+                {9, Years},
+                {10, Years},
+                {12, Years},
+                {15, Years},
+                {20, Years},
+                {25, Years},
+                {30, Years}
+            };
 
-            strikes = std::vector<Rate>();
-            strikes.push_back(0.015);
-            strikes.push_back(0.0175);
-            strikes.push_back(0.02);
-            strikes.push_back(0.0225);
-            strikes.push_back(0.025);
-            strikes.push_back(0.03);
-            strikes.push_back(0.035);
-            strikes.push_back(0.04);
-            strikes.push_back(0.05);
-            strikes.push_back(0.06);
-            strikes.push_back(0.07);
-            strikes.push_back(0.08);
-            strikes.push_back(0.1);
+            strikes = {
+                0.015,
+                0.0175,
+                0.02,
+                0.0225,
+                0.025,
+                0.03,
+                0.035,
+                0.04,
+                0.05,
+                0.06,
+                0.07,
+                0.08,
+                0.1
+            };
 
             termV = Matrix(optionTenors.size(), strikes.size());
             termV[0][0]=0.287;  termV[0][1]=0.274;  termV[0][2]=0.256;  termV[0][3]=0.245;  termV[0][4]=0.227;  termV[0][5]=0.148;  termV[0][6]=0.096;  termV[0][7]=0.09;   termV[0][8]=0.11;   termV[0][9]=0.139;  termV[0][10]=0.166;  termV[0][11]=0.19;   termV[0][12]=0.214;
@@ -309,58 +315,61 @@ struct CommonVars {
             setRealTermStructure();
 
             // cap volatility smile matrix
-            optionTenors = std::vector< Period >();
-            optionTenors.push_back(Period(1, Years));
-            optionTenors.push_back(Period(18, Months));
-            optionTenors.push_back(Period(2, Years));
-            optionTenors.push_back(Period(3, Years));
-            optionTenors.push_back(Period(4, Years));
-            optionTenors.push_back(Period(5, Years));
-            optionTenors.push_back(Period(6, Years));
-            optionTenors.push_back(Period(7, Years));
-            optionTenors.push_back(Period(8, Years));
-            optionTenors.push_back(Period(9, Years));
-            optionTenors.push_back(Period(10, Years));
-            optionTenors.push_back(Period(12, Years));
-            optionTenors.push_back(Period(15, Years));
-            optionTenors.push_back(Period(20, Years));
-            optionTenors.push_back(Period(25, Years));
-            optionTenors.push_back(Period(30, Years));
+            optionTenors = {
+                {1, Years},
+                {18, Months},
+                {2, Years},
+                {3, Years},
+                {4, Years},
+                {5, Years},
+                {6, Years},
+                {7, Years},
+                {8, Years},
+                {9, Years},
+                {10, Years},
+                {12, Years},
+                {15, Years},
+                {20, Years},
+                {25, Years},
+                {30, Years}
+            };
             // 16
 
-            strikes = std::vector< Rate >();
-            strikes.push_back(-0.005);
-            strikes.push_back(-0.0025);
-            strikes.push_back(-0.00125);
-            strikes.push_back(0.0);
-            strikes.push_back(0.00125);
-            strikes.push_back(0.0025);
-            strikes.push_back(0.005);
-            strikes.push_back(0.01);
-            strikes.push_back(0.015);
-            strikes.push_back(0.02);
-            strikes.push_back(0.03);
-            strikes.push_back(0.05);
-            strikes.push_back(0.1);
+            strikes = {
+                -0.005,
+                -0.0025,
+                -0.00125,
+                0.0,
+                0.00125,
+                0.0025,
+                0.005,
+                0.01,
+                0.015,
+                0.02,
+                0.03,
+                0.05,
+                0.1
+            };
             // 13
 
-            std::vector< Real > rawVols;
-            rawVols += 0.49, 0.39, 0.34, 0.31, 0.34, 0.37, 0.50, 0.75, 0.99, 1.21, 1.64, 2.44, 4.29, 
-                       0.44, 0.36, 0.33, 0.31, 0.33, 0.35,0.45, 0.65, 0.83, 1.00, 1.32, 1.93, 3.30, 
-                       0.40, 0.35, 0.33,0.31, 0.33, 0.34, 0.41, 0.55, 0.69, 0.82, 1.08, 1.56, 2.68,
-                       0.42, 0.39, 0.38, 0.37, 0.38, 0.39, 0.43, 0.54, 0.64, 0.74,0.94, 1.31, 2.18, 
-                       0.46, 0.43, 0.42, 0.41, 0.42, 0.43, 0.47,0.56, 0.66, 0.75, 0.93, 1.28, 2.07, 
-                       0.49, 0.47, 0.46, 0.45,0.46, 0.47, 0.51, 0.59, 0.68, 0.76, 0.93, 1.25, 1.99, 
-                       0.51, 0.49, 0.49, 0.48, 0.49, 0.50, 0.54, 0.62, 0.70, 0.78, 0.94,1.24, 1.94, 
-                       0.52, 0.51, 0.51, 0.51, 0.52, 0.53, 0.56, 0.63,0.71, 0.79, 0.94, 1.23, 1.89, 
-                       0.53, 0.52, 0.52, 0.52, 0.53,0.54, 0.57, 0.65, 0.72, 0.79, 0.94, 1.21, 1.83, 
-                       0.55, 0.54, 0.54, 0.54, 0.55, 0.56, 0.59, 0.66, 0.72, 0.79, 0.91, 1.15,1.71, 
-                       0.56, 0.56, 0.56, 0.56, 0.57, 0.58, 0.61, 0.67, 0.72,0.78, 0.89, 1.09, 1.59, 
-                       0.59, 0.58, 0.58, 0.59, 0.59, 0.60,0.63, 0.68, 0.73, 0.78, 0.86, 1.03, 1.45, 
-                       0.61, 0.61, 0.61,0.61, 0.62, 0.62, 0.64, 0.69, 0.73, 0.77, 0.85, 1.02, 1.44,
-                       0.62, 0.62, 0.63, 0.63, 0.64, 0.64, 0.65, 0.69, 0.72, 0.76,0.82, 0.96, 1.32, 
-                       0.62, 0.63, 0.63, 0.63, 0.65, 0.66, 0.66,0.68, 0.72, 0.74, 0.80, 0.93, 1.25, 
-                       0.62, 0.62, 0.62, 0.62,0.66, 0.67, 0.67, 0.67, 0.72, 0.72, 0.78, 0.90, 1.25;
+            std::vector< Real > rawVols = {
+                0.49, 0.39, 0.34, 0.31, 0.34, 0.37, 0.50, 0.75, 0.99, 1.21, 1.64, 2.44, 4.29,
+                0.44, 0.36, 0.33, 0.31, 0.33, 0.35,0.45, 0.65, 0.83, 1.00, 1.32, 1.93, 3.30,
+                0.40, 0.35, 0.33,0.31, 0.33, 0.34, 0.41, 0.55, 0.69, 0.82, 1.08, 1.56, 2.68,
+                0.42, 0.39, 0.38, 0.37, 0.38, 0.39, 0.43, 0.54, 0.64, 0.74,0.94, 1.31, 2.18,
+                0.46, 0.43, 0.42, 0.41, 0.42, 0.43, 0.47,0.56, 0.66, 0.75, 0.93, 1.28, 2.07,
+                0.49, 0.47, 0.46, 0.45,0.46, 0.47, 0.51, 0.59, 0.68, 0.76, 0.93, 1.25, 1.99,
+                0.51, 0.49, 0.49, 0.48, 0.49, 0.50, 0.54, 0.62, 0.70, 0.78, 0.94,1.24, 1.94,
+                0.52, 0.51, 0.51, 0.51, 0.52, 0.53, 0.56, 0.63,0.71, 0.79, 0.94, 1.23, 1.89,
+                0.53, 0.52, 0.52, 0.52, 0.53,0.54, 0.57, 0.65, 0.72, 0.79, 0.94, 1.21, 1.83,
+                0.55, 0.54, 0.54, 0.54, 0.55, 0.56, 0.59, 0.66, 0.72, 0.79, 0.91, 1.15,1.71,
+                0.56, 0.56, 0.56, 0.56, 0.57, 0.58, 0.61, 0.67, 0.72,0.78, 0.89, 1.09, 1.59,
+                0.59, 0.58, 0.58, 0.59, 0.59, 0.60,0.63, 0.68, 0.73, 0.78, 0.86, 1.03, 1.45,
+                0.61, 0.61, 0.61,0.61, 0.62, 0.62, 0.64, 0.69, 0.73, 0.77, 0.85, 1.02, 1.44,
+                0.62, 0.62, 0.63, 0.63, 0.64, 0.64, 0.65, 0.69, 0.72, 0.76,0.82, 0.96, 1.32,
+                0.62, 0.63, 0.63, 0.63, 0.65, 0.66, 0.66,0.68, 0.72, 0.74, 0.80, 0.93, 1.25,
+                0.62, 0.62, 0.62, 0.62,0.66, 0.67, 0.67, 0.67, 0.72, 0.72, 0.78, 0.90, 1.25
+            };
 
             termV = Matrix(optionTenors.size(), strikes.size());
             std::copy(rawVols.begin(), rawVols.end(), termV.begin());
@@ -780,6 +789,8 @@ void OptionletStripperTest::testSwitchStrike() {
 
     using namespace optionlet_stripper_test;
 
+    bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
+
     CommonVars vars;
     Settings::instance().evaluationDate() = Date(28, October, 2013);
     vars.setCapFloorTermVolSurface();
@@ -794,12 +805,8 @@ void OptionletStripperTest::testSwitchStrike() {
         new OptionletStripper1(vars.capFloorVolSurface, iborIndex,
                                Null< Rate >(), vars.accuracy));
 
-    Real expected;
-    if (!IborCoupon::usingAtParCoupons())
-        expected = 0.02981258;
-    else
-        expected = 0.02981223;
-    
+    Real expected = usingAtParCoupons ? 0.02981223 : 0.02981258;
+
     Real error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)
         BOOST_FAIL("\nSwitchstrike not correctly computed:  "
@@ -812,10 +819,7 @@ void OptionletStripperTest::testSwitchStrike() {
     yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
         0, vars.calendar, 0.05, vars.dayCounter));
 
-    if (!IborCoupon::usingAtParCoupons())
-        expected = 0.0499381;
-    else
-        expected = 0.0499371;
+    expected = usingAtParCoupons ? 0.0499371 : 0.0499381;
 
     error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)
@@ -828,7 +832,7 @@ void OptionletStripperTest::testSwitchStrike() {
 }
 
 test_suite* OptionletStripperTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("OptionletStripper Tests");
+    auto* suite = BOOST_TEST_SUITE("OptionletStripper Tests");
     suite->add(QUANTLIB_TEST_CASE(
                    &OptionletStripperTest::testFlatTermVolatilityStripping1));
     suite->add(QUANTLIB_TEST_CASE(

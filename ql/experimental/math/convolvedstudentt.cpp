@@ -23,7 +23,6 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/functional.hpp>
 
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic push
@@ -36,21 +35,16 @@
 
 namespace QuantLib {
 
-    CumulativeBehrensFisher::CumulativeBehrensFisher(
-        const std::vector<Integer>& degreesFreedom,
-        const std::vector<Real>& factors
-        )
-    : degreesFreedom_(degreesFreedom), factors_(factors),
-      polyConvolved_(std::vector<Real>(1, 1.)), // value to start convolution
-      a_(0.)
+    CumulativeBehrensFisher::CumulativeBehrensFisher(const std::vector<Integer>& degreesFreedom,
+                                                     const std::vector<Real>& factors)
+    : degreesFreedom_(degreesFreedom), factors_(factors), polyConvolved_(std::vector<Real>(1, 1.))
+
     {
         QL_REQUIRE(degreesFreedom.size() == factors.size(),
             "Incompatible sizes in convolution.");
-        for(Size i=0; i<degreesFreedom.size(); i++) {
-            QL_REQUIRE(degreesFreedom[i]%2 != 0,
-                "Even degree of freedom not allowed");
-            QL_REQUIRE(degreesFreedom[i] >= 0,
-                "Negative degree of freedom not allowed");
+        for (int i : degreesFreedom) {
+            QL_REQUIRE(i % 2 != 0, "Even degree of freedom not allowed");
+            QL_REQUIRE(i >= 0, "Negative degree of freedom not allowed");
         }
         for(Size i=0; i<degreesFreedom_.size(); i++)
             polynCharFnc_.push_back(polynCharactT((degreesFreedom[i]-1)/2));
@@ -64,13 +58,12 @@ namespace QuantLib {
             }
         }
         //convolution, here it is a product of polynomials and exponentials
-        for(Size i=0; i<polynCharFnc_.size(); i++)
-            polyConvolved_ =
-                convolveVectorPolynomials(polyConvolved_, polynCharFnc_[i]);
-          // trim possible zeros that might have arised:
-          std::vector<Real>::reverse_iterator it = polyConvolved_.rbegin();
-          while(it != polyConvolved_.rend()) {
-              if(*it == 0.) {
+        for (auto& i : polynCharFnc_)
+            polyConvolved_ = convolveVectorPolynomials(polyConvolved_, i);
+        // trim possible zeros that might have arised:
+        auto it = polyConvolved_.rbegin();
+        while (it != polyConvolved_.rend()) {
+            if (*it == 0.) {
                 polyConvolved_.pop_back();
                 it = polyConvolved_.rbegin();
               }else{
@@ -171,8 +164,6 @@ namespace QuantLib {
       accuracy_(accuracy), distrib_(degreesFreedom, factors) { }
 
     Real InverseCumulativeBehrensFisher::operator()(const Probability q) const {
-        using namespace ext::placeholders;
-
         Probability effectiveq;
         Real sign;
         // since the distrib is symmetric solve only on the right side:
@@ -191,10 +182,8 @@ namespace QuantLib {
         // (q is very close to 1.), in a bad combination fails around 1.-1.e-7
         Real xMax = 1.e6;
         return sign *
-            Brent().solve(ext::bind(subtract<Real>(effectiveq),
-                                      ext::bind(
-                &CumulativeBehrensFisher::operator(),
-                distrib_, _1)), accuracy_, (xMin+xMax)/2., xMin, xMax);
+            Brent().solve([&](Real x){ return distrib_(x) - effectiveq; },
+                          accuracy_, (xMin+xMax)/2., xMin, xMax);
     }
 
 }

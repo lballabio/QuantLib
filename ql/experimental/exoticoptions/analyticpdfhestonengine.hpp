@@ -49,10 +49,10 @@ namespace QuantLib {
                                    VanillaOption::arguments,
                                    VanillaOption::results> {
       public:
-        explicit AnalyticPDFHestonEngine(const ext::shared_ptr<HestonModel>& model,
+        explicit AnalyticPDFHestonEngine(ext::shared_ptr<HestonModel> model,
                                          Real gaussLobattoEps = 1e-6,
                                          Size gaussLobattoIntegrationOrder = 10000UL);
-        void calculate() const;
+        void calculate() const override;
 
 
         // probability in x_t = ln(s_t)

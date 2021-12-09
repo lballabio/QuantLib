@@ -24,12 +24,13 @@
 #ifndef quantlib_catbond_hpp
 #define quantlib_catbond_hpp
 
+#include <ql/experimental/catbonds/catrisk.hpp>
+#include <ql/experimental/catbonds/riskynotional.hpp>
+#include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/bond.hpp>
 #include <ql/time/dategenerationrule.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/indexes/iborindex.hpp>
-#include <ql/experimental/catbonds/catrisk.hpp>
-#include <ql/experimental/catbonds/riskynotional.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -43,12 +44,12 @@ namespace QuantLib {
         CatBond(Natural settlementDays,
                 const Calendar& calendar,
                 const Date& issueDate,
-                const ext::shared_ptr<NotionalRisk>& notionalRisk)
-        : Bond(settlementDays, calendar, issueDate), notionalRisk_(notionalRisk) {}
-        virtual ~CatBond() {}
+                ext::shared_ptr<NotionalRisk> notionalRisk)
+        : Bond(settlementDays, calendar, issueDate), notionalRisk_(std::move(notionalRisk)) {}
+        ~CatBond() override = default;
 
-        virtual void setupArguments(PricingEngine::arguments*) const;
-        virtual void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results*) const override;
 
         Real lossProbability() const { return lossProbability_; }
         Real expectedLoss() const { return expectedLoss_; }
@@ -66,7 +67,7 @@ namespace QuantLib {
       public:
         Date startDate;
         ext::shared_ptr<NotionalRisk> notionalRisk;
-        void validate() const;
+        void validate() const override;
     };
 
     //! results for a cat bond calculation

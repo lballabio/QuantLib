@@ -32,10 +32,8 @@
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
-#include <boost/assign/std/vector.hpp>
 
 using namespace QuantLib;
-using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
 
 void FdCIRTest::testFdmCIRConvergence() {
@@ -97,9 +95,9 @@ void FdCIRTest::testFdmCIRConvergence() {
     Real expected = 4.275;
     Real tolerance = 0.0003;
 
-    for (Size l=0; l < LENGTH(schemes); ++l) {
-        ext::shared_ptr<PricingEngine> fdcirengine = MakeFdCIRVanillaEngine(cirProcess, bsmProcess, rho)
-            .withFdmSchemeDesc(schemes[l]);
+    for (const auto& scheme : schemes) {
+        ext::shared_ptr<PricingEngine> fdcirengine =
+            MakeFdCIRVanillaEngine(cirProcess, bsmProcess, rho).withFdmSchemeDesc(scheme);
         europeanOption.setPricingEngine(fdcirengine);
         Real calculated = europeanOption.NPV();
         if (std::fabs(expected - calculated) > tolerance) {
@@ -109,11 +107,10 @@ void FdCIRTest::testFdmCIRConvergence() {
                             << "\n    tolerance:  " << tolerance);
         }
     }
-
 }
 
 test_suite* FdCIRTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Finite Difference CIR tests");
+    auto* suite = BOOST_TEST_SUITE("Finite Difference CIR tests");
 
     suite->add(QUANTLIB_TEST_CASE(&FdCIRTest::testFdmCIRConvergence));
 

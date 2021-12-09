@@ -92,7 +92,7 @@ namespace capfloored_coupon_test {
             std::vector<Rate> coupons(length, 0.0);
             return FixedRateLeg(schedule)
                 .withNotionals(nominals)
-                .withCouponRates(coupons, Thirty360());
+                .withCouponRates(coupons, Thirty360(Thirty360::BondBasis));
         }
 
         Leg makeFloatingLeg(const Date& startDate,
@@ -253,9 +253,9 @@ void CapFlooredCouponTest::testDecomposition() {
     std::vector<Rate> floors(vars.length,floorstrike);
     std::vector<Rate> floors0 = std::vector<Rate>();
     Rate gearing_p = Rate(0.5);
-    Spread spread_p = Spread(0.002);
+    auto spread_p = Spread(0.002);
     Rate gearing_n = Rate(-1.5);
-    Spread spread_n = Spread(0.12);
+    auto spread_n = Spread(0.12);
     // fixed leg with zero rate
     Leg fixedLeg  =
         vars.makeFixedLeg(vars.startDate,vars.length);
@@ -548,7 +548,7 @@ void CapFlooredCouponTest::testDecomposition() {
 }
 
 test_suite* CapFlooredCouponTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Capped and floored coupon tests");
+    auto* suite = BOOST_TEST_SUITE("Capped and floored coupon tests");
     suite->add(QUANTLIB_TEST_CASE(&CapFlooredCouponTest::testLargeRates));
     suite->add(QUANTLIB_TEST_CASE(&CapFlooredCouponTest::testDecomposition));
     return suite;

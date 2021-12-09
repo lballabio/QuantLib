@@ -65,32 +65,31 @@ namespace QuantLib {
     */
     class CPISwap : public Swap {
       public:
-        enum Type { Receiver = -1, Payer = 1 };
         class arguments;
         class results;
         class engine;
 
+        /*! In this swap, the type (Payer or Receiver) refers to the floating leg. */
         CPISwap(Type type,
                 Real nominal,
                 bool subtractInflationNominal,
                 // float+spread leg
                 Spread spread,
-                const DayCounter& floatDayCount,
-                const Schedule& floatSchedule,
+                DayCounter floatDayCount,
+                Schedule floatSchedule,
                 const BusinessDayConvention& floatRoll,
                 Natural fixingDays,
-                const ext::shared_ptr<IborIndex>& floatIndex,
+                ext::shared_ptr<IborIndex> floatIndex,
                 // fixed x inflation leg
                 Rate fixedRate,
                 Real baseCPI,
-                const DayCounter& fixedDayCount,
-                const Schedule& fixedSchedule,
+                DayCounter fixedDayCount,
+                Schedule fixedSchedule,
                 const BusinessDayConvention& fixedRoll,
                 const Period& observationLag,
-                const ext::shared_ptr<ZeroInflationIndex>& fixedIndex,
+                ext::shared_ptr<ZeroInflationIndex> fixedIndex,
                 CPI::InterpolationType observationInterpolation = CPI::AsIndex,
-                Real inflationNominal = Null<Real>()
-                );
+                Real inflationNominal = Null<Real>());
 
         // results
         // float+spread
@@ -129,11 +128,11 @@ namespace QuantLib {
         virtual const Leg& floatLeg() const;
 
         // other
-        void setupArguments(PricingEngine::arguments* args) const;
-        void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments* args) const override;
+        void fetchResults(const PricingEngine::results*) const override;
 
       private:
-        void setupExpired() const;
+        void setupExpired() const override;
 
         Type type_;
         Real nominal_;
@@ -167,12 +166,11 @@ namespace QuantLib {
     //! %Arguments for swap calculation
     class CPISwap::arguments : public Swap::arguments {
     public:
-        arguments() : type(Receiver),
-        nominal(Null<Real>()) {}
-        Type type;
-        Real nominal;
+      arguments() : nominal(Null<Real>()) {}
+      Type type = Receiver;
+      Real nominal;
 
-        void validate() const;
+      void validate() const override;
     };
 
     //! %Results from swap calculation
@@ -180,7 +178,7 @@ namespace QuantLib {
     public:
         Rate fairRate;
         Spread fairSpread;
-        void reset();
+        void reset() override;
     };
 
     class CPISwap::engine : public GenericEngine<CPISwap::arguments,
@@ -190,7 +188,7 @@ namespace QuantLib {
     // inline definitions
 
     // inspectors
-    inline  CPISwap::Type CPISwap::type() const { return type_; }
+    inline  Swap::Type CPISwap::type() const { return type_; }
     inline  Real CPISwap::nominal() const { return nominal_; }
     inline  bool CPISwap::subtractInflationNominal() const { return subtractInflationNominal_; }
 
@@ -220,8 +218,6 @@ namespace QuantLib {
     inline const Leg& CPISwap::floatLeg() const {
         return legs_[1];
     }
-
-    std::ostream& operator<<(std::ostream& out, CPISwap::Type t);
 
 }
 

@@ -26,7 +26,7 @@ namespace QuantLib {
 
     class AlphaForm {
       public:
-        virtual ~AlphaForm() {}
+        virtual ~AlphaForm() = default;
         virtual Real operator()(Integer i) const=0;
         virtual void setAlpha(Real alpha)=0;
     };

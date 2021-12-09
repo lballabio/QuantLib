@@ -19,11 +19,11 @@
 
 #include <ql/quotes/lastfixingquote.hpp>
 #include <ql/settings.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    LastFixingQuote::LastFixingQuote(const ext::shared_ptr<Index>& index)
-    : index_(index) {
+    LastFixingQuote::LastFixingQuote(ext::shared_ptr<Index> index) : index_(std::move(index)) {
         registerWith(index_);
     }
 

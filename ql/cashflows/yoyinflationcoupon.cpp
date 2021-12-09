@@ -18,10 +18,11 @@
  */
 
 
-#include <ql/cashflows/inflationcouponpricer.hpp>
-#include <ql/cashflows/inflationcoupon.hpp>
 #include <ql/cashflows/capflooredinflationcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/inflationcoupon.hpp>
+#include <ql/cashflows/inflationcouponpricer.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -45,9 +46,8 @@ namespace QuantLib {
 
 
     void YoYInflationCoupon::accept(AcyclicVisitor& v) {
-        Visitor<YoYInflationCoupon>* v1 =
-        dynamic_cast<Visitor<YoYInflationCoupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<YoYInflationCoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             InflationCoupon::accept(v);
@@ -61,15 +61,12 @@ namespace QuantLib {
     }
 
 
-
-    yoyInflationLeg::
-    yoyInflationLeg(const Schedule& schedule, const Calendar& paymentCalendar,
-                    const ext::shared_ptr<YoYInflationIndex>& index,
-                    const Period& observationLag)
-    : schedule_(schedule), index_(index),
-      observationLag_(observationLag),
-      paymentAdjustment_(ModifiedFollowing),
-      paymentCalendar_(paymentCalendar) {}
+    yoyInflationLeg::yoyInflationLeg(Schedule schedule,
+                                     Calendar paymentCalendar,
+                                     ext::shared_ptr<YoYInflationIndex> index,
+                                     const Period& observationLag)
+    : schedule_(std::move(schedule)), index_(std::move(index)), observationLag_(observationLag),
+      paymentAdjustment_(ModifiedFollowing), paymentCalendar_(std::move(paymentCalendar)) {}
 
 
     yoyInflationLeg& yoyInflationLeg::withNotionals(Real notional) {
@@ -183,17 +180,16 @@ namespace QuantLib {
                 refEnd = schedule_.calendar().adjust(start + schedule_.tenor(), bdc);
             }
             if (detail::get(gearings_, i, 1.0) == 0.0) { // fixed coupon
-                leg.push_back(ext::shared_ptr<CashFlow>(new
-                            FixedRateCoupon(paymentDate,
+                leg.push_back(ext::make_shared<FixedRateCoupon>(
+                            paymentDate,
                             detail::get(notionals_, i, 1.0),
                             detail::effectiveFixedRate(spreads_,caps_,
-                                    floors_,i),
-                                    paymentDayCounter_,
-                                    start, end, refStart, refEnd)));
+                                                       floors_,i),
+                            paymentDayCounter_,
+                            start, end, refStart, refEnd));
             } else { // yoy inflation coupon
                 if (detail::noOption(caps_, floors_, i)) { // just swaplet
-                    ext::shared_ptr<YoYInflationCoupon> coup(new
-                            YoYInflationCoupon(
+                    leg.push_back(ext::make_shared<YoYInflationCoupon>(
                             paymentDate,
                             detail::get(notionals_, i, 1.0),
                             start, end,
@@ -204,20 +200,8 @@ namespace QuantLib {
                             detail::get(gearings_, i, 1.0),
                             detail::get(spreads_, i, 0.0),
                             refStart, refEnd));
-
-                    // in this case you can set a pricer
-                    // straight away because it only provides computation - not data
-                    ext::shared_ptr<YoYInflationCouponPricer> pricer =
-                        ext::make_shared<YoYInflationCouponPricer>(Handle<YoYOptionletVolatilitySurface>(),
-                                                                   Handle<YieldTermStructure>());
-                    coup->setPricer(pricer);
-                    leg.push_back(ext::dynamic_pointer_cast<CashFlow>(coup));
-
-
-
                 } else {    // cap/floorlet
-                    leg.push_back(ext::shared_ptr<CashFlow>(new
-                            CappedFlooredYoYInflationCoupon(
+                    leg.push_back(ext::make_shared<CappedFlooredYoYInflationCoupon>(
                             paymentDate,
                             detail::get(notionals_, i, 1.0),
                             start, end,
@@ -229,18 +213,18 @@ namespace QuantLib {
                             detail::get(spreads_, i, 0.0),
                             detail::get(caps_,   i, Null<Rate>()),
                             detail::get(floors_, i, Null<Rate>()),
-                            refStart, refEnd)));
+                            refStart, refEnd));
                 }
             }
         }
 
+        // Without caps or floors, this is enough; otherwise, a more
+        // specific pricer will need to be set in client code.
+        if (caps_.empty() && floors_.empty())
+            setCouponPricer(leg, ext::make_shared<YoYInflationCouponPricer>());
+
         return leg;
     }
-
-
-
-
-
 
 }
 

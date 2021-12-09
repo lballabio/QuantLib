@@ -18,31 +18,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
-#include <ql/functional.hpp>
+#include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    AmericanBasketPathPricer::AmericanBasketPathPricer(
-        Size assetNumber,
-        const ext::shared_ptr<Payoff>& payoff,
-        Size polynomOrder,
-        LsmBasisSystem::PolynomType polynomType)
-    : assetNumber_ (assetNumber),
-      payoff_      (payoff),
-      scalingValue_(1.0),
-      v_           (LsmBasisSystem::multiPathBasisSystem(assetNumber_,
-                                                         polynomOrder,
-                                                         polynomType)) {
+    AmericanBasketPathPricer::AmericanBasketPathPricer(Size assetNumber,
+                                                       ext::shared_ptr<Payoff> payoff,
+                                                       Size polynomOrder,
+                                                       LsmBasisSystem::PolynomType polynomType)
+    : assetNumber_(assetNumber), payoff_(std::move(payoff)), scalingValue_(1.0),
+      v_(LsmBasisSystem::multiPathBasisSystem(assetNumber_, polynomOrder, polynomType)) {
         QL_REQUIRE(   polynomType == LsmBasisSystem::Monomial
                    || polynomType == LsmBasisSystem::Laguerre
                    || polynomType == LsmBasisSystem::Hermite
                    || polynomType == LsmBasisSystem::Hyperbolic
                    || polynomType == LsmBasisSystem::Chebyshev2nd,
                    "insufficient polynom type");
-        using namespace ext::placeholders;
+
         const ext::shared_ptr<BasketPayoff> basketPayoff
             = ext::dynamic_pointer_cast<BasketPayoff>(payoff_);
         QL_REQUIRE(basketPayoff, "payoff not a basket payoff");
@@ -50,12 +45,11 @@ namespace QuantLib {
         const ext::shared_ptr<StrikedTypePayoff> strikePayoff
             = ext::dynamic_pointer_cast<StrikedTypePayoff>(basketPayoff->basePayoff());
 
-        if (strikePayoff != 0) {
+        if (strikePayoff != nullptr) {
             scalingValue_/=strikePayoff->strike();
         }
 
-        v_.push_back(ext::bind(&AmericanBasketPathPricer::payoff,
-                                 this, _1));
+        v_.emplace_back([&](const Array& state) { return this->payoff(state); });
     }
 
     Array AmericanBasketPathPricer::state(const MultiPath& path,

@@ -24,6 +24,7 @@
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <cmath>
 
 using std::exp;
 using std::fabs;
@@ -61,7 +62,7 @@ namespace QuantLib {
             Date expiry = exercise->date(i);
             Real rebate = 0.0;
             Date rebateDate = expiry;
-            if (rebEx != NULL) {
+            if (rebEx != nullptr) {
                 rebate = rebEx->rebate(i);
                 rebateDate = rebEx->rebatePaymentDate(i);
             }
@@ -76,7 +77,7 @@ namespace QuantLib {
                 ext::shared_ptr<SmileSection> sec =
                     swaptionVolatility->smileSection(
                         expiry,
-                        static_cast<Size>(swapLength * 12.0 + 0.5) * Months,
+                        static_cast<Size>(std::lround(swapLength * 12.0)) * Months,
                         true);
                 Real atmStrike = sec->atmLevel();
                 Real atmVol;

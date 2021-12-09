@@ -73,9 +73,6 @@ using namespace boost::unit_test_framework;
 using std::fabs;
 using std::sqrt;
 
-#define BEGIN(x) (x+0)
-#define END(x) (x+LENGTH(x))
-
 namespace market_model_smm_caplet_homo_calibration_test {
 
     Date todaysDate_, startDate_, endDate_;
@@ -401,9 +398,7 @@ void MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction()
     std::vector<PiecewiseConstantAbcdVariance >
                                     swapVariances;
     for (Size i=0; i<numberBigRates; ++i) {
-        swapVariances.push_back(
-            PiecewiseConstantAbcdVariance(a_, b_, c_, d_,
-                                          i, bigRateTimes));
+        swapVariances.emplace_back(a_, b_, c_, d_, i, bigRateTimes);
     }
 
     VolatilityInterpolationSpecifierabcd varianceInterpolator(period, offset, swapVariances, // these should be associated with the long rates
@@ -633,16 +628,13 @@ void MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder() {
 
 // --- Call the desired tests
 test_suite* MarketModelSmmCapletHomoCalibrationTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("SMM Caplet homogeneous calibration test");
+    auto* suite = BOOST_TEST_SUITE("SMM Caplet homogeneous calibration test");
 
-    #if !defined(QL_NO_UBLAS_SUPPORT)
     suite->add(QUANTLIB_TEST_CASE(
                      &MarketModelSmmCapletHomoCalibrationTest::testFunction));
     suite->add(QUANTLIB_TEST_CASE(
                &MarketModelSmmCapletHomoCalibrationTest::testPeriodFunction));
-    #endif
 
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(
                &MarketModelSmmCapletHomoCalibrationTest::testSphereCylinder));
 

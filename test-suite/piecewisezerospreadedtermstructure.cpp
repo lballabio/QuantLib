@@ -86,15 +86,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationLeft() {
 
     CommonVars vars;
 
-    std::vector<Handle<Quote> > spreads;
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
     ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
-    spreads.push_back(Handle<Quote>(spread1));
-    spreads.push_back(Handle<Quote>(spread2));
+    std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
-    std::vector<Date> spreadDates;
-    spreadDates.push_back(vars.calendar.advance(vars.today, 8,  Months));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 15, Months));
+    std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 8, Months),
+                                     vars.calendar.advance(vars.today, 15, Months)};
 
     Date interpolationDate = vars.calendar.advance(vars.today, 6, Months);
 
@@ -127,15 +124,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationRight() {
 
     CommonVars vars;
 
-    std::vector<Handle<Quote> > spreads;
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
     ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
-    spreads.push_back(Handle<Quote>(spread1));
-    spreads.push_back(Handle<Quote>(spread2));
+    std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
-    std::vector<Date> spreadDates;
-    spreadDates.push_back(vars.calendar.advance(vars.today, 8,  Months));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 15, Months));
+    std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 8, Months),
+                                     vars.calendar.advance(vars.today, 15, Months)};
 
     Date interpolationDate = vars.calendar.advance(vars.today, 20, Months);
 
@@ -169,21 +163,19 @@ void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolationMultipleSpre
 
     CommonVars vars;
 
-    std::vector<Handle<Quote> > spreads;
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
     ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.02);
     ext::shared_ptr<SimpleQuote> spread3 = ext::make_shared<SimpleQuote>(0.035);
     ext::shared_ptr<SimpleQuote> spread4 = ext::make_shared<SimpleQuote>(0.04);
-    spreads.push_back(Handle<Quote>(spread1));
-    spreads.push_back(Handle<Quote>(spread2));
-    spreads.push_back(Handle<Quote>(spread3));
-    spreads.push_back(Handle<Quote>(spread4));
+    std::vector<Handle<Quote> > spreads = {
+        Handle<Quote>(spread1), Handle<Quote>(spread2),
+        Handle<Quote>(spread3), Handle<Quote>(spread4),
+    };
 
-    std::vector<Date> spreadDates;
-    spreadDates.push_back(vars.calendar.advance(vars.today, 90,  Days));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 150, Days));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 30, Months));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 40, Months));
+    std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 90, Days),
+                                     vars.calendar.advance(vars.today, 150, Days),
+                                     vars.calendar.advance(vars.today, 30, Months),
+                                     vars.calendar.advance(vars.today, 40, Months)};
 
     Date interpolationDate = vars.calendar.advance(vars.today, 120, Days);
 
@@ -216,15 +208,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testLinearInterpolation() {
 
     CommonVars vars;
 
-    std::vector<Handle<Quote> > spreads;
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
     ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
-    spreads.push_back(Handle<Quote>(spread1));
-    spreads.push_back(Handle<Quote>(spread2));
+    std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
-    std::vector<Date> spreadDates;
-    spreadDates.push_back(vars.calendar.advance(vars.today, 100,  Days));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 150, Days));
+    std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 100, Days),
+                                     vars.calendar.advance(vars.today, 150, Days)};
 
     Date interpolationDate = vars.calendar.advance(vars.today, 120, Days);
 
@@ -262,15 +251,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testForwardFlatInterpolation() {
 
     CommonVars vars;
 
-    std::vector<Handle<Quote> > spreads;
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
     ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
-    spreads.push_back(Handle<Quote>(spread1));
-    spreads.push_back(Handle<Quote>(spread2));
+    std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
-    std::vector<Date> spreadDates;
-    spreadDates.push_back(vars.calendar.advance(vars.today, 75,  Days));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 260, Days));
+    std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 75, Days),
+                                     vars.calendar.advance(vars.today, 260, Days)};
 
     Date interpolationDate = vars.calendar.advance(vars.today, 100, Days);
 
@@ -303,18 +289,16 @@ void PiecewiseZeroSpreadedTermStructureTest::testBackwardFlatInterpolation() {
 
     CommonVars vars;
 
-    std::vector<Handle<Quote> > spreads;
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
     ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
     ext::shared_ptr<SimpleQuote> spread3 = ext::make_shared<SimpleQuote>(0.04);
-    spreads.push_back(Handle<Quote>(spread1));
-    spreads.push_back(Handle<Quote>(spread2));
-    spreads.push_back(Handle<Quote>(spread3));
+    std::vector<Handle<Quote> > spreads = {
+        Handle<Quote>(spread1), Handle<Quote>(spread2), Handle<Quote>(spread3)
+    };
 
-    std::vector<Date> spreadDates;
-    spreadDates.push_back(vars.calendar.advance(vars.today, 100,  Days));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 200, Days));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 300, Days));
+    std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 100, Days),
+                                     vars.calendar.advance(vars.today, 200, Days),
+                                     vars.calendar.advance(vars.today, 300, Days)};
 
     Date interpolationDate = vars.calendar.advance(vars.today, 110, Days);
 
@@ -347,15 +331,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testDefaultInterpolation() {
 
     CommonVars vars;
 
-    std::vector<Handle<Quote> > spreads;
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
     ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.02);
-    spreads.push_back(Handle<Quote>(spread1));
-    spreads.push_back(Handle<Quote>(spread2));
+    std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
-    std::vector<Date> spreadDates;
-    spreadDates.push_back(vars.calendar.advance(vars.today, 75,  Days));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 160, Days));
+    std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 75,  Days),
+                                     vars.calendar.advance(vars.today, 160, Days)};
 
     Date interpolationDate = vars.calendar.advance(vars.today, 100, Days);
 
@@ -388,18 +369,16 @@ void PiecewiseZeroSpreadedTermStructureTest::testSetInterpolationFactory() {
 
     CommonVars vars;
 
-    std::vector<Handle<Quote> > spreads;
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
     ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
     ext::shared_ptr<SimpleQuote> spread3 = ext::make_shared<SimpleQuote>(0.01);
-    spreads.push_back(Handle<Quote>(spread1));
-    spreads.push_back(Handle<Quote>(spread2));
-    spreads.push_back(Handle<Quote>(spread3));
+    std::vector<Handle<Quote> > spreads = {
+        Handle<Quote>(spread1), Handle<Quote>(spread2), Handle<Quote>(spread3)
+    };
 
-    std::vector<Date> spreadDates;
-    spreadDates.push_back(vars.calendar.advance(vars.today, 8,  Months));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 15, Months));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 25, Months));
+    std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 8,  Months),
+                                     vars.calendar.advance(vars.today, 15, Months),
+                                     vars.calendar.advance(vars.today, 25, Months)};
 
     Date interpolationDate = vars.calendar.advance(vars.today, 11, Months);
 
@@ -440,15 +419,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testMaxDate() {
 
     CommonVars vars;
 
-    std::vector<Handle<Quote> > spreads;
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
     ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
-    spreads.push_back(Handle<Quote>(spread1));
-    spreads.push_back(Handle<Quote>(spread2));
+    std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
-    std::vector<Date> spreadDates;
-    spreadDates.push_back(vars.calendar.advance(vars.today, 8,  Months));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 15, Months));
+    std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 8,  Months),
+                                     vars.calendar.advance(vars.today, 15, Months)};
 
     ext::shared_ptr<ZeroYieldStructure> spreadedTermStructure =
         ext::make_shared<PiecewiseZeroSpreadedTermStructure>(
@@ -476,15 +452,12 @@ void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
 
     CommonVars vars;
 
-    std::vector<Handle<Quote> > spreads;
     ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
     ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
-    spreads.push_back(Handle<Quote>(spread1));
-    spreads.push_back(Handle<Quote>(spread2));
+    std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
-    std::vector<Date> spreadDates;
-    spreadDates.push_back(vars.calendar.advance(vars.today, 100,  Days));
-    spreadDates.push_back(vars.calendar.advance(vars.today, 150, Days));
+    std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 100,  Days),
+                                     vars.calendar.advance(vars.today, 150, Days)};
 
     Date interpolationDate = vars.calendar.advance(vars.today, 120, Days);
 
@@ -522,7 +495,7 @@ void PiecewiseZeroSpreadedTermStructureTest::testQuoteChanging() {
 }
 
 test_suite* PiecewiseZeroSpreadedTermStructureTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Interpolated piecewise zero spreaded yield curve tests");
+    auto* suite = BOOST_TEST_SUITE("Interpolated piecewise zero spreaded yield curve tests");
     suite->add(QUANTLIB_TEST_CASE(
         &PiecewiseZeroSpreadedTermStructureTest::testFlatInterpolationLeft));
     suite->add(QUANTLIB_TEST_CASE(

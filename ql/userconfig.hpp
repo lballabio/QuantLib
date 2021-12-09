@@ -54,7 +54,7 @@
 #endif
 
 /* Define this to use indexed coupons instead of par coupons in floating
-   legs as the default in 'static bool IborCoupon::usingAtParCoupons();'. */
+   legs as the default in 'bool IborCoupon::Settings::usingAtParCoupons();'. */
 #ifndef QL_USE_INDEXED_COUPON
 //#   define QL_USE_INDEXED_COUPON
 #endif
@@ -62,7 +62,9 @@
 /* Define this to have singletons return different instances for
    different sessions. You will have to provide and link with the
    library a sessionId() function in namespace QuantLib, returning a
-   different session id for each session.*/
+   different session id for each session.
+   This also implies thread-safe Singleton initialization.
+*/
 #ifndef QL_ENABLE_SESSIONS
 //#   define QL_ENABLE_SESSIONS
 #endif
@@ -82,31 +84,33 @@
 #endif
 
 /* Define this to use standard smart pointers instead of Boost ones.
-   This requires you to set your compiler's standard to at least
-   C++11.  Note that std::shared_ptr does not check access and can
+   Note that std::shared_ptr does not check access and can
    cause segmentation faults. */
 #ifndef QL_USE_STD_SHARED_PTR
 //#    define QL_USE_STD_SHARED_PTR
 #endif
 
-/* Define this to replace std::auto_ptr with std::unique_ptr.
-   This requires you to set your compiler's standard to at least C++11. */
+/* Undefine this to use std::auto_ptr instead of std::unique_ptr. */
 #ifndef QL_USE_STD_UNIQUE_PTR
-//#    define QL_USE_STD_UNIQUE_PTR
+#    define QL_USE_STD_UNIQUE_PTR
 #endif
 
 /* Define this to use std::function and std::bind instead of
-   boost::function and boost::bind.  This requires you to set your
-   compiler's standard to at least C++11. */
+   boost::function and boost::bind. */
 #ifndef QL_USE_STD_FUNCTION
 //#    define QL_USE_STD_FUNCTION
 #endif
 
-/* Define this to use std::tuple instead of
-   boost::function and boost::bind.  This requires you to set your
-   compiler's standard to at least C++11. */
+/* Define this to use std::tuple instead of boost::tuple. */
 #ifndef QL_USE_STD_TUPLE
 //#    define QL_USE_STD_TUPLE
+#endif
+
+/* Define this if you want to use the Disposable class template.
+   This should be no longer necessary in C++11
+   and might interfere with compiler optimizations. */
+#ifndef QL_USE_DISPOSABLE
+//#    define QL_USE_DISPOSABLE
 #endif
 
 /* Define this to enable the parallel unit test runner */
@@ -115,7 +119,8 @@
 #endif
 
 /* Define this to make Singleton initialization thread-safe.
-   Note: There is no support for thread safety and multiple sessions.
+   Note that defining QL_ENABLE_SESSIONS implies thread-safe
+   initialization, whether this is defined or not.
 */
 #ifndef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
 //#   define QL_ENABLE_SINGLETON_THREAD_SAFE_INIT

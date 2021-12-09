@@ -47,7 +47,7 @@ namespace QuantLib {
                          Size intervals)
         : GenericModelEngine<G2, Swaption::arguments, Swaption::results>(model),
           range_(range), intervals_(intervals) {}
-        void calculate() const {
+        void calculate() const override {
             QL_REQUIRE(arguments_.settlementType == Settlement::Physical,
                        "cash-settled swaptions not priced with G2 engine");
 
@@ -64,6 +64,7 @@ namespace QuantLib {
             results_.value =  model_->swaption(arguments_, fixedRate,
                                                range_, intervals_);
         }
+
       private:
         Real range_;
         Size intervals_;

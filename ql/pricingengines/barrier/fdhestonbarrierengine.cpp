@@ -19,35 +19,34 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdhestonrebateengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdHestonBarrierEngine::FdHestonBarrierEngine(
-            const ext::shared_ptr<HestonModel>& model,
-            Size tGrid, Size xGrid, Size vGrid, Size dampingSteps,
-            const FdmSchemeDesc& schemeDesc,
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
-            const Real mixingFactor)
+    FdHestonBarrierEngine::FdHestonBarrierEngine(const ext::shared_ptr<HestonModel>& model,
+                                                 Size tGrid,
+                                                 Size xGrid,
+                                                 Size vGrid,
+                                                 Size dampingSteps,
+                                                 const FdmSchemeDesc& schemeDesc,
+                                                 ext::shared_ptr<LocalVolTermStructure> leverageFct,
+                                                 const Real mixingFactor)
     : GenericModelEngine<HestonModel,
-                        DividendBarrierOption::arguments,
-                        DividendBarrierOption::results>(model),
-      tGrid_(tGrid), xGrid_(xGrid), 
-      vGrid_(vGrid), dampingSteps_(dampingSteps),
-      schemeDesc_(schemeDesc),
-      leverageFct_(leverageFct),
-      mixingFactor_(mixingFactor) {
-    }
+                         DividendBarrierOption::arguments,
+                         DividendBarrierOption::results>(model),
+      tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
+      schemeDesc_(schemeDesc), leverageFct_(std::move(leverageFct)), mixingFactor_(mixingFactor) {}
 
     void FdHestonBarrierEngine::calculate() const {
 

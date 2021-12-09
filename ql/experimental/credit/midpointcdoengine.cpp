@@ -55,13 +55,12 @@ namespace QuantLib {
                     arguments_.normalizedLeg[0])->accrualStartDate());
         results_.expectedTrancheLoss.push_back(e1);
         //'e1'  should contain the existing loses.....? use remaining amounts?
-        for (Size i = 0; i < arguments_.normalizedLeg.size(); i++) {
-            if(arguments_.normalizedLeg[i]->hasOccurred(today)) {
+        for (auto& i : arguments_.normalizedLeg) {
+            if (i->hasOccurred(today)) {
                 results_.expectedTrancheLoss.push_back(0.);
                 continue;
             }
-            ext::shared_ptr<Coupon> coupon =
-              ext::dynamic_pointer_cast<Coupon>(arguments_.normalizedLeg[i]);
+            ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(i);
             Date paymentDate = coupon->date();
             Date startDate = std::max(coupon->accrualStartDate(),
                                       discountCurve_->referenceDate());

@@ -40,7 +40,7 @@ namespace QuantLib {
       public:
         LfmCovarianceParameterization(Size size, Size factors)
         : size_(size), factors_(factors) {}
-        virtual ~LfmCovarianceParameterization() {}
+        virtual ~LfmCovarianceParameterization() = default;
 
         Size size() const { return size_; }
         Size factors() const { return factors_; }

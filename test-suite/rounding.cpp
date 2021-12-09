@@ -70,17 +70,16 @@ void RoundingTest::testClosest() {
 
     using namespace rounding_test;
 
-    for (Size i=0; i<LENGTH(testData); i++) {
-        Integer digits = testData[i].precision;
+    for (auto& i : testData) {
+        Integer digits = i.precision;
         ClosestRounding closest(digits);
-        Real calculated = closest(testData[i].x);
-        Real expected = testData[i].closest;
+        Real calculated = closest(i.x);
+        Real expected = i.closest;
         if (!close(calculated,expected,1))
-            BOOST_ERROR(std::fixed << std::setprecision(8)
-                        << "Original number: " << testData[i].x << "\n"
-                        << std::setprecision(digits)
-                        << "Expected:        " << expected << "\n"
-                        << "Calculated:      " << calculated);
+            BOOST_ERROR(std::fixed << std::setprecision(8) << "Original number: " << i.x << "\n"
+                                   << std::setprecision(digits) << "Expected:        " << expected
+                                   << "\n"
+                                   << "Calculated:      " << calculated);
     }
 }
 
@@ -90,17 +89,16 @@ void RoundingTest::testUp() {
 
     using namespace rounding_test;
 
-    for (Size i=0; i<LENGTH(testData); i++) {
-        Integer digits = testData[i].precision;
+    for (auto& i : testData) {
+        Integer digits = i.precision;
         UpRounding up(digits);
-        Real calculated = up(testData[i].x);
-        Real expected = testData[i].up;
+        Real calculated = up(i.x);
+        Real expected = i.up;
         if (!close(calculated,expected,1))
-            BOOST_ERROR(std::fixed << std::setprecision(8)
-                        << "Original number: " << testData[i].x << "\n"
-                        << std::setprecision(digits)
-                        << "Expected:        " << expected << "\n"
-                        << "Calculated:      " << calculated);
+            BOOST_ERROR(std::fixed << std::setprecision(8) << "Original number: " << i.x << "\n"
+                                   << std::setprecision(digits) << "Expected:        " << expected
+                                   << "\n"
+                                   << "Calculated:      " << calculated);
     }
 }
 
@@ -110,17 +108,16 @@ void RoundingTest::testDown() {
 
     using namespace rounding_test;
 
-    for (Size i=0; i<LENGTH(testData); i++) {
-        Integer digits = testData[i].precision;
+    for (auto& i : testData) {
+        Integer digits = i.precision;
         DownRounding down(digits);
-        Real calculated = down(testData[i].x);
-        Real expected = testData[i].down;
+        Real calculated = down(i.x);
+        Real expected = i.down;
         if (!close(calculated,expected,1))
-            BOOST_ERROR(std::fixed << std::setprecision(8)
-                        << "Original number: " << testData[i].x << "\n"
-                        << std::setprecision(digits)
-                        << "Expected:        " << expected << "\n"
-                        << "Calculated:      " << calculated);
+            BOOST_ERROR(std::fixed << std::setprecision(8) << "Original number: " << i.x << "\n"
+                                   << std::setprecision(digits) << "Expected:        " << expected
+                                   << "\n"
+                                   << "Calculated:      " << calculated);
     }
 }
 
@@ -130,17 +127,16 @@ void RoundingTest::testFloor() {
 
     using namespace rounding_test;
 
-    for (Size i=0; i<LENGTH(testData); i++) {
-        Integer digits = testData[i].precision;
+    for (auto& i : testData) {
+        Integer digits = i.precision;
         FloorTruncation floor(digits);
-        Real calculated = floor(testData[i].x);
-        Real expected = testData[i].floor;
+        Real calculated = floor(i.x);
+        Real expected = i.floor;
         if (!close(calculated,expected,1))
-            BOOST_ERROR(std::fixed << std::setprecision(8)
-                        << "Original number: " << testData[i].x << "\n"
-                        << std::setprecision(digits)
-                        << "Expected:        " << expected << "\n"
-                        << "Calculated:      " << calculated);
+            BOOST_ERROR(std::fixed << std::setprecision(8) << "Original number: " << i.x << "\n"
+                                   << std::setprecision(digits) << "Expected:        " << expected
+                                   << "\n"
+                                   << "Calculated:      " << calculated);
     }
 }
 
@@ -150,23 +146,22 @@ void RoundingTest::testCeiling() {
 
     using namespace rounding_test;
 
-    for (Size i=0; i<LENGTH(testData); i++) {
-        Integer digits = testData[i].precision;
+    for (auto& i : testData) {
+        Integer digits = i.precision;
         CeilingTruncation ceiling(digits);
-        Real calculated = ceiling(testData[i].x);
-        Real expected = testData[i].ceiling;
+        Real calculated = ceiling(i.x);
+        Real expected = i.ceiling;
         if (!close(calculated,expected,1))
-            BOOST_ERROR(std::fixed << std::setprecision(8)
-                        << "Original number: " << testData[i].x << "\n"
-                        << std::setprecision(digits)
-                        << "Expected:        " << expected << "\n"
-                        << "Calculated:      " << calculated);
+            BOOST_ERROR(std::fixed << std::setprecision(8) << "Original number: " << i.x << "\n"
+                                   << std::setprecision(digits) << "Expected:        " << expected
+                                   << "\n"
+                                   << "Calculated:      " << calculated);
     }
 }
 
 
 test_suite* RoundingTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Rounding tests");
+    auto* suite = BOOST_TEST_SUITE("Rounding tests");
     suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testClosest));
     suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testUp));
     suite->add(QUANTLIB_TEST_CASE(&RoundingTest::testDown));

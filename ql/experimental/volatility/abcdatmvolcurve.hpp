@@ -45,8 +45,7 @@ namespace QuantLib {
                         const Calendar& cal,
                         const std::vector<Period>& optionTenors,
                         const std::vector<Handle<Quote> >& volsHandles,
-                        const std::vector<bool>& inclusionInInterpolationFlag
-                            = std::vector<bool>(1, true),
+                        std::vector<bool> inclusionInInterpolationFlag = std::vector<bool>(1, true),
                         BusinessDayConvention bdc = Following,
                         const DayCounter& dc = Actual365Fixed());
         //! Returns k adjustment factors for option tenors used in interpolation
@@ -62,17 +61,17 @@ namespace QuantLib {
         EndCriteria::Type endCriteria() const;
         //! \name TermStructure interface
         //@{
-        virtual Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
         //! \name LazyObject interface
         //@{
-        void update();
-        void performCalculations() const;
+        void update() override;
+        void performCalculations() const override;
         //@}
         //! \name some inspectors
         //@{
@@ -83,15 +82,15 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
         //! \name BlackAtmVolCurve interface
         //@{
         //! spot at-the-money variance calculation (k adjusted)
-        virtual Real atmVarianceImpl(Time t) const;
+        Real atmVarianceImpl(Time t) const override;
         //! spot at-the-money volatility calculation (k adjusted)
-        virtual Volatility atmVolImpl(Time t) const;
+        Volatility atmVolImpl(Time t) const override;
         //@}
       private:
         void checkInputs() const;
@@ -191,6 +190,10 @@ namespace QuantLib {
     }
     inline Real AbcdAtmVolCurve::maxError() const {
         return interpolation_->maxError();
+    }
+
+    inline EndCriteria::Type AbcdAtmVolCurve::endCriteria() const { 
+        return interpolation_->endCriteria();
     }
 }
 

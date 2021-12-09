@@ -51,9 +51,9 @@ namespace QuantLib {
       private:
         class TadawulImpl : public Calendar::Impl {
           public:
-            std::string name() const { return "Tadawul"; }
-            bool isWeekend(Weekday) const;
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Tadawul"; }
+            bool isWeekend(Weekday) const override;
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         enum Market { Tadawul    //!< Tadawul financial market

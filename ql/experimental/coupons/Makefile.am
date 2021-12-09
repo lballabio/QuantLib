@@ -10,7 +10,6 @@ this_include_HEADERS = \
     proxyibor.hpp \
     quantocouponpricer.hpp \
     strippedcapflooredcoupon.hpp \
-    subperiodcoupons.hpp \
     swapspreadindex.hpp
 
 cpp_files = \
@@ -20,7 +19,6 @@ cpp_files = \
     proxyibor.cpp \
     quantocouponpricer.cpp \
     strippedcapflooredcoupon.cpp \
-    subperiodcoupons.cpp \
     swapspreadindex.cpp
 
 if UNITY_BUILD

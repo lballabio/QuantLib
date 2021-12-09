@@ -101,6 +101,8 @@ void ArrayTest::testConstruction() {
                         << "\n    copy:      " << a6[i]);
     }
 
+    #ifdef QL_USE_DISPOSABLE
+
     // creation of disposable array
     Array temp1(size, value);
     Disposable<Array> temp2(temp1);
@@ -163,6 +165,8 @@ void ArrayTest::testConstruction() {
                         << "\n    resulting: " << a9[i]);
     }
 
+    #endif
+
     // transform
     Array a10(5);
     for (i=0; i < a10.size(); i++) {
@@ -188,13 +192,13 @@ void ArrayTest::testArrayFunctions() {
         a[i] = std::sin(Real(i))+1.1;
     }
 
-    const Real exponential = -2.3;
+    QL_CONSTEXPR Real exponential = -2.3;
     const Array p = Pow(a, exponential);
     const Array e = Exp(a);
     const Array l = Log(a);
     const Array s = Sqrt(a);
 
-    const Real tol = 10*QL_EPSILON;
+    QL_CONSTEXPR Real tol = 10*QL_EPSILON;
     for (Size i=0; i < a.size(); ++i) {
         if (std::fabs(p[i]-std::pow(a[i], exponential)) > tol) {
             BOOST_FAIL("Array function test Pow failed");
@@ -242,7 +246,7 @@ void ArrayTest::testArrayResize() {
 
 
 test_suite* ArrayTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("array tests");
+    auto* suite = BOOST_TEST_SUITE("array tests");
     suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testConstruction));
     suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testArrayFunctions));
     suite->add(QUANTLIB_TEST_CASE(&ArrayTest::testArrayResize));

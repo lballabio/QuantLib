@@ -34,10 +34,9 @@ namespace QuantLib {
             bool successful = true;
             std::string errMsg;
 
-            for (iterator i=deferredObservers_.begin();
-                i!=deferredObservers_.end(); ++i) {
+            for (auto* deferredObserver : deferredObservers_) {
                 try {
-                    (*i)->update();
+                    deferredObserver->update();
                 } catch (std::exception& e) {
                     successful = false;
                     errMsg = e.what();
@@ -62,9 +61,9 @@ namespace QuantLib {
         } else if (!observers_.empty()) {
             bool successful = true;
             std::string errMsg;
-            for (iterator i=observers_.begin(); i!=observers_.end(); ++i) {
+            for (auto* observer : observers_) {
                 try {
-                    (*i)->update();
+                    observer->update();
                 } catch (std::exception& e) {
                     // quite a dilemma. If we don't catch the exception,
                     // other observers will not receive the notification
@@ -87,21 +86,6 @@ namespace QuantLib {
 }
 
 #else
-
-#include <ql/functional.hpp>
-
-#if defined(QL_USE_STD_FUNCTION)
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-
-#include <boost/bind/bind.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
-#endif
 
 #include <boost/signals2/signal_type.hpp>
 
@@ -132,17 +116,35 @@ namespace QuantLib {
             signal_type sig_;
         };
 
+        template <class T>
+        class ProxyUpdater {
+            T* proxy_;
+          public:
+            explicit ProxyUpdater(const ext::shared_ptr<T>& observerProxy)
+            : proxy_(observerProxy.get()) {}
+
+            void operator()() const {
+                proxy_->update();
+            }
+
+            bool operator==(const ProxyUpdater<T>& other) const {
+                return proxy_ == other.proxy_;
+            }
+
+            bool operator!=(const ProxyUpdater<T>& other) const {
+                return proxy_ != other.proxy_;
+            }
+        };
+
     }
 
-    void Observable::registerObserver(
-        const ext::shared_ptr<Observer::Proxy>& observerProxy) {
+    void Observable::registerObserver(const ext::shared_ptr<Observer::Proxy>& observerProxy) {
         {
             boost::lock_guard<boost::recursive_mutex> lock(mutex_);
             observers_.insert(observerProxy);
         }
 
-        detail::Signal::signal_type::slot_type slot(&Observer::Proxy::update,
-                                    observerProxy.get());
+        detail::Signal::signal_type::slot_type slot {detail::ProxyUpdater<Observer::Proxy>(observerProxy)};
         #if defined(QL_USE_STD_SHARED_PTR)
         sig_->connect(slot.track_foreign(observerProxy));
         #else
@@ -150,8 +152,8 @@ namespace QuantLib {
         #endif
     }
 
-    void Observable::unregisterObserver(
-        const ext::shared_ptr<Observer::Proxy>& observerProxy) {
+    void Observable::unregisterObserver(const ext::shared_ptr<Observer::Proxy>& observerProxy,
+                                        bool disconnect) {
         {
             boost::lock_guard<boost::recursive_mutex> lock(mutex_);
             observers_.erase(observerProxy);
@@ -164,9 +166,9 @@ namespace QuantLib {
             }
         }
 
-        // signals2 needs boost::bind, std::bind does not work
-        sig_->disconnect(boost::bind(&Observer::Proxy::update,
-                             observerProxy.get()));
+        if (disconnect) {
+            sig_->disconnect(detail::ProxyUpdater<Observer::Proxy>(observerProxy));
+        }
     }
 
     void Observable::notifyObservers() {

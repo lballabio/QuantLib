@@ -42,35 +42,6 @@ namespace QuantLib {
     //! default choice for step condition
     typedef StepCondition<Array> StandardStepCondition;
 
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#if defined(QL_PATCH_MSVC)
-#pragma warning(push)
-#pragma warning(disable:4996)
-#endif
-
-    /*! \deprecated Inherit from StandardStepCondition directly.
-                    Deprecated in version 1.19.
-    */
-    QL_DEPRECATED
-    typedef CurveDependentStepCondition<Array> StandardCurveDependentStepCondition;
-
-#if defined(QL_PATCH_MSVC)
-#pragma warning(pop)
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif
-
 }
 
 

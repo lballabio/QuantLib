@@ -54,11 +54,6 @@ namespace QuantLib {
                    " instead of " << n_-1);
     }
 
-    TridiagonalOperator::TridiagonalOperator(
-                                const Disposable<TridiagonalOperator>& from) {
-        swap(const_cast<Disposable<TridiagonalOperator>&>(from));
-    }
-
     Disposable<Array> TridiagonalOperator::applyTo(const Array& v) const {
         QL_REQUIRE(n_!=0,
                    "uninitialized TridiagonalOperator");

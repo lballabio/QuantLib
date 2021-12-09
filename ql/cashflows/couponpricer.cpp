@@ -20,19 +20,94 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
-#include <ql/cashflows/digitalcoupon.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/digitalcmscoupon.hpp>
+#include <ql/cashflows/digitalcoupon.hpp>
 #include <ql/cashflows/digitaliborcoupon.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
-#include <ql/experimental/coupons/subperiodcoupons.hpp> /* internal */
-#include <ql/experimental/coupons/cmsspreadcoupon.hpp>  /* internal */
-#include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp>  /* internal */
+#include <ql/cashflows/subperiodcoupon.hpp>
+#include <ql/experimental/coupons/cmsspreadcoupon.hpp>        /* internal */
+#include <ql/experimental/coupons/digitalcmsspreadcoupon.hpp> /* internal */
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
+
+//===========================================================================//
+//                              IborCouponPricer                             //
+//===========================================================================//
+
+    IborCouponPricer::IborCouponPricer(
+            Handle<OptionletVolatilityStructure> v,
+            boost::optional<bool> useIndexedCoupon)
+        : capletVol_(std::move(v)),
+          useIndexedCoupon_(useIndexedCoupon ?
+                            *useIndexedCoupon :
+                            !IborCoupon::Settings::instance().usingAtParCoupons()) {
+        registerWith(capletVol_);
+    }
+
+    void IborCouponPricer::initializeCachedData(const IborCoupon& coupon) const {
+
+        if(coupon.cachedDataIsInitialized_)
+            return;
+
+        coupon.fixingValueDate_ = coupon.iborIndex()->fixingCalendar().advance(
+            coupon.fixingDate_, coupon.iborIndex()->fixingDays(), Days);
+        coupon.fixingMaturityDate_ = coupon.iborIndex()->maturityDate(coupon.fixingValueDate_);
+
+        if (useIndexedCoupon_) {
+            coupon.fixingEndDate_ = coupon.fixingMaturityDate_;
+        } else {
+            if (coupon.isInArrears_)
+                coupon.fixingEndDate_ = coupon.fixingMaturityDate_;
+            else { // par coupon approximation
+                Date nextFixingDate = coupon.iborIndex()->fixingCalendar().advance(
+                    coupon.accrualEndDate(), -static_cast<Integer>(coupon.fixingDays_), Days);
+                coupon.fixingEndDate_ = coupon.iborIndex()->fixingCalendar().advance(
+                    nextFixingDate, coupon.iborIndex()->fixingDays(), Days);
+                // make sure the estimation period contains at least one day
+                coupon.fixingEndDate_ =
+                    std::max(coupon.fixingEndDate_, coupon.fixingValueDate_ + 1);
+            }
+        }
+
+        coupon.spanningTime_ = coupon.iborIndex()->dayCounter().yearFraction(
+            coupon.fixingValueDate_, coupon.fixingEndDate_);
+
+        QL_REQUIRE(coupon.spanningTime_ > 0.0,
+                   "\n cannot calculate forward rate between "
+                       << coupon.fixingValueDate_ << " and " << coupon.fixingEndDate_
+                       << ":\n non positive time (" << coupon.spanningTime_ << ") using "
+                       << coupon.iborIndex()->dayCounter().name() << " daycounter");
+
+        coupon.spanningTimeIndexMaturity_ = coupon.iborIndex()->dayCounter().yearFraction(
+            coupon.fixingValueDate_, coupon.fixingMaturityDate_);
+
+        coupon.cachedDataIsInitialized_ = true;
+    }
+
+    void IborCouponPricer::initialize(const FloatingRateCoupon& coupon) {
+        coupon_ = dynamic_cast<const IborCoupon *>(&coupon);
+        QL_REQUIRE(coupon_, "IborCouponPricer: expected IborCoupon");
+
+        initializeCachedData(*coupon_);
+
+        index_ = coupon_->iborIndex();
+        gearing_ = coupon_->gearing();
+        spread_ = coupon_->spread();
+        accrualPeriod_ = coupon_->accrualPeriod();
+        QL_REQUIRE(accrualPeriod_ != 0.0, "null accrual period");
+
+        fixingDate_ = coupon_->fixingDate_;
+        fixingValueDate_ = coupon_->fixingValueDate_;
+        fixingMaturityDate_ = coupon_->fixingMaturityDate_;
+        spanningTime_ = coupon_->spanningTime_;
+        spanningTimeIndexMaturity_ = coupon_->spanningTimeIndexMaturity_;
+    }
+
 
 //===========================================================================//
 //                              BlackIborCouponPricer                        //
@@ -40,23 +115,11 @@ namespace QuantLib {
 
     void BlackIborCouponPricer::initialize(const FloatingRateCoupon& coupon) {
 
-        gearing_ = coupon.gearing();
-        spread_ = coupon.spread();
-        accrualPeriod_ = coupon.accrualPeriod();
-        QL_REQUIRE(accrualPeriod_ != 0.0, "null accrual period");
+        IborCouponPricer::initialize(coupon);
 
-        index_ = ext::dynamic_pointer_cast<IborIndex>(coupon.index());
-        if (!index_) {
-            // check if the coupon was right
-            const IborCoupon* c = dynamic_cast<const IborCoupon*>(&coupon);
-            QL_REQUIRE(c, "IborCoupon required");
-            // coupon was right, index is not
-            QL_FAIL("IborIndex required");
-        }
-        Handle<YieldTermStructure> rateCurve =
-                                            index_->forwardingTermStructure();
+        Handle<YieldTermStructure> rateCurve = index_->forwardingTermStructure();
 
-        Date paymentDate = coupon.date();
+        Date paymentDate = coupon_->date();
         if (paymentDate > rateCurve->referenceDate())
             discount_ = rateCurve->discount(paymentDate);
         else
@@ -64,13 +127,11 @@ namespace QuantLib {
 
         spreadLegValue_ = spread_ * accrualPeriod_ * discount_;
 
-        coupon_ = &coupon;
     }
 
     Real BlackIborCouponPricer::optionletPrice(Option::Type optionType,
                                                Real effStrike) const {
-        Date fixingDate = coupon_->fixingDate();
-        if (fixingDate <= Settings::instance().evaluationDate()) {
+        if (fixingDate_ <= Settings::instance().evaluationDate()) {
             // the amount is determined
             Real a, b;
             if (optionType==Option::Call) {
@@ -86,7 +147,7 @@ namespace QuantLib {
             QL_REQUIRE(!capletVolatility().empty(),
                        "missing optionlet volatility");
             Real stdDev =
-                std::sqrt(capletVolatility()->blackVariance(fixingDate,
+                std::sqrt(capletVolatility()->blackVariance(fixingDate_,
                                                             effStrike));
             Real shift = capletVolatility()->displacement();
             bool shiftedLn =
@@ -113,9 +174,9 @@ namespace QuantLib {
         // lognormal method is more accurate in this regard.
         if ((!coupon_->isInArrears() && timingAdjustment_ == Black76))
             return fixing;
-        Date d1 = coupon_->fixingDate();
-        Date d2 = index_->valueDate(d1);
-        Date d3 = index_->maturityDate(d2);
+        const Date& d1 = fixingDate_;
+        const Date& d2 = fixingValueDate_;
+        const Date& d3 = fixingMaturityDate_;
         if (coupon_->date() == d3)
             return fixing;
 
@@ -125,7 +186,7 @@ namespace QuantLib {
         // no variance has accumulated, so the convexity is zero
         if (d1 <= referenceDate)
             return fixing;
-        Time tau = index_->dayCounter().yearFraction(d2, d3);
+        const Time& tau = spanningTimeIndexMaturity_;
         Real variance = capletVolatility()->blackVariance(d1, fixing);
 
         Real shift = capletVolatility()->displacement();
@@ -139,8 +200,8 @@ namespace QuantLib {
 
         if (timingAdjustment_ == BivariateLognormal) {
             QL_REQUIRE(!correlation_.empty(), "no correlation given");
-            Date d4 = coupon_->date();
-            Date d5 = d4 >= d3 ? d3 : d2;
+            const Date& d4 = coupon_->date();
+            const Date& d5 = d4 >= d3 ? d3 : d2;
             Time tau2 = index_->dayCounter().yearFraction(d5, d4);
             if (d4 >= d3)
                 adjustment = 0.0;
@@ -188,25 +249,24 @@ namespace QuantLib {
           private:
             ext::shared_ptr<FloatingRateCouponPricer> pricer_;
           public:
-            explicit PricerSetter(
-                    const ext::shared_ptr<FloatingRateCouponPricer>& pricer)
-            : pricer_(pricer) {}
+            explicit PricerSetter(ext::shared_ptr<FloatingRateCouponPricer> pricer)
+            : pricer_(std::move(pricer)) {}
 
-            void visit(CashFlow& c);
-            void visit(Coupon& c);
-            void visit(FloatingRateCoupon& c);
-            void visit(CappedFlooredCoupon& c);
-            void visit(IborCoupon& c);
-            void visit(CappedFlooredIborCoupon& c);
-            void visit(DigitalIborCoupon& c);
-            void visit(CmsCoupon& c);
-            void visit(CmsSpreadCoupon& c);
-            void visit(CappedFlooredCmsCoupon& c);
-            void visit(CappedFlooredCmsSpreadCoupon& c);
-            void visit(DigitalCmsCoupon& c);
-            void visit(DigitalCmsSpreadCoupon& c);
-            void visit(RangeAccrualFloatersCoupon& c);
-            void visit(SubPeriodsCoupon& c);
+            void visit(CashFlow& c) override;
+            void visit(Coupon& c) override;
+            void visit(FloatingRateCoupon& c) override;
+            void visit(CappedFlooredCoupon& c) override;
+            void visit(IborCoupon& c) override;
+            void visit(CappedFlooredIborCoupon& c) override;
+            void visit(DigitalIborCoupon& c) override;
+            void visit(CmsCoupon& c) override;
+            void visit(CmsSpreadCoupon& c) override;
+            void visit(CappedFlooredCmsCoupon& c) override;
+            void visit(CappedFlooredCmsSpreadCoupon& c) override;
+            void visit(DigitalCmsCoupon& c) override;
+            void visit(DigitalCmsSpreadCoupon& c) override;
+            void visit(RangeAccrualFloatersCoupon& c) override;
+            void visit(SubPeriodsCoupon& c) override;
         };
 
         void PricerSetter::visit(CashFlow&) {
@@ -225,13 +285,13 @@ namespace QuantLib {
             // we might end up here because a CappedFlooredCoupon
             // was directly constructed; we should then check
             // the underlying for consistency with the pricer
-            if (ext::dynamic_pointer_cast<IborCoupon>(c.underlying()) != 0) {
+            if (ext::dynamic_pointer_cast<IborCoupon>(c.underlying()) != nullptr) {
                 QL_REQUIRE(ext::dynamic_pointer_cast<IborCouponPricer>(pricer_),
                            "pricer not compatible with Ibor Coupon");
-            } else if (ext::dynamic_pointer_cast<CmsCoupon>(c.underlying()) != 0) {
+            } else if (ext::dynamic_pointer_cast<CmsCoupon>(c.underlying()) != nullptr) {
                 QL_REQUIRE(ext::dynamic_pointer_cast<CmsCouponPricer>(pricer_),
                            "pricer not compatible with CMS Coupon");
-            } else if (ext::dynamic_pointer_cast<CmsSpreadCoupon>(c.underlying()) != 0) {
+            } else if (ext::dynamic_pointer_cast<CmsSpreadCoupon>(c.underlying()) != nullptr) {
                 QL_REQUIRE(ext::dynamic_pointer_cast<CmsSpreadCouponPricer>(pricer_),
                            "pricer not compatible with CMS spread Coupon");
             }
@@ -329,14 +389,15 @@ namespace QuantLib {
         void setCouponPricersFirstMatching(const Leg& leg,
                                            const std::vector<ext::shared_ptr<FloatingRateCouponPricer> >& p) {
             std::vector<PricerSetter> setter;
-            for (Size i = 0; i < p.size(); ++i) {
-                setter.push_back(PricerSetter(p[i]));
+            setter.reserve(p.size());
+            for (const auto& i : p) {
+                setter.emplace_back(i);
             }
-            for (Size i = 0; i < leg.size(); ++i) {
+            for (const auto& i : leg) {
                 Size j = 0;
                 do {
                     try {
-                        leg[i]->accept(setter[j]);
+                        i->accept(setter[j]);
                         j = p.size();
                     } catch (...) {
                         ++j;
@@ -349,8 +410,8 @@ namespace QuantLib {
 
     void setCouponPricer(const Leg& leg, const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
             PricerSetter setter(pricer);
-            for (Size i = 0; i < leg.size(); ++i) {
-                leg[i]->accept(setter);
+            for (const auto& i : leg) {
+                i->accept(setter);
             }
     }
 

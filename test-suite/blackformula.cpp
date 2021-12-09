@@ -24,8 +24,7 @@
 #include "blackformula.hpp"
 #include "utilities.hpp"
 #include <ql/pricingengines/blackformula.hpp>
-
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <cmath>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -44,10 +43,10 @@ void BlackFormulaTest::testBachelierImpliedVol(){
     Real discount = 0.95;
 
     Real d[] = {-3.0, -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0, 3.0};
-    for(Size i=0;i<LENGTH(d);++i){
+    for (double i : d) {
 
 
-        Real strike = forward - d[i] * bpvol * std::sqrt(tte);
+        Real strike = forward - i * bpvol * std::sqrt(tte);
 
         Real callPrem = bachelierBlackFormula(optionType, strike, forward, stdDev, discount);
 
@@ -74,43 +73,31 @@ void BlackFormulaTest::testChambersImpliedVol() {
 
     Real tol = 5.0E-4;
 
-    for (Size i1 = 0; i1 < LENGTH(types); ++i1) {
-        for (Size i2 = 0; i2 < LENGTH(displacements); ++i2) {
-            for (Size i3 = 0; i3 < LENGTH(forwards); ++i3) {
-                for (Size i4 = 0; i4 < LENGTH(strikes); ++i4) {
-                    for (Size i5 = 0; i5 < LENGTH(stdDevs); ++i5) {
-                        for (Size i6 = 0; i6 < LENGTH(discounts); ++i6) {
-                            if (forwards[i3] + displacements[i2] > 0.0 &&
-                                strikes[i4] + displacements[i2] > 0.0) {
-                                Real premium = blackFormula(
-                                    types[i1], strikes[i4], forwards[i3],
-                                    stdDevs[i5], discounts[i6],
-                                    displacements[i2]);
-                                Real atmPremium = blackFormula(
-                                    types[i1], forwards[i3], forwards[i3],
-                                    stdDevs[i5], discounts[i6],
-                                    displacements[i2]);
-                                Real iStdDev =
-                                    blackFormulaImpliedStdDevChambers(
-                                        types[i1], strikes[i4], forwards[i3],
-                                        premium, atmPremium, discounts[i6],
-                                        displacements[i2]);
-                                Real moneyness = (strikes[i4] + displacements[i2]) /
-                                             (forwards[i3] + displacements[i2]);
+    for (auto& type : types) {
+        for (double& displacement : displacements) {
+            for (double& forward : forwards) {
+                for (double& strike : strikes) {
+                    for (double& stdDev : stdDevs) {
+                        for (double& discount : discounts) {
+                            if (forward + displacement > 0.0 && strike + displacement > 0.0) {
+                                Real premium = blackFormula(type, strike, forward, stdDev, discount,
+                                                            displacement);
+                                Real atmPremium = blackFormula(type, forward, forward, stdDev,
+                                                               discount, displacement);
+                                Real iStdDev = blackFormulaImpliedStdDevChambers(
+                                    type, strike, forward, premium, atmPremium, discount,
+                                    displacement);
+                                Real moneyness = (strike + displacement) / (forward + displacement);
                                 if(moneyness > 1.0) moneyness = 1.0 / moneyness;
-                                Real error = (iStdDev - stdDevs[i5]) / stdDevs[i5] * moneyness;
+                                Real error = (iStdDev - stdDev) / stdDev * moneyness;
                                 if(error > tol)
-                                    BOOST_ERROR(
-                                        "Failed to verify Chambers-Nawalkha "
-                                        "approximation for "
-                                        << types[i1]
-                                        << " displacement=" << displacements[i2]
-                                        << " forward=" << forwards[i3]
-                                        << " strike=" << strikes[i4]
-                                        << " discount=" << discounts[i6]
-                                        << " stddev=" << stdDevs[i5]
-                                        << " result=" << iStdDev
-                                        << " exceeds maximum error tolerance");
+                                    BOOST_ERROR("Failed to verify Chambers-Nawalkha "
+                                                "approximation for "
+                                                << type << " displacement=" << displacement
+                                                << " forward=" << forward << " strike=" << strike
+                                                << " discount=" << discount << " stddev=" << stdDev
+                                                << " result=" << iStdDev
+                                                << " exceeds maximum error tolerance");
                             }
                         }
                     }
@@ -140,11 +127,8 @@ void BlackFormulaTest::testRadoicicStefanicaImpliedVol() {
 
     const Real tol = 0.02;
 
-    for (Size i=0; i < LENGTH(strikes); ++i) {
-        const Real strike = strikes[i];
-        for (Size j=0; j < LENGTH(types); ++j) {
-            const Option::Type type = types[j];
-
+    for (double strike : strikes) {
+        for (auto type : types) {
             const ext::shared_ptr<PlainVanillaPayoff> payoff(
                 ext::make_shared<PlainVanillaPayoff>(type, strike));
 
@@ -189,7 +173,7 @@ void BlackFormulaTest::testRadoicicStefanicaLowerBound() {
             Option::Call, strike, forward, c);
 
         const Real error = s - estimate;
-        if (boost::math::isnan(estimate) || std::fabs(error) > 0.05) {
+        if (std::isnan(estimate) || std::fabs(error) > 0.05) {
             BOOST_ERROR("Failed to lower bound Radoicic-Stefanica"
                 "approximation for "
                 << "\n forward     :" << forward
@@ -241,20 +225,14 @@ void BlackFormulaTest::testImpliedVolAdaptiveSuccessiveOverRelaxation() {
 
     const Real tol = 1e-8;
 
-    for (Size i=0; i < LENGTH(strikes); ++i) {
-        const Real strike = strikes[i];
-
-        for (Size j=0; j < LENGTH(types); ++j) {
-            const Option::Type type = types[j];
-
+    for (double strike : strikes) {
+        for (auto type : types) {
             const ext::shared_ptr<PlainVanillaPayoff> payoff(
                 ext::make_shared<PlainVanillaPayoff>(type, strike));
 
-            for (Size k=0; k < LENGTH(displacements); ++k) {
+            for (double displacement : displacements) {
 
-                const Real displacement = displacements[k];
-                const Real marketValue = blackFormula(
-                    payoff, forward, stdDev, df, displacement);
+                const Real marketValue = blackFormula(payoff, forward, stdDev, df, displacement);
 
                 const Real impliedStdDev = blackFormulaImpliedStdDevLiRS(
                     payoff, forward, marketValue, df, displacement,
@@ -291,11 +269,9 @@ void assertBlackFormulaForwardDerivative(
     Real epsilon = 1.e-10;
     std::string type = optionType == Option::Call ? "Call" : "Put";
 
-    for (std::vector<Real>::const_iterator it = strikes.begin(); it != strikes.end(); ++it)
-    {
-        Real strike = *it;
-        Real delta = blackFormulaForwardDerivative(
-            optionType, strike, forward, stdDev, discount, displacement);
+    for (double strike : strikes) {
+        Real delta = blackFormulaForwardDerivative(optionType, strike, forward, stdDev, discount,
+                                                   displacement);
         Real bumpedDelta = blackFormulaForwardDerivative(
             optionType, strike, forward + bump, stdDev, discount, displacement);
 
@@ -384,11 +360,9 @@ void assertBachelierBlackFormulaForwardDerivative(
     Real epsilon = 1.e-10;
     std::string type = optionType == Option::Call ? "Call" : "Put";
 
-    for (std::vector<Real>::const_iterator it = strikes.begin(); it != strikes.end(); ++it)
-    {
-        Real strike = *it;
-        Real delta = bachelierBlackFormulaForwardDerivative(
-            optionType, strike, forward, stdDev, discount);
+    for (double strike : strikes) {
+        Real delta =
+            bachelierBlackFormulaForwardDerivative(optionType, strike, forward, stdDev, discount);
         Real bumpedDelta = bachelierBlackFormulaForwardDerivative(
             optionType, strike, forward + bump, stdDev, discount);
 
@@ -461,7 +435,7 @@ void BlackFormulaTest::testBachelierBlackFormulaForwardDerivativeWithZeroVolatil
 }
 
 test_suite* BlackFormulaTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Black formula tests");
+    auto* suite = BOOST_TEST_SUITE("Black formula tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &BlackFormulaTest::testBachelierImpliedVol));

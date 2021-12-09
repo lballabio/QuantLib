@@ -18,9 +18,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/vanilla/integralengine.hpp>
-#include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/exercise.hpp>
+#include <ql/math/integrals/segmentintegral.hpp>
+#include <ql/pricingengines/vanilla/integralengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -28,11 +29,8 @@ namespace QuantLib {
 
         class Integrand {
           public:
-            Integrand(const ext::shared_ptr<Payoff>& payoff,
-                      Real s0,
-                      Rate drift,
-                      Real variance)
-           : payoff_(payoff), s0_(s0), drift_(drift), variance_(variance) {}
+            Integrand(ext::shared_ptr<Payoff> payoff, Real s0, Rate drift, Real variance)
+            : payoff_(std::move(payoff)), s0_(s0), drift_(drift), variance_(variance) {}
             Real operator()(Real x) const {
                 Real temp = s0_ * std::exp(x);
                 Real result = (*payoff_)(temp);
@@ -47,9 +45,8 @@ namespace QuantLib {
         };
     }
 
-    IntegralEngine::IntegralEngine(
-              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+    IntegralEngine::IntegralEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 

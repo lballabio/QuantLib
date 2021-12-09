@@ -39,19 +39,19 @@ namespace QuantLib {
                          public virtual Observer {
       public:
         SmileSection(const Date& d,
-                     const DayCounter& dc = DayCounter(),
+                     DayCounter dc = DayCounter(),
                      const Date& referenceDate = Date(),
                      VolatilityType type = ShiftedLognormal,
                      Rate shift = 0.0);
         SmileSection(Time exerciseTime,
-                     const DayCounter& dc = DayCounter(),
+                     DayCounter dc = DayCounter(),
                      VolatilityType type = ShiftedLognormal,
                      Rate shift = 0.0);
-        SmileSection() {}
+        SmileSection() = default;
 
-        virtual ~SmileSection() {}
+        ~SmileSection() override = default;
 
-        virtual void update();
+        void update() override;
         virtual Real minStrike() const = 0;
         virtual Real maxStrike() const = 0;
         Real variance(Rate strike) const;

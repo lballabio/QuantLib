@@ -29,10 +29,13 @@ this_include_HEADERS = \
     lineartsrpricer.hpp \
     overnightindexedcoupon.hpp \
     rangeaccrual.hpp \
+    rateaveraging.hpp \
     replication.hpp \
     simplecashflow.hpp \
+    subperiodcoupon.hpp \
     timebasket.hpp \
-    yoyinflationcoupon.hpp
+    yoyinflationcoupon.hpp \
+    zeroinflationcashflow.hpp
 
 cpp_files = \
     averagebmacoupon.cpp \
@@ -62,8 +65,10 @@ cpp_files = \
     rangeaccrual.cpp \
     replication.cpp \
     simplecashflow.cpp \
+    subperiodcoupon.cpp \
     timebasket.cpp \
-    yoyinflationcoupon.cpp
+    yoyinflationcoupon.cpp \
+    zeroinflationcashflow.cpp
 
 if UNITY_BUILD
 

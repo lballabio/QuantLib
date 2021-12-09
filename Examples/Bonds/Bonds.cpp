@@ -23,7 +23,7 @@
  */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/instruments/bonds/zerocouponbond.hpp>
@@ -49,7 +49,7 @@ using namespace QuantLib;
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
 
-    ThreadKey sessionId() { return 0; }
+    ThreadKey sessionId() { return {}; }
 
 }
 #endif
@@ -163,8 +163,8 @@ int main(int, char* []) {
         };
 
         std::vector< ext::shared_ptr<SimpleQuote> > quote;
-        for (Size i=0; i<numberOfBonds; i++) {
-            ext::shared_ptr<SimpleQuote> cp(new SimpleQuote(marketQuotes[i]));
+        for (double marketQuote : marketQuotes) {
+            ext::shared_ptr<SimpleQuote> cp(new SimpleQuote(marketQuote));
             quote.push_back(cp);
         }
 

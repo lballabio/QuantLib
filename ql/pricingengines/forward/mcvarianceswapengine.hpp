@@ -24,10 +24,11 @@
 #ifndef quantlib_mc_varianceswap_engine_hpp
 #define quantlib_mc_varianceswap_engine_hpp
 
-#include <ql/pricingengines/mcsimulation.hpp>
-#include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/instruments/varianceswap.hpp>
+#include <ql/math/integrals/segmentintegral.hpp>
+#include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -56,18 +57,17 @@ namespace QuantLib {
         typedef typename McSimulation<SingleVariate,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCVarianceSwapEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps,
-             Size timeStepsPerYear,
-             bool brownianBridge,
-             bool antitheticVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed);
+        MCVarianceSwapEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                             Size timeSteps,
+                             Size timeStepsPerYear,
+                             bool brownianBridge,
+                             bool antitheticVariate,
+                             Size requiredSamples,
+                             Real requiredTolerance,
+                             Size maxSamples,
+                             BigNatural seed);
         // calculate variance via Monte Carlo
-        void calculate() const {
+        void calculate() const override {
             McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
                                                          requiredSamples_,
                                                          maxSamples_);
@@ -98,12 +98,13 @@ namespace QuantLib {
                 results_.errorEstimate = multiplier * varianceError;
             }
         }
+
       protected:
         // McSimulation implementation
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
-        TimeGrid timeGrid() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        TimeGrid timeGrid() const override;
 
-        ext::shared_ptr<path_generator_type> pathGenerator() const {
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size dimensions = process_->factors();
 
@@ -129,8 +130,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCVarianceSwapEngine {
       public:
-        MakeMCVarianceSwapEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+        MakeMCVarianceSwapEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
         // named parameters
         MakeMCVarianceSwapEngine& withSteps(Size steps);
         MakeMCVarianceSwapEngine& withStepsPerYear(Size steps);
@@ -153,33 +153,30 @@ namespace QuantLib {
 
     class VariancePathPricer : public PathPricer<Path> {
       public:
-        VariancePathPricer(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-        : process_(process) {}
-        Real operator()(const Path& path) const;
+        VariancePathPricer(ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        : process_(std::move(process)) {}
+        Real operator()(const Path& path) const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
     // inline definitions
 
-    template<class RNG, class S>
-    inline
-    MCVarianceSwapEngine<RNG,S>::MCVarianceSwapEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps,
-             Size timeStepsPerYear,
-             bool brownianBridge,
-             bool antitheticVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed)
-    : McSimulation<SingleVariate,RNG,S>(antitheticVariate, false),
-      process_(process),
-      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
-      requiredSamples_(requiredSamples), maxSamples_(maxSamples),
-      requiredTolerance_(requiredTolerance),
+    template <class RNG, class S>
+    inline MCVarianceSwapEngine<RNG, S>::MCVarianceSwapEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Size timeSteps,
+        Size timeStepsPerYear,
+        bool brownianBridge,
+        bool antitheticVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        BigNatural seed)
+    : McSimulation<SingleVariate, RNG, S>(antitheticVariate, false), process_(std::move(process)),
+      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), requiredSamples_(requiredSamples),
+      maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
                    timeStepsPerYear != Null<Size>(),
@@ -225,11 +222,10 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline MakeMCVarianceSwapEngine<RNG,S>::MakeMCVarianceSwapEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+    inline MakeMCVarianceSwapEngine<RNG, S>::MakeMCVarianceSwapEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), antithetic_(false), steps_(Null<Size>()),
+      stepsPerYear_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
 
     template <class RNG, class S>
@@ -318,10 +314,8 @@ namespace QuantLib {
 
         class Integrand {
           public:
-            Integrand(const Path& path,
-                      const ext::shared_ptr<GeneralizedBlackScholesProcess>&
-                                                                      process)
-            : path_(path), process_(process) {}
+            Integrand(Path path, ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+            : path_(std::move(path)), process_(std::move(process)) {}
             Real operator()(Time t) const {
                 Size i =  static_cast<Size>(t/path_.timeGrid().dt(0));
                 Real sigma = process_->diffusion(t,path_[i]);

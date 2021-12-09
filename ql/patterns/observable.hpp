@@ -60,8 +60,8 @@ namespace QuantLib {
 
       private:
         ObservableSettings()
-        : updatesEnabled_(true),
-          updatesDeferred_(false) {}
+
+            = default;
 
         void registerDeferredObservers(
             const boost::unordered_set<Observer*>& observers);
@@ -71,7 +71,7 @@ namespace QuantLib {
         typedef set_type::iterator iterator;
         set_type deferredObservers_;
 
-        bool updatesEnabled_,  updatesDeferred_;
+        bool updatesEnabled_ = true, updatesDeferred_ = false;
     };
 
     //! Object that notifies its changes to a set of observers
@@ -83,7 +83,7 @@ namespace QuantLib {
         Observable() : settings_(ObservableSettings::instance()) {}
         Observable(const Observable&);
         Observable& operator=(const Observable&);
-        virtual ~Observable() {}
+        virtual ~Observable() = default;
         /*! This method should be called at the end of non-const methods
             or when the programmer desires to notify any changes.
         */
@@ -104,7 +104,7 @@ namespace QuantLib {
         typedef set_type::iterator iterator;
 
         // constructors, assignment, destructor
-        Observer() {}
+        Observer() = default;
         Observer(const Observer&);
         Observer& operator=(const Observer&);
         virtual ~Observer();
@@ -188,8 +188,8 @@ namespace QuantLib {
 
     inline Observer::Observer(const Observer& o)
     : observables_(o.observables_) {
-        for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->registerObserver(this);
+        for (const auto& observable : observables_)
+            observable->registerObserver(this);
     }
 
     inline Observer& Observer::operator=(const Observer& o) {
@@ -203,13 +203,13 @@ namespace QuantLib {
     }
 
     inline Observer::~Observer() {
-        for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->unregisterObserver(this);
+        for (const auto& observable : observables_)
+            observable->unregisterObserver(this);
     }
 
     inline std::pair<Observer::iterator, bool>
     Observer::registerWith(const ext::shared_ptr<Observable>& h) {
-        if (h != 0) {
+        if (h != nullptr) {
             h->registerObserver(this);
             return observables_.insert(h);
         }
@@ -218,7 +218,7 @@ namespace QuantLib {
 
     inline void
     Observer::registerWithObservables(const ext::shared_ptr<Observer> &o) {
-        if (o != 0) {
+        if (o != nullptr) {
             iterator i;
             for (i = o->observables_.begin(); i != o->observables_.end(); ++i)
                 registerWith(*i);
@@ -227,14 +227,14 @@ namespace QuantLib {
 
     inline
     Size Observer::unregisterWith(const ext::shared_ptr<Observable>& h) {
-        if (h != 0)
+        if (h != nullptr)
             h->unregisterObserver(this);
         return observables_.erase(h);
     }
 
     inline void Observer::unregisterWithAll() {
-        for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->unregisterObserver(this);
+        for (const auto& observable : observables_)
+            observable->unregisterObserver(this);
         observables_.clear();
     }
 
@@ -367,7 +367,8 @@ namespace QuantLib {
         void notifyObservers();
       private:
         void registerObserver(const ext::shared_ptr<Observer::Proxy>&);
-        void unregisterObserver(const ext::shared_ptr<Observer::Proxy>&);
+        void unregisterObserver(
+            const ext::shared_ptr<Observer::Proxy>& proxy, bool disconnect);
 
         ext::shared_ptr<detail::Signal> sig_;
 
@@ -491,7 +492,7 @@ namespace QuantLib {
 
         iterator i;
         for (i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->unregisterObserver(proxy_);
+            (*i)->unregisterObserver(proxy_, true);
 
         {
             boost::lock_guard<boost::recursive_mutex> lock(o.mutex_);
@@ -509,7 +510,7 @@ namespace QuantLib {
             proxy_->deactivate();
 
         for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->unregisterObserver(proxy_);
+            (*i)->unregisterObserver(proxy_, false);
     }
 
     inline std::pair<Observer::iterator, bool>
@@ -541,9 +542,8 @@ namespace QuantLib {
     Size Observer::unregisterWith(const ext::shared_ptr<Observable>& h) {
         boost::lock_guard<boost::recursive_mutex> lock(mutex_);
 
-        if (h)  {
-            QL_REQUIRE(proxy_, "unregister called without a proxy");
-            h->unregisterObserver(proxy_);
+        if (h && proxy_)  {
+            h->unregisterObserver(proxy_, true);
         }
 
         return observables_.erase(h);
@@ -553,7 +553,7 @@ namespace QuantLib {
         boost::lock_guard<boost::recursive_mutex> lock(mutex_);
 
         for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->unregisterObserver(proxy_);
+            (*i)->unregisterObserver(proxy_, true);
 
         observables_.clear();
     }

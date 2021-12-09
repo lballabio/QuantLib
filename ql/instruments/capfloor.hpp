@@ -58,20 +58,18 @@ namespace QuantLib {
         class arguments;
         class engine;
         CapFloor(Type type,
-                 const Leg& floatingLeg,
-                 const std::vector<Rate>& capRates,
-                 const std::vector<Rate>& floorRates);
-        CapFloor(Type type,
-                 const Leg& floatingLeg,
-                 const std::vector<Rate>& strikes);
+                 Leg floatingLeg,
+                 std::vector<Rate> capRates,
+                 std::vector<Rate> floorRates);
+        CapFloor(Type type, Leg floatingLeg, const std::vector<Rate>& strikes);
         //! \name Observable interface
         //@{
-        void deepUpdate();
+        void deepUpdate() override;
         //@}
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
         //@}
         //! \name Inspectors
         //@{
@@ -152,7 +150,7 @@ namespace QuantLib {
         std::vector<Real> spreads;
         std::vector<Real> nominals;
         std::vector<ext::shared_ptr<InterestRateIndex> > indexes;
-        void validate() const;
+        void validate() const override;
     };
 
     //! base class for cap/floor engines

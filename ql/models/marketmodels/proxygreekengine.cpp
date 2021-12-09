@@ -17,32 +17,29 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/proxygreekengine.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/constrainedevolver.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/discounter.hpp>
-#include <ql/models/marketmodels/constrainedevolver.hpp>
+#include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/proxygreekengine.hpp>
 #include <algorithm>
+#include <utility>
 
 namespace QuantLib {
 
     ProxyGreekEngine::ProxyGreekEngine(
-            const ext::shared_ptr<MarketModelEvolver>& evolver,
-            const std::vector<
-                std::vector<ext::shared_ptr<ConstrainedEvolver> > >&
-                                                          constrainedEvolvers,
-            const std::vector<std::vector<std::vector<Real> > >& diffWeights,
-            const std::vector<Size>& startIndexOfConstraint,
-            const std::vector<Size>& endIndexOfConstraint,
-            const Clone<MarketModelMultiProduct>& product,
-            Real initialNumeraireValue)
-    : originalEvolver_(evolver), constrainedEvolvers_(constrainedEvolvers),
-      diffWeights_(diffWeights),
-      startIndexOfConstraint_(startIndexOfConstraint),
-      endIndexOfConstraint_(endIndexOfConstraint),
-      product_(product),
-      initialNumeraireValue_(initialNumeraireValue),
-      numberProducts_(product->numberOfProducts()),
+        ext::shared_ptr<MarketModelEvolver> evolver,
+        std::vector<std::vector<ext::shared_ptr<ConstrainedEvolver> > > constrainedEvolvers,
+        std::vector<std::vector<std::vector<Real> > > diffWeights,
+        std::vector<Size> startIndexOfConstraint,
+        std::vector<Size> endIndexOfConstraint,
+        const Clone<MarketModelMultiProduct>& product,
+        Real initialNumeraireValue)
+    : originalEvolver_(std::move(evolver)), constrainedEvolvers_(std::move(constrainedEvolvers)),
+      diffWeights_(std::move(diffWeights)),
+      startIndexOfConstraint_(std::move(startIndexOfConstraint)),
+      endIndexOfConstraint_(std::move(endIndexOfConstraint)), product_(product),
+      initialNumeraireValue_(initialNumeraireValue), numberProducts_(product->numberOfProducts()),
       numerairesHeld_(product->numberOfProducts()),
       numberCashFlowsThisStep_(product->numberOfProducts()),
       cashFlowsGenerated_(product->numberOfProducts()) {
@@ -56,8 +53,7 @@ namespace QuantLib {
         Size n = cashFlowTimes.size();
         discounters_.reserve(n);
         for (Size j=0; j<n; ++j)
-            discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
-                                                         rateTimes));
+            discounters_.emplace_back(cashFlowTimes[j], rateTimes);
         const std::vector<Rate>& evolutionTimes =
             product_->evolution().evolutionTimes();
         constraints_.resize(evolutionTimes.size());
@@ -89,8 +85,8 @@ namespace QuantLib {
         modifiedValues.resize(constrainedEvolvers_.size());
         for (Size i=0; i<modifiedValues.size(); ++i) {
             modifiedValues[i].resize(constrainedEvolvers_[i].size());
-            for (Size j=0; j<modifiedValues[i].size(); ++j)
-                modifiedValues[i][j].resize(N);
+            for (auto& j : modifiedValues[i])
+                j.resize(N);
         }
 
         std::vector<Real> results(N);

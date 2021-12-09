@@ -45,7 +45,7 @@ void GJRGARCHModelTest::testEngines() {
        "Testing Monte Carlo GJR-GARCH engine against "
        "analytic GJR-GARCH engine...");
 
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
 
     const Date today = Date::todaysDate();
     Handle<YieldTermStructure> riskFreeTS(flatRate(today, 0.05, dayCounter));
@@ -304,7 +304,7 @@ void GJRGARCHModelTest::testDAXCalibration() {
 }
 
 test_suite* GJRGARCHModelTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("GJR-GARCH model tests");
+    auto* suite = BOOST_TEST_SUITE("GJR-GARCH model tests");
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&GJRGARCHModelTest::testDAXCalibration));

@@ -25,9 +25,10 @@
 #ifndef quantlib_one_factor_model_hpp
 #define quantlib_one_factor_model_hpp
 
-#include <ql/models/model.hpp>
 #include <ql/methods/lattices/lattice1d.hpp>
 #include <ql/methods/lattices/trinomialtree.hpp>
+#include <ql/models/model.hpp>
+#include <utility>
 
 namespace QuantLib {
     class StochasticProcess1D;
@@ -37,7 +38,7 @@ namespace QuantLib {
     class OneFactorModel : public ShortRateModel {
       public:
         explicit OneFactorModel(Size nArguments);
-        virtual ~OneFactorModel() {}
+        ~OneFactorModel() override = default;
 
         class ShortRateDynamics;
         class ShortRateTree;
@@ -46,16 +47,15 @@ namespace QuantLib {
         virtual ext::shared_ptr<ShortRateDynamics> dynamics() const = 0;
 
         //! Return by default a trinomial recombining tree
-        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
     };
 
     //! Base class describing the short-rate dynamics
     class OneFactorModel::ShortRateDynamics {
       public:
-        explicit ShortRateDynamics(
-                        const ext::shared_ptr<StochasticProcess1D>& process)
-        : process_(process) {}
-        virtual ~ShortRateDynamics() {}
+        explicit ShortRateDynamics(ext::shared_ptr<StochasticProcess1D> process)
+        : process_(std::move(process)) {}
+        virtual ~ShortRateDynamics() = default;
 
         //! Compute state variable from short rate
         virtual Real variable(Time t, Rate r) const = 0;
@@ -77,13 +77,12 @@ namespace QuantLib {
       public:
         //! Plain tree build-up from short-rate dynamics
         ShortRateTree(const ext::shared_ptr<TrinomialTree>& tree,
-                      const ext::shared_ptr<ShortRateDynamics>& dynamics,
+                      ext::shared_ptr<ShortRateDynamics> dynamics,
                       const TimeGrid& timeGrid);
         //! Tree build-up + numerical fitting to term-structure
         ShortRateTree(const ext::shared_ptr<TrinomialTree>& tree,
-                      const ext::shared_ptr<ShortRateDynamics>& dynamics,
-                      const ext::shared_ptr
-                          <TermStructureFittingParameter::NumericalImpl>& phi,
+                      ext::shared_ptr<ShortRateDynamics> dynamics,
+                      const ext::shared_ptr<TermStructureFittingParameter::NumericalImpl>& phi,
                       const TimeGrid& timeGrid);
 
         Size size(Size i) const {
@@ -130,9 +129,7 @@ namespace QuantLib {
         explicit OneFactorAffineModel(Size nArguments)
         : OneFactorModel(nArguments) {}
 
-        virtual Real discountBond(Time now,
-                                  Time maturity,
-                                  Array factors) const {
+        Real discountBond(Time now, Time maturity, Array factors) const override {
             return discountBond(now, maturity, factors[0]);
         }
 
@@ -140,7 +137,8 @@ namespace QuantLib {
             return A(now, maturity)*std::exp(-B(now, maturity)*rate);
         }
 
-        DiscountFactor discount(Time t) const;
+        DiscountFactor discount(Time t) const override;
+
       protected:
         virtual Real A(Time t, Time T) const = 0;
         virtual Real B(Time t, Time T) const = 0;

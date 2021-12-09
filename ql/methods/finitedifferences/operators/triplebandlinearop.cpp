@@ -81,16 +81,10 @@ namespace QuantLib {
     }
 
 
+    #ifdef QL_USE_DISPOSABLE
     TripleBandLinearOp::TripleBandLinearOp(
         const Disposable<TripleBandLinearOp>& from) {
         swap(const_cast<Disposable<TripleBandLinearOp>&>(from));
-    }
-
-    TripleBandLinearOp& TripleBandLinearOp::operator=(
-        const TripleBandLinearOp& m) {
-        TripleBandLinearOp tmp(m);
-        swap(tmp);
-        return *this;
     }
 
     TripleBandLinearOp& TripleBandLinearOp::operator=(
@@ -98,6 +92,7 @@ namespace QuantLib {
         swap(const_cast<Disposable<TripleBandLinearOp>&>(m));
         return *this;
     }
+    #endif
 
     void TripleBandLinearOp::swap(TripleBandLinearOp& m) {
         std::swap(mesher_, m.mesher_);
@@ -265,7 +260,6 @@ namespace QuantLib {
         return retVal;
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<SparseMatrix> TripleBandLinearOp::toMatrix() const {
         const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
         const Size n = index->size();
@@ -279,7 +273,6 @@ namespace QuantLib {
 
         return retVal;
     }
-#endif
 
 
     Disposable<Array>

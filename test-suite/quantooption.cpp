@@ -264,37 +264,33 @@ void QuantoOptionTest::testValues() {
                                                  stochProcess, fxrTS, fxVolTS,
                                                  Handle<Quote>(correlation)));
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
-                    new PlainVanillaPayoff(values[i].type, values[i].strike));
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
+        Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
-        fxRate->setValue(values[i].fxr);
-        fxVol->setValue(values[i].fxv);
-        correlation->setValue(values[i].corr);
+        fxRate->setValue(value.fxr);
+        fxVol->setValue(value.fxv);
+        correlation->setValue(value.corr);
 
         QuantoVanillaOption option(payoff, exercise);
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real error = std::fabs(calculated-values[i].result);
+        Real error = std::fabs(calculated - value.result);
         Real tolerance = 1e-4;
         if (error>tolerance) {
-            QUANTO_REPORT_FAILURE("value", payoff, exercise, values[i].s,
-                           values[i].q, values[i].r, today,
-                           values[i].v, values[i].fxr, values[i].fxv,
-                           values[i].corr, values[i].result, calculated,
-                           error, tolerance);
+            QUANTO_REPORT_FAILURE("value", payoff, exercise, value.s, value.q, value.r, today,
+                                  value.v, value.fxr, value.fxv, value.corr, value.result,
+                                  calculated, error, tolerance);
         }
     }
-
 }
 
 
@@ -349,154 +345,149 @@ void QuantoOptionTest::testGreeks() {
                                                   stochProcess,fxrTS, fxVolTS,
                                                   Handle<Quote>(correlation)));
 
-    for (Size i=0; i<LENGTH(types); i++) {
-      for (Size j=0; j<LENGTH(strikes); j++) {
-        for (Size k=0; k<LENGTH(lengths); k++) {
+    for (auto& type : types) {
+        for (double strike : strikes) {
+            for (int length : lengths) {
 
-          Date exDate = today + lengths[k]*Years;
-          ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                Date exDate = today + length * Years;
+                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-          ext::shared_ptr<StrikedTypePayoff> payoff(
-                                new PlainVanillaPayoff(types[i], strikes[j]));
+                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
 
-          QuantoVanillaOption option(payoff, exercise);
-          option.setPricingEngine(engine);
+                QuantoVanillaOption option(payoff, exercise);
+                option.setPricingEngine(engine);
 
-          for (Size l=0; l<LENGTH(underlyings); l++) {
-            for (Size m=0; m<LENGTH(qRates); m++) {
-              for (Size n=0; n<LENGTH(rRates); n++) {
-                for (Size p=0; p<LENGTH(vols); p++) {
-                  for (Size a=0; a<LENGTH(rRates); a++) {
-                    for (Size b=0; b<LENGTH(vols); b++) {
-                      for (Size c=0; c<LENGTH(correlations); c++) {
+                for (double u : underlyings) {
+                    for (double m : qRates) {
+                        for (double n : rRates) {
+                            for (double v : vols) {
+                                for (double fxr : rRates) {
+                                    for (double fxv : vols) {
+                                        for (double corr : correlations) {
 
-                        Real u = underlyings[l];
-                        Rate q = qRates[m],
-                             r = rRates[n];
-                        Volatility v = vols[p];
-                        Rate fxr = rRates[a];
-                        Volatility fxv = vols[b];
-                        Rate corr = correlations[c];
-                        spot->setValue(u);
-                        qRate->setValue(q);
-                        rRate->setValue(r);
-                        vol->setValue(v);
-                        fxRate->setValue(fxr);
-                        fxVol->setValue(fxv);
-                        correlation->setValue(corr);
+                                            Rate q = m, r = n;
+                                            spot->setValue(u);
+                                            qRate->setValue(q);
+                                            rRate->setValue(r);
+                                            vol->setValue(v);
+                                            fxRate->setValue(fxr);
+                                            fxVol->setValue(fxv);
+                                            correlation->setValue(corr);
 
-                        Real value = option.NPV();
-                        calculated["delta"]   = option.delta();
-                        calculated["gamma"]   = option.gamma();
-                        calculated["theta"]   = option.theta();
-                        calculated["rho"]     = option.rho();
-                        calculated["divRho"]  = option.dividendRho();
-                        calculated["vega"]    = option.vega();
-                        calculated["qrho"]    = option.qrho();
-                        calculated["qvega"]   = option.qvega();
-                        calculated["qlambda"] = option.qlambda();
+                                            Real value = option.NPV();
+                                            calculated["delta"] = option.delta();
+                                            calculated["gamma"] = option.gamma();
+                                            calculated["theta"] = option.theta();
+                                            calculated["rho"] = option.rho();
+                                            calculated["divRho"] = option.dividendRho();
+                                            calculated["vega"] = option.vega();
+                                            calculated["qrho"] = option.qrho();
+                                            calculated["qvega"] = option.qvega();
+                                            calculated["qlambda"] = option.qlambda();
 
-                        if (value > spot->value()*1.0e-5) {
-                          // perturb spot and get delta and gamma
-                          Real du = u*1.0e-4;
-                          spot->setValue(u+du);
-                          Real value_p = option.NPV(),
-                               delta_p = option.delta();
-                          spot->setValue(u-du);
-                          Real value_m = option.NPV(),
-                               delta_m = option.delta();
-                          spot->setValue(u);
-                          expected["delta"] = (value_p - value_m)/(2*du);
-                          expected["gamma"] = (delta_p - delta_m)/(2*du);
+                                            if (value > spot->value() * 1.0e-5) {
+                                                // perturb spot and get delta and gamma
+                                                Real du = u * 1.0e-4;
+                                                spot->setValue(u + du);
+                                                Real value_p = option.NPV(),
+                                                     delta_p = option.delta();
+                                                spot->setValue(u - du);
+                                                Real value_m = option.NPV(),
+                                                     delta_m = option.delta();
+                                                spot->setValue(u);
+                                                expected["delta"] = (value_p - value_m) / (2 * du);
+                                                expected["gamma"] = (delta_p - delta_m) / (2 * du);
 
-                          // perturb rates and get rho and dividend rho
-                          Spread dr = r*1.0e-4;
-                          rRate->setValue(r+dr);
-                          value_p = option.NPV();
-                          rRate->setValue(r-dr);
-                          value_m = option.NPV();
-                          rRate->setValue(r);
-                          expected["rho"] = (value_p - value_m)/(2*dr);
+                                                // perturb rates and get rho and dividend rho
+                                                Spread dr = r * 1.0e-4;
+                                                rRate->setValue(r + dr);
+                                                value_p = option.NPV();
+                                                rRate->setValue(r - dr);
+                                                value_m = option.NPV();
+                                                rRate->setValue(r);
+                                                expected["rho"] = (value_p - value_m) / (2 * dr);
 
-                          Spread dq = q*1.0e-4;
-                          qRate->setValue(q+dq);
-                          value_p = option.NPV();
-                          qRate->setValue(q-dq);
-                          value_m = option.NPV();
-                          qRate->setValue(q);
-                          expected["divRho"] = (value_p - value_m)/(2*dq);
+                                                Spread dq = q * 1.0e-4;
+                                                qRate->setValue(q + dq);
+                                                value_p = option.NPV();
+                                                qRate->setValue(q - dq);
+                                                value_m = option.NPV();
+                                                qRate->setValue(q);
+                                                expected["divRho"] = (value_p - value_m) / (2 * dq);
 
-                          // perturb volatility and get vega
-                          Volatility dv = v*1.0e-4;
-                          vol->setValue(v+dv);
-                          value_p = option.NPV();
-                          vol->setValue(v-dv);
-                          value_m = option.NPV();
-                          vol->setValue(v);
-                          expected["vega"] = (value_p - value_m)/(2*dv);
+                                                // perturb volatility and get vega
+                                                Volatility dv = v * 1.0e-4;
+                                                vol->setValue(v + dv);
+                                                value_p = option.NPV();
+                                                vol->setValue(v - dv);
+                                                value_m = option.NPV();
+                                                vol->setValue(v);
+                                                expected["vega"] = (value_p - value_m) / (2 * dv);
 
-                          // perturb fx rate and get qrho
-                          Spread dfxr = fxr*1.0e-4;
-                          fxRate->setValue(fxr+dfxr);
-                          value_p = option.NPV();
-                          fxRate->setValue(fxr-dfxr);
-                          value_m = option.NPV();
-                          fxRate->setValue(fxr);
-                          expected["qrho"] = (value_p - value_m)/(2*dfxr);
+                                                // perturb fx rate and get qrho
+                                                Spread dfxr = fxr * 1.0e-4;
+                                                fxRate->setValue(fxr + dfxr);
+                                                value_p = option.NPV();
+                                                fxRate->setValue(fxr - dfxr);
+                                                value_m = option.NPV();
+                                                fxRate->setValue(fxr);
+                                                expected["qrho"] = (value_p - value_m) / (2 * dfxr);
 
-                          // perturb fx volatility and get qvega
-                          Volatility dfxv = fxv*1.0e-4;
-                          fxVol->setValue(fxv+dfxv);
-                          value_p = option.NPV();
-                          fxVol->setValue(fxv-dfxv);
-                          value_m = option.NPV();
-                          fxVol->setValue(fxv);
-                          expected["qvega"] = (value_p - value_m)/(2*dfxv);
+                                                // perturb fx volatility and get qvega
+                                                Volatility dfxv = fxv * 1.0e-4;
+                                                fxVol->setValue(fxv + dfxv);
+                                                value_p = option.NPV();
+                                                fxVol->setValue(fxv - dfxv);
+                                                value_m = option.NPV();
+                                                fxVol->setValue(fxv);
+                                                expected["qvega"] =
+                                                    (value_p - value_m) / (2 * dfxv);
 
-                          // perturb correlation and get qlambda
-                          Real dcorr = corr*1.0e-4;
-                          correlation->setValue(corr+dcorr);
-                          value_p = option.NPV();
-                          correlation->setValue(corr-dcorr);
-                          value_m = option.NPV();
-                          correlation->setValue(corr);
-                          expected["qlambda"] = (value_p - value_m)/(2*dcorr);
+                                                // perturb correlation and get qlambda
+                                                Real dcorr = corr * 1.0e-4;
+                                                correlation->setValue(corr + dcorr);
+                                                value_p = option.NPV();
+                                                correlation->setValue(corr - dcorr);
+                                                value_m = option.NPV();
+                                                correlation->setValue(corr);
+                                                expected["qlambda"] =
+                                                    (value_p - value_m) / (2 * dcorr);
 
-                          // perturb date and get theta
-                          Time dT = dc.yearFraction(today-1, today+1);
-                          Settings::instance().evaluationDate() = today-1;
-                          value_m = option.NPV();
-                          Settings::instance().evaluationDate() = today+1;
-                          value_p = option.NPV();
-                          Settings::instance().evaluationDate() = today;
-                          expected["theta"] = (value_p - value_m)/dT;
+                                                // perturb date and get theta
+                                                Time dT = dc.yearFraction(today - 1, today + 1);
+                                                Settings::instance().evaluationDate() = today - 1;
+                                                value_m = option.NPV();
+                                                Settings::instance().evaluationDate() = today + 1;
+                                                value_p = option.NPV();
+                                                Settings::instance().evaluationDate() = today;
+                                                expected["theta"] = (value_p - value_m) / dT;
 
-                          // compare
-                          std::map<std::string,Real>::iterator it;
-                          for (it = calculated.begin();
-                               it != calculated.end(); ++it) {
-                              std::string greek = it->first;
-                              Real expct = expected  [greek],
-                                   calcl = calculated[greek],
-                                   tol   = tolerance [greek];
-                              Real error = relativeError(expct,calcl,u);
-                              if (error>tol) {
-                                  QUANTO_REPORT_FAILURE(greek, payoff, exercise,
-                                                 u, q, r, today, v,
-                                                 fxr, fxv, corr,
-                                                 expct, calcl, error, tol);
-                              }
-                          }
+                                                // compare
+                                                std::map<std::string, Real>::iterator it;
+                                                for (it = calculated.begin();
+                                                     it != calculated.end(); ++it) {
+                                                    std::string greek = it->first;
+                                                    Real expct = expected[greek],
+                                                         calcl = calculated[greek],
+                                                         tol = tolerance[greek];
+                                                    Real error = relativeError(expct, calcl, u);
+                                                    if (error > tol) {
+                                                        QUANTO_REPORT_FAILURE(
+                                                            greek, payoff, exercise, u, q, r, today,
+                                                            v, fxr, fxv, corr, expct, calcl, error,
+                                                            tol);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                      }
                     }
-                  }
                 }
-              }
             }
-          }
         }
-      }
     }
 }
 
@@ -547,40 +538,35 @@ void QuantoOptionTest::testForwardValues() {
                                                  stochProcess, fxrTS, fxVolTS,
                                                  Handle<Quote>(correlation)));
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
-                                 new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, 0.0));
+        Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today + Integer(values[i].start*360+0.5);
+        Date reset = today + timeToDays(value.start);
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
-        fxRate->setValue(values[i].fxr);
-        fxVol->setValue(values[i].fxv);
-        correlation->setValue(values[i].corr);
+        fxRate->setValue(value.fxr);
+        fxVol->setValue(value.fxv);
+        correlation->setValue(value.corr);
 
-        QuantoForwardVanillaOption option(values[i].moneyness, reset,
-                                          payoff, exercise);
+        QuantoForwardVanillaOption option(value.moneyness, reset, payoff, exercise);
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real error = std::fabs(calculated-values[i].result);
+        Real error = std::fabs(calculated - value.result);
         Real tolerance = 1e-4;
         if (error>tolerance) {
-            QUANTO_FORWARD_REPORT_FAILURE("value", payoff, values[i].moneyness,
-                            exercise, values[i].s,
-                            values[i].q, values[i].r, today, reset,
-                            values[i].v, values[i].fxr, values[i].fxv,
-                            values[i].corr, values[i].result, calculated,
-                            error, tolerance);
+            QUANTO_FORWARD_REPORT_FAILURE("value", payoff, value.moneyness, exercise, value.s,
+                                          value.q, value.r, today, reset, value.v, value.fxr,
+                                          value.fxv, value.corr, value.result, calculated, error,
+                                          tolerance);
         }
     }
-
 }
 
 
@@ -637,160 +623,161 @@ void QuantoOptionTest::testForwardGreeks() {
                                                  stochProcess, fxrTS, fxVolTS,
                                                  Handle<Quote>(correlation)));
 
-    for (Size i=0; i<LENGTH(types); i++) {
-      for (Size j=0; j<LENGTH(moneyness); j++) {
-        for (Size k=0; k<LENGTH(lengths); k++) {
-          for (Size h=0; h<LENGTH(startMonths); h++) {
+    for (auto& type : types) {
+        for (double moneynes : moneyness) {
+            for (int length : lengths) {
+                for (int startMonth : startMonths) {
 
-            Date exDate = today + lengths[k]*Years;
-            ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                    Date exDate = today + length * Years;
+                    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-            Date reset = today + startMonths[h]*Months;
+                    Date reset = today + startMonth * Months;
 
-            ext::shared_ptr<StrikedTypePayoff> payoff(
-                                       new PlainVanillaPayoff(types[i], 0.0));
+                    ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, 0.0));
 
-            QuantoForwardVanillaOption option(moneyness[j], reset,
-                                              payoff, exercise);
-            option.setPricingEngine(engine);
+                    QuantoForwardVanillaOption option(moneynes, reset, payoff, exercise);
+                    option.setPricingEngine(engine);
 
-            for (Size l=0; l<LENGTH(underlyings); l++) {
-              for (Size m=0; m<LENGTH(qRates); m++) {
-                for (Size n=0; n<LENGTH(rRates); n++) {
-                  for (Size p=0; p<LENGTH(vols); p++) {
-                    for (Size a=0; a<LENGTH(rRates); a++) {
-                      for (Size b=0; b<LENGTH(vols); b++) {
-                        for (Size c=0; c<LENGTH(correlations); c++) {
+                    for (double u : underlyings) {
+                        for (double m : qRates) {
+                            for (double n : rRates) {
+                                for (double v : vols) {
+                                    for (double fxr : rRates) {
+                                        for (double fxv : vols) {
+                                            for (double corr : correlations) {
 
-                          Real u = underlyings[l];
-                          Rate q = qRates[m],
-                               r = rRates[n];
-                          Volatility v = vols[p];
-                          Rate fxr = rRates[a];
-                          Volatility fxv = vols[b];
-                          Real corr = correlations[c];
-                          spot->setValue(u);
-                          qRate->setValue(q);
-                          rRate->setValue(r);
-                          vol->setValue(v);
-                          fxRate->setValue(fxr);
-                          fxVol->setValue(fxv);
-                          correlation->setValue(corr);
+                                                Rate q = m, r = n;
+                                                spot->setValue(u);
+                                                qRate->setValue(q);
+                                                rRate->setValue(r);
+                                                vol->setValue(v);
+                                                fxRate->setValue(fxr);
+                                                fxVol->setValue(fxv);
+                                                correlation->setValue(corr);
 
-                          Real value = option.NPV();
-                          calculated["delta"]   = option.delta();
-                          calculated["gamma"]   = option.gamma();
-                          calculated["theta"]   = option.theta();
-                          calculated["rho"]     = option.rho();
-                          calculated["divRho"]  = option.dividendRho();
-                          calculated["vega"]    = option.vega();
-                          calculated["qrho"]    = option.qrho();
-                          calculated["qvega"]   = option.qvega();
-                          calculated["qlambda"] = option.qlambda();
+                                                Real value = option.NPV();
+                                                calculated["delta"] = option.delta();
+                                                calculated["gamma"] = option.gamma();
+                                                calculated["theta"] = option.theta();
+                                                calculated["rho"] = option.rho();
+                                                calculated["divRho"] = option.dividendRho();
+                                                calculated["vega"] = option.vega();
+                                                calculated["qrho"] = option.qrho();
+                                                calculated["qvega"] = option.qvega();
+                                                calculated["qlambda"] = option.qlambda();
 
-                          if (value > spot->value()*1.0e-5) {
-                            // perturb spot and get delta and gamma
-                            Real du = u*1.0e-4;
-                            spot->setValue(u+du);
-                            Real value_p = option.NPV(),
-                                 delta_p = option.delta();
-                            spot->setValue(u-du);
-                            Real value_m = option.NPV(),
-                                 delta_m = option.delta();
-                            spot->setValue(u);
-                            expected["delta"] = (value_p - value_m)/(2*du);
-                            expected["gamma"] = (delta_p - delta_m)/(2*du);
+                                                if (value > spot->value() * 1.0e-5) {
+                                                    // perturb spot and get delta and gamma
+                                                    Real du = u * 1.0e-4;
+                                                    spot->setValue(u + du);
+                                                    Real value_p = option.NPV(),
+                                                         delta_p = option.delta();
+                                                    spot->setValue(u - du);
+                                                    Real value_m = option.NPV(),
+                                                         delta_m = option.delta();
+                                                    spot->setValue(u);
+                                                    expected["delta"] =
+                                                        (value_p - value_m) / (2 * du);
+                                                    expected["gamma"] =
+                                                        (delta_p - delta_m) / (2 * du);
 
-                            // perturb rates and get rho and dividend rho
-                            Spread dr = r*1.0e-4;
-                            rRate->setValue(r+dr);
-                            value_p = option.NPV();
-                            rRate->setValue(r-dr);
-                            value_m = option.NPV();
-                            rRate->setValue(r);
-                            expected["rho"] = (value_p - value_m)/(2*dr);
+                                                    // perturb rates and get rho and dividend rho
+                                                    Spread dr = r * 1.0e-4;
+                                                    rRate->setValue(r + dr);
+                                                    value_p = option.NPV();
+                                                    rRate->setValue(r - dr);
+                                                    value_m = option.NPV();
+                                                    rRate->setValue(r);
+                                                    expected["rho"] =
+                                                        (value_p - value_m) / (2 * dr);
 
-                            Spread dq = q*1.0e-4;
-                            qRate->setValue(q+dq);
-                            value_p = option.NPV();
-                            qRate->setValue(q-dq);
-                            value_m = option.NPV();
-                            qRate->setValue(q);
-                            expected["divRho"] = (value_p - value_m)/(2*dq);
+                                                    Spread dq = q * 1.0e-4;
+                                                    qRate->setValue(q + dq);
+                                                    value_p = option.NPV();
+                                                    qRate->setValue(q - dq);
+                                                    value_m = option.NPV();
+                                                    qRate->setValue(q);
+                                                    expected["divRho"] =
+                                                        (value_p - value_m) / (2 * dq);
 
-                            // perturb volatility and get vega
-                            Volatility dv = v*1.0e-4;
-                            vol->setValue(v+dv);
-                            value_p = option.NPV();
-                            vol->setValue(v-dv);
-                            value_m = option.NPV();
-                            vol->setValue(v);
-                            expected["vega"] = (value_p - value_m)/(2*dv);
+                                                    // perturb volatility and get vega
+                                                    Volatility dv = v * 1.0e-4;
+                                                    vol->setValue(v + dv);
+                                                    value_p = option.NPV();
+                                                    vol->setValue(v - dv);
+                                                    value_m = option.NPV();
+                                                    vol->setValue(v);
+                                                    expected["vega"] =
+                                                        (value_p - value_m) / (2 * dv);
 
-                            // perturb fx rate and get qrho
-                            Spread dfxr = fxr*1.0e-4;
-                            fxRate->setValue(fxr+dfxr);
-                            value_p = option.NPV();
-                            fxRate->setValue(fxr-dfxr);
-                            value_m = option.NPV();
-                            fxRate->setValue(fxr);
-                            expected["qrho"] = (value_p - value_m)/(2*dfxr);
+                                                    // perturb fx rate and get qrho
+                                                    Spread dfxr = fxr * 1.0e-4;
+                                                    fxRate->setValue(fxr + dfxr);
+                                                    value_p = option.NPV();
+                                                    fxRate->setValue(fxr - dfxr);
+                                                    value_m = option.NPV();
+                                                    fxRate->setValue(fxr);
+                                                    expected["qrho"] =
+                                                        (value_p - value_m) / (2 * dfxr);
 
-                            // perturb fx volatility and get qvega
-                            Volatility dfxv = fxv*1.0e-4;
-                            fxVol->setValue(fxv+dfxv);
-                            value_p = option.NPV();
-                            fxVol->setValue(fxv-dfxv);
-                            value_m = option.NPV();
-                            fxVol->setValue(fxv);
-                            expected["qvega"] = (value_p - value_m)/(2*dfxv);
+                                                    // perturb fx volatility and get qvega
+                                                    Volatility dfxv = fxv * 1.0e-4;
+                                                    fxVol->setValue(fxv + dfxv);
+                                                    value_p = option.NPV();
+                                                    fxVol->setValue(fxv - dfxv);
+                                                    value_m = option.NPV();
+                                                    fxVol->setValue(fxv);
+                                                    expected["qvega"] =
+                                                        (value_p - value_m) / (2 * dfxv);
 
-                            // perturb correlation and get qlambda
-                            Real dcorr = corr*1.0e-4;
-                            correlation->setValue(corr+dcorr);
-                            value_p = option.NPV();
-                            correlation->setValue(corr-dcorr);
-                            value_m = option.NPV();
-                            correlation->setValue(corr);
-                            expected["qlambda"] =
-                                (value_p - value_m)/(2*dcorr);
+                                                    // perturb correlation and get qlambda
+                                                    Real dcorr = corr * 1.0e-4;
+                                                    correlation->setValue(corr + dcorr);
+                                                    value_p = option.NPV();
+                                                    correlation->setValue(corr - dcorr);
+                                                    value_m = option.NPV();
+                                                    correlation->setValue(corr);
+                                                    expected["qlambda"] =
+                                                        (value_p - value_m) / (2 * dcorr);
 
-                            // perturb date and get theta
-                            Time dT = dc.yearFraction(today-1, today+1);
-                            Settings::instance().evaluationDate() = today-1;
-                            value_m = option.NPV();
-                            Settings::instance().evaluationDate() = today+1;
-                            value_p = option.NPV();
-                            Settings::instance().evaluationDate() = today;
-                            expected["theta"] = (value_p - value_m)/dT;
+                                                    // perturb date and get theta
+                                                    Time dT = dc.yearFraction(today - 1, today + 1);
+                                                    Settings::instance().evaluationDate() =
+                                                        today - 1;
+                                                    value_m = option.NPV();
+                                                    Settings::instance().evaluationDate() =
+                                                        today + 1;
+                                                    value_p = option.NPV();
+                                                    Settings::instance().evaluationDate() = today;
+                                                    expected["theta"] = (value_p - value_m) / dT;
 
-                            // compare
-                            std::map<std::string,Real>::iterator it;
-                            for (it = calculated.begin();
-                                 it != calculated.end(); ++it) {
-                              std::string greek = it->first;
-                              Real expct = expected  [greek],
-                                   calcl = calculated[greek],
-                                   tol   = tolerance [greek];
-                              Real error = relativeError(expct,calcl,u);
-                              if (error>tol) {
-                                  QUANTO_FORWARD_REPORT_FAILURE(greek, payoff,
-                                      moneyness[j],
-                                      exercise, u, q, r, today, reset, v, fxr,
-                                      fxv, corr, expct, calcl, error, tol);
-                              }
+                                                    // compare
+                                                    std::map<std::string, Real>::iterator it;
+                                                    for (it = calculated.begin();
+                                                         it != calculated.end(); ++it) {
+                                                        std::string greek = it->first;
+                                                        Real expct = expected[greek],
+                                                             calcl = calculated[greek],
+                                                             tol = tolerance[greek];
+                                                        Real error = relativeError(expct, calcl, u);
+                                                        if (error > tol) {
+                                                            QUANTO_FORWARD_REPORT_FAILURE(
+                                                                greek, payoff, moneynes, exercise,
+                                                                u, q, r, today, reset, v, fxr, fxv,
+                                                                corr, expct, calcl, error, tol);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                          }
                         }
-                      }
                     }
-                  }
                 }
-              }
             }
-          }
         }
-      }
     }
 }
 
@@ -841,40 +828,38 @@ void QuantoOptionTest::testForwardPerformanceValues() {
                                                  stochProcess, fxrTS, fxVolTS,
                                                  Handle<Quote>(correlation)));
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (auto& value : values) {
 
         ext::shared_ptr<StrikedTypePayoff> payoff(
-//                               new PercentageStrikePayoff(values[i].type, values[i].moneyness));
-                                 new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today + Integer(values[i].t*360+0.5);
+            //                               new PercentageStrikePayoff(values[i].type,
+            //                               values[i].moneyness));
+            new PlainVanillaPayoff(value.type, 0.0));
+        Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today + Integer(values[i].start*360+0.5);
+        Date reset = today + timeToDays(value.start);
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
-        fxRate->setValue(values[i].fxr);
-        fxVol->setValue(values[i].fxv);
-        correlation->setValue(values[i].corr);
+        fxRate->setValue(value.fxr);
+        fxVol->setValue(value.fxv);
+        correlation->setValue(value.corr);
 
-        QuantoForwardVanillaOption option(values[i].moneyness, reset,
-                                          payoff, exercise);
+        QuantoForwardVanillaOption option(value.moneyness, reset, payoff, exercise);
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real error = std::fabs(calculated-values[i].result);
+        Real error = std::fabs(calculated - value.result);
         Real tolerance = 1e-4;
         if (error>tolerance) {
-            QUANTO_FORWARD_REPORT_FAILURE("value", payoff, values[i].moneyness,
-                exercise,
-                values[i].s, values[i].q, values[i].r, today, reset,
-                values[i].v, values[i].fxr, values[i].fxv, values[i].corr,
-                values[i].result, calculated, error, tolerance);
+            QUANTO_FORWARD_REPORT_FAILURE("value", payoff, value.moneyness, exercise, value.s,
+                                          value.q, value.r, today, reset, value.v, value.fxr,
+                                          value.fxv, value.corr, value.result, calculated, error,
+                                          tolerance);
         }
     }
-
 }
 
 void QuantoOptionTest::testBarrierValues()  {
@@ -923,44 +908,36 @@ void QuantoOptionTest::testBarrierValues()  {
                                                  stochProcess, fxrTS, fxVolTS,
                                                  Handle<Quote>(correlation)));
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
-                    new PlainVanillaPayoff(values[i].type, values[i].strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
-        fxRate->setValue(values[i].fxr);
-        fxVol->setValue(values[i].fxv);
-        correlation->setValue(values[i].corr);
+        fxRate->setValue(value.fxr);
+        fxVol->setValue(value.fxv);
+        correlation->setValue(value.corr);
 
-        QuantoBarrierOption option(values[i].barrierType,
-                                   values[i].barrier,
-                                   values[i].rebate,
-                                   payoff,
+        QuantoBarrierOption option(value.barrierType, value.barrier, value.rebate, payoff,
                                    exercise);
 
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real error = std::fabs(calculated-values[i].result);
-        Real tolerance = values[i].tol;
+        Real error = std::fabs(calculated - value.result);
+        Real tolerance = value.tol;
 
         if (error>tolerance) {
-            QUANTO_BARRIER_REPORT_FAILURE("value", payoff,
-                values[i].barrierType,
-                values[i].barrier,
-                values[i].rebate,
-                exercise,
-                values[i].s, values[i].q, values[i].r, today,
-                values[i].v, values[i].fxr, values[i].fxv, values[i].corr,
-                values[i].result, calculated, error, tolerance);
+            QUANTO_BARRIER_REPORT_FAILURE("value", payoff, value.barrierType, value.barrier,
+                                          value.rebate, exercise, value.s, value.q, value.r, today,
+                                          value.v, value.fxr, value.fxv, value.corr, value.result,
+                                          calculated, error, tolerance);
         }
     }
 }
@@ -1008,46 +985,36 @@ void QuantoOptionTest::testDoubleBarrierValues()  {
                                                  stochProcess, fxrTS, fxVolTS,
                                                  Handle<Quote>(correlation)));
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (auto& value : values) {
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
-                    new PlainVanillaPayoff(values[i].type, values[i].strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
-        fxRate->setValue(values[i].fxr);
-        fxVol->setValue(values[i].fxv);
-        correlation->setValue(values[i].corr);
+        fxRate->setValue(value.fxr);
+        fxVol->setValue(value.fxv);
+        correlation->setValue(value.corr);
 
-        QuantoDoubleBarrierOption option(values[i].barrierType,
-                                   values[i].barrier_lo,
-                                   values[i].barrier_hi,
-                                   values[i].rebate,
-                                   payoff,
-                                   exercise);
+        QuantoDoubleBarrierOption option(value.barrierType, value.barrier_lo, value.barrier_hi,
+                                         value.rebate, payoff, exercise);
 
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real error = std::fabs(calculated-values[i].result);
-        Real tolerance = values[i].tol;
+        Real error = std::fabs(calculated - value.result);
+        Real tolerance = value.tol;
 
         if (error>tolerance) {
-            QUANTO_DOUBLE_BARRIER_REPORT_FAILURE("value", payoff,
-                values[i].barrierType,
-                values[i].barrier_lo,
-                values[i].barrier_hi,
-                values[i].rebate,
-                exercise,
-                values[i].s, values[i].q, values[i].r, today,
-                values[i].v, values[i].fxr, values[i].fxv, values[i].corr,
-                values[i].result, calculated, error, tolerance);
+            QUANTO_DOUBLE_BARRIER_REPORT_FAILURE(
+                "value", payoff, value.barrierType, value.barrier_lo, value.barrier_hi,
+                value.rebate, exercise, value.s, value.q, value.r, today, value.v, value.fxr,
+                value.fxv, value.corr, value.result, calculated, error, tolerance);
         }
     }
 }
@@ -1165,7 +1132,7 @@ void QuantoOptionTest::testPDEOptionValues()  {
         { Option::Call, 0.0,   100.0, 0.04,     0.08,      0.3,  0.3,     0.05,      0.10,     0.75, Null<Real>(), Null<Real>() },
     };
 
-    for (Size i=0; i < LENGTH(values); ++i) {
+    for (auto& value : values) {
 
         std::map<std::string,Real> calculated, expected, tolerance;
         tolerance["npv"]   = 2e-4;
@@ -1173,32 +1140,26 @@ void QuantoOptionTest::testPDEOptionValues()  {
         tolerance["gamma"] = 1e-4;
         tolerance["theta"] = 1e-4;
 
-        const Handle<Quote> spot(
-            ext::make_shared<SimpleQuote>(values[i].s));
+        const Handle<Quote> spot(ext::make_shared<SimpleQuote>(value.s));
 
-        const Real strike = values[i].strike;
+        const Real strike = value.strike;
 
-        const Handle<YieldTermStructure> domesticTS(
-            flatRate(today, values[i].r, dc));
+        const Handle<YieldTermStructure> domesticTS(flatRate(today, value.r, dc));
 
-        const Handle<YieldTermStructure> divTS(
-            flatRate(today, values[i].q, dc));
+        const Handle<YieldTermStructure> divTS(flatRate(today, value.q, dc));
 
-        const Handle<BlackVolTermStructure> volTS(
-            flatVol(today, values[i].v, dc));
+        const Handle<BlackVolTermStructure> volTS(flatVol(today, value.v, dc));
 
         const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess
             = ext::make_shared<BlackScholesMertonProcess>(
                 spot, divTS, domesticTS, volTS);
 
-        const Handle<YieldTermStructure> foreignTS(
-            flatRate(today, values[i].fxr, dc));
+        const Handle<YieldTermStructure> foreignTS(flatRate(today, value.fxr, dc));
 
-        const Handle<BlackVolTermStructure> fxVolTS(
-            flatVol(today, values[i].fxv, dc));
+        const Handle<BlackVolTermStructure> fxVolTS(flatVol(today, value.fxv, dc));
 
         const Real exchRateATMlevel = 1.0;
-        const Real equityFxCorrelation = values[i].corr;
+        const Real equityFxCorrelation = value.corr;
 
         const ext::shared_ptr<FdmQuantoHelper> quantoHelper
             = ext::make_shared<FdmQuantoHelper>(
@@ -1207,17 +1168,16 @@ void QuantoOptionTest::testPDEOptionValues()  {
                   fxVolTS.currentLink(),
                   equityFxCorrelation, exchRateATMlevel);
 
-        const ext::shared_ptr<StrikedTypePayoff> payoff
-            = ext::make_shared<PlainVanillaPayoff>(
-                values[i].type, strike);
-        const Date exDate = today + Integer(values[i].t*360+0.5);
+        const ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::make_shared<PlainVanillaPayoff>(value.type, strike);
+        const Date exDate = today + timeToDays(value.t);
         const ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         VanillaOption option(payoff, exercise);
 
         const ext::shared_ptr<PricingEngine> pdeEngine =
-            ext::make_shared<FdBlackScholesVanillaEngine>(
-                bsmProcess, quantoHelper, Size(values[i].t*200), 500, 1);
+            ext::make_shared<FdBlackScholesVanillaEngine>(bsmProcess, quantoHelper,
+                                                          Size(value.t * 200), 500, 1);
 
         option.setPricingEngine(pdeEngine);
 
@@ -1251,10 +1211,9 @@ void QuantoOptionTest::testPDEOptionValues()  {
             const Real tol = tolerance[greek];
 
             if (error > tol) {
-                QUANTO_REPORT_FAILURE(greek, payoff, exercise,
-                    values[i].s, values[i].q, values[i].r, today,
-                    values[i].v, values[i].fxr, values[i].fxv,
-                    values[i].corr, expct, calcl, error, tol)
+                QUANTO_REPORT_FAILURE(greek, payoff, exercise, value.s, value.q, value.r, today,
+                                      value.v, value.fxr, value.fxv, value.corr, expct, calcl,
+                                      error, tol)
             }
         }
     }
@@ -1400,7 +1359,7 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
 }
 
 test_suite* QuantoOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Quanto option tests");
+    auto* suite = BOOST_TEST_SUITE("Quanto option tests");
     suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testValues));
     suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testGreeks));
     suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testForwardValues));
@@ -1416,7 +1375,7 @@ test_suite* QuantoOptionTest::suite() {
 }
 
 test_suite* QuantoOptionTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE("Experimental quanto option tests");
+    auto* suite = BOOST_TEST_SUITE("Experimental quanto option tests");
     suite->add(QUANTLIB_TEST_CASE(&QuantoOptionTest::testDoubleBarrierValues));
     return suite;
 }

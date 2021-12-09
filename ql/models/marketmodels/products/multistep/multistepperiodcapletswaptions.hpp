@@ -31,27 +31,26 @@ namespace QuantLib {
     class MultiStepPeriodCapletSwaptions : public MultiProductMultiStep 
     {
       public:
-    
-          MultiStepPeriodCapletSwaptions(const std::vector<Time>& rateTimes,
-                                     const std::vector<Time>& forwardOptionPaymentTimes,
-                                     const std::vector<Time>& swaptionPaymentTimes,
-                                     const std::vector<ext::shared_ptr<StrikedTypePayoff> >& forwardPayOffs,
-                                     const std::vector<ext::shared_ptr<StrikedTypePayoff> >& swapPayOffs,
-                                     Size period,
-                                     Size offset);
+        MultiStepPeriodCapletSwaptions(
+            const std::vector<Time>& rateTimes,
+            const std::vector<Time>& forwardOptionPaymentTimes,
+            const std::vector<Time>& swaptionPaymentTimes,
+            std::vector<ext::shared_ptr<StrikedTypePayoff> > forwardPayOffs,
+            std::vector<ext::shared_ptr<StrikedTypePayoff> > swapPayOffs,
+            Size period,
+            Size offset);
         //! \name MarketModelMultiProduct interface
         //@{
-        std::vector<Time> possibleCashFlowTimes() const;
-        Size numberOfProducts() const;
-        Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset();
-        bool nextTimeStep(
-                     const CurveState& currentState,
-                     std::vector<Size>& numberCashFlowsThisStep,
-                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-        #if defined(QL_USE_STD_UNIQUE_PTR)
-        std::unique_ptr<MarketModelMultiProduct> clone() const;
-        #else
+          std::vector<Time> possibleCashFlowTimes() const override;
+          Size numberOfProducts() const override;
+          Size maxNumberOfCashFlowsPerProductPerStep() const override;
+          void reset() override;
+          bool nextTimeStep(const CurveState& currentState,
+                            std::vector<Size>& numberCashFlowsThisStep,
+                            std::vector<std::vector<CashFlow> >& cashFlowsGenerated) override;
+#if defined(QL_USE_STD_UNIQUE_PTR)
+          std::unique_ptr<MarketModelMultiProduct> clone() const override;
+#else
         std::auto_ptr<MarketModelMultiProduct> clone() const;
         #endif
          //@}

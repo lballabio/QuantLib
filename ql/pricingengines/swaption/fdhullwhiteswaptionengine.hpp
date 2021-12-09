@@ -41,7 +41,7 @@ namespace QuantLib {
             Size dampingSteps = 0, Real invEps = 1e-5,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const Size tGrid_, xGrid_, dampingSteps_;

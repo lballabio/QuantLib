@@ -47,7 +47,7 @@ namespace QuantLib {
         operator ext::shared_ptr<VanillaSwap>() const;
 
         MakeVanillaSwap& receiveFixed(bool flag = true);
-        MakeVanillaSwap& withType(VanillaSwap::Type type);
+        MakeVanillaSwap& withType(Swap::Type type);
         MakeVanillaSwap& withNominal(Real n);
 
         MakeVanillaSwap& withSettlementDays(Natural settlementDays);
@@ -82,6 +82,8 @@ namespace QuantLib {
                               const Handle<YieldTermStructure>& discountCurve);
         MakeVanillaSwap& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);
+        MakeVanillaSwap& withIndexedCoupons(const boost::optional<bool>& b = true);
+        MakeVanillaSwap& withAtParCoupons(bool b = true);
       private:
         Period swapTenor_;
         ext::shared_ptr<IborIndex> iborIndex_;
@@ -92,7 +94,7 @@ namespace QuantLib {
         Date effectiveDate_, terminationDate_;
         Calendar fixedCalendar_, floatCalendar_;
 
-        VanillaSwap::Type type_;
+        Swap::Type type_;
         Real nominal_;
         Period fixedTenor_, floatTenor_;
         BusinessDayConvention fixedConvention_, fixedTerminationDateConvention_;
@@ -103,6 +105,7 @@ namespace QuantLib {
         Date floatFirstDate_, floatNextToLastDate_;
         Spread floatSpread_;
         DayCounter fixedDayCount_, floatDayCount_;
+        boost::optional<bool> useIndexedCoupons_;
 
         ext::shared_ptr<PricingEngine> engine_;
     };

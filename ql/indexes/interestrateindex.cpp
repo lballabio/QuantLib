@@ -21,20 +21,20 @@
 
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/settings.hpp>
-
 #include <sstream>
+#include <utility>
 
 namespace QuantLib {
 
-    InterestRateIndex::InterestRateIndex(const std::string& familyName,
+    InterestRateIndex::InterestRateIndex(std::string familyName,
                                          const Period& tenor,
                                          Natural fixingDays,
-                                         const Currency& currency,
-                                         const Calendar& fixingCalendar,
-                                         const DayCounter& dayCounter)
-    : familyName_(familyName), tenor_(tenor), fixingDays_(fixingDays),
-      currency_(currency), dayCounter_(dayCounter),
-      fixingCalendar_(fixingCalendar) {
+                                         Currency currency,
+                                         Calendar fixingCalendar,
+                                         DayCounter dayCounter)
+    : familyName_(std::move(familyName)), tenor_(tenor), fixingDays_(fixingDays),
+      currency_(std::move(currency)), dayCounter_(std::move(dayCounter)),
+      fixingCalendar_(std::move(fixingCalendar)) {
         tenor_.normalize();
 
         std::ostringstream out;

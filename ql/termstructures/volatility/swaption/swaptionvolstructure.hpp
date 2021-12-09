@@ -62,7 +62,7 @@ namespace QuantLib {
                                     BusinessDayConvention bdc,
                                     const DayCounter& dc = DayCounter());
         //@}
-        virtual ~SwaptionVolatilityStructure() {}
+        ~SwaptionVolatilityStructure() override = default;
         //! \name Volatility, variance and smile
         //@{
         //! returns the volatility for a given option tenor and swap tenor

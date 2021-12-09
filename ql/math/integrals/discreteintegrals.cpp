@@ -18,20 +18,13 @@
 */
 
 #include <ql/math/integrals/discreteintegrals.hpp>
-
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wc++11-extensions"
-#endif
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/sum.hpp>
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
 
 using namespace boost::accumulators;
 
 namespace QuantLib {
+
     Real DiscreteTrapezoidIntegral::operator()(
         const Array& x, const Array& f)    const {
 

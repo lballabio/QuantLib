@@ -29,12 +29,19 @@
 
 #include <ql/time/date.hpp>
 #include <vector>
+#include <string>
 
 namespace QuantLib {
 
     namespace io {
 
-        Integer to_integer(const std::string&);
+        /*! \deprecated Use std::stoi instead.
+                        Deprecated in version 1.22.
+        */
+        QL_DEPRECATED
+        inline Integer to_integer(const std::string& s) {
+            return std::stoi(s);
+        }
 
     }
 

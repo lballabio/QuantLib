@@ -35,10 +35,8 @@
 #include <ql/math/integrals/twodimensionalintegral.hpp>
 #include <ql/experimental/math/piecewisefunction.hpp>
 #include <ql/experimental/math/piecewiseintegral.hpp>
-#include <boost/assign/std/vector.hpp>
 
 using namespace QuantLib;
-using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
 
 namespace integrals_test {
@@ -325,8 +323,8 @@ void IntegralTest::testPiecewiseIntegral() {
 
     using namespace integrals_test;
 
-    x += 1.0, 2.0, 3.0, 4.0, 5.0;
-    y += 1.0, 2.0, 3.0, 4.0, 5.0, 6.0;
+    x = { 1.0, 2.0, 3.0, 4.0, 5.0 };
+    y = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
     ext::shared_ptr<Integrator> segment =
         ext::make_shared<SegmentIntegral>(1);
     ext::shared_ptr<Integrator> piecewise =
@@ -466,14 +464,14 @@ void IntegralTest::testExponentialIntegral() {
 
     const Real tol = 1e-10;
 
-    for (Size i=0; i < LENGTH(data); ++i) {
-        const Real x = data[i][0];
-        const Real y = (std::abs(data[i][1]) < 1e-12) ? 0.0 : data[i][1];
+    for (const auto& i : data) {
+        const Real x = i[0];
+        const Real y = (std::abs(i[1]) < 1e-12) ? 0.0 : i[1];
         const std::complex<Real> z(x, y);
 
 
         const std::complex<Real> si = Si(z);
-        std::complex<Real> ref(data[i][2], data[i][3]);
+        std::complex<Real> ref(i[2], i[3]);
         Real diff = std::abs(si-ref)/std::abs(ref);
         if (diff > tol
             || (std::abs(ref.real()) < tol && std::abs(si.real()) > tol)
@@ -482,7 +480,7 @@ void IntegralTest::testExponentialIntegral() {
         }
 
         const std::complex<Real> ci = Ci(z);
-        ref = std::complex<Real>(data[i][4], data[i][5]);
+        ref = std::complex<Real>(i[4], i[5]);
         diff = std::min(std::abs(ci-ref), std::abs(ci-ref)/std::abs(ref));
         if (diff > tol
             || (std::abs(ref.real()) < tol && std::abs(ci.real()) > tol)
@@ -491,7 +489,7 @@ void IntegralTest::testExponentialIntegral() {
         }
 
         const std::complex<Real> ei = Ei(z);
-        ref = std::complex<Real>(data[i][6], data[i][7]);
+        ref = std::complex<Real>(i[6], i[7]);
         diff = std::abs(ei-ref)/std::abs(ref);
         if (diff > tol
             || (std::abs(ref.real()) < tol && std::abs(ei.real()) > tol)
@@ -500,7 +498,7 @@ void IntegralTest::testExponentialIntegral() {
         }
 
         const std::complex<Real> e1 = E1(z);
-        ref = std::complex<Real>(data[i][8], data[i][9]);
+        ref = std::complex<Real>(i[8], i[9]);
         diff = std::min(std::abs(e1-ref), std::abs(e1-ref)/std::abs(ref));
         if (std::abs(z) < 10.0)
             if (diff > tol
@@ -542,33 +540,32 @@ void IntegralTest::testRealSiCiIntegrals() {
 
     const Real tol = 1e-12;
 
-    for (Size i=0; i < LENGTH(data); ++i) {
-        Real x = data[i][0];
+    for (const auto& i : data) {
+        Real x = i[0];
         Real si = Si(x);
 
-        Real diff = std::fabs(si - data[i][1]);
+        Real diff = std::fabs(si - i[1]);
         if (diff > tol) {
-            integrals_test::reportSiCiFail("SineIntegral", x, si, data[i][1], diff, tol);
+            integrals_test::reportSiCiFail("SineIntegral", x, si, i[1], diff, tol);
         }
 
         const Real ci = Ci(x);
-        diff = std::fabs(ci - data[i][2]);
+        diff = std::fabs(ci - i[2]);
         if (diff > tol) {
-            integrals_test::reportSiCiFail("CosineIntegral", x, ci, data[i][2], diff, tol);
+            integrals_test::reportSiCiFail("CosineIntegral", x, ci, i[2], diff, tol);
         }
 
-        x = -data[i][0];
+        x = -i[0];
         si = Si(x);
-        diff = std::fabs(si + data[i][1]);
+        diff = std::fabs(si + i[1]);
         if (diff > tol) {
-            integrals_test::reportSiCiFail("SineIntegral", x, si, -data[i][1], diff, tol);
+            integrals_test::reportSiCiFail("SineIntegral", x, si, -i[1], diff, tol);
         }
-
     }
 }
 
 test_suite* IntegralTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Integration tests");
+    auto* suite = BOOST_TEST_SUITE("Integration tests");
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testSegment));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testTrapezoid));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testMidPointTrapezoid));

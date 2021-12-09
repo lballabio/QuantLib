@@ -50,9 +50,6 @@ using namespace boost::unit_test_framework;
 using std::fabs;
 using std::sqrt;
 
-#define BEGIN(x) (x+0)
-#define END(x) (x+LENGTH(x))
-
 namespace {
 
     class MarketModelData{
@@ -173,9 +170,9 @@ namespace {
         const std::vector<Time>& rateTimes, Real strike ){
             std::vector<Time> paymentTimes(rateTimes.begin(), rateTimes.end()-1);
             std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size());
-            for (Size i = 0; i < payoffs.size(); ++i){
-                payoffs[i] = ext::shared_ptr<StrikedTypePayoff>(new
-                    PlainVanillaPayoff(Option::Call, strike));
+            for (auto& payoff : payoffs) {
+                payoff = ext::shared_ptr<StrikedTypePayoff>(
+                    new PlainVanillaPayoff(Option::Call, strike));
             }
             return MultiStepCoterminalSwaptions (rateTimes,
                 paymentTimes, payoffs);
@@ -453,18 +450,15 @@ void SwapForwardMappingsTest::testSwaptionImpliedVolatility()
 
 
 test_suite* SwapForwardMappingsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("swap-forward mappings tests");
-
+    auto* suite = BOOST_TEST_SUITE("swap-forward mappings tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &SwapForwardMappingsTest::testSwaptionImpliedVolatility));
 
     suite->add(QUANTLIB_TEST_CASE(
         &SwapForwardMappingsTest::testForwardSwapJacobians));
-// #if !defined(QL_NO_UBLAS_SUPPORT)
-//     suite->add(QUANTLIB_TEST_CASE(
-//         &SwapForwardMappingsTest::testForwardCoterminalMappings));
-// #endif
+    // suite->add(QUANTLIB_TEST_CASE(
+    //     &SwapForwardMappingsTest::testForwardCoterminalMappings));
     return suite;
 }
 

@@ -30,20 +30,19 @@ namespace QuantLib {
  
     class FwdPeriodAdapter : public MarketModel {
       public:
-        FwdPeriodAdapter(
-                          const ext::shared_ptr<MarketModel>& largeModel,
-                          Size period,
-                          Size offset,
-                          const std::vector<Spread>& newDisplacements_ );
+        FwdPeriodAdapter(const ext::shared_ptr<MarketModel>& largeModel,
+                         Size period,
+                         Size offset,
+                         std::vector<Spread> newDisplacements_);
         //! \name MarketModel interface
         //@{
-        const std::vector<Rate>& initialRates() const;
-        const std::vector<Spread>& displacements() const;
-        const EvolutionDescription& evolution() const;
-        Size numberOfRates() const;
-        Size numberOfFactors() const;
-        Size numberOfSteps() const;
-        const Matrix& pseudoRoot(Size i) const;
+        const std::vector<Rate>& initialRates() const override;
+        const std::vector<Spread>& displacements() const override;
+        const EvolutionDescription& evolution() const override;
+        Size numberOfRates() const override;
+        Size numberOfFactors() const override;
+        Size numberOfSteps() const override;
+        const Matrix& pseudoRoot(Size i) const override;
         //@}
       private:
         EvolutionDescription evolution_;

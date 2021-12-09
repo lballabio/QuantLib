@@ -26,9 +26,10 @@
 #define quantlib_mc_hull_white_cap_floor_engine_hpp
 
 #include <ql/instruments/capfloor.hpp>
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/hullwhiteprocess.hpp>
-#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -37,9 +38,10 @@ namespace QuantLib {
         class HullWhiteCapFloorPricer : public PathPricer<Path> {
           public:
             HullWhiteCapFloorPricer(const CapFloor::arguments&,
-                                    const ext::shared_ptr<HullWhite>&,
+                                    ext::shared_ptr<HullWhite>,
                                     Time forwardMeasureTime);
-            Real operator()(const Path& path) const;
+            Real operator()(const Path& path) const override;
+
           private:
             CapFloor::arguments args_;
             ext::shared_ptr<HullWhite> model_;
@@ -69,21 +71,20 @@ namespace QuantLib {
         typedef typename simulation::path_pricer_type path_pricer_type;
         typedef typename simulation::stats_type stats_type;
 
-        MCHullWhiteCapFloorEngine(const ext::shared_ptr<HullWhite>& model,
+        MCHullWhiteCapFloorEngine(ext::shared_ptr<HullWhite> model,
                                   bool brownianBridge,
                                   bool antitheticVariate,
                                   Size requiredSamples,
                                   Real requiredTolerance,
                                   Size maxSamples,
                                   BigNatural seed)
-        : McSimulation<SingleVariate,RNG,S>(antitheticVariate, false),
-          model_(model), requiredSamples_(requiredSamples),
-          maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
-          brownianBridge_(brownianBridge), seed_(seed) {
+        : McSimulation<SingleVariate, RNG, S>(antitheticVariate, false), model_(std::move(model)),
+          requiredSamples_(requiredSamples), maxSamples_(maxSamples),
+          requiredTolerance_(requiredTolerance), brownianBridge_(brownianBridge), seed_(seed) {
             registerWith(model_);
         }
 
-        void calculate() const {
+        void calculate() const override {
             simulation::calculate(requiredTolerance_,
                                   requiredSamples_,
                                   maxSamples_);
@@ -155,7 +156,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCHullWhiteCapFloorEngine {
       public:
-        MakeMCHullWhiteCapFloorEngine(const ext::shared_ptr<HullWhite>&);
+        MakeMCHullWhiteCapFloorEngine(ext::shared_ptr<HullWhite>);
         // named parameters
         MakeMCHullWhiteCapFloorEngine& withBrownianBridge(bool b = true);
         MakeMCHullWhiteCapFloorEngine& withSamples(Size samples);
@@ -178,12 +179,10 @@ namespace QuantLib {
     // inline definitions
 
     template <class RNG, class S>
-    inline
-    MakeMCHullWhiteCapFloorEngine<RNG,S>::MakeMCHullWhiteCapFloorEngine(
-                                    const ext::shared_ptr<HullWhite>& model)
-    : model_(model), antithetic_(false),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
+    inline MakeMCHullWhiteCapFloorEngine<RNG, S>::MakeMCHullWhiteCapFloorEngine(
+        ext::shared_ptr<HullWhite> model)
+    : model_(std::move(model)), antithetic_(false), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCHullWhiteCapFloorEngine<RNG,S>&

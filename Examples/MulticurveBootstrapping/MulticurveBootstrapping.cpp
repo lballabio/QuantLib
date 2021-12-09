@@ -31,7 +31,7 @@
 */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
@@ -57,7 +57,7 @@ using namespace QuantLib;
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
 
-    ThreadKey sessionId() { return 0; }
+    ThreadKey sessionId() { return {}; }
 
 }
 #endif
@@ -628,7 +628,7 @@ int main(int, char* []) {
         Spread spread = 0.0;
 
         Integer lengthInYears = 5;
-        VanillaSwap::Type swapType = VanillaSwap::Payer;
+        Swap::Type swapType = Swap::Payer;
 
         Date maturity = settlementDate + lengthInYears*Years;
         Schedule fixedSchedule(settlementDate, maturity,

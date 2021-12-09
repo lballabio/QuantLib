@@ -49,9 +49,10 @@ namespace QuantLib {
         Real qrho() const;
         Real qlambda() const;
         //@}
-        void fetchResults(const PricingEngine::results*) const;
+        void fetchResults(const PricingEngine::results*) const override;
+
       private:
-        void setupExpired() const;
+        void setupExpired() const override;
         // results
         mutable Real qvega_, qrho_, qlambda_;
     };

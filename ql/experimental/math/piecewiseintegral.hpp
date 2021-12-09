@@ -37,12 +37,12 @@ namespace QuantLib {
 
 class PiecewiseIntegral : public Integrator {
   public:
-    PiecewiseIntegral(const ext::shared_ptr<Integrator>& integrator,
-                      const std::vector<Real>& criticalPoints,
+    PiecewiseIntegral(ext::shared_ptr<Integrator> integrator,
+                      std::vector<Real> criticalPoints,
                       bool avoidCriticalPoints = true);
 
   protected:
-    Real integrate(const ext::function<Real(Real)> &f, Real a, Real b) const;
+    Real integrate(const ext::function<Real(Real)>& f, Real a, Real b) const override;
 
   private:
     Real integrate_h(const ext::function<Real(Real)> &f, Real a,
@@ -66,11 +66,9 @@ inline Real PiecewiseIntegral::integrate_h(const ext::function<Real(Real)> &f,
 inline Real PiecewiseIntegral::integrate(const ext::function<Real(Real)> &f,
                                          Real a, Real b) const {
 
-    std::vector<Real>::const_iterator a0 =
-        std::lower_bound(criticalPoints_.begin(), criticalPoints_.end(), a);
+    auto a0 = std::lower_bound(criticalPoints_.begin(), criticalPoints_.end(), a);
 
-    std::vector<Real>::const_iterator b0 =
-        std::lower_bound(criticalPoints_.begin(), criticalPoints_.end(), b);
+    auto b0 = std::lower_bound(criticalPoints_.begin(), criticalPoints_.end(), b);
 
     if (a0 == criticalPoints_.end()) {
         Real tmp = 1.0;
@@ -95,7 +93,7 @@ inline Real PiecewiseIntegral::integrate(const ext::function<Real(Real)> &f,
         }
     }
 
-    for (std::vector<Real>::const_iterator x = a0; x < b0; ++x) {
+    for (auto x = a0; x < b0; ++x) {
         res += integrate_h(f, (*x) * eps_, std::min(*(x + 1) / eps_, b));
     }
 

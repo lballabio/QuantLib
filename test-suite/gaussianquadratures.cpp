@@ -129,14 +129,14 @@ namespace gaussian_quadratures_test {
                              Real expected, Real tolerance) {
         const Size order[] = { 6, 7, 12, 20 };
         TabulatedGaussLegendre quad;
-        for (Size i=0; i<LENGTH(order); i++) {
-            quad.order(order[i]);
+        for (unsigned long i : order) {
+            quad.order(i);
             Real realised = quad(f);
             if (std::fabs(realised-expected) > tolerance) {
                 BOOST_ERROR(" integrating " << tag << "\n"
-                            << "    order " << order[i] << "\n"
-                            << "    realised: " << realised << "\n"
-                            << "    expected: " << expected);
+                                            << "    order " << i << "\n"
+                                            << "    realised: " << realised << "\n"
+                                            << "    expected: " << expected);
             }
         }
     }
@@ -276,16 +276,14 @@ namespace gaussian_quadratures_test {
     class MomentBasedGaussLaguerrePolynomial
             : public MomentBasedGaussianPolynomial<mp_float> {
       public:
-        mp_float moment(Size i) const {
+        mp_float moment(Size i) const override {
             if (i == 0)
                 return mp_float(1.0);
             else
                 return mp_float(i)*moment(i-1);
         }
 
-        Real w(Real x) const {
-            return std::exp(-x);
-        }
+        Real w(Real x) const override { return std::exp(-x); }
     };
 }
 
@@ -308,23 +306,21 @@ void GaussianQuadraturesTest::testMomentBasedGaussianPolynomial() {
 #endif
 
      const Real tol = 1e-12;
-     for (Size k=0; k < ml.size(); ++k) {
+     for (auto& k : ml) {
 
          for (Size i=0; i < 10; ++i) {
-             const Real diffAlpha = std::fabs(ml[k]->alpha(i)-g.alpha(i));
-             const Real diffBeta = std::fabs(ml[k]->beta(i)-g.beta(i));
+             const Real diffAlpha = std::fabs(k->alpha(i) - g.alpha(i));
+             const Real diffBeta = std::fabs(k->beta(i) - g.beta(i));
 
              if (diffAlpha > tol) {
                  BOOST_ERROR("failed to reproduce alpha for Laguerre quadrature"
-                             << "\n    calculated: " << ml[k]->alpha(i)
-                             << "\n    expected  : " << g.alpha(i)
-                             << "\n    diff      : " << diffAlpha);
+                             << "\n    calculated: " << k->alpha(i) << "\n    expected  : "
+                             << g.alpha(i) << "\n    diff      : " << diffAlpha);
              }
              if (i > 0 && diffBeta > tol) {
                  BOOST_ERROR("failed to reproduce beta for Laguerre quadrature"
-                             << "\n    calculated: " << ml[k]->beta(i)
-                             << "\n    expected  : " << g.beta(i)
-                             << "\n    diff      : " << diffBeta);
+                             << "\n    calculated: " << k->beta(i) << "\n    expected  : "
+                             << g.beta(i) << "\n    diff      : " << diffBeta);
              }
          }
      }
@@ -353,7 +349,7 @@ void GaussianQuadraturesTest::testGaussLaguerreCosinePolynomial() {
 }
 
 test_suite* GaussianQuadraturesTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Gaussian quadratures tests");
+    auto* suite = BOOST_TEST_SUITE("Gaussian quadratures tests");
     suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testJacobi));
     suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testLaguerre));
     suite->add(QUANTLIB_TEST_CASE(&GaussianQuadraturesTest::testHermite));
@@ -368,8 +364,7 @@ test_suite* GaussianQuadraturesTest::suite() {
 }
 
 test_suite* GaussianQuadraturesTest::experimental() {
-    test_suite* suite = BOOST_TEST_SUITE(
-        "Gaussian quadratures experimental tests");
+    auto* suite = BOOST_TEST_SUITE("Gaussian quadratures experimental tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &GaussianQuadraturesTest::testNonCentralChiSquared));

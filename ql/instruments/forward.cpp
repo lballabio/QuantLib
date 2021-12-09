@@ -17,24 +17,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/event.hpp>
 #include <ql/instruments/forward.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/event.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    Forward::Forward(const DayCounter& dayCounter,
-                     const Calendar& calendar,
+    Forward::Forward(DayCounter dayCounter,
+                     Calendar calendar,
                      BusinessDayConvention businessDayConvention,
                      Natural settlementDays,
-                     const ext::shared_ptr<Payoff>& payoff,
+                     ext::shared_ptr<Payoff> payoff,
                      const Date& valueDate,
                      const Date& maturityDate,
-                     const Handle<YieldTermStructure>& discountCurve)
-    : dayCounter_(dayCounter), calendar_(calendar),
-      businessDayConvention_(businessDayConvention),
-      settlementDays_(settlementDays), payoff_(payoff), valueDate_(valueDate),
-      maturityDate_(maturityDate), discountCurve_(discountCurve) {
+                     Handle<YieldTermStructure> discountCurve)
+    : dayCounter_(std::move(dayCounter)), calendar_(std::move(calendar)),
+      businessDayConvention_(businessDayConvention), settlementDays_(settlementDays),
+      payoff_(std::move(payoff)), valueDate_(valueDate), maturityDate_(maturityDate),
+      discountCurve_(std::move(discountCurve)) {
 
         maturityDate_ = calendar_.adjust(maturityDate_,
                                          businessDayConvention_);

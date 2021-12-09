@@ -106,31 +106,27 @@ void TwoAssetBarrierOptionTest::testHaugValues() {
                        new AnalyticTwoAssetBarrierEngine(process1, process2,
                                                          Handle<Quote>(rho)));
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (auto& value : values) {
 
-        s1->setValue(values[i].s1);
-        q1->setValue(values[i].q1);
-        vol1->setValue(values[i].v1);
+        s1->setValue(value.s1);
+        q1->setValue(value.q1);
+        vol1->setValue(value.v1);
 
-        s2->setValue(values[i].s2);
-        q2->setValue(values[i].q2);
-        vol2->setValue(values[i].v2);
+        s2->setValue(value.s2);
+        q2->setValue(value.q2);
+        vol2->setValue(value.v2);
 
-        rho->setValue(values[i].correlation);
+        rho->setValue(value.correlation);
 
-        r->setValue(values[i].r);
+        r->setValue(value.r);
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(
-                    new PlainVanillaPayoff(values[i].type, values[i].strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
 
-        TwoAssetBarrierOption barrierOption(values[i].barrierType,
-                                            values[i].barrier,
-                                            payoff,
-                                            exercise);
+        TwoAssetBarrierOption barrierOption(value.barrierType, value.barrier, payoff, exercise);
         barrierOption.setPricingEngine(engine);
 
         Real calculated = barrierOption.NPV();
-        Real expected = values[i].result;
+        Real expected = value.result;
         Real error = std::fabs(calculated-expected);
         Real tolerance = 4.0e-3;
         if (error > tolerance) {
@@ -144,7 +140,7 @@ void TwoAssetBarrierOptionTest::testHaugValues() {
 }
 
 test_suite* TwoAssetBarrierOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Two-asset barrier option tests");
+    auto* suite = BOOST_TEST_SUITE("Two-asset barrier option tests");
     suite->add(QUANTLIB_TEST_CASE(&TwoAssetBarrierOptionTest::testHaugValues));
     return suite;
 }

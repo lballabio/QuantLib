@@ -164,19 +164,18 @@ namespace distributions_test {
         const Real x(0.0);
         const Real y(0.0);
 
-        for (Size i=0;i<LENGTH(rho);i++) {
+        for (double i : rho) {
             for (Integer sgn=-1; sgn < 2; sgn+=2) {
-                Bivariate bvn(sgn*rho[i]);
-                Real expected = 0.25 + std::asin(sgn*rho[i]) / (2*M_PI) ;
+                Bivariate bvn(sgn * i);
+                Real expected = 0.25 + std::asin(sgn * i) / (2 * M_PI);
                 Real realised = bvn(x,y);
 
                 if (std::fabs(realised-expected)>=tolerance) {
                     BOOST_ERROR(tag << " bivariate cumulative distribution\n"
-                                << std::scientific
-                                << "    rho: " << sgn*rho[i] << "\n"
-                                << "    expected:  " << expected << "\n"
-                                << "    realised:  " << realised << "\n"
-                                << "    tolerance: " << tolerance);
+                                    << std::scientific << "    rho: " << sgn * i << "\n"
+                                    << "    expected:  " << expected << "\n"
+                                    << "    realised:  " << realised << "\n"
+                                    << "    tolerance: " << tolerance);
                 }
             }
         }
@@ -588,18 +587,15 @@ void DistributionTest::testBivariateCumulativeStudent() {
     };
 
     tolerance = 1.0e-6;
-    for (Size i=0; i < LENGTH(cases); ++i) {
-		BivariateCumulativeStudentDistribution f(cases[i].n,  cases[i].rho);
-        Real calculated = f(cases[i].x, cases[i].y);
-        Real expected = cases[i].result;
+    for (auto& i : cases) {
+        BivariateCumulativeStudentDistribution f(i.n, i.rho);
+        Real calculated = f(i.x, i.y);
+        Real expected = i.result;
         if (std::fabs(calculated - expected) > tolerance)
-            BOOST_ERROR("Failed to reproduce CDF value:" <<
-                        "\n    n:   " << cases[i].n <<
-                        "\n    rho: " << cases[i].rho <<
-                        "\n    x:   " << cases[i].x <<
-                        "\n    y:   " << cases[i].y <<
-                        "\n    calculated: " << calculated <<
-                        "\n    expected:   " << expected);
+            BOOST_ERROR("Failed to reproduce CDF value:"
+                        << "\n    n:   " << i.n << "\n    rho: " << i.rho << "\n    x:   " << i.x
+                        << "\n    y:   " << i.y << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected);
     }
 }
 
@@ -732,12 +728,8 @@ void DistributionTest::testSankaranApproximation() {
     const Real ncps[] = {1,2,3,1,2,3};
 
     const Real tol = 0.01;
-    for (Size i=0; i < LENGTH(dfs); ++i) {
-        const Real df = dfs[i];
-
-        for (Size j=0; j < LENGTH(ncps); ++j) {
-            Real ncp = ncps[j];
-
+    for (double df : dfs) {
+        for (double ncp : ncps) {
             const NonCentralCumulativeChiSquareDistribution d(df, ncp);
             const NonCentralCumulativeChiSquareSankaranApprox sankaran(df, ncp);
 
@@ -762,25 +754,19 @@ void DistributionTest::testSankaranApproximation() {
 }
 
 test_suite* DistributionTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Distribution tests");
+    auto* suite = BOOST_TEST_SUITE("Distribution tests");
 
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testNormal));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariate));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testPoisson));
     suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testCumulativePoisson));
-    suite->add(QUANTLIB_TEST_CASE(
-                            &DistributionTest::testInverseCumulativePoisson));
-    suite->add(QUANTLIB_TEST_CASE(
-                          &DistributionTest::testBivariateCumulativeStudent));
-    suite->add(QUANTLIB_TEST_CASE(
-                   &DistributionTest::testInvCDFviaStochasticCollocation));
+    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testInverseCumulativePoisson));
+    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariateCumulativeStudent));
+    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testInvCDFviaStochasticCollocation));
+    suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testSankaranApproximation));
 
-    suite->add(QUANTLIB_TEST_CASE(
-                   &DistributionTest::testSankaranApproximation));
-
-    if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &DistributionTest::testBivariateCumulativeStudentVsBivariate));
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&DistributionTest::testBivariateCumulativeStudentVsBivariate));
     }
 
     return suite;

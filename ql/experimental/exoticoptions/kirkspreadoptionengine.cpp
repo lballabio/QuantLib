@@ -17,19 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
 #include <ql/experimental/exoticoptions/kirkspreadoptionengine.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 using namespace std;
 
 namespace QuantLib {
 
-    KirkSpreadOptionEngine::KirkSpreadOptionEngine(
-            const ext::shared_ptr<BlackProcess>& process1,
-            const ext::shared_ptr<BlackProcess>& process2,
-            const Handle<Quote>& correlation)
-    : process1_(process1), process2_(process2), rho_(correlation) {
+    KirkSpreadOptionEngine::KirkSpreadOptionEngine(ext::shared_ptr<BlackProcess> process1,
+                                                   ext::shared_ptr<BlackProcess> process2,
+                                                   Handle<Quote> correlation)
+    : process1_(std::move(process1)), process2_(std::move(process2)), rho_(std::move(correlation)) {
         registerWith(process1_);
         registerWith(process2_);
         registerWith(rho_);
@@ -96,7 +96,8 @@ namespace QuantLib {
         }
 
         Real callValue = optionType == Option::Call ? results_.value : riskFreeDiscount*(F*Nd1-Nd2)*(forward2+strike);
-        results_.theta = (log(riskFreeDiscount)/t)*callValue+riskFreeDiscount*(forward1*sigma)/(2*sqrt(t))*pdf(d1);
+        results_.theta = -((log(riskFreeDiscount)/t)*callValue
+                           + riskFreeDiscount*(forward1*sigma)/(2*sqrt(t))*pdf(d1));
     }
 
 }

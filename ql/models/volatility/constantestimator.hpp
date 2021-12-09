@@ -38,8 +38,8 @@ namespace QuantLib {
       public:
         ConstantEstimator(Size size)
         : size_(size) {}
-        TimeSeries<Volatility> calculate(const TimeSeries<Volatility>&);
-        void calibrate(const TimeSeries<Volatility>&) {}
+        TimeSeries<Volatility> calculate(const TimeSeries<Volatility>&) override;
+        void calibrate(const TimeSeries<Volatility>&) override {}
     };
 
 }

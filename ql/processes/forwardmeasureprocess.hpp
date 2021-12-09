@@ -39,7 +39,7 @@ namespace QuantLib {
         virtual void setForwardMeasureTime(Time);
         Time getForwardMeasureTime() const;
       protected:
-        ForwardMeasureProcess() {}
+        ForwardMeasureProcess() = default;
         explicit ForwardMeasureProcess(Time T) : T_(T) {}
         explicit ForwardMeasureProcess(
                                    const ext::shared_ptr<discretization>&);
@@ -57,7 +57,7 @@ namespace QuantLib {
         virtual void setForwardMeasureTime(Time);
         Time getForwardMeasureTime() const;
       protected:
-        ForwardMeasureProcess1D() {}
+        ForwardMeasureProcess1D() = default;
         explicit ForwardMeasureProcess1D(Time T) : T_(T) {}
         explicit ForwardMeasureProcess1D(
                                     const ext::shared_ptr<discretization>&);

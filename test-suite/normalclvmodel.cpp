@@ -18,41 +18,37 @@
 */
 
 
-#include "utilities.hpp"
 #include "normalclvmodel.hpp"
-
-#include <ql/quotes/simplequote.hpp>
-#include <ql/time/daycounters/actual360.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/instruments/impliedvolatility.hpp>
+#include "utilities.hpp"
+#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
+#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
+#include <ql/experimental/models/normalclvmodel.hpp>
+#include <ql/experimental/volatility/sabrvoltermstructure.hpp>
+#include <ql/functional.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
-#include <ql/math/statistics/statistics.hpp>
+#include <ql/instruments/impliedvolatility.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/pricingengines/forward/forwardengine.hpp>
-#include <ql/methods/montecarlo/pathgenerator.hpp>
-#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
-
-#include <ql/experimental/models/normalclvmodel.hpp>
-#include <ql/experimental/volatility/sabrvoltermstructure.hpp>
+#include <ql/math/statistics/statistics.hpp>
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/fdornsteinuhlenbeckvanillaengine.hpp>
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
-#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
-#include <ql/functional.hpp>
-
-#include <boost/assign/std/vector.hpp>
+#include <ql/methods/montecarlo/pathgenerator.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/forward/forwardengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <utility>
 
 using namespace QuantLib;
-using namespace boost::assign;
 using namespace boost::unit_test_framework;
 
 void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
@@ -201,30 +197,33 @@ void NormalCLVModelTest::testIllustrative1DExample() {
         ext::make_shared<OrnsteinUhlenbeckProcess>(
             speed, vol, x0, level));
 
-    std::vector<Date> maturityDates;
-    maturityDates += (today + Period(18, Days)),
-        today + Period(90, Days)  , today + Period(180, Days),
-        today + Period(360, Days) , today + Period(720, Days);
+    std::vector<Date> maturityDates = {
+        today + Period(18, Days),
+        today + Period(90, Days),
+        today + Period(180, Days),
+        today + Period(360, Days),
+        today + Period(720, Days)
+    };
 
     const NormalCLVModel m(bsProcess, ouProcess, maturityDates, 4);
     const ext::function<Real(Real, Real)> g = m.g();
 
     // test collocation points in x_ij
-    std::vector<Date> maturities;
-    maturities += maturityDates[0], maturityDates[2], maturityDates[4];
+    std::vector<Date> maturities = { maturityDates[0], maturityDates[2], maturityDates[4] };
 
-    std::vector<std::vector<Real> > x(3);
-    x[0] += 1.070, 0.984, 0.903, 0.817;
-    x[1] += 0.879, 0.668, 0.472, 0.261;
-    x[2] += 0.528, 0.282, 0.052,-0.194;
+    std::vector<std::vector<Real> > x = {
+        { 1.070, 0.984, 0.903, 0.817 },
+        { 0.879, 0.668, 0.472, 0.261 },
+        { 0.528, 0.282, 0.052,-0.194 }
+    };
 
-    std::vector<std::vector<Real> > s(3);
-    s[0] += 1.104, 1.035, 0.969, 0.895;
-    s[1] += 1.328, 1.122, 0.911, 0.668;
-    s[2] += 1.657, 1.283, 0.854, 0.339;
+    std::vector<std::vector<Real> > s = {
+        {1.104, 1.035, 0.969, 0.895},
+        {1.328, 1.122, 0.911, 0.668},
+        {1.657, 1.283, 0.854, 0.339}
+    };
 
-    std::vector<Real> c;
-    c += 2.3344, 0.7420, -0.7420, -2.3344;
+    std::vector<Real> c = { 2.3344, 0.7420, -0.7420, -2.3344 };
 
     const Real tol = 0.001;
     for (Size i=0; i < maturities.size(); ++i) {
@@ -273,12 +272,10 @@ void NormalCLVModelTest::testIllustrative1DExample() {
 namespace normal_clv_model_test {
     class CLVModelPayoff : public PlainVanillaPayoff {
       public:
-        CLVModelPayoff(Option::Type type, Real strike, const ext::function<Real(Real)>& g)
-        : PlainVanillaPayoff(type, strike), g_(g) {}
+        CLVModelPayoff(Option::Type type, Real strike, ext::function<Real(Real)> g)
+        : PlainVanillaPayoff(type, strike), g_(std::move(g)) {}
 
-        Real operator()(Real x) const {
-            return PlainVanillaPayoff::operator()(g_(x));
-        }
+        Real operator()(Real x) const override { return PlainVanillaPayoff::operator()(g_(x)); }
 
       private:
         const ext::function<Real(Real)> g_;
@@ -288,7 +285,6 @@ namespace normal_clv_model_test {
 void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     BOOST_TEST_MESSAGE("Testing Monte Carlo BS option pricing...");
 
-    using namespace ext::placeholders;
     using namespace normal_clv_model_test;
 
     SavedSettings backup;
@@ -328,8 +324,7 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
         ext::make_shared<OrnsteinUhlenbeckProcess>(
             speed, sigma, x0, level));
 
-    std::vector<Date> maturities;
-    maturities += today + Period(6, Months), maturity;
+    std::vector<Date> maturities = { today + Period(6, Months), maturity };
 
     const NormalCLVModel m(bsProcess, ouProcess, maturities, 8);
     const ext::function<Real(Real, Real)> g = m.g();
@@ -366,8 +361,8 @@ void NormalCLVModelTest::testMonteCarloBSOptionPricing() {
     }
 
     VanillaOption fdmOption(
-         ext::make_shared<CLVModelPayoff>(
-             payoff->optionType(), payoff->strike(), ext::bind(g, t, _1)),
+         ext::make_shared<CLVModelPayoff>(payoff->optionType(), payoff->strike(),
+                                          [&](Real _x) { return g(t, _x); }),
          exercise);
 
     fdmOption.setPricingEngine(
@@ -396,7 +391,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
      Foreign Exchange Option Pricing: A Practitioner’s Guide
     */
 
-    const DayCounter dc = ActualActual();
+    const DayCounter dc = ActualActual(ActualActual::ISDA);
     const Date todaysDate(5, Aug, 2016);
     const Date maturityDate = todaysDate + Period(1, Years);
     const Time maturityTime = dc.yearFraction(todaysDate, maturityDate);
@@ -553,7 +548,7 @@ void NormalCLVModelTest::testMoustacheGraph() {
 }
 
 test_suite* NormalCLVModelTest::experimental(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("NormalCLVModel tests");
+    auto* suite = BOOST_TEST_SUITE("NormalCLVModel tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &NormalCLVModelTest::testBSCumlativeDistributionFunction));

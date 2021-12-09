@@ -1,79 +1,105 @@
-Changes for QuantLib 1.20:
+Changes for QuantLib 1.24:
 ==========================
 
-QuantLib 1.20 includes 24 pull requests from several contributors.
+QuantLib 1.24 includes 25 pull requests from several contributors.
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/16?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/20?closed=1>.
 
 Portability
 -----------
 
-- Support for Visual C++ 2012 is being deprecated.  It will be dropped
-  after the next release in order to enable use of C++11 features.
-
-- It is now possible to opt into using `std::tuple` instead of
-  `boost::tuple` when the compiler allows it.  The default is still to
-  use the Boost implementation.  The feature can be enabled by
-  uncommenting the `QL_USE_STD_TUPLE` macro in `ql/userconfig.hpp` on
-  Visual C++ or by passing the `--enable-std-tuple` switch to
-  `./configure` on other systems.  The `--enable-std-tuple` switch is
-  also implied by `--enable-std-classes`.  (Thanks to Joseph Wang.)
+- Overhauled the CMake build system (thanks to Philip Kovacs).  Among
+  other things, it now allows to specify the available configuration
+  options from the `cmake` invocation and adds the required Boost
+  libraries accordingly.
 
 Instruments
 -----------
 
-- Added mixing-factor parameter to Heston finite-differences barrier,
-  rebate and double-barrier engines (thanks to Jack Gillett).
+- Avoid callable-bond mispricing when a call date is close but not equal
+  to a coupon date (thanks to Ralf Konrad for the fix and to GitHub user
+  @aichao for the analysis).
+  See <https://github.com/lballabio/QuantLib/issues/930> for details.
 
-- Added a few additional results to Black swaption engine and to
-  analytic European option engine (thanks to Peter Caspers and Marcin
+- A new `RiskyBondEngine` is available for bonds (thanks to Lew Wei
+  Hao).  It prices bonds based on a risk-free discount cure and a
+  default-probability curve used to assess the probability of each
+  coupon payment.  It makes accessible to all bonds the calculations
+  previously available in the experimental `RiskyBond` class.
+
+Cashflows
+---------
+
+- The choice between par and indexed coupons was moved to
+  `IborCouponPricer` (thanks to Peter Caspers).  This also made it
+  possible to override the choice locally when building a
+  `VanillaSwap` or a `SwapRateHelper`, so that coupons with both
+  behaviors can now be used at the same time.
+
+Term structures
+---------------
+
+- Cross-currency basis swap rate helpers now support both
+  constant-notional and marked-to-market swaps (thanks to Marcin
   Rybacki).
-
-- Improved calculation of spot date for vanilla swap around holidays
-  (thanks to Paul Giltinan).
-
-- Added ex-coupon feature to amortizing bonds, callable bonds and
-  convertible bonds.
-
-- Added optional first-coupon day counter to fixed-rate bonds (thanks
-  to Jacob Lee-Howes).
-
-Math
-----
-
-- Added convenience classes `LogCubic` and `LogMixedLinearCubic`
-  hiding a few default parameters (thanks to Andrea Maffezzoli).
-
-Models
-------
-
-- Added control variate based on asymptotic expansion for the Heston
-  model (thanks to Klaus Spanderen).
 
 Date/time
 ---------
 
-- Added missing Hong Kong holiday (thanks to GitHub user `CarrieMY`).
+- Added Chilean calendar (thanks to Anubhav Pandey).
 
-- Added a couple of one-off closing days to the Romanian calendar.
+- Added new `ThirdWednesdayInclusive` date-generation rule that also
+  adjusts start and end dates (thanks to Lew Wei Hao).
 
-- Added a one-off holiday to South Korean calendar (thanks to GitHub
-  user `fayce66`).
+Patterns
+--------
 
-- Added a missing holiday to Turkish calendar (thanks to Berat
-  Postalcioglu).
+- Overhauled `Singleton` implementation (thanks to Peter Caspers).
+  Singletons are now initialized in a thread-safe way when sessions
+  are enabled, global singletons (that is, independent of sessions)
+  were made available, and static initialization was made safer.
 
-Documentation
--------------
+Test suite
+----------
 
-- Added basic documentation to optimization methods (thanks to GitHub
-  user `martinbrose`).
+- Sped up some of the longer-running tests (thanks to Mohammad Shojatalab).
 
 Deprecated features
 -------------------
 
-- Features deprecate in version 1.16 were removed: a constructor of
-  the `FdmOrnsteinUhlenbeckOp` class and a constructor of the
-  `SwaptionVolatilityMatrix` class.
+- Deprecated default constructor for the U.S. calendar; the desired
+  market should now be passed explicitly.
+
+- Deprecated the `nominalTermStructure` method and the corresponding
+  data member in inflation term structures.  Any object needing the
+  nominal term structure should have it passed explicitly.
+
+- Deprecated the `termStructure_` data member in
+  `BlackCalibrationHelper`.  It you're inheriting from
+  `BlackCalibrationHelper` and need it, declare it in your derived
+  class.
+
+- Deprecated the `createAtParCoupons`, `createIndexedCoupons` and
+  `usingAtParCoupons` methods of `IborCoupon`, now moved to a new
+  `IborCoupon::Settings` singleton (thanks to Philip Kovacs).
+
+- Deprecated the `conversionType` and `baseCurrency` static data
+  members of `Money`, now moved to a new `Money::Settings` singleton
+  (thanks to Philip Kovacs).
+
+- Removed features deprecated in version 1.19: the `BMAIndex`
+  constructor taking a calendar, the `AmericanCondition` and
+  `ShoutCondition` constructors taking an option type and strike, the
+  `CurveDependentStepCondition` class and the
+  `StandardCurveDependentStepCondition` typedef, the
+  `BlackCalibrationHelper` constructor taking a yield term structure,
+  the various inflation term structure constructors taking a yield
+  term structure, the various yield term constructors taking a vector
+  of jumps but not specifying a reference date.
+
+
+Thanks go also to Mickael Anas Laaouini, Jack Gillett, Bojan Nikolic
+and Klaus Spanderen for smaller fixes, enhancements and bug reports.
+

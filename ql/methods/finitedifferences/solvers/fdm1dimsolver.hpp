@@ -39,7 +39,7 @@ namespace QuantLib {
       public:
         Fdm1DimSolver(const FdmSolverDesc& solverDesc,
                       const FdmSchemeDesc& schemeDesc,
-                      const ext::shared_ptr<FdmLinearOpComposite>& op);
+                      ext::shared_ptr<FdmLinearOpComposite> op);
 
         Real interpolateAt(Real x) const;
         Real thetaAt(Real x) const;
@@ -48,7 +48,7 @@ namespace QuantLib {
         Real derivativeXX(Real x) const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         const FdmSolverDesc solverDesc_;

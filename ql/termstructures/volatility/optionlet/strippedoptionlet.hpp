@@ -38,38 +38,39 @@ namespace QuantLib {
     */
     class StrippedOptionlet : public StrippedOptionletBase {
       public:
-        StrippedOptionlet(Natural settlementDays, const Calendar &calendar,
+        StrippedOptionlet(Natural settlementDays,
+                          const Calendar& calendar,
                           BusinessDayConvention bdc,
-                          const ext::shared_ptr< IborIndex > &iborIndex,
-                          const std::vector< Date > &optionletDates,
-                          const std::vector< Rate > &strikes,
-                          const std::vector< std::vector< Handle< Quote > > > &,
-                          const DayCounter &dc,
+                          ext::shared_ptr<IborIndex> iborIndex,
+                          const std::vector<Date>& optionletDates,
+                          const std::vector<Rate>& strikes,
+                          std::vector<std::vector<Handle<Quote> > >,
+                          DayCounter dc,
                           VolatilityType type = ShiftedLognormal,
                           Real displacement = 0.0);
         //! \name StrippedOptionletBase interface
         //@{
-        const std::vector<Rate>& optionletStrikes(Size i) const;
-        const std::vector<Volatility>& optionletVolatilities(Size i) const;
+        const std::vector<Rate>& optionletStrikes(Size i) const override;
+        const std::vector<Volatility>& optionletVolatilities(Size i) const override;
 
-        const std::vector<Date>& optionletFixingDates() const;
-        const std::vector<Time>& optionletFixingTimes() const;
-        Size optionletMaturities() const;
+        const std::vector<Date>& optionletFixingDates() const override;
+        const std::vector<Time>& optionletFixingTimes() const override;
+        Size optionletMaturities() const override;
 
-        const std::vector<Rate>& atmOptionletRates() const;
+        const std::vector<Rate>& atmOptionletRates() const override;
 
-        DayCounter dayCounter() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
-        BusinessDayConvention businessDayConvention() const;
+        DayCounter dayCounter() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
+        BusinessDayConvention businessDayConvention() const override;
         //@}
-        VolatilityType volatilityType() const;
-        Real displacement() const;
+        VolatilityType volatilityType() const override;
+        Real displacement() const override;
 
       private:
         void checkInputs() const;
         void registerWithMarketData();
-        void performCalculations() const;
+        void performCalculations() const override;
 
         Calendar calendar_;
         Natural settlementDays_;

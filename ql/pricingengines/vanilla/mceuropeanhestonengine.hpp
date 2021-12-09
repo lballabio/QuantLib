@@ -27,6 +27,7 @@
 
 #include <ql/pricingengines/vanilla/mcvanillaengine.hpp>
 #include <ql/processes/hestonprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -52,7 +53,7 @@ namespace QuantLib {
                                Size maxSamples,
                                BigNatural seed);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
     };
 
     //! Monte Carlo Heston European engine factory
@@ -60,7 +61,7 @@ namespace QuantLib {
               class S = Statistics, class P = HestonProcess>
     class MakeMCEuropeanHestonEngine {
       public:
-        explicit MakeMCEuropeanHestonEngine(const ext::shared_ptr<P>&);
+        explicit MakeMCEuropeanHestonEngine(ext::shared_ptr<P>);
         // named parameters
         MakeMCEuropeanHestonEngine& withSteps(Size steps);
         MakeMCEuropeanHestonEngine& withStepsPerYear(Size steps);
@@ -85,7 +86,8 @@ namespace QuantLib {
         EuropeanHestonPathPricer(Option::Type type,
                                  Real strike,
                                  DiscountFactor discount);
-        Real operator()(const MultiPath& Multipath) const;
+        Real operator()(const MultiPath& Multipath) const override;
+
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
@@ -130,13 +132,11 @@ namespace QuantLib {
     }
 
 
-
     template <class RNG, class S, class P>
-    inline MakeMCEuropeanHestonEngine<RNG,S,P>::MakeMCEuropeanHestonEngine(
-                              const ext::shared_ptr<P>& process)
-    : process_(process), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
+    inline MakeMCEuropeanHestonEngine<RNG, S, P>::MakeMCEuropeanHestonEngine(
+        ext::shared_ptr<P> process)
+    : process_(std::move(process)), antithetic_(false), steps_(Null<Size>()),
+      stepsPerYear_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
       tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG, class S,class P>

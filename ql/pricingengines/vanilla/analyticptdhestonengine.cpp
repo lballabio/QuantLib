@@ -130,7 +130,7 @@ namespace QuantLib {
           sx_(std::log(strike)),
           dd_(x_-std::log(ratio)),
           enginePtr_(enginePtr) {
-            QL_REQUIRE(enginePtr != 0, "pricing engine required");
+            QL_REQUIRE(enginePtr != nullptr, "pricing engine required");
         }
 
         Real operator()(Real u) const {
@@ -366,9 +366,9 @@ namespace QuantLib {
 
               const Real c_inf = -(C_u_inf + D_u_inf*v0).real();
 
-              const ext::function<Real()> uM = ext::bind(
-                  Integration::andersenPiterbargIntegrationLimit,
-                      c_inf, epsilon, v0, term);
+              const ext::function<Real()> uM = [=](){
+                  return Integration::andersenPiterbargIntegrationLimit(c_inf, epsilon, v0, term);
+              };
 
               const Real vAvg
                   = (1-std::exp(-kappaAvg*term))*(v0-thetaAvg)
@@ -403,5 +403,9 @@ namespace QuantLib {
             default:
               QL_FAIL("unknown complex log formula");
           }
+    }
+ 
+    Size AnalyticPTDHestonEngine::numberOfEvaluations() const {
+        return evaluations_;
     }
 }

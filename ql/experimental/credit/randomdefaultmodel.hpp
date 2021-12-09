@@ -42,8 +42,8 @@ namespace QuantLib {
           // assuming none defaulted this is true.
           QL_REQUIRE(defaultKeys.size() == pool->size(), "Incompatible pool and keys sizes.");
         }
-        virtual ~RandomDefaultModel() {}
-        void update() { notifyObservers(); }
+        ~RandomDefaultModel() override = default;
+        void update() override { notifyObservers(); }
         /*!
           Generate a sequence of random default times, one for each name in the
           pool, and store the result in the Pool using method setTime(name).
@@ -67,8 +67,9 @@ namespace QuantLib {
                                  const Handle<OneFactorCopula>& copula,
                                  Real accuracy,
                                  long seed);
-      void nextSequence(Real tmax = QL_MAX_REAL);
-      void reset();
+      void nextSequence(Real tmax = QL_MAX_REAL) override;
+      void reset() override;
+
     private:
         Handle<OneFactorCopula> copula_;
         Real accuracy_;

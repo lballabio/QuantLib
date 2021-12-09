@@ -26,9 +26,10 @@
 #ifndef quantlib_basket_option_hpp
 #define quantlib_basket_option_hpp
 
-#include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/multiassetoption.hpp>
+#include <ql/instruments/payoffs.hpp>
 #include <ql/math/array.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -36,12 +37,11 @@ namespace QuantLib {
       private:
         ext::shared_ptr<Payoff> basePayoff_;
       public:
-        explicit BasketPayoff(const ext::shared_ptr<Payoff> &p)
-        : basePayoff_(p) {}
-        virtual ~BasketPayoff() {}
-        std::string name() const { return basePayoff_->name(); }
-        std::string description() const { return basePayoff_->description(); }
-        Real operator()(Real price) const { return (*basePayoff_)(price); }
+        explicit BasketPayoff(ext::shared_ptr<Payoff> p) : basePayoff_(std::move(p)) {}
+        ~BasketPayoff() override = default;
+        std::string name() const override { return basePayoff_->name(); }
+        std::string description() const override { return basePayoff_->description(); }
+        Real operator()(Real price) const override { return (*basePayoff_)(price); }
         virtual Real operator()(const Array &a) const {
             return (*basePayoff_)(accumulate(a));
         }
@@ -53,7 +53,7 @@ namespace QuantLib {
       public:
         explicit MinBasketPayoff(const ext::shared_ptr<Payoff> &p)
         : BasketPayoff(p) {}
-        Real accumulate (const Array &a) const {
+        Real accumulate(const Array& a) const override {
             return *std::min_element(a.begin(), a.end());
         }
     };
@@ -62,24 +62,24 @@ namespace QuantLib {
       public:
         explicit MaxBasketPayoff(const ext::shared_ptr<Payoff> &p)
         : BasketPayoff(p) {}
-        Real accumulate (const Array &a) const {
+        Real accumulate(const Array& a) const override {
             return *std::max_element(a.begin(), a.end());
         }
     };
 
     class AverageBasketPayoff : public BasketPayoff {
       public:
-        AverageBasketPayoff(const ext::shared_ptr<Payoff> &p,
-                            const Array &a)
-        : BasketPayoff(p), weights_(a) {}
+        AverageBasketPayoff(const ext::shared_ptr<Payoff>& p, Array a)
+        : BasketPayoff(p), weights_(std::move(a)) {}
         AverageBasketPayoff(const ext::shared_ptr<Payoff> &p,
                             Size n)
         : BasketPayoff(p), weights_(n, 1.0/static_cast<Real>(n)) {}
-        Real accumulate (const Array &a) const {
+        Real accumulate(const Array& a) const override {
             return std::inner_product(weights_.begin(),
                                       weights_.end(),
                                       a.begin(), 0.0);
         }
+
       private:
         Array weights_;
     };
@@ -89,7 +89,7 @@ namespace QuantLib {
       public:
         explicit SpreadBasketPayoff(const ext::shared_ptr<Payoff> &p)
         : BasketPayoff(p) {}
-        Real accumulate (const Array &a) const {
+        Real accumulate(const Array& a) const override {
             QL_REQUIRE(a.size() == 2, 
                     "payoff is only defined for two underlyings");
             return a[0]-a[1];
