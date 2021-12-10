@@ -124,6 +124,7 @@ QuantLib is
     Copyright (C) 2015, 2016 Andres Hernandez
 
     Copyright (C) 2016 Nicholas Bertocchi
+    Copyright (C) 2016 Quaternion Risk Management Ltd
     Copyright (C) 2016 Stefano Fondi
     Copyright (C) 2016, 2017 Fabrice Lecuyer
     Copyright (C) 2016, 2019, 2020 Eisuke Tani
