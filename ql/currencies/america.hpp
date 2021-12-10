@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004, 2005, 2008 StatPro Italia srl
+ Copyright (C) 2016 Quaternion Risk Management Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -201,6 +202,16 @@ namespace QuantLib {
     class CLFCurrency : public Currency {
       public:
         CLFCurrency();
+    };
+
+    //! Uruguayan peso
+    /*! The ISO three-letter code is UYU; the numeric code is 858.
+     A unit of account used in Uruguay.
+     \ingroup currencies
+     */
+    class UYUCurrency : public Currency {
+      public:
+        UYUCurrency();
     };
 
 }
