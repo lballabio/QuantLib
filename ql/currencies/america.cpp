@@ -212,6 +212,7 @@ namespace QuantLib {
         static ext::shared_ptr<Data> uyuData(
             new Data("Uruguayan peso", "UYU", 858, "UYU", "", 1, Rounding(), "1$.2f %3%"));
         data_ = uyuData;
+    }
 
 }
 
