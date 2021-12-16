@@ -125,14 +125,16 @@ namespace QuantLib {
 
         // Bootstrap the yield curve at the currentDate
         Natural settlementDays = 0;
+        IterativeBootstrap<PiecewiseYieldCurve<Traits, Interpolator> > bootstrap(
+            yieldCurveAccuracy);
         PiecewiseYieldCurve<Traits, Interpolator> yc(settlementDays,
                                                      cal,
                                                      rateHelpers,
                                                      yieldCurveDayCounter,
                                                      std::vector<Handle<Quote> >(),
                                                      std::vector<Date>(),
-                                                     yieldCurveAccuracy,
-                                                     i);
+                                                     i,
+                                                     bootstrap);
 
         // start with a valid business date
         Date currentDate = cal.advance(startDate, 1*Days, Following);
