@@ -125,7 +125,7 @@ namespace QuantLib {
 
         // Bootstrap the yield curve at the currentDate
         Natural settlementDays = 0;
-        PiecewiseYieldCurve<Traits, Interpolator>::bootstrap_type bootstrap(yieldCurveAccuracy);
+        typename PiecewiseYieldCurve<Traits, Interpolator>::bootstrap_type bootstrap(yieldCurveAccuracy);
         PiecewiseYieldCurve<Traits, Interpolator> yc(settlementDays,
                                                      cal,
                                                      rateHelpers,
