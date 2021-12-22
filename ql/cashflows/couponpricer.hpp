@@ -102,6 +102,8 @@ namespace QuantLib {
         bool useIndexedCoupon_;
     };
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     /*! Black-formula pricer for capped/floored Ibor coupons
         References for timing adjustments
         Black76             Hull, Options, Futures and other
@@ -138,12 +140,21 @@ namespace QuantLib {
         virtual Rate adjustedFixing(Rate fixing = Null<Rate>()) const;
 
         Real discount_;
+
+        /*! \deprecated don't use this data member.  Use spread_ instead
+                        and calculate it on the fly if needed.  But you
+                        probably won't.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
         Real spreadLegValue_;
 
       private:
         const TimingAdjustment timingAdjustment_;
         const Handle<Quote> correlation_;
     };
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     //! base pricer for vanilla CMS coupons
     class CmsCouponPricer : public FloatingRateCouponPricer {
