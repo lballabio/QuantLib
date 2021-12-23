@@ -8,6 +8,7 @@ set(QL_TEST_SOURCES
     autocovariances.cpp
     barrieroption.cpp
     basismodels.cpp
+    basisswapratehelpers.cpp
     basketoption.cpp
     batesmodel.cpp
     bermudanswaption.cpp
@@ -174,6 +175,7 @@ set(QL_TEST_HEADERS
     autocovariances.hpp
     barrieroption.hpp
     basismodels.hpp
+    basisswapratehelpers.hpp
     basketoption.hpp
     batesmodel.hpp
     bermudanswaption.hpp

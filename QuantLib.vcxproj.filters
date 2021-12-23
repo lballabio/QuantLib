@@ -4364,6 +4364,9 @@
     <ClInclude Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.hpp">
       <Filter>experimental\asian</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\termstructures\basisswapratehelpers.hpp">
+      <Filter>experimental\termstructures</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\termstructures\crosscurrencyratehelpers.hpp">
       <Filter>experimental\termstructures</Filter>
     </ClInclude>
@@ -7066,6 +7069,9 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\forward\analytichestonforwardeuropeanengine.cpp">
       <Filter>experimental\forward</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\termstructures\basisswapratehelpers.cpp">
+      <Filter>experimental\termstructures</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\termstructures\crosscurrencyratehelpers.cpp">
       <Filter>experimental\termstructures</Filter>
