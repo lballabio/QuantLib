@@ -46,9 +46,9 @@ namespace QuantLib {
                                     Calendar calendar,
                                     BusinessDayConvention convention,
                                     bool endOfMonth,
-                                    ext::shared_ptr<IborIndex> baseIndex,
-                                    ext::shared_ptr<IborIndex> otherIndex,
-                                    Handle<YieldTermStructure> discountHandle,
+                                    const ext::shared_ptr<IborIndex>& baseIndex,
+                                    const ext::shared_ptr<IborIndex>& otherIndex,
+                                    const Handle<YieldTermStructure>& discountHandle,
                                     bool bootstrapBaseCurve);
 
         Real impliedQuote() const override;

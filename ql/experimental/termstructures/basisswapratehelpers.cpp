@@ -17,25 +17,27 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/termstructures/basisswapratehelpers.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/experimental/termstructures/basisswapratehelpers.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/utilities/null_deleter.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    IborIborBasisSwapRateHelper::IborIborBasisSwapRateHelper(const Handle<Quote>& basis,
-                                                             const Period& tenor,
-                                                             Natural settlementDays,
-                                                             Calendar calendar,
-                                                             BusinessDayConvention convention,
-                                                             bool endOfMonth,
-                                                             ext::shared_ptr<IborIndex> baseIndex,
-                                                             ext::shared_ptr<IborIndex> otherIndex,
-                                                             Handle<YieldTermStructure> discountHandle,
-                                                             bool bootstrapBaseCurve)
+    IborIborBasisSwapRateHelper::IborIborBasisSwapRateHelper(
+        const Handle<Quote>& basis,
+        const Period& tenor,
+        Natural settlementDays,
+        Calendar calendar,
+        BusinessDayConvention convention,
+        bool endOfMonth,
+        const ext::shared_ptr<IborIndex>& baseIndex,
+        const ext::shared_ptr<IborIndex>& otherIndex,
+        const Handle<YieldTermStructure>& discountHandle,
+        bool bootstrapBaseCurve)
     : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
-      calendar_(calendar), convention_(convention), endOfMonth_(endOfMonth),
+      calendar_(std::move(std::move(calendar))), convention_(convention), endOfMonth_(endOfMonth),
       discountHandle_(discountHandle), bootstrapBaseCurve_(bootstrapBaseCurve) {
 
         // we need to clone the index whose forecast curve we want to bootstrap
