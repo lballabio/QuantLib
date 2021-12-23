@@ -119,18 +119,25 @@ namespace QuantLib {
 
         Handle<YieldTermStructure> rateCurve = index_->forwardingTermStructure();
 
-        Date paymentDate = coupon_->date();
-        if (paymentDate > rateCurve->referenceDate())
-            discount_ = rateCurve->discount(paymentDate);
-        else
-            discount_ = 1.0;
-
-        spreadLegValue_ = spread_ * accrualPeriod_ * discount_;
+        if (rateCurve.empty()) {
+            discount_ = Null<Real>(); // might not be needed, will be checked later
+            QL_DEPRECATED_DISABLE_WARNING
+            spreadLegValue_ = Null<Real>();
+            QL_DEPRECATED_ENABLE_WARNING
+        } else {
+            Date paymentDate = coupon_->date();
+            if (paymentDate > rateCurve->referenceDate())
+                discount_ = rateCurve->discount(paymentDate);
+            else
+                discount_ = 1.0;
+            QL_DEPRECATED_DISABLE_WARNING
+            spreadLegValue_ = spread_ * accrualPeriod_ * discount_;
+            QL_DEPRECATED_ENABLE_WARNING
+        }
 
     }
 
-    Real BlackIborCouponPricer::optionletPrice(Option::Type optionType,
-                                               Real effStrike) const {
+    Real BlackIborCouponPricer::optionletRate(Option::Type optionType, Real effStrike) const {
         if (fixingDate_ <= Settings::instance().evaluationDate()) {
             // the amount is determined
             Real a, b;
@@ -141,7 +148,7 @@ namespace QuantLib {
                 a = effStrike;
                 b = coupon_->indexFixing();
             }
-            return std::max(a - b, 0.0)* accrualPeriod_*discount_;
+            return std::max(a - b, 0.0);
         } else {
             // not yet determined, use Black model
             QL_REQUIRE(!capletVolatility().empty(),
@@ -158,8 +165,14 @@ namespace QuantLib {
                                    stdDev, 1.0, shift)
                     : bachelierBlackFormula(optionType, effStrike,
                                             adjustedFixing(), stdDev, 1.0);
-            return fixing * accrualPeriod_ * discount_;
+            return fixing;
         }
+    }
+
+    Real BlackIborCouponPricer::optionletPrice(Option::Type optionType,
+                                               Real effStrike) const {
+        QL_REQUIRE(discount_ != Null<Rate>(), "no forecast curve provided");
+        return optionletRate(optionType, effStrike) * accrualPeriod_ * discount_;
     }
 
     Rate BlackIborCouponPricer::adjustedFixing(Rate fixing) const {

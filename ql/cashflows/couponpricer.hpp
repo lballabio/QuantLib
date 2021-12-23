@@ -102,6 +102,8 @@ namespace QuantLib {
         bool useIndexedCoupon_;
     };
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     /*! Black-formula pricer for capped/floored Ibor coupons
         References for timing adjustments
         Black76             Hull, Options, Futures and other
@@ -132,18 +134,27 @@ namespace QuantLib {
         Rate floorletRate(Rate effectiveFloor) const override;
 
       protected:
-        Real optionletPrice(Option::Type optionType,
-                            Real effStrike) const;
+        Real optionletPrice(Option::Type optionType, Real effStrike) const;
+        Real optionletRate(Option::Type optionType, Real effStrike) const;
 
         virtual Rate adjustedFixing(Rate fixing = Null<Rate>()) const;
 
         Real discount_;
+
+        /*! \deprecated don't use this data member.  Use spread_ instead
+                        and calculate it on the fly if needed.  But you
+                        probably won't.
+                        Deprecated in version 1.25.
+        */
+        QL_DEPRECATED
         Real spreadLegValue_;
 
       private:
         const TimingAdjustment timingAdjustment_;
         const Handle<Quote> correlation_;
     };
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     //! base pricer for vanilla CMS coupons
     class CmsCouponPricer : public FloatingRateCouponPricer {
@@ -208,9 +219,8 @@ namespace QuantLib {
 
     inline Real BlackIborCouponPricer::swapletPrice() const {
         // past or future fixing is managed in InterestRateIndex::fixing()
-
-        Real swapletPrice = adjustedFixing() * accrualPeriod_ * discount_;
-        return gearing_ * swapletPrice + spreadLegValue_;
+        QL_REQUIRE(discount_ != Null<Rate>(), "no forecast curve provided");
+        return swapletRate() * accrualPeriod_ * discount_;
     }
 
     inline Rate BlackIborCouponPricer::swapletRate() const {
@@ -218,23 +228,23 @@ namespace QuantLib {
     }
 
     inline Real BlackIborCouponPricer::capletPrice(Rate effectiveCap) const {
-        Real capletPrice = optionletPrice(Option::Call, effectiveCap);
-        return gearing_ * capletPrice;
+        QL_REQUIRE(discount_ != Null<Rate>(), "no forecast curve provided");
+        return capletRate(effectiveCap) * accrualPeriod_ * discount_;
     }
 
     inline Rate BlackIborCouponPricer::capletRate(Rate effectiveCap) const {
-        return capletPrice(effectiveCap) / (accrualPeriod_*discount_);
+        return gearing_ * optionletRate(Option::Call, effectiveCap);
     }
 
     inline
     Real BlackIborCouponPricer::floorletPrice(Rate effectiveFloor) const {
-        Real floorletPrice = optionletPrice(Option::Put, effectiveFloor);
-        return gearing_ * floorletPrice;
+        QL_REQUIRE(discount_ != Null<Rate>(), "no forecast curve provided");
+        return floorletRate(effectiveFloor) * accrualPeriod_ * discount_;
     }
 
     inline
     Rate BlackIborCouponPricer::floorletRate(Rate effectiveFloor) const {
-        return floorletPrice(effectiveFloor) / (accrualPeriod_*discount_);
+        return gearing_ * optionletRate(Option::Put, effectiveFloor);
     }
 
 }
