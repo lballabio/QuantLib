@@ -36,27 +36,27 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
   public:
     // constant mean reversion
     Gsr(const Handle<YieldTermStructure>& termStructure,
-        const std::vector<Date>& volstepdates,
+        std::vector<Date> volstepdates,
         const std::vector<Real>& volatilities,
         Real reversion,
         Real T = 60.0);
     // piecewise mean reversion (with same step dates as volatilities)
     Gsr(const Handle<YieldTermStructure>& termStructure,
-        const std::vector<Date>& volstepdates,
+        std::vector<Date> volstepdates,
         const std::vector<Real>& volatilities,
         const std::vector<Real>& reversions,
         Real T = 60.0);
     // constant mean reversion with floating model data
     Gsr(const Handle<YieldTermStructure>& termStructure,
-        const std::vector<Date>& volstepdates,
-        const std::vector<Handle<Quote> >& volatilities,
+        std::vector<Date> volstepdates,
+        std::vector<Handle<Quote> > volatilities,
         const Handle<Quote>& reversion,
         Real T = 60.0);
     // piecewise mean reversion with floating model data
     Gsr(const Handle<YieldTermStructure>& termStructure,
-        const std::vector<Date>& volstepdates,
-        const std::vector<Handle<Quote> >& volatilities,
-        const std::vector<Handle<Quote> >& reversions,
+        std::vector<Date> volstepdates,
+        std::vector<Handle<Quote> > volatilities,
+        std::vector<Handle<Quote> > reversions,
         Real T = 60.0);
 
     Real numeraireTime() const;
@@ -137,18 +137,18 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     }
 
   protected:
-    Real numeraireImpl(Time t, Real y, const Handle<YieldTermStructure>& yts) const;
+    Real numeraireImpl(Time t, Real y, const Handle<YieldTermStructure>& yts) const override;
 
-    Real zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const;
+    Real zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const override;
 
-    void generateArguments() {
+    void generateArguments() override {
         ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
         notifyObservers();
     }
 
-    void update();
+    void update() override;
 
-    void performCalculations() const {
+    void performCalculations() const override {
         Gaussian1dModel::performCalculations();
         updateTimes();
     }
@@ -173,12 +173,12 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
 
     struct VolatilityObserver : public Observer {
         explicit VolatilityObserver(Gsr *p) : p_(p) {}
-        void update() { p_->updateVolatility(); }
+        void update() override { p_->updateVolatility(); }
         Gsr *p_;
     };
     struct ReversionObserver : public Observer {
         explicit ReversionObserver(Gsr *p) : p_(p) {}
-        void update() { p_->updateReversion(); }
+        void update() override { p_->updateReversion(); }
         Gsr *p_;
     };
 

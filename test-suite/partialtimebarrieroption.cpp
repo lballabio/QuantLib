@@ -101,10 +101,10 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
         { 105.0, 110.0, 359, 13.1376 }
     };
 
-    for (Size i=0; i<LENGTH(cases); ++i) {
-        Date coverEventDate = today + cases[i].days;
+    for (auto& i : cases) {
+        Date coverEventDate = today + i.days;
         ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::make_shared<PlainVanillaPayoff>(type, cases[i].strike);
+            ext::make_shared<PlainVanillaPayoff>(type, i.strike);
         PartialTimeBarrierOption option(PartialBarrier::DownOut,
                                         PartialBarrier::EndB1,
                                         barrier, rebate,
@@ -112,9 +112,9 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
                                         payoff, exercise);
         option.setPricingEngine(engine);
 
-        spot->setValue(cases[i].underlying);
+        spot->setValue(i.underlying);
         Real calculated = option.NPV();
-        Real expected = cases[i].result;
+        Real expected = i.result;
         Real error = std::fabs(calculated-expected);
         Real tolerance = 1e-4;
         if (error > tolerance)
@@ -127,7 +127,7 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
 
 
 test_suite* PartialTimeBarrierOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Partial-time barrier option tests");
+    auto* suite = BOOST_TEST_SUITE("Partial-time barrier option tests");
 
     suite->add(QUANTLIB_TEST_CASE(
                           &PartialTimeBarrierOptionTest::testAnalyticEngine));

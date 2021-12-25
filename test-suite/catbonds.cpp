@@ -157,7 +157,8 @@ void CatBondTest::testBetaRisk() {
     {
         BOOST_REQUIRE(simulation->nextPath(path));
         Real processValue = 0.0;
-        for(size_t j=0; j<path.size(); ++j) processValue+=path[j].second;
+        for (auto& j : path)
+            processValue += j.second;
         sum+=processValue;
         sumSquares+=processValue*processValue;
         poissonSum+=path.size();
@@ -207,6 +208,8 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     BOOST_TEST_MESSAGE("Testing floating-rate cat bond against risk-free floating-rate bond...");
 
     using namespace catbonds_test;
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
 
@@ -268,11 +271,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond1.setPricingEngine(catBondEngine);
     setCouponPricer(catBond1.cashflows(),pricer);
 
-    Real cachedPrice1;
-    if (!IborCoupon::usingAtParCoupons())
-        cachedPrice1 = 99.874645;
-    else
-        cachedPrice1 = 99.874646;
+    Real cachedPrice1 = usingAtParCoupons ? 99.874646 : 99.874645;
 
     Real price = bond1.cleanPrice();
     Real catPrice = catBond1.cleanPrice();
@@ -315,11 +314,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond2.setPricingEngine(catBondEngine2);
     setCouponPricer(catBond2.cashflows(),pricer);
 
-    Real cachedPrice2; 
-    if (!IborCoupon::usingAtParCoupons())
-        cachedPrice2 = 97.955904;
-    else
-        cachedPrice2 = 97.955904;
+    Real cachedPrice2 = 97.955904;
 
     price = bond2.cleanPrice();
     catPrice = catBond2.cleanPrice();
@@ -363,11 +358,7 @@ void CatBondTest::testRiskFreeAgainstFloatingRateBond() {
     catBond3.setPricingEngine(catBondEngine2);
     setCouponPricer(catBond3.cashflows(),pricer);
 
-    Real cachedPrice3;
-    if (!IborCoupon::usingAtParCoupons())
-        cachedPrice3 = 98.495458;
-    else
-        cachedPrice3 = 98.495459;
+    Real cachedPrice3 = usingAtParCoupons ? 98.495459 : 98.495458;
 
     price = bond3.cleanPrice();
     catPrice = catBond3.cleanPrice();
@@ -691,7 +682,7 @@ void CatBondTest::testCatBondWithGeneratedEventsProportional() {
 }
 
 test_suite* CatBondTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("CatBond tests");
+    auto* suite = BOOST_TEST_SUITE("CatBond tests");
 
     suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testEventSetForWholeYears));
     suite->add(QUANTLIB_TEST_CASE(&CatBondTest::testEventSetForIrregularPeriods));

@@ -24,9 +24,10 @@
 #ifndef quantlib_mc_discrete_geometric_average_price_asian_heston_engine_hpp
 #define quantlib_mc_discrete_geometric_average_price_asian_heston_engine_hpp
 
+#include <ql/exercise.hpp>
 #include <ql/pricingengines/asian/mcdiscreteasianenginebase.hpp>
 #include <ql/processes/hestonprocess.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -60,7 +61,7 @@ namespace QuantLib {
                                           Size timeSteps = Null<Size>(),
                                           Size timeStepsPerYear = Null<Size>());
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
     };
 
 
@@ -68,8 +69,7 @@ namespace QuantLib {
               class S = Statistics, class P = HestonProcess>
     class MakeMCDiscreteGeometricAPHestonEngine {
       public:
-        explicit MakeMCDiscreteGeometricAPHestonEngine(
-            const ext::shared_ptr<P>& process);
+        explicit MakeMCDiscreteGeometricAPHestonEngine(ext::shared_ptr<P> process);
         // named parameters
         MakeMCDiscreteGeometricAPHestonEngine& withSamples(Size samples);
         MakeMCDiscreteGeometricAPHestonEngine& withAbsoluteTolerance(Real tolerance);
@@ -93,10 +93,11 @@ namespace QuantLib {
         GeometricAPOHestonPathPricer(Option::Type type,
                                      Real strike,
                                      DiscountFactor discount,
-                                     const std::vector<Size>& fixingIndices,
+                                     std::vector<Size> fixingIndices,
                                      Real runningProduct = 1.0,
                                      Size pastFixings = 0);
-        Real operator()(const MultiPath& multiPath) const;
+        Real operator()(const MultiPath& multiPath) const override;
+
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
@@ -142,8 +143,9 @@ namespace QuantLib {
         TimeGrid timeGrid = this->timeGrid();
         std::vector<Time> fixingTimes = timeGrid.mandatoryTimes();
         std::vector<Size> fixingIndexes;
-        for (Size i=0; i<fixingTimes.size(); i++) {
-            fixingIndexes.push_back(timeGrid.closestIndex(fixingTimes[i]));
+        fixingIndexes.reserve(fixingTimes.size());
+        for (double fixingTime : fixingTimes) {
+            fixingIndexes.push_back(timeGrid.closestIndex(fixingTime));
         }
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
@@ -172,11 +174,11 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline MakeMCDiscreteGeometricAPHestonEngine<RNG,S,P>::MakeMCDiscreteGeometricAPHestonEngine(
-             const ext::shared_ptr<P>& process)
-    : process_(process), antithetic_(false), samples_(Null<Size>()),
-      maxSamples_(Null<Size>()), steps_(Null<Size>()),
-      stepsPerYear_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
+    inline MakeMCDiscreteGeometricAPHestonEngine<RNG, S, P>::MakeMCDiscreteGeometricAPHestonEngine(
+        ext::shared_ptr<P> process)
+    : process_(std::move(process)), antithetic_(false), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      tolerance_(Null<Real>()), seed_(0) {}
 
     template<class RNG, class S, class P>
     inline MakeMCDiscreteGeometricAPHestonEngine<RNG,S,P>&

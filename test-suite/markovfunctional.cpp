@@ -241,8 +241,8 @@ namespace {
         };
 
         q6m.reserve(10 + 15 + 35);
-        for (int i = 0; i < 10 + 15 + 35; i++) {
-            q6m.push_back(ext::shared_ptr<Quote>(new SimpleQuote(q6mh[i])));
+        for (double i : q6mh) {
+            q6m.push_back(ext::shared_ptr<Quote>(new SimpleQuote(i)));
         }
 
         r6m.reserve(10);
@@ -284,23 +284,18 @@ namespace {
 
     Handle<SwaptionVolatilityStructure> md0SwaptionVts() {
 
-        std::vector<Period> optionTenors;
-        std::vector<Period> swapTenors;
-
-        Period optTen[] = { 1 * Months, 2 * Months, 3 * Months,  6 * Months,
+        std::vector<Period> optionTenors = {
+                            1 * Months, 2 * Months, 3 * Months,  6 * Months,
                             9 * Months, 1 * Years,  18 * Months, 2 * Years,
                             3 * Years,  4 * Years,  5 * Years,   6 * Years,
                             7 * Years,  8 * Years,  9 * Years,   10 * Years,
                             15 * Years, 20 * Years, 25 * Years,  30 * Years };
-        for (Size i = 0; i < 20; i++)
-            optionTenors.push_back(optTen[i]);
 
-        Period swpTen[] = { 1 * Years,  2 * Years,  3 * Years,  4 * Years,
+        std::vector<Period> swapTenors = {
+                            1 * Years,  2 * Years,  3 * Years,  4 * Years,
                             5 * Years,  6 * Years,  7 * Years,  8 * Years,
                             9 * Years,  10 * Years, 15 * Years, 20 * Years,
                             25 * Years, 30 * Years };
-        for (Size i = 0; i < 14; i++)
-            swapTenors.push_back(swpTen[i]);
 
         double qSwAtmh[] = {
             1.81,  0.897, 0.819, 0.692, 0.551, 0.47,  0.416, 0.379, 0.357,
@@ -342,8 +337,8 @@ namespace {
             std::vector<Handle<Quote> > qSwAtmTmp;
             qSwAtmTmp.reserve(14);
             for (int j = 0; j < 14; j++) {
-                qSwAtmTmp.push_back(Handle<Quote>(ext::shared_ptr<Quote>(
-                    new SimpleQuote(qSwAtmh[i * 14 + j]))));
+                qSwAtmTmp.emplace_back(
+                    ext::shared_ptr<Quote>(new SimpleQuote(qSwAtmh[i * 14 + j])));
             }
             qSwAtm.push_back(qSwAtmTmp);
         }
@@ -354,23 +349,12 @@ namespace {
                                              optionTenors, swapTenors, qSwAtm,
                                              Actual365Fixed())));
 
-        std::vector<Period> optionTenorsSmile;
-        std::vector<Period> swapTenorsSmile;
-        std::vector<Real> strikeSpreads;
-
-        Period optTenSm[] = { 3 * Months, 1 * Years,  5 * Years,
-                              10 * Years, 20 * Years, 30 * Years };
-        Period swpTenSm[] = { 2 * Years,  5 * Years, 10 * Years,
-                              20 * Years, 30 * Years };
-        Real strksp[] = { -0.02,  -0.01,  -0.0050, -0.0025, 0.0,
-                          0.0025, 0.0050, 0.01,    0.02 };
-
-        for (Size i = 0; i < 6; i++)
-            optionTenorsSmile.push_back(optTenSm[i]);
-        for (Size i = 0; i < 5; i++)
-            swapTenorsSmile.push_back(swpTenSm[i]);
-        for (Size i = 0; i < 9; i++)
-            strikeSpreads.push_back(strksp[i]);
+        std::vector<Period> optionTenorsSmile = { 3 * Months, 1 * Years,  5 * Years,
+                                                  10 * Years, 20 * Years, 30 * Years };
+        std::vector<Period> swapTenorsSmile = { 2 * Years,  5 * Years, 10 * Years,
+                                                20 * Years, 30 * Years };
+        std::vector<Real> strikeSpreads = { -0.02,  -0.01,  -0.0050, -0.0025, 0.0,
+                                            0.0025, 0.0050, 0.01,    0.02 };
 
         std::vector<std::vector<Handle<Quote> > > qSwSmile;
 
@@ -420,8 +404,8 @@ namespace {
             std::vector<Handle<Quote> > qSwSmileTmp;
             qSwSmileTmp.reserve(9);
             for (int j = 0; j < 9; j++) {
-                qSwSmileTmp.push_back(Handle<Quote>(ext::shared_ptr<Quote>(
-                    new SimpleQuote(qSwSmileh[i * 9 + j]))));
+                qSwSmileTmp.emplace_back(
+                    ext::shared_ptr<Quote>(new SimpleQuote(qSwSmileh[i * 9 + j])));
             }
             qSwSmile.push_back(qSwSmileTmp);
         }
@@ -439,20 +423,15 @@ namespace {
             0.01, 0.2, 0.8, -0.2, 0.01, 0.2, 0.8, -0.2, 0.01, 0.2, 0.8, -0.2
         };
 
-        std::vector<bool> parameterFixed;
-        parameterFixed.push_back(false);
-        parameterFixed.push_back(false); // beta could be fixed
-        parameterFixed.push_back(false);
-        parameterFixed.push_back(false);
+        std::vector<bool> parameterFixed = {false, false, false, false};
 
         std::vector<std::vector<Handle<Quote> > > parameterGuess;
         for (int i = 0; i < 30; i++) {
             std::vector<Handle<Quote> > parameterGuessTmp;
             parameterGuessTmp.reserve(4);
             for (int j = 0; j < 4; j++) {
-                parameterGuessTmp.push_back(
-                    Handle<Quote>(ext::shared_ptr<Quote>(
-                        new SimpleQuote(qSwSmileh1[i * 4 + j]))));
+                parameterGuessTmp.emplace_back(
+                    ext::shared_ptr<Quote>(new SimpleQuote(qSwSmileh1[i * 4 + j])));
             }
             parameterGuess.push_back(parameterGuessTmp);
         }
@@ -499,19 +478,15 @@ namespace {
         Size nStrikes = 12; // leave out last strike 10% because it causes an
                             // exception in bootstrapping
 
-        std::vector<Period> optionTenors;
-        Period optTen[] = { 1 * Years,  18 * Months, 2 * Years,  3 * Years,
+        std::vector<Period> optionTenors = {
+                            1 * Years,  18 * Months, 2 * Years,  3 * Years,
                             4 * Years,  5 * Years,   6 * Years,  7 * Years,
                             8 * Years,  9 * Years,   10 * Years, 12 * Years,
                             15 * Years, 20 * Years,  25 * Years, 30 * Years };
-        for (Size i = 0; i < nOptTen; i++)
-            optionTenors.push_back(optTen[i]);
 
-        std::vector<Real> strikes;
-        Real strk[] = { 0.0025, 0.0050, 0.0100, 0.0150, 0.0200, 0.0225, 0.0250,
-                        0.0300, 0.0350, 0.0400, 0.0500, 0.0600, 0.1000 };
-        for (Size i = 0; i < nStrikes; i++)
-            strikes.push_back(strk[i]);
+        std::vector<Real> strikes = {
+                        0.0025, 0.0050, 0.0100, 0.0150, 0.0200, 0.0225,
+                        0.0250, 0.0300, 0.0350, 0.0400, 0.0500, 0.0600 };
 
         Matrix vols(nOptTen, nStrikes);
         Real volsa[13][16] = { { 1.3378, 1.3032, 1.2514, 1.081, 1.019, 0.961,
@@ -596,19 +571,20 @@ namespace {
 
     Disposable<std::vector<Date> > expiriesCalBasket2() {
 
-        std::vector<Date> res;
         Date referenceDate_ = Settings::instance().evaluationDate();
 
-        res.push_back(TARGET().advance(referenceDate_, 6 * Months));
-        res.push_back(TARGET().advance(referenceDate_, 12 * Months));
-        res.push_back(TARGET().advance(referenceDate_, 18 * Months));
-        res.push_back(TARGET().advance(referenceDate_, 24 * Months));
-        res.push_back(TARGET().advance(referenceDate_, 30 * Months));
-        res.push_back(TARGET().advance(referenceDate_, 36 * Months));
-        res.push_back(TARGET().advance(referenceDate_, 42 * Months));
-        res.push_back(TARGET().advance(referenceDate_, 48 * Months));
-        res.push_back(TARGET().advance(referenceDate_, 54 * Months));
-        res.push_back(TARGET().advance(referenceDate_, 60 * Months));
+        std::vector<Date> res = {
+            TARGET().advance(referenceDate_, 6 * Months),
+            TARGET().advance(referenceDate_, 12 * Months),
+            TARGET().advance(referenceDate_, 18 * Months),
+            TARGET().advance(referenceDate_, 24 * Months),
+            TARGET().advance(referenceDate_, 30 * Months),
+            TARGET().advance(referenceDate_, 36 * Months),
+            TARGET().advance(referenceDate_, 42 * Months),
+            TARGET().advance(referenceDate_, 48 * Months),
+            TARGET().advance(referenceDate_, 54 * Months),
+            TARGET().advance(referenceDate_, 60 * Months)
+        };
 
         return res;
     }
@@ -617,34 +593,27 @@ namespace {
 
     Disposable<std::vector<Date> > expiriesCalBasket3() {
 
-        std::vector<Date> res;
         Date referenceDate_ = Settings::instance().evaluationDate();
 
-        res.push_back(TARGET().advance(referenceDate_, 1 * Years));
-        res.push_back(TARGET().advance(referenceDate_, 2 * Years));
-        res.push_back(TARGET().advance(referenceDate_, 3 * Years));
-        res.push_back(TARGET().advance(referenceDate_, 4 * Years));
-        res.push_back(TARGET().advance(referenceDate_, 5 * Years));
-        res.push_back(TARGET().advance(referenceDate_, 6 * Years));
-        res.push_back(TARGET().advance(referenceDate_, 7 * Years));
-        res.push_back(TARGET().advance(referenceDate_, 8 * Years));
-        res.push_back(TARGET().advance(referenceDate_, 9 * Years));
+        std::vector<Date> res = {
+            TARGET().advance(referenceDate_, 1 * Years),
+            TARGET().advance(referenceDate_, 2 * Years),
+            TARGET().advance(referenceDate_, 3 * Years),
+            TARGET().advance(referenceDate_, 4 * Years),
+            TARGET().advance(referenceDate_, 5 * Years),
+            TARGET().advance(referenceDate_, 6 * Years),
+            TARGET().advance(referenceDate_, 7 * Years),
+            TARGET().advance(referenceDate_, 8 * Years),
+            TARGET().advance(referenceDate_, 9 * Years)
+        };
 
         return res;
     }
 
     Disposable<std::vector<Period> > tenorsCalBasket3() {
 
-        std::vector<Period> res;
-        res.push_back(9 * Years);
-        res.push_back(8 * Years);
-        res.push_back(7 * Years);
-        res.push_back(6 * Years);
-        res.push_back(5 * Years);
-        res.push_back(4 * Years);
-        res.push_back(3 * Years);
-        res.push_back(2 * Years);
-        res.push_back(1 * Years);
+        std::vector<Period> res = {9 * Years, 8 * Years, 7 * Years, 6 * Years, 5 * Years,
+                                   4 * Years, 3 * Years, 2 * Years, 1 * Years};
         return res;
     }
 
@@ -682,10 +651,9 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     std::vector<Real> money;
     std::vector<Real> calls0;
 
-    for (Size i = 0; i < strikes.size(); i++) {
-        money.push_back(strikes[i] / atm);
-        calls0.push_back(blackFormula(Option::Call, strikes[i], atm,
-                                      0.50 * std::sqrt(t), 1.0, 0.0));
+    for (double strike : strikes) {
+        money.push_back(strike / atm);
+        calls0.push_back(blackFormula(Option::Call, strike, atm, 0.50 * std::sqrt(t), 1.0, 0.0));
     }
 
     std::vector<Real> stdDevs0 = impliedStdDevs(atm, strikes, calls0);
@@ -898,21 +866,12 @@ void MarkovFunctionalTest::testCalibrationOneInstrumentSet() {
     ext::shared_ptr<IborIndex> iborIndex(new Euribor(6 * Months));
 
     std::vector<Date> volStepDates;
-    std::vector<Real> vols;
-    vols.push_back(1.0);
+    std::vector<Real> vols = {1.0};
 
-    std::vector<Real> money; // use a grid with fewer points for smile arbitrage
-                             // testing and model outputs than the default grid
-                             // for the testing here
-    money.push_back(0.1);
-    money.push_back(0.25);
-    money.push_back(0.50);
-    money.push_back(0.75);
-    money.push_back(1.0);
-    money.push_back(1.25);
-    money.push_back(1.50);
-    money.push_back(2.0);
-    money.push_back(5.0);
+    // use a grid with fewer points for smile arbitrage
+    // testing and model outputs than the default grid
+    // for the testing here
+    std::vector<Real> money = {0.1, 0.25, 0.50, 0.75, 1.0, 1.25, 1.50, 2.0, 5.0};
 
     // Calibration Basket 1 / flat yts, vts
 
@@ -1135,22 +1094,10 @@ void MarkovFunctionalTest::testVanillaEngines() {
         new EuriborSwapIsdaFixA(1 * Years));
 
     std::vector<Date> volStepDates;
-    std::vector<Real> vols;
-    vols.push_back(1.0);
+    std::vector<Real> vols = {1.0};
 
-    std::vector<Real> money; // use a grid with few points for the check here
-    money.push_back(0.1);
-    money.push_back(0.25);
-    money.push_back(0.50);
-    money.push_back(0.75);
-    money.push_back(1.0);
-    money.push_back(1.25);
-    money.push_back(1.50);
-    money.push_back(2.0);
-    money.push_back(5.0);
-    // money.push_back(10.0);
-    // money.push_back(20.0);
-    // money.push_back(50.0);
+    // use a grid with few points for the check here
+    std::vector<Real> money = {0.1, 0.25, 0.50, 0.75, 1.0, 1.25, 1.50, 2.0, 5.0};
 
     // Calibration Basket 1 / flat yts, vts
 
@@ -1240,27 +1187,28 @@ void MarkovFunctionalTest::testVanillaEngines() {
         new BlackCapFloorEngine(flatYts_, flatOptionletVts_));
     ext::shared_ptr<Gaussian1dCapFloorEngine> mfCapFloorEngine2(
         new Gaussian1dCapFloorEngine(mf2, 64, 7.0));
-    std::vector<CapFloor> c2;
-    c2.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.01));
-    c2.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.02));
-    c2.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.03));
-    c2.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.04));
-    c2.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.05));
-    c2.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.07));
-    c2.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.10));
-    c2.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.01));
-    c2.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.02));
-    c2.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.03));
-    c2.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.04));
-    c2.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.05));
-    c2.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.07));
-    c2.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.10));
+    std::vector<CapFloor> c2 = {
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.01),
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.02),
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.03),
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.04),
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.05),
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.07),
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex2, 0.10),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.01),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.02),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.03),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.04),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.05),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.07),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex2, 0.10)
+    };
 
-    for (Size i = 0; i < c2.size(); i++) {
-        c2[i].setPricingEngine(blackCapFloorEngine2);
-        Real blackPrice = c2[i].NPV();
-        c2[i].setPricingEngine(mfCapFloorEngine2);
-        Real mfPrice = c2[i].NPV();
+    for (auto& i : c2) {
+        i.setPricingEngine(blackCapFloorEngine2);
+        Real blackPrice = i.NPV();
+        i.setPricingEngine(mfCapFloorEngine2);
+        Real mfPrice = i.NPV();
         if (fabs(blackPrice - mfPrice) > tol1)
             BOOST_ERROR(
                 "Basket 2 / flat termstructures: Cap/Floor premium market ("
@@ -1371,29 +1319,30 @@ void MarkovFunctionalTest::testVanillaEngines() {
     ext::shared_ptr<Gaussian1dCapFloorEngine> mfCapFloorEngine4(
         new Gaussian1dCapFloorEngine(mf4, 64, 7.0));
 
-    std::vector<CapFloor> c4;
-    c4.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex4, 0.01));
-    c4.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex4, 0.02));
-    c4.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex4, 0.03));
-    c4.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex4, 0.04));
-    c4.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex4, 0.05));
-    c4.push_back(MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex4, 0.06));
-    // c4.push_back(MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.10));
-    // //exclude because caplet stripper fails for this strike
-    c4.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex4, 0.01));
-    c4.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex4, 0.02));
-    c4.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex4, 0.03));
-    c4.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex4, 0.04));
-    c4.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex4, 0.05));
-    c4.push_back(MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex4, 0.06));
-    // c4.push_back(MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.10));
-    // //exclude because caplet stripper fails for this strike
+    std::vector<CapFloor> c4 = {
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex4, 0.01),
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex4, 0.02),
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex4, 0.03),
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex4, 0.04),
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex4, 0.05),
+        MakeCapFloor(CapFloor::Cap, 5 * Years, iborIndex4, 0.06),
+        // //exclude because caplet stripper fails for this strike
+        // MakeCapFloor(CapFloor::Cap,5*Years,iborIndex4,0.10),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex4, 0.01),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex4, 0.02),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex4, 0.03),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex4, 0.04),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex4, 0.05),
+        MakeCapFloor(CapFloor::Floor, 5 * Years, iborIndex4, 0.06)
+        // //exclude because caplet stripper fails for this strike
+        // MakeCapFloor(CapFloor::Floor,5*Years,iborIndex4,0.10)
+    };
 
-    for (Size i = 0; i < c4.size(); i++) {
-        c4[i].setPricingEngine(blackCapFloorEngine4);
-        Real blackPrice = c4[i].NPV();
-        c4[i].setPricingEngine(mfCapFloorEngine4);
-        Real mfPrice = c4[i].NPV();
+    for (auto& i : c4) {
+        i.setPricingEngine(blackCapFloorEngine4);
+        Real blackPrice = i.NPV();
+        i.setPricingEngine(mfCapFloorEngine4);
+        Real mfPrice = i.NPV();
         if (fabs(blackPrice - mfPrice) > tol1)
             BOOST_ERROR(
                 "Basket 2 / real termstructures: Cap/Floor premium market ("
@@ -1425,28 +1374,14 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     ext::shared_ptr<SwapIndex> swapIndexBase(
         new EuriborSwapIsdaFixA(1 * Years));
 
-    std::vector<Date> volStepDates;
-    std::vector<Real> vols;
-    volStepDates.push_back(TARGET().advance(referenceDate, 1 * Years));
-    volStepDates.push_back(TARGET().advance(referenceDate, 2 * Years));
-    volStepDates.push_back(TARGET().advance(referenceDate, 3 * Years));
-    volStepDates.push_back(TARGET().advance(referenceDate, 4 * Years));
-    vols.push_back(1.0);
-    vols.push_back(1.0);
-    vols.push_back(1.0);
-    vols.push_back(1.0);
-    vols.push_back(1.0);
-
-    std::vector<Real> money; // use a grid with few points for the check here
-    money.push_back(0.1);
-    money.push_back(0.25);
-    money.push_back(0.50);
-    money.push_back(0.75);
-    money.push_back(1.0);
-    money.push_back(1.25);
-    money.push_back(1.50);
-    money.push_back(2.0);
-    money.push_back(5.0);
+    std::vector<Date> volStepDates = {
+        TARGET().advance(referenceDate, 1 * Years),
+        TARGET().advance(referenceDate, 2 * Years),
+        TARGET().advance(referenceDate, 3 * Years),
+        TARGET().advance(referenceDate, 4 * Years)
+    };
+    std::vector<Real> vols = {1.0, 1.0, 1.0, 1.0, 1.0};
+    std::vector<Real> money = {0.1, 0.25, 0.50, 0.75, 1.0, 1.25, 1.50, 2.0, 5.0};
 
     LevenbergMarquardt om;
     // ConjugateGradient om;
@@ -1458,35 +1393,31 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
     ext::shared_ptr<IborIndex> iborIndex1(new Euribor(6 * Months, flatYts_));
 
     std::vector<ext::shared_ptr<BlackCalibrationHelper> > calibrationHelper1;
-    std::vector<Real> calibrationHelperVols1;
-    calibrationHelperVols1.push_back(0.20);
-    calibrationHelperVols1.push_back(0.20);
-    calibrationHelperVols1.push_back(0.20);
-    calibrationHelperVols1.push_back(0.20);
+    std::vector<Real> calibrationHelperVols1 = {0.20, 0.20, 0.20, 0.20};
 
     calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(1 * Years, 4 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[0]))),
-                           iborIndex1, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex1, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            flatYts_)));
     calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(2 * Years, 3 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[1]))),
-                           iborIndex1, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex1, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            flatYts_)));
     calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(3 * Years, 2 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[2]))),
-                           iborIndex1, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex1, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            flatYts_)));
     calibrationHelper1.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(4 * Years, 1 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols1[3]))),
-                           iborIndex1, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex1, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            flatYts_)));
 
     ext::shared_ptr<MarkovFunctional> mf1(new MarkovFunctional(
@@ -1594,25 +1525,25 @@ void MarkovFunctionalTest::testCalibrationTwoInstrumentSets() {
         new SwaptionHelper(1 * Years, 4 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[0]))),
-                           iborIndex2, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex2, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            md0Yts_)));
     calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(2 * Years, 3 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[1]))),
-                           iborIndex2, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex2, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            md0Yts_)));
     calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(3 * Years, 2 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[2]))),
-                           iborIndex2, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex2, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            md0Yts_)));
     calibrationHelper2.push_back(ext::shared_ptr<BlackCalibrationHelper>(
         new SwaptionHelper(4 * Years, 1 * Years,
                            Handle<Quote>(ext::shared_ptr<Quote>(
                                new SimpleQuote(calibrationHelperVols2[3]))),
-                           iborIndex2, 1 * Years, Thirty360(), Actual360(),
+                           iborIndex2, 1 * Years, Thirty360(Thirty360::BondBasis), Actual360(),
                            md0Yts_)));
 
     ext::shared_ptr<Gaussian1dSwaptionEngine> mfSwaptionEngine2(
@@ -1686,8 +1617,7 @@ void MarkovFunctionalTest::testBermudanSwaption() {
         new EuriborSwapIsdaFixA(1 * Years));
 
     std::vector<Date> volStepDates;
-    std::vector<Real> vols;
-    vols.push_back(1.0);
+    std::vector<Real> vols = {1.0};
 
     ext::shared_ptr<IborIndex> iborIndex1(new Euribor(6 * Months, md0Yts_));
 
@@ -1718,8 +1648,7 @@ void MarkovFunctionalTest::testBermudanSwaption() {
     for (Size i = 0; i < expiries.size(); i++) {
         europeanExercises.push_back(
             ext::shared_ptr<Exercise>(new EuropeanExercise(expiries[i])));
-        europeanSwaptions.push_back(
-            Swaption(underlyingCall, europeanExercises[i]));
+        europeanSwaptions.emplace_back(underlyingCall, europeanExercises[i]);
         europeanSwaptions.back().setPricingEngine(mfSwaptionEngine1);
     }
 
@@ -1751,24 +1680,19 @@ void MarkovFunctionalTest::testBermudanSwaption() {
 }
 
 test_suite *MarkovFunctionalTest::suite(SpeedLevel speed) {
-    test_suite *suite = BOOST_TEST_SUITE("Markov functional model tests");
+    auto* suite = BOOST_TEST_SUITE("Markov functional model tests");
 
     suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testMfStateProcess));
-    suite->add(QUANTLIB_TEST_CASE(
-        &MarkovFunctionalTest::testKahaleSmileSection));
-    suite->add(QUANTLIB_TEST_CASE(
-        &MarkovFunctionalTest::testBermudanSwaption));
+    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testKahaleSmileSection));
+    suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testBermudanSwaption));
 
     if (speed <= Fast) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &MarkovFunctionalTest::testCalibrationOneInstrumentSet));
-        suite->add(QUANTLIB_TEST_CASE(
-            &MarkovFunctionalTest::testCalibrationTwoInstrumentSets));
+        suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testCalibrationTwoInstrumentSets));
     }
 
     if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &MarkovFunctionalTest::testVanillaEngines));
+        suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testCalibrationOneInstrumentSet));
+        suite->add(QUANTLIB_TEST_CASE(&MarkovFunctionalTest::testVanillaEngines));
     }
 
     return suite;

@@ -36,14 +36,12 @@ namespace {
 
     class UpdateCounter : public Observer {
       public:
-        UpdateCounter() : counter_(0) {}
-        void update() {
-            ++counter_;
-        }
+        UpdateCounter() = default;
+        void update() override { ++counter_; }
         Size counter() const { return counter_; }
 
       private:
-        Size counter_;
+        Size counter_ = 0;
     };
 
     class RestoreUpdates {
@@ -278,16 +276,13 @@ void ObservableTest::testDeepUpdate() {
     Handle<YieldTermStructure> yts(
         ext::make_shared<FlatForward>(0, NullCalendar(), 0.02, Actual365Fixed()));
     ext::shared_ptr<IborIndex> ibor = ext::make_shared<Euribor>(3 * Months, yts);
-    std::vector<Real> strikes;
-    std::vector<Date> dates;
-    std::vector<std::vector<Handle<Quote> > > quotes;
-    strikes.push_back(0.01);
-    strikes.push_back(0.02);
-    dates.push_back(refDate + 90);
-    dates.push_back(refDate + 180);
     ext::shared_ptr<SimpleQuote> q = ext::make_shared<SimpleQuote>(0.20);
-    quotes.push_back(std::vector<Handle<Quote> >(2, Handle<Quote>(q)));
-    quotes.push_back(std::vector<Handle<Quote> >(2, Handle<Quote>(q)));
+    std::vector<Real> strikes = {0.01, 0.02};
+    std::vector<Date> dates = {refDate + 90, refDate + 180};
+    std::vector<std::vector<Handle<Quote> > > quotes = {
+        {Handle<Quote>(q), Handle<Quote>(q)},
+        {Handle<Quote>(q), Handle<Quote>(q)}
+    };
 
     ext::shared_ptr<StrippedOptionletAdapter> vol =
         ext::make_shared<StrippedOptionletAdapter>(ext::make_shared<StrippedOptionlet>(
@@ -310,9 +305,9 @@ void ObservableTest::testDeepUpdate() {
 namespace {
 	class DummyObserver : public Observer {
 	  public:
-		DummyObserver() {}
-		void update() {}
-	};
+            DummyObserver() = default;
+            void update() override {}
+        };
 }
 
 void ObservableTest::testEmptyObserverList() {
@@ -325,7 +320,7 @@ void ObservableTest::testEmptyObserverList() {
 }
 
 test_suite* ObservableTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Observer tests");
+    auto* suite = BOOST_TEST_SUITE("Observer tests");
 
     suite->add(QUANTLIB_TEST_CASE(&ObservableTest::testObservableSettings));
 

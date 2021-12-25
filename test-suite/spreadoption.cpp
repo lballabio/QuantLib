@@ -74,50 +74,50 @@ void SpreadOptionTest::testKirkEngine() {
        formula */
 
     Case cases[] = {
-        {  28.0,  20.0, 7.0, 0.05, 0.29, 0.36,  0.42, 90,  2.1670,  3.0431 },
-        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.20, -0.5,  36,  4.7530, 25.5905 },
-        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.20,  0.0,  36,  3.7970, 20.8841 },
-        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.20,  0.5,  36,  2.5537, 14.7260 },
-        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.20, -0.5, 180, 10.7517, 10.0847 },
-        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.20,  0.0, 180,  8.7020,  8.2619 },
-        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.20,  0.5, 180,  6.0257,  5.8661 },
-        { 122.0, 120.0, 3.0, 0.10, 0.25, 0.20, -0.5,  36,  5.4275, 28.9013 },
-        { 122.0, 120.0, 3.0, 0.10, 0.25, 0.20,  0.0,  36,  4.3712, 23.7133 },
-        { 122.0, 120.0, 3.0, 0.10, 0.25, 0.20,  0.5,  36,  3.0086, 16.9864 },
-        { 122.0, 120.0, 3.0, 0.10, 0.25, 0.20, -0.5, 180, 12.1941, 11.3603 },
-        { 122.0, 120.0, 3.0, 0.10, 0.25, 0.20,  0.0, 180,  9.9340,  9.3589 },
-        { 122.0, 120.0, 3.0, 0.10, 0.25, 0.20,  0.5, 180,  7.0067,  6.7463 },
-        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.25, -0.5,  36,  5.4061, 28.7963 },
-        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.25,  0.0,  36,  4.3451, 23.5848 },
-        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.25,  0.5,  36,  2.9723, 16.8060 },
-        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.25, -0.5, 180, 12.1483, 11.3200 },
-        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.25,  0.0, 180,  9.8780,  9.3091 },
-        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.25,  0.5, 180,  6.9284,  6.6761 }
+        {  28.0,  20.0, 7.0, 0.05, 0.29, 0.36,  0.42, 90,  2.1670,  -3.0431 },
+        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.20, -0.5,  36,  4.7530, -25.5905 },
+        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.20,  0.0,  36,  3.7970, -20.8841 },
+        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.20,  0.5,  36,  2.5537, -14.7260 },
+        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.20, -0.5, 180, 10.7517, -10.0847 },
+        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.20,  0.0, 180,  8.7020,  -8.2619 },
+        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.20,  0.5, 180,  6.0257,  -5.8661 },
+        { 122.0, 120.0, 3.0, 0.10, 0.25, 0.20, -0.5,  36,  5.4275, -28.9013 },
+        { 122.0, 120.0, 3.0, 0.10, 0.25, 0.20,  0.0,  36,  4.3712, -23.7133 },
+        { 122.0, 120.0, 3.0, 0.10, 0.25, 0.20,  0.5,  36,  3.0086, -16.9864 },
+        { 122.0, 120.0, 3.0, 0.10, 0.25, 0.20, -0.5, 180, 12.1941, -11.3603 },
+        { 122.0, 120.0, 3.0, 0.10, 0.25, 0.20,  0.0, 180,  9.9340,  -9.3589 },
+        { 122.0, 120.0, 3.0, 0.10, 0.25, 0.20,  0.5, 180,  7.0067,  -6.7463 },
+        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.25, -0.5,  36,  5.4061, -28.7963 },
+        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.25,  0.0,  36,  4.3451, -23.5848 },
+        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.25,  0.5,  36,  2.9723, -16.8060 },
+        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.25, -0.5, 180, 12.1483, -11.3200 },
+        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.25,  0.0, 180,  9.8780,  -9.3091 },
+        { 122.0, 120.0, 3.0, 0.10, 0.20, 0.25,  0.5, 180,  6.9284,  -6.6761 }
     };
 
-    for (Size i=0; i<LENGTH(cases); ++i) {
+    for (auto& i : cases) {
 
         // First step: preparing the test values
         // Useful dates
         DayCounter dc = Actual360();
         Date today = Date::todaysDate();
-        Date exerciseDate = today  + cases[i].length;
+        Date exerciseDate = today + i.length;
 
         // Futures values
-        ext::shared_ptr<SimpleQuote> F1(new SimpleQuote(cases[i].F1));
-        ext::shared_ptr<SimpleQuote> F2(new SimpleQuote(cases[i].F2));
+        ext::shared_ptr<SimpleQuote> F1(new SimpleQuote(i.F1));
+        ext::shared_ptr<SimpleQuote> F2(new SimpleQuote(i.F2));
 
         // Risk-free interest rate
-        Rate riskFreeRate = cases[i].r;
+        Rate riskFreeRate = i.r;
         ext::shared_ptr<YieldTermStructure> forwardRate =
             flatRate(today,riskFreeRate,dc);
 
         // Correlation
-        ext::shared_ptr<Quote> rho(new SimpleQuote(cases[i].rho));
+        ext::shared_ptr<Quote> rho(new SimpleQuote(i.rho));
 
         // Volatilities
-        Volatility vol1 = cases[i].sigma1;
-        Volatility vol2 = cases[i].sigma2;
+        Volatility vol1 = i.sigma1;
+        Volatility vol2 = i.sigma2;
         ext::shared_ptr<BlackVolTermStructure> volTS1 =
             flatVol(today,vol1,dc);
         ext::shared_ptr<BlackVolTermStructure> volTS2 =
@@ -142,7 +142,7 @@ void SpreadOptionTest::testKirkEngine() {
 
         // Finally, create the option:
         Option::Type type = Option::Call;
-        Real strike = cases[i].X;
+        Real strike = i.X;
         ext::shared_ptr<PlainVanillaPayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
         ext::shared_ptr<Exercise> exercise(
@@ -156,22 +156,18 @@ void SpreadOptionTest::testKirkEngine() {
         Real theta = option.theta();
         Real tolerance = 1e-4;
 
-        if (std::fabs(value-cases[i].value) > tolerance) {
-            REPORT_FAILURE("value",
-                           payoff, exercise,
-                           cases[i].value, value, tolerance);
+        if (std::fabs(value - i.value) > tolerance) {
+            REPORT_FAILURE("value", payoff, exercise, i.value, value, tolerance);
         }
 
-        if (std::fabs(theta-cases[i].theta) > tolerance) {
-            REPORT_FAILURE("theta",
-                            payoff, exercise,
-                            cases[i].theta, theta, tolerance);
+        if (std::fabs(theta - i.theta) > tolerance) {
+            REPORT_FAILURE("theta", payoff, exercise, i.theta, theta, tolerance);
         }
     }
 }
 
 test_suite* SpreadOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Spread option tests");
+    auto* suite = BOOST_TEST_SUITE("Spread option tests");
 
     suite->add(QUANTLIB_TEST_CASE(&SpreadOptionTest::testKirkEngine));
 

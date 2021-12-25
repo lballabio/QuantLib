@@ -17,36 +17,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
-#include <ql/methods/finitedifferences/solvers/fdm3dimsolver.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/solvers/fdm3dimsolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    Fdm3DimSolver::Fdm3DimSolver(
-                        const FdmSolverDesc& solverDesc,
-                        const FdmSchemeDesc& schemeDesc,
-                        const ext::shared_ptr<FdmLinearOpComposite>& op)
-    : solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc),
-      op_(op),
+    Fdm3DimSolver::Fdm3DimSolver(const FdmSolverDesc& solverDesc,
+                                 const FdmSchemeDesc& schemeDesc,
+                                 ext::shared_ptr<FdmLinearOpComposite> op)
+    : solverDesc_(solverDesc), schemeDesc_(schemeDesc), op_(std::move(op)),
       thetaCondition_(ext::make_shared<FdmSnapshotCondition>(
-        0.99*std::min(1.0/365.0,
-                solverDesc.condition->stoppingTimes().empty()
-                ? solverDesc.maturity :
-                  solverDesc.condition->stoppingTimes().front()))),
-      conditions_(FdmStepConditionComposite::joinConditions(thetaCondition_,
-                                                         solverDesc.condition)),
+          0.99 * std::min(1.0 / 365.0,
+                          solverDesc.condition->stoppingTimes().empty() ?
+                              solverDesc.maturity :
+                              solverDesc.condition->stoppingTimes().front()))),
+      conditions_(FdmStepConditionComposite::joinConditions(thetaCondition_, solverDesc.condition)),
       initialValues_(solverDesc.mesher->layout()->size()),
-      resultValues_ (solverDesc.mesher->layout()->dim()[2],
-                     Matrix(solverDesc.mesher->layout()->dim()[1],
-                            solverDesc.mesher->layout()->dim()[0])),
+      resultValues_(
+          solverDesc.mesher->layout()->dim()[2],
+          Matrix(solverDesc.mesher->layout()->dim()[1], solverDesc.mesher->layout()->dim()[0])),
       interpolation_(solverDesc.mesher->layout()->dim()[2]) {
 
         const ext::shared_ptr<FdmMesher> mesher = solverDesc.mesher;

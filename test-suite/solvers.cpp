@@ -57,13 +57,13 @@ namespace {
                             const F& f, Real guess) {
         Real accuracy[] = { 1.0e-4, 1.0e-6, 1.0e-8 };
         Real expected = 1.0;
-        for (Size i=0; i<LENGTH(accuracy); i++) {
-            Real root = solver.solve(f,accuracy[i],guess,0.1);
-            if (std::fabs(root-expected) > accuracy[i]) {
+        for (double& i : accuracy) {
+            Real root = solver.solve(f, i, guess, 0.1);
+            if (std::fabs(root - expected) > i) {
                 BOOST_FAIL(name << " solver (not bracketed):\n"
-                           << "    expected:   " << expected << "\n"
-                           << "    calculated: " << root << "\n"
-                           << "    accuracy:   " << accuracy[i]);
+                                << "    expected:   " << expected << "\n"
+                                << "    calculated: " << root << "\n"
+                                << "    accuracy:   " << i);
             }
         }
     }
@@ -73,14 +73,14 @@ namespace {
                         const F& f, Real guess) {
         Real accuracy[] = { 1.0e-4, 1.0e-6, 1.0e-8 };
         Real expected = 1.0;
-        for (Size i=0; i<LENGTH(accuracy); i++) {
+        for (double& i : accuracy) {
             // guess on the left side of the root, increasing function
-            Real root = solver.solve(f,accuracy[i],guess,0.0,2.0);
-            if (std::fabs(root-expected) > accuracy[i]) {
+            Real root = solver.solve(f, i, guess, 0.0, 2.0);
+            if (std::fabs(root - expected) > i) {
                 BOOST_FAIL(name << " solver (bracketed):\n"
-                           << "    expected:   " << expected << "\n"
-                           << "    calculated: " << root << "\n"
-                           << "    accuracy:   " << accuracy[i]);
+                                << "    expected:   " << expected << "\n"
+                                << "    calculated: " << root << "\n"
+                                << "    accuracy:   " << i);
             }
         }
     }
@@ -211,7 +211,7 @@ void Solver1DTest::testSecant() {
 
 
 test_suite* Solver1DTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("1-D solver tests");
+    auto* suite = BOOST_TEST_SUITE("1-D solver tests");
     suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testBrent));
     suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testBisection));
     suite->add(QUANTLIB_TEST_CASE(&Solver1DTest::testFalsePosition));

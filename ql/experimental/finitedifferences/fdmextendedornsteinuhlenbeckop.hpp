@@ -38,28 +38,24 @@ namespace QuantLib {
 
     class FdmExtendedOrnsteinUhlenbeckOp : public FdmLinearOpComposite {
       public:
-        FdmExtendedOrnsteinUhlenbeckOp(
-               const ext::shared_ptr<FdmMesher>& mesher,
-               const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& p,
-               const ext::shared_ptr<YieldTermStructure>& rTS,
-               const FdmBoundaryConditionSet& bcSet,
-               Size direction = 0);
+        FdmExtendedOrnsteinUhlenbeckOp(const ext::shared_ptr<FdmMesher>& mesher,
+                                       ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> p,
+                                       ext::shared_ptr<YieldTermStructure> rTS,
+                                       FdmBoundaryConditionSet bcSet,
+                                       Size direction = 0);
 
-        Size size() const;
-        void setTime(Time t1, Time t2);
+        Size size() const override;
+        void setTime(Time t1, Time t2) override;
 
-        Disposable<Array> apply(const Array& r) const;
-        Disposable<Array> apply_mixed(const Array& r) const;
+        Disposable<Array> apply(const Array& r) const override;
+        Disposable<Array> apply_mixed(const Array& r) const override;
 
-        Disposable<Array> apply_direction(Size direction,
-                                          const Array& r) const;
-        Disposable<Array> solve_splitting(Size direction,
-                                          const Array& r, Real s) const;
-        Disposable<Array> preconditioner(const Array& r, Real s) const;
+        Disposable<Array> apply_direction(Size direction, const Array& r) const override;
+        Disposable<Array> solve_splitting(Size direction, const Array& r, Real s) const override;
+        Disposable<Array> preconditioner(const Array& r, Real s) const override;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
-#endif
+        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const override;
+
       private:
         const ext::shared_ptr<FdmMesher> mesher_;
         const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process_;

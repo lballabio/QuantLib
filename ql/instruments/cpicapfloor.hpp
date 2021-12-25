@@ -66,15 +66,15 @@ namespace QuantLib {
         class engine;
         CPICapFloor(Option::Type type,
                     Real nominal,
-                    const Date& startDate,   // start date of contract (only)
+                    const Date& startDate, // start date of contract (only)
                     Real baseCPI,
-                    const Date& maturity,    // this is pre-adjustment!
-                    const Calendar& fixCalendar,
+                    const Date& maturity, // this is pre-adjustment!
+                    Calendar fixCalendar,
                     BusinessDayConvention fixConvention,
-                    const Calendar& payCalendar,
+                    Calendar payCalendar,
                     BusinessDayConvention payConvention,
                     Rate strike,
-                    const Handle<ZeroInflationIndex> &infIndex,
+                    Handle<ZeroInflationIndex> infIndex,
                     const Period& observationLag,
                     CPI::InterpolationType observationInterpolation = CPI::AsIndex);
 
@@ -92,9 +92,9 @@ namespace QuantLib {
 
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results* r) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results* r) const override;
         //@}
 
     protected:
@@ -128,13 +128,13 @@ namespace QuantLib {
         Period observationLag;
         CPI::InterpolationType observationInterpolation;
 
-        void validate() const;
+        void validate() const override;
     };
 
 
     class CPICapFloor::results : public Instrument::results {
     public:
-        void reset();
+      void reset() override;
     };
 
 

@@ -36,20 +36,25 @@ namespace QuantLib {
     class ArithmeticAveragedOvernightIndexedCouponPricer
                                          : public FloatingRateCouponPricer {
     public:
-        ArithmeticAveragedOvernightIndexedCouponPricer(
+        explicit ArithmeticAveragedOvernightIndexedCouponPricer(
             Real meanReversion = 0.03,
             Real volatility = 0.00, // NO convexity adjustment by default
             bool byApprox = false) // TRUE to use Katsumi Takada approximation
         : byApprox_(byApprox), mrs_(meanReversion), vol_(volatility) {}
 
-        void initialize(const FloatingRateCoupon& coupon);
-        Rate swapletRate() const;
-        Real swapletPrice() const { QL_FAIL("swapletPrice not available"); }
-        Real capletPrice(Rate) const { QL_FAIL("capletPrice not available"); }
-        Rate capletRate(Rate) const { QL_FAIL("capletRate not available"); }
-        Real floorletPrice(Rate) const { QL_FAIL("floorletPrice not available"); }
-        Rate floorletRate(Rate) const { QL_FAIL("floorletRate not available"); }
-    protected:
+        explicit ArithmeticAveragedOvernightIndexedCouponPricer(
+            bool byApprox)  // Simplified constructor assuming no convexity correction
+        : ArithmeticAveragedOvernightIndexedCouponPricer(0.03, 0.0, byApprox) {}
+
+        void initialize(const FloatingRateCoupon& coupon) override;
+        Rate swapletRate() const override;
+        Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
+        Real capletPrice(Rate) const override { QL_FAIL("capletPrice not available"); }
+        Rate capletRate(Rate) const override { QL_FAIL("capletRate not available"); }
+        Real floorletPrice(Rate) const override { QL_FAIL("floorletPrice not available"); }
+        Rate floorletRate(Rate) const override { QL_FAIL("floorletRate not available"); }
+
+      protected:
         Real convAdj1(Time ts, Time te) const;
         Real convAdj2(Time ts, Time te) const;
         const OvernightIndexedCoupon* coupon_;

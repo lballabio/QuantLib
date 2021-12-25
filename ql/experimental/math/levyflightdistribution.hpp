@@ -26,7 +26,6 @@
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
-#include <boost/config/no_tr1/cmath.hpp>
 #include <boost/random/detail/config.hpp>
 #include <boost/random/detail/operators.hpp>
 #include <boost/random/uniform_01.hpp>
@@ -131,7 +130,7 @@ namespace QuantLib {
         { return QL_MAX_REAL; }
 
         //! Returns the parameters of the distribution
-        param_type param() const { return param_type(xm_, alpha_); }
+        param_type param() const { return {xm_, alpha_}; }
         //@}
         
         //! Sets the parameters of the distribution

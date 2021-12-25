@@ -60,7 +60,7 @@ namespace QuantLib {
                                         const DayCounter& dc = DayCounter(),
                                         BusinessDayConvention bdc = Following);
         //@}
-        virtual ~CallableBondVolatilityStructure() {}
+        ~CallableBondVolatilityStructure() override = default;
         //! \name Volatility, variance and smile
         //@{
         //! returns the volatility for a given option time and bondLength

@@ -27,7 +27,7 @@
 */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
@@ -49,7 +49,7 @@ using namespace QuantLib;
 
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
-    ThreadKey sessionId() { return 0; }
+    ThreadKey sessionId() { return {}; }
 }
 #endif
 
@@ -89,13 +89,13 @@ int main(int, char* []) {
         const Size numberOfBonds = 15;
         Real cleanPrice[numberOfBonds];
 
-        for (Size i=0; i<numberOfBonds; i++) {
-            cleanPrice[i]=100.0;
+        for (double& i : cleanPrice) {
+            i = 100.0;
         }
 
         std::vector< ext::shared_ptr<SimpleQuote> > quote;
-        for (Size i=0; i<numberOfBonds; i++) {
-            ext::shared_ptr<SimpleQuote> cp(new SimpleQuote(cleanPrice[i]));
+        for (double i : cleanPrice) {
+            ext::shared_ptr<SimpleQuote> cp(new SimpleQuote(i));
             quote.push_back(cp);
         }
 
@@ -227,8 +227,8 @@ int main(int, char* []) {
                            20.0,  25.0, 30.0, 40.0, 50.0 };
 
         std::vector<Time> knotVector;
-        for (Size i=0; i< LENGTH(knots); i++) {
-            knotVector.push_back(knots[i]);
+        for (double& knot : knots) {
+            knotVector.push_back(knot);
         }
 
         CubicBSplinesFitting cubicBSplines(knotVector, constrainAtZero);

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Example" Description="Enable Warnings" ToolsVersion="10.0">
+  <!-- Default rules available in Visual Studio -->
+  <Include Path="NativeRecommendedRules.ruleset" Action="Default" />
+  <Rules AnalyzerId="Microsoft.Analyzers.NativeCodeAnalysis" RuleNamespace="Microsoft.Rules.Native">
+    <Rule Id="C26495" Action="None" /> <!-- Uninitialized members: too many -->
+    <Rule Id="C26451" Action="None" /> <!-- Arithmetic overflow: too many -->
+  </Rules>
+</RuleSet>

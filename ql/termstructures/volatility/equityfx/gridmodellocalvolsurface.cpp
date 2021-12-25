@@ -89,7 +89,7 @@ namespace QuantLib {
 
         std::transform(arguments_.begin(), arguments_.end(),
                        localVolMatrix->begin(),
-                       ext::bind(&Parameter::operator(), _1, 0.0));
+                       [](const Parameter& p) { return p(0.0); });
 
         localVol_ = ext::make_shared<FixedLocalVolSurface>(
                 referenceDate_,

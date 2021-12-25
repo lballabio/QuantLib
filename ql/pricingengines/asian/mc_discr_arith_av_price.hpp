@@ -25,10 +25,11 @@
 #ifndef quantlib_mc_discrete_arithmetic_average_price_asian_engine_hpp
 #define quantlib_mc_discrete_arithmetic_average_price_asian_engine_hpp
 
-#include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
-#include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/exercise.hpp>
+#include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
+#include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -67,9 +68,9 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
-        ext::shared_ptr<path_pricer_type> controlPathPricer() const;
-        ext::shared_ptr<PricingEngine> controlPricingEngine() const {
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        ext::shared_ptr<path_pricer_type> controlPathPricer() const override;
+        ext::shared_ptr<PricingEngine> controlPricingEngine() const override {
             ext::shared_ptr<GeneralizedBlackScholesProcess> process =
                 ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                     this->process_);
@@ -87,7 +88,8 @@ namespace QuantLib {
                                 DiscountFactor discount,
                                 Real runningSum = 0.0,
                                 Size pastFixings = 0);
-        Real operator()(const Path& path) const;
+        Real operator()(const Path& path) const override;
+
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
@@ -185,7 +187,7 @@ namespace QuantLib {
     class MakeMCDiscreteArithmeticAPEngine {
       public:
         explicit MakeMCDiscreteArithmeticAPEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
         // named parameters
         MakeMCDiscreteArithmeticAPEngine& withBrownianBridge(bool b = true);
         MakeMCDiscreteArithmeticAPEngine& withSamples(Size samples);
@@ -206,12 +208,11 @@ namespace QuantLib {
     };
 
     template <class RNG, class S>
-    inline
-    MakeMCDiscreteArithmeticAPEngine<RNG,S>::MakeMCDiscreteArithmeticAPEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), antithetic_(false), controlVariate_(false),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), brownianBridge_(true), seed_(0) {}
+    inline MakeMCDiscreteArithmeticAPEngine<RNG, S>::MakeMCDiscreteArithmeticAPEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), antithetic_(false), controlVariate_(false),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()),
+      brownianBridge_(true), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCDiscreteArithmeticAPEngine<RNG,S>&

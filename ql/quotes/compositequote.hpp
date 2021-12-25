@@ -24,10 +24,11 @@
 #ifndef quantlib_composite_quote_hpp
 #define quantlib_composite_quote_hpp
 
+#include <ql/errors.hpp>
+#include <ql/handle.hpp>
 #include <ql/quote.hpp>
 #include <ql/types.hpp>
-#include <ql/handle.hpp>
-#include <ql/errors.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,10 +39,7 @@ namespace QuantLib {
     template <class BinaryFunction>
     class CompositeQuote : public Quote, public Observer {
       public:
-        CompositeQuote(
-            const Handle<Quote>& element1,
-            const Handle<Quote>& element2,
-            const BinaryFunction& f);
+        CompositeQuote(Handle<Quote> element1, Handle<Quote> element2, const BinaryFunction& f);
         //! \name inspectors
         //@{
         Real value1() const { return element1_->value(); }
@@ -49,12 +47,12 @@ namespace QuantLib {
         //@}
         //! \name Quote interface
         //@{
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       private:
         Handle<Quote> element1_, element2_;
@@ -72,11 +70,10 @@ namespace QuantLib {
     // inline definitions
 
     template <class BinaryFunction>
-    inline CompositeQuote<BinaryFunction>::CompositeQuote(
-                                                const Handle<Quote>& element1,
-                                                const Handle<Quote>& element2,
-                                                const BinaryFunction& f)
-    : element1_(element1), element2_(element2), f_(f) {
+    inline CompositeQuote<BinaryFunction>::CompositeQuote(Handle<Quote> element1,
+                                                          Handle<Quote> element2,
+                                                          const BinaryFunction& f)
+    : element1_(std::move(element1)), element2_(std::move(element2)), f_(f) {
         registerWith(element1_);
         registerWith(element2_);
     }

@@ -76,7 +76,7 @@ namespace QuantLib {
                         Time end,
                         Size steps)
         : ExtendedBinomialTree<T>(process, end, steps) {}
-        virtual ~ExtendedEqualProbabilitiesBinomialTree() {}
+        virtual ~ExtendedEqualProbabilitiesBinomialTree() = default;
 
         Real underlying(Size i, Size index) const {
             Time stepTime = i*this->dt_;
@@ -103,7 +103,7 @@ namespace QuantLib {
                         Time end,
                         Size steps)
         : ExtendedBinomialTree<T>(process, end, steps) {}
-        virtual ~ExtendedEqualJumpsBinomialTree() {}
+        virtual ~ExtendedEqualJumpsBinomialTree() = default;
 
         Real underlying(Size i, Size index) const {
             Time stepTime = i*this->dt_;
@@ -138,7 +138,7 @@ namespace QuantLib {
                            Size steps,
                            Real strike);
       protected:
-        Real upStep(Time stepTime) const;
+        Real upStep(Time stepTime) const override;
     };
 
 
@@ -152,8 +152,8 @@ namespace QuantLib {
                                   Size steps,
                                   Real strike);
       protected:
-          Real dxStep(Time stepTime) const;
-          Real probUp(Time stepTime) const;
+        Real dxStep(Time stepTime) const override;
+        Real probUp(Time stepTime) const override;
     };
 
 
@@ -170,7 +170,7 @@ namespace QuantLib {
                         Real strike);
 
       protected:
-          Real upStep(Time stepTime) const;
+        Real upStep(Time stepTime) const override;
     };
 
 
@@ -184,8 +184,8 @@ namespace QuantLib {
                            Size steps,
                            Real strike);
     protected:
-        Real dxStep(Time stepTime) const;
-        Real probUp(Time stepTime) const;
+      Real dxStep(Time stepTime) const override;
+      Real probUp(Time stepTime) const override;
     };
 
 

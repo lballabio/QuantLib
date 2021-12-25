@@ -20,21 +20,19 @@
 
 /*! \file fdmdiscountdirichletboundary.cpp */
 
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdiscountdirichletboundary.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     namespace {
         class DiscountedCashflowAtBoundary {
           public:
-            DiscountedCashflowAtBoundary(
-                Time maturityTime,
-                Real valueOnBoundary,
-                const ext::shared_ptr<YieldTermStructure>& rTS)
-            : maturityTime_(maturityTime),
-              cashFlow_(valueOnBoundary),
-              rTS_(rTS) {}
+            DiscountedCashflowAtBoundary(Time maturityTime,
+                                         Real valueOnBoundary,
+                                         ext::shared_ptr<YieldTermStructure> rTS)
+            : maturityTime_(maturityTime), cashFlow_(valueOnBoundary), rTS_(std::move(rTS)) {}
 
             Real operator()(Real t) const {
                 return cashFlow_

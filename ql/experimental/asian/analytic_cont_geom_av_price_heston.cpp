@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/asian/analytic_cont_geom_av_price_heston.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -55,9 +56,10 @@ namespace QuantLib {
       public:
         DcfIntegrand(Real t,
                      Real T,
-                     const Handle<YieldTermStructure>& riskFreeRate,
-                     const Handle<YieldTermStructure>& dividendYield) :
-                t_(t), T_(T), riskFreeRate_(riskFreeRate), dividendYield_(dividendYield) {
+                     Handle<YieldTermStructure> riskFreeRate,
+                     Handle<YieldTermStructure> dividendYield)
+        : t_(t), T_(T), riskFreeRate_(std::move(riskFreeRate)),
+          dividendYield_(std::move(dividendYield)) {
             denominator_ = std::log(riskFreeRate_->discount(t_)) - std::log(dividendYield_->discount(t_));
         }
 
@@ -71,8 +73,8 @@ namespace QuantLib {
 
     AnalyticContinuousGeometricAveragePriceAsianHestonEngine::
         AnalyticContinuousGeometricAveragePriceAsianHestonEngine(
-            const ext::shared_ptr<HestonProcess>& process, Size summationCutoff, Real xiRightLimit)
-    : process_(process), a3_(0.0), a4_(0.0), a5_(0.0), summationCutoff_(summationCutoff),
+            ext::shared_ptr<HestonProcess> process, Size summationCutoff, Real xiRightLimit)
+    : process_(std::move(process)), a3_(0.0), a4_(0.0), a5_(0.0), summationCutoff_(summationCutoff),
       xiRightLimit_(xiRightLimit), integrator_(128) {
         registerWith(process_);
 
@@ -135,7 +137,7 @@ namespace QuantLib {
             Real prefactor = -0.5*sigma_*sigma_*tau*tau / (n*(n-1));
 
             // For each offset, look up the value in the map and only evaluate function if it's not there
-            for (Size offset=1; offset<5; offset++) {
+            for (int offset=1; offset<5; offset++) {
                 int location = n-offset;
                 std::map<int, std::complex<Real> >::const_iterator position = fLookupTable_.find(location);
                 if (position != fLookupTable_.end()) {

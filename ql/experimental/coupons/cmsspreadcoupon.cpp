@@ -16,9 +16,10 @@
  or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
 */
 
-#include <ql/experimental/coupons/cmsspreadcoupon.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/experimental/coupons/cmsspreadcoupon.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -36,18 +37,16 @@ namespace QuantLib {
           index_(index) {}
 
     void CmsSpreadCoupon::accept(AcyclicVisitor &v) {
-        Visitor<CmsSpreadCoupon> *v1 = dynamic_cast<Visitor<CmsSpreadCoupon> *>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<CmsSpreadCoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             FloatingRateCoupon::accept(v);
     }
 
-    CmsSpreadLeg::CmsSpreadLeg(const Schedule &schedule,
-                               const ext::shared_ptr<SwapSpreadIndex> &index)
-        : schedule_(schedule), swapSpreadIndex_(index),
-          paymentAdjustment_(Following), inArrears_(false),
-          zeroPayments_(false) {}
+    CmsSpreadLeg::CmsSpreadLeg(Schedule schedule, ext::shared_ptr<SwapSpreadIndex> index)
+    : schedule_(std::move(schedule)), swapSpreadIndex_(std::move(index)),
+      paymentAdjustment_(Following), inArrears_(false), zeroPayments_(false) {}
 
     CmsSpreadLeg &CmsSpreadLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1, notional);

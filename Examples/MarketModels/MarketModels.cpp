@@ -18,7 +18,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/models/marketmodels/marketmodel.hpp>
@@ -73,7 +73,7 @@ using namespace QuantLib;
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
 
-    ThreadKey sessionId() { return 0; }
+    ThreadKey sessionId() { return {}; }
 
 }
 #endif
@@ -323,8 +323,8 @@ int Bermudan()
 
     std::vector<Real> means(stats.mean());
 
-    for (Size i=0; i < means.size(); ++i)
-        std::cout << means[i] << "\n";
+    for (double mean : means)
+        std::cout << mean << "\n";
 
     std::cout << " time to build strategy, " << (t2-t1)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";
     std::cout << " time to price, " << (t3-t2)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";
@@ -656,8 +656,8 @@ int InverseFloater(Real rateLevel)
 
     std::vector<Real> means(stats.mean());
 
-    for (Size i=0; i < means.size(); ++i)
-        std::cout << means[i] << "\n";
+    for (double mean : means)
+        std::cout << mean << "\n";
 
     std::cout << " time to build strategy, " << (t2-t1)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";
     std::cout << " time to price, " << (t3-t2)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";

@@ -47,19 +47,19 @@ namespace QuantLib {
         //@{
         DefaultProbabilityTermStructure(
             const DayCounter& dc = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            std::vector<Handle<Quote> > jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>());
         DefaultProbabilityTermStructure(
             const Date& referenceDate,
             const Calendar& cal = Calendar(),
             const DayCounter& dc = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            std::vector<Handle<Quote> > jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>());
         DefaultProbabilityTermStructure(
             Natural settlementDays,
             const Calendar& cal,
             const DayCounter& dc = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+            std::vector<Handle<Quote> > jumps = std::vector<Handle<Quote> >(),
             const std::vector<Date>& jumpDates = std::vector<Date>());
         //@}
 
@@ -141,7 +141,7 @@ namespace QuantLib {
 
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       protected:
         /*! \name Calculations

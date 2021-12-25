@@ -1057,43 +1057,40 @@ void LowDiscrepancyTest::testSobolSkipping() {
                                                SobolRsg::SobolLevitan,
                                                SobolRsg::SobolLevitanLemieux };
 
-    for (Size i=0; i<LENGTH(integers); i++) {
-      for (Size j=0; j<LENGTH(dimensionality); j++) {
-        for (Size k=0; k<LENGTH(skip); k++) {
+    for (auto& integer : integers) {
+        for (Size& j : dimensionality) {
+            for (unsigned long& k : skip) {
 
-            // extract n samples
-            SobolRsg rsg1(dimensionality[j], seed, integers[i]);
-            for (Size l=0; l<skip[k]; l++)
-                rsg1.nextInt32Sequence();
+                // extract n samples
+                SobolRsg rsg1(j, seed, integer);
+                for (Size l = 0; l < k; l++)
+                    rsg1.nextInt32Sequence();
 
-            // skip n samples at once
-            SobolRsg rsg2(dimensionality[j], seed, integers[i]);
-            rsg2.skipTo(skip[k]);
+                // skip n samples at once
+                SobolRsg rsg2(j, seed, integer);
+                rsg2.skipTo(k);
 
-            // compare next 100 samples
-            for (Size m=0; m<100; m++) {
-                std::vector<boost::uint_least32_t> s1 = rsg1.nextInt32Sequence();
-                std::vector<boost::uint_least32_t> s2 = rsg2.nextInt32Sequence();
-                for (Size n=0; n<s1.size(); n++) {
-                    if (s1[n] != s2[n]) {
-                        BOOST_ERROR("Mismatch after skipping:"
-                                    << "\n  size:     " << dimensionality[j]
-                                    << "\n  integers: " << integers[i]
-                                    << "\n  skipped:  " << skip[k]
-                                    << "\n  at index: " << n
-                                    << "\n  expected: " << s1[n]
-                                    << "\n  found:    " << s2[n]);
+                // compare next 100 samples
+                for (Size m = 0; m < 100; m++) {
+                    std::vector<boost::uint_least32_t> s1 = rsg1.nextInt32Sequence();
+                    std::vector<boost::uint_least32_t> s2 = rsg2.nextInt32Sequence();
+                    for (Size n = 0; n < s1.size(); n++) {
+                        if (s1[n] != s2[n]) {
+                            BOOST_ERROR("Mismatch after skipping:"
+                                        << "\n  size:     " << j << "\n  integers: " << integer
+                                        << "\n  skipped:  " << k << "\n  at index: " << n
+                                        << "\n  expected: " << s1[n] << "\n  found:    " << s2[n]);
+                        }
                     }
                 }
             }
         }
-      }
     }
 }
 
 
 test_suite* LowDiscrepancyTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
+    auto* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
 
     suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testRandomizedLattices));

@@ -66,7 +66,7 @@ namespace inflation_capfloored_coupon_test {
 
     template <class T, class U, class I>
     std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
-                        Datum iiData[], Size N,
+                        const std::vector<Datum>& iiData,
                         const ext::shared_ptr<I> &ii, const Period &observationLag,
                         const Calendar &calendar,
                         const BusinessDayConvention &bdc,
@@ -74,10 +74,10 @@ namespace inflation_capfloored_coupon_test {
                         const Handle<YieldTermStructure>& discountCurve) {
 
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
-        for (Size i=0; i<N; i++) {
-            Date maturity = iiData[i].date;
+        for (Datum datum : iiData) {
+            Date maturity = datum.date;
             Handle<Quote> quote(ext::shared_ptr<Quote>(
-                            new SimpleQuote(iiData[i].rate/100.0)));
+                            new SimpleQuote(datum.rate/100.0)));
             ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                             quote, observationLag, maturity,
                             calendar, bdc, dc, ii, discountCurve));
@@ -132,7 +132,7 @@ namespace inflation_capfloored_coupon_test {
             fixingDays = 0;
             settlement = calendar.advance(today,settlementDays,Days);
             startDate = settlement;
-            dc = Thirty360();
+            dc = Thirty360(Thirty360::BondBasis);
 
             // yoy index
             //      fixing data
@@ -156,13 +156,13 @@ namespace inflation_capfloored_coupon_test {
             }
 
             ext::shared_ptr<YieldTermStructure> nominalFF(
-                        new FlatForward(evaluationDate, 0.05, ActualActual()));
+                        new FlatForward(evaluationDate, 0.05, ActualActual(ActualActual::ISDA)));
             nominalTS.linkTo(nominalFF);
 
             // now build the YoY inflation curve
             Period observationLag = Period(2,Months);
 
-            Datum yyData[] = {
+            std::vector<Datum> yyData = {
                 { Date(13, August, 2008), 2.95 },
                 { Date(13, August, 2009), 2.95 },
                 { Date(13, August, 2010), 2.93 },
@@ -183,7 +183,7 @@ namespace inflation_capfloored_coupon_test {
             // now build the helpers ...
             std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
             makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
-            YoYInflationIndex>(yyData, LENGTH(yyData), iir,
+            YoYInflationIndex>(yyData, iir,
                                observationLag,
                                calendar, convention, dc,
                                Handle<YieldTermStructure>(nominalTS));
@@ -223,8 +223,6 @@ namespace inflation_capfloored_coupon_test {
             .withGearings(gearingVector)
             .withSpreads(spreadVector)
             .withPaymentAdjustment(convention);
-
-            setCouponPricer(yoyLeg, ext::make_shared<YoYInflationCouponPricer>(nominalTS));
 
             return yoyLeg;
         }
@@ -304,7 +302,6 @@ namespace inflation_capfloored_coupon_test {
             .withFloors(floors);
 
             setCouponPricer(yoyLeg, pricer);
-            //setCouponPricer(iborLeg, pricer);
 
             return yoyLeg;
         }
@@ -395,9 +392,9 @@ void InflationCapFlooredCouponTest::testDecomposition() {
     std::vector<Rate> floors(vars.length,floorstrike);
     std::vector<Rate> floors0 = std::vector<Rate>();
     Rate gearing_p = Rate(0.5);
-    Spread spread_p = Spread(0.002);
+    auto spread_p = Spread(0.002);
     Rate gearing_n = Rate(-1.5);
-    Spread spread_n = Spread(0.12);
+    auto spread_n = Spread(0.12);
     // fixed leg with zero rate
     Leg fixedLeg  =
     vars.makeFixedLeg(vars.startDate,vars.length);
@@ -714,22 +711,20 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
     // capped coupon = fwd - cap, and fwd = swap(0)
     // floored coupon = fwd + floor
     for (Size whichPricer = 0; whichPricer < 3; whichPricer++) {
-        for (Size i=0; i<LENGTH(lengths); i++) {
-            for (Size j=0; j<LENGTH(strikes); j++) {
-                for (Size k=0; k<LENGTH(vols); k++) {
+        for (int& length : lengths) {
+            for (double& strike : strikes) {
+                for (double vol : vols) {
 
-                    Leg leg = vars.makeYoYLeg(vars.evaluationDate,lengths[i]);
+                    Leg leg = vars.makeYoYLeg(vars.evaluationDate, length);
 
-                    ext::shared_ptr<Instrument> cap
-                    = vars.makeYoYCapFloor(YoYInflationCapFloor::Cap,
-                                           leg, strikes[j], vols[k], whichPricer);
+                    ext::shared_ptr<Instrument> cap = vars.makeYoYCapFloor(
+                        YoYInflationCapFloor::Cap, leg, strike, vol, whichPricer);
 
-                    ext::shared_ptr<Instrument> floor
-                    = vars.makeYoYCapFloor(YoYInflationCapFloor::Floor,
-                                           leg, strikes[j], vols[k], whichPricer);
+                    ext::shared_ptr<Instrument> floor = vars.makeYoYCapFloor(
+                        YoYInflationCapFloor::Floor, leg, strike, vol, whichPricer);
 
                     Date from = vars.nominalTS->referenceDate();
-                    Date to = from+lengths[i]*Years;
+                    Date to = from + length * Years;
                     Schedule yoySchedule = MakeSchedule().from(from).to(to)
                     .withTenor(1*Years)
                     .withCalendar(UnitedKingdom())
@@ -737,47 +732,43 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
                     .backwards()
                     ;
 
-                    YearOnYearInflationSwap swap(YearOnYearInflationSwap::Payer,
-                                                    1000000.0,
-                                                    yoySchedule,//fixed schedule, but same as yoy
-                                                    0.0,//strikes[j],
-                                                    vars.dc,
-                                                    yoySchedule,
-                                                    vars.iir,
-                                                    vars.observationLag,
-                                                    0.0,        //spread on index
-                                                    vars.dc,
-                                                    UnitedKingdom());
+                    YearOnYearInflationSwap swap(Swap::Payer,
+                                                 1000000.0,
+                                                 yoySchedule,//fixed schedule, but same as yoy
+                                                 0.0,//strikes[j],
+                                                 vars.dc,
+                                                 yoySchedule,
+                                                 vars.iir,
+                                                 vars.observationLag,
+                                                 0.0,        //spread on index
+                                                 vars.dc,
+                                                 UnitedKingdom());
 
                     Handle<YieldTermStructure> hTS(vars.nominalTS);
                     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
                     swap.setPricingEngine(sppe);
-                    setCouponPricer(swap.yoyLeg(), ext::make_shared<YoYInflationCouponPricer>(vars.nominalTS));
 
-                    Leg leg2 = vars.makeYoYCapFlooredLeg(whichPricer, from,
-                                                         lengths[i],
-                                                         std::vector<Rate>(lengths[i],strikes[j]),//cap
-                                                         std::vector<Rate>(),//floor
-                                                         vols[k],
-                                                         1.0,   // gearing
-                                                         0.0);// spread
+                    Leg leg2 = vars.makeYoYCapFlooredLeg(whichPricer, from, length,
+                                                         std::vector<Rate>(length, strike), // cap
+                                                         std::vector<Rate>(),               // floor
+                                                         vol,
+                                                         1.0,  // gearing
+                                                         0.0); // spread
 
-                    Leg leg3 = vars.makeYoYCapFlooredLeg(whichPricer, from,
-                                                         lengths[i],
-                                                         std::vector<Rate>(),// cap
-                                                         std::vector<Rate>(lengths[i],strikes[j]),//floor
-                                                         vols[k],
-                                                         1.0,   // gearing
-                                                         0.0);// spread
+                    Leg leg3 = vars.makeYoYCapFlooredLeg(whichPricer, from, length,
+                                                         std::vector<Rate>(),               // cap
+                                                         std::vector<Rate>(length, strike), // floor
+                                                         vol,
+                                                         1.0,  // gearing
+                                                         0.0); // spread
 
                     // N.B. nominals are 10e6
                     Real capped = CashFlows::npv(leg2,(**vars.nominalTS),false);
                     if ( fabs(capped - (swap.NPV() - cap->NPV())) > 1.0e-6) {
-                        BOOST_FAIL(
-                                   "capped coupon != swap(0) - cap:\n"
-                                   << "    length:      " << lengths[i] << " years\n"
-                                   << "    volatility:  " << io::volatility(vols[k]) << "\n"
-                                   << "    strike:      " << io::rate(strikes[j]) << "\n"
+                        BOOST_FAIL("capped coupon != swap(0) - cap:\n"
+                                   << "    length:      " << length << " years\n"
+                                   << "    volatility:  " << io::volatility(vol) << "\n"
+                                   << "    strike:      " << io::rate(strike) << "\n"
                                    << "    cap value:   " << cap->NPV() << "\n"
                                    << "    swap value:  " << swap.NPV() << "\n"
                                    << "   capped coupon " << capped);
@@ -787,16 +778,14 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
                     // N.B. nominals are 10e6
                     Real floored = CashFlows::npv(leg3,(**vars.nominalTS),false);
                     if ( fabs(floored - (swap.NPV() + floor->NPV())) > 1.0e-6) {
-                        BOOST_FAIL(
-                                   "floored coupon != swap(0) + floor :\n"
-                                   << "    length:      " << lengths[i] << " years\n"
-                                   << "    volatility:  " << io::volatility(vols[k]) << "\n"
-                                   << "    strike:      " << io::rate(strikes[j]) << "\n"
+                        BOOST_FAIL("floored coupon != swap(0) + floor :\n"
+                                   << "    length:      " << length << " years\n"
+                                   << "    volatility:  " << io::volatility(vol) << "\n"
+                                   << "    strike:      " << io::rate(strike) << "\n"
                                    << "    floor value: " << floor->NPV() << "\n"
                                    << "    swap value:  " << swap.NPV() << "\n"
                                    << "  floored coupon " << floored);
                     }
-
                 }
             }
         }
@@ -809,7 +798,7 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
 
 
 test_suite* InflationCapFlooredCouponTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("YoY inflation capped and floored coupon tests");
+    auto* suite = BOOST_TEST_SUITE("YoY inflation capped and floored coupon tests");
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFlooredCouponTest::testDecomposition));
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFlooredCouponTest::testInstrumentEquality));
     return suite;

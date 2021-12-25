@@ -28,6 +28,7 @@
 class DayCounterTest {
    public:
     static void testActualActual();
+    static void testActualActualIsma();
     static void testActualActualWithSchedule();
     static void testActualActualWithAnnualSchedule();
     static void testActualActualWithSemiannualSchedule();
@@ -37,9 +38,10 @@ class DayCounterTest {
     static void testThirty365();
     static void testThirty360_BondBasis();
     static void testThirty360_EurobondBasis();
-    static void testThirty360_German();
+    static void testThirty360_ISDA();
     static void testActual365_Canadian();
     static void testIntraday();
+    static void testActualActualOutOfScheduleRange();
     static boost::unit_test_framework::test_suite* suite();
 };
 

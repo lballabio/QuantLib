@@ -59,10 +59,9 @@ namespace QuantLib {
                 stoppingTimes_.push_back(process_->time(events_[i]->date()));
         }
 
-        virtual void setupArguments(const PricingEngine::arguments* a) const {
+        void setupArguments(const PricingEngine::arguments* a) const override {
             FDVanillaEngine::setupArguments(a);
-            const OneAssetOption::arguments *args =
-                dynamic_cast<const OneAssetOption::arguments*>(a);
+            const auto* args = dynamic_cast<const OneAssetOption::arguments*>(a);
             QL_REQUIRE(args, "incorrect argument type");
             events_.clear();
 
@@ -97,8 +96,7 @@ namespace QuantLib {
     template <template <class> class Scheme>
     void FDMultiPeriodEngine<Scheme>::calculate(
                                             PricingEngine::results* r) const {
-        OneAssetOption::results *results =
-            dynamic_cast<OneAssetOption::results *>(r);
+        auto* results = dynamic_cast<OneAssetOption::results*>(r);
         QL_REQUIRE(results, "incorrect argument type");
         Time beginDate, endDate;
         Size dateNumber = stoppingTimes_.size();

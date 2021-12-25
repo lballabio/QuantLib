@@ -22,12 +22,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/swaption.hpp>
-#include <ql/pricingengines/swaption/blackswaptionengine.hpp>
-#include <ql/math/solvers1d/newtonsafe.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <ql/exercise.hpp>
+#include <ql/instruments/swaption.hpp>
+#include <ql/math/solvers1d/newtonsafe.hpp>
+#include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/shared_ptr.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -36,7 +37,7 @@ namespace QuantLib {
         class ImpliedSwaptionVolHelper {
           public:
             ImpliedSwaptionVolHelper(const Swaption&,
-                                     const Handle<YieldTermStructure>& discountCurve,
+                                     Handle<YieldTermStructure> discountCurve,
                                      Real targetValue,
                                      Real displacement,
                                      VolatilityType type);
@@ -50,13 +51,12 @@ namespace QuantLib {
             const Instrument::results* results_;
         };
 
-        ImpliedSwaptionVolHelper::ImpliedSwaptionVolHelper(
-                              const Swaption& swaption,
-                              const Handle<YieldTermStructure>& discountCurve,
-                              Real targetValue,
-                              Real displacement,
-                              VolatilityType type)
-        : discountCurve_(discountCurve), targetValue_(targetValue),
+        ImpliedSwaptionVolHelper::ImpliedSwaptionVolHelper(const Swaption& swaption,
+                                                           Handle<YieldTermStructure> discountCurve,
+                                                           Real targetValue,
+                                                           Real displacement,
+                                                           VolatilityType type)
+        : discountCurve_(std::move(discountCurve)), targetValue_(targetValue),
           vol_(ext::make_shared<SimpleQuote>(-1.0)) {
 
             // vol_ is set an implausible value, so that calculation is forced
@@ -95,8 +95,7 @@ namespace QuantLib {
                 vol_->setValue(x);
                 engine_->calculate();
             }
-            std::map<std::string,boost::any>::const_iterator vega_ =
-                results_->additionalResults.find("vega");
+            auto vega_ = results_->additionalResults.find("vega");
             QL_REQUIRE(vega_ != results_->additionalResults.end(),
                        "vega not provided");
             return boost::any_cast<Real>(vega_->second);
@@ -130,12 +129,12 @@ namespace QuantLib {
         }
     }
 
-    Swaption::Swaption(const ext::shared_ptr<VanillaSwap>& swap,
+    Swaption::Swaption(ext::shared_ptr<VanillaSwap> swap,
                        const ext::shared_ptr<Exercise>& exercise,
                        Settlement::Type delivery,
                        Settlement::Method settlementMethod)
-        : Option(ext::shared_ptr<Payoff>(), exercise), swap_(swap),
-          settlementType_(delivery), settlementMethod_(settlementMethod) {
+    : Option(ext::shared_ptr<Payoff>(), exercise), swap_(std::move(swap)),
+      settlementType_(delivery), settlementMethod_(settlementMethod) {
         registerWith(swap_);
         registerWithObservables(swap_);
     }
@@ -148,10 +147,9 @@ namespace QuantLib {
 
         swap_->setupArguments(args);
 
-        Swaption::arguments* arguments =
-            dynamic_cast<Swaption::arguments*>(args);
+        auto* arguments = dynamic_cast<Swaption::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->swap = swap_;
         arguments->settlementType = settlementType_;

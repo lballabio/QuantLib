@@ -20,9 +20,10 @@
 #ifndef onefactor_affine_survival_hpp
 #define onefactor_affine_survival_hpp
 
-#include <ql/termstructures/credit/hazardratestructure.hpp>
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/stochasticprocess.hpp>
+#include <ql/termstructures/credit/hazardratestructure.hpp>
+#include <utility>
 
 namespace QuantLib {
     
@@ -42,36 +43,36 @@ namespace QuantLib {
     public:
         // implement remaining constructors.....
       explicit OneFactorAffineSurvivalStructure(
-          const ext::shared_ptr<OneFactorAffineModel>& model,
+          ext::shared_ptr<OneFactorAffineModel> model,
           const DayCounter& dayCounter = DayCounter(),
           const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
           const std::vector<Date>& jumpDates = std::vector<Date>())
-      : HazardRateStructure(dayCounter, jumps, jumpDates), model_(model) {}
+      : HazardRateStructure(dayCounter, jumps, jumpDates), model_(std::move(model)) {}
 
       OneFactorAffineSurvivalStructure(
-          const ext::shared_ptr<OneFactorAffineModel>& model,
+          ext::shared_ptr<OneFactorAffineModel> model,
           const Date& referenceDate,
           const Calendar& cal = Calendar(),
           const DayCounter& dayCounter = DayCounter(),
           const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
           const std::vector<Date>& jumpDates = std::vector<Date>())
       : HazardRateStructure(referenceDate, Calendar(), dayCounter, jumps, jumpDates),
-        model_(model) {}
+        model_(std::move(model)) {}
 
       OneFactorAffineSurvivalStructure(
-          const ext::shared_ptr<OneFactorAffineModel>& model,
+          ext::shared_ptr<OneFactorAffineModel> model,
           Natural settlementDays,
           const Calendar& calendar,
           const DayCounter& dayCounter = DayCounter(),
           const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
           const std::vector<Date>& jumpDates = std::vector<Date>())
-      : HazardRateStructure(settlementDays, calendar, dayCounter, jumps, jumpDates), model_(model) {
-      }
+      : HazardRateStructure(settlementDays, calendar, dayCounter, jumps, jumpDates),
+        model_(std::move(model)) {}
 
       //! \name TermStructure interface
       //@{
       // overwrite on mkt models (e.g. bootstraps)
-      Date maxDate() const { return Date::maxDate(); }
+      Date maxDate() const override { return Date::maxDate(); }
 
       /* Notice this is not calling hazard rate methods, these are
          stochastic now.
@@ -109,7 +110,7 @@ namespace QuantLib {
                 bool extrapolate = false) const
         {
             #if defined(QL_EXTRA_SAFETY_CHECKS)
-                    QL_REQUIRE(tgt >= tFwd, "Incorrect dates ordering.")
+                QL_REQUIRE(tgt >= tFwd, "Incorrect dates ordering.");
             #endif
             checkRange(tFwd, extrapolate);
             checkRange(tgt, extrapolate);
@@ -128,19 +129,18 @@ namespace QuantLib {
     protected:
         //! \name DefaultProbabilityTermStructure implementation
         //@{
-        Probability survivalProbabilityImpl(Time) const;
-        Real defaultDensityImpl(Time) const;
-        //@}
-        // avoid call super
-        // \todo addd date overload
-        virtual Probability conditionalSurvivalProbabilityImpl(
-                Time tFwd, Time tgt, Real yVal) const;
+      Probability survivalProbabilityImpl(Time) const override;
+      Real defaultDensityImpl(Time) const override;
+      //@}
+      // avoid call super
+      // \todo addd date overload
+      virtual Probability conditionalSurvivalProbabilityImpl(Time tFwd, Time tgt, Real yVal) const;
 
-        // HazardRateStructure interface
-        Real hazardRateImpl(Time t) const{
-            // no deterministic component
-            return 0.;
-        }
+      // HazardRateStructure interface
+      Real hazardRateImpl(Time) const override {
+          // no deterministic component
+          return 0.;
+      }
 
         ext::shared_ptr<OneFactorAffineModel> model_;        
     };

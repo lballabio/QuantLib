@@ -64,8 +64,8 @@ namespace QuantLib {
       private:
         class HkexImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Hong Kong stock exchange"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Hong Kong stock exchange"; }
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         enum Market { HKEx    //!< Hong Kong stock exchange

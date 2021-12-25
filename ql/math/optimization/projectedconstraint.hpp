@@ -26,6 +26,7 @@
 
 #include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/projection.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -35,21 +36,20 @@ namespace QuantLib {
 
         class Impl : public Constraint::Impl {
           public:
-            Impl(const Constraint &constraint,
-                 const Array &parameterValues,
-                 const std::vector<bool> &fixParameters)
-                : constraint_(constraint),
-                  projection_(parameterValues, fixParameters) {}
-            Impl(const Constraint &constraint, const Projection &projection)
-                : constraint_(constraint), projection_(projection) {}
-            bool test(const Array &params) const {
+            Impl(Constraint constraint,
+                 const Array& parameterValues,
+                 const std::vector<bool>& fixParameters)
+            : constraint_(std::move(constraint)), projection_(parameterValues, fixParameters) {}
+            Impl(Constraint constraint, const Projection& projection)
+            : constraint_(std::move(constraint)), projection_(projection) {}
+            bool test(const Array& params) const override {
                 return constraint_.test(projection_.include(params));
             }
-            Array upperBound(const Array &params) const {
-				return projection_.project(constraint_.upperBound(projection_.include(params)));
+            Array upperBound(const Array& params) const override {
+                return projection_.project(constraint_.upperBound(projection_.include(params)));
             }
-            Array lowerBound(const Array &params) const {
-				return projection_.project(constraint_.lowerBound(projection_.include(params)));
+            Array lowerBound(const Array& params) const override {
+                return projection_.project(constraint_.lowerBound(projection_.include(params)));
             }
 
           private:

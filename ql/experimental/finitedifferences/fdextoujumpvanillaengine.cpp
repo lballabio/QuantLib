@@ -23,37 +23,34 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
-#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/experimental/finitedifferences/fdextoujumpvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpmodelinnervalue.hpp>
+#include <ql/experimental/finitedifferences/fdmextoujumpsolver.hpp>
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
+#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
+#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmbermudanstepcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmextoujumpsolver.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdextoujumpvanillaengine.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdExtOUJumpVanillaEngine::FdExtOUJumpVanillaEngine(
-                      const ext::shared_ptr<ExtOUWithJumpsProcess>& process,
-                      const ext::shared_ptr<YieldTermStructure>& rTS,
-                      Size tGrid, Size xGrid, Size yGrid,
-                      const ext::shared_ptr<Shape>& shape,
-                      const FdmSchemeDesc& schemeDesc)
-    : process_(process),
-      rTS_(rTS),
-      shape_(shape),
-      tGrid_(tGrid),
-      xGrid_(xGrid),
-      yGrid_(yGrid),
-      schemeDesc_(schemeDesc) {
-    }
-                      
+        ext::shared_ptr<ExtOUWithJumpsProcess> process,
+        ext::shared_ptr<YieldTermStructure> rTS,
+        Size tGrid,
+        Size xGrid,
+        Size yGrid,
+        ext::shared_ptr<Shape> shape,
+        const FdmSchemeDesc& schemeDesc)
+    : process_(std::move(process)), rTS_(std::move(rTS)), shape_(std::move(shape)), tGrid_(tGrid),
+      xGrid_(xGrid), yGrid_(yGrid), schemeDesc_(schemeDesc) {}
+
     void FdExtOUJumpVanillaEngine::calculate() const {
         // 1. Mesher
         const Time maturity 

@@ -18,43 +18,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/comparison.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <ql/models/marketmodels/marketmodel.hpp>
+#include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/models/ctsmmcapletcalibration.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/models/marketmodels/models/pseudorootfacade.hpp>
-#include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
-#include <ql/models/marketmodels/marketmodel.hpp>
-#include <ql/math/matrixutilities/pseudosqrt.hpp>
-#include <ql/math/comparison.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    CTSMMCapletCalibration::~CTSMMCapletCalibration() {}
-
     CTSMMCapletCalibration::CTSMMCapletCalibration(
-                            const EvolutionDescription& evolution,
-                            const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
-                            const std::vector<ext::shared_ptr<
-                                        PiecewiseConstantVariance> >&
-                                                displacedSwapVariances,
-                            const std::vector<Volatility>& mktCapletVols,
-                            const ext::shared_ptr<CurveState>& cs,
-                            Spread displacement)
-    : evolution_(evolution),  corr_(corr),
-      displacedSwapVariances_(displacedSwapVariances),
-      mktCapletVols_(mktCapletVols),
-      mdlCapletVols_(evolution_.numberOfRates()),
-      mktSwaptionVols_(evolution_.numberOfRates()),
-      mdlSwaptionVols_(evolution_.numberOfRates()),
-      cs_(cs), displacement_(displacement),
-      numberOfRates_(evolution_.numberOfRates())
-    {
+        EvolutionDescription evolution,
+        ext::shared_ptr<PiecewiseConstantCorrelation> corr,
+        std::vector<ext::shared_ptr<PiecewiseConstantVariance> > displacedSwapVariances,
+        std::vector<Volatility> mktCapletVols,
+        ext::shared_ptr<CurveState> cs,
+        Spread displacement)
+    : evolution_(std::move(evolution)), corr_(std::move(corr)),
+      displacedSwapVariances_(std::move(displacedSwapVariances)),
+      mktCapletVols_(std::move(mktCapletVols)), mdlCapletVols_(evolution_.numberOfRates()),
+      mktSwaptionVols_(evolution_.numberOfRates()), mdlSwaptionVols_(evolution_.numberOfRates()),
+      cs_(std::move(cs)), displacement_(displacement), numberOfRates_(evolution_.numberOfRates()) {
         performChecks(evolution_, *corr_, displacedSwapVariances_,
                       mktCapletVols_, *cs_);
-
-
-
     }
 
     const std::vector<Volatility>&

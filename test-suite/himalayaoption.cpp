@@ -101,7 +101,7 @@ void HimalayaOptionTest::testCached() {
                             .withSeed(seed));
 
     Real value = option.NPV();
-    Real storedValue = 6.60370398;
+    Real storedValue = 5.93632056;
     Real tolerance = 1.0e-8;
 
     if (std::fabs(value-storedValue) > tolerance)
@@ -127,7 +127,7 @@ void HimalayaOptionTest::testCached() {
 
 
 test_suite* HimalayaOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Himalaya-option tests");
+    auto* suite = BOOST_TEST_SUITE("Himalaya-option tests");
     suite->add(QUANTLIB_TEST_CASE(&HimalayaOptionTest::testCached));
     return suite;
 }

@@ -18,10 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/smilesection.hpp>
+#include <ql/math/comparison.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/settings.hpp>
-#include <ql/math/comparison.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
+#include <utility>
 
 using std::sqrt;
 
@@ -43,11 +44,11 @@ namespace QuantLib {
     }
 
     SmileSection::SmileSection(const Date& d,
-                               const DayCounter& dc,
+                               DayCounter dc,
                                const Date& referenceDate,
                                const VolatilityType type,
                                const Rate shift)
-        : exerciseDate_(d), dc_(dc), volatilityType_(type), shift_(shift) {
+    : exerciseDate_(d), dc_(std::move(dc)), volatilityType_(type), shift_(shift) {
         isFloating_ = referenceDate==Date();
         if (isFloating_) {
             registerWith(Settings::instance().evaluationDate());
@@ -58,11 +59,11 @@ namespace QuantLib {
     }
 
     SmileSection::SmileSection(Time exerciseTime,
-                               const DayCounter& dc,
+                               DayCounter dc,
                                const VolatilityType type,
                                const Rate shift)
-    : isFloating_(false), referenceDate_(Date()),
-      dc_(dc), exerciseTime_(exerciseTime), volatilityType_(type), shift_(shift) {
+    : isFloating_(false), referenceDate_(Date()), dc_(std::move(dc)), exerciseTime_(exerciseTime),
+      volatilityType_(type), shift_(shift) {
         QL_REQUIRE(exerciseTime_>=0.0,
                    "expiry time must be positive: " <<
                    exerciseTime_ << " not allowed");

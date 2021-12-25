@@ -51,7 +51,7 @@ namespace QuantLib {
     */
       public:
         CurveState(const std::vector<Time>& rateTimes);
-        virtual ~CurveState() {}
+        virtual ~CurveState() = default;
 
         //! \name Inspectors
         //@{

@@ -42,20 +42,20 @@ namespace QuantLib {
           load_      (load),
           changeRate_(changeRate) {}
 
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
+          bool isExpired() const override;
+          void setupArguments(PricingEngine::arguments*) const override;
 
-      private:
-        const Real capacity_;
-        const Real load_;
-        const Real changeRate_;
+        private:
+          const Real capacity_;
+          const Real load_;
+          const Real changeRate_;
     };
 
     class VanillaStorageOption::arguments
         : public virtual PricingEngine::arguments {
       public:
-        arguments() {}
-        void validate() const {
+        arguments() = default;
+        void validate() const override {
             QL_REQUIRE(payoff, "no payoff given");
             QL_REQUIRE(exercise, "no exercise given");
 
@@ -74,9 +74,8 @@ namespace QuantLib {
 
     inline void VanillaStorageOption::setupArguments(
                                 PricingEngine::arguments* args) const {
-        VanillaStorageOption::arguments* arguments =
-            dynamic_cast<VanillaStorageOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<VanillaStorageOption::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->payoff
             = ext::dynamic_pointer_cast<NullPayoff>(payoff_);

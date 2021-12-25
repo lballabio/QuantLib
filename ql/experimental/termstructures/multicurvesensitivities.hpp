@@ -24,11 +24,12 @@
 #ifndef quantlib_multicurve_sensitivity_hpp
 #define quantlib_multicurve_sensitivity_hpp
 
-#include <ql/termstructures/yield/ratehelpers.hpp>
-#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/shared_ptr.hpp>
+#include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
+#include <ql/termstructures/yield/ratehelpers.hpp>
 #include <iostream>
 #include <sstream>
+#include <utility>
 
 namespace {
     inline QuantLib::Real secondElement(const std::pair<QuantLib::Date, QuantLib::Real>& p) {
@@ -67,22 +68,21 @@ public:
   /*! @param curves std::map of string (curve name) and handle to piecewiseyieldcurve
   */
 
-  explicit MultiCurveSensitivities(const curvespec& curves) : curves_(curves) {
-    for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it)
-      registerWith((*it).second);
-    for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
-      ext::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
-          ext::dynamic_pointer_cast< PiecewiseYieldCurve< ZeroYield, Linear > >(it->second.currentLink());
-      QL_REQUIRE(curve != NULL, "Couldn't cast curvename: " << it->first);
-      for (std::vector< ext::shared_ptr< BootstrapHelper< YieldTermStructure > > >::iterator inst =
-               curve->instruments_.begin();
-           inst != curve->instruments_.end(); ++inst) {
-        allQuotes_.push_back((*inst)->quote());
-        std::stringstream tmp;
-        tmp << QuantLib::io::iso_date((*inst)->latestRelevantDate());
-        headers_.push_back(it->first + "_" + tmp.str());
+  explicit MultiCurveSensitivities(curvespec curves) : curves_(std::move(curves)) {
+      for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it)
+          registerWith((*it).second);
+      for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
+          ext::shared_ptr<PiecewiseYieldCurve<ZeroYield, Linear> > curve =
+              ext::dynamic_pointer_cast<PiecewiseYieldCurve<ZeroYield, Linear> >(
+                  it->second.currentLink());
+          QL_REQUIRE(curve != nullptr, "Couldn't cast curvename: " << it->first);
+          for (auto& instrument : curve->instruments_) {
+              allQuotes_.push_back(instrument->quote());
+              std::stringstream tmp;
+              tmp << QuantLib::io::iso_date(instrument->latestRelevantDate());
+              headers_.push_back(it->first + "_" + tmp.str());
+          }
       }
-    }
   }
 
   Matrix sensitivities() const;
@@ -92,7 +92,7 @@ public:
 private:
   //! \name LazyObject interface
   //@{
-  void performCalculations() const;
+  void performCalculations() const override;
   //@}
   // methods
   std::vector< Real > allZeros() const;
@@ -108,20 +108,21 @@ private:
 inline void MultiCurveSensitivities::performCalculations() const {
   std::vector< Rate > sensiVector;
   origZeros_ = allZeros();
-  for (std::vector< Handle< Quote > >::const_iterator it = allQuotes_.begin(); it != allQuotes_.end(); ++it) {
-    Rate bps = +1e-4;
-    Rate origQuote = (*it)->value();
-    ext::shared_ptr< SimpleQuote > q = ext::dynamic_pointer_cast< SimpleQuote >((*it).currentLink());
-    q->setValue(origQuote + bps);
-    try {
-      std::vector< Rate > tmp(allZeros());
-      for (Size i = 0; i < tmp.size(); ++i)
-        sensiVector.push_back((tmp[i] - origZeros_[i]) / bps);
-      q->setValue(origQuote);
-    } catch (...) {
-      q->setValue(origQuote);
-      QL_FAIL("Application of shift to quote led to exception.");
-    }
+  for (const auto& allQuote : allQuotes_) {
+      Rate bps = +1e-4;
+      Rate origQuote = allQuote->value();
+      ext::shared_ptr<SimpleQuote> q =
+          ext::dynamic_pointer_cast<SimpleQuote>(allQuote.currentLink());
+      q->setValue(origQuote + bps);
+      try {
+          std::vector<Rate> tmp(allZeros());
+          for (Size i = 0; i < tmp.size(); ++i)
+              sensiVector.push_back((tmp[i] - origZeros_[i]) / bps);
+          q->setValue(origQuote);
+      } catch (...) {
+          q->setValue(origQuote);
+          QL_FAIL("Application of shift to quote led to exception.");
+      }
   }
   Matrix result(origZeros_.size(), origZeros_.size(), sensiVector.begin(), sensiVector.end());
   sensi_ = result;
@@ -140,12 +141,14 @@ inline Matrix MultiCurveSensitivities::inverseSensitivities() const {
 
 inline std::vector< std::pair< Date, Real > > MultiCurveSensitivities::allNodes() const {
   std::vector< std::pair< Date, Real > > result;
-  for (curvespec::const_iterator it = curves_.begin(); it != curves_.end(); ++it) {
-    ext::shared_ptr< PiecewiseYieldCurve< ZeroYield, Linear > > curve =
-        ext::dynamic_pointer_cast< PiecewiseYieldCurve< ZeroYield, Linear > >(it->second.currentLink());
-    result.reserve(result.size() + curve->nodes().size() - 1);
-    for (std::vector<std::pair<Date, Real> >::const_iterator p = curve->nodes().begin() + 1; p != curve->nodes().end(); ++p)
-      result.push_back(*p);
+  for (const auto& it : curves_) {
+      ext::shared_ptr<PiecewiseYieldCurve<ZeroYield, Linear> > curve =
+          ext::dynamic_pointer_cast<PiecewiseYieldCurve<ZeroYield, Linear> >(
+              it.second.currentLink());
+      result.reserve(result.size() + curve->nodes().size() - 1);
+      for (std::vector<std::pair<Date, Real> >::const_iterator p = curve->nodes().begin() + 1;
+           p != curve->nodes().end(); ++p)
+          result.push_back(*p);
   }
   return result;
 }

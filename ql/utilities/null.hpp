@@ -73,7 +73,7 @@ namespace QuantLib {
     template <typename T>
     class Null {
       public:
-        Null() {}
+        Null() = default;
         operator T() const {
             return T(detail::FloatingPointNull<
                          boost::is_floating_point<T>::value>::nullValue());

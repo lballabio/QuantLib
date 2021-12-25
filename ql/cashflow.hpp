@@ -37,18 +37,17 @@ namespace QuantLib {
     */
     class CashFlow : public Event {
       public:
-        virtual ~CashFlow() {}
+        ~CashFlow() override = default;
         //! \name Event interface
         //@{
         //! \note This is inherited from the event class
-        virtual Date date() const = 0;
+        Date date() const override = 0;
         //! returns true if an event has already occurred before a date
         /*! overloads Event::hasOccurred in order to take
             Settings::includeTodaysCashflows in account
         */
-        bool hasOccurred(
-                    const Date& refDate = Date(),
-                    boost::optional<bool> includeRefDate = boost::none) const;
+        bool hasOccurred(const Date& refDate = Date(),
+                         boost::optional<bool> includeRefDate = boost::none) const override;
         //@}
         //! \name CashFlow interface
         //@{
@@ -58,14 +57,14 @@ namespace QuantLib {
         */
         virtual Real amount() const = 0;
         //! returns the date that the cash flow trades exCoupon
-        virtual Date exCouponDate() const {return Date();};
+        virtual Date exCouponDate() const { return {}; };
         //! returns true if the cashflow is trading ex-coupon on the refDate
         bool tradingExCoupon(const Date& refDate = Date()) const;
 
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 

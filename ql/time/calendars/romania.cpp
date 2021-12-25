@@ -21,7 +21,6 @@
 
 #include <ql/time/calendars/romania.hpp>
 #include <ql/errors.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -88,7 +87,7 @@ namespace QuantLib {
             (d == 24 && m == December && y == 2014) ||
             (d == 31 && m == December && y == 2014)
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
             

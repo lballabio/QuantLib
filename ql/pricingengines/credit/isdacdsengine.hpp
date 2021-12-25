@@ -86,7 +86,7 @@ namespace QuantLib {
             specifications.
 
             To be precisely consistent with the ISDA specification
-                static bool IborCoupon::usingAtParCoupons();
+                bool IborCoupon::Settings::usingAtParCoupons();
             must be true. This is not checked in order not to
             kill the engine completely in this case.
 
@@ -94,9 +94,9 @@ namespace QuantLib {
             provide the evaluation date's fixing.
         */
 
-        IsdaCdsEngine(const Handle<DefaultProbabilityTermStructure>& probability,
+        IsdaCdsEngine(Handle<DefaultProbabilityTermStructure> probability,
                       Real recoveryRate,
-                      const Handle<YieldTermStructure>& discountCurve,
+                      Handle<YieldTermStructure> discountCurve,
                       const boost::optional<bool>& includeSettlementDateFlows = boost::none,
                       NumericalFix numericalFix = Taylor,
                       AccrualBias accrualBias = HalfDayBias,
@@ -105,7 +105,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> isdaRateCurve() const { return discountCurve_; }
         Handle<DefaultProbabilityTermStructure> isdaCreditCurve() const { return probability_; }
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         Handle<DefaultProbabilityTermStructure> probability_;

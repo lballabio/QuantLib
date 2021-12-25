@@ -41,14 +41,15 @@ namespace QuantLib {
         typedef std::vector<std::pair<Time, Real> > Shape;
 
 
-        FdSimpleExtOUStorageEngine(
-          const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& p,
-          const ext::shared_ptr<YieldTermStructure>& rTS,
-          Size tGrid = 50, Size xGrid = 100, Size yGrid = Null<Size>(),
-          const ext::shared_ptr<Shape>& shape = ext::shared_ptr<Shape>(),
-          const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
+        FdSimpleExtOUStorageEngine(ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> p,
+                                   ext::shared_ptr<YieldTermStructure> rTS,
+                                   Size tGrid = 50,
+                                   Size xGrid = 100,
+                                   Size yGrid = Null<Size>(),
+                                   ext::shared_ptr<Shape> shape = ext::shared_ptr<Shape>(),
+                                   const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process_;

@@ -17,26 +17,30 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/distributions/chisquaredistribution.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/processes/gjrgarchprocess.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
+#include <ql/processes/gjrgarchprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    GJRGARCHProcess::GJRGARCHProcess(
-                              const Handle<YieldTermStructure>& riskFreeRate,
-                              const Handle<YieldTermStructure>& dividendYield,
-                              const Handle<Quote>& s0, Real v0, 
-                              Real omega, Real alpha, Real beta, 
-                              Real gamma, Real lambda, Real daysPerYear, Discretization d)
-    : StochasticProcess(ext::shared_ptr<discretization>(
-                                                    new EulerDiscretization)),
-      riskFreeRate_(riskFreeRate), dividendYield_(dividendYield), s0_(s0),
-      v0_(v0), omega_(omega), alpha_(alpha), 
-      beta_(beta), gamma_(gamma), lambda_(lambda), daysPerYear_(daysPerYear),
-      discretization_(d) {
+    GJRGARCHProcess::GJRGARCHProcess(Handle<YieldTermStructure> riskFreeRate,
+                                     Handle<YieldTermStructure> dividendYield,
+                                     Handle<Quote> s0,
+                                     Real v0,
+                                     Real omega,
+                                     Real alpha,
+                                     Real beta,
+                                     Real gamma,
+                                     Real lambda,
+                                     Real daysPerYear,
+                                     Discretization d)
+    : StochasticProcess(ext::shared_ptr<discretization>(new EulerDiscretization)),
+      riskFreeRate_(std::move(riskFreeRate)), dividendYield_(std::move(dividendYield)),
+      s0_(std::move(s0)), v0_(v0), omega_(omega), alpha_(alpha), beta_(beta), gamma_(gamma),
+      lambda_(lambda), daysPerYear_(daysPerYear), discretization_(d) {
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
         registerWith(s0_);

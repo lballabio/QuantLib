@@ -24,9 +24,8 @@
 namespace QuantLib {
 
     void Dividend::accept(AcyclicVisitor& v) {
-        Visitor<Dividend>* v1 =
-            dynamic_cast<Visitor<Dividend>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<Dividend>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             CashFlow::accept(v);

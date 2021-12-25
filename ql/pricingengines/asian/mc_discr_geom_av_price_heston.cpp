@@ -18,17 +18,17 @@
 */
 
 #include <ql/pricingengines/asian/mc_discr_geom_av_price_heston.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    GeometricAPOHestonPathPricer::GeometricAPOHestonPathPricer(
-        Option::Type type,
-        Real strike,
-        DiscountFactor discount,
-        const std::vector<Size>& fixingIndices,
-        Real runningProduct,
-        Size pastFixings)
-    : payoff_(type, strike), discount_(discount), fixingIndices_(fixingIndices),
+    GeometricAPOHestonPathPricer::GeometricAPOHestonPathPricer(Option::Type type,
+                                                               Real strike,
+                                                               DiscountFactor discount,
+                                                               std::vector<Size> fixingIndices,
+                                                               Real runningProduct,
+                                                               Size pastFixings)
+    : payoff_(type, strike), discount_(discount), fixingIndices_(std::move(fixingIndices)),
       runningProduct_(runningProduct), pastFixings_(pastFixings) {
         QL_REQUIRE(strike>=0.0,
             "strike less than zero not allowed");
@@ -44,9 +44,9 @@ namespace QuantLib {
         Size fixings = pastFixings_ + fixingIndices_.size();
 
         // care must be taken not to overflow product
-        Real maxValue = QL_MAX_REAL;
-        for (Size i=0; i<fixingIndices_.size(); i++) {
-            Real price = path[fixingIndices_[i]];
+        QL_CONSTEXPR Real maxValue = QL_MAX_REAL;
+        for (unsigned long fixingIndice : fixingIndices_) {
+            Real price = path[fixingIndice];
             if (product < maxValue/price) {
                 product *= price;
             } else {

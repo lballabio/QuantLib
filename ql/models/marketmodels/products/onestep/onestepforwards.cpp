@@ -17,19 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/products/onestep/onestepforwards.hpp>
-#include <ql/models/marketmodels/curvestate.hpp>
-#include <ql/models/marketmodels/utilities.hpp>
 #include <ql/auto_ptr.hpp>
+#include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/products/onestep/onestepforwards.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     OneStepForwards::OneStepForwards(const std::vector<Time>& rateTimes,
-                                     const std::vector<Real>& accruals,
+                                     std::vector<Real> accruals,
                                      const std::vector<Time>& paymentTimes,
-                                     const std::vector<Rate>& strikes)
-    : MultiProductOneStep(rateTimes), accruals_(accruals),
-      paymentTimes_(paymentTimes), strikes_(strikes) {
+                                     std::vector<Rate> strikes)
+    : MultiProductOneStep(rateTimes), accruals_(std::move(accruals)), paymentTimes_(paymentTimes),
+      strikes_(std::move(strikes)) {
         checkIncreasingTimes(paymentTimes);
     }
 

@@ -85,10 +85,10 @@ namespace QuantLib {
         // assemble raw cash flow data...
         Actual365Fixed dc;
         // ... float times/weights
-        for (Size k = 0; k < floatLeg_.size(); ++k)
-            floatTimes_.push_back(dc.yearFraction(refDate_, floatLeg_[k]->date()));
-        for (Size k = 0; k < floatLeg_.size(); ++k)
-            floatWeights_.push_back(floatLeg_[k]->amount());
+        for (auto& k : floatLeg_)
+            floatTimes_.push_back(dc.yearFraction(refDate_, k->date()));
+        for (auto& k : floatLeg_)
+            floatWeights_.push_back(k->amount());
     }
 
     SwapCashFlows::SwapCashFlows(const ext::shared_ptr<VanillaSwap>& swap,
@@ -97,19 +97,19 @@ namespace QuantLib {
     : IborLegCashFlows(swap->floatingLeg(), discountCurve, contTenorSpread) {
         // copy fixed leg coupons
         Leg fixedLeg = swap->fixedLeg();
-        for (Size k = 0; k < fixedLeg.size(); ++k) {
-            if (ext::dynamic_pointer_cast<Coupon>(fixedLeg[k])->accrualStartDate() >= refDate_)
-                fixedLeg_.push_back(fixedLeg[k]);
+        for (auto& k : fixedLeg) {
+            if (ext::dynamic_pointer_cast<Coupon>(k)->accrualStartDate() >= refDate_)
+                fixedLeg_.push_back(k);
         }
         Actual365Fixed dc;
         // ... fixed times/weights
-        for (Size k = 0; k < fixedLeg_.size(); ++k)
-            fixedTimes_.push_back(dc.yearFraction(refDate_, fixedLeg_[k]->date()));
-        for (Size k = 0; k < fixedLeg_.size(); ++k)
-            fixedWeights_.push_back(fixedLeg_[k]->amount());
-        for (Size k = 0; k < fixedLeg_.size(); ++k) {
-            ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(fixedLeg_[k]);
-            if (coupon != 0)
+        for (auto& k : fixedLeg_)
+            fixedTimes_.push_back(dc.yearFraction(refDate_, k->date()));
+        for (auto& k : fixedLeg_)
+            fixedWeights_.push_back(k->amount());
+        for (auto& k : fixedLeg_) {
+            ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(k);
+            if (coupon != nullptr)
                 annuityWeights_.push_back(coupon->nominal() * coupon->accrualPeriod());
         }
     }

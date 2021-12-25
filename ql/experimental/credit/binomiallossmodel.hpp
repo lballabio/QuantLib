@@ -20,14 +20,14 @@
 #ifndef quantlib_binomial_loss_model_hpp
 #define quantlib_binomial_loss_model_hpp
 
-#include <ql/handle.hpp>
 #include <ql/experimental/credit/basket.hpp>
-#include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
-#include <ql/math/functional.hpp>
+#include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/functional.hpp>
+#include <ql/handle.hpp>
 #include <algorithm>
 #include <numeric>
+#include <utility>
 
 namespace QuantLib {
 
@@ -62,25 +62,24 @@ namespace QuantLib {
     class BinomialLossModel : public DefaultLossModel {
     public:
         typedef typename LLM::copulaType copulaType;
-        explicit BinomialLossModel(
-            const ext::shared_ptr<LLM>& copula)
-        : copula_(copula) { }
-    private:
-        void resetModel() {
-            /* say there are defaults and these havent settled... and this is 
+        explicit BinomialLossModel(ext::shared_ptr<LLM> copula) : copula_(std::move(copula)) {}
+
+      private:
+        void resetModel() override {
+            /* say there are defaults and these havent settled... and this is
             the engine to compute them.... is this the wrong place?:*/
             attachAmount_ = basket_->remainingAttachmentAmount();
             detachAmount_ = basket_->remainingDetachmentAmount();
 
-            copula_->resetBasket(basket_.currentLink());// forces interface
-        }
+            copula_->resetBasket(basket_.currentLink()); // forces interface
+      }
+
     protected:
         /*! Returns the probability of the default loss values given by the 
             method lossPoints.
         */
         Disposable<std::vector<Real> > 
             expectedDistribution(const Date& date) const {
-            using namespace ext::placeholders;
             // precal date conditional magnitudes:
             std::vector<Real> notionals = basket_->remainingNotionals(date);
             std::vector<Probability> invProbs = 
@@ -89,28 +88,19 @@ namespace QuantLib {
                 invProbs[iName] = 
                     copula_->inverseCumulativeY(invProbs[iName], iName);
 
-            return copula_->integratedExpectedValue(
-                ext::function<Disposable<std::vector<Real> > (
-                  const std::vector<Real>& v1)>(
-                    ext::bind(
-                        &BinomialLossModel<LLM>::lossProbability,
-                        this,
-                        ext::cref(date), //d,
-                        ext::cref(notionals),
-                        ext::cref(invProbs),
-                        _1)
-                    )
-                );
+            return copula_->integratedExpectedValueV(
+                [&](const std::vector<Real>& v1) {
+                    return lossProbability(date, notionals, invProbs, v1);
+                });
         }
         //! attainable loss points this model provides
         Disposable<std::vector<Real> > lossPoints(const Date&) const;
         //! Returns the cumulative full loss distribution
-        Disposable<std::map<Real, Probability> > 
-            lossDistribution(const Date& d) const;
+        Disposable<std::map<Real, Probability> > lossDistribution(const Date& d) const override;
         //! Loss level for this percentile
-        Real percentile(const Date& d, Real percentile) const;
-        Real expectedShortfall(const Date&d, Real percentile) const;
-        Real expectedTrancheLoss(const Date& d) const;
+        Real percentile(const Date& d, Real percentile) const override;
+        Real expectedShortfall(const Date& d, Real percentile) const override;
+        Real expectedTrancheLoss(const Date& d) const override;
 
         // Model internal workings ----------------
         //! Average loss per credit.
@@ -127,9 +117,9 @@ namespace QuantLib {
         {
             std::vector<Real> condLgds;
             const std::vector<Size>& evalDateLives = basket_->liveList();
-            for(Size i=0; i<evalDateLives.size(); i++) 
-                condLgds.push_back(1.-copula_->conditionalRecovery(d, 
-                    evalDateLives[i], mktFactors));
+            condLgds.reserve(evalDateLives.size());
+            for (unsigned long evalDateLive : evalDateLives)
+                condLgds.push_back(1. - copula_->conditionalRecovery(d, evalDateLive, mktFactors));
             return condLgds;
         }
 
@@ -286,19 +276,12 @@ namespace QuantLib {
     Disposable<std::vector<Real> >
         BinomialLossModel<LLM>::lossPoints(const Date& d) const 
     {
-        using namespace ext::placeholders;
         std::vector<Real> notionals = basket_->remainingNotionals(d);
 
         Real aveLossFrct = copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(
-                    &BinomialLossModel<LLM>::averageLoss,
-                    this,
-                    ext::cref(d),
-                    ext::cref(notionals),
-                    _1)
-                )
-            );
+            [&](const std::vector<Real>& v1) {
+                return averageLoss(d, notionals, v1);
+            });
 
         std::vector<Real> data;
         Size dataSize = basket_->remainingSize() + 1;
@@ -332,7 +315,6 @@ namespace QuantLib {
 
     template< class LLM>
     Real BinomialLossModel<LLM>::expectedTrancheLoss(const Date& d) const {
-        using namespace ext::placeholders;
         std::vector<Real> lossVals  = lossPoints(d);
         std::vector<Real> notionals = basket_->remainingNotionals(d);
         std::vector<Probability> invProbs = 
@@ -342,15 +324,9 @@ namespace QuantLib {
                 copula_->inverseCumulativeY(invProbs[iName], iName);
             
         return copula_->integratedExpectedValue(
-            ext::function<Real (const std::vector<Real>& v1)>(
-                ext::bind(&BinomialLossModel<LLM>::condTrancheLoss,
-                            this,
-                            ext::cref(d), 
-                            ext::cref(lossVals), 
-                            ext::cref(notionals), 
-                            ext::cref(invProbs), 
-                            _1))
-            );
+            [&](const std::vector<Real>& v1) {
+                return condTrancheLoss(d, lossVals, notionals, invProbs, v1);
+            });
     }
 
 

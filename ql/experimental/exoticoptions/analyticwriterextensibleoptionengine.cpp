@@ -20,14 +20,15 @@
 #include <ql/experimental/exoticoptions/analyticwriterextensibleoptionengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <utility>
 
 using namespace std;
 
 namespace QuantLib {
 
     AnalyticWriterExtensibleOptionEngine::AnalyticWriterExtensibleOptionEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 

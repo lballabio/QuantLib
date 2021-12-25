@@ -26,14 +26,15 @@
 #ifndef quantlib_american_basket_montecarlo_engine_hpp
 #define quantlib_american_basket_montecarlo_engine_hpp
 
-#include <ql/qldefines.hpp>
-#include <ql/instruments/basketoption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/processes/stochasticprocessarray.hpp>
-#include <ql/methods/montecarlo/lsmbasissystem.hpp>
-#include <ql/pricingengines/mclongstaffschwartzengine.hpp>
 #include <ql/exercise.hpp>
 #include <ql/functional.hpp>
+#include <ql/instruments/basketoption.hpp>
+#include <ql/methods/montecarlo/lsmbasissystem.hpp>
+#include <ql/pricingengines/mclongstaffschwartzengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/qldefines.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -62,8 +63,7 @@ namespace QuantLib {
                                LsmBasisSystem::PolynomType
                                    polynomType = LsmBasisSystem::Monomial);
       protected:
-        ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
-            lsmPathPricer() const;
+        ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > lsmPathPricer() const override;
 
       private:
         const Size polynomOrder_;
@@ -75,8 +75,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom>
     class MakeMCAmericanBasketEngine {
       public:
-        MakeMCAmericanBasketEngine(
-                            const ext::shared_ptr<StochasticProcessArray>&);
+        MakeMCAmericanBasketEngine(ext::shared_ptr<StochasticProcessArray>);
         // named parameters
         MakeMCAmericanBasketEngine& withSteps(Size steps);
         MakeMCAmericanBasketEngine& withStepsPerYear(Size steps);
@@ -107,16 +106,16 @@ namespace QuantLib {
     class AmericanBasketPathPricer
         : public EarlyExercisePathPricer<MultiPath>  {
       public:
-        AmericanBasketPathPricer(Size assetNumber,
-                                 const ext::shared_ptr<Payoff>& payoff,
-                                 Size polynomOrder = 2,
-                                 LsmBasisSystem::PolynomType
-                                 polynomType = LsmBasisSystem::Monomial);
+        AmericanBasketPathPricer(
+            Size assetNumber,
+            ext::shared_ptr<Payoff> payoff,
+            Size polynomOrder = 2,
+            LsmBasisSystem::PolynomType polynomType = LsmBasisSystem::Monomial);
 
-        Array state(const MultiPath& path, Size t) const;
-        Real operator()(const MultiPath& path, Size t) const;
+        Array state(const MultiPath& path, Size t) const override;
+        Real operator()(const MultiPath& path, Size t) const override;
 
-        std::vector<ext::function<Real(Array)> > basisSystem() const;
+        std::vector<ext::function<Real(Array)> > basisSystem() const override;
 
       protected:
         Real payoff(const Array& state) const;
@@ -194,14 +193,11 @@ namespace QuantLib {
 
     template <class RNG>
     inline MakeMCAmericanBasketEngine<RNG>::MakeMCAmericanBasketEngine(
-                     const ext::shared_ptr<StochasticProcessArray>& process)
-    : process_(process), brownianBridge_(false), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      calibrationSamples_(Null<Size>()),
-      polynomOrder_(2),
-      polynomType_(LsmBasisSystem::Monomial),
-      tolerance_(Null<Real>()), seed_(0) {}
+        ext::shared_ptr<StochasticProcessArray> process)
+    : process_(std::move(process)), brownianBridge_(false), antithetic_(false),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), calibrationSamples_(Null<Size>()), polynomOrder_(2),
+      polynomType_(LsmBasisSystem::Monomial), tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG>
     inline MakeMCAmericanBasketEngine<RNG>&

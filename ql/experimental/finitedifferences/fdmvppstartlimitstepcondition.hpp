@@ -40,11 +40,10 @@ namespace QuantLib {
             const ext::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice);
 
         static Size nStates(Size tMinUp, Size tMinDown, Size nStarts);
-        Real maxValue(const Array& states) const;
+        Real maxValue(const Array& states) const override;
 
       private:
-        Disposable<Array> changeState(Real gasPrice,
-                                      const Array& state, Time t) const;
+        Disposable<Array> changeState(Real gasPrice, const Array& state, Time t) const override;
 
         const Size nStarts_;
     };

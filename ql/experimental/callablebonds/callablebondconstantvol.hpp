@@ -37,34 +37,35 @@ namespace QuantLib {
       public:
         CallableBondConstantVolatility(const Date& referenceDate,
                                        Volatility volatility,
-                                       const DayCounter& dayCounter);
+                                       DayCounter dayCounter);
         CallableBondConstantVolatility(const Date& referenceDate,
-                                       const Handle<Quote>& volatility,
-                                       const DayCounter& dayCounter);
+                                       Handle<Quote> volatility,
+                                       DayCounter dayCounter);
         CallableBondConstantVolatility(Natural settlementDays,
                                        const Calendar&,
                                        Volatility volatility,
-                                       const DayCounter& dayCounter);
+                                       DayCounter dayCounter);
         CallableBondConstantVolatility(Natural settlementDays,
                                        const Calendar&,
-                                       const Handle<Quote>& volatility,
-                                       const DayCounter& dayCounter);
+                                       Handle<Quote> volatility,
+                                       DayCounter dayCounter);
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const { return dayCounter_; }
-        Date maxDate() const { return Date::maxDate(); }
+        DayCounter dayCounter() const override { return dayCounter_; }
+        Date maxDate() const override { return Date::maxDate(); }
         //@}
         //! \name CallableBondConstantVolatility interface
         //@{
-        const Period& maxBondTenor() const;
-        Time maxBondLength() const;
-        Real minStrike() const;
-        Real maxStrike() const;
+        const Period& maxBondTenor() const override;
+        Time maxBondLength() const override;
+        Real minStrike() const override;
+        Real maxStrike() const override;
+
       protected:
-        Volatility volatilityImpl(Time, Time, Rate) const;
+        Volatility volatilityImpl(Time, Time, Rate) const override;
         ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
-                                                         Time bondLength) const;
-        Volatility volatilityImpl(const Date&, const Period&, Rate) const;
+                                                       Time bondLength) const override;
+        Volatility volatilityImpl(const Date&, const Period&, Rate) const override;
         //@}
       private:
         Handle<Quote> volatility_;

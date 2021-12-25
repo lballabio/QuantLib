@@ -36,42 +36,41 @@ namespace QuantLib {
                                          Real atm = Null<Real>(),
                                          bool recenterSmile = false);
 
-        Real minStrike() const { return source_->minStrike(); }
-        Real maxStrike() const { return source_->maxStrike(); }
-        Real atmLevel() const { return f_; }
-        const Date& exerciseDate() const { return source_->exerciseDate(); }
-        Time exerciseTime() const { return source_->exerciseTime(); }
-        const DayCounter& dayCounter() const { return source_->dayCounter(); }
-        const Date& referenceDate() const { return source_->referenceDate(); }
-        VolatilityType volatilityType() const {
-            return source_->volatilityType();
-        }
-        Rate shift() const { return source_->shift(); }
+        Real minStrike() const override { return source_->minStrike(); }
+        Real maxStrike() const override { return source_->maxStrike(); }
+        Real atmLevel() const override { return f_; }
+        const Date& exerciseDate() const override { return source_->exerciseDate(); }
+        Time exerciseTime() const override { return source_->exerciseTime(); }
+        const DayCounter& dayCounter() const override { return source_->dayCounter(); }
+        const Date& referenceDate() const override { return source_->referenceDate(); }
+        VolatilityType volatilityType() const override { return source_->volatilityType(); }
+        Rate shift() const override { return source_->shift(); }
 
-        Real optionPrice(Rate strike, Option::Type type = Option::Call,
-                         Real discount = 1.0) const {
+        Real optionPrice(Rate strike,
+                         Option::Type type = Option::Call,
+                         Real discount = 1.0) const override {
             return source_->optionPrice(adjustedStrike(strike), type, discount);
         }
 
-        Real digitalOptionPrice(Rate strike, Option::Type type = Option::Call,
-                                Real discount = 1.0, Real gap = 1.0e-5) const {
+        Real digitalOptionPrice(Rate strike,
+                                Option::Type type = Option::Call,
+                                Real discount = 1.0,
+                                Real gap = 1.0e-5) const override {
             return source_->digitalOptionPrice(adjustedStrike(strike), type,
                                                discount, gap);
         }
 
-        Real vega(Rate strike, Real discount = 1.0) const {
+        Real vega(Rate strike, Real discount = 1.0) const override {
             return source_->vega(adjustedStrike(strike), discount);
         }
 
-        Real density(Rate strike, Real discount = 1.0,
-                     Real gap = 1.0E-4) const {
+        Real density(Rate strike, Real discount = 1.0, Real gap = 1.0E-4) const override {
             return source_->density(adjustedStrike(strike), discount, gap);
         }
 
       protected:
-
-        Real varianceImpl(Rate strike) const;
-        Volatility volatilityImpl(Rate strike) const;
+        Real varianceImpl(Rate strike) const override;
+        Volatility volatilityImpl(Rate strike) const override;
 
       private:
 

@@ -17,11 +17,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/vanilla/analyticeuropeanvasicekengine.hpp>
 #include <ql/exercise.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <boost/function.hpp>
+#include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanvasicekengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -50,10 +50,11 @@ namespace QuantLib {
     }
 
     AnalyticBlackVasicekEngine::AnalyticBlackVasicekEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& blackProcess,
-            const ext::shared_ptr<Vasicek>& vasicekProcess,
-            Real correlation)
-    : blackProcess_(blackProcess), vasicekProcess_(vasicekProcess), simpsonIntegral_(new SimpsonIntegral(1e-5, 1000)), correlation_(correlation) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> blackProcess,
+        ext::shared_ptr<Vasicek> vasicekProcess,
+        Real correlation)
+    : blackProcess_(std::move(blackProcess)), vasicekProcess_(std::move(vasicekProcess)),
+      simpsonIntegral_(new SimpsonIntegral(1e-5, 1000)), correlation_(correlation) {
         registerWith(blackProcess_);
         registerWith(vasicekProcess_);
     }

@@ -94,11 +94,12 @@
 #include <ql/types.hpp>
 #include <ql/version.hpp>
 #include <boost/test/unit_test.hpp>
-#include <boost/timer/timer.hpp>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <list>
 #include <string>
+#include <utility>
+#include <chrono>
 
 /* PAPI code
 #include <stdio.h
@@ -108,28 +109,13 @@
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
 */
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #  define BOOST_LIB_NAME boost_unit_test_framework
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_timer
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_chrono
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_system
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-
-/* uncomment the following lines to unmask floating-point exceptions.
-   See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
-*/
-//#  include <float.h>
-//   namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
-
 #endif
+
 #include "utilities.hpp"
 
 #include "americanoption.hpp"
@@ -157,7 +143,6 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    boost::timer::cpu_timer t;
     std::list<double> runTimes;
 
     /* PAPI code
@@ -170,19 +155,14 @@ namespace {
         typedef void (*fct_ptr)();
         explicit TimedCase(fct_ptr f) : f_(f) {}
 
-        void startTimer() const {
-            t.start();
-
+        void startMeasurement() const {
             /* PAPI code
                lflop = flop;
                PAPI_flops(&real_time, &proc_time, &flop, &mflops);
             */
         }
 
-        void stopTimer() const {
-            t.stop();
-            runTimes.push_back(t.elapsed().wall * 1e-9);
-
+        void stopMeasurement() const {
             /* PAPI code
                PAPI_flops(&real_time, &proc_time, &flop, &mflops);
                printf("Real_time: %f Proc_time: %f Total mflop: %f\n",
@@ -191,10 +171,13 @@ namespace {
         }
 
         void operator()() const {
-            startTimer();
+            startMeasurement();
+            auto startTime = std::chrono::steady_clock::now();
             BOOST_CHECK(true); // to prevent no-assertion warning
             f_();
-            stopTimer();
+            auto stopTime = std::chrono::steady_clock::now();
+            stopMeasurement();
+            runTimes.push_back(std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count() * 1e-6);
         }
       private:
         fct_ptr f_;
@@ -203,9 +186,8 @@ namespace {
     class Benchmark {
       public:
         typedef void (*fct_ptr)();
-        Benchmark(const std::string& name, fct_ptr f, double mflop)
-        : f_(f), name_(name), mflop_(mflop) {
-        }
+        Benchmark(std::string name, fct_ptr f, double mflop)
+        : f_(f), name_(std::move(name)), mflop_(mflop) {}
 
         test_case* getTestCase() const {
             #if BOOST_VERSION >= 105900
@@ -233,11 +215,7 @@ namespace {
 
     void printResults() {
         std::string header = "Benchmark Suite "
-        #ifdef BOOST_MSVC
-        QL_LIB_NAME;
-        #else
         "QuantLib " QL_VERSION;
-        #endif
 
         std::cout << std::endl
                   << std::string(56,'-') << std::endl;
@@ -271,65 +249,46 @@ namespace {
 
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
-    ThreadKey sessionId() { return 0; }
+    ThreadKey sessionId() { return {}; }
 }
 #endif
 
 test_suite* init_unit_test_suite(int, char*[]) {
-    bm.push_back(Benchmark("AmericanOption::FdAmericanGreeks",
-        &AmericanOptionTest::testFdAmericanGreeks, 518.31));
-    bm.push_back(Benchmark("AmericanOption::FdShoutGreeks",
-        &AmericanOptionTest::testFdShoutGreeks, 546.58));
-    bm.push_back(Benchmark("AsianOption::MCArithmeticAveragePrice",
-        &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 5186.13));
-    bm.push_back(Benchmark("BarrierOption::BabsiriValues",
-        &BarrierOptionTest::testBabsiriValues, 880.8));
-    bm.push_back(Benchmark("BasketOption::EuroTwoValues",
-        &BasketOptionTest::testEuroTwoValues, 340.04));
-    bm.push_back(Benchmark("BasketOption::TavellaValues",
-        &BasketOptionTest::testTavellaValues, 933.80));
-    bm.push_back(Benchmark("BasketOption::OddSamples",
-        &BasketOptionTest::testOddSamples, 642.46));
-    bm.push_back(Benchmark("BatesModel::DAXCalibration",
-        &BatesModelTest::testDAXCalibration, 1993.35));
-    bm.push_back(Benchmark("ConvertibleBondTest::testBond",
-        &ConvertibleBondTest::testBond, 159.85));
-    bm.push_back(Benchmark("DigitalOption::MCCashAtHit",
-        &DigitalOptionTest::testMCCashAtHit,995.87));
-    bm.push_back(Benchmark("DividendOption::FdEuropeanGreeks",
-        &DividendOptionTest::testFdEuropeanGreeks, 949.52));
-    bm.push_back(Benchmark("DividendOption::FdAmericanGreeks",
-        &DividendOptionTest::testFdAmericanGreeks, 1113.74));
-    bm.push_back(Benchmark("EuropeanOption::FdMcEngines",
-        &EuropeanOptionTest::testMcEngines, 1988.63));
-    bm.push_back(Benchmark("EuropeanOption::ImpliedVol",
-        &EuropeanOptionTest::testImpliedVol, 131.51));
-    bm.push_back(Benchmark("EuropeanOption::FdEngines",
-        &EuropeanOptionTest::testFdEngines, 148.43));
-    bm.push_back(Benchmark("FdHestonTest::testFdmHestonAmerican",
-        &FdHestonTest::testFdmHestonAmerican, 234.21));
-    bm.push_back(Benchmark("HestonModel::DAXCalibration",
-        &HestonModelTest::testDAXCalibration, 555.19));
-    bm.push_back(Benchmark("InterpolationTest::testSabrInterpolation",
-        &InterpolationTest::testSabrInterpolation, 2266.06));
-    bm.push_back(Benchmark("JumpDiffusion::Greeks",
-        &JumpDiffusionTest::testGreeks, 433.77));
-    bm.push_back(Benchmark("MarketModelCmsTest::testCmSwapsSwaptions",
-        &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions,
-        11497.73));
-    bm.push_back(Benchmark("MarketModelSmmTest::testMultiSmmSwaptions",
-        &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions,
-        11244.95));
-    bm.push_back(Benchmark("QuantoOption::ForwardGreeks",
-        &QuantoOptionTest::testForwardGreeks, 90.98));
-    bm.push_back(Benchmark("RandomNumber::MersenneTwisterDescrepancy",
-        &LowDiscrepancyTest::testMersenneTwisterDiscrepancy, 951.98));
-    bm.push_back(Benchmark("RiskStatistics::Results",
-        &RiskStatisticsTest::testResults, 300.28));
-    bm.push_back(Benchmark("ShortRateModel::Swaps",
-        &ShortRateModelTest::testSwaps, 454.73));
+    bm.emplace_back("AmericanOption::FdAmericanGreeks", &AmericanOptionTest::testFdAmericanGreeks,
+                    518.31);
+    bm.emplace_back("AsianOption::MCArithmeticAveragePrice",
+                    &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 5186.13);
+    bm.emplace_back("BarrierOption::BabsiriValues", &BarrierOptionTest::testBabsiriValues, 880.8);
+    bm.emplace_back("BasketOption::EuroTwoValues", &BasketOptionTest::testEuroTwoValues, 340.04);
+    bm.emplace_back("BasketOption::TavellaValues", &BasketOptionTest::testTavellaValues, 933.80);
+    bm.emplace_back("BasketOption::OddSamples", &BasketOptionTest::testOddSamples, 642.46);
+    bm.emplace_back("BatesModel::DAXCalibration", &BatesModelTest::testDAXCalibration, 1993.35);
+    bm.emplace_back("ConvertibleBondTest::testBond", &ConvertibleBondTest::testBond, 159.85);
+    bm.emplace_back("DigitalOption::MCCashAtHit", &DigitalOptionTest::testMCCashAtHit, 995.87);
+    bm.emplace_back("DividendOption::FdEuropeanGreeks", &DividendOptionTest::testFdEuropeanGreeks,
+                    949.52);
+    bm.emplace_back("DividendOption::FdAmericanGreeks", &DividendOptionTest::testFdAmericanGreeks,
+                    1113.74);
+    bm.emplace_back("EuropeanOption::FdMcEngines", &EuropeanOptionTest::testMcEngines, 1988.63);
+    bm.emplace_back("EuropeanOption::ImpliedVol", &EuropeanOptionTest::testImpliedVol, 131.51);
+    bm.emplace_back("EuropeanOption::FdEngines", &EuropeanOptionTest::testFdEngines, 148.43);
+    bm.emplace_back("FdHestonTest::testFdmHestonAmerican", &FdHestonTest::testFdmHestonAmerican,
+                    234.21);
+    bm.emplace_back("HestonModel::DAXCalibration", &HestonModelTest::testDAXCalibration, 555.19);
+    bm.emplace_back("InterpolationTest::testSabrInterpolation",
+                    &InterpolationTest::testSabrInterpolation, 2266.06);
+    bm.emplace_back("JumpDiffusion::Greeks", &JumpDiffusionTest::testGreeks, 433.77);
+    bm.emplace_back("MarketModelCmsTest::testCmSwapsSwaptions",
+                    &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions, 11497.73);
+    bm.emplace_back("MarketModelSmmTest::testMultiSmmSwaptions",
+                    &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions, 11244.95);
+    bm.emplace_back("QuantoOption::ForwardGreeks", &QuantoOptionTest::testForwardGreeks, 90.98);
+    bm.emplace_back("RandomNumber::MersenneTwisterDescrepancy",
+                    &LowDiscrepancyTest::testMersenneTwisterDiscrepancy, 951.98);
+    bm.emplace_back("RiskStatistics::Results", &RiskStatisticsTest::testResults, 300.28);
+    bm.emplace_back("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73);
 
-    test_suite* test = BOOST_TEST_SUITE("QuantLib benchmark suite");
+    auto* test = BOOST_TEST_SUITE("QuantLib benchmark suite");
 
     for (std::list<Benchmark>::const_iterator iter = bm.begin();
          iter != bm.end(); ++iter) {

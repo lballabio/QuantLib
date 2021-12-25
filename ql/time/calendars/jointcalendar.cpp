@@ -19,9 +19,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/time/calendars/jointcalendar.hpp>
 #include <ql/errors.hpp>
+#include <ql/time/calendars/jointcalendar.hpp>
 #include <sstream>
+#include <utility>
 
 namespace QuantLib {
 
@@ -56,10 +57,8 @@ namespace QuantLib {
         calendars_[3] = c4;
     }
 
-    JointCalendar::Impl::Impl(const std::vector<Calendar> &cv,
-                              JointCalendarRule r)
-    : rule_(r), calendars_(cv){
-    }
+    JointCalendar::Impl::Impl(std::vector<Calendar> cv, JointCalendarRule r)
+    : rule_(r), calendars_(std::move(cv)) {}
 
     std::string JointCalendar::Impl::name() const {
         std::ostringstream out;

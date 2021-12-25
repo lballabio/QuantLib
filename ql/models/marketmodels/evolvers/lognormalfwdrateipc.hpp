@@ -40,12 +40,12 @@ namespace QuantLib {
                             Size initialStep = 0);
         //! \name MarketModel interface
         //@{
-        const std::vector<Size>& numeraires() const;
-        Real startNewPath();
-        Real advanceStep();
-        Size currentStep() const;
-        const CurveState& currentState() const;
-        void setInitialState(const CurveState&);
+        const std::vector<Size>& numeraires() const override;
+        Real startNewPath() override;
+        Real advanceStep() override;
+        Size currentStep() const override;
+        const CurveState& currentState() const override;
+        void setInitialState(const CurveState&) override;
         //@}
       private:
         void setForwards(const std::vector<Real>& forwards);

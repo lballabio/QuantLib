@@ -53,16 +53,16 @@ namespace QuantLib {
     template <class T>
     class BinomialVanillaEngine : public VanillaOption::engine {
       public:
-        BinomialVanillaEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps)
-        : process_(process), timeSteps_(timeSteps) {
+        BinomialVanillaEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                              Size timeSteps)
+        : process_(std::move(process)), timeSteps_(timeSteps) {
             QL_REQUIRE(timeSteps >= 2,
                        "at least 2 time steps required, "
                        << timeSteps << " provided");
             registerWith(process_);
         }
-        void calculate() const;
+        void calculate() const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_;

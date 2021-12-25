@@ -41,11 +41,11 @@ namespace QuantLib {
 
     class FdmHestonSolver : public LazyObject {
       public:
-        FdmHestonSolver(const Handle<HestonProcess>& process,
-                        const FdmSolverDesc& solverDesc,
+        FdmHestonSolver(Handle<HestonProcess> process,
+                        FdmSolverDesc solverDesc,
                         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                        const Handle<FdmQuantoHelper>& quantoHelper = Handle<FdmQuantoHelper>(),
-                        const ext::shared_ptr<LocalVolTermStructure>& leverageFct =
+                        Handle<FdmQuantoHelper> quantoHelper = Handle<FdmQuantoHelper>(),
+                        ext::shared_ptr<LocalVolTermStructure> leverageFct =
                             ext::shared_ptr<LocalVolTermStructure>(),
                         Real mixingFactor = 1.0);
 
@@ -64,8 +64,8 @@ namespace QuantLib {
         Real meanVarianceGammaAt(Real s, Real v) const;
 
       protected:
-        void performCalculations() const;
-        
+        void performCalculations() const override;
+
       private:
         const Handle<HestonProcess> process_;
         const FdmSolverDesc solverDesc_;

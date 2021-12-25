@@ -40,13 +40,12 @@ namespace QuantLib {
 
     class SquareRootCLVModel : public LazyObject {
       public:
-        SquareRootCLVModel(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-            const ext::shared_ptr<SquareRootProcess>& sqrtProcess,
-            const std::vector<Date>& maturityDates,
-            Size lagrangeOrder,
-            Real pMax = Null<Real>(),
-            Real pMin = Null<Real>());
+        SquareRootCLVModel(const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+                           ext::shared_ptr<SquareRootProcess> sqrtProcess,
+                           std::vector<Date> maturityDates,
+                           Size lagrangeOrder,
+                           Real pMax = Null<Real>(),
+                           Real pMin = Null<Real>());
 
         // cumulative distribution function of the BS process
         Real cdf(const Date& d, Real x) const;
@@ -64,7 +63,7 @@ namespace QuantLib {
         ext::function<Real(Time, Real)> g() const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         class MappingFunction {

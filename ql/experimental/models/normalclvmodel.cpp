@@ -21,35 +21,33 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/experimental/models/normalclvmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/solvers1d/brent.hpp>
-#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/experimental/models/normalclvmodel.hpp>
-#include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
+#include <utility>
 
 
 namespace QuantLib {
 
-    NormalCLVModel::NormalCLVModel(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-        const ext::shared_ptr<OrnsteinUhlenbeckProcess>& ouProcess,
-        const std::vector<Date>& maturityDates,
-        Size lagrangeOrder, Real pMax, Real pMin)
-    : x_(M_SQRT2*GaussHermiteIntegration(lagrangeOrder).x()),
-      sigma_( (pMax != Null<Real>())
-              ? x_.back() / InverseCumulativeNormal()(pMax)
-              : (pMin != Null<Real>())
-                  ? x_.front() / InverseCumulativeNormal()(pMin)
-                  : 1.0),
-      bsProcess_    (bsProcess),
-      ouProcess_    (ouProcess),
-      maturityDates_(maturityDates),
+    NormalCLVModel::NormalCLVModel(const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+                                   ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess,
+                                   const std::vector<Date>& maturityDates,
+                                   Size lagrangeOrder,
+                                   Real pMax,
+                                   Real pMin)
+    : x_(M_SQRT2 * GaussHermiteIntegration(lagrangeOrder).x()),
+      sigma_((pMax != Null<Real>()) ?
+                 x_.back() / InverseCumulativeNormal()(pMax) :
+                 (pMin != Null<Real>()) ? x_.front() / InverseCumulativeNormal()(pMin) : 1.0),
+      bsProcess_(bsProcess), ouProcess_(std::move(ouProcess)), maturityDates_(maturityDates),
       rndCalculator_(ext::make_shared<GBSMRNDCalculator>(bsProcess)),
       maturityTimes_(maturityDates.size()) {
 
@@ -113,9 +111,8 @@ namespace QuantLib {
         }
 
         for (Size i=0; i < data_->s_.rows(); ++i) {
-            data_->interpl_.push_back(
-                LinearInterpolation(data_->t_.begin(), data_->t_.end(),
-                                    data_->s_.row_begin(i)));
+            data_->interpl_.emplace_back(data_->t_.begin(), data_->t_.end(),
+                                         data_->s_.row_begin(i));
         }
     }
 

@@ -40,31 +40,30 @@ namespace QuantLib
     class CallSpecifiedPathwiseMultiProduct : public MarketModelPathwiseMultiProduct
     {
     public:
-        CallSpecifiedPathwiseMultiProduct(
-            const Clone<MarketModelPathwiseMultiProduct>& underlying,
-            const Clone<ExerciseStrategy<CurveState> >&,
-            const Clone<MarketModelPathwiseMultiProduct>& rebate
-            = Clone<MarketModelPathwiseMultiProduct>());
-        //! \name MarketModelPathwiseMultiProduct interface
-        //@{
-        virtual std::vector<Size> suggestedNumeraires() const;
-        virtual const EvolutionDescription& evolution() const;
-        virtual std::vector<Time> possibleCashFlowTimes() const;
-        virtual Size numberOfProducts() const;
-        virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
-        virtual void reset();
-        virtual bool nextTimeStep(
-            const CurveState& currentState,
-            std::vector<Size>& numberCashFlowsThisStep,
-            std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
+      CallSpecifiedPathwiseMultiProduct(
+          const Clone<MarketModelPathwiseMultiProduct>& underlying,
+          const Clone<ExerciseStrategy<CurveState> >&,
+          Clone<MarketModelPathwiseMultiProduct> rebate = Clone<MarketModelPathwiseMultiProduct>());
+      //! \name MarketModelPathwiseMultiProduct interface
+      //@{
+      std::vector<Size> suggestedNumeraires() const override;
+      const EvolutionDescription& evolution() const override;
+      std::vector<Time> possibleCashFlowTimes() const override;
+      Size numberOfProducts() const override;
+      Size maxNumberOfCashFlowsPerProductPerStep() const override;
+      void reset() override;
+      bool nextTimeStep(const CurveState& currentState,
+                        std::vector<Size>& numberCashFlowsThisStep,
+                        std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >&
+                            cashFlowsGenerated) override;
 
-        #if defined(QL_USE_STD_UNIQUE_PTR)
-        virtual std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const;
-        #else
+#if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const override;
+#else
         virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
         #endif
-          
-        virtual bool alreadyDeflated() const;
+
+        bool alreadyDeflated() const override;
         //@}
         const MarketModelPathwiseMultiProduct& underlying() const;
         const ExerciseStrategy<CurveState>& strategy() const;

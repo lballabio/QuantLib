@@ -33,17 +33,17 @@ namespace QuantLib {
 class SviSmileSection : public SmileSection {
 
   public:
-    SviSmileSection(Time timeToExpiry, Rate forward,
-                          const std::vector<Real> &sviParameters);
-    SviSmileSection(const Date &d, Rate forward,
-                          const std::vector<Real> &sviParameters,
-                          const DayCounter &dc = Actual365Fixed());
-    Real minStrike() const { return 0.0; }
-    Real maxStrike() const { return QL_MAX_REAL; }
-    Real atmLevel() const { return forward_; }
+    SviSmileSection(Time timeToExpiry, Rate forward, std::vector<Real> sviParameters);
+    SviSmileSection(const Date& d,
+                    Rate forward,
+                    std::vector<Real> sviParameters,
+                    const DayCounter& dc = Actual365Fixed());
+    Real minStrike() const override { return 0.0; }
+    Real maxStrike() const override { return QL_MAX_REAL; }
+    Real atmLevel() const override { return forward_; }
 
   protected:
-    Volatility volatilityImpl(Rate strike) const;
+    Volatility volatilityImpl(Rate strike) const override;
 
   private:
     void init();

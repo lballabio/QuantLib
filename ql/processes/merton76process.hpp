@@ -35,28 +35,23 @@ namespace QuantLib {
     /*! \ingroup processes */
     class Merton76Process : public StochasticProcess1D {
       public:
-        Merton76Process(
-            const Handle<Quote>& stateVariable,
-            const Handle<YieldTermStructure>& dividendTS,
-            const Handle<YieldTermStructure>& riskFreeTS,
-            const Handle<BlackVolTermStructure>& blackVolTS,
-            const Handle<Quote>& jumpInt,
-            const Handle<Quote>& logJMean,
-            const Handle<Quote>& logJVol,
-            const ext::shared_ptr<discretization>& d =
-                  ext::shared_ptr<discretization>(new EulerDiscretization));
+        Merton76Process(const Handle<Quote>& stateVariable,
+                        const Handle<YieldTermStructure>& dividendTS,
+                        const Handle<YieldTermStructure>& riskFreeTS,
+                        const Handle<BlackVolTermStructure>& blackVolTS,
+                        Handle<Quote> jumpInt,
+                        Handle<Quote> logJMean,
+                        Handle<Quote> logJVol,
+                        const ext::shared_ptr<discretization>& d =
+                            ext::shared_ptr<discretization>(new EulerDiscretization));
         //! \name StochasticProcess1D interface
         //@{
-        Real x0() const;
-        Real drift(Time, Real) const {
-            QL_FAIL("not implemented"); }
-        Real diffusion(Time, Real) const {
-            QL_FAIL("not implemented"); }
-        Real apply(Real, Real) const {
-            QL_FAIL("not implemented");
-        }
+        Real x0() const override;
+        Real drift(Time, Real) const override { QL_FAIL("not implemented"); }
+        Real diffusion(Time, Real) const override { QL_FAIL("not implemented"); }
+        Real apply(Real, Real) const override { QL_FAIL("not implemented"); }
         //@}
-        Time time(const Date&) const;
+        Time time(const Date&) const override;
         //! \name Inspectors
         //@{
         const Handle<Quote>& stateVariable() const;

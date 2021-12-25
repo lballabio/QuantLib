@@ -22,6 +22,7 @@
 #include <ql/math/optimization/lmdif.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/functional.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -29,8 +30,8 @@ namespace QuantLib {
                                            Real xtol,
                                            Real gtol,
                                            bool useCostFunctionsJacobian)
-        : info_(0), epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol),
-          useCostFunctionsJacobian_(useCostFunctionsJacobian) {}
+    : epsfcn_(epsfcn), xtol_(xtol), gtol_(gtol),
+      useCostFunctionsJacobian_(useCostFunctionsJacobian) {}
 
     Integer LevenbergMarquardt::getInfo() const {
         return info_;
@@ -51,23 +52,23 @@ namespace QuantLib {
             initJacobian_ = Matrix(m,n);
             P.costFunction().jacobian(initJacobian_, x_);
         }
-        boost::scoped_array<Real> xx(new Real[n]);
+        std::unique_ptr<Real[]> xx(new Real[n]);
         std::copy(x_.begin(), x_.end(), xx.get());
-        boost::scoped_array<Real> fvec(new Real[m]);
-        boost::scoped_array<Real> diag(new Real[n]);
+        std::unique_ptr<Real[]> fvec(new Real[m]);
+        std::unique_ptr<Real[]> diag(new Real[n]);
         int mode = 1;
         Real factor = 1;
         int nprint = 0;
         int info = 0;
         int nfev =0;
-        boost::scoped_array<Real> fjac(new Real[m*n]);
+        std::unique_ptr<Real[]> fjac(new Real[m*n]);
         int ldfjac = m;
-        boost::scoped_array<int> ipvt(new int[n]);
-        boost::scoped_array<Real> qtf(new Real[n]);
-        boost::scoped_array<Real> wa1(new Real[n]);
-        boost::scoped_array<Real> wa2(new Real[n]);
-        boost::scoped_array<Real> wa3(new Real[n]);
-        boost::scoped_array<Real> wa4(new Real[m]);
+        std::unique_ptr<int[]> ipvt(new int[n]);
+        std::unique_ptr<Real[]> qtf(new Real[n]);
+        std::unique_ptr<Real[]> wa1(new Real[n]);
+        std::unique_ptr<Real[]> wa2(new Real[n]);
+        std::unique_ptr<Real[]> wa3(new Real[n]);
+        std::unique_ptr<Real[]> wa4(new Real[m]);
         // requirements; check here to get more detailed error messages.
         QL_REQUIRE(n > 0, "no variables given");
         QL_REQUIRE(m >= n,
@@ -86,8 +87,7 @@ namespace QuantLib {
             ext::bind(&LevenbergMarquardt::fcn, this, _1, _2, _3, _4, _5);
         MINPACK::LmdifCostFunction lmdifJacFunction =
             useCostFunctionsJacobian_
-                ? ext::bind(&LevenbergMarquardt::jacFcn, this, _1, _2, _3,
-                              _4, _5)
+                ? ext::bind(&LevenbergMarquardt::jacFcn, this, _1, _2, _3, _4, _5)
                 : MINPACK::LmdifCostFunction();
         MINPACK::lmdif(m, n, xx.get(), fvec.get(),
                        endCriteria.functionEpsilon(),

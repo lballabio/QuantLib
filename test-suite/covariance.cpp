@@ -159,15 +159,16 @@ void CovarianceTest::testCovariance() {
 
     BOOST_TEST_MESSAGE("Testing covariance and correlation calculations...");
 
-    Real data00[] = { 3.0,  9.0 };
-    Real data01[] = { 2.0,  7.0 };
-    Real data02[] = { 4.0, 12.0 };
-    Real data03[] = { 5.0, 15.0 };
-    Real data04[] = { 6.0, 17.0 };
-    Real* data[5] = { data00, data01, data02, data03, data04 };
-    std::vector<Real> weights(LENGTH(data), 1.0);
+    std::vector<std::vector<Real>> data = {
+        { 3.0,  9.0 },
+        { 2.0,  7.0 },
+        { 4.0, 12.0 },
+        { 5.0, 15.0 },
+        { 6.0, 17.0 }
+    };
+    std::vector<Real> weights(data.size(), 1.0);
 
-    Size i, j, n = LENGTH(data00);
+    Size i, j, n = data[0].size();
 
     Matrix expCor(n, n);
     expCor[0][0] = 1.0000000000000000; expCor[0][1] = 0.9970544855015813;
@@ -176,7 +177,7 @@ void CovarianceTest::testCovariance() {
     SequenceStatistics s(n);
     std::vector<Real> temp(n);
 
-    for (i = 0; i<LENGTH(data); i++) {
+    for (i = 0; i<data.size(); i++) {
         for (j=0; j<n; j++) {
             temp[j]= data[i][j];
         }
@@ -270,7 +271,7 @@ void CovarianceTest::testCovariance() {
 
 
 test_suite* CovarianceTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Covariance and correlation tests");
+    auto* suite = BOOST_TEST_SUITE("Covariance and correlation tests");
     suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testCovariance));
     suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testSalvagingMatrix));
     suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testRankReduction));

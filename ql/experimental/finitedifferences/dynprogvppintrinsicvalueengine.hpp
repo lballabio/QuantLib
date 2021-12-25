@@ -36,13 +36,12 @@ namespace QuantLib {
         : public GenericEngine<VanillaVPPOption::arguments,
                                VanillaVPPOption::results> {
       public:
-        DynProgVPPIntrinsicValueEngine(
-            const std::vector<Real>& fuelPrices,
-            const std::vector<Real>& powerPrices,
-            Real fuelCostAddon,
-            const ext::shared_ptr<YieldTermStructure>& rTS);
+        DynProgVPPIntrinsicValueEngine(std::vector<Real> fuelPrices,
+                                       std::vector<Real> powerPrices,
+                                       Real fuelCostAddon,
+                                       ext::shared_ptr<YieldTermStructure> rTS);
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const std::vector<Real> fuelPrices_;

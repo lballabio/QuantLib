@@ -144,17 +144,15 @@ namespace QuantLib {
                            int forcedLeftIndex = -1,
                            int forcedRightIndex = QL_MAX_INTEGER);
 
-        Real minStrike() const { return -shift(); }
-        Real maxStrike() const { return QL_MAX_REAL; }
-        Real atmLevel() const { return f_; }
-        const Date& exerciseDate() const { return source_->exerciseDate(); }
-        Time exerciseTime() const { return source_->exerciseTime(); }
-        const DayCounter& dayCounter() const { return source_->dayCounter(); }
-        const Date& referenceDate() const { return source_->referenceDate(); }
-        VolatilityType volatilityType() const {
-            return source_->volatilityType();
-        }
-        Real shift() const { return source_->shift(); }
+        Real minStrike() const override { return -shift(); }
+        Real maxStrike() const override { return QL_MAX_REAL; }
+        Real atmLevel() const override { return f_; }
+        const Date& exerciseDate() const override { return source_->exerciseDate(); }
+        Time exerciseTime() const override { return source_->exerciseTime(); }
+        const DayCounter& dayCounter() const override { return source_->dayCounter(); }
+        const Date& referenceDate() const override { return source_->referenceDate(); }
+        VolatilityType volatilityType() const override { return source_->volatilityType(); }
+        Real shift() const override { return source_->shift(); }
 
         Real leftCoreStrike() const { return k_[leftIndex_]; }
         Real rightCoreStrike() const { return k_[rightIndex_]; }
@@ -163,11 +161,12 @@ namespace QuantLib {
             return std::make_pair(leftIndex_, rightIndex_);
         }
 
-        Real optionPrice(Rate strike, Option::Type type = Option::Call,
-                         Real discount = 1.0) const;
+        Real optionPrice(Rate strike,
+                         Option::Type type = Option::Call,
+                         Real discount = 1.0) const override;
 
       protected:
-        Volatility volatilityImpl(Rate strike) const;
+        Volatility volatilityImpl(Rate strike) const override;
 
       private:
         Size index(Rate strike) const;

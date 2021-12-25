@@ -33,15 +33,18 @@ namespace QuantLib {
 
     class FdCEVVanillaEngine : public VanillaOption::engine {
       public:
-        FdCEVVanillaEngine(
-            Real f0, Real alpha, Real beta,
-            const Handle<YieldTermStructure>& discountCurve,
-            Size tGrid = 50, Size xGrid = 400,
-            Size dampingSteps = 0,
-            Real scalingFactor = 1.0, Real eps = 1e-4,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
+        FdCEVVanillaEngine(Real f0,
+                           Real alpha,
+                           Real beta,
+                           Handle<YieldTermStructure> discountCurve,
+                           Size tGrid = 50,
+                           Size xGrid = 400,
+                           Size dampingSteps = 0,
+                           Real scalingFactor = 1.0,
+                           Real eps = 1e-4,
+                           const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const Real f0_, alpha_, beta_;

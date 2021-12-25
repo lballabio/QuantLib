@@ -52,9 +52,8 @@ namespace QuantLib {
     }
 
     void FdmDirichletBoundary::applyAfterApplying(Array& x) const {
-        for (std::vector<Size>::const_iterator iter = indices_.begin();
-             iter != indices_.end(); ++iter) {
-            x[*iter] = valueOnBoundary_;
+        for (unsigned long indice : indices_) {
+            x[indice] = valueOnBoundary_;
         }
     }
     

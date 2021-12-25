@@ -20,32 +20,34 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/experimental/math/particleswarmoptimization.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <cmath>
+#include <utility>
 
 using std::sqrt;
 
 namespace QuantLib {
     ParticleSwarmOptimization::ParticleSwarmOptimization(Size M,
-                                                         const ext::shared_ptr<Topology>& topology,
-                                                         const ext::shared_ptr<Inertia>& inertia,
+                                                         ext::shared_ptr<Topology> topology,
+                                                         ext::shared_ptr<Inertia> inertia,
                                                          Real c1,
                                                          Real c2,
                                                          unsigned long seed)
-    : M_(M), rng_(seed), topology_(topology), inertia_(inertia) {
+    : M_(M), rng_(seed), topology_(std::move(topology)), inertia_(std::move(inertia)) {
         Real phi = c1 + c2;
-        QL_ENSURE(phi*phi - 4 * phi, "Invalid phi");
+        QL_ENSURE(phi*phi - 4 * phi != 0.0, "Invalid phi");
         c0_ = 2.0 / std::abs(2.0 - phi - sqrt(phi*phi - 4 * phi));
         c1_ = c0_*c1;
         c2_ = c0_*c2;
     }
 
     ParticleSwarmOptimization::ParticleSwarmOptimization(Size M,
-                                                         const ext::shared_ptr<Topology>& topology,
-                                                         const ext::shared_ptr<Inertia>& inertia,
+                                                         ext::shared_ptr<Topology> topology,
+                                                         ext::shared_ptr<Inertia> inertia,
                                                          Real omega,
                                                          Real c1,
                                                          Real c2,
                                                          unsigned long seed)
-    : M_(M), c0_(omega), c1_(c1), c2_(c2), rng_(seed), topology_(topology), inertia_(inertia) {}
+    : M_(M), c0_(omega), c1_(c1), c2_(c2), rng_(seed), topology_(std::move(topology)),
+      inertia_(std::move(inertia)) {}
 
     void ParticleSwarmOptimization::startState(Problem &P, const EndCriteria &endCriteria) {
         QL_REQUIRE(topology_, "Invalid topology");
@@ -69,11 +71,11 @@ namespace QuantLib {
         //Prepare containers
         for (Size i = 0; i < M_; i++) {
             const SobolRsg::sample_type::value_type &sample = sobol.nextSequence().value;
-            X_.push_back(Array(N_, 0.0));
+            X_.emplace_back(N_, 0.0);
             Array& x = X_.back();
-            V_.push_back(Array(N_, 0.0));
+            V_.emplace_back(N_, 0.0);
             Array& v = V_.back();
-            gBX_.push_back(Array(N_, 0.0));
+            gBX_.emplace_back(N_, 0.0);
             for (Size j = 0; j < N_; j++) {
                 //Assign X=lb+(ub-lb)*random
                 x[j] = lX_[j] + bounds[j] * sample[2 * j];

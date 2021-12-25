@@ -21,29 +21,27 @@
     \brief Finite Differences Black-Scholes engine for simple swing options
 */
 
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
-#include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsimpleswingcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
-    
+
     FdSimpleBSSwingEngine::FdSimpleBSSwingEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid,
-            const FdmSchemeDesc& schemeDesc)
-    : process_(process),
-      tGrid_(tGrid),
-      xGrid_(xGrid),
-      schemeDesc_(schemeDesc) { 
-    }
-            
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Size tGrid,
+        Size xGrid,
+        const FdmSchemeDesc& schemeDesc)
+    : process_(std::move(process)), tGrid_(tGrid), xGrid_(xGrid), schemeDesc_(schemeDesc) {}
+
     void FdSimpleBSSwingEngine::calculate() const {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::Bermudan,
                    "Bermudan exercise supported only");
@@ -76,8 +74,8 @@ namespace QuantLib {
         
         // 3.1 Bermudan step conditions
         std::vector<Time> exerciseTimes;
-        for (Size i=0; i<arguments_.exercise->dates().size(); ++i) {
-            Time t = process_->time(arguments_.exercise->dates()[i]);
+        for (auto i : arguments_.exercise->dates()) {
+            Time t = process_->time(i);
             QL_REQUIRE(t >= 0, "exercise dates must not contain past date");
             exerciseTimes.push_back(t);
         }

@@ -105,7 +105,7 @@ void FastFourierTransformTest::testInverse() {
 
 
 test_suite* FastFourierTransformTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("fast fourier transform tests");
+    auto* suite = BOOST_TEST_SUITE("fast fourier transform tests");
     suite->add(QUANTLIB_TEST_CASE(&FastFourierTransformTest::testSimple));
     suite->add(QUANTLIB_TEST_CASE(&FastFourierTransformTest::testInverse));
     return suite;

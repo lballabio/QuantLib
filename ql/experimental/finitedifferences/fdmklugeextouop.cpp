@@ -108,7 +108,6 @@ namespace QuantLib {
         return klugeOp_->solve_splitting(0, r, dt);
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> >
     FdmKlugeExtOUOp::toMatrixDecomp() const {
         const std::vector<SparseMatrix> klugeDecomp
@@ -122,5 +121,5 @@ namespace QuantLib {
 
         return retVal;
     }
-#endif
+
 }

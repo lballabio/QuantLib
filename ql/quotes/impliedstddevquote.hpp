@@ -36,19 +36,19 @@ namespace QuantLib {
                                public LazyObject {
       public:
         ImpliedStdDevQuote(Option::Type optionType,
-                           const Handle<Quote>& forward,
-                           const Handle<Quote>& price,
+                           Handle<Quote> forward,
+                           Handle<Quote> price,
                            Real strike,
                            Real guess,
                            Real accuracy = 1.0e-6,
                            Natural maxIter = 100);
         //! \name Quote interface
         //@{
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
         //@}
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
         mutable Real impliedStdev_;
         Option::Type optionType_;
         Real strike_;

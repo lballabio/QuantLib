@@ -110,9 +110,8 @@ namespace QuantLib {
     }
 
     void VanillaForwardPayoff::accept(AcyclicVisitor& v) {
-        Visitor<VanillaForwardPayoff>* v1 =
-            dynamic_cast<Visitor<VanillaForwardPayoff>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<VanillaForwardPayoff>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             StrikedTypePayoff::accept(v);
@@ -124,7 +123,7 @@ namespace QuantLib {
         QL_REQUIRE(exercise, "no exercise given");
 
         QL_REQUIRE(minExerciseRights <= maxExerciseRights,
-                   "minExerciseRights <= maxExerciseRights")
+                   "minExerciseRights <= maxExerciseRights");
         QL_REQUIRE(exercise->dates().size() >= maxExerciseRights,
                    "number of exercise rights exceeds "
                    "number of exercise dates");
@@ -132,9 +131,8 @@ namespace QuantLib {
 
     void VanillaSwingOption::setupArguments(
                             PricingEngine::arguments* args) const {
-        VanillaSwingOption::arguments* arguments =
-            dynamic_cast<VanillaSwingOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<VanillaSwingOption::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->payoff
             = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);

@@ -32,17 +32,16 @@ namespace QuantLib {
 
     class ParametricExerciseAdapter : public ExerciseStrategy<CurveState> {
       public:
-        ParametricExerciseAdapter(
-                           const MarketModelParametricExercise& exercise,
-                           const std::vector<std::vector<Real> >& parameters);
-        std::vector<Time> exerciseTimes() const;
-        std::vector<Time> relevantTimes() const;
-        void reset();
-        void nextStep(const CurveState& currentState);
-        bool exercise(const CurveState& currentState) const;
-        #if defined(QL_USE_STD_UNIQUE_PTR)
-        std::unique_ptr<ExerciseStrategy<CurveState> > clone() const;
-        #else
+        ParametricExerciseAdapter(const MarketModelParametricExercise& exercise,
+                                  std::vector<std::vector<Real> > parameters);
+        std::vector<Time> exerciseTimes() const override;
+        std::vector<Time> relevantTimes() const override;
+        void reset() override;
+        void nextStep(const CurveState& currentState) override;
+        bool exercise(const CurveState& currentState) const override;
+#if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<ExerciseStrategy<CurveState> > clone() const override;
+#else
         std::auto_ptr<ExerciseStrategy<CurveState> > clone() const;
         #endif
       private:

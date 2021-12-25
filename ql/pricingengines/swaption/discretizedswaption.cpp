@@ -61,15 +61,13 @@ namespace QuantLib {
                     && arguments_.fixedResetDates[j] < referenceDate)
                     arguments_.fixedPayDates[j] = exerciseDate;
             }
-            for (Size j=0; j<arguments_.fixedResetDates.size(); j++) {
-                if (withinPreviousWeek(exerciseDate,
-                                       arguments_.fixedResetDates[j]))
-                    arguments_.fixedResetDates[j] = exerciseDate;
+            for (auto& fixedResetDate : arguments_.fixedResetDates) {
+                if (withinPreviousWeek(exerciseDate, fixedResetDate))
+                    fixedResetDate = exerciseDate;
             }
-            for (Size j=0; j<arguments_.floatingResetDates.size(); j++) {
-                if (withinPreviousWeek(exerciseDate,
-                                       arguments_.floatingResetDates[j]))
-                    arguments_.floatingResetDates[j] = exerciseDate;
+            for (auto& floatingResetDate : arguments_.floatingResetDates) {
+                if (withinPreviousWeek(exerciseDate, floatingResetDate))
+                    floatingResetDate = exerciseDate;
             }
         }
 

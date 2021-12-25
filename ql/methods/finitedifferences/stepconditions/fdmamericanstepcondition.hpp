@@ -34,12 +34,10 @@ namespace QuantLib {
 
     class FdmAmericanStepCondition : public StepCondition<Array> {
       public:
-        FdmAmericanStepCondition(
-            const ext::shared_ptr<FdmMesher> & mesher,
-            const ext::shared_ptr<FdmInnerValueCalculator> & calculator);
+        FdmAmericanStepCondition(ext::shared_ptr<FdmMesher> mesher,
+                                 ext::shared_ptr<FdmInnerValueCalculator> calculator);
 
-        void applyTo(Array& a,
-                     Time) const;
+        void applyTo(Array& a, Time) const override;
 
       private:
         const ext::shared_ptr<FdmMesher> mesher_;

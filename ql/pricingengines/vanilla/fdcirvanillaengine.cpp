@@ -28,27 +28,25 @@
 #include <ql/pricingengines/vanilla/fdcirvanillaengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/coxingersollrossprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdCIRVanillaEngine::FdCIRVanillaEngine(
-            const ext::shared_ptr<CoxIngersollRossProcess>& cirProcess,
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-            Size tGrid, Size xGrid, Size rGrid, Size dampingSteps,
-            const Real rho,
-            const FdmSchemeDesc& schemeDesc,
-            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper)
-    : tGrid_(tGrid), xGrid_(xGrid), rGrid_(rGrid), dampingSteps_(dampingSteps),
-      rho_(rho),
-      schemeDesc_(schemeDesc),
-      bsProcess_(bsProcess),
-      cirProcess_(cirProcess),
-      quantoHelper_(quantoHelper){
-    }
+        ext::shared_ptr<CoxIngersollRossProcess> cirProcess,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+        Size tGrid,
+        Size xGrid,
+        Size rGrid,
+        Size dampingSteps,
+        const Real rho,
+        const FdmSchemeDesc& schemeDesc,
+        ext::shared_ptr<FdmQuantoHelper> quantoHelper)
+    : tGrid_(tGrid), xGrid_(xGrid), rGrid_(rGrid), dampingSteps_(dampingSteps), rho_(rho),
+      schemeDesc_(schemeDesc), bsProcess_(std::move(bsProcess)), cirProcess_(std::move(cirProcess)),
+      quantoHelper_(std::move(quantoHelper)) {}
 
     FdmSolverDesc FdCIRVanillaEngine::getSolverDesc(Real) const {
-        DividendSchedule dividendSchedule = DividendSchedule();
-
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         const Time maturity = bsProcess_->time(arguments_.exercise->lastDate());
@@ -63,7 +61,7 @@ namespace QuantLib {
                 xGrid_, bsProcess_, maturity, payoff->strike(),
                 Null<Real>(), Null<Real>(), 0.0001, 1.5,
                 std::pair<Real, Real>(payoff->strike(), 0.1),
-                dividendSchedule, quantoHelper_,
+                arguments_.cashFlow, quantoHelper_,
                 0.0));
         
         const ext::shared_ptr<FdmMesher> mesher(
@@ -112,19 +110,13 @@ namespace QuantLib {
     }
 
     MakeFdCIRVanillaEngine::MakeFdCIRVanillaEngine(
-       const ext::shared_ptr<CoxIngersollRossProcess>& cirProcess,
-       const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-       const Real rho)
-      : cirProcess_(cirProcess),
-        bsProcess_(bsProcess),
-        rho_(rho),
-        tGrid_(10),
-        xGrid_(100),
-        rGrid_(100),
-        dampingSteps_(0),
-        schemeDesc_(
-            ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::ModifiedHundsdorfer())),
-        quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()) {}
+        ext::shared_ptr<CoxIngersollRossProcess> cirProcess,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+        const Real rho)
+    : cirProcess_(std::move(cirProcess)), bsProcess_(std::move(bsProcess)), rho_(rho), tGrid_(10),
+      xGrid_(100), rGrid_(100), dampingSteps_(0),
+      schemeDesc_(ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::ModifiedHundsdorfer())),
+      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()) {}
 
     MakeFdCIRVanillaEngine& MakeFdCIRVanillaEngine::withQuantoHelper(
         const ext::shared_ptr<FdmQuantoHelper>& quantoHelper) {

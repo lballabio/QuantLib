@@ -32,8 +32,11 @@
 
 namespace QuantLib {
 
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.22.
+    */
     template <typename baseEngine>
-    class FDAmericanCondition : public baseEngine {
+    class QL_DEPRECATED FDAmericanCondition : public baseEngine {
       public:
         FDAmericanCondition(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -42,9 +45,15 @@ namespace QuantLib {
         : baseEngine(process, timeSteps, gridPoints, timeDependent) {}
       protected:
         void initializeStepCondition() const {
+
+            QL_DEPRECATED_DISABLE_WARNING
+
             baseEngine::stepCondition_ =
                 ext::shared_ptr<StandardStepCondition>(
                   new AmericanCondition(baseEngine::intrinsicValues_.values()));
+
+            QL_DEPRECATED_ENABLE_WARNING
+
         }
     };
 
@@ -57,7 +66,7 @@ namespace QuantLib {
              bool timeDependent = false)
         : baseEngine(process, timeSteps, gridPoints, timeDependent) {}
       protected:
-        void initializeStepCondition() const {
+        void initializeStepCondition() const override {
             Time residualTime = baseEngine::getResidualTime();
             Rate riskFreeRate = baseEngine::process_->riskFreeRate()
                 ->zeroRate(residualTime, Continuous);

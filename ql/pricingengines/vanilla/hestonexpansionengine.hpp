@@ -53,7 +53,7 @@ namespace QuantLib {
         HestonExpansionEngine(const ext::shared_ptr<HestonModel>& model,
                               HestonExpansionFormula formula);
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const HestonExpansionFormula formula_;
@@ -67,7 +67,7 @@ namespace QuantLib {
     */
     class HestonExpansion {
       public:
-        virtual ~HestonExpansion() {}
+        virtual ~HestonExpansion() = default;
         virtual Real impliedVolatility(Real strike, Real forward) const = 0;
     };
 
@@ -80,7 +80,7 @@ namespace QuantLib {
     class LPP2HestonExpansion : public HestonExpansion {
       public:
         LPP2HestonExpansion(Real kappa, Real theta, Real sigma, Real v0, Real rho, Real term);
-        virtual Real impliedVolatility(Real strike, Real forward) const;
+        Real impliedVolatility(Real strike, Real forward) const override;
 
       private:
         Real coeffs[3];
@@ -102,7 +102,7 @@ namespace QuantLib {
     class LPP3HestonExpansion : public HestonExpansion{
       public:
         LPP3HestonExpansion(Real kappa, Real theta, Real sigma, Real v0, Real rho, Real term);
-        virtual Real impliedVolatility(Real strike, Real forward) const;
+        Real impliedVolatility(Real strike, Real forward) const override;
 
       private:
         Real coeffs[4];
@@ -125,7 +125,7 @@ namespace QuantLib {
     class FordeHestonExpansion : public HestonExpansion {
       public:
         FordeHestonExpansion(Real kappa, Real theta, Real sigma, Real v0, Real rho, Real term);
-        virtual Real impliedVolatility(Real strike, Real forward) const;
+        Real impliedVolatility(Real strike, Real forward) const override;
 
       private:
         Real coeffs[5];

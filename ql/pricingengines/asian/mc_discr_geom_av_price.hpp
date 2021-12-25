@@ -26,11 +26,12 @@
 #ifndef quantlib_mc_discrete_geometric_average_price_asian_engine_h
 #define quantlib_mc_discrete_geometric_average_price_asian_engine_h
 
+#include <ql/exercise.hpp>
 #include <ql/pricingengines/asian/mcdiscreteasianenginebase.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -62,7 +63,7 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
     };
 
 
@@ -73,7 +74,8 @@ namespace QuantLib {
                                DiscountFactor discount,
                                Real runningProduct = 1.0,
                                Size pastFixings = 0);
-        Real operator()(const Path& path) const;
+        Real operator()(const Path& path) const override;
+
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
@@ -141,7 +143,7 @@ namespace QuantLib {
     class MakeMCDiscreteGeometricAPEngine {
       public:
         explicit MakeMCDiscreteGeometricAPEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
         // named parameters
         MakeMCDiscreteGeometricAPEngine& withBrownianBridge(bool b = true);
         MakeMCDiscreteGeometricAPEngine& withSamples(Size samples);
@@ -161,12 +163,10 @@ namespace QuantLib {
     };
 
     template <class RNG, class S>
-    inline
-    MakeMCDiscreteGeometricAPEngine<RNG,S>::MakeMCDiscreteGeometricAPEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), antithetic_(false),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), brownianBridge_(true), seed_(0) {}
+    inline MakeMCDiscreteGeometricAPEngine<RNG, S>::MakeMCDiscreteGeometricAPEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), antithetic_(false), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), tolerance_(Null<Real>()), brownianBridge_(true), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCDiscreteGeometricAPEngine<RNG,S>&

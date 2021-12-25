@@ -20,9 +20,10 @@
 #ifndef quantlib_mcforwardvanilla_engine_hpp
 #define quantlib_mcforwardvanilla_engine_hpp
 
-#include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/pricingengines/mcsimulation.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -43,18 +44,17 @@ namespace QuantLib {
         typedef typename McSimulation<MC,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCForwardVanillaEngine(
-             const ext::shared_ptr<StochasticProcess>& process,
-             Size timeSteps,
-             Size timeStepsPerYear,
-             bool brownianBridge,
-             bool antitheticVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed,
-             bool controlVariate = false);
-        void calculate() const {
+        MCForwardVanillaEngine(ext::shared_ptr<StochasticProcess> process,
+                               Size timeSteps,
+                               Size timeStepsPerYear,
+                               bool brownianBridge,
+                               bool antitheticVariate,
+                               Size requiredSamples,
+                               Real requiredTolerance,
+                               Size maxSamples,
+                               BigNatural seed,
+                               bool controlVariate = false);
+        void calculate() const override {
             McSimulation<MC,RNG,S>::calculate(requiredTolerance_,
                                               requiredSamples_,
                                               maxSamples_);
@@ -63,11 +63,12 @@ namespace QuantLib {
             this->results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
         }
+
       protected:
         // McSimulation implementation
-        TimeGrid timeGrid() const;
-        Real controlVariateValue() const;
-        ext::shared_ptr<path_generator_type> pathGenerator() const {
+        TimeGrid timeGrid() const override;
+        Real controlVariateValue() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size dimensions = process_->factors();
             TimeGrid grid = this->timeGrid();
@@ -85,21 +86,20 @@ namespace QuantLib {
         BigNatural seed_;
     };
 
-    template<template <class> class MC, class RNG, class S>
-    inline MCForwardVanillaEngine<MC,RNG,S>::MCForwardVanillaEngine(
-             const ext::shared_ptr<StochasticProcess>& process,
-             Size timeSteps,
-             Size timeStepsPerYear,
-             bool brownianBridge,
-             bool antitheticVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed,
-             bool controlVariate)
-    : McSimulation<MC,RNG,S>(antitheticVariate, controlVariate),
-      process_(process), timeSteps_(timeSteps),
-      timeStepsPerYear_(timeStepsPerYear), requiredSamples_(requiredSamples),
+    template <template <class> class MC, class RNG, class S>
+    inline MCForwardVanillaEngine<MC, RNG, S>::MCForwardVanillaEngine(
+        ext::shared_ptr<StochasticProcess> process,
+        Size timeSteps,
+        Size timeStepsPerYear,
+        bool brownianBridge,
+        bool antitheticVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        BigNatural seed,
+        bool controlVariate)
+    : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate), process_(std::move(process)),
+      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), requiredSamples_(requiredSamples),
       maxSamples_(maxSamples), requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge), seed_(seed) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
@@ -162,14 +162,13 @@ namespace QuantLib {
         ext::shared_ptr<StrikedTypePayoff> newPayoff(new
             PlainVanillaPayoff(payoff->optionType(), strike));
 
-        VanillaOption::arguments* controlArguments =
-            dynamic_cast<VanillaOption::arguments*>(controlPE->getArguments());
+        auto* controlArguments = dynamic_cast<VanillaOption::arguments*>(controlPE->getArguments());
 
         controlArguments->payoff = newPayoff;
         controlArguments->exercise = this->arguments_.exercise;
         controlPE->calculate();
 
-        const VanillaOption::results* controlResults =
+        const auto* controlResults =
             dynamic_cast<const VanillaOption::results*>(controlPE->getResults());
 
         return controlResults->value;

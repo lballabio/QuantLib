@@ -64,7 +64,7 @@ namespace QuantLib {
                                      BusinessDayConvention bdc,
                                      const DayCounter& dc = DayCounter());
         //@}
-        virtual ~OptionletVolatilityStructure() {}
+        ~OptionletVolatilityStructure() override = default;
         //! \name Volatility and Variance
         //@{
         //! returns the volatility for a given option tenor and strike rate

@@ -52,16 +52,14 @@ namespace QuantLib {
                     arguments_.normalizedLeg[0])->accrualStartDate()); 
         results_.expectedTrancheLoss.push_back(e1);// zero or realized losses?
 
-        for (Size i = 0; i < arguments_.normalizedLeg.size(); i++) {
-            if(arguments_.normalizedLeg[i]->hasOccurred(today)) {
+        for (auto& i : arguments_.normalizedLeg) {
+            if (i->hasOccurred(today)) {
                 // add includeSettlement date flows variable to engine.
                 results_.expectedTrancheLoss.push_back(0.);
                 continue;
             }
 
-            const ext::shared_ptr<Coupon> coupon =
-                ext::dynamic_pointer_cast<Coupon>(
-                    arguments_.normalizedLeg[i]);
+            const ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(i);
 
             Date d1 = coupon->accrualStartDate();
             Date d2 = coupon->date();

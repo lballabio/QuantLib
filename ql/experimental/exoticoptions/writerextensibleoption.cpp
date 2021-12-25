@@ -17,8 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/writerextensibleoption.hpp>
 #include <ql/event.hpp>
+#include <ql/experimental/exoticoptions/writerextensibleoption.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -26,17 +27,15 @@ namespace QuantLib {
         const ext::shared_ptr<PlainVanillaPayoff>& payoff1,
         const ext::shared_ptr<Exercise>& exercise1,
         const ext::shared_ptr<PlainVanillaPayoff>& payoff2,
-        const ext::shared_ptr<Exercise>& exercise2)
-    : OneAssetOption(payoff1, exercise1),
-      payoff2_(payoff2), exercise2_(exercise2) {}
+        ext::shared_ptr<Exercise> exercise2)
+    : OneAssetOption(payoff1, exercise1), payoff2_(payoff2), exercise2_(std::move(exercise2)) {}
 
     void WriterExtensibleOption::setupArguments(
                                        PricingEngine::arguments* args) const {
         OneAssetOption::setupArguments(args);
 
-        WriterExtensibleOption::arguments* otherArguments =
-            dynamic_cast<WriterExtensibleOption::arguments*>(args);
-        QL_REQUIRE(otherArguments != 0, "wrong arguments type");
+        auto* otherArguments = dynamic_cast<WriterExtensibleOption::arguments*>(args);
+        QL_REQUIRE(otherArguments != nullptr, "wrong arguments type");
 
         otherArguments->payoff2 = payoff2_;
         otherArguments->exercise2 = exercise2_;

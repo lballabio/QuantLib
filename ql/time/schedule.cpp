@@ -19,9 +19,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/time/schedule.hpp>
-#include <ql/time/imm.hpp>
 #include <ql/settings.hpp>
+#include <ql/time/imm.hpp>
+#include <ql/time/schedule.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -53,16 +54,16 @@ namespace QuantLib {
 
 
     Schedule::Schedule(const std::vector<Date>& dates,
-                       const Calendar& calendar,
+                       Calendar calendar,
                        BusinessDayConvention convention,
                        const boost::optional<BusinessDayConvention>& terminationDateConvention,
                        const boost::optional<Period>& tenor,
                        const boost::optional<DateGeneration::Rule>& rule,
                        const boost::optional<bool>& endOfMonth,
-                       const std::vector<bool>& isRegular)
-    : tenor_(tenor), calendar_(calendar), convention_(convention),
+                       std::vector<bool> isRegular)
+    : tenor_(tenor), calendar_(std::move(calendar)), convention_(convention),
       terminationDateConvention_(terminationDateConvention), rule_(rule), dates_(dates),
-      isRegular_(isRegular) {
+      isRegular_(std::move(isRegular)) {
 
         if (tenor != boost::none && !allowsEndOfMonth(*tenor))
             endOfMonth_ = false;
@@ -78,19 +79,18 @@ namespace QuantLib {
     Schedule::Schedule(Date effectiveDate,
                        const Date& terminationDate,
                        const Period& tenor,
-                       const Calendar& cal,
+                       Calendar cal,
                        BusinessDayConvention convention,
                        BusinessDayConvention terminationDateConvention,
                        DateGeneration::Rule rule,
                        bool endOfMonth,
                        const Date& first,
                        const Date& nextToLast)
-    : tenor_(tenor), calendar_(cal), convention_(convention),
+    : tenor_(tenor), calendar_(std::move(cal)), convention_(convention),
       terminationDateConvention_(terminationDateConvention), rule_(rule),
       endOfMonth_(allowsEndOfMonth(tenor) ? endOfMonth : false),
-      firstDate_(first==effectiveDate ? Date() : first),
-      nextToLastDate_(nextToLast==terminationDate ? Date() : nextToLast)
-    {
+      firstDate_(first == effectiveDate ? Date() : first),
+      nextToLastDate_(nextToLast == terminationDate ? Date() : nextToLast) {
         // sanity checks
         QL_REQUIRE(terminationDate != Date(), "null termination date");
 
@@ -248,6 +248,7 @@ namespace QuantLib {
           case DateGeneration::Twentieth:
           case DateGeneration::TwentiethIMM:
           case DateGeneration::ThirdWednesday:
+          case DateGeneration::ThirdWednesdayInclusive:
           case DateGeneration::OldCDS:
           case DateGeneration::CDS:
           case DateGeneration::CDS2015:
@@ -353,6 +354,9 @@ namespace QuantLib {
                 dates_[i] = Date::nthWeekday(3, Wednesday,
                                              dates_[i].month(),
                                              dates_[i].year());
+        else if (*rule_ == DateGeneration::ThirdWednesdayInclusive)
+            for (auto& date : dates_)
+                date = Date::nthWeekday(3, Wednesday, date.month(), date.year());
 
         if (*endOfMonth_ && calendar_.isEndOfMonth(seed)) {
             // adjust to end of month
@@ -432,7 +436,6 @@ namespace QuantLib {
             "\n termination date: " << terminationDate <<
             "\n generation rule: " << *rule_ <<
             "\n end of month: " << *endOfMonth_);
-
     }
 
     Schedule Schedule::after(const Date& truncationDate) const {
@@ -511,19 +514,19 @@ namespace QuantLib {
     }
 
     Date Schedule::nextDate(const Date& refDate) const {
-        std::vector<Date>::const_iterator res = lower_bound(refDate);
+        auto res = lower_bound(refDate);
         if (res!=dates_.end())
             return *res;
         else
-            return Date();
+            return {};
     }
 
     Date Schedule::previousDate(const Date& refDate) const {
-        std::vector<Date>::const_iterator res = lower_bound(refDate);
+        auto res = lower_bound(refDate);
         if (res!=dates_.begin())
             return *(--res);
         else
-            return Date();
+            return {};
     }
 
     bool Schedule::hasIsRegular() const { return !isRegular_.empty(); }
@@ -541,9 +544,6 @@ namespace QuantLib {
         QL_REQUIRE(!isRegular_.empty(), "full interface (isRegular) not available");
         return isRegular_;
     }
-
-    MakeSchedule::MakeSchedule()
-    : rule_(DateGeneration::Backward), endOfMonth_(false) {}
 
     MakeSchedule& MakeSchedule::from(const Date& effectiveDate) {
         effectiveDate_ = effectiveDate;

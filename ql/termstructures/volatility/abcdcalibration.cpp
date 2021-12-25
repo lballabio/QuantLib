@@ -21,14 +21,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/abcdcalibration.hpp>
-#include <ql/math/optimization/method.hpp>
-#include <ql/math/optimization/constraint.hpp>
-#include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/interpolations/abcdinterpolation.hpp>
+#include <ql/math/optimization/constraint.hpp>
+#include <ql/math/optimization/levenbergmarquardt.hpp>
+#include <ql/math/optimization/method.hpp>
+#include <ql/pricingengines/blackformula.hpp>
+#include <ql/termstructures/volatility/abcd.hpp>
+#include <ql/termstructures/volatility/abcdcalibration.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -52,21 +53,24 @@ namespace QuantLib {
 
     // to constrained <- from unconstrained
 
-    AbcdCalibration::AbcdCalibration(
-               const std::vector<Real>& t,
-               const std::vector<Real>& blackVols,
-               Real a, Real b, Real c, Real d,
-               bool aIsFixed, bool bIsFixed, bool cIsFixed, bool dIsFixed,
-               bool vegaWeighted,
-               const ext::shared_ptr<EndCriteria>& endCriteria,
-               const ext::shared_ptr<OptimizationMethod>& optMethod)
-    : aIsFixed_(aIsFixed), bIsFixed_(bIsFixed),
-      cIsFixed_(cIsFixed), dIsFixed_(dIsFixed),
-      a_(a), b_(b), c_(c), d_(d),
-      abcdEndCriteria_(EndCriteria::None), endCriteria_(endCriteria),
-      optMethod_(optMethod), weights_(blackVols.size(), 1.0/blackVols.size()),
-      vegaWeighted_(vegaWeighted),
-      times_(t), blackVols_(blackVols) {
+    AbcdCalibration::AbcdCalibration(const std::vector<Real>& t,
+                                     const std::vector<Real>& blackVols,
+                                     Real a,
+                                     Real b,
+                                     Real c,
+                                     Real d,
+                                     bool aIsFixed,
+                                     bool bIsFixed,
+                                     bool cIsFixed,
+                                     bool dIsFixed,
+                                     bool vegaWeighted,
+                                     ext::shared_ptr<EndCriteria> endCriteria,
+                                     ext::shared_ptr<OptimizationMethod> optMethod)
+    : aIsFixed_(aIsFixed), bIsFixed_(bIsFixed), cIsFixed_(cIsFixed), dIsFixed_(dIsFixed), a_(a),
+      b_(b), c_(c), d_(d), abcdEndCriteria_(EndCriteria::None),
+      endCriteria_(std::move(endCriteria)), optMethod_(std::move(optMethod)),
+      weights_(blackVols.size(), 1.0 / blackVols.size()), vegaWeighted_(vegaWeighted), times_(t),
+      blackVols_(blackVols) {
 
         AbcdMathFunction::validate(a, b, c, d);
 

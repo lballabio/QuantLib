@@ -197,8 +197,8 @@ void OdeTest::testMatrixExponentialOfZero() {
 
     Matrix m(3, 3, 0.0);
 
-    const Real tol = 100*QL_EPSILON;
-    const Time t=1.0;
+    QL_CONSTEXPR Real tol = 100*QL_EPSILON;
+    QL_CONSTEXPR Time t=1.0;
     const Matrix calculated = Expm(m, t);
 
     for (Size i=0; i < calculated.rows(); ++i) {
@@ -213,7 +213,7 @@ void OdeTest::testMatrixExponentialOfZero() {
 }
 
 test_suite* OdeTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("ode tests");
+    auto* suite = BOOST_TEST_SUITE("ode tests");
     suite->add(QUANTLIB_TEST_CASE(&OdeTest::testAdaptiveRungeKutta));
     suite->add(QUANTLIB_TEST_CASE(&OdeTest::testMatrixExponential));
     suite->add(QUANTLIB_TEST_CASE(&OdeTest::testMatrixExponentialOfZero));

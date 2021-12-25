@@ -43,8 +43,9 @@ namespace QuantLib {
         : public ContinuousFloatingLookbackOption::engine {
       public:
         AnalyticContinuousFloatingLookbackEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
-        void calculate() const;
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        void calculate() const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         CumulativeNormalDistribution f_;

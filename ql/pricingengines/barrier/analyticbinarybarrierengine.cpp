@@ -17,11 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/barrier/analyticbinarybarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/instruments/vanillaoption.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -51,13 +52,9 @@ namespace QuantLib {
     };
 
 
-
-
-
-
     AnalyticBinaryBarrierEngine::AnalyticBinaryBarrierEngine(
-              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
@@ -163,14 +160,14 @@ namespace QuantLib {
         // binary cash-or-nothing payoff?
         ext::shared_ptr<CashOrNothingPayoff> coo =
             ext::dynamic_pointer_cast<CashOrNothingPayoff>(payoff_);
-        if (coo != 0) {
+        if (coo != nullptr) {
             K = coo->cashPayoff();
         }
 
         // binary asset-or-nothing payoff?
         ext::shared_ptr<AssetOrNothingPayoff> aoo =
             ext::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff_);
-        if (aoo != 0) {
+        if (aoo != nullptr) {
             mu += 1.0; 
             K = spot * dividendDiscount / discount; // forward
         }

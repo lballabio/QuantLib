@@ -88,8 +88,7 @@ namespace QuantLib {
         return type * npv;
     }
 
-    VanillaSwap::Type
-    Gaussian1dNonstandardSwaptionEngine::underlyingType() const {
+    Swap::Type Gaussian1dNonstandardSwaptionEngine::underlyingType() const {
         return arguments_.swap->type();
     }
 
@@ -159,7 +158,7 @@ namespace QuantLib {
 
         NonstandardSwap swap = *arguments_.swap;
         Option::Type type =
-            arguments_.type == VanillaSwap::Payer ? Option::Call : Option::Put;
+            arguments_.type == Swap::Payer ? Option::Call : Option::Put;
 
         Array npv0(2 * integrationPoints_ + 1, 0.0),
             npv1(2 * integrationPoints_ + 1, 0.0);
@@ -415,7 +414,7 @@ namespace QuantLib {
                     Real rebate = 0.0;
                     Real zSpreadDf = 1.0;
                     Date rebateDate = expiry0;
-                    if (rebatedExercise != NULL) {
+                    if (rebatedExercise != nullptr) {
                         rebate = rebatedExercise->rebate(idx);
                         rebateDate = rebatedExercise->rebatePaymentDate(idx);
                         zSpreadDf =

@@ -42,19 +42,19 @@ namespace QuantLib {
       public:
         //! \name StrippedOptionletBase interface
         //@{
-        const std::vector<Rate>& optionletStrikes(Size i) const;
-        const std::vector<Volatility>& optionletVolatilities(Size i) const;
+        const std::vector<Rate>& optionletStrikes(Size i) const override;
+        const std::vector<Volatility>& optionletVolatilities(Size i) const override;
 
-        const std::vector<Date>& optionletFixingDates() const;
-        const std::vector<Time>& optionletFixingTimes() const;
-        Size optionletMaturities() const;
+        const std::vector<Date>& optionletFixingDates() const override;
+        const std::vector<Time>& optionletFixingTimes() const override;
+        Size optionletMaturities() const override;
 
-        const std::vector<Rate>& atmOptionletRates() const;
+        const std::vector<Rate>& atmOptionletRates() const override;
 
-        DayCounter dayCounter() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
-        BusinessDayConvention businessDayConvention() const;
+        DayCounter dayCounter() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
+        BusinessDayConvention businessDayConvention() const override;
         //@}
 
         const std::vector<Period>& optionletFixingTenors() const;
@@ -62,13 +62,13 @@ namespace QuantLib {
         const std::vector<Time>& optionletAccrualPeriods() const;
         ext::shared_ptr<CapFloorTermVolSurface> termVolSurface() const;
         ext::shared_ptr<IborIndex> iborIndex() const;
-        Real displacement() const;
-        VolatilityType volatilityType() const;
+        Real displacement() const override;
+        VolatilityType volatilityType() const override;
 
       protected:
         OptionletStripper(const ext::shared_ptr<CapFloorTermVolSurface>&,
-                          const ext::shared_ptr<IborIndex>& iborIndex_,
-                          const Handle<YieldTermStructure>& discount = Handle<YieldTermStructure>(),
+                          ext::shared_ptr<IborIndex> iborIndex_,
+                          Handle<YieldTermStructure> discount = Handle<YieldTermStructure>(),
                           VolatilityType type = ShiftedLognormal,
                           Real displacement = 0.0);
         ext::shared_ptr<CapFloorTermVolSurface> termVolSurface_;

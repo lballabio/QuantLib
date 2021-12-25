@@ -76,17 +76,17 @@ namespace QuantLib {
                              const DayCounter& dc = Actual365Fixed());
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
         //! \name LazyObject interface
         //@{
-        void update();
-        void performCalculations() const;
+        void update() override;
+        void performCalculations() const override;
         //@}
         //! \name some inspectors
         //@{
@@ -95,8 +95,8 @@ namespace QuantLib {
         const std::vector<Time>& optionTimes() const;
         //@}
       protected:
-        Volatility volatilityImpl(Time length,
-                                  Rate) const;
+        Volatility volatilityImpl(Time length, Rate) const override;
+
       private:
         void checkInputs() const;
         void initializeOptionDatesAndTimes() const;

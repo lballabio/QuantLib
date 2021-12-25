@@ -22,11 +22,12 @@
 #ifndef quantlib_mc_discrete_arithmetic_average_price_asian_heston_engine_hpp
 #define quantlib_mc_discrete_arithmetic_average_price_asian_heston_engine_hpp
 
-#include <ql/pricingengines/asian/mcdiscreteasianenginebase.hpp>
-#include <ql/pricingengines/asian/mc_discr_geom_av_price_heston.hpp>
-#include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
-#include <ql/processes/hestonprocess.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
+#include <ql/pricingengines/asian/mc_discr_geom_av_price_heston.hpp>
+#include <ql/pricingengines/asian/mcdiscreteasianenginebase.hpp>
+#include <ql/processes/hestonprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -65,11 +66,11 @@ namespace QuantLib {
              Size timeStepsPerYear = Null<Size>(),
              bool controlVariate = false);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
 
         // Use the experimental analytic geometric asian option as a control variate.
-        ext::shared_ptr<path_pricer_type> controlPathPricer() const;
-        ext::shared_ptr<PricingEngine> controlPricingEngine() const {
+        ext::shared_ptr<path_pricer_type> controlPathPricer() const override;
+        ext::shared_ptr<PricingEngine> controlPricingEngine() const override {
             ext::shared_ptr<P> process = ext::dynamic_pointer_cast<P>(this->process_);
             QL_REQUIRE(process, "Heston-like process required");
 
@@ -83,8 +84,7 @@ namespace QuantLib {
               class S = Statistics, class P = HestonProcess>
     class MakeMCDiscreteArithmeticAPHestonEngine {
       public:
-        explicit MakeMCDiscreteArithmeticAPHestonEngine(
-            const ext::shared_ptr<P>& process);
+        explicit MakeMCDiscreteArithmeticAPHestonEngine(ext::shared_ptr<P> process);
         // named parameters
         MakeMCDiscreteArithmeticAPHestonEngine& withSamples(Size samples);
         MakeMCDiscreteArithmeticAPHestonEngine& withAbsoluteTolerance(Real tolerance);
@@ -110,10 +110,11 @@ namespace QuantLib {
         ArithmeticAPOHestonPathPricer(Option::Type type,
                                       Real strike,
                                       DiscountFactor discount,
-                                      const std::vector<Size>& fixingIndices,
+                                      std::vector<Size> fixingIndices,
                                       Real runningSum = 0.0,
                                       Size pastFixings = 0);
-        Real operator()(const MultiPath& multiPath) const;
+        Real operator()(const MultiPath& multiPath) const override;
+
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
@@ -160,8 +161,9 @@ namespace QuantLib {
         TimeGrid timeGrid = this->timeGrid();
         std::vector<Time> fixingTimes = timeGrid.mandatoryTimes();
         std::vector<Size> fixingIndexes;
-        for (Size i=0; i<fixingTimes.size(); i++) {
-            fixingIndexes.push_back(timeGrid.closestIndex(fixingTimes[i]));
+        fixingIndexes.reserve(fixingTimes.size());
+        for (double fixingTime : fixingTimes) {
+            fixingIndexes.push_back(timeGrid.closestIndex(fixingTime));
         }
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
@@ -198,8 +200,9 @@ namespace QuantLib {
         TimeGrid timeGrid = this->timeGrid();
         std::vector<Time> fixingTimes = timeGrid.mandatoryTimes();
         std::vector<Size> fixingIndexes;
-        for (Size i=0; i<fixingTimes.size(); i++) {
-            fixingIndexes.push_back(timeGrid.closestIndex(fixingTimes[i]));
+        fixingIndexes.reserve(fixingTimes.size());
+        for (double fixingTime : fixingTimes) {
+            fixingIndexes.push_back(timeGrid.closestIndex(fixingTime));
         }
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
@@ -231,9 +234,9 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>::MakeMCDiscreteArithmeticAPHestonEngine(
-             const ext::shared_ptr<P>& process)
-    : process_(process), antithetic_(false), controlVariate_(false),
+    inline MakeMCDiscreteArithmeticAPHestonEngine<RNG, S, P>::
+    MakeMCDiscreteArithmeticAPHestonEngine(ext::shared_ptr<P> process)
+    : process_(std::move(process)), antithetic_(false), controlVariate_(false),
       samples_(Null<Size>()), maxSamples_(Null<Size>()), steps_(Null<Size>()),
       stepsPerYear_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
 

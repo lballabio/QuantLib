@@ -33,26 +33,26 @@ namespace QuantLib {
 
     class SpreadedSmileSection : public SmileSection {
       public:
-        SpreadedSmileSection(const ext::shared_ptr<SmileSection>&,
-                             const Handle<Quote>& spread);
+        SpreadedSmileSection(ext::shared_ptr<SmileSection>, Handle<Quote> spread);
         //! \name SmileSection interface
         //@{
-        Real minStrike () const;
-        Real maxStrike () const;
-        Real atmLevel() const;
-        const Date& exerciseDate() const;
-        Time exerciseTime() const;
-        const DayCounter& dayCounter() const;
-        const Date& referenceDate() const;
-        VolatilityType volatilityType() const;
-        Rate shift() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
+        Real atmLevel() const override;
+        const Date& exerciseDate() const override;
+        Time exerciseTime() const override;
+        const DayCounter& dayCounter() const override;
+        const Date& referenceDate() const override;
+        VolatilityType volatilityType() const override;
+        Rate shift() const override;
         //@}
         //! \name LazyObject interface
         //@{
-        void update() { notifyObservers(); }
+        void update() override { notifyObservers(); }
         //@}
       protected:
-        Volatility volatilityImpl(Rate strike) const;
+        Volatility volatilityImpl(Rate strike) const override;
+
       private:
         const ext::shared_ptr<SmileSection> underlyingSection_;
         const Handle<Quote> spread_;

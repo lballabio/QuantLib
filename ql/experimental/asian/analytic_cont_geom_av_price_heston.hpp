@@ -65,10 +65,10 @@ namespace QuantLib {
         : public ContinuousAveragingAsianOption::engine {
       public:
         explicit AnalyticContinuousGeometricAveragePriceAsianHestonEngine(
-            const ext::shared_ptr<HestonProcess>& process,
+            ext::shared_ptr<HestonProcess> process,
             Size summationCutoff = 50,
             Real xiRightLimit = 100.0);
-        void calculate() const;
+        void calculate() const override;
 
         // Phi, defined in eq (25). Must be public so the integrand can access it (Could
         // use friend functions I think, but perhaps overkill?)

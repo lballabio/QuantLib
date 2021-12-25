@@ -21,32 +21,32 @@
     \brief FDM operator for the SABR model
 */
 
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
-#include <ql/methods/finitedifferences/operators/fdmsabrop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/operators/fdmsabrop.hpp>
 #include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
-    FdmSabrOp::FdmSabrOp(
-        const ext::shared_ptr<FdmMesher>& mesher,
-        const ext::shared_ptr<YieldTermStructure>& rTS,
-        Real f0, Real alpha, Real beta, Real nu, Real rho)
-    : rTS_  (rTS),
-      dffMap_(SecondDerivativeOp(0, mesher).
-          mult(0.5 * Exp(2.0*mesher->locations(1))
-               * Pow(mesher->locations(0), 2.0*beta))),
-      dxMap_(FirstDerivativeOp(1, mesher).
-          mult(Array(mesher->layout()->size(), -0.5*nu*nu))),
-      dxxMap_(SecondDerivativeOp(1, mesher).
-          mult(Array(mesher->layout()->size(),  0.5*nu*nu))),
-      correlationMap_(SecondOrderMixedDerivativeOp(0, 1, mesher).
-          mult(rho * nu * Exp(mesher->locations(1))
-               * Pow(mesher->locations(0), beta))),
-      mapF_(0, mesher),
-      mapA_(1, mesher) { }
+    FdmSabrOp::FdmSabrOp(const ext::shared_ptr<FdmMesher>& mesher,
+                         ext::shared_ptr<YieldTermStructure> rTS,
+                         Real f0,
+                         Real alpha,
+                         Real beta,
+                         Real nu,
+                         Real rho)
+    : rTS_(std::move(rTS)),
+      dffMap_(SecondDerivativeOp(0, mesher).mult(0.5 * Exp(2.0 * mesher->locations(1)) *
+                                                 Pow(mesher->locations(0), 2.0 * beta))),
+      dxMap_(FirstDerivativeOp(1, mesher).mult(Array(mesher->layout()->size(), -0.5 * nu * nu))),
+      dxxMap_(SecondDerivativeOp(1, mesher).mult(Array(mesher->layout()->size(), 0.5 * nu * nu))),
+      correlationMap_(
+          SecondOrderMixedDerivativeOp(0, 1, mesher)
+              .mult(rho * nu * Exp(mesher->locations(1)) * Pow(mesher->locations(0), beta))),
+      mapF_(0, mesher), mapA_(1, mesher) {}
 
     void FdmSabrOp::setTime(Time t1, Time t2) {
         const Rate r = rTS_->forwardRate(t1, t2, Continuous).rate();
@@ -96,7 +96,6 @@ namespace QuantLib {
         return solve_splitting(1, solve_splitting(0, r, dt), dt) ;
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> > FdmSabrOp::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal(3);
 
@@ -106,5 +105,5 @@ namespace QuantLib {
 
         return retVal;
     }
-#endif
+
 }

@@ -162,7 +162,7 @@ namespace QuantLib {
             if (d > length)
                 d = length;
 
-            return Date(d, Month(m), y);
+            return {d, Month(m), y};
           }
           case Years: {
               Day d = date.dayOfMonth();
@@ -176,7 +176,7 @@ namespace QuantLib {
               if (d == 29 && m == February && !isLeap(y))
                   d = 28;
 
-              return Date(d,m,y);
+              return {d, m, y};
           }
           default:
             QL_FAIL("undefined time units");
@@ -773,11 +773,9 @@ namespace QuantLib {
         std::time_t t;
 
         if (std::time(&t) == std::time_t(-1)) // -1 means time() didn't work
-            return Date();
+            return {};
         std::tm *lt = std::localtime(&t);
-        return Date(Day(lt->tm_mday),
-                        Month(lt->tm_mon+1),
-                        Year(lt->tm_year+1900));
+        return {Day(lt->tm_mday), Month(lt->tm_mon + 1), Year(lt->tm_year + 1900)};
     }
 
     Date Date::nextWeekday(const Date& d, Weekday dayOfWeek) {
@@ -793,7 +791,7 @@ namespace QuantLib {
                    "no more than 5 weekday in a given (month, year)");
         Weekday first = Date(1, m, y).weekday();
         Size skip = nth - (dayOfWeek>=first ? 1 : 0);
-        return Date((1 + dayOfWeek + skip*7) - first, m, y);
+        return {Day((1 + dayOfWeek + skip * 7) - first), m, y};
     }
 
     // month formatting
@@ -854,7 +852,7 @@ namespace QuantLib {
             // if the object out passed in the constructor is destroyed
             // before this instance
             struct nopunct : std::numpunct<char> {
-                std::string do_grouping() const {return "";}
+                std::string do_grouping() const override { return ""; }
             };
             explicit FormatResetter(std::ostream &out)
                 : out_(&out), flags_(out.flags()), filler_(out.fill()),

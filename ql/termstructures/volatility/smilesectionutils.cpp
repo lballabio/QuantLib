@@ -81,15 +81,12 @@ namespace QuantLib {
         }
 
         bool minStrikeAdded = false, maxStrikeAdded = false;
-        for (Size i = 0; i < tmp.size(); i++) {
-            Real k = section.volatilityType() == Normal
-                         ? f_ + tmp[i]
-                         : tmp[i] * (f_ + shift) - shift;
-            if ((section.volatilityType() == ShiftedLognormal &&
-                 tmp[i] <= QL_EPSILON) ||
+        for (double& i : tmp) {
+            Real k = section.volatilityType() == Normal ? f_ + i : i * (f_ + shift) - shift;
+            if ((section.volatilityType() == ShiftedLognormal && i <= QL_EPSILON) ||
                 (k >= section.minStrike() && k <= section.maxStrike())) {
                 if (!minStrikeAdded || !close(k, section.minStrike())) {
-                    m_.push_back(tmp[i]);
+                    m_.push_back(i);
                     k_.push_back(k);
                 }
                 if (close(k, section.maxStrike()))
@@ -141,7 +138,7 @@ namespace QuantLib {
             centralIndex++;
 
         QL_REQUIRE(centralIndex < k_.size(),
-                   "central index is at right boundary")
+                   "central index is at right boundary");
 
         leftIndex_ = centralIndex;
         rightIndex_ = centralIndex;
@@ -197,11 +194,11 @@ namespace QuantLib {
     }
 
     std::pair<Real, Real> SmileSectionUtils::arbitragefreeRegion() const {
-        return std::pair<Real, Real>(k_[leftIndex_], k_[rightIndex_]);
+        return {k_[leftIndex_], k_[rightIndex_]};
     }
 
     std::pair<Size, Size> SmileSectionUtils::arbitragefreeIndices() const {
-        return std::pair<Size, Size>(leftIndex_, rightIndex_);
+        return {leftIndex_, rightIndex_};
     }
 
     bool SmileSectionUtils::af(const Size i0, const Size i,

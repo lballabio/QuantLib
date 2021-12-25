@@ -26,9 +26,10 @@
 #ifndef quantlib_mcdiscreteasian_engine_base_hpp
 #define quantlib_mcdiscreteasian_engine_base_hpp
 
-#include <ql/pricingengines/mcsimulation.hpp>
-#include <ql/instruments/asianoption.hpp>
 #include <ql/exercise.hpp>
+#include <ql/instruments/asianoption.hpp>
+#include <ql/pricingengines/mcsimulation.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -63,19 +64,17 @@ namespace QuantLib {
         typedef typename McSimulation<MC,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCDiscreteAveragingAsianEngineBase(
-             const ext::shared_ptr<StochasticProcess>& process,
-             bool brownianBridge,
-             bool antitheticVariate,
-             bool controlVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed,
-             Size timeSteps = Null<Size>(),
-             Size timeStepsPerYear = Null<Size>()
-        );
-        void calculate() const {
+        MCDiscreteAveragingAsianEngineBase(ext::shared_ptr<StochasticProcess> process,
+                                           bool brownianBridge,
+                                           bool antitheticVariate,
+                                           bool controlVariate,
+                                           Size requiredSamples,
+                                           Real requiredTolerance,
+                                           Size maxSamples,
+                                           BigNatural seed,
+                                           Size timeSteps = Null<Size>(),
+                                           Size timeStepsPerYear = Null<Size>());
+        void calculate() const override {
             try {
                 McSimulation<MC,RNG,S>::calculate(requiredTolerance_,
                                                   requiredSamples_,
@@ -97,16 +96,17 @@ namespace QuantLib {
             }
                 
             if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
-                this->mcModel_->sampleAccumulator().errorEstimate();
+                results_.errorEstimate =
+                    this->mcModel_->sampleAccumulator().errorEstimate();
 
             // Allow inspection of the timeGrid via additional results
             this->results_.additionalResults["TimeGrid"] = this->timeGrid();
         }
+
       protected:
         // McSimulation implementation
-        TimeGrid timeGrid() const;
-        ext::shared_ptr<path_generator_type> pathGenerator() const {
+        TimeGrid timeGrid() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Size dimensions = process_->factors();
             TimeGrid grid = this->timeGrid();
@@ -116,7 +116,7 @@ namespace QuantLib {
                          new path_generator_type(process_, grid,
                                                  gen, brownianBridge_));
         }
-        Real controlVariateValue() const;
+        Real controlVariateValue() const override;
         // data members
         ext::shared_ptr<StochasticProcess> process_;
         Size requiredSamples_, maxSamples_, timeSteps_, timeStepsPerYear_;
@@ -128,23 +128,22 @@ namespace QuantLib {
 
     // template definitions
 
-    template<template <class> class MC, class RNG, class S>
-    inline
-    MCDiscreteAveragingAsianEngineBase<MC,RNG,S>::MCDiscreteAveragingAsianEngineBase(
-             const ext::shared_ptr<StochasticProcess>& process,
-             bool brownianBridge,
-             bool antitheticVariate,
-             bool controlVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             BigNatural seed,
-             Size timeSteps,
-             Size timeStepsPerYear)
-    : McSimulation<MC,RNG,S>(antitheticVariate, controlVariate),
-      process_(process), requiredSamples_(requiredSamples), maxSamples_(maxSamples), 
-      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), 
-      requiredTolerance_(requiredTolerance), brownianBridge_(brownianBridge), seed_(seed) {
+    template <template <class> class MC, class RNG, class S>
+    inline MCDiscreteAveragingAsianEngineBase<MC, RNG, S>::MCDiscreteAveragingAsianEngineBase(
+        ext::shared_ptr<StochasticProcess> process,
+        bool brownianBridge,
+        bool antitheticVariate,
+        bool controlVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        BigNatural seed,
+        Size timeSteps,
+        Size timeStepsPerYear)
+    : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate), process_(std::move(process)),
+      requiredSamples_(requiredSamples), maxSamples_(maxSamples), timeSteps_(timeSteps),
+      timeStepsPerYear_(timeStepsPerYear), requiredTolerance_(requiredTolerance),
+      brownianBridge_(brownianBridge), seed_(seed) {
         registerWith(process_);
     }
 
@@ -189,15 +188,13 @@ namespace QuantLib {
                        "engine does not provide "
                        "control variation pricing engine");
 
-            DiscreteAveragingAsianOption::arguments* controlArguments =
-                dynamic_cast<DiscreteAveragingAsianOption::arguments*>(
-                    controlPE->getArguments());
+            auto* controlArguments =
+                dynamic_cast<DiscreteAveragingAsianOption::arguments*>(controlPE->getArguments());
             *controlArguments = arguments_;
             controlPE->calculate();
 
-            const DiscreteAveragingAsianOption::results* controlResults =
-                dynamic_cast<const DiscreteAveragingAsianOption::results*>(
-                    controlPE->getResults());
+            const auto* controlResults =
+                dynamic_cast<const DiscreteAveragingAsianOption::results*>(controlPE->getResults());
 
             return controlResults->value;
     }

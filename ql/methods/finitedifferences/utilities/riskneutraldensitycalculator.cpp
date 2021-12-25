@@ -21,9 +21,9 @@
 #include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/methods/finitedifferences/utilities/riskneutraldensitycalculator.hpp>
-#include <ql/functional.hpp>
 
 namespace QuantLib {
+
     RiskNeutralDensityCalculator::InvCDFHelper::InvCDFHelper(
         const RiskNeutralDensityCalculator* calculator,
         Real guess, Real accuracy, Size maxEvaluations,
@@ -34,17 +34,11 @@ namespace QuantLib {
       maxEvaluations_(maxEvaluations),
       stepSize_(stepSize) { }
 
-    Real RiskNeutralDensityCalculator::InvCDFHelper::inverseCDF(Real p, Time t)
-    const {
-        using namespace ext::placeholders;
-
-        const ext::function<Real(Real)> cdf
-            = ext::bind(&RiskNeutralDensityCalculator::cdf,
-                          calculator_, _1, t);
-
+    Real RiskNeutralDensityCalculator::InvCDFHelper::inverseCDF(Real p, Time t) const {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations_);
-        return solver.solve(compose(subtract<Real>(p), cdf),
+        return solver.solve([&](Real _x){ return calculator_->cdf(_x, t) - p; },
                             accuracy_, guess_, stepSize_);
     }
+
 }

@@ -18,13 +18,14 @@
 */
 
 #include <ql/pricingengines/cliquet/mcperformanceengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    PerformanceOptionPathPricer::PerformanceOptionPathPricer(
-                                 Option::Type type, Real strike,
-                                 const std::vector<DiscountFactor>& discounts)
-    : strike_(strike), type_(type), discounts_(discounts) {}
+    PerformanceOptionPathPricer::PerformanceOptionPathPricer(Option::Type type,
+                                                             Real strike,
+                                                             std::vector<DiscountFactor> discounts)
+    : strike_(strike), type_(type), discounts_(std::move(discounts)) {}
 
     Real PerformanceOptionPathPricer::operator()(const Path& path) const {
 

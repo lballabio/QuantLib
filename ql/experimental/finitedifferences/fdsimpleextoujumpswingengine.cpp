@@ -22,36 +22,35 @@
 */
 
 
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
-#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpmodelinnervalue.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmsimpleswingcondition.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-#include <ql/methods/finitedifferences/solvers/fdm3dimsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmsimple3dextoujumpsolver.hpp>
 #include <ql/experimental/finitedifferences/fdsimpleextoujumpswingengine.hpp>
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
+#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
+#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/solvers/fdm3dimsolver.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmsimpleswingcondition.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdSimpleExtOUJumpSwingEngine::FdSimpleExtOUJumpSwingEngine(
-              const ext::shared_ptr<ExtOUWithJumpsProcess>& process,
-              const ext::shared_ptr<YieldTermStructure>& rTS,
-              Size tGrid, Size xGrid, Size yGrid,
-              const ext::shared_ptr<Shape>& shape,
-              const FdmSchemeDesc& schemeDesc)
-    : process_(process),
-      rTS_(rTS),
-      shape_(shape),
-      tGrid_(tGrid), xGrid_(xGrid), yGrid_(yGrid),
-      schemeDesc_(schemeDesc) {
-    }
+        ext::shared_ptr<ExtOUWithJumpsProcess> process,
+        ext::shared_ptr<YieldTermStructure> rTS,
+        Size tGrid,
+        Size xGrid,
+        Size yGrid,
+        ext::shared_ptr<Shape> shape,
+        const FdmSchemeDesc& schemeDesc)
+    : process_(std::move(process)), rTS_(std::move(rTS)), shape_(std::move(shape)), tGrid_(tGrid),
+      xGrid_(xGrid), yGrid_(yGrid), schemeDesc_(schemeDesc) {}
 
     void FdSimpleExtOUJumpSwingEngine::calculate() const {
 

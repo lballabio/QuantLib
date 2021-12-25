@@ -6,6 +6,7 @@ this_include_HEADERS = \
     all.hpp \
     btp.hpp \
     cmsratebond.hpp \
+    convertiblebonds.hpp \
     cpibond.hpp \
     fixedratebond.hpp \
     floatingratebond.hpp \
@@ -14,6 +15,7 @@ this_include_HEADERS = \
 cpp_files = \
     btp.cpp \
     cmsratebond.cpp \
+    convertiblebonds.cpp \
     cpibond.cpp \
     fixedratebond.cpp \
     floatingratebond.cpp \

@@ -77,10 +77,10 @@ namespace QuantLib {
 
         //! \name VolatilityCompositor interface
         //@{
-        time_series calculate(const time_series& quoteSeries) {
+        time_series calculate(const time_series& quoteSeries) override {
             return calculate(quoteSeries, alpha(), beta(), omega());
         }
-        void calibrate(const time_series& quoteSeries) {
+        void calibrate(const time_series& quoteSeries) override {
             calibrate(quoteSeries.cbegin_values(), quoteSeries.cend_values());
         }
         //@}

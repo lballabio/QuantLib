@@ -26,16 +26,12 @@ this_include_HEADERS = \
     integralengine.hpp \
     jumpdiffusionengine.hpp \
     juquadraticengine.hpp \
-    fdamericanengine.hpp \
 	fdbatesvanillaengine.hpp \
-    fdbermudanengine.hpp \
 	fdblackscholesvanillaengine.hpp \
+	fdblackscholesshoutengine.hpp \
 	fdcevvanillaengine.hpp \
-    fddividendamericanengine.hpp \
     fddividendengine.hpp \
-    fddividendeuropeanengine.hpp \
     fddividendshoutengine.hpp \
-    fdeuropeanengine.hpp \
 	fdhestonhullwhitevanillaengine.hpp \
 	fdhestonvanillaengine.hpp \
 	fdcirvanillaengine.hpp \
@@ -78,6 +74,7 @@ cpp_files = \
     juquadraticengine.cpp \
 	fdbatesvanillaengine.cpp \
 	fdblackscholesvanillaengine.cpp \
+	fdblackscholesshoutengine.cpp \
 	fdcevvanillaengine.cpp \
 	fdhestonhullwhitevanillaengine.cpp \
 	fdhestonvanillaengine.cpp \

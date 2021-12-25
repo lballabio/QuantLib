@@ -18,29 +18,30 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/callablebonds/callablebond.hpp>
-#include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
+#include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
+#include <ql/experimental/callablebonds/callablebond.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     CallableBond::CallableBond(Natural settlementDays,
                                const Schedule& schedule,
-                               const DayCounter& paymentDayCounter,
+                               DayCounter paymentDayCounter,
                                const Date& issueDate,
-                               const CallabilitySchedule& putCallSchedule)
+                               CallabilitySchedule putCallSchedule)
     : Bond(settlementDays, schedule.calendar(), issueDate),
-      paymentDayCounter_(paymentDayCounter), putCallSchedule_(putCallSchedule) {
+      paymentDayCounter_(std::move(paymentDayCounter)),
+      putCallSchedule_(std::move(putCallSchedule)) {
 
         maturityDate_ = schedule.dates().back();
 
         if (!putCallSchedule_.empty()) {
             Date finalOptionDate = Date::minDate();
-            for (Size i=0; i<putCallSchedule_.size();++i) {
-                finalOptionDate=std::max(finalOptionDate,
-                                         putCallSchedule_[i]->date());
+            for (auto& i : putCallSchedule_) {
+                finalOptionDate = std::max(finalOptionDate, i->date());
             }
             QL_REQUIRE(finalOptionDate <= maturityDate_ ,
                        "Bond cannot mature before last call/put date");
@@ -228,8 +229,7 @@ namespace QuantLib {
 
    Real CallableBond::NPVSpreadHelper::operator()(Real x) const
    {
-       CallableBond::arguments* args=
-           dynamic_cast<CallableBond::arguments*>(bond_.engine_->getArguments());
+       auto* args = dynamic_cast<CallableBond::arguments*>(bond_.engine_->getArguments());
        // Pops the original value when function finishes
        RestoreVal<Spread> restorer(args->spread);
        args->spread=x;
@@ -414,12 +414,11 @@ namespace QuantLib {
         if (settlement == Date()) settlement = settlementDate();
 
         const bool IncludeToday = false;
-        for (Size i = 0; i<cashflows_.size(); ++i) {
+        for (const auto& cashflow : cashflows_) {
             // the first coupon paying after d is the one we're after
-            if (!cashflows_[i]->hasOccurred(settlement,IncludeToday)) {
-                ext::shared_ptr<Coupon> coupon =
-                    ext::dynamic_pointer_cast<Coupon>(cashflows_[i]);
-                if (coupon != 0)
+            if (!cashflow->hasOccurred(settlement, IncludeToday)) {
+                ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(cashflow);
+                if (coupon != nullptr)
                     // !!!
                     return coupon->accruedAmount(settlement) /
                            notional(settlement) * 100.0;
@@ -436,10 +435,9 @@ namespace QuantLib {
 
         CallableBond::setupArguments(args);
 
-        CallableBond::arguments* arguments =
-            dynamic_cast<CallableBond::arguments*>(args);
+        auto* arguments = dynamic_cast<CallableBond::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, "no arguments given");
+        QL_REQUIRE(arguments != nullptr, "no arguments given");
 
         Date settlement = arguments->settlementDate;
 
@@ -470,21 +468,18 @@ namespace QuantLib {
         arguments->frequency = frequency_;
 
         arguments->putCallSchedule = putCallSchedule_;
-        for (Size i=0; i<putCallSchedule_.size(); i++) {
-            if (!putCallSchedule_[i]->hasOccurred(settlement, false)) {
-                arguments->callabilityDates.push_back(
-                                                 putCallSchedule_[i]->date());
-                arguments->callabilityPrices.push_back(
-                                       putCallSchedule_[i]->price().amount());
+        for (const auto& i : putCallSchedule_) {
+            if (!i->hasOccurred(settlement, false)) {
+                arguments->callabilityDates.push_back(i->date());
+                arguments->callabilityPrices.push_back(i->price().amount());
 
-                if (putCallSchedule_[i]->price().type() == Bond::Price::Clean) {
+                if (i->price().type() == Bond::Price::Clean) {
                     /* calling accrued() forces accrued interest to be zero
                        if future option date is also coupon date, so that dirty
                        price = clean price. Use here because callability is
                        always applied before coupon in the tree engine.
                     */
-                    arguments->callabilityPrices.back() +=
-                        this->accrued(putCallSchedule_[i]->date());
+                    arguments->callabilityPrices.back() += this->accrued(i->date());
                 }
             }
         }

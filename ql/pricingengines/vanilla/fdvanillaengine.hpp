@@ -27,12 +27,13 @@
 #ifndef quantlib_fd_vanilla_engine_hpp
 #define quantlib_fd_vanilla_engine_hpp
 
-#include <ql/pricingengine.hpp>
-#include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
-#include <ql/methods/finitedifferences/boundarycondition.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/sampledcurve.hpp>
+#include <ql/methods/finitedifferences/boundarycondition.hpp>
+#include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
 #include <ql/payoff.hpp>
+#include <ql/pricingengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 
 namespace QuantLib {
@@ -45,14 +46,13 @@ namespace QuantLib {
     */
     class FDVanillaEngine {
       public:
-        FDVanillaEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps, Size gridPoints,
-             bool timeDependent = false)
-        : process_(process), timeSteps_(timeSteps), gridPoints_(gridPoints),
-          timeDependent_(timeDependent),
-          intrinsicValues_(gridPoints), BCs_(2) {}
-        virtual ~FDVanillaEngine() {}
+        FDVanillaEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                        Size timeSteps,
+                        Size gridPoints,
+                        bool timeDependent = false)
+        : process_(std::move(process)), timeSteps_(timeSteps), gridPoints_(gridPoints),
+          timeDependent_(timeDependent), intrinsicValues_(gridPoints), BCs_(2) {}
+        virtual ~FDVanillaEngine() = default;
         // accessors
         const Array& grid() const { return intrinsicValues_.grid(); }
       protected:
@@ -96,7 +96,7 @@ namespace QuantLib {
         }
       private:
         using base::calculate;
-        void calculate() const {
+        void calculate() const override {
             base::setupArguments(&(this->arguments_));
             base::calculate(&(this->results_));
         }

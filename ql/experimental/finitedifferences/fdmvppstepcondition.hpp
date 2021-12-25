@@ -49,15 +49,14 @@ namespace QuantLib {
 
     class FdmVPPStepCondition : public StepCondition<Array> {
       public:
-        FdmVPPStepCondition(
-            const FdmVPPStepConditionParams& params,
-            Size nStates,
-            const FdmVPPStepConditionMesher& mesh,
-            const ext::shared_ptr<FdmInnerValueCalculator>& gasPrice,
-            const ext::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice);
+        FdmVPPStepCondition(const FdmVPPStepConditionParams& params,
+                            Size nStates,
+                            const FdmVPPStepConditionMesher& mesh,
+                            ext::shared_ptr<FdmInnerValueCalculator> gasPrice,
+                            ext::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice);
 
         Size nStates() const;
-        void applyTo(Array& a, Time t) const;
+        void applyTo(Array& a, Time t) const override;
 
         virtual Real maxValue(const Array& states) const = 0;
 

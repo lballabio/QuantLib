@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2020 Jack Gillett
+ Copyright (C) 2020, 2021 Jack Gillett
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,6 +18,7 @@
 */
 
 #include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -35,13 +36,14 @@ namespace QuantLib {
         Integrand(Real t,
                   Real T,
                   Size kStar,
-                  const std::vector<Time>& t_n,
-                  const std::vector<Time>& tauK,
+                  std::vector<Time> t_n,
+                  std::vector<Time> tauK,
                   Real K,
                   const AnalyticDiscreteGeometricAveragePriceAsianHestonEngine* const parent,
-                  Real xiRightLimit) : t_(t), T_(T), K_(K), logK_(std::log(K)),
-                                       kStar_(kStar), t_n_(t_n), tauK_(tauK), parent_(parent), xiRightLimit_(xiRightLimit),
-                                       i_(std::complex<Real>(0.0, 1.0)) {}
+                  Real xiRightLimit)
+        : t_(t), T_(T), K_(K), logK_(std::log(K)), kStar_(kStar), t_n_(std::move(t_n)),
+          tauK_(std::move(tauK)), parent_(parent), xiRightLimit_(xiRightLimit),
+          i_(std::complex<Real>(0.0, 1.0)) {}
 
         double operator()(double xi) const {
             double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
@@ -56,9 +58,8 @@ namespace QuantLib {
 
     AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::
         AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(
-            const ext::shared_ptr<HestonProcess>& process,
-            Real xiRightLimit)
-    : process_(process), xiRightLimit_(xiRightLimit), integrator_(128) {
+            ext::shared_ptr<HestonProcess> process, Real xiRightLimit)
+    : process_(std::move(process)), xiRightLimit_(xiRightLimit), integrator_(128) {
         registerWith(process_);
 
         v0_ = process_->v0();
@@ -95,8 +96,8 @@ namespace QuantLib {
 
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::z(
             const std::complex<Real>& s, const std::complex<Real>& w, Size k, Size n) const {
-        double k_ = double(k);
-        double n_ = double(n);
+        auto k_ = double(k);
+        auto n_ = double(n);
         std::complex<Real> term1 = (2*rho_*kappa_ - sigma_)*((n_-k_+1)*s + n_*w)/(2*sigma_*n_);
         std::complex<Real> term2 = (1-rho_*rho_)*pow(((n_-k_+1)*s + n_*w), 2)/(2*n_*n_);
 
@@ -119,8 +120,8 @@ namespace QuantLib {
             const std::complex<Real>& w,
             Time t, Time T, Size kStar,
             const std::vector<Time>& t_n) const {
-        double kStar_ = double(kStar);
-        double n_ = double(t_n.size());
+        auto kStar_ = double(kStar);
+        auto n_ = double(t_n.size());
         Real temp = -rho_*kappa_*theta_/sigma_;
 
         Time summation = 0.0;
@@ -207,6 +208,19 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
+        Real runningLog;
+        Size pastFixings;
+        if (arguments_.averageType == Average::Geometric) {
+            QL_REQUIRE(arguments_.runningAccumulator>0.0,
+                       "positive running product required: "
+                       << arguments_.runningAccumulator << " not allowed");
+            runningLog = std::log(arguments_.runningAccumulator);
+            pastFixings = arguments_.pastFixings;
+        } else {  // it is being used as control variate
+            runningLog = 0.0;
+            pastFixings = 0;
+        }
+
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
@@ -219,30 +233,28 @@ namespace QuantLib {
 
         Real expiryDcf = riskFreeRate_->discount(expiryTime);
 
+        Time startTime = 0.0;
         std::vector<Time> fixingTimes, tauK;
-        for (Size i=0; i<arguments_.fixingDates.size(); i++) {
-            fixingTimes.push_back(this->process_->time(arguments_.fixingDates[i]));
+        for (auto& fixingDate : arguments_.fixingDates) {
+            fixingTimes.push_back(this->process_->time(fixingDate));
         }
         std::sort(fixingTimes.begin(), fixingTimes.end());
+        tauK = fixingTimes;
 
-
-        // TODO: extend to cover seasoned options (discussed in paper)
-        Time startTime = 0.0;
-
-
-        Size kStar = 0;
-        for (Size i=0; i<fixingTimes.size(); i++) {
-            if (startTime > fixingTimes[i]) {
-                kStar = i+1;
-            } else {
-                tauK.push_back(this->process_->time(arguments_.fixingDates[i]));
-            }
-        }
-
-        // tauK is just a vector of the sorted fixing times from the kStar element
-        // onwards, with t pushed on the front and T pushed on the back!
+        // tauK is just a vector of the sorted future fixing times (ie. from the kStar element
+        // onwards), with t pushed on the front and T pushed on the back!
         tauK.insert(tauK.begin(), startTime);
         tauK.push_back(expiryTime);
+
+        // In the paper, seasoned asians are dealt with by letting the start time variable be greater
+        // than 0. We can achieve the same by fixing the start time to 0.0, but attaching 'dummy'
+        // fixing times at t=-1 for each past fixing, at the front of the fixing times arrays
+        for (Size i=0; i<pastFixings; i++) {
+            fixingTimes.insert(fixingTimes.begin(), -1.0);
+            tauK.insert(tauK.begin(), -1.0);
+        }
+
+        Size kStar = pastFixings;
 
         // Need the log of some discount factors to calculate the r-adjusted a factor (Eq 16)
         tr_t_ = 0;
@@ -250,26 +262,33 @@ namespace QuantLib {
         tkr_tk_ = std::vector<Real>();
         tr_t_ = -std::log(riskFreeRate_->discount(startTime) / dividendYield_->discount(startTime));
         Tr_T_ = -std::log(riskFreeRate_->discount(expiryTime) / dividendYield_->discount(expiryTime));
-        for (Size i=0; i<fixingTimes.size(); i++) {
-            tkr_tk_.push_back(-std::log(riskFreeRate_->discount(fixingTimes[i])
-                                        / dividendYield_->discount(fixingTimes[i])));
+        for (double fixingTime : fixingTimes) {
+            if (fixingTime < 0) {
+                tkr_tk_.push_back(1.0);
+            } else {
+                tkr_tk_.push_back(-std::log(riskFreeRate_->discount(fixingTime) /
+                                            dividendYield_->discount(fixingTime)));
+            }
         }
 
+        // To account for seasoning, we need to calculate an 'adjusted' strike (Eq 6)
+        Real prefactor = std::exp(runningLog / fixingTimes.size());
+        Real adjustedStrike = strike / prefactor;
+
         // Calculate the two terms in eq (23) - Phi(1,0) is real (asian forward) but need to type convert
-        Real term1 = 0.5 * (std::real(Phi(1,0, startTime, expiryTime, kStar, fixingTimes, tauK)) - strike);
+        Real term1 = 0.5 * (std::real(Phi(1,0, startTime, expiryTime, kStar, fixingTimes, tauK)) - adjustedStrike);
 
-        Integrand integrand(startTime, expiryTime, kStar, fixingTimes, tauK, strike, this, xiRightLimit_);
+        Integrand integrand(startTime, expiryTime, kStar, fixingTimes, tauK, adjustedStrike, this, xiRightLimit_);
         Real term2 = integrator_(integrand) / M_PI;
-
 
         // Apply the payoff functions
         Real value = 0.0;
         switch (payoff->optionType()){
             case Option::Call:
-                value = expiryDcf * (term1 + term2);
+                value = expiryDcf * prefactor * (term1 + term2);
                 break;
             case Option::Put:
-                value = expiryDcf * (-term1 + term2);
+                value = expiryDcf * prefactor * (-term1 + term2);
                 break;
             default:
                 QL_FAIL("unknown option type");
@@ -284,5 +303,10 @@ namespace QuantLib {
         results_.additionalResults["term1"] = term1;
         results_.additionalResults["term2"] = term2;
         results_.additionalResults["xiRightLimit"] = xiRightLimit_;
+        results_.additionalResults["fixingTimes"] = fixingTimes;
+        results_.additionalResults["tauK"] = tauK;
+        results_.additionalResults["adjustedStrike"] = adjustedStrike;
+        results_.additionalResults["prefactor"] = prefactor;
+        results_.additionalResults["kStar"] = kStar;
     }
 }

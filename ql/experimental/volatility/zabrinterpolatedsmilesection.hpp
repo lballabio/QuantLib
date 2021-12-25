@@ -24,12 +24,13 @@
 #ifndef quantlib_zabr_interpolated_smile_section_hpp
 #define quantlib_zabr_interpolated_smile_section_hpp
 
-#include <ql/handle.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/patterns/lazyobject.hpp>
-#include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/experimental/volatility/zabrinterpolation.hpp>
+#include <ql/handle.hpp>
+#include <ql/patterns/lazyobject.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -40,47 +41,62 @@ class ZabrInterpolatedSmileSection : public SmileSection, public LazyObject {
     //@{
     //! all market data are quotes
     ZabrInterpolatedSmileSection(
-        const Date &optionDate, const Handle<Quote> &forward,
-        const std::vector<Rate> &strikes, bool hasFloatingStrikes,
-        const Handle<Quote> &atmVolatility,
-        const std::vector<Handle<Quote> > &volHandles, Real alpha, Real beta,
-        Real nu, Real rho, Real gamma, bool isAlphaFixed = false,
-        bool isBetaFixed = false, bool isNuFixed = false,
-        bool isRhoFixed = false, bool isGammaFixed = false,
+        const Date& optionDate,
+        Handle<Quote> forward,
+        const std::vector<Rate>& strikes,
+        bool hasFloatingStrikes,
+        Handle<Quote> atmVolatility,
+        const std::vector<Handle<Quote> >& volHandles,
+        Real alpha,
+        Real beta,
+        Real nu,
+        Real rho,
+        Real gamma,
+        bool isAlphaFixed = false,
+        bool isBetaFixed = false,
+        bool isNuFixed = false,
+        bool isRhoFixed = false,
+        bool isGammaFixed = false,
         bool vegaWeighted = true,
-        const ext::shared_ptr<EndCriteria> &endCriteria =
-            ext::shared_ptr<EndCriteria>(),
-        const ext::shared_ptr<OptimizationMethod> &method =
-            ext::shared_ptr<OptimizationMethod>(),
-        const DayCounter &dc = Actual365Fixed());
+        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+        ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+        const DayCounter& dc = Actual365Fixed());
     //! no quotes
     ZabrInterpolatedSmileSection(
-        const Date &optionDate, const Rate &forward,
-        const std::vector<Rate> &strikes, bool hasFloatingStrikes,
-        const Volatility &atmVolatility, const std::vector<Volatility> &vols,
-        Real alpha, Real beta, Real nu, Real rho, Real gamma,
-        bool isAlphaFixed = false, bool isBetaFixed = false,
-        bool isNuFixed = false, bool isRhoFixed = false,
-        bool isGammaFixed = false, bool vegaWeighted = true,
-        const ext::shared_ptr<EndCriteria> &endCriteria =
-            ext::shared_ptr<EndCriteria>(),
-        const ext::shared_ptr<OptimizationMethod> &method =
-            ext::shared_ptr<OptimizationMethod>(),
-        const DayCounter &dc = Actual365Fixed());
+        const Date& optionDate,
+        const Rate& forward,
+        const std::vector<Rate>& strikes,
+        bool hasFloatingStrikes,
+        const Volatility& atmVolatility,
+        const std::vector<Volatility>& vols,
+        Real alpha,
+        Real beta,
+        Real nu,
+        Real rho,
+        Real gamma,
+        bool isAlphaFixed = false,
+        bool isBetaFixed = false,
+        bool isNuFixed = false,
+        bool isRhoFixed = false,
+        bool isGammaFixed = false,
+        bool vegaWeighted = true,
+        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+        ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+        const DayCounter& dc = Actual365Fixed());
     //@}
     //! \name LazyObject interface
     //@{
-    virtual void performCalculations() const;
-    virtual void update();
+    void performCalculations() const override;
+    void update() override;
     //@}
     //! \name SmileSection interface
     //@{
-    Real minStrike() const;
-    Real maxStrike() const;
-    Real atmLevel() const;
+    Real minStrike() const override;
+    Real maxStrike() const override;
+    Real atmLevel() const override;
     //@}
-    Real varianceImpl(Rate strike) const;
-    Volatility volatilityImpl(Rate strike) const;
+    Real varianceImpl(Rate strike) const override;
+    Volatility volatilityImpl(Rate strike) const override;
     //! \name Inspectors
     //@{
     Real alpha() const;
@@ -194,50 +210,70 @@ inline Real ZabrInterpolatedSmileSection<Evaluation>::atmLevel() const {
 
 template <typename Evaluation>
 ZabrInterpolatedSmileSection<Evaluation>::ZabrInterpolatedSmileSection(
-    const Date &optionDate, const Handle<Quote> &forward,
-    const std::vector<Rate> &strikes, bool hasFloatingStrikes,
-    const Handle<Quote> &atmVolatility,
-    const std::vector<Handle<Quote> > &volHandles, Real alpha, Real beta,
-    Real nu, Real rho, Real gamma, bool isAlphaFixed, bool isBetaFixed,
-    bool isNuFixed, bool isRhoFixed, bool isGammaFixed, bool vegaWeighted,
-    const ext::shared_ptr<EndCriteria> &endCriteria,
-    const ext::shared_ptr<OptimizationMethod> &method, const DayCounter &dc)
-    : SmileSection(optionDate, dc), forward_(forward),
-      atmVolatility_(atmVolatility), volHandles_(volHandles), strikes_(strikes),
-      actualStrikes_(strikes), hasFloatingStrikes_(hasFloatingStrikes),
-      vols_(volHandles.size()), alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
-      gamma_(gamma), isAlphaFixed_(isAlphaFixed), isBetaFixed_(isBetaFixed),
-      isNuFixed_(isNuFixed), isRhoFixed_(isRhoFixed),
-      isGammaFixed_(isGammaFixed), vegaWeighted_(vegaWeighted),
-      endCriteria_(endCriteria), method_(method) {
+    const Date& optionDate,
+    Handle<Quote> forward,
+    const std::vector<Rate>& strikes,
+    bool hasFloatingStrikes,
+    Handle<Quote> atmVolatility,
+    const std::vector<Handle<Quote> >& volHandles,
+    Real alpha,
+    Real beta,
+    Real nu,
+    Real rho,
+    Real gamma,
+    bool isAlphaFixed,
+    bool isBetaFixed,
+    bool isNuFixed,
+    bool isRhoFixed,
+    bool isGammaFixed,
+    bool vegaWeighted,
+    ext::shared_ptr<EndCriteria> endCriteria,
+    ext::shared_ptr<OptimizationMethod> method,
+    const DayCounter& dc)
+: SmileSection(optionDate, dc), forward_(std::move(forward)),
+  atmVolatility_(std::move(atmVolatility)), volHandles_(volHandles), strikes_(strikes),
+  actualStrikes_(strikes), hasFloatingStrikes_(hasFloatingStrikes), vols_(volHandles.size()),
+  alpha_(alpha), beta_(beta), nu_(nu), rho_(rho), gamma_(gamma), isAlphaFixed_(isAlphaFixed),
+  isBetaFixed_(isBetaFixed), isNuFixed_(isNuFixed), isRhoFixed_(isRhoFixed),
+  isGammaFixed_(isGammaFixed), vegaWeighted_(vegaWeighted), endCriteria_(std::move(endCriteria)),
+  method_(std::move(method)) {
 
     LazyObject::registerWith(forward_);
     LazyObject::registerWith(atmVolatility_);
-    for (Size i = 0; i < volHandles_.size(); ++i)
-        LazyObject::registerWith(volHandles_[i]);
+    for (auto& volHandle : volHandles_)
+        LazyObject::registerWith(volHandle);
 }
 
 template <typename Evaluation>
 ZabrInterpolatedSmileSection<Evaluation>::ZabrInterpolatedSmileSection(
-    const Date &optionDate, const Rate &forward,
-    const std::vector<Rate> &strikes, bool hasFloatingStrikes,
-    const Volatility &atmVolatility, const std::vector<Volatility> &volHandles,
-    Real alpha, Real beta, Real nu, Real rho, Real gamma, bool isAlphaFixed,
-    bool isBetaFixed, bool isNuFixed, bool isRhoFixed, bool isGammaFixed,
-    bool vegaWeighted, const ext::shared_ptr<EndCriteria> &endCriteria,
-    const ext::shared_ptr<OptimizationMethod> &method, const DayCounter &dc)
-    : SmileSection(optionDate, dc),
-      forward_(
-          Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(forward)))),
-      atmVolatility_(Handle<Quote>(
-          ext::shared_ptr<Quote>(new SimpleQuote(atmVolatility)))),
-      volHandles_(volHandles.size()), strikes_(strikes),
-      actualStrikes_(strikes), hasFloatingStrikes_(hasFloatingStrikes),
-      vols_(volHandles.size()), alpha_(alpha), beta_(beta), nu_(nu), rho_(rho),
-      gamma_(gamma), isAlphaFixed_(isAlphaFixed), isBetaFixed_(isBetaFixed),
-      isNuFixed_(isNuFixed), isRhoFixed_(isRhoFixed),
-      isGammaFixed_(isGammaFixed), vegaWeighted_(vegaWeighted),
-      endCriteria_(endCriteria), method_(method) {
+    const Date& optionDate,
+    const Rate& forward,
+    const std::vector<Rate>& strikes,
+    bool hasFloatingStrikes,
+    const Volatility& atmVolatility,
+    const std::vector<Volatility>& volHandles,
+    Real alpha,
+    Real beta,
+    Real nu,
+    Real rho,
+    Real gamma,
+    bool isAlphaFixed,
+    bool isBetaFixed,
+    bool isNuFixed,
+    bool isRhoFixed,
+    bool isGammaFixed,
+    bool vegaWeighted,
+    ext::shared_ptr<EndCriteria> endCriteria,
+    ext::shared_ptr<OptimizationMethod> method,
+    const DayCounter& dc)
+: SmileSection(optionDate, dc),
+  forward_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(forward)))),
+  atmVolatility_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(atmVolatility)))),
+  volHandles_(volHandles.size()), strikes_(strikes), actualStrikes_(strikes),
+  hasFloatingStrikes_(hasFloatingStrikes), vols_(volHandles.size()), alpha_(alpha), beta_(beta),
+  nu_(nu), rho_(rho), gamma_(gamma), isAlphaFixed_(isAlphaFixed), isBetaFixed_(isBetaFixed),
+  isNuFixed_(isNuFixed), isRhoFixed_(isRhoFixed), isGammaFixed_(isGammaFixed),
+  vegaWeighted_(vegaWeighted), endCriteria_(std::move(endCriteria)), method_(std::move(method)) {
 
     for (Size i = 0; i < volHandles_.size(); ++i)
         volHandles_[i] = Handle<Quote>(

@@ -32,21 +32,20 @@ namespace QuantLib {
     class LongstaffSchwartzExerciseStrategy
         : public ExerciseStrategy<CurveState> {
       public:
-        LongstaffSchwartzExerciseStrategy(
-                     const Clone<MarketModelBasisSystem>& basisSystem,
-                     const std::vector<std::vector<Real> >& basisCoefficients,
-                     const EvolutionDescription& evolution,
-                     const std::vector<Size>& numeraires,
-                     const Clone<MarketModelExerciseValue>& exercise,
-                     const Clone<MarketModelExerciseValue>& control);
-        std::vector<Time> exerciseTimes() const;
-        std::vector<Time> relevantTimes() const;
-        void reset();
-        bool exercise(const CurveState& currentState) const;
-        void nextStep(const CurveState& currentState);
-        #if defined(QL_USE_STD_UNIQUE_PTR)
-        std::unique_ptr<ExerciseStrategy<CurveState> > clone() const;
-        #else
+        LongstaffSchwartzExerciseStrategy(Clone<MarketModelBasisSystem> basisSystem,
+                                          std::vector<std::vector<Real> > basisCoefficients,
+                                          const EvolutionDescription& evolution,
+                                          const std::vector<Size>& numeraires,
+                                          Clone<MarketModelExerciseValue> exercise,
+                                          Clone<MarketModelExerciseValue> control);
+        std::vector<Time> exerciseTimes() const override;
+        std::vector<Time> relevantTimes() const override;
+        void reset() override;
+        bool exercise(const CurveState& currentState) const override;
+        void nextStep(const CurveState& currentState) override;
+#if defined(QL_USE_STD_UNIQUE_PTR)
+        std::unique_ptr<ExerciseStrategy<CurveState> > clone() const override;
+#else
         std::auto_ptr<ExerciseStrategy<CurveState> > clone() const;
         #endif
       private:

@@ -22,9 +22,6 @@
 
 namespace QuantLib {
 
-    MarketModelComposite::MarketModelComposite()
-    : finalized_(false) {}
-
     const EvolutionDescription& MarketModelComposite::evolution() const {
         QL_REQUIRE(finalized_, "composite not finalized");
         return evolution_;
@@ -41,9 +38,9 @@ namespace QuantLib {
     }
 
     void MarketModelComposite::reset() {
-        for (iterator i=components_.begin(); i!=components_.end(); ++i) {
-            i->product->reset();
-            i->done = false;
+        for (auto& component : components_) {
+            component.product->reset();
+            component.done = false;
         }
         currentIndex_ = 0;
     }
@@ -66,7 +63,7 @@ namespace QuantLib {
                                   rateTimes2.begin()),
                        "incompatible rate times");
         }
-        components_.push_back(SubProduct());
+        components_.emplace_back();
         components_.back().product = product;
         components_.back().multiplier = multiplier;
         components_.back().done = false;
@@ -116,8 +113,7 @@ namespace QuantLib {
         // all information having been collected, we can sort and
         // compact the vector of all cash-flow times...
         std::sort(allCashflowTimes.begin(), allCashflowTimes.end());
-        std::vector<Time>::iterator end = std::unique(allCashflowTimes.begin(),
-                                                      allCashflowTimes.end());
+        auto end = std::unique(allCashflowTimes.begin(), allCashflowTimes.end());
         //std::copy(allCashflowTimes.begin(), end,
         //          std::back_inserter(cashflowTimes_));
         cashflowTimes_.insert(cashflowTimes_.end(),

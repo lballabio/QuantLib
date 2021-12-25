@@ -20,13 +20,14 @@
 /*! \file dynprogvppintrinsicvalueengine.cpp
 */
 
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/experimental/finitedifferences/dynprogvppintrinsicvalueengine.hpp>
+#include <ql/experimental/finitedifferences/fdmvppstepconditionfactory.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/experimental/finitedifferences/fdmvppstepconditionfactory.hpp>
-#include <ql/experimental/finitedifferences/dynprogvppintrinsicvalueengine.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 
 namespace QuantLib {
@@ -40,14 +41,15 @@ namespace QuantLib {
               fuelPrices_(fuelPrices),
               powerPrices_(powerPrices) {}
 
-            Real innerValue(const FdmLinearOpIterator&, Time t) {
+            Real innerValue(const FdmLinearOpIterator&, Time t) override {
                 Size i = (Size) t;
                 QL_REQUIRE(i < powerPrices_.size(), "invalid time");
                 return powerPrices_[i] - heatRate_*fuelPrices_[i];
             }
-            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
                 return innerValue(iter, t);
             }
+
           private:
             const Real heatRate_;
             const std::vector<Real>& fuelPrices_;
@@ -60,11 +62,12 @@ namespace QuantLib {
             explicit FuelPrice(const std::vector<Real>& fuelPrices)
             : fuelPrices_(fuelPrices) {}
 
-            Real innerValue(const FdmLinearOpIterator&, Time t) {
+            Real innerValue(const FdmLinearOpIterator&, Time t) override {
                 Size i = (Size) t;
                 QL_REQUIRE(i < fuelPrices_.size(), "invalid time");
-                return fuelPrices_[(Size) t]; }
-            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+                return fuelPrices_[(Size) t];
+            }
+            Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
                 return innerValue(iter, t);
             }
 
@@ -74,15 +77,12 @@ namespace QuantLib {
     }
 
     DynProgVPPIntrinsicValueEngine::DynProgVPPIntrinsicValueEngine(
-        const std::vector<Real>& fuelPrices,
-        const std::vector<Real>& powerPrices,
+        std::vector<Real> fuelPrices,
+        std::vector<Real> powerPrices,
         Real fuelCostAddon,
-        const ext::shared_ptr<YieldTermStructure>& rTS)
-    : fuelPrices_   (fuelPrices),
-      powerPrices_  (powerPrices),
-      fuelCostAddon_(fuelCostAddon),
-      rTS_(rTS) {
-    }
+        ext::shared_ptr<YieldTermStructure> rTS)
+    : fuelPrices_(std::move(fuelPrices)), powerPrices_(std::move(powerPrices)),
+      fuelCostAddon_(fuelCostAddon), rTS_(std::move(rTS)) {}
 
     void DynProgVPPIntrinsicValueEngine::calculate() const {
         const ext::shared_ptr<FdmInnerValueCalculator> fuelPrice(

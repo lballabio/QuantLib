@@ -42,36 +42,6 @@ namespace QuantLib {
                                     const std::vector<Date>& jumpDates)
     : YieldTermStructure(settlDays, cal, dc, jumps, jumpDates) {}
 
-
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#if defined(QL_PATCH_MSVC)
-#pragma warning(push)
-#pragma warning(disable:4996)
-#endif
-
-    ForwardRateStructure::ForwardRateStructure(
-                                    const DayCounter& dc,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates)
-    : YieldTermStructure(dc, jumps, jumpDates) {}
-
-#if defined(QL_PATCH_MSVC)
-#pragma warning(pop)
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif
-
     Rate ForwardRateStructure::zeroYieldImpl(Time t) const {
         if (t == 0.0)
             return forwardImpl(0.0);

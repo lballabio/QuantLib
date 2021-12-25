@@ -20,11 +20,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/comparison.hpp>
 #include <ql/models/marketmodels/correlations/expcorrelations.hpp>
 #include <ql/models/marketmodels/correlations/timehomogeneousforwardcorrelation.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
-#include <ql/math/comparison.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -71,16 +72,13 @@ namespace QuantLib {
     }
 
 
-    ExponentialForwardCorrelation::ExponentialForwardCorrelation(
-                                    const std::vector<Time>& rateTimes,
-                                    Real longTermCorr,
-                                    Real beta,
-                                    Real gamma,
-                                    const std::vector<Time>& times)
-    : numberOfRates_(rateTimes.empty() ? 0 : rateTimes.size()-1),
-      longTermCorr_(longTermCorr), beta_(beta), gamma_(gamma),
-      rateTimes_(rateTimes),
-      times_(times) {
+    ExponentialForwardCorrelation::ExponentialForwardCorrelation(const std::vector<Time>& rateTimes,
+                                                                 Real longTermCorr,
+                                                                 Real beta,
+                                                                 Real gamma,
+                                                                 std::vector<Time> times)
+    : numberOfRates_(rateTimes.empty() ? 0 : rateTimes.size() - 1), longTermCorr_(longTermCorr),
+      beta_(beta), gamma_(gamma), rateTimes_(rateTimes), times_(std::move(times)) {
 
         QL_REQUIRE(numberOfRates_>1,
                    "Rate times must contain at least two values");

@@ -21,19 +21,20 @@
 #include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlocalvolfwdop.hpp>
+#include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdmLocalVolFwdOp::FdmLocalVolFwdOp(const ext::shared_ptr<FdmMesher>& mesher,
                                        const ext::shared_ptr<Quote>& spot,
-                                       const ext::shared_ptr<YieldTermStructure>& rTS,
-                                       const ext::shared_ptr<YieldTermStructure>& qTS,
+                                       ext::shared_ptr<YieldTermStructure> rTS,
+                                       ext::shared_ptr<YieldTermStructure> qTS,
                                        const ext::shared_ptr<LocalVolTermStructure>& localVol,
                                        Size direction)
-    : mesher_(mesher), rTS_(rTS), qTS_(qTS), localVol_(localVol),
-      x_((localVol) != 0 ? Array(Exp(mesher->locations(direction))) : Array()),
+    : mesher_(mesher), rTS_(std::move(rTS)), qTS_(std::move(qTS)), localVol_(localVol),
+      x_((localVol) != nullptr ? Array(Exp(mesher->locations(direction))) : Array()),
       dxMap_(FirstDerivativeOp(direction, mesher)), dxxMap_(SecondDerivativeOp(direction, mesher)),
       mapT_(direction, mesher), direction_(direction) {}
 
@@ -92,11 +93,10 @@ namespace QuantLib {
         return solve_splitting(direction_, r, dt);
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> >
     FdmLocalVolFwdOp::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal(1, mapT_.toMatrix());
         return retVal;
     }
-#endif
+
 }

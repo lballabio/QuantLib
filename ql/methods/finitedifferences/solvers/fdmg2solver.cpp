@@ -20,21 +20,19 @@
 /*! \file fdmg2solver.cpp
 */
 
-#include <ql/models/shortrate/twofactormodels/g2.hpp>
+#include <ql/methods/finitedifferences/operators/fdmg2op.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmg2solver.hpp>
-#include <ql/methods/finitedifferences/operators/fdmg2op.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
+#include <ql/models/shortrate/twofactormodels/g2.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmG2Solver::FdmG2Solver(
-        const Handle<G2>& model,
-        const FdmSolverDesc& solverDesc,
-        const FdmSchemeDesc& schemeDesc)
-    : model_(model),
-      solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc) {
+    FdmG2Solver::FdmG2Solver(Handle<G2> model,
+                             FdmSolverDesc solverDesc,
+                             const FdmSchemeDesc& schemeDesc)
+    : model_(std::move(model)), solverDesc_(std::move(solverDesc)), schemeDesc_(schemeDesc) {
         registerWith(model_);
     }
 

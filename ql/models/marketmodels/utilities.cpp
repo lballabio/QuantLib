@@ -31,16 +31,13 @@ namespace QuantLib {
                     std::vector<std::valarray<bool> >& isPresent) {
 
         std::vector<Time> allTimes;
-        for (Size i=0; i<times.size(); i++) {
-            allTimes.insert(allTimes.end(),
-                            times[i].begin(),
-                            times[i].end());
+        for (const auto& time : times) {
+            allTimes.insert(allTimes.end(), time.begin(), time.end());
         }
 
         // ...sort and compact the vector mergedTimes...
         std::sort(allTimes.begin(), allTimes.end());
-        std::vector<Time>::iterator end = std::unique(allTimes.begin(),
-                                                      allTimes.end());
+        auto end = std::unique(allTimes.begin(), allTimes.end());
         //mergedTimes.clear(); // shouldn't be cleared?
         mergedTimes.insert(mergedTimes.end(),
                            allTimes.begin(), end);

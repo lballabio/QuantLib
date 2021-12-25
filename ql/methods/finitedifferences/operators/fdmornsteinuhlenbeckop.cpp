@@ -21,26 +21,23 @@
 */
 
 #include <ql/math/functional.hpp>
-#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/fdmornsteinuhlenbeckop.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
+#include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdmOrnsteinUhlenbeckOp::FdmOrnsteinUhlenbeckOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<OrnsteinUhlenbeckProcess>& process,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            Size direction)
-    : mesher_   (mesher),
-      process_  (process),
-      rTS_      (rTS),
-      direction_(direction),
-      m_        (direction, mesher),
-      mapX_     (direction, mesher)  {
+        const ext::shared_ptr<FdmMesher>& mesher,
+        ext::shared_ptr<OrnsteinUhlenbeckProcess> process,
+        ext::shared_ptr<YieldTermStructure> rTS,
+        Size direction)
+    : mesher_(mesher), process_(std::move(process)), rTS_(std::move(rTS)), direction_(direction),
+      m_(direction, mesher), mapX_(direction, mesher) {
 
         const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
 
@@ -109,12 +106,10 @@ namespace QuantLib {
         return solve_splitting(direction_, r, dt);
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> >
     FdmOrnsteinUhlenbeckOp::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal(1, mapX_.toMatrix());
         return retVal;
     }
-#endif
 
 }

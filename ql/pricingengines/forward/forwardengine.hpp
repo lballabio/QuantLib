@@ -25,13 +25,14 @@
 #ifndef quantlib_forward_engine_hpp
 #define quantlib_forward_engine_hpp
 
+#include <ql/exercise.hpp>
 #include <ql/instruments/forwardvanillaoption.hpp>
+#include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/impliedvoltermstructure.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
-#include <ql/instruments/payoffs.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -49,9 +50,9 @@ namespace QuantLib {
         : public GenericEngine<ForwardOptionArguments<VanillaOption::arguments>,
                                VanillaOption::results> {
       public:
-        ForwardVanillaEngine(
-                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
-        void calculate() const;
+        ForwardVanillaEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
+        void calculate() const override;
+
       protected:
         void setup() const;
         void getOriginalResults() const;
@@ -66,8 +67,8 @@ namespace QuantLib {
 
     template <class Engine>
     ForwardVanillaEngine<Engine>::ForwardVanillaEngine(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 

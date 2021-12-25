@@ -1,2 +1,5 @@
 add_executable(BasketLosses BasketLosses.cpp)
-target_link_libraries(BasketLosses ${QL_LINK_LIBRARY})
+target_link_libraries(BasketLosses ql_library ${QL_EXAMPLES_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS BasketLosses RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

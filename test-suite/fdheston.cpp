@@ -41,12 +41,9 @@
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-
-#include <boost/assign/std/vector.hpp>
 #include <ql/tuple.hpp>
 
 using namespace QuantLib;
-using namespace boost::assign;
 using boost::unit_test_framework::test_suite;
 
 
@@ -77,12 +74,12 @@ namespace fd_heston_test {
           s0_(s0),
           alpha_(alpha) {}
 
-        Date maxDate() const   { return Date::maxDate(); }
-        Real minStrike() const { return 0.0; }
-        Real maxStrike() const { return std::numeric_limits<Real>::max(); }
+        Date maxDate() const override { return Date::maxDate(); }
+        Real minStrike() const override { return 0.0; }
+        Real maxStrike() const override { return std::numeric_limits<Real>::max(); }
 
       protected:
-        Volatility localVolImpl(Time t, Real s) const {
+        Volatility localVolImpl(Time t, Real s) const override {
             return alpha_*(square<Real>()(s0_ - s) + 25.0);
         }
 
@@ -305,22 +302,20 @@ void FdHestonTest::testFdmHestonBarrierVsBlackScholes() {
 
     ext::shared_ptr<PricingEngine> analyticEngine(
                                         new AnalyticBarrierEngine(bsProcess));
-    
-    for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = todaysDate + Integer(values[i].t*365+0.5);
+
+    for (auto& value : values) {
+        Date exDate = todaysDate + timeToDays(value.t, 365);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-        ext::dynamic_pointer_cast<SimpleQuote>(spot .currentLink())
-                                                    ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        ext::dynamic_pointer_cast<SimpleQuote>(spot.currentLink())->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
-        ext::shared_ptr<StrikedTypePayoff> payoff(new
-                    PlainVanillaPayoff(values[i].type, values[i].strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
 
-        BarrierOption barrierOption(values[i].barrierType, values[i].barrier,
-                                    values[i].rebate, payoff, exercise);
+        BarrierOption barrierOption(value.barrierType, value.barrier, value.rebate, payoff,
+                                    exercise);
 
         const Real v0 = vol->value()*vol->value();
         ext::shared_ptr<HestonProcess> hestonProcess(
@@ -526,9 +521,9 @@ void FdHestonTest::testFdmHestonBlackScholes() {
 
     Real strikes[]  = { 8, 9, 10, 11, 12 };
     const Real tol = 0.0001;
-    
-    for (Size i=0; i < LENGTH(strikes); ++i) {
-        Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(strikes[i])));
+
+    for (double& strike : strikes) {
+        Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(strike)));
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
                        new GeneralizedBlackScholesProcess(s0, qTS, rTS, volTS));
@@ -550,10 +545,8 @@ void FdHestonTest::testFdmHestonBlackScholes() {
         Real calculated = option.NPV();
         if (std::fabs(calculated - expected) > tol) {
             BOOST_ERROR("Failed to reproduce expected npv"
-                        << "\n    strike:     " << strikes[i]
-                        << "\n    calculated: " << calculated
-                        << "\n    expected:   " << expected
-                        << "\n    tolerance:  " << tol); 
+                        << "\n    strike:     " << strike << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected << "\n    tolerance:  " << tol);
         }
         
         // Explicit scheme
@@ -566,10 +559,8 @@ void FdHestonTest::testFdmHestonBlackScholes() {
         calculated = option.NPV();
         if (std::fabs(calculated - expected) > tol) {
             BOOST_ERROR("Failed to reproduce expected npv"
-                        << "\n    strike:     " << strikes[i]
-                        << "\n    calculated: " << calculated
-                        << "\n    expected:   " << expected
-                        << "\n    tolerance:  " << tol);
+                        << "\n    strike:     " << strike << "\n    calculated: " << calculated
+                        << "\n    expected:   " << expected << "\n    tolerance:  " << tol);
         }
     }
 }
@@ -610,9 +601,9 @@ void FdHestonTest::testFdmHestonEuropeanWithDividends() {
     
     const Real tol = 0.01;
     const Real gammaTol = 0.001;
-    const Real npvExpected   =  7.365075;
-    const Real deltaExpected = -0.396678;
-    const Real gammaExpected =  0.027681;
+    const Real npvExpected   =  7.38216;
+    const Real deltaExpected = -0.397902;
+    const Real gammaExpected =  0.027747;
         
     if (std::fabs(option.NPV() - npvExpected) > tol) {
         BOOST_ERROR("Failed to reproduce expected npv"
@@ -682,38 +673,27 @@ void FdHestonTest::testFdmHestonConvergence() {
     
     Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(75.0)));
 
-    for (Size l=0; l < LENGTH(schemes); ++l) {
-        for (Size i=0; i < LENGTH(values); ++i) {
-            for (Size j=0; j < LENGTH(tn); ++j) {
-                for (Size k=0; k < LENGTH(v0); ++k) {
-                    Handle<YieldTermStructure> rTS(
-                        flatRate(values[i].r, Actual365Fixed()));
-                    Handle<YieldTermStructure> qTS(
-                        flatRate(values[i].q, Actual365Fixed()));
-                
-                    ext::shared_ptr<HestonProcess> hestonProcess(
-                        new HestonProcess(rTS, qTS, s0, 
-                                          v0[k], 
-                                          values[i].kappa, 
-                                          values[i].theta, 
-                                          values[i].sigma, 
-                                          values[i].rho));
-                
-                    Date exerciseDate = todaysDate 
-                        + Period(static_cast<Integer>(values[i].T*365), Days);
+    for (const auto& scheme : schemes) {
+        for (auto& value : values) {
+            for (unsigned long j : tn) {
+                for (double k : v0) {
+                    Handle<YieldTermStructure> rTS(flatRate(value.r, Actual365Fixed()));
+                    Handle<YieldTermStructure> qTS(flatRate(value.q, Actual365Fixed()));
+
+                    ext::shared_ptr<HestonProcess> hestonProcess(new HestonProcess(
+                        rTS, qTS, s0, k, value.kappa, value.theta, value.sigma, value.rho));
+
+                    Date exerciseDate =
+                        todaysDate + Period(static_cast<Integer>(value.T * 365), Days);
                     ext::shared_ptr<Exercise> exercise(
                                           new EuropeanExercise(exerciseDate));
-                
-                    ext::shared_ptr<StrikedTypePayoff> payoff(new
-                               PlainVanillaPayoff(Option::Call, values[i].K));
-            
+
+                    ext::shared_ptr<StrikedTypePayoff> payoff(
+                        new PlainVanillaPayoff(Option::Call, value.K));
+
                     VanillaOption option(payoff, exercise);
-                    ext::shared_ptr<PricingEngine> engine(
-                         new FdHestonVanillaEngine(
-                             ext::make_shared<HestonModel>(
-                                 hestonProcess), 
-                             tn[j], 101, 51, 0,
-                             schemes[l]));
+                    ext::shared_ptr<PricingEngine> engine(new FdHestonVanillaEngine(
+                        ext::make_shared<HestonModel>(hestonProcess), j, 101, 51, 0, scheme));
                     option.setPricingEngine(engine);
                     
                     const Real calculated = option.NPV();
@@ -971,12 +951,9 @@ void FdHestonTest::testSpuriousOscillations() {
         ext::make_tuple(FdmSchemeDesc::TrBDF2(), "TR-BDF2", false)
     };
 
-    for (Size j=0; j < LENGTH(descs); ++j) {
-        const ext::shared_ptr<FdmHestonSolver> solver =
-            ext::make_shared<FdmHestonSolver>(
-                Handle<HestonProcess>(process),
-                hestonEngine->getSolverDesc(1.0),
-                ext::get<0>(descs[j]));
+    for (const auto& desc : descs) {
+        const ext::shared_ptr<FdmHestonSolver> solver = ext::make_shared<FdmHestonSolver>(
+            Handle<HestonProcess>(process), hestonEngine->getSolverDesc(1.0), ext::get<0>(desc));
 
         std::vector<Real> gammas;
         for (Real x=99; x < 101.001; x+=0.1) {
@@ -993,19 +970,17 @@ void FdHestonTest::testSpuriousOscillations() {
         const Real tol = 0.01;
         const bool hasSpuriousOscillations = maximum > tol;
 
-        if (hasSpuriousOscillations != ext::get<2>(descs[j])) {
+        if (hasSpuriousOscillations != ext::get<2>(desc)) {
             BOOST_ERROR("unable to reproduce spurious oscillation behaviour "
-                     << "\n   scheme name          : " << ext::get<1>(descs[j])
-                     << "\n   oscillations observed: "
-                         << hasSpuriousOscillations
-                     << "\n   oscillations expected: " << ext::get<2>(descs[j])
-            );
+                        << "\n   scheme name          : " << ext::get<1>(desc)
+                        << "\n   oscillations observed: " << hasSpuriousOscillations
+                        << "\n   oscillations expected: " << ext::get<2>(desc));
         }
     }
 }
 
 test_suite* FdHestonTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
+    auto* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
 
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonVarianceMesher));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testFdmHestonBarrier));

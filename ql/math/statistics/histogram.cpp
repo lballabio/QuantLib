@@ -148,9 +148,8 @@ namespace QuantLib {
         } else {
             // or ensure they're sorted if given
             std::sort(breaks_.begin(), breaks_.end());
-            std::vector<Real>::iterator end =
-                std::unique(breaks_.begin(),breaks_.end(),
-                            static_cast<bool (*)(Real, Real)>(close_enough));
+            auto end = std::unique(breaks_.begin(), breaks_.end(),
+                                   static_cast<bool (*)(Real, Real)>(close_enough));
             breaks_.resize(end - breaks_.begin());
         }
 
@@ -158,11 +157,10 @@ namespace QuantLib {
         counts_.resize(bins_);
         std::fill(counts_.begin(), counts_.end(), 0);
 
-        for (std::vector<Real>::const_iterator p = data_.begin();
-             p != data_.end(); ++p) {
+        for (double p : data_) {
             bool processed = false;
             for (Size i=0; i<breaks_.size(); ++i) {
-                if (*p < breaks_[i]) {
+                if (p < breaks_[i]) {
                     ++counts_[i];
                     processed = true;
                     break;

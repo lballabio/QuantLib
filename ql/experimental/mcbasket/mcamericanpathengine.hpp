@@ -26,6 +26,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -61,8 +62,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom>
     class MakeMCAmericanPathEngine {
       public:
-        explicit MakeMCAmericanPathEngine(
-                            const ext::shared_ptr<StochasticProcessArray>&);
+        explicit MakeMCAmericanPathEngine(ext::shared_ptr<StochasticProcessArray>);
         // named parameters
         MakeMCAmericanPathEngine& withSteps(Size steps);
         MakeMCAmericanPathEngine& withStepsPerYear(Size steps);
@@ -163,12 +163,10 @@ namespace QuantLib {
 
     template <class RNG>
     inline MakeMCAmericanPathEngine<RNG>::MakeMCAmericanPathEngine(
-                     const ext::shared_ptr<StochasticProcessArray>& process)
-    : process_(process), brownianBridge_(false), antithetic_(false),
-      controlVariate_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      calibrationSamples_(Null<Size>()),
+        ext::shared_ptr<StochasticProcessArray> process)
+    : process_(std::move(process)), brownianBridge_(false), antithetic_(false),
+      controlVariate_(false), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), calibrationSamples_(Null<Size>()),
       tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG>

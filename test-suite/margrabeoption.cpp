@@ -115,10 +115,6 @@ namespace {
         Real tol;
     };
 
-    Integer timeToDays(Time t) {
-        // FLOATING_POINT_EXCEPTION
-        return Integer(t*360+0.5);
-    }
 }
 
 void MargrabeOptionTest::testEuroExchangeTwoAssets() {
@@ -182,18 +178,18 @@ void MargrabeOptionTest::testEuroExchangeTwoAssets() {
     ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
     ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (auto& value : values) {
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-        spot1 ->setValue(values[i].s1);
-        spot2 ->setValue(values[i].s2);
-        qRate1->setValue(values[i].q1);
-        qRate2->setValue(values[i].q2);
-        rRate ->setValue(values[i].r );
-        vol1  ->setValue(values[i].v1);
-        vol2  ->setValue(values[i].v2);
+        spot1->setValue(value.s1);
+        spot2->setValue(value.s2);
+        qRate1->setValue(value.q1);
+        qRate2->setValue(value.q2);
+        rRate->setValue(value.r);
+        vol1->setValue(value.v1);
+        vol2->setValue(value.v2);
 
         ext::shared_ptr<BlackScholesMertonProcess> stochProcess1(new
             BlackScholesMertonProcess(Handle<Quote>(spot1),
@@ -207,108 +203,83 @@ void MargrabeOptionTest::testEuroExchangeTwoAssets() {
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS2)));
 
-        std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-        procs.push_back(stochProcess1);
-        procs.push_back(stochProcess2);
+        std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1, stochProcess2};
 
-        Matrix correlationMatrix(2,2, values[i].rho);
+        Matrix correlationMatrix(2, 2, value.rho);
         for (Integer j=0; j < 2; j++) {
             correlationMatrix[j][j] = 1.0;
         }
 
         ext::shared_ptr<PricingEngine> engine(
-                             new AnalyticEuropeanMargrabeEngine(stochProcess1,
-                                                                stochProcess2,
-                                                                values[i].rho));
+            new AnalyticEuropeanMargrabeEngine(stochProcess1, stochProcess2, value.rho));
 
-        MargrabeOption margrabeOption(values[i].Q1, values[i].Q2, exercise);
+        MargrabeOption margrabeOption(value.Q1, value.Q2, exercise);
 
         // analytic engine
         margrabeOption.setPricingEngine(engine);
 
         Real calculated = margrabeOption.NPV();
-        Real expected = values[i].result;
+        Real expected = value.result;
         Real error = std::fabs(calculated-expected);
-        Real tolerance = values[i].tol;
+        Real tolerance = value.tol;
         if (error > tolerance) {
-            REPORT_FAILURE("value", exercise,
-                             values[i].s1, values[i].s2, values[i].Q1,
-                             values[i].Q2, values[i].q1, values[i].q2,
-                             values[i].r, today, values[i].v1,
-                             values[i].v2, values[i].rho, expected,
-                             calculated, error, tolerance);
+            REPORT_FAILURE("value", exercise, value.s1, value.s2, value.Q1, value.Q2, value.q1,
+                           value.q2, value.r, today, value.v1, value.v2, value.rho, expected,
+                           calculated, error, tolerance);
         }
 
         calculated = margrabeOption.delta1();
-        expected = values[i].delta1;
+        expected = value.delta1;
         error= std::fabs(calculated-expected);
         if (error>tolerance) {
-            REPORT_FAILURE("delta1", exercise,
-                             values[i].s1, values[i].s2, values[i].Q1,
-                             values[i].Q2, values[i].q1, values[i].q2,
-                             values[i].r, today, values[i].v1,
-                             values[i].v2, values[i].rho, expected,
-                             calculated, error, tolerance);
+            REPORT_FAILURE("delta1", exercise, value.s1, value.s2, value.Q1, value.Q2, value.q1,
+                           value.q2, value.r, today, value.v1, value.v2, value.rho, expected,
+                           calculated, error, tolerance);
         }
 
         calculated = margrabeOption.delta2();
-        expected = values[i].delta2;
+        expected = value.delta2;
         error= std::fabs(calculated-expected);
         if (error>tolerance) {
-            REPORT_FAILURE("delta2", exercise,
-                             values[i].s1, values[i].s2, values[i].Q1,
-                             values[i].Q2, values[i].q1, values[i].q2,
-                             values[i].r, today, values[i].v1,
-                             values[i].v2, values[i].rho, expected,
-                             calculated, error, tolerance);
+            REPORT_FAILURE("delta2", exercise, value.s1, value.s2, value.Q1, value.Q2, value.q1,
+                           value.q2, value.r, today, value.v1, value.v2, value.rho, expected,
+                           calculated, error, tolerance);
         }
 
         calculated = margrabeOption.gamma1();
-        expected = values[i].gamma1;
+        expected = value.gamma1;
         error= std::fabs(calculated-expected);
         if (error>tolerance) {
-            REPORT_FAILURE("gamma1", exercise,
-                             values[i].s1, values[i].s2, values[i].Q1,
-                             values[i].Q2, values[i].q1, values[i].q2,
-                             values[i].r, today, values[i].v1,
-                             values[i].v2, values[i].rho, expected,
-                             calculated, error, tolerance);
+            REPORT_FAILURE("gamma1", exercise, value.s1, value.s2, value.Q1, value.Q2, value.q1,
+                           value.q2, value.r, today, value.v1, value.v2, value.rho, expected,
+                           calculated, error, tolerance);
         }
 
         calculated = margrabeOption.gamma2();
-        expected = values[i].gamma2;
+        expected = value.gamma2;
         error= std::fabs(calculated-expected);
         if (error>tolerance) {
-            REPORT_FAILURE("gamma2", exercise,
-                             values[i].s1, values[i].s2, values[i].Q1,
-                             values[i].Q2, values[i].q1, values[i].q2,
-                             values[i].r, today, values[i].v1,
-                             values[i].v2, values[i].rho, expected,
-                             calculated, error, tolerance);
+            REPORT_FAILURE("gamma2", exercise, value.s1, value.s2, value.Q1, value.Q2, value.q1,
+                           value.q2, value.r, today, value.v1, value.v2, value.rho, expected,
+                           calculated, error, tolerance);
         }
 
         calculated = margrabeOption.theta();
-        expected = values[i].theta;
+        expected = value.theta;
         error= std::fabs(calculated-expected);
         if (error>tolerance) {
-            REPORT_FAILURE("theta", exercise,
-                             values[i].s1, values[i].s2, values[i].Q1,
-                             values[i].Q2, values[i].q1, values[i].q2,
-                             values[i].r, today, values[i].v1,
-                             values[i].v2, values[i].rho, expected,
-                             calculated, error, tolerance);
+            REPORT_FAILURE("theta", exercise, value.s1, value.s2, value.Q1, value.Q2, value.q1,
+                           value.q2, value.r, today, value.v1, value.v2, value.rho, expected,
+                           calculated, error, tolerance);
         }
 
         calculated = margrabeOption.rho();
-        expected = values[i].rho_greek;
+        expected = value.rho_greek;
         error= std::fabs(calculated-expected);
         if (error>tolerance) {
-            REPORT_FAILURE("rho_greek", exercise,
-                             values[i].s1, values[i].s2, values[i].Q1,
-                             values[i].Q2, values[i].q1, values[i].q2,
-                             values[i].r, today, values[i].v1,
-                             values[i].v2, values[i].rho, expected,
-                             calculated, error, tolerance);
+            REPORT_FAILURE("rho_greek", exercise, value.s1, value.s2, value.Q1, value.Q2, value.q1,
+                           value.q2, value.r, today, value.v1, value.v2, value.rho, expected,
+                           calculated, error, tolerance);
         }
     }
 }
@@ -356,135 +327,119 @@ void MargrabeOptionTest::testGreeks() {
     ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
     ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(vol2, dc);
 
-    for (Size k=0; k<LENGTH(residualTimes); k++) {
-          Date exDate = today + timeToDays(residualTimes[k]);
-          ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    for (double residualTime : residualTimes) {
+        Date exDate = today + timeToDays(residualTime);
+        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-          // option to check
-          ext::shared_ptr<BlackScholesMertonProcess> stochProcess1(new
-              BlackScholesMertonProcess(Handle<Quote>(spot1),
-                                      Handle<YieldTermStructure>(qTS1),
-                                      Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS1)));
+        // option to check
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess1(new BlackScholesMertonProcess(
+            Handle<Quote>(spot1), Handle<YieldTermStructure>(qTS1), Handle<YieldTermStructure>(rTS),
+            Handle<BlackVolTermStructure>(volTS1)));
 
-          ext::shared_ptr<BlackScholesMertonProcess> stochProcess2(new
-              BlackScholesMertonProcess(Handle<Quote>(spot2),
-                                      Handle<YieldTermStructure>(qTS2),
-                                      Handle<YieldTermStructure>(rTS),
-                                      Handle<BlackVolTermStructure>(volTS2)));
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess2(new BlackScholesMertonProcess(
+            Handle<Quote>(spot2), Handle<YieldTermStructure>(qTS2), Handle<YieldTermStructure>(rTS),
+            Handle<BlackVolTermStructure>(volTS2)));
 
-          std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-          procs.push_back(stochProcess1);
-          procs.push_back(stochProcess2);
+        std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1, stochProcess2};
 
-          //The correlation -0.5 can be different real between -1 and 1 for more tests
-          Real correlation = -0.5;
-          Matrix correlationMatrix(2,2, correlation);
-          for (Integer j=0; j < 2; j++) {
-              correlationMatrix[j][j] = 1.0;
+        // The correlation -0.5 can be different real between -1 and 1 for more tests
+        Real correlation = -0.5;
+        Matrix correlationMatrix(2, 2, correlation);
+        for (Integer j = 0; j < 2; j++) {
+            correlationMatrix[j][j] = 1.0;
 
-          ext::shared_ptr<PricingEngine> engine(
-                             new AnalyticEuropeanMargrabeEngine(stochProcess1,
-                                                                stochProcess2,
-                                                                correlation));
+            ext::shared_ptr<PricingEngine> engine(
+                new AnalyticEuropeanMargrabeEngine(stochProcess1, stochProcess2, correlation));
 
-          //The quantities of S1 and S2 can be different from 1 & 1 for more tests
-          MargrabeOption margrabeOption(1, 1, exercise);
+            // The quantities of S1 and S2 can be different from 1 & 1 for more tests
+            MargrabeOption margrabeOption(1, 1, exercise);
 
-          // analytic engine
-          margrabeOption.setPricingEngine(engine);
+            // analytic engine
+            margrabeOption.setPricingEngine(engine);
 
-              for (Size l=0; l<LENGTH(underlyings1); l++) {
+            for (Size l = 0; l < LENGTH(underlyings1); l++) {
                 for (Size m=0; m<LENGTH(qRates1); m++) {
-                  for (Size n=0; n<LENGTH(rRates); n++) {
-                    for (Size p=0; p<LENGTH(vols1); p++) {
-                      Real u1 = underlyings1[l],
-                           u2 = underlyings2[l],
-                           u;
-                      Rate q1 = qRates1[m],
-                           q2 = qRates2[m],
-                           r = rRates[n];
-                      Volatility v1 = vols1[p],
-                                 v2 = vols2[p];
+                    for (double n : rRates) {
+                        for (Size p = 0; p < LENGTH(vols1); p++) {
+                            Real u1 = underlyings1[l], u2 = underlyings2[l], u;
+                            Rate q1 = qRates1[m], q2 = qRates2[m], r = n;
+                            Volatility v1 = vols1[p], v2 = vols2[p];
 
-                      spot1 ->setValue(u1);
-                      spot2 ->setValue(u2);
-                      qRate1->setValue(q1);
-                      qRate2->setValue(q2);
-                      rRate ->setValue(r);
-                      vol1  ->setValue(v1);
-                      vol2  ->setValue(v2);
+                            spot1->setValue(u1);
+                            spot2->setValue(u2);
+                            qRate1->setValue(q1);
+                            qRate2->setValue(q2);
+                            rRate->setValue(r);
+                            vol1->setValue(v1);
+                            vol2->setValue(v2);
 
-                      Real value = margrabeOption.NPV();
+                            Real value = margrabeOption.NPV();
 
-                      calculated["delta1"]  = margrabeOption.delta1();
-                      calculated["delta2"]  = margrabeOption.delta2();
-                      calculated["gamma1"]  = margrabeOption.gamma1();
-                      calculated["gamma2"]  = margrabeOption.gamma2();
-                      calculated["theta"]   = margrabeOption.theta();
-                      calculated["rho"]     = margrabeOption.rho();
+                            calculated["delta1"] = margrabeOption.delta1();
+                            calculated["delta2"] = margrabeOption.delta2();
+                            calculated["gamma1"] = margrabeOption.gamma1();
+                            calculated["gamma2"] = margrabeOption.gamma2();
+                            calculated["theta"] = margrabeOption.theta();
+                            calculated["rho"] = margrabeOption.rho();
 
-                      if (value > spot1->value()*1.0e-5) {
-                          // perturb spot and get delta1 and gamma
-                          u = u1;
-                          Real du = u*1.0e-4;
-                          spot1->setValue(u+du);
-                          Real value_p = margrabeOption.NPV(),
-                               delta_p = margrabeOption.delta1();
-                          spot1->setValue(u-du);
-                          Real value_m = margrabeOption.NPV(),
-                               delta_m = margrabeOption.delta1();
-                          spot1->setValue(u);
-                          expected["delta1"] = (value_p - value_m)/(2*du);
-                          expected["gamma1"] = (delta_p - delta_m)/(2*du);
+                            if (value > spot1->value() * 1.0e-5) {
+                                // perturb spot and get delta1 and gamma
+                                u = u1;
+                                Real du = u * 1.0e-4;
+                                spot1->setValue(u + du);
+                                Real value_p = margrabeOption.NPV(),
+                                     delta_p = margrabeOption.delta1();
+                                spot1->setValue(u - du);
+                                Real value_m = margrabeOption.NPV(),
+                                     delta_m = margrabeOption.delta1();
+                                spot1->setValue(u);
+                                expected["delta1"] = (value_p - value_m) / (2 * du);
+                                expected["gamma1"] = (delta_p - delta_m) / (2 * du);
 
-                          u = u2;
-                          spot2->setValue(u+du);
-                               value_p = margrabeOption.NPV();
-                               delta_p = margrabeOption.delta2();
-                          spot2->setValue(u-du);
-                               value_m = margrabeOption.NPV();
-                               delta_m = margrabeOption.delta2();
-                          spot2->setValue(u);
-                          expected["delta2"] = (value_p - value_m)/(2*du);
-                          expected["gamma2"] = (delta_p - delta_m)/(2*du);
+                                u = u2;
+                                spot2->setValue(u + du);
+                                value_p = margrabeOption.NPV();
+                                delta_p = margrabeOption.delta2();
+                                spot2->setValue(u - du);
+                                value_m = margrabeOption.NPV();
+                                delta_m = margrabeOption.delta2();
+                                spot2->setValue(u);
+                                expected["delta2"] = (value_p - value_m) / (2 * du);
+                                expected["gamma2"] = (delta_p - delta_m) / (2 * du);
 
-                          // perturb rates and get rho
-                          Spread dr = r*1.0e-4;
-                          rRate->setValue(r+dr);
-                               value_p = margrabeOption.NPV();
-                          rRate->setValue(r-dr);
-                               value_m = margrabeOption.NPV();
-                          rRate->setValue(r);
-                          expected["rho"] = (value_p - value_m)/(2*dr);
+                                // perturb rates and get rho
+                                Spread dr = r * 1.0e-4;
+                                rRate->setValue(r + dr);
+                                value_p = margrabeOption.NPV();
+                                rRate->setValue(r - dr);
+                                value_m = margrabeOption.NPV();
+                                rRate->setValue(r);
+                                expected["rho"] = (value_p - value_m) / (2 * dr);
 
-                          // perturb date and get theta
-                          Time dT = dc.yearFraction(today-1, today+1);
-                          Settings::instance().evaluationDate() = today-1;
-                               value_m = margrabeOption.NPV();
-                          Settings::instance().evaluationDate() = today+1;
-                               value_p = margrabeOption.NPV();
-                          Settings::instance().evaluationDate() = today;
-                          expected["theta"] = (value_p - value_m)/dT;
+                                // perturb date and get theta
+                                Time dT = dc.yearFraction(today - 1, today + 1);
+                                Settings::instance().evaluationDate() = today - 1;
+                                value_m = margrabeOption.NPV();
+                                Settings::instance().evaluationDate() = today + 1;
+                                value_p = margrabeOption.NPV();
+                                Settings::instance().evaluationDate() = today;
+                                expected["theta"] = (value_p - value_m) / dT;
 
-                          // compare
-                          std::map<std::string,Real>::iterator it;
-                          for (it = calculated.begin();
-                               it != calculated.end(); ++it) {
-                              std::string greek = it->first;
-                              Real expct = expected  [greek],
-                                   calcl = calculated[greek],
-                                   tol   = tolerance [greek];
-                              Real error = relativeError(expct,calcl,u1);
-                              if (error>tol) {
-                                  REPORT_FAILURE2(greek, exercise,
-                                                 u1, u2, q1, q2, r, today, v1, v2,
-                                                 expct, calcl, error, tol);
-                              }
-                          }
-                      }
+                                // compare
+                                std::map<std::string, Real>::iterator it;
+                                for (it = calculated.begin(); it != calculated.end(); ++it) {
+                                    std::string greek = it->first;
+                                    Real expct = expected[greek], calcl = calculated[greek],
+                                         tol = tolerance[greek];
+                                    Real error = relativeError(expct, calcl, u1);
+                                    if (error > tol) {
+                                        REPORT_FAILURE2(greek, exercise, u1, u2, q1, q2, r, today,
+                                                        v1, v2, expct, calcl, error, tol);
+                                    }
+                                }
+                            }
+                        }
                     }
-                  }
                 }
               }
           }
@@ -543,18 +498,18 @@ void MargrabeOptionTest::testAmericanExchangeTwoAssets() {
     ext::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
     ext::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (auto& value : values) {
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + timeToDays(value.t);
         ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
 
-        spot1 ->setValue(values[i].s1);
-        spot2 ->setValue(values[i].s2);
-        qRate1->setValue(values[i].q1);
-        qRate2->setValue(values[i].q2);
-        rRate ->setValue(values[i].r );
-        vol1  ->setValue(values[i].v1);
-        vol2  ->setValue(values[i].v2);
+        spot1->setValue(value.s1);
+        spot2->setValue(value.s2);
+        qRate1->setValue(value.q1);
+        qRate2->setValue(value.q2);
+        rRate->setValue(value.r);
+        vol1->setValue(value.v1);
+        vol2->setValue(value.v2);
 
         ext::shared_ptr<BlackScholesMertonProcess> stochProcess1(new
             BlackScholesMertonProcess(Handle<Quote>(spot1),
@@ -568,42 +523,35 @@ void MargrabeOptionTest::testAmericanExchangeTwoAssets() {
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS2)));
 
-        std::vector<ext::shared_ptr<StochasticProcess1D> > procs;
-        procs.push_back(stochProcess1);
-        procs.push_back(stochProcess2);
+        std::vector<ext::shared_ptr<StochasticProcess1D> > procs = {stochProcess1,stochProcess2};
 
-        Matrix correlationMatrix(2,2, values[i].rho);
+        Matrix correlationMatrix(2, 2, value.rho);
         for (Integer j=0; j < 2; j++) {
             correlationMatrix[j][j] = 1.0;
         }
 
         ext::shared_ptr<PricingEngine> engine(
-                             new AnalyticAmericanMargrabeEngine(stochProcess1,
-                                                                stochProcess2,
-                                                                values[i].rho));
+            new AnalyticAmericanMargrabeEngine(stochProcess1, stochProcess2, value.rho));
 
-        MargrabeOption margrabeOption(values[i].Q1, values[i].Q2, exercise);
+        MargrabeOption margrabeOption(value.Q1, value.Q2, exercise);
 
         // analytic engine
         margrabeOption.setPricingEngine(engine);
 
         Real calculated = margrabeOption.NPV();
-        Real expected = values[i].result;
+        Real expected = value.result;
         Real error = std::fabs(calculated-expected);
-        Real tolerance = values[i].tol;
+        Real tolerance = value.tol;
         if (error > tolerance) {
-            REPORT_FAILURE("value", exercise,
-                             values[i].s1, values[i].s2, values[i].Q1,
-                             values[i].Q2, values[i].q1, values[i].q2,
-                             values[i].r, today, values[i].v1,
-                             values[i].v2, values[i].rho, expected,
-                             calculated, error, tolerance);
+            REPORT_FAILURE("value", exercise, value.s1, value.s2, value.Q1, value.Q2, value.q1,
+                           value.q2, value.r, today, value.v1, value.v2, value.rho, expected,
+                           calculated, error, tolerance);
         }
     }
 }
 
 test_suite* MargrabeOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Exchange option tests");
+    auto* suite = BOOST_TEST_SUITE("Exchange option tests");
     suite->add(
         QUANTLIB_TEST_CASE(&MargrabeOptionTest::testEuroExchangeTwoAssets));
     suite->add(

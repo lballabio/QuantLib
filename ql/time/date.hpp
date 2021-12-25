@@ -327,8 +327,7 @@ namespace QuantLib {
         std::ostream& operator<<(std::ostream&, const iso_date_holder&);
 
         struct formatted_date_holder {
-            formatted_date_holder(const Date& d, const std::string& f)
-            : d(d), f(f) {}
+            formatted_date_holder(const Date& d, std::string f) : d(d), f(std::move(f)) {}
             Date d;
             std::string f;
         };
@@ -375,8 +374,8 @@ namespace QuantLib {
     template <>
     class Null<Date> {
       public:
-        Null() {}
-        operator Date() const { return Date(); }
+        Null() = default;
+        operator Date() const { return {}; }
     };
 
 
@@ -419,7 +418,7 @@ namespace QuantLib {
     inline Date Date::endOfMonth(const Date& d) {
         Month m = d.month();
         Year y = d.year();
-        return Date(monthLength(m, isLeap(y)), m, y);
+        return {monthLength(m, isLeap(y)), m, y};
     }
 
     inline bool Date::isEndOfMonth(const Date& d) {

@@ -46,7 +46,7 @@ void VolatilityModelsTest::testConstruction() {
 }
 
 test_suite* VolatilityModelsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("volatility models tests");
+    auto* suite = BOOST_TEST_SUITE("volatility models tests");
     suite->add(QUANTLIB_TEST_CASE(&VolatilityModelsTest::testConstruction));
     return suite;
 }

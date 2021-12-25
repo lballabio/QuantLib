@@ -45,31 +45,31 @@ class MarketModelPathwiseCoterminalSwaptionsDeflated : public MarketModelPathwis
                           const std::vector<Time>& rateTimes,
                           const std::vector<Rate>& strikes);
 
-        virtual ~MarketModelPathwiseCoterminalSwaptionsDeflated() {}
+       ~MarketModelPathwiseCoterminalSwaptionsDeflated() override = default;
 
-        virtual std::vector<Size> suggestedNumeraires() const;
-        virtual const EvolutionDescription& evolution() const;
-        virtual std::vector<Time> possibleCashFlowTimes() const;
-        virtual Size numberOfProducts() const;
-        virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
+       std::vector<Size> suggestedNumeraires() const override;
+       const EvolutionDescription& evolution() const override;
+       std::vector<Time> possibleCashFlowTimes() const override;
+       Size numberOfProducts() const override;
+       Size maxNumberOfCashFlowsPerProductPerStep() const override;
 
-        // has division by the numeraire already been done?
-        virtual bool alreadyDeflated() const;
+       // has division by the numeraire already been done?
+       bool alreadyDeflated() const override;
 
 
-        //! during simulation put product at start of path
-        virtual void reset();
+       //! during simulation put product at start of path
+       void reset() override;
 
-        //! return value indicates whether path is finished, TRUE means done
-        virtual bool nextTimeStep(
-            const CurveState& currentState,
-            std::vector<Size>& numberCashFlowsThisStep,
-            std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
+       //! return value indicates whether path is finished, TRUE means done
+       bool nextTimeStep(const CurveState& currentState,
+                         std::vector<Size>& numberCashFlowsThisStep,
+                         std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >&
+                             cashFlowsGenerated) override;
 
         //! returns a newly-allocated copy of itself
         #if defined(QL_USE_STD_UNIQUE_PTR)
-        virtual std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const;
-        #else
+        std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const override;
+#else
         virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
         #endif
 
@@ -96,31 +96,31 @@ class MarketModelPathwiseCoterminalSwaptionsNumericalDeflated : public MarketMod
                           const std::vector<Rate>& strikes,
                           Real bumpSize_);
 
-        virtual ~MarketModelPathwiseCoterminalSwaptionsNumericalDeflated() {}
+       ~MarketModelPathwiseCoterminalSwaptionsNumericalDeflated() override = default;
 
-        virtual std::vector<Size> suggestedNumeraires() const;
-        virtual const EvolutionDescription& evolution() const;
-        virtual std::vector<Time> possibleCashFlowTimes() const;
-        virtual Size numberOfProducts() const;
-        virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
+       std::vector<Size> suggestedNumeraires() const override;
+       const EvolutionDescription& evolution() const override;
+       std::vector<Time> possibleCashFlowTimes() const override;
+       Size numberOfProducts() const override;
+       Size maxNumberOfCashFlowsPerProductPerStep() const override;
 
-        // has division by the numeraire already been done?
-        virtual bool alreadyDeflated() const;
+       // has division by the numeraire already been done?
+       bool alreadyDeflated() const override;
 
 
-        //! during simulation put product at start of path
-        virtual void reset();
+       //! during simulation put product at start of path
+       void reset() override;
 
-        //! return value indicates whether path is finished, TRUE means done
-        virtual bool nextTimeStep(
-            const CurveState& currentState,
-            std::vector<Size>& numberCashFlowsThisStep,
-            std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
+       //! return value indicates whether path is finished, TRUE means done
+       bool nextTimeStep(const CurveState& currentState,
+                         std::vector<Size>& numberCashFlowsThisStep,
+                         std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >&
+                             cashFlowsGenerated) override;
 
         //! returns a newly-allocated copy of itself
         #if defined(QL_USE_STD_UNIQUE_PTR)
-        virtual std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const;
-        #else
+        std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const override;
+#else
         virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
         #endif
 

@@ -39,23 +39,22 @@ namespace QuantLib {
     class InterestRateIndex : public Index,
                               public Observer {
       public:
-        InterestRateIndex(const std::string& familyName,
+        InterestRateIndex(std::string familyName,
                           const Period& tenor,
                           Natural settlementDays,
-                          const Currency& currency,
-                          const Calendar& fixingCalendar,
-                          const DayCounter& dayCounter);
+                          Currency currency,
+                          Calendar fixingCalendar,
+                          DayCounter dayCounter);
         //! \name Index interface
         //@{
-        std::string name() const;
-        Calendar fixingCalendar() const;
-        bool isValidFixingDate(const Date& fixingDate) const;
-        Rate fixing(const Date& fixingDate,
-                    bool forecastTodaysFixing = false) const;
+        std::string name() const override;
+        Calendar fixingCalendar() const override;
+        bool isValidFixingDate(const Date& fixingDate) const override;
+        Rate fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
         //! \name Inspectors
         //@{

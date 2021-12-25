@@ -69,31 +69,30 @@ namespace QuantLib {
           for low discrepancy RNGs usually, it is therefore recommended
           to use pseudo random generators for the calibration phase always
           (and possibly quasi monte carlo in the subsequent pricing). */
-        MCLongstaffSchwartzEngine(
-            const ext::shared_ptr<StochasticProcess>& process,
-            Size timeSteps,
-            Size timeStepsPerYear,
-            bool brownianBridge,
-            bool antitheticVariate,
-            bool controlVariate,
-            Size requiredSamples,
-            Real requiredTolerance,
-            Size maxSamples,
-            BigNatural seed,
-            Size nCalibrationSamples = Null<Size>(),
-            boost::optional<bool> brownianBridgeCalibration = boost::none,
-            boost::optional<bool> antitheticVariateCalibration = boost::none,
-            BigNatural seedCalibration = Null<Size>());
+        MCLongstaffSchwartzEngine(ext::shared_ptr<StochasticProcess> process,
+                                  Size timeSteps,
+                                  Size timeStepsPerYear,
+                                  bool brownianBridge,
+                                  bool antitheticVariate,
+                                  bool controlVariate,
+                                  Size requiredSamples,
+                                  Real requiredTolerance,
+                                  Size maxSamples,
+                                  BigNatural seed,
+                                  Size nCalibrationSamples = Null<Size>(),
+                                  boost::optional<bool> brownianBridgeCalibration = boost::none,
+                                  boost::optional<bool> antitheticVariateCalibration = boost::none,
+                                  BigNatural seedCalibration = Null<Size>());
 
-        void calculate() const;
+        void calculate() const override;
 
       protected:
         virtual ext::shared_ptr<LongstaffSchwartzPathPricer<path_type> >
                                                    lsmPathPricer() const = 0;
 
-        TimeGrid timeGrid() const;
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
-        ext::shared_ptr<path_generator_type> pathGenerator() const;
+        TimeGrid timeGrid() const override;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override;
 
         ext::shared_ptr<StochasticProcess> process_;
         const Size timeSteps_;
@@ -115,12 +114,13 @@ namespace QuantLib {
     };
 
     template <class GenericEngine,
-              template <class> class MC,
+              template <class>
+              class MC,
               class RNG,
               class S,
               class RNG_Calibration>
     inline MCLongstaffSchwartzEngine<GenericEngine, MC, RNG, S, RNG_Calibration>::
-        MCLongstaffSchwartzEngine(const ext::shared_ptr<StochasticProcess>& process,
+        MCLongstaffSchwartzEngine(ext::shared_ptr<StochasticProcess> process,
                                   Size timeSteps,
                                   Size timeStepsPerYear,
                                   bool brownianBridge,
@@ -134,14 +134,14 @@ namespace QuantLib {
                                   boost::optional<bool> brownianBridgeCalibration,
                                   boost::optional<bool> antitheticVariateCalibration,
                                   BigNatural seedCalibration)
-    : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate), process_(process),
+    : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate), process_(std::move(process)),
       timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), brownianBridge_(brownianBridge),
       requiredSamples_(requiredSamples), requiredTolerance_(requiredTolerance),
       maxSamples_(maxSamples), seed_(seed),
       nCalibrationSamples_((nCalibrationSamples == Null<Size>()) ? 2048 : nCalibrationSamples),
       // NOLINTNEXTLINE(readability-implicit-bool-conversion)
       brownianBridgeCalibration_(brownianBridgeCalibration ? *brownianBridgeCalibration :
-                                                                  brownianBridge),
+                                                             brownianBridge),
       antitheticVariateCalibration_(
           // NOLINTNEXTLINE(readability-implicit-bool-conversion)
           antitheticVariateCalibration ? *antitheticVariateCalibration : antitheticVariate),

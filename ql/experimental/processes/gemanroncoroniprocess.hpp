@@ -54,11 +54,11 @@ namespace QuantLib {
                               Real theta1, Real theta2, Real theta3,
                               Real psi);
 
-        Real x0() const;
-        Real drift(Time t, Real x)     const;
-        Real diffusion(Time t, Real x) const;
-        Real stdDeviation(Time t0, Real x0, Time dt)    const;
-        Real evolve(Time t0, Real x0, Time dt, Real dw) const;
+        Real x0() const override;
+        Real drift(Time t, Real x) const override;
+        Real diffusion(Time t, Real x) const override;
+        Real stdDeviation(Time t0, Real x0, Time dt) const override;
+        Real evolve(Time t0, Real x0, Time dt, Real dw) const override;
 
         Real evolve(Time t0, Real x0, Time dt, Real dw, const Array& du) const;
         

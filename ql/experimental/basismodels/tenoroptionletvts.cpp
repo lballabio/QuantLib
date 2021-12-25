@@ -21,26 +21,28 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
     \brief caplet volatility term structure based on volatility transformation
 */
 
-#include <ql/experimental/basismodels/tenoroptionletvts.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/basismodels/tenoroptionletvts.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/math/rounding.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/time/dategenerationrule.hpp>
 #include <ql/time/schedule.hpp>
+#include <utility>
 
 
 namespace QuantLib {
 
     TenorOptionletVTS::TenorOptionletVTS(const Handle<OptionletVolatilityStructure>& baseVTS,
-                                         const ext::shared_ptr<IborIndex>& baseIndex,
-                                         const ext::shared_ptr<IborIndex>& targIndex,
-                                         const ext::shared_ptr<CorrelationStructure>& correlation)
+                                         ext::shared_ptr<IborIndex> baseIndex,
+                                         ext::shared_ptr<IborIndex> targIndex,
+                                         ext::shared_ptr<CorrelationStructure> correlation)
     : OptionletVolatilityStructure(baseVTS->referenceDate(),
                                    baseVTS->calendar(),
                                    baseVTS->businessDayConvention(),
                                    baseVTS->dayCounter()),
-      baseVTS_(baseVTS), baseIndex_(baseIndex), targIndex_(targIndex), correlation_(correlation) {
+      baseVTS_(baseVTS), baseIndex_(std::move(baseIndex)), targIndex_(std::move(targIndex)),
+      correlation_(std::move(correlation)) {
         QL_REQUIRE(baseIndex_->tenor().frequency() % targIndex_->tenor().frequency() == 0,
                    "Base index frequency must be a multiple of target tenor frequency");
     }
@@ -85,8 +87,8 @@ namespace QuantLib {
 
     Volatility TenorOptionletVTS::TenorOptionletSmileSection::volatilityImpl(Rate strike) const {
         Real sum_v = 0.0;
-        for (Size k = 0; k < v_.size(); ++k)
-            sum_v += v_[k];
+        for (double k : v_)
+            sum_v += k;
         std::vector<Real> volBase(v_.size());
         for (Size k = 0; k < fraRateBase_.size(); ++k) {
             Real strike_k = (strike - (fraRateTarg_ - sum_v * fraRateBase_[k])) / sum_v;

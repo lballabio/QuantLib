@@ -26,18 +26,9 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmhestonvariancemesher.hpp>
-
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wc++11-extensions"
-#endif
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/mean.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
-
 #include <set>
 #include <algorithm>
 
@@ -176,7 +167,7 @@ namespace QuantLib {
 
         volaEstimate_ = mesher.volaEstimate();
 
-        if (leverageFct != 0) {
+        if (leverageFct != nullptr) {
             typedef boost::accumulators::accumulator_set<
                 Real, boost::accumulators::stats<
                     boost::accumulators::tag::mean> >

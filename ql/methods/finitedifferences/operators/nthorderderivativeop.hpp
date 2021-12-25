@@ -24,9 +24,6 @@
 #ifndef quantlib_nth_order_derivative_op_hpp
 #define quantlib_nth_order_derivative_op_hpp
 
-#include <ql/qldefines.hpp>
-#ifndef QL_NO_UBLAS_SUPPORT
-
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
 
@@ -38,13 +35,12 @@ namespace QuantLib {
             Size direction, Size order, Integer nPoints,
             const ext::shared_ptr<FdmMesher>& mesher);
 
-        Disposable<array_type> apply(const array_type& r) const;
-        Disposable<SparseMatrix> toMatrix() const;
+        Disposable<array_type> apply(const array_type& r) const override;
+        Disposable<SparseMatrix> toMatrix() const override;
 
       private:
         SparseMatrix m_;
     };
 }
 
-#endif
 #endif

@@ -40,21 +40,19 @@ namespace QuantLib {
             const ext::shared_ptr<HullWhite>& model,
             Size direction);
 
-        Size size() const;
+        Size size() const override;
 
         //! Time \f$t1 <= t2\f$ is required
-        void setTime(Time t1, Time t2);
+        void setTime(Time t1, Time t2) override;
 
-        Disposable<Array> apply(const Array& r) const;
-        Disposable<Array> apply_mixed(const Array& r) const;
-        Disposable<Array> apply_direction(Size direction, const Array& r) const;
-        Disposable<Array>
-            solve_splitting(Size direction, const Array& r, Real s) const;
-        Disposable<Array> preconditioner(const Array& r, Real s) const;
+        Disposable<Array> apply(const Array& r) const override;
+        Disposable<Array> apply_mixed(const Array& r) const override;
+        Disposable<Array> apply_direction(Size direction, const Array& r) const override;
+        Disposable<Array> solve_splitting(Size direction, const Array& r, Real s) const override;
+        Disposable<Array> preconditioner(const Array& r, Real s) const override;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
-#endif
+        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const override;
+
       private:
         const Size direction_;
         const Array x_;

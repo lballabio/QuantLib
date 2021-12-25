@@ -53,9 +53,8 @@ namespace QuantLib {
       public:
         typedef Sample<Real> sample_type;
         explicit ZigguratRng(unsigned long seed = 0);
-        sample_type next() const {
-            return sample_type(nextGaussian(),1.0);
-        }
+        sample_type next() const { return {nextGaussian(), 1.0}; }
+
       private:
         mutable MersenneTwisterUniformRng mt32_;
         Real nextGaussian() const;

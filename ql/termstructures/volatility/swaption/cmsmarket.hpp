@@ -41,16 +41,15 @@ namespace QuantLib {
     //! set of CMS quotes
     class CmsMarket: public LazyObject{
       public:
-        CmsMarket(
-            const std::vector<Period>& swapLengths,
-            const std::vector<ext::shared_ptr<SwapIndex> >& swapIndexes,
-            const ext::shared_ptr<IborIndex>& iborIndex,
-            const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
-            const std::vector<ext::shared_ptr<CmsCouponPricer> >& pricers,
-            const Handle<YieldTermStructure>& discountingTS);
+        CmsMarket(std::vector<Period> swapLengths,
+                  std::vector<ext::shared_ptr<SwapIndex> > swapIndexes,
+                  ext::shared_ptr<IborIndex> iborIndex,
+                  const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
+                  const std::vector<ext::shared_ptr<CmsCouponPricer> >& pricers,
+                  Handle<YieldTermStructure> discountingTS);
         //! \name LazyObject interface
         //@{
-        void update() { LazyObject::update();}
+        void update() override { LazyObject::update(); }
         //@}
         // called during calibration procedure
         void reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
@@ -71,7 +70,7 @@ namespace QuantLib {
         Disposable<Array> weightedFwdNpvErrors(const Matrix& weights);
 
       private:
-        void performCalculations() const;
+        void performCalculations() const override;
         Real weightedMean(const Matrix& var, const Matrix& weights) const;
         Disposable<Array> weightedMeans(const Matrix& var, const Matrix& weights) const;
 

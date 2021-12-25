@@ -63,7 +63,7 @@ namespace QuantLib {
         //! abstract base class for calendar implementations
         class Impl {
           public:
-            virtual ~Impl() {}
+            virtual ~Impl() = default;
             virtual std::string name() const = 0;
             virtual bool isBusinessDay(const Date&) const = 0;
             virtual bool isWeekend(Weekday) const = 0;
@@ -75,7 +75,7 @@ namespace QuantLib {
             implementation, which is therefore unusable except as a
             placeholder.
         */
-        Calendar() {}
+        Calendar() = default;
         //! \name Calendar interface
         //@{
         //!  Returns whether or not the calendar is initialized
@@ -116,17 +116,6 @@ namespace QuantLib {
         void addHoliday(const Date&);
         /*! Removes a date from the set of holidays for the given calendar. */
         void removeHoliday(const Date&);
-
-        /*! Returns the holidays between two dates.
-
-            \deprecated Use the non-static overload.
-                        Deprecated in version 1.18.
-        */
-        QL_DEPRECATED
-        static std::vector<Date> holidayList(const Calendar& calendar,
-                                             const Date& from,
-                                             const Date& to,
-                                             bool includeWeekEnds = false);
 
         /*! Returns the holidays between two dates. */
         std::vector<Date> holidayList(const Date& from,
@@ -175,7 +164,7 @@ namespace QuantLib {
         */
         class WesternImpl : public Impl {
           public:
-            bool isWeekend(Weekday) const;
+            bool isWeekend(Weekday) const override;
             //! expressed relative to first day of year
             static Day easterMonday(Year);
         };
@@ -186,7 +175,7 @@ namespace QuantLib {
         */
         class OrthodoxImpl : public Impl {
           public:
-            bool isWeekend(Weekday) const;
+            bool isWeekend(Weekday) const override;
             //! expressed relative to first day of year
             static Day easterMonday(Year);
         };

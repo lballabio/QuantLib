@@ -514,11 +514,11 @@ namespace QuantLib {
     }
 
     Size SVD::rank() const {
-        Real eps = QL_EPSILON;
+        QL_CONSTEXPR Real eps = QL_EPSILON;
         Real tol = m_*s_[0]*eps;
         Size r = 0;
-        for (Size i = 0; i < s_.size(); i++) {
-            if (s_[i] > tol) {
+        for (double i : s_) {
+            if (i > tol) {
                 r++;
             }
         }

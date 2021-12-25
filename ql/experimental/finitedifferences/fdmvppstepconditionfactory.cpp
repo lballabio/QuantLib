@@ -20,15 +20,15 @@
 /*! \file fdmvppstepconditionfactory.cpp
 */
 
-#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmvppstepconditionfactory.hpp>
 #include <ql/experimental/finitedifferences/fdmvppstartlimitstepcondition.hpp>
+#include <ql/experimental/finitedifferences/fdmvppstepconditionfactory.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmVPPStepConditionFactory::FdmVPPStepConditionFactory(
-        const VanillaVPPOption::arguments& args)
-    : args_(args) {
+    FdmVPPStepConditionFactory::FdmVPPStepConditionFactory(VanillaVPPOption::arguments args)
+    : args_(std::move(args)) {
         QL_REQUIRE(!(   args_.nStarts       != Null<Size>()
                      && args_.nRunningHours != Null<Size>()),
                    "start and running hour limt together is not supported");

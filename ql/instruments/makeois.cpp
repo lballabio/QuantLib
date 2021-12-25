@@ -42,9 +42,11 @@ namespace QuantLib {
       rule_(DateGeneration::Backward),
       // any value here for endOfMonth_ would not be actually used
       isDefaultEOM_(true),
-      type_(OvernightIndexedSwap::Payer), nominal_(1.0),
+      type_(Swap::Payer), nominal_(1.0),
       overnightSpread_(0.0),
-      fixedDayCount_(overnightIndex->dayCounter()), telescopicValueDates_(false) {}
+      fixedDayCount_(overnightIndex->dayCounter()), 
+      telescopicValueDates_(false), 
+      averagingMethod_(RateAveraging::Compound) {}
 
     MakeOIS::operator OvernightIndexedSwap() const {
         ext::shared_ptr<OvernightIndexedSwap> ois = *this;
@@ -102,7 +104,7 @@ namespace QuantLib {
                                       overnightIndex_, overnightSpread_,
                                       paymentLag_, paymentAdjustment_,
                                       paymentCalendar_, telescopicValueDates_);
-            if (engine_ == 0) {
+            if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                     overnightIndex_->forwardingTermStructure();
                 QL_REQUIRE(!disc.empty(),
@@ -124,9 +126,10 @@ namespace QuantLib {
                                  usedFixedRate, fixedDayCount_,
                                  overnightIndex_, overnightSpread_,
                                  paymentLag_, paymentAdjustment_,
-                                 paymentCalendar_, telescopicValueDates_));
+                                 paymentCalendar_, telescopicValueDates_, 
+                                 averagingMethod_));
 
-        if (engine_ == 0) {
+        if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
                                 overnightIndex_->forwardingTermStructure();
             bool includeSettlementDateFlows = false;
@@ -140,11 +143,11 @@ namespace QuantLib {
     }
 
     MakeOIS& MakeOIS::receiveFixed(bool flag) {
-        type_ = flag ? OvernightIndexedSwap::Receiver : OvernightIndexedSwap::Payer ;
+        type_ = flag ? Swap::Receiver : Swap::Payer ;
         return *this;
     }
 
-    MakeOIS& MakeOIS::withType(OvernightIndexedSwap::Type type) {
+    MakeOIS& MakeOIS::withType(Swap::Type type) {
         type_ = type;
         return *this;
     }
@@ -233,8 +236,11 @@ namespace QuantLib {
     MakeOIS& MakeOIS::withTelescopicValueDates(bool telescopicValueDates) {
         telescopicValueDates_ = telescopicValueDates;
         return *this;
-
     }
 
+    MakeOIS& MakeOIS::withAveragingMethod(RateAveraging::Type averagingMethod) {
+        averagingMethod_ = averagingMethod;
+        return *this;
+    }
 
 }

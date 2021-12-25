@@ -39,31 +39,30 @@ namespace QuantLib {
     */
     class SwaptionVolatilityCube : public SwaptionVolatilityDiscrete {
       public:
-        SwaptionVolatilityCube(
-            const Handle<SwaptionVolatilityStructure>& atmVolStructure,
-            const std::vector<Period>& optionTenors,
-            const std::vector<Period>& swapTenors,
-            const std::vector<Spread>& strikeSpreads,
-            const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-            const ext::shared_ptr<SwapIndex>& swapIndexBase,
-            const ext::shared_ptr<SwapIndex>& shortSwapIndexBase,
-            bool vegaWeightedSmileFit);
+        SwaptionVolatilityCube(const Handle<SwaptionVolatilityStructure>& atmVolStructure,
+                               const std::vector<Period>& optionTenors,
+                               const std::vector<Period>& swapTenors,
+                               const std::vector<Spread>& strikeSpreads,
+                               std::vector<std::vector<Handle<Quote> > > volSpreads,
+                               ext::shared_ptr<SwapIndex> swapIndexBase,
+                               ext::shared_ptr<SwapIndex> shortSwapIndexBase,
+                               bool vegaWeightedSmileFit);
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const { return atmVol_->dayCounter(); }
-        Date maxDate() const { return atmVol_->maxDate(); }
-        Time maxTime() const { return atmVol_->maxTime(); }
-        const Date& referenceDate() const { return atmVol_->referenceDate();}
-        Calendar calendar() const { return atmVol_->calendar(); }
-        Natural settlementDays() const { return atmVol_->settlementDays(); }
+        DayCounter dayCounter() const override { return atmVol_->dayCounter(); }
+        Date maxDate() const override { return atmVol_->maxDate(); }
+        Time maxTime() const override { return atmVol_->maxTime(); }
+        const Date& referenceDate() const override { return atmVol_->referenceDate(); }
+        Calendar calendar() const override { return atmVol_->calendar(); }
+        Natural settlementDays() const override { return atmVol_->settlementDays(); }
         //! \name VolatilityTermStructure interface
         //@{
-        Rate minStrike() const { return -QL_MAX_REAL; }
-        Rate maxStrike() const { return QL_MAX_REAL; }
+        Rate minStrike() const override { return -QL_MAX_REAL; }
+        Rate maxStrike() const override { return QL_MAX_REAL; }
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
-        const Period& maxSwapTenor() const { return atmVol_->maxSwapTenor(); }
+        const Period& maxSwapTenor() const override { return atmVol_->maxSwapTenor(); }
         //@}
         //! \name Other inspectors
         //@{
@@ -83,7 +82,7 @@ namespace QuantLib {
         //@}
         //! \name LazyObject interface
         //@{
-        void performCalculations() const {
+        void performCalculations() const override {
             QL_REQUIRE(nStrikes_ >= requiredNumberOfStrikes(),
                        "too few strikes (" << nStrikes_
                                            << ") required are at least "
@@ -91,17 +90,15 @@ namespace QuantLib {
             SwaptionVolatilityDiscrete::performCalculations();
         }
         //@}
-        VolatilityType volatilityType() const;
+        VolatilityType volatilityType() const override;
+
       protected:
         void registerWithVolatilitySpread();
         virtual Size requiredNumberOfStrikes() const { return 2; }
-        Volatility volatilityImpl(Time optionTime,
-                                  Time swapLength,
-                                  Rate strike) const;
-        Volatility volatilityImpl(const Date& optionDate,
-                                  const Period& swapTenor,
-                                  Rate strike) const;
-        Real shiftImpl(Time optionTime, Time swapLength) const;
+        Volatility volatilityImpl(Time optionTime, Time swapLength, Rate strike) const override;
+        Volatility
+        volatilityImpl(const Date& optionDate, const Period& swapTenor, Rate strike) const override;
+        Real shiftImpl(Time optionTime, Time swapLength) const override;
         Handle<SwaptionVolatilityStructure> atmVol_;
         Size nStrikes_;
         std::vector<Spread> strikeSpreads_;

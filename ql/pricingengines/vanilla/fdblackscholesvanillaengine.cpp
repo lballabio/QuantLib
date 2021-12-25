@@ -20,47 +20,49 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
-#include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
+#include <ql/methods/finitedifferences/utilities/escroweddividendadjustment.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmescrowedloginnervaluecalculator.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
     FdBlackScholesVanillaEngine::FdBlackScholesVanillaEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid, Size dampingSteps, 
-            const FdmSchemeDesc& schemeDesc,
-            bool localVol, Real illegalLocalVolOverwrite,
-            CashDividendModel cashDividendModel)
-    : process_(process),
-      tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
-      schemeDesc_(schemeDesc),
-      localVol_(localVol),
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Size tGrid,
+        Size xGrid,
+        Size dampingSteps,
+        const FdmSchemeDesc& schemeDesc,
+        bool localVol,
+        Real illegalLocalVolOverwrite,
+        CashDividendModel cashDividendModel)
+    : process_(std::move(process)), tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
+      schemeDesc_(schemeDesc), localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
-      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()),
-      cashDividendModel_(cashDividendModel) {
+      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()), cashDividendModel_(cashDividendModel) {
         registerWith(process_);
     }
 
     FdBlackScholesVanillaEngine::FdBlackScholesVanillaEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
-            Size tGrid, Size xGrid, Size dampingSteps,
-            const FdmSchemeDesc& schemeDesc,
-            bool localVol, Real illegalLocalVolOverwrite,
-            CashDividendModel cashDividendModel)
-    : process_(process),
-      tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
-      schemeDesc_(schemeDesc), 
-      localVol_(localVol),
-      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
-      quantoHelper_(quantoHelper),
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        ext::shared_ptr<FdmQuantoHelper> quantoHelper,
+        Size tGrid,
+        Size xGrid,
+        Size dampingSteps,
+        const FdmSchemeDesc& schemeDesc,
+        bool localVol,
+        Real illegalLocalVolOverwrite,
+        CashDividendModel cashDividendModel)
+    : process_(std::move(process)), tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
+      schemeDesc_(schemeDesc), localVol_(localVol),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite), quantoHelper_(std::move(quantoHelper)),
       cashDividendModel_(cashDividendModel) {
         registerWith(process_);
         registerWith(quantoHelper_);
@@ -68,7 +70,6 @@ namespace QuantLib {
 
 
     void FdBlackScholesVanillaEngine::calculate() const {
-
         // 0. Cash dividend model
         const Date exerciseDate = arguments_.exercise->lastDate();
         const Time maturity = process_->time(exerciseDate);
@@ -77,36 +78,36 @@ namespace QuantLib {
         Real spotAdjustment = 0.0;
         DividendSchedule dividendSchedule = DividendSchedule();
 
+        ext::shared_ptr<EscrowedDividendAdjustment> escrowedDivAdj;
+
         switch (cashDividendModel_) {
           case Spot:
             dividendSchedule = arguments_.cashFlow;
             break;
           case Escrowed:
-            for (DividendSchedule::const_iterator
-                    divIter = arguments_.cashFlow.begin();
-                 divIter != arguments_.cashFlow.end(); ++divIter) {
+            if  (arguments_.exercise->type() != Exercise::European)
+                // add dividend dates as stopping times
+                for (const auto& cf: arguments_.cashFlow)
+                    dividendSchedule.push_back(
+                        ext::make_shared<FixedDividend>(0.0, cf->date()));
 
-                const Date divDate = (*divIter)->date();
+            QL_REQUIRE(quantoHelper_ == nullptr,
+                "Escrowed dividend model is not supported for Quanto-Options");
 
-                if (divDate <= exerciseDate && divDate >= settlementDate) {
-                    const Real divAmount = (*divIter)->amount();
+            escrowedDivAdj = ext::make_shared<EscrowedDividendAdjustment>(
+                arguments_.cashFlow,
+                process_->riskFreeRate(),
+                process_->dividendYield(),
+                [&](Date d){ return process_->time(d); },
+                maturity
+            );
 
-                    if (divAmount != 0.0) {
-                        QL_REQUIRE(arguments_.exercise->type()
-                                        == Exercise::European,
-                             "Escrowed dividend model expects an European option");
-
-                        const DiscountFactor discount =
-                            process_->riskFreeRate()->discount(divDate) /
-                            process_->dividendYield()->discount(divDate);
-
-                        spotAdjustment -= divAmount * discount;
-                    }
-                }
-            }
+            spotAdjustment =
+                escrowedDivAdj->dividendAdjustment(process_->time(settlementDate));
 
             QL_REQUIRE(process_->x0() + spotAdjustment > 0.0,
                     "spot minus dividends becomes negative");
+
             break;
           default:
               QL_FAIL("unknwon cash dividend model");
@@ -116,20 +117,31 @@ namespace QuantLib {
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
 
-        const ext::shared_ptr<Fdm1dMesher> equityMesher(
-            new FdmBlackScholesMesher(
+        const ext::shared_ptr<Fdm1dMesher> equityMesher =
+            ext::make_shared<FdmBlackScholesMesher>(
                     xGrid_, process_, maturity, payoff->strike(), 
                     Null<Real>(), Null<Real>(), 0.0001, 1.5, 
                     std::pair<Real, Real>(payoff->strike(), 0.1),
                     dividendSchedule, quantoHelper_,
-                    spotAdjustment));
+                    spotAdjustment);
         
-        const ext::shared_ptr<FdmMesher> mesher (
-            new FdmMesherComposite(equityMesher));
+        const ext::shared_ptr<FdmMesher> mesher =
+            ext::make_shared<FdmMesherComposite>(equityMesher);
         
         // 2. Calculator
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-                                      new FdmLogInnerValue(payoff, mesher, 0));
+        ext::shared_ptr<FdmInnerValueCalculator> calculator;
+        switch (cashDividendModel_) {
+          case Spot:
+              calculator = ext::make_shared<FdmLogInnerValue>(
+                  payoff, mesher, 0);
+            break;
+          case Escrowed:
+              calculator = ext::make_shared<FdmEscrowedLogInnerValueCalculator>(
+                  escrowedDivAdj, payoff, mesher, 0);
+            break;
+          default:
+              QL_FAIL("unknwon cash dividend model");
+        }
 
         // 3. Step conditions
         const ext::shared_ptr<FdmStepConditionComposite> conditions = 
@@ -161,16 +173,11 @@ namespace QuantLib {
     }
 
     MakeFdBlackScholesVanillaEngine::MakeFdBlackScholesVanillaEngine(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-      : process_(process),
-        tGrid_(100),
-        xGrid_(100),
-        dampingSteps_(0),
-        schemeDesc_(ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::Douglas())),
-        localVol_(false),
-        illegalLocalVolOverwrite_(-Null<Real>()),
-        quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()),
-        cashDividendModel_(FdBlackScholesVanillaEngine::Spot) {}
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), tGrid_(100), xGrid_(100), dampingSteps_(0),
+      schemeDesc_(ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::Douglas())), localVol_(false),
+      illegalLocalVolOverwrite_(-Null<Real>()), quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()),
+      cashDividendModel_(FdBlackScholesVanillaEngine::Spot) {}
 
     MakeFdBlackScholesVanillaEngine&
     MakeFdBlackScholesVanillaEngine::withQuantoHelper(

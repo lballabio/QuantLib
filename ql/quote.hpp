@@ -36,7 +36,7 @@ namespace QuantLib {
      */
     class Quote : public virtual Observable {
       public:
-        virtual ~Quote() {}
+        ~Quote() override = default;
         //! returns the current value
         virtual Real value() const = 0;
         //! returns true if the Quote holds a valid value

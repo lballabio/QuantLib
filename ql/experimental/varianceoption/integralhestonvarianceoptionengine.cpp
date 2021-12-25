@@ -21,11 +21,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/varianceoption/integralhestonvarianceoptionengine.hpp>
 #include <ql/errors.hpp>
+#include <ql/experimental/varianceoption/integralhestonvarianceoptionengine.hpp>
 #include <ql/functional.hpp>
-#include <boost/scoped_array.hpp>
 #include <complex>
+#include <utility>
+#include <memory>
 
 namespace QuantLib {
 
@@ -57,14 +58,14 @@ namespace QuantLib {
                       Real v0, Real eprice, Time tau, Real rtax)
     {
         Real ss=0.0;
-        boost::scoped_array<double> xiv(new double[2048*2048+1]);
+        std::unique_ptr<double[]> xiv(new double[2048*2048+1]);
         double nris=0.0;
         int j=0,mm=0;
         double pi=0,pi2=0;
         double dstep=0;
         Real option=0, impart=0;
 
-        boost::scoped_array<Complex> ff(new Complex[2048*2048]);
+        std::unique_ptr<Complex[]> ff(new Complex[2048*2048]);
         Complex xi;
         Complex ui,beta,zita,gamma,csum,vero;
         Complex contrib, caux, caux1,caux2,caux3;
@@ -202,8 +203,8 @@ namespace QuantLib {
                     const ext::function<Real(Real)>& payoff) {
 
         Real ss=0.0;
-        boost::scoped_array<double> xiv(new double[2048*2048+1]);
-        boost::scoped_array<double> ivet(new double[2048 * 2048 + 1]);
+        std::unique_ptr<double[]> xiv(new double[2048*2048+1]);
+        std::unique_ptr<double[]> ivet(new double[2048 * 2048 + 1]);
         double nris=0.0;
         int j=0,mm=0,k=0;
         double pi=0,pi2=0;
@@ -216,7 +217,7 @@ namespace QuantLib {
         Real sumr=0;//,sumi=0;
         Complex dxi,z;
 
-        boost::scoped_array<Complex> ff(new Complex[2048*2048]);
+        std::unique_ptr<Complex[]> ff(new Complex[2048*2048]);
         Complex xi;
         Complex ui,beta,zita,gamma,csum;
         Complex caux,caux1,caux2,caux3;
@@ -347,7 +348,8 @@ namespace QuantLib {
 
     struct payoff_adapter {
         ext::shared_ptr<QuantLib::Payoff> payoff;
-        explicit payoff_adapter(const ext::shared_ptr<QuantLib::Payoff>& payoff) : payoff(payoff) {}
+        explicit payoff_adapter(ext::shared_ptr<QuantLib::Payoff> payoff)
+        : payoff(std::move(payoff)) {}
         Real operator()(Real S) const {
             return (*payoff)(S);
         }
@@ -356,8 +358,8 @@ namespace QuantLib {
     }
 
     IntegralHestonVarianceOptionEngine::IntegralHestonVarianceOptionEngine(
-                              const ext::shared_ptr<HestonProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<HestonProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
@@ -383,7 +385,7 @@ namespace QuantLib {
 
         ext::shared_ptr<PlainVanillaPayoff> plainPayoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        if ((plainPayoff != 0) && plainPayoff->optionType() == Option::Call) {
+        if ((plainPayoff != nullptr) && plainPayoff->optionType() == Option::Call) {
             // a specialization for Call options is available
             Real strike = plainPayoff->strike();
             results_.value = IvopOneDim(epsilon, chi, theta, rho,

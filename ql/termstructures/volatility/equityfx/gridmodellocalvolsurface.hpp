@@ -45,16 +45,16 @@ namespace QuantLib {
             Extrapolation upperExtrapolation
                 = FixedLocalVolSurface::ConstantExtrapolation);
 
-        void update();
+        void update() override;
 
-        Date maxDate() const;
-        Time maxTime() const;
-        Real minStrike() const;
-        Real maxStrike() const;
+        Date maxDate() const override;
+        Time maxTime() const override;
+        Real minStrike() const override;
+        Real maxStrike() const override;
 
       protected:
-        void generateArguments();
-        Volatility localVolImpl(Time t, Real strike) const;
+        void generateArguments() override;
+        Volatility localVolImpl(Time t, Real strike) const override;
 
         const Date referenceDate_;
         std::vector<Time> times_;

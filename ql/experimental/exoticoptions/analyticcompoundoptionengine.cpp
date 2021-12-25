@@ -20,6 +20,7 @@
 #include <ql/experimental/exoticoptions/analyticcompoundoptionengine.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -32,10 +33,10 @@ namespace QuantLib {
             ImpliedSpotHelper(DiscountFactor dividendDiscount,
                               DiscountFactor riskFreeDiscount,
                               Real standardDeviation,
-                              const ext::shared_ptr<PlainVanillaPayoff>& payoff,
+                              ext::shared_ptr<PlainVanillaPayoff> payoff,
                               Real strike)
             : dividendDiscount_(dividendDiscount), riskFreeDiscount_(riskFreeDiscount),
-              standardDeviation_(standardDeviation), strike_(strike), payoff_(payoff) {}
+              standardDeviation_(standardDeviation), strike_(strike), payoff_(std::move(payoff)) {}
             Real operator()(Real spot) const {
                 Real forwardPrice = spot*dividendDiscount_/riskFreeDiscount_;
                 Real value = blackFormula(payoff_, forwardPrice,
@@ -53,8 +54,8 @@ namespace QuantLib {
     }
 
     AnalyticCompoundOptionEngine::AnalyticCompoundOptionEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process){
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 

@@ -17,19 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/pricingengines/basket/kirkengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    KirkEngine::KirkEngine(
-            const ext::shared_ptr<BlackProcess>& process1,
-            const ext::shared_ptr<BlackProcess>& process2,
-            Real correlation)
-    : process1_(process1), process2_(process2), rho_(correlation) {
+    KirkEngine::KirkEngine(ext::shared_ptr<BlackProcess> process1,
+                           ext::shared_ptr<BlackProcess> process2,
+                           Real correlation)
+    : process1_(std::move(process1)), process2_(std::move(process2)), rho_(correlation) {
         registerWith(process1_);
         registerWith(process2_);
     }

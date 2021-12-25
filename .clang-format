@@ -50,5 +50,6 @@ BreakBeforeTernaryOperators: false
 ConstructorInitializerIndentWidth: 0
 SortUsingDeclarations: false
 IndentCaseLabels: true
+IndentPPDirectives: AfterHash
 
 ...

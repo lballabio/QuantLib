@@ -25,6 +25,7 @@
 
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 
 namespace QuantLib {
 
@@ -47,7 +48,7 @@ namespace QuantLib {
                   const Period& fixedLegTenor,
                   BusinessDayConvention fixedLegConvention,
                   const DayCounter& fixedLegDayCounter,
-                  const ext::shared_ptr<IborIndex>& iborIndex);
+                  ext::shared_ptr<IborIndex> iborIndex);
         SwapIndex(const std::string& familyName,
                   const Period& tenor,
                   Natural settlementDays,
@@ -56,11 +57,11 @@ namespace QuantLib {
                   const Period& fixedLegTenor,
                   BusinessDayConvention fixedLegConvention,
                   const DayCounter& fixedLegDayCounter,
-                  const ext::shared_ptr<IborIndex>& iborIndex,
-                  const Handle<YieldTermStructure>& discountingTermStructure);
+                  ext::shared_ptr<IborIndex> iborIndex,
+                  Handle<YieldTermStructure> discountingTermStructure);
         //! \name InterestRateIndex interface
         //@{
-        Date maturityDate(const Date& valueDate) const;
+        Date maturityDate(const Date& valueDate) const override;
         //@}
         //! \name Inspectors
         //@{
@@ -90,7 +91,7 @@ namespace QuantLib {
                         const Period& tenor) const;
         // @}
       protected:
-        Rate forecastFixing(const Date& fixingDate) const;
+        Rate forecastFixing(const Date& fixingDate) const override;
         Period tenor_;
         ext::shared_ptr<IborIndex> iborIndex_;
         Period fixedLegTenor_;
@@ -113,7 +114,8 @@ namespace QuantLib {
                   Natural settlementDays,
                   const Currency& currency,
                   const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                  bool telescopicValueDates = false);
+                  bool telescopicValueDates = false,
+                  RateAveraging::Type averagingMethod = RateAveraging::Compound);
         //! \name Inspectors
         //@{
         ext::shared_ptr<OvernightIndex> overnightIndex() const;
@@ -126,6 +128,7 @@ namespace QuantLib {
       protected:
         ext::shared_ptr<OvernightIndex> overnightIndex_;
         bool telescopicValueDates_;
+        RateAveraging::Type averagingMethod_;
         // cache data to avoid swap recreation when the same fixing date
         // is used multiple time to forecast changing fixing
         mutable ext::shared_ptr<OvernightIndexedSwap> lastSwap_;

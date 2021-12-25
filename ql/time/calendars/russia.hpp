@@ -59,13 +59,13 @@ namespace QuantLib {
       private:
         class SettlementImpl : public Calendar::OrthodoxImpl {
           public:
-            std::string name() const { return "Russian settlement"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Russian settlement"; }
+            bool isBusinessDay(const Date&) const override;
         };
         class ExchangeImpl : public Calendar::OrthodoxImpl {
           public:
-            std::string name() const { return "Moscow exchange"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Moscow exchange"; }
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         //! Russian calendars

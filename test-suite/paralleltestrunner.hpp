@@ -32,7 +32,6 @@
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
-#include <ql/functional.hpp>
 
 #ifdef VERSION
 /* This comes from ./configure, and for some reason it interferes with
@@ -44,36 +43,22 @@
 #include <boost/interprocess/ipc/message_queue.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
-#include <boost/timer/timer.hpp>
 
 #define BOOST_TEST_NO_MAIN 1
-#if BOOST_VERSION < 107000
-#define timer __TIMER__
 #include <boost/test/included/unit_test.hpp>
-#undef timer
-#else
-#include <boost/test/included/unit_test.hpp>
-#endif
 #include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <map>
 #include <list>
 #include <sstream>
 #include <utility>
 #include <fstream>
-
+#include <chrono>
 #include <string>
 #include <cstring>
 #include <cstdlib>
 
 #ifdef BOOST_MSVC
-#  define BOOST_LIB_NAME boost_timer
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_chrono
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
 #  define BOOST_LIB_NAME boost_system
 #  include <boost/config/auto_link.hpp>
 #  undef BOOST_LIB_NAME
@@ -222,7 +207,7 @@ int main( int argc, char* argv[] )
 
                     QL_REQUIRE(tok.size() == 2,
                         "every line should consists of two entries");
-                    runTimeLog[tok[0]] = boost::lexical_cast<Time>(tok[1]);
+                    runTimeLog[tok[0]] = std::stod(tok[1]);
                 }
             }
             in.close();
@@ -241,7 +226,7 @@ int main( int argc, char* argv[] )
                 std::vector<std::string> tok;
                 boost::split(tok, arg, boost::is_any_of("="));
                 if (tok.size() == 2 && tok[0] == "--nProc") {
-                    nProc = boost::lexical_cast<unsigned>(tok[1]);
+                    nProc = std::stoul(tok[1]);
                 }
                 else if (arg != "--build_info=yes") {
                     cmd << arg << " ";
@@ -287,7 +272,7 @@ int main( int argc, char* argv[] )
             // fork worker processes
             boost::thread_group threadGroup;
             for (unsigned i=0; i < nProc; ++i) {
-                threadGroup.create_thread(QuantLib::ext::bind(worker, cmd.str()));
+                threadGroup.create_thread([&]() { worker(cmd.str()); });
             }
 
             struct mutex_remove {
@@ -411,13 +396,12 @@ int main( int argc, char* argv[] )
             message_queue rq(open_only, testResultQueueName);
 
             while (!id.terminate) {
-                boost::timer::cpu_timer t;
+                auto startTime = std::chrono::steady_clock::now();
 
                 #if BOOST_VERSION < 106200
                     BOOST_TEST_FOREACH( test_observer*, to,
                         framework::impl::s_frk_state().m_observers )
-                        framework::impl::s_frk_state().m_aux_em.vexecute(
-                            ext::bind( &test_observer::test_start, to, 1 ) );
+                        framework::impl::s_frk_state().m_aux_em.vexecute([&](){ to->test_start(1); });
 
                     framework::impl::s_frk_state().execute_test_tree( id.id );
 
@@ -429,8 +413,10 @@ int main( int argc, char* argv[] )
                     framework::run(id.id, false);
                 #endif
 
+                auto stopTime = std::chrono::steady_clock::now();
+                double T = std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count() * 1e-6;
                 runTimeLogs.push_back(std::make_pair(
-                    framework::get(id.id, TUT_ANY).p_name, t.elapsed().wall));
+                    framework::get(id.id, TUT_ANY).p_name, T));
 
                 output_logstream(log_stream(), oldBuf, logBuf);
 

@@ -17,31 +17,27 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file andreasenhugelocalvolatility.cpp
-*/
-
-#include <ql/timegrid.hpp>
 #include <ql/exercise.hpp>
-#include <ql/utilities/null.hpp>
-#include <ql/math/array.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/comparison.hpp>
-#include <ql/math/interpolations/cubicinterpolation.hpp>
-#include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/math/array.hpp>
+#include <ql/math/comparison.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
-#include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityinterpl.hpp>
-
-#include <boost/math/special_functions/fpclassify.hpp>
-
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/timegrid.hpp>
+#include <ql/utilities/null.hpp>
+#include <cmath>
 #include <limits>
+#include <utility>
 
 namespace QuantLib {
 
@@ -59,18 +55,19 @@ namespace QuantLib {
     class AndreasenHugeCostFunction : public CostFunction {
       public:
         AndreasenHugeCostFunction(
-            const Array& marketNPVs,
-            const Array& marketVegas,
-            const Array& lnMarketStrikes,
-            const Array& previousNPVs,
+            Array marketNPVs,
+            Array marketVegas,
+            Array lnMarketStrikes,
+            Array previousNPVs,
             const ext::shared_ptr<FdmMesherComposite>& mesher,
             Time dT,
             AndreasenHugeVolatilityInterpl::InterpolationType interpolationType)
-        : marketNPVs_(marketNPVs), marketVegas_(marketVegas), lnMarketStrikes_(lnMarketStrikes),
-          previousNPVs_(previousNPVs), mesher_(mesher), nGridPoints_(mesher->layout()->size()),
-          dT_(dT), interpolationType_((lnMarketStrikes_.size() > 1) ?
-                                          interpolationType :
-                                          AndreasenHugeVolatilityInterpl::PiecewiseConstant),
+        : marketNPVs_(std::move(marketNPVs)), marketVegas_(std::move(marketVegas)),
+          lnMarketStrikes_(std::move(lnMarketStrikes)), previousNPVs_(std::move(previousNPVs)),
+          mesher_(mesher), nGridPoints_(mesher->layout()->size()), dT_(dT),
+          interpolationType_((lnMarketStrikes_.size() > 1) ?
+                                 interpolationType :
+                                 AndreasenHugeVolatilityInterpl::PiecewiseConstant),
           dxMap_(FirstDerivativeOp(0, mesher_)), dxxMap_(SecondDerivativeOp(0, mesher_)),
           d2CdK2_(dxMap_.mult(Array(mesher->layout()->size(), -1.0)).add(dxxMap_)),
           mapT_(0, mesher_) {}
@@ -134,7 +131,7 @@ namespace QuantLib {
             return -mapT_.apply(c);
         }
 
-        Disposable<Array> values(const Array& sig) const {
+        Disposable<Array> values(const Array& sig) const override {
             Array newNPVs = solveFor(dT_, sig, previousNPVs_);
 
             const std::vector<Real>& gridPoints =
@@ -178,14 +175,12 @@ namespace QuantLib {
 
     class CombinedCostFunction : public CostFunction {
       public:
-        CombinedCostFunction(
-            const ext::shared_ptr<AndreasenHugeCostFunction>& putCostFct,
-            const ext::shared_ptr<AndreasenHugeCostFunction>& callCostFct)
-      : putCostFct_(putCostFct),
-        callCostFct_(callCostFct) { }
+        CombinedCostFunction(ext::shared_ptr<AndreasenHugeCostFunction> putCostFct,
+                             ext::shared_ptr<AndreasenHugeCostFunction> callCostFct)
+        : putCostFct_(std::move(putCostFct)), callCostFct_(std::move(callCostFct)) {}
 
-        Disposable<Array> values(const Array& sig) const {
-            if ((putCostFct_ != 0) && (callCostFct_ != 0)) {
+        Disposable<Array> values(const Array& sig) const override {
+            if ((putCostFct_ != nullptr) && (callCostFct_ != nullptr)) {
                 const Array pv = putCostFct_->values(sig);
                 const Array cv = callCostFct_->values(sig);
 
@@ -194,21 +189,21 @@ namespace QuantLib {
                 std::copy(cv.begin(), cv.end(), retVal.begin() + cv.size());
 
                 return retVal;
-            } else if (putCostFct_ != 0)
+            } else if (putCostFct_ != nullptr)
                 return putCostFct_->values(sig);
-            else if (callCostFct_ != 0)
+            else if (callCostFct_ != nullptr)
                 return callCostFct_->values(sig);
             else
                 QL_FAIL("internal error: cost function not set");
         }
 
         Disposable<Array> initialValues() const {
-            if ((putCostFct_ != 0) && (callCostFct_ != 0))
+            if ((putCostFct_ != nullptr) && (callCostFct_ != nullptr))
                 return 0.5*(  putCostFct_->initialValues()
                             + callCostFct_->initialValues());
-            else if (putCostFct_ != 0)
+            else if (putCostFct_ != nullptr)
                 return putCostFct_->initialValues();
-            else if (callCostFct_ != 0)
+            else if (callCostFct_ != nullptr)
                 return callCostFct_->initialValues();
             else
                 QL_FAIL("internal error: cost function not set");
@@ -220,39 +215,31 @@ namespace QuantLib {
     };
 
 
-
     AndreasenHugeVolatilityInterpl::AndreasenHugeVolatilityInterpl(
         const CalibrationSet& calibrationSet,
-        const Handle<Quote>& spot,
-        const Handle<YieldTermStructure>& rTS,
-        const Handle<YieldTermStructure>& qTS,
+        Handle<Quote> spot,
+        Handle<YieldTermStructure> rTS,
+        Handle<YieldTermStructure> qTS,
         InterpolationType interplationType,
         CalibrationType calibrationType,
         Size nGridPoints,
         Real _minStrike,
         Real _maxStrike,
-        const ext::shared_ptr<OptimizationMethod>& optimizationMethod,
+        ext::shared_ptr<OptimizationMethod> optimizationMethod,
         const EndCriteria& endCriteria)
-    : spot_(spot),
-      rTS_(rTS),
-      qTS_(qTS),
-      interpolationType_(interplationType),
-      calibrationType_(calibrationType),
-      nGridPoints_(nGridPoints),
-      minStrike_(_minStrike),
-      maxStrike_(_maxStrike),
-      optimizationMethod_(optimizationMethod),
-      endCriteria_(endCriteria) {
+    : spot_(std::move(spot)), rTS_(std::move(rTS)), qTS_(std::move(qTS)),
+      interpolationType_(interplationType), calibrationType_(calibrationType),
+      nGridPoints_(nGridPoints), minStrike_(_minStrike), maxStrike_(_maxStrike),
+      optimizationMethod_(std::move(optimizationMethod)), endCriteria_(endCriteria) {
         QL_REQUIRE(nGridPoints > 2 && !calibrationSet.empty(), "undefined grid or calibration set");
 
         std::set<Real> strikes;
         std::set<Date> expiries;
 
         calibrationSet_.reserve(calibrationSet.size());
-        for (Size i=0; i < calibrationSet.size(); ++i) {
+        for (const auto& i : calibrationSet) {
 
-            const ext::shared_ptr<Exercise> exercise =
-                calibrationSet[i].first->exercise();
+            const ext::shared_ptr<Exercise> exercise = i.first->exercise();
 
             QL_REQUIRE(exercise->type() == Exercise::European,
                     "European option required");
@@ -261,8 +248,7 @@ namespace QuantLib {
             expiries.insert(expiry);
 
             const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                ext::dynamic_pointer_cast<PlainVanillaPayoff>(
-                    calibrationSet[i].first->payoff());
+                ext::dynamic_pointer_cast<PlainVanillaPayoff>(i.first->payoff());
 
             QL_REQUIRE(payoff, "plain vanilla payoff required");
 
@@ -270,12 +256,9 @@ namespace QuantLib {
             strikes.insert(strike);
 
             calibrationSet_.push_back(
-                std::make_pair(
-                    ext::make_shared<VanillaOption>(payoff, exercise),
-                    calibrationSet[i].second)
-            );
+                std::make_pair(ext::make_shared<VanillaOption>(payoff, exercise), i.second));
 
-            registerWith(calibrationSet[i].second);
+            registerWith(i.second);
         }
 
         strikes_.assign(strikes.begin(), strikes.end());
@@ -460,9 +443,9 @@ namespace QuantLib {
             maxError_ = std::max(maxError_,
                 *std::max_element(vegaDiffs.begin(), vegaDiffs.end()));
 
-            if (putCostFct != 0)
+            if (putCostFct != nullptr)
                 npvPuts = putCostFct->solveFor(dT_[i], sig, npvPuts);
-            if (callCostFct != 0)
+            if (callCostFct != nullptr)
                 npvCalls= callCostFct->solveFor(dT_[i], sig, npvCalls);
         }
 
@@ -607,7 +590,7 @@ namespace QuantLib {
         Array localVol = Sqrt(2*dCdT/d2CdK2);
 
         for (Size i=1; i < localVol.size()-1; ++i)
-            if (!boost::math::isfinite(localVol[i]) || localVol[i] < 0.0)
+            if (!std::isfinite(localVol[i]) || localVol[i] < 0.0)
                 localVol[i] = 0.25;
 
         return localVol;

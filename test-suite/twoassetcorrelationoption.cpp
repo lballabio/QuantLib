@@ -83,7 +83,7 @@ void TwoAssetCorrelationOptionTest::testAnalyticEngine() {
 }
 
 test_suite* TwoAssetCorrelationOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Two-asset correlation option tests");
+    auto* suite = BOOST_TEST_SUITE("Two-asset correlation option tests");
 
     suite->add(QUANTLIB_TEST_CASE(
        &TwoAssetCorrelationOptionTest::testAnalyticEngine));

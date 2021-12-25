@@ -26,6 +26,7 @@
 
 #include <ql/math/functional.hpp>
 #include <ql/math/integrals/momentbasedgaussianpolynomial.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -44,7 +45,7 @@ namespace QuantLib {
 			if (m_.size() <= n)
 				m_.resize(n+1, std::numeric_limits<mp_real>::quiet_NaN());
 
-			if (boost::math::isnan(m_[n])) {
+			if (std::isnan(m_[n])) {
 				if (n == 0)
 					m_[0] = m0();
 				else if (n == 1)
@@ -60,7 +61,7 @@ namespace QuantLib {
 			if (f_.size() <= n)
 				f_.resize(n+1, std::numeric_limits<mp_real>::quiet_NaN());
 
-			if (boost::math::isnan(f_[n])) {
+			if (std::isnan(f_[n])) {
 				if (n == 0)
 					f_[0] = 1.0;
 				else
@@ -94,18 +95,12 @@ namespace QuantLib {
         : GaussLaguerreTrigonometricBase<mp_real>(u),
           m0_(1.0+1.0/(1.0+u*u)) { }
 
-        mp_real moment(Size n) const {
-            return (this->moment_(n) + this->fact(n))/m0_;
-        }
-        Real w(Real x) const {
-            return std::exp(-x)*(1 + std::cos(this->u_*x))/m0_;
-        }
+        mp_real moment(Size n) const override { return (this->moment_(n) + this->fact(n)) / m0_; }
+        Real w(Real x) const override { return std::exp(-x) * (1 + std::cos(this->u_ * x)) / m0_; }
 
       protected:
-        mp_real m0() const {
-            return 1/(1 + this->u_*this->u_);
-        }
-        mp_real m1() const {
+        mp_real m0() const override { return 1 / (1 + this->u_ * this->u_); }
+        mp_real m1() const override {
             return (1 - this->u_*this->u_)
                     /square<mp_real>()(1 + this->u_*this->u_);
         }
@@ -133,18 +128,12 @@ namespace QuantLib {
         : GaussLaguerreTrigonometricBase<mp_real>(u),
           m0_(1.0+u/(1.0+u*u)) { }
 
-        mp_real moment(Size n) const {
-            return (this->moment_(n) + this->fact(n))/m0_;
-        }
-        Real w(Real x) const {
-            return std::exp(-x)*(1 + std::sin(this->u_*x))/m0_;
-        }
+        mp_real moment(Size n) const override { return (this->moment_(n) + this->fact(n)) / m0_; }
+        Real w(Real x) const override { return std::exp(-x) * (1 + std::sin(this->u_ * x)) / m0_; }
 
       protected:
-        mp_real m0() const {
-            return this->u_/(1 + this->u_*this->u_);
-        }
-        mp_real m1() const {
+        mp_real m0() const override { return this->u_ / (1 + this->u_ * this->u_); }
+        mp_real m1() const override {
             return 2*this->u_/square<mp_real>()(1 + this->u_*this->u_);
         }
 

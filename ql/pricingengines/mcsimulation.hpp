@@ -50,7 +50,7 @@ namespace QuantLib {
             stats_type;
         typedef typename MonteCarloModel<MC,RNG,S>::result_type result_type;
 
-        virtual ~McSimulation() {}
+        virtual ~McSimulation() = default;
         //! add samples until the required absolute tolerance is reached
         result_type value(Real tolerance,
                           Size maxSamples = QL_MAX_INTEGER,

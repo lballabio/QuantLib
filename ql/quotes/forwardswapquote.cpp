@@ -19,14 +19,14 @@
 
 #include <ql/quotes/forwardswapquote.hpp>
 #include <ql/settings.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    ForwardSwapQuote::ForwardSwapQuote(
-                    const ext::shared_ptr<SwapIndex>& swapIndex,
-                    const Handle<Quote>& spread,
-                    const Period& fwdStart)
-    : swapIndex_(swapIndex), spread_(spread), fwdStart_(fwdStart) {
+    ForwardSwapQuote::ForwardSwapQuote(ext::shared_ptr<SwapIndex> swapIndex,
+                                       Handle<Quote> spread,
+                                       const Period& fwdStart)
+    : swapIndex_(std::move(swapIndex)), spread_(std::move(spread)), fwdStart_(fwdStart) {
         registerWith(swapIndex_);
         registerWith(spread_);
         registerWith(Settings::instance().evaluationDate());

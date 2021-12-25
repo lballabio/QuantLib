@@ -31,15 +31,6 @@
 
 namespace QuantLib {
 
-    struct CPI {
-        //! when you observe an index, how do you interpolate between fixings?
-        enum InterpolationType {
-            AsIndex,   //!< same interpolation as index
-            Flat,      //!< flat from previous fixing
-            Linear     //!< linearly between bracketing fixings
-        };
-    };
-
 
     class CPICouponPricer;
 
@@ -88,7 +79,7 @@ namespace QuantLib {
         //! adjusted fixing (already divided by the base fixing)
         Rate adjustedFixing() const;
         //! allows for a different interpolation from the index
-        Rate indexFixing() const;
+        Rate indexFixing() const override;
         //! base value for the CPI index
         /*! \warning make sure that the interpolation used to create
                      this is what you are using for the fixing,
@@ -105,7 +96,7 @@ namespace QuantLib {
 
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
         Real baseCPI_;
@@ -113,8 +104,7 @@ namespace QuantLib {
         Spread spread_;
         CPI::InterpolationType observationInterpolation_;
 
-        bool checkPricerImpl(
-                       const ext::shared_ptr<InflationCouponPricer>&) const;
+        bool checkPricerImpl(const ext::shared_ptr<InflationCouponPricer>&) const override;
         // use to calculate for fixing date, allows change of
         // interpolation w.r.t. index.  Can also be used ahead of time
         Rate indexFixing(const Date &) const;
@@ -150,7 +140,7 @@ namespace QuantLib {
         /*! This does not have to agree with index on that date. */
         virtual Real baseFixing() const;
         //! you may not have a valid date
-        virtual Date baseDate() const;
+        Date baseDate() const override;
 
         //! do you want linear/constant/as-index interpolation of future data?
         virtual CPI::InterpolationType interpolation() const {
@@ -159,7 +149,8 @@ namespace QuantLib {
         virtual Frequency frequency() const { return frequency_; }
 
         //! redefined to use baseFixing() and interpolation
-        virtual Real amount() const;
+        Real amount() const override;
+
       protected:
         Real baseFixing_;
         CPI::InterpolationType interpolation_;
@@ -178,7 +169,7 @@ namespace QuantLib {
     class CPILeg {
       public:
         CPILeg(const Schedule& schedule,
-               const ext::shared_ptr<ZeroInflationIndex>& index,
+               ext::shared_ptr<ZeroInflationIndex> index,
                Real baseCPI,
                const Period& observationLag);
         CPILeg& withNotionals(Real notional);

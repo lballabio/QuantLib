@@ -32,10 +32,6 @@ namespace QuantLib {
 
 
     //Multiplicative Seasonality on price = on CPI/RPI/HICP/etc
-    //
-    MultiplicativePriceSeasonality::MultiplicativePriceSeasonality() {
-    }
-
 
     void MultiplicativePriceSeasonality::validate() const
     {
@@ -128,8 +124,7 @@ namespace QuantLib {
         // curveBaseDate and effective fixing date. This means that we should retrieve
         // the input seasonality adjustments when we look at I_{SA}(t) / I_{NSA}(t).
         Date curveBaseDate = iTS.baseDate();
-        Date effectiveFixingDate = iTS.indexIsInterpolated() ? d : 
-            inflationPeriod(d, iTS.frequency()).first;
+        Date effectiveFixingDate = inflationPeriod(d, iTS.frequency()).first;
         
         return seasonalityCorrection(r, effectiveFixingDate, iTS.dayCounter(), curveBaseDate, true);
     }
@@ -206,7 +201,8 @@ namespace QuantLib {
         if (isZeroRate) {
             Rate factorBase = this->seasonalityFactor(curveBaseDate);
             Real seasonalityAt = factorAt / factorBase;
-            Time timeFromCurveBase = dc.yearFraction(curveBaseDate, atDate);
+            std::pair<Date,Date> p = inflationPeriod(atDate,frequency());
+            Time timeFromCurveBase = dc.yearFraction(curveBaseDate, p.first);
             f = std::pow(seasonalityAt, 1/timeFromCurveBase);
         }
         else {

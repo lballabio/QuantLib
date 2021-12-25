@@ -18,7 +18,7 @@
 */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/instruments/vanillaswap.hpp>
@@ -42,7 +42,7 @@ using namespace QuantLib;
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
 
-    ThreadKey sessionId() { return 0; }
+    ThreadKey sessionId() { return {}; }
 
 }
 #endif
@@ -123,27 +123,15 @@ int main(int, char* []) {
             intesitiesVHigh.push_back(intensitiesHigh[i]);
         }
 
-        defaultIntensityTS.push_back(Handle<DefaultProbabilityTermStructure>(
-            ext::shared_ptr<DefaultProbabilityTermStructure>(
-                 new InterpolatedHazardRateCurve<BackwardFlat>(
-                   defaultTSDates, 
-                   intesitiesVLow,
-                   Actual360(),
-                   TARGET()))));
-        defaultIntensityTS.push_back(Handle<DefaultProbabilityTermStructure>(
-            ext::shared_ptr<DefaultProbabilityTermStructure>(
-                 new InterpolatedHazardRateCurve<BackwardFlat>(
-                   defaultTSDates,
-                   intesitiesVMedium,
-                   Actual360(),
-                   TARGET()))));
-        defaultIntensityTS.push_back(Handle<DefaultProbabilityTermStructure>(
-            ext::shared_ptr<DefaultProbabilityTermStructure>(
-                 new InterpolatedHazardRateCurve<BackwardFlat>(
-                   defaultTSDates, 
-                   intesitiesVHigh,
-                   Actual360(), 
-                   TARGET()))));
+        defaultIntensityTS.emplace_back(ext::shared_ptr<DefaultProbabilityTermStructure>(
+            new InterpolatedHazardRateCurve<BackwardFlat>(defaultTSDates, intesitiesVLow,
+                                                          Actual360(), TARGET())));
+        defaultIntensityTS.emplace_back(ext::shared_ptr<DefaultProbabilityTermStructure>(
+            new InterpolatedHazardRateCurve<BackwardFlat>(defaultTSDates, intesitiesVMedium,
+                                                          Actual360(), TARGET())));
+        defaultIntensityTS.emplace_back(ext::shared_ptr<DefaultProbabilityTermStructure>(
+            new InterpolatedHazardRateCurve<BackwardFlat>(defaultTSDates, intesitiesVHigh,
+                                                          Actual360(), TARGET())));
 
         Volatility blackVol = 0.15;   
         ext::shared_ptr<PricingEngine> ctptySwapCvaLow = 
@@ -180,9 +168,7 @@ int main(int, char* []) {
         DayCounter fixedLegDayCounter = ActualActual(ActualActual::ISDA);
         DayCounter floatingLegDayCounter = ActualActual(ActualActual::ISDA);
 
-        VanillaSwap::Type swapType = 
-            //VanillaSwap::Receiver ;
-            VanillaSwap::Payer;
+        Swap::Type swapType = Swap::Payer;
         ext::shared_ptr<IborIndex> yieldIndxS(
              new Euribor3M(Handle<YieldTermStructure>(swapTS)));
         std::vector<VanillaSwap> riskySwaps;

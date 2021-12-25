@@ -21,7 +21,7 @@
 #include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/exercise.hpp>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -40,9 +40,8 @@ namespace QuantLib {
 
         OneAssetOption::setupArguments(args);
 
-        DoubleBarrierOption::arguments* moreArgs =
-            dynamic_cast<DoubleBarrierOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        auto* moreArgs = dynamic_cast<DoubleBarrierOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->barrierType = barrierType_;
         moreArgs->barrier_lo = barrier_lo_;
         moreArgs->barrier_hi = barrier_hi_;
@@ -66,7 +65,7 @@ namespace QuantLib {
             detail::ImpliedVolatilityHelper::clone(process, volQuote);
 
         // engines are built-in for the time being
-        boost::scoped_ptr<PricingEngine> engine;
+        std::unique_ptr<PricingEngine> engine;
         switch (exercise_->type()) {
           case Exercise::European:
             engine.reset(new AnalyticDoubleBarrierEngine(newProcess));

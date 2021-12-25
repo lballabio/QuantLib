@@ -18,11 +18,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/model.hpp>
 #include <ql/math/optimization/problem.hpp>
-#include <ql/math/optimization/projection.hpp>
 #include <ql/math/optimization/projectedconstraint.hpp>
+#include <ql/math/optimization/projection.hpp>
+#include <ql/models/model.hpp>
 #include <ql/utilities/null_deleter.hpp>
+#include <utility>
 
 using std::vector;
 
@@ -37,14 +38,14 @@ namespace QuantLib {
       public:
         CalibrationFunction(CalibratedModel* model,
                             const vector<ext::shared_ptr<CalibrationHelper> >& h,
-                            const vector<Real>& weights,
+                            vector<Real> weights,
                             const Projection& projection)
-            : model_(model, null_deleter()), instruments_(h),
-              weights_(weights), projection_(projection) {}
+        : model_(model, null_deleter()), instruments_(h), weights_(std::move(weights)),
+          projection_(projection) {}
 
-        virtual ~CalibrationFunction() {}
+        ~CalibrationFunction() override = default;
 
-        virtual Real value(const Array& params) const {
+        Real value(const Array& params) const override {
             model_->setParams(projection_.include(params));
             Real value = 0.0;
             for (Size i=0; i<instruments_.size(); i++) {
@@ -54,7 +55,7 @@ namespace QuantLib {
             return std::sqrt(value);
         }
 
-        virtual Disposable<Array> values(const Array& params) const {
+        Disposable<Array> values(const Array& params) const override {
             model_->setParams(projection_.include(params));
             Array values(instruments_.size());
             for (Size i=0; i<instruments_.size(); i++) {
@@ -64,7 +65,7 @@ namespace QuantLib {
             return values;
         }
 
-        virtual Real finiteDifferenceEpsilon() const { return 1e-6; }
+        Real finiteDifferenceEpsilon() const override { return 1e-6; }
 
       private:
         ext::shared_ptr<CalibratedModel> model_;
@@ -72,20 +73,6 @@ namespace QuantLib {
         vector<Real> weights_;
         const Projection projection_;
     };
-
-    void CalibratedModel::calibrate(
-                    const vector<ext::shared_ptr<BlackCalibrationHelper> >& instruments,
-                    OptimizationMethod& method,
-                    const EndCriteria& endCriteria,
-                    const Constraint& additionalConstraint,
-                    const vector<Real>& weights,
-                    const vector<bool>& fixParameters) {
-        vector<ext::shared_ptr<CalibrationHelper> > tmp(instruments.size());
-        for (Size i=0; i<instruments.size(); ++i)
-            tmp[i] = ext::static_pointer_cast<CalibrationHelper>(instruments[i]);
-        calibrate(tmp, method, endCriteria, additionalConstraint,
-                  weights, fixParameters);
-    }
 
     void CalibratedModel::calibrate(
             const vector<ext::shared_ptr<CalibrationHelper> >& instruments,
@@ -131,15 +118,6 @@ namespace QuantLib {
 
     Real CalibratedModel::value(
                 const Array& params,
-                const vector<ext::shared_ptr<BlackCalibrationHelper> >& instruments) {
-        vector<ext::shared_ptr<CalibrationHelper> > tmp(instruments.size());
-        for (Size i=0; i<instruments.size(); ++i)
-            tmp[i] = ext::static_pointer_cast<CalibrationHelper>(instruments[i]);
-        return value(params, tmp);
-    }
-
-    Real CalibratedModel::value(
-                const Array& params,
                 const vector<ext::shared_ptr<CalibrationHelper> >& instruments) {
         vector<Real> w = vector<Real>(instruments.size(), 1.0);
         Projection p(params);
@@ -149,8 +127,8 @@ namespace QuantLib {
 
     Disposable<Array> CalibratedModel::params() const {
         Size size=0;
-        for (Size i=0; i<arguments_.size(); ++i)
-            size += arguments_[i].size();
+        for (const auto& argument : arguments_)
+            size += argument.size();
         Array params(size);
         for (Size i=0, k=0; i<arguments_.size(); ++i) {
             for (Size j=0; j<arguments_[i].size(); ++j, ++k)
@@ -161,10 +139,10 @@ namespace QuantLib {
 
     void CalibratedModel::setParams(const Array& params) {
         Array::const_iterator p = params.begin();
-        for (Size i=0; i<arguments_.size(); ++i) {
-            for (Size j=0; j<arguments_[i].size(); ++j, ++p) {
+        for (auto& argument : arguments_) {
+            for (Size j = 0; j < argument.size(); ++j, ++p) {
                 QL_REQUIRE(p!=params.end(),"parameter array too small");
-                arguments_[i].setParam(j, *p);
+                argument.setParam(j, *p);
             }
         }
         QL_REQUIRE(p==params.end(),"parameter array too big!");

@@ -36,7 +36,7 @@ namespace QuantLib {
     namespace detail {
         class UpdatedYInterpolation {
           public:
-            virtual ~UpdatedYInterpolation() {}
+            virtual ~UpdatedYInterpolation() = default;
             virtual Real value(const Array& yValues, Real x) const = 0;
         };
 
@@ -57,7 +57,7 @@ namespace QuantLib {
                 #endif
             }
 
-            void update() {
+            void update() override {
                 const Real cM1 = 4.0/(*(this->xEnd_-1) - *(this->xBegin_));
 
                 for (Size i=0; i < n_; ++i) {
@@ -72,11 +72,9 @@ namespace QuantLib {
                 }
             }
 
-            Real value(Real x) const {
-                return _value(this->yBegin_, x);
-            }
+            Real value(Real x) const override { return _value(this->yBegin_, x); }
 
-            Real derivative(Real x) const {
+            Real derivative(Real x) const override {
                 Real n=0.0, d=0.0, nd=0.0, dd=0.0;
                 for (Size i=0; i < n_; ++i) {
                     const Real x_i = this->xBegin_[i];
@@ -101,33 +99,31 @@ namespace QuantLib {
                 return (nd * d - n * dd)/(d*d);
             }
 
-            Real primitive(Real) const {
+            Real primitive(Real) const override {
                 QL_FAIL("LagrangeInterpolation primitive is not implemented");
             }
 
-            Real secondDerivative(Real) const {
+            Real secondDerivative(Real) const override {
                 QL_FAIL("LagrangeInterpolation secondDerivative "
                         "is not implemented");
             }
 
-            Real value(const Array& y, Real x) const {
-                return _value(y.begin(), x);
-            }
+            Real value(const Array& y, Real x) const override { return _value(y.begin(), x); }
 
-            private:
-              template <class Iterator>
-              Real _value(const Iterator& yBegin, Real x) const {
-                  Real n=0.0, d=0.0;
-                  for (Size i=0; i < n_; ++i) {
-                      const Real x_i = this->xBegin_[i];
-                      if (close_enough(x, x_i))
-                          return yBegin[i];
+          private:
+            template <class Iterator>
+            Real _value(const Iterator& yBegin, Real x) const {
+                Real n = 0.0, d = 0.0;
+                for (Size i = 0; i < n_; ++i) {
+                    const Real x_i = this->xBegin_[i];
+                    if (close_enough(x, x_i))
+                        return yBegin[i];
 
-                      const Real alpha = lambda_[i]/(x-x_i);
-                      n += alpha * yBegin[i];
-                      d += alpha;
-                  }
-                  return n/d;
+                    const Real alpha = lambda_[i] / (x - x_i);
+                    n += alpha * yBegin[i];
+                    d += alpha;
+                }
+                return n / d;
               }
 
               const Size n_;

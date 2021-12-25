@@ -127,7 +127,7 @@ void PagodaOptionTest::testCached() {
 
 
 test_suite* PagodaOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Pagoda-option tests");
+    auto* suite = BOOST_TEST_SUITE("Pagoda-option tests");
     suite->add(QUANTLIB_TEST_CASE(&PagodaOptionTest::testCached));
     return suite;
 }

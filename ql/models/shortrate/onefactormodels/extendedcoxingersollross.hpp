@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2021 Magnus Mencke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +26,7 @@
 #define quantlib_extended_cox_ingersoll_ross_hpp
 
 #include <ql/models/shortrate/onefactormodels/coxingersollross.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -32,8 +34,10 @@ namespace QuantLib {
     /*! This class implements the extended Cox-Ingersoll-Ross model
         defined by
         \f[
-            dr_t = (\theta(t) - \alpha r_t)dt + \sqrt{r_t}\sigma dW_t .
+            r(t) = \varphi(t)+y(t)
         \f]
+        where \f$ \varphi(t) \f$ is the deterministic time-dependent
+        parameter used for term-structure fitting and \f$ y_t \f$ is a standard CIR process.
 
         \bug this class was not tested enough to guarantee
              its functionality.
@@ -51,18 +55,18 @@ namespace QuantLib {
                               Real x0 = 0.05,
                               bool withFellerConstraint = true);
 
-        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
 
-        ext::shared_ptr<ShortRateDynamics> dynamics() const;
+        ext::shared_ptr<ShortRateDynamics> dynamics() const override;
 
         Real discountBondOption(Option::Type type,
                                 Real strike,
                                 Time maturity,
-                                Time bondMaturity) const;
+                                Time bondMaturity) const override;
 
       protected:
-        void generateArguments();
-        Real A(Time t, Time T) const;
+        void generateArguments() override;
+        Real A(Time t, Time T) const override;
 
       private:
         class Dynamics;
@@ -74,28 +78,24 @@ namespace QuantLib {
     //! Short-rate dynamics in the extended Cox-Ingersoll-Ross model
     /*! The short-rate is here
         \f[
-            r_t = \varphi(t) + y_t^2
+            r(t) = \varphi(t) + y(t)
         \f]
         where \f$ \varphi(t) \f$ is the deterministic time-dependent
-        parameter used for term-structure fitting and \f$ y_t \f$ is the
-        state variable, the square-root of a standard CIR process.
+        parameter used for term-structure fitting and \f$ y_t \f$ is a standard CIR process
+        with dynamics
+        \f[
+            dy(t)=k(\theta-y(t))dt+\sigma \sqrt{y(t)}dW(t)
+        \f]
     */
     class ExtendedCoxIngersollRoss::Dynamics
         : public CoxIngersollRoss::Dynamics {
       public:
-        Dynamics(const Parameter& phi,
-                 Real theta,
-                 Real k,
-                 Real sigma,
-                 Real x0)
-        : CoxIngersollRoss::Dynamics(theta, k, sigma, x0), phi_(phi) {}
+        Dynamics(Parameter phi, Real theta, Real k, Real sigma, Real x0)
+        : CoxIngersollRoss::Dynamics(theta, k, sigma, x0), phi_(std::move(phi)) {}
 
-        virtual Real variable(Time t, Rate r) const {
-            return std::sqrt(r - phi_(t));
-        }
-        virtual Real shortRate(Time t, Real y) const {
-            return y*y + phi_(t);
-        }
+        Real variable(Time t, Rate r) const override { return r - phi_(t); }
+        Real shortRate(Time t, Real y) const override { return y + phi_(t); }
+
       private:
         Parameter phi_;
     };
@@ -115,12 +115,11 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Impl(const Handle<YieldTermStructure>& termStructure,
-                 Real theta, Real k, Real sigma, Real x0)
-            : termStructure_(termStructure),
-              theta_(theta), k_(k), sigma_(sigma), x0_(x0) {}
+            Impl(Handle<YieldTermStructure> termStructure, Real theta, Real k, Real sigma, Real x0)
+            : termStructure_(std::move(termStructure)), theta_(theta), k_(k), sigma_(sigma),
+              x0_(x0) {}
 
-            Real value(const Array&, Time t) const {
+            Real value(const Array&, Time t) const override {
                 Rate forwardRate =
                     termStructure_->forwardRate(t, t, Continuous, NoFrequency);
                 Real h = std::sqrt(k_*k_ + 2.0*sigma_*sigma_);
@@ -131,6 +130,7 @@ namespace QuantLib {
                     x0_*4.0*h*h*expth/(temp*temp);
                 return phi;
             }
+
           private:
             Handle<YieldTermStructure> termStructure_;
             Real theta_, k_, sigma_, x0_;
@@ -159,4 +159,3 @@ namespace QuantLib {
 
 
 #endif
-

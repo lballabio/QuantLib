@@ -85,7 +85,7 @@ namespace QuantLib {
       protected:
         //! \name Calculations
         //@{
-        void calculate() const;
+        void calculate() const override;
         /*! This method must leave the instrument in a consistent
             state when the expiration condition is met.
         */
@@ -96,7 +96,7 @@ namespace QuantLib {
             a pricing engine is used, the default implementation
             can be used.
         */
-        virtual void performCalculations() const;
+        void performCalculations() const override;
         //@}
         /*! \name Results
             The value of this attribute and any other that derived
@@ -112,7 +112,7 @@ namespace QuantLib {
 
     class Instrument::results : public virtual PricingEngine::results {
       public:
-        void reset() {
+        void reset() override {
             value = errorEstimate = Null<Real>();
             valuationDate = Date();
             additionalResults.clear();
@@ -132,10 +132,10 @@ namespace QuantLib {
 
     inline void Instrument::setPricingEngine(
                                   const ext::shared_ptr<PricingEngine>& e) {
-        if (engine_ != 0)
+        if (engine_ != nullptr)
             unregisterWith(engine_);
         engine_ = e;
-        if (engine_ != 0)
+        if (engine_ != nullptr)
             registerWith(engine_);
         // trigger (lazy) recalculation and notify observers
         update();
@@ -173,10 +173,8 @@ namespace QuantLib {
 
     inline void Instrument::fetchResults(
                                       const PricingEngine::results* r) const {
-        const Instrument::results* results =
-            dynamic_cast<const Instrument::results*>(r);
-        QL_ENSURE(results != 0,
-                  "no results returned from pricing engine");
+        const auto* results = dynamic_cast<const Instrument::results*>(r);
+        QL_ENSURE(results != nullptr, "no results returned from pricing engine");
 
         NPV_ = results->value;
         errorEstimate_ = results->errorEstimate;
@@ -217,6 +215,7 @@ namespace QuantLib {
 
     inline const std::map<std::string,boost::any>&
     Instrument::additionalResults() const {
+        calculate();
         return additionalResults_;
     }
 

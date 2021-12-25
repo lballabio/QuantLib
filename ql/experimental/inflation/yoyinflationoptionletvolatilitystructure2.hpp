@@ -62,15 +62,15 @@ namespace QuantLib {
                                                             Interpolator1D());
         //@}
 
-        virtual ~InterpolatedYoYOptionletVolatilityCurve() {}
+        ~InterpolatedYoYOptionletVolatilityCurve() override = default;
 
         //! \name Limits
         //@{
         //! the minimum strike for which the term structure can return vols
-        virtual Real minStrike() const {return minStrike_;}
+        Real minStrike() const override { return minStrike_; }
         //! the maximum strike for which the term structure can return vols
-        virtual Real maxStrike() const {return maxStrike_;}
-        virtual Date maxDate() const {
+        Real maxStrike() const override { return maxStrike_; }
+        Date maxDate() const override {
             //FIXME approx
             return optionDateFromTenor(Period((int)ceil(this->interpolation_.xMax()),Years));
         }
@@ -108,7 +108,7 @@ namespace QuantLib {
         //@}
 
         //! implements the actual volatility calculation in derived classes
-        virtual Volatility volatilityImpl(Time length, Rate strike) const;
+        Volatility volatilityImpl(Time length, Rate strike) const override;
 
         Rate minStrike_, maxStrike_;
     };

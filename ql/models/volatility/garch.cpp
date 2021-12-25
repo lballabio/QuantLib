@@ -18,12 +18,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/volatility/garch.hpp>
-#include <ql/math/optimization/leastsquare.hpp>
-#include <ql/math/optimization/simplex.hpp>
 #include <ql/math/autocovariance.hpp>
 #include <ql/math/functional.hpp>
+#include <ql/math/optimization/leastsquare.hpp>
+#include <ql/math/optimization/simplex.hpp>
+#include <ql/models/volatility/garch.hpp>
 #include <boost/foreach.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,7 +39,7 @@ namespace QuantLib {
               public:
                 Impl (Real gammaLower, Real gammaUpper)
                 : gammaLower_(gammaLower), gammaUpper_(gammaUpper) {}
-                bool test(const Array &x) const {
+                bool test(const Array& x) const override {
                     QL_REQUIRE(x.size() >= 3, "size of parameters vector < 3");
                     return x[0] > 0 && x[1] >= 0 && x[2] >= 0
                         && x[1] + x[2] < gammaUpper_
@@ -55,10 +56,11 @@ namespace QuantLib {
         class Garch11CostFunction : public CostFunction {
           public:
             explicit Garch11CostFunction (const std::vector<Volatility> &);
-            virtual Real value(const Array& x) const;
-            virtual Disposable<Array> values(const Array& x) const;
-            virtual void gradient(Array& grad, const Array& x) const;
-            virtual Real valueAndGradient(Array& grad, const Array& x) const;
+            Real value(const Array& x) const override;
+            Disposable<Array> values(const Array& x) const override;
+            void gradient(Array& grad, const Array& x) const override;
+            Real valueAndGradient(Array& grad, const Array& x) const override;
+
           private:
             const std::vector<Volatility> &r2_;
         };
@@ -141,23 +143,22 @@ namespace QuantLib {
 
         class FitAcfProblem : public LeastSquareProblem {
           public:
-            FitAcfProblem(Real A2, const Array &acf,
-                          const std::vector<std::size_t> &idx);
-            virtual Size size();
-            virtual void targetAndValue(const Array& x, Array& target,
-                                        Array& fct2fit);
-            virtual void targetValueAndGradient(const Array& x,
-                                                Matrix& grad_fct2fit,
-                                                Array& target, Array& fct2fit);
+            FitAcfProblem(Real A2, Array acf, std::vector<std::size_t> idx);
+            Size size() override;
+            void targetAndValue(const Array& x, Array& target, Array& fct2fit) override;
+            void targetValueAndGradient(const Array& x,
+                                        Matrix& grad_fct2fit,
+                                        Array& target,
+                                        Array& fct2fit) override;
+
           private:
             Real A2_;
             Array acf_;
             std::vector<std::size_t> idx_;
         };
 
-        FitAcfProblem::FitAcfProblem(Real A2, const Array &acf,
-                                     const std::vector<std::size_t> &idx)
-        : A2_(A2), acf_(acf), idx_(idx) {}
+        FitAcfProblem::FitAcfProblem(Real A2, Array acf, std::vector<std::size_t> idx)
+        : A2_(A2), acf_(std::move(acf)), idx_(std::move(idx)) {}
 
         Size FitAcfProblem::size() { return idx_.size(); }
 
@@ -212,7 +213,7 @@ namespace QuantLib {
               public:
                 Impl(Real gammaLower, Real gammaUpper)
                 : gammaLower_(gammaLower), gammaUpper_(gammaUpper) {}
-                bool test(const Array &x) const {
+                bool test(const Array& x) const override {
                     QL_REQUIRE(x.size() >= 2, "size of parameters vector < 2");
                     return x[0] >= gammaLower_ && x[0] < gammaUpper_
                         && x[1] >= 0 && x[1] <= x[0];
@@ -375,7 +376,7 @@ namespace QuantLib {
     Garch11::calculate(const time_series& quoteSeries,
                        Real alpha, Real beta, Real omega) {
         time_series retval;
-        const_iterator cur = quoteSeries.cbegin();
+        auto cur = quoteSeries.cbegin();
         Real u = cur->second;
         Real sigma2 = u*u;
         while (++cur != quoteSeries.end()) {
@@ -385,7 +386,7 @@ namespace QuantLib {
         }
         sigma2 = omega + alpha * u * u + beta * sigma2;
         --cur;
-        const_iterator prev = cur;
+        auto prev = cur;
         retval[cur->first + (cur->first - (--prev)->first) ] = std::sqrt(sigma2);
         return retval;
     }

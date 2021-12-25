@@ -149,7 +149,7 @@ void ExtensibleOptionsTest::testAnalyticWriterExtensibleOptionEngine() {
 }
 
 test_suite* ExtensibleOptionsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Extensible option tests");
+    auto* suite = BOOST_TEST_SUITE("Extensible option tests");
 
     suite->add(QUANTLIB_TEST_CASE(
        &ExtensibleOptionsTest::testAnalyticHolderExtensibleOptionEngine));

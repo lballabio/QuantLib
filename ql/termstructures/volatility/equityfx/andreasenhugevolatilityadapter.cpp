@@ -19,17 +19,16 @@
 
 #include <ql/math/functional.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityinterpl.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityadapter.hpp>
+#include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityinterpl.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AndreasenHugeVolatilityAdapter::AndreasenHugeVolatilityAdapter(
-        const ext::shared_ptr<AndreasenHugeVolatilityInterpl>& volInterpl,
-        Real eps)
-    : eps_(eps),
-      volInterpl_(volInterpl) { }
+        ext::shared_ptr<AndreasenHugeVolatilityInterpl> volInterpl, Real eps)
+    : eps_(eps), volInterpl_(std::move(volInterpl)) {}
 
     Real AndreasenHugeVolatilityAdapter::blackVarianceImpl(Time t, Real strike)
     const {

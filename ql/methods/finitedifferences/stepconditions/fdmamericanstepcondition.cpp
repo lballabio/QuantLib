@@ -21,15 +21,13 @@
 
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdmAmericanStepCondition::FdmAmericanStepCondition(
-            const ext::shared_ptr<FdmMesher> & mesher,
-            const ext::shared_ptr<FdmInnerValueCalculator> & calculator)
-    : mesher_(mesher),
-      calculator_(calculator) {
-    }
+        ext::shared_ptr<FdmMesher> mesher, ext::shared_ptr<FdmInnerValueCalculator> calculator)
+    : mesher_(std::move(mesher)), calculator_(std::move(calculator)) {}
 
     void FdmAmericanStepCondition::applyTo(Array& a, Time t) const {
         ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();

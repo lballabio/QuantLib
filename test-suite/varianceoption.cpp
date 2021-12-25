@@ -110,7 +110,7 @@ void VarianceOptionTest::testIntegralHeston() {
 }
 
 test_suite* VarianceOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Variance option tests");
+    auto* suite = BOOST_TEST_SUITE("Variance option tests");
 
     suite->add(QUANTLIB_TEST_CASE(&VarianceOptionTest::testIntegralHeston));
     return suite;

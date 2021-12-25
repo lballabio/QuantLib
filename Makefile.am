@@ -21,6 +21,7 @@ EXTRA_DIST = \
 	Contributors.txt \
 	LICENSE.TXT \
 	News.md \
+	QuantLib.natvis \
 	QuantLib.props \
 	QuantLib.spec \
 	QuantLib.sln \
@@ -52,5 +53,6 @@ docs-clean:
 dist-hook:
 	mkdir -p $(distdir)/build
 	mkdir -p $(distdir)/cmake
-	cp -p $(srcdir)/cmake/quantlib.cmake $(distdir)/cmake
-
+	cp -p $(srcdir)/cmake/GenerateHeaders.cmake $(distdir)/cmake
+	cp -p $(srcdir)/cmake/Platform.cmake $(distdir)/cmake
+	cp -p $(srcdir)/cmake/QuantLibConfig.cmake.in $(distdir)/cmake

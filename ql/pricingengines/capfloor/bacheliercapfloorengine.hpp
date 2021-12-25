@@ -35,15 +35,15 @@ namespace QuantLib {
     /*! \ingroup capfloorengines */
     class BachelierCapFloorEngine : public CapFloor::engine {
       public:
-        BachelierCapFloorEngine(const Handle<YieldTermStructure>& discountCurve,
+        BachelierCapFloorEngine(Handle<YieldTermStructure> discountCurve,
                                 Volatility vol,
                                 const DayCounter& dc = Actual365Fixed());
-        BachelierCapFloorEngine(const Handle<YieldTermStructure>& discountCurve,
+        BachelierCapFloorEngine(Handle<YieldTermStructure> discountCurve,
                                 const Handle<Quote>& vol,
                                 const DayCounter& dc = Actual365Fixed());
-        BachelierCapFloorEngine(const Handle<YieldTermStructure>& discountCurve,
-                                const Handle<OptionletVolatilityStructure>& vol);
-        void calculate() const;
+        BachelierCapFloorEngine(Handle<YieldTermStructure> discountCurve,
+                                Handle<OptionletVolatilityStructure> vol);
+        void calculate() const override;
         Handle<YieldTermStructure> termStructure() { return discountCurve_; }
         Handle<OptionletVolatilityStructure> volatility() { return vol_; }
       private:

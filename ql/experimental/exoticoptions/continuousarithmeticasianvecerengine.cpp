@@ -17,31 +17,32 @@
   FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/rounding.hpp>
-#include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
 #include <ql/methods/finitedifferences/dminus.hpp>
 #include <ql/methods/finitedifferences/dplus.hpp>
 #include <ql/methods/finitedifferences/dplusdminus.hpp>
-#include <ql/instruments/vanillaoption.hpp>
+#include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     ContinuousArithmeticAsianVecerEngine::ContinuousArithmeticAsianVecerEngine(
-         const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-         const Handle<Quote>& currentAverage,
-         Date startDate,
-         Size timeSteps,
-         Size assetSteps,
-         Real z_min,
-         Real z_max )
-        : process_(process), currentAverage_(currentAverage),
-          startDate_(startDate),z_min_(z_min),z_max_(z_max),
-          timeSteps_(timeSteps),assetSteps_(assetSteps){
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Handle<Quote> currentAverage,
+        Date startDate,
+        Size timeSteps,
+        Size assetSteps,
+        Real z_min,
+        Real z_max)
+    : process_(std::move(process)), currentAverage_(std::move(currentAverage)),
+      startDate_(startDate), z_min_(z_min), z_max_(z_max), timeSteps_(timeSteps),
+      assetSteps_(assetSteps) {
         registerWith(process_);
         registerWith(currentAverage_);
     }
@@ -182,7 +183,7 @@ namespace QuantLib {
             } // End Time Loop
 
             DownRounding Rounding(0);
-            Integer lowerI = Integer(Rounding( (Z_0-z_min_)/h));
+            auto lowerI = Integer(Rounding((Z_0 - z_min_) / h));
             // Interpolate solution
             Real pv;
 

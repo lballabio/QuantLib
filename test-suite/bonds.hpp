@@ -37,6 +37,7 @@ class BondTest {
     static void testCachedFloating();
     static void testBrazilianCached();
     static void testFixedBondWithGivenDates();
+    static void testRiskyBondWithGivenDates();
     static void testExCouponGilt();
     static void testExCouponAustralianBond();
     static void testBondFromScheduleWithDateVector();

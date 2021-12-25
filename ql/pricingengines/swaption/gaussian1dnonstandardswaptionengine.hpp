@@ -118,13 +118,13 @@ namespace QuantLib {
                 registerWith(discountCurve_);
         }
 
-        void calculate() const;
+        void calculate() const override;
 
       protected:
-        Real underlyingNpv(const Date& expiry, Real y) const;
-        VanillaSwap::Type underlyingType() const;
-        const Date underlyingLastDate() const;
-        const Disposable<Array> initialGuess(const Date &expiry) const;
+        Real underlyingNpv(const Date& expiry, Real y) const override;
+        Swap::Type underlyingType() const override;
+        const Date underlyingLastDate() const override;
+        const Disposable<Array> initialGuess(const Date& expiry) const override;
 
       private:
         const int integrationPoints_;

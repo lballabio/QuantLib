@@ -40,7 +40,7 @@ namespace QuantLib {
             const std::vector<Real>& alphaMax,
             const std::vector<Real>& alphaMin,
             bool maximizeHomogeneity,
-            const ext::shared_ptr<AlphaForm>& parametricForm = ext::shared_ptr<AlphaForm>());
+            ext::shared_ptr<AlphaForm> parametricForm = ext::shared_ptr<AlphaForm>());
         // inspector
         const std::vector<Real>& alpha() const;
         // actual calibration function
@@ -69,9 +69,8 @@ namespace QuantLib {
             std::vector<Matrix>& swapCovariancePseudoRoots);
 
       private:
-        Natural calibrationImpl_(Natural numberOfFactors, 
-                                 Natural maxIterations,
-                                 Real tolerance);
+        Natural
+        calibrationImpl_(Natural numberOfFactors, Natural maxIterations, Real tolerance) override;
         // input
         std::vector<Real> alphaInitial_, alphaMax_, alphaMin_;
         bool maximizeHomogeneity_;

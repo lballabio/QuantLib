@@ -47,12 +47,13 @@ namespace QuantLib {
                          VolatilityType type = ShiftedLognormal,
                          Real shift = 0.0);
         //@{
-        Real minStrike () const;
-        Real maxStrike () const;
-        Real atmLevel() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
+        Real atmLevel() const override;
         //@}
       protected:
-        Volatility volatilityImpl(Rate) const;
+        Volatility volatilityImpl(Rate) const override;
+
       private:
         Volatility vol_;
         Real atmLevel_;

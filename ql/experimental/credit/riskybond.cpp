@@ -30,15 +30,18 @@ using namespace std;
 
 namespace QuantLib {
 
-    RiskyBond::RiskyBond(const std::string& name,
-                         const Currency& ccy,
+    QL_DEPRECATED_DISABLE_WARNING
+
+    RiskyBond::RiskyBond(std::string name,
+                         Currency ccy,
                          Real recoveryRate,
-                         const Handle<DefaultProbabilityTermStructure>& defaultTS,
-                         const Handle<YieldTermStructure>& yieldTS,
+                         Handle<DefaultProbabilityTermStructure> defaultTS,
+                         Handle<YieldTermStructure> yieldTS,
                          Natural settlementDays,
-                         const Calendar& calendar)
-    : name_(name), ccy_(ccy), recoveryRate_(recoveryRate), defaultTS_(defaultTS), yieldTS_(yieldTS),
-      settlementDays_(settlementDays), calendar_(calendar) {
+                         Calendar calendar)
+    : name_(std::move(name)), ccy_(std::move(ccy)), recoveryRate_(recoveryRate),
+      defaultTS_(std::move(defaultTS)), yieldTS_(std::move(yieldTS)),
+      settlementDays_(settlementDays), calendar_(std::move(calendar)) {
         registerWith (yieldTS_);
         registerWith (defaultTS_);
         //the two above might not be registered with evalDate
@@ -59,14 +62,13 @@ namespace QuantLib {
         Date npvDate = calendar_.advance(today, settlementDays_, Days);
         std::vector<ext::shared_ptr<CashFlow> > cf = cashflows();
         Date d1 = effectiveDate();
-        for (Size i = 0; i < cf.size(); i++) {
-            Date d2 = cf[i]->date();
+        for (auto& i : cf) {
+            Date d2 = i->date();
             if (d2 > npvDate) {
                 d1 = max(npvDate , d1);
                 Date defaultDate = d1 + (d2-d1)/2;
 
-                Real coupon = cf[i]->amount()
-                    * defaultTS_->survivalProbability(d2);
+                Real coupon = i->amount() * defaultTS_->survivalProbability(d2);
                 Real recovery = notional(defaultDate) * recoveryRate_
                     * (defaultTS_->survivalProbability(d1)
                        -defaultTS_->survivalProbability(d2));
@@ -83,10 +85,10 @@ namespace QuantLib {
         Date npvDate = calendar_.advance(today, settlementDays_, Days);
         Real npv = 0;
         std::vector<ext::shared_ptr<CashFlow> > cf = cashflows();
-        for (Size i = 0; i < cf.size(); i++) {
-            Date d2 = cf[i]->date();
+        for (auto& i : cf) {
+            Date d2 = i->date();
             if (d2 > npvDate)
-                npv += cf[i]->amount() * yieldTS()->discount(d2);
+                npv += i->amount() * yieldTS()->discount(d2);
         }
         return npv;
     }
@@ -96,9 +98,9 @@ namespace QuantLib {
         Date npvDate = calendar_.advance(today, settlementDays_, Days);
         Real flow = 0;
         std::vector<ext::shared_ptr<CashFlow> > cf = cashflows();
-        for (Size i = 0; i < cf.size(); i++) {
-            if (cf[i]->date() > npvDate)
-                flow += cf[i]->amount();
+        for (auto& i : cf) {
+            if (i->date() > npvDate)
+                flow += i->amount();
         }
         return flow;
     }
@@ -109,14 +111,13 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
         Date npvDate = calendar_.advance(today, settlementDays_, Days);
         Date d1 = effectiveDate();
-        for (Size i = 0; i < cf.size(); i++) {
-            Date d2 = cf[i]->date();
+        for (auto& i : cf) {
+            Date d2 = i->date();
             if (d2 > npvDate) {
                 d1 = max(npvDate, d1);
                 Date defaultDate = d1 + (d2-d1)/2;
 
-                Real coupon = cf[i]->amount()
-                    * defaultTS_->survivalProbability(d2);
+                Real coupon = i->amount() * defaultTS_->survivalProbability(d2);
                 Real recovery = notional(defaultDate) * recoveryRate_
                     * (defaultTS_->survivalProbability(d1)
                        -defaultTS_->survivalProbability(d2));
@@ -134,25 +135,21 @@ namespace QuantLib {
     }
 
     //------------------------------------------------------------------------
-    RiskyFixedBond::RiskyFixedBond(
-                            const std::string& name,
-                            const Currency& ccy,
-                            Real recoveryRate,
-                            const Handle<DefaultProbabilityTermStructure>& defaultTS,
-                            const Schedule& schedule,
-                            Real rate,
-                            const DayCounter& dayCounter,
-                            BusinessDayConvention paymentConvention,
-                            const std::vector<Real>& notionals,
-                            const Handle<YieldTermStructure>& yieldTS,
-                            Natural settlementDays)
-    : RiskyBond(name, ccy, recoveryRate, defaultTS, yieldTS,
-                settlementDays, schedule.calendar()),
-          schedule_(schedule),
-          rate_(rate),
-          dayCounter_(dayCounter),
-          // paymentConvention_(paymentConvention),
-          notionals_(notionals) {
+    RiskyFixedBond::RiskyFixedBond(const std::string& name,
+                                   const Currency& ccy,
+                                   Real recoveryRate,
+                                   const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                                   const Schedule& schedule,
+                                   Real rate,
+                                   DayCounter dayCounter,
+                                   BusinessDayConvention paymentConvention,
+                                   std::vector<Real> notionals,
+                                   const Handle<YieldTermStructure>& yieldTS,
+                                   Natural settlementDays)
+    : RiskyBond(name, ccy, recoveryRate, defaultTS, yieldTS, settlementDays, schedule.calendar()),
+      schedule_(schedule), rate_(rate), dayCounter_(std::move(dayCounter)),
+      // paymentConvention_(paymentConvention),
+      notionals_(std::move(notionals)) {
         // FIXME: Take paymentConvention into account
         std::vector<Date> dates = schedule_.dates();
         Real previousNotional = notionals_.front();
@@ -218,15 +215,15 @@ namespace QuantLib {
                                          Real recoveryRate,
                                          const Handle<DefaultProbabilityTermStructure>& defaultTS,
                                          const Schedule& schedule,
-                                         const ext::shared_ptr<IborIndex>& index,
+                                         ext::shared_ptr<IborIndex> index,
                                          Integer fixingDays,
                                          Real spread,
-                                         const std::vector<Real>& notionals,
+                                         std::vector<Real> notionals,
                                          const Handle<YieldTermStructure>& yieldTS,
                                          Natural settlementDays)
     : RiskyBond(name, ccy, recoveryRate, defaultTS, yieldTS, settlementDays, schedule.calendar()),
-      schedule_(schedule), index_(index), fixingDays_(fixingDays), spread_(spread),
-      notionals_(notionals) {
+      schedule_(schedule), index_(std::move(index)), fixingDays_(fixingDays), spread_(spread),
+      notionals_(std::move(notionals)) {
 
         // FIXME: Take paymentConvention into account
         std::vector<Date> dates = schedule_.dates();
@@ -296,6 +293,8 @@ namespace QuantLib {
     Date RiskyFloatingBond::maturityDate() const {
         return schedule_.dates().back();
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

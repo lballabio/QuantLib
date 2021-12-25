@@ -24,13 +24,14 @@
 #ifndef quantlib_binomial_barrier_engine_hpp
 #define quantlib_binomial_barrier_engine_hpp
 
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/lattices/binomialtree.hpp>
 #include <ql/methods/lattices/bsmlattice.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/barrier/discretizedbarrieroption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -56,11 +57,10 @@ namespace QuantLib {
             CoxRossRubinstein Boyle-Lau is disabled and maxTimeSteps
             ignored.
         */
-        BinomialBarrierEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps,
-             Size maxTimeSteps=0)
-        : process_(process), timeSteps_(timeSteps), maxTimeSteps_(maxTimeSteps) {
+        BinomialBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                              Size timeSteps,
+                              Size maxTimeSteps = 0)
+        : process_(std::move(process)), timeSteps_(timeSteps), maxTimeSteps_(maxTimeSteps) {
             QL_REQUIRE(timeSteps>0,
                        "timeSteps must be positive, " << timeSteps <<
                        " not allowed");
@@ -72,7 +72,8 @@ namespace QuantLib {
                maxTimeSteps_ = std::max( (Size)1000, timeSteps_*5);
             registerWith(process_);
         }
-        void calculate() const;
+        void calculate() const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_;

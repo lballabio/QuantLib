@@ -18,18 +18,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/swaptions/haganirregularswaptionengine.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/pricingengines/swaption/blackswaptionengine.hpp>
-#include <ql/exercise.hpp>
-#include <ql/instruments/swaption.hpp>
-#include <ql/math/matrixutilities/svd.hpp>
-#include <ql/math/solvers1d/bisection.hpp>
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/exercise.hpp>
+#include <ql/experimental/swaptions/haganirregularswaptionengine.hpp>
+#include <ql/instruments/swaption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/matrixutilities/svd.hpp>
+#include <ql/math/solvers1d/bisection.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,11 +39,11 @@ namespace QuantLib {
     //////////////////////////////////////////////////////////////////////////
 
     HaganIrregularSwaptionEngine::Basket::Basket(
-        const ext::shared_ptr<IrregularSwap>& swap,
-        const Handle<YieldTermStructure>& termStructure,
-        const Handle<SwaptionVolatilityStructure>& volatilityStructure)
-    : swap_(swap), termStructure_(termStructure), volatilityStructure_(volatilityStructure),
-      targetNPV_(0.0), lambda_(0.0) {
+        ext::shared_ptr<IrregularSwap> swap,
+        Handle<YieldTermStructure> termStructure,
+        Handle<SwaptionVolatilityStructure> volatilityStructure)
+    : swap_(std::move(swap)), termStructure_(std::move(termStructure)),
+      volatilityStructure_(std::move(volatilityStructure)), targetNPV_(0.0), lambda_(0.0) {
 
         engine_ = ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(termStructure_));
 
@@ -76,10 +77,9 @@ namespace QuantLib {
 
             floatCFS.clear();
 
-            for (Size j = 0; j < floatLeg.size(); ++j) {
+            for (const auto& j : floatLeg) {
                 // retrieve ibor coupon from floating leg
-                ext::shared_ptr<IborCoupon> coupon =
-                    ext::dynamic_pointer_cast<IborCoupon>(floatLeg[j]);
+                ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(j);
                 QL_REQUIRE(coupon, "dynamic cast of float leg coupon failed.");
 
                 if (coupon->date() <= expiries_[i]) {
@@ -102,7 +102,6 @@ namespace QuantLib {
 
             fairRates_.push_back(floatLegNPV / annuities_[i]);
         }
-
     }
 
 
@@ -179,7 +178,8 @@ namespace QuantLib {
 
         Real defect = -targetNPV_;
 
-        for(Size i=0; i< weights.size();++i)   defect -= swap_->type()*lambda*weights[i]*annuities_[i];
+        for (Size i=0; i< weights.size();++i)
+            defect -= Integer(swap_->type()) * lambda*weights[i] * annuities_[i];
 
         return defect;
     }
@@ -198,7 +198,7 @@ namespace QuantLib {
         Period dummySwapLength = Period(1,Years);
                         
         ext::shared_ptr<VanillaSwap> memberSwap_ = MakeVanillaSwap(dummySwapLength,iborIndex)
-                                                     .withType(VanillaSwap::Type(swap_->type()))
+                                                     .withType(swap_->type())
                                                      .withEffectiveDate(swap_->startDate())
                                                      .withTerminationDate(expiries_[i])
                                                      .withRule(DateGeneration::Backward)
@@ -210,7 +210,7 @@ namespace QuantLib {
         Rate transformedRate = (fairRates_[i]+lambda_)*annuities_[i]/stdAnnuity;
 
         memberSwap_ = MakeVanillaSwap(dummySwapLength,iborIndex,transformedRate)
-                                                     .withType(VanillaSwap::Type(swap_->type()))
+                                                     .withType(swap_->type())
                                                      .withEffectiveDate(swap_->startDate())
                                                      .withTerminationDate(expiries_[i])
                                                      .withRule(DateGeneration::Backward)
@@ -228,9 +228,10 @@ namespace QuantLib {
 
 
     HaganIrregularSwaptionEngine::HaganIrregularSwaptionEngine(
-        const Handle<SwaptionVolatilityStructure>& volatilityStructure,
-        const Handle<YieldTermStructure>& termStructure)
-    : termStructure_(termStructure), volatilityStructure_(volatilityStructure) {
+        Handle<SwaptionVolatilityStructure> volatilityStructure,
+        Handle<YieldTermStructure> termStructure)
+    : termStructure_(std::move(termStructure)),
+      volatilityStructure_(std::move(volatilityStructure)) {
         registerWith(termStructure_);
         registerWith(volatilityStructure_);
     }
@@ -260,9 +261,9 @@ namespace QuantLib {
 
         floatCFS.clear();
 
-        for(Size j = 0; j < floatLeg.size(); ++j){
+        for (auto& j : floatLeg) {
             //retrieve ibor coupon from floating leg
-            ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(floatLeg[j]);
+            ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(j);
             QL_REQUIRE(coupon,"dynamic cast of float leg coupon failed.");
 
             ext::shared_ptr<IborCoupon> newCpn = ext::shared_ptr<IborCoupon> (
@@ -296,10 +297,9 @@ namespace QuantLib {
 
         fixedCFS.clear();
 
-        for(Size i = 0; i < fixedLeg.size(); ++i)  
-        {
+        for (auto& i : fixedLeg) {
             //retrieve fixed rate coupon from fixed leg
-            ext::shared_ptr<FixedRateCoupon> coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(fixedLeg[i]);
+            ext::shared_ptr<FixedRateCoupon> coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(i);
             QL_REQUIRE(coupon,"dynamic cast of fixed leg coupon failed.");
 
             ext::shared_ptr<FixedRateCoupon> newCpn = ext::make_shared<FixedRateCoupon> (

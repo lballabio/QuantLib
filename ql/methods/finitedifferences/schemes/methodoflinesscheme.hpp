@@ -42,7 +42,7 @@ namespace QuantLib {
         // constructors
         MethodOfLinesScheme(Real eps,
                             Real relInitStepSize,
-                            const ext::shared_ptr<FdmLinearOpComposite>& map,
+                            ext::shared_ptr<FdmLinearOpComposite> map,
                             const bc_set& bcSet = bc_set());
 
         void step(array_type& a, Time t);

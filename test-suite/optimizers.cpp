@@ -59,7 +59,7 @@ namespace {
         : coefficients_(coefficients),
           polynomialDegree_(coefficients.size()-1) {}
 
-        Real value(const Array& x) const {
+        Real value(const Array& x) const override {
             QL_REQUIRE(x.size()==1,"independent variable must be 1 dimensional");
             Real y = 0;
             for (Size i=0; i<=polynomialDegree_; ++i)
@@ -67,7 +67,7 @@ namespace {
             return y;
         }
 
-        Disposable<Array> values(const Array& x) const{
+        Disposable<Array> values(const Array& x) const override {
             QL_REQUIRE(x.size()==1,"independent variable must be 1 dimensional");
             Array y(1);
             y[0] = value(x);
@@ -84,9 +84,9 @@ namespace {
     // in order to test nested optimizations
     class OptimizationBasedCostFunction : public CostFunction {
       public:
-        Real value(const Array&) const { return 1.0; }
+        Real value(const Array&) const override { return 1.0; }
 
-        Disposable<Array> values(const Array&) const{
+        Disposable<Array> values(const Array&) const override {
             // dummy nested optimization
             Array coefficients(3, 1.0);
             OneDimensionalPolynomialDegreeN oneDimensionalPolynomialDegreeN(coefficients);
@@ -188,23 +188,18 @@ namespace {
 
 
     std::vector<NamedOptimizationMethod> makeOptimizationMethods(
-                             OptimizationMethodType optimizationMethodTypes[],
-                             Size optimizationMethodNb,
+                             const std::vector<OptimizationMethodType>& optimizationMethodTypes,
                              Real simplexLambda,
                              Real levenbergMarquardtEpsfcn,
                              Real levenbergMarquardtXtol,
                              Real levenbergMarquardtGtol) {
         std::vector<NamedOptimizationMethod> results;
-        for (Size i=0; i<optimizationMethodNb; ++i) {
+        for (auto optimizationMethodType : optimizationMethodTypes) {
             NamedOptimizationMethod namedOptimizationMethod;
             namedOptimizationMethod.optimizationMethod = makeOptimizationMethod(
-                optimizationMethodTypes[i],
-                simplexLambda,
-                levenbergMarquardtEpsfcn,
-                levenbergMarquardtXtol,
-                levenbergMarquardtGtol);
-            namedOptimizationMethod.name
-                = optimizationMethodTypeToString(optimizationMethodTypes[i]);
+                optimizationMethodType, simplexLambda, levenbergMarquardtEpsfcn,
+                levenbergMarquardtXtol, levenbergMarquardtGtol);
+            namedOptimizationMethod.name = optimizationMethodTypeToString(optimizationMethodType);
             results.push_back(namedOptimizationMethod);
         }
         return results;
@@ -213,8 +208,8 @@ namespace {
     Real maxDifference(const Array& a, const Array& b) {
         Array diff = a-b;
         Real maxDiff = 0.0;
-        for (Size i=0; i<diff.size(); ++i)
-            maxDiff = std::max(maxDiff, std::fabs(diff[i]));
+        for (double i : diff)
+            maxDiff = std::max(maxDiff, std::fabs(i));
         return maxDiff;
     }
 
@@ -249,7 +244,7 @@ namespace {
                             rootEpsilons_.back(), functionEpsilons_.back(),
                             gradientNormEpsilons_.back()));
         // Set optimization methods for optimizer
-        OptimizationMethodType optimizationMethodTypes[] = {
+        std::vector<OptimizationMethodType> optimizationMethodTypes = {
             simplex, levenbergMarquardt, levenbergMarquardt2, conjugateGradient,
             bfgs //, steepestDescent
         };
@@ -258,7 +253,7 @@ namespace {
         Real levenbergMarquardtXtol   = 1.0e-8;     //
         Real levenbergMarquardtGtol   = 1.0e-8;     //
         optimizationMethods_.push_back(makeOptimizationMethods(
-            optimizationMethodTypes, LENGTH(optimizationMethodTypes),
+            optimizationMethodTypes,
             simplexLambda, levenbergMarquardtEpsfcn, levenbergMarquardtXtol,
             levenbergMarquardtGtol));
         // Set expected results for optimizer
@@ -374,22 +369,20 @@ namespace {
 
     class FirstDeJong : public CostFunction {
       public:
-        Disposable<Array> values(const Array& x) const {
+        Disposable<Array> values(const Array& x) const override {
             Array retVal(x.size(),value(x));
             return retVal;
         }
-        Real value(const Array& x) const {
-            return DotProduct(x,x);
-        }
+        Real value(const Array& x) const override { return DotProduct(x, x); }
     };
 
     class SecondDeJong : public CostFunction {
       public:
-        Disposable<Array> values(const Array& x) const {
+        Disposable<Array> values(const Array& x) const override {
             Array retVal(x.size(),value(x));
             return retVal;
         }
-        Real value(const Array& x) const {
+        Real value(const Array& x) const override {
             return  100.0*(x[0]*x[0]-x[1])*(x[0]*x[0]-x[1])
                   + (1.0-x[0])*(1.0-x[0]);
         }
@@ -397,14 +390,14 @@ namespace {
 
     class ModThirdDeJong : public CostFunction {
       public:
-        Disposable<Array> values(const Array& x) const {
+        Disposable<Array> values(const Array& x) const override {
             Array retVal(x.size(),value(x));
             return retVal;
         }
-        Real value(const Array& x) const {
+        Real value(const Array& x) const override {
             Real fx = 0.0;
-            for (Size i=0; i<x.size(); ++i) {
-                fx += std::floor(x[i])*std::floor(x[i]);
+            for (double i : x) {
+                fx += std::floor(i) * std::floor(i);
             }
             return fx;
         }
@@ -415,11 +408,11 @@ namespace {
         ModFourthDeJong()
         : uniformRng_(MersenneTwisterUniformRng(4711)) {
         }
-        Disposable<Array> values(const Array& x) const {
+        Disposable<Array> values(const Array& x) const override {
             Array retVal(x.size(),value(x));
             return retVal;
         }
-        Real value(const Array& x) const {
+        Real value(const Array& x) const override {
             Real fx = 0.0;
             for (Size i=0; i<x.size(); ++i) {
                 fx += (i+1.0)*pow(x[i],4.0) + uniformRng_.nextReal();
@@ -431,14 +424,14 @@ namespace {
 
     class Griewangk : public CostFunction {
       public:
-        Disposable<Array> values(const Array& x) const{
+        Disposable<Array> values(const Array& x) const override {
             Array retVal(x.size(),value(x));
             return retVal;
         }
-        Real value(const Array& x) const {
+        Real value(const Array& x) const override {
             Real fx = 0.0;
-            for (Size i=0; i<x.size(); ++i) {
-                fx += x[i]*x[i]/4000.0;
+            for (double i : x) {
+                fx += i * i / 4000.0;
             }
             Real p = 1.0;
             for (Size i=0; i<x.size(); ++i) {
@@ -487,47 +480,53 @@ void OptimizersTest::testDifferentialEvolution() {
         .withSeed(3242);
     DifferentialEvolution deOptim2(conf2);
 
-    std::vector<DifferentialEvolution > diffEvolOptimisers;
-    diffEvolOptimisers.push_back(deOptim);
-    diffEvolOptimisers.push_back(deOptim);
-    diffEvolOptimisers.push_back(deOptim);
-    diffEvolOptimisers.push_back(deOptim);
-    diffEvolOptimisers.push_back(deOptim2);
+    std::vector<DifferentialEvolution > diffEvolOptimisers = {
+        deOptim,
+        deOptim,
+        deOptim,
+        deOptim,
+        deOptim2
+    };
 
-    std::vector<ext::shared_ptr<CostFunction> > costFunctions;
-    costFunctions.push_back(ext::shared_ptr<CostFunction>(new FirstDeJong));
-    costFunctions.push_back(ext::shared_ptr<CostFunction>(new SecondDeJong));
-    costFunctions.push_back(ext::shared_ptr<CostFunction>(new ModThirdDeJong));
-    costFunctions.push_back(ext::shared_ptr<CostFunction>(new ModFourthDeJong));
-    costFunctions.push_back(ext::shared_ptr<CostFunction>(new Griewangk));
+    std::vector<ext::shared_ptr<CostFunction> > costFunctions = {
+        ext::shared_ptr<CostFunction>(new FirstDeJong),
+        ext::shared_ptr<CostFunction>(new SecondDeJong),
+        ext::shared_ptr<CostFunction>(new ModThirdDeJong),
+        ext::shared_ptr<CostFunction>(new ModFourthDeJong),
+        ext::shared_ptr<CostFunction>(new Griewangk)
+    };
 
-    std::vector<BoundaryConstraint> constraints;
-    constraints.push_back(BoundaryConstraint(-10.0, 10.0));
-    constraints.push_back(BoundaryConstraint(-10.0, 10.0));
-    constraints.push_back(BoundaryConstraint(-10.0, 10.0));
-    constraints.push_back(BoundaryConstraint(-10.0, 10.0));
-    constraints.push_back(BoundaryConstraint(-600.0, 600.0));
+    std::vector<BoundaryConstraint> constraints = {
+        {-10.0, 10.0},
+        {-10.0, 10.0},
+        {-10.0, 10.0},
+        {-10.0, 10.0},
+        {-600.0, 600.0}
+    };
 
-    std::vector<Array> initialValues;
-    initialValues.push_back(Array(3, 5.0));
-    initialValues.push_back(Array(2, 5.0));
-    initialValues.push_back(Array(5, 5.0));
-    initialValues.push_back(Array(30, 5.0));
-    initialValues.push_back(Array(10, 100.0));
+    std::vector<Array> initialValues = {
+        Array(3, 5.0),
+        Array(2, 5.0),
+        Array(5, 5.0),
+        Array(30, 5.0),
+        Array(10, 100.0)
+    };
 
-    std::vector<EndCriteria> endCriteria;
-    endCriteria.push_back(EndCriteria(100, 10, 1e-10, 1e-8, Null<Real>()));
-    endCriteria.push_back(EndCriteria(100, 10, 1e-10, 1e-8, Null<Real>()));
-    endCriteria.push_back(EndCriteria(100, 10, 1e-10, 1e-8, Null<Real>()));
-    endCriteria.push_back(EndCriteria(500, 100, 1e-10, 1e-8, Null<Real>()));
-    endCriteria.push_back(EndCriteria(1000, 800, 1e-12, 1e-10, Null<Real>()));
+    std::vector<EndCriteria> endCriteria = {
+        {100, 10, 1e-10, 1e-8, Null<Real>()},
+        {100, 10, 1e-10, 1e-8, Null<Real>()},
+        {100, 10, 1e-10, 1e-8, Null<Real>()},
+        {500, 100, 1e-10, 1e-8, Null<Real>()},
+        {1000, 800, 1e-12, 1e-10, Null<Real>()}
+    };
 
-    std::vector<Real> minima;
-    minima.push_back(0.0);
-    minima.push_back(0.0);
-    minima.push_back(0.0);
-    minima.push_back(10.9639796558);
-    minima.push_back(0.0);
+    std::vector<Real> minima = {
+        0.0,
+        0.0,
+        0.0,
+        10.9639796558,
+        0.0
+    };
 
     for (Size i = 0; i < costFunctions.size(); ++i) {
         Problem problem(*costFunctions[i], constraints[i], initialValues[i]);
@@ -553,7 +552,7 @@ void OptimizersTest::testDifferentialEvolution() {
 }
 
 test_suite* OptimizersTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Optimizers tests");
+    auto* suite = BOOST_TEST_SUITE("Optimizers tests");
 
     suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::test));
     suite->add(QUANTLIB_TEST_CASE(&OptimizersTest::nestedOptimizationTest));

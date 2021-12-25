@@ -67,11 +67,11 @@ namespace QuantLib {
 
         //! \name Lattice interface
         //@{
-        void initialize(DiscretizedAsset&, Time t) const;
-        void rollback(DiscretizedAsset&, Time to) const;
-        void partialRollback(DiscretizedAsset&, Time to) const;
+        void initialize(DiscretizedAsset&, Time t) const override;
+        void rollback(DiscretizedAsset&, Time to) const override;
+        void partialRollback(DiscretizedAsset&, Time to) const override;
         //! Computes the present value of an asset using Arrow-Debrew prices
-        Real presentValue(DiscretizedAsset&) const;
+        Real presentValue(DiscretizedAsset&) const override;
         //@}
 
         const Array& statePrices(Size i) const;
@@ -149,8 +149,8 @@ namespace QuantLib {
                    "cannot roll the asset back to" << to
                    << " (it is already at t = " << from << ")");
 
-        Integer iFrom = Integer(t_.index(from));
-        Integer iTo = Integer(t_.index(to));
+        auto iFrom = Integer(t_.index(from));
+        auto iTo = Integer(t_.index(to));
 
         for (Integer i=iFrom-1; i>=iTo; --i) {
             Array newValues(this->impl().size(i));

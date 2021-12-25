@@ -24,17 +24,18 @@
 
 #include <ql/mathconstants.hpp>
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
-#include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/cranknicolsonscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/hundsdorferscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>
-#include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/methodoflinesscheme.hpp>
+#include <ql/methods/finitedifferences/schemes/modifiedcraigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/trbdf2scheme.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <utility>
 
 
 namespace QuantLib {
@@ -42,57 +43,47 @@ namespace QuantLib {
     FdmSchemeDesc::FdmSchemeDesc(FdmSchemeType aType, Real aTheta, Real aMu)
     : type(aType), theta(aTheta), mu(aMu) { }
 
-    FdmSchemeDesc FdmSchemeDesc::Douglas() { 
-        return FdmSchemeDesc(FdmSchemeDesc::DouglasType, 0.5, 0.0);
-    }
-    
+    FdmSchemeDesc FdmSchemeDesc::Douglas() { return {FdmSchemeDesc::DouglasType, 0.5, 0.0}; }
+
     FdmSchemeDesc FdmSchemeDesc::CrankNicolson() {
-        return FdmSchemeDesc(FdmSchemeDesc::CrankNicolsonType, 0.5, 0.0);
+        return {FdmSchemeDesc::CrankNicolsonType, 0.5, 0.0};
     }
 
-    FdmSchemeDesc FdmSchemeDesc::CraigSneyd() {
-        return FdmSchemeDesc(FdmSchemeDesc::CraigSneydType,0.5, 0.5);
-    }
-    
-    FdmSchemeDesc FdmSchemeDesc::ModifiedCraigSneyd() { 
-        return FdmSchemeDesc(FdmSchemeDesc::ModifiedCraigSneydType, 
-                             1.0/3.0, 1.0/3.0);
+    FdmSchemeDesc FdmSchemeDesc::CraigSneyd() { return {FdmSchemeDesc::CraigSneydType, 0.5, 0.5}; }
+
+    FdmSchemeDesc FdmSchemeDesc::ModifiedCraigSneyd() {
+        return {FdmSchemeDesc::ModifiedCraigSneydType, 1.0 / 3.0, 1.0 / 3.0};
     }
     
     FdmSchemeDesc FdmSchemeDesc::Hundsdorfer() {
-        return FdmSchemeDesc(FdmSchemeDesc::HundsdorferType, 
-                             0.5+std::sqrt(3.0)/6, 0.5);
+        return {FdmSchemeDesc::HundsdorferType, 0.5 + std::sqrt(3.0) / 6, 0.5};
     }
     
     FdmSchemeDesc FdmSchemeDesc::ModifiedHundsdorfer() {
-        return FdmSchemeDesc(FdmSchemeDesc::HundsdorferType, 
-                             1.0-std::sqrt(2.0)/2, 0.5);
+        return {FdmSchemeDesc::HundsdorferType, 1.0 - std::sqrt(2.0) / 2, 0.5};
     }
     
     FdmSchemeDesc FdmSchemeDesc::ExplicitEuler() {
-        return FdmSchemeDesc(FdmSchemeDesc::ExplicitEulerType, 0.0, 0.0);
+        return {FdmSchemeDesc::ExplicitEulerType, 0.0, 0.0};
     }
 
     FdmSchemeDesc FdmSchemeDesc::ImplicitEuler() {
-        return FdmSchemeDesc(FdmSchemeDesc::ImplicitEulerType, 0.0, 0.0);
+        return {FdmSchemeDesc::ImplicitEulerType, 0.0, 0.0};
     }
 
     FdmSchemeDesc FdmSchemeDesc::MethodOfLines(Real eps, Real relInitStepSize) {
-        return FdmSchemeDesc(
-            FdmSchemeDesc::MethodOfLinesType, eps, relInitStepSize);
+        return {FdmSchemeDesc::MethodOfLinesType, eps, relInitStepSize};
     }
 
-    FdmSchemeDesc FdmSchemeDesc::TrBDF2() {
-        return FdmSchemeDesc(FdmSchemeDesc::TrBDF2Type, 2 - M_SQRT2, 1e-8);
-    }
+    FdmSchemeDesc FdmSchemeDesc::TrBDF2() { return {FdmSchemeDesc::TrBDF2Type, 2 - M_SQRT2, 1e-8}; }
 
     FdmBackwardSolver::FdmBackwardSolver(
-        const ext::shared_ptr<FdmLinearOpComposite>& map,
-        const FdmBoundaryConditionSet& bcSet,
+        ext::shared_ptr<FdmLinearOpComposite> map,
+        FdmBoundaryConditionSet bcSet,
         const ext::shared_ptr<FdmStepConditionComposite>& condition,
         const FdmSchemeDesc& schemeDesc)
-    : map_(map), bcSet_(bcSet),
-      condition_((condition) != 0 ?
+    : map_(std::move(map)), bcSet_(std::move(bcSet)),
+      condition_((condition) != nullptr ?
                      condition :
                      ext::make_shared<FdmStepConditionComposite>(
                          std::list<std::vector<Time> >(), FdmStepConditionComposite::Conditions())),

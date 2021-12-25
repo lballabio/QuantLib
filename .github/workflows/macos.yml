@@ -2,7 +2,15 @@ name: Mac OS build
 on: [push, pull_request]
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: [macos-10.15]
+            shortname: default
+          - os: [macos-11]
+            shortname: default-11
     steps:
     - uses: actions/checkout@v2
     - name: Setup
@@ -12,19 +20,16 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/Library/Caches/ccache
-        key: macos-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp', '**/macos.yml') }}
+        key: ${{ matrix.os }}-${{ matrix.shortname }}-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp', '**/macos.yml') }}
         restore-keys: |
-          macos-build-${{ github.ref }}-${{ github.head_ref }}-
-          macos-build-${{ github.ref }}-
-          macos-build-refs/heads/master-
-          macos-build-
+          ${{ matrix.os }}-${{ matrix.shortname }}-build-${{ github.ref }}-${{ github.head_ref }}-
+          ${{ matrix.os }}-${{ matrix.shortname }}-build-${{ github.ref }}-
+          ${{ matrix.os }}-${{ matrix.shortname }}-build-refs/heads/master-
+          ${{ matrix.os }}-${{ matrix.shortname }}-build-
     - name: Build
-      env:
-        CXXFLAGS: -O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9
-        LDFLAGS: -stdlib=libc++ -mmacosx-version-min=10.9
       run: |
         ./autogen.sh
-        ./configure CC="ccache clang" CXX="ccache clang++" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}"
+        ./configure --disable-shared ${{ matrix.configureflags }} CC="ccache clang" CXX="ccache clang++" CXXFLAGS="-O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9 ${{ matrix.cxxflags }}" LDFLAGS="-stdlib=libc++ -mmacosx-version-min=10.9"
         make -j 2
     - name: Run tests
       run: |

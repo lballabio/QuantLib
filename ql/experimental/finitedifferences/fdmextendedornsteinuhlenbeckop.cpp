@@ -20,35 +20,30 @@
 /*! \file fdmextendedornsteinuhlenbeckop.cpp
 */
 
+#include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdmExtendedOrnsteinUhlenbeckOp::FdmExtendedOrnsteinUhlenbeckOp(
-            const ext::shared_ptr<FdmMesher>& mesher,
-            const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            const FdmBoundaryConditionSet& bcSet,
-            Size direction)
-    : mesher_   (mesher),
-      process_  (process),
-      rTS_      (rTS),
-      bcSet_    (bcSet),
-      direction_(direction),
-      x_        (mesher->locations(direction)),
-      dxMap_    (direction, mesher),
-      dxxMap_   (SecondDerivativeOp(direction, mesher)
-                .mult(0.5*square<Real>()(process_->volatility())
-                  *Array(mesher->layout()->size(), 1.))),
-      mapX_     (direction, mesher) {
-    }
+        const ext::shared_ptr<FdmMesher>& mesher,
+        ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process,
+        ext::shared_ptr<YieldTermStructure> rTS,
+        FdmBoundaryConditionSet bcSet,
+        Size direction)
+    : mesher_(mesher), process_(std::move(process)), rTS_(std::move(rTS)), bcSet_(std::move(bcSet)),
+      direction_(direction), x_(mesher->locations(direction)), dxMap_(direction, mesher),
+      dxxMap_(SecondDerivativeOp(direction, mesher)
+                  .mult(0.5 * square<Real>()(process_->volatility()) *
+                        Array(mesher->layout()->size(), 1.))),
+      mapX_(direction, mesher) {}
 
     Size FdmExtendedOrnsteinUhlenbeckOp::size() const {
         return mesher_->layout()->dim().size();;
@@ -107,12 +102,10 @@ namespace QuantLib {
         return solve_splitting(direction_, r, dt);
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
     Disposable<std::vector<SparseMatrix> >
     FdmExtendedOrnsteinUhlenbeckOp::toMatrixDecomp() const {
         std::vector<SparseMatrix> retVal(1, mapX_.toMatrix());
         return retVal;
     }
-#endif
 
 }

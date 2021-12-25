@@ -33,6 +33,7 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/currencies/europe.hpp>
 #include <iostream>
+#include <string>
 
 using namespace QuantLib;
 using namespace std;
@@ -134,11 +135,12 @@ void NthToDefaultTest::testGauss() {
 
     Settings::instance().evaluationDate() = asofDate;
 
-    vector<Date> gridDates;
-    gridDates.push_back (asofDate);
-    gridDates.push_back (TARGET().advance (asofDate, Period (1, Years)));
-    gridDates.push_back (TARGET().advance (asofDate, Period (5, Years)));
-    gridDates.push_back (TARGET().advance (asofDate, Period (7, Years)));
+    vector<Date> gridDates = {
+        asofDate,
+        TARGET().advance (asofDate, Period (1, Years)),
+        TARGET().advance (asofDate, Period (5, Years)),
+        TARGET().advance (asofDate, Period (7, Years))
+    };
 
     ext::shared_ptr<YieldTermStructure> yieldPtr (
                                    new FlatForward (asofDate, rate, dc, cmp));
@@ -146,11 +148,11 @@ void NthToDefaultTest::testGauss() {
 
     vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
-    for (Size i = 0; i < lambda.size(); i++) {
-        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(lambda[i])));
+    for (double i : lambda) {
+        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(i)));
         ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
-        probabilities.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
+        probabilities.emplace_back(ptr);
     }
 
     ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
@@ -182,8 +184,7 @@ void NthToDefaultTest::testGauss() {
     // Set up pool and basket
     std::vector<std::string> namesIds;
     for(Size i=0; i<names; i++)
-        namesIds.push_back(std::string("Name") + 
-            boost::lexical_cast<std::string>(i));
+        namesIds.push_back(std::string("Name") + std::to_string(i));
 
     std::vector<Issuer> issuers;
     for(Size i=0; i<names; i++) {
@@ -192,7 +193,7 @@ void NthToDefaultTest::testGauss() {
                 EURCurrency(), QuantLib::SeniorSec,
                 Period(), 1. // amount threshold
                 ), probabilities[i]));
-        issuers.push_back(Issuer(curves));
+        issuers.emplace_back(curves);
     }
 
     ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
@@ -211,8 +212,8 @@ void NthToDefaultTest::testGauss() {
 
     vector<NthToDefault> ntd;
     for (Size i = 1; i <= probabilities.size(); i++) {
-        ntd.push_back (NthToDefault (basket, i, Protection::Seller, 
-            schedule, 0.0, 0.02, Actual360(), namesNotional*names, true));
+        ntd.emplace_back(basket, i, Protection::Seller, schedule, 0.0, 0.02, Actual360(),
+                         namesNotional * names, true);
         ntd.back().setPricingEngine(engine);
     }
 
@@ -280,11 +281,12 @@ void NthToDefaultTest::testStudent() {
 
     Settings::instance().evaluationDate() = asofDate;
 
-    vector<Date> gridDates;
-    gridDates.push_back (asofDate);
-    gridDates.push_back (TARGET().advance (asofDate, Period (1, Years)));
-    gridDates.push_back (TARGET().advance (asofDate, Period (5, Years)));
-    gridDates.push_back (TARGET().advance (asofDate, Period (7, Years)));
+    vector<Date> gridDates {
+        asofDate,
+        TARGET().advance (asofDate, Period (1, Years)),
+        TARGET().advance (asofDate, Period (5, Years)),
+        TARGET().advance (asofDate, Period (7, Years))
+    };
 
     ext::shared_ptr<YieldTermStructure> yieldPtr (
                                 new FlatForward (asofDate, rate, dc, cmp));
@@ -292,11 +294,11 @@ void NthToDefaultTest::testStudent() {
 
     vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
-    for (Size i = 0; i < lambda.size(); i++) {
-        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(lambda[i])));
+    for (double i : lambda) {
+        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(i)));
         ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
-        probabilities.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
+        probabilities.emplace_back(ptr);
     }
 
     ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
@@ -312,8 +314,7 @@ void NthToDefaultTest::testStudent() {
     // Set up pool and basket
     std::vector<std::string> namesIds;
     for(Size i=0; i<names; i++)
-        namesIds.push_back(std::string("Name") + 
-            boost::lexical_cast<std::string>(i));
+        namesIds.push_back(std::string("Name") + std::to_string(i));
 
     std::vector<Issuer> issuers;
     for(Size i=0; i<names; i++) {
@@ -322,7 +323,7 @@ void NthToDefaultTest::testStudent() {
                 EURCurrency(), QuantLib::SeniorSec,
                 Period(), 1. // amount threshold
                 ), probabilities[i]));
-        issuers.push_back(Issuer(curves));
+        issuers.emplace_back(curves);
     }
 
     ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
@@ -341,8 +342,8 @@ void NthToDefaultTest::testStudent() {
 
     vector<NthToDefault> ntd;
     for (Size i = 1; i <= probabilities.size(); i++) {
-        ntd.push_back (NthToDefault (basket, i, Protection::Seller, 
-            schedule, 0.0, 0.02, Actual360(), namesNotional*names, true));
+        ntd.emplace_back(basket, i, Protection::Seller, schedule, 0.0, 0.02, Actual360(),
+                         namesNotional * names, true);
         ntd.back().setPricingEngine(engine);
     }
 
@@ -389,8 +390,8 @@ void NthToDefaultTest::testStudent() {
 }
 
 test_suite* NthToDefaultTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Nth-to-default tests");
-    #ifndef QL_PATCH_SOLARIS
+    auto* suite = BOOST_TEST_SUITE("Nth-to-default tests");
+#ifndef QL_PATCH_SOLARIS
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testGauss));
         suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testStudent));

@@ -18,7 +18,7 @@
 */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/experimental/credit/gaussianlhplossmodel.hpp>
@@ -32,20 +32,16 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/currencies/europe.hpp>
-
-#include <boost/assign/std/vector.hpp>
-
 #include <iostream>
 #include <iomanip>
 #include <string>
 
 using namespace std;
 using namespace QuantLib;
-using namespace boost::assign;
 
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
-    ThreadKey sessionId() { return 0; }
+    ThreadKey sessionId() { return {}; }
 }
 #endif
 
@@ -67,20 +63,16 @@ int main(int, char* []) {
                         SET UP BASKET PORTFOLIO
         -------------------------------------------------------------- */
         // build curves and issuers into a basket of ten names
-        std::vector<Real> hazardRates;
-        hazardRates += 
-        //  0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9;        
-            0.001, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09;        
-        //  0.01,  0.01,  0.01,  0.01, 0.01,  0.01,  0.01,  0.01,  0.01,  0.01;        
+        std::vector<Real> hazardRates = {
+            0.001, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09
+        };
         std::vector<std::string> names;
         for(Size i=0; i<hazardRates.size(); i++)
-            names.push_back(std::string("Acme") + 
-                boost::lexical_cast<std::string>(i));
+            names.push_back(std::string("Acme") + std::to_string(i));
         std::vector<Handle<DefaultProbabilityTermStructure> > defTS;
-        for(Size i=0; i<hazardRates.size(); i++) {
-            defTS.push_back(Handle<DefaultProbabilityTermStructure>(
-                ext::make_shared<FlatHazardRate>(0, TARGET(), hazardRates[i], 
-                    Actual365Fixed())));
+        for (double& hazardRate : hazardRates) {
+            defTS.emplace_back(
+                ext::make_shared<FlatHazardRate>(0, TARGET(), hazardRate, Actual365Fixed()));
             defTS.back()->enableExtrapolation();
         }
         std::vector<Issuer> issuers;
@@ -90,7 +82,7 @@ int main(int, char* []) {
                     EURCurrency(), QuantLib::SeniorSec,
                     Period(), 1. // amount threshold
                     ), defTS[i]));
-            issuers.push_back(Issuer(curves));
+            issuers.emplace_back(curves);
         }
 
         ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
@@ -248,8 +240,8 @@ int main(int, char* []) {
 
         // Base Correlation model set up to test cocherence with base LHP model
         std::vector<Period> bcTenors;
-        bcTenors.push_back(Period(1, Years));
-        bcTenors.push_back(Period(5, Years));
+        bcTenors.emplace_back(1, Years);
+        bcTenors.emplace_back(5, Years);
         std::vector<Real> bcLossPercentages;
         bcLossPercentages.push_back(0.03);
         bcLossPercentages.push_back(0.12);
@@ -257,19 +249,19 @@ int main(int, char* []) {
         // 
         std::vector<Handle<Quote> > corr1Y;
         // 3%
-        corr1Y.push_back(Handle<Quote>(ext::shared_ptr<Quote>(
-            new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
+        corr1Y.emplace_back(
+            ext::shared_ptr<Quote>(new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0])));
         // 12%
-        corr1Y.push_back(Handle<Quote>(ext::shared_ptr<Quote>(
-            new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
+        corr1Y.emplace_back(
+            ext::shared_ptr<Quote>(new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0])));
         correls.push_back(corr1Y);
         std::vector<Handle<Quote> > corr2Y;
         // 3%
-        corr2Y.push_back(Handle<Quote>(ext::shared_ptr<Quote>(
-            new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
+        corr2Y.emplace_back(
+            ext::shared_ptr<Quote>(new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0])));
         // 12%
-        corr2Y.push_back(Handle<Quote>(ext::shared_ptr<Quote>(
-            new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0]))));
+        corr2Y.emplace_back(
+            ext::shared_ptr<Quote>(new SimpleQuote(fctrsWeights[0][0] * fctrsWeights[0][0])));
         correls.push_back(corr2Y);
         ext::shared_ptr<BaseCorrelationTermStructure<BilinearInterpolation> > 
           correlSurface(

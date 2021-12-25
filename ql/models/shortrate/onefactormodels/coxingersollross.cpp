@@ -29,7 +29,7 @@ namespace QuantLib {
             Real k_, theta_;
           public:
             Impl(Real k, Real theta) : k_(k), theta_(theta) {}
-            bool test(const Array& params) const {
+            bool test(const Array& params) const override {
                 Real sigma = params[0];
                 return (sigma > 0.0) && (sigma*sigma < 2.0*k_*theta_);
             }

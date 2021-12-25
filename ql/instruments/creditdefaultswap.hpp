@@ -104,7 +104,7 @@ namespace QuantLib {
                           bool settlesAccrual = true,
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
-                          const ext::shared_ptr<Claim>& = ext::shared_ptr<Claim>(),
+                          ext::shared_ptr<Claim> = ext::shared_ptr<Claim>(),
                           const DayCounter& lastPeriodDayCounter = DayCounter(),
                           bool rebatesAccrual = true,
                           const Date& tradeDate = Date(),
@@ -158,7 +158,7 @@ namespace QuantLib {
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
                           const Date& upfrontDate = Date(),
-                          const ext::shared_ptr<Claim>& = ext::shared_ptr<Claim>(),
+                          ext::shared_ptr<Claim> = ext::shared_ptr<Claim>(),
                           const DayCounter& lastPeriodDayCounter = DayCounter(),
                           bool rebatesAccrual = true,
                           const Date& tradeDate = Date(),
@@ -166,9 +166,9 @@ namespace QuantLib {
         //@}
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results*) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results*) const override;
         //@}
         //! \name Inspectors
         //@{
@@ -183,7 +183,7 @@ namespace QuantLib {
         const Date& protectionStartDate() const;
         //! The last date for which defaults will trigger the contract
         const Date& protectionEndDate() const;
-        bool rebatesAccrual() const { return accrualRebate_ != NULL; }
+        bool rebatesAccrual() const { return accrualRebate_ != nullptr; }
         const ext::shared_ptr<SimpleCashFlow>& upfrontPayment() const;
         const ext::shared_ptr<SimpleCashFlow>& accrualRebate() const;
         const Date& tradeDate() const;
@@ -276,7 +276,7 @@ namespace QuantLib {
       protected:
         //! \name Instrument interface
         //@{
-        void setupExpired() const;
+        void setupExpired() const override;
         //@}
         // data members
         Protection::Side side_;
@@ -324,7 +324,7 @@ namespace QuantLib {
         ext::shared_ptr<Claim> claim;
         Date protectionStart;
         Date maturity;
-        void validate() const;
+        void validate() const override;
     };
 
     class CreditDefaultSwap::results : public Instrument::results {
@@ -337,7 +337,7 @@ namespace QuantLib {
         Real upfrontBPS;
         Real upfrontNPV;
         Real accrualRebateNPV;
-        void reset();
+        void reset() override;
     };
 
     class CreditDefaultSwap::engine

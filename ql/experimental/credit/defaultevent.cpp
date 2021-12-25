@@ -22,6 +22,7 @@
 #include <ql/experimental/credit/recoveryratequote.hpp>
 #include <ql/patterns/visitor.hpp>
 #include <ql/settings.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -30,9 +31,8 @@ namespace QuantLib {
     }
 
     void DefaultEvent::accept(AcyclicVisitor& v) {
-        Visitor<DefaultEvent>* v1 =
-            dynamic_cast<Visitor<DefaultEvent>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<DefaultEvent>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             Event::accept(v);
@@ -44,9 +44,8 @@ namespace QuantLib {
     }
 
     void DefaultEvent::DefaultSettlement::accept(AcyclicVisitor& v) {
-        Visitor<DefaultEvent::DefaultSettlement>* v1 =
-            dynamic_cast<Visitor<DefaultEvent::DefaultSettlement>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<DefaultEvent::DefaultSettlement>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             Event::accept(v);
@@ -67,9 +66,8 @@ namespace QuantLib {
         const Real recoveryRate)
     : settlementDate_(date), recoveryRates_(makeIsdaConvMap()) {
         if (seniority == NoSeniority) {
-            for (std::map<Seniority, Real>::iterator i=recoveryRates_.begin();
-                 i != recoveryRates_.end(); ++i) {
-                i->second = recoveryRate;
+            for (auto& i : recoveryRates_) {
+                i.second = recoveryRate;
             }
         } else {
             recoveryRates_[seniority] = recoveryRate;
@@ -81,8 +79,7 @@ namespace QuantLib {
         // expensive require cause called often...... fix me
         QL_REQUIRE(sen != NoSeniority,
             "NoSeniority is not valid for recovery rate request.");
-        std::map<Seniority, Real>::const_iterator itmatch =
-            recoveryRates_.find(sen);
+        auto itmatch = recoveryRates_.find(sen);
         if(itmatch != recoveryRates_.end()) {
             return itmatch->second;
         }else{
@@ -92,18 +89,14 @@ namespace QuantLib {
 
     DefaultEvent::DefaultEvent(const Date& creditEventDate,
                                const DefaultType& atomicEvType,
-                               const Currency& curr,
+                               Currency curr,
                                Seniority bondsSen,
                                // Settlement information:
                                const Date& settleDate,
                                const std::map<Seniority, Real>& recoveryRates)
-    : bondsCurrency_(curr),
-      defaultDate_(creditEventDate),
-      eventType_(atomicEvType),
+    : bondsCurrency_(std::move(curr)), defaultDate_(creditEventDate), eventType_(atomicEvType),
       bondsSeniority_(bondsSen),
-      defSettlement_(settleDate,
-                     recoveryRates.empty() ? makeIsdaConvMap()
-                                           : recoveryRates) {
+      defSettlement_(settleDate, recoveryRates.empty() ? makeIsdaConvMap() : recoveryRates) {
         if(settleDate != Null<Date>()) {// has settled
             QL_REQUIRE(settleDate >= creditEventDate,
               "Settlement date should be after default date.");
@@ -114,16 +107,13 @@ namespace QuantLib {
 
     DefaultEvent::DefaultEvent(const Date& creditEventDate,
                                const DefaultType& atomicEvType,
-                               const Currency& curr,
+                               Currency curr,
                                Seniority bondsSen,
                                // Settlement information:
                                const Date& settleDate,
                                Real recoveryRate)
-    : bondsCurrency_(curr),
-      defaultDate_(creditEventDate),
-      eventType_(atomicEvType),
-      bondsSeniority_(bondsSen),
-      defSettlement_(settleDate, bondsSen, recoveryRate) {
+    : bondsCurrency_(std::move(curr)), defaultDate_(creditEventDate), eventType_(atomicEvType),
+      bondsSeniority_(bondsSen), defSettlement_(settleDate, bondsSen, recoveryRate) {
         if(settleDate != Null<Date>()) {
             QL_REQUIRE(settleDate >= creditEventDate,
             "Settlement date should be after default date.");

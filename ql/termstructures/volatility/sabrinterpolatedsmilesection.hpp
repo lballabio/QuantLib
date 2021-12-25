@@ -43,10 +43,10 @@ namespace QuantLib {
         //! all market data are quotes
         SabrInterpolatedSmileSection(
             const Date& optionDate,
-            const Handle<Quote>& forward,
+            Handle<Quote> forward,
             const std::vector<Rate>& strikes,
             bool hasFloatingStrikes,
-            const Handle<Quote>& atmVolatility,
+            Handle<Quote> atmVolatility,
             const std::vector<Handle<Quote> >& volHandles,
             Real alpha,
             Real beta,
@@ -57,9 +57,8 @@ namespace QuantLib {
             bool isNuFixed = false,
             bool isRhoFixed = false,
             bool vegaWeighted = true,
-            const ext::shared_ptr<EndCriteria>& endCriteria = ext::shared_ptr<EndCriteria>(),
-            const ext::shared_ptr<OptimizationMethod>& method =
-                ext::shared_ptr<OptimizationMethod>(),
+            ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+            ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
             const DayCounter& dc = Actual365Fixed(),
             Real shift = 0.0);
         //! no quotes
@@ -79,26 +78,25 @@ namespace QuantLib {
             bool isNuFixed = false,
             bool isRhoFixed = false,
             bool vegaWeighted = true,
-            const ext::shared_ptr<EndCriteria>& endCriteria = ext::shared_ptr<EndCriteria>(),
-            const ext::shared_ptr<OptimizationMethod>& method =
-                ext::shared_ptr<OptimizationMethod>(),
+            ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+            ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
             const DayCounter& dc = Actual365Fixed(),
             Real shift = 0.0);
         //@}
         //! \name LazyObject interface
         //@{
-        virtual void performCalculations() const;
-        virtual void update();
+        void performCalculations() const override;
+        void update() override;
         //@}
         //! \name SmileSection interface
         //@{
-        Real minStrike () const;
-        Real maxStrike () const;
-        Real atmLevel() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
+        Real atmLevel() const override;
         //@}
-        Real varianceImpl(Rate strike) const;
-        Volatility volatilityImpl(Rate strike) const;
-         //! \name Inspectors
+        Real varianceImpl(Rate strike) const override;
+        Volatility volatilityImpl(Rate strike) const override;
+        //! \name Inspectors
         //@{
         Real alpha() const;
         Real beta() const;

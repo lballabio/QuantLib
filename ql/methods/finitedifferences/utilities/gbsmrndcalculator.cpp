@@ -22,19 +22,18 @@
            Black-Scholes-Merton model with skew dependent volatility
 */
 
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/functional.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    GBSMRNDCalculator::GBSMRNDCalculator(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) { }
+    GBSMRNDCalculator::GBSMRNDCalculator(ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {}
 
     Real GBSMRNDCalculator::pdf(Real k, Time t) const {
         const Real dk = 1e-3*k;
@@ -74,8 +73,6 @@ namespace QuantLib {
     }
 
     Real GBSMRNDCalculator::invcdf(Real q, Time t) const {
-        using namespace ext::placeholders;
-
         const Real fwd = process_->x0()
             / process_->riskFreeRate()->discount(t, true)
             * process_->dividendYield()->discount(t, true);
@@ -100,9 +97,7 @@ namespace QuantLib {
                 << cdf(lower, t) << ", " << cdf(upper, t) << ")");
 
         return Brent().solve(
-            compose(subtract<Real>(q),
-                    ext::function<Real(Real)>(
-                        ext::bind(&GBSMRNDCalculator::cdf, this, _1, t))),
+            [&](Real _k){ return cdf(_k, t) - q; },
             1e-10, 0.5*(lower+upper), lower, upper);
     }
 }

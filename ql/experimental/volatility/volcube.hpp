@@ -37,8 +37,8 @@ namespace QuantLib {
 
     class VolatilityCube {
       public:
-        VolatilityCube(const std::vector<Handle<InterestRateVolSurface> >&,
-                       const std::vector<Handle<AbcdAtmVolCurve> >&);
+        VolatilityCube(std::vector<Handle<InterestRateVolSurface> >,
+                       std::vector<Handle<AbcdAtmVolCurve> >);
         const Period& minIndexTenor() const;
         const Period& maxIndexTenor() const;
         const std::vector<Handle<InterestRateVolSurface> >& surfaces() const;

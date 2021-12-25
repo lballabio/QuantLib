@@ -19,19 +19,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/matrixutilities/gmres.hpp>
-#include <ql/math/matrixutilities/bicgstab.hpp>
-#include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
 #include <ql/functional.hpp>
+#include <ql/math/matrixutilities/bicgstab.hpp>
+#include <ql/math/matrixutilities/gmres.hpp>
+#include <ql/methods/finitedifferences/schemes/impliciteulerscheme.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    ImplicitEulerScheme::ImplicitEulerScheme(const ext::shared_ptr<FdmLinearOpComposite>& map,
+    ImplicitEulerScheme::ImplicitEulerScheme(ext::shared_ptr<FdmLinearOpComposite> map,
                                              const bc_set& bcSet,
                                              Real relTol,
                                              SolverType solverType)
-    : dt_(Null<Real>()), iterations_(ext::make_shared<Size>(0U)), relTol_(relTol), map_(map),
-      bcSet_(bcSet), solverType_(solverType) {}
+    : dt_(Null<Real>()), iterations_(ext::make_shared<Size>(0U)), relTol_(relTol),
+      map_(std::move(map)), bcSet_(bcSet), solverType_(solverType) {}
 
     Disposable<Array> ImplicitEulerScheme::apply(const Array& r, Real theta) const {
         return r - (theta*dt_)*map_->apply(r);
@@ -42,7 +43,6 @@ namespace QuantLib {
     }
 
     void ImplicitEulerScheme::step(array_type& a, Time t, Real theta) {
-        using namespace ext::placeholders;
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");
         map_->setTime(std::max(0.0, t-dt_), t);
         bcSet_.setTime(std::max(0.0, t-dt_));
@@ -53,12 +53,8 @@ namespace QuantLib {
             a = map_->solve_splitting(0, a, -theta*dt_);
         }
         else {
-            const ext::function<Disposable<Array>(const Array&)>
-                preconditioner(ext::bind(
-                    &FdmLinearOpComposite::preconditioner, map_, _1, -theta*dt_));
-
-            const ext::function<Disposable<Array>(const Array&)> applyF(
-                ext::bind(&ImplicitEulerScheme::apply, this, _1, theta));
+            auto preconditioner = [&](const Array& _a){ return map_->preconditioner(_a, -theta*dt_); };
+            auto applyF = [&](const Array& _a){ return apply(_a, theta); };
 
             if (solverType_ == BiCGstab) {
                 const BiCGStabResult result =

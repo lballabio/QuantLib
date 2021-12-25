@@ -18,15 +18,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/lookback/analyticcontinuouspartialfixedlookback.hpp>
 #include <ql/exercise.hpp>
+#include <ql/pricingengines/lookback/analyticcontinuouspartialfixedlookback.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    AnalyticContinuousPartialFixedLookbackEngine::
-    AnalyticContinuousPartialFixedLookbackEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+    AnalyticContinuousPartialFixedLookbackEngine::AnalyticContinuousPartialFixedLookbackEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 

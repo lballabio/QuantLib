@@ -41,20 +41,18 @@ namespace QuantLib {
         enum Extrapolation { ConstantExtrapolation,
                              InterpolatorDefaultExtrapolation };
         ExtendedBlackVarianceSurface(
-                              const Date& referenceDate,
-                              const Calendar& calendar,
-                              const std::vector<Date>& dates,
-                              const std::vector<Real>& strikes,
-                              const std::vector<Handle<Quote> >& volatilities,
-                              const DayCounter& dayCounter,
-                              Extrapolation lowerExtrapolation =
-                                             InterpolatorDefaultExtrapolation,
-                              Extrapolation upperExtrapolation =
-                                            InterpolatorDefaultExtrapolation);
-        DayCounter dayCounter() const { return dayCounter_; }
-        Date maxDate() const { return maxDate_; }
-        Real minStrike() const { return strikes_.front(); }
-        Real maxStrike() const { return strikes_.back(); }
+            const Date& referenceDate,
+            const Calendar& calendar,
+            const std::vector<Date>& dates,
+            std::vector<Real> strikes,
+            const std::vector<Handle<Quote> >& volatilities,
+            DayCounter dayCounter,
+            Extrapolation lowerExtrapolation = InterpolatorDefaultExtrapolation,
+            Extrapolation upperExtrapolation = InterpolatorDefaultExtrapolation);
+        DayCounter dayCounter() const override { return dayCounter_; }
+        Date maxDate() const override { return maxDate_; }
+        Real minStrike() const override { return strikes_.front(); }
+        Real maxStrike() const override { return strikes_.back(); }
         template <class Interpolator>
         void setInterpolation(const Interpolator& i = Interpolator()) {
             varianceSurface_ =
@@ -64,10 +62,11 @@ namespace QuantLib {
             varianceSurface_.update();
             notifyObservers();
         }
-        void accept(AcyclicVisitor&);
-        void update();
+        void accept(AcyclicVisitor&) override;
+        void update() override;
+
       private:
-        Real blackVarianceImpl(Time t, Real strike) const;
+        Real blackVarianceImpl(Time t, Real strike) const override;
         void setVariances();
         DayCounter dayCounter_;
         Date maxDate_;
@@ -80,9 +79,8 @@ namespace QuantLib {
     };
 
     inline void ExtendedBlackVarianceSurface::accept(AcyclicVisitor& v) {
-        Visitor<ExtendedBlackVarianceSurface>* v1 =
-            dynamic_cast<Visitor<ExtendedBlackVarianceSurface>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<ExtendedBlackVarianceSurface>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             BlackVarianceTermStructure::accept(v);

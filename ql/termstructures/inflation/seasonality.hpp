@@ -75,7 +75,7 @@ namespace QuantLib {
           virtual bool isConsistent(const InflationTermStructure& iTS) const;
           //@}
 
-          virtual ~Seasonality() {}
+          virtual ~Seasonality() = default;
     };
 
     //! Multiplicative seasonality in the price index (CPI/RPI/HICP/etc).
@@ -127,7 +127,7 @@ namespace QuantLib {
 
             //Constructors
             //
-            MultiplicativePriceSeasonality();
+            MultiplicativePriceSeasonality() = default;
 
             MultiplicativePriceSeasonality(const Date& seasonalityBaseDate,
                                            Frequency frequency,
@@ -148,17 +148,19 @@ namespace QuantLib {
 
             //! \name Seasonality interface
             //@{
-            virtual Rate
-            correctZeroRate(const Date& d, Rate r, const InflationTermStructure& iTS) const;
-            virtual Rate
-            correctYoYRate(const Date& d, Rate r, const InflationTermStructure& iTS) const;
-            virtual bool isConsistent(const InflationTermStructure& iTS) const;
+            Rate correctZeroRate(const Date& d,
+                                 Rate r,
+                                 const InflationTermStructure& iTS) const override;
+            Rate
+            correctYoYRate(const Date& d, Rate r, const InflationTermStructure& iTS) const override;
+            bool isConsistent(const InflationTermStructure& iTS) const override;
             //@}
 
             //Destructor
-            virtual ~MultiplicativePriceSeasonality() {};
+            ~MultiplicativePriceSeasonality() override = default;
+            ;
 
-        protected:
+          protected:
             virtual void validate() const;
             virtual Rate seasonalityCorrection(Rate r, const Date &d, const DayCounter &dc,
                                                const Date &curveBaseDate, bool isZeroRate) const;
@@ -174,13 +176,14 @@ namespace QuantLib {
 
         /*Rate correctZeroRate(const Date &d, const Rate r,
                                const InflationTermStructure& iTS) const;*/
-        Real seasonalityFactor(const Date &to) const;
+        Real seasonalityFactor(const Date& to) const override;
+
       protected:
-        virtual Rate seasonalityCorrection(Rate rate,
-                                           const Date& atDate,
-                                           const DayCounter& dc,
-                                           const Date& curveBaseDate,
-                                           bool isZeroRate) const;
+        Rate seasonalityCorrection(Rate rate,
+                                   const Date& atDate,
+                                   const DayCounter& dc,
+                                   const Date& curveBaseDate,
+                                   bool isZeroRate) const override;
     };
 
 }  // end of namespace QuantLib

@@ -43,14 +43,14 @@ namespace QuantLib {
         TreeCallableFixedRateBondEngine(
             const ext::shared_ptr<ShortRateModel>&,
             Size timeSteps,
-            const Handle<YieldTermStructure>& termStructure = Handle<YieldTermStructure>());
+            Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>());
         TreeCallableFixedRateBondEngine(
-                           const ext::shared_ptr<ShortRateModel>&,
-                           const TimeGrid& timeGrid,
-                           const Handle<YieldTermStructure>& termStructure =
-                                                 Handle<YieldTermStructure>()) ;
+            const ext::shared_ptr<ShortRateModel>&,
+            const TimeGrid& timeGrid,
+            Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>());
         //@}
-        void calculate() const;
+        void calculate() const override;
+
       private:
         void calculateWithSpread(Spread s) const;
         Handle<YieldTermStructure> termStructure_;

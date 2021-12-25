@@ -11,6 +11,7 @@ this_include_HEADERS = \
 	botswana.hpp \
 	brazil.hpp \
 	canada.hpp \
+	chile.hpp \
 	china.hpp \
 	czechrepublic.hpp \
 	denmark.hpp \
@@ -57,6 +58,7 @@ cpp_files = \
 	botswana.cpp \
 	brazil.cpp \
 	canada.cpp \
+	chile.cpp \
 	china.cpp \
 	czechrepublic.cpp \
 	denmark.cpp \

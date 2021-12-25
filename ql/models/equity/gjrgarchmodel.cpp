@@ -26,7 +26,7 @@ namespace QuantLib {
       private:
         class Impl : public Constraint::Impl {
           public:
-            bool test(const Array& params) const {
+            bool test(const Array& params) const override {
                 const Real beta  = params[2];
                 const Real gamma = params[3];
 

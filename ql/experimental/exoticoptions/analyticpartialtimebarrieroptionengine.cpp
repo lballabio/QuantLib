@@ -17,16 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
+#include <ql/math/distributions/bivariatenormaldistribution.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticPartialTimeBarrierOptionEngine::AnalyticPartialTimeBarrierOptionEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
@@ -186,7 +187,7 @@ namespace QuantLib {
 
     Real AnalyticPartialTimeBarrierOptionEngine::CA(Integer eta) const {
         //Partial-Time-Start- OUT  Call Option calculation
-        Real b = riskFreeDiscount()-dividendYield();
+        Real b = riskFreeRate()-dividendYield();
         Real result;
         result = underlying()*std::exp((b-riskFreeRate())*residualTime());
         result *= (M(d1(),eta*e1(),eta*rho())-HS(underlying(),barrier(),2*(mu()+1))*M(f1(),eta*e3(),eta*rho()));

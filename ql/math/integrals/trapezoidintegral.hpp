@@ -56,9 +56,7 @@ namespace QuantLib {
         : Integrator(accuracy, maxIterations){}
 
       protected:
-        Real integrate (const ext::function<Real (Real)>& f, 
-                        Real a,
-                        Real b) const {
+        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b) const override {
 
             // start from the coarsest trapezoid...
             Size N = 1;

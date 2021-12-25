@@ -97,11 +97,10 @@ void InterestRateTest::testConversions() {
     DiscountFactor disc;
 
 
-    for (Size i=0; i<LENGTH(cases); i++) {
-        ir = InterestRate(cases[i].r, Actual360(),
-                          cases[i].comp, cases[i].freq);
-        d2 = d1+Integer(360*cases[i].t+0.5)*Days;
-        roundingPrecision = Rounding(cases[i].precision);
+    for (auto& i : cases) {
+        ir = InterestRate(i.r, Actual360(), i.comp, i.freq);
+        d2 = d1 + timeToDays(i.t);
+        roundingPrecision = Rounding(i.precision);
 
         // check that the compound factor is the inverse of the discount factor
         compoundf = ir.compoundFactor(d1, d2);
@@ -154,23 +153,17 @@ void InterestRateTest::testConversions() {
 
         // check that the equivalent InterestRate with *different*
         // compounding, and frequency is the *expected* InterestRate
-        ir3 = ir.equivalentRate(ir.dayCounter(),
-                                cases[i].comp2, cases[i].freq2,
-                                d1, d2);
-        expectedIR = InterestRate(cases[i].expected, ir.dayCounter(),
-                                  cases[i].comp2, cases[i].freq2);
+        ir3 = ir.equivalentRate(ir.dayCounter(), i.comp2, i.freq2, d1, d2);
+        expectedIR = InterestRate(i.expected, ir.dayCounter(), i.comp2, i.freq2);
         r3 = roundingPrecision(ir3.rate());
         error = std::fabs(r3-expectedIR.rate());
         if (error>1.0e-17)
-            BOOST_FAIL(std::setprecision(cases[i].precision+1)
+            BOOST_FAIL(std::setprecision(i.precision + 1)
                        << "\n               original interest rate: " << ir
                        << "\n  calculated equivalent interest rate: " << ir3
-                       << "\n            truncated equivalent rate: "
-                       << io::rate(r3)
-                       << "\n    expected equivalent interest rate: "
-                       << expectedIR
-                       << "\n                           rate error: "
-                       << error);
+                       << "\n            truncated equivalent rate: " << io::rate(r3)
+                       << "\n    expected equivalent interest rate: " << expectedIR
+                       << "\n                           rate error: " << error);
         if (ir3.dayCounter()!=expectedIR.dayCounter())
             BOOST_FAIL("\n day counter error"
                        << "\n    original interest rate: " << ir3
@@ -186,22 +179,19 @@ void InterestRateTest::testConversions() {
 
         // check that the equivalent rate with *different*
         // compounding, and frequency is the *expected* rate
-        r3 = ir.equivalentRate(ir.dayCounter(),
-                               cases[i].comp2, cases[i].freq2,
-                               d1, d2);
+        r3 = ir.equivalentRate(ir.dayCounter(), i.comp2, i.freq2, d1, d2);
         r3 = roundingPrecision(r3);
-        error = std::fabs(r3-cases[i].expected);
+        error = std::fabs(r3 - i.expected);
         if (error>1.0e-17)
-            BOOST_FAIL(std::setprecision(cases[i].precision-2)
+            BOOST_FAIL(std::setprecision(i.precision - 2)
                        << "\n  calculated equivalent rate: " << io::rate(r3)
-                       << "\n    expected equivalent rate: "
-                       << io::rate(cases[i].expected)
+                       << "\n    expected equivalent rate: " << io::rate(i.expected)
                        << "\n                       error: " << error);
     }
 }
 
 test_suite* InterestRateTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Interest Rate tests");
+    auto* suite = BOOST_TEST_SUITE("Interest Rate tests");
     suite->add(QUANTLIB_TEST_CASE(&InterestRateTest::testConversions));
     return suite;
 }

@@ -25,8 +25,9 @@
 #ifndef quantlib_drift_term_structure_hpp
 #define quantlib_drift_term_structure_hpp
 
-#include <ql/termstructures/yield/zeroyieldstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <ql/termstructures/yield/zeroyieldstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -41,19 +42,20 @@ namespace QuantLib {
     class DriftTermStructure : public ZeroYieldStructure {
       public:
         DriftTermStructure(const Handle<YieldTermStructure>& riskFreeTS,
-                           const Handle<YieldTermStructure>& dividendTS,
-                           const Handle<BlackVolTermStructure>& blackVolTS);
+                           Handle<YieldTermStructure> dividendTS,
+                           Handle<BlackVolTermStructure> blackVolTS);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
-        const Date& referenceDate() const;
-        Date maxDate() const;
+        DayCounter dayCounter() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
+        const Date& referenceDate() const override;
+        Date maxDate() const override;
         //@}
       protected:
         //! returns the discount factor as seen from the evaluation date
-        Rate zeroYieldImpl(Time) const;
+        Rate zeroYieldImpl(Time) const override;
+
       private:
         Handle<YieldTermStructure> riskFreeTS_, dividendTS_;
         Handle<BlackVolTermStructure> blackVolTS_;
@@ -63,14 +65,11 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline DriftTermStructure::DriftTermStructure(
-                              const Handle<YieldTermStructure>& riskFreeTS,
-                              const Handle<YieldTermStructure>& dividendTS,
-                              const Handle<BlackVolTermStructure>& blackVolTS)
-    : ZeroYieldStructure(riskFreeTS->dayCounter()),
-      riskFreeTS_(riskFreeTS),
-      dividendTS_(dividendTS),
-      blackVolTS_(blackVolTS) {
+    inline DriftTermStructure::DriftTermStructure(const Handle<YieldTermStructure>& riskFreeTS,
+                                                  Handle<YieldTermStructure> dividendTS,
+                                                  Handle<BlackVolTermStructure> blackVolTS)
+    : ZeroYieldStructure(riskFreeTS->dayCounter()), riskFreeTS_(riskFreeTS),
+      dividendTS_(std::move(dividendTS)), blackVolTS_(std::move(blackVolTS)) {
         registerWith(riskFreeTS_);
         registerWith(dividendTS_);
         registerWith(blackVolTS_);

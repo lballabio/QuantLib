@@ -43,6 +43,7 @@
 #include <ql/instruments/nonstandardswaption.hpp>
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
+#include <ql/instruments/overnightindexfuture.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/quantobarrieroption.hpp>
 #include <ql/instruments/quantoforwardvanillaoption.hpp>
@@ -58,5 +59,6 @@
 #include <ql/instruments/varianceswap.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
+#include <ql/instruments/zerocouponswap.hpp>
 
 #include <ql/instruments/bonds/all.hpp>

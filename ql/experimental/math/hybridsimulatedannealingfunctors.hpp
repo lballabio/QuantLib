@@ -46,8 +46,9 @@ typedef boost::variate_generator<base_generator_type, normal_random > normal_var
 typedef boost::variate_generator<base_generator_type&, lognormal_random > lognormal_variate;
 typedef boost::variate_generator<base_generator_type&, cauchy_random > cauchy_variate;
 
-#include <cmath> //for log
 #include <algorithm> //for std::max
+#include <cmath>     //for log
+#include <utility>
 #include <vector>
 
 namespace QuantLib
@@ -124,23 +125,21 @@ namespace QuantLib
     class SamplerRingGaussian
     {
     public:
-        SamplerRingGaussian(const Array& lower, const Array& upper, 
-				unsigned long seed = SeedGenerator::instance().get()) :
-            generator_(seed), distribution_(0.0, 1.0), 
-            gaussian_(generator_, distribution_),
-            lower_(lower), upper_(upper) {};
-        SamplerRingGaussian(const SamplerRingGaussian& sampler) : 
-			generator_(sampler.gaussian_.engine()),
-            distribution_(sampler.gaussian_.distribution()),
-            gaussian_(generator_, distribution_),
-            lower_(sampler.lower_), upper_(sampler.upper_) {};
-        SamplerRingGaussian& operator=(const SamplerRingGaussian& sampler) {
-            generator_ = sampler.gaussian_.engine();
-            distribution_ = sampler.gaussian_.distribution();
-            gaussian_ = normal_variate(generator_, distribution_);
-            lower_ = sampler.lower_;
-            upper_ = sampler.upper_;
-            return *this;
+      SamplerRingGaussian(Array lower,
+                          Array upper,
+                          unsigned long seed = SeedGenerator::instance().get())
+      : generator_(seed), distribution_(0.0, 1.0), gaussian_(generator_, distribution_),
+        lower_(std::move(lower)), upper_(std::move(upper)){};
+      SamplerRingGaussian(const SamplerRingGaussian& sampler)
+      : generator_(sampler.gaussian_.engine()), distribution_(sampler.gaussian_.distribution()),
+        gaussian_(generator_, distribution_), lower_(sampler.lower_), upper_(sampler.upper_){};
+      SamplerRingGaussian& operator=(const SamplerRingGaussian& sampler) {
+          generator_ = sampler.gaussian_.engine();
+          distribution_ = sampler.gaussian_.distribution();
+          gaussian_ = normal_variate(generator_, distribution_);
+          lower_ = sampler.lower_;
+          upper_ = sampler.upper_;
+          return *this;
         }
 
         inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
@@ -172,23 +171,21 @@ namespace QuantLib
     class SamplerMirrorGaussian
     {
     public:
-        SamplerMirrorGaussian(const Array& lower, const Array& upper, 
-				unsigned long seed = SeedGenerator::instance().get()) :
-            generator_(seed), distribution_(0.0, 1.0), 
-            gaussian_(generator_, distribution_),
-            lower_(lower), upper_(upper) {};
-        SamplerMirrorGaussian(const SamplerMirrorGaussian& sampler) : 
-			generator_(sampler.gaussian_.engine()),
-            distribution_(sampler.gaussian_.distribution()),
-            gaussian_(generator_, distribution_),
-            lower_(sampler.lower_), upper_(sampler.upper_) {};
-        SamplerMirrorGaussian& operator=(const SamplerMirrorGaussian& sampler) {
-            generator_ = sampler.gaussian_.engine();
-            distribution_ = sampler.gaussian_.distribution();
-            gaussian_ = normal_variate(generator_, distribution_);
-            lower_ = sampler.lower_;
-            upper_ = sampler.upper_;
-            return *this;
+      SamplerMirrorGaussian(Array lower,
+                            Array upper,
+                            unsigned long seed = SeedGenerator::instance().get())
+      : generator_(seed), distribution_(0.0, 1.0), gaussian_(generator_, distribution_),
+        lower_(std::move(lower)), upper_(std::move(upper)){};
+      SamplerMirrorGaussian(const SamplerMirrorGaussian& sampler)
+      : generator_(sampler.gaussian_.engine()), distribution_(sampler.gaussian_.distribution()),
+        gaussian_(generator_, distribution_), lower_(sampler.lower_), upper_(sampler.upper_){};
+      SamplerMirrorGaussian& operator=(const SamplerMirrorGaussian& sampler) {
+          generator_ = sampler.gaussian_.engine();
+          distribution_ = sampler.gaussian_.distribution();
+          gaussian_ = normal_variate(generator_, distribution_);
+          lower_ = sampler.lower_;
+          upper_ = sampler.upper_;
+          return *this;
         }
 
         inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
@@ -247,12 +244,13 @@ namespace QuantLib
     class SamplerVeryFastAnnealing
     {
     public:
-        SamplerVeryFastAnnealing(const Array &lower, const Array &upper, unsigned long seed = SeedGenerator::instance().get()) :
-            lower_(lower), upper_(upper),
-            generator_(seed),
-            uniform_(generator_, distribution_) {
-            QL_REQUIRE(lower_.size() == upper_.size(), "Incompatible input");
-        };
+      SamplerVeryFastAnnealing(Array lower,
+                               Array upper,
+                               unsigned long seed = SeedGenerator::instance().get())
+      : lower_(std::move(lower)), upper_(std::move(upper)), generator_(seed),
+        uniform_(generator_, distribution_) {
+          QL_REQUIRE(lower_.size() == upper_.size(), "Incompatible input");
+      };
         SamplerVeryFastAnnealing(const SamplerVeryFastAnnealing& sampler) :
             lower_(sampler.lower_), upper_(sampler.upper_),
             generator_(sampler.uniform_.engine()), distribution_(sampler.uniform_.distribution()),
@@ -428,7 +426,8 @@ namespace QuantLib
     /*!    No reannealing is performed
     */
     struct ReannealingTrivial {
-        ReannealingTrivial() {};
+        ReannealingTrivial() = default;
+        ;
         inline void setProblem(Problem &P) {};
         inline void operator()(Array & steps, const Array &currentPoint,
             Real aCurrentValue, const Array & currTemp) const {};

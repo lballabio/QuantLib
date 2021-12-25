@@ -31,24 +31,23 @@
 namespace QuantLib {
     class PdeSecondOrderParabolic {
     public:
-        virtual ~PdeSecondOrderParabolic() {}
-        virtual Real diffusion(Time t, Real x) const = 0;
-        virtual Real drift(Time t, Real x) const = 0;
-        virtual Real discount(Time t, Real x) const = 0;
-        virtual void generateOperator(Time t,
-                                      const TransformedGrid &tg,
-                                      TridiagonalOperator &L) const {
-            for (Size i=1; i < tg.size() - 1; i++) {
-                Real sigma = diffusion(t, tg.grid(i));
-                Real nu = drift(t, tg.grid(i));
-                Real r = discount(t, tg.grid(i));
-                Real sigma2 = sigma * sigma;
+      virtual ~PdeSecondOrderParabolic() = default;
+      virtual Real diffusion(Time t, Real x) const = 0;
+      virtual Real drift(Time t, Real x) const = 0;
+      virtual Real discount(Time t, Real x) const = 0;
+      virtual void
+      generateOperator(Time t, const TransformedGrid& tg, TridiagonalOperator& L) const {
+          for (Size i = 1; i < tg.size() - 1; i++) {
+              Real sigma = diffusion(t, tg.grid(i));
+              Real nu = drift(t, tg.grid(i));
+              Real r = discount(t, tg.grid(i));
+              Real sigma2 = sigma * sigma;
 
-                Real pd = -(sigma2/tg.dxm(i)-nu)/ tg.dx(i);
-                Real pu = -(sigma2/tg.dxp(i)+nu)/ tg.dx(i);
-                Real pm = sigma2/(tg.dxm(i) * tg.dxp(i))+r;
-                L.setMidRow(i, pd,pm,pu);
-            }
+              Real pd = -(sigma2 / tg.dxm(i) - nu) / tg.dx(i);
+              Real pu = -(sigma2 / tg.dxp(i) + nu) / tg.dx(i);
+              Real pm = sigma2 / (tg.dxm(i) * tg.dxp(i)) + r;
+              L.setMidRow(i, pd, pm, pu);
+          }
         }
     };
 
@@ -62,16 +61,11 @@ namespace QuantLib {
             drift_ = pde.drift(t, x);
             discount_ = pde.discount(t, x);
         }
-        virtual Real diffusion(Time, Real) const {
-            return diffusion_;
-        }
-        virtual Real drift(Time, Real) const {
-            return drift_;
-        }
-        virtual Real discount(Time, Real) const {
-          return discount_;
-        }
-    private:
+        Real diffusion(Time, Real) const override { return diffusion_; }
+        Real drift(Time, Real) const override { return drift_; }
+        Real discount(Time, Real) const override { return discount_; }
+
+      private:
         Real diffusion_;
         Real drift_;
         Real discount_;
@@ -83,10 +77,10 @@ namespace QuantLib {
         template <class T>
         GenericTimeSetter(const Array &grid, T process) :
             grid_(grid), pde_(process) {}
-        void setTime(Time t,
-                     TridiagonalOperator &L) const {
+        void setTime(Time t, TridiagonalOperator& L) const override {
             pde_.generateOperator(t, grid_, L);
         }
+
     private:
         typename PdeClass::grid_type grid_;
         PdeClass pde_;

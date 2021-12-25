@@ -44,23 +44,19 @@ namespace QuantLib {
             bool localVol = false,
             Real illegalLocalVolOverwrite = -Null<Real>(),
             Size direction = 0,
-            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
-                = ext::shared_ptr<FdmQuantoHelper>());
+            ext::shared_ptr<FdmQuantoHelper> quantoHelper = ext::shared_ptr<FdmQuantoHelper>());
 
-        Size size() const;
-        void setTime(Time t1, Time t2);
+        Size size() const override;
+        void setTime(Time t1, Time t2) override;
 
-        Disposable<Array> apply(const Array& r) const;
-        Disposable<Array> apply_mixed(const Array& r) const;
-        Disposable<Array> apply_direction(Size direction,
-                                          const Array& r) const;
-        Disposable<Array> solve_splitting(Size direction,
-                                          const Array& r, Real s) const;
-        Disposable<Array> preconditioner(const Array& r, Real s) const;
+        Disposable<Array> apply(const Array& r) const override;
+        Disposable<Array> apply_mixed(const Array& r) const override;
+        Disposable<Array> apply_direction(Size direction, const Array& r) const override;
+        Disposable<Array> solve_splitting(Size direction, const Array& r, Real s) const override;
+        Disposable<Array> preconditioner(const Array& r, Real s) const override;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
-#endif
+        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const override;
+
       private:
         const ext::shared_ptr<FdmMesher> mesher_;
         const ext::shared_ptr<YieldTermStructure> rTS_, qTS_;

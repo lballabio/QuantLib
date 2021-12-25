@@ -37,9 +37,9 @@ namespace QuantLib {
     */
     class AnalyticPerformanceEngine : public CliquetOption::engine {
       public:
-        AnalyticPerformanceEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
-        void calculate() const;
+        AnalyticPerformanceEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        void calculate() const override;
+
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };

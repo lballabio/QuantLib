@@ -70,24 +70,18 @@ namespace QuantLib {
         std::vector<MarketModelDiscounter> productDiscounters;
         productDiscounters.reserve(n);
         for (i=0; i<n; ++i)
-            productDiscounters.push_back(
-                                     MarketModelDiscounter(cashFlowTimes[i],
-                                                           rateTimes));
+            productDiscounters.emplace_back(cashFlowTimes[i], rateTimes);
 
         n = rebateTimes.size();
         std::vector<MarketModelDiscounter> rebateDiscounters;
         rebateDiscounters.reserve(n);
         for (i=0; i<n; ++i)
-            rebateDiscounters.push_back(
-                                     MarketModelDiscounter(rebateTimes[i],
-                                                           rateTimes));
+            rebateDiscounters.emplace_back(rebateTimes[i], rateTimes);
         n = controlTimes.size();
         std::vector<MarketModelDiscounter> controlDiscounters;
         controlDiscounters.reserve(n);
         for (i=0; i<n; ++i)
-            controlDiscounters.push_back(
-                                     MarketModelDiscounter(controlTimes[i],
-                                                           rateTimes));
+            controlDiscounters.emplace_back(controlTimes[i], rateTimes);
 
         EvolutionDescription evolution = product.evolution();
         const std::vector<Size>& numeraires = evolver.numeraires();

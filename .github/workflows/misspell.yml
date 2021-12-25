@@ -1,6 +1,8 @@
 name: Misspell fixer
 on:
-  - push
+  push:
+    branches:
+      - '**'
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -11,6 +13,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: misspell-fixes-${{ github.ref }}
+        delete-branch: true
         commit-message: 'Fixes by misspell-fixer'
         title: 'Typos fixed by misspell-fixer'
         author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>

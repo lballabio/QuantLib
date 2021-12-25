@@ -34,14 +34,11 @@ namespace QuantLib {
     void HimalayaOption::setupArguments(PricingEngine::arguments* args) const {
         MultiAssetOption::setupArguments(args);
 
-        HimalayaOption::arguments* arguments =
-            dynamic_cast<HimalayaOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<HimalayaOption::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->fixingDates = fixingDates_;
     }
-
-    HimalayaOption::arguments::arguments() {}
 
     void HimalayaOption::arguments::validate() const {
         MultiAssetOption::arguments::validate();

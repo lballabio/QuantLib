@@ -35,8 +35,8 @@ namespace QuantLib {
         SimpleQuote(Real value = Null<Real>());
         //! \name Quote interface
         //@{
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
         //@}
         //! \name Modifiers
         //@{

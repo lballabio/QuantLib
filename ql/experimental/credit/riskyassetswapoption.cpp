@@ -17,19 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/event.hpp>
 #include <ql/experimental/credit/riskyassetswapoption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/event.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    RiskyAssetSwapOption::RiskyAssetSwapOption(
-                                 const ext::shared_ptr<RiskyAssetSwap>& asw,
-                                 const Date& expiry,
-                                 Rate marketSpread,
-                                 Volatility spreadVolatility)
-    : asw_(asw), expiry_(expiry),
-      marketSpread_(marketSpread),
+    RiskyAssetSwapOption::RiskyAssetSwapOption(ext::shared_ptr<RiskyAssetSwap> asw,
+                                               const Date& expiry,
+                                               Rate marketSpread,
+                                               Volatility spreadVolatility)
+    : asw_(std::move(asw)), expiry_(expiry), marketSpread_(marketSpread),
       spreadVolatility_(spreadVolatility) {}
 
     bool RiskyAssetSwapOption::isExpired() const {

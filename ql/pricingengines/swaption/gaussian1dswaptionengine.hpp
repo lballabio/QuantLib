@@ -25,8 +25,9 @@
 #define quantlib_pricers_gaussian1d_swaption_hpp
 
 #include <ql/instruments/swaption.hpp>
-#include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
+#include <ql/pricingengines/genericmodelengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -51,44 +52,40 @@ namespace QuantLib {
         };
 
         Gaussian1dSwaptionEngine(
-            const ext::shared_ptr<Gaussian1dModel> &model,
-            const int integrationPoints = 64, const Real stddevs = 7.0,
+            const ext::shared_ptr<Gaussian1dModel>& model,
+            const int integrationPoints = 64,
+            const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
-            const Handle<YieldTermStructure> &discountCurve =
-                Handle<YieldTermStructure>(),
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
             const Probabilities probabilities = None)
-            : GenericModelEngine<Gaussian1dModel, Swaption::arguments,
-                                 Swaption::results>(model),
-              integrationPoints_(integrationPoints), stddevs_(stddevs),
-              extrapolatePayoff_(extrapolatePayoff),
-              flatPayoffExtrapolation_(flatPayoffExtrapolation),
-              discountCurve_(discountCurve), probabilities_(probabilities) {
+        : GenericModelEngine<Gaussian1dModel, Swaption::arguments, Swaption::results>(model),
+          integrationPoints_(integrationPoints), stddevs_(stddevs),
+          extrapolatePayoff_(extrapolatePayoff), flatPayoffExtrapolation_(flatPayoffExtrapolation),
+          discountCurve_(std::move(discountCurve)), probabilities_(probabilities) {
 
             if (!discountCurve_.empty())
                 registerWith(discountCurve_);
         }
 
         Gaussian1dSwaptionEngine(
-            const Handle<Gaussian1dModel> &model,
-            const int integrationPoints = 64, const Real stddevs = 7.0,
+            const Handle<Gaussian1dModel>& model,
+            const int integrationPoints = 64,
+            const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
-            const Handle<YieldTermStructure> &discountCurve =
-                Handle<YieldTermStructure>(),
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
             const Probabilities probabilities = None)
-            : GenericModelEngine<Gaussian1dModel, Swaption::arguments,
-                                 Swaption::results>(model),
-              integrationPoints_(integrationPoints), stddevs_(stddevs),
-              extrapolatePayoff_(extrapolatePayoff),
-              flatPayoffExtrapolation_(flatPayoffExtrapolation),
-              discountCurve_(discountCurve), probabilities_(probabilities) {
+        : GenericModelEngine<Gaussian1dModel, Swaption::arguments, Swaption::results>(model),
+          integrationPoints_(integrationPoints), stddevs_(stddevs),
+          extrapolatePayoff_(extrapolatePayoff), flatPayoffExtrapolation_(flatPayoffExtrapolation),
+          discountCurve_(std::move(discountCurve)), probabilities_(probabilities) {
 
             if (!discountCurve_.empty())
                 registerWith(discountCurve_);
         }
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const int integrationPoints_;

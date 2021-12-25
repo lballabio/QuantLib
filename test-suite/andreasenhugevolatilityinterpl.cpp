@@ -19,7 +19,6 @@
 
 #include "andreasenhugevolatilityinterpl.hpp"
 #include "utilities.hpp"
-
 #include <ql/math/comparison.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/interpolations/sabrinterpolation.hpp>
@@ -40,9 +39,7 @@
 #include <ql/termstructures/volatility/equityfx/andreasenhugelocalvoladapter.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityinterpl.hpp>
 #include <ql/termstructures/volatility/equityfx/andreasenhugevolatilityadapter.hpp>
-
-#include <boost/assign/std/vector.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <cmath>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -124,15 +121,15 @@ namespace andreasen_huge_volatility_interpl_test {
             &raw[0][0], &raw[nStrikes-1][nMaturities]+1,
             not_zero<Real>()) - nStrikes);
 
-        for (Size i=0; i < LENGTH(raw); ++i) {
-            const Real strike = spot->value()*raw[i][0];
+        for (const auto & i : raw) {
+            const Real strike = spot->value()*i[0];
 
-            for (Size j=1; j < LENGTH(raw[i]); ++j)
-                if (raw[i][j] > QL_EPSILON) {
+            for (Size j=1; j < LENGTH(i); ++j) {
+                if (i[j] > QL_EPSILON) {
                     const Date maturity
                         = today + Period(Size(365*maturityTimes[j-1]), Days);
 
-                    const Volatility impliedVol = raw[i][j];
+                    const Volatility impliedVol = i[j];
 
                     calibrationSet.push_back(std::make_pair(
                         ext::make_shared<VanillaOption>(
@@ -144,11 +141,10 @@ namespace andreasen_huge_volatility_interpl_test {
                         ext::make_shared<SimpleQuote>(impliedVol))
                     );
                 }
+            }
         }
 
-        const CalibrationData data = { spot, rTS, qTS, calibrationSet};
-
-        return data;
+        return { spot, rTS, qTS, calibrationSet };
     }
 
     void testAndreasenHugeVolatilityInterpolation(
@@ -289,12 +285,9 @@ namespace andreasen_huge_volatility_interpl_test {
 
         AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
 
-        for (Size i=0; i < LENGTH(strikes); ++i) {
-            const Real strike = strikes[i];
-
-            for (Size j=0; j < LENGTH(maturityMonths); ++j) {
-                const Date maturityDate = today +
-                    Period(maturityMonths[j], Months);
+        for (double strike : strikes) {
+            for (unsigned long maturityMonth : maturityMonths) {
+                const Date maturityDate = today + Period(maturityMonth, Months);
                 const Time t = dc.yearFraction(today, maturityDate);
 
                 const Real fwd = spot->value()*qTS->discount(t)/rTS->discount(t);
@@ -314,7 +307,7 @@ namespace andreasen_huge_volatility_interpl_test {
             }
         }
 
-        const CalibrationData data = { spot, rTS, qTS, calibrationSet};
+        CalibrationData data = { spot, rTS, qTS, calibrationSet };
 
         return data;
     }
@@ -348,9 +341,7 @@ namespace andreasen_huge_volatility_interpl_test {
                 ext::make_shared<SimpleQuote>(vol)));
         }
 
-        const CalibrationData data = { spot, rTS, qTS, calibrationSet};
-
-        return data;
+        return { spot, rTS, qTS, calibrationSet };
     }
 }
 
@@ -465,16 +456,19 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
     const Date today = data.rTS->referenceDate();
     Settings::instance().evaluationDate() = today;
 
-    using namespace boost::assign;
-    std::vector<Real> r, q;
-    r += 0.0167, 0.023, 0.03234, 0.034, 0.038, 0.042, 0.047, 0.053;
-    q += 0.01, 0.011, 0.013, 0.014, 0.02, 0.025, 0.067, 0.072;
+    std::vector<Real> r = { 0.0167, 0.023, 0.03234, 0.034, 0.038, 0.042, 0.047, 0.053 };
+    std::vector<Real> q = { 0.01, 0.011, 0.013, 0.014, 0.02, 0.025, 0.067, 0.072 };
 
-    std::vector<Date> dates;
-    dates += today,                     today + Period(41, Days),
-             today + Period(75, Days),  today + Period(165, Days),
-             today + Period(256, Days), today + Period(345, Days),
-             today + Period(524, Days), today + Period(2190, Days);
+    std::vector<Date> dates = {
+        today,
+        today + Period(41, Days),
+        today + Period(75, Days),
+        today + Period(165, Days),
+        today + Period(256, Days),
+        today + Period(345, Days),
+        today + Period(524, Days),
+        today + Period(2190, Days)
+    };
 
     const Handle<YieldTermStructure> rTS(
         ext::make_shared<ZeroCurve>(dates, r, dc));
@@ -498,9 +492,8 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
             AnalyticHestonEngine::AndersenPiterbarg,
             AnalyticHestonEngine::Integration::discreteTrapezoid(128)));
 
-    for (Size i=0; i < calibrationSet.size(); ++i) {
-        const ext::shared_ptr<VanillaOption> option =
-            calibrationSet[i].first;
+    for (auto& i : calibrationSet) {
+        const ext::shared_ptr<VanillaOption> option = i.first;
 
         const ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(option->payoff());
@@ -520,7 +513,7 @@ void AndreasenHugeVolatilityInterplTest::testTimeDependentInterestRates() {
             optionType, strike, fwd, npv,
             discount, 0.0, Null<Real>(), 1.0, 1e-12)/std::sqrt(t);
 
-        calibrationSet[i].second = ext::make_shared<SimpleQuote>(impliedVol);
+        i.second = ext::make_shared<SimpleQuote>(impliedVol);
     }
 
     CalibrationData irData = { spot, rTS, qTS, calibrationSet };
@@ -573,13 +566,11 @@ void AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration() {
         AndreasenHugeVolatilityInterpl::CallPut
     };
 
-    for (Size i=0; i < LENGTH(interpl); ++i)
-        for (Size j=0; j < LENGTH(calibrationType); ++j) {
-            const ext::shared_ptr<AndreasenHugeVolatilityInterpl>
-                andreasenHugeVolInterplation(
-                    ext::make_shared<AndreasenHugeVolatilityInterpl>(
-                        calibrationSet, spot, rTS, qTS,
-                        interpl[i], calibrationType[j], 50));
+    for (auto i : interpl)
+        for (auto j : calibrationType) {
+            const ext::shared_ptr<AndreasenHugeVolatilityInterpl> andreasenHugeVolInterplation(
+                ext::make_shared<AndreasenHugeVolatilityInterpl>(calibrationSet, spot, rTS, qTS, i,
+                                                                 j, 50));
 
             const ext::shared_ptr<AndreasenHugeVolatilityAdapter>
                 volatilityAdapter =
@@ -609,13 +600,12 @@ void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
 
     CalibrationData data[] = { BorovkovaExampleData(), arbitrageData() };;
 
-    for (Size i=0; i < LENGTH(data); ++i) {
-        const Handle<Quote>& spot = data[i].spot;
-        const AndreasenHugeVolatilityInterpl::CalibrationSet& calibrationSet =
-            data[i].calibrationSet;
+    for (auto& i : data) {
+        const Handle<Quote>& spot = i.spot;
+        const AndreasenHugeVolatilityInterpl::CalibrationSet& calibrationSet = i.calibrationSet;
 
-        const Handle<YieldTermStructure>& rTS = data[i].rTS;
-        const Handle<YieldTermStructure>& qTS = data[i].qTS;
+        const Handle<YieldTermStructure>& rTS = i.rTS;
+        const Handle<YieldTermStructure>& qTS = i.qTS;
 
         const DayCounter dc = rTS->dayCounter();
         const Date today = rTS->referenceDate();
@@ -723,11 +713,9 @@ void AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing() {
 
     AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
 
-    for (Size i=0; i < LENGTH(strikes); ++i) {
-        const Real strike = strikes[i];
-
-        for (Size j=0; j < LENGTH(maturityMonths); ++j) {
-            const Date maturityDate = today + Period(maturityMonths[j], Months);
+    for (double strike : strikes) {
+        for (unsigned long maturityMonth : maturityMonths) {
+            const Date maturityDate = today + Period(maturityMonth, Months);
             const Time t = dc.yearFraction(today, maturityDate);
 
             const Volatility vol = hestonVol->blackVol(t, strike);
@@ -818,10 +806,8 @@ namespace andreasen_huge_volatility_interpl_test {
 
         const Real strikes[] = { 0.02, 0.025, 0.03, 0.035, 0.04, 0.05, 0.06 };
 
-        for (Size i=0; i < LENGTH(strikes); ++i) {
-            const Real strike = strikes[i];
-            const Volatility vol = sabrVolatility(
-               strike, forward, maturity, alpha, beta, nu, rho);
+        for (double strike : strikes) {
+            const Volatility vol = sabrVolatility(strike, forward, maturity, alpha, beta, nu, rho);
 
             calibrationSet.push_back(std::make_pair(
                 ext::make_shared<VanillaOption>(
@@ -838,9 +824,7 @@ namespace andreasen_huge_volatility_interpl_test {
 
         const CalibrationData data = { spot, rTS, qTS, calibrationSet};
 
-        using namespace boost::assign;
-        std::vector<Real> parameter;
-        parameter += alpha, beta, nu, rho, forward, maturity;
+        std::vector<Real> parameter = { alpha, beta, nu, rho, forward, maturity };
 
         return std::make_pair(data, parameter);
     }
@@ -885,7 +869,7 @@ void AndreasenHugeVolatilityInterplTest::testPeterAndFabiensExample() {
         const Real tol = 0.0005;
         const Real diff = std::fabs(sabrVol - ahVol);
 
-        if (boost::math::isnan(ahVol) || diff > 0.005) {
+        if (std::isnan(ahVol) || diff > 0.005) {
             BOOST_FAIL("failed to reproduce SABR volatility with "
                     "Andreasen-Huge interpolation"
                    << "\n    Andreasen-Huge vol: " << ahVol
@@ -911,21 +895,15 @@ void AndreasenHugeVolatilityInterplTest::testDifferentOptimizers() {
         ext::make_shared<Simplex>(0.2)
     };
 
-    for (Size i=0; i < LENGTH(optimizationMethods); ++i) {
-        const ext::shared_ptr<OptimizationMethod> optimizationMethod =
-            optimizationMethods[i];
+    for (const auto& optimizationMethod : optimizationMethods) {
+        const Real avgError = ext::get<2>(
+            AndreasenHugeVolatilityInterpl(data.calibrationSet, data.spot, data.rTS, data.qTS,
+                                           AndreasenHugeVolatilityInterpl::CubicSpline,
+                                           AndreasenHugeVolatilityInterpl::Call, 400, Null<Real>(),
+                                           Null<Real>(), optimizationMethod)
+                .calibrationError());
 
-        const Real avgError = ext::get<2>(AndreasenHugeVolatilityInterpl(
-            data.calibrationSet,
-            data.spot,
-            data.rTS, data.qTS,
-            AndreasenHugeVolatilityInterpl::CubicSpline,
-            AndreasenHugeVolatilityInterpl::Call,
-            400,
-            Null<Real>(), Null<Real>(),
-            optimizationMethod).calibrationError());
-
-        if (boost::math::isnan(avgError) || avgError > 0.0001) {
+        if (std::isnan(avgError) || avgError > 0.0001) {
             BOOST_FAIL("failed to calibrate Andreasen-Huge "
                     "volatility interpolation with different optimizera"
                    << "\n    calibration error: " << avgError);
@@ -1039,17 +1017,15 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
     const ext::shared_ptr<Quote> vol = ext::make_shared<SimpleQuote>(0.18);
 
     AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
-    for (Size i=0; i < LENGTH(expiries); ++i) {
+    for (auto expiry : expiries) {
 
-        const Date expiry = expiries[i];
-        const ext::shared_ptr<Exercise> exercise =
-            ext::make_shared<EuropeanExercise>(expiry);
+        const ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(expiry);
 
         const Time t = rTS->timeFromReference(expiry);
         const Real fwd = spot->value() / rTS->discount(t) * qTS->discount(t);
 
-        for (Size j=0; j < LENGTH(moneyness); ++j) {
-            const Real strike = fwd * moneyness[j];
+        for (double m : moneyness) {
+            const Real strike = fwd * m;
             const Real mn = std::log(fwd/strike)/std::sqrt(t);
 
             if (std::fabs(mn) < 3.72*vol->value()) {
@@ -1078,8 +1054,7 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
 
 
 test_suite* AndreasenHugeVolatilityInterplTest::suite(SpeedLevel speed) {
-    test_suite* suite =
-        BOOST_TEST_SUITE("Andreasen-Huge volatility interpolation tests");
+    auto* suite = BOOST_TEST_SUITE("Andreasen-Huge volatility interpolation tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &AndreasenHugeVolatilityInterplTest::testSingleOptionCalibration));

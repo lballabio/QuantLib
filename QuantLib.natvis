@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- https://github.com/boostorg/date_time/blob/6015e3039114c0f2ba456e00dd50404e3fb88275/include/boost/date_time/gregorian_calendar.ipp#L108-L126 -->
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="QuantLib::Date">
+    <Intrinsic Name="_a"          Expression="serialNumber_+32044+2415019"/>
+    <Intrinsic Name="_b"          Expression="(4*_a()+3)/146097"/>
+    <Intrinsic Name="_c"          Expression="_a()-((146097*_b())/4)"/>
+    <Intrinsic Name="_d"          Expression="(4*_c()+3)/1461"/>
+    <Intrinsic Name="_e"          Expression="_c()-(1461*_d())/4"/>
+    <Intrinsic Name="_m"          Expression="(5*_e()+2)/153"/>
+    <Intrinsic Name="day"         Expression="_e()-((153*_m()+2)/5)+1"/>
+    <Intrinsic Name="day_tens"    Expression="day()/10"/>
+    <Intrinsic Name="day_units"   Expression="day()%10"/>
+    <Intrinsic Name="month"       Expression="_m()+3-12*(_m()/10)"/>
+    <Intrinsic Name="month_tens"  Expression="month()/10"/>
+    <Intrinsic Name="month_units" Expression="month()%10"/>
+    <Intrinsic Name="year"        Expression="100*_b()+_d()-4800+(_m()/10)"/>
+    <DisplayString>{year()}-{month_tens()}{month_units()}-{day_tens()}{day_units()}</DisplayString>
+    <Expand>
+      <Synthetic Name="[year]">
+        <DisplayString>{year()}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[month]">
+        <DisplayString>{month_tens()}{month_units()}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="[day]">
+        <DisplayString>{day_tens()}{day_units()}</DisplayString>
+      </Synthetic>
+    </Expand>
+  </Type>
+
+  <Type Name="QuantLib::Array">
+    <DisplayString Condition="n_ == 0">{{size={n_} data=[]}}</DisplayString>
+    <DisplayString Condition="n_ == 1">{{size={n_} data=[{data_[0]}]}}</DisplayString>
+    <DisplayString Condition="n_ == 2">{{size={n_} data=[{data_[0]}, {data_[1]}]}}</DisplayString>
+    <DisplayString Condition="n_ == 3">{{size={n_} data=[{data_[0]}, {data_[1]}, {data_[2]}]}}</DisplayString>
+    <DisplayString Condition="n_ == 4">{{size={n_} data=[{data_[0]}, {data_[1]}, {data_[2]}, {data_[3]}]}}</DisplayString>
+    <DisplayString Condition="n_ >= 5">{{size={n_} data=[{data_[0]}, {data_[1]}, {data_[2]}, {data_[3]}, {data_[4]},...]}}</DisplayString>
+    <Expand>
+      <Synthetic Name="[size]">
+        <DisplayString>{n_}</DisplayString>
+      </Synthetic>
+      <ArrayItems Condition="data_.px != 0">
+          <Size>n_</Size>
+          <ValuePointer>data_.px</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <Type Name="QuantLib::Period">
+    <DisplayString>{length_} {units_,en}</DisplayString>
+  </Type>
+
+  <Type Name="QuantLib::InterestRate">
+    <DisplayString Condition="freqMakesSense_">{r_*100}% {comp_,en} {(Frequency)freq_,en}</DisplayString>
+    <DisplayString Condition="!freqMakesSense_">{r_*100}% {comp_,en}</DisplayString>
+  </Type>
+
+  <Type Name="QuantLib::InterestRateIndex">
+    <DisplayString>{familyName_} {{{tenor_}}}</DisplayString>
+  </Type>
+</AutoVisualizer>

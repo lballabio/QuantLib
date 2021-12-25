@@ -49,7 +49,7 @@ namespace QuantLib {
         Real lambda() const { return arguments_[7](0.0); }
 
       protected:
-        void generateArguments();
+        void generateArguments() override;
     };
 
 

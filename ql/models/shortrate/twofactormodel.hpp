@@ -25,8 +25,9 @@
 #ifndef quantlib_two_factor_model_hpp
 #define quantlib_two_factor_model_hpp
 
-#include <ql/models/model.hpp>
 #include <ql/methods/lattices/lattice2d.hpp>
+#include <ql/models/model.hpp>
+#include <utility>
 
 namespace QuantLib {
     class StochasticProcess1D;
@@ -44,8 +45,7 @@ namespace QuantLib {
         virtual ext::shared_ptr<ShortRateDynamics> dynamics() const = 0;
 
         //! Returns a two-dimensional trinomial tree
-        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
-
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
     };
 
     //! Class describing the dynamics of the two state variables
@@ -71,13 +71,12 @@ namespace QuantLib {
     */
     class TwoFactorModel::ShortRateDynamics {
       public:
-        ShortRateDynamics(
-                       const ext::shared_ptr<StochasticProcess1D>& xProcess,
-                       const ext::shared_ptr<StochasticProcess1D>& yProcess,
-                       Real correlation)
-        : xProcess_(xProcess), yProcess_(yProcess),
+        ShortRateDynamics(ext::shared_ptr<StochasticProcess1D> xProcess,
+                          ext::shared_ptr<StochasticProcess1D> yProcess,
+                          Real correlation)
+        : xProcess_(std::move(xProcess)), yProcess_(std::move(yProcess)),
           correlation_(correlation) {}
-        virtual ~ShortRateDynamics() {}
+        virtual ~ShortRateDynamics() = default;
 
         virtual Rate shortRate(Time t, Real x, Real y) const = 0;
 

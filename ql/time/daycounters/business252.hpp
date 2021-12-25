@@ -40,14 +40,11 @@ namespace QuantLib {
           private:
             Calendar calendar_;
           public:
-            std::string name() const;
-            Date::serial_type dayCount(const Date& d1,
-                                       const Date& d2) const;
-            Time yearFraction(const Date& d1,
-                              const Date& d2,
-                              const Date&,
-                              const Date&) const;
-            explicit Impl(const Calendar& c) : calendar_(c) {}
+            std::string name() const override;
+            Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
+            Time
+            yearFraction(const Date& d1, const Date& d2, const Date&, const Date&) const override;
+            explicit Impl(Calendar c) : calendar_(std::move(c)) {}
         };
       public:
         Business252(const Calendar& c = Brazil())

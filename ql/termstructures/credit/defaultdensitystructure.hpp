@@ -78,7 +78,7 @@ namespace QuantLib {
                      Derived classes should override it if a more efficient
                      implementation is available.
         */
-        Probability survivalProbabilityImpl(Time) const;
+        Probability survivalProbabilityImpl(Time) const override;
         //@}
     };
 

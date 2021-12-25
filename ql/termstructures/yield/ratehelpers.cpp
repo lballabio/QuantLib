@@ -23,19 +23,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/yield/ratehelpers.hpp>
-#include <ql/time/imm.hpp>
-#include <ql/time/asx.hpp>
-#include <ql/time/calendars/unitedstates.hpp>
-#include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/currency.hpp>
+#include <ql/indexes/swapindex.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/quote.hpp>
-#include <ql/currency.hpp>
-#include <ql/indexes/swapindex.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/termstructures/yield/ratehelpers.hpp>
+#include <ql/time/asx.hpp>
+#include <ql/time/calendars/jointcalendar.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/utilities/null_deleter.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -46,9 +46,9 @@ namespace QuantLib {
                                          BusinessDayConvention convention,
                                          bool endOfMonth,
                                          const DayCounter& dayCounter,
-                                         const Handle<Quote>& convAdj,
+                                         Handle<Quote> convAdj,
                                          Futures::Type type)
-    : RateHelper(price), convAdj_(convAdj) {
+    : RateHelper(price), convAdj_(std::move(convAdj)) {
         switch (type) {
           case Futures::IMM:
             QL_REQUIRE(IMM::isIMMdate(iborStartDate, false),
@@ -105,9 +105,9 @@ namespace QuantLib {
                                          const Date& iborStartDate,
                                          const Date& iborEndDate,
                                          const DayCounter& dayCounter,
-                                         const Handle<Quote>& convAdj,
+                                         Handle<Quote> convAdj,
                                          Futures::Type type)
-    : RateHelper(price), convAdj_(convAdj) {
+    : RateHelper(price), convAdj_(std::move(convAdj)) {
         switch (type) {
           case Futures::IMM:
             QL_REQUIRE(IMM::isIMMdate(iborStartDate, false),
@@ -194,7 +194,7 @@ namespace QuantLib {
                            "end date (" << iborEndDate <<
                            ") must be greater than start date (" <<
                            iborStartDate << ")");
-                latestRelevantDate_ = iborEndDate;
+                maturityDate_ = iborEndDate;
             }
             break;
           default:
@@ -264,7 +264,7 @@ namespace QuantLib {
     }
 
     Real FuturesRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         Rate forwardRate = (termStructure_->discount(earliestDate_) /
             termStructure_->discount(maturityDate_) - 1.0) / yearFraction_;
         Rate convAdj = convAdj_.empty() ? 0.0 : convAdj_->value();
@@ -280,9 +280,8 @@ namespace QuantLib {
     }
 
     void FuturesRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<FuturesRateHelper>* v1 =
-            dynamic_cast<Visitor<FuturesRateHelper>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<FuturesRateHelper>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             RateHelper::accept(v);
@@ -333,7 +332,7 @@ namespace QuantLib {
     }
 
     Real DepositRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         // the forecast fixing flag is set to true because
         // we do not want to take fixing into account
         return iborIndex_->fixing(fixingDate_, true);
@@ -362,9 +361,8 @@ namespace QuantLib {
     }
 
     void DepositRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<DepositRateHelper>* v1 =
-            dynamic_cast<Visitor<DepositRateHelper>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<DepositRateHelper>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             RateHelper::accept(v);
@@ -582,7 +580,7 @@ namespace QuantLib {
     }
 
     Real FraRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         if (useIndexedCoupon_)
             return iborIndex_->fixing(fixingDate_, true);
         else
@@ -671,9 +669,8 @@ namespace QuantLib {
     }
 
     void FraRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<FraRateHelper>* v1 =
-            dynamic_cast<Visitor<FraRateHelper>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<FraRateHelper>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             RateHelper::accept(v);
@@ -682,21 +679,19 @@ namespace QuantLib {
 
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    const ext::shared_ptr<SwapIndex>& swapIndex,
-                                   const Handle<Quote>& spread,
+                                   Handle<Quote> spread,
                                    const Period& fwdStart,
-                                   const Handle<YieldTermStructure>& discount,
+                                   Handle<YieldTermStructure> discount,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
-                                   bool endOfMonth)
-    : RelativeDateRateHelper(rate),
-      settlementDays_(Null<Natural>()),
-      tenor_(swapIndex->tenor()), pillarChoice_(pillarChoice),
-      calendar_(swapIndex->fixingCalendar()),
+                                   bool endOfMonth,
+                                   const boost::optional<bool>& useIndexedCoupons)
+    : RelativeDateRateHelper(rate), settlementDays_(Null<Natural>()), tenor_(swapIndex->tenor()),
+      pillarChoice_(pillarChoice), calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
-      fixedDayCount_(swapIndex->dayCounter()),
-      spread_(spread), endOfMonth_(endOfMonth),
-      fwdStart_(fwdStart), discountHandle_(discount) {
+      fixedDayCount_(swapIndex->dayCounter()), spread_(std::move(spread)), endOfMonth_(endOfMonth),
+      fwdStart_(fwdStart), discountHandle_(std::move(discount)), useIndexedCoupons_(useIndexedCoupons) {
         // take fixing into account
         iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
         // We want to be notified of changes of fixings, but we don't
@@ -714,27 +709,25 @@ namespace QuantLib {
 
     SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
                                    const Period& tenor,
-                                   const Calendar& calendar,
+                                   Calendar calendar,
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
-                                   const DayCounter& fixedDayCount,
+                                   DayCounter fixedDayCount,
                                    const ext::shared_ptr<IborIndex>& iborIndex,
-                                   const Handle<Quote>& spread,
+                                   Handle<Quote> spread,
                                    const Period& fwdStart,
-                                   const Handle<YieldTermStructure>& discount,
+                                   Handle<YieldTermStructure> discount,
                                    Natural settlementDays,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
-                                   bool endOfMonth)
-    : RelativeDateRateHelper(rate),
-      settlementDays_(settlementDays),
-      tenor_(tenor), pillarChoice_(pillarChoice),
-      calendar_(calendar),
-      fixedConvention_(fixedConvention),
-      fixedFrequency_(fixedFrequency),
-      fixedDayCount_(fixedDayCount),
-      spread_(spread), endOfMonth_(endOfMonth),
-      fwdStart_(fwdStart), discountHandle_(discount) {
+                                   bool endOfMonth,
+                                   const boost::optional<bool>& useIndexedCoupons)
+    : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
+      pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
+      fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
+      fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
+      fwdStart_(fwdStart), discountHandle_(std::move(discount)),
+      useIndexedCoupons_(useIndexedCoupons) {
 
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
@@ -753,21 +746,20 @@ namespace QuantLib {
 
     SwapRateHelper::SwapRateHelper(Rate rate,
                                    const ext::shared_ptr<SwapIndex>& swapIndex,
-                                   const Handle<Quote>& spread,
+                                   Handle<Quote> spread,
                                    const Period& fwdStart,
-                                   const Handle<YieldTermStructure>& discount,
+                                   Handle<YieldTermStructure> discount,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
-                                   bool endOfMonth)
-    : RelativeDateRateHelper(rate),
-      settlementDays_(Null<Natural>()),
-      tenor_(swapIndex->tenor()), pillarChoice_(pillarChoice),
-      calendar_(swapIndex->fixingCalendar()),
+                                   bool endOfMonth,
+                                   const boost::optional<bool>& useIndexedCoupons)
+    : RelativeDateRateHelper(rate), settlementDays_(Null<Natural>()), tenor_(swapIndex->tenor()),
+      pillarChoice_(pillarChoice), calendar_(swapIndex->fixingCalendar()),
       fixedConvention_(swapIndex->fixedLegConvention()),
       fixedFrequency_(swapIndex->fixedLegTenor().frequency()),
-      fixedDayCount_(swapIndex->dayCounter()),
-      spread_(spread), endOfMonth_(endOfMonth),
-      fwdStart_(fwdStart), discountHandle_(discount) {
+      fixedDayCount_(swapIndex->dayCounter()), spread_(std::move(spread)), endOfMonth_(endOfMonth),
+      fwdStart_(fwdStart), discountHandle_(std::move(discount)),
+      useIndexedCoupons_(useIndexedCoupons) {
         // take fixing into account
         iborIndex_ = swapIndex->iborIndex()->clone(termStructureHandle_);
         // We want to be notified of changes of fixings, but we don't
@@ -785,27 +777,25 @@ namespace QuantLib {
 
     SwapRateHelper::SwapRateHelper(Rate rate,
                                    const Period& tenor,
-                                   const Calendar& calendar,
+                                   Calendar calendar,
                                    Frequency fixedFrequency,
                                    BusinessDayConvention fixedConvention,
-                                   const DayCounter& fixedDayCount,
+                                   DayCounter fixedDayCount,
                                    const ext::shared_ptr<IborIndex>& iborIndex,
-                                   const Handle<Quote>& spread,
+                                   Handle<Quote> spread,
                                    const Period& fwdStart,
-                                   const Handle<YieldTermStructure>& discount,
+                                   Handle<YieldTermStructure> discount,
                                    Natural settlementDays,
                                    Pillar::Choice pillarChoice,
                                    Date customPillarDate,
-                                   bool endOfMonth)
-    : RelativeDateRateHelper(rate),
-      settlementDays_(settlementDays),
-      tenor_(tenor), pillarChoice_(pillarChoice),
-      calendar_(calendar),
-      fixedConvention_(fixedConvention),
-      fixedFrequency_(fixedFrequency),
-      fixedDayCount_(fixedDayCount),
-      spread_(spread), endOfMonth_(endOfMonth),
-      fwdStart_(fwdStart), discountHandle_(discount) {
+                                   bool endOfMonth,
+                                   const boost::optional<bool>& useIndexedCoupons)
+    : RelativeDateRateHelper(rate), settlementDays_(settlementDays), tenor_(tenor),
+      pillarChoice_(pillarChoice), calendar_(std::move(calendar)),
+      fixedConvention_(fixedConvention), fixedFrequency_(fixedFrequency),
+      fixedDayCount_(std::move(fixedDayCount)), spread_(std::move(spread)), endOfMonth_(endOfMonth),
+      fwdStart_(fwdStart), discountHandle_(std::move(discount)),
+      useIndexedCoupons_(useIndexedCoupons) {
 
         // take fixing into account
         iborIndex_ = iborIndex->clone(termStructureHandle_);
@@ -838,7 +828,8 @@ namespace QuantLib {
             .withFixedLegCalendar(calendar_)
             .withFixedLegEndOfMonth(endOfMonth_)
             .withFloatingLegCalendar(calendar_)
-            .withFloatingLegEndOfMonth(endOfMonth_);
+            .withFloatingLegEndOfMonth(endOfMonth_)
+            .withIndexedCoupons(useIndexedCoupons_);
 
         earliestDate_ = swap_->startDate();
         maturityDate_ = swap_->maturityDate();
@@ -890,7 +881,7 @@ namespace QuantLib {
     }
 
     Real SwapRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->recalculate();
         // weak implementation... to be improved
@@ -904,34 +895,28 @@ namespace QuantLib {
     }
 
     void SwapRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<SwapRateHelper>* v1 =
-            dynamic_cast<Visitor<SwapRateHelper>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<SwapRateHelper>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             RateHelper::accept(v);
     }
 
-    BMASwapRateHelper::BMASwapRateHelper(
-                          const Handle<Quote>& liborFraction,
-                          const Period& tenor,
-                          Natural settlementDays,
-                          const Calendar& calendar,
-                          // bma leg
-                          const Period& bmaPeriod,
-                          BusinessDayConvention bmaConvention,
-                          const DayCounter& bmaDayCount,
-                          const ext::shared_ptr<BMAIndex>& bmaIndex,
-                          // libor leg
-                          const ext::shared_ptr<IborIndex>& iborIndex)
-    : RelativeDateRateHelper(liborFraction),
-      tenor_(tenor), settlementDays_(settlementDays),
-      calendar_(calendar),
-      bmaPeriod_(bmaPeriod),
-      bmaConvention_(bmaConvention),
-      bmaDayCount_(bmaDayCount),
-      bmaIndex_(bmaIndex),
-      iborIndex_(iborIndex) {
+    BMASwapRateHelper::BMASwapRateHelper(const Handle<Quote>& liborFraction,
+                                         const Period& tenor,
+                                         Natural settlementDays,
+                                         Calendar calendar,
+                                         // bma leg
+                                         const Period& bmaPeriod,
+                                         BusinessDayConvention bmaConvention,
+                                         DayCounter bmaDayCount,
+                                         ext::shared_ptr<BMAIndex> bmaIndex,
+                                         // libor leg
+                                         ext::shared_ptr<IborIndex> iborIndex)
+    : RelativeDateRateHelper(liborFraction), tenor_(tenor), settlementDays_(settlementDays),
+      calendar_(std::move(calendar)), bmaPeriod_(bmaPeriod), bmaConvention_(bmaConvention),
+      bmaDayCount_(std::move(bmaDayCount)), bmaIndex_(std::move(bmaIndex)),
+      iborIndex_(std::move(iborIndex)) {
         registerWith(iborIndex_);
         registerWith(bmaIndex_);
         initializeDates();
@@ -966,15 +951,15 @@ namespace QuantLib {
                           .endOfMonth(iborIndex_->endOfMonth())
                           .backwards();
 
-        swap_ = ext::shared_ptr<BMASwap>(new BMASwap(BMASwap::Payer, 100.0,
-                                                liborSchedule,
-                                                0.75, // arbitrary
-                                                0.0,
-                                                iborIndex_,
-                                                iborIndex_->dayCounter(),
-                                                bmaSchedule,
-                                                clonedIndex,
-                                                bmaDayCount_));
+        swap_ = ext::make_shared<BMASwap>(Swap::Payer, 100.0,
+                                          liborSchedule,
+                                          0.75, // arbitrary
+                                          0.0,
+                                          iborIndex_,
+                                          iborIndex_->dayCounter(),
+                                          bmaSchedule,
+                                          clonedIndex,
+                                          bmaDayCount_);
         swap_->setPricingEngine(ext::shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(iborIndex_->forwardingTermStructure())));
 
@@ -999,36 +984,34 @@ namespace QuantLib {
     }
 
     Real BMASwapRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->recalculate();
         return swap_->fairLiborFraction();
     }
 
     void BMASwapRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<BMASwapRateHelper>* v1 =
-            dynamic_cast<Visitor<BMASwapRateHelper>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<BMASwapRateHelper>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             RateHelper::accept(v);
     }
 
     FxSwapRateHelper::FxSwapRateHelper(const Handle<Quote>& fwdPoint,
-                                       const Handle<Quote>& spotFx,
+                                       Handle<Quote> spotFx,
                                        const Period& tenor,
                                        Natural fixingDays,
-                                       const Calendar& calendar,
+                                       Calendar calendar,
                                        BusinessDayConvention convention,
                                        bool endOfMonth,
                                        bool isFxBaseCurrencyCollateralCurrency,
-                                       const Handle<YieldTermStructure>& coll,
-                                       const Calendar& tradingCalendar)
-    : RelativeDateRateHelper(fwdPoint), spot_(spotFx), tenor_(tenor),
-      fixingDays_(fixingDays), cal_(calendar), conv_(convention),
-      eom_(endOfMonth),
+                                       Handle<YieldTermStructure> coll,
+                                       Calendar tradingCalendar)
+    : RelativeDateRateHelper(fwdPoint), spot_(std::move(spotFx)), tenor_(tenor),
+      fixingDays_(fixingDays), cal_(std::move(calendar)), conv_(convention), eom_(endOfMonth),
       isFxBaseCurrencyCollateralCurrency_(isFxBaseCurrencyCollateralCurrency),
-      collHandle_(coll), tradingCalendar_(tradingCalendar) {
+      collHandle_(std::move(coll)), tradingCalendar_(std::move(tradingCalendar)) {
         registerWith(spot_);
         registerWith(collHandle_);
 
@@ -1057,7 +1040,7 @@ namespace QuantLib {
     }
 
     Real FxSwapRateHelper::impliedQuote() const {
-        QL_REQUIRE(termStructure_ != 0, "term structure not set");
+        QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
 
         QL_REQUIRE(!collHandle_.empty(), "collateral term structure not set");
 
@@ -1089,9 +1072,8 @@ namespace QuantLib {
     }
 
     void FxSwapRateHelper::accept(AcyclicVisitor& v) {
-        Visitor<FxSwapRateHelper>* v1 =
-            dynamic_cast<Visitor<FxSwapRateHelper>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<FxSwapRateHelper>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             RateHelper::accept(v);

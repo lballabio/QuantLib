@@ -54,27 +54,21 @@ namespace QuantLib {
         };
 
         // Standard constructor delta vs vol.
-        DeltaVolQuote(Real delta,
-                      const Handle<Quote>& vol,
-                      Time maturity,
-                      DeltaType deltaType);
+        DeltaVolQuote(Real delta, Handle<Quote> vol, Time maturity, DeltaType deltaType);
 
         // Additional constructor, if special atm quote is used
-        DeltaVolQuote(const Handle<Quote>& vol,
-                      DeltaType deltaType,
-                      Time maturity,
-                      AtmType atmType);
+        DeltaVolQuote(Handle<Quote> vol, DeltaType deltaType, Time maturity, AtmType atmType);
 
-        void update();
+        void update() override;
 
-        Real value() const;
+        Real value() const override;
         Real delta() const;
         Time maturity() const;
 
         AtmType atmType()   const;
         DeltaType deltaType() const;
 
-        bool isValid()  const;
+        bool isValid() const override;
 
       private:
           Real delta_;

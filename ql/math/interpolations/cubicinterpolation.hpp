@@ -43,7 +43,7 @@ namespace QuantLib {
             explicit CoefficientHolder(Size n)
             : n_(n), primitiveConst_(n-1), a_(n-1), b_(n-1), c_(n-1),
               monotonicityAdjustments_(n) {}
-            virtual ~CoefficientHolder() {}
+            virtual ~CoefficientHolder() = default;
             Size n_;
             // P[i](x) = y[i] +
             //           a[i]*(x-x[i]) +
@@ -389,7 +389,7 @@ namespace QuantLib {
                 }
             }
 
-            void update() {
+            void update() override {
 
                 for (Size i=0; i<n_-1; ++i) {
                     dx_[i] = this->xBegin_[i+1] - this->xBegin_[i];
@@ -755,28 +755,29 @@ namespace QuantLib {
                           (b_[i-1]/3.0 + dx_[i-1] * c_[i-1]/4.0)));
                 }
             }
-            Real value(Real x) const {
+            Real value(Real x) const override {
                 Size j = this->locate(x);
                 Real dx_ = x-this->xBegin_[j];
                 return this->yBegin_[j] + dx_*(a_[j] + dx_*(b_[j] + dx_*c_[j]));
             }
-            Real primitive(Real x) const {
+            Real primitive(Real x) const override {
                 Size j = this->locate(x);
                 Real dx_ = x-this->xBegin_[j];
                 return primitiveConst_[j]
                     + dx_*(this->yBegin_[j] + dx_*(a_[j]/2.0
                     + dx_*(b_[j]/3.0 + dx_*c_[j]/4.0)));
             }
-            Real derivative(Real x) const {
+            Real derivative(Real x) const override {
                 Size j = this->locate(x);
                 Real dx_ = x-this->xBegin_[j];
                 return a_[j] + (2.0*b_[j] + 3.0*c_[j]*dx_)*dx_;
             }
-            Real secondDerivative(Real x) const {
+            Real secondDerivative(Real x) const override {
                 Size j = this->locate(x);
                 Real dx_ = x-this->xBegin_[j];
                 return 2.0*b_[j] + 6.0*c_[j]*dx_;
             }
+
           private:
             CubicInterpolation::DerivativeApprox da_;
             bool monotonic_;

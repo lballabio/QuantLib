@@ -13,8 +13,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcforwardvanillabsengine.hpp
-    \brief Monte Carlo engine for forward-starting strike-reset vanilla options using BS process
+/*! \file mcforwardeuropeanbsengine.hpp
+    \brief Monte Carlo engine for forward-starting strike-reset European options using BS process
 */
 
 #ifndef quantlib_mc_forward_european_bs_engine_hpp
@@ -22,6 +22,7 @@
 
 #include <ql/pricingengines/forward/mcforwardvanillaengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -55,7 +56,7 @@ namespace QuantLib {
              Size maxSamples,
              BigNatural seed);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
     };
 
 
@@ -63,7 +64,7 @@ namespace QuantLib {
     class MakeMCForwardEuropeanBSEngine {
       public:
         explicit MakeMCForwardEuropeanBSEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
         // named parameters
         MakeMCForwardEuropeanBSEngine& withSteps(Size steps);
         MakeMCForwardEuropeanBSEngine& withStepsPerYear(Size steps);
@@ -91,7 +92,8 @@ namespace QuantLib {
                                    Real moneyness,
                                    Size resetIndex,
                                    DiscountFactor discount);
-        Real operator()(const Path& path) const;
+        Real operator()(const Path& path) const override;
+
       private:
         Option::Type type_;
         Real moneyness_;
@@ -162,12 +164,11 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline MakeMCForwardEuropeanBSEngine<RNG,S>::MakeMCForwardEuropeanBSEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
-      maxSamples_(Null<Size>()), tolerance_(Null<Real>()),
-      brownianBridge_(false), seed_(0) {}
+    inline MakeMCForwardEuropeanBSEngine<RNG, S>::MakeMCForwardEuropeanBSEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), antithetic_(false), steps_(Null<Size>()),
+      stepsPerYear_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCForwardEuropeanBSEngine<RNG,S>&

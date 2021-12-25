@@ -42,14 +42,16 @@ namespace QuantLib {
                 m == January)
             // Anniversary Day, Monday nearest January 22nd
             || ((d >= 19 && d <= 25) && w == Monday && m == January)
-            // Waitangi Day. February 6th
+            // Waitangi Day. February 6th ("Mondayised" since 2013)
             || (d == 6 && m == February)
+            || ((d == 7 || d == 8) && w == Monday && m == February && y > 2013)
             // Good Friday
             || (dd == em-3)
             // Easter Monday
             || (dd == em)
-            // ANZAC Day. April 25th
+            // ANZAC Day. April 25th ("Mondayised" since 2013) 
             || (d == 25 && m == April)
+            || ((d == 26 || d == 27) && w == Monday && m == April && y > 2013)
             // Queen's Birthday, first Monday in June
             || (d <= 7 && w == Monday && m == June)
             // Labour Day, fourth Monday in October

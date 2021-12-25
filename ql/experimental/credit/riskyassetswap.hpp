@@ -37,14 +37,14 @@ namespace QuantLib {
       public:
         RiskyAssetSwap(bool fixedPayer,
                        Real nominal,
-                       const Schedule& fixedSchedule,
-                       const Schedule& floatSchedule,
-                       const DayCounter& fixedDayCounter,
-                       const DayCounter& floatDayCounter,
+                       Schedule fixedSchedule,
+                       Schedule floatSchedule,
+                       DayCounter fixedDayCounter,
+                       DayCounter floatDayCounter,
                        Rate spread,
                        Rate recoveryRate_,
-                       const Handle<YieldTermStructure>& yieldTS,
-                       const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                       Handle<YieldTermStructure> yieldTS,
+                       Handle<DefaultProbabilityTermStructure> defaultTS,
                        Rate coupon = Null<Rate>());
 
         Real fairSpread ();
@@ -56,9 +56,9 @@ namespace QuantLib {
         bool fixedPayer() const { return fixedPayer_; }
 
       private:
-        void setupExpired() const;
-        bool isExpired() const;
-        void performCalculations() const;
+        void setupExpired() const override;
+        bool isExpired() const override;
+        void performCalculations() const override;
 
         Real fixedAnnuity() const;
         Real parCoupon() const;
@@ -91,21 +91,21 @@ namespace QuantLib {
         AssetSwapHelper(const Handle<Quote>& spread,
                         const Period& tenor,
                         Natural settlementDays,
-                        const Calendar& calendar,
+                        Calendar calendar,
                         const Period& fixedPeriod,
                         BusinessDayConvention fixedConvention,
-                        const DayCounter& fixedDayCount,
+                        DayCounter fixedDayCount,
                         const Period& floatPeriod,
                         BusinessDayConvention floatConvention,
-                        const DayCounter& floatDayCount,
+                        DayCounter floatDayCount,
                         Real recoveryRate,
                         const RelinkableHandle<YieldTermStructure>& yieldTS,
                         const Period& integrationStepSize = Period());
-        Real impliedQuote() const;
-        void setTermStructure(DefaultProbabilityTermStructure*);
+        Real impliedQuote() const override;
+        void setTermStructure(DefaultProbabilityTermStructure*) override;
 
       private:
-        void update();
+        void update() override;
         void initializeDates();
 
         Period tenor_;

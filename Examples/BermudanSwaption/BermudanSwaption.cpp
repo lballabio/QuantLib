@@ -20,7 +20,7 @@
 */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/instruments/swaption.hpp>
@@ -49,7 +49,7 @@ using namespace QuantLib;
 #if defined(QL_ENABLE_SESSIONS)
 namespace QuantLib {
 
-    ThreadKey sessionId() { return 0; }
+    ThreadKey sessionId() { return {}; }
 
 }
 #endif
@@ -121,7 +121,7 @@ int main(int, char* []) {
         BusinessDayConvention floatingLegConvention = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         Frequency floatingLegFrequency = Semiannual;
-        VanillaSwap::Type type = VanillaSwap::Payer;
+        Swap::Type type = Swap::Payer;
         Rate dummyFixedRate = 0.03;
         ext::shared_ptr<IborIndex> indexSixMonths(new
             Euribor6M(rhTermStructure));
@@ -166,11 +166,11 @@ int main(int, char* []) {
 
         // defining the swaptions to be used in model calibration
         std::vector<Period> swaptionMaturities;
-        swaptionMaturities.push_back(Period(1, Years));
-        swaptionMaturities.push_back(Period(2, Years));
-        swaptionMaturities.push_back(Period(3, Years));
-        swaptionMaturities.push_back(Period(4, Years));
-        swaptionMaturities.push_back(Period(5, Years));
+        swaptionMaturities.emplace_back(1, Years);
+        swaptionMaturities.emplace_back(2, Years);
+        swaptionMaturities.emplace_back(3, Years);
+        swaptionMaturities.emplace_back(4, Years);
+        swaptionMaturities.emplace_back(5, Years);
 
         std::vector<ext::shared_ptr<BlackCalibrationHelper> > swaptions;
 

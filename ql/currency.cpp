@@ -18,6 +18,7 @@
 */
 
 #include <ql/currency.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -28,20 +29,37 @@ namespace QuantLib {
             return out << "null currency";
     }
 
-    Currency::Data::Data(const std::string& name,
-                         const std::string& code,
+    Currency::Data::Data(std::string name,
+                         std::string code,
                          Integer numericCode,
-                         const std::string& symbol,
-                         const std::string& fractionSymbol,
+                         std::string symbol,
+                         std::string fractionSymbol,
                          Integer fractionsPerUnit,
                          const Rounding& rounding,
-                         const std::string& formatString,
-                         const Currency& triangulationCurrency)
-    : name(name), code(code), numeric(numericCode),
-      symbol(symbol), fractionSymbol(fractionSymbol),
-      fractionsPerUnit(fractionsPerUnit), rounding(rounding),
-      triangulated(triangulationCurrency),
-      formatString(formatString) {}
+                         std::string formatString,
+                         Currency triangulationCurrency)
+    : name(std::move(name)), code(std::move(code)), numeric(numericCode), symbol(std::move(symbol)),
+      fractionSymbol(std::move(fractionSymbol)), fractionsPerUnit(fractionsPerUnit),
+      rounding(rounding), triangulated(std::move(triangulationCurrency)),
+      formatString(std::move(formatString)) {}
 
+    Currency::Currency(const std::string& name,
+                       const std::string& code,
+                       Integer numericCode,
+                       const std::string& symbol,
+                       const std::string& fractionSymbol,
+                       Integer fractionsPerUnit,
+                       const Rounding& rounding,
+                       const std::string& formatString,
+                       const Currency& triangulationCurrency)
+    : data_(ext::make_shared<Currency::Data>(name,
+                                             code,
+                                             numericCode,
+                                             symbol,
+                                             fractionSymbol,
+                                             fractionsPerUnit,
+                                             rounding,
+                                             formatString,
+                                             triangulationCurrency)) {}
 }
 

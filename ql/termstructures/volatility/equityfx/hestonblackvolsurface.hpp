@@ -36,17 +36,17 @@ namespace QuantLib {
         explicit HestonBlackVolSurface(
             const Handle<HestonModel>& hestonModel,
             AnalyticHestonEngine::ComplexLogFormula cpxLogFormula = AnalyticHestonEngine::Gatheral,
-            const AnalyticHestonEngine::Integration& integration =
+            AnalyticHestonEngine::Integration integration =
                 AnalyticHestonEngine::Integration::gaussLaguerre(164));
 
-        DayCounter dayCounter() const;
-        Date maxDate() const;
-        Real minStrike() const;
-        Real maxStrike() const;
+        DayCounter dayCounter() const override;
+        Date maxDate() const override;
+        Real minStrike() const override;
+        Real maxStrike() const override;
 
       protected:
-        Real blackVarianceImpl(Time t, Real strike) const;
-        Volatility blackVolImpl(Time t, Real strike) const;
+        Real blackVarianceImpl(Time t, Real strike) const override;
+        Volatility blackVolImpl(Time t, Real strike) const override;
 
       private:
         const Handle<HestonModel> hestonModel_;

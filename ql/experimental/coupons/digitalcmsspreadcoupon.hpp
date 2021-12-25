@@ -49,7 +49,7 @@ namespace QuantLib {
 
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 
@@ -57,8 +57,7 @@ namespace QuantLib {
     //! helper class building a sequence of digital ibor-rate coupons
     class DigitalCmsSpreadLeg {
       public:
-        DigitalCmsSpreadLeg(const Schedule& schedule,
-                      const ext::shared_ptr<SwapSpreadIndex>& index);
+        DigitalCmsSpreadLeg(Schedule schedule, ext::shared_ptr<SwapSpreadIndex> index);
         DigitalCmsSpreadLeg& withNotionals(Real notional);
         DigitalCmsSpreadLeg& withNotionals(const std::vector<Real>& notionals);
         DigitalCmsSpreadLeg& withPaymentDayCounter(const DayCounter&);

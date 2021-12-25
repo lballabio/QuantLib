@@ -23,6 +23,7 @@
 #define quantlib_test_american_option_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -35,7 +36,12 @@ class AmericanOptionTest {
     static void testFdValues();
     static void testFdAmericanGreeks();
     static void testFdShoutGreeks();
-    static boost::unit_test_framework::test_suite* suite();
+    static void testFDShoutNPV();
+    static void testZeroVolFDShoutNPV();
+    static void testLargeDividendShoutNPV();
+    static void testEscrowedVsSpotAmericanOption();
+    static void testTodayIsDividendDate();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 

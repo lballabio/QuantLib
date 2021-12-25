@@ -80,7 +80,7 @@ namespace QuantLib {
             included in the passed cash flows.
         */
         Bond(Natural settlementDays,
-             const Calendar& calendar,
+             Calendar calendar,
              const Date& issueDate = Date(),
              const Leg& coupons = Leg());
 
@@ -90,7 +90,7 @@ namespace QuantLib {
                      later than the redemption date.
         */
         Bond(Natural settlementDays,
-             const Calendar& calendar,
+             Calendar calendar,
              Real faceAmount,
              const Date& maturityDate,
              const Date& issueDate = Date(),
@@ -102,11 +102,11 @@ namespace QuantLib {
 
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
+        bool isExpired() const override;
         //@}
         //! \name Observable interface
         //@{
-        void deepUpdate();
+        void deepUpdate() override;
         //@}
         //! \name Inspectors
         //@{
@@ -234,9 +234,9 @@ namespace QuantLib {
         Date previousCashFlowDate(Date d = Date()) const;
 
       protected:
-        void setupExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results*) const;
+        void setupExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results*) const override;
 
         /*! This method can be called by derived classes in order to
             build redemption payments from the existing cash flows.
@@ -297,13 +297,13 @@ namespace QuantLib {
         Date settlementDate;
         Leg cashflows;
         Calendar calendar;
-        void validate() const;
+        void validate() const override;
     };
 
     class Bond::results : public Instrument::results {
       public:
         Real settlementValue;
-        void reset() {
+        void reset() override {
             settlementValue = Null<Real>();
             Instrument::results::reset();
         }

@@ -13,17 +13,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcforwardvanillahestonengine.hpp
-    \brief Monte Carlo engine for forward-starting strike-reset vanilla options using Heston-like process
+/*! \file mcforwardeuropeanhestonengine.hpp
+    \brief Monte Carlo engine for forward-starting strike-reset European options using Heston-like process
 */
 
 #ifndef quantlib_mc_forward_european_heston_engine_hpp
 #define quantlib_mc_forward_european_heston_engine_hpp
 
+#include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/forward/mcforwardvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/processes/hestonprocess.hpp>
-#include <ql/models/equity/hestonmodel.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -67,12 +68,12 @@ namespace QuantLib {
              BigNatural seed,
              bool controlVariate = false);
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
 
         // Use the vanilla option running from t=0 to t=expiryTime with an analytic Heston pricer
         // as a control variate. Works well if resetTime small.
-        ext::shared_ptr<path_pricer_type> controlPathPricer() const;
-        ext::shared_ptr<PricingEngine> controlPricingEngine() const {
+        ext::shared_ptr<path_pricer_type> controlPathPricer() const override;
+        ext::shared_ptr<PricingEngine> controlPricingEngine() const override {
             ext::shared_ptr<P> process = ext::dynamic_pointer_cast<P>(this->process_);
             QL_REQUIRE(process, "Heston-like process required");
 
@@ -87,7 +88,7 @@ namespace QuantLib {
               class S = Statistics, class P = HestonProcess>
     class MakeMCForwardEuropeanHestonEngine {
       public:
-        explicit MakeMCForwardEuropeanHestonEngine(const ext::shared_ptr<P>& process);
+        explicit MakeMCForwardEuropeanHestonEngine(ext::shared_ptr<P> process);
         // named parameters
         MakeMCForwardEuropeanHestonEngine& withSteps(Size steps);
         MakeMCForwardEuropeanHestonEngine& withStepsPerYear(Size steps);
@@ -114,7 +115,8 @@ namespace QuantLib {
                                    Real moneyness,
                                    Size resetIndex,
                                    DiscountFactor discount);
-        Real operator()(const MultiPath& multiPath) const;
+        Real operator()(const MultiPath& multiPath) const override;
+
       private:
         Option::Type type_;
         Real moneyness_;
@@ -215,11 +217,11 @@ namespace QuantLib {
     }
 
     template <class RNG, class S, class P>
-    inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>::MakeMCForwardEuropeanHestonEngine(
-             const ext::shared_ptr<P>& process)
-    : process_(process), antithetic_(false), controlVariate_(false), steps_(Null<Size>()),
-      stepsPerYear_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+    inline MakeMCForwardEuropeanHestonEngine<RNG, S, P>::MakeMCForwardEuropeanHestonEngine(
+        ext::shared_ptr<P> process)
+    : process_(std::move(process)), antithetic_(false), controlVariate_(false),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
+      maxSamples_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG, class S, class P>
     inline MakeMCForwardEuropeanHestonEngine<RNG,S,P>&

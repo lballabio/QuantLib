@@ -20,51 +20,53 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/overnightindexedswap.hpp>
-#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
+#include <ql/instruments/overnightindexedswap.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    OvernightIndexedSwap::OvernightIndexedSwap(
-        Type type,
-        Real nominal,
-        const Schedule& schedule,
-        Rate fixedRate,
-        const DayCounter& fixedDC,
-        const ext::shared_ptr<OvernightIndex>& overnightIndex,
-        Spread spread,
-        Natural paymentLag,
-        BusinessDayConvention paymentAdjustment,
-        const Calendar& paymentCalendar,
-        bool telescopicValueDates)
+    OvernightIndexedSwap::OvernightIndexedSwap(Type type,
+                                               Real nominal,
+                                               const Schedule& schedule,
+                                               Rate fixedRate,
+                                               DayCounter fixedDC,
+                                               ext::shared_ptr<OvernightIndex> overnightIndex,
+                                               Spread spread,
+                                               Natural paymentLag,
+                                               BusinessDayConvention paymentAdjustment,
+                                               const Calendar& paymentCalendar,
+                                               bool telescopicValueDates, 
+                                               RateAveraging::Type averagingMethod)
     : Swap(2), type_(type), nominals_(std::vector<Real>(1, nominal)),
       paymentFrequency_(schedule.tenor().frequency()),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
       paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag), fixedRate_(fixedRate),
-      fixedDC_(fixedDC), overnightIndex_(overnightIndex), spread_(spread),
-      telescopicValueDates_(telescopicValueDates) {
+      fixedDC_(std::move(fixedDC)), overnightIndex_(std::move(overnightIndex)), spread_(spread),
+      telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
 
         initialize(schedule);
     }
 
-    OvernightIndexedSwap::OvernightIndexedSwap(
-        Type type,
-        const std::vector<Real>& nominals,
-        const Schedule& schedule,
-        Rate fixedRate,
-        const DayCounter& fixedDC,
-        const ext::shared_ptr<OvernightIndex>& overnightIndex,
-        Spread spread,
-        Natural paymentLag,
-        BusinessDayConvention paymentAdjustment,
-        const Calendar& paymentCalendar,
-        bool telescopicValueDates)
-    : Swap(2), type_(type), nominals_(nominals), paymentFrequency_(schedule.tenor().frequency()),
+    OvernightIndexedSwap::OvernightIndexedSwap(Type type,
+                                               std::vector<Real> nominals,
+                                               const Schedule& schedule,
+                                               Rate fixedRate,
+                                               DayCounter fixedDC,
+                                               ext::shared_ptr<OvernightIndex> overnightIndex,
+                                               Spread spread,
+                                               Natural paymentLag,
+                                               BusinessDayConvention paymentAdjustment,
+                                               const Calendar& paymentCalendar,
+                                               bool telescopicValueDates, 
+                                               RateAveraging::Type averagingMethod)
+    : Swap(2), type_(type), nominals_(std::move(nominals)),
+      paymentFrequency_(schedule.tenor().frequency()),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
       paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag), fixedRate_(fixedRate),
-      fixedDC_(fixedDC), overnightIndex_(overnightIndex), spread_(spread),
-      telescopicValueDates_(telescopicValueDates) {
+      fixedDC_(std::move(fixedDC)), overnightIndex_(std::move(overnightIndex)), spread_(spread),
+      telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
 
         initialize(schedule);
     }
@@ -85,11 +87,12 @@ namespace QuantLib {
             .withTelescopicValueDates(telescopicValueDates_)
             .withPaymentLag(paymentLag_)
             .withPaymentAdjustment(paymentAdjustment_)
-            .withPaymentCalendar(paymentCalendar_);
+            .withPaymentCalendar(paymentCalendar_)
+            .withAveragingMethod(averagingMethod_);
 
         for (Size j=0; j<2; ++j) {
-            for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
-                registerWith(*i);
+            for (auto& i : legs_[j])
+                registerWith(i);
         }
 
         switch (type_) {

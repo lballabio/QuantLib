@@ -20,13 +20,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/barrieroption/perturbativebarrieroptionengine.hpp>
-#include <ql/exercise.hpp>
 #include <ql/errors.hpp>
-#include <ql/types.hpp>
+#include <ql/exercise.hpp>
+#include <ql/experimental/barrieroption/perturbativebarrieroptionengine.hpp>
 #include <ql/functional.hpp>
-#include <cmath>
+#include <ql/types.hpp>
 #include <algorithm>
+#include <cmath>
+#include <utility>
 
 using namespace std;
 
@@ -1498,10 +1499,8 @@ namespace QuantLib {
 
 
     PerturbativeBarrierOptionEngine::PerturbativeBarrierOptionEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Natural order,
-             bool zeroGamma)
-    : process_(process), order_(order), zeroGamma_(zeroGamma) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process, Natural order, bool zeroGamma)
+    : process_(std::move(process)), order_(order), zeroGamma_(zeroGamma) {
         registerWith(process_);
     }
 

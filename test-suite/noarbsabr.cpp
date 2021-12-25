@@ -19,9 +19,6 @@
 
 #include "noarbsabr.hpp"
 #include "utilities.hpp"
-
-#include <boost/assign/list_of.hpp>
-
 #include <ql/termstructures/volatility/sabrsmilesection.hpp>
 #include <ql/experimental/volatility/noarbsabrsmilesection.hpp>
 
@@ -85,8 +82,8 @@ void NoArbSabrTest::testConsistencyWithHagan() {
     Real nu = 0.4;
     Real f = 0.0488;
 
-    SabrSmileSection sabr(tau,f,boost::assign::list_of(alpha)(beta)(nu)(rho));
-    NoArbSabrSmileSection noarbsabr(tau,f,boost::assign::list_of(alpha)(beta)(nu)(rho));
+    SabrSmileSection sabr(tau, f, {alpha, beta, nu, rho});
+    NoArbSabrSmileSection noarbsabr(tau, f, {alpha, beta, nu, rho});
 
     Real absProb=noarbsabr.model()->absorptionProbability();
     if( absProb > 1E-10 || absProb < 0.0 )
@@ -122,7 +119,7 @@ void NoArbSabrTest::testConsistencyWithHagan() {
 
 
 test_suite* NoArbSabrTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("NoArbSabrModel tests");
+    auto* suite = BOOST_TEST_SUITE("NoArbSabrModel tests");
     suite->add(QUANTLIB_TEST_CASE(&NoArbSabrTest::testAbsorptionMatrix));
     suite->add(QUANTLIB_TEST_CASE(&NoArbSabrTest::testConsistencyWithHagan));
     return suite;

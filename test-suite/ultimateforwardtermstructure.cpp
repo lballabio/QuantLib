@@ -217,7 +217,7 @@ void UltimateForwardTermStructureTest::testExtrapolatedForward() {
 }
 
 void UltimateForwardTermStructureTest::testZeroRateAtFirstSmoothingPoint() {
-    BOOST_TEST_MESSAGE("Testing zero rate on the First Smoothing Point...");
+    BOOST_TEST_MESSAGE("Testing zero rate on the first smoothing point...");
 
     using namespace ultimate_forward_term_structure_test;
 
@@ -277,7 +277,7 @@ void UltimateForwardTermStructureTest::testThatInspectorsEqualToBaseCurve() {
 }
 
 void UltimateForwardTermStructureTest::testExceptionWhenFspLessOrEqualZero() {
-    BOOST_TEST_MESSAGE("Testing exception when the First Smoothing Point less or equal zero...");
+    BOOST_TEST_MESSAGE("Testing exception when the first smoothing point is less than or equal to zero...");
 
     using namespace ultimate_forward_term_structure_test;
 
@@ -324,7 +324,7 @@ void UltimateForwardTermStructureTest::testObservability() {
 }
 
 test_suite* UltimateForwardTermStructureTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("UFR term structure tests");
+    auto* suite = BOOST_TEST_SUITE("UFR term structure tests");
 
     suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testDutchCentralBankRates));
     suite->add(QUANTLIB_TEST_CASE(&UltimateForwardTermStructureTest::testExtrapolatedForward));

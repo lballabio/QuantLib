@@ -43,22 +43,23 @@ namespace QuantLib {
       public:
         enum Discretization { MidPoint, Trapezodial, GaussLobatto };
 
-        ExtendedOrnsteinUhlenbeckProcess(
-                                Real speed, Volatility sigma, Real x0,
-                                const ext::function<Real (Real)>& b,
-                                Discretization discretization = MidPoint,
-                                Real intEps = 1e-4);
+        ExtendedOrnsteinUhlenbeckProcess(Real speed,
+                                         Volatility sigma,
+                                         Real x0,
+                                         ext::function<Real(Real)> b,
+                                         Discretization discretization = MidPoint,
+                                         Real intEps = 1e-4);
 
         //! \name StochasticProcess interface
         //@{
-        Real x0() const;
+        Real x0() const override;
         Real speed() const;
         Real volatility() const;
-        Real drift(Time t, Real x) const;
-        Real diffusion(Time t, Real x) const;
-        Real expectation(Time t0, Real x0, Time dt) const;
-        Real stdDeviation(Time t0, Real x0, Time dt) const;
-        Real variance(Time t0, Real x0, Time dt) const;
+        Real drift(Time t, Real x) const override;
+        Real diffusion(Time t, Real x) const override;
+        Real expectation(Time t0, Real x0, Time dt) const override;
+        Real stdDeviation(Time t0, Real x0, Time dt) const override;
+        Real variance(Time t0, Real x0, Time dt) const override;
         //@}
       private:
         const Real speed_;

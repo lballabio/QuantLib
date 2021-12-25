@@ -109,48 +109,27 @@ namespace range_accrual_test {
         void createYieldCurve() {
 
             // Yield Curve
-            std::vector<Date> dates;
-            dates.push_back(Date(39147));    dates.push_back(Date(39148));    dates.push_back(Date(39151));
-            dates.push_back(Date(39153));    dates.push_back(Date(39159));    dates.push_back(Date(39166));
-            dates.push_back(Date(39183));    dates.push_back(Date(39294));    dates.push_back(Date(39384));
-            dates.push_back(Date(39474));    dates.push_back(Date(39567));    dates.push_back(Date(39658));
-            dates.push_back(Date(39748));    dates.push_back(Date(39839));    dates.push_back(Date(39931));
-            dates.push_back(Date(40250));    dates.push_back(Date(40614));    dates.push_back(Date(40978));
-            dates.push_back(Date(41344));    dates.push_back(Date(41709));    dates.push_back(Date(42074));
-            dates.push_back(Date(42441));    dates.push_back(Date(42805));    dates.push_back(Date(43170));
-            dates.push_back(Date(43535));    dates.push_back(Date(43900));    dates.push_back(Date(44268));
-            dates.push_back(Date(44632));    dates.push_back(Date(44996));    dates.push_back(Date(45361));
-            dates.push_back(Date(45727));    dates.push_back(Date(46092));    dates.push_back(Date(46459));
-            dates.push_back(Date(46823));    dates.push_back(Date(47188));    dates.push_back(Date(47553));
-            dates.push_back(Date(47918));    dates.push_back(Date(48283));    dates.push_back(Date(48650));
-            dates.push_back(Date(49014));    dates.push_back(Date(49379));    dates.push_back(Date(49744));
-            dates.push_back(Date(50110));    dates.push_back(Date(53762));    dates.push_back(Date(57415));
-            dates.push_back(Date(61068));
+            std::vector<Date> dates = {
+                Date(39147), Date(39148), Date(39151), Date(39153), Date(39159), Date(39166),
+                Date(39183), Date(39294), Date(39384), Date(39474), Date(39567), Date(39658),
+                Date(39748), Date(39839), Date(39931), Date(40250), Date(40614), Date(40978),
+                Date(41344), Date(41709), Date(42074), Date(42441), Date(42805), Date(43170),
+                Date(43535), Date(43900), Date(44268), Date(44632), Date(44996), Date(45361),
+                Date(45727), Date(46092), Date(46459), Date(46823), Date(47188), Date(47553),
+                Date(47918), Date(48283), Date(48650), Date(49014), Date(49379), Date(49744),
+                Date(50110), Date(53762), Date(57415), Date(61068)};
 
-            std::vector<Rate> zeroRates;
-            zeroRates.push_back(0.02676568527);    zeroRates.push_back(0.02676568527);
-            zeroRates.push_back(0.02676333038);    zeroRates.push_back(0.02682286201);
-            zeroRates.push_back(0.02682038347);    zeroRates.push_back(0.02683030208);
-            zeroRates.push_back(0.02700136766);    zeroRates.push_back(0.02932526033);
-            zeroRates.push_back(0.03085568949);    zeroRates.push_back(0.03216370631);
-            zeroRates.push_back(0.03321234116);    zeroRates.push_back(0.03404978072);
-            zeroRates.push_back(0.03471117149);    zeroRates.push_back(0.03527141916);
-            zeroRates.push_back(0.03574660393);    zeroRates.push_back(0.03691715582);
-            zeroRates.push_back(0.03796468718);    zeroRates.push_back(0.03876457629);
-            zeroRates.push_back(0.03942029708);    zeroRates.push_back(0.03999925325);
-            zeroRates.push_back(0.04056663618);    zeroRates.push_back(0.04108743922);
-            zeroRates.push_back(0.04156156761);    zeroRates.push_back(0.0419979179);
-            zeroRates.push_back(0.04239486483);    zeroRates.push_back(0.04273799032);
-            zeroRates.push_back(0.04305531203);    zeroRates.push_back(0.04336417578);
-            zeroRates.push_back(0.04364017665);    zeroRates.push_back(0.04388153459);
-            zeroRates.push_back(0.04408005012);    zeroRates.push_back(0.04424764425);
-            zeroRates.push_back(0.04437504759);    zeroRates.push_back(0.04447696334);
-            zeroRates.push_back(0.04456212318);    zeroRates.push_back(0.04464090072);
-            zeroRates.push_back(0.0447068707);     zeroRates.push_back(0.04475921774);
-            zeroRates.push_back(0.04477418345);    zeroRates.push_back(0.04477880755);
-            zeroRates.push_back(0.04476692489);    zeroRates.push_back(0.04473779454);
-            zeroRates.push_back(0.04468646066);    zeroRates.push_back(0.04430951558);
-            zeroRates.push_back(0.04363922313);    zeroRates.push_back(0.04363601992);
+            std::vector<Rate> zeroRates = {
+                0.02676568527, 0.02676568527, 0.02676333038, 0.02682286201, 0.02682038347,
+                0.02683030208, 0.02700136766, 0.02932526033, 0.03085568949, 0.03216370631,
+                0.03321234116, 0.03404978072, 0.03471117149, 0.03527141916, 0.03574660393,
+                0.03691715582, 0.03796468718, 0.03876457629, 0.03942029708, 0.03999925325,
+                0.04056663618, 0.04108743922, 0.04156156761, 0.0419979179,  0.04239486483,
+                0.04273799032, 0.04305531203, 0.04336417578, 0.04364017665, 0.04388153459,
+                0.04408005012, 0.04424764425, 0.04437504759, 0.04447696334, 0.04456212318,
+                0.04464090072, 0.0447068707,  0.04475921774, 0.04477418345, 0.04477880755,
+                0.04476692489, 0.04473779454, 0.04468646066, 0.04430951558, 0.04363922313,
+                0.04363601992};
 
             termStructure.linkTo( ext::shared_ptr<YieldTermStructure>(
                 new ZeroCurve(dates, zeroRates, Actual365Fixed())));
@@ -161,19 +140,10 @@ namespace range_accrual_test {
             // ATM swaptionvol matrix
             optionBDC = Following;
 
-            atmOptionTenors = std::vector<Period>();
-            atmOptionTenors.push_back(Period(1, Months));
-            atmOptionTenors.push_back(Period(6, Months));
-            atmOptionTenors.push_back(Period(1, Years));
-            atmOptionTenors.push_back(Period(5, Years));
-            atmOptionTenors.push_back(Period(10, Years));
-            atmOptionTenors.push_back(Period(30, Years));
+            atmOptionTenors = {1 * Months, 6 * Months, 1 * Years,
+                               5 * Years,  10 * Years, 30 * Years};
 
-            atmSwapTenors = std::vector<Period>();
-            atmSwapTenors.push_back(Period(1, Years));
-            atmSwapTenors.push_back(Period(5, Years));
-            atmSwapTenors.push_back(Period(10, Years));
-            atmSwapTenors.push_back(Period(30, Years));
+            atmSwapTenors = {1 * Years, 5 * Years, 10 * Years, 30 * Years};
 
             atmVolMatrix = Matrix(atmOptionTenors.size(), atmSwapTenors.size());
             //atmVolMatrix[0][0]=0.1300; atmVolMatrix[0][1]=0.1560; atmVolMatrix[0][2]=0.1390; atmVolMatrix[0][3]=0.1220;
@@ -194,23 +164,12 @@ namespace range_accrual_test {
             Size nColsAtmVols = atmVolMatrix.columns();
 
 
-            //swaptionvolcube
-            optionTenors = std::vector<Period>();
-            optionTenors.push_back(Period(1, Years));
-            optionTenors.push_back(Period(10, Years));
-            optionTenors.push_back(Period(30, Years));
+            // swaptionvolcube
+            optionTenors = {Period(1, Years), Period(10, Years), Period(30, Years)};
 
-            swapTenors = std::vector<Period>();
-            swapTenors.push_back(Period(2, Years));
-            swapTenors.push_back(Period(10, Years));
-            swapTenors.push_back(Period(30, Years));
+            swapTenors = {Period(2, Years), Period(10, Years), Period(30, Years)};
 
-            strikeSpreads = std::vector<Rate>();
-            strikeSpreads.push_back(-0.020);
-            strikeSpreads.push_back(-0.005);
-            strikeSpreads.push_back(+0.000);
-            strikeSpreads.push_back(+0.005);
-            strikeSpreads.push_back(+0.020);
+            strikeSpreads = {-0.020, -0.005, +0.000, +0.005, +0.020};
 
             Size nRows = optionTenors.size()*swapTenors.size();
             Size nCols = strikeSpreads.size();
@@ -255,7 +214,7 @@ namespace range_accrual_test {
             swapSettlementDays = 2;
             fixedLegFrequency = Annual;
             fixedLegConvention = Unadjusted;
-            fixedLegDayCounter = Thirty360();
+            fixedLegDayCounter = Thirty360(Thirty360::BondBasis);
             ext::shared_ptr<SwapIndex> swapIndexBase(new
                 EuriborSwapIsdaFixA(2*Years, termStructure));
 
@@ -380,11 +339,10 @@ namespace range_accrual_test {
             ext::shared_ptr<SwaptionVolatilityStructure>(swaptionVolatilityCubeBySabrPtr));
             swaptionVolatilityCubeBySabr->enableExtrapolation();
 
-            swaptionVolatilityStructures = std::vector<Handle<SwaptionVolatilityStructure> >();
-            //swaptionVolatilityStructures.push_back(atmVol);
-            //swaptionVolatilityStructures.push_back(flatSwaptionVolatilityCube1);
-            swaptionVolatilityStructures.push_back(flatSwaptionVolatilityCube2);
-            swaptionVolatilityStructures.push_back(swaptionVolatilityCubeBySabr);
+            swaptionVolatilityStructures = {// atmVol,
+                                            // flatSwaptionVolatilityCube1,
+                                            flatSwaptionVolatilityCube2,
+                                            swaptionVolatilityCubeBySabr};
         }
 
 
@@ -394,7 +352,7 @@ namespace range_accrual_test {
             for (Size i=0; i < 1000; ++i)
                 strikes[i] = 0.003+i/1000.0;
 
-            Real expiryBag[] = {
+            const std::vector<Rate> stdDevsOnExpiry = {
                     2.45489828353233, 2.10748097295326, 1.87317517200074, 1.69808302023488, 1.55911989073644, 1.44436083444893, 1.34687413874126, 1.26228953588707, 1.18769456816136, 1.12104324191799, 1.06085561121201, 1.00603120341767,
                     0.9557256903997, 0.90928131840481, 0.86618579845204, 0.82601854761258, 0.78844752673212, 0.75320077993188, 0.720053785498, 0.68882313132617, 0.65935702808872, 0.6315321469569, 0.60524729504558, 0.58041392858028, 0.55696247745247, 0.53482969610895,
                     0.51396815038482, 0.49433040611518, 0.47586902913511, 0.45854923439037, 0.44232991227137, 0.4271636286132, 0.41300927380629, 0.39981941368572, 0.38754661408661, 0.37613711628872, 0.3655403238495, 0.35570564032638, 0.34657298244381,
@@ -472,7 +430,7 @@ namespace range_accrual_test {
                     0.50112930308454, 0.50133801341011, 0.50154039918036, 0.50164475434315, 0.50172064900699, 0.50195465755384, 0.50209696004855, 0.50221080204432, 0.50240686325925, 0.50259659991886,
                     0.50265984547206, 0.50281163479975, 0.50290334085189, 0.50308359067852, 0.50330495011473, 0.50338400705624, 0.50352947182861, 0.5037128839329, 0.50385834870526, 0.50402911169891, 0.50412714230638, 0.50430106757769};
 
-            Real paymentBag[] = {
+            const std::vector<Rate> stdDevsOnPayment = {
                     1.6617526454415, 1.4669124167142, 1.32415790098, 1.2120961731935, 1.1201668663866, 1.0424206605982, 0.9751732547411, 0.9160138132757, 0.8632670647314, 0.8157437931899, 0.7725528968054, 0.7330333400265, 0.6966731443381, 0.6630705038169, 0.6319111025389,
                     0.6029486723577, 0.5759823103116, 0.5508499978832, 0.5274286009992, 0.5056047066973, 0.4852940653485, 0.4664189080644, 0.4489047063269, 0.4326866527292, 0.4176999398641, 0.4038765199544, 0.3911451048524, 0.3794344064103, 0.3686698961103, 0.3587770454342,
                     0.3496780854936, 0.3413049685113, 0.3335864063394, 0.3264575915712, 0.3198563090958, 0.3137287687655, 0.3080244208027, 0.3026982240597, 0.2977103219812, 0.2930253945303, 0.2886123341517, 0.2844432736605, 0.2804945583529, 0.2767441537107, 0.273174237697,
@@ -540,9 +498,6 @@ namespace range_accrual_test {
                     0.5002030093252, 0.5003455856205, 0.5004363159903, 0.5006890648775, 0.5007927567287, 0.5010066211718, 0.5010746689491, 0.5013436196881, 0.5014311096875, 0.501602849316, 0.5017259833893, 0.5018944826474, 0.5020370589428, 0.5022638848673, 0.502344894126,
                     0.5025069126434, 0.5025684796801, 0.502827709308, 0.5029800067144, 0.503096660047, 0.503375331897, 0.5034239374523, 0.5036216000436, 0.5038063011535, 0.5039294352267, 0.5040784922628, 0.5041757033733, 0.5043701255942, 0.5044478944826, 0.5047136048513,
                     0.5047136048513, 0.504924228924, 0.5050959685525, 0.5051899392926, 0.5053908422542, 0.505611187438, 0.5056954370671, 0.5058185711403, 0.505964387806, 0.5061393678049 };
-
-            const std::vector<Rate> stdDevsOnExpiry(&expiryBag[0], &expiryBag[0]+LENGTH(expiryBag));
-            const std::vector<Rate> stdDevsOnPayment(&paymentBag[0], &paymentBag[0]+LENGTH(paymentBag));
 
             //Create smiles on Expiry Date
             smilesOnExpiry = std::vector<ext::shared_ptr<SmileSection> >();
@@ -616,9 +571,7 @@ namespace range_accrual_test {
                                          observationsConvention,
                                          DateGeneration::Forward, false);
             // Range accrual pricers properties
-            byCallSpread = std::vector<bool>();
-            byCallSpread.push_back(true);
-            byCallSpread.push_back(false);
+            byCallSpread = {true, false};
 
             std::vector<Rate> strikes;
 
@@ -807,7 +760,7 @@ void RangeAccrualTest::testPriceMonotonicityWithRespectToUpperStrike() {
 
 
 test_suite* RangeAccrualTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Range Accrual tests");
+    auto* suite = BOOST_TEST_SUITE("Range Accrual tests");
     suite->add(QUANTLIB_TEST_CASE(&RangeAccrualTest::testInfiniteRange));
     suite->add(QUANTLIB_TEST_CASE(
            &RangeAccrualTest::testPriceMonotonicityWithRespectToLowerStrike));

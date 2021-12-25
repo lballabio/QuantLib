@@ -51,35 +51,30 @@ namespace QuantLib {
       private:
         class Impl : public DayCounter::Impl {
           public:
-            std::string name() const { return std::string("Actual/365 (Fixed)"); }
-            Time yearFraction(const Date& d1,
-                              const Date& d2,
-                              const Date&,
-                              const Date&) const {
+            std::string name() const override { return std::string("Actual/365 (Fixed)"); }
+            Time
+            yearFraction(const Date& d1, const Date& d2, const Date&, const Date&) const override {
                 return daysBetween(d1,d2)/365.0;
             }
         };
         class CA_Impl : public DayCounter::Impl {
           public:
-            std::string name() const {
+            std::string name() const override {
                 return std::string("Actual/365 (Fixed) Canadian Bond");
             }
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date& refPeriodStart,
-                              const Date& refPeriodEnd) const;
+                              const Date& refPeriodEnd) const override;
         };
         class NL_Impl : public DayCounter::Impl {
           public:
-            std::string name() const {
-                return std::string("Actual/365 (No Leap)");
-            }
-            Date::serial_type dayCount(const Date& d1,
-                                       const Date& d2) const;
+            std::string name() const override { return std::string("Actual/365 (No Leap)"); }
+            Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
             Time yearFraction(const Date& d1,
                               const Date& d2,
                               const Date& refPeriodStart,
-                              const Date& refPeriodEnd) const;
+                              const Date& refPeriodEnd) const override;
         };
         static ext::shared_ptr<DayCounter::Impl> implementation(Convention);
     };

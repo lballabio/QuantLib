@@ -40,15 +40,16 @@ namespace QuantLib {
                                VanillaOption::results> {
       public:
         typedef FdmExtOUJumpModelInnerValue::Shape Shape;
-        FdExtOUJumpVanillaEngine(
-            const ext::shared_ptr<ExtOUWithJumpsProcess>& p,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            Size tGrid = 50, Size xGrid = 200, Size yGrid = 50,
-            const ext::shared_ptr<Shape>& shape = ext::shared_ptr<Shape>(),
-            const FdmSchemeDesc& schemeDesc=FdmSchemeDesc::Hundsdorfer());
-    
-        void calculate() const;
-    
+        FdExtOUJumpVanillaEngine(ext::shared_ptr<ExtOUWithJumpsProcess> p,
+                                 ext::shared_ptr<YieldTermStructure> rTS,
+                                 Size tGrid = 50,
+                                 Size xGrid = 200,
+                                 Size yGrid = 50,
+                                 ext::shared_ptr<Shape> shape = ext::shared_ptr<Shape>(),
+                                 const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+
+        void calculate() const override;
+
       private:
         const ext::shared_ptr<ExtOUWithJumpsProcess> process_;
         const ext::shared_ptr<YieldTermStructure> rTS_;

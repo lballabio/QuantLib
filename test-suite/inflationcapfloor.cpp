@@ -64,7 +64,7 @@ namespace inflation_capfloor_test {
 
     template <class T, class U, class I>
     std::vector<ext::shared_ptr<BootstrapHelper<T> > > makeHelpers(
-                 Datum iiData[], Size N,
+                 const std::vector<Datum>& iiData,
                  const ext::shared_ptr<I> &ii, const Period &observationLag,
                  const Calendar &calendar,
                  const BusinessDayConvention &bdc,
@@ -72,10 +72,10 @@ namespace inflation_capfloor_test {
                  const Handle<YieldTermStructure>& discountCurve) {
 
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
-        for (Size i=0; i<N; i++) {
-            Date maturity = iiData[i].date;
+        for (Datum datum : iiData) {
+            Date maturity = datum.date;
             Handle<Quote> quote(ext::shared_ptr<Quote>(
-                    new SimpleQuote(iiData[i].rate/100.0)));
+                    new SimpleQuote(datum.rate/100.0)));
             ext::shared_ptr<BootstrapHelper<T> > anInstrument(new U(
                     quote, observationLag, maturity,
                     calendar, bdc, dc, ii, discountCurve));
@@ -123,7 +123,7 @@ namespace inflation_capfloor_test {
             settlementDays = 0;
             fixingDays = 0;
             settlement = calendar.advance(today,settlementDays,Days);
-            dc = Thirty360();
+            dc = Thirty360(Thirty360::BondBasis);
 
             // yoy index
             //      fixing data
@@ -147,13 +147,13 @@ namespace inflation_capfloor_test {
             }
 
             ext::shared_ptr<YieldTermStructure> nominalFF(
-                new FlatForward(evaluationDate, 0.05, ActualActual()));
+                new FlatForward(evaluationDate, 0.05, ActualActual(ActualActual::ISDA)));
             nominalTS.linkTo(nominalFF);
 
             // now build the YoY inflation curve
             Period observationLag = Period(2,Months);
 
-            Datum yyData[] = {
+            std::vector<Datum> yyData = {
                 { Date(13, August, 2008), 2.95 },
                 { Date(13, August, 2009), 2.95 },
                 { Date(13, August, 2010), 2.93 },
@@ -174,7 +174,7 @@ namespace inflation_capfloor_test {
             // now build the helpers ...
             std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > > helpers =
             makeHelpers<YoYInflationTermStructure,YearOnYearInflationSwapHelper,
-            YoYInflationIndex>(yyData, LENGTH(yyData), iir,
+            YoYInflationIndex>(yyData, iir,
                                observationLag,
                                calendar, convention, dc,
                                Handle<YieldTermStructure>(nominalTS));
@@ -290,108 +290,99 @@ void InflationCapFloorTest::testConsistency() {
     Volatility vols[] = { 0.001, 0.005, 0.010, 0.015, 0.020 };
 
     for (Size whichPricer = 0; whichPricer < 3; whichPricer++) {
-    for (Size i=0; i<LENGTH(lengths); i++) {
-        for (Size j=0; j<LENGTH(cap_rates); j++) {
-            for (Size k=0; k<LENGTH(floor_rates); k++) {
-                for (Size l=0; l<LENGTH(vols); l++) {
+        for (int& length : lengths) {
+            for (double& cap_rate : cap_rates) {
+                for (double& floor_rate : floor_rates) {
+                    for (double vol : vols) {
 
-                    Leg leg = vars.makeYoYLeg(vars.evaluationDate,lengths[i]);
+                        Leg leg = vars.makeYoYLeg(vars.evaluationDate, length);
 
-                    ext::shared_ptr<YoYInflationCapFloor> cap
-                    = vars.makeYoYCapFloor(YoYInflationCapFloor::Cap,
-                                           leg, cap_rates[j], vols[l], whichPricer);
+                        ext::shared_ptr<YoYInflationCapFloor> cap = vars.makeYoYCapFloor(
+                            YoYInflationCapFloor::Cap, leg, cap_rate, vol, whichPricer);
 
-                    ext::shared_ptr<YoYInflationCapFloor> floor
-                    = vars.makeYoYCapFloor(YoYInflationCapFloor::Floor,
-                                           leg, floor_rates[k], vols[l], whichPricer);
+                        ext::shared_ptr<YoYInflationCapFloor> floor = vars.makeYoYCapFloor(
+                            YoYInflationCapFloor::Floor, leg, floor_rate, vol, whichPricer);
 
-                    YoYInflationCollar collar(leg,std::vector<Rate>(1,cap_rates[j]),
-                                  std::vector<Rate>(1,floor_rates[k]));
-                    collar.setPricingEngine(vars.makeEngine(vols[l], whichPricer));
+                        YoYInflationCollar collar(leg, std::vector<Rate>(1, cap_rate),
+                                                  std::vector<Rate>(1, floor_rate));
+                        collar.setPricingEngine(vars.makeEngine(vol, whichPricer));
 
-                    if (std::fabs((cap->NPV()-floor->NPV())-collar.NPV()) > 1e-6) {
-                        BOOST_FAIL(
-                                   "inconsistency between cap, floor and collar:\n"
-                                   << "    length:       " << lengths[i] << " years\n"
-                                   << "    volatility:   " << io::volatility(vols[l]) << "\n"
-                                   << "    cap value:    " << cap->NPV()
-                                   << " at strike: " << io::rate(cap_rates[j]) << "\n"
-                                   << "    floor value:  " << floor->NPV()
-                                   << " at strike: " << io::rate(floor_rates[k]) << "\n"
-                                   << "    collar value: " << collar.NPV());
-
-
-                        // test re-composition by optionlets, N.B. ONE per year
-                        Real capletsNPV = 0.0;
-                        std::vector<ext::shared_ptr<YoYInflationCapFloor> > caplets;
-                        for (Integer m=0; m<lengths[i]*1; m++) {
-                            caplets.push_back(cap->optionlet(m));
-                            caplets[m]->setPricingEngine(vars.makeEngine(vols[l], whichPricer));
-                            capletsNPV += caplets[m]->NPV();
-                        }
-
-                        if (std::fabs(cap->NPV() - capletsNPV) > 1e-6) {
-                            BOOST_FAIL(
-                                       "sum of caplet NPVs does not equal cap NPV:\n"
-                                       << "    length:       " << lengths[i] << " years\n"
-                                       << "    volatility:   " << io::volatility(vols[l]) << "\n"
+                        if (std::fabs((cap->NPV() - floor->NPV()) - collar.NPV()) > 1e-6) {
+                            BOOST_FAIL("inconsistency between cap, floor and collar:\n"
+                                       << "    length:       " << length << " years\n"
+                                       << "    volatility:   " << io::volatility(vol) << "\n"
                                        << "    cap value:    " << cap->NPV()
-                                       << " at strike: " << io::rate(cap_rates[j]) << "\n"
-                                       << "    sum of caplets value:  " << capletsNPV
-                                       << " at strike (first): " << io::rate(caplets[0]->capRates()[0]) << "\n"
-                                       );
+                                       << " at strike: " << io::rate(cap_rate) << "\n"
+                                       << "    floor value:  " << floor->NPV()
+                                       << " at strike: " << io::rate(floor_rate) << "\n"
+                                       << "    collar value: " << collar.NPV());
+
+
+                            // test re-composition by optionlets, N.B. ONE per year
+                            Real capletsNPV = 0.0;
+                            std::vector<ext::shared_ptr<YoYInflationCapFloor> > caplets;
+                            for (Integer m = 0; m < length * 1; m++) {
+                                caplets.push_back(cap->optionlet(m));
+                                caplets[m]->setPricingEngine(vars.makeEngine(vol, whichPricer));
+                                capletsNPV += caplets[m]->NPV();
+                            }
+
+                            if (std::fabs(cap->NPV() - capletsNPV) > 1e-6) {
+                                BOOST_FAIL("sum of caplet NPVs does not equal cap NPV:\n"
+                                           << "    length:       " << length << " years\n"
+                                           << "    volatility:   " << io::volatility(vol) << "\n"
+                                           << "    cap value:    " << cap->NPV()
+                                           << " at strike: " << io::rate(cap_rate) << "\n"
+                                           << "    sum of caplets value:  " << capletsNPV
+                                           << " at strike (first): "
+                                           << io::rate(caplets[0]->capRates()[0]) << "\n");
+                            }
+
+                            Real floorletsNPV = 0.0;
+                            std::vector<ext::shared_ptr<YoYInflationCapFloor> > floorlets;
+                            for (Integer m = 0; m < length * 1; m++) {
+                                floorlets.push_back(floor->optionlet(m));
+                                floorlets[m]->setPricingEngine(vars.makeEngine(vol, whichPricer));
+                                floorletsNPV += floorlets[m]->NPV();
+                            }
+
+                            if (std::fabs(floor->NPV() - floorletsNPV) > 1e-6) {
+                                BOOST_FAIL("sum of floorlet NPVs does not equal floor NPV:\n"
+                                           << "    length:       " << length << " years\n"
+                                           << "    volatility:   " << io::volatility(vol) << "\n"
+                                           << "    cap value:    " << floor->NPV()
+                                           << " at strike: " << io::rate(floor_rate) << "\n"
+                                           << "    sum of floorlets value:  " << floorletsNPV
+                                           << " at strike (first): "
+                                           << io::rate(floorlets[0]->floorRates()[0]) << "\n");
+                            }
+
+                            Real collarletsNPV = 0.0;
+                            std::vector<ext::shared_ptr<YoYInflationCapFloor> > collarlets;
+                            for (Integer m = 0; m < length * 1; m++) {
+                                collarlets.push_back(collar.optionlet(m));
+                                collarlets[m]->setPricingEngine(vars.makeEngine(vol, whichPricer));
+                                collarletsNPV += collarlets[m]->NPV();
+                            }
+
+                            if (std::fabs(collar.NPV() - collarletsNPV) > 1e-6) {
+                                BOOST_FAIL("sum of collarlet NPVs does not equal collar NPV:\n"
+                                           << "    length:       " << length << " years\n"
+                                           << "    volatility:   " << io::volatility(vol) << "\n"
+                                           << "    cap value:    " << collar.NPV()
+                                           << " at strike floor: " << io::rate(floor_rate)
+                                           << " at strike cap: " << io::rate(cap_rate) << "\n"
+                                           << "    sum of collarlets value:  " << collarletsNPV
+                                           << " at strike floor (first): "
+                                           << io::rate(collarlets[0]->floorRates()[0])
+                                           << " at strike cap (first): "
+                                           << io::rate(collarlets[0]->capRates()[0]) << "\n");
+                            }
                         }
-
-                        Real floorletsNPV = 0.0;
-                        std::vector<ext::shared_ptr<YoYInflationCapFloor> > floorlets;
-                        for (Integer m=0; m<lengths[i]*1; m++) {
-                            floorlets.push_back(floor->optionlet(m));
-                            floorlets[m]->setPricingEngine(vars.makeEngine(vols[l], whichPricer));
-                            floorletsNPV += floorlets[m]->NPV();
-                        }
-
-                        if (std::fabs(floor->NPV() - floorletsNPV) > 1e-6) {
-                            BOOST_FAIL(
-                                       "sum of floorlet NPVs does not equal floor NPV:\n"
-                                       << "    length:       " << lengths[i] << " years\n"
-                                       << "    volatility:   " << io::volatility(vols[l]) << "\n"
-                                       << "    cap value:    " << floor->NPV()
-                                       << " at strike: " << io::rate(floor_rates[j]) << "\n"
-                                       << "    sum of floorlets value:  " << floorletsNPV
-                                       << " at strike (first): " << io::rate(floorlets[0]->floorRates()[0]) << "\n"
-                                       );
-                        }
-
-                        Real collarletsNPV = 0.0;
-                        std::vector<ext::shared_ptr<YoYInflationCapFloor> > collarlets;
-                        for (Integer m=0; m<lengths[i]*1; m++) {
-                            collarlets.push_back(collar.optionlet(m));
-                            collarlets[m]->setPricingEngine(vars.makeEngine(vols[l], whichPricer));
-                            collarletsNPV += collarlets[m]->NPV();
-                        }
-
-                        if (std::fabs(collar.NPV() - collarletsNPV) > 1e-6) {
-                            BOOST_FAIL(
-                                       "sum of collarlet NPVs does not equal floor NPV:\n"
-                                       << "    length:       " << lengths[i] << " years\n"
-                                       << "    volatility:   " << io::volatility(vols[l]) << "\n"
-                                       << "    cap value:    " << collar.NPV()
-                                       << " at strike floor: " << io::rate(floor_rates[j])
-                                       << " at strike cap: " << io::rate(cap_rates[j]) << "\n"
-                                       << "    sum of collarlets value:  " << collarletsNPV
-                                       << " at strike floor (first): " << io::rate(collarlets[0]->floorRates()[0])
-                                       << " at strike cap (first): " << io::rate(collarlets[0]->capRates()[0]) << "\n"
-                                       );
-                        }
-
-
-
-
                     }
                 }
             }
         }
-    }
     } // pricer loop
     // remove circular refernce
     vars.hy.linkTo(ext::shared_ptr<YoYInflationTermStructure>());
@@ -421,22 +412,20 @@ void InflationCapFloorTest::testParity() {
 
     // cap-floor-swap parity is model-independent
     for (Size whichPricer = 0; whichPricer < 3; whichPricer++) {
-        for (Size i=0; i<LENGTH(lengths); i++) {
-            for (Size j=0; j<LENGTH(strikes); j++) {
-                for (Size k=0; k<LENGTH(vols); k++) {
+        for (int& length : lengths) {
+            for (double strike : strikes) {
+                for (double vol : vols) {
 
-                    Leg leg = vars.makeYoYLeg(vars.evaluationDate,lengths[i]);
+                    Leg leg = vars.makeYoYLeg(vars.evaluationDate, length);
 
-                    ext::shared_ptr<Instrument> cap
-                    = vars.makeYoYCapFloor(YoYInflationCapFloor::Cap,
-                                       leg, strikes[j], vols[k], whichPricer);
+                    ext::shared_ptr<Instrument> cap = vars.makeYoYCapFloor(
+                        YoYInflationCapFloor::Cap, leg, strike, vol, whichPricer);
 
-                    ext::shared_ptr<Instrument> floor
-                    = vars.makeYoYCapFloor(YoYInflationCapFloor::Floor,
-                                       leg, strikes[j], vols[k], whichPricer);
+                    ext::shared_ptr<Instrument> floor = vars.makeYoYCapFloor(
+                        YoYInflationCapFloor::Floor, leg, strike, vol, whichPricer);
 
                     Date from = vars.nominalTS->referenceDate();
-                    Date to = from+lengths[i]*Years;
+                    Date to = from + length * Years;
                     Schedule yoySchedule = MakeSchedule().from(from).to(to)
                     .withTenor(1*Years)
                     .withCalendar(UnitedKingdom())
@@ -444,34 +433,26 @@ void InflationCapFloorTest::testParity() {
                     .backwards()
                     ;
 
-                    YearOnYearInflationSwap swap(YearOnYearInflationSwap::Payer,
-                                                1000000.0,
-                                                yoySchedule,//fixed schedule, but same as yoy
-                                                strikes[j],
-                                                vars.dc,
-                                                yoySchedule,
-                                                vars.iir,
-                                                vars.observationLag,
-                                                0.0,        //spread on index
-                                                vars.dc,
-                                                UnitedKingdom());
+                    YearOnYearInflationSwap swap(Swap::Payer, 1000000.0,
+                                                 yoySchedule, // fixed schedule, but same as yoy
+                                                 strike, vars.dc, yoySchedule, vars.iir,
+                                                 vars.observationLag,
+                                                 0.0, // spread on index
+                                                 vars.dc, UnitedKingdom());
 
                     Handle<YieldTermStructure> hTS(vars.nominalTS);
                     ext::shared_ptr<PricingEngine> sppe(new DiscountingSwapEngine(hTS));
                     swap.setPricingEngine(sppe);
-                    setCouponPricer(swap.yoyLeg(),
-                                    ext::make_shared<YoYInflationCouponPricer>(vars.nominalTS));
 
                     // N.B. nominals are 10e6
                     if (std::fabs((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-6) {
-                        BOOST_FAIL(
-                               "put/call parity violated:\n"
-                               << "    length:      " << lengths[i] << " years\n"
-                               << "    volatility:  " << io::volatility(vols[k]) << "\n"
-                               << "    strike:      " << io::rate(strikes[j]) << "\n"
-                               << "    cap value:   " << cap->NPV() << "\n"
-                               << "    floor value: " << floor->NPV() << "\n"
-                               << "    swap value:  " << swap.NPV());
+                        BOOST_FAIL("put/call parity violated:\n"
+                                   << "    length:      " << length << " years\n"
+                                   << "    volatility:  " << io::volatility(vol) << "\n"
+                                   << "    strike:      " << io::rate(strike) << "\n"
+                                   << "    cap value:   " << cap->NPV() << "\n"
+                                   << "    floor value: " << floor->NPV() << "\n"
+                                   << "    swap value:  " << swap.NPV());
                     }
                 }
             }
@@ -560,7 +541,7 @@ void InflationCapFloorTest::testCachedValue() {
 
 
 test_suite* InflationCapFloorTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Inflation (year-on-year) Cap and floor tests");
+    auto* suite = BOOST_TEST_SUITE("Inflation (year-on-year) Cap and floor tests");
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFloorTest::testConsistency));
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFloorTest::testParity));
     suite->add(QUANTLIB_TEST_CASE(&InflationCapFloorTest::testCachedValue));

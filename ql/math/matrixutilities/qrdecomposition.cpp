@@ -23,6 +23,7 @@
 
 #include <ql/math/optimization/lmdif.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
+#include <memory>
 
 namespace QuantLib {
 
@@ -33,9 +34,9 @@ namespace QuantLib {
         const Size m = M.rows();
         const Size n = M.columns();
 
-        boost::scoped_array<int> lipvt(new int[n]);
-        boost::scoped_array<Real> rdiag(new Real[n]);
-        boost::scoped_array<Real> wa(new Real[n]);
+        std::unique_ptr<int[]> lipvt(new int[n]);
+        std::unique_ptr<Real[]> rdiag(new Real[n]);
+        std::unique_ptr<Real[]> wa(new Real[n]);
 
         MINPACK::qrfac(m, n, mT.begin(), 0, (pivot)?1:0,
                        lipvt.get(), n, rdiag.get(), rdiag.get(), wa.get());
@@ -133,13 +134,13 @@ namespace QuantLib {
 
         std::vector<Size> lipvt = qrDecomposition(a, q, r, pivot);
 
-        boost::scoped_array<int> ipvt(new int[n]);
+        std::unique_ptr<int[]> ipvt(new int[n]);
         std::copy(lipvt.begin(), lipvt.end(), ipvt.get());
 
         Matrix rT = transpose(r);
 
-        boost::scoped_array<Real> sdiag(new Real[n]);
-        boost::scoped_array<Real> wa(new Real[n]);
+        std::unique_ptr<Real[]> sdiag(new Real[n]);
+        std::unique_ptr<Real[]> wa(new Real[n]);
 
         Array ld(n, 0.0);
         if (!d.empty()) {

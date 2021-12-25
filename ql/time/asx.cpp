@@ -32,6 +32,7 @@
 #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
+#include <string>
 
 using boost::algorithm::to_upper_copy;
 using std::string;
@@ -155,9 +156,7 @@ namespace QuantLib {
         else if (ms=="Z") m = December;
         else QL_FAIL("invalid ASX month letter");
 
-//        Year y = boost::lexical_cast<Year>(); // lexical_cast causes compilation errors with x64
-
-        Year y= io::to_integer(code.substr(1,1));
+        Year y = std::stoi(code.substr(1,1));
         /* year<1900 are not valid QuantLib years: to avoid a run-time
            exception few lines below we need to add 10 years right away */
         if (y==0 && referenceDate.year()<=1909) y+=10;
