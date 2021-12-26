@@ -27,8 +27,10 @@
 
 class BasisSwapRateHelpersTest {
   public:
-    static void testBaseCurveBootstrap();
-    static void testOtherCurveBootstrap();
+    static void testIborIborBaseCurveBootstrap();
+    static void testIborIborOtherCurveBootstrap();
+    static void testOvernightIborBootstrap();
+    static void testOvernightIborBootstrapWithDiscountCurve();
 
     static boost::unit_test_framework::test_suite* suite();
 };

@@ -18,6 +18,7 @@
 */
 
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/experimental/termstructures/basisswapratehelpers.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/utilities/null_deleter.hpp>
@@ -111,6 +112,85 @@ namespace QuantLib {
 
     void IborIborBasisSwapRateHelper::accept(AcyclicVisitor& v) {
         auto* v1 = dynamic_cast<Visitor<IborIborBasisSwapRateHelper>*>(&v);
+        if (v1 != nullptr)
+            v1->visit(*this);
+        else
+            RateHelper::accept(v);
+    }
+
+
+
+    OvernightIborBasisSwapRateHelper::OvernightIborBasisSwapRateHelper(
+        const Handle<Quote>& basis,
+        const Period& tenor,
+        Natural settlementDays,
+        Calendar calendar,
+        BusinessDayConvention convention,
+        bool endOfMonth,
+        const ext::shared_ptr<OvernightIndex>& baseIndex,
+        const ext::shared_ptr<IborIndex>& otherIndex,
+        Handle<YieldTermStructure> discountHandle)
+    : RelativeDateRateHelper(basis), tenor_(tenor), settlementDays_(settlementDays),
+      calendar_(std::move(calendar)), convention_(convention), endOfMonth_(endOfMonth),
+      discountHandle_(std::move(discountHandle)) {
+
+        // we need to clone the index whose forecast curve we want to bootstrap
+        // and copy the other one
+        baseIndex_ = baseIndex;
+        otherIndex_ = otherIndex->clone(termStructureHandle_);
+        otherIndex_->unregisterWith(termStructureHandle_);
+
+        registerWith(baseIndex_);
+        registerWith(otherIndex_);
+        registerWith(discountHandle_);
+
+        initializeDates();
+    }
+
+    void OvernightIborBasisSwapRateHelper::initializeDates() {
+        Date today = Settings::instance().evaluationDate();
+        earliestDate_ = calendar_.advance(today, settlementDays_ * Days, Following);
+        maturityDate_ = calendar_.advance(earliestDate_, tenor_, convention_);
+
+        Schedule schedule =
+            MakeSchedule().from(earliestDate_).to(maturityDate_)
+            .withTenor(otherIndex_->tenor())
+            .withCalendar(calendar_)
+            .withConvention(convention_)
+            .endOfMonth(endOfMonth_)
+            .forwards();
+
+        Leg baseLeg = OvernightLeg(schedule, baseIndex_).withNotionals(100.0);
+
+        Leg otherLeg = IborLeg(schedule, otherIndex_).withNotionals(100.0);
+        auto lastOtherCoupon = ext::dynamic_pointer_cast<IborCoupon>(otherLeg.back());
+
+        latestRelevantDate_ = std::max(maturityDate_, lastOtherCoupon->fixingEndDate());
+        pillarDate_ = latestRelevantDate_;
+
+        swap_ = ext::make_shared<Swap>(baseLeg, otherLeg);
+        swap_->setPricingEngine(ext::make_shared<DiscountingSwapEngine>(
+            discountHandle_.empty() ? termStructureHandle_ : discountHandle_));
+    }
+
+    void OvernightIborBasisSwapRateHelper::setTermStructure(YieldTermStructure* t) {
+        // do not set the relinkable handle as an observer -
+        // force recalculation when needed---the index is not lazy
+        bool observer = false;
+
+        ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
+        termStructureHandle_.linkTo(temp, observer);
+
+        RelativeDateRateHelper::setTermStructure(t);
+    }
+
+    Real OvernightIborBasisSwapRateHelper::impliedQuote() const {
+        swap_->recalculate();
+        return - (swap_->NPV() / swap_->legBPS(0)) * 1.0e-4;
+    }
+
+    void OvernightIborBasisSwapRateHelper::accept(AcyclicVisitor& v) {
+        auto* v1 = dynamic_cast<Visitor<OvernightIborBasisSwapRateHelper>*>(&v);
         if (v1 != nullptr)
             v1->visit(*this);
         else

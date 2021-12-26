@@ -72,6 +72,46 @@ namespace QuantLib {
         RelinkableHandle<YieldTermStructure> termStructureHandle_;
     };
 
+
+    //! Rate helper for bootstrapping over overnight-ibor basis swaps
+    /*! The swap is assumed to pay baseIndex + basis and receive
+        otherIndex.  This helper can be used to bootstrap the forecast
+        curve for otherIndex; baseIndex will need an existing forecast
+        curve.  An exogenous discount curve can be passed; if not,
+        the overnight-index curve will be used.
+    */
+    class OvernightIborBasisSwapRateHelper : public RelativeDateRateHelper {
+      public:
+        OvernightIborBasisSwapRateHelper(const Handle<Quote>& basis,
+                                         const Period& tenor,
+                                         Natural settlementDays,
+                                         Calendar calendar,
+                                         BusinessDayConvention convention,
+                                         bool endOfMonth,
+                                         const ext::shared_ptr<OvernightIndex>& baseIndex,
+                                         const ext::shared_ptr<IborIndex>& otherIndex,
+                                         Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>());
+
+        Real impliedQuote() const override;
+        void accept(AcyclicVisitor&) override;
+      private:
+        void initializeDates() override;
+        void setTermStructure(YieldTermStructure*) override;
+
+        Period tenor_;
+        Natural settlementDays_;
+        Calendar calendar_;
+        BusinessDayConvention convention_;
+        bool endOfMonth_;
+        ext::shared_ptr<OvernightIndex> baseIndex_;
+        ext::shared_ptr<IborIndex> otherIndex_;
+        Handle<YieldTermStructure> discountHandle_;
+
+        ext::shared_ptr<Swap> swap_;
+
+        RelinkableHandle<YieldTermStructure> termStructureHandle_;
+    };
+
 }
 
 #endif
