@@ -11,6 +11,7 @@ QL_TEST_SRCS = \
 	barrieroption.cpp \
 	binaryoption.cpp \
 	basismodels.cpp \
+	basisswapratehelpers.cpp \
 	basketoption.cpp \
 	batesmodel.cpp \
 	bermudanswaption.cpp \
@@ -176,6 +177,7 @@ QL_TEST_HDRS = \
 	barrieroption.hpp \
 	binaryoption.hpp \
 	basismodels.hpp \
+	basisswapratehelpers.hpp \
 	basketoption.hpp \
 	batesmodel.hpp \
 	bermudanswaption.hpp \

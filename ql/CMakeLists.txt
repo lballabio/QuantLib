@@ -223,6 +223,7 @@ set(QL_SOURCES
     experimental/swaptions/haganirregularswaptionengine.cpp
     experimental/swaptions/irregularswap.cpp
     experimental/swaptions/irregularswaption.cpp
+    experimental/termstructures/basisswapratehelpers.cpp
     experimental/termstructures/crosscurrencyratehelpers.cpp
     experimental/variancegamma/analyticvariancegammaengine.cpp
     experimental/variancegamma/fftengine.cpp
@@ -1205,6 +1206,7 @@ set(QL_HEADERS
     experimental/swaptions/haganirregularswaptionengine.hpp
     experimental/swaptions/irregularswap.hpp
     experimental/swaptions/irregularswaption.hpp
+    experimental/termstructures/basisswapratehelpers.hpp
     experimental/termstructures/crosscurrencyratehelpers.hpp
     experimental/termstructures/multicurvesensitivities.hpp
     experimental/variancegamma/analyticvariancegammaengine.hpp
