@@ -18,20 +18,20 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/barrieroption/wulinyongdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/SuoWangDoubleBarrierEngine.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <utility>
 
 namespace QuantLib {
 
-    WulinYongDoubleBarrierEngine::WulinYongDoubleBarrierEngine(
+    SuoWangDoubleBarrierEngine::SuoWangDoubleBarrierEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process, int series)
     : process_(std::move(process)), series_(series) {
         registerWith(process_);
     }
 
-    void WulinYongDoubleBarrierEngine::calculate() const {
+    void SuoWangDoubleBarrierEngine::calculate() const {
 
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
@@ -130,40 +130,40 @@ namespace QuantLib {
     }
 
 
-    Real WulinYongDoubleBarrierEngine::strike() const {
+    Real SuoWangDoubleBarrierEngine::strike() const {
         ext::shared_ptr<PlainVanillaPayoff> payoff =
             ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }
 
-    Time WulinYongDoubleBarrierEngine::residualTime() const {
+    Time SuoWangDoubleBarrierEngine::residualTime() const {
         return process_->time(arguments_.exercise->lastDate());
     }
 
-    Volatility WulinYongDoubleBarrierEngine::volatility() const {
+    Volatility SuoWangDoubleBarrierEngine::volatility() const {
         return process_->blackVolatility()->blackVol(residualTime(), strike());
     }
 
-    Rate WulinYongDoubleBarrierEngine::riskFreeRate() const {
+    Rate SuoWangDoubleBarrierEngine::riskFreeRate() const {
         return process_->riskFreeRate()->zeroRate(residualTime(), Continuous,
                                                   NoFrequency);
     }
 
-    DiscountFactor WulinYongDoubleBarrierEngine::riskFreeDiscount() const {
+    DiscountFactor SuoWangDoubleBarrierEngine::riskFreeDiscount() const {
         return process_->riskFreeRate()->discount(residualTime());
     }
 
-    Rate WulinYongDoubleBarrierEngine::dividendYield() const {
+    Rate SuoWangDoubleBarrierEngine::dividendYield() const {
         return process_->dividendYield()->zeroRate(residualTime(),
                                                    Continuous, NoFrequency);
     }
 
-    DiscountFactor WulinYongDoubleBarrierEngine::dividendDiscount() const {
+    DiscountFactor SuoWangDoubleBarrierEngine::dividendDiscount() const {
         return process_->dividendYield()->discount(residualTime());
     }
 
-    Real WulinYongDoubleBarrierEngine::D(Real X, Real lambda, Real sigma, Real T) const {
+    Real SuoWangDoubleBarrierEngine::D(Real X, Real lambda, Real sigma, Real T) const {
         return (std::log(X) + lambda * T)/(sigma * std::sqrt(T));
     }
 

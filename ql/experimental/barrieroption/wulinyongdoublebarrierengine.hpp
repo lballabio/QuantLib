@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file wulinyongdoublebarrierengine.hpp
+/*! \file SuoWangDoubleBarrierEngine.hpp
     \brief Wulin Suo, Yong Wang double-barrier option engine
 */
 
@@ -39,9 +39,9 @@ namespace QuantLib {
         \test the correctness of the returned value is tested by
               reproducing results available in literature.
     */
-    class WulinYongDoubleBarrierEngine : public DoubleBarrierOption::engine {
+    class SuoWangDoubleBarrierEngine : public DoubleBarrierOption::engine {
       public:
-        explicit WulinYongDoubleBarrierEngine(
+        explicit SuoWangDoubleBarrierEngine(
             ext::shared_ptr<GeneralizedBlackScholesProcess> process, int series = 5);
         void calculate() const override;
 

@@ -16,7 +16,7 @@ this_include_HEADERS = \
     vannavolgabarrierengine.hpp \
     vannavolgadoublebarrierengine.hpp \
     vannavolgainterpolation.hpp \
-    wulinyongdoublebarrierengine.hpp
+    SuoWangDoubleBarrierEngine.hpp
 
 cpp_files = \
     analyticdoublebarrierbinaryengine.cpp \
@@ -28,7 +28,7 @@ cpp_files = \
     perturbativebarrieroptionengine.cpp \
     quantodoublebarrieroption.cpp \
     vannavolgabarrierengine.cpp \
-    wulinyongdoublebarrierengine.cpp
+    SuoWangDoubleBarrierEngine.cpp
 
 if UNITY_BUILD
 

@@ -62,7 +62,7 @@ set(QL_SOURCES
     experimental/barrieroption/perturbativebarrieroptionengine.cpp
     experimental/barrieroption/quantodoublebarrieroption.cpp
     experimental/barrieroption/vannavolgabarrierengine.cpp
-    experimental/barrieroption/wulinyongdoublebarrierengine.cpp
+    experimental/barrieroption/SuoWangDoubleBarrierEngine.cpp
     experimental/basismodels/swaptioncfs.cpp
     experimental/basismodels/tenoroptionletvts.cpp
     experimental/basismodels/tenorswaptionvts.cpp
@@ -995,7 +995,7 @@ set(QL_HEADERS
     experimental/barrieroption/vannavolgabarrierengine.hpp
     experimental/barrieroption/vannavolgadoublebarrierengine.hpp
     experimental/barrieroption/vannavolgainterpolation.hpp
-    experimental/barrieroption/wulinyongdoublebarrierengine.hpp
+    experimental/barrieroption/SuoWangDoubleBarrierEngine.hpp
     experimental/basismodels/swaptioncfs.hpp
     experimental/basismodels/tenoroptionletvts.hpp
     experimental/basismodels/tenorswaptionvts.hpp
