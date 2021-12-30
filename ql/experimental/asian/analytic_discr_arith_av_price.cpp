@@ -47,7 +47,22 @@ void AnalyticDiscreteArithmeticAveragePriceAsianEngine::calculate() const {
         ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
     QL_REQUIRE(payoff, "non-plain payoff given");
 
+    // TODO: If not model dependent, return early.
     Size m = arguments_.fixingDates.size() + pastFixings;
+    /*if (pastFixings > 0) {
+
+        if (accruedAverage > 1.0 * arguments_.fixingDates.size() / pastFixings * payoff->strike()) {
+            if (payoff->optionType() == Option::Type::Call) {
+                results_.value = 1010101;
+            } else if (payoff->optionType() == Option::Type::Put) {
+                results_.value = 0;
+                return;
+            } else {
+                QL_FAIL("unexpected option type " << payoff->optionType());
+            }
+        }
+    }*/
+
     // We will read the volatility off the surface at the effective strike
     // We should only get this far when the effectiveStrike > 0 but will check anyway
     Real effectiveStrike = payoff->strike() - accruedAverage;
