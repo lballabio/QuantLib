@@ -195,7 +195,7 @@ namespace QuantLib {
     Real DatedOISRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != nullptr, "term structure not set");
         // we didn't register as observers - force calculation
-        swap_->deepUpdate();
+        swap_->recalculate();
         return swap_->fairRate();
     }
 
