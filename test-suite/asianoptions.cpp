@@ -6,6 +6,7 @@
  Copyright (C) 2009, 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
  Copyright (C) 2014 Bernd Lewerenz
  Copyright (C) 2020, 2021 Jack Gillett
+ Copyright (C) 2021 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,6 +40,7 @@
 #include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
 #include <ql/experimental/asian/analytic_cont_geom_av_price_heston.hpp>
 #include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
+#include <ql/experimental/asian/analytic_discr_arith_av_price.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -974,6 +976,18 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
                             qRate->value(), rRate->value(), today,
                             vol->value(), expected, calculated, tolerance);
             }
+        }
+
+        engine = ext::make_shared<AnalyticDiscreteArithmeticAveragePriceAsianEngine>(stochProcess);
+        option.setPricingEngine(engine);
+        calculated = option.NPV();
+        tolerance = 3.0e-2;
+        if (std::fabs(calculated - expected) > tolerance) {
+            BOOST_TEST_MESSAGE(
+                "The consistency check of the analytic approximation engine failed");
+            REPORT_FAILURE("value", averageType, runningSum, pastFixings, fixingDates, payoff,
+                           exercise, spot->value(), qRate->value(), rRate->value(), today,
+                           vol->value(), expected, calculated, tolerance);
         }
     }
 }
@@ -2092,6 +2106,142 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston() {
 
 }
 
+namespace {
+    struct DiscreteAverageDataTermStructure {
+        Option::Type type;
+        Real underlying;
+        Real strike;
+        Rate b;
+        Rate riskFreeRate;
+        Time first; // t1
+        Time expiry;
+        Size fixings;
+        Volatility volatility;
+        std::string slope;
+        Real result;
+    };
+}
+
+void AsianOptionTest::testAnalyticDiscreteArithmeticAveragePrice() {
+
+    BOOST_TEST_MESSAGE("Testing Turnbull-Wakeman engine for discrete-time arithmetic average-rate "
+                       "Asians options with term structure support...");
+
+    // Data from Haug, "Option Pricing Formulas", Table 4-28, p.201
+    // Type, underlying, strike, b, rfRate, t1, expiry, fixings, base vol, slope, expected result
+    DiscreteAverageDataTermStructure cases[] = {
+        {Option::Call, 100, 80, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "flat", 19.5152},
+        {Option::Call, 100, 80, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "up", 19.5063},
+        {Option::Call, 100, 80, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "down", 19.5885},
+        {Option::Put, 100, 80, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "flat", 0.0090},
+        {Option::Put, 100, 80, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "up", 0.0001},
+        {Option::Put, 100, 80, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "down", 0.0823},
+
+        {Option::Call, 100, 90, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "flat", 10.1437},
+        {Option::Call, 100, 90, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "up", 9.8313},
+        {Option::Call, 100, 90, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "down", 10.7062},
+        {Option::Put, 100, 90, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "flat", 0.3906},
+        {Option::Put, 100, 90, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "up", 0.0782},
+        {Option::Put, 100, 90, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "down", 0.9531},
+
+        {Option::Call, 100, 100, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "flat", 3.2700},
+        {Option::Call, 100, 100, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "up", 2.2819},
+        {Option::Call, 100, 100, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "down", 4.3370},
+        {Option::Put, 100, 100, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "flat", 3.2700},
+        {Option::Put, 100, 100, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "up", 2.2819},
+        {Option::Put, 100, 100, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "down", 4.3370},
+
+        {Option::Call, 100, 110, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "flat", 0.5515},
+        {Option::Call, 100, 110, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "up", 0.1314},
+        {Option::Call, 100, 110, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "down", 1.2429},
+        {Option::Put, 100, 110, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "flat", 10.3046},
+        {Option::Put, 100, 110, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "up", 9.8845},
+        {Option::Put, 100, 110, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "down", 10.9960},
+
+        {Option::Call, 100, 120, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "flat", 0.0479},
+        {Option::Call, 100, 120, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "up", 0.0016},
+        {Option::Call, 100, 120, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "down", 0.2547},
+        {Option::Put, 100, 120, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "flat", 19.5541},
+        {Option::Put, 100, 120, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "up", 19.5078},
+        {Option::Put, 100, 120, 0, 0.05, 1.0 / 52, 0.5, 26, 0.2, "down", 19.7609}};
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+
+    for (auto& l : cases) {
+        Time dt = (l.expiry - l.first) / (l.fixings - 1);
+        std::vector<Date> fixingDates(l.fixings);
+        fixingDates[0] = today + timeToDays(l.first, 360);
+
+        for (Size i = 1; i < l.fixings; i++) {
+            fixingDates[i] = today + timeToDays(i * dt + l.first, 360);
+        }
+
+        // Set up market data
+        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(l.underlying));
+        ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, l.b + l.riskFreeRate, dc);
+        ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, l.riskFreeRate, dc);
+        ext::shared_ptr<BlackVolTermStructure> volTS;
+        Volatility volSlope = 0.005;
+        if (l.slope == "flat") {
+            volTS = flatVol(today, l.volatility, dc);
+        } else if (l.slope == "up") {
+            std::vector<Volatility> volatilities(l.fixings);
+            for (Size i = 0; i < l.fixings; ++i) {
+                // Loop to fill a vector of vols from 7.5 % to 20 %
+                volatilities[i] = l.volatility - (l.fixings - 1) * volSlope + i * volSlope;
+            }
+            volTS =
+                ext::make_shared<BlackVarianceCurve>(today, fixingDates, volatilities, dc, true);
+        } else if (l.slope == "down") {
+            std::vector<Volatility> volatilities(l.fixings);
+            for (Size i = 0; i < l.fixings; ++i) {
+                // Loop to fill a vector of vols from 32.5 % to 20 %
+                volatilities[i] = l.volatility + (l.fixings - 1) * volSlope - i * volSlope;
+            }
+            volTS =
+                ext::make_shared<BlackVarianceCurve>(today, fixingDates, volatilities, dc, false);
+        } else {
+            QL_FAIL("unexpected slope type in engine test case");
+        }
+
+        Average::Type averageType = Average::Arithmetic;
+
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(l.type, l.strike));
+
+        Date maturity = today + timeToDays(l.expiry, 360);
+
+        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
+
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new BlackScholesMertonProcess(
+            Handle<Quote>(spot), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
+            Handle<BlackVolTermStructure>(volTS)));
+
+        // Construct engine
+        ext::shared_ptr<PricingEngine> engine(
+            new AnalyticDiscreteArithmeticAveragePriceAsianEngine(stochProcess));
+
+        DiscreteAveragingAsianOption option(averageType, 0, 0, fixingDates, payoff, exercise);
+        option.setPricingEngine(engine);
+
+        Real calculated = option.NPV();
+        Real expected = l.result;
+        Real tolerance = 2.5e-3;
+        Real error = std::fabs(expected - calculated);
+        if (error > tolerance) {
+            BOOST_ERROR(
+                "Failed to reproduce expected NPV:"
+                << "\n    type:            " << l.type << "\n    spot:            " << l.underlying
+                << "\n    strike:          " << l.strike << "\n    dividend yield:  "
+                << l.b + l.riskFreeRate << "\n    risk-free rate:  " << l.riskFreeRate
+                << "\n    volatility:      " << l.volatility << "\n    slope:           " << l.slope
+                << "\n    reference date:  " << today << "\n    expiry:          " << l.expiry
+                << "\n    expected value:  " << expected << "\n    calculated:      " << calculated
+                << "\n    error:           " << error);
+        }
+    }
+}
+
 test_suite* AsianOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Asian option tests");
 
@@ -2124,6 +2274,7 @@ test_suite* AsianOptionTest::experimental(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticContinuousGeometricAveragePriceHeston));
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston));
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteArithmeticAveragePrice));
 
     return suite;
 }
