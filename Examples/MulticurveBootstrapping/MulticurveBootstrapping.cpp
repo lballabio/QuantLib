@@ -606,6 +606,7 @@ int main(int, char* []) {
                 termStructureDayCounter,
                 PiecewiseYieldCurve<Discount, Cubic>::bootstrap_type(tolerance)));
 
+        forecastingTermStructure.linkTo(euribor6MTermStructure);
 
         /*********************
         * SWAPS TO BE PRICED *
@@ -668,33 +669,35 @@ int main(int, char* []) {
         * SWAP PRICING *
         ****************/
 
-        // utilities for reporting
+        // utilities for formatting the report
+
+        std::ostringstream s1;
+        s1 << "5-years swap paying " << std::setprecision(2) << io::rate(fixedRate);
+        std::string case1 = s1.str();
+
+        std::ostringstream s2;
+        s2 << "5-years, 1-year forward swap paying " << std::setprecision(2) << io::rate(fixedRate);
+        std::string case2 = s2.str();
+
         std::vector<std::string> headers(4);
-        headers[0] = "term structure";
+        headers[0] = std::string(std::max(case1.size(), case2.size()) + 1, ' ');
         headers[1] = "net present value";
         headers[2] = "fair spread";
         headers[3] = "fair fixed rate";
         std::string separator = " | ";
-        Size width = headers[0].size() + separator.size()
-                   + headers[1].size() + separator.size()
-                   + headers[2].size() + separator.size()
-                   + headers[3].size() + separator.size() - 1;
+        std::string header = headers[0] + separator + headers[1] + separator + headers[2] + separator + headers[3];
+        Size width = header.size();
         std::string rule(width, '-'), dblrule(width, '=');
-        std::string tab(8, ' ');
 
         // calculations
+
         std::cout << dblrule << std::endl;
-        std::cout <<  "5-year market swap-rate = "
+        std::cout << " With 5-year market swap-rate = "
                   << std::setprecision(2) << io::rate(s5yRate->value())
                   << std::endl;
-        std::cout << dblrule << std::endl;
+        std::cout << rule << std::endl;
 
-        std::cout << tab << "5-years swap paying "
-                  << io::rate(fixedRate) << std::endl;
-        std::cout << headers[0] << separator
-                  << headers[1] << separator
-                  << headers[2] << separator
-                  << headers[3] << separator << std::endl;
+        std::cout << header << std::endl;
         std::cout << rule << std::endl;
 
         Real NPV;
@@ -707,100 +710,42 @@ int main(int, char* []) {
         spot5YearSwap.setPricingEngine(swapEngine);
         oneYearForward5YearSwap.setPricingEngine(swapEngine);
 
-        // Of course, you're not forced to really use different curves
-        forecastingTermStructure.linkTo(euribor6MTermStructure);
-        discountingTermStructure.linkTo(eoniaTermStructure);
-
         NPV = spot5YearSwap.NPV();
         fairSpread = spot5YearSwap.fairSpread();
         fairRate = spot5YearSwap.fairRate();
 
         std::cout << std::setw(headers[0].size())
-                  << "eonia disc" << separator;
+                  << case1 << separator;
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << io::rate(fairRate) << separator;
+                  << io::rate(fairRate);
         std::cout << std::endl;
 
+        std::cout << rule << std::endl;
 
         // let's check that the 5 years swap has been correctly re-priced
         QL_REQUIRE(std::fabs(fairRate-s5yRate->value())<1e-8,
                    "5-years swap mispriced by "
                    << io::rate(std::fabs(fairRate-s5yRate->value())));
 
-
-        forecastingTermStructure.linkTo(euribor6MTermStructure);
-        discountingTermStructure.linkTo(euribor6MTermStructure);
-
-        NPV = spot5YearSwap.NPV();
-        fairSpread = spot5YearSwap.fairSpread();
-        fairRate = spot5YearSwap.fairRate();
-
-        std::cout << std::setw(headers[0].size())
-                  << "euribor disc" << separator;
-        std::cout << std::setw(headers[1].size())
-                  << std::fixed << std::setprecision(2) << NPV << separator;
-        std::cout << std::setw(headers[2].size())
-                  << io::rate(fairSpread) << separator;
-        std::cout << std::setw(headers[3].size())
-                  << io::rate(fairRate) << separator;
-        std::cout << std::endl;
-
-        QL_REQUIRE(std::fabs(fairRate-s5yRate->value())<1e-8,
-                  "5-years swap mispriced!");
-
-
-        std::cout << rule << std::endl;
-
         // now let's price the 1Y forward 5Y swap
 
-        std::cout << tab << "5-years, 1-year forward swap paying "
-                  << io::rate(fixedRate) << std::endl;
-        std::cout << headers[0] << separator
-                  << headers[1] << separator
-                  << headers[2] << separator
-                  << headers[3] << separator << std::endl;
-        std::cout << rule << std::endl;
-
-
-        forecastingTermStructure.linkTo(euribor6MTermStructure);
-        discountingTermStructure.linkTo(eoniaTermStructure);
-
         NPV = oneYearForward5YearSwap.NPV();
         fairSpread = oneYearForward5YearSwap.fairSpread();
         fairRate = oneYearForward5YearSwap.fairRate();
 
         std::cout << std::setw(headers[0].size())
-                  << "eonia disc" << separator;
+                  << case2 << separator;
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << io::rate(fairRate) << separator;
+                  << io::rate(fairRate);
         std::cout << std::endl;
-
-        forecastingTermStructure.linkTo(euribor6MTermStructure);
-        discountingTermStructure.linkTo(euribor6MTermStructure);
-
-        NPV = oneYearForward5YearSwap.NPV();
-        fairSpread = oneYearForward5YearSwap.fairSpread();
-        fairRate = oneYearForward5YearSwap.fairRate();
-
-        std::cout << std::setw(headers[0].size())
-            << "euribor disc" << separator;
-        std::cout << std::setw(headers[1].size())
-            << std::fixed << std::setprecision(2) << NPV << separator;
-        std::cout << std::setw(headers[2].size())
-            << io::rate(fairSpread) << separator;
-        std::cout << std::setw(headers[3].size())
-            << io::rate(fairRate) << separator;
-        std::cout << std::endl;
-
-
 
         // now let's say that the 5-years swap rate goes up to 0.009%.
         // A smarter market element--say, connected to a data source-- would
@@ -816,108 +761,52 @@ int main(int, char* []) {
         fiveYearsRate->setValue(0.0090);
 
         std::cout << dblrule << std::endl;
-        std::cout <<  "5-year market swap-rate = "
+        std::cout << " With 5-year market swap-rate = "
                   << io::rate(s5yRate->value()) << std::endl;
-        std::cout << dblrule << std::endl;
+        std::cout << rule << std::endl;
 
-        std::cout << tab << "5-years swap paying "
-                  << io::rate(fixedRate) << std::endl;
-        std::cout << headers[0] << separator
-                  << headers[1] << separator
-                  << headers[2] << separator
-                  << headers[3] << separator << std::endl;
+        std::cout << header << std::endl;
         std::cout << rule << std::endl;
 
         // now get the updated results
-        forecastingTermStructure.linkTo(euribor6MTermStructure);
-        discountingTermStructure.linkTo(eoniaTermStructure);
 
         NPV = spot5YearSwap.NPV();
         fairSpread = spot5YearSwap.fairSpread();
         fairRate = spot5YearSwap.fairRate();
 
         std::cout << std::setw(headers[0].size())
-                  << "eonia disc" << separator;
+                  << case1 << separator;
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << io::rate(fairRate) << separator;
+                  << io::rate(fairRate);
         std::cout << std::endl;
 
         QL_REQUIRE(std::fabs(fairRate-s5yRate->value())<1e-8,
                    "5-years swap mispriced!");
 
-
-        forecastingTermStructure.linkTo(euribor6MTermStructure);
-        discountingTermStructure.linkTo(euribor6MTermStructure);
-
-        NPV = spot5YearSwap.NPV();
-        fairSpread = spot5YearSwap.fairSpread();
-        fairRate = spot5YearSwap.fairRate();
-
-        std::cout << std::setw(headers[0].size())
-                  << "euribor disc" << separator;
-        std::cout << std::setw(headers[1].size())
-                  << std::fixed << std::setprecision(2) << NPV << separator;
-        std::cout << std::setw(headers[2].size())
-                  << io::rate(fairSpread) << separator;
-        std::cout << std::setw(headers[3].size())
-                  << io::rate(fairRate) << separator;
-        std::cout << std::endl;
-
-        QL_REQUIRE(std::fabs(fairRate-s5yRate->value())<1e-8,
-                   "5-years swap mispriced!");
-
-
         std::cout << rule << std::endl;
 
-        // the 1Y forward 5Y swap changes as well
-
-        std::cout << tab << "5-years, 1-year forward swap paying "
-                  << io::rate(fixedRate) << std::endl;
-        std::cout << headers[0] << separator
-                  << headers[1] << separator
-                  << headers[2] << separator
-                  << headers[3] << separator << std::endl;
-        std::cout << rule << std::endl;
-
-
-        forecastingTermStructure.linkTo(euribor6MTermStructure);
-        discountingTermStructure.linkTo(eoniaTermStructure);
+        // the 1Y forward 5Y swap doesn't change;
+        // it depends on the 1-year and 6-years rates, which didn't move
 
         NPV = oneYearForward5YearSwap.NPV();
         fairSpread = oneYearForward5YearSwap.fairSpread();
         fairRate = oneYearForward5YearSwap.fairRate();
 
         std::cout << std::setw(headers[0].size())
-                  << "eonia disc" << separator;
+                  << case2 << separator;
         std::cout << std::setw(headers[1].size())
                   << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << io::rate(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << io::rate(fairRate) << separator;
+                  << io::rate(fairRate);
         std::cout << std::endl;
 
-
-        forecastingTermStructure.linkTo(euribor6MTermStructure);
-        discountingTermStructure.linkTo(euribor6MTermStructure);
-
-        NPV = oneYearForward5YearSwap.NPV();
-        fairSpread = oneYearForward5YearSwap.fairSpread();
-        fairRate = oneYearForward5YearSwap.fairRate();
-
-        std::cout << std::setw(headers[0].size())
-                  << "euribor disc" << separator;
-        std::cout << std::setw(headers[1].size())
-                  << std::fixed << std::setprecision(2) << NPV << separator;
-        std::cout << std::setw(headers[2].size())
-                  << io::rate(fairSpread) << separator;
-        std::cout << std::setw(headers[3].size())
-                  << io::rate(fairRate) << separator;
-        std::cout << std::endl;
+        std::cout << dblrule << std::endl;
 
         return 0;
 
