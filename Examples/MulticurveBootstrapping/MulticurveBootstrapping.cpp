@@ -120,7 +120,7 @@ int main(int, char* []) {
 
         DayCounter depositDayCounter = Actual360();
 
-        for (auto q : depoQuotes) {
+        for (const auto& q : depoQuotes) {
             auto settlementDays = q.first;
             auto quote = q.second;
             auto helper = ext::make_shared<DepositRateHelper>(
@@ -140,7 +140,7 @@ int main(int, char* []) {
             {1 * Months, ext::make_shared<SimpleQuote>(0.00074)}
         };
 
-        for (auto q : shortOisQuotes) {
+        for (const auto& q : shortOisQuotes) {
             auto tenor = q.first;
             auto quote = q.second;
             auto helper = ext::make_shared<OISRateHelper>(
@@ -158,7 +158,7 @@ int main(int, char* []) {
             {{Date(8, May, 2013), Date(12, June, 2013)}, ext::make_shared<SimpleQuote>(-0.000140)},
         };
 
-        for (auto q : datedOisQuotes) {
+        for (const auto& q : datedOisQuotes) {
             auto startDate = q.first.first;
             auto endDate = q.first.second;
             auto quote = q.second;
@@ -190,7 +190,7 @@ int main(int, char* []) {
             {30 * Years, ext::make_shared<SimpleQuote>(0.02038)}
         };
 
-        for (auto q : longOisQuotes) {
+        for (const auto& q : longOisQuotes) {
             auto tenor = q.first;
             auto quote = q.second;
             auto helper = ext::make_shared<OISRateHelper>(
@@ -255,7 +255,7 @@ int main(int, char* []) {
             {18, ext::make_shared<SimpleQuote>(0.004090)}
         };
 
-        for (auto q: fraQuotes) {
+        for (const auto& q : fraQuotes) {
             auto monthsToStart = q.first;
             auto quote = q.second;
             auto helper = ext::make_shared<FraRateHelper>(
@@ -290,7 +290,7 @@ int main(int, char* []) {
         BusinessDayConvention swFixedLegConvention = Unadjusted;
         DayCounter swFixedLegDayCounter = Thirty360(Thirty360::European);
 
-        for (auto q: swapQuotes) {
+        for (const auto& q : swapQuotes) {
             auto tenor = q.first;
             auto quote = q.second;
             auto helper = ext::make_shared<SwapRateHelper>(
