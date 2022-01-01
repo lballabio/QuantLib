@@ -1705,8 +1705,28 @@ void CalendarTest::testChinaSSE() {
     expectedHol.emplace_back(6, October, 2021);
     expectedHol.emplace_back(7, October, 2021);
 
+    // China Shanghai Securities Exchange holiday list in the year 2021
+    expectedHol.emplace_back(3, Jan, 2022);
+    expectedHol.emplace_back(31, Jan, 2022);
+    expectedHol.emplace_back(1, Feb, 2022);
+    expectedHol.emplace_back(2, Feb, 2022);
+    expectedHol.emplace_back(3, Feb, 2022);
+    expectedHol.emplace_back(4, Feb, 2022);
+    expectedHol.emplace_back(4, April, 2022);
+    expectedHol.emplace_back(5, April, 2022);
+    expectedHol.emplace_back(2, May, 2022);
+    expectedHol.emplace_back(3, May, 2022);
+    expectedHol.emplace_back(4, May, 2022);
+    expectedHol.emplace_back(3, June, 2022);
+    expectedHol.emplace_back(12, September, 2022);
+    expectedHol.emplace_back(3, October, 2022);
+    expectedHol.emplace_back(4, October, 2022);
+    expectedHol.emplace_back(5, October, 2022);
+    expectedHol.emplace_back(6, October, 2022);
+    expectedHol.emplace_back(7, October, 2022);
+
     Calendar c = China(China::SSE);
-    std::vector<Date> hol = c.holidayList(Date(1, January, 2014), Date(31, December, 2021));
+    std::vector<Date> hol = c.holidayList(Date(1, January, 2014), Date(31, December, 2022));
 
     for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i] != expectedHol[i])
@@ -1786,10 +1806,18 @@ void CalendarTest::testChinaIB() {
     expectedWorkingWeekEnds.emplace_back(26, September, 2021);
     expectedWorkingWeekEnds.emplace_back(9, October, 2021);
 
+    // China Inter Bank working weekends list in the year 2022
+    expectedWorkingWeekEnds.emplace_back(29, Jan, 2022);
+    expectedWorkingWeekEnds.emplace_back(30, Jan, 2022);
+    expectedWorkingWeekEnds.emplace_back(2, April, 2022);
+    expectedWorkingWeekEnds.emplace_back(24, April, 2022);
+    expectedWorkingWeekEnds.emplace_back(7, May, 2022);
+    expectedWorkingWeekEnds.emplace_back(8, October, 2022);
+    expectedWorkingWeekEnds.emplace_back(9, October, 2022);
 
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2021);
+    Date end(31, Dec, 2022);
 
     Size k = 0;
 
