@@ -29,7 +29,7 @@
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/binomialdoublebarrierengine.hpp>
-#include <ql/experimental/barrieroption/wulinyongdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/suowangdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/vannavolgadoublebarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
@@ -316,7 +316,7 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
 
         // Wulin Suo/Yong Wang engine
         engine = ext::shared_ptr<PricingEngine>(
-                                     new WulinYongDoubleBarrierEngine(stochProcess));
+                                     new SuoWangDoubleBarrierEngine(stochProcess));
         opt.setPricingEngine(engine);
 
         calculated = opt.NPV();
