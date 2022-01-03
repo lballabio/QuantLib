@@ -123,9 +123,7 @@ namespace QuantLib {
 
         Real l1 = std::log(lambda()) / vol;
         Real g1 = l1 / std::sqrt(residualTime());
-        Real g2;
-        if (!fullLookbackPeriod) g2 = l1 / std::sqrt(residualTime() - lookbackPeriodEndTime());
-        
+
         Real n1 = f_(eta*(d1 - g1));
         Real n2 = f_(eta*(d2 - g1));
 
@@ -140,6 +138,7 @@ namespace QuantLib {
         Real n4 = 0, n5 = 0, n6 = 0, n7 = 0;
         if (!fullLookbackPeriod)
         {
+            Real g2 = l1 / std::sqrt(residualTime() - lookbackPeriodEndTime());
             n4 = cnbn2(-eta*(d1+g1), eta*(e1 + g2));
             n5 = cnbn2(-eta*(d1-g1), eta*(e1 - g2));
             n6 = cnbn3(eta*-f2, eta*(d2 - g1));

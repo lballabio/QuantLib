@@ -103,8 +103,12 @@ namespace QuantLib {
 
 
     Date CPICashFlow::baseDate() const {
-        // you may not have a valid date
-        QL_FAIL("no base date specified");
+        Date base = IndexedCashFlow::baseDate();
+        if (base != Date()) {
+            return base;
+        } else {
+            QL_FAIL("no base date specified");
+        }
     }
 
     Real CPICashFlow::baseFixing() const {
