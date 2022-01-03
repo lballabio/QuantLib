@@ -1567,7 +1567,7 @@ void BondTest::testFixedBondWithGivenDates() {
 
 void BondTest::testRiskyBondWithGivenDates() {
 
-    BOOST_TEST_MESSAGE("Testing risky fixed bond engine...");
+    BOOST_TEST_MESSAGE("Testing risky bond engine...");
 
     using namespace bonds_test;
 

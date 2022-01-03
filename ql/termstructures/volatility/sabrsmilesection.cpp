@@ -27,9 +27,10 @@ namespace QuantLib {
     SabrSmileSection::SabrSmileSection(Time timeToExpiry,
                                        Rate forward,
                                        const std::vector<Real>& sabrParams,
-                                       const Real shift)
+                                       const Real shift,
+                                       VolatilityType volatilityType)
         : SmileSection(timeToExpiry,DayCounter(),
-                       ShiftedLognormal,shift),
+                       volatilityType,shift),
           forward_(forward), shift_(shift) {
         initialise(sabrParams);
     }
@@ -38,8 +39,9 @@ namespace QuantLib {
                                        Rate forward,
                                        const std::vector<Real>& sabrParams,
                                        const DayCounter& dc,
-                                       const Real shift)
-        : SmileSection(d, dc,Date(),ShiftedLognormal,shift),
+                                       const Real shift,
+                                       VolatilityType volatilityType)
+        : SmileSection(d, dc,Date(),volatilityType,shift),
           forward_(forward), shift_(shift) {
         initialise(sabrParams);
      }
@@ -62,13 +64,13 @@ namespace QuantLib {
      Real SabrSmileSection::varianceImpl(Rate strike) const {
         strike = std::max(0.00001 - shift(),strike);
         Volatility vol = unsafeShiftedSabrVolatility(
-            strike, forward_, exerciseTime(), alpha_, beta_, nu_, rho_, shift_);
+            strike, forward_, exerciseTime(), alpha_, beta_, nu_, rho_, shift_, volatilityType());
         return vol * vol * exerciseTime();
      }
 
      Real SabrSmileSection::volatilityImpl(Rate strike) const {
         strike = std::max(0.00001 - shift(),strike);
         return unsafeShiftedSabrVolatility(strike, forward_, exerciseTime(),
-                                           alpha_, beta_, nu_, rho_, shift_);
+                                           alpha_, beta_, nu_, rho_, shift_, volatilityType());
      }
 }

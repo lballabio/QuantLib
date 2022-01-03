@@ -43,6 +43,7 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/utilities/null.hpp>
 #include <utility>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
@@ -115,12 +116,13 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
                           const Real errorAccept,
                           const bool useMaxError,
                           const Size maxGuesses,
-                          const std::vector<Real>& addParams = std::vector<Real>())
+                          const std::vector<Real>& addParams = std::vector<Real>(),
+                          VolatilityType volatilityType = VolatilityType::ShiftedLognormal)
     : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin, 1),
       XABRCoeffHolder<Model>(t, forward, params, paramIsFixed, addParams),
       endCriteria_(std::move(endCriteria)), optMethod_(std::move(optMethod)),
       errorAccept_(errorAccept), useMaxError_(useMaxError), maxGuesses_(maxGuesses),
-      vegaWeighted_(vegaWeighted) {
+      vegaWeighted_(vegaWeighted), volatilityType_(volatilityType) {
         // if no optimization method or endCriteria is provided, we provide one
         if (!optMethod_)
             optMethod_ = ext::shared_ptr<OptimizationMethod>(
@@ -237,7 +239,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         }
     }
 
-    Real value(Real x) const override { return this->modelInstance_->volatility(x); }
+    Real value(Real x) const override { return this->modelInstance_->volatility(x, volatilityType_); }
 
     Real primitive(Real) const override { QL_FAIL("XABR primitive not implemented"); }
     Real derivative(Real) const override { QL_FAIL("XABR derivative not implemented"); }
@@ -319,6 +321,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
     const Size maxGuesses_;
     bool vegaWeighted_;
     NoConstraint constraint_;
+    VolatilityType volatilityType_;
 };
 
 } // namespace detail

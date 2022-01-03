@@ -37,12 +37,14 @@ class NoArbSabrSmileSection : public SmileSection {
     NoArbSabrSmileSection(Time timeToExpiry,
                           Rate forward,
                           std::vector<Real> sabrParameters,
-                          Real shift = 0.0);
+                          Real shift = 0.0,
+                          VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
     NoArbSabrSmileSection(const Date& d,
                           Rate forward,
                           std::vector<Real> sabrParameters,
                           const DayCounter& dc = Actual365Fixed(),
-                          Real shift = 0.0);
+                          Real shift = 0.0,
+                          VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
     Real minStrike() const override { return 0.0; }
     Real maxStrike() const override { return QL_MAX_REAL; }
     Real atmLevel() const override { return forward_; }

@@ -326,7 +326,7 @@ void SwapTest::testCachedValue() {
 
 void SwapTest::testThirdWednesdayAdjustment() {
 
-    BOOST_TEST_MESSAGE("Testing third wednesday adjustment...");
+    BOOST_TEST_MESSAGE("Testing third-Wednesday adjustment...");
 
     using namespace swap_test;
 

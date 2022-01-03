@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004, 2005, 2008 StatPro Italia srl
+ Copyright (C) 2016 Quaternion Risk Management Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -182,6 +183,35 @@ namespace QuantLib {
                                          Rounding(),
                                          "%3% %1$.2f"));
         data_ = vebData;
+    }
+
+    // Mexican Unidad de Inversion
+    MXVCurrency::MXVCurrency() {
+        static ext::shared_ptr<Data> mxvData(new Data("Mexican Unidad de Inversion", "MXV", 979,
+                                                        "MXV", "", 1, Rounding(), "1$.2f %3%"));
+        data_ = mxvData;
+    }
+
+    // Unidad de Valor Real
+    COUCurrency::COUCurrency() {
+        static ext::shared_ptr<Data> couData(new Data("Unidad de Valor Real (UVR) (funds code)",
+                                                        "COU", 970, "COU", "", 100, Rounding(),
+                                                        "1$.2f %3%"));
+        data_ = couData;
+    }
+
+    // Unidad de Fomento
+    CLFCurrency::CLFCurrency() {
+        static ext::shared_ptr<Data> clfData(new Data(
+            "Unidad de Fomento (funds code)", "CLF", 990, "CLF", "", 1, Rounding(), "1$.2f %3%"));
+        data_ = clfData;
+    }
+
+    // Uruguayan peso
+    UYUCurrency::UYUCurrency() {
+        static ext::shared_ptr<Data> uyuData(
+            new Data("Uruguayan peso", "UYU", 858, "UYU", "", 1, Rounding(), "1$.2f %3%"));
+        data_ = uyuData;
     }
 
 }

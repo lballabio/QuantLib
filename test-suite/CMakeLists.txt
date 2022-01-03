@@ -8,6 +8,7 @@ set(QL_TEST_SOURCES
     autocovariances.cpp
     barrieroption.cpp
     basismodels.cpp
+    basisswapratehelpers.cpp
     basketoption.cpp
     batesmodel.cpp
     bermudanswaption.cpp
@@ -113,6 +114,7 @@ set(QL_TEST_SOURCES
     operators.cpp
     optimizers.cpp
     optionletstripper.cpp
+    overnightindexedcoupon.cpp
     overnightindexedswap.cpp
     pagodaoption.cpp
     partialtimebarrieroption.cpp
@@ -173,6 +175,7 @@ set(QL_TEST_HEADERS
     autocovariances.hpp
     barrieroption.hpp
     basismodels.hpp
+    basisswapratehelpers.hpp
     basketoption.hpp
     batesmodel.hpp
     bermudanswaption.hpp
@@ -278,6 +281,7 @@ set(QL_TEST_HEADERS
     operators.hpp
     optimizers.hpp
     optionletstripper.hpp
+    overnightindexedcoupon.hpp
     overnightindexedswap.hpp
     pagodaoption.hpp
     paralleltestrunner.hpp

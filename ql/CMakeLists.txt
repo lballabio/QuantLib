@@ -95,8 +95,6 @@ set(QL_SOURCES
     experimental/commodities/unitofmeasure.cpp
     experimental/commodities/unitofmeasureconversion.cpp
     experimental/commodities/unitofmeasureconversionmanager.cpp
-    experimental/convertiblebonds/convertiblebond.cpp
-    experimental/convertiblebonds/discretizedconvertible.cpp
     experimental/coupons/cmsspreadcoupon.cpp
     experimental/coupons/digitalcmsspreadcoupon.cpp
     experimental/coupons/lognormalcmsspreadpricer.cpp
@@ -225,6 +223,7 @@ set(QL_SOURCES
     experimental/swaptions/haganirregularswaptionengine.cpp
     experimental/swaptions/irregularswap.cpp
     experimental/swaptions/irregularswaption.cpp
+    experimental/termstructures/basisswapratehelpers.cpp
     experimental/termstructures/crosscurrencyratehelpers.cpp
     experimental/variancegamma/analyticvariancegammaengine.cpp
     experimental/variancegamma/fftengine.cpp
@@ -284,6 +283,7 @@ set(QL_SOURCES
     instruments/bond.cpp
     instruments/bonds/btp.cpp
     instruments/bonds/cmsratebond.cpp
+    instruments/bonds/convertiblebonds.cpp
     instruments/bonds/cpibond.cpp
     instruments/bonds/fixedratebond.cpp
     instruments/bonds/floatingratebond.cpp
@@ -678,6 +678,7 @@ set(QL_SOURCES
     pricingengines/blackscholescalculator.cpp
     pricingengines/bond/bondfunctions.cpp
     pricingengines/bond/discountingbondengine.cpp
+    pricingengines/bond/discretizedconvertible.cpp
     pricingengines/bond/riskybondengine.cpp
     pricingengines/capfloor/analyticcapfloorengine.cpp
     pricingengines/capfloor/bacheliercapfloorengine.cpp
@@ -1030,10 +1031,6 @@ set(QL_HEADERS
     experimental/commodities/unitofmeasure.hpp
     experimental/commodities/unitofmeasureconversion.hpp
     experimental/commodities/unitofmeasureconversionmanager.hpp
-    experimental/convertiblebonds/binomialconvertibleengine.hpp
-    experimental/convertiblebonds/convertiblebond.hpp
-    experimental/convertiblebonds/discretizedconvertible.hpp
-    experimental/convertiblebonds/tflattice.hpp
     experimental/coupons/cmsspreadcoupon.hpp
     experimental/coupons/digitalcmsspreadcoupon.hpp
     experimental/coupons/lognormalcmsspreadpricer.hpp
@@ -1209,6 +1206,7 @@ set(QL_HEADERS
     experimental/swaptions/haganirregularswaptionengine.hpp
     experimental/swaptions/irregularswap.hpp
     experimental/swaptions/irregularswaption.hpp
+    experimental/termstructures/basisswapratehelpers.hpp
     experimental/termstructures/crosscurrencyratehelpers.hpp
     experimental/termstructures/multicurvesensitivities.hpp
     experimental/variancegamma/analyticvariancegammaengine.hpp
@@ -1308,6 +1306,7 @@ set(QL_HEADERS
     instruments/bond.hpp
     instruments/bonds/btp.hpp
     instruments/bonds/cmsratebond.hpp
+    instruments/bonds/convertiblebonds.hpp
     instruments/bonds/cpibond.hpp
     instruments/bonds/fixedratebond.hpp
     instruments/bonds/floatingratebond.hpp
@@ -1658,6 +1657,7 @@ set(QL_HEADERS
     methods/lattices/lattice.hpp
     methods/lattices/lattice1d.hpp
     methods/lattices/lattice2d.hpp
+    methods/lattices/tflattice.hpp
     methods/lattices/tree.hpp
     methods/lattices/trinomialtree.hpp
     methods/montecarlo/brownianbridge.hpp
@@ -1856,8 +1856,10 @@ set(QL_HEADERS
     pricingengines/blackcalculator.hpp
     pricingengines/blackformula.hpp
     pricingengines/blackscholescalculator.hpp
+    pricingengines/bond/binomialconvertibleengine.hpp
     pricingengines/bond/bondfunctions.hpp
     pricingengines/bond/discountingbondengine.hpp
+    pricingengines/bond/discretizedconvertible.hpp
     pricingengines/bond/riskybondengine.hpp
     pricingengines/capfloor/analyticcapfloorengine.hpp
     pricingengines/capfloor/bacheliercapfloorengine.hpp
@@ -2199,7 +2201,6 @@ set(QL_GENERATED_HEADERS
     ${CMAKE_BINARY_DIR}/ql/experimental/callablebonds/all.hpp
     ${CMAKE_BINARY_DIR}/ql/experimental/catbonds/all.hpp
     ${CMAKE_BINARY_DIR}/ql/experimental/commodities/all.hpp
-    ${CMAKE_BINARY_DIR}/ql/experimental/convertiblebonds/all.hpp
     ${CMAKE_BINARY_DIR}/ql/experimental/coupons/all.hpp
     ${CMAKE_BINARY_DIR}/ql/experimental/credit/all.hpp
     ${CMAKE_BINARY_DIR}/ql/experimental/exoticoptions/all.hpp
@@ -2317,6 +2318,7 @@ add_library(ql_library
     ${QL_GENERATED_HEADERS})
 
 set_target_properties(ql_library PROPERTIES
+    EXPORT_NAME ${PACKAGE_NAME}
     OUTPUT_NAME ${PACKAGE_NAME}
     VERSION ${QUANTLIB_VERSION}
     SOVERSION ${QUANTLIB_VERSION_MAJOR})
@@ -2328,8 +2330,9 @@ target_compile_options(ql_library PRIVATE
     ${OpenMP_CXX_FLAGS})
 
 target_include_directories(ql_library PUBLIC
-    ${CMAKE_BINARY_DIR}
-    ${CMAKE_SOURCE_DIR}
+    $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${QL_INSTALL_INCLUDEDIR}>
     ${Boost_INCLUDE_DIRS}
     ${OpenMP_CXX_INCLUDE_DIRS})
 
@@ -2339,7 +2342,7 @@ target_link_directories(ql_library PUBLIC
 target_link_libraries(ql_library PUBLIC
     ${OpenMP_CXX_LIBRARIES})
 
-install(TARGETS ql_library
+install(TARGETS ql_library EXPORT QuantLibTargets
     ARCHIVE DESTINATION ${QL_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${QL_INSTALL_LIBDIR})
 
@@ -2360,3 +2363,32 @@ foreach(file ${QL_GENERATED_HEADERS})
     file(RELATIVE_PATH path ${CMAKE_BINARY_DIR} ${dir})
     install(FILES ${file} DESTINATION "${QL_INSTALL_INCLUDEDIR}/${path}")
 endforeach()
+
+# Install config scripts for people using `find_package(QuantLib::QuantLib CONFIG ...)`
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_BINARY_DIR}/cmake/QuantLibConfigVersion.cmake"
+    VERSION ${QL_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+export(EXPORT QuantLibTargets
+    FILE "${CMAKE_BINARY_DIR}/cmake/QuantLibTargets.cmake"
+    NAMESPACE QuantLib::
+)
+configure_file("${PROJECT_SOURCE_DIR}/cmake/QuantLibConfig.cmake.in"
+    "${CMAKE_BINARY_DIR}/cmake/QuantLibConfig.cmake"
+    COPYONLY
+)
+configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/QuantLibConfig.cmake.in"
+    "${CMAKE_BINARY_DIR}/cmake/QuantLibConfig.cmake"
+    INSTALL_DESTINATION "${QL_INSTALL_CMAKEDIR}"
+)
+install(EXPORT QuantLibTargets
+    FILE QuantLibTargets.cmake
+    NAMESPACE QuantLib::
+    DESTINATION "${QL_INSTALL_CMAKEDIR}"
+)
+install(FILES "${CMAKE_BINARY_DIR}/cmake/QuantLibConfig.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/QuantLibConfigVersion.cmake"
+    DESTINATION "${QL_INSTALL_CMAKEDIR}"
+)

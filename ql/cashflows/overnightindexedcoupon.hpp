@@ -76,6 +76,7 @@ namespace QuantLib {
         //@{
         //! the date when the coupon is fully determined
         Date fixingDate() const override { return fixingDates_.back(); }
+        Real accruedAmount(const Date&) const override;
         //@}
         //! \name Visitability
         //@{
@@ -86,6 +87,8 @@ namespace QuantLib {
         mutable std::vector<Rate> fixings_;
         Size n_;
         std::vector<Time> dt_;
+
+        Rate averageRate(const Date& date) const;
     };
 
 

@@ -132,7 +132,7 @@ namespace QuantLib {
                         floorletVega = blackFormulaStdDevDerivative(strike,
                             forward, stdDevs[i], discountedAccrual, displacement_) 
                             * sqrtTime;
-                        floorletDelta = Option::Put * blackFormulaAssetItmProbability(
+                        floorletDelta = Integer(Option::Put) * blackFormulaAssetItmProbability(
                                                         Option::Put, strike, forward, 
                                                         stdDevs[i], displacement_);
                     }

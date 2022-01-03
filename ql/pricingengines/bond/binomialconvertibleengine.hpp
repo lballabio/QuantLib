@@ -25,9 +25,9 @@
 #ifndef quantlib_binomial_convertible_engine_hpp
 #define quantlib_binomial_convertible_engine_hpp
 
-#include <ql/experimental/convertiblebonds/convertiblebond.hpp>
-#include <ql/experimental/convertiblebonds/discretizedconvertible.hpp>
-#include <ql/experimental/convertiblebonds/tflattice.hpp>
+#include <ql/instruments/bonds/convertiblebonds.hpp>
+#include <ql/pricingengines/bond/discretizedconvertible.hpp>
+#include <ql/methods/lattices/tflattice.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
@@ -43,21 +43,31 @@ namespace QuantLib {
               checking it against known results in a few corner cases.
     */
     template <class T>
-    class BinomialConvertibleEngine : public ConvertibleBond::option::engine {
+    class BinomialConvertibleEngine : public ConvertibleBond::engine {
       public:
         BinomialConvertibleEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
-                                  Size timeSteps)
-        : process_(std::move(process)), timeSteps_(timeSteps) {
+                                  Size timeSteps,
+                                  const Handle<Quote>& creditSpread,
+                                  DividendSchedule dividends = DividendSchedule())
+        : process_(std::move(process)), timeSteps_(timeSteps),
+          dividends_(std::move(dividends)), creditSpread_(creditSpread)
+           {
             QL_REQUIRE(timeSteps>0,
                        "timeSteps must be positive, " << timeSteps <<
                        " not allowed");
+
             registerWith(process_);
+            registerWith(creditSpread);
         }
         void calculate() const override;
+        const Handle<Quote>& creditSpread() const { return creditSpread_; }
+        const DividendSchedule& dividends() const { return dividends_; }
 
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_;
+        DividendSchedule dividends_;
+        Handle<Quote> creditSpread_;
     };
 
 
@@ -72,62 +82,50 @@ namespace QuantLib {
         Real s0 = process_->x0();
         QL_REQUIRE(s0 > 0.0, "negative or null underlying");
         Volatility v = process_->blackVolatility()->blackVol(
-                                         arguments_.exercise->lastDate(), s0);
+            arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
         Rate riskFreeRate = process_->riskFreeRate()->zeroRate(
-                                 maturityDate, rfdc, Continuous, NoFrequency);
+            maturityDate, rfdc, Continuous, NoFrequency);
         Rate q = process_->dividendYield()->zeroRate(
-                                maturityDate, divdc, Continuous, NoFrequency);
+            maturityDate, divdc, Continuous, NoFrequency);
         Date referenceDate = process_->riskFreeRate()->referenceDate();
 
         // subtract dividends
         Size i;
-        for (i=0; i<arguments_.dividends.size(); i++) {
-            if (arguments_.dividends[i]->date() >= referenceDate)
-                s0 -= arguments_.dividends[i]->amount() *
-                      process_->riskFreeRate()->discount(
-                                             arguments_.dividends[i]->date());
+        for (i=0; i<dividends_.size(); i++) {
+            if (dividends_[i]->date() >= referenceDate)
+                s0 -= dividends_[i]->amount() *
+                      process_->riskFreeRate()->discount(dividends_[i]->date());
         }
         QL_REQUIRE(s0 > 0.0,
-                   "negative value after subtracting dividends");
+            "negative value after subtracting dividends");
 
         // binomial trees with constant coefficient
         Handle<Quote> underlying(ext::shared_ptr<Quote>(new SimpleQuote(s0)));
-        Handle<YieldTermStructure> flatRiskFree(
-            ext::shared_ptr<YieldTermStructure>(
-                new FlatForward(referenceDate, riskFreeRate, rfdc)));
+        Handle<YieldTermStructure> flatRiskFree(ext::shared_ptr<YieldTermStructure>(
+            new FlatForward(referenceDate, riskFreeRate, rfdc)));
         Handle<YieldTermStructure> flatDividends(
-            ext::shared_ptr<YieldTermStructure>(
-                new FlatForward(referenceDate, q, divdc)));
-        Handle<BlackVolTermStructure> flatVol(
-            ext::shared_ptr<BlackVolTermStructure>(
-                new BlackConstantVol(referenceDate, volcal, v, voldc)));
+            ext::shared_ptr<YieldTermStructure>(new FlatForward(referenceDate, q, divdc)));
+        Handle<BlackVolTermStructure> flatVol(ext::shared_ptr<BlackVolTermStructure>(
+            new BlackConstantVol(referenceDate, volcal, v, voldc)));
 
-        ext::shared_ptr<PlainVanillaPayoff> payoff =
-            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "non-plain payoff given");
-
-        Time maturity = rfdc.yearFraction(arguments_.settlementDate,
-                                          maturityDate);
+        Time maturity = rfdc.yearFraction(arguments_.settlementDate, maturityDate);
+        Real strike = arguments_.redemption / arguments_.conversionRatio ;
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> bs(
-                 new GeneralizedBlackScholesProcess(underlying, flatDividends,
-                                                    flatRiskFree, flatVol));
-        ext::shared_ptr<T> tree(new T(bs, maturity, timeSteps_,
-                                        payoff->strike()));
+            new GeneralizedBlackScholesProcess(underlying, flatDividends, flatRiskFree, flatVol));
+        ext::shared_ptr<T> tree(new T(bs, maturity, timeSteps_, strike));
 
-        Real creditSpread = arguments_.creditSpread->value();
+        Real creditSpread = creditSpread_->value();
 
-        ext::shared_ptr<Lattice> lattice(
-              new TsiveriotisFernandesLattice<T>(tree,riskFreeRate,maturity,
-                                                 timeSteps_,creditSpread,v,q));
+        ext::shared_ptr<Lattice> lattice(new TsiveriotisFernandesLattice<T>(
+            tree, riskFreeRate, maturity, timeSteps_, creditSpread, v, q));
 
-        DiscretizedConvertible convertible(arguments_, bs,
-                                           TimeGrid(maturity, timeSteps_));
+        DiscretizedConvertible convertible(arguments_, bs, dividends_, creditSpread_, TimeGrid(maturity, timeSteps_));
 
         convertible.initialize(lattice, maturity);
         convertible.rollback(0.0);
-        results_.value = convertible.presentValue();
+        results_.value = results_.settlementValue = convertible.presentValue();
         QL_ENSURE(results_.value < std::numeric_limits<Real>::max(),
                   "floating-point overflow on tree grid");
     }

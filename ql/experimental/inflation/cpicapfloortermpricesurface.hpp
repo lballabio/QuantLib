@@ -86,6 +86,7 @@ namespace QuantLib {
         //@{
         Period observationLag() const override;
         Date baseDate() const override;
+        bool indexIsInterpolated() const override;
         //@}
 
         //! is based on
@@ -204,7 +205,6 @@ namespace QuantLib {
             mutable Interpolation2D capPrice_, floorPrice_;
             mutable Interpolator2D interpolator2d_;
     };
-
 
 
     // template definitions, for some reason DOXYGEN doesn't like the first one
@@ -350,7 +350,7 @@ namespace QuantLib {
         return floorPrice_(t,k);
     }
 
-    // inline
+    // inline definitions
 
     inline Period CPICapFloorTermPriceSurface::observationLag() const {
         return zeroInflationIndex()->zeroInflationTermStructure()->observationLag();
@@ -367,6 +367,12 @@ namespace QuantLib {
     inline BusinessDayConvention
     CPICapFloorTermPriceSurface::businessDayConvention() const {
         return bdc_;
+    }
+
+    inline bool CPICapFloorTermPriceSurface::indexIsInterpolated() const {
+        QL_DEPRECATED_DISABLE_WARNING
+        return indexIsInterpolated_;
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
 }
