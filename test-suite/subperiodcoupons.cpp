@@ -51,7 +51,8 @@ namespace subperiodcoupons_test {
             businessConvention = ModifiedFollowing;
 
             euribor = ext::shared_ptr<IborIndex>(new Euribor6M(euriborHandle));
-            euribor->addFixing(Date(10, February, 2021), 0.0085);
+            euribor->addFixing(Date(8, February, 2021), 0.0085);
+            euribor->addFixing(Date(9, February, 2021), 0.0085);
 
             today = calendar.adjust(Date(15, March, 2021));
             Settings::instance().evaluationDate() = today;
