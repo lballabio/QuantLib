@@ -475,7 +475,7 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
                              spot->value() * qTS->discount(value.t) / rTS->discount(value.t),
                              value.v * sqrt(value.t), rTS->discount(value.t));
             ext::shared_ptr<PricingEngine> vannaVolgaEngine =
-                ext::make_shared<VannaVolgaDoubleBarrierEngine<WulinYongDoubleBarrierEngine> >(
+                ext::make_shared<VannaVolgaDoubleBarrierEngine<SuoWangDoubleBarrierEngine> >(
                                 volAtmQuote,
                                 vol25PutQuote,
                                 vol25CallQuote,
