@@ -60,7 +60,7 @@ namespace subperiodcoupons_test {
             euriborHandle.linkTo(flatRate(settlement, 0.007, dayCount));
         }
 
-        Leg createIborLeg(const Date& start, const Date& end, Spread spread) {
+        Leg createIborLeg(const Date& start, const Date& end, Spread spread, Natural fixingDays = 2) {
             Schedule sch = MakeSchedule()
                                .from(start)
                                .to(end)
@@ -73,20 +73,21 @@ namespace subperiodcoupons_test {
                 .withSpreads(spread)
                 .withExCouponPeriod(2 * Days, calendar, businessConvention)
                 .withPaymentLag(1)
-                .withFixingDays(settlementDays);
+                .withFixingDays(fixingDays);
         }
 
         ext::shared_ptr<CashFlow> createSubPeriodsCoupon(const Date& start,
                                                          const Date& end,
                                                          Spread rateSpread = 0.0,
                                                          Spread couponSpread = 0.0,
-                                                         RateAveraging::Type averaging = RateAveraging::Compound) {
+                                                         RateAveraging::Type averaging = RateAveraging::Compound,
+                                                         Natural fixingDays = 2) {
             Calendar paymentCalendar = euribor->fixingCalendar();
             BusinessDayConvention paymentBdc = euribor->businessDayConvention();
             Date paymentDate = paymentCalendar.advance(end, 1 * Days, paymentBdc);
             Date exCouponDate = paymentCalendar.advance(paymentDate, -2 * Days, paymentBdc);
             ext::shared_ptr<FloatingRateCoupon> cpn(new SubPeriodsCoupon(
-                paymentDate, 1.0, start, end, settlementDays, euribor, 1.0, couponSpread,
+                paymentDate, 1.0, start, end, fixingDays, euribor, 1.0, couponSpread,
                 rateSpread, Date(), Date(), DayCounter(), exCouponDate));
             bool useCompoundedRate = (averaging == RateAveraging::Compound);
             if (useCompoundedRate)
@@ -103,7 +104,8 @@ namespace subperiodcoupons_test {
                                           const Period& cpnFrequency,
                                           Spread rateSpread = 0.0,
                                           Spread couponSpread = 0.0,
-                                          RateAveraging::Type averaging = RateAveraging::Compound) {
+                                          RateAveraging::Type averaging = RateAveraging::Compound,
+                                          Natural fixingDays = 2) {
             Schedule sch = MakeSchedule()
                                .from(start)
                                .to(end)
@@ -115,7 +117,7 @@ namespace subperiodcoupons_test {
                 .withNotionals(1.0)
                 .withExCouponPeriod(2 * Days, calendar, businessConvention)
                 .withPaymentLag(1)
-                .withFixingDays(settlementDays)
+                .withFixingDays(fixingDays)
                 .withRateSpreads(rateSpread)
                 .withCouponSpreads(couponSpread)
                 .withAveragingMethod(averaging);
@@ -157,14 +159,15 @@ namespace subperiodcoupons_test {
 void testSinglePeriodCouponReplication(const Date& start,
                                        const Date& end,
                                        Spread rateSpread,
-                                       RateAveraging::Type averaging) {
+                                       RateAveraging::Type averaging,
+                                       Natural fixingDays) {
     using namespace subperiodcoupons_test;
     CommonVars vars;
 
-    Leg iborLeg = vars.createIborLeg(start, end, rateSpread);
+    Leg iborLeg = vars.createIborLeg(start, end, rateSpread, fixingDays);
     Spread couponSpread = 0.0;
     ext::shared_ptr<CashFlow> subPeriodCpn =
-        vars.createSubPeriodsCoupon(start, end, rateSpread, couponSpread, averaging);
+        vars.createSubPeriodsCoupon(start, end, rateSpread, couponSpread, averaging, fixingDays);
 
     Real tolerance = 1.0e-14;
 
@@ -269,8 +272,8 @@ void SubPeriodsCouponTest::testRegularSinglePeriodForwardStartingCoupon() {
 
     Spread spread = 0.001;
     // For a single sub-period averaging method should not matter.
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Compound);
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple);
+    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Compound, 3);
+    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple, 4);
 }
 
 void SubPeriodsCouponTest::testRegularSinglePeriodCouponAfterFixing() {
@@ -281,8 +284,8 @@ void SubPeriodsCouponTest::testRegularSinglePeriodCouponAfterFixing() {
 
     Spread spread = 0.001;
     // For a single sub-period averaging method should not matter.
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Compound);
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple);
+    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Compound, 3);
+    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple, 4);
 }
 
 void SubPeriodsCouponTest::testIrregularSinglePeriodCouponAfterFixing() {
@@ -293,8 +296,8 @@ void SubPeriodsCouponTest::testIrregularSinglePeriodCouponAfterFixing() {
 
     Spread spread = 0.001;
     // For a single sub-period averaging method should not matter.
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Compound);
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple);
+    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Compound, 3);
+    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple, 4);
 }
 
 void SubPeriodsCouponTest::testRegularCompoundedForwardStartingCouponWithMultipleSubPeriods() {
