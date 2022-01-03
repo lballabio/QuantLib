@@ -191,7 +191,7 @@ jobs:
     - name: Build
       run: |
         ./autogen.sh
-        ./configure --disable-static ${{ matrix.configureflags }} CC="ccache ${{ matrix.cc }}" CXX="ccache ${{ matrix.cxx }}" CXXFLAGS="-O2 -g0 -fsanitize=address -fno-omit-frame-pointer -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }}"
+        ./configure --disable-static ${{ matrix.configureflags }} CC="ccache ${{ matrix.cc }}" CXX="ccache ${{ matrix.cxx }}" CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }}"
         make -j 2
     - name: Run tests
       run: |
@@ -207,4 +207,4 @@ jobs:
             echo "namespace QuantLib { ThreadKey sessionId() { return 0; } }" >> test2.cpp
         fi
         make install
-        ${{ matrix.cxx }} -O2 -g0 -fsanitize=address -fno-omit-frame-pointer -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs`
+        ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs`
