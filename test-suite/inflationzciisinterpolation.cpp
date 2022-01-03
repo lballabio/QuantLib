@@ -192,6 +192,9 @@ namespace ZCIIS {
 
         hz.linkTo(result.curve);
 
+        // remove circular reference
+        hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
+
         return result;
     }
 
