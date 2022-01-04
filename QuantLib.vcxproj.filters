@@ -3606,6 +3606,9 @@
     <ClInclude Include="ql\experimental\barrieroption\quantodoublebarrieroption.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\barrieroption\suowangdoublebarrierengine.hpp">
+      <Filter>experimental\barrieroption</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\vannavolgabarrierengine.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
@@ -3613,9 +3616,6 @@
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\vannavolgainterpolation.hpp">
-      <Filter>experimental\barrieroption</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\exoticoptions\analyticcompoundoptionengine.hpp">
@@ -6533,10 +6533,10 @@
     <ClCompile Include="ql\experimental\barrieroption\quantodoublebarrieroption.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\barrieroption\vannavolgabarrierengine.cpp">
+    <ClCompile Include="ql\experimental\barrieroption\suowangdoublebarrierengine.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.cpp">
+    <ClCompile Include="ql\experimental\barrieroption\vannavolgabarrierengine.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\exoticoptions\analyticcompoundoptionengine.cpp">
