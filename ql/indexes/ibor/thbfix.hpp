@@ -58,9 +58,7 @@ namespace QuantLib {
         : IborIndex("THBFIX", tenor,
                     2,
                     THBCurrency(),
-                    JointCalendar(UnitedKingdom(UnitedKingdom::Exchange),
-                                  JointCalendar(UnitedStates(UnitedStates::LiborImpact),
-                                                Thailand())),
+                    Thailand(),
                     ModifiedFollowing, true,
                     Actual365Fixed(), h) {}
     };
