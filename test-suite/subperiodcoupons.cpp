@@ -53,6 +53,7 @@ namespace subperiodcoupons_test {
             euribor = ext::shared_ptr<IborIndex>(new Euribor6M(euriborHandle));
             euribor->addFixing(Date(8, February, 2021), 0.0085);
             euribor->addFixing(Date(9, February, 2021), 0.0085);
+            euribor->addFixing(Date(10, February, 2021), 0.0085);
 
             today = calendar.adjust(Date(15, March, 2021));
             Settings::instance().evaluationDate() = today;
@@ -273,7 +274,7 @@ void SubPeriodsCouponTest::testRegularSinglePeriodForwardStartingCoupon() {
 
     Spread spread = 0.001;
     // For a single sub-period averaging method should not matter.
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Compound, 3);
+    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Compound, 2);
     testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple, 4);
 }
 
@@ -298,7 +299,7 @@ void SubPeriodsCouponTest::testIrregularSinglePeriodCouponAfterFixing() {
     Spread spread = 0.001;
     // For a single sub-period averaging method should not matter.
     testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Compound, 3);
-    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple, 4);
+    testSinglePeriodCouponReplication(start, end, spread, RateAveraging::Simple, 2);
 }
 
 void SubPeriodsCouponTest::testRegularCompoundedForwardStartingCouponWithMultipleSubPeriods() {
