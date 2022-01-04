@@ -564,10 +564,10 @@
     <ClInclude Include="ql\experimental\barrieroption\doublebarriertype.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\quantodoublebarrieroption.hpp" />
+    <ClInclude Include="ql\experimental\barrieroption\suowangdoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\vannavolgabarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\vannavolgadoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\vannavolgainterpolation.hpp" />
-    <ClInclude Include="ql\experimental\barrieroption\suowangdoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\basismodels\all.hpp" />
     <ClInclude Include="ql\experimental\basismodels\swaptioncfs.hpp" />
     <ClInclude Include="ql\experimental\basismodels\tenoroptionletvts.hpp" />
@@ -1933,8 +1933,8 @@
     <ClCompile Include="ql\experimental\barrieroption\doublebarriertype.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\quantodoublebarrieroption.cpp" />
-    <ClCompile Include="ql\experimental\barrieroption\vannavolgabarrierengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\suowangdoublebarrierengine.cpp" />
+    <ClCompile Include="ql\experimental\barrieroption\vannavolgabarrierengine.cpp" />
     <ClCompile Include="ql\experimental\basismodels\swaptioncfs.cpp" />
     <ClCompile Include="ql\experimental\basismodels\tenoroptionletvts.cpp" />
     <ClCompile Include="ql\experimental\basismodels\tenorswaptionvts.cpp" />
