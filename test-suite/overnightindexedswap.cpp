@@ -500,8 +500,8 @@ void OvernightIndexedSwapTest::testBootstrapRegression() {
                                   Pillar::MaturityDate)));
     }
 
-    PiecewiseYieldCurve<Discount,LogCubic> curve(0, UnitedStates(), helpers, Actual365Fixed(),
-                                                 MonotonicLogCubic());
+    PiecewiseYieldCurve<Discount,LogCubic> curve(0, UnitedStates(UnitedStates::GovernmentBond),
+                                                 helpers, Actual365Fixed(), MonotonicLogCubic());
 
     BOOST_CHECK_NO_THROW(curve.discount(1.0));
 }

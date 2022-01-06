@@ -46,6 +46,10 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
+#include <ql/termstructures/credit/flathazardrate.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/currencies/europe.hpp>
+#include <ql/pricingengines/bond/riskybondengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -875,6 +879,8 @@ void BondTest::testCachedFloating() {
 
     using namespace bonds_test;
 
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+
     CommonVars vars;
 
     Date today(22,November,2004);
@@ -916,11 +922,7 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond1.cashflows(),pricer);
 
-    Real cachedPrice1;
-    if (!IborCoupon::usingAtParCoupons())
-        cachedPrice1 = 99.874645;
-    else
-        cachedPrice1 = 99.874646;
+    Real cachedPrice1 = usingAtParCoupons ? 99.874646 : 99.874645;
 
     Real price = bond1.cleanPrice();
     if (std::fabs(price-cachedPrice1) > tolerance) {
@@ -947,11 +949,7 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond2.cashflows(),pricer);
 
-    Real cachedPrice2;
-    if (!IborCoupon::usingAtParCoupons())
-        cachedPrice2 = 97.955904;
-    else
-        cachedPrice2 = 97.955904;
+    Real cachedPrice2 = 97.955904;
 
     price = bond2.cleanPrice();
     if (std::fabs(price-cachedPrice2) > tolerance) {
@@ -982,11 +980,7 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond3.cashflows(),pricer);
 
-    Real cachedPrice3;
-    if (!IborCoupon::usingAtParCoupons())
-        cachedPrice3 = 98.495458;
-    else
-        cachedPrice3 = 98.495459;
+    Real cachedPrice3 = usingAtParCoupons ? 98.495459 : 98.495458;
 
     price = bond3.cleanPrice();
     if (std::fabs(price-cachedPrice3) > tolerance) {
@@ -1009,11 +1003,7 @@ void BondTest::testCachedFloating() {
 
     setCouponPricer(bond4.cashflows(), pricer);
 
-    Real cachedPrice4;
-    if (!IborCoupon::usingAtParCoupons())
-        cachedPrice4 = 98.892346;
-    else
-        cachedPrice4 = 98.892055;
+    Real cachedPrice4 = usingAtParCoupons ? 98.892055 : 98.892346;
 
     price = bond4.cleanPrice();
     if (std::fabs(price - cachedPrice4) > tolerance) {
@@ -1575,6 +1565,73 @@ void BondTest::testFixedBondWithGivenDates() {
     }
 }
 
+void BondTest::testRiskyBondWithGivenDates() {
+
+    BOOST_TEST_MESSAGE("Testing risky bond engine...");
+
+    using namespace bonds_test;
+
+    CommonVars vars;
+
+    Date today(22, November, 2005);
+    Settings::instance().evaluationDate() = today;
+
+    // Probability Structure
+    Handle<Quote> hazardRate(ext::shared_ptr<Quote>(new SimpleQuote(0.1)));
+    Handle<DefaultProbabilityTermStructure> defaultProbability(
+        ext::shared_ptr<DefaultProbabilityTermStructure>(
+            new FlatHazardRate(0, TARGET(), hazardRate, Actual360())));
+
+    // Yield term structure
+    RelinkableHandle<YieldTermStructure> riskFree;
+    riskFree.linkTo(ext::shared_ptr<YieldTermStructure>(new FlatForward(today, 0.02, Actual360())));
+    Schedule sch1(Date(30, November, 2004), Date(30, November, 2008), Period(Semiannual),
+                  UnitedStates(UnitedStates::GovernmentBond), Unadjusted, Unadjusted,
+                  DateGeneration::Backward, false);
+
+    // Create Bond
+    Natural settlementDays = 1;
+    std::vector<Real> notionals = {0.0167, 0.023, 0.03234, 0.034, 0.038, 0.042, 0.047, 0.053};
+
+    std::vector<Rate> couponRates(4);
+    couponRates[0] = 0.02875;
+    couponRates[1] = 0.03;
+    couponRates[2] = 0.03125;
+    couponRates[3] = 0.0325;
+    Real recoveryRate = 0.4;
+
+    FixedRateBond bond(settlementDays, vars.faceAmount, sch1, couponRates,
+                       ActualActual(ActualActual::ISMA), ModifiedFollowing, 100.0,
+                       Date(20, November, 2004));
+
+    // Create Engine
+    ext::shared_ptr<PricingEngine> bondEngine(new RiskyBondEngine(defaultProbability, recoveryRate, riskFree));
+    bond.setPricingEngine(bondEngine);
+
+    // Calculate and validate NPV and price
+    Real expected = 888458.819055;
+    Real calculated = bond.NPV();
+    Real tolerance = 1.0e-6;
+    if (std::fabs(expected - calculated) > tolerance) {
+        BOOST_FAIL("Failed to reproduce risky bond NPV:\n"
+                   << std::fixed
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected << "\n"
+                   << "    error:      " << expected - calculated);
+    }
+
+    expected = 87.407883;
+    calculated = bond.cleanPrice();
+    if (std::fabs(expected - calculated) > tolerance) {
+        BOOST_FAIL("Failed to reproduce risky bond price:\n"
+                   << std::fixed
+                   << "    calculated: " << calculated << "\n"
+                   << "    expected:   " << expected << "\n"
+                   << "    error:      " << expected - calculated);
+    }
+}
+
+
 void BondTest::testFixedRateBondWithArbitrarySchedule() {
     BOOST_TEST_MESSAGE("Testing fixed-rate bond with arbitrary schedule...");
     SavedSettings backup;
@@ -1674,6 +1731,7 @@ test_suite* BondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testCachedFloating));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testBrazilianCached));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testFixedBondWithGivenDates));
+    suite->add(QUANTLIB_TEST_CASE(&BondTest::testRiskyBondWithGivenDates));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponGilt));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testExCouponAustralianBond));
     suite->add(QUANTLIB_TEST_CASE(&BondTest::testBondFromScheduleWithDateVector));

@@ -789,6 +789,8 @@ void OptionletStripperTest::testSwitchStrike() {
 
     using namespace optionlet_stripper_test;
 
+    bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
+
     CommonVars vars;
     Settings::instance().evaluationDate() = Date(28, October, 2013);
     vars.setCapFloorTermVolSurface();
@@ -803,11 +805,7 @@ void OptionletStripperTest::testSwitchStrike() {
         new OptionletStripper1(vars.capFloorVolSurface, iborIndex,
                                Null< Rate >(), vars.accuracy));
 
-    Real expected;
-    if (!IborCoupon::usingAtParCoupons())
-        expected = 0.02981258;
-    else
-        expected = 0.02981223;
+    Real expected = usingAtParCoupons ? 0.02981223 : 0.02981258;
 
     Real error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)
@@ -821,10 +819,7 @@ void OptionletStripperTest::testSwitchStrike() {
     yieldTermStructure.linkTo(ext::make_shared< FlatForward >(
         0, vars.calendar, 0.05, vars.dayCounter));
 
-    if (!IborCoupon::usingAtParCoupons())
-        expected = 0.0499381;
-    else
-        expected = 0.0499371;
+    expected = usingAtParCoupons ? 0.0499371 : 0.0499381;
 
     error = std::fabs(optionletStripper1->switchStrike() - expected);
     if (error > vars.tolerance)

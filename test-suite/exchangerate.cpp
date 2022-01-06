@@ -39,7 +39,7 @@ void ExchangeRateTest::testDirect() {
     Money m1 = 50000.0 * EUR;
     Money m2 = 100000.0 * USD;
 
-    Money::conversionType = Money::NoConversion;
+    Money::Settings::instance().conversionType() = Money::NoConversion;
 
     Money calculated = eur_usd.exchange(m1);
     Money expected(m1.value()*eur_usd.rate(), USD);
@@ -74,7 +74,7 @@ void ExchangeRateTest::testDerived() {
     Money m1 = 50000.0 * GBP;
     Money m2 = 100000.0 * USD;
 
-    Money::conversionType = Money::NoConversion;
+    Money::Settings::instance().conversionType() = Money::NoConversion;
 
     Money calculated = derived.exchange(m1);
     Money expected(m1.value()*eur_usd.rate()/eur_gbp.rate(), USD);
@@ -112,7 +112,7 @@ void ExchangeRateTest::testDirectLookup() {
     Money m1 = 50000.0 * EUR;
     Money m2 = 100000.0 * USD;
 
-    Money::conversionType = Money::NoConversion;
+    Money::Settings::instance().conversionType() = Money::NoConversion;
 
     ExchangeRate eur_usd = rateManager.lookup(EUR, USD,
                                               Date(4,August,2004),
@@ -182,7 +182,7 @@ void ExchangeRateTest::testTriangulatedLookup() {
     Money m1 = 50000000.0 * ITL;
     Money m2 = 100000.0 * USD;
 
-    Money::conversionType = Money::NoConversion;
+    Money::Settings::instance().conversionType() = Money::NoConversion;
 
     ExchangeRate itl_usd = rateManager.lookup(ITL, USD,
                                               Date(4,August,2004));
@@ -273,7 +273,7 @@ void ExchangeRateTest::testSmartLookup() {
     Money m5 = 100000.0 * SEK;
     Money m6 = 100000.0 * JPY;
 
-    Money::conversionType = Money::NoConversion;
+    Money::Settings::instance().conversionType() = Money::NoConversion;
 
     // two-rate chain
 

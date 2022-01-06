@@ -24,6 +24,7 @@
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/termstructures/volatility/optionlet/constantoptionletvol.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -32,8 +33,9 @@
 #include <ql/time/schedule.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
 #include <ql/indexes/ibor/usdlibor.hpp>
+#include <ql/indexes/ibor/sofr.hpp>
 #include <ql/settings.hpp>
-
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -504,20 +506,52 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
     BOOST_CHECK_EQUAL(lastCpnF3->referencePeriodEnd(), Date(30, Sep, 2020));
 }
 
+void CashFlowsTest::testFixedIborCouponWithoutForecastCurve() {
+    BOOST_TEST_MESSAGE("Testing past ibor coupon without forecast curve...");
+
+    IndexHistoryCleaner cleaner;
+
+    Date today = Settings::instance().evaluationDate();
+
+    auto index = ext::make_shared<USDLibor>(6*Months);
+    auto calendar = index->fixingCalendar();
+
+    Date fixingDate = calendar.advance(today, -2, Months);
+    Rate pastFixing = 0.01;
+    index->addFixing(fixingDate, pastFixing);
+
+    Date startDate = index->valueDate(fixingDate);
+    Date endDate = index->maturityDate(fixingDate);
+
+    IborCoupon coupon(endDate, 100.0, startDate, endDate, index->fixingDays(), index);
+    coupon.setPricer(ext::make_shared<BlackIborCouponPricer>());
+
+    BOOST_CHECK_NO_THROW(coupon.amount());
+
+    // the main check is the one above, but let's check for consistency too:
+    Real amount = coupon.amount();
+    Real expected = pastFixing * coupon.nominal() * coupon.accrualPeriod();
+    if (std::fabs(amount - expected) > 1e-8) {
+        BOOST_ERROR("amount mismatch:"
+                    << "\n    calculated: " << amount
+                    << "\n    expected: " << expected);
+    }
+}
+
 test_suite* CashFlowsTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Cash flows tests");
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testSettings));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testAccessViolation));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testDefaultSettlementDate));
     suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testExCouponDates));
-    if (IborCoupon::usingAtParCoupons())
+
+    if (IborCoupon::Settings::instance().usingAtParCoupons())
         suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testNullFixingDays));
 
-    suite->add(QUANTLIB_TEST_CASE(
-                             &CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth));
-    suite->add(QUANTLIB_TEST_CASE(
-                             &CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth));
-    suite->add(QUANTLIB_TEST_CASE(
-                             &CashFlowsTest::testPartialScheduleLegConstruction));
+    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testIrregularFirstCouponReferenceDatesAtEndOfMonth));
+    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testIrregularLastCouponReferenceDatesAtEndOfMonth));
+    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testPartialScheduleLegConstruction));
+    suite->add(QUANTLIB_TEST_CASE(&CashFlowsTest::testFixedIborCouponWithoutForecastCurve));
+
     return suite;
 }

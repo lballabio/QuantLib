@@ -54,7 +54,7 @@
 #endif
 
 /* Define this to use indexed coupons instead of par coupons in floating
-   legs as the default in 'static bool IborCoupon::usingAtParCoupons();'. */
+   legs as the default in 'bool IborCoupon::Settings::usingAtParCoupons();'. */
 #ifndef QL_USE_INDEXED_COUPON
 //#   define QL_USE_INDEXED_COUPON
 #endif
@@ -62,7 +62,9 @@
 /* Define this to have singletons return different instances for
    different sessions. You will have to provide and link with the
    library a sessionId() function in namespace QuantLib, returning a
-   different session id for each session.*/
+   different session id for each session.
+   This also implies thread-safe Singleton initialization.
+*/
 #ifndef QL_ENABLE_SESSIONS
 //#   define QL_ENABLE_SESSIONS
 #endif
@@ -117,7 +119,8 @@
 #endif
 
 /* Define this to make Singleton initialization thread-safe.
-   Note: There is no support for thread safety and multiple sessions.
+   Note that defining QL_ENABLE_SESSIONS implies thread-safe
+   initialization, whether this is defined or not.
 */
 #ifndef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
 //#   define QL_ENABLE_SINGLETON_THREAD_SAFE_INIT

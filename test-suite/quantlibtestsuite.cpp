@@ -32,15 +32,13 @@
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
 */
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
-
-#ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
-#  define BOOST_LIB_NAME boost_unit_test_framework
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#endif
-
+#  ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
+#      define BOOST_LIB_NAME boost_unit_test_framework
+#      include <boost/config/auto_link.hpp>
+#      undef BOOST_LIB_NAME
+#  endif
 #endif
 
 #include "utilities.hpp"
@@ -55,6 +53,7 @@
 #include "autocovariances.hpp"
 #include "barrieroption.hpp"
 #include "basismodels.hpp"
+#include "basisswapratehelpers.hpp"
 #include "basketoption.hpp"
 #include "batesmodel.hpp"
 #include "bermudanswaption.hpp"
@@ -160,6 +159,7 @@
 #include "operators.hpp"
 #include "optimizers.hpp"
 #include "optionletstripper.hpp"
+#include "overnightindexedcoupon.hpp"
 #include "overnightindexedswap.hpp"
 #include "pagodaoption.hpp"
 #include "partialtimebarrieroption.hpp"
@@ -322,11 +322,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     std::ostringstream header;
     header <<
         " Testing "
-        #ifdef BOOST_MSVC
-        QL_LIB_NAME
-        #else
         "QuantLib " QL_VERSION
-        #endif
         "\n  QL_EXTRA_SAFETY_CHECKS "
         #ifdef QL_EXTRA_SAFETY_CHECKS
         "  defined"
@@ -386,6 +382,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CashFlowsTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
+    test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(CPISwapTest::suite());
     test->add(CreditDefaultSwapTest::suite());
@@ -450,6 +447,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(OperatorTest::suite());
     test->add(OptimizersTest::suite(speed));
     test->add(OptionletStripperTest::suite());
+    test->add(OvernightIndexedCouponTest::suite());
     test->add(OvernightIndexedSwapTest::suite());
     test->add(PathGeneratorTest::suite());
     test->add(PeriodTest::suite());
@@ -489,6 +487,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AmortizingBondTest::suite());
     test->add(AsianOptionTest::experimental(speed));
     test->add(BasismodelsTest::suite());
+    test->add(BasisSwapRateHelpersTest::suite());
     test->add(BarrierOptionTest::experimental());
     test->add(DoubleBarrierOptionTest::experimental(speed));
     test->add(BlackDeltaCalculatorTest::suite());
@@ -501,7 +500,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CommodityUnitOfMeasureTest::suite());
     test->add(CompiledBoostVersionTest::suite());
     test->add(CompoundOptionTest::suite());
-    test->add(ConvertibleBondTest::suite());
     test->add(CreditRiskPlusTest::suite());
     test->add(DoubleBarrierOptionTest::suite(speed));
     test->add(DoubleBinaryOptionTest::suite());

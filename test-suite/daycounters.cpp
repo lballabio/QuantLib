@@ -37,6 +37,7 @@
 #include <ql/time/schedule.hpp>
 #include <cmath>
 #include <iomanip>
+#include <ql/time/calendars/china.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -338,7 +339,7 @@ void DayCounterTest::testActualActualWithSemiannualSchedule() {
 
     using namespace day_counters_test;
 
-    Calendar calendar = UnitedStates();
+    Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
     Date fromDate = Date(10, January, 2017);
     Date firstCoupon = Date(31, August, 2017);
     Date quasiCoupon = Date(28, February, 2017);
@@ -457,7 +458,7 @@ void DayCounterTest::testActualActualWithAnnualSchedule(){
     using namespace day_counters_test;
 
     // Now do an annual schedule
-    Calendar calendar = UnitedStates();
+    Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
     Schedule schedule = MakeSchedule()
         .from(Date(10, January, 2017))
         .withFirstDate(Date(31, August, 2017))
@@ -1051,6 +1052,37 @@ void DayCounterTest::testIntraday() {
 #endif
 }
 
+void DayCounterTest::testActualActualOutOfScheduleRange() {
+    Date today = Date(10, November, 2020);
+    Date temp = Settings::instance().evaluationDate();
+    Settings::instance().evaluationDate() = today;
+
+    Date effectiveDate = Date(21, May, 2019);
+    Date terminationDate = Date(21, May, 2029);
+    Period tenor = Period(1, Years);
+    Calendar calendar = China(China::Market::IB);
+    BusinessDayConvention convention = Unadjusted;
+    BusinessDayConvention terminationDateConvention = convention;
+    DateGeneration::Rule rule = DateGeneration::Backward;
+    bool endOfMonth = false;
+
+    Schedule schedule = Schedule(effectiveDate, terminationDate, tenor, calendar, convention,
+                                 terminationDateConvention, rule, endOfMonth);
+    DayCounter dayCounter = ActualActual(ActualActual::Convention::Bond, schedule);
+    bool raised = false;
+
+    try {
+        dayCounter.yearFraction(today, today + Period(9, Years));
+    } catch (const std::exception&) {
+        raised = true;
+    }
+       
+    if (!raised) {
+        BOOST_FAIL("Exception expected but did not happen!");
+    }
+
+    Settings::instance().evaluationDate() = temp;
+}
 
 test_suite* DayCounterTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Day counter tests");
@@ -1070,6 +1102,7 @@ test_suite* DayCounterTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_EurobondBasis));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_ISDA));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActual365_Canadian));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualOutOfScheduleRange));
 
 #ifdef QL_HIGH_RESOLUTION_DATE
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testIntraday));

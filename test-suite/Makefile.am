@@ -11,6 +11,7 @@ QL_TEST_SRCS = \
 	barrieroption.cpp \
 	binaryoption.cpp \
 	basismodels.cpp \
+	basisswapratehelpers.cpp \
 	basketoption.cpp \
 	batesmodel.cpp \
 	bermudanswaption.cpp \
@@ -115,6 +116,7 @@ QL_TEST_SRCS = \
 	operators.cpp \
 	optimizers.cpp \
 	optionletstripper.cpp \
+	overnightindexedcoupon.cpp \
 	overnightindexedswap.cpp \
 	pagodaoption.cpp \
 	partialtimebarrieroption.cpp \
@@ -175,6 +177,7 @@ QL_TEST_HDRS = \
 	barrieroption.hpp \
 	binaryoption.hpp \
 	basismodels.hpp \
+	basisswapratehelpers.hpp \
 	basketoption.hpp \
 	batesmodel.hpp \
 	bermudanswaption.hpp \
@@ -279,6 +282,7 @@ QL_TEST_HDRS = \
 	operators.hpp \
 	optimizers.hpp \
 	optionletstripper.hpp \
+	overnightindexedcoupon.hpp \
 	overnightindexedswap.hpp \
 	pagodaoption.hpp \
 	partialtimebarrieroption.hpp \

@@ -17,7 +17,81 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.23 - July 2021</strong>
+    <strong>Release 1.24 - October 2021</strong>
+
+    PORTABILITY
+    - Overhauled the CMake build system (thanks to Philip Kovacs).  Among
+      other things, it now allows to specify the available configuration
+      options from the `cmake` invocation and adds the required Boost
+      libraries accordingly.
+
+    INSTRUMENTS
+    - Avoid callable-bond mispricing when a call date is close but not equal
+      to a coupon date (thanks to Ralf Konrad for the fix and to GitHub user
+      aichao for the analysis).
+      See <https://github.com/lballabio/QuantLib/issues/930> for details.
+    - A new `RiskyBondEngine` is available for bonds (thanks to Lew Wei
+      Hao).  It prices bonds based on a risk-free discount cure and a
+      default-probability curve used to assess the probability of each
+      coupon payment.  It makes accessible to all bonds the calculations
+      previously available in the experimental `RiskyBond` class.
+
+    CASHFLOWS
+    - The choice between par and indexed coupons was moved to
+      `IborCouponPricer` (thanks to Peter Caspers).  This also made it
+      possible to override the choice locally when building a
+      `VanillaSwap` or a `SwapRateHelper`, so that coupons with both
+      behaviors can now be used at the same time.
+
+    TERM STRUCTURES
+    - Cross-currency basis swap rate helpers now support both
+      constant-notional and marked-to-market swaps (thanks to Marcin
+      Rybacki).
+
+    DATE/TIME
+    - Added Chilean calendar (thanks to Anubhav Pandey).
+    - Added new `ThirdWednesdayInclusive` date-generation rule that also
+      adjusts start and end dates (thanks to Lew Wei Hao).
+
+    PATTERNS
+    - Overhauled `Singleton` implementation (thanks to Peter Caspers).
+      Singletons are now initialized in a thread-safe way when sessions
+      are enabled, global singletons (that is, independent of sessions)
+      were made available, and static initialization was made safer.
+
+    TEST SUITE
+    - Sped up some of the longer-running tests (thanks to Mohammad Shojatalab).
+
+    DEPRECATED FEATURES
+    - Deprecated default constructor for the U.S. calendar; the desired
+      market should now be passed explicitly.
+    - Deprecated the `nominalTermStructure` method and the corresponding
+      data member in inflation term structures.  Any object needing the
+      nominal term structure should have it passed explicitly.
+    - Deprecated the `termStructure_` data member in
+      `BlackCalibrationHelper`.  It you're inheriting from
+      `BlackCalibrationHelper` and need it, declare it in your derived
+      class.
+    - Deprecated the `createAtParCoupons`, `createIndexedCoupons` and
+      `usingAtParCoupons` methods of `IborCoupon`, now moved to a new
+      `IborCoupon::Settings` singleton (thanks to Philip Kovacs).
+    - Deprecated the `conversionType` and `baseCurrency` static data
+      members of `Money`, now moved to a new `Money::Settings` singleton
+      (thanks to Philip Kovacs).
+    - Removed features deprecated in version 1.19: the `BMAIndex`
+      constructor taking a calendar, the `AmericanCondition` and
+      `ShoutCondition` constructors taking an option type and strike, the
+      `CurveDependentStepCondition` class and the
+      `StandardCurveDependentStepCondition` typedef, the
+      `BlackCalibrationHelper` constructor taking a yield term structure,
+      the various inflation term structure constructors taking a yield
+      term structure, the various yield term constructors taking a vector
+      of jumps but not specifying a reference date.
+
+    Thanks go also to Mickael Anas Laaouini, Jack Gillett, Bojan Nikolic
+    and Klaus Spanderen for smaller fixes, enhancements and bug reports.
+
+    <strong>Release 1.23 - July 14th, 2021</strong>
 
     PORTABILITY
     - On Mac OS, the `-std=c++11` flag is now added automatically when

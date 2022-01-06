@@ -39,7 +39,12 @@ jobs:
             cxx: g++
           - name: "gcc 10.x"
             shortname: gcc10
-            tag: groovy
+            tag: hirsute
+            cc: gcc
+            cxx: g++
+          - name: "gcc 11.x"
+            shortname: gcc11
+            tag: impish
             cc: gcc
             cxx: g++
             tests: true
@@ -76,6 +81,11 @@ jobs:
           - name: "Clang 12"
             shortname: clang12
             tag: hirsute
+            cc: clang
+            cxx: clang++
+          - name: "Clang 13"
+            shortname: clang13
+            tag: impish
             cc: clang
             cxx: clang++
             tests: true
@@ -152,6 +162,20 @@ jobs:
             cxx: g++
             configureflags: --enable-thread-safe-observer-pattern
             tests: true
+          - name: "Thread-safe singleton init enabled"
+            shortname: threadsafeinit
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            configureflags: --enable-thread-safe-singleton-init
+            tests: true
+          - name: "Sessions enabled"
+            shortname: sessions
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            configureflags: --enable-sessions
+            tests: true
           - name: "OpenMP enabled"
             shortname: openmp
             tag: rolling
@@ -179,6 +203,9 @@ jobs:
           linux-build-${{ matrix.shortname }}-${{ github.ref }}-
           linux-build-${{ matrix.shortname }}-refs/heads/master-
           linux-build-${{ matrix.shortname }}-
+    - name: Compiler version
+      run: |
+        ${{ matrix.cc }} --version
     - name: Build
       run: |
         ./autogen.sh
@@ -197,5 +224,8 @@ jobs:
       run: |
         echo "#include <ql/quantlib.hpp>" > test1.cpp && echo "int main() { return 0; }" >> test1.cpp
         echo "#include <ql/quantlib.hpp>" > test2.cpp
+        if test ${{ matrix.shortname }} = sessions ; then
+            echo "namespace QuantLib { ThreadKey sessionId() { return 0; } }" >> test2.cpp
+        fi
         make install
         ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs` ${{ matrix.moreflags }}

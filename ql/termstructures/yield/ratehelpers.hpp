@@ -267,7 +267,8 @@ namespace QuantLib {
                        Handle<YieldTermStructure> discountingCurve = Handle<YieldTermStructure>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
-                       bool endOfMonth = false);
+                       bool endOfMonth = false,
+                       const boost::optional<bool>& useIndexedCoupons = boost::none);
         SwapRateHelper(const Handle<Quote>& rate,
                        const Period& tenor,
                        Calendar calendar,
@@ -284,7 +285,8 @@ namespace QuantLib {
                        Natural settlementDays = Null<Natural>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
-                       bool endOfMonth = false);
+                       bool endOfMonth = false,
+                       const boost::optional<bool>& useIndexedCoupons = boost::none);
         SwapRateHelper(Rate rate,
                        const ext::shared_ptr<SwapIndex>& swapIndex,
                        Handle<Quote> spread = Handle<Quote>(),
@@ -293,7 +295,8 @@ namespace QuantLib {
                        Handle<YieldTermStructure> discountingCurve = Handle<YieldTermStructure>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
-                       bool endOfMonth = false);
+                       bool endOfMonth = false,
+                       const boost::optional<bool>& useIndexedCoupons = boost::none);
         SwapRateHelper(Rate rate,
                        const Period& tenor,
                        Calendar calendar,
@@ -310,7 +313,8 @@ namespace QuantLib {
                        Natural settlementDays = Null<Natural>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
-                       bool endOfMonth = false);
+                       bool endOfMonth = false,
+                       const boost::optional<bool>& useIndexedCoupons = boost::none);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -343,6 +347,7 @@ namespace QuantLib {
         Period fwdStart_;
         Handle<YieldTermStructure> discountHandle_;
         RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
+        boost::optional<bool> useIndexedCoupons_;
     };
 
 

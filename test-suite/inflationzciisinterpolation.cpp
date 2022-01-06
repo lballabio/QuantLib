@@ -161,7 +161,7 @@ namespace ZCIIS {
         ext::shared_ptr<PiecewiseZeroInflationCurve<Linear> > pZITS(
             new PiecewiseZeroInflationCurve<Linear>(setup.evaluationDate, setup.calendar, setup.dc,
                                                     setup.observationLag, frequency,
-                                                    index->interpolated(), baseZeroRate, helpers));
+                                                    baseZeroRate, helpers));
         pZITS->recalculate();
 
         return pZITS;
@@ -191,6 +191,9 @@ namespace ZCIIS {
         result.swap = makeZeroCouponInflationSwap(setup, result.index, result.curve);
 
         hz.linkTo(result.curve);
+
+        // remove circular reference
+        hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
 
         return result;
     }

@@ -9,9 +9,8 @@ jobs:
         include:
           - os: [macos-10.15]
             shortname: default
-          - os: [macos-10.15]
-            shortname: stdclasses
-            configureflags: --enable-std-classes
+          - os: [macos-11]
+            shortname: default-11
     steps:
     - uses: actions/checkout@v2
     - name: Setup

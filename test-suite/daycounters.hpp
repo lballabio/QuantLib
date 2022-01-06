@@ -41,6 +41,7 @@ class DayCounterTest {
     static void testThirty360_ISDA();
     static void testActual365_Canadian();
     static void testIntraday();
+    static void testActualActualOutOfScheduleRange();
     static boost::unit_test_framework::test_suite* suite();
 };
 

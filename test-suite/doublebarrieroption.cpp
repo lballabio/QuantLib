@@ -29,7 +29,7 @@
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/binomialdoublebarrierengine.hpp>
-#include <ql/experimental/barrieroption/wulinyongdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/suowangdoublebarrierengine.hpp>
 #include <ql/experimental/barrieroption/vannavolgadoublebarrierengine.hpp>
 #include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
@@ -316,7 +316,7 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
 
         // Wulin Suo/Yong Wang engine
         engine = ext::shared_ptr<PricingEngine>(
-                                     new WulinYongDoubleBarrierEngine(stochProcess));
+                                     new SuoWangDoubleBarrierEngine(stochProcess));
         opt.setPricingEngine(engine);
 
         calculated = opt.NPV();
@@ -475,7 +475,7 @@ void DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues() {
                              spot->value() * qTS->discount(value.t) / rTS->discount(value.t),
                              value.v * sqrt(value.t), rTS->discount(value.t));
             ext::shared_ptr<PricingEngine> vannaVolgaEngine =
-                ext::make_shared<VannaVolgaDoubleBarrierEngine<WulinYongDoubleBarrierEngine> >(
+                ext::make_shared<VannaVolgaDoubleBarrierEngine<SuoWangDoubleBarrierEngine> >(
                                 volAtmQuote,
                                 vol25PutQuote,
                                 vol25CallQuote,
@@ -621,7 +621,7 @@ void DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical() {
     tolerance = 0.01;
 
     mcdoublebarrierengine = MakeMCDoubleBarrierEngine<PseudoRandom>(bsmProcess)
-        .withSteps(10000)
+        .withSteps(5000)
         .withAntitheticVariate()
         .withAbsoluteTolerance(tolerance)
         .withSeed(10);
@@ -650,7 +650,7 @@ test_suite* DoubleBarrierOptionTest::experimental(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("DoubleBarrier_experimental");
     suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testVannaVolgaDoubleBarrierValues));
 
-    if (speed == Slow) {
+    if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&DoubleBarrierOptionTest::testMonteCarloDoubleBarrierWithAnalytical));
     }
 

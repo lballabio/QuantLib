@@ -86,8 +86,7 @@ namespace QuantLib {
                                 BusinessDayConvention infConvention = BusinessDayConvention());
 
         /*! \deprecated Use the other constructor.
-
-            Deprecated in version 1.23.
+                        Deprecated in version 1.23.
         */
         QL_DEPRECATED
         ZeroCouponInflationSwap(Type type,
@@ -109,8 +108,8 @@ namespace QuantLib {
         //! "Payer" or "Receiver" refers to the inflation leg
         Type type() const { return type_; }
         Real nominal() const { return nominal_; }
-        Date startDate() const { return startDate_; }
-        Date maturityDate() const { return maturityDate_; }
+        Date startDate() const override { return startDate_; }
+        Date maturityDate() const override { return maturityDate_; }
         Calendar fixedCalendar() const { return fixCalendar_; }
         BusinessDayConvention fixedConvention() const {
             return fixConvention_;

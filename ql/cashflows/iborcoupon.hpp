@@ -31,6 +31,7 @@
 
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/patterns/singleton.hpp>
 #include <ql/time/schedule.hpp>
 
 namespace QuantLib {
@@ -54,45 +55,90 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         const ext::shared_ptr<IborIndex>& iborIndex() const { return iborIndex_; }
-        //! this is dependent on usingAtParCoupons()
-        const Date& fixingEndDate() const { return fixingEndDate_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
-        //! Implemented in order to manage the case of par coupon
+        // implemented in order to manage the case of par coupon
         Rate indexFixing() const override;
+        void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>&) override;
         //@}
         //! \name Visitability
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
+        /*! \name Internal calculations
+
+            You won't probably need these methods unless you're implementing
+            a coupon pricer.
+        */
+        //@{
+        //! Start of the deposit period underlying the index fixing
+        const Date& fixingValueDate() const;
+        //! End of the deposit period underlying the index fixing
+        const Date& fixingMaturityDate() const;
+        //! End of the deposit period underlying the coupon fixing
+        /*! This might be not the same as fixingMaturityDate if par coupons are used. */
+        const Date& fixingEndDate() const;
+        //! Period underlying the index fixing, as a year fraction
+        Time spanningTimeIndexMaturity() const;
+        //! Period underlying the coupon fixing, as a year fraction
+        /*! This might be not the same as spanningTimeIndexMaturity if par coupons are used. */
+        Time spanningTime() const;
+        //@}
+
       private:
+        friend class IborCouponPricer;
         ext::shared_ptr<IborIndex> iborIndex_;
-        Date fixingDate_, fixingValueDate_, fixingEndDate_;
-        Time spanningTime_;
+        Date fixingDate_;
+        // computed by coupon pricer (depending on par coupon flag) and stored here
+        void initializeCachedData() const;
+        mutable bool cachedDataIsInitialized_ = false;
+        mutable Date fixingValueDate_, fixingEndDate_, fixingMaturityDate_;
+        mutable Time spanningTime_, spanningTimeIndexMaturity_;
 
       public:
-        /*! When called, IborCoupons are created as indexed coupons instead of par coupons. This
-         * method must be called before any IborCoupon is created, otherwise an exception is thrown.
-         */
-        static void createAtParCoupons();
-
-        /*! When called, IborCoupons are created as par coupons instead of indexed coupons. This
-         * method must be called before any IborCoupon is created, otherwise an exception is thrown.
-         */
-        static void createIndexedCoupons();
-
-        /*! If true the IborCoupons are created as par coupons and vice versa.
-         *  The default depends on the compiler flag QL_USE_INDEXED_COUPON and can be overwritten by
-         *  createAtParCoupons() and createIndexedCoupons()
+        // IborCoupon::Settings forward declaration
+        class Settings;
+        /*! \deprecated Use IborCouponSettings::Settings::instance().createAtParCoupons() instead
+                        Deprecated in version 1.24.
         */
-        static bool usingAtParCoupons() { return usingAtParCoupons_; }
-
-      private:
-        static bool constructorWasNotCalled_;
-        static bool usingAtParCoupons_;
+        QL_DEPRECATED static void createAtParCoupons();
+        /*! \deprecated Use IborCouponSettings::Settings::instance().createIndexedCoupons() instead
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED static void createIndexedCoupons();
+        /*! \deprecated Use IborCouponSettings::Settings::instance().usingAtParCoupons() instead
+                        Deprecated in version 1.24.
+        */
+        QL_DEPRECATED static bool usingAtParCoupons();
     };
 
+
+    //! Per-session settings for IborCoupon class
+    class IborCoupon::Settings : public Singleton<IborCoupon::Settings> {
+        friend class Singleton<IborCoupon::Settings>;
+      private:
+        Settings() = default;
+
+      public:
+        //! When called, IborCoupons are created as indexed coupons instead of par coupons.
+        void createAtParCoupons();
+
+        //! When called, IborCoupons are created as par coupons instead of indexed coupons.
+        void createIndexedCoupons();
+
+        /*! If true the IborCoupons are created as par coupons and vice versa.
+            The default depends on the compiler flag QL_USE_INDEXED_COUPON and can be overwritten by
+            createAtParCoupons() and createIndexedCoupons() */
+        bool usingAtParCoupons() const;
+
+      private:
+        #ifndef QL_USE_INDEXED_COUPON
+        bool usingAtParCoupons_ = true;
+        #else
+        bool usingAtParCoupons_ = false;
+        #endif
+    };
 
     //! helper class building a sequence of capped/floored ibor-rate coupons
     class IborLeg {
@@ -120,6 +166,8 @@ namespace QuantLib {
                                     const Calendar&,
                                     BusinessDayConvention,
                                     bool endOfMonth = false);
+        IborLeg& withIndexedCoupons(boost::optional<bool> b = true);
+        IborLeg& withAtParCoupons(bool b = true);
         operator Leg() const;
 
       private:
@@ -139,6 +187,7 @@ namespace QuantLib {
         Calendar exCouponCalendar_;
         BusinessDayConvention exCouponAdjustment_;
         bool exCouponEndOfMonth_;
+        boost::optional<bool> useIndexedCoupons_;
     };
 
 }

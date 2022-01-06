@@ -73,7 +73,8 @@
     If defined, singletons will return different instances for
     different sessions. You will have to provide and link with the
     library a `sessionId()` function in namespace QuantLib, returning a
-    different session id for each session. Undefined by default.
+    different session id for each session. This also implies thread-safe
+    Singleton initialization.  Undefined by default.
 
     \code
     #define QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
@@ -89,8 +90,9 @@
     #define QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
     \endcode
     Define this to make `Singleton` initialization thread-safe.
-    Undefined by default.  Not compatible with `QL_ENABLE_SESSIONS`
-    or `QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN`.
+    Undefined by default.  Not compatible with `QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN`.
+    Note that defining QL_ENABLE_SESSIONS implies thread-safe initialization,
+    whether this is defined or not.
 
     \code
     #define QL_HIGH_RESOLUTION_DATE

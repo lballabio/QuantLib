@@ -85,6 +85,8 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
       private:
+        Date fixingDate(const Date& valueDate) const;
+
         std::vector<Date> valueDates_, fixingDates_;
         Size n_;
         std::vector<Time> dt_;

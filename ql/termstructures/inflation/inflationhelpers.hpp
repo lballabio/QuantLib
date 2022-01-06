@@ -47,8 +47,7 @@ namespace QuantLib {
             Handle<YieldTermStructure> nominalTermStructure);
 
         /*! \deprecated Use the other constructor.
-
-            Deprecated in version 1.23.
+                        Deprecated in version 1.23.
         */
         QL_DEPRECATED
         ZeroCouponInflationSwapHelper(

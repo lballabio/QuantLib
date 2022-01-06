@@ -44,7 +44,7 @@ namespace QuantLib {
         Size fixings = pastFixings_ + fixingIndices_.size();
 
         // care must be taken not to overflow product
-        Real maxValue = QL_MAX_REAL;
+        QL_CONSTEXPR Real maxValue = QL_MAX_REAL;
         for (unsigned long fixingIndice : fixingIndices_) {
             Real price = path[fixingIndice];
             if (product < maxValue/price) {

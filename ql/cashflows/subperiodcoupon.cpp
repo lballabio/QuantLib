@@ -57,12 +57,12 @@ namespace QuantLib {
 
         // fixing dates
         n_ = valueDates_.size() - 1;
-        if (index->fixingDays() == 0) {
+        if (fixingDays_ == 0) {
             fixingDates_ = std::vector<Date>(valueDates_.begin(), valueDates_.end() - 1);
         } else {
             fixingDates_.resize(n_);
             for (Size i = 0; i < n_; ++i)
-                fixingDates_[i] = index->fixingDate(valueDates_[i]);
+                fixingDates_[i] = fixingDate(valueDates_[i]);
         }
 
         // accrual of sub-periods
@@ -78,6 +78,12 @@ namespace QuantLib {
             v1->visit(*this);
         else
             FloatingRateCoupon::accept(v);
+    }
+
+    Date SubPeriodsCoupon::fixingDate(const Date& valueDate) const {
+        Date fixingDate =
+            index_->fixingCalendar().advance(valueDate, -static_cast<Integer>(fixingDays_), Days);
+        return fixingDate;
     }
 
     void SubPeriodsPricer::initialize(const FloatingRateCoupon& coupon) {

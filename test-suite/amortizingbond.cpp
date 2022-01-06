@@ -74,7 +74,7 @@ void AmortizingBondTest::testAmortizingFixedRateBond() {
 			}
 
 			// Check the coupon result
-			Real expectedCoupon = notionals[k] * rates[i] / freq;
+			Real expectedCoupon = notionals[k] * rates[i] / Integer(freq);
 			error = std::fabs(coupon- expectedCoupon);
 
 			if(error > tolerance) {

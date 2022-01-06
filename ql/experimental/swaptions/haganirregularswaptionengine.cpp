@@ -178,7 +178,8 @@ namespace QuantLib {
 
         Real defect = -targetNPV_;
 
-        for(Size i=0; i< weights.size();++i)   defect -= swap_->type()*lambda*weights[i]*annuities_[i];
+        for (Size i=0; i< weights.size();++i)
+            defect -= Integer(swap_->type()) * lambda*weights[i] * annuities_[i];
 
         return defect;
     }
