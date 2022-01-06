@@ -132,7 +132,7 @@ namespace QuantLib {
         const std::vector<Rate>& rates,
         const Interpolator& interpolator)
     : InterpolatedZeroInflationCurve(
-          referenceDate, calendar, dayCounter, lag, frequency, dates, rates, false) {}
+          referenceDate, calendar, dayCounter, lag, frequency, false, dates, rates, interpolator) {}
 
     template <class Interpolator>
     InterpolatedZeroInflationCurve<Interpolator>::InterpolatedZeroInflationCurve(
