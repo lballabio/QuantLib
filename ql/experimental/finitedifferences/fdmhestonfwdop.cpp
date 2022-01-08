@@ -30,7 +30,6 @@
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
 #include <ql/processes/hestonprocess.hpp>
-#include <boost/unordered/unordered_map.hpp>
 #include <cmath>
 #include <utility>
 
