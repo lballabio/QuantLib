@@ -40,10 +40,10 @@
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/randomnumbers/haltonrsg.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <ql/termstructures/volatility/volatilitytype.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/utilities/null.hpp>
 #include <utility>
-#include <ql/termstructures/volatility/volatilitytype.hpp>
 
 namespace QuantLib {
 
