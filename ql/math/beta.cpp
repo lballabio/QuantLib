@@ -72,10 +72,8 @@ namespace QuantLib {
     QL_REQUIRE(b > 0.0, "b must be greater than zero");
 
 
-    if (x == 0.0)
-        return 0.0;
-    else if (x == 1.0)
-        return 1.0;
+    if (x == 0.0 || x == 1.0)
+        return x;
     else
         QL_REQUIRE(x>0.0 && x<1.0, "x must be in [0,1]");
 
