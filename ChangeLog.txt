@@ -1,3 +1,37 @@
+commit e9876eec38a52a934081d9188b27e34350a18c9e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.25 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit d958461ce545603303648030626c917e6e582760
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 1 Apr 2021 11:28:16 +0200
+
+    Set version to 1.25 rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 387150daf1462f8fc002ac9b9c07eb9cca6e9cad
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Jan 2022 19:02:50 +0100
+
+    Update changelog and news
+
+ ChangeLog.txt           | 2852 +++++++++++++++++++----------------------------
+ Contributors.txt        |    6 +
+ Docs/pages/history.docs |   92 ++
+ News.md                 |  139 +--
+ 4 files changed, 1343 insertions(+), 1746 deletions(-)
+
 commit d1cea7395e12a5a4ab8b651a60c3d2d0c1a76466
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 10 Jan 2022 13:00:50 +0100
