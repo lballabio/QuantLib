@@ -2373,9 +2373,6 @@
     <ClInclude Include="ql\pricingengines\asian\mc_discr_geom_av_price_heston.hpp">
       <Filter>pricingengines\asian</Filter>
     </ClInclude>
-    <ClInclude Include="ql\pricingengines\asian\mcdiscreteasianengine.hpp">
-      <Filter>pricingengines\asian</Filter>
-    </ClInclude>
     <ClInclude Include="ql\pricingengines\asian\mcdiscreteasianenginebase.hpp">
       <Filter>pricingengines\asian</Filter>
     </ClInclude>
