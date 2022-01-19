@@ -1837,7 +1837,6 @@ set(QL_HEADERS
     pricingengines/asian/mc_discr_arith_av_strike.hpp
     pricingengines/asian/mc_discr_geom_av_price.hpp
     pricingengines/asian/mc_discr_geom_av_price_heston.hpp
-    pricingengines/asian/mcdiscreteasianengine.hpp
     pricingengines/asian/mcdiscreteasianenginebase.hpp
     pricingengines/barrier/analyticbarrierengine.hpp
     pricingengines/barrier/analyticbinarybarrierengine.hpp

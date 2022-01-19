@@ -19,7 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcdiscreteasianengine.hpp
+/*! \file mcdiscreteasianenginebase.hpp
     \brief Monte Carlo pricing engine for discrete average Asians
 */
 
