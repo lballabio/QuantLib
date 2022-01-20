@@ -172,13 +172,6 @@ int main(int, char* []) {
                                          settlementDate, fraInstruments,
                                          termStructureDayCounter));
 
-
-        // Term structures used for pricing/discounting
-
-        RelinkableHandle<YieldTermStructure> discountingTermStructure;
-        discountingTermStructure.linkTo(fraTermStructure);
-
-
         /***********************
          ***  construct FRA's ***
          ***********************/
@@ -208,8 +201,7 @@ int main(int, char* []) {
 
             ForwardRateAgreement myFRA(fraValueDate,
                                        fraFwdType,fraStrikeRate,
-                                       fraNotional, euribor3m,
-                                       discountingTermStructure);
+                                       fraNotional, euribor3m);
 
             cout << "3m Term FRA, Months to Start: "
                  << monthsToStart[i]
@@ -268,8 +260,7 @@ int main(int, char* []) {
 
             ForwardRateAgreement myFRA(fraValueDate,
                                        fraFwdType, fraStrikeRate,
-                                       fraNotional, euribor3m,
-                                       discountingTermStructure);
+                                       fraNotional, euribor3m);
 
             cout << "3m Term FRA, 100 notional, Months to Start = "
                  << monthsToStart[i]
