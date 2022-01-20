@@ -21,6 +21,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/forwardrateagreement.hpp>
 #include <utility>
+#include <iostream>
 
 namespace QuantLib {
 
@@ -101,9 +102,13 @@ namespace QuantLib {
     // spotValue() is defined here.
     Real ForwardRateAgreement::spotValue() const {
         calculate();
+
+        Handle<YieldTermStructure> discount =
+            discountCurve_.empty() ? index_->forwardingTermStructure() : discountCurve_;
+
         return notionalAmount_ *
                forwardRate().compoundFactor(valueDate_, maturityDate_) *
-               discountCurve_->discount(maturityDate_);
+               discount->discount(maturityDate_);
     }
 
     Real ForwardRateAgreement::amount() const {
@@ -165,7 +170,11 @@ namespace QuantLib {
 
     Real ForwardRateAgreement::forwardValue() const {
         calculate();
-        return (underlyingSpotValue_ - underlyingIncome_) / discountCurve_->discount(maturityDate_);
+
+        Handle<YieldTermStructure> discount =
+            discountCurve_.empty() ? index_->forwardingTermStructure() : discountCurve_;
+
+        return (underlyingSpotValue_ - underlyingIncome_) / discount->discount(maturityDate_);
     }
 
     InterestRate ForwardRateAgreement::impliedYield(Real underlyingSpotValue,
