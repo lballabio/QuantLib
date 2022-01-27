@@ -619,7 +619,43 @@ void InflationTest::testZeroIndexFutureFixing() {
                     << "\n    returned: " << fixing);
 }
 
+void InflationTest::testInterpolatedZeroTermStructure() {
+    BOOST_TEST_MESSAGE("Testing interpolated zero-rate inflation curve...");
 
+    SavedSettings backup;
+
+    Date today = Date(27, January, 2022);
+    Settings::instance().evaluationDate() = today;
+
+    Period lag = 3 * Months;
+
+    std::vector<Date> dates = {
+        today - lag,
+        today + 7 * Days,
+        today + 14 * Days,
+        today + 1 * Months,
+        today + 2 * Months,
+        today + 3 * Months,
+        today + 6 * Months,
+        today + 1 * Years,
+        today + 2 * Years,
+        today + 5 * Years,
+        today + 10 * Years
+    };
+    std::vector<Rate> rates = { 0.01, 0.01, 0.011, 0.012, 0.013, 0.015, 0.018, 0.02, 0.025, 0.03, 0.03 };
+
+    auto curve = ext::make_shared<InterpolatedZeroInflationCurve<Linear>>(
+        today, TARGET(), Actual360(), lag, Monthly, dates, rates);
+
+    auto nodes = curve->nodes();
+
+    BOOST_CHECK_MESSAGE(nodes.size() == dates.size(), "different number of nodes and input dates");
+
+    for (Size i=0; i<dates.size(); ++i) {
+        BOOST_CHECK_MESSAGE(dates[i] == nodes[i].first,
+                            "node " << i << " at " << nodes[i].first << "; " << dates[i] << " expected");
+    }
+}
 
 //===========================================================================================
 // year on year tests, index, termstructure, and swaps
@@ -1023,6 +1059,7 @@ test_suite* InflationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testZeroIndex));
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testZeroTermStructure));
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testZeroIndexFutureFixing));
+    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testInterpolatedZeroTermStructure));
 
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testYYIndex));
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testYYTermStructure));
