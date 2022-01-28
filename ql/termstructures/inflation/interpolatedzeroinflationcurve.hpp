@@ -161,13 +161,6 @@ namespace QuantLib {
                    "first data date is not in base period, date: "
                        << dates_[0] << " not within [" << lim.first << "," << lim.second << "]");
 
-        // by convention, we pull all the dates
-        // back to the start of their inflation periods
-        // otherwise the time calculations will be inconsistent
-        for (auto& date : dates_) {
-            date = inflationPeriod(date, frequency).first;
-        }
-
         QL_REQUIRE(this->data_.size() == dates_.size(),
                    "indices/dates count mismatch: " << this->data_.size() << " vs "
                                                     << dates_.size());
