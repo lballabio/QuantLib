@@ -41,7 +41,31 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 namespace QuantLib {
 
     class Observer;
-    class Observable;
+    class ObservableSettings;
+
+    //! Object that notifies its changes to a set of observers
+    /*! \ingroup patterns */
+    class Observable {
+        friend class Observer;
+        friend class ObservableSettings;
+      public:
+        // constructors, assignment, destructor
+        Observable();
+        Observable(const Observable&);
+        Observable& operator=(const Observable&);
+        virtual ~Observable() = default;
+        /*! This method should be called at the end of non-const methods
+            or when the programmer desires to notify any changes.
+        */
+        void notifyObservers();
+      private:
+        typedef std::unordered_set<Observer*> set_type;
+        typedef set_type::iterator iterator;
+        std::pair<iterator, bool> registerObserver(Observer*);
+        Size unregisterObserver(Observer*);
+        set_type observers_;
+        ObservableSettings& settings_;
+    };
 
     //! global repository for run-time library settings
     class ObservableSettings : public Singleton<ObservableSettings> {
@@ -58,49 +82,31 @@ namespace QuantLib {
         bool updatesDeferred() const { return updatesDeferred_; }
 
       private:
-        ObservableSettings()
-
-            = default;
-
-        void registerDeferredObservers(
-            const std::unordered_set<Observer*>& observers);
-        void unregisterDeferredObserver(Observer*);
+        ObservableSettings() = default;
 
         typedef std::unordered_set<Observer*> set_type;
         typedef set_type::iterator iterator;
+
+        void registerDeferredObservers(const Observable::set_type& observers);
+        void unregisterDeferredObserver(Observer*);
+
         set_type deferredObservers_;
 
         bool updatesEnabled_ = true, updatesDeferred_ = false;
-    };
-
-    //! Object that notifies its changes to a set of observers
-    /*! \ingroup patterns */
-    class Observable {
-        friend class Observer;
-      public:
-        // constructors, assignment, destructor
-        Observable() : settings_(ObservableSettings::instance()) {}
-        Observable(const Observable&);
-        Observable& operator=(const Observable&);
-        virtual ~Observable() = default;
-        /*! This method should be called at the end of non-const methods
-            or when the programmer desires to notify any changes.
-        */
-        void notifyObservers();
-      private:
-        typedef std::unordered_set<Observer*>::iterator iterator;
-        std::pair<iterator, bool> registerObserver(Observer*);
-        Size unregisterObserver(Observer*);
-        std::unordered_set<Observer*> observers_;
-        ObservableSettings& settings_;
     };
 
     //! Object that gets notified when a given observable changes
     /*! \ingroup patterns */
     class Observer {
       public:
-        QL_DEPRECATED // TODO - make private and undeprecate
+        /*! \deprecated Don't use `set_type`; it's not used in the public interface
+                        anyway.  Use `Observer::iterator` if you need to
+                        capture the return value from `registerWith`.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED  // to be moved to private section, not removed
         typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
+
         QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
         QL_DEPRECATED_ENABLE_WARNING
@@ -113,7 +119,7 @@ namespace QuantLib {
 
         // observer interface
         std::pair<iterator, bool>
-            registerWith(const ext::shared_ptr<Observable>&);
+        registerWith(const ext::shared_ptr<Observable>&);
 
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
@@ -144,8 +150,9 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline void ObservableSettings::registerDeferredObservers(
-        const std::unordered_set<Observer*>& observers) {
+    inline Observable::Observable() : settings_(ObservableSettings::instance()) {}
+
+    inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         if (updatesDeferred()) {
             deferredObservers_.insert(observers.begin(), observers.end());
         }
@@ -177,7 +184,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline std::pair<std::unordered_set<Observer*>::iterator, bool>
+    inline std::pair<Observable::iterator, bool>
     Observable::registerObserver(Observer* o) {
         return observers_.insert(o);
     }
@@ -255,9 +262,8 @@ namespace QuantLib {
 #include <boost/smart_ptr/owner_less.hpp>
 #include <set>
 
-
-
 namespace QuantLib {
+
     class Observable;
     class ObservableSettings;
 
@@ -267,9 +273,16 @@ namespace QuantLib {
         friend class Observable;
         friend class ObservableSettings;
       public:
-        QL_DEPRECATED // TODO - make private and undeprecate
+        /*! \deprecated Don't use `set_type`; it's not used in the public interface
+                        anyway.  Use `Observer::iterator` if you need to capture
+                        the return value from `registerWith`.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED  // to be moved to private section, not removed
         typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
+        QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
+        QL_DEPRECATED_ENABLE_WARNING
 
         // constructors, assignment, destructor
         Observer() {}
@@ -278,7 +291,7 @@ namespace QuantLib {
         virtual ~Observer();
         // observer interface
         std::pair<iterator, bool>
-            registerWith(const ext::shared_ptr<Observable>&);
+        registerWith(const ext::shared_ptr<Observable>&);
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
             itself. */
@@ -357,9 +370,14 @@ namespace QuantLib {
     class Observable {
         friend class Observer;
       public:
-        QL_DEPRECATED // TODO - make private and undeprecate
+        /*! \deprecated Don't use `set_type`; it's not used in the public interface anyway.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED  // to be moved to private section, not removed
         typedef boost::unordered_set<ext::shared_ptr<Observer::Proxy>> set_type;
+        QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
+        QL_DEPRECATED_ENABLE_WARNING
 
         // constructors, assignment, destructor
         Observable();
@@ -391,7 +409,7 @@ namespace QuantLib {
         friend class Singleton<ObservableSettings>;
         friend class Observable;
 
-    public:
+      public:
         void disableUpdates(bool deferred=false) {
             boost::lock_guard<boost::mutex> lock(mutex_);
             updatesType_ = (deferred) ? UpdatesDeferred : 0;
@@ -400,17 +418,17 @@ namespace QuantLib {
 
         bool updatesEnabled()  {return (updatesType_ & UpdatesEnabled) != 0; }
         bool updatesDeferred() {return (updatesType_ & UpdatesDeferred) != 0; }
-    private:
+      private:
         ObservableSettings() : updatesType_(UpdatesEnabled) {}
 
         typedef std::set<ext::weak_ptr<Observer::Proxy>,
                          boost::owner_less<ext::weak_ptr<Observer::Proxy> > >
             set_type;
-        typedef set_type::iterator iterator;
 
-        void registerDeferredObservers(const boost::unordered_set<ext::shared_ptr<Observer::Proxy>>& observers);
-        void unregisterDeferredObserver(
-            const ext::shared_ptr<Observer::Proxy>& proxy);
+        QL_DEPRECATED_DISABLE_WARNING
+        void registerDeferredObservers(const Observable::set_type& observers);
+        QL_DEPRECATED_ENABLE_WARNING
+        void unregisterDeferredObserver(const ext::shared_ptr<Observer::Proxy>& proxy);
 
         set_type deferredObservers_;
         mutable boost::mutex mutex_;
@@ -422,10 +440,11 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline void ObservableSettings::registerDeferredObservers(
-        const boost::unordered_set<ext::shared_ptr<Observer::Proxy>>& observers) {
+    QL_DEPRECATED_DISABLE_WARNING
+    inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         deferredObservers_.insert(observers.begin(), observers.end());
     }
+    QL_DEPRECATED_ENABLE_WARNING
 
     inline void ObservableSettings::unregisterDeferredObserver(
         const ext::shared_ptr<Observer::Proxy>& o) {
