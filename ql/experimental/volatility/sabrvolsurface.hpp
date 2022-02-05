@@ -28,7 +28,7 @@
 #include <ql/experimental/volatility/blackatmvolcurve.hpp>
 #include <ql/quote.hpp>
 #include <ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp>
-#include <boost/array.hpp>
+#include <array>
 
 namespace QuantLib {
 
@@ -67,7 +67,7 @@ namespace QuantLib {
         std::vector<Volatility> volatilitySpreads(const Period&) const;
         std::vector<Volatility> volatilitySpreads(const Date&) const;
       protected:
-        boost::array<Real, 4> sabrGuesses(const Date&) const;
+        std::array<Real, 4> sabrGuesses(const Date&) const;
       public:
         //@}
         //! \name BlackVolSurface interface
@@ -84,7 +84,7 @@ namespace QuantLib {
       private:
         void registerWithMarketData();
         void checkInputs() const;
-        void updateSabrGuesses(const Date& d, boost::array<Real, 4> newGuesses) const;
+        void updateSabrGuesses(const Date& d, std::array<Real, 4> newGuesses) const;
         Handle<BlackAtmVolCurve> atmCurve_;
         std::vector<Period> optionTenors_;
         std::vector<Time> optionTimes_;
@@ -98,7 +98,7 @@ namespace QuantLib {
         bool isRhoFixed_;
         bool vegaWeighted_;
         //
-        mutable std::vector<boost::array<Real,4> > sabrGuesses_;
+        mutable std::vector<std::array<Real,4>> sabrGuesses_;
     };
 
     // inline
