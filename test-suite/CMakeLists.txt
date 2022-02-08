@@ -386,7 +386,7 @@ if (QL_BUILD_TEST_SUITE)
     if (QL_INSTALL_TEST_SUITE)
         install(TARGETS ql_test_suite RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()
-    add_test(NAME test_suite COMMAND ql_test_suite --log_level=message)
+    add_test(NAME quantlib_test_suite COMMAND ql_test_suite --log_level=message)
 endif()
 
 IF (QL_BUILD_BENCHMARK)
