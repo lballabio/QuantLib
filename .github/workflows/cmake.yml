@@ -40,7 +40,7 @@ jobs:
         cd build
         ./test-suite/quantlib-test-suite --log_level=message
   cmake-win:
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
     - name: Setup
@@ -61,7 +61,7 @@ jobs:
         cd build
         .\test-suite\Release\quantlib-test-suite --log_level=message
   cmake-win-with-options:
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
     - name: Setup
