@@ -365,8 +365,8 @@ set(QL_BENCHMARK_SOURCES
 if (QL_BUILD_TEST_SUITE)
     add_library(ql_unit_test_main STATIC main.cpp)
     target_include_directories(ql_unit_test_main PRIVATE
-        ${CMAKE_BINARY_DIR}
-        ${CMAKE_SOURCE_DIR}
+        ${PROJECT_BINARY_DIR}
+        ${PROJECT_SOURCE_DIR}
         ${Boost_INCLUDE_DIRS})
     add_executable(ql_test_suite ${QL_TEST_SOURCES} ${QL_TEST_HEADERS})
     set_target_properties(ql_test_suite PROPERTIES OUTPUT_NAME "quantlib-test-suite")
