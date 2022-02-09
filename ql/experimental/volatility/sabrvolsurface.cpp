@@ -63,7 +63,7 @@ namespace QuantLib {
         registerWithMarketData();
     }
 
-    boost::array<Real, 4> SabrVolSurface::sabrGuesses(const Date& d) const {
+    std::array<Real, 4> SabrVolSurface::sabrGuesses(const Date& d) const {
 
         // the guesses for sabr parameters are assumed to be piecewise constant
         if (d<=optionDates_[0]) return sabrGuesses_[0];
@@ -73,7 +73,7 @@ namespace QuantLib {
         return sabrGuesses_[i];
     }
 
-    void SabrVolSurface::updateSabrGuesses(const Date& d, boost::array<Real, 4> newGuesses) const {
+    void SabrVolSurface::updateSabrGuesses(const Date& d, std::array<Real, 4> newGuesses) const {
 
         Size i=0;
         while (i<optionDates_.size() && d<=optionDates_[i])
@@ -123,7 +123,7 @@ namespace QuantLib {
         std::vector<Volatility> volSpreads = volatilitySpreads(d);
 
         // calculate sabr fit
-        boost::array<Real, 4> sabrParameters1 = sabrGuesses(d);
+        std::array<Real, 4> sabrParameters1 = sabrGuesses(d);
 
         ext::shared_ptr<SabrInterpolatedSmileSection> tmp(new
             SabrInterpolatedSmileSection(d,
