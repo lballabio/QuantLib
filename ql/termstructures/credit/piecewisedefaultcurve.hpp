@@ -202,12 +202,21 @@ namespace QuantLib {
         #if defined(__clang__)
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Winconsistent-missing-override"
+        #pragma clang diagnostic ignored "-Wsuggest-override"
+        #endif
+        #if defined(__GNUC__)
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Winconsistent-missing-override"
+        #pragma GCC diagnostic ignored "-Wsuggest-override"
         #endif
         Real hazardRateImpl(Time) const; // NOLINT(modernize-use-override)
                                          // (sometimes this method is not virtual,
                                          //  depending on the base class)
         #if defined(__clang__)
         #pragma clang diagnostic pop
+        #endif
+        #if defined(__GNUC__)
+        #pragma GCC diagnostic pop
         #endif
         // data members
         std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;

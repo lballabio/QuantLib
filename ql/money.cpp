@@ -21,7 +21,22 @@
 #include <ql/money.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/math/comparison.hpp>
+
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsuggest-override"
+#endif
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-override"
+#endif
 #include <boost/format.hpp>
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 namespace QuantLib {
 
