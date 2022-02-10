@@ -202,16 +202,14 @@ namespace QuantLib {
         #if defined(__clang__)
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Winconsistent-missing-override"
-        #if (__clang_major__ > 10)
+        #if (__clang_major__ > 11)
         #pragma clang diagnostic ignored "-Wsuggest-override"
         #endif
         #endif
-        #if defined(__GNUC__)
+        #if defined(__GNUC__) && (((__GNUC__ == 5) && (__GNUC_MINOR__ >= 1)) || (__GNUC__ > 5))
         #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Winconsistent-missing-override"
-        #if (((__GNUC__ == 5) && (__GNUC_MINOR__ >= 1)) || (__GNUC__ > 5))
         #pragma GCC diagnostic ignored "-Wsuggest-override"
-        #endif
         #endif
         Real hazardRateImpl(Time) const; // NOLINT(modernize-use-override)
                                          // (sometimes this method is not virtual,
@@ -219,7 +217,7 @@ namespace QuantLib {
         #if defined(__clang__)
         #pragma clang diagnostic pop
         #endif
-        #if defined(__GNUC__)
+        #if defined(__GNUC__) && (((__GNUC__ == 5) && (__GNUC_MINOR__ >= 1)) || (__GNUC__ > 5))
         #pragma GCC diagnostic pop
         #endif
         // data members
