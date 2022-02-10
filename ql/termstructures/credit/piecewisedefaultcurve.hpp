@@ -202,7 +202,7 @@ namespace QuantLib {
         #if defined(__clang__)
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Winconsistent-missing-override"
-        #if (__clang_major__ > 11)
+        #if (defined(__APPLE__) && __clang_major__ > 12) || (!defined(__APPLE__) && __clang_major__ > 10)
         #pragma clang diagnostic ignored "-Wsuggest-override"
         #endif
         #endif
