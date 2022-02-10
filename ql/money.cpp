@@ -22,10 +22,8 @@
 #include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/math/comparison.hpp>
 
-#if defined(__clang__)
+#if defined(__clang__) && (defined(__APPLE__) && __clang_major__ > 12) || (!defined(__APPLE__) && __clang_major__ > 10)
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Winconsistent-missing-override"
-#if (defined(__APPLE__) && __clang_major__ > 12) || (!defined(__APPLE__) && __clang_major__ > 10)
 #pragma clang diagnostic ignored "-Wsuggest-override"
 #endif
 #endif
@@ -36,7 +34,7 @@
 
 #include <boost/format.hpp>
 
-#if defined(__clang__)
+#if defined(__clang__) && (defined(__APPLE__) && __clang_major__ > 12) || (!defined(__APPLE__) && __clang_major__ > 10)
 #pragma clang diagnostic pop
 #endif
 #if defined(__GNUC__) && (((__GNUC__ == 5) && (__GNUC_MINOR__ >= 1)) || (__GNUC__ > 5))
