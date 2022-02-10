@@ -31,7 +31,6 @@
 #endif
 #if defined(__GNUC__) && (((__GNUC__ == 5) && (__GNUC_MINOR__ >= 1)) || (__GNUC__ > 5))
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Winconsistent-missing-override"
 #pragma GCC diagnostic ignored "-Wsuggest-override"
 #endif
 
