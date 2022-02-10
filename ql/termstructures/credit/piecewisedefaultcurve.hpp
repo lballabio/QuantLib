@@ -204,7 +204,7 @@ namespace QuantLib {
         #pragma clang diagnostic ignored "-Winconsistent-missing-override"
         #pragma clang diagnostic ignored "-Wsuggest-override"
         #endif
-        #if defined(__GNUC__)
+        #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
         #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Winconsistent-missing-override"
         #pragma GCC diagnostic ignored "-Wsuggest-override"
@@ -215,7 +215,7 @@ namespace QuantLib {
         #if defined(__clang__)
         #pragma clang diagnostic pop
         #endif
-        #if defined(__GNUC__)
+        #if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
         #pragma GCC diagnostic pop
         #endif
         // data members
