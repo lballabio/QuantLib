@@ -58,7 +58,7 @@ namespace QuantLib {
         const ext::shared_ptr<Exercise>& exercise,
         std::vector<Real> allPastFixings)
     : OneAssetOption(payoff, exercise), averageType_(averageType), runningAccumulator_(0.0),
-      pastFixings_(0), fixingDates_(std::move(std::move(fixingDates))),
+      pastFixings_(0), fixingDates_(std::move(fixingDates)),
       allPastFixingsProvided_(true), allPastFixings_(std::move(allPastFixings)) {}
 
     void DiscreteAveragingAsianOption::setupArguments(
