@@ -1052,11 +1052,10 @@ test_suite* BasketOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testTavellaValues));
 
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testOddSamples));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BasketOptionTest::testLocalVolatilitySpreadOption));
     suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::test2DPDEGreeks));
 
     if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testLocalVolatilitySpreadOption));
         // unrolled to get different test names
         suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues( 0,  5); }));
         suite->add(QUANTLIB_TEST_CASE([=](){ BasketOptionTest::testOneDAmericanValues( 5, 11); }));
@@ -1066,8 +1065,7 @@ test_suite* BasketOptionTest::suite(SpeedLevel speed) {
     }
 
     if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &BasketOptionTest::testBarraquandThreeValues));
+        suite->add(QUANTLIB_TEST_CASE(&BasketOptionTest::testBarraquandThreeValues));
     }
 
     return suite;
