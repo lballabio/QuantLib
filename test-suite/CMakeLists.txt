@@ -365,8 +365,8 @@ set(QL_BENCHMARK_SOURCES
 if (QL_BUILD_TEST_SUITE)
     add_library(ql_unit_test_main STATIC main.cpp)
     target_include_directories(ql_unit_test_main PRIVATE
-        ${CMAKE_BINARY_DIR}
-        ${CMAKE_SOURCE_DIR}
+        ${PROJECT_BINARY_DIR}
+        ${PROJECT_SOURCE_DIR}
         ${Boost_INCLUDE_DIRS})
     add_executable(ql_test_suite ${QL_TEST_SOURCES} ${QL_TEST_HEADERS})
     set_target_properties(ql_test_suite PROPERTIES OUTPUT_NAME "quantlib-test-suite")
@@ -386,7 +386,7 @@ if (QL_BUILD_TEST_SUITE)
     if (QL_INSTALL_TEST_SUITE)
         install(TARGETS ql_test_suite RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()
-    add_test(NAME test_suite COMMAND ql_test_suite --log_level=message)
+    add_test(NAME quantlib_test_suite COMMAND ql_test_suite --log_level=message)
 endif()
 
 IF (QL_BUILD_BENCHMARK)
