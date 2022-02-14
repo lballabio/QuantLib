@@ -40,17 +40,17 @@ jobs:
         cd build
         ./test-suite/quantlib-test-suite --log_level=message
   cmake-win:
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v2
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.75.0/binaries/boost_1_75_0-msvc-14.2-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.75.0"
+        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.78.0"
     - name: Compile
       env:
-        BOOST_ROOT: C:\local\boost-1.75.0
+        BOOST_ROOT: C:\local\boost-1.78.0
       run: |
         mkdir build
         cd build
@@ -61,17 +61,17 @@ jobs:
         cd build
         .\test-suite\Release\quantlib-test-suite --log_level=message
   cmake-win-with-options:
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v2
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.75.0/binaries/boost_1_75_0-msvc-14.2-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.75.0"
+        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.78.0"
     - name: Compile
       env:
-        BOOST_ROOT: C:\local\boost-1.75.0
+        BOOST_ROOT: C:\local\boost-1.78.0
       run: |
         cmake --preset windows-ci-build-with-nonstandard-options
         cmake --build --preset windows-ci-build-with-nonstandard-options

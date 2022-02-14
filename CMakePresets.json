@@ -40,7 +40,7 @@
     {
       "name": "windows-clang-x64",
       "binaryDir": "${sourceDir}/build",
-      "generator": "Visual Studio 16 2019",
+      "generator": "Visual Studio 17 2022",
       "toolset": "ClangCL",
       "architecture": {
         "value": "x64",
@@ -58,7 +58,7 @@
     {
       "name": "windows-msvc-x64",
       "binaryDir": "${sourceDir}/build",
-      "generator": "Visual Studio 16 2019",
+      "generator": "Visual Studio 17 2022",
       "architecture": {
         "value": "x64",
         "strategy": "external"
@@ -91,7 +91,7 @@
     {
       "name": "windows-ci-build-with-nonstandard-options",
       "binaryDir": "${sourceDir}/build",
-      "generator": "Visual Studio 16 2019",
+      "generator": "Visual Studio 17 2022",
       "architecture": {
         "value": "x64",
         "strategy": "external"
