@@ -259,13 +259,13 @@ namespace QuantLib {
                         CubicInterpolation::Lagrange, 0.0,
                         CubicInterpolation::Lagrange, 0.0);
                     for (Size i = 0; i < z.size() - 1; i++) {
-                        price += model_->gaussianShiftedPolynomialIntegral(
+                        price += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                      0.0, payoff1.cCoefficients()[i],
                                      payoff1.bCoefficients()[i],
                                      payoff1.aCoefficients()[i], p[i], z[i],
                                      z[i], z[i + 1]) *
                                  zSpreadDf;
-                        pricea += model_->gaussianShiftedPolynomialIntegral(
+                        pricea += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                       0.0, payoff1a.cCoefficients()[i],
                                       payoff1a.bCoefficients()[i],
                                       payoff1a.aCoefficients()[i], pa[i], z[i],
@@ -275,27 +275,27 @@ namespace QuantLib {
                     if (extrapolatePayoff_) {
                         if (flatPayoffExtrapolation_) {
                             price +=
-                                model_->gaussianShiftedPolynomialIntegral(
+                                Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                     0.0, 0.0, 0.0, 0.0, p[z.size() - 2],
                                     z[z.size() - 2], z[z.size() - 1], 100.0) *
                                 zSpreadDf;
-                            price += model_->gaussianShiftedPolynomialIntegral(
+                            price += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                          0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0,
                                          z[0]) *
                                      zSpreadDf;
                             pricea +=
-                                model_->gaussianShiftedPolynomialIntegral(
+                                Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                     0.0, 0.0, 0.0, 0.0, pa[z.size() - 2],
                                     z[z.size() - 2], z[z.size() - 1], 100.0) *
                                 zSpreadDf;
-                            pricea += model_->gaussianShiftedPolynomialIntegral(
+                            pricea += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                           0.0, 0.0, 0.0, 0.0, pa[0], z[0],
                                           -100.0, z[0]) *
                                       zSpreadDf;
                         } else {
                             if (type == Option::Call)
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0,
                                         payoff1.cCoefficients()[z.size() - 2],
                                         payoff1.bCoefficients()[z.size() - 2],
@@ -305,7 +305,7 @@ namespace QuantLib {
                                     zSpreadDf;
                             if (type == Option::Put)
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, payoff1.cCoefficients()[0],
                                         payoff1.bCoefficients()[0],
                                         payoff1.aCoefficients()[0], p[0], z[0],
@@ -313,7 +313,7 @@ namespace QuantLib {
                                     zSpreadDf;
                             if (type == Option::Call)
                                 pricea +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0,
                                         payoff1a.cCoefficients()[z.size() - 2],
                                         payoff1a.bCoefficients()[z.size() - 2],
@@ -323,7 +323,7 @@ namespace QuantLib {
                                     zSpreadDf;
                             if (type == Option::Put)
                                 pricea +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, payoff1a.cCoefficients()[0],
                                         payoff1a.bCoefficients()[0],
                                         payoff1a.aCoefficients()[0], pa[0],
@@ -364,7 +364,7 @@ namespace QuantLib {
                                 CubicInterpolation::Lagrange, 0.0);
                             for (Size i = 0; i < z.size() - 1; i++) {
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, payoff1.cCoefficients()[i],
                                         payoff1.bCoefficients()[i],
                                         payoff1.aCoefficients()[i], p[i], z[i],
@@ -374,24 +374,21 @@ namespace QuantLib {
                             if (extrapolatePayoff_) {
                                 if (flatPayoffExtrapolation_) {
                                     price +=
-                                        model_
-                                            ->gaussianShiftedPolynomialIntegral(
+                                        Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                                   0.0, 0.0, 0.0, 0.0,
                                                   p[z.size() - 2],
                                                   z[z.size() - 2],
                                                   z[z.size() - 1], 100.0) *
                                         zSpreadDf;
                                     price +=
-                                        model_
-                                            ->gaussianShiftedPolynomialIntegral(
+                                        Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                                   0.0, 0.0, 0.0, 0.0, p[0],
                                                   z[0], -100.0, z[0]) *
                                         zSpreadDf;
                                 } else {
                                     if (type == Option::Call)
                                         price +=
-                                            model_
-                                                ->gaussianShiftedPolynomialIntegral(
+                                            Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                                       0.0,
                                                       payoff1.cCoefficients()
                                                           [z.size() - 2],
@@ -405,8 +402,7 @@ namespace QuantLib {
                                             zSpreadDf;
                                     if (type == Option::Put)
                                         price +=
-                                            model_
-                                                ->gaussianShiftedPolynomialIntegral(
+                                            Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                                       0.0,
                                                       payoff1
                                                           .cCoefficients()[0],
