@@ -36,6 +36,8 @@ namespace QuantLib {
     class ZeroInflationTermStructure;
     class YoYInflationTermStructure;
 
+    class ZeroInflationIndex;
+
     struct CPI {
         //! when you observe an index, how do you interpolate between fixings?
         enum InterpolationType {
@@ -43,6 +45,32 @@ namespace QuantLib {
             Flat,    //!< flat from previous fixing
             Linear   //!< linearly between bracketing fixings
         };
+
+        //! non-interpolated inflation fixing
+        /*! \param index           The index whose fixing should be retrieved
+            \param date            The date without lag; usually, the payment
+                                   date for some inflation-based coupon.
+            \param observationLag  The observation lag to be subtracted from the
+                                   passed date; for instance, if the passed date is
+                                   in May and the lag is three months, the inflation
+                                   fixing from February will be returned.
+        */
+        static Real flatFixing(const ext::shared_ptr<ZeroInflationIndex>& index,
+                               const Date& date,
+                               const Period& observationLag);
+
+        //! interpolated inflation fixing
+        /*! \param index           The index whose fixing should be retrieved
+            \param date            The date without lag; usually, the payment
+                                   date for some inflation-based coupon.
+            \param observationLag  The observation lag to be subtracted from the
+                                   passed date; for instance, if the passed date is
+                                   in May and the lag is three months, the inflation
+                                   fixings from February and March will be interpolated.
+        */
+        static Real interpolatedFixing(const ext::shared_ptr<ZeroInflationIndex>& index,
+                                       const Date& date,
+                                       const Period& observationLag);
     };
 
 
