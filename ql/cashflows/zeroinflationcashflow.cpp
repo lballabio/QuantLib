@@ -60,14 +60,9 @@ namespace QuantLib {
         if (observationInterpolation_ == CPI::AsIndex) {
             I0 = zeroInflationIndex_->fixing(baseDate());
             I1 = zeroInflationIndex_->fixing(fixingDate());
-        } else if (observationInterpolation_ == CPI::Linear) {
-            I0 = CPI::interpolatedFixing(zeroInflationIndex_, startDate_, observationLag_);
-            I1 = CPI::interpolatedFixing(zeroInflationIndex_, endDate_, observationLag_);
-        } else if (observationInterpolation_ == CPI::Flat) {
-            I0 = CPI::flatFixing(zeroInflationIndex_, startDate_, observationLag_);
-            I1 = CPI::flatFixing(zeroInflationIndex_, endDate_, observationLag_);
         } else {
-            QL_FAIL("Unknown ZeroInflationInterpolationType.");
+            I0 = CPI::laggedFixing(zeroInflationIndex_, startDate_, observationLag_, observationInterpolation_);
+            I1 = CPI::laggedFixing(zeroInflationIndex_, endDate_, observationLag_, observationInterpolation_);
         }
 
         if (growthOnly())
