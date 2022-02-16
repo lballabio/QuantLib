@@ -88,8 +88,13 @@ namespace QuantLib {
         Rate baseCPI() const;
         //! how do you observe the index?  as-is, flat, linear?
         CPI::InterpolationType observationInterpolation() const;
-        //! utility method, calls indexFixing
+
+        /*! \deprecated Use CPI::laggedFixing instead.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED
         Rate indexObservation(const Date& onDate) const;
+
         //! index used
         ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
         //@}
