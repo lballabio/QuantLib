@@ -25,6 +25,44 @@
 
 namespace QuantLib {
 
+    Real CPI::laggedFixing(const ext::shared_ptr<ZeroInflationIndex>& index,
+                           const Date& date,
+                           const Period& observationLag,
+                           CPI::InterpolationType interpolationType) {
+
+        switch (interpolationType) {
+          case AsIndex: {
+              return index->fixing(date - observationLag);
+          }
+          case Flat: {
+              auto fixingPeriod = inflationPeriod(date - observationLag, index->frequency());
+              return index->fixing(fixingPeriod.first);
+          }
+          case Linear: {
+              auto fixingPeriod = inflationPeriod(date - observationLag, index->frequency());
+              auto interpolationPeriod = inflationPeriod(date, index->frequency());
+
+              if (date == interpolationPeriod.first) {
+                  // special case; no interpolation.  This avoids asking for
+                  // the fixing at the end of the period, which might need a
+                  // forecast curve to be set.
+                  return index->fixing(fixingPeriod.first);
+              }
+
+              static const auto oneDay = Period(1, Days);
+
+              auto I0 = index->fixing(fixingPeriod.first);
+              auto I1 = index->fixing(fixingPeriod.second + oneDay);
+
+              return I0 + (I1 - I0) * (date - interpolationPeriod.first) /
+                  (Real)((interpolationPeriod.second + oneDay) - interpolationPeriod.first);
+          }
+          default:
+            QL_FAIL("unknown CPI interpolation type: " << int(interpolationType));
+        }
+    }
+
+
     InflationIndex::InflationIndex(std::string familyName,
                                    Region region,
                                    bool revised,
