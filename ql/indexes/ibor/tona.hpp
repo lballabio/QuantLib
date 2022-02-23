@@ -17,7 +17,7 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file toan.hpp
+/*! \file tona.hpp
 \brief %TONA index
 */
 
