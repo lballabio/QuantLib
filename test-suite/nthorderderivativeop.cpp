@@ -525,8 +525,8 @@ namespace {
                                ext::shared_ptr<YieldTermStructure> qTS,
                                Volatility vol,
                                Size direction)
-        : payoff_(std::move(std::move(payoff))), mesher_(std::move(std::move(mesher))),
-          rTS_(std::move(std::move(rTS))), qTS_(std::move(std::move(qTS))), vol_(vol),
+        : payoff_(std::move(payoff)), mesher_(std::move(mesher)),
+          rTS_(std::move(rTS)), qTS_(std::move(qTS)), vol_(vol),
           direction_(direction) {}
 
         Real innerValue(const FdmLinearOpIterator& iter, Time t)  override {
