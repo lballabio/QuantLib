@@ -4,6 +4,7 @@
  Copyright (C) 2006 Klaus Spanderen
  Copyright (C) 2007 StatPro Italia srl
  Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2022 Jonghee Lee
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -115,7 +116,7 @@ namespace QuantLib {
         MakeMCAmericanEngine& withSeed(BigNatural seed);
         MakeMCAmericanEngine& withAntitheticVariate(bool b = true);
         MakeMCAmericanEngine& withControlVariate(bool b = true);
-        MakeMCAmericanEngine& withPolynomOrder(Size polynomOrer);
+        MakeMCAmericanEngine& withPolynomOrder(Size polynomOrder);
         MakeMCAmericanEngine& withBasisSystem(LsmBasisSystem::PolynomType);
         MakeMCAmericanEngine& withCalibrationSamples(Size calibrationSamples);
         MakeMCAmericanEngine& withAntitheticVariateCalibration(bool b = true);
