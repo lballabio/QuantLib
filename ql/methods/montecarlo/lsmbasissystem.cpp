@@ -29,6 +29,7 @@
 #include <utility>
 
 namespace QuantLib {
+
     namespace {
 
         // makes typing a little easier
@@ -100,14 +101,15 @@ namespace QuantLib {
             VV ret(tuples.begin(), tuples.end());
             return ret;
         }
+
     } 
 
     // LsmBasisSystem static methods
 
-    VF_R LsmBasisSystem::pathBasisSystem(Size order, PolynomType polyType) {
+    VF_R LsmBasisSystem::pathBasisSystem(Size order, PolynomialType type) {
         VF_R ret(order+1);
         for (Size i=0; i<=order; ++i) {
-            switch (polyType) {
+            switch (type) {
               case Monomial:
                 ret[i] = MonomialFct(i);
                 break;
@@ -155,10 +157,10 @@ namespace QuantLib {
     }
 
     VF_A LsmBasisSystem::multiPathBasisSystem(Size dim, Size order,
-                                              PolynomType polyType) {
+                                              PolynomialType type) {
         QL_REQUIRE(dim>0, "zero dimension");
         // get single factor basis
-        VF_R pathBasis = pathBasisSystem(order, polyType);
+        VF_R pathBasis = pathBasisSystem(order, type);
         VF_A ret;
         // 0-th order term
         VF_R term(dim, pathBasis[0]);
@@ -178,4 +180,5 @@ namespace QuantLib {
         }
         return ret;
     }
+
 }
