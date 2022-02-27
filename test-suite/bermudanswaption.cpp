@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2005, 2007 StatPro Italia srl
  Copyright (C) 2016 Klaus Spanderen
+ Copyright (C) 2021, 2022 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -357,7 +358,7 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
             bermudanSwaption->setPricingEngine(ext::make_shared<FdHullWhiteSwaptionEngine>(model));
             auto npvFD = bermudanSwaption->NPV();
 
-            constexpr auto timesteps = 14 * 4 * 20;
+            constexpr auto timesteps = 14 * 4 * 2;
 
             bermudanSwaption->setPricingEngine(
                 ext::make_shared<TreeSwaptionEngine2>(model, timesteps));
