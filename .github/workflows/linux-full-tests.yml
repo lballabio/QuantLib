@@ -147,6 +147,7 @@ jobs:
             tag: rolling
             cc: gcc
             cxx: g++
+            cxxflags: "-Wno-deprecated-declarations"
             configureflags: --enable-disposable
           - name: "Thread-safe observer enabled"
             shortname: threadsafe

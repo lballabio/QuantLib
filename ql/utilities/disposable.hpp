@@ -71,12 +71,18 @@ namespace QuantLib {
             return temp;
         }
         \endcode
+
+        \deprecated This class is no longer required after C++11.
+                    Deprecated in version 1.26.
     */
     template <class T>
     class Disposable : public T {
       public:
+        QL_DEPRECATED
         Disposable(T& t);
+        QL_DEPRECATED
         Disposable(const Disposable<T>& t);
+        QL_DEPRECATED
         Disposable<T>& operator=(const Disposable<T>& t);
     };
 
