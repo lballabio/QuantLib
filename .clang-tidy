@@ -9,4 +9,10 @@ CheckOptions:
     value: 1
   - key:   modernize-use-noexcept.ReplacementString
     value: QL_NOEXCEPT
+  - key:   readability-identifier-length.MinimumParameterNameLength
+    value: 1
+  - key:   readability-identifier-length.MinimumVariableNameLength
+    value: 1
+  - key:   readability-identifier-length.MinimumLoopCounterNameLength
+    value: 1
 ...
