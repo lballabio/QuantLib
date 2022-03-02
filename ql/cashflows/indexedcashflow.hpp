@@ -49,12 +49,7 @@ namespace QuantLib {
                         const Date& baseDate,
                         const Date& fixingDate,
                         const Date& paymentDate,
-                        bool growthOnly = false)
-        : notional_(notional), index_(index),
-          baseDate_(baseDate), fixingDate_(fixingDate),
-          paymentDate_(paymentDate), growthOnly_(growthOnly) {
-            registerWith(index);
-        }
+                        bool growthOnly = false);
         //! \name Event interface
         //@{
         Date date() const override { return paymentDate_; }

@@ -22,6 +22,19 @@
 
 namespace QuantLib {
 
+    IndexedCashFlow::IndexedCashFlow(Real notional,
+                                     const ext::shared_ptr<Index> &index,
+                                     const Date& baseDate,
+                                     const Date& fixingDate,
+                                     const Date& paymentDate,
+                                     bool growthOnly)
+    : notional_(notional), index_(index),
+      baseDate_(baseDate), fixingDate_(fixingDate),
+      paymentDate_(paymentDate), growthOnly_(growthOnly) {
+        QL_REQUIRE(index_, "no index provided");
+        registerWith(index_);
+    }
+
     Real IndexedCashFlow::amount() const {
         Real I0 = index_->fixing(baseDate_);
         Real I1 = index_->fixing(fixingDate_);
