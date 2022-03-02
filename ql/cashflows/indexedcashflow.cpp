@@ -19,17 +19,17 @@
 
 #include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/index.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     IndexedCashFlow::IndexedCashFlow(Real notional,
-                                     const ext::shared_ptr<Index> &index,
+                                     ext::shared_ptr<Index> index,
                                      const Date& baseDate,
                                      const Date& fixingDate,
                                      const Date& paymentDate,
                                      bool growthOnly)
-    : notional_(notional), index_(index),
-      baseDate_(baseDate), fixingDate_(fixingDate),
+    : notional_(notional), index_(std::move(index)), baseDate_(baseDate), fixingDate_(fixingDate),
       paymentDate_(paymentDate), growthOnly_(growthOnly) {
         QL_REQUIRE(index_, "no index provided");
         registerWith(index_);
