@@ -73,6 +73,21 @@
       }
     },
     {
+      "name": "linux-ci-build-with-clang-tidy",
+      "binaryDir": "${sourceDir}/build",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "BOOST_ROOT": "/usr",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "g++",
+        "QL_CLANG_TIDY": "clang-tidy-10",
+        "QL_USE_CLANG_TIDY": "ON",
+        "QL_USE_STD_SHARED_PTR": "ON",
+        "QL_USE_STD_FUNCTION": "ON",
+        "QL_USE_STD_TUPLE": "ON"
+      }
+    },
+    {
       "name": "linux-ci-build-with-nonstandard-options",
       "binaryDir": "${sourceDir}/build",
       "generator": "Unix Makefiles",
@@ -150,6 +165,10 @@
       "name": "windows-msvc-x64-release",
       "configurePreset": "windows-msvc-x64",
       "configuration": "Release"
+    },
+    {
+      "name": "linux-ci-build-with-clang-tidy",
+      "configurePreset": "linux-ci-build-with-clang-tidy"
     },
     {
       "name": "linux-ci-build-with-nonstandard-options",
