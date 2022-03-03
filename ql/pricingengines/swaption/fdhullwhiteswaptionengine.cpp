@@ -46,6 +46,8 @@ namespace QuantLib {
     }
 
     void FdHullWhiteSwaptionEngine::calculate() const {
+        QL_REQUIRE(!model_.empty(), "no model specified");
+
         // 1. Term structure
         const Handle<YieldTermStructure> ts = model_->termStructure();
 
@@ -55,15 +57,9 @@ namespace QuantLib {
         const Time maturity = dc.yearFraction(referenceDate,
                                               arguments_.exercise->lastDate());
 
-
-        const ext::shared_ptr<OrnsteinUhlenbeckProcess> process(
-            new OrnsteinUhlenbeckProcess(model_->a(), model_->sigma()));
-
-        const ext::shared_ptr<Fdm1dMesher> shortRateMesher(
-            new FdmSimpleProcess1dMesher(xGrid_, process, maturity,1,invEps_));
-
-        const ext::shared_ptr<FdmMesher> mesher(
-            new FdmMesherComposite(shortRateMesher));
+        auto process = ext::make_shared<OrnsteinUhlenbeckProcess>(model_->a(), model_->sigma());
+        auto shortRateMesher = ext::make_shared<FdmSimpleProcess1dMesher>(xGrid_, process, maturity, 1, invEps_);
+        auto mesher = ext::make_shared<FdmMesherComposite>(shortRateMesher);
 
         // 3. Inner Value Calculator
         const std::vector<Date>& exerciseDates = arguments_.exercise->dates();
@@ -81,20 +77,17 @@ namespace QuantLib {
             = arguments_.swap->iborIndex()->forwardingTermStructure();
 
         QL_REQUIRE(fwdTs->dayCounter() == disTs->dayCounter(),
-                "day counter of forward and discount curve must match");
+                   "day counter of forward and discount curve must match");
         QL_REQUIRE(fwdTs->referenceDate() == disTs->referenceDate(),
-                "reference date of forward and discount curve must match");
+                   "reference date of forward and discount curve must match");
 
-        const ext::shared_ptr<HullWhite> fwdModel(
-            new HullWhite(fwdTs, model_->a(), model_->sigma()));
-
-        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
-             new FdmAffineModelSwapInnerValue<HullWhite>(
+        auto fwdModel = ext::make_shared<HullWhite>(fwdTs, model_->a(), model_->sigma());
+        auto calculator = ext::make_shared<FdmAffineModelSwapInnerValue<HullWhite>>(
                  model_.currentLink(), fwdModel,
-                 arguments_.swap, t2d, mesher, 0));
+                 arguments_.swap, t2d, mesher, 0);
 
         // 4. Step conditions
-        const ext::shared_ptr<FdmStepConditionComposite> conditions =
+        auto conditions =
              FdmStepConditionComposite::vanillaComposite(
                  DividendSchedule(), arguments_.exercise,
                  mesher, calculator, referenceDate, dc);
