@@ -339,5 +339,7 @@ Real ZabrSmileSection<Evaluation>::volatilityImpl(Rate strike,
 
 #ifndef id_98e0f4f5a7666fae51cac656dd48c949
 #define id_98e0f4f5a7666fae51cac656dd48c949
-inline bool test_98e0f4f5a7666fae51cac656dd48c949(int* i) { return i != 0; }
+inline bool test_98e0f4f5a7666fae51cac656dd48c949(const int* i) {
+    return i != nullptr;
+}
 #endif

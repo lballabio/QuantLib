@@ -160,5 +160,7 @@ class D0Interpolator {
 
 #ifndef id_828294fde2b48b130d83038ac8b78d28
 #define id_828294fde2b48b130d83038ac8b78d28
-inline bool test_828294fde2b48b130d83038ac8b78d28(int* i) { return i != 0; }
+inline bool test_828294fde2b48b130d83038ac8b78d28(const int* i) {
+    return i != nullptr;
+}
 #endif

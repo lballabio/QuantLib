@@ -115,5 +115,7 @@ using initializers::operator<<;   // NOLINT(misc-unused-using-decls)
 
 #ifndef id_dd3a4ad2e15914b054f958d2f72dadb4
 #define id_dd3a4ad2e15914b054f958d2f72dadb4
-inline bool test_dd3a4ad2e15914b054f958d2f72dadb4(int* i) { return i != 0; }
+inline bool test_dd3a4ad2e15914b054f958d2f72dadb4(const int* i) {
+    return i != nullptr;
+}
 #endif

@@ -43,5 +43,7 @@
 
 #ifndef id_2d1abbb554483787801b0f43219d38cc
 #define id_2d1abbb554483787801b0f43219d38cc
-inline bool test_2d1abbb554483787801b0f43219d38cc(int* i) { return i != 0; }
+inline bool test_2d1abbb554483787801b0f43219d38cc(const int* i) {
+    return i != nullptr;
+}
 #endif

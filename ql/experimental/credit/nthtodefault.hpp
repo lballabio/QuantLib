@@ -173,5 +173,7 @@ namespace QuantLib {
 
 #ifndef id_7590c2d0ec0d5ccd32a985de34a1ada7
 #define id_7590c2d0ec0d5ccd32a985de34a1ada7
-inline bool test_7590c2d0ec0d5ccd32a985de34a1ada7(int* i) { return i != 0; }
+inline bool test_7590c2d0ec0d5ccd32a985de34a1ada7(const int* i) {
+    return i != nullptr;
+}
 #endif

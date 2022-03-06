@@ -290,5 +290,7 @@ class NoArbSabr {
 
 #ifndef id_432e9c8b979c2a824a738240c42172ff
 #define id_432e9c8b979c2a824a738240c42172ff
-inline bool test_432e9c8b979c2a824a738240c42172ff(int* i) { return i != 0; }
+inline bool test_432e9c8b979c2a824a738240c42172ff(const int* i) {
+    return i != nullptr;
+}
 #endif

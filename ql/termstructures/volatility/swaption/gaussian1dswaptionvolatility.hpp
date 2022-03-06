@@ -95,5 +95,7 @@ class Gaussian1dSwaptionVolatility : public SwaptionVolatilityStructure {
 
 #ifndef id_19647887126ae220800bafa5b2d524ca
 #define id_19647887126ae220800bafa5b2d524ca
-inline bool test_19647887126ae220800bafa5b2d524ca(int* i) { return i != 0; }
+inline bool test_19647887126ae220800bafa5b2d524ca(const int* i) {
+    return i != nullptr;
+}
 #endif

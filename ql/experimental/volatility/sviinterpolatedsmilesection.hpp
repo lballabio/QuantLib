@@ -203,5 +203,7 @@ inline Real SviInterpolatedSmileSection::atmLevel() const {
 
 #ifndef id_f9d6b47e24c4b0ad6cf28226d5adec52
 #define id_f9d6b47e24c4b0ad6cf28226d5adec52
-inline bool test_f9d6b47e24c4b0ad6cf28226d5adec52(int* i) { return i != 0; }
+inline bool test_f9d6b47e24c4b0ad6cf28226d5adec52(const int* i) {
+    return i != nullptr;
+}
 #endif

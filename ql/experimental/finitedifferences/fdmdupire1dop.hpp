@@ -61,5 +61,7 @@ class FdmDupire1dOp : public FdmLinearOpComposite {
 
 #ifndef id_d096fbbec898265cabf97de9c7a87e4c
 #define id_d096fbbec898265cabf97de9c7a87e4c
-inline bool test_d096fbbec898265cabf97de9c7a87e4c(int* i) { return i != 0; }
+inline bool test_d096fbbec898265cabf97de9c7a87e4c(const int* i) {
+    return i != nullptr;
+}
 #endif

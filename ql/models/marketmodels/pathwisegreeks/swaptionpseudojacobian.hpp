@@ -114,5 +114,7 @@ This is  tested in the pathwise vegas routine in MarketModels.cpp
 
 #ifndef id_071cef2448cb90c8cffeb591a46c1ce8
 #define id_071cef2448cb90c8cffeb591a46c1ce8
-inline bool test_071cef2448cb90c8cffeb591a46c1ce8(int* i) { return i != 0; }
+inline bool test_071cef2448cb90c8cffeb591a46c1ce8(const int* i) {
+    return i != nullptr;
+}
 #endif

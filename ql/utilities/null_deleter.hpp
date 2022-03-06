@@ -48,5 +48,7 @@ struct null_deleter {
 
 #ifndef id_6f5d3344ee75535b6490a67437a6a052
 #define id_6f5d3344ee75535b6490a67437a6a052
-inline bool test_6f5d3344ee75535b6490a67437a6a052(int* i) { return i != 0; }
+inline bool test_6f5d3344ee75535b6490a67437a6a052(const int* i) {
+    return i != nullptr;
+}
 #endif

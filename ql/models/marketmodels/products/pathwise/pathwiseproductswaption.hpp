@@ -150,5 +150,7 @@ class MarketModelPathwiseCoterminalSwaptionsNumericalDeflated : public MarketMod
 
 #ifndef id_f5dac31b986a6ef6f6c11e7b6e03add8
 #define id_f5dac31b986a6ef6f6c11e7b6e03add8
-inline bool test_f5dac31b986a6ef6f6c11e7b6e03add8(int* i) { return i != 0; }
+inline bool test_f5dac31b986a6ef6f6c11e7b6e03add8(const int* i) {
+    return i != nullptr;
+}
 #endif

@@ -63,5 +63,7 @@ inline Disposable<Matrix> moorePenroseInverse(const Matrix &A,
 
 #ifndef id_dd5747b6542444eefe2aabd53f385af7
 #define id_dd5747b6542444eefe2aabd53f385af7
-inline bool test_dd5747b6542444eefe2aabd53f385af7(int* i) { return i != 0; }
+inline bool test_dd5747b6542444eefe2aabd53f385af7(const int* i) {
+    return i != nullptr;
+}
 #endif

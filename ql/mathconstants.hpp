@@ -132,5 +132,7 @@
 
 #ifndef id_2a5717b5087ce77d85ef6ac2f834609c
 #define id_2a5717b5087ce77d85ef6ac2f834609c
-inline bool test_2a5717b5087ce77d85ef6ac2f834609c(int* i) { return i != 0; }
+inline bool test_2a5717b5087ce77d85ef6ac2f834609c(const int* i) {
+    return i != nullptr;
+}
 #endif

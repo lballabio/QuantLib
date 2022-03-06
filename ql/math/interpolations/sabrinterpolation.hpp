@@ -250,5 +250,7 @@ class SABR {
 
 #ifndef id_f8af61e2e13b07788a354c8cb78b1bd4
 #define id_f8af61e2e13b07788a354c8cb78b1bd4
-inline bool test_f8af61e2e13b07788a354c8cb78b1bd4(int* i) { return i != 0; }
+inline bool test_f8af61e2e13b07788a354c8cb78b1bd4(const int* i) {
+    return i != nullptr;
+}
 #endif

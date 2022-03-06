@@ -328,5 +328,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
 #ifndef id_8b89b672393e8ce5ed2fb0efa2140385
 #define id_8b89b672393e8ce5ed2fb0efa2140385
-inline bool test_8b89b672393e8ce5ed2fb0efa2140385(int* i) { return i != 0; }
+inline bool test_8b89b672393e8ce5ed2fb0efa2140385(const int* i) {
+    return i != nullptr;
+}
 #endif

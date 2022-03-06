@@ -73,5 +73,7 @@ class FdmBlackScholesFwdOp : public FdmLinearOpComposite {
 
 #ifndef id_38171f24a23ffe642c782abf7b5413e6
 #define id_38171f24a23ffe642c782abf7b5413e6
-inline bool test_38171f24a23ffe642c782abf7b5413e6(int* i) { return i != 0; }
+inline bool test_38171f24a23ffe642c782abf7b5413e6(const int* i) {
+    return i != nullptr;
+}
 #endif

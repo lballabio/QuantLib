@@ -473,5 +473,7 @@ namespace std {
 
 #ifndef id_bfe9ffae7bbd8df2697702356d8e9124
 #define id_bfe9ffae7bbd8df2697702356d8e9124
-inline bool test_bfe9ffae7bbd8df2697702356d8e9124(int* i) { return i != 0; }
+inline bool test_bfe9ffae7bbd8df2697702356d8e9124(const int* i) {
+    return i != nullptr;
+}
 #endif

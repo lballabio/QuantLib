@@ -332,5 +332,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
 
 #ifndef id_e842617c46115ebbf0cd18f968b22562
 #define id_e842617c46115ebbf0cd18f968b22562
-inline bool test_e842617c46115ebbf0cd18f968b22562(int* i) { return i != 0; }
+inline bool test_e842617c46115ebbf0cd18f968b22562(const int* i) {
+    return i != nullptr;
+}
 #endif

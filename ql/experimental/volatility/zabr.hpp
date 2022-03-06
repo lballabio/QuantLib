@@ -90,5 +90,7 @@ class ZabrModel {
 
 #ifndef id_cea381bf23b5fd84ff71e527988cc08c
 #define id_cea381bf23b5fd84ff71e527988cc08c
-inline bool test_cea381bf23b5fd84ff71e527988cc08c(int* i) { return i != 0; }
+inline bool test_cea381bf23b5fd84ff71e527988cc08c(const int* i) {
+    return i != nullptr;
+}
 #endif

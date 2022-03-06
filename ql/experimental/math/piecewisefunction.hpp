@@ -49,5 +49,7 @@
 
 #ifndef id_9da3011abd9ea9d60d0fc1a2cc25731b
 #define id_9da3011abd9ea9d60d0fc1a2cc25731b
-inline bool test_9da3011abd9ea9d60d0fc1a2cc25731b(int* i) { return i != 0; }
+inline bool test_9da3011abd9ea9d60d0fc1a2cc25731b(const int* i) {
+    return i != nullptr;
+}
 #endif

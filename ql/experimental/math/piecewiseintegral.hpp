@@ -107,5 +107,7 @@ inline Real PiecewiseIntegral::integrate(const ext::function<Real(Real)> &f,
 
 #ifndef id_ee73646a4737ecfe109e40dfbabbc426
 #define id_ee73646a4737ecfe109e40dfbabbc426
-inline bool test_ee73646a4737ecfe109e40dfbabbc426(int* i) { return i != 0; }
+inline bool test_ee73646a4737ecfe109e40dfbabbc426(const int* i) {
+    return i != nullptr;
+}
 #endif

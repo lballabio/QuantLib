@@ -54,5 +54,7 @@ class Loss {
 
 #ifndef id_4456d9f6af0ee048089c3f57ffc93066
 #define id_4456d9f6af0ee048089c3f57ffc93066
-inline bool test_4456d9f6af0ee048089c3f57ffc93066(int* i) { return i != 0; }
+inline bool test_4456d9f6af0ee048089c3f57ffc93066(const int* i) {
+    return i != nullptr;
+}
 #endif

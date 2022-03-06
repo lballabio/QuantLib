@@ -202,5 +202,7 @@ inline void Gsr::numeraireTime(const Real T) {
 
 #ifndef id_fa578063d99d871ba8e49b4d7e9edadc
 #define id_fa578063d99d871ba8e49b4d7e9edadc
-inline bool test_fa578063d99d871ba8e49b4d7e9edadc(int* i) { return i != 0; }
+inline bool test_fa578063d99d871ba8e49b4d7e9edadc(const int* i) {
+    return i != nullptr;
+}
 #endif
