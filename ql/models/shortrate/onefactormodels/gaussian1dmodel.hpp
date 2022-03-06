@@ -268,3 +268,9 @@ Gaussian1dModel::zerobond(const Date &maturity, const Date &referenceDate,
 }
 
 #endif
+
+
+#ifndef id_678325e665755709af1646bba10366ef
+#define id_678325e665755709af1646bba10366ef
+inline bool test_678325e665755709af1646bba10366ef(int* i) { return i != 0; }
+#endif

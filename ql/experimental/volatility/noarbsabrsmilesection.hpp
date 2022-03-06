@@ -71,3 +71,9 @@ class NoArbSabrSmileSection : public SmileSection {
 }
 
 #endif
+
+
+#ifndef id_6ce7b91a830704274f87ac1ba4e5ca9f
+#define id_6ce7b91a830704274f87ac1ba4e5ca9f
+inline bool test_6ce7b91a830704274f87ac1ba4e5ca9f(int* i) { return i != 0; }
+#endif

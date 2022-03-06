@@ -238,3 +238,9 @@ class Svi {
 }
 
 #endif
+
+
+#ifndef id_1d1deb79231d54898ca02e28891e3e91
+#define id_1d1deb79231d54898ca02e28891e3e91
+inline bool test_1d1deb79231d54898ca02e28891e3e91(int* i) { return i != 0; }
+#endif

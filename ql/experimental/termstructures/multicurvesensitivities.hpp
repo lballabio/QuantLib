@@ -162,3 +162,9 @@ inline std::vector< Real > MultiCurveSensitivities::allZeros() const {
 }
 
 #endif
+
+
+#ifndef id_17a4004be709ea30e93f2dc7026da095
+#define id_17a4004be709ea30e93f2dc7026da095
+inline bool test_17a4004be709ea30e93f2dc7026da095(int* i) { return i != 0; }
+#endif

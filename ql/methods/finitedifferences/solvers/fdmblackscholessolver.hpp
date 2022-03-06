@@ -69,3 +69,9 @@ namespace QuantLib {
 }
 
 #endif /* quantlib_fdm_black_scholes_solver_hpp */
+
+
+#ifndef id_88be24653083a26b272233565b2c0291
+#define id_88be24653083a26b272233565b2c0291
+inline bool test_88be24653083a26b272233565b2c0291(int* i) { return i != 0; }
+#endif

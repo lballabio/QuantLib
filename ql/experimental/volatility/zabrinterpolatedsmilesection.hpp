@@ -324,3 +324,9 @@ Real ZabrInterpolatedSmileSection<Evaluation>::varianceImpl(Real strike) const {
 }
 
 #endif
+
+
+#ifndef id_f4f69ec7f39b56141b545239860e7bdd
+#define id_f4f69ec7f39b56141b545239860e7bdd
+inline bool test_f4f69ec7f39b56141b545239860e7bdd(int* i) { return i != 0; }
+#endif

@@ -324,3 +324,9 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 } // namespace QuantLib
 
 #endif
+
+
+#ifndef id_8b89b672393e8ce5ed2fb0efa2140385
+#define id_8b89b672393e8ce5ed2fb0efa2140385
+inline bool test_8b89b672393e8ce5ed2fb0efa2140385(int* i) { return i != 0; }
+#endif

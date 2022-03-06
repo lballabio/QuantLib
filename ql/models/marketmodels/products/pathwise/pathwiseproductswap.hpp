@@ -92,3 +92,9 @@ class MarketModelPathwiseSwap : public MarketModelPathwiseMultiProduct
 }
 
 #endif
+
+
+#ifndef id_91eeb13c7ebe60c2e9903898b3e9758a
+#define id_91eeb13c7ebe60c2e9903898b3e9758a
+inline bool test_91eeb13c7ebe60c2e9903898b3e9758a(int* i) { return i != 0; }
+#endif

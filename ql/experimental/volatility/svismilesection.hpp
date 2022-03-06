@@ -53,3 +53,9 @@ class SviSmileSection : public SmileSection {
 }
 
 #endif
+
+
+#ifndef id_bb16e3db4f18732a4809ec3a0970ed18
+#define id_bb16e3db4f18732a4809ec3a0970ed18
+inline bool test_bb16e3db4f18732a4809ec3a0970ed18(int* i) { return i != 0; }
+#endif

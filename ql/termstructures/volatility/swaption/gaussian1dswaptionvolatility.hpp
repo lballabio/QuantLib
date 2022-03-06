@@ -91,3 +91,9 @@ class Gaussian1dSwaptionVolatility : public SwaptionVolatilityStructure {
 }
 
 #endif
+
+
+#ifndef id_19647887126ae220800bafa5b2d524ca
+#define id_19647887126ae220800bafa5b2d524ca
+inline bool test_19647887126ae220800bafa5b2d524ca(int* i) { return i != 0; }
+#endif

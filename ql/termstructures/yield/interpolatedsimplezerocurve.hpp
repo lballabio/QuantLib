@@ -201,3 +201,9 @@ template <class T> void InterpolatedSimpleZeroCurve<T>::initialize() {
 } // namespace QuantLib
 
 #endif
+
+
+#ifndef id_970951354fa2c6d2551f97c1acb2bfef
+#define id_970951354fa2c6d2551f97c1acb2bfef
+inline bool test_970951354fa2c6d2551f97c1acb2bfef(int* i) { return i != 0; }
+#endif

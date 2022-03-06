@@ -94,3 +94,9 @@ class FdmZabrOp : public FdmLinearOpComposite {
 }
 
 #endif
+
+
+#ifndef id_240fee1254b2f2dfa412b1a93b6973d5
+#define id_240fee1254b2f2dfa412b1a93b6973d5
+inline bool test_240fee1254b2f2dfa412b1a93b6973d5(int* i) { return i != 0; }
+#endif

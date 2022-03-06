@@ -75,3 +75,9 @@ class Gaussian1dSmileSection : public SmileSection {
 }
 
 #endif
+
+
+#ifndef id_32e47e2349931357f926988fdb7f315e
+#define id_32e47e2349931357f926988fdb7f315e
+inline bool test_32e47e2349931357f926988fdb7f315e(int* i) { return i != 0; }
+#endif

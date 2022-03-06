@@ -75,3 +75,9 @@ namespace QuantLib {
 }
 
 #endif /*quantlib_fd_heston_barrier_engine_hpp*/
+
+
+#ifndef id_ad3de28b04b117de462bfa183d7ba029
+#define id_ad3de28b04b117de462bfa183d7ba029
+inline bool test_ad3de28b04b117de462bfa183d7ba029(int* i) { return i != 0; }
+#endif

@@ -45,3 +45,9 @@ public:
 }
 
 #endif
+
+
+#ifndef id_4d825abade6c4795658cba829d762b01
+#define id_4d825abade6c4795658cba829d762b01
+inline bool test_4d825abade6c4795658cba829d762b01(int* i) { return i != 0; }
+#endif

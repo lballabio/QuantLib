@@ -279,3 +279,9 @@ QL_TRACE(#variable << " = " << variable)
 #endif
 
 #endif
+
+
+#ifndef id_b27d85bc7d5a5a17ebda549eea980ca1
+#define id_b27d85bc7d5a5a17ebda549eea980ca1
+inline bool test_b27d85bc7d5a5a17ebda549eea980ca1(int* i) { return i != 0; }
+#endif

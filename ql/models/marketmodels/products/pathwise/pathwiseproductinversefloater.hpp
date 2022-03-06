@@ -95,3 +95,9 @@ class MarketModelPathwiseInverseFloater : public MarketModelPathwiseMultiProduct
 }
 
 #endif
+
+
+#ifndef id_f68ff90c2126debb4e3699f79a087f76
+#define id_f68ff90c2126debb4e3699f79a087f76
+inline bool test_f68ff90c2126debb4e3699f79a087f76(int* i) { return i != 0; }
+#endif

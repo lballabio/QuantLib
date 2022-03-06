@@ -161,3 +161,9 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
 } // namespace QuantLib
 
 #endif // include guard
+
+
+#ifndef id_a5d16d0395520aea756da853957e1d91
+#define id_a5d16d0395520aea756da853957e1d91
+inline bool test_a5d16d0395520aea756da853957e1d91(int* i) { return i != 0; }
+#endif

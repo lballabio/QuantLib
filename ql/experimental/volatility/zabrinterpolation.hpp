@@ -216,3 +216,9 @@ template<class Evaluation> class Zabr {
 }
 
 #endif
+
+
+#ifndef id_d7b37573988115bb4128fe468aa8f533
+#define id_d7b37573988115bb4128fe468aa8f533
+inline bool test_d7b37573988115bb4128fe468aa8f533(int* i) { return i != 0; }
+#endif

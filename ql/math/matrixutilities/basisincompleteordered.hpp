@@ -86,3 +86,9 @@ This class is tested in
 }
 
 #endif
+
+
+#ifndef id_32bbe94c33374934fe1af1fc0ed489f4
+#define id_32bbe94c33374934fe1af1fc0ed489f4
+inline bool test_32bbe94c33374934fe1af1fc0ed489f4(int* i) { return i != 0; }
+#endif

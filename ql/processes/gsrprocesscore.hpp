@@ -104,3 +104,9 @@ inline Real GsrProcessCore::reversion(const Time t) const {
 } // namespace QuantLib
 
 #endif
+
+
+#ifndef id_52242b1f817796af5f91a096789324d0
+#define id_52242b1f817796af5f91a096789324d0
+inline bool test_52242b1f817796af5f91a096789324d0(int* i) { return i != 0; }
+#endif

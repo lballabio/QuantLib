@@ -61,3 +61,9 @@ namespace QuantLib {
 }
 
 #endif /* quantlib_fdm_simple_2d_bs_solver_hpp */
+
+
+#ifndef id_08cc9d55784faec86b23a84993460cc3
+#define id_08cc9d55784faec86b23a84993460cc3
+inline bool test_08cc9d55784faec86b23a84993460cc3(int* i) { return i != 0; }
+#endif

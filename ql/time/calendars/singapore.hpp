@@ -73,3 +73,9 @@ namespace QuantLib {
 
 
 #endif
+
+
+#ifndef id_455a87758263909cb4586d2d91b5c0ca
+#define id_455a87758263909cb4586d2d91b5c0ca
+inline bool test_455a87758263909cb4586d2d91b5c0ca(int* i) { return i != 0; }
+#endif

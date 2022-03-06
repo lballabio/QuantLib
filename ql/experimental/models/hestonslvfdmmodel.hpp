@@ -112,3 +112,9 @@ class SimpleQuote;
 
 #endif
 
+
+
+#ifndef id_8f6e977c502d5909090156eb917533df
+#define id_8f6e977c502d5909090156eb917533df
+inline bool test_8f6e977c502d5909090156eb917533df(int* i) { return i != 0; }
+#endif

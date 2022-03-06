@@ -388,3 +388,9 @@ namespace detail {
 }
 
 #endif
+
+
+#ifndef id_a54a0f9dea4b5c5888c52ed4995131fb
+#define id_a54a0f9dea4b5c5888c52ed4995131fb
+inline bool test_a54a0f9dea4b5c5888c52ed4995131fb(int* i) { return i != 0; }
+#endif

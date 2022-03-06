@@ -67,3 +67,9 @@ namespace QuantLib {
 }
 
 #endif /*quantlib_fd_black_scholes_barrier_engine_hpp*/
+
+
+#ifndef id_832c7e537d607f56b865a03bb6272ac6
+#define id_832c7e537d607f56b865a03bb6272ac6
+inline bool test_832c7e537d607f56b865a03bb6272ac6(int* i) { return i != 0; }
+#endif

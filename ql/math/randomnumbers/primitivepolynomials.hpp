@@ -267,3 +267,9 @@ extern
 const long *const PrimitivePolynomials[N_MAX_DEGREE];
 
 #endif
+
+
+#ifndef id_2495e72871119fcbc5b7024ab4b220e9
+#define id_2495e72871119fcbc5b7024ab4b220e9
+inline bool test_2495e72871119fcbc5b7024ab4b220e9(int* i) { return i != 0; }
+#endif

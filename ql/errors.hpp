@@ -156,3 +156,9 @@ QL_MULTILINE_ASSERTION_END
 
 #endif
 
+
+
+#ifndef id_55bcece915b148130c4b2d3cffe3a976
+#define id_55bcece915b148130c4b2d3cffe3a976
+inline bool test_55bcece915b148130c4b2d3cffe3a976(int* i) { return i != 0; }
+#endif
