@@ -583,25 +583,26 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
     SavedSettings backup;
     Settings::instance().evaluationDate() = today;
 
+    RelinkableHandle<YieldTermStructure> termStructure;
+    termStructure.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
+    auto accrualDCC = Thirty360(Thirty360::Convention::USA);
+    auto frequency = Frequency::Semiannual;
+    auto compounding = Compounding::Compounded;
 
-    auto makeBonds = [&today, &calendar](Date callDate,
-                                         ext::shared_ptr<FixedRateBond>& fixedRateBond,
-                                         ext::shared_ptr<CallableFixedRateBond>& callableBond) {
-        RelinkableHandle<YieldTermStructure> termStructure;
-        termStructure.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
-
+    auto makeBonds = [&today, &calendar, &termStructure, &accrualDCC,
+                      &frequency](Date callDate, ext::shared_ptr<FixedRateBond>& fixedRateBond,
+                                  ext::shared_ptr<CallableFixedRateBond>& callableBond) {
         auto settlementDays = 2;
         auto settlementDate = Date(20, May, 2021);
         auto coupon = 0.05;
         auto faceAmount = 100.00;
         auto redemption = faceAmount;
-        auto accrualDCC = Thirty360(Thirty360::Convention::USA);
         auto maturityDate = Date(14, Feb, 2026);
         auto issueDate = settlementDate - 2 * 366 * Days;
         Schedule schedule = MakeSchedule()
                                 .from(issueDate)
                                 .to(maturityDate)
-                                .withFrequency(Semiannual)
+                                .withFrequency(frequency)
                                 .withCalendar(calendar)
                                 .withConvention(Unadjusted)
                                 .withTerminationDateConvention(Unadjusted)
@@ -629,8 +630,8 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
         auto newFixedRateBond = ext::make_shared<FixedRateBond>(
             settlementDays, faceAmount, fixedRateBondSchedule, fixedRateBondCoupons, accrualDCC,
             BusinessDayConvention::Following, redemption, issueDate);
-        auto discountigEngine = ext::make_shared<DiscountingBondEngine>(termStructure);
-        newFixedRateBond->setPricingEngine(discountigEngine);
+        auto discountingEngine = ext::make_shared<DiscountingBondEngine>(termStructure);
+        newFixedRateBond->setPricingEngine(discountingEngine);
 
         fixedRateBond.swap(newFixedRateBond);
     };
@@ -655,12 +656,18 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
                             << "    expected:   " << npvFixedRateBond << " +/- " << std::scientific
                             << std::setprecision(1) << tolerance);
             }
+
+            auto cleanPrice = callableBond->cleanPrice();
+            auto oasFixedRateBond =
+                callableBond->OAS(cleanPrice, termStructure, accrualDCC, compounding, frequency);
+            BOOST_TEST_MESSAGE("bond oas at " << io::iso_date(callDate) << std::setprecision(4)
+                                              << ": " << oasFixedRateBond * 10000.);
         }
     }
 }
 
 test_suite* CallableBondTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Convertible-bond tests");
+    auto* suite = BOOST_TEST_SUITE("Callable-bond tests");
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testConsistency));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testInterplay));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testObservability));

@@ -36,6 +36,7 @@ namespace QuantLib {
         const CallableBond::arguments& args, const Handle<YieldTermStructure>& termStructure)
     : arguments_(args), adjustedCallabilityPrices_(args.callabilityPrices) {
 
+        auto spread = arguments_.spread;
         auto dayCounter = termStructure->dayCounter();
         auto referenceDate = termStructure->referenceDate();
 
@@ -74,8 +75,23 @@ namespace QuantLib {
 
                     /* We snapped the callabilityTime so we need to take into account the missing
                      * discount factor. */
-                    auto discountTillCallDate = termStructure->discount(callabilityDate);
-                    auto discountTillCouponDate = termStructure->discount(couponDate);
+                    auto timeToCallDate = termStructure->dayCounter().yearFraction(
+                        Settings::instance().evaluationDate(), callabilityDate);
+                    auto zeroRateTillCallDate =
+                        termStructure->zeroRate(callabilityDate, termStructure->dayCounter(),
+                                                Continuous, Annual) +
+                        spread;
+                    auto discountTillCallDate = std::exp(-zeroRateTillCallDate * timeToCallDate);
+
+                    auto timeToCouponDate = termStructure->dayCounter().yearFraction(
+                        Settings::instance().evaluationDate(), couponDate);
+                    auto zeroRateTillCouponDate =
+                        termStructure->zeroRate(couponDate, termStructure->dayCounter(), Continuous,
+                                                Annual) +
+                        spread;
+                    auto discountTillCouponDate =
+                        std::exp(-zeroRateTillCouponDate * timeToCouponDate);
+
                     adjustedCallabilityPrices_[i] *= discountTillCallDate / discountTillCouponDate;
 
                     break;
