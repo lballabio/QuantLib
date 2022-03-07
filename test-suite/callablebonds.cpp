@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2018 StatPro Italia srl
- Copyright (C) 2021 Ralf Konrad Eckel
+ Copyright (C) 2021, 2022 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +27,7 @@
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/schedule.hpp>
@@ -400,7 +401,7 @@ void CallableBondTest::testDegenerate() {
 
     ext::shared_ptr<PricingEngine> discountingEngine =
         ext::make_shared<DiscountingBondEngine>(vars.termStructure);
-    
+
     zeroCouponBond.setPricingEngine(discountingEngine);
     couponBond.setPricingEngine(discountingEngine);
 
@@ -578,30 +579,30 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
      * https://github.com/lballabio/QuantLib/issues/930#issuecomment-853886024 */
 
     auto today = Date(18, May, 2021);
-    auto calendar = UnitedStates(UnitedStates::FederalReserve);
 
     SavedSettings backup;
     Settings::instance().evaluationDate() = today;
 
+    auto calendar = UnitedStates(UnitedStates::FederalReserve);
+    auto accrualDCC = Thirty360(Thirty360::Convention::USA);
+    auto frequency = Semiannual;
+    RelinkableHandle<YieldTermStructure> termStructure;
+    termStructure.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
 
-    auto makeBonds = [&today, &calendar](Date callDate,
-                                         ext::shared_ptr<FixedRateBond>& fixedRateBond,
-                                         ext::shared_ptr<CallableFixedRateBond>& callableBond) {
-        RelinkableHandle<YieldTermStructure> termStructure;
-        termStructure.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
-
+    auto makeBonds = [&calendar, &accrualDCC, frequency,
+                      &termStructure](Date callDate, ext::shared_ptr<FixedRateBond>& fixedRateBond,
+                                      ext::shared_ptr<CallableFixedRateBond>& callableBond) {
         auto settlementDays = 2;
         auto settlementDate = Date(20, May, 2021);
         auto coupon = 0.05;
         auto faceAmount = 100.00;
         auto redemption = faceAmount;
-        auto accrualDCC = Thirty360(Thirty360::Convention::USA);
         auto maturityDate = Date(14, Feb, 2026);
         auto issueDate = settlementDate - 2 * 366 * Days;
         Schedule schedule = MakeSchedule()
                                 .from(issueDate)
                                 .to(maturityDate)
-                                .withFrequency(Semiannual)
+                                .withFrequency(frequency)
                                 .withCalendar(calendar)
                                 .withConvention(Unadjusted)
                                 .withTerminationDateConvention(Unadjusted)
@@ -629,14 +630,16 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
         auto newFixedRateBond = ext::make_shared<FixedRateBond>(
             settlementDays, faceAmount, fixedRateBondSchedule, fixedRateBondCoupons, accrualDCC,
             BusinessDayConvention::Following, redemption, issueDate);
-        auto discountigEngine = ext::make_shared<DiscountingBondEngine>(termStructure);
-        newFixedRateBond->setPricingEngine(discountigEngine);
+        auto discountingEngine = ext::make_shared<DiscountingBondEngine>(termStructure);
+        newFixedRateBond->setPricingEngine(discountingEngine);
 
         fixedRateBond.swap(newFixedRateBond);
     };
 
     auto initialCallDate = Date(14, Feb, 2022);
     auto tolerance = 1e-10;
+    auto prevOAS = 0.0266;
+    auto expectedOasStep = 0.00005;
 
     ext::shared_ptr<CallableFixedRateBond> callableBond;
     ext::shared_ptr<FixedRateBond> fixedRateBond;
@@ -655,12 +658,24 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
                             << "    expected:   " << npvFixedRateBond << " +/- " << std::scientific
                             << std::setprecision(1) << tolerance);
             }
+
+            auto cleanPrice = callableBond->cleanPrice() - 2.0;
+            auto oas = callableBond->OAS(cleanPrice, termStructure, accrualDCC,
+                                         QuantLib::Continuous, frequency);
+            if (prevOAS - oas < expectedOasStep) {
+                BOOST_ERROR("failed to get expected change in OAS at "
+                            << io::iso_date(callDate) << ":\n"
+                            << std::setprecision(7) << "    calculated: " << oas << "\n"
+                            << "      previous: " << prevOAS << "\n"
+                            << "  should at least change by " << expectedOasStep);
+            }
+            prevOAS = oas;
         }
     }
 }
 
 test_suite* CallableBondTest::suite() {
-    auto* suite = BOOST_TEST_SUITE("Convertible-bond tests");
+    auto* suite = BOOST_TEST_SUITE("Callable-bond tests");
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testConsistency));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testInterplay));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testObservability));
@@ -669,4 +684,3 @@ test_suite* CallableBondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testSnappingExerciseDate2ClosestCouponDate));
     return suite;
 }
-

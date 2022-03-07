@@ -78,7 +78,7 @@ namespace QuantLib {
                               Volatility maxVol) const;
 
         //! Calculate the Option Adjusted Spread (OAS)
-        /*! Calculates the spread that needs to be added to the the
+        /*! Calculates the spread that needs to be added to the
             reference curve so that the theoretical model value
             matches the marketPrice.
 
