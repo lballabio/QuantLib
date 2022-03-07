@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2018 StatPro Italia srl
- Copyright (C) 2021 Ralf Konrad Eckel
+ Copyright (C) 2021, 2022 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/

@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2008 Allen Kuo
- Copyright (C) 2021 Ralf Konrad Eckel
+ Copyright (C) 2021, 2022 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,7 +36,6 @@ namespace QuantLib {
         const CallableBond::arguments& args, const Handle<YieldTermStructure>& termStructure)
     : arguments_(args), adjustedCallabilityPrices_(args.callabilityPrices) {
 
-        auto spread = arguments_.spread;
         auto dayCounter = termStructure->dayCounter();
         auto referenceDate = termStructure->referenceDate();
 
@@ -74,25 +73,23 @@ namespace QuantLib {
                     couponAdjustments_[j] = CouponAdjustment::pre;
 
                     /* We snapped the callabilityTime so we need to take into account the missing
-                     * discount factor. */
-                    auto timeToCallDate = termStructure->dayCounter().yearFraction(
-                        Settings::instance().evaluationDate(), callabilityDate);
-                    auto zeroRateTillCallDate =
-                        termStructure->zeroRate(callabilityDate, termStructure->dayCounter(),
-                                                Continuous, Annual) +
-                        spread;
-                    auto discountTillCallDate = std::exp(-zeroRateTillCallDate * timeToCallDate);
+                     * discount factor including any possible spread e.g. set in the OAS
+                     * calculation. */
+                    auto spread  = arguments_.spread;
+                    auto calcDiscountFactorInclSpread = [&termStructure, spread](Date date) {
+                        auto time = termStructure->dayCounter().yearFraction(
+                            Settings::instance().evaluationDate(), date);
+                        auto zeroRateInclSpread =
+                            termStructure->zeroRate(date, termStructure->dayCounter(), Continuous,
+                                                    Annual) +
+                            spread;
+                        auto df = std::exp(-zeroRateInclSpread * time);
+                        return df;
+                    };
 
-                    auto timeToCouponDate = termStructure->dayCounter().yearFraction(
-                        Settings::instance().evaluationDate(), couponDate);
-                    auto zeroRateTillCouponDate =
-                        termStructure->zeroRate(couponDate, termStructure->dayCounter(), Continuous,
-                                                Annual) +
-                        spread;
-                    auto discountTillCouponDate =
-                        std::exp(-zeroRateTillCouponDate * timeToCouponDate);
-
-                    adjustedCallabilityPrices_[i] *= discountTillCallDate / discountTillCouponDate;
+                    auto dfTillCallDate = calcDiscountFactorInclSpread(callabilityDate);
+                    auto dfTillCouponDate = calcDiscountFactorInclSpread(couponDate);
+                    adjustedCallabilityPrices_[i] *= dfTillCallDate / dfTillCouponDate;
 
                     break;
                 }
