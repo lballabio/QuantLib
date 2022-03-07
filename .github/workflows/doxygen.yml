@@ -4,7 +4,7 @@ jobs:
   docs:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
         rm -f /usr/local/bin/2to3

@@ -192,7 +192,7 @@ jobs:
             moreflags: -lrt
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Cache
       uses: actions/cache@v2
       with:
