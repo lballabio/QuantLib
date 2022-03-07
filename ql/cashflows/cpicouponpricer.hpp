@@ -67,7 +67,7 @@ namespace QuantLib {
         //@}
 
 
-    protected:
+      protected:
         virtual Real optionletPrice(Option::Type optionType,
                                     Real effStrike) const;
 

@@ -76,10 +76,13 @@ namespace QuantLib {
         //! spread paid over the fixing of the underlying index
         Spread spread() const;
 
-        //! adjusted fixing (already divided by the base fixing)
-        Rate adjustedFixing() const;
-        //! allows for a different interpolation from the index
+        //! the ratio between the end index fixing and the base CPI
+        /*! This might include adjustments calculated by the pricer */
+        Rate adjustedIndexGrowth() const;
+
+        //! the index value observed (with a lag) at the end date
         Rate indexFixing() const override;
+
         //! base value for the CPI index
         /*! \warning make sure that the interpolation used to create
                      this is what you are using for the fixing,
@@ -94,6 +97,12 @@ namespace QuantLib {
         */
         QL_DEPRECATED
         Rate indexObservation(const Date& onDate) const;
+
+        /*! \deprecated Renamed to adjustedIndexGrowth.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED
+        Rate adjustedFixing() const;
 
         //! index used
         ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
@@ -110,8 +119,11 @@ namespace QuantLib {
         CPI::InterpolationType observationInterpolation_;
 
         bool checkPricerImpl(const ext::shared_ptr<InflationCouponPricer>&) const override;
-        // use to calculate for fixing date, allows change of
-        // interpolation w.r.t. index.  Can also be used ahead of time
+
+        /*! \deprecated Use CPI::laggedFixing instead.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED
         Rate indexFixing(const Date &) const;
     };
 
@@ -232,12 +244,12 @@ namespace QuantLib {
         return spread_;
     }
 
-    inline Rate CPICoupon::adjustedFixing() const {
+    inline Rate CPICoupon::adjustedIndexGrowth() const {
         return (rate()-spread())/fixedRate();
     }
 
     inline Rate CPICoupon::indexFixing() const {
-        return indexFixing(fixingDate());
+        return CPI::laggedFixing(cpiIndex(), accrualEndDate(), observationLag(), observationInterpolation());
     }
 
     inline Rate CPICoupon::baseCPI() const {
@@ -250,6 +262,10 @@ namespace QuantLib {
 
     inline Rate CPICoupon::indexObservation(const Date& onDate) const {
         return indexFixing(onDate);
+    }
+
+    inline Rate CPICoupon::adjustedFixing() const {
+        return adjustedIndexGrowth();
     }
 
     inline ext::shared_ptr<ZeroInflationIndex> CPICoupon::cpiIndex() const {

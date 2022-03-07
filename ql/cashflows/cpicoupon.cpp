@@ -28,32 +28,31 @@
 
 namespace QuantLib {
 
-    CPICoupon::
-    CPICoupon(
-              Real baseCPI, // user provided
-              const Date& paymentDate,
-              Real nominal,
-              const Date& startDate,
-              const Date& endDate,
-              Natural fixingDays,
-              const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
-              const Period& observationLag,
-              CPI::InterpolationType observationInterpolation,
-              const DayCounter& dayCounter,
-              Real fixedRate, // aka gearing
-              Spread spread,
-              const Date& refPeriodStart,
-              const Date& refPeriodEnd,
-              const Date& exCouponDate)
+    CPICoupon:: CPICoupon(Real baseCPI,
+                          const Date& paymentDate,
+                          Real nominal,
+                          const Date& startDate,
+                          const Date& endDate,
+                          Natural fixingDays,
+                          const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
+                          const Period& observationLag,
+                          CPI::InterpolationType observationInterpolation,
+                          const DayCounter& dayCounter,
+                          Real fixedRate,
+                          Spread spread,
+                          const Date& refPeriodStart,
+                          const Date& refPeriodEnd,
+                          const Date& exCouponDate)
     : InflationCoupon(paymentDate, nominal, startDate, endDate,
                       fixingDays, zeroIndex, observationLag,
                       dayCounter, refPeriodStart, refPeriodEnd, exCouponDate),
-        baseCPI_(baseCPI), fixedRate_(fixedRate), spread_(spread),
-        observationInterpolation_(observationInterpolation) {
+      baseCPI_(baseCPI), fixedRate_(fixedRate), spread_(spread),
+      observationInterpolation_(observationInterpolation) {
 
-            QL_REQUIRE(std::fabs(baseCPI_) > 1e-16,
-                       "|baseCPI_| < 1e-16, future divide-by-zero problem");
-        }
+        QL_REQUIRE(zeroIndex, "no index provided");
+        QL_REQUIRE(std::fabs(baseCPI_) > 1e-16,
+                   "|baseCPI_| < 1e-16, future divide-by-zero problem");
+    }
 
 
     void CPICoupon::accept(AcyclicVisitor& v) {
