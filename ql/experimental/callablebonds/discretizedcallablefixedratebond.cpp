@@ -77,11 +77,10 @@ namespace QuantLib {
                      * calculation. */
                     auto spread  = arguments_.spread;
                     auto calcDiscountFactorInclSpread = [&termStructure, spread](Date date) {
-                        auto time = termStructure->dayCounter().yearFraction(
-                            Settings::instance().evaluationDate(), date);
+                        auto time = termStructure->timeFromReference(date);
                         auto zeroRateInclSpread =
                             termStructure->zeroRate(date, termStructure->dayCounter(), Continuous,
-                                                    Annual) +
+                                                    NoFrequency) +
                             spread;
                         auto df = std::exp(-zeroRateInclSpread * time);
                         return df;
