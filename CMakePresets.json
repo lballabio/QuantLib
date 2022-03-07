@@ -80,7 +80,7 @@
         "BOOST_ROOT": "/usr",
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_CXX_COMPILER": "g++",
-        "QL_CLANG_TIDY": "clang-tidy-10",
+        "QL_CLANG_TIDY": "clang-tidy-12",
         "QL_USE_CLANG_TIDY": "ON",
         "QL_USE_STD_SHARED_PTR": "ON",
         "QL_USE_STD_FUNCTION": "ON",

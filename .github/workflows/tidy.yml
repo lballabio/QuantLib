@@ -11,7 +11,7 @@ jobs:
     - name: Setup
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang-tidy-10 libboost-all-dev
+        sudo apt-get install -y clang-tidy-12 libboost-all-dev
     - name: Check
       run: |
         cmake --preset linux-ci-build-with-clang-tidy
