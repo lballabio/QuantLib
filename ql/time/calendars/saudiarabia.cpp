@@ -20,6 +20,7 @@
 
 #include <ql/time/calendars/saudiarabia.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -80,12 +81,8 @@ namespace QuantLib {
                 Date(10, July, 2022)
             };
 
-            for (auto& p : EidAlAdha) {
-                if (d >= p - 1 && d <= p + 4) {
-                    return true;
-                }
-            }
-            return false;
+            return std::any_of(EidAlAdha.begin(), EidAlAdha.end(),
+                               [=](Date p) { return d >= p - 1 && d <= p + 4; });
         }
 
         bool isEidAlFitr(Date d) {
@@ -123,12 +120,8 @@ namespace QuantLib {
                 Date(14, Feb, 2029)
             };
 
-            for (auto& p : EidAlFitr) {
-                if (d >= p - 1 && d <= p + 4) {
-                    return true;
-                }
-            }
-            return false;
+            return std::any_of(EidAlFitr.begin(), EidAlFitr.end(),
+                               [=](Date p) { return d >= p - 1 && d <= p + 4; });
         }
 
     }
