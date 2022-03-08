@@ -136,22 +136,25 @@ namespace QuantLib {
                     const ext::shared_ptr<ZeroInflationIndex>& index,
                     const Date& baseDate,
                     Real baseFixing,
+                    const Date& observationDate,
+                    const Period& observationLag,
+                    CPI::InterpolationType interpolation,
+                    const Date& paymentDate,
+                    bool growthOnly = false);
+
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED
+        CPICashFlow(Real notional,
+                    const ext::shared_ptr<ZeroInflationIndex>& index,
+                    const Date& baseDate,
+                    Real baseFixing,
                     const Date& fixingDate,
                     const Date& paymentDate,
                     bool growthOnly = false,
                     CPI::InterpolationType interpolation = CPI::AsIndex,
-                    const Frequency& frequency = QuantLib::NoFrequency)
-        : IndexedCashFlow(notional, index, baseDate, fixingDate,
-                          paymentDate, growthOnly),
-          baseFixing_(baseFixing), interpolation_(interpolation),
-          frequency_(frequency) {
-            QL_REQUIRE(std::fabs(baseFixing_)>1e-16,
-                       "|baseFixing|<1e-16, future divide-by-zero error");
-            if (interpolation_ != CPI::AsIndex) {
-                QL_REQUIRE(frequency_ != QuantLib::NoFrequency,
-                           "non-index interpolation w/o frequency");
-            }
-        }
+                    const Frequency& frequency = QuantLib::NoFrequency);
 
         //! value used on base date
         /*! This does not have to agree with index on that date. */
@@ -159,17 +162,23 @@ namespace QuantLib {
         //! you may not have a valid date
         Date baseDate() const override;
 
+        Date observationDate() const { return observationDate_; }
+        Period observationLag() const { return observationLag_; }
         //! do you want linear/constant/as-index interpolation of future data?
         virtual CPI::InterpolationType interpolation() const {
             return interpolation_;
         }
         virtual Frequency frequency() const { return frequency_; }
 
+        ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
+
         //! redefined to use baseFixing() and interpolation
         Real amount() const override;
 
       protected:
         Real baseFixing_;
+        Date observationDate_;
+        Period observationLag_;
         CPI::InterpolationType interpolation_;
         Frequency frequency_;
     };
@@ -269,6 +278,11 @@ namespace QuantLib {
     }
 
     inline ext::shared_ptr<ZeroInflationIndex> CPICoupon::cpiIndex() const {
+        return ext::dynamic_pointer_cast<ZeroInflationIndex>(index());
+    }
+
+
+    inline ext::shared_ptr<ZeroInflationIndex> CPICashFlow::cpiIndex() const {
         return ext::dynamic_pointer_cast<ZeroInflationIndex>(index());
     }
 

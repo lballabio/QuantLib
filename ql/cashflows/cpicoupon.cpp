@@ -100,6 +100,43 @@ namespace QuantLib {
 
 
 
+    CPICashFlow::CPICashFlow(Real notional,
+                             const ext::shared_ptr<ZeroInflationIndex>& index,
+                             const Date& baseDate,
+                             Real baseFixing,
+                             const Date& observationDate,
+                             const Period& observationLag,
+                             CPI::InterpolationType interpolation,
+                             const Date& paymentDate,
+                             bool growthOnly)
+    : IndexedCashFlow(notional, index, baseDate, observationDate - observationLag, paymentDate, growthOnly),
+      baseFixing_(baseFixing), observationDate_(observationDate), observationLag_(observationLag),
+      interpolation_(interpolation), frequency_(index ? index->frequency() : NoFrequency) {
+        QL_REQUIRE(index, "no index provided");
+        QL_REQUIRE(std::fabs(baseFixing_)>1e-16,
+                   "|baseFixing|<1e-16, future divide-by-zero error");
+    }
+
+    CPICashFlow::CPICashFlow(Real notional,
+                             const ext::shared_ptr<ZeroInflationIndex>& index,
+                             const Date& baseDate,
+                             Real baseFixing,
+                             const Date& fixingDate,
+                             const Date& paymentDate,
+                             bool growthOnly,
+                             CPI::InterpolationType interpolation,
+                             const Frequency& frequency)
+    : IndexedCashFlow(notional, index, baseDate, fixingDate,
+                      paymentDate, growthOnly),
+      baseFixing_(baseFixing), interpolation_(interpolation),
+      frequency_(frequency) {
+        QL_REQUIRE(std::fabs(baseFixing_)>1e-16,
+                   "|baseFixing|<1e-16, future divide-by-zero error");
+        if (interpolation_ != CPI::AsIndex) {
+            QL_REQUIRE(frequency_ != QuantLib::NoFrequency,
+                       "non-index interpolation w/o frequency");
+        }
+    }
 
     Date CPICashFlow::baseDate() const {
         Date base = IndexedCashFlow::baseDate();
@@ -118,30 +155,26 @@ namespace QuantLib {
         Real I0 = baseFixing();
         Real I1;
 
-        // what interpolation do we use? Index / flat / linear
-        if (interpolation() == CPI::AsIndex ) {
-            I1 = index()->fixing(fixingDate());
+        if (observationDate_ != Date()) {
+            I1 = CPI::laggedFixing(cpiIndex(), observationDate_, observationLag_, interpolation_);
         } else {
-            // work out what it should be
-            //std::cout << fixingDate() << " and " << frequency() << std::endl;
-            //std::pair<Date,Date> dd = inflationPeriod(fixingDate(), frequency());
-            //std::cout << fixingDate() << " and " << dd.first << " " << dd.second << std::endl;
-            // work out what it should be
-            std::pair<Date,Date> dd = inflationPeriod(fixingDate(), frequency());
-            Real indexStart = index()->fixing(dd.first);
-            if (interpolation() == CPI::Linear) {
-                Real indexEnd = index()->fixing(dd.second+Period(1,Days));
-                // linear interpolation
-                //std::cout << indexStart << " and " << indexEnd << std::endl;
-                I1 = indexStart + (indexEnd - indexStart) * (fixingDate() - dd.first)
-                / ( (dd.second+Period(1,Days)) - dd.first); // can't get to next period's value within current period
+            // we get to this branch when the deprecated constructor was used; it will be phased out
+            if (interpolation() == CPI::AsIndex ) {
+                I1 = index()->fixing(fixingDate());
             } else {
-                // no interpolation, i.e. flat = constant, so use start-of-period value
-                I1 = indexStart;
+                std::pair<Date,Date> dd = inflationPeriod(fixingDate(), frequency());
+                Real indexStart = index()->fixing(dd.first);
+                if (interpolation() == CPI::Linear) {
+                    Real indexEnd = index()->fixing(dd.second+Period(1,Days));
+                    // linear interpolation
+                    I1 = indexStart + (indexEnd - indexStart) * (fixingDate() - dd.first)
+                        / ( (dd.second+Period(1,Days)) - dd.first);
+                } else {
+                    // no interpolation, i.e. flat = constant, so use start-of-period value
+                    I1 = indexStart;
+                }
             }
-
         }
-
 
         if (growthOnly())
             return notional() * (I1 / I0 - 1.0);
@@ -322,13 +355,11 @@ namespace QuantLib {
 
         // in CPI legs you always have a notional flow of some sort
         Date paymentDate = paymentCalendar_.adjust(schedule_.date(n), paymentAdjustment_);
-        Date fixingDate = paymentDate - observationLag_;
         leg.push_back(ext::make_shared<CPICashFlow>
                           (detail::get(notionals_, n, 0.0), index_,
-                           Date(), // is fake, i.e. you do not have one
-                           baseCPI_, fixingDate, paymentDate,
-                           subtractInflationNominal_, observationInterpolation_,
-                           index_->frequency()));
+                           Date(), baseCPI_, // no base date provided
+                           schedule_.date(n), observationLag_, observationInterpolation_,
+                           paymentDate, subtractInflationNominal_));
 
         // no caps and floors here, so this is enough
         setCouponPricer(leg, ext::make_shared<CPICouponPricer>());
