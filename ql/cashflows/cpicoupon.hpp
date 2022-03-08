@@ -58,6 +58,25 @@ namespace QuantLib {
                   Real nominal,
                   const Date& startDate,
                   const Date& endDate,
+                  const ext::shared_ptr<ZeroInflationIndex>& index,
+                  const Period& observationLag,
+                  CPI::InterpolationType observationInterpolation,
+                  const DayCounter& dayCounter,
+                  Real fixedRate, // aka gearing
+                  Spread spread = 0.0,
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const Date& exCouponDate = Date());
+
+        /*! \deprecated Use the other constructor instead.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED
+        CPICoupon(Real baseCPI,
+                  const Date& paymentDate,
+                  Real nominal,
+                  const Date& startDate,
+                  const Date& endDate,
                   Natural fixingDays,
                   const ext::shared_ptr<ZeroInflationIndex>& index,
                   const Period& observationLag,
@@ -205,7 +224,15 @@ namespace QuantLib {
         CPILeg& withPaymentDayCounter(const DayCounter&);
         CPILeg& withPaymentAdjustment(BusinessDayConvention);
         CPILeg& withPaymentCalendar(const Calendar&);
+        /*! \deprecated No-op; do not use.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED
         CPILeg& withFixingDays(Natural fixingDays);
+        /*! \deprecated No-op; do not use.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED
         CPILeg& withFixingDays(const std::vector<Natural>& fixingDays);
         CPILeg& withObservationInterpolation(CPI::InterpolationType);
         CPILeg& withSubtractInflationNominal(bool);
@@ -231,7 +258,6 @@ namespace QuantLib {
         DayCounter paymentDayCounter_;
         BusinessDayConvention paymentAdjustment_;
         Calendar paymentCalendar_;
-        std::vector<Natural> fixingDays_;
         CPI::InterpolationType observationInterpolation_;
         bool subtractInflationNominal_;
         std::vector<Spread> spreads_;

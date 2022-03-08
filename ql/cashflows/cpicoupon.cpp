@@ -28,21 +28,46 @@
 
 namespace QuantLib {
 
-    CPICoupon:: CPICoupon(Real baseCPI,
-                          const Date& paymentDate,
-                          Real nominal,
-                          const Date& startDate,
-                          const Date& endDate,
-                          Natural fixingDays,
-                          const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
-                          const Period& observationLag,
-                          CPI::InterpolationType observationInterpolation,
-                          const DayCounter& dayCounter,
-                          Real fixedRate,
-                          Spread spread,
-                          const Date& refPeriodStart,
-                          const Date& refPeriodEnd,
-                          const Date& exCouponDate)
+    CPICoupon::CPICoupon(Real baseCPI,
+                         const Date& paymentDate,
+                         Real nominal,
+                         const Date& startDate,
+                         const Date& endDate,
+                         const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
+                         const Period& observationLag,
+                         CPI::InterpolationType observationInterpolation,
+                         const DayCounter& dayCounter,
+                         Real fixedRate,
+                         Spread spread,
+                         const Date& refPeriodStart,
+                         const Date& refPeriodEnd,
+                         const Date& exCouponDate)
+    : InflationCoupon(paymentDate, nominal, startDate, endDate,
+                      0, zeroIndex, observationLag,
+                      dayCounter, refPeriodStart, refPeriodEnd, exCouponDate),
+      baseCPI_(baseCPI), fixedRate_(fixedRate), spread_(spread),
+      observationInterpolation_(observationInterpolation) {
+
+        QL_REQUIRE(zeroIndex, "no index provided");
+        QL_REQUIRE(std::fabs(baseCPI_) > 1e-16,
+                   "|baseCPI_| < 1e-16, future divide-by-zero problem");
+    }
+
+    CPICoupon::CPICoupon(Real baseCPI,
+                         const Date& paymentDate,
+                         Real nominal,
+                         const Date& startDate,
+                         const Date& endDate,
+                         Natural fixingDays,
+                         const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
+                         const Period& observationLag,
+                         CPI::InterpolationType observationInterpolation,
+                         const DayCounter& dayCounter,
+                         Real fixedRate,
+                         Spread spread,
+                         const Date& refPeriodStart,
+                         const Date& refPeriodEnd,
+                         const Date& exCouponDate)
     : InflationCoupon(paymentDate, nominal, startDate, endDate,
                       fixingDays, zeroIndex, observationLag,
                       dayCounter, refPeriodStart, refPeriodEnd, exCouponDate),
@@ -190,7 +215,7 @@ namespace QuantLib {
     : schedule_(schedule), index_(std::move(index)), baseCPI_(baseCPI),
       observationLag_(observationLag), paymentDayCounter_(Thirty360(Thirty360::BondBasis)),
       paymentAdjustment_(ModifiedFollowing), paymentCalendar_(schedule.calendar()),
-      fixingDays_(std::vector<Natural>(1, 0)), observationInterpolation_(CPI::AsIndex),
+      observationInterpolation_(CPI::AsIndex),
       subtractInflationNominal_(true), spreads_(std::vector<Real>(1, 0)) {}
 
 
@@ -241,12 +266,10 @@ namespace QuantLib {
     }
 
     CPILeg& CPILeg::withFixingDays(Natural fixingDays) {
-        fixingDays_ = std::vector<Natural>(1,fixingDays);
         return *this;
     }
 
     CPILeg& CPILeg::withFixingDays(const std::vector<Natural>& fixingDays) {
-        fixingDays_ = fixingDays;
         return *this;
     }
 
@@ -339,7 +362,6 @@ namespace QuantLib {
                                      paymentDate,
                                      detail::get(notionals_, i, 0.0),
                                      start, end,
-                                     detail::get(fixingDays_, i, 0.0),
                                      index_, observationLag_,
                                      observationInterpolation_,
                                      paymentDayCounter_,
