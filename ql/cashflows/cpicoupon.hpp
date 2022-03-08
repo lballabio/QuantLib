@@ -270,7 +270,9 @@ namespace QuantLib {
     }
 
     inline Rate CPICoupon::indexObservation(const Date& onDate) const {
+        QL_DEPRECATED_DISABLE_WARNING
         return indexFixing(onDate);
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     inline Rate CPICoupon::adjustedFixing() const {
