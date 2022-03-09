@@ -34,7 +34,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class QL_DEPRECATED FDDividendEngineBase : public FDMultiPeriodEngine<Scheme> {
+    class [[deprecated]] FDDividendEngineBase : public FDMultiPeriodEngine<Scheme> {
       public:
         FDDividendEngineBase(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -72,7 +72,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class QL_DEPRECATED FDDividendEngineMerton73 : public FDDividendEngineBase<Scheme> {
+    class [[deprecated]] FDDividendEngineMerton73 : public FDDividendEngineBase<Scheme> {
       public:
         FDDividendEngineMerton73(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -90,7 +90,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class QL_DEPRECATED FDDividendEngineShiftScale : public FDDividendEngineBase<Scheme> {
+    class [[deprecated]] FDDividendEngineShiftScale : public FDDividendEngineBase<Scheme> {
       public:
         FDDividendEngineShiftScale(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -109,7 +109,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class QL_DEPRECATED FDDividendEngine : public FDDividendEngineMerton73<Scheme> {
+    class [[deprecated]] FDDividendEngine : public FDDividendEngineMerton73<Scheme> {
       public:
         FDDividendEngine(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -180,7 +180,7 @@ namespace QuantLib {
 
     namespace detail {
 
-        class QL_DEPRECATED DividendAdder {
+        class [[deprecated]] DividendAdder {
           private:
             const Dividend *dividend;
           public:

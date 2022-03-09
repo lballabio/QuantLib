@@ -146,7 +146,7 @@ namespace QuantLib {
                         probably won't.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         Real spreadLegValue_;
 
       private:

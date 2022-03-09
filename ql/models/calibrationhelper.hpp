@@ -103,7 +103,7 @@ namespace QuantLib {
                         `termStructure_` to your derived class.
                         Deprecated in version 1.24.
         */
-        QL_DEPRECATED Handle<YieldTermStructure> termStructure_;
+        [[deprecated]] Handle<YieldTermStructure> termStructure_;
         ext::shared_ptr<PricingEngine> engine_;
         const VolatilityType volatilityType_;
         const Real shift_;

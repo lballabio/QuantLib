@@ -45,7 +45,7 @@ namespace QuantLib {
         \deprecated Use RiskyBondEngine with regular bonds instead.
                     Deprecated in version 1.24.
     */
-    class QL_DEPRECATED RiskyBond : public Instrument {
+    class [[deprecated]] RiskyBond : public Instrument {
     public:
         /*! The value is contingent to survival, i.e., the knockout
             probability is considered.  To compute the npv given that
@@ -147,7 +147,7 @@ namespace QuantLib {
         \deprecated Use RiskyBondEngine with regular bonds instead.
                     Deprecated in version 1.24.
     */
-    class QL_DEPRECATED RiskyFixedBond : public RiskyBond {
+    class [[deprecated]] RiskyFixedBond : public RiskyBond {
     public:
       RiskyFixedBond(const std::string& name,
                      const Currency& ccy,
@@ -185,7 +185,7 @@ namespace QuantLib {
         \deprecated Use RiskyBondEngine with regular bonds instead.
                     Deprecated in version 1.24.
     */
-    class QL_DEPRECATED RiskyFloatingBond : public RiskyBond {
+    class [[deprecated]] RiskyFloatingBond : public RiskyBond {
     public:
       RiskyFloatingBond(const std::string& name,
                         const Currency& ccy,

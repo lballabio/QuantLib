@@ -105,7 +105,7 @@ namespace QuantLib {
                         capture the return value from `registerWith`.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED  // to be moved to private section, not removed
+        [[deprecated]]  // to be moved to private section, not removed
         typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
 
         QL_DEPRECATED_DISABLE_WARNING
@@ -279,7 +279,7 @@ namespace QuantLib {
                         the return value from `registerWith`.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED  // to be moved to private section, not removed
+        [[deprecated]]  // to be moved to private section, not removed
         typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
         QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
@@ -374,7 +374,7 @@ namespace QuantLib {
         /*! \deprecated Don't use `set_type`; it's not used in the public interface anyway.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED  // to be moved to private section, not removed
+        [[deprecated]]  // to be moved to private section, not removed
         typedef boost::unordered_set<ext::shared_ptr<Observer::Proxy>> set_type;
         QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;

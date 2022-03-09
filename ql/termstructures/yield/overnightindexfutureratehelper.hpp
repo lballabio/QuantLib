@@ -70,7 +70,7 @@ namespace QuantLib {
         /*! \deprecated Use the constructor without index and averaging method.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         SofrFutureRateHelper(const Handle<Quote>& price,
                              Month referenceMonth,
                              Year referenceYear,
@@ -82,7 +82,7 @@ namespace QuantLib {
         /*! \deprecated Use the constructor without index and averaging method.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         SofrFutureRateHelper(Real price,
                              Month referenceMonth,
                              Year referenceYear,

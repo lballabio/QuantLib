@@ -37,7 +37,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class QL_DEPRECATED FDStepConditionEngine :  public FDVanillaEngine {
+    class [[deprecated]] FDStepConditionEngine :  public FDVanillaEngine {
       public:
         FDStepConditionEngine(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,

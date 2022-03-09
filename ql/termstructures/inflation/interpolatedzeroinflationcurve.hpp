@@ -53,7 +53,7 @@ namespace QuantLib {
                         indexIsInterpolated parameter.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         InterpolatedZeroInflationCurve(const Date& referenceDate,
                                        const Calendar& calendar,
                                        const DayCounter& dayCounter,
@@ -102,7 +102,7 @@ namespace QuantLib {
                         indexIsInterpolated parameter.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         InterpolatedZeroInflationCurve(const Date& referenceDate,
                                        const Calendar& calendar,
                                        const DayCounter& dayCounter,

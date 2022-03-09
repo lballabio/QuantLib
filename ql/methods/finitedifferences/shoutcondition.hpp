@@ -36,7 +36,7 @@ namespace QuantLib {
     /*! \deprecated Use the new finite-differences framework instead.
                     Deprecated in version 1.27.
     */
-    class QL_DEPRECATED ShoutCondition : public StandardStepCondition {
+    class [[deprecated]] ShoutCondition : public StandardStepCondition {
       public:
         ShoutCondition(const Array& intrinsicValues,
                        Time resTime,

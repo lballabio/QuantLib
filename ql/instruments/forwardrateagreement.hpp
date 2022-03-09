@@ -93,7 +93,7 @@ namespace QuantLib {
         /*! \deprecated This used to be inherited from Forward, but it's not correct for FRAs.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         Date settlementDate() const;
 
         const Calendar& calendar() const;
@@ -105,7 +105,7 @@ namespace QuantLib {
         /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         Handle<YieldTermStructure> incomeDiscountCurve() const;
 
         Date fixingDate() const;
@@ -113,12 +113,12 @@ namespace QuantLib {
         /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         Real spotIncome(const Handle<YieldTermStructure>& incomeDiscountCurve) const;
         /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         Real spotValue() const;
 
         //! Returns the relevant forward rate associated with the FRA term
@@ -127,7 +127,7 @@ namespace QuantLib {
         /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         InterestRate impliedYield(Real underlyingSpotValue,
                                   Real forwardValue,
                                   Date settlementDate,
@@ -137,7 +137,7 @@ namespace QuantLib {
         /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         virtual Real forwardValue() const;
         //@}
 
@@ -156,12 +156,12 @@ namespace QuantLib {
         /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         mutable Real underlyingIncome_;
         /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         mutable Real underlyingSpotValue_;
 
         DayCounter dayCounter_;
@@ -171,13 +171,13 @@ namespace QuantLib {
         /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         Natural settlementDays_;
 
         /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         ext::shared_ptr<Payoff> payoff_;
 
         //! the valueDate is the date the underlying index starts accruing and the FRA is settled.
@@ -189,7 +189,7 @@ namespace QuantLib {
         /*! \deprecated This used to be inherited from Forward, but it doesn't make sense for FRAs.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         Handle<YieldTermStructure> incomeDiscountCurve_;
 
       private:

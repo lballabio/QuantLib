@@ -120,7 +120,7 @@ namespace QuantLib {
     /*! \deprecated Use ConstNotionalCrossCurrencyBasisSwapRateHelper instead.
                     Deprecated in version 1.24.
     */
-    QL_DEPRECATED
+    [[deprecated]]
     typedef ConstNotionalCrossCurrencyBasisSwapRateHelper CrossCurrencyBasisSwapRateHelper;
 
 

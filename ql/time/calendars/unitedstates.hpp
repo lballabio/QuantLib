@@ -179,7 +179,7 @@ namespace QuantLib {
         /*! \deprecated Use the other constructor.
                         Deprecated in version 1.24.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         UnitedStates()
         : UnitedStates(Settlement) {}
     };

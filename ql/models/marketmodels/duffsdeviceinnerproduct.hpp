@@ -45,7 +45,7 @@ namespace QuantLib {
 
     */
     template <class InputIterator1, class InputIterator2, class T>
-    QL_DEPRECATED
+    [[deprecated]]
     inline T inner_product(InputIterator1 f1, InputIterator1 l1,
                            InputIterator2 f2, T init) {
 

@@ -88,7 +88,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <typename base, typename engine>
-    class QL_DEPRECATED FDEngineAdapter : public base, public engine {
+    class [[deprecated]] FDEngineAdapter : public base, public engine {
       public:
         FDEngineAdapter(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,

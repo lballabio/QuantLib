@@ -125,7 +125,7 @@ namespace QuantLib {
         /*! \deprecated Renamed to withPolynomialOrder.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         MakeMCAmericanEngine& withPolynomOrder(Size polynomialOrder);
 
         // conversion to pricing engine

@@ -37,7 +37,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T, class U>
-    class QL_DEPRECATED constant {
+    class [[deprecated]] constant {
       public:
         typedef T argument_type;
         typedef U result_type;
@@ -51,7 +51,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED identity {
+    class [[deprecated]] identity {
       public:
         typedef T argument_type;
         typedef T result_type;
@@ -65,7 +65,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED square {
+    class [[deprecated]] square {
       public:
         typedef T argument_type;
         typedef T result_type;
@@ -76,7 +76,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED cube {
+    class [[deprecated]] cube {
       public:
         typedef T argument_type;
         typedef T result_type;
@@ -87,7 +87,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED fourth_power {
+    class [[deprecated]] fourth_power {
       public:
         typedef T argument_type;
         typedef T result_type;
@@ -100,7 +100,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED add {
+    class [[deprecated]] add {
         T y;
       public:
         typedef T argument_type;
@@ -113,7 +113,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED subtract {
+    class [[deprecated]] subtract {
         T y;
       public:
         typedef T argument_type;
@@ -126,7 +126,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED subtract_from {
+    class [[deprecated]] subtract_from {
         T y;
       public:
         typedef T argument_type;
@@ -139,7 +139,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED multiply_by {
+    class [[deprecated]] multiply_by {
         T y;
       public:
         typedef T argument_type;
@@ -152,7 +152,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED divide {
+    class [[deprecated]] divide {
         T y;
       public:
         typedef T argument_type;
@@ -165,7 +165,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED divide_by {
+    class [[deprecated]] divide_by {
         T y;
       public:
         typedef T argument_type;
@@ -178,7 +178,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED less_than {
+    class [[deprecated]] less_than {
         T y;
       public:
         typedef T argument_type;
@@ -191,7 +191,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED greater_than {
+    class [[deprecated]] greater_than {
         T y;
       public:
         typedef T argument_type;
@@ -204,7 +204,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED greater_or_equal_to {
+    class [[deprecated]] greater_or_equal_to {
         T y;
       public:
         typedef T argument_type;
@@ -217,7 +217,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED not_zero {
+    class [[deprecated]] not_zero {
       public:
         typedef T argument_type;
         typedef bool result_type;
@@ -228,7 +228,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED not_null {
+    class [[deprecated]] not_null {
         T null;
       public:
         typedef T argument_type;
@@ -242,7 +242,7 @@ namespace QuantLib {
     /*! \deprecated Use a lambda instead.
                     Deprecated in version 1.27.
     */
-    class QL_DEPRECATED everywhere {
+    class [[deprecated]] everywhere {
       public:
         typedef Real argument_type;
         typedef bool result_type;
@@ -252,7 +252,7 @@ namespace QuantLib {
     /*! \deprecated Use a lambda instead.
                     Deprecated in version 1.27.
     */
-    class QL_DEPRECATED nowhere {
+    class [[deprecated]] nowhere {
       public:
         typedef Real argument_type;
         typedef bool result_type;
@@ -263,7 +263,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class T>
-    class QL_DEPRECATED equal_within {
+    class [[deprecated]] equal_within {
       public:
         typedef T first_argument_type;
         typedef T second_argument_type;
@@ -282,7 +282,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class F, class R>
-    class QL_DEPRECATED clipped_function {
+    class [[deprecated]] clipped_function {
       public:
         typedef typename F::argument_type argument_type;
         typedef typename F::result_type result_type;
@@ -300,14 +300,14 @@ namespace QuantLib {
     */
 #if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
     template <class F, class R>
-    QL_DEPRECATED
+    [[deprecated]]
     auto clip(F&& f, R&& r) {
         return [f_ = std::forward<F>(f), r_ = std::forward<R>(r)](const auto& x) { return r_(x) ? f_(x) : decltype(f_(x)){}; };
     }
 #else
     QL_DEPRECATED_DISABLE_WARNING
     template <class F, class R>
-    QL_DEPRECATED
+    [[deprecated]]
     clipped_function<F,R> clip(const F& f, const R& r) {
         return clipped_function<F,R>(f,r);
     }
@@ -318,7 +318,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class F, class G>
-    class QL_DEPRECATED composed_function {
+    class [[deprecated]] composed_function {
       public:
         typedef typename G::argument_type argument_type;
         typedef typename F::result_type result_type;
@@ -336,14 +336,14 @@ namespace QuantLib {
     */
 #if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
     template <class F, class G>
-    QL_DEPRECATED
+    [[deprecated]]
     auto compose(F&& f, G&& g) {
         return [f_ = std::forward<F>(f), g_ = std::forward<G>(g)](const auto& x) { return f_(g_(x)); };
     }
 #else
     QL_DEPRECATED_DISABLE_WARNING
     template <class F, class G>
-    QL_DEPRECATED
+    [[deprecated]]
     composed_function<F,G> compose(const F& f, const G& g) {
         return composed_function<F,G>(f,g);
     }
@@ -354,7 +354,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <class F, class G, class H>
-    class QL_DEPRECATED binary_compose3_function {
+    class [[deprecated]] binary_compose3_function {
       public:
         typedef typename G::argument_type first_argument_type;
         typedef typename H::argument_type second_argument_type;
@@ -376,14 +376,14 @@ namespace QuantLib {
     */
 #if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
     template <class F, class G, class H>
-    QL_DEPRECATED
+    [[deprecated]]
     auto compose3(F&& f, G&& g, H&& h) {
         return [f_ = std::forward<F>(f), g_ = std::forward<G>(g), h_ = std::forward<H>(h)](const auto& x, const auto& y) { return f_(g_(x), h_(y)); };
     }
 #else
     QL_DEPRECATED_DISABLE_WARNING
     template <class F, class G, class H> binary_compose3_function<F, G, H>
-    QL_DEPRECATED
+    [[deprecated]]
     compose3(const F& f, const G& g, const H& h) {
         return binary_compose3_function<F, G, H>(f, g, h);
     }

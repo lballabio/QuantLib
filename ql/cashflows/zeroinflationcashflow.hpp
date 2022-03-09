@@ -52,7 +52,7 @@ namespace QuantLib {
         /*! \deprecated Use the other constructor.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         ZeroInflationCashFlow(Real notional,
                               const ext::shared_ptr<ZeroInflationIndex>& index,
                               CPI::InterpolationType observationInterpolation,

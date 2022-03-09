@@ -34,7 +34,7 @@ namespace QuantLib {
                     Deprecated in version 1.26.
     */
     template <class RandomAccessIterator>
-    class QL_DEPRECATED LexicographicalView {
+    class [[deprecated]] LexicographicalView {
       public:
         //! attaches the view with the given dimension to a sequence
         LexicographicalView(const RandomAccessIterator& begin,

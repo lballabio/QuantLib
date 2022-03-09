@@ -75,7 +75,7 @@ namespace QuantLib {
                         indexIsInterpolated parameter.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         PiecewiseZeroInflationCurve(
             const Date& referenceDate,
             const Calendar& calendar,

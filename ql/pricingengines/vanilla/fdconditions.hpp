@@ -37,7 +37,7 @@ namespace QuantLib {
                     Deprecated in version 1.27.
     */
     template <typename baseEngine>
-    class QL_DEPRECATED FDShoutCondition : public baseEngine {
+    class [[deprecated]] FDShoutCondition : public baseEngine {
       public:
         FDShoutCondition(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,

@@ -44,7 +44,7 @@ namespace QuantLib {
         /*! \deprecated Renamed to PolynomialType.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         typedef PolynomialType PolynomType;
 
         static std::vector<ext::function<Real(Real)> >

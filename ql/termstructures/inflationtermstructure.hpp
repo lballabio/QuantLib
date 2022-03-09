@@ -63,7 +63,7 @@ namespace QuantLib {
                         indexIsInterpolated parameter.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         InflationTermStructure(Rate baseRate,
                                const Period& observationLag,
                                Frequency frequency,
@@ -74,7 +74,7 @@ namespace QuantLib {
                         indexIsInterpolated parameter.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         InflationTermStructure(const Date& referenceDate,
                                Rate baseRate,
                                const Period& observationLag,
@@ -87,7 +87,7 @@ namespace QuantLib {
                         indexIsInterpolated parameter.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         InflationTermStructure(Natural settlementDays,
                                const Calendar& calendar,
                                Rate baseRate,
@@ -114,7 +114,7 @@ namespace QuantLib {
                         Curves can return flat rates over an inflation period.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         virtual bool indexIsInterpolated() const;
 
         //! minimum (base) date
@@ -135,7 +135,7 @@ namespace QuantLib {
                         should be passed one explicitly.
                         Deprecated in version 1.24.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         virtual Handle<YieldTermStructure> nominalTermStructure() const;
 
         //! Functions to set and get seasonality.
@@ -174,7 +174,7 @@ namespace QuantLib {
                         Curves can return flat rates over an inflation period.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         bool indexIsInterpolated_;
         /*! \deprecated Don't use this data member.  If you're
                         inheriting from InflationTermStructure, don't
@@ -184,7 +184,7 @@ namespace QuantLib {
                         explicitly.
                         Deprecated in version 1.24.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         Handle<YieldTermStructure> nominalTermStructure_;
     };
 
@@ -223,7 +223,7 @@ namespace QuantLib {
                         indexIsInterpolated parameter.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         ZeroInflationTermStructure(const DayCounter& dayCounter,
                                    Rate baseZeroRate,
                                    const Period& lag,
@@ -235,7 +235,7 @@ namespace QuantLib {
                         indexIsInterpolated parameter.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         ZeroInflationTermStructure(const Date& referenceDate,
                                    const Calendar& calendar,
                                    const DayCounter& dayCounter,
@@ -249,7 +249,7 @@ namespace QuantLib {
                         indexIsInterpolated parameter.
                         Deprecated in version 1.25.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         ZeroInflationTermStructure(Natural settlementDays,
                                    const Calendar& calendar,
                                    const DayCounter& dayCounter,

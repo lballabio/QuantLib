@@ -35,7 +35,7 @@ namespace QuantLib {
                     Copy it in your codebase if you need it.
                     Deprecated in version 1.26.
     */
-    class QL_DEPRECATED DriftTermStructure : public ZeroYieldStructure {
+    class [[deprecated]] DriftTermStructure : public ZeroYieldStructure {
       public:
         DriftTermStructure(const Handle<YieldTermStructure>& riskFreeTS,
                            Handle<YieldTermStructure> dividendTS,

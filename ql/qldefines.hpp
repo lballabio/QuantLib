@@ -194,21 +194,18 @@
 // emit warning when using deprecated features
 // clang-format off
 #if defined(BOOST_MSVC)       // Microsoft Visual C++
-#    define QL_DEPRECATED __declspec(deprecated)
 #    define QL_DEPRECATED_DISABLE_WARNING \
         __pragma(warning(push))           \
         __pragma(warning(disable : 4996))
 #    define QL_DEPRECATED_ENABLE_WARNING \
         __pragma(warning(pop))
 #elif defined(__GNUC__)
-#    define QL_DEPRECATED __attribute__((deprecated))
 #    define QL_DEPRECATED_DISABLE_WARNING                               \
         _Pragma("GCC diagnostic push")                                  \
         _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
 #    define QL_DEPRECATED_ENABLE_WARNING \
         _Pragma("GCC diagnostic pop")
 #elif defined(__clang__)
-#    define QL_DEPRECATED __attribute__((deprecated))
 #    define QL_DEPRECATED_DISABLE_WARNING                                 \
         _Pragma("clang diagnostic push")                                  \
         _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
@@ -216,11 +213,15 @@
         _Pragma("clang diagnostic pop")
 #else
 // we don't know how to enable it, just define the macros away
-#    define QL_DEPRECATED
 #    define QL_DEPRECATED_DISABLE_WARNING
 #    define QL_DEPRECATED_ENABLE_WARNING
 #endif
 // clang-format on
+
+/*! \deprecated Use the [[deprecated]] attribute instead.
+                Deprecated in version 1.28.
+*/
+#define QL_DEPRECATED [[deprecated]]
 
 /*! \deprecated Use the noexcept keyword instead.
                 Deprecated in version 1.27.

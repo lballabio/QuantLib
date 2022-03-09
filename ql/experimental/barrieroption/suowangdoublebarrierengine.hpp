@@ -64,7 +64,7 @@ namespace QuantLib {
     /*! \deprecated Use SuoWangDoubleBarrierEngine instead.
                     Deprecated in version 1.25.
     */
-    QL_DEPRECATED
+    [[deprecated]]
     typedef SuoWangDoubleBarrierEngine WulinYongDoubleBarrierEngine;
 
 }

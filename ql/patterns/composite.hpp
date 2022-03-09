@@ -35,7 +35,7 @@ namespace QuantLib {
                     Deprecated in version 1.26.
     */
     template <class T>
-    class QL_DEPRECATED Composite : public T {
+    class [[deprecated]] Composite : public T {
       protected:
         std::list<ext::shared_ptr<T> > components_;
         void add(const ext::shared_ptr<T>& c) { components_.push_back(c); }

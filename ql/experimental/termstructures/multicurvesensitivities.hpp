@@ -61,7 +61,7 @@ quoted par rates.
                 Deprecated in version 1.27.
 
 */
-class QL_DEPRECATED MultiCurveSensitivities : public LazyObject {
+class [[deprecated]] MultiCurveSensitivities : public LazyObject {
 private:
   typedef std::map< std::string, Handle< YieldTermStructure > > curvespec;
 

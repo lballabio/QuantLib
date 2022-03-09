@@ -101,11 +101,11 @@ namespace QuantLib {
         /*! \deprecated Use Money::Settings::instance().baseCurrency() instead.
                         Deprecated in version 1.24.
         */
-        QL_DEPRECATED static BaseCurrencyProxy baseCurrency;
+        [[deprecated]] static BaseCurrencyProxy baseCurrency;
         /*! \deprecated Use Money::Settings::instance().conversionType() instead.
                         Deprecated in version 1.24.
         */
-        QL_DEPRECATED static ConversionTypeProxy conversionType;
+        [[deprecated]] static ConversionTypeProxy conversionType;
     };
 
     //! Per-session settings for the Money class

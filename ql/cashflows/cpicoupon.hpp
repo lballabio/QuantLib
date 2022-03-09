@@ -71,7 +71,7 @@ namespace QuantLib {
         /*! \deprecated Use the other constructor instead.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         CPICoupon(Real baseCPI,
                   const Date& paymentDate,
                   Real nominal,
@@ -114,13 +114,13 @@ namespace QuantLib {
         /*! \deprecated Use CPI::laggedFixing instead.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         Rate indexObservation(const Date& onDate) const;
 
         /*! \deprecated Renamed to adjustedIndexGrowth.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         Rate adjustedFixing() const;
 
         //! index used
@@ -142,7 +142,7 @@ namespace QuantLib {
         /*! \deprecated Use CPI::laggedFixing instead.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         Rate indexFixing(const Date &) const;
     };
 
@@ -164,7 +164,7 @@ namespace QuantLib {
         /*! \deprecated Use the other constructor.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         CPICashFlow(Real notional,
                     const ext::shared_ptr<ZeroInflationIndex>& index,
                     const Date& baseDate,
@@ -227,12 +227,12 @@ namespace QuantLib {
         /*! \deprecated No-op; do not use.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         CPILeg& withFixingDays(Natural fixingDays);
         /*! \deprecated No-op; do not use.
                         Deprecated in version 1.26.
         */
-        QL_DEPRECATED
+        [[deprecated]]
         CPILeg& withFixingDays(const std::vector<Natural>& fixingDays);
         CPILeg& withObservationInterpolation(CPI::InterpolationType);
         CPILeg& withSubtractInflationNominal(bool);
