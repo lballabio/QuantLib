@@ -1,30 +1,24 @@
 
-# QL_CHECK_CPP11
+# QL_CHECK_CPP14
 # --------------------
-# Check whether C++11 features are supported by default.
-# If not (e.g., with Clang on Mac OS) add -std=c++11
-AC_DEFUN([QL_CHECK_CPP11],
-[AC_MSG_CHECKING([for C++11 support])
+# Check whether C++14 features are supported by default.
+# If not (e.g., with Clang on Mac OS) add -std=c++14
+AC_DEFUN([QL_CHECK_CPP14],
+[AC_MSG_CHECKING([for C++14 support])
  AC_COMPILE_IFELSE(
     [AC_LANG_PROGRAM(
-        [[@%:@include <initializer_list>
-          struct S {
-            int i = 3;
-            double x = 3.5;
-          };
-
+        [[@%:@include <memory>
           class C {
             public:
               C(int) noexcept;
-              C(std::initializer_list<int>);
-              S f() { return { 2, 1.5 }; }
+              auto f() { return std::make_unique<C>(1); }
           };
           ]],
         [[]])],
     [AC_MSG_RESULT([yes])],
-    [AC_MSG_RESULT([no: adding -std=c++11 to CXXFLAGS])
-     AC_SUBST([CPP11_CXXFLAGS],["-std=c++11"])
-     AC_SUBST([CXXFLAGS],["${CXXFLAGS} -std=c++11"])
+    [AC_MSG_RESULT([no: adding -std=c++14 to CXXFLAGS])
+     AC_SUBST([CPP14_CXXFLAGS],["-std=c++14"])
+     AC_SUBST([CXXFLAGS],["${CXXFLAGS} -std=c++14"])
     ])
 ])
 
