@@ -151,7 +151,7 @@ namespace QuantLib {
                                                       std::vector<Time>& payTimes) {
             std::vector<Time> times;
             std::transform(dates.begin(), dates.end(), std::back_inserter(times),
-                           [&referenceDate, &dayCounter](const auto date) -> Time {
+                           [&referenceDate, &dayCounter](const Date& date) -> Time {
                                return dayCounter.yearFraction(referenceDate, date);
                            });
 
