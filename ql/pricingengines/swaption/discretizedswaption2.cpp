@@ -45,10 +45,8 @@ namespace QuantLib {
         // Here, we try and collapse similar dates which could cause
         // a mispricing.
         Swaption::arguments snappedArgs;
-        prepareSwaptionWithSnappedDates(
-            arguments_, referenceDate, dayCounter, snappedArgs, fixedResetTimes_, fixedPayTimes_,
-            fixedCouponAdjustments_, floatingResetTimes_, floatingPayTimes_,
-            floatCouponAdjustments_, preCouponAdjustments_, postCouponAdjustments_);
+        prepareSwaptionWithSnappedDates(arguments_, referenceDate, dayCounter, snappedArgs,
+                                        preCouponAdjustments_, postCouponAdjustments_);
 
         exerciseTimes_.resize(snappedArgs.exercise->dates().size());
         for (Size i = 0; i < exerciseTimes_.size(); ++i)
@@ -67,59 +65,19 @@ namespace QuantLib {
 
     void DiscretizedSwaption2::reset(Size size) {
         underlying_->initialize(method(), lastPayment_);
-        underlying_->partialRollback(time());
-        values_ = underlying_->values();
-        QL_ASSERT(size == values_.size(), "We should have rolled back to the right size by now.");
+        DiscretizedOption::reset(size);
     }
-
-    std::vector<Time> DiscretizedSwaption2::mandatoryTimes() const {
-        std::vector<Time> mandatoryTimes;
-
-        mandatoryTimes.insert(mandatoryTimes.end(), fixedResetTimes_.begin(),
-                              fixedResetTimes_.end());
-        mandatoryTimes.insert(mandatoryTimes.end(), fixedPayTimes_.begin(), fixedPayTimes_.end());
-        mandatoryTimes.insert(mandatoryTimes.end(), floatingResetTimes_.begin(),
-                              floatingResetTimes_.end());
-        mandatoryTimes.insert(mandatoryTimes.end(), floatingPayTimes_.begin(),
-                              floatingPayTimes_.end());
-        mandatoryTimes.insert(mandatoryTimes.end(), exerciseTimes_.begin(), exerciseTimes_.end());
-
-        std::sort(mandatoryTimes.begin(), mandatoryTimes.end());
-        mandatoryTimes.erase(std::unique(mandatoryTimes.begin(), mandatoryTimes.end()),
-                             mandatoryTimes.end());
-
-        return mandatoryTimes;
-    }
-
-    void DiscretizedSwaption2::preAdjustValuesImpl() {}
-
-    void DiscretizedSwaption2::postAdjustValuesImpl() {}
-
-    void DiscretizedSwaption2::applyCallability(Size i) {}
-
-    void DiscretizedSwaption2::addFixedCoupon(Size i) { values_ += arguments_.fixedCoupons[i]; }
-
-    void DiscretizedSwaption2::addFloatCoupon(Size i) {}
 
     void DiscretizedSwaption2::prepareSwaptionWithSnappedDates(
         const Swaption::arguments& args,
         const Date& referenceDate,
         const DayCounter& dayCounter,
         PricingEngine::arguments& snappedArgs,
-        std::vector<Time>& fixedResetTimes,
-        std::vector<Time>& fixedPayTimes,
-        std::vector<CouponAdjustment>& fixedCouponAdjustments,
-        std::vector<Time>& floatingResetTimes,
-        std::vector<Time>& floatingPayTimes,
-        std::vector<CouponAdjustment>& floatCouponAdjustments,
         std::vector<Real>& preCouponAdjustments,
         std::vector<Real>& postCouponAdjustments) {
 
         std::vector<Date> fixedDates = args.swap->fixedSchedule().dates();
         std::vector<Date> floatDates = args.swap->floatingSchedule().dates();
-
-        fixedCouponAdjustments = std::vector<CouponAdjustment>(fixedDates.size() - 1);
-        floatCouponAdjustments = std::vector<CouponAdjustment>(floatDates.size() - 1);
 
         preCouponAdjustments = std::vector<Real>(args.exercise->dates().size(), 0.0);
         postCouponAdjustments = std::vector<Real>(args.exercise->dates().size(), 0.0);
@@ -129,9 +87,6 @@ namespace QuantLib {
                 auto& fixedDate = fixedDates[j];
                 if (withinOneWeek(exerciseDate, fixedDate) && exerciseDate != fixedDate) {
                     fixedDate = exerciseDate;
-                    fixedCouponAdjustments[j] = withinNextWeek(exerciseDate, fixedDate) ?
-                                                    CouponAdjustment::pre :
-                                                    CouponAdjustment::post;
                 }
             }
 
@@ -139,31 +94,9 @@ namespace QuantLib {
                 auto& floatDate = floatDates[j];
                 if (withinOneWeek(exerciseDate, floatDate)) {
                     floatDate = exerciseDate;
-                    floatCouponAdjustments[j] = withinNextWeek(exerciseDate, floatDate) ?
-                                                    CouponAdjustment::pre :
-                                                    CouponAdjustment::post;
                 }
             }
         }
-
-        auto getTimes = [&referenceDate, &dayCounter](const std::vector<Date>& dates,
-                                                      std::vector<Time>& resetTimes,
-                                                      std::vector<Time>& payTimes) {
-            std::vector<Time> times;
-            std::transform(dates.begin(), dates.end(), std::back_inserter(times),
-                           [&referenceDate, &dayCounter](const Date& date) -> Time {
-                               return dayCounter.yearFraction(referenceDate, date);
-                           });
-
-            resetTimes = times;
-            resetTimes.pop_back();
-
-            payTimes = times;
-            payTimes.erase(payTimes.begin());
-        };
-
-        getTimes(fixedDates, fixedResetTimes, fixedPayTimes);
-        getTimes(floatDates, floatingResetTimes, floatingPayTimes);
 
         Schedule snappedFixedSchedule(fixedDates);
         Schedule snappedFloatSchedule(floatDates);

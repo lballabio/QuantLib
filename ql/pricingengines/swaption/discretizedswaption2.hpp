@@ -35,46 +35,20 @@ namespace QuantLib {
                              const Date& referenceDate,
                              const DayCounter& dayCounter);
         void reset(Size size) override;
-        std::vector<Time> mandatoryTimes() const override;
-
-      protected:
-        void preAdjustValuesImpl() override;
-        void postAdjustValuesImpl() override;
 
       private:
-        enum class CouponAdjustment { pre, post };
         Swaption::arguments arguments_;
-
-        std::vector<Time> fixedResetTimes_;
-        std::vector<Time> fixedPayTimes_;
-        std::vector<CouponAdjustment> fixedCouponAdjustments_;
-        std::vector<Time> floatingResetTimes_;
-        std::vector<Time> floatingPayTimes_;
-        std::vector<CouponAdjustment> floatCouponAdjustments_;
+        Time lastPayment_;
 
         std::vector<Real> preCouponAdjustments_;
         std::vector<Real> postCouponAdjustments_;
 
-        bool includeTodaysCashFlows_;
-        Time lastPayment_;
-
-        void applyCallability(Size i);
-        void addFixedCoupon(Size i);
-        void addFloatCoupon(Size i);
-
-        static void
-        prepareSwaptionWithSnappedDates(const Swaption::arguments& args,
-                                        const Date& referenceDate,
-                                        const DayCounter& dayCounter,
-                                        PricingEngine::arguments& snappedArgs,
-                                        std::vector<Time>& fixedResetTimes,
-                                        std::vector<Time>& fixedPayTimes,
-                                        std::vector<CouponAdjustment>& fixedCouponAdjustments,
-                                        std::vector<Time>& floatingResetTimes,
-                                        std::vector<Time>& floatingPayTimes,
-                                        std::vector<CouponAdjustment>& floatCouponAdjustments,
-                                        std::vector<Real>& preCouponAdjustments,
-                                        std::vector<Real>& postCouponAdjustments);
+        static void prepareSwaptionWithSnappedDates(const Swaption::arguments& args,
+                                                    const Date& referenceDate,
+                                                    const DayCounter& dayCounter,
+                                                    PricingEngine::arguments& snappedArgs,
+                                                    std::vector<Real>& preCouponAdjustments,
+                                                    std::vector<Real>& postCouponAdjustments);
     };
 
 }
