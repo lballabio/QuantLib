@@ -25,16 +25,24 @@
 #ifndef quantlib_discretized_swap_hpp
 #define quantlib_discretized_swap_hpp
 
-#include <ql/instruments/vanillaswap.hpp>
 #include <ql/discretizedasset.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 
 namespace QuantLib {
 
     class DiscretizedSwap : public DiscretizedAsset {
       public:
-        DiscretizedSwap(const VanillaSwap::arguments&,
+        enum class CouponAdjustment { pre, post };
+
+        DiscretizedSwap(const VanillaSwap::arguments& args,
                         const Date& referenceDate,
                         const DayCounter& dayCounter);
+
+        DiscretizedSwap(const VanillaSwap::arguments& args,
+                        const Date& referenceDate,
+                        const DayCounter& dayCounter,
+                        std::vector<CouponAdjustment> fixedCouponAdjustment,
+                        std::vector<CouponAdjustment> floatingCouponAdjustment);
         void reset(Size size) override;
         std::vector<Time> mandatoryTimes() const override;
 
@@ -46,13 +54,19 @@ namespace QuantLib {
         VanillaSwap::arguments arguments_;
         std::vector<Time> fixedResetTimes_;
         std::vector<Time> fixedPayTimes_;
+        std::vector<CouponAdjustment> fixedCouponAdjustment_;
+        std::vector<bool> fixedResetTimeIsInPast_;
         std::vector<Time> floatingResetTimes_;
         std::vector<Time> floatingPayTimes_;
+        std::vector<CouponAdjustment> floatingCouponAdjustment_;
+        std::vector<bool> floatingResetTimeIsInPast_;
         bool includeTodaysCashFlows_;
+
+        void addFixedCoupon(Size i);
+        void addFloatingCoupon(Size i);
     };
 
 }
 
 
 #endif
-
