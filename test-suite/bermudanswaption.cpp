@@ -77,32 +77,24 @@ namespace bermudan_swaption_test {
             index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             calendar = index->fixingCalendar();
             today = calendar.adjust(Date::todaysDate());
-            settlement = calendar.advance(today,settlementDays,Days);
+            settlement = calendar.advance(today, settlementDays, Days);
         }
 
         // utilities
         ext::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) const {
             Date start = calendar.advance(settlement, startYears, Years);
             Date maturity = calendar.advance(start, length, Years);
-            Schedule fixedSchedule(start, maturity,
-                                   Period(fixedFrequency),
-                                   calendar,
-                                   fixedConvention,
-                                   fixedConvention,
-                                   DateGeneration::Forward, false);
-            Schedule floatSchedule(start, maturity,
-                                   Period(floatingFrequency),
-                                   calendar,
-                                   floatingConvention,
-                                   floatingConvention,
-                                   DateGeneration::Forward, false);
+            Schedule fixedSchedule(start, maturity, Period(fixedFrequency), calendar,
+                                   fixedConvention, fixedConvention, DateGeneration::Forward,
+                                   false);
+            Schedule floatSchedule(start, maturity, Period(floatingFrequency), calendar,
+                                   floatingConvention, floatingConvention, DateGeneration::Forward,
+                                   false);
             ext::shared_ptr<VanillaSwap> swap(
-                      new VanillaSwap(type, nominal,
-                                      fixedSchedule, fixedRate, fixedDayCount,
-                                      floatSchedule, index, 0.0,
-                                      index->dayCounter()));
-            swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
-                                   new DiscountingSwapEngine(termStructure)));
+                new VanillaSwap(type, nominal, fixedSchedule, fixedRate, fixedDayCount,
+                                floatSchedule, index, 0.0, index->dayCounter()));
+            swap->setPricingEngine(
+                ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(termStructure)));
             return swap;
         }
     };
@@ -112,8 +104,7 @@ namespace bermudan_swaption_test {
 
 void BermudanSwaptionTest::testCachedValues() {
 
-    BOOST_TEST_MESSAGE(
-        "Testing Bermudan swaption with HW model against cached values...");
+    BOOST_TEST_MESSAGE("Testing Bermudan swaption with HW model against cached values...");
 
     using namespace bermudan_swaption_test;
 
@@ -127,19 +118,16 @@ void BermudanSwaptionTest::testCachedValues() {
 
     vars.settlement = Date(19, February, 2002);
     // flat yield term structure impling 1x5 swap at 5%
-    vars.termStructure.linkTo(flatRate(vars.settlement,
-                                          0.04875825,
-                                          Actual365Fixed()));
+    vars.termStructure.linkTo(flatRate(vars.settlement, 0.04875825, Actual365Fixed()));
 
     Rate atmRate = vars.makeSwap(0.0)->fairRate();
 
-    ext::shared_ptr<VanillaSwap> itmSwap = vars.makeSwap(0.8*atmRate);
+    ext::shared_ptr<VanillaSwap> itmSwap = vars.makeSwap(0.8 * atmRate);
     ext::shared_ptr<VanillaSwap> atmSwap = vars.makeSwap(atmRate);
-    ext::shared_ptr<VanillaSwap> otmSwap = vars.makeSwap(1.2*atmRate);
+    ext::shared_ptr<VanillaSwap> otmSwap = vars.makeSwap(1.2 * atmRate);
 
     Real a = 0.048696, sigma = 0.0058904;
-    ext::shared_ptr<HullWhite> model(new HullWhite(vars.termStructure,
-                                                     a, sigma));
+    ext::shared_ptr<HullWhite> model(new HullWhite(vars.termStructure, a, sigma));
     std::vector<Date> exerciseDates;
     const Leg& leg = atmSwap->fixedLeg();
     for (const auto& i : leg) {
@@ -148,18 +136,16 @@ void BermudanSwaptionTest::testCachedValues() {
     }
     ext::shared_ptr<Exercise> exercise(new BermudanExercise(exerciseDates));
 
-    ext::shared_ptr<PricingEngine> treeEngine(
-                                            new TreeSwaptionEngine(model, 50));
-    ext::shared_ptr<PricingEngine> fdmEngine(
-                                         new FdHullWhiteSwaptionEngine(model));
+    ext::shared_ptr<PricingEngine> treeEngine(new TreeSwaptionEngine(model, 50));
+    ext::shared_ptr<PricingEngine> fdmEngine(new FdHullWhiteSwaptionEngine(model));
 
-    Real itmValue,    atmValue,    otmValue;
+    Real itmValue, atmValue, otmValue;
     Real itmValueFdm, atmValueFdm, otmValueFdm;
     if (!usingAtParCoupons) {
-        itmValue    = 42.2413,    atmValue = 12.8789,    otmValue = 2.4759;
+        itmValue = 42.2413, atmValue = 12.8789, otmValue = 2.4759;
         itmValueFdm = 42.2111, atmValueFdm = 12.8879, otmValueFdm = 2.44443;
     } else {
-        itmValue    = 42.2470,    atmValue = 12.8826,    otmValue = 2.4769;
+        itmValue = 42.2470, atmValue = 12.8826, otmValue = 2.4769;
         itmValueFdm = 42.2091, atmValueFdm = 12.8864, otmValueFdm = 2.4437;
     }
 
@@ -167,39 +153,39 @@ void BermudanSwaptionTest::testCachedValues() {
 
     Swaption swaption(itmSwap, exercise);
     swaption.setPricingEngine(treeEngine);
-    if (std::fabs(swaption.NPV()-itmValue) > tolerance)
+    if (std::fabs(swaption.NPV() - itmValue) > tolerance)
         BOOST_ERROR("failed to reproduce cached in-the-money swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
                     << "expected:   " << itmValue);
     swaption.setPricingEngine(fdmEngine);
-    if (std::fabs(swaption.NPV()-itmValueFdm) > tolerance)
+    if (std::fabs(swaption.NPV() - itmValueFdm) > tolerance)
         BOOST_ERROR("failed to reproduce cached in-the-money swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
                     << "expected:   " << itmValueFdm);
 
     swaption = Swaption(atmSwap, exercise);
     swaption.setPricingEngine(treeEngine);
-    if (std::fabs(swaption.NPV()-atmValue) > tolerance)
+    if (std::fabs(swaption.NPV() - atmValue) > tolerance)
         BOOST_ERROR("failed to reproduce cached at-the-money swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
                     << "expected:   " << atmValue);
 
     swaption.setPricingEngine(fdmEngine);
-    if (std::fabs(swaption.NPV()-atmValueFdm) > tolerance)
+    if (std::fabs(swaption.NPV() - atmValueFdm) > tolerance)
         BOOST_ERROR("failed to reproduce cached at-the-money swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
                     << "expected:   " << atmValueFdm);
 
     swaption = Swaption(otmSwap, exercise);
     swaption.setPricingEngine(treeEngine);
-    if (std::fabs(swaption.NPV()-otmValue) > tolerance)
+    if (std::fabs(swaption.NPV() - otmValue) > tolerance)
         BOOST_ERROR("failed to reproduce cached out-of-the-money "
                     << "swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
                     << "expected:   " << otmValue);
 
     swaption.setPricingEngine(fdmEngine);
-    if (std::fabs(swaption.NPV()-otmValueFdm) > tolerance)
+    if (std::fabs(swaption.NPV() - otmValueFdm) > tolerance)
         BOOST_ERROR("failed to reproduce cached out-of-the-money "
                     << "swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
@@ -208,30 +194,33 @@ void BermudanSwaptionTest::testCachedValues() {
 
     for (auto& exerciseDate : exerciseDates)
         exerciseDate = vars.calendar.adjust(exerciseDate - 10);
-    exercise =
-        ext::shared_ptr<Exercise>(new BermudanExercise(exerciseDates));
+    exercise = ext::shared_ptr<Exercise>(new BermudanExercise(exerciseDates));
 
     if (!usingAtParCoupons) {
-        itmValue = 42.1917; atmValue = 12.7788; otmValue = 2.4388;
+        itmValue = 42.1917;
+        atmValue = 12.7788;
+        otmValue = 2.4388;
     } else {
-        itmValue = 42.1974; atmValue = 12.7825; otmValue = 2.4399;
+        itmValue = 42.1974;
+        atmValue = 12.7825;
+        otmValue = 2.4399;
     }
 
     swaption = Swaption(itmSwap, exercise);
     swaption.setPricingEngine(treeEngine);
-    if (std::fabs(swaption.NPV()-itmValue) > tolerance)
+    if (std::fabs(swaption.NPV() - itmValue) > tolerance)
         BOOST_ERROR("failed to reproduce cached in-the-money swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
                     << "expected:   " << itmValue);
     swaption = Swaption(atmSwap, exercise);
     swaption.setPricingEngine(treeEngine);
-    if (std::fabs(swaption.NPV()-atmValue) > tolerance)
+    if (std::fabs(swaption.NPV() - atmValue) > tolerance)
         BOOST_ERROR("failed to reproduce cached at-the-money swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
                     << "expected:   " << atmValue);
     swaption = Swaption(otmSwap, exercise);
     swaption.setPricingEngine(treeEngine);
-    if (std::fabs(swaption.NPV()-otmValue) > tolerance)
+    if (std::fabs(swaption.NPV() - otmValue) > tolerance)
         BOOST_ERROR("failed to reproduce cached out-of-the-money "
                     << "swaption value:\n"
                     << "calculated: " << swaption.NPV() << "\n"
@@ -239,8 +228,7 @@ void BermudanSwaptionTest::testCachedValues() {
 }
 
 void BermudanSwaptionTest::testCachedG2Values() {
-    BOOST_TEST_MESSAGE(
-        "Testing Bermudan swaption with G2 model against cached values...");
+    BOOST_TEST_MESSAGE("Testing Bermudan swaption with G2 model against cached values...");
 
     using namespace bermudan_swaption_test;
 
@@ -253,27 +241,25 @@ void BermudanSwaptionTest::testCachedG2Values() {
     vars.settlement = Date(19, September, 2016);
 
     // flat yield term structure impling 1x5 swap at 5%
-    vars.termStructure.linkTo(flatRate(vars.settlement,
-                                          0.04875825,
-                                          Actual365Fixed()));
+    vars.termStructure.linkTo(flatRate(vars.settlement, 0.04875825, Actual365Fixed()));
 
     const Rate atmRate = vars.makeSwap(0.0)->fairRate();
     std::vector<ext::shared_ptr<Swaption> > swaptions;
-    for (Real s=0.5; s<1.51; s+=0.25) {
-        const ext::shared_ptr<VanillaSwap> swap(vars.makeSwap(s*atmRate));
+    for (Real s = 0.5; s < 1.51; s += 0.25) {
+        const ext::shared_ptr<VanillaSwap> swap(vars.makeSwap(s * atmRate));
 
         std::vector<Date> exerciseDates;
         for (const auto& i : swap->fixedLeg()) {
             exerciseDates.push_back(ext::dynamic_pointer_cast<Coupon>(i)->accrualStartDate());
         }
-        swaptions.push_back(ext::make_shared<Swaption>(swap,
-            ext::make_shared<BermudanExercise>(exerciseDates)));
+        swaptions.push_back(
+            ext::make_shared<Swaption>(swap, ext::make_shared<BermudanExercise>(exerciseDates)));
     }
 
-    const Real a=0.1, sigma=0.01, b=0.2, eta=0.013, rho=-0.5;
+    const Real a = 0.1, sigma = 0.01, b = 0.2, eta = 0.013, rho = -0.5;
 
-    const ext::shared_ptr<G2> g2Model(ext::make_shared<G2>(
-        vars.termStructure, a, sigma, b, eta, rho));
+    const ext::shared_ptr<G2> g2Model(
+        ext::make_shared<G2>(vars.termStructure, a, sigma, b, eta, rho));
     const ext::shared_ptr<PricingEngine> fdmEngine(
         ext::make_shared<FdG2SwaptionEngine>(g2Model, 50, 75, 75, 0, 1e-3));
     const ext::shared_ptr<PricingEngine> treeEngine(
@@ -281,19 +267,19 @@ void BermudanSwaptionTest::testCachedG2Values() {
 
     Real expectedFdm[5], expectedTree[5];
     if (!usingAtParCoupons) {
-        Real tmpExpectedFdm[]  = { 103.231, 54.6519, 20.0475, 5.26941, 1.07097 };
-        Real tmpExpectedTree[] = { 103.253, 54.6685, 20.1399, 5.40517, 1.10642 };
-        std::copy(tmpExpectedFdm,  tmpExpectedFdm + 5,  expectedFdm);
+        Real tmpExpectedFdm[] = {103.231, 54.6519, 20.0475, 5.26941, 1.07097};
+        Real tmpExpectedTree[] = {103.253, 54.6685, 20.1399, 5.40517, 1.10642};
+        std::copy(tmpExpectedFdm, tmpExpectedFdm + 5, expectedFdm);
         std::copy(tmpExpectedTree, tmpExpectedTree + 5, expectedTree);
     } else {
-        Real tmpExpectedFdm[]  = { 103.227, 54.6502, 20.0469, 5.26924, 1.07093 };
-        Real tmpExpectedTree[] = { 103.256, 54.6726, 20.1429, 5.4064 , 1.10677 };
-        std::copy(tmpExpectedFdm,  tmpExpectedFdm + 5,  expectedFdm);
+        Real tmpExpectedFdm[] = {103.227, 54.6502, 20.0469, 5.26924, 1.07093};
+        Real tmpExpectedTree[] = {103.256, 54.6726, 20.1429, 5.4064, 1.10677};
+        std::copy(tmpExpectedFdm, tmpExpectedFdm + 5, expectedFdm);
         std::copy(tmpExpectedTree, tmpExpectedTree + 5, expectedTree);
     }
 
     const Real tol = 0.005;
-    for (Size i=0; i < swaptions.size(); ++i) {
+    for (Size i = 0; i < swaptions.size(); ++i) {
         swaptions[i]->setPricingEngine(fdmEngine);
         const Real calculatedFdm = swaptions[i]->NPV();
 
@@ -339,7 +325,6 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
         return bermudanSwaption;
     };
 
-    auto previousNPVTree = 0.0;
     int intervalOfDaysToTest = 10;
 
     BOOST_TEST_MESSAGE("Call date\t   FD\t Tree\tTree2\tDiff");
@@ -374,24 +359,16 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
                                           << std::setw(5) << "\t" << npvFD << "\t" << npvTree
                                           << "\t" << npvTree2 << "\t" << npvDiff);
 
-            // BOOST_TEST_WARN(previousNPVTree < npvTree2,
-            //                std::fixed << std::setprecision(2) << std::setw(5) << "At "
-            //                           << io::iso_date(callDate)
-            //                           << ": The npv is expected to increase compared to the "
-            //                              "previous business day but decreased. (previous: "
-            //                           << previousNPVTree << ", current: " << npvTree2 << ")");
-
-            // BOOST_TEST_WARN(std::abs(npvDiff - offsetFDvsTree) < tolerance,
-            //                std::fixed << std::setprecision(2) << std::setw(5) << "At "
-            //                           << io::iso_date(callDate)
-            //                           << ": The difference between the npv of the FD and the tree
-            //                           "
-            //                              "engine is expected to be "
-            //                           << offsetFDvsTree << "+/-" << tolerance << " but was "
-            //                           << npvDiff << ". (FD: " << npvFD << ", tree: " << npvTree2
-            //                           << ")");
-
-            previousNPVTree = npvTree2;
+            auto offsetFDvsTree = 0.50;
+            auto tolerance = 0.05;
+            BOOST_TEST_WARN(std::abs(npvTree2 - npvFD) < offsetFDvsTree,
+                            std::fixed << std::setprecision(2) << std::setw(5) << "At "
+                                       << io::iso_date(callDate)
+                                       << ": The difference between the npv of the FD and the tree "
+                                          "engine is expected to be "
+                                       << offsetFDvsTree << "+/-" << tolerance << " but was "
+                                       << npvDiff << ". (FD: " << npvFD << ", tree: " << npvTree2
+                                       << ")");
         }
     }
 }

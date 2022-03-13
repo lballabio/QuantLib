@@ -41,8 +41,8 @@ namespace QuantLib {
         DiscretizedSwap(const VanillaSwap::arguments& args,
                         const Date& referenceDate,
                         const DayCounter& dayCounter,
-                        std::vector<CouponAdjustment> fixedCouponAdjustment,
-                        std::vector<CouponAdjustment> floatingCouponAdjustment);
+                        std::vector<CouponAdjustment> fixedCouponAdjustments,
+                        std::vector<CouponAdjustment> floatingCouponAdjustments);
         void reset(Size size) override;
         std::vector<Time> mandatoryTimes() const override;
 
@@ -54,13 +54,12 @@ namespace QuantLib {
         VanillaSwap::arguments arguments_;
         std::vector<Time> fixedResetTimes_;
         std::vector<Time> fixedPayTimes_;
-        std::vector<CouponAdjustment> fixedCouponAdjustment_;
+        std::vector<CouponAdjustment> fixedCouponAdjustments_;
         std::vector<bool> fixedResetTimeIsInPast_;
         std::vector<Time> floatingResetTimes_;
         std::vector<Time> floatingPayTimes_;
-        std::vector<CouponAdjustment> floatingCouponAdjustment_;
+        std::vector<CouponAdjustment> floatingCouponAdjustments_;
         std::vector<bool> floatingResetTimeIsInPast_;
-        bool includeTodaysCashFlows_;
 
         void addFixedCoupon(Size i);
         void addFloatingCoupon(Size i);

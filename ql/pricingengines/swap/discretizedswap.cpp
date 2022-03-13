@@ -45,20 +45,20 @@ namespace QuantLib {
     DiscretizedSwap::DiscretizedSwap(const VanillaSwap::arguments& args,
                                      const Date& referenceDate,
                                      const DayCounter& dayCounter,
-                                     std::vector<CouponAdjustment> fixedCouponAdjustment,
-                                     std::vector<CouponAdjustment> floatingCouponAdjustment)
-    : arguments_(args), fixedCouponAdjustment_(std::move(fixedCouponAdjustment)),
-      floatingCouponAdjustment_(std::move(floatingCouponAdjustment)) {
+                                     std::vector<CouponAdjustment> fixedCouponAdjustments,
+                                     std::vector<CouponAdjustment> floatingCouponAdjustments)
+    : arguments_(args), fixedCouponAdjustments_(std::move(fixedCouponAdjustments)),
+      floatingCouponAdjustments_(std::move(floatingCouponAdjustments)) {
         QL_REQUIRE(
-            fixedCouponAdjustment_.size() == arguments_.fixedPayDates.size(),
+            fixedCouponAdjustments_.size() == arguments_.fixedPayDates.size(),
             "The fixed coupon adjustments must have the same size as the number of fixed coupons.");
-        QL_REQUIRE(floatingCouponAdjustment_.size() == arguments_.floatingPayDates.size(),
+        QL_REQUIRE(floatingCouponAdjustments_.size() == arguments_.floatingPayDates.size(),
                    "The floating coupon adjustments must have the same size as the number of "
                    "floating coupons.");
 
         // NOLINTNEXTLINE(readability-implicit-bool-conversion)
-        includeTodaysCashFlows_ = Settings::instance().includeTodaysCashFlows() &&
-                                  *Settings::instance().includeTodaysCashFlows();
+        auto includeTodaysCashFlows = Settings::instance().includeTodaysCashFlows() &&
+                                      *Settings::instance().includeTodaysCashFlows();
 
         auto fixedCouponsCount = args.fixedResetDates.size();
         fixedResetTimes_.resize(fixedCouponsCount);
@@ -67,13 +67,13 @@ namespace QuantLib {
         for (Size i = 0; i < fixedResetTimes_.size(); ++i) {
             auto resetTime = dayCounter.yearFraction(referenceDate, args.fixedResetDates[i]);
             auto payTime = dayCounter.yearFraction(referenceDate, args.fixedPayDates[i]);
-            auto resestIsInPast = isResetTimeInPast(resetTime, payTime, includeTodaysCashFlows_);
+            auto resestIsInPast = isResetTimeInPast(resetTime, payTime, includeTodaysCashFlows);
 
             fixedResetTimes_[i] = resetTime;
             fixedPayTimes_[i] = payTime;
             fixedResetTimeIsInPast_[i] = resestIsInPast;
             if (resestIsInPast)
-                fixedCouponAdjustment_[i] = CouponAdjustment::post;
+                fixedCouponAdjustments_[i] = CouponAdjustment::post;
         }
 
         auto floatingCouponsCount = args.floatingResetDates.size();
@@ -83,13 +83,13 @@ namespace QuantLib {
         for (Size i = 0; i < floatingResetTimes_.size(); ++i) {
             auto resetTime = dayCounter.yearFraction(referenceDate, args.floatingResetDates[i]);
             auto payTime = dayCounter.yearFraction(referenceDate, args.floatingPayDates[i]);
-            auto resestIsInPast = isResetTimeInPast(resetTime, payTime, includeTodaysCashFlows_);
+            auto resestIsInPast = isResetTimeInPast(resetTime, payTime, includeTodaysCashFlows);
 
             floatingResetTimes_[i] = resetTime;
             floatingPayTimes_[i] = payTime;
             floatingResetTimeIsInPast_[i] = resestIsInPast;
             if (resestIsInPast)
-                floatingCouponAdjustment_[i] = CouponAdjustment::post;
+                floatingCouponAdjustments_[i] = CouponAdjustment::post;
         }
     }
 
@@ -123,14 +123,14 @@ namespace QuantLib {
         // floating payments
         for (Size i = 0; i < floatingResetTimes_.size(); i++) {
             Time t = floatingResetTimes_[i];
-            if (floatingCouponAdjustment_[i] == CouponAdjustment::pre && t >= 0.0 && isOnTime(t)) {
+            if (floatingCouponAdjustments_[i] == CouponAdjustment::pre && t >= 0.0 && isOnTime(t)) {
                 addFloatingCoupon(i);
             }
         }
         // fixed payments
         for (Size i = 0; i < fixedResetTimes_.size(); i++) {
             Time t = fixedResetTimes_[i];
-            if (fixedCouponAdjustment_[i] == CouponAdjustment::pre && t >= 0.0 && isOnTime(t)) {
+            if (fixedCouponAdjustments_[i] == CouponAdjustment::pre && t >= 0.0 && isOnTime(t)) {
                 addFixedCoupon(i);
             }
         }
@@ -140,14 +140,15 @@ namespace QuantLib {
         // floating payments
         for (Size i = 0; i < floatingResetTimes_.size(); i++) {
             Time t = floatingResetTimes_[i];
-            if (floatingCouponAdjustment_[i] == CouponAdjustment::post && t >= 0.0 && isOnTime(t)) {
+            if (floatingCouponAdjustments_[i] == CouponAdjustment::post && t >= 0.0 &&
+                isOnTime(t)) {
                 addFloatingCoupon(i);
             }
         }
         // fixed payments
         for (Size i = 0; i < fixedResetTimes_.size(); i++) {
             Time t = fixedResetTimes_[i];
-            if (fixedCouponAdjustment_[i] == CouponAdjustment::post && t >= 0.0 && isOnTime(t)) {
+            if (fixedCouponAdjustments_[i] == CouponAdjustment::post && t >= 0.0 && isOnTime(t)) {
                 addFixedCoupon(i);
             }
         }

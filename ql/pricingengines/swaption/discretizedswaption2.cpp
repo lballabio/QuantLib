@@ -45,7 +45,11 @@ namespace QuantLib {
         // Here, we try and collapse similar dates which could cause
         // a mispricing.
         Swaption::arguments snappedArgs;
+        std::vector<DiscretizedSwap::CouponAdjustment> fixedCouponAdjustments;
+        std::vector<DiscretizedSwap::CouponAdjustment> floatingCouponAdjustments;
+
         prepareSwaptionWithSnappedDates(arguments_, referenceDate, dayCounter, snappedArgs,
+                                        fixedCouponAdjustments, floatingCouponAdjustments,
                                         preCouponAdjustments_, postCouponAdjustments_);
 
         exerciseTimes_.resize(snappedArgs.exercise->dates().size());
@@ -59,8 +63,9 @@ namespace QuantLib {
             dayCounter.yearFraction(referenceDate, snappedArgs.floatingPayDates.back());
         lastPayment_ = std::max(lastFixedPayment, lastFloatingPayment);
 
-        underlying_ = ext::shared_ptr<DiscretizedAsset>(
-            new DiscretizedSwap(snappedArgs, referenceDate, dayCounter));
+        underlying_ =
+            ext::make_shared<DiscretizedSwap>(snappedArgs, referenceDate, dayCounter,
+                                              fixedCouponAdjustments, floatingCouponAdjustments);
     }
 
     void DiscretizedSwaption2::reset(Size size) {
@@ -73,27 +78,38 @@ namespace QuantLib {
         const Date& referenceDate,
         const DayCounter& dayCounter,
         PricingEngine::arguments& snappedArgs,
+        std::vector<DiscretizedSwap::CouponAdjustment>& fixedCouponAdjustments,
+        std::vector<DiscretizedSwap::CouponAdjustment>& floatingCouponAdjustments,
         std::vector<Real>& preCouponAdjustments,
         std::vector<Real>& postCouponAdjustments) {
 
         std::vector<Date> fixedDates = args.swap->fixedSchedule().dates();
         std::vector<Date> floatDates = args.swap->floatingSchedule().dates();
 
+        fixedCouponAdjustments.resize(args.swap->fixedLeg().size(),
+                                      DiscretizedSwap::CouponAdjustment::pre);
+        floatingCouponAdjustments.resize(args.swap->floatingLeg().size(),
+                                         DiscretizedSwap::CouponAdjustment::pre);
+
         preCouponAdjustments = std::vector<Real>(args.exercise->dates().size(), 0.0);
         postCouponAdjustments = std::vector<Real>(args.exercise->dates().size(), 0.0);
 
         for (const auto& exerciseDate : args.exercise->dates()) {
             for (Size j = 0; j < fixedDates.size() - 1; j++) {
-                auto& fixedDate = fixedDates[j];
-                if (withinOneWeek(exerciseDate, fixedDate) && exerciseDate != fixedDate) {
-                    fixedDate = exerciseDate;
+                auto unadjustedDate = fixedDates[j];
+                if (exerciseDate != unadjustedDate && withinOneWeek(exerciseDate, unadjustedDate)) {
+                    fixedDates[j] = exerciseDate;
+                    if (withinPreviousWeek(exerciseDate, unadjustedDate))
+                        fixedCouponAdjustments[j] = DiscretizedSwap::CouponAdjustment::post;
                 }
             }
 
             for (Size j = 0; j < floatDates.size() - 1; j++) {
-                auto& floatDate = floatDates[j];
-                if (withinOneWeek(exerciseDate, floatDate)) {
-                    floatDate = exerciseDate;
+                auto unadjustedDate = floatDates[j];
+                if (exerciseDate != unadjustedDate && withinOneWeek(exerciseDate, unadjustedDate)) {
+                    floatDates[j] = exerciseDate;
+                    if (withinPreviousWeek(exerciseDate, unadjustedDate))
+                        floatingCouponAdjustments[j] = DiscretizedSwap::CouponAdjustment::post;
                 }
             }
         }
