@@ -327,10 +327,8 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
 
     int intervalOfDaysToTest = 10;
 
-    BOOST_TEST_MESSAGE("Call date\t   FD\t Tree\tTree2\tDiff");
+    // BOOST_TEST_MESSAGE("Call date\t   FD\tTree\tDiff");
     for (int i = -intervalOfDaysToTest; i < intervalOfDaysToTest + 1; i++) {
-        // static auto offsetFDvsTree = 0.38;
-        // static auto tolerance = 0.1;
         static auto initialCallDate = Date(15, May, 2030);
         static auto calendar = index->fixingCalendar();
 
@@ -343,32 +341,27 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
             bermudanSwaption->setPricingEngine(ext::make_shared<FdHullWhiteSwaptionEngine>(model));
             auto npvFD = bermudanSwaption->NPV();
 
-            constexpr auto timesteps = 14 * 4 * 2;
+            constexpr auto timesteps = 14 * 4 * 4;
 
             bermudanSwaption->setPricingEngine(
                 ext::make_shared<TreeSwaptionEngine2>(model, timesteps));
-            auto npvTree2 = bermudanSwaption->NPV();
-
-            bermudanSwaption->setPricingEngine(
-                ext::make_shared<TreeSwaptionEngine>(model, timesteps));
             auto npvTree = bermudanSwaption->NPV();
 
-            auto npvDiff = npvTree2 - npvTree;
+            auto npvDiff = npvTree - npvFD;
 
-            BOOST_TEST_MESSAGE(std::fixed << std::setprecision(2) << io::iso_date(callDate)
-                                          << std::setw(5) << "\t" << npvFD << "\t" << npvTree
-                                          << "\t" << npvTree2 << "\t" << npvDiff);
+            // BOOST_TEST_MESSAGE(io::iso_date(callDate)
+            //                    << "\t" << std::fixed << std::setprecision(2) << std::setw(5)
+            //                    << npvFD << "\t" << npvTree << "\t" << npvDiff);
 
-            auto offsetFDvsTree = 0.50;
-            auto tolerance = 0.05;
-            BOOST_TEST_WARN(std::abs(npvTree2 - npvFD) < offsetFDvsTree,
-                            std::fixed << std::setprecision(2) << std::setw(5) << "At "
+            static auto tolerance = 1.0;
+            if (std::abs(npvTree - npvFD) > tolerance) {
+                BOOST_ERROR(std::fixed << std::setprecision(2) << std::setw(5) << "At "
                                        << io::iso_date(callDate)
                                        << ": The difference between the npv of the FD and the tree "
-                                          "engine is expected to be "
-                                       << offsetFDvsTree << "+/-" << tolerance << " but was "
-                                       << npvDiff << ". (FD: " << npvFD << ", tree: " << npvTree2
-                                       << ")");
+                                          "engine is expected to be smaller than "
+                                       << tolerance << " but was " << npvDiff << ". (FD: " << npvFD
+                                       << ", tree: " << npvTree << ")");
+            }
         }
     }
 }
@@ -377,10 +370,10 @@ test_suite* BermudanSwaptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Bermudan swaption tests");
 
     suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedValues));
+    suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testTreeEngineTimeSnapping));
 
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedG2Values));
-        suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testTreeEngineTimeSnapping));
     }
 
     return suite;
