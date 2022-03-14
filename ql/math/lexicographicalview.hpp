@@ -81,6 +81,8 @@ namespace QuantLib {
 
     // inline definitions
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     template <class RandomAccessIterator>
     inline
     LexicographicalView<RandomAccessIterator>::LexicographicalView(
@@ -162,6 +164,7 @@ namespace QuantLib {
         return ySize_;
     }
 
+    QL_DEPRECATED_ENABLE_WARNING
 }
 
 
