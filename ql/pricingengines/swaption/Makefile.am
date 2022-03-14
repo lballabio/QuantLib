@@ -7,7 +7,6 @@ this_include_HEADERS = \
     basketgeneratingengine.hpp \
     blackswaptionengine.hpp \
     discretizedswaption.hpp \
-    discretizedswaption2.hpp \
     gaussian1dfloatfloatswaptionengine.hpp \
     gaussian1djamshidianswaptionengine.hpp \
     gaussian1dnonstandardswaptionengine.hpp \
@@ -22,14 +21,14 @@ cpp_files = \
     basketgeneratingengine.cpp \
     blackswaptionengine.cpp \
     discretizedswaption.cpp \
-    discretizedswaption2.cpp \
     gaussian1dfloatfloatswaptionengine.cpp \
     gaussian1djamshidianswaptionengine.cpp \
     gaussian1dnonstandardswaptionengine.cpp \
     gaussian1dswaptionengine.cpp \
     jamshidianswaptionengine.cpp \
     fdg2swaptionengine.cpp \
-    fdhullwhiteswaptionengine.cpp
+    fdhullwhiteswaptionengine.cpp \
+    treeswaptionengine.cpp
 
 if UNITY_BUILD
 
@@ -64,3 +63,4 @@ all.hpp: Makefile.am
 	subdirs='$(SUBDIRS)'; for i in $$subdirs; do \
 		echo "#include <${subdir}/$$i/all.hpp>" >> ${srcdir}/$@; \
 	done
+

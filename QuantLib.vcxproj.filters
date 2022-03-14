@@ -2565,9 +2565,6 @@
     <ClInclude Include="ql\pricingengines\swaption\discretizedswaption.hpp">
       <Filter>pricingengines\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\pricingengines\swaption\discretizedswaption2.hpp">
-      <Filter>pricingengines\swaption</Filter>
-    </ClInclude>
     <ClInclude Include="ql\pricingengines\swaption\g2swaptionengine.hpp">
       <Filter>pricingengines\swaption</Filter>
     </ClInclude>
@@ -5729,10 +5726,10 @@
     <ClCompile Include="ql\pricingengines\swaption\discretizedswaption.cpp">
       <Filter>pricingengines\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\pricingengines\swaption\discretizedswaption2.cpp">
+    <ClCompile Include="ql\pricingengines\swaption\jamshidianswaptionengine.cpp">
       <Filter>pricingengines\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\pricingengines\swaption\jamshidianswaptionengine.cpp">
+    <ClCompile Include="ql\pricingengines\swaption\treeswaptionengine.cpp">
       <Filter>pricingengines\swaption</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\cliquet\analyticcliquetengine.cpp">
