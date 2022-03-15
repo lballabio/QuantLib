@@ -61,11 +61,11 @@ namespace QuantLib {
         auto includeTodaysCashFlows = Settings::instance().includeTodaysCashFlows() &&
                                       *Settings::instance().includeTodaysCashFlows();
 
-        auto fixedCouponsCount = args.fixedResetDates.size();
-        fixedResetTimes_.resize(fixedCouponsCount);
-        fixedPayTimes_.resize(fixedCouponsCount);
-        fixedResetTimeIsInPast_.resize(fixedCouponsCount);
-        for (Size i = 0; i < fixedResetTimes_.size(); ++i) {
+        auto nrOfFixedCoupons = args.fixedResetDates.size();
+        fixedResetTimes_.resize(nrOfFixedCoupons);
+        fixedPayTimes_.resize(nrOfFixedCoupons);
+        fixedResetTimeIsInPast_.resize(nrOfFixedCoupons);
+        for (Size i = 0; i < nrOfFixedCoupons; ++i) {
             auto resetTime = dayCounter.yearFraction(referenceDate, args.fixedResetDates[i]);
             auto payTime = dayCounter.yearFraction(referenceDate, args.fixedPayDates[i]);
             auto resestIsInPast = isResetTimeInPast(resetTime, payTime, includeTodaysCashFlows);
@@ -77,11 +77,11 @@ namespace QuantLib {
                 fixedCouponAdjustments_[i] = CouponAdjustment::post;
         }
 
-        auto floatingCouponsCount = args.floatingResetDates.size();
-        floatingResetTimes_.resize(floatingCouponsCount);
-        floatingPayTimes_.resize(floatingCouponsCount);
-        floatingResetTimeIsInPast_.resize(floatingCouponsCount);
-        for (Size i = 0; i < floatingResetTimes_.size(); ++i) {
+        auto nrOfFloatingCoupons = args.floatingResetDates.size();
+        floatingResetTimes_.resize(nrOfFloatingCoupons);
+        floatingPayTimes_.resize(nrOfFloatingCoupons);
+        floatingResetTimeIsInPast_.resize(nrOfFloatingCoupons);
+        for (Size i = 0; i < nrOfFloatingCoupons; ++i) {
             auto resetTime = dayCounter.yearFraction(referenceDate, args.floatingResetDates[i]);
             auto payTime = dayCounter.yearFraction(referenceDate, args.floatingPayDates[i]);
             auto resestIsInPast = isResetTimeInPast(resetTime, payTime, includeTodaysCashFlows);
