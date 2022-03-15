@@ -47,8 +47,8 @@ namespace QuantLib {
             const Date& referenceDate,
             const DayCounter& dayCounter,
             PricingEngine::arguments& snappedArgs,
-            std::vector<DiscretizedAsset::CouponAdjustment>& fixedCouponAdjustments,
-            std::vector<DiscretizedAsset::CouponAdjustment>& floatingCouponAdjustments);
+            std::vector<CouponAdjustment>& fixedCouponAdjustments,
+            std::vector<CouponAdjustment>& floatingCouponAdjustments);
     };
 
 }

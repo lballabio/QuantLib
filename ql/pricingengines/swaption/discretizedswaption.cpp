@@ -47,8 +47,8 @@ namespace QuantLib {
         // Here, we try and collapse similar dates which could cause
         // a mispricing.
         Swaption::arguments snappedArgs;
-        std::vector<DiscretizedSwap::CouponAdjustment> fixedCouponAdjustments;
-        std::vector<DiscretizedSwap::CouponAdjustment> floatingCouponAdjustments;
+        std::vector<CouponAdjustment> fixedCouponAdjustments;
+        std::vector<CouponAdjustment> floatingCouponAdjustments;
 
         prepareSwaptionWithSnappedDates(arguments_, referenceDate, dayCounter, snappedArgs,
                                         fixedCouponAdjustments, floatingCouponAdjustments);
@@ -79,16 +79,16 @@ namespace QuantLib {
         const Date& referenceDate,
         const DayCounter& dayCounter,
         PricingEngine::arguments& snappedArgs,
-        std::vector<DiscretizedAsset::CouponAdjustment>& fixedCouponAdjustments,
-        std::vector<DiscretizedAsset::CouponAdjustment>& floatingCouponAdjustments) {
+        std::vector<CouponAdjustment>& fixedCouponAdjustments,
+        std::vector<CouponAdjustment>& floatingCouponAdjustments) {
 
         std::vector<Date> fixedDates = args.swap->fixedSchedule().dates();
         std::vector<Date> floatDates = args.swap->floatingSchedule().dates();
 
         fixedCouponAdjustments.resize(args.swap->fixedLeg().size(),
-                                      DiscretizedSwap::CouponAdjustment::pre);
+                                      CouponAdjustment::pre);
         floatingCouponAdjustments.resize(args.swap->floatingLeg().size(),
-                                         DiscretizedSwap::CouponAdjustment::pre);
+                                         CouponAdjustment::pre);
 
         for (const auto& exerciseDate : args.exercise->dates()) {
             for (Size j = 0; j < fixedDates.size() - 1; j++) {
@@ -96,7 +96,7 @@ namespace QuantLib {
                 if (exerciseDate != unadjustedDate && withinOneWeek(exerciseDate, unadjustedDate)) {
                     fixedDates[j] = exerciseDate;
                     if (withinPreviousWeek(exerciseDate, unadjustedDate))
-                        fixedCouponAdjustments[j] = DiscretizedSwap::CouponAdjustment::post;
+                        fixedCouponAdjustments[j] = CouponAdjustment::post;
                 }
             }
 
@@ -105,7 +105,7 @@ namespace QuantLib {
                 if (exerciseDate != unadjustedDate && withinOneWeek(exerciseDate, unadjustedDate)) {
                     floatDates[j] = exerciseDate;
                     if (withinPreviousWeek(exerciseDate, unadjustedDate))
-                        floatingCouponAdjustments[j] = DiscretizedSwap::CouponAdjustment::post;
+                        floatingCouponAdjustments[j] = CouponAdjustment::post;
                 }
             }
         }

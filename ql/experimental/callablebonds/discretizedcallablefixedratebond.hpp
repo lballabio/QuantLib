@@ -45,7 +45,7 @@ namespace QuantLib {
         CallableBond::arguments arguments_;
         Time redemptionTime_;
         std::vector<Time> couponTimes_;
-        std::vector<DiscretizedAsset::CouponAdjustment> couponAdjustments_;
+        std::vector<CouponAdjustment> couponAdjustments_;
         std::vector<Time> callabilityTimes_;
         std::vector<Real> adjustedCallabilityPrices_;
         void applyCallability(Size i);
