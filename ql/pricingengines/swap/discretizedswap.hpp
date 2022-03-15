@@ -33,8 +33,6 @@ namespace QuantLib {
 
     class DiscretizedSwap : public DiscretizedAsset {
       public:
-        enum class CouponAdjustment { pre, post };
-
         DiscretizedSwap(const VanillaSwap::arguments& args,
                         const Date& referenceDate,
                         const DayCounter& dayCounter);

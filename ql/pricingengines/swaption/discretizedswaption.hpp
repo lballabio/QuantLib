@@ -28,7 +28,6 @@
 
 #include <ql/discretizedasset.hpp>
 #include <ql/instruments/swaption.hpp>
-#include <ql/pricingengines/swap/discretizedswap.hpp>
 
 namespace QuantLib {
 
@@ -43,18 +42,13 @@ namespace QuantLib {
         Swaption::arguments arguments_;
         Time lastPayment_;
 
-        std::vector<Real> preCouponAdjustments_;
-        std::vector<Real> postCouponAdjustments_;
-
         static void prepareSwaptionWithSnappedDates(
             const Swaption::arguments& args,
             const Date& referenceDate,
             const DayCounter& dayCounter,
             PricingEngine::arguments& snappedArgs,
-            std::vector<DiscretizedSwap::CouponAdjustment>& fixedCouponAdjustments,
-            std::vector<DiscretizedSwap::CouponAdjustment>& floatingCouponAdjustments,
-            std::vector<Real>& preCouponAdjustments,
-            std::vector<Real>& postCouponAdjustments);
+            std::vector<DiscretizedAsset::CouponAdjustment>& fixedCouponAdjustments,
+            std::vector<DiscretizedAsset::CouponAdjustment>& floatingCouponAdjustments);
     };
 
 }

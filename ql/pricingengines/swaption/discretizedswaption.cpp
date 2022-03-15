@@ -51,8 +51,7 @@ namespace QuantLib {
         std::vector<DiscretizedSwap::CouponAdjustment> floatingCouponAdjustments;
 
         prepareSwaptionWithSnappedDates(arguments_, referenceDate, dayCounter, snappedArgs,
-                                        fixedCouponAdjustments, floatingCouponAdjustments,
-                                        preCouponAdjustments_, postCouponAdjustments_);
+                                        fixedCouponAdjustments, floatingCouponAdjustments);
 
         exerciseTimes_.resize(snappedArgs.exercise->dates().size());
         for (Size i = 0; i < exerciseTimes_.size(); ++i)
@@ -80,10 +79,8 @@ namespace QuantLib {
         const Date& referenceDate,
         const DayCounter& dayCounter,
         PricingEngine::arguments& snappedArgs,
-        std::vector<DiscretizedSwap::CouponAdjustment>& fixedCouponAdjustments,
-        std::vector<DiscretizedSwap::CouponAdjustment>& floatingCouponAdjustments,
-        std::vector<Real>& preCouponAdjustments,
-        std::vector<Real>& postCouponAdjustments) {
+        std::vector<DiscretizedAsset::CouponAdjustment>& fixedCouponAdjustments,
+        std::vector<DiscretizedAsset::CouponAdjustment>& floatingCouponAdjustments) {
 
         std::vector<Date> fixedDates = args.swap->fixedSchedule().dates();
         std::vector<Date> floatDates = args.swap->floatingSchedule().dates();
@@ -92,9 +89,6 @@ namespace QuantLib {
                                       DiscretizedSwap::CouponAdjustment::pre);
         floatingCouponAdjustments.resize(args.swap->floatingLeg().size(),
                                          DiscretizedSwap::CouponAdjustment::pre);
-
-        preCouponAdjustments = std::vector<Real>(args.exercise->dates().size(), 0.0);
-        postCouponAdjustments = std::vector<Real>(args.exercise->dates().size(), 0.0);
 
         for (const auto& exerciseDate : args.exercise->dates()) {
             for (Size j = 0; j < fixedDates.size() - 1; j++) {
