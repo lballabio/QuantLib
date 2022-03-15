@@ -396,30 +396,13 @@ namespace QuantLib {
         std::ostream& operator<<(std::ostream& out,
                                  const long_period_holder& holder) {
             Integer n = holder.p.length();
-            Integer m = 0;
             switch (holder.p.units()) {
               case Days:
-                if (n>=7) {
-                    m = n/7;
-                    out << m << (m == 1 ? " week " : " weeks ");
-                    n = n%7;
-                }
-                if (n != 0 || m == 0)
-                    return out << n << (n == 1 ? " day" : " days");
-                else
-                    return out;
+                return out << n << (n == 1 ? " day" : " days");
               case Weeks:
                 return out << n << (n == 1 ? " week" : " weeks");
               case Months:
-                if (n>=12) {
-                    m = n/12;
-                    out << m << (m == 1 ? " year " : " years ");
-                    n = n%12;
-                }
-                if (n != 0 || m == 0)
-                    return out << n << (n == 1 ? " month" : " months");
-                else
-                    return out;
+                return out << n << (n == 1 ? " month" : " months");
               case Years:
                 return out << n << (n == 1 ? " year" : " years");
               default:
@@ -430,30 +413,13 @@ namespace QuantLib {
         std::ostream& operator<<(std::ostream& out,
                                  const short_period_holder& holder) {
             Integer n = holder.p.length();
-            Integer m = 0;
             switch (holder.p.units()) {
               case Days:
-                if (n>=7) {
-                    m = n/7;
-                    out << m << "W";
-                    n = n%7;
-                }
-                if (n != 0 || m == 0)
-                    return out << n << "D";
-                else
-                    return out;
+                return out << n << "D";
               case Weeks:
                 return out << n << "W";
               case Months:
-                if (n>=12) {
-                    m = n/12;
-                    out << n/12 << "Y";
-                    n = n%12;
-                }
-                if (n != 0 || m == 0)
-                    return out << n << "M";
-                else
-                    return out;
+                return out << n << "M";
               case Years:
                 return out << n << "Y";
               default:
