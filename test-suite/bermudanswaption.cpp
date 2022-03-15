@@ -313,6 +313,7 @@ void BermudanSwaptionTest::testCachedG2Values() {
         }
     }
 }
+
 void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
     BOOST_TEST_MESSAGE("Testing snap of exercise dates for discretized swaption...");
 
@@ -340,7 +341,6 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
 
     int intervalOfDaysToTest = 10;
 
-    // BOOST_TEST_MESSAGE("Call date\t   FD\tTree\tDiff");
     for (int i = -intervalOfDaysToTest; i < intervalOfDaysToTest + 1; i++) {
         static auto initialCallDate = Date(15, May, 2030);
         static auto calendar = index->fixingCalendar();
@@ -354,17 +354,13 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
             bermudanSwaption->setPricingEngine(ext::make_shared<FdHullWhiteSwaptionEngine>(model));
             auto npvFD = bermudanSwaption->NPV();
 
-            constexpr auto timesteps = 14 * 4 * 4;
+            QL_CONSTEXPR auto timesteps = 14 * 4 * 4;
 
             bermudanSwaption->setPricingEngine(
                 ext::make_shared<TreeSwaptionEngine>(model, timesteps));
             auto npvTree = bermudanSwaption->NPV();
 
             auto npvDiff = npvTree - npvFD;
-
-            // BOOST_TEST_MESSAGE(io::iso_date(callDate)
-            //                    << "\t" << std::fixed << std::setprecision(2) << std::setw(5)
-            //                    << npvFD << "\t" << npvTree << "\t" << npvDiff);
 
             static auto tolerance = 1.0;
             if (std::abs(npvTree - npvFD) > tolerance) {
