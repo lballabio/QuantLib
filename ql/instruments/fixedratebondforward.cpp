@@ -32,13 +32,12 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     const Calendar& calendar,
                     BusinessDayConvention businessDayConvention,
-                    const ext::shared_ptr<FixedRateBond>& fixedCouponBond,
+                    const ext::shared_ptr<Bond>& bond,
                     const Handle<YieldTermStructure>& discountCurve,
                     const Handle<YieldTermStructure>& incomeDiscountCurve)
     : Forward(dayCounter, calendar, businessDayConvention, settlementDays,
               ext::shared_ptr<Payoff>(new ForwardTypePayoff(type,strike)),
-              valueDate, maturityDate, discountCurve),
-      fixedCouponBond_(fixedCouponBond) {
+              valueDate, maturityDate, discountCurve), bond_(bond) {
 
         incomeDiscountCurve_ = incomeDiscountCurve;
         registerWith(incomeDiscountCurve_);
@@ -47,8 +46,7 @@ namespace QuantLib {
 
 
     Real FixedRateBondForward::cleanForwardPrice() const {
-        return forwardValue() -
-               fixedCouponBond_->accruedAmount(maturityDate_);
+        return forwardValue() - bond_->accruedAmount(maturityDate_);
     }
 
 
@@ -62,8 +60,7 @@ namespace QuantLib {
 
         Real income = 0.0;
         Date settlement = settlementDate();
-        Leg cf =
-            fixedCouponBond_->cashflows();
+        Leg cf = bond_->cashflows();
 
         /*
           the following assumes
@@ -85,8 +82,8 @@ namespace QuantLib {
     }
 
 
-    Real FixedRateBondForward::spotValue() const {
-        return fixedCouponBond_->dirtyPrice();
+    Real FixedRateBondForward::spotValue() const { 
+        return bond_->dirtyPrice();
     }
 
 

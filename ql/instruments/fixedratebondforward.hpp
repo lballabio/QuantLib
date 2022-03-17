@@ -25,7 +25,7 @@
 #define quantlib_fixed_rate_bond_forward_hpp
 
 #include <ql/instruments/forward.hpp>
-#include <ql/instruments/bonds/fixedratebond.hpp>
+#include <ql/instruments/bond.hpp>
 
 namespace QuantLib {
 
@@ -85,7 +85,7 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     const Calendar& calendar,
                     BusinessDayConvention businessDayConvention,
-                    const ext::shared_ptr<FixedRateBond>& fixedCouponBond,
+                    const ext::shared_ptr<Bond>& fixedCouponBond,
                     const Handle<YieldTermStructure>& discountCurve =
                                                 Handle<YieldTermStructure>(),
                     const Handle<YieldTermStructure>& incomeDiscountCurve =
@@ -114,7 +114,7 @@ namespace QuantLib {
         //@}
 
       protected:
-        ext::shared_ptr<FixedRateBond> fixedCouponBond_;
+        ext::shared_ptr<Bond> bond_;
         void performCalculations() const override;
     };
 
