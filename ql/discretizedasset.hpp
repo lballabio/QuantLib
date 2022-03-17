@@ -125,6 +125,9 @@ namespace QuantLib {
         virtual std::vector<Time> mandatoryTimes() const = 0;
         //@}
       protected:
+        /*! Indicates if a coupon should be adjusted in preAdjustValues() or postAdjustValues(). */
+        enum class CouponAdjustment { pre, post };
+
         /*! This method checks whether the asset was rolled at the
             given time. */
         bool isOnTime(Time t) const;
