@@ -68,12 +68,12 @@ namespace QuantLib {
         for (Size i = 0; i < nrOfFixedCoupons; ++i) {
             auto resetTime = dayCounter.yearFraction(referenceDate, args.fixedResetDates[i]);
             auto payTime = dayCounter.yearFraction(referenceDate, args.fixedPayDates[i]);
-            auto resestIsInPast = isResetTimeInPast(resetTime, payTime, includeTodaysCashFlows);
+            auto resetIsInPast = isResetTimeInPast(resetTime, payTime, includeTodaysCashFlows);
 
             fixedResetTimes_[i] = resetTime;
             fixedPayTimes_[i] = payTime;
-            fixedResetTimeIsInPast_[i] = resestIsInPast;
-            if (resestIsInPast)
+            fixedResetTimeIsInPast_[i] = resetIsInPast;
+            if (resetIsInPast)
                 fixedCouponAdjustments_[i] = CouponAdjustment::post;
         }
 
@@ -84,12 +84,12 @@ namespace QuantLib {
         for (Size i = 0; i < nrOfFloatingCoupons; ++i) {
             auto resetTime = dayCounter.yearFraction(referenceDate, args.floatingResetDates[i]);
             auto payTime = dayCounter.yearFraction(referenceDate, args.floatingPayDates[i]);
-            auto resestIsInPast = isResetTimeInPast(resetTime, payTime, includeTodaysCashFlows);
+            auto resetIsInPast = isResetTimeInPast(resetTime, payTime, includeTodaysCashFlows);
 
             floatingResetTimes_[i] = resetTime;
             floatingPayTimes_[i] = payTime;
-            floatingResetTimeIsInPast_[i] = resestIsInPast;
-            if (resestIsInPast)
+            floatingResetTimeIsInPast_[i] = resetIsInPast;
+            if (resetIsInPast)
                 floatingCouponAdjustments_[i] = CouponAdjustment::post;
         }
     }
@@ -141,8 +141,7 @@ namespace QuantLib {
         // floating payments
         for (Size i = 0; i < floatingResetTimes_.size(); i++) {
             Time t = floatingResetTimes_[i];
-            if (floatingCouponAdjustments_[i] == CouponAdjustment::post && t >= 0.0 &&
-                isOnTime(t)) {
+            if (floatingCouponAdjustments_[i] == CouponAdjustment::post && t >= 0.0 && isOnTime(t)) {
                 addFloatingCoupon(i);
             }
         }
