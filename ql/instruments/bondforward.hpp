@@ -136,9 +136,6 @@ namespace QuantLib {
             const Handle<YieldTermStructure>& incomeDiscountCurve = Handle<YieldTermStructure>());
     };
 
-
 }
 
-
 #endif
-
