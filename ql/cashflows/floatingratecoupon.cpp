@@ -45,8 +45,9 @@ namespace QuantLib {
                                            const Date& exCouponDate)
     : Coupon(paymentDate, nominal, startDate, endDate, refPeriodStart, refPeriodEnd, exCouponDate),
       index_(index), dayCounter_(std::move(dayCounter)),
-      fixingDays_(fixingDays == Null<Natural>() ? index->fixingDays() : fixingDays),
+      fixingDays_(fixingDays == Null<Natural>() ? (index ? index->fixingDays() : 0) : fixingDays),
       gearing_(gearing), spread_(spread), isInArrears_(isInArrears) {
+        QL_REQUIRE(index_, "no index provided");
         QL_REQUIRE(gearing_!=0, "Null gearing not allowed");
 
         if (dayCounter_.empty())

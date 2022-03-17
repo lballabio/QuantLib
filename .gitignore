@@ -112,7 +112,7 @@ test-suite/.unit_test_profile.txt
 .vs
 .vscode
 .idea
-cmake-build-debug
+cmake-build-*
 nbproject
 .cproject
 

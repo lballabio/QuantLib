@@ -17,7 +17,7 @@
 
 ---
 
-The QuantLib project (<http://quantlib.org>) is aimed at providing a
+The QuantLib project (<https://www.quantlib.org>) is aimed at providing a
 comprehensive software framework for quantitative finance. QuantLib is
 a free/open-source library for modeling, trading, and risk management
 in real-life.
@@ -28,22 +28,22 @@ Software.
 
 ## Download and usage
 
-QuantLib can be downloaded from <http://quantlib.org/download.shtml>;
+QuantLib can be downloaded from <https://www.quantlib.org/download.shtml>;
 installation instructions are available at
-<http://quantlib.org/install.shtml> for most platforms.
+<https://www.quantlib.org/install.shtml> for most platforms.
 
 Documentation for the usage and the design of the QuantLib library is
-available from <http://quantlib.org/docs.shtml>.
+available from <https://www.quantlib.org/docs.shtml>.
 
 A list of changes for each past versions of the library can be
-browsed at <http://quantlib.org/reference/history.html>.
+browsed at <https://www.quantlib.org/reference/history.html>.
 
 
 ## Questions and feedback
 
 The preferred channel for questions (and the one with the largest
 audience) is the quantlib-users mailing list.  Instructions for
-subscribing are at <http://quantlib.org/mailinglists.shtml>.
+subscribing are at <https://www.quantlib.org/mailinglists.shtml>.
 
 Bugs can be reported as a GitHub issue at
 <https://github.com/lballabio/QuantLib/issues>; if you have a patch

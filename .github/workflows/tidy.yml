@@ -7,18 +7,15 @@ jobs:
   check:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang-tidy-10 libboost-dev
+        sudo apt-get install -y clang-tidy-12 libboost-all-dev
     - name: Check
       run: |
-        find ql -name *.[hc]pp -not -name config.*.hpp -not -name all.hpp -not -name quantlib.hpp >> filelist
-        find test-suite -name *.cpp >> filelist
-        find Examples -name *.cpp >> filelist
-        cat filelist | sort | xargs -n 1 ./tools/run_tidy.sh
-        rm filelist
+        cmake --preset linux-ci-build-with-clang-tidy
+        cmake --build --preset linux-ci-build-with-clang-tidy -j1
     - uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}

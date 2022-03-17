@@ -4,7 +4,7 @@ jobs:
   cmake-linux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
         sudo apt update
@@ -24,7 +24,7 @@ jobs:
   cmake-linux-with-options:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
         sudo apt update
@@ -42,7 +42,7 @@ jobs:
   cmake-win:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
         $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
@@ -63,7 +63,7 @@ jobs:
   cmake-win-with-options:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
         $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
@@ -82,7 +82,7 @@ jobs:
   cmake-macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
         brew install boost

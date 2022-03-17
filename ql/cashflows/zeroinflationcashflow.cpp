@@ -32,9 +32,11 @@ namespace QuantLib {
                                                  const Period& observationLag,
                                                  const Date& paymentDate,
                                                  bool growthOnly)
-    : ZeroInflationCashFlow(notional, index, observationInterpolation,
-                            startDate, endDate, observationLag,
-                            NullCalendar(), Unadjusted, paymentDate, growthOnly) {}
+    : IndexedCashFlow(notional, index,
+                      startDate - observationLag, endDate - observationLag,
+                      paymentDate, growthOnly),
+      zeroInflationIndex_(index), observationInterpolation_(observationInterpolation),
+      startDate_(startDate), endDate_(endDate), observationLag_(observationLag) {}
 
     ZeroInflationCashFlow::ZeroInflationCashFlow(Real notional,
                                                  const ext::shared_ptr<ZeroInflationIndex>& index,

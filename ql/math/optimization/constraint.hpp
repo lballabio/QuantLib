@@ -26,6 +26,7 @@
 #define quantlib_optimization_constraint_h
 
 #include <ql/math/array.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -93,11 +94,7 @@ namespace QuantLib {
         class Impl : public Constraint::Impl {
           public:
             bool test(const Array& params) const override {
-                for (double param : params) {
-                    if (param <= 0.0)
-                        return false;
-                }
-                return true;
+                return std::all_of(params.begin(), params.end(), [](Real p) { return p > 0.0; });
             }
             Array upperBound(const Array& params) const override {
                 return Array(params.size(),
@@ -121,11 +118,7 @@ namespace QuantLib {
             Impl(Real low, Real high)
             : low_(low), high_(high) {}
             bool test(const Array& params) const override {
-                for (double param : params) {
-                    if ((param < low_) || (param > high_))
-                        return false;
-                }
-                return true;
+                return std::all_of(params.begin(), params.end(), [this](Real p) { return low_ <= p && p <= high_; });
             }
             Array upperBound(const Array& params) const override {
                 return Array(params.size(), high_);

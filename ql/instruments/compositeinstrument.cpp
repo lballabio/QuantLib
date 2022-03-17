@@ -21,8 +21,8 @@
 
 namespace QuantLib {
 
-    void CompositeInstrument::add(
-           const ext::shared_ptr<Instrument>& instrument, Real multiplier) {
+    void CompositeInstrument::add(const ext::shared_ptr<Instrument>& instrument, Real multiplier) {
+        QL_REQUIRE(instrument, "null instrument provided");
         components_.emplace_back(instrument, multiplier);
         registerWith(instrument);
         update();
