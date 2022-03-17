@@ -96,5 +96,30 @@ namespace QuantLib {
         Forward::performCalculations();
     }
 
+
+    FixedRateBondForward::FixedRateBondForward(
+        const Date& valueDate,
+        const Date& maturityDate,
+        Position::Type type,
+        Real strike,
+        Natural settlementDays,
+        const DayCounter& dayCounter,
+        const Calendar& calendar,
+        BusinessDayConvention businessDayConvention,
+        const ext::shared_ptr<FixedRateBond>& fixedRateBond,
+        const Handle<YieldTermStructure>& discountCurve,
+        const Handle<YieldTermStructure>& incomeDiscountCurve)
+    : BondForward(valueDate,
+                  maturityDate,
+                  type,
+                  strike,
+                  settlementDays,
+                  dayCounter,
+                  calendar,
+                  businessDayConvention,
+                  ext::make_shared<Bond>(fixedRateBond),
+                  discountCurve,
+                  incomeDiscountCurve) {}
+
 }
 
