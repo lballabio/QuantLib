@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Allen Kuo
+ Copyright (C) 2022 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,7 +24,7 @@
 
 namespace QuantLib {
 
-    FixedRateBondForward::FixedRateBondForward(
+    BondForward::BondForward(
                     const Date& valueDate,
                     const Date& maturityDate,
                     Position::Type type,
@@ -41,22 +42,22 @@ namespace QuantLib {
 
         incomeDiscountCurve_ = incomeDiscountCurve;
         registerWith(incomeDiscountCurve_);
-        registerWith(fixedCouponBond);
+        registerWith(bond);
     }
 
 
-    Real FixedRateBondForward::cleanForwardPrice() const {
+    Real BondForward::cleanForwardPrice() const {
         return forwardValue() - bond_->accruedAmount(maturityDate_);
     }
 
 
-    Real FixedRateBondForward::forwardPrice() const {
+    Real BondForward::forwardPrice() const {
         return forwardValue();
     }
 
 
-    Real FixedRateBondForward::spotIncome(const Handle<YieldTermStructure>&
-                                                  incomeDiscountCurve) const {
+    Real BondForward::spotIncome(
+        const Handle<YieldTermStructure>& incomeDiscountCurve) const {
 
         Real income = 0.0;
         Date settlement = settlementDate();
@@ -82,12 +83,12 @@ namespace QuantLib {
     }
 
 
-    Real FixedRateBondForward::spotValue() const { 
+    Real BondForward::spotValue() const { 
         return bond_->dirtyPrice();
     }
 
 
-    void FixedRateBondForward::performCalculations() const {
+    void BondForward::performCalculations() const {
 
         underlyingSpotValue_ = spotValue();
         underlyingIncome_    = spotIncome(incomeDiscountCurve_);

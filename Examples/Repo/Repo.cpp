@@ -32,7 +32,7 @@
 #if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
-#include <ql/instruments/fixedratebondforward.hpp>
+#include <ql/instruments/bondforward.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/schedule.hpp>
@@ -151,17 +151,9 @@ int main(int, char* []) {
                                                        repoCompoundFreq)));
 
 
-        FixedRateBondForward bondFwd(repoSettlementDate,
-                                     repoDeliveryDate,
-                                     fwdType,
-                                     dummyStrike,
-                                     repoSettlementDays,
-                                     repoDayCountConvention,
-                                     bondCalendar,
-                                     bondBusinessDayConvention,
-                                     bond,
-                                     repoCurve,
-                                     repoCurve);
+        BondForward bondFwd(repoSettlementDate, repoDeliveryDate, fwdType, dummyStrike,
+                            repoSettlementDays, repoDayCountConvention, bondCalendar,
+                            bondBusinessDayConvention, bond, repoCurve, repoCurve);
 
 
         cout << "Underlying bond clean price: "

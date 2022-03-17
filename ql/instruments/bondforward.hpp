@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Allen Kuo
+ Copyright (C) 2022 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,15 +22,15 @@
     \brief forward contract on a fixed-rate bond
 */
 
-#ifndef quantlib_fixed_rate_bond_forward_hpp
-#define quantlib_fixed_rate_bond_forward_hpp
+#ifndef quantlib_bond_forward_hpp
+#define quantlib_bond_forward_hpp
 
 #include <ql/instruments/forward.hpp>
 #include <ql/instruments/bond.hpp>
 
 namespace QuantLib {
 
-    //! %Forward contract on a fixed-rate bond
+    //! %Forward contract on a bond
     /*! 1. valueDate refers to the settlement date of the bond forward
            contract.  maturityDate is the delivery (or repurchase)
            date for the underlying bond (not the bond's maturity
@@ -65,7 +66,7 @@ namespace QuantLib {
 
         \ingroup instruments
     */
-    class FixedRateBondForward : public Forward {
+    class BondForward : public Forward {
       public:
         //! \name Constructors
         /*! If strike is given in the constructor, can calculate the
@@ -76,20 +77,18 @@ namespace QuantLib {
             constructor is irrelevant and will be ignored.
         */
         //@{
-        FixedRateBondForward(
-                    const Date& valueDate,
-                    const Date& maturityDate,
-                    Position::Type type,
-                    Real strike,
-                    Natural settlementDays,
-                    const DayCounter& dayCounter,
-                    const Calendar& calendar,
-                    BusinessDayConvention businessDayConvention,
-                    const ext::shared_ptr<Bond>& fixedCouponBond,
-                    const Handle<YieldTermStructure>& discountCurve =
-                                                Handle<YieldTermStructure>(),
-                    const Handle<YieldTermStructure>& incomeDiscountCurve =
-                                                Handle<YieldTermStructure>());
+        BondForward(
+            const Date& valueDate,
+            const Date& maturityDate,
+            Position::Type type,
+            Real strike,
+            Natural settlementDays,
+            const DayCounter& dayCounter,
+            const Calendar& calendar,
+            BusinessDayConvention businessDayConvention,
+            const ext::shared_ptr<Bond>& fixedCouponBond,
+            const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>(),
+            const Handle<YieldTermStructure>& incomeDiscountCurve = Handle<YieldTermStructure>());
         //@}
 
         //! \name Calculations

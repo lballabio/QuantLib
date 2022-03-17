@@ -9,6 +9,7 @@
 #include <ql/instruments/basketoption.hpp>
 #include <ql/instruments/bmaswap.hpp>
 #include <ql/instruments/bond.hpp>
+#include <ql/instruments/bondforward.hpp>
 #include <ql/instruments/callabilityschedule.hpp>
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/claim.hpp>
@@ -21,7 +22,6 @@
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/europeanoption.hpp>
-#include <ql/instruments/fixedratebondforward.hpp>
 #include <ql/instruments/floatfloatswap.hpp>
 #include <ql/instruments/floatfloatswaption.hpp>
 #include <ql/instruments/forward.hpp>

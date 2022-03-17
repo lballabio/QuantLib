@@ -920,7 +920,7 @@
     <ClInclude Include="ql\instruments\dividendschedule.hpp" />
     <ClInclude Include="ql\instruments\dividendvanillaoption.hpp" />
     <ClInclude Include="ql\instruments\europeanoption.hpp" />
-    <ClInclude Include="ql\instruments\fixedratebondforward.hpp" />
+    <ClInclude Include="ql\instruments\bondforward.hpp" />
     <ClInclude Include="ql\instruments\floatfloatswap.hpp" />
     <ClInclude Include="ql\instruments\floatfloatswaption.hpp" />
     <ClInclude Include="ql\instruments\forward.hpp" />
@@ -2169,7 +2169,7 @@
     <ClCompile Include="ql\instruments\dividendbarrieroption.cpp" />
     <ClCompile Include="ql\instruments\dividendvanillaoption.cpp" />
     <ClCompile Include="ql\instruments\europeanoption.cpp" />
-    <ClCompile Include="ql\instruments\fixedratebondforward.cpp" />
+    <ClCompile Include="ql\instruments\bondforward.cpp" />
     <ClCompile Include="ql\instruments\floatfloatswap.cpp" />
     <ClCompile Include="ql\instruments\floatfloatswaption.cpp" />
     <ClCompile Include="ql\instruments\forward.cpp" />
