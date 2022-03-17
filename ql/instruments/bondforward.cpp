@@ -18,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/fixedratebondforward.hpp>
+#include <ql/instruments/bondforward.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/cashflow.hpp>
 
