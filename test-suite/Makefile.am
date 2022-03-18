@@ -18,6 +18,7 @@ QL_TEST_SRCS = \
 	blackdeltacalculator.cpp \
 	blackformula.cpp \
 	bonds.cpp \
+	bondforward.cpp \
 	brownianbridge.cpp \
 	businessdayconventions.cpp \
 	calendars.cpp \
@@ -184,6 +185,7 @@ QL_TEST_HDRS = \
 	blackdeltacalculator.hpp \
 	blackformula.hpp \
 	bonds.hpp \
+	bondforward.hpp \
 	brownianbridge.hpp \
 	businessdayconventions.hpp \
 	calendars.hpp \

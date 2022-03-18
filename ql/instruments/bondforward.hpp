@@ -18,8 +18,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fixedratebondforward.hpp
-    \brief forward contract on a fixed-rate bond
+/*! \file bondforward.hpp
+    \brief forward contract on a bond
 */
 
 #ifndef quantlib_bond_forward_hpp

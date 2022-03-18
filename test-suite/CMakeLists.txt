@@ -16,6 +16,7 @@ set(QL_TEST_SOURCES
     blackdeltacalculator.cpp
     blackformula.cpp
     bonds.cpp
+    bondforward.cpp
     brownianbridge.cpp
     businessdayconventions.cpp
     calendars.cpp
@@ -183,6 +184,7 @@ set(QL_TEST_HEADERS
     blackdeltacalculator.hpp
     blackformula.hpp
     bonds.hpp
+    bondforward.hpp
     brownianbridge.hpp
     businessdayconventions.hpp
     calendars.hpp

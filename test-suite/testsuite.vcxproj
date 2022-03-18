@@ -652,6 +652,7 @@
     <ClCompile Include="binaryoption.cpp" />
     <ClCompile Include="blackdeltacalculator.cpp" />
     <ClCompile Include="blackformula.cpp" />
+    <ClCompile Include="bondforward.cpp" />
     <ClCompile Include="bonds.cpp" />
     <ClCompile Include="brownianbridge.cpp" />
     <ClCompile Include="businessdayconventions.cpp" />
@@ -818,6 +819,7 @@
     <ClInclude Include="binaryoption.hpp" />
     <ClInclude Include="blackdeltacalculator.hpp" />
     <ClInclude Include="blackformula.hpp" />
+    <ClInclude Include="bondforward.hpp" />
     <ClInclude Include="bonds.hpp" />
     <ClInclude Include="brownianbridge.hpp" />
     <ClInclude Include="businessdayconventions.hpp" />

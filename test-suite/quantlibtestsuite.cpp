@@ -61,6 +61,7 @@
 #include "blackdeltacalculator.hpp"
 #include "blackformula.hpp"
 #include "bonds.hpp"
+#include "bondforward.hpp"
 #include "brownianbridge.hpp"
 #include "businessdayconventions.hpp"
 #include "calendars.hpp"
@@ -374,6 +375,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(BinaryOptionTest::suite());
     test->add(BlackFormulaTest::suite());
     test->add(BondTest::suite());
+    test->add(BondForwardTest::suite());
     test->add(BrownianBridgeTest::suite());
     test->add(BusinessDayConventionTest::suite());
     test->add(CalendarTest::suite());
