@@ -27,7 +27,8 @@
 
 class BondForwardTest {
   public:
-    static void test();
+    static void testFuturesPriceReplication();
+    static void testCleanForwardPriceReplication();
 
     static boost::unit_test_framework::test_suite* suite();
 };

@@ -17,8 +17,8 @@ QL_TEST_SRCS = \
 	bermudanswaption.cpp \
 	blackdeltacalculator.cpp \
 	blackformula.cpp \
-	bonds.cpp \
 	bondforward.cpp \
+	bonds.cpp \
 	brownianbridge.cpp \
 	businessdayconventions.cpp \
 	calendars.cpp \
@@ -184,8 +184,8 @@ QL_TEST_HDRS = \
 	bermudanswaption.hpp \
 	blackdeltacalculator.hpp \
 	blackformula.hpp \
-	bonds.hpp \
 	bondforward.hpp \
+	bonds.hpp \
 	brownianbridge.hpp \
 	businessdayconventions.hpp \
 	calendars.hpp \

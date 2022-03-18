@@ -18,21 +18,118 @@
 
 #include "bondforward.hpp"
 #include "utilities.hpp"
+#include <ql/time/calendars/target.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/instruments/bonds/fixedratebond.hpp>
+#include <ql/instruments/bondforward.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace bond_forward_test {}
+namespace bond_forward_test {
 
-void BondForwardTest::test() {
-    BOOST_TEST_MESSAGE("");
+    struct CommonVars {
+        // common data
+        Date today;
+        RelinkableHandle<YieldTermStructure> bondHandle;
+
+        // cleanup
+        SavedSettings backup;
+
+        // setup
+        CommonVars() {
+            today = Date(7, March, 2022);
+            Settings::instance().evaluationDate() = today;
+
+            bondHandle.linkTo(flatRate(today, 0.0004977, Actual365Fixed()));
+        }
+    };
+
+    ext::shared_ptr<Bond> buildBond(const Date &issue, 
+                                    const Date &maturity, 
+                                    Rate cpn) {
+        Schedule sch(issue, maturity, Period(Annual), TARGET(), Following, Following,
+                     DateGeneration::Backward, false);
+
+        return ext::make_shared<FixedRateBond>(2, 1.e5, sch, std::vector<Rate>(1, cpn),
+                                               ActualActual(ActualActual::ISDA));
+    }
+
+    ext::shared_ptr<BondForward> buildBondForward(const ext::shared_ptr<Bond>& underlying,
+                                                  const Handle<YieldTermStructure> &handle,
+                                                  const Date& delivery, 
+                                                  Position::Type type) {
+        auto valueDt = handle->referenceDate();
+        return ext::make_shared<BondForward>(valueDt, delivery, type, 0.0, 2,
+                                             ActualActual(ActualActual::ISDA), 
+                                             TARGET(), Following, underlying, handle, handle);
+    }
+}
+
+void BondForwardTest::testFuturesPriceReplication() {
+    BOOST_TEST_MESSAGE("Testing futures price replication...");
 
     using namespace bond_forward_test;
+    
+    CommonVars vars;
+
+    Real tolerance = 1.0e-2;
+
+    Date issue(15, August, 2015);
+    Date maturity(15, August, 2046);
+    Rate cpn = 0.025;
+
+    auto bnd = buildBond(issue, maturity, cpn);
+    auto pricer = ext::make_shared<DiscountingBondEngine>(vars.bondHandle);
+    bnd->setPricingEngine(pricer);
+
+    Date delivery(10, March, 2022);
+    Real conversionFactor = 0.76871;
+    auto bndFwd = buildBondForward(bnd, vars.bondHandle, delivery, Position::Long);
+
+    auto futuresPrice = bndFwd->cleanForwardPrice() / conversionFactor;
+    auto expectedFuturesPrice = 207.47;
+
+    if (std::fabs(futuresPrice - expectedFuturesPrice) > tolerance)
+        BOOST_ERROR("unable to replicate bond futures price\n"
+                    << std::setprecision(5) << "    calculated:    " << futuresPrice << "\n"
+                    << "    expected:    " << expectedFuturesPrice << "\n");
+}
+
+void BondForwardTest::testCleanForwardPriceReplication() {
+    BOOST_TEST_MESSAGE("Testing clean forward price replication...");
+
+    using namespace bond_forward_test;
+
+    CommonVars vars;
+
+    Real tolerance = 1.0e-2;
+
+    Date issue(15, August, 2015);
+    Date maturity(15, August, 2046);
+    Rate cpn = 0.025;
+
+    auto bnd = buildBond(issue, maturity, cpn);
+    auto pricer = ext::make_shared<DiscountingBondEngine>(vars.bondHandle);
+    bnd->setPricingEngine(pricer);
+
+    Date delivery(10, March, 2022);
+    auto bndFwd = buildBondForward(bnd, vars.bondHandle, delivery, Position::Long);
+
+    auto fwdCleanPrice = bndFwd->cleanForwardPrice();
+    auto expectedFwdCleanPrice = bndFwd->forwardValue() - bnd->accruedAmount(delivery);
+
+    if (std::fabs(fwdCleanPrice - expectedFwdCleanPrice) > tolerance)
+        BOOST_ERROR("unable to replicate clean forward price\n"
+                    << std::setprecision(5) << "    calculated:    " << fwdCleanPrice << "\n"
+                    << "    expected:    " << expectedFwdCleanPrice << "\n");
 }
 
 test_suite* BondForwardTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Bond forward tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&BondForwardTest::test));
+    suite->add(QUANTLIB_TEST_CASE(&BondForwardTest::testFuturesPriceReplication));
+    suite->add(QUANTLIB_TEST_CASE(&BondForwardTest::testCleanForwardPriceReplication));
     return suite;
 }

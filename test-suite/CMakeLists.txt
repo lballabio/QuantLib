@@ -15,8 +15,8 @@ set(QL_TEST_SOURCES
     binaryoption.cpp
     blackdeltacalculator.cpp
     blackformula.cpp
-    bonds.cpp
     bondforward.cpp
+    bonds.cpp
     brownianbridge.cpp
     businessdayconventions.cpp
     calendars.cpp
@@ -183,8 +183,8 @@ set(QL_TEST_HEADERS
     binaryoption.hpp
     blackdeltacalculator.hpp
     blackformula.hpp
-    bonds.hpp
     bondforward.hpp
+    bonds.hpp
     brownianbridge.hpp
     businessdayconventions.hpp
     calendars.hpp
