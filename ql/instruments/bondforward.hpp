@@ -119,8 +119,7 @@ namespace QuantLib {
     };
 
     /*! \deprecated Use BondForward instead. */
-    QL_DEPRECATED
-    class FixedRateBondForward : public BondForward {
+    class QL_DEPRECATED FixedRateBondForward : public BondForward {
       public:
         FixedRateBondForward(
             const Date& valueDate,
