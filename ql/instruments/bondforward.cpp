@@ -117,7 +117,7 @@ namespace QuantLib {
                   dayCounter,
                   calendar,
                   businessDayConvention,
-                  ext::make_shared<Bond>(fixedRateBond),
+                  fixedRateBond,
                   discountCurve,
                   incomeDiscountCurve) {}
 
