@@ -32,7 +32,7 @@ namespace bond_forward_test {
     struct CommonVars {
         // common data
         Date today;
-        RelinkableHandle<YieldTermStructure> bondHandle;
+        RelinkableHandle<YieldTermStructure> curveHandle;
 
         // cleanup
         SavedSettings backup;
@@ -42,7 +42,7 @@ namespace bond_forward_test {
             today = Date(7, March, 2022);
             Settings::instance().evaluationDate() = today;
 
-            bondHandle.linkTo(flatRate(today, 0.0004977, Actual365Fixed()));
+            curveHandle.linkTo(flatRate(today, 0.0004977, Actual365Fixed()));
         }
     };
 
@@ -81,12 +81,12 @@ void BondForwardTest::testFuturesPriceReplication() {
     Rate cpn = 0.025;
 
     auto bnd = buildBond(issue, maturity, cpn);
-    auto pricer = ext::make_shared<DiscountingBondEngine>(vars.bondHandle);
+    auto pricer = ext::make_shared<DiscountingBondEngine>(vars.curveHandle);
     bnd->setPricingEngine(pricer);
 
     Date delivery(10, March, 2022);
     Real conversionFactor = 0.76871;
-    auto bndFwd = buildBondForward(bnd, vars.bondHandle, delivery, Position::Long);
+    auto bndFwd = buildBondForward(bnd, vars.curveHandle, delivery, Position::Long);
 
     auto futuresPrice = bndFwd->cleanForwardPrice() / conversionFactor;
     auto expectedFuturesPrice = 207.47;
@@ -111,11 +111,11 @@ void BondForwardTest::testCleanForwardPriceReplication() {
     Rate cpn = 0.025;
 
     auto bnd = buildBond(issue, maturity, cpn);
-    auto pricer = ext::make_shared<DiscountingBondEngine>(vars.bondHandle);
+    auto pricer = ext::make_shared<DiscountingBondEngine>(vars.curveHandle);
     bnd->setPricingEngine(pricer);
 
     Date delivery(10, March, 2022);
-    auto bndFwd = buildBondForward(bnd, vars.bondHandle, delivery, Position::Long);
+    auto bndFwd = buildBondForward(bnd, vars.curveHandle, delivery, Position::Long);
 
     auto fwdCleanPrice = bndFwd->cleanForwardPrice();
     auto expectedFwdCleanPrice = bndFwd->forwardValue() - bnd->accruedAmount(delivery);
@@ -126,10 +126,42 @@ void BondForwardTest::testCleanForwardPriceReplication() {
                     << "    expected:    " << expectedFwdCleanPrice << "\n");
 }
 
+void BondForwardTest::testThatForwardValueIsEqualToSpotValueIfNoIncome() {
+    BOOST_TEST_MESSAGE(
+        "Testing that forward value is equal to spot value if no income...");
+
+    using namespace bond_forward_test;
+
+    CommonVars vars;
+
+    Real tolerance = 1.0e-2;
+
+    Date issue(15, August, 2015);
+    Date maturity(15, August, 2046);
+    Rate cpn = 0.025;
+
+    auto bnd = buildBond(issue, maturity, cpn);
+    auto pricer = ext::make_shared<DiscountingBondEngine>(vars.curveHandle);
+    bnd->setPricingEngine(pricer);
+
+    Date delivery(10, March, 2022);
+    auto bndFwd = buildBondForward(bnd, vars.curveHandle, delivery, Position::Long);
+
+    auto bndFwdValue = bndFwd->forwardValue();
+    auto underlyingDirtyPrice = bnd->dirtyPrice();
+
+    if (std::fabs(bndFwdValue - underlyingDirtyPrice) > tolerance)
+        BOOST_ERROR("unable to match the dirty price \n"
+                    << std::setprecision(5) << "    bond forward:    " << bndFwdValue << "\n"
+                    << "    underlying bond:    " << underlyingDirtyPrice << "\n");
+}
+
 test_suite* BondForwardTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Bond forward tests");
 
     suite->add(QUANTLIB_TEST_CASE(&BondForwardTest::testFuturesPriceReplication));
     suite->add(QUANTLIB_TEST_CASE(&BondForwardTest::testCleanForwardPriceReplication));
+    suite->add(QUANTLIB_TEST_CASE(
+        &BondForwardTest::testThatForwardValueIsEqualToSpotValueIfNoIncome));
     return suite;
 }
