@@ -25,7 +25,7 @@ jobs:
       run: |
         brew install automake boost ccache
     - name: Cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/Library/Caches/ccache
         key: ${{ matrix.os }}-${{ matrix.shortname }}-nondef-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp', '**/macos.yml') }}
