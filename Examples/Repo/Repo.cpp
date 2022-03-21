@@ -33,6 +33,7 @@
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/instruments/bondforward.hpp>
+#include <ql/instruments/bonds/fixedratebond.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/schedule.hpp>
