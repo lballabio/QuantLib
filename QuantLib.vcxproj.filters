@@ -816,10 +816,10 @@
     <ClInclude Include="ql\instruments\dividendvanillaoption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
-    <ClInclude Include="ql\instruments\fixedratebondforward.hpp">
+    <ClInclude Include="ql\instruments\europeanoption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
-    <ClInclude Include="ql\instruments\europeanoption.hpp">
+    <ClInclude Include="ql\instruments\fixedratebondforward.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
     <ClInclude Include="ql\instruments\forward.hpp">
