@@ -789,6 +789,9 @@
     <ClInclude Include="ql\instruments\bond.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\bondforward.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\callabilityschedule.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -813,10 +816,10 @@
     <ClInclude Include="ql\instruments\dividendvanillaoption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
-    <ClInclude Include="ql\instruments\europeanoption.hpp">
+    <ClInclude Include="ql\instruments\fixedratebondforward.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
-    <ClInclude Include="ql\instruments\bondforward.hpp">
+    <ClInclude Include="ql\instruments\europeanoption.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
     <ClInclude Include="ql\instruments\forward.hpp">
@@ -4616,9 +4619,6 @@
     <ClCompile Include="ql\instruments\europeanoption.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
-    <ClInclude Include="ql\instruments\fixedratebondforward.hpp">
-      <Filter>instruments</Filter>
-    </ClInclude>
     <ClCompile Include="ql\instruments\forward.cpp">
       <Filter>instruments</Filter>
     </ClCompile>

@@ -2153,6 +2153,7 @@
     <ClCompile Include="ql\instruments\basketoption.cpp" />
     <ClCompile Include="ql\instruments\bmaswap.cpp" />
     <ClCompile Include="ql\instruments\bond.cpp" />
+    <ClCompile Include="ql\instruments\bondforward.cpp" />
     <ClCompile Include="ql\instruments\bonds\btp.cpp" />
     <ClCompile Include="ql\instruments\bonds\cmsratebond.cpp" />
     <ClCompile Include="ql\instruments\bonds\convertiblebonds.cpp" />
@@ -2170,7 +2171,6 @@
     <ClCompile Include="ql\instruments\dividendbarrieroption.cpp" />
     <ClCompile Include="ql\instruments\dividendvanillaoption.cpp" />
     <ClCompile Include="ql\instruments\europeanoption.cpp" />
-    <ClCompile Include="ql\instruments\bondforward.cpp" />
     <ClCompile Include="ql\instruments\floatfloatswap.cpp" />
     <ClCompile Include="ql\instruments\floatfloatswaption.cpp" />
     <ClCompile Include="ql\instruments\forward.cpp" />
