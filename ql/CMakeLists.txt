@@ -299,7 +299,6 @@ set(QL_SOURCES
     instruments/dividendbarrieroption.cpp
     instruments/dividendvanillaoption.cpp
     instruments/europeanoption.cpp
-    instruments/fixedratebondforward.cpp
     instruments/floatfloatswap.cpp
     instruments/floatfloatswaption.cpp
     instruments/forward.cpp

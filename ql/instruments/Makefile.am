@@ -87,7 +87,6 @@ cpp_files = \
 	dividendbarrieroption.cpp \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
-    fixedratebondforward.cpp \
     floatfloatswap.cpp \
     floatfloatswaption.cpp \
     forward.cpp \
