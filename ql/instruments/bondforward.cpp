@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Allen Kuo
+ Copyright (C) 2022 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,13 +18,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/fixedratebondforward.hpp>
+#include <ql/instruments/bondforward.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/cashflow.hpp>
 
 namespace QuantLib {
 
-    FixedRateBondForward::FixedRateBondForward(
+    BondForward::BondForward(
                     const Date& valueDate,
                     const Date& maturityDate,
                     Position::Type type,
@@ -32,38 +33,35 @@ namespace QuantLib {
                     const DayCounter& dayCounter,
                     const Calendar& calendar,
                     BusinessDayConvention businessDayConvention,
-                    const ext::shared_ptr<FixedRateBond>& fixedCouponBond,
+                    const ext::shared_ptr<Bond>& bond,
                     const Handle<YieldTermStructure>& discountCurve,
                     const Handle<YieldTermStructure>& incomeDiscountCurve)
     : Forward(dayCounter, calendar, businessDayConvention, settlementDays,
               ext::shared_ptr<Payoff>(new ForwardTypePayoff(type,strike)),
-              valueDate, maturityDate, discountCurve),
-      fixedCouponBond_(fixedCouponBond) {
+              valueDate, maturityDate, discountCurve), bond_(bond) {
 
         incomeDiscountCurve_ = incomeDiscountCurve;
         registerWith(incomeDiscountCurve_);
-        registerWith(fixedCouponBond);
+        registerWith(bond);
     }
 
 
-    Real FixedRateBondForward::cleanForwardPrice() const {
-        return forwardValue() -
-               fixedCouponBond_->accruedAmount(maturityDate_);
+    Real BondForward::cleanForwardPrice() const {
+        return forwardValue() - bond_->accruedAmount(maturityDate_);
     }
 
 
-    Real FixedRateBondForward::forwardPrice() const {
+    Real BondForward::forwardPrice() const {
         return forwardValue();
     }
 
 
-    Real FixedRateBondForward::spotIncome(const Handle<YieldTermStructure>&
-                                                  incomeDiscountCurve) const {
+    Real BondForward::spotIncome(
+        const Handle<YieldTermStructure>& incomeDiscountCurve) const {
 
         Real income = 0.0;
         Date settlement = settlementDate();
-        Leg cf =
-            fixedCouponBond_->cashflows();
+        Leg cf = bond_->cashflows();
 
         /*
           the following assumes
@@ -85,12 +83,12 @@ namespace QuantLib {
     }
 
 
-    Real FixedRateBondForward::spotValue() const {
-        return fixedCouponBond_->dirtyPrice();
+    Real BondForward::spotValue() const { 
+        return bond_->dirtyPrice();
     }
 
 
-    void FixedRateBondForward::performCalculations() const {
+    void BondForward::performCalculations() const {
 
         underlyingSpotValue_ = spotValue();
         underlyingIncome_    = spotIncome(incomeDiscountCurve_);
