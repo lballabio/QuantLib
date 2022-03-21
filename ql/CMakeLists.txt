@@ -299,6 +299,7 @@ set(QL_SOURCES
     instruments/dividendbarrieroption.cpp
     instruments/dividendvanillaoption.cpp
     instruments/europeanoption.cpp
+    instruments/fixedratebondforward.cpp
     instruments/floatfloatswap.cpp
     instruments/floatfloatswaption.cpp
     instruments/forward.cpp
@@ -1325,6 +1326,7 @@ set(QL_HEADERS
     instruments/dividendschedule.hpp
     instruments/dividendvanillaoption.hpp
     instruments/europeanoption.hpp
+    instruments/fixedratebondforward.hpp
     instruments/floatfloatswap.hpp
     instruments/floatfloatswaption.hpp
     instruments/forward.hpp

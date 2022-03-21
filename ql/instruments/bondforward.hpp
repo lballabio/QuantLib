@@ -27,7 +27,6 @@
 
 #include <ql/instruments/forward.hpp>
 #include <ql/instruments/bond.hpp>
-#include <ql/instruments/bonds/fixedratebond.hpp>
 
 namespace QuantLib {
 
@@ -116,23 +115,6 @@ namespace QuantLib {
       protected:
         ext::shared_ptr<Bond> bond_;
         void performCalculations() const override;
-    };
-
-    /*! \deprecated Use BondForward instead. */
-    class QL_DEPRECATED FixedRateBondForward : public BondForward {
-      public:
-        FixedRateBondForward(
-            const Date& valueDate,
-            const Date& maturityDate,
-            Position::Type type,
-            Real strike,
-            Natural settlementDays,
-            const DayCounter& dayCounter,
-            const Calendar& calendar,
-            BusinessDayConvention businessDayConvention,
-            const ext::shared_ptr<FixedRateBond>& fixedRateBond,
-            const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>(),
-            const Handle<YieldTermStructure>& incomeDiscountCurve = Handle<YieldTermStructure>());
     };
 
 }

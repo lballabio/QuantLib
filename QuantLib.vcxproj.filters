@@ -4592,6 +4592,9 @@
     <ClCompile Include="ql\instruments\bond.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\bondforward.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
     <ClCompile Include="ql\instruments\capfloor.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
@@ -4613,9 +4616,9 @@
     <ClCompile Include="ql\instruments\europeanoption.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
-    <ClCompile Include="ql\instruments\bondforward.cpp">
+    <ClInclude Include="ql\instruments\fixedratebondforward.hpp">
       <Filter>instruments</Filter>
-    </ClCompile>
+    </ClInclude>
     <ClCompile Include="ql\instruments\forward.cpp">
       <Filter>instruments</Filter>
     </ClCompile>

@@ -900,6 +900,7 @@
     <ClInclude Include="ql\instruments\basketoption.hpp" />
     <ClInclude Include="ql\instruments\bmaswap.hpp" />
     <ClInclude Include="ql\instruments\bond.hpp" />
+    <ClInclude Include="ql\instruments\bondforward.hpp" />
     <ClInclude Include="ql\instruments\bonds\all.hpp" />
     <ClInclude Include="ql\instruments\bonds\btp.hpp" />
     <ClInclude Include="ql\instruments\bonds\cmsratebond.hpp" />
@@ -920,7 +921,7 @@
     <ClInclude Include="ql\instruments\dividendschedule.hpp" />
     <ClInclude Include="ql\instruments\dividendvanillaoption.hpp" />
     <ClInclude Include="ql\instruments\europeanoption.hpp" />
-    <ClInclude Include="ql\instruments\bondforward.hpp" />
+    <ClInclude Include="ql\instruments\fixedratebondforward.hpp" />
     <ClInclude Include="ql\instruments\floatfloatswap.hpp" />
     <ClInclude Include="ql\instruments\floatfloatswaption.hpp" />
     <ClInclude Include="ql\instruments\forward.hpp" />
