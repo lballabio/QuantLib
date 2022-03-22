@@ -106,21 +106,29 @@ namespace QuantLib {
     }
 
     void Period::normalize() {
-        if (length_!=0)
+        if (length_ == 0) {
+            units_ = Days;
+        } else {
             switch (units_) {
               case Months:
-                  if ((length_ % 12) == 0) {
-                      length_ /= 12;
-                      units_ = Years;
+                if ((length_ % 12) == 0) {
+                    length_ /= 12;
+                    units_ = Years;
                 }
                 break;
               case Days:
+                if ((length_ % 7) == 0) {
+                    length_ /= 7;
+                    units_ = Weeks;
+                }
+                break;
               case Weeks:
               case Years:
                 break;
               default:
                 QL_FAIL("unknown time unit (" << Integer(units_) << ")");
             }
+        }
     }
 
     Period& Period::operator+=(const Period& p) {
@@ -205,12 +213,16 @@ namespace QuantLib {
             }
         }
 
-        //this->normalize();
         return *this;
     }
 
     Period& Period::operator-=(const Period& p) {
         return operator+=(-p);
+    }
+
+    Period& Period::operator*=(Integer n) {
+        length_ *= n;
+        return *this;
     }
 
     Period& Period::operator/=(Integer n) {
@@ -240,10 +252,6 @@ namespace QuantLib {
                        *this << " cannot be divided by " << n);
             length_ = length/n;
             units_ = units;
-            // if normalization were possible, we wouldn't be
-            // here---the "if" branch would have been executed
-            // instead.
-            // result.normalize();
         }
         return *this;
     }

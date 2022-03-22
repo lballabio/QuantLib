@@ -52,8 +52,10 @@ namespace QuantLib {
         Frequency frequency() const;
         Period& operator+=(const Period&);
         Period& operator-=(const Period&);
+        Period& operator*=(Integer);
         Period& operator/=(Integer);
         void normalize();
+        Period normalized() const;
       private:
         Integer length_ = 0;
         TimeUnit units_ = Days;
@@ -134,6 +136,12 @@ namespace QuantLib {
     }
 
     // inline definitions
+
+    inline Period Period::normalized() const {
+        Period p = *this;
+        p.normalize();
+        return p;
+    }
 
     template <typename T>
     inline Period operator*(T n, TimeUnit units) {
