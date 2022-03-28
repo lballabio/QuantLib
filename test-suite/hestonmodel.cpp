@@ -3199,7 +3199,7 @@ void HestonModelTest::testAsymptoticControlVariate() {
             const ext::shared_ptr<AnalyticHestonEngine> analyticHestonEngine =
                 ext::dynamic_pointer_cast<AnalyticHestonEngine>(engine);
 
-            if ((analyticHestonEngine != nullptr) &&
+            if ((analyticHestonEngine != 0) &&
                 analyticHestonEngine->numberOfEvaluations() > 5000) {
                 BOOST_ERROR("too many function valuation needed "
                         << "\n  moneyness      : " << moneyness

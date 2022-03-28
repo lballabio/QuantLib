@@ -430,8 +430,8 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
         ext::dynamic_pointer_cast<FixedRateCoupon>(leg.front());
     ext::shared_ptr<FixedRateCoupon> lastCpn =
         ext::dynamic_pointer_cast<FixedRateCoupon>(leg.back());
-    BOOST_REQUIRE(firstCpn != nullptr);
-    BOOST_REQUIRE(lastCpn != nullptr);
+    BOOST_REQUIRE(firstCpn != 0);
+    BOOST_REQUIRE(lastCpn != 0);
     BOOST_CHECK_EQUAL(firstCpn->referencePeriodStart(), Date(25, Mar, 2017));
     BOOST_CHECK_EQUAL(firstCpn->referencePeriodEnd(), Date(25, Sep, 2017));
     BOOST_CHECK_EQUAL(lastCpn->referencePeriodStart(), Date(25, Sep, 2020));
@@ -441,8 +441,8 @@ void CashFlowsTest::testPartialScheduleLegConstruction() {
         ext::dynamic_pointer_cast<FixedRateCoupon>(leg2.front());
     ext::shared_ptr<FixedRateCoupon> lastCpn2 =
         ext::dynamic_pointer_cast<FixedRateCoupon>(leg2.back());
-    BOOST_REQUIRE(firstCpn2 != nullptr);
-    BOOST_REQUIRE(lastCpn2 != nullptr);
+    BOOST_REQUIRE(firstCpn2 != 0);
+    BOOST_REQUIRE(lastCpn2 != 0);
     BOOST_CHECK_EQUAL(firstCpn2->referencePeriodStart(), Date(25, Mar, 2017));
     BOOST_CHECK_EQUAL(firstCpn2->referencePeriodEnd(), Date(25, Sep, 2017));
     BOOST_CHECK_EQUAL(lastCpn2->referencePeriodStart(), Date(25, Sep, 2020));
