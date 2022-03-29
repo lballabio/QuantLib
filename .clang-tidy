@@ -1,9 +1,34 @@
 ---
-Checks:          '-*,readability-*,bugprone-*,misc-*,performance-*,modernize-*,-readability-else-after-return,-readability-named-parameter,-readability-braces-around-statements,-readability-inconsistent-declaration-parameter-name,-readability-isolate-declaration,-readability-magic-numbers,-readability-convert-member-functions-to-static,-readability-function-cognitive-complexity,-bugprone-macro-parentheses,-bugprone-narrowing-conversions,-bugprone-branch-clone,-misc-non-private-member-variables-in-classes,-misc-unused-parameters,-misc-no-recursion,-modernize-avoid-c-arrays,-modernize-make-shared,-modernize-use-trailing-return-type,-modernize-use-using'
+Checks: >
+        -*,
+        bugprone-*,
+          -bugprone-branch-clone,
+          -bugprone-macro-parentheses,
+          -bugprone-narrowing-conversions,
+        misc-*,
+          -misc-no-recursion,
+          -misc-non-private-member-variables-in-classes,
+          -misc-unused-parameters,
+        modernize-*,
+          -modernize-avoid-c-arrays,
+          -modernize-make-shared,
+          -modernize-use-trailing-return-type,
+          -modernize-use-using,
+        performance-*,
+        readability-*,
+          -readability-braces-around-statements,
+          -readability-convert-member-functions-to-static,
+          -readability-else-after-return,
+          -readability-function-cognitive-complexity,
+          -readability-inconsistent-declaration-parameter-name,
+          -readability-isolate-declaration,
+          -readability-magic-numbers,
+          -readability-named-parameter,
+          -readability-simplify-boolean-expr,
+          -readability-use-anyofallof,
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
-AnalyzeTemporaryDtors: false
-FormatStyle:     file
+FormatStyle: file
 CheckOptions:
   - key:   modernize-use-default-member-init.UseAssignment
     value: 1
