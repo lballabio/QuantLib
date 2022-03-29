@@ -210,7 +210,7 @@ namespace QuantLib {
         #pragma GCC diagnostic push
         #pragma GCC diagnostic ignored "-Wsuggest-override"
         #endif
-        Real hazardRateImpl(Time) const; // NOLINT(modernize-use-override)
+        Real hazardRateImpl(Time) const; // NOLINT(modernize-use-override, cppcoreguidelines-explicit-virtual-functions)
                                          // (sometimes this method is not virtual,
                                          //  depending on the base class)
         #if defined(__clang__)
