@@ -82,6 +82,11 @@ jobs:
             tag: impish
             cc: clang
             cxx: clang++
+          - name: "Clang 14"
+            shortname: clang14
+            tag: jammy
+            cc: clang
+            cxx: clang++
           - name: "C++11 mode"
             shortname: c++11
             tag: rolling

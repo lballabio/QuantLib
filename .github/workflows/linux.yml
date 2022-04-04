@@ -37,7 +37,7 @@ jobs:
             tag: focal
             cc: gcc
             cxx: g++
-          - name: "gcc 10.x (Boost 1.78)"
+          - name: "gcc 10.x"
             shortname: gcc10
             tag: hirsute
             cc: gcc
@@ -86,6 +86,11 @@ jobs:
           - name: "Clang 13"
             shortname: clang13
             tag: impish
+            cc: clang
+            cxx: clang++
+          - name: "Clang 14"
+            shortname: clang14
+            tag: jammy
             cc: clang
             cxx: clang++
             tests: true
