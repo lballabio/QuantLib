@@ -148,8 +148,7 @@ void DividendOptionTest::testEuropeanValues() {
 
 void DividendOptionTest::testEuropeanKnownValue() {
 
-    BOOST_TEST_MESSAGE(
-              "Testing dividend European option values with known value...");
+    BOOST_TEST_MESSAGE("Testing dividend European option against known value...");
 
     SavedSettings backup;
 

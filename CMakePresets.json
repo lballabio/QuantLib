@@ -40,7 +40,7 @@
     {
       "name": "windows-clang-x64",
       "binaryDir": "${sourceDir}/build",
-      "generator": "Visual Studio 16 2019",
+      "generator": "Visual Studio 17 2022",
       "toolset": "ClangCL",
       "architecture": {
         "value": "x64",
@@ -58,7 +58,7 @@
     {
       "name": "windows-msvc-x64",
       "binaryDir": "${sourceDir}/build",
-      "generator": "Visual Studio 16 2019",
+      "generator": "Visual Studio 17 2022",
       "architecture": {
         "value": "x64",
         "strategy": "external"
@@ -70,6 +70,20 @@
             "Windows"
           ]
         }
+      }
+    },
+    {
+      "name": "linux-ci-build-with-clang-tidy",
+      "binaryDir": "${sourceDir}/build",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "BOOST_ROOT": "/usr",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "g++",
+        "QL_CLANG_TIDY": "clang-tidy-12",
+        "QL_CLANG_TIDY_OPTIONS": "-quiet;-fix",
+        "QL_USE_CLANG_TIDY": "ON",
+        "QL_USE_STD_CLASSES": "ON"
       }
     },
     {
@@ -91,7 +105,7 @@
     {
       "name": "windows-ci-build-with-nonstandard-options",
       "binaryDir": "${sourceDir}/build",
-      "generator": "Visual Studio 16 2019",
+      "generator": "Visual Studio 17 2022",
       "architecture": {
         "value": "x64",
         "strategy": "external"
@@ -150,6 +164,10 @@
       "name": "windows-msvc-x64-release",
       "configurePreset": "windows-msvc-x64",
       "configuration": "Release"
+    },
+    {
+      "name": "linux-ci-build-with-clang-tidy",
+      "configurePreset": "linux-ci-build-with-clang-tidy"
     },
     {
       "name": "linux-ci-build-with-nonstandard-options",

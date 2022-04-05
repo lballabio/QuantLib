@@ -2,11 +2,11 @@ name: Check test times
 on: [push, pull_request]
 jobs:
   check-test-times:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.ccache
         key: linux-build-times-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}

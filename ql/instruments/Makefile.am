@@ -14,6 +14,7 @@ this_include_HEADERS = \
     basketoption.hpp \
     bmaswap.hpp \
     bond.hpp \
+    bondforward.hpp \
     callabilityschedule.hpp \
     capfloor.hpp \
     claim.hpp \
@@ -75,6 +76,7 @@ cpp_files = \
     basketoption.cpp \
     bmaswap.cpp \
     bond.cpp \
+    bondforward.cpp \
     capfloor.cpp \
     claim.cpp \
     cliquetoption.cpp \
@@ -85,7 +87,6 @@ cpp_files = \
 	dividendbarrieroption.cpp \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
-    fixedratebondforward.cpp \
     floatfloatswap.cpp \
     floatfloatswaption.cpp \
     forward.cpp \

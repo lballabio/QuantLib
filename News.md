@@ -1,105 +1,110 @@
-Changes for QuantLib 1.24:
+Changes for QuantLib 1.25:
 ==========================
 
-QuantLib 1.24 includes 25 pull requests from several contributors.
+QuantLib 1.25 includes 35 pull requests from several contributors.
 
-The most notable changes are included below.
+Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/20?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/21?closed=1>.
 
 Portability
 -----------
 
-- Overhauled the CMake build system (thanks to Philip Kovacs).  Among
-  other things, it now allows to specify the available configuration
-  options from the `cmake` invocation and adds the required Boost
-  libraries accordingly.
+- **End of support:** this release and the next will be the last two
+  to support Visual Studio 2013.
 
-Instruments
------------
+- Added a few CMake presets for building the library (thanks to Jonathan Sweemer).
 
-- Avoid callable-bond mispricing when a call date is close but not equal
-  to a coupon date (thanks to Ralf Konrad for the fix and to GitHub user
-  @aichao for the analysis).
-  See <https://github.com/lballabio/QuantLib/issues/930> for details.
-
-- A new `RiskyBondEngine` is available for bonds (thanks to Lew Wei
-  Hao).  It prices bonds based on a risk-free discount cure and a
-  default-probability curve used to assess the probability of each
-  coupon payment.  It makes accessible to all bonds the calculations
-  previously available in the experimental `RiskyBond` class.
+- When built and installed through CMake, the library now installs a `QuantLibConfig.cmake` file
+  that allows other CMake projects to find and use QuantLib (thanks to Jonathan Sweemer).
 
 Cashflows
 ---------
 
-- The choice between par and indexed coupons was moved to
-  `IborCouponPricer` (thanks to Peter Caspers).  This also made it
-  possible to override the choice locally when building a
-  `VanillaSwap` or a `SwapRateHelper`, so that coupons with both
-  behaviors can now be used at the same time.
+- Fixed the accrual calculation in overnight-indexed coupons (thanks to Mohammad Shojatalab).
+
+- Fixed fixing-days usage in `SubPeriodsCoupon` class (thanks to Marcin Rybacki).
+
+- IBOR coupons fixed in the past no longer need a forecast curve to return their amount.
+
+Indexes
+-------
+
+- **Important change:** inflation indexes inherited from the `ZeroInflationIndex`
+  class no longer rely on their forecast curve for interpolation.  For coupons
+  that already took care of interpolation (as in the case of `CPICoupon` and
+  `ZeroInflationCashFlow`) this should not change the results. In other cases,
+  figures will change but should be more correct as the interpolation is now
+  performed according to market conventions.
+  Also, most inflation curves now assume that the index is not implemented.
+  Year-on-year inflation indexes and curves are not affected.
+
+Instruments
+-----------
+
+- **Breaking change:** convertible bonds were moved out of the `ql/experimental` folder.
+  Also, being market values and not part of the contract, dividends and credit spread
+  were moved from the bond to the `BinomialConvertibleEngine` class
+  (thanks to Lew Wei Hao).
+
+- The `ForwardRateAgreement` no longer inherits from `Forward`.  This also made it
+  possible to implement the `amount` method returning the expected cash settlement
+  (thanks to Lew Wei Hao).  The methods from `Forward` were kept available but
+  deprecated so code using them won't break.  Client code might break if it
+  performed casts to `Forward`.
+
+Models
+------
+
+- Fixed formula for discount bond option in CIR++ model (thanks to Magnus Mencke).
 
 Term structures
 ---------------
 
-- Cross-currency basis swap rate helpers now support both
-  constant-notional and marked-to-market swaps (thanks to Marcin
-  Rybacki).
+- It is now possible to use normal volatilities in SABR smile sections,
+  and thus in the `SwaptionVolCube1` class (thanks to Lew Wei Hao).
 
 Date/time
 ---------
 
-- Added Chilean calendar (thanks to Anubhav Pandey).
+- Added Chinese holidays for 2022 (thanks to Cheng Li).
 
-- Added new `ThirdWednesdayInclusive` date-generation rule that also
-  adjusts start and end dates (thanks to Lew Wei Hao).
-
-Patterns
---------
-
-- Overhauled `Singleton` implementation (thanks to Peter Caspers).
-  Singletons are now initialized in a thread-safe way when sessions
-  are enabled, global singletons (that is, independent of sessions)
-  were made available, and static initialization was made safer.
-
-Test suite
+Currencies
 ----------
 
-- Sped up some of the longer-running tests (thanks to Mohammad Shojatalab).
+- Added a number of African, American, Asian and European currencies from
+  Quaternion's `QuantExt` project (thanks to Ole Bueker).
+
+Experimental folder
+-------------------
+
+The `ql/experimental` folder contains code whose interface is not
+fully stable, but is released in order to get user
+feedback. Experimental classes make no guarantees of backward
+compatibility; their interfaces might change in future releases.
+
+- Added experimental rate helpers for LIBOR-LIBOR and Overnight-LIBOR basis swaps.
+
+- Renamed `WulinYongDoubleBarrierEngine` to `SuoWangDoubleBarrierEngine`
+ (thanks to Adityakumar Sinha for the fix and Ruilong Xu for the heads-up).
 
 Deprecated features
 -------------------
 
-- Deprecated default constructor for the U.S. calendar; the desired
-  market should now be passed explicitly.
+- Deprecated the constructors of zero-coupon inflation term structures taking
+  an `indexIsInterpolated` boolean argument.
 
-- Deprecated the `nominalTermStructure` method and the corresponding
-  data member in inflation term structures.  Any object needing the
-  nominal term structure should have it passed explicitly.
+- Deprecated a number of methods in the `ForwardRateAgreement` class that used
+  to be inherited from `Forward`.
 
-- Deprecated the `termStructure_` data member in
-  `BlackCalibrationHelper`.  It you're inheriting from
-  `BlackCalibrationHelper` and need it, declare it in your derived
-  class.
+- Deprecated a couple of constructors in the `SofrFutureRateHelper` class.
 
-- Deprecated the `createAtParCoupons`, `createIndexedCoupons` and
-  `usingAtParCoupons` methods of `IborCoupon`, now moved to a new
-  `IborCoupon::Settings` singleton (thanks to Philip Kovacs).
+- Deprecated the `WulinYongDoubleBarrierEngine` alias for `SuoWangDoubleBarrierEngine`.
 
-- Deprecated the `conversionType` and `baseCurrency` static data
-  members of `Money`, now moved to a new `Money::Settings` singleton
-  (thanks to Philip Kovacs).
-
-- Removed features deprecated in version 1.19: the `BMAIndex`
-  constructor taking a calendar, the `AmericanCondition` and
-  `ShoutCondition` constructors taking an option type and strike, the
-  `CurveDependentStepCondition` class and the
-  `StandardCurveDependentStepCondition` typedef, the
-  `BlackCalibrationHelper` constructor taking a yield term structure,
-  the various inflation term structure constructors taking a yield
-  term structure, the various yield term constructors taking a vector
-  of jumps but not specifying a reference date.
+- Deprecated the protected `spreadLegValue_` data member
+  in the `BlackIborCouponPricer` class.
 
 
-Thanks go also to Mickael Anas Laaouini, Jack Gillett, Bojan Nikolic
-and Klaus Spanderen for smaller fixes, enhancements and bug reports.
-
+Thanks go also to Tom Anderson, Francois Botha, Matthew Kolbe, Benson
+Luk, Marcin Rybacki, Henning Segger, Klaus Spanderen, and GitHub users
+@jxcv0 and @azsrz for smaller fixes, enhancements and bug reports.

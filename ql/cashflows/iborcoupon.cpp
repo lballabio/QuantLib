@@ -165,7 +165,9 @@ namespace QuantLib {
     : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following),
       paymentLag_(0), paymentCalendar_(Calendar()), inArrears_(false), zeroPayments_(false),
       exCouponPeriod_(Period()), exCouponCalendar_(Calendar()), exCouponAdjustment_(Unadjusted),
-      exCouponEndOfMonth_(false) {}
+      exCouponEndOfMonth_(false) {
+        QL_REQUIRE(index_, "no index provided");
+    }
 
     IborLeg& IborLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);

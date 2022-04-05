@@ -286,6 +286,8 @@ namespace QuantLib {
     amortized or changed in value and the total outstanding notional might 
     differ from the inception one.*/
     Real Basket::remainingDetachmentAmount(const Date& endDate) const {
+        QL_REQUIRE(endDate >= refDate_, 
+            "Target date lies before basket inception");
         return detachmentAmount_;
     }
 

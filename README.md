@@ -17,7 +17,7 @@
 
 ---
 
-The QuantLib project (<http://quantlib.org>) is aimed at providing a
+The QuantLib project (<https://www.quantlib.org>) is aimed at providing a
 comprehensive software framework for quantitative finance. QuantLib is
 a free/open-source library for modeling, trading, and risk management
 in real-life.
@@ -28,22 +28,22 @@ Software.
 
 ## Download and usage
 
-QuantLib can be downloaded from <http://quantlib.org/download.shtml>;
+QuantLib can be downloaded from <https://www.quantlib.org/download.shtml>;
 installation instructions are available at
-<http://quantlib.org/install.shtml> for most platforms.
+<https://www.quantlib.org/install.shtml> for most platforms.
 
 Documentation for the usage and the design of the QuantLib library is
-available from <http://quantlib.org/docs.shtml>.
+available from <https://www.quantlib.org/docs.shtml>.
 
 A list of changes for each past versions of the library can be
-browsed at <http://quantlib.org/reference/history.html>.
+browsed at <https://www.quantlib.org/reference/history.html>.
 
 
 ## Questions and feedback
 
 The preferred channel for questions (and the one with the largest
 audience) is the quantlib-users mailing list.  Instructions for
-subscribing are at <http://quantlib.org/mailinglists.shtml>.
+subscribing are at <https://www.quantlib.org/mailinglists.shtml>.
 
 Bugs can be reported as a GitHub issue at
 <https://github.com/lballabio/QuantLib/issues>; if you have a patch
@@ -53,25 +53,6 @@ below).
 
 ## Contributing
 
-The preferred way to contribute is through pull requests on GitHub.
-Get a GitHub account if you don't have it already and clone the
-repository at <https://github.com/lballabio/QuantLib> with the "Fork"
-button in the top right corner of the page. Check out your clone to
-your machine, code away, push your changes to your clone and submit a
-pull request; instructions are available at
-<https://help.github.com/articles/fork-a-repo>.
-
-In case you need them, more detailed instructions for creating pull
-requests are at
-<https://help.github.com/articles/using-pull-requests>, and a basic
-guide to GitHub is at
-<https://guides.github.com/activities/hello-world/>.  GitHub also
-provides interactive learning at <https://lab.github.com/>.
-
-It's likely that we won't merge your code right away, and we'll ask
-for some changes instead. Don't be discouraged! That's normal; the
-library is complex, and thus it might take some time to become
-familiar with it and to use it in an idiomatic way.
-
-We're looking forward to your contributions.
+Contributions are very welcome!  Details are in
+[CONTRIBUTING.md](https://github.com/lballabio/QuantLib/blob/master/CONTRIBUTING.md)
 

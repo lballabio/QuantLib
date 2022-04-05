@@ -24,7 +24,7 @@
 #ifndef quantlib_volatility_type_hpp
 #define quantlib_volatility_type_hpp
 
-#include <ql/qldefines.hpp>
+#include <ql/types.hpp>
 #include <ostream>
 
 namespace QuantLib {
@@ -39,7 +39,7 @@ namespace QuantLib {
           case ShiftedLognormal:
             return out << "ShiftedLognormal";
           default:
-            return out << "Unknown volatility type (" << t << ")";
+            return out << "Unknown volatility type (" << Integer(t) << ")";
         }
     }
 

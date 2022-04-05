@@ -49,11 +49,12 @@
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 #include <boost/math/special_functions/erf.hpp>
-#include <boost/unordered_map.hpp>
 #if defined(__GNUC__) &&                                                       \
     (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
 #pragma GCC diagnostic pop
 #endif
+
+#include <unordered_map>
 
 namespace QuantLib {
 
@@ -179,10 +180,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         }
     };
 
-    typedef boost::unordered_map<CachedSwapKey, ext::shared_ptr<VanillaSwap>,
-                                 CachedSwapKeyHasher> CacheType;
-
-    mutable CacheType swapCache_;
+    mutable std::unordered_map<CachedSwapKey, ext::shared_ptr<VanillaSwap>, CachedSwapKeyHasher> swapCache_;
 
   protected:
     // we let derived classes register with the termstructure
@@ -216,7 +214,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
                    const Date &expiry, const Period &tenor) const {
 
         CachedSwapKey k = {index, expiry, tenor};
-        CacheType::iterator i = swapCache_.find(k);
+        auto i = swapCache_.find(k);
         if (i == swapCache_.end()) {
             ext::shared_ptr<VanillaSwap> underlying =
                 index->clone(tenor)->underlyingSwap(expiry);

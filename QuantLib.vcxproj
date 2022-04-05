@@ -564,10 +564,10 @@
     <ClInclude Include="ql\experimental\barrieroption\doublebarriertype.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\quantodoublebarrieroption.hpp" />
+    <ClInclude Include="ql\experimental\barrieroption\suowangdoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\vannavolgabarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\vannavolgadoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\barrieroption\vannavolgainterpolation.hpp" />
-    <ClInclude Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.hpp" />
     <ClInclude Include="ql\experimental\basismodels\all.hpp" />
     <ClInclude Include="ql\experimental\basismodels\swaptioncfs.hpp" />
     <ClInclude Include="ql\experimental\basismodels\tenoroptionletvts.hpp" />
@@ -866,6 +866,7 @@
     <ClInclude Include="ql\indexes\ibor\sonia.hpp" />
     <ClInclude Include="ql\indexes\ibor\thbfix.hpp" />
     <ClInclude Include="ql\indexes\ibor\tibor.hpp" />
+    <ClInclude Include="ql\indexes\ibor\tona.hpp" />
     <ClInclude Include="ql\indexes\ibor\trlibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\usdlibor.hpp" />
     <ClInclude Include="ql\indexes\ibor\wibor.hpp" />
@@ -899,6 +900,7 @@
     <ClInclude Include="ql\instruments\basketoption.hpp" />
     <ClInclude Include="ql\instruments\bmaswap.hpp" />
     <ClInclude Include="ql\instruments\bond.hpp" />
+    <ClInclude Include="ql\instruments\bondforward.hpp" />
     <ClInclude Include="ql\instruments\bonds\all.hpp" />
     <ClInclude Include="ql\instruments\bonds\btp.hpp" />
     <ClInclude Include="ql\instruments\bonds\cmsratebond.hpp" />
@@ -1471,7 +1473,6 @@
     <ClInclude Include="ql\pricingengines\asian\mc_discr_arith_av_strike.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mc_discr_geom_av_price.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mc_discr_geom_av_price_heston.hpp" />
-    <ClInclude Include="ql\pricingengines\asian\mcdiscreteasianengine.hpp" />
     <ClInclude Include="ql\pricingengines\asian\mcdiscreteasianenginebase.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\all.hpp" />
     <ClInclude Include="ql\pricingengines\barrier\analyticbarrierengine.hpp" />
@@ -1933,8 +1934,8 @@
     <ClCompile Include="ql\experimental\barrieroption\doublebarriertype.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\quantodoublebarrieroption.cpp" />
+    <ClCompile Include="ql\experimental\barrieroption\suowangdoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\barrieroption\vannavolgabarrierengine.cpp" />
-    <ClCompile Include="ql\experimental\barrieroption\wulinyongdoublebarrierengine.cpp" />
     <ClCompile Include="ql\experimental\basismodels\swaptioncfs.cpp" />
     <ClCompile Include="ql\experimental\basismodels\tenoroptionletvts.cpp" />
     <ClCompile Include="ql\experimental\basismodels\tenorswaptionvts.cpp" />
@@ -2152,6 +2153,7 @@
     <ClCompile Include="ql\instruments\basketoption.cpp" />
     <ClCompile Include="ql\instruments\bmaswap.cpp" />
     <ClCompile Include="ql\instruments\bond.cpp" />
+    <ClCompile Include="ql\instruments\bondforward.cpp" />
     <ClCompile Include="ql\instruments\bonds\btp.cpp" />
     <ClCompile Include="ql\instruments\bonds\cmsratebond.cpp" />
     <ClCompile Include="ql\instruments\bonds\convertiblebonds.cpp" />
@@ -2169,7 +2171,6 @@
     <ClCompile Include="ql\instruments\dividendbarrieroption.cpp" />
     <ClCompile Include="ql\instruments\dividendvanillaoption.cpp" />
     <ClCompile Include="ql\instruments\europeanoption.cpp" />
-    <ClCompile Include="ql\instruments\fixedratebondforward.cpp" />
     <ClCompile Include="ql\instruments\floatfloatswap.cpp" />
     <ClCompile Include="ql\instruments\floatfloatswaption.cpp" />
     <ClCompile Include="ql\instruments\forward.cpp" />

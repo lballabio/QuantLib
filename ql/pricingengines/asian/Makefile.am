@@ -13,7 +13,6 @@ this_include_HEADERS = \
 	mc_discr_arith_av_strike.hpp \
 	mc_discr_geom_av_price.hpp \
 	mc_discr_geom_av_price_heston.hpp \
-	mcdiscreteasianengine.hpp \
 	mcdiscreteasianenginebase.hpp
 
 cpp_files = \
