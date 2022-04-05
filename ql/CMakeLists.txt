@@ -385,6 +385,7 @@ set(QL_SOURCES
     math/integrals/integral.cpp
     math/integrals/kronrodintegral.cpp
     math/integrals/segmentintegral.cpp
+    math/interpolations/chebyshevinterpolation.cpp    
     math/matrix.cpp
     math/matrixutilities/basisincompleteordered.cpp
     math/matrixutilities/bicgstab.cpp
@@ -1426,6 +1427,7 @@ set(QL_HEADERS
     math/integrals/momentbasedgaussianpolynomial.hpp
     math/integrals/segmentintegral.hpp
     math/integrals/simpsonintegral.hpp
+    math/integrals/tanhsinhintegral.hpp
     math/integrals/trapezoidintegral.hpp
     math/integrals/twodimensionalintegral.hpp
     math/interpolation.hpp
@@ -1434,6 +1436,7 @@ set(QL_HEADERS
     math/interpolations/backwardflatlinearinterpolation.hpp
     math/interpolations/bicubicsplineinterpolation.hpp
     math/interpolations/bilinearinterpolation.hpp
+    math/interpolations/chebyshevinterpolation.hpp    
     math/interpolations/convexmonotoneinterpolation.hpp
     math/interpolations/cubicinterpolation.hpp
     math/interpolations/extrapolation.hpp

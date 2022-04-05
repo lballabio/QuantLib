@@ -34,6 +34,7 @@ class IntegralTest {
     static void testGaussKronrodAdaptive();
     static void testGaussKronrodNonAdaptive();
     static void testGaussLobatto();
+    static void testTanhSinh();
     static void testTwoDimensionalIntegration();
     static void testFolinIntegration();
     static void testDiscreteIntegrals();

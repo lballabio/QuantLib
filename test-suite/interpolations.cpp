@@ -30,6 +30,7 @@
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/math/interpolations/chebyshevinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation.hpp>
@@ -2397,6 +2398,46 @@ void InterpolationTest::testBackwardFlatOnSinglePoint() {
     }
 }
 
+void InterpolationTest::testChebyshevInterpolation() {
+    BOOST_TEST_MESSAGE("Testing Chebyshev interpolation...");
+
+    const auto fcts =
+        std::vector<std::pair<std::function<Real(Real)>, std::string> >{
+        {[](Real x) { return std::sin(x); }, "sin"},
+        {[](Real x) { return std::cos(x); }, "cos"},
+        {[](Real x) { return std::exp(-x*x); }, "e^(-x*x)"}
+    };
+
+    const auto tests = std::vector<std::pair<Size, Real> >{
+        {11, 1e-5},
+        {20, 1e-11}
+    };
+
+    for (const auto& t: tests) {
+        for (const auto& fct: fcts) {
+            ChebyshevInterpolation interp(t.first, fct.first);
+
+            for (Real x=-0.99; x < 1.0; x+=0.01) {
+                const Real expected = fct.first(x);
+                const Real calculated = interp(x);
+                const Real diff = std::fabs(expected-calculated);
+                const Real tol = t.second;
+
+                if (   std::isnan(calculated)
+                    || std::fabs(calculated - expected) > tol) {
+                    BOOST_FAIL("failed to reproduce the Chebyshev interpolation values"
+                            << "\n    x         : " << x
+                            << "\n    fct       : " << fct.second
+                            << "\n    calculated: " << calculated
+                            << "\n    expected  : " << expected
+                            << "\n    difference: " << diff
+                            << "\n    tolerance : " << tol);
+                }
+            }
+        }
+    }
+}
+
 test_suite* InterpolationTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Interpolation tests");
 
@@ -2429,6 +2470,7 @@ test_suite* InterpolationTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBSplines));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlatOnSinglePoint));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolation));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));

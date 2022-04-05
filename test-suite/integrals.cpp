@@ -29,6 +29,7 @@
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
+#include <ql/math/integrals/tanhsinhintegral.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
@@ -141,6 +142,13 @@ void IntegralTest::testGaussLobatto() {
     testSeveral(GaussLobattoIntegral(maxEvaluations, integrals_test::tolerance));
     // on degenerated domain [1,1+macheps] an exception is thrown
     // which is also ok, but not tested here
+}
+
+void IntegralTest::testTanhSinh() {
+    BOOST_TEST_MESSAGE("Testing tanh-sinh integration...");
+
+    using namespace integrals_test;
+    testSeveral(TanhSinhIntegral());
 }
 
 void IntegralTest::testGaussKronrodNonAdaptive() {
@@ -580,6 +588,11 @@ test_suite* IntegralTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testPiecewiseIntegral));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testExponentialIntegral));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testRealSiCiIntegrals));
+
+#ifdef QL_BOOST_HAS_TANH_SINH
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testTanhSinh));
+#endif
+
     return suite;
 }
 
