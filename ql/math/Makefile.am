@@ -81,6 +81,7 @@ libMath_la_LIBADD = \
     copulas/libCopulas.la \
     distributions/libDistributions.la \
     integrals/libIntegrals.la \
+    interpolations\libInterpolations.la \
     matrixutilities/libMatrixUtilities.la \
     optimization/libOptimization.la \
     randomnumbers/libRandomNumbers.la \

@@ -195,6 +195,8 @@ endif()
 include(CTest)
 include(Platform)
 
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall -Wno-unknown-pragmas")
+
 # Add subdirectories
 add_subdirectory(ql)
 if (QL_BUILD_EXAMPLES)
