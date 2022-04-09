@@ -902,6 +902,97 @@ void AmericanOptionTest::testTodayIsDividendDate() {
     }
 }
 
+
+void AmericanOptionTest::testCallPutParity() {
+    BOOST_TEST_MESSAGE("Testing Call/Put parity for American options...");
+
+    // R.L. McDonald, M.D. Schroder: A parity result for American option
+
+    SavedSettings backup;
+
+    const auto dc = Actual365Fixed();
+    const auto today = Date(8, April, 2022);
+    Settings::instance().evaluationDate() = today;
+
+    struct OptionSpec {
+        Real spot;
+        Real strike;
+        Size maturityInDays;
+        Real volatility;
+        Real r;
+        Real q;
+    };
+
+    auto buildStochProcess = [&dc](const OptionSpec& testCase) {
+        return ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(testCase.spot)),
+            Handle<YieldTermStructure>(flatRate(testCase.q, dc)),
+            Handle<YieldTermStructure>(flatRate(testCase.r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(testCase.volatility, dc))
+        );
+    };
+    const OptionSpec testCaseSpecs[] = {
+        {100.0, 100.0, 365, 0.5, 0.15, 0.02},
+        {100.0, 90.0, 365, 0.5, 0.15, 0.02},
+        {100.0, 125.0, 730, 0.4, 0.15, 0.05},
+        {100.0, 125.0, 730, 0.4, 0.06, 0.05}
+    };
+
+    const Size xGrid = 400;
+    const Size timeStepsPerYear=50;
+
+    for (const auto& testCaseSpec: testCaseSpecs) {
+        const auto maturityDate =
+            today + Period(testCaseSpec.maturityInDays, Days);
+        const Time maturityTime = dc.yearFraction(today,  maturityDate);
+        const Size tGrid = Size(maturityTime * timeStepsPerYear);
+
+        const auto exercise =
+            ext::make_shared<AmericanExercise>(today, maturityDate);
+
+        VanillaOption putOption(
+            ext::make_shared<PlainVanillaPayoff>(
+                Option::Put, testCaseSpec.strike),
+            exercise
+        );
+        putOption.setPricingEngine(
+            ext::make_shared<FdBlackScholesVanillaEngine>(
+                buildStochProcess(testCaseSpec), tGrid, xGrid)
+        );
+        const Real putNpv = putOption.NPV();
+
+        OptionSpec callOptionSpec = {
+            testCaseSpec.strike,
+            testCaseSpec.spot,
+            testCaseSpec.maturityInDays,
+            testCaseSpec.volatility,
+            testCaseSpec.q,
+            testCaseSpec.r
+        };
+        VanillaOption callOption(
+            ext::make_shared<PlainVanillaPayoff>(
+                Option::Call, callOptionSpec.strike),
+            exercise
+        );
+        callOption.setPricingEngine(
+            ext::make_shared<FdBlackScholesVanillaEngine>(
+                buildStochProcess(callOptionSpec), tGrid, xGrid)
+        );
+        const Real callNpv = callOption.NPV();
+
+        const Real diff = std::fabs(putNpv -callNpv);
+        const Real tol = 0.001;
+
+        if (diff > 0.001) {
+            BOOST_FAIL("failed to reproduce American Call/Put parity"
+                    << "\n    Put NPV   : " << putNpv
+                    << "\n    Call NPV  : " << callNpv
+                    << "\n    difference: " << diff
+                    << "\n    tolerance : " << tol);
+        }
+    }
+}
+
 test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("American option tests");
 
@@ -915,6 +1006,7 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testLargeDividendShoutNPV));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testEscrowedVsSpotAmericanOption));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testTodayIsDividendDate));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));

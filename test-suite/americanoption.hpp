@@ -41,6 +41,7 @@ class AmericanOptionTest {
     static void testLargeDividendShoutNPV();
     static void testEscrowedVsSpotAmericanOption();
     static void testTodayIsDividendDate();
+    static void testCallPutParity();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
