@@ -238,11 +238,17 @@ namespace QuantLib {
         R r_;
     };
 
+#if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
+    template <class F, class R>
+    auto clip(F&& f, R&& r) {
+        return [f_ = std::forward<F>(f), r_ = std::forward<R>(r)](const auto& x) { return r_(x) ? f_(x) : decltype(f_(x)){}; };
+    }
+#else
     template <class F, class R>
     clipped_function<F,R> clip(const F& f, const R& r) {
         return clipped_function<F,R>(f,r);
     }
-
+#endif
 
     template <class F, class G>
     class composed_function {
@@ -258,10 +264,17 @@ namespace QuantLib {
         G g_;
     };
 
+#if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
+    template <class F, class G>
+    auto compose(F&& f, G&& g) {
+        return [f_ = std::forward<F>(f), g_ = std::forward<G>(g)](const auto& x) { return f_(g_(x)); };
+    }
+#else
     template <class F, class G>
     composed_function<F,G> compose(const F& f, const G& g) {
         return composed_function<F,G>(f,g);
     }
+#endif
 
     template <class F, class G, class H>
     class binary_compose3_function {
@@ -284,10 +297,17 @@ namespace QuantLib {
         H h_;
     };
 
+#if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
+    template <class F, class G, class H>
+    auto compose3(F&& f, G&& g, H&& h) {
+        return [f_ = std::forward<F>(f), g_ = std::forward<G>(g), h_ = std::forward<H>(h)](const auto& x, const auto& y) { return f_(g_(x), h_(y)); };
+    }
+#else
     template <class F, class G, class H> binary_compose3_function<F, G, H>
     compose3(const F& f, const G& g, const H& h) {
         return binary_compose3_function<F, G, H>(f, g, h);
     }
+#endif
 }
 
 
