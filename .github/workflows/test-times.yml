@@ -30,7 +30,7 @@ jobs:
         ./test-suite/quantlib-test-suite --logger=JUNIT,warning,fast.xml:HRF,message -- --fast
         ./test-suite/quantlib-test-suite --logger=JUNIT,warning,all.xml:HRF,message
     - name: Save test times
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: test-reports
         path: ./all.xml
