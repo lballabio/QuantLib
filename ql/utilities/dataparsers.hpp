@@ -33,18 +33,6 @@
 
 namespace QuantLib {
 
-    namespace io {
-
-        /*! \deprecated Use std::stoi instead.
-                        Deprecated in version 1.22.
-        */
-        QL_DEPRECATED
-        inline Integer to_integer(const std::string& s) {
-            return std::stoi(s);
-        }
-
-    }
-
     class PeriodParser {
       public:
         static Period parse(const std::string& str);
