@@ -23,7 +23,6 @@
 #include "matrices.hpp"
 #include "utilities.hpp"
 #include <ql/experimental/math/moorepenroseinverse.hpp>
-#include <ql/math/initializers.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/matrixutilities/basisincompleteordered.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>

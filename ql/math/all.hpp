@@ -16,7 +16,6 @@
 #include <ql/math/generallinearleastsquares.hpp>
 #include <ql/math/kernelfunctions.hpp>
 #include <ql/math/incompletegamma.hpp>
-#include <ql/math/initializers.hpp>
 #include <ql/math/interpolation.hpp>
 #include <ql/math/lexicographicalview.hpp>
 #include <ql/math/linearleastsquaresregression.hpp>
