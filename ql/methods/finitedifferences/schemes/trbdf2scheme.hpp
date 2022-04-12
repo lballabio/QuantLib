@@ -60,7 +60,7 @@ namespace QuantLib {
 
         Size numberOfIterations() const;
       protected:
-        Disposable<Array> apply(const Array& r) const;
+        Array apply(const Array& r) const;
 
         Time dt_;
         Real beta_;
@@ -98,8 +98,7 @@ namespace QuantLib {
     }
 
     template <class TrapezoidalScheme>
-    inline Disposable<Array> TrBDF2Scheme<TrapezoidalScheme>::apply(
-        const Array& r) const {
+    inline Array TrBDF2Scheme<TrapezoidalScheme>::apply(const Array& r) const {
         return r - beta_*map_->apply(r);
     }
 

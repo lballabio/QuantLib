@@ -44,25 +44,18 @@ namespace QuantLib {
 
         TripleBandLinearOp(const TripleBandLinearOp& m);
         TripleBandLinearOp(TripleBandLinearOp&& m) QL_NOEXCEPT;
-        #ifdef QL_USE_DISPOSABLE
-        TripleBandLinearOp(const Disposable<TripleBandLinearOp>& m);
-        #endif
         TripleBandLinearOp& operator=(const TripleBandLinearOp& m);
         TripleBandLinearOp& operator=(TripleBandLinearOp&& m) QL_NOEXCEPT;
-        #ifdef QL_USE_DISPOSABLE
-        TripleBandLinearOp& operator=(const Disposable<TripleBandLinearOp>& m);
-        #endif
 
-        Disposable<Array> apply(const Array& r) const override;
-        Disposable<Array> solve_splitting(const Array& r, Real a,
-                                          Real b = 1.0) const;
+        Array apply(const Array& r) const override;
+        Array solve_splitting(const Array& r, Real a, Real b = 1.0) const;
 
-        Disposable<TripleBandLinearOp> mult(const Array& u) const;
+        TripleBandLinearOp mult(const Array& u) const;
         // interpret u as the diagonal of a diagonal matrix, multiplied on LHS
-        Disposable<TripleBandLinearOp> multR(const Array& u) const;
+        TripleBandLinearOp multR(const Array& u) const;
         // interpret u as the diagonal of a diagonal matrix, multiplied on RHS
-        Disposable<TripleBandLinearOp> add(const TripleBandLinearOp& m) const;
-        Disposable<TripleBandLinearOp> add(const Array& u) const;
+        TripleBandLinearOp add(const TripleBandLinearOp& m) const;
+        TripleBandLinearOp add(const Array& u) const;
 
         // some very basic linear algebra routines
         void axpyb(const Array& a, const TripleBandLinearOp& x,
@@ -70,7 +63,7 @@ namespace QuantLib {
 
         void swap(TripleBandLinearOp& m);
 
-        Disposable<SparseMatrix> toMatrix() const override;
+        SparseMatrix toMatrix() const override;
 
       protected:
         TripleBandLinearOp() = default;

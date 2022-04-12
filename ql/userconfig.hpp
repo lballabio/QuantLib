@@ -106,13 +106,6 @@
 //#    define QL_USE_STD_TUPLE
 #endif
 
-/* Define this if you want to use the Disposable class template.
-   This should be no longer necessary in C++11
-   and might interfere with compiler optimizations. */
-#ifndef QL_USE_DISPOSABLE
-//#    define QL_USE_DISPOSABLE
-#endif
-
 /* Define this to enable the parallel unit test runner */
 #ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 //#    define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER

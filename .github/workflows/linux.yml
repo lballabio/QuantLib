@@ -153,13 +153,6 @@ jobs:
             cxxflags: "-Wno-deprecated-declarations"
             configureflags: --disable-std-unique-ptr
             tests: true
-          - name: "Disposable re-enabled"
-            shortname: disposable
-            tag: rolling
-            cc: gcc
-            cxx: g++
-            configureflags: --enable-disposable
-            tests: true
           - name: "Thread-safe observer enabled"
             shortname: threadsafe
             tag: rolling

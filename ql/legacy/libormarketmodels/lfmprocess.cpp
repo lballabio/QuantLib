@@ -66,8 +66,8 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> LiborForwardModelProcess::drift(Time t,
-                                                      const Array& x) const {
+    Array LiborForwardModelProcess::drift(Time t,
+                                          const Array& x) const {
         Array f(size_, 0.0);
         Matrix covariance(lfmParam_->covariance(t, x));
 
@@ -83,18 +83,15 @@ namespace QuantLib {
         return f;
     }
 
-    Disposable<Matrix>
-    LiborForwardModelProcess::diffusion(Time t, const Array& x) const {
+    Matrix LiborForwardModelProcess::diffusion(Time t, const Array& x) const {
         return lfmParam_->diffusion(t, x);
     }
 
-    Disposable<Matrix> LiborForwardModelProcess::covariance(
-        Time t, const Array& x, Time dt) const {
+    Matrix LiborForwardModelProcess::covariance(Time t, const Array& x, Time dt) const {
         return lfmParam_->covariance(t, x)*dt;
     }
 
-    Disposable<Array> LiborForwardModelProcess::apply(
-        const Array& x0, const Array& dx) const {
+    Array LiborForwardModelProcess::apply(const Array& x0, const Array& dx) const {
         Array tmp(size_);
 
         for (Size k=0; k<size_; ++k) {
@@ -104,9 +101,8 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Array> LiborForwardModelProcess::evolve(
-                                             Time t0, const Array& x0,
-                                             Time dt, const Array& dw) const {
+    Array LiborForwardModelProcess::evolve(Time t0, const Array& x0,
+                                           Time dt, const Array& dw) const {
         /* predictor-corrector step to reduce discretization errors.
 
            Short - but slow - solution would be
@@ -149,9 +145,8 @@ namespace QuantLib {
         return f;
     }
 
-    Disposable<Array> LiborForwardModelProcess::initialValues() const {
-        Array tmp = initialValues_;
-        return tmp;
+    Array LiborForwardModelProcess::initialValues() const {
+        return initialValues_;
     }
 
     void LiborForwardModelProcess::setCovarParam(

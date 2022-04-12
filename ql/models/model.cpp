@@ -55,7 +55,7 @@ namespace QuantLib {
             return std::sqrt(value);
         }
 
-        Disposable<Array> values(const Array& params) const override {
+        Array values(const Array& params) const override {
             model_->setParams(projection_.include(params));
             Array values(instruments_.size());
             for (Size i=0; i<instruments_.size(); i++) {
@@ -125,7 +125,7 @@ namespace QuantLib {
         return f.value(params);
     }
 
-    Disposable<Array> CalibratedModel::params() const {
+    Array CalibratedModel::params() const {
         Size size=0;
         for (const auto& argument : arguments_)
             size += argument.size();

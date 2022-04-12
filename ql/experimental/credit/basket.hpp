@@ -33,7 +33,6 @@
 #include <ql/experimental/credit/recoveryratemodel.hpp>
 #include <ql/experimental/credit/pool.hpp>
 #include <ql/experimental/credit/loss.hpp>
-#include <ql/utilities/disposable.hpp>
 
 namespace QuantLib {
 
@@ -103,7 +102,7 @@ namespace QuantLib {
         //! Underlying pool
         const ext::shared_ptr<Pool>& pool() const;
         //! The keys each counterparty enters the basket with (sensitive to)
-        Disposable<std::vector<DefaultProbKey> > defaultKeys() const;
+        std::vector<DefaultProbKey> defaultKeys() const;
         /*! Loss Given Default for all issuers/notionals based on
             expected recovery rates for the respective issuers.
         */
@@ -128,8 +127,7 @@ namespace QuantLib {
         /*! Vector of cumulative default probability to date d for all
             issuers in the basket.
         */
-        Disposable<std::vector<Probability> > 
-            probabilities(const Date& d) const;
+        std::vector<Probability> probabilities(const Date& d) const;
         /*! Realized basket losses between the reference date and the 
             calculation date, taking the actual recovery rates of loss events 
             into account. 
@@ -165,26 +163,23 @@ namespace QuantLib {
           reference date and the given date, recovery ignored.
         */
         const std::vector<Real>& remainingNotionals() const;
-        Disposable<std::vector<Real> > remainingNotionals(const Date&) const;
+        std::vector<Real> remainingNotionals(const Date&) const;
         /*! Vector of surviving issuers after defaults between the reference 
           basket date and the given (or evaluation) date.
         */
         const std::vector<std::string>& remainingNames() const;
-        Disposable<std::vector<std::string> > 
-            remainingNames(const Date&) const;
+        std::vector<std::string> remainingNames(const Date&) const;
         /*! Default keys of non defaulted counterparties
         */
         const std::vector<DefaultProbKey>& remainingDefaultKeys() const;
-        Disposable<std::vector<DefaultProbKey> > remainingDefaultKeys(
-            const Date&) const;
+        std::vector<DefaultProbKey> remainingDefaultKeys(const Date&) const;
         //! Number of counterparties alive on the requested date.
         Size remainingSize() const;
         Size remainingSize(const Date&) const;
         /*! Vector of cumulative default probability to date d for all
             issuers still (at the evaluation date) alive in the basket.
         */
-        Disposable<std::vector<Probability> > 
-            remainingProbabilities(const Date& d) const;
+        std::vector<Probability> remainingProbabilities(const Date& d) const;
         /*!
           Attachment amount of the equivalent (after defaults) remaining basket
           The remaining attachment amount is
@@ -222,7 +217,7 @@ namespace QuantLib {
         }
         //!Indexes of remaining names. Notice these are names and not positions.
         const std::vector<Size>& liveList() const;
-        Disposable<std::vector<Size> > liveList(const Date&) const;//?? keep?
+        std::vector<Size> liveList(const Date&) const;//?? keep?
         //! Assigns the default loss model to this basket. Resets calculations.
         void setLossModel(
             const ext::shared_ptr<DefaultLossModel>& lossModel);
@@ -246,12 +241,10 @@ namespace QuantLib {
         Real expectedShortfall(const Date& d, Probability prob) const;
         /* Split a portfolio loss along counterparties. Typically loss 
         corresponds to some percentile.*/
-        Disposable<std::vector<Real> > 
-            splitVaRLevel(const Date& date, Real loss) const;
+        std::vector<Real> splitVaRLevel(const Date& date, Real loss) const;
         /*! Full loss distribution
         */
-        Disposable<std::map<Real, Probability> > lossDistribution(
-            const Date&) const;
+        std::map<Real, Probability> lossDistribution(const Date&) const;
         Real densityTrancheLoss(const Date& d, Real lossFraction) const;
         Real defaultCorrelation(const Date& d, Size iName, Size jName) const;
         /*! Probability vector that each of the remaining live names (at eval
@@ -329,8 +322,7 @@ namespace QuantLib {
         return notionals_;
     }
 
-    inline Disposable<std::vector<DefaultProbKey> > 
-        Basket::defaultKeys() const {
+    inline std::vector<DefaultProbKey> Basket::defaultKeys() const {
         return pool_->defaultKeys();
     }
 

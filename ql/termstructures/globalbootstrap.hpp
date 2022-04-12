@@ -267,7 +267,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
             return std::sqrt(std::accumulate(v.begin(), v.end(), 0.0) / static_cast<Real>(v.size()));
         }
 
-        Disposable<Array> values(const Array& x) const override {
+        Array values(const Array& x) const override {
             for (Size i = 0; i < x.size(); ++i) {
                 Traits::updateGuess(ts_->data_, transformDirect(x[i], i), i + 1);
             }
@@ -284,8 +284,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
                     result[numberHelpers_ + i] = tmp[i];
                 }
             }
-            Array asArray(result.begin(), result.end());
-            return asArray;
+            return Array(result.begin(), result.end());
         }
 
       private:

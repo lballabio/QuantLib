@@ -253,7 +253,7 @@ void NumericalDifferentiationTest::testDerivativesOfSineFunction() {
 }
 
 namespace {
-    Disposable<Array> vandermondeCoefficients(
+    Array vandermondeCoefficients(
         Size order, Real x, const Array& gridPoints) {
 
         const Array q = gridPoints - x;

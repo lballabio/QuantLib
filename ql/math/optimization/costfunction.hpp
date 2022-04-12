@@ -43,7 +43,7 @@ namespace QuantLib {
                              static_cast<Real>(v.size()));
         }
         //! method to overload to compute the cost function values in x
-        virtual Disposable<Array> values(const Array& x) const =0;
+        virtual Array values(const Array& x) const =0;
 
         //! method to overload to compute grad_f, the first derivative of
         //  the cost function with respect to x
@@ -87,8 +87,8 @@ namespace QuantLib {
 
         //! method to overload to compute J_f, the jacobian of
         // the cost function with respect to x and also the cost function
-        virtual Disposable<Array> valuesAndJacobian(Matrix &jac,
-                                                    const Array &x) const {
+        virtual Array valuesAndJacobian(Matrix &jac,
+                                        const Array &x) const {
             jacobian(jac,x);
             return values(x);
         }

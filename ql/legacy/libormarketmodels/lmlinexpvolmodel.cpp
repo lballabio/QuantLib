@@ -33,7 +33,7 @@ namespace QuantLib {
     }
 
 
-    Disposable<Array> LmLinearExponentialVolatilityModel::volatility(
+    Array LmLinearExponentialVolatilityModel::volatility(
                                                  Time t, const Array&) const {
         const Real a = arguments_[0](0.0);
         const Real b = arguments_[1](0.0);

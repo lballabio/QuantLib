@@ -50,18 +50,17 @@ namespace QuantLib {
           Discretization discretization = BSMHullWhite);
 
         Size size() const override;
-        Disposable<Array> initialValues() const override;
-        Disposable<Array> drift(Time t, const Array& x) const override;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const override;
-        Disposable<Array> apply(const Array& x0, const Array& dx) const override;
+        Array initialValues() const override;
+        Array drift(Time t, const Array& x) const override;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Array apply(const Array& x0, const Array& dx) const override;
 
-        Disposable<Array> evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
+        Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
         DiscountFactor numeraire(Time t, const Array& x) const;
 
         const ext::shared_ptr<HestonProcess>& hestonProcess() const;
-        const ext::shared_ptr<HullWhiteForwardProcess>& 
-                                                    hullWhiteProcess() const;
+        const ext::shared_ptr<HullWhiteForwardProcess>& hullWhiteProcess() const;
 
         Real eta() const;
         Time time(const Date& date) const override;

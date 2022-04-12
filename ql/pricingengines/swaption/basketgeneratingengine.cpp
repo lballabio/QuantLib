@@ -31,7 +31,7 @@ using std::fabs;
 
 namespace QuantLib {
 
-    Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
+    std::vector<ext::shared_ptr<BlackCalibrationHelper>>
     BasketGeneratingEngine::calibrationBasket(
         const ext::shared_ptr<Exercise>& exercise,
         const ext::shared_ptr<SwapIndex>& standardSwapBase,

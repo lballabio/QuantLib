@@ -39,8 +39,7 @@ namespace QuantLib {
         return costFunction_.value(actualParameters_);
     }
 
-    Disposable<Array> ProjectedCostFunction::values(
-                                        const Array& freeParameters) const{
+    Array ProjectedCostFunction::values(const Array& freeParameters) const{
         mapFreeParameters(freeParameters);
         return costFunction_.values(actualParameters_);
     }

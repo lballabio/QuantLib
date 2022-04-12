@@ -259,7 +259,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
     }
 
     // calculate weighted differences
-    Disposable<Array> interpolationErrors() const {
+    Array interpolationErrors() const {
         Array results(this->xEnd_ - this->xBegin_);
         I1 x = this->xBegin_;
         Array::iterator r = results.begin();
@@ -302,7 +302,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
             return xabr_->interpolationSquaredError();
         }
 
-        Disposable<Array> values(const Array& x) const override {
+        Array values(const Array& x) const override {
             const Array y = Model().direct(x, xabr_->paramIsFixed_,
                                            xabr_->params_, xabr_->forward_);
             for (Size i = 0; i < xabr_->params_.size(); ++i)

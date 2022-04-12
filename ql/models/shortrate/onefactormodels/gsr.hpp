@@ -68,7 +68,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     // calibration constraints
 
     // fixed reversions, only volatilities are free
-    Disposable<std::vector<bool> > FixedReversions() {
+    std::vector<bool> FixedReversions() {
         std::vector<bool> res(reversions_.size(), true);
         std::vector<bool> vol(volatilities_.size(), false);
         res.insert(res.end(), vol.begin(), vol.end());
@@ -76,14 +76,14 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     }
 
     // fixed volatilities, only reversions are free
-    Disposable<std::vector<bool> > FixedVolatilities() {
+    std::vector<bool> FixedVolatilities() {
         std::vector<bool> res(reversions_.size(), false);
         std::vector<bool> vol(volatilities_.size(), true);
         res.insert(res.end(), vol.begin(), vol.end());
         return res;
     }
 
-    Disposable<std::vector<bool> > MoveVolatility(Size i) {
+    std::vector<bool> MoveVolatility(Size i) {
         QL_REQUIRE(i < volatilities_.size(),
                    "volatility with index " << i << " does not exist (0..."
                                             << volatilities_.size() - 1 << ")");
@@ -92,7 +92,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         return res;
     }
 
-    Disposable<std::vector<bool> > MoveReversion(Size i) {
+    std::vector<bool> MoveReversion(Size i) {
         QL_REQUIRE(i < reversions_.size(),
                    "reversion with index " << i << " does not exist (0..."
                                            << reversions_.size() - 1 << ")");

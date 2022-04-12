@@ -134,14 +134,6 @@
     default) the Boost facilities are used.
 
     \code
-    #define QL_USE_DISPOSABLE
-    \endcode
-    If defined, the old `Disposable` class template is used; this
-    should be no longer necessary in C++11 and might interfere with
-    compiler optimizations. If disabled (the default) `Disposable<T>` is
-    still available but is just an alias to `T`.
-
-    \code
     #define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
     \endcode
     Define this to enable the parallel unit test runner. Undefined by

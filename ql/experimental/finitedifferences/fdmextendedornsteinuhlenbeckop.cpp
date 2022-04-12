@@ -64,48 +64,41 @@ namespace QuantLib {
         mapX_.axpyb(drift, dxMap_, dxxMap_, Array(1, -r));
     }
 
-    Disposable<Array> FdmExtendedOrnsteinUhlenbeckOp::apply(
-                                                    const Array& r) const {
+    Array FdmExtendedOrnsteinUhlenbeckOp::apply(const Array& r) const {
         return mapX_.apply(r);
     }
 
-    Disposable<Array> FdmExtendedOrnsteinUhlenbeckOp::apply_mixed(
-                                                    const Array& r) const {
-        Array retVal(r.size(), 0.0);
-        return retVal;
+    Array FdmExtendedOrnsteinUhlenbeckOp::apply_mixed(const Array& r) const {
+        return Array(r.size(), 0.0);
     }
 
-    Disposable<Array> FdmExtendedOrnsteinUhlenbeckOp::apply_direction(
+    Array FdmExtendedOrnsteinUhlenbeckOp::apply_direction(
                                     Size direction, const Array& r) const {
         if (direction == direction_) {
             return mapX_.apply(r);
         }
         else {
-            Array retVal(r.size(), 0.0);
-            return retVal;
+            return Array(r.size(), 0.0);
         }
     }
 
-    Disposable<Array> FdmExtendedOrnsteinUhlenbeckOp::solve_splitting(
+    Array FdmExtendedOrnsteinUhlenbeckOp::solve_splitting(
                             Size direction, const Array& r, Real a) const {
         if (direction == direction_) {
             return mapX_.solve_splitting(r, a, 1.0);
         }
         else {
-            Array retVal(r);
-            return retVal;
+            return r;
         }
     }
 
-    Disposable<Array> FdmExtendedOrnsteinUhlenbeckOp::preconditioner(
+    Array FdmExtendedOrnsteinUhlenbeckOp::preconditioner(
                                             const Array& r, Real dt) const {
         return solve_splitting(direction_, r, dt);
     }
 
-    Disposable<std::vector<SparseMatrix> >
-    FdmExtendedOrnsteinUhlenbeckOp::toMatrixDecomp() const {
-        std::vector<SparseMatrix> retVal(1, mapX_.toMatrix());
-        return retVal;
+    std::vector<SparseMatrix> FdmExtendedOrnsteinUhlenbeckOp::toMatrixDecomp() const {
+        return std::vector<SparseMatrix>(1, mapX_.toMatrix());
     }
 
 }

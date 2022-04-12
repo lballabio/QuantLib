@@ -51,16 +51,16 @@ namespace QuantLib {
         Size size() const override;
         void setTime(Time t1, Time t2) override;
 
-        Disposable<Array> apply(const Array& r) const override;
-        Disposable<Array> apply_mixed(const Array& r) const override;
+        Array apply(const Array& r) const override;
+        Array apply_mixed(const Array& r) const override;
 
-        Disposable<Array> apply_direction(Size direction, const Array& r) const override;
-        Disposable<Array> solve_splitting(Size direction, const Array& r, Real s) const override;
-        Disposable<Array> preconditioner(const Array& r, Real s) const override;
+        Array apply_direction(Size direction, const Array& r) const override;
+        Array solve_splitting(Size direction, const Array& r, Real s) const override;
+        Array preconditioner(const Array& r, Real s) const override;
 
-        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const override;
+        std::vector<SparseMatrix> toMatrixDecomp() const override;
       private:
-        Disposable<Array> getLeverageFctSlice(Time t1, Time t2) const;
+        Array getLeverageFctSlice(Time t1, Time t2) const;
         const FdmSquareRootFwdOp::TransformationType type_;
         const Real kappa_, theta_, sigma_, rho_, v0_, mixedSigma_;
 

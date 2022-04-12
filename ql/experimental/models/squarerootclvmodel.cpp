@@ -70,8 +70,8 @@ namespace QuantLib {
     }
 
 
-    Disposable<Array> SquareRootCLVModel::collocationPointsX(const Date& d)
-    const {
+    Array SquareRootCLVModel::collocationPointsX(const Date& d) const {
+
         const std::pair<Real, Real> p = nonCentralChiSquaredParams(d);
 
         Array x = GaussianQuadrature(lagrangeOrder_,
@@ -101,8 +101,7 @@ namespace QuantLib {
         return x;
     }
 
-    Disposable<Array> SquareRootCLVModel::collocationPointsY(const Date& d)
-    const {
+    Array SquareRootCLVModel::collocationPointsY(const Date& d) const {
 
         const Array x = collocationPointsX(d);
         const std::pair<Real, Real> params = nonCentralChiSquaredParams(d);

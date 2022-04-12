@@ -46,7 +46,7 @@ namespace QuantLib {
             oneOverTaus_[i] = 1.0/taus[i];
 
         // Compute covariance matrix from pseudoroot
-        const Disposable<Matrix> pT = transpose(pseudo_);
+        Matrix pT = transpose(pseudo_);
         C_ = pseudo_*pT;
 
         // Compute lower and upper extrema for (non reduced) drift calculation

@@ -33,7 +33,7 @@ namespace QuantLib {
     }
 
 
-    Disposable<Array> LmExtLinearExponentialVolModel::volatility(
+    Array LmExtLinearExponentialVolModel::volatility(
                                                Time t, const Array& x) const {
         Array tmp = LmLinearExponentialVolatilityModel::volatility(t, x);
         for (Size i=0; i<size_; ++i) {
