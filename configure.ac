@@ -376,20 +376,6 @@ if test "$ql_use_std_pointers" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_std_pointers])
 
-AC_MSG_CHECKING([whether to enable std::unique_ptr instead of std::auto_ptr])
-AC_ARG_ENABLE([std-unique-ptr],
-              AS_HELP_STRING([--enable-std-unique-ptr],
-                             [If enabled (the default), std::unique_ptr will
-                              be used instead of the deprecated std::auto_ptr.
-                              If disabled, std::auto_ptr will still be used.]),
-              [ql_use_unique_ptr=$enableval],
-              [ql_use_unique_ptr=yes])
-if test "$ql_use_unique_ptr" = "yes" ; then
-   AC_DEFINE([QL_USE_STD_UNIQUE_PTR],[1],
-             [Define this if you want to replace std::auto_ptr with std::unique_ptr.])
-fi
-AC_MSG_RESULT([$ql_use_unique_ptr])
-
 AC_MSG_CHECKING([whether to enable std::function])
 AC_ARG_ENABLE([std-function],
               AS_HELP_STRING([--enable-std-function],
@@ -425,8 +411,7 @@ AC_MSG_CHECKING([whether to enable available std classes])
 AC_ARG_ENABLE([std-classes],
               AS_HELP_STRING([--enable-std-classes],
                              [This is a shortcut for --enable-std-pointers
-                              --enable-std-unique-ptr --enable-std-function
-                              --enable-std-tuple.
+                              --enable-std-function --enable-std-tuple.
                               If enabled, this supersedes any --disable
                               option passed for the above.]),
               [ql_use_std_classes=$enableval],
@@ -434,8 +419,6 @@ AC_ARG_ENABLE([std-classes],
 if test "$ql_use_std_classes" = "yes" ; then
    AC_DEFINE([QL_USE_STD_SHARED_PTR],[1],
              [Define this if you want to use standard smart pointers.])
-   AC_DEFINE([QL_USE_STD_UNIQUE_PTR],[1],
-             [Define this if you want to replace std::auto_ptr with std::unique_ptr.])
    AC_DEFINE([QL_USE_STD_FUNCTION],[1],
              [Define this if you want to use std::function and std::bind.])
    AC_DEFINE([QL_USE_STD_TUPLE],[1],

@@ -47,11 +47,7 @@ namespace QuantLib {
                       const std::vector<Real>& variables) const override;
         void guess(Size exerciseNumber, std::vector<Real>& parameters) const override;
 
-#if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<MarketModelParametricExercise> clone() const override;
-#else
-        std::auto_ptr<MarketModelParametricExercise> clone() const;
-        #endif
 
       private:
         std::vector<Time> rateTimes_, exerciseTimes_;

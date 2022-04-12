@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/products/onestep/onestepcoterminalswaps.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
@@ -64,10 +63,9 @@ namespace QuantLib {
         return true ;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     OneStepCoterminalSwaps::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
-                                           new OneStepCoterminalSwaps(*this));
+        return std::unique_ptr<MarketModelMultiProduct>(new OneStepCoterminalSwaps(*this));
     }
 
 }

@@ -225,5 +225,11 @@
 #  define QL_CONSTEXPR constexpr
 #endif
 
+/*! \deprecated Do not check; always use std::unique_ptr.
+                Deprecated in version 1.27
+*/
+#ifndef QL_USE_STD_UNIQUE_PTR
+#define QL_USE_STD_UNIQUE_PTR 1
+#endif
 
 #endif

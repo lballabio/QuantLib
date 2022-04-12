@@ -28,9 +28,6 @@
 #define quantlib_triple_band_linear_op_hpp
 
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
-#if !defined(QL_USE_STD_UNIQUE_PTR)
-#include <boost/shared_array.hpp>
-#endif
 #include <memory>
 
 namespace QuantLib {
@@ -69,15 +66,9 @@ namespace QuantLib {
         TripleBandLinearOp() = default;
 
         Size direction_;
-        #if !defined(QL_USE_STD_UNIQUE_PTR)
-        boost::shared_array<Size> i0_, i2_;
-        boost::shared_array<Size> reverseIndex_;
-        boost::shared_array<Real> lower_, diag_, upper_;
-        #else
         std::unique_ptr<Size[]> i0_, i2_;
         std::unique_ptr<Size[]> reverseIndex_;
         std::unique_ptr<Real[]> lower_, diag_, upper_;
-        #endif
 
         ext::shared_ptr<FdmMesher> mesher_;
     };

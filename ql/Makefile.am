@@ -149,6 +149,7 @@ quantlib.hpp: Makefile.am
 	for i in $(this_include_HEADERS); do \
 		case $$i in \
 			auto_link.hpp)     continue;; \
+			auto_ptr.hpp)      continue;; \
 			config.hpp)        continue;; \
 			mathconstants.hpp) continue;; \
 			qldefines.hpp)     continue;; \

@@ -28,9 +28,6 @@
 
 #include <ql/math/matrixutilities/sparsematrix.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
-#if !defined(QL_USE_STD_UNIQUE_PTR)
-#include <boost/shared_array.hpp>
-#endif
 #include <memory>
 
 namespace QuantLib {
@@ -57,21 +54,12 @@ namespace QuantLib {
         NinePointLinearOp() = default;
 
         Size d0_, d1_;
-        #if !defined(QL_USE_STD_UNIQUE_PTR)
-        boost::shared_array<Size> i00_, i10_, i20_;
-        boost::shared_array<Size> i01_, i21_;
-        boost::shared_array<Size> i02_, i12_, i22_;
-        boost::shared_array<Real> a00_, a10_, a20_;
-        boost::shared_array<Real> a01_, a11_, a21_;
-        boost::shared_array<Real> a02_, a12_, a22_;
-        #else
         std::unique_ptr<Size[]> i00_, i10_, i20_;
         std::unique_ptr<Size[]> i01_, i21_;
         std::unique_ptr<Size[]> i02_, i12_, i22_;
         std::unique_ptr<Real[]> a00_, a10_, a20_;
         std::unique_ptr<Real[]> a01_, a11_, a21_;
         std::unique_ptr<Real[]> a02_, a12_, a22_;
-        #endif
 
         ext::shared_ptr<FdmMesher> mesher_;
     };
