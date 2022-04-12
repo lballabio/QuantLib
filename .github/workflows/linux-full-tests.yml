@@ -1,5 +1,8 @@
 name: Linux build with full test matrix
 on: workflow_dispatch
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest

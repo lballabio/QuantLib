@@ -1,5 +1,8 @@
 name: Check CMake file list and VC++ projects
 on: [push, pull_request]
+permissions:
+  contents: read
+
 jobs:
   filelists:
     runs-on: ubuntu-latest

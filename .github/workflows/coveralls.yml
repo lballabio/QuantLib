@@ -1,7 +1,13 @@
 name: Coverage report
 on: [push, pull_request]
+permissions:
+  contents: read
+
 jobs:
   coverage:
+    permissions:
+      checks: write  # for coverallsapp/github-action to create new checks
+      contents: read  # for actions/checkout to fetch code
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3

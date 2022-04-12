@@ -1,5 +1,8 @@
 name: Check test times
 on: [push, pull_request]
+permissions:
+  contents: read
+
 jobs:
   check-test-times:
     runs-on: ubuntu-latest
