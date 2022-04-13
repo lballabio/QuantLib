@@ -230,7 +230,7 @@ void FdmLinearOpTest::testUniformGridMesher() {
     const Real dx2 = 95.0/(dim[1]-1);
     const Real dx3 = 10.0/(dim[2]-1);
 
-    QL_CONSTEXPR Real tol = 100*QL_EPSILON;
+    constexpr Real tol = 100*QL_EPSILON;
     if (   std::fabs(dx1-mesher.dminus(layout->begin(),0)) > tol
         || std::fabs(dx1-mesher.dplus(layout->begin(),0)) > tol
         || std::fabs(dx2-mesher.dminus(layout->begin(),1)) > tol
@@ -1680,7 +1680,7 @@ void FdmLinearOpTest::testLowVolatilityHighDiscreteDividendBlackScholesMesher() 
     const Real calculatedMin = std::exp(loc.front());
 
 
-    QL_CONSTEXPR Real relTol = 1e5*QL_EPSILON;
+    constexpr Real relTol = 1e5*QL_EPSILON;
 
     const Real maxDiff = std::fabs(calculatedMax - maximum);
     if (maxDiff > relTol*maximum) {

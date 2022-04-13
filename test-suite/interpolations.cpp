@@ -2191,7 +2191,7 @@ void InterpolationTest::testLagrangeInterpolation() {
         0.5130076920869246
     };
 
-    QL_CONSTEXPR Real tol = 50*QL_EPSILON;
+    constexpr Real tol = 50*QL_EPSILON;
     for (Size i=0; i < 79; ++i) {
         const Real xx = -1.0 + i*0.025;
         const Real calculated = interpl(xx);

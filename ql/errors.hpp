@@ -46,7 +46,7 @@ namespace QuantLib {
               const std::string& functionName,
               const std::string& message = "");
         //! returns the error message.
-        const char* what() const QL_NOEXCEPT override;
+        const char* what() const noexcept override;
 
       private:
         ext::shared_ptr<std::string> message_;
