@@ -31,8 +31,13 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.27.
+    */
     template <typename baseEngine>
-    class FDShoutCondition : public baseEngine {
+    class QL_DEPRECATED FDShoutCondition : public baseEngine {
       public:
         FDShoutCondition(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -52,6 +57,8 @@ namespace QuantLib {
                                         riskFreeRate));
         }
     };
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
