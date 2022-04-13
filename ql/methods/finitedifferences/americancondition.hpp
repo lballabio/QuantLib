@@ -18,61 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file americancondition.hpp
-    \brief american option exercise condition
-*/
-
 #ifndef quantlib_fd_american_condition_h
 #define quantlib_fd_american_condition_h
 
-#include <ql/discretizedasset.hpp>
-#include <ql/instruments/payoffs.hpp>
-#include <ql/methods/finitedifferences/fdtypedefs.hpp>
-#include <utility>
-
-namespace QuantLib {
-
-    //! American exercise condition.
-    /*! \deprecated Use the new finite-differences framework instead.
-                    Deprecated in version 1.22.
-    */
-    class QL_DEPRECATED AmericanCondition : public StandardStepCondition {
-      public:
-        explicit AmericanCondition(const Array& intrinsicValues)
-        : impl_(new ArrayImpl(intrinsicValues)) {}
-
-        void applyTo(Array& a, Time) const override {
-            //#pragma omp parallel for
-            for (Size i = 0; i < a.size(); i++) {
-                a[i] = std::max(a[i], impl_->getValue(a, i));
-            }
-        }
-
-      private:
-        // This part should be removed and the array-based implementation
-        // inlined once the payoff-based constructor is removed.
-
-        class Impl;
-
-        ext::shared_ptr<Impl> impl_;
-
-        class Impl {
-          public:
-            virtual ~Impl() = default;
-            virtual Real getValue(const Array &a,
-                                  int i) = 0;
-        };
-
-        class ArrayImpl : public Impl {
-          private:
-            Array intrinsicValues_;
-          public:
-            explicit ArrayImpl(Array a) : intrinsicValues_(std::move(a)) {}
-
-            Real getValue(const Array&, int i) override { return intrinsicValues_[i]; }
-        };
-    };
-}
+// Deprecated in version 1.27
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 
 #endif
