@@ -30,13 +30,11 @@
 
 namespace QuantLib {
 
-    //! Abstract base class for dividend engines
-    /*! \todo The dividend class really needs to be made more
-              sophisticated to distinguish between fixed dividends and
-              fractional dividends
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.27.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendEngineBase : public FDMultiPeriodEngine<Scheme> {
+    class QL_DEPRECATED FDDividendEngineBase : public FDMultiPeriodEngine<Scheme> {
       public:
         FDDividendEngineBase(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -68,20 +66,13 @@ namespace QuantLib {
         }
     };
 
-    /*! \brief Finite-differences pricing engine for dividend options
-               using escowed dividends model
+    QL_DEPRECATED_DISABLE_WARNING
 
-        The Merton-73 engine is the classic engine described in most
-        derivatives texts.  However, Haug, Haug, and Lewis in "Back to
-        Basics: a new approach to the discrete dividend problem"
-        argues that this scheme underprices call options.  This is set
-        as the default engine, because it is consistent with the
-        analytic version.
-
-        \ingroup vanillaengines
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.27.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendEngineMerton73 : public FDDividendEngineBase<Scheme> {
+    class QL_DEPRECATED FDDividendEngineMerton73 : public FDDividendEngineBase<Scheme> {
       public:
         FDDividendEngineMerton73(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -95,17 +86,11 @@ namespace QuantLib {
         void executeIntermediateStep(Size step) const;
     };
 
-    //! Finite-differences engine for dividend options using shifted dividends
-    /*! This engine uses the same algorithm that was used in versions
-        0.3.11 and earlier.  It produces results that are different
-        from the Merton-73 engine.
-
-       \todo Review literature to see whether this is described
-
-       \ingroup vanillaengines
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.27.
     */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendEngineShiftScale : public FDDividendEngineBase<Scheme> {
+    class QL_DEPRECATED FDDividendEngineShiftScale : public FDDividendEngineBase<Scheme> {
       public:
         FDDividendEngineShiftScale(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -120,9 +105,11 @@ namespace QuantLib {
     };
 
 
-    // Use Merton73 engine as default.
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.27.
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDDividendEngine : public FDDividendEngineMerton73<Scheme> {
+    class QL_DEPRECATED FDDividendEngine : public FDDividendEngineMerton73<Scheme> {
       public:
         FDDividendEngine(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -193,7 +180,7 @@ namespace QuantLib {
 
     namespace detail {
 
-        class DividendAdder {
+        class QL_DEPRECATED DividendAdder {
           private:
             const Dividend *dividend;
           public:
@@ -243,6 +230,8 @@ namespace QuantLib {
         this->stepCondition_ -> applyTo(this->prices_.values(),
                                         this->getDividendTime(step));
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 
