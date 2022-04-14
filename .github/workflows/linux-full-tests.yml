@@ -42,11 +42,13 @@ jobs:
             tag: hirsute
             cc: gcc
             cxx: g++
+            gitsetup: true
           - name: "gcc 11.x"
             shortname: gcc11
             tag: impish
             cc: gcc
             cxx: g++
+            gitsetup: true
           - name: "Clang 6 (Boost 1.72)"
             shortname: clang6
             tag: bionic
@@ -82,64 +84,75 @@ jobs:
             tag: hirsute
             cc: clang
             cxx: clang++
+            gitsetup: true
           - name: "Clang 13"
             shortname: clang13
             tag: impish
             cc: clang
             cxx: clang++
+            gitsetup: true
           - name: "Clang 14"
             shortname: clang14
             tag: jammy
             cc: clang
             cxx: clang++
+            gitsetup: true
           - name: "C++11 mode"
             shortname: c++11
             tag: rolling
             cc: gcc
             cxx: g++
             cxxflags: "-std=c++11"
+            gitsetup: true
           - name: "C++14 mode"
             shortname: c++14
             tag: rolling
             cc: gcc
             cxx: g++
             cxxflags: "-std=c++14"
+            gitsetup: true
           - name: "C++17 mode"
             shortname: c++17
             tag: rolling
             cc: gcc
             cxx: g++
             cxxflags: "-std=c++17"
+            gitsetup: true
           - name: "C++20 mode"
             shortname: c++20
             tag: rolling
             cc: gcc
             cxx: g++
             cxxflags: "-std=c++20"
+            gitsetup: true
           - name: "Unity build enabled"
             shortname: unity
             tag: rolling
             cc: gcc
             cxx: g++
             configureflags: --enable-unity-build
+            gitsetup: true
           - name: "Intraday calculations enabled"
             shortname: intraday
             tag: rolling
             cc: gcc
             cxx: g++
             configureflags: --enable-intraday
+            gitsetup: true
           - name: "Indexed coupons enabled"
             shortname: indexed
             tag: rolling
             cc: gcc
             cxx: g++
             configureflags: --enable-indexed-coupons
+            gitsetup: true
           - name: "C++11 classes enabled"
             shortname: stdclasses
             tag: rolling
             cc: gcc
             cxx: g++
             configureflags: --enable-std-classes
+            gitsetup: true
           - name: "auto_ptr re-enabled"
             shortname: autoptr
             tag: rolling
@@ -147,38 +160,48 @@ jobs:
             cxx: g++
             cxxflags: "-Wno-deprecated-declarations"
             configureflags: --disable-std-unique-ptr
+            gitsetup: true
           - name: "Disposable re-enabled"
             shortname: disposable
             tag: rolling
             cc: gcc
             cxx: g++
             configureflags: --enable-disposable
+            gitsetup: true
           - name: "Thread-safe observer enabled"
             shortname: threadsafe
             tag: rolling
             cc: gcc
             cxx: g++
             configureflags: --enable-thread-safe-observer-pattern
+            gitsetup: true
           - name: "Thread-safe singleton init enabled"
             shortname: threadsafeinit
             tag: rolling
             cc: gcc
             cxx: g++
             configureflags: --enable-thread-safe-singleton-init
+            gitsetup: true
           - name: "Sessions enabled"
             shortname: sessions
             tag: rolling
             cc: gcc
             cxx: g++
             configureflags: --enable-sessions
+            gitsetup: true
           - name: "OpenMP enabled"
             shortname: openmp
             tag: rolling
             cc: gcc
             cxx: g++
             configureflags: --enable-openmp
+            gitsetup: true
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
+    - name: Set up git permissions
+      if: ${{ matrix.gitsetup }}
+      run: |
+        git config --global --add safe.directory $GITHUB_WORKSPACE
     - uses: actions/checkout@v3
     - name: Cache
       uses: actions/cache@v3
