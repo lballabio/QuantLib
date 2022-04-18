@@ -1,3 +1,124 @@
+commit f6122aff6205ae50b28bc06f91252295b6192d93
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.26 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 94ffbaac5d8fbf11f0b48b63a93f7c4f44cafa30
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 8 Apr 2022 23:26:38 +0200
+
+    Change style of reference docs to match web site
+
+ Docs/quantlib.doxy       |  3 +--
+ Docs/quantlibextra.css   | 50 ++++++++++++++++++++++++++++++++++++------------
+ Docs/quantlibheader.html |  6 ++----
+ 3 files changed, 41 insertions(+), 18 deletions(-)
+
+commit ec7d9ce041da527128695d3060c26408a4b9480c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 8 Apr 2022 17:27:03 +0200
+
+    Update news and contributors
+
+ ChangeLog.txt           | 2409 +++++++++++++++++++++--------------------------
+ Contributors.txt        |    2 +
+ Docs/pages/history.docs |   76 +-
+ News.md                 |  136 +--
+ 4 files changed, 1226 insertions(+), 1397 deletions(-)
+
+commit fdadfe4527f1e866afe5490d8446020dc4317e23
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Apr 2022 09:43:48 +0200
+
+    Set up git permissions in CI runs inside containers
+
+ .github/workflows/linux-full-tests.yml | 23 +++++++++++++++++++++++
+ .github/workflows/linux-nondefault.yml | 16 ++++++++++++++++
+ .github/workflows/linux.yml            | 24 ++++++++++++++++++++++++
+ .github/workflows/sanitizer.yml        |  3 +++
+ 4 files changed, 66 insertions(+)
+
+commit 620ceec3667c9061b7978325d91fe6b11a982342
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 1 Apr 2021 11:28:16 +0200
+
+    Set version to 1.26 rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 08fcb0618329f0bf2ff4351bc797ce1357f96591
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 11 Apr 2022 11:01:25 +0000
+
+    Bump actions/stale from 4 to 5
+    
+    Bumps [actions/stale](https://github.com/actions/stale) from 4 to 5.
+    - [Release notes](https://github.com/actions/stale/releases)
+    - [Changelog](https://github.com/actions/stale/blob/main/CHANGELOG.md)
+    - [Commits](https://github.com/actions/stale/compare/v4...v5)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/stale
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/stale.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 0f3c9e757839247bb0986cc042747b59a57a7bd8
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 11 Apr 2022 11:01:21 +0000
+
+    Bump actions/upload-artifact from 2 to 3
+    
+    Bumps [actions/upload-artifact](https://github.com/actions/upload-artifact) from 2 to 3.
+    - [Release notes](https://github.com/actions/upload-artifact/releases)
+    - [Commits](https://github.com/actions/upload-artifact/compare/v2...v3)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/upload-artifact
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/msvc-analysis.yml | 2 +-
+ .github/workflows/test-times.yml    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 5e59b562b4113e798bfdd34d414d49989956f03c
+Merge: 468978a2b 0decc8237
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 11 Apr 2022 12:21:13 +0200
+
+    Merge pull request #1342.
+    
+    Fix C++20 compilation error
+
+commit 0decc8237d1b36bc0058222da857bd95b897ccfa
+Author: Jonathan Sweemer <sweemer@gmail.com>
+Date:   Sun, 10 Apr 2022 16:32:19 +0900
+
+    Fix C++20 compilation error
+
+ ql/math/functional.hpp | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
 commit 468978a2b9acf89049fe045e2b9d3382234364a2
 Merge: 001f83dc9 8571c6b73
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
