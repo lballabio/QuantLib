@@ -458,38 +458,35 @@ namespace {
                     theta*identity_matrix<Real>(n) - u, dv);
         }
 
-        Disposable<SparseMatrix> toMatrix() const override {
-            SparseMatrix tmp(map_);
-            return tmp;
+        SparseMatrix toMatrix() const override {
+            return map_;
         }
 
         Size size() const override { return 2; }
         void setTime(Time t1, Time t2) override { }
 
-        Disposable<Array> apply(const Array& r) const override {
+        Array apply(const Array& r) const override {
             return prod(map_, r);
         }
 
-        Disposable<Array> apply_mixed(const Array& r) const override {
+        Array apply_mixed(const Array& r) const override {
             QL_FAIL("operator splitting is not supported");
         }
 
-        Disposable<Array> apply_direction(
-            Size direction, const Array& r) const override {
+        Array apply_direction(Size direction, const Array& r) const override {
             QL_FAIL("operator splitting is not supported");
         }
 
-        Disposable<Array> solve_splitting(
-            Size direction, const Array& r, Real dt) const override {
+        Array solve_splitting(Size direction, const Array& r, Real dt) const override {
             QL_FAIL("operator splitting is not supported");
         }
 
-        Disposable<Array> preconditioner(const Array& r, Real dt) const override {
+        Array preconditioner(const Array& r, Real dt) const override {
             return preconditioner_.solve_splitting(r, dt, 1.0);
         }
 
       private:
-        Disposable<Array> solve_apply(const Array& r, Real dt) const {
+        Array solve_apply(const Array& r, Real dt) const {
             return r - dt*apply(r);
         }
 
@@ -548,7 +545,7 @@ namespace {
         const Size direction_;
     };
 
-    Disposable<Array> priceReport(
+    Array priceReport(
         const GridSetup& setup, const Array& strikes) {
 
         const Date today(2, May, 2018);
@@ -704,7 +701,7 @@ namespace {
             const GridSetup& setup, Array strikes)
         : setup_(setup), strikes_(std::move(strikes)) { }
 
-        Disposable<Array> values(const Array& x) const override {
+        Array values(const Array& x) const override {
             const GridSetup g = {
                 x[0], x[1],
                 setup_.cellAvg, setup_.midPoint,

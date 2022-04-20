@@ -116,11 +116,9 @@ namespace QuantLib {
         Real getCacheValue(
             Real strike, const TimeValueCacheType::const_iterator& f) const;
 
-        Disposable<Array>
-            getPriceSlice(Time t, Option::Type optionType) const;
+        Array getPriceSlice(Time t, Option::Type optionType) const;
 
-        Disposable<Array>
-            getLocalVolSlice(Time t, Option::Type optionType) const;
+        Array getLocalVolSlice(Time t, Option::Type optionType) const;
 
         CalibrationSet calibrationSet_;
         const Handle<Quote> spot_;

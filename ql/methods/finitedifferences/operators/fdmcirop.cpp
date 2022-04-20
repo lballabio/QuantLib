@@ -126,7 +126,7 @@ namespace QuantLib {
         return 2;
     }
 
-    Disposable<Array> FdmCIROp::apply(const Array& u) const {
+    Array FdmCIROp::apply(const Array& u) const {
         Array dx = dxMap_.getMap().apply(u);
         Array dy = dyMap_.getMap().apply(u);
         Array dz = dzMap_.getMap().apply(u);
@@ -134,8 +134,8 @@ namespace QuantLib {
         return (dy + dx + dz);
     }
 
-    Disposable<Array> FdmCIROp::apply_direction(Size direction,
-                                                   const Array& r) const {
+    Array FdmCIROp::apply_direction(Size direction,
+                                    const Array& r) const {
         if (direction == 0)
             return dxMap_.getMap().apply(r);
         else if (direction == 1)
@@ -144,14 +144,12 @@ namespace QuantLib {
             QL_FAIL("direction too large");
     }
 
-    Disposable<Array> FdmCIROp::apply_mixed(const Array& r) const {
+    Array FdmCIROp::apply_mixed(const Array& r) const {
         return dzMap_.getMap().apply(r);
     }
 
-    Disposable<Array>
-        FdmCIROp::solve_splitting(Size direction,
-                                     const Array& r, Real a) const {
-
+    Array FdmCIROp::solve_splitting(Size direction,
+                                    const Array& r, Real a) const {
         if (direction == 0) {
             return dxMap_.getMap().solve_splitting(r, a, 1.0);
         }
@@ -162,21 +160,16 @@ namespace QuantLib {
             QL_FAIL("direction too large");
     }
 
-    Disposable<Array>
-        FdmCIROp::preconditioner(const Array& r, Real dt) const {
-
+    Array FdmCIROp::preconditioner(const Array& r, Real dt) const {
         return solve_splitting(1, solve_splitting(0, r, dt), dt) ;
     }
 
-    Disposable<std::vector<SparseMatrix> >
-    FdmCIROp::toMatrixDecomp() const {
-        std::vector<SparseMatrix> retVal(3);
-
-        retVal[0] = dxMap_.getMap().toMatrix();
-        retVal[1] = dyMap_.getMap().toMatrix();
-        retVal[2] = dzMap_.getMap().toMatrix();
-
-        return retVal;
+    std::vector<SparseMatrix> FdmCIROp::toMatrixDecomp() const {
+        return {
+            dxMap_.getMap().toMatrix(),
+            dyMap_.getMap().toMatrix(),
+            dzMap_.getMap().toMatrix()
+        };
     }
 
 }

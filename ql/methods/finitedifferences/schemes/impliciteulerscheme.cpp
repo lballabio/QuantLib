@@ -34,7 +34,7 @@ namespace QuantLib {
     : dt_(Null<Real>()), iterations_(ext::make_shared<Size>(0U)), relTol_(relTol),
       map_(std::move(map)), bcSet_(bcSet), solverType_(solverType) {}
 
-    Disposable<Array> ImplicitEulerScheme::apply(const Array& r, Real theta) const {
+    Array ImplicitEulerScheme::apply(const Array& r, Real theta) const {
         return r - (theta*dt_)*map_->apply(r);
     }
 

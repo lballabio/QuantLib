@@ -37,14 +37,14 @@ namespace QuantLib {
       m_(std::exp(nu+0.5*delta*delta)-1) {
     }
 
-    Disposable<Array> BatesProcess::drift(Time t, const Array& x) const {
+    Array BatesProcess::drift(Time t, const Array& x) const {
         Array retVal = HestonProcess::drift(t, x);
         retVal[0] -= lambda_*m_;
         return retVal;
     }
 
-    Disposable<Array> BatesProcess::evolve(Time t0, const Array& x0,
-                                           Time dt, const Array& dw) const {
+    Array BatesProcess::evolve(Time t0, const Array& x0,
+                               Time dt, const Array& dw) const {
 
         const Size hestonFactors = HestonProcess::factors();
 

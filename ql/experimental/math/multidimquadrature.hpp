@@ -35,10 +35,6 @@
 
 namespace QuantLib {
 
-    namespace detail {
-        typedef Disposable<std::vector<Real> > DispArray;
-    }
-
     /*! \brief Integrates a vector or scalar function of vector domain. 
         
         A template recursion along dimensions avoids calling depth 
@@ -60,7 +56,7 @@ namespace QuantLib {
             : GaussHermiteIntegration(n, mu) {}
 
             template <class F> // todo: fix copies.
-            detail::DispArray operator()(const F& f) const {
+            std::vector<Real> operator()(const F& f) const {
                 //first one, we do not know the size of the vector returned by f
                 Integer i = order()-1;
                 std::vector<Real> term = f(x_[i]);// potential copy! @#$%^!!!
@@ -98,9 +94,7 @@ namespace QuantLib {
         cost... up to the compiler. It can not be templated all the way since
         the integration entries functions can not be templates.
         Most times integrands will return a scalar or vector but could be a 
-        matrix too. Also vectors might be returned as vector or Disposable 
-        wrapped (which is preferred and I have removed the plain vector
-        version).
+        matrix too.
          */
         template<class RetType_T>
         RetType_T operator()(const ext::function<RetType_T (
@@ -139,7 +133,7 @@ namespace QuantLib {
                     return scalarIntegrator<levelSpawn>(f, x);
                 };
             integrationEntriesVR_[levelSpawn-1] =
-                [&](const ext::function<detail::DispArray(const std::vector<Real>&)>& f, Real x){
+                [&](const ext::function<std::vector<Real>(const std::vector<Real>&)>& f, Real x){
                     return vectorIntegratorVR<levelSpawn>(f, x);
                 };
             spawnFcts<levelSpawn-1>();
@@ -158,8 +152,8 @@ namespace QuantLib {
         }
 
         template <int intgDepth>
-        detail::DispArray vectorIntegratorVR(
-            const ext::function<detail::DispArray(const std::vector<Real>& arg1)>& f,
+        std::vector<Real> vectorIntegratorVR(
+            const ext::function<std::vector<Real>(const std::vector<Real>& arg1)>& f,
             const Real mFctr) const 
         {
             varBuffer_[intgDepth-1] = mFctr;
@@ -180,7 +174,7 @@ namespace QuantLib {
             const std::vector<Real>& varg2)> f1, 
             const Real r3)> > integrationEntries_;
         mutable std::vector<
-        ext::function<detail::DispArray (const ext::function<detail::DispArray(
+        ext::function<std::vector<Real> (const ext::function<std::vector<Real>(
             const std::vector<Real>& vvarg2)>& vf1, 
             const Real vr3)> > integrationEntriesVR_;
 
@@ -214,8 +208,8 @@ namespace QuantLib {
 
     // Vector integrand version
     template<>
-    inline detail::DispArray GaussianQuadMultidimIntegrator::integrate<detail::DispArray>(
-        const ext::function<detail::DispArray (const std::vector<Real>& v1)>& f) const
+    inline std::vector<Real> GaussianQuadMultidimIntegrator::integrate<std::vector<Real>>(
+        const ext::function<std::vector<Real> (const std::vector<Real>& v1)>& f) const
     {
         return integralV_([&](Real x){ return integrationEntriesVR_[dimension_-1](ext::cref(f), x); });
     } 
@@ -230,11 +224,11 @@ namespace QuantLib {
         return f(varBuffer_);
     }
 
-    //! Terminal integrand; disposable vector function version
+    //! Terminal integrand; vector function version
     template<>
-    inline detail::DispArray
+    inline std::vector<Real>
         GaussianQuadMultidimIntegrator::vectorIntegratorVR<1>(
-        const ext::function<detail::DispArray (const std::vector<Real>& arg1)>& f,
+        const ext::function<std::vector<Real> (const std::vector<Real>& arg1)>& f,
         const Real mFctr) const 
     {
         varBuffer_[0] = mFctr;
@@ -247,7 +241,7 @@ namespace QuantLib {
         integrationEntries_[0] = [&](const ext::function<Real(const std::vector<Real>&)>& f,
                                      Real x) { return scalarIntegrator<1>(f, x); };
         integrationEntriesVR_[0] =
-            [&](const ext::function<detail::DispArray(const std::vector<Real>&)>& f, Real x) {
+            [&](const ext::function<std::vector<Real>(const std::vector<Real>&)>& f, Real x) {
                 return vectorIntegratorVR<1>(f, x);
             };
     }

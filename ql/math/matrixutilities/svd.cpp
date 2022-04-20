@@ -494,7 +494,7 @@ namespace QuantLib {
         return s_;
     }
 
-    Disposable<Matrix> SVD::S() const {
+    Matrix SVD::S() const {
         Matrix S(n_,n_);
         for (Size i = 0; i < Size(n_); i++) {
             for (Size j = 0; j < Size(n_); j++) {
@@ -525,15 +525,14 @@ namespace QuantLib {
         return r;
     }
 
-    Disposable<Array> SVD::solveFor(const Array& b) const{
+    Array SVD::solveFor(const Array& b) const{
         Matrix W(n_, n_, 0.0);
         const Size numericalRank = this->rank();
         for (Size i=0; i<numericalRank; i++)
             W[i][i] = 1./s_[i];
 
         Matrix inverse = V()* W * transpose(U());
-        Array result = inverse * b;
-        return result;
+        return inverse * b;
     }
 
 }

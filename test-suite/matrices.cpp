@@ -624,9 +624,8 @@ namespace matrices_test {
     class MatrixMult {
       public:
         explicit MatrixMult(Matrix m) : m_(std::move(m)) {}
-        Disposable<Array> operator()(const Array& x) const {
-            Array retVal = m_*x;
-            return retVal;
+        Array operator()(const Array& x) const {
+            return m_ * x;
         }
 
       private:

@@ -27,7 +27,6 @@
 #define quantlib_linear_op_iterator_hpp
 
 #include <ql/types.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <numeric>
 #include <utility>
 #include <vector>
@@ -46,11 +45,6 @@ namespace QuantLib {
 
         FdmLinearOpIterator(std::vector<Size> dim, std::vector<Size> coordinates, Size index)
         : index_(index), dim_(std::move(dim)), coordinates_(std::move(coordinates)) {}
-
-        FdmLinearOpIterator(
-            const Disposable<FdmLinearOpIterator> & from) {
-            swap(const_cast<Disposable<FdmLinearOpIterator> & >(from));
-        }
 
         void operator++() {
             ++index_;

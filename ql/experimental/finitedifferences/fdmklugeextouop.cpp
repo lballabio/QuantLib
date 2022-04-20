@@ -74,23 +74,22 @@ namespace QuantLib {
         klugeOp_->setTime(t1, t2);
     }
 
-    Disposable<Array> FdmKlugeExtOUOp::apply(const Array& r) const {
+    Array FdmKlugeExtOUOp::apply(const Array& r) const {
         return ouOp_->apply(r) + klugeOp_->apply(r) + corrMap_.apply(r);
     }
 
-    Disposable<Array> FdmKlugeExtOUOp::apply_mixed(const Array& r) const {
-        return  corrMap_.apply(r) + klugeOp_->apply_mixed(r);
+    Array FdmKlugeExtOUOp::apply_mixed(const Array& r) const {
+        return corrMap_.apply(r) + klugeOp_->apply_mixed(r);
     }
 
-    Disposable<Array> FdmKlugeExtOUOp::apply_direction(Size direction,
-                                                       const Array& r) const {
+    Array FdmKlugeExtOUOp::apply_direction(Size direction,
+                                           const Array& r) const {
         return klugeOp_->apply_direction(direction, r)
                 + ouOp_->apply_direction(direction, r);
     }
 
-    Disposable<Array>
-        FdmKlugeExtOUOp::solve_splitting(Size direction,
-                                        const Array& r, Real a) const {
+    Array FdmKlugeExtOUOp::solve_splitting(Size direction,
+                                           const Array& r, Real a) const {
         if (direction == 0 || direction == 1) {
             return klugeOp_->solve_splitting(direction, r, a);
         }
@@ -103,23 +102,19 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array>
-        FdmKlugeExtOUOp::preconditioner(const Array& r, Real dt) const {
+    Array FdmKlugeExtOUOp::preconditioner(const Array& r, Real dt) const {
         return klugeOp_->solve_splitting(0, r, dt);
     }
 
-    Disposable<std::vector<SparseMatrix> >
-    FdmKlugeExtOUOp::toMatrixDecomp() const {
-        const std::vector<SparseMatrix> klugeDecomp
-            = klugeOp_->toMatrixDecomp();
+    std::vector<SparseMatrix> FdmKlugeExtOUOp::toMatrixDecomp() const {
+        const std::vector<SparseMatrix> klugeDecomp = klugeOp_->toMatrixDecomp();
 
-        std::vector<SparseMatrix> retVal(4);
-        retVal[0] = klugeDecomp[0];
-        retVal[1] = klugeDecomp[1];
-        retVal[2] = ouOp_->toMatrixDecomp().front();
-        retVal[3] = corrMap_.toMatrix() + klugeDecomp[2];
-
-        return retVal;
+        return {
+            klugeDecomp[0],
+            klugeDecomp[1],
+            ouOp_->toMatrixDecomp().front(),
+            corrMap_.toMatrix() + klugeDecomp[2]
+        };
     }
 
 }

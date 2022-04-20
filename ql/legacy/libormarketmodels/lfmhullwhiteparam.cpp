@@ -93,8 +93,7 @@ namespace QuantLib {
     }
 
 
-    Disposable<Matrix> LfmHullWhiteParameterization::diffusion(
-                                                 Time t, const Array&) const {
+    Matrix LfmHullWhiteParameterization::diffusion(Time t, const Array&) const {
         Matrix tmp(size_, factors_, 0.0);
         const Size m = nextIndexReset(t);
 
@@ -106,8 +105,7 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Matrix> LfmHullWhiteParameterization::covariance(
-                                                 Time t, const Array&) const {
+    Matrix LfmHullWhiteParameterization::covariance(Time t, const Array&) const {
         Matrix tmp(size_, size_, 0.0);
         const Size m = nextIndexReset(t);
 
@@ -120,8 +118,7 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Matrix> LfmHullWhiteParameterization::integratedCovariance(
-                                                 Time t, const Array&) const {
+    Matrix LfmHullWhiteParameterization::integratedCovariance(Time t, const Array&) const {
 
         Matrix tmp(size_, size_, 0.0);
 

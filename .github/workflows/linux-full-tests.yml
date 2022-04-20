@@ -161,13 +161,6 @@ jobs:
             cxxflags: "-Wno-deprecated-declarations"
             configureflags: --disable-std-unique-ptr
             gitsetup: true
-          - name: "Disposable re-enabled"
-            shortname: disposable
-            tag: rolling
-            cc: gcc
-            cxx: g++
-            configureflags: --enable-disposable
-            gitsetup: true
           - name: "Thread-safe observer enabled"
             shortname: threadsafe
             tag: rolling

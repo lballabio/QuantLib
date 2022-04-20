@@ -27,7 +27,6 @@
 #define quantlib_zabr_hpp
 
 #include <ql/types.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
@@ -42,22 +41,18 @@ class ZabrModel {
     ZabrModel(Real expiryTime, Real forward, Real alpha, Real beta, Real nu, Real rho, Real gamma);
 
     Real localVolatility(Real f) const;
-    Disposable<std::vector<Real> >
-    localVolatility(const std::vector<Real> &f) const;
+    std::vector<Real> localVolatility(const std::vector<Real> &f) const;
 
     Real fdPrice(Real strike) const;
-    Disposable<std::vector<Real> >
-    fdPrice(const std::vector<Real> &strikes) const;
+    std::vector<Real> fdPrice(const std::vector<Real> &strikes) const;
 
     Real fullFdPrice(Real strike) const;
 
     Real lognormalVolatility(Real strike) const;
-    Disposable<std::vector<Real> >
-    lognormalVolatility(const std::vector<Real> &strikes) const;
+    std::vector<Real> lognormalVolatility(const std::vector<Real> &strikes) const;
 
     Real normalVolatility(Real strike) const;
-    Disposable<std::vector<Real> >
-    normalVolatility(const std::vector<Real> &strikes) const;
+    std::vector<Real> normalVolatility(const std::vector<Real> &strikes) const;
 
     Real forward() const { return forward_; }
     Real expiryTime() const { return expiryTime_; }
@@ -73,7 +68,7 @@ class ZabrModel {
         gamma_; // nu_ here is a tranformed version of the input nu !
 
     Real x(Real strike) const;
-    Disposable<std::vector<Real> > x(const std::vector<Real> &strikes) const;
+    std::vector<Real> x(const std::vector<Real> &strikes) const;
 
     Real y(Real strike) const;
 

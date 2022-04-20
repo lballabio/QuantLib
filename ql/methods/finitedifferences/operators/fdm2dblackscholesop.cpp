@@ -111,15 +111,15 @@ namespace QuantLib {
                                  ->forwardRate(t1, t2, Continuous).rate();
     }
 
-    Disposable<Array> Fdm2dBlackScholesOp::apply(const Array& x) const {
+    Array Fdm2dBlackScholesOp::apply(const Array& x) const {
         return opX_.apply(x) + opY_.apply(x) + apply_mixed(x);
     }
     
-    Disposable<Array> Fdm2dBlackScholesOp::apply_mixed(const Array& x) const {
+    Array Fdm2dBlackScholesOp::apply_mixed(const Array& x) const {
         return corrMapT_.apply(x) + currentForwardRate_*x;
     }
     
-    Disposable<Array> Fdm2dBlackScholesOp::apply_direction(
+    Array Fdm2dBlackScholesOp::apply_direction(
                                        Size direction, const Array& x) const {
         if (direction == 0) {
             return opX_.apply(x);
@@ -132,7 +132,7 @@ namespace QuantLib {
         }
     }
     
-    Disposable<Array> Fdm2dBlackScholesOp::solve_splitting(Size direction,
+    Array Fdm2dBlackScholesOp::solve_splitting(Size direction,
                                                const Array& x, Real s) const {
         if (direction == 0) {
             return opX_.solve_splitting(direction, x, s);
@@ -144,21 +144,19 @@ namespace QuantLib {
             QL_FAIL("direction is too large");
     }
     
-    Disposable<Array> Fdm2dBlackScholesOp::preconditioner(const Array& r, 
-                                                          Real dt) const {
+    Array Fdm2dBlackScholesOp::preconditioner(const Array& r, 
+                                              Real dt) const {
         return solve_splitting(0, r, dt);
     }
 
-    Disposable<std::vector<SparseMatrix> >
-    Fdm2dBlackScholesOp::toMatrixDecomp() const {
-        std::vector<SparseMatrix> retVal(3);
-        retVal[0] = opX_.toMatrix();
-        retVal[1] = opY_.toMatrix();
-        retVal[2] = corrMapT_.toMatrix() +
+    std::vector<SparseMatrix> Fdm2dBlackScholesOp::toMatrixDecomp() const {
+        return {
+            opX_.toMatrix(),
+            opY_.toMatrix(),
+            corrMapT_.toMatrix() +
             currentForwardRate_*boost::numeric::ublas::identity_matrix<Real>(
-                    mesher_->layout()->size());
-
-        return retVal;
+                    mesher_->layout()->size())
+        };
     }
 
 }

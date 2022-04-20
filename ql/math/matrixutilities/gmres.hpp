@@ -53,7 +53,7 @@ namespace QuantLib {
 
     class GMRES  {
       public:
-        typedef ext::function<Disposable<Array>(const Array&)> MatrixMult;
+        typedef ext::function<Array(const Array&)> MatrixMult;
 
         GMRES(MatrixMult A, Size maxIter, Real relTol, MatrixMult preConditioner = MatrixMult());
 

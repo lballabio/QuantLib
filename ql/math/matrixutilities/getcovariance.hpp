@@ -46,10 +46,10 @@ namespace QuantLib {
               CovarianceDecomposition
     */
     template<class DataIterator>
-    Disposable<Matrix> getCovariance(DataIterator stdDevBegin,
-                                     DataIterator stdDevEnd,
-                                     const Matrix& corr,
-                                     Real tolerance = 1.0e-12){
+    Matrix getCovariance(DataIterator stdDevBegin,
+                         DataIterator stdDevEnd,
+                         const Matrix& corr,
+                         Real tolerance = 1.0e-12){
         Size size = std::distance(stdDevBegin, stdDevEnd);
         QL_REQUIRE(corr.rows() == size,
                    "dimension mismatch between volatilities (" << size <<

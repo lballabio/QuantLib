@@ -23,9 +23,9 @@
 
 namespace QuantLib {
 
-    Disposable<Array> BFGS::getUpdatedDirection(const Problem& P,
-                                                Real,
-                                                const Array& oldGradient) {
+    Array BFGS::getUpdatedDirection(const Problem& P,
+                                    Real,
+                                    const Array& oldGradient) {
         if (inverseHessian_.rows() == 0)
         {
             // first time in this update, we create needed structures

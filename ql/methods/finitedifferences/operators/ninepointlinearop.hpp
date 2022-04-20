@@ -43,21 +43,15 @@ namespace QuantLib {
                 const ext::shared_ptr<FdmMesher>& mesher);
         NinePointLinearOp(const NinePointLinearOp& m);
         NinePointLinearOp(NinePointLinearOp&& m) noexcept;
-        #ifdef QL_USE_DISPOSABLE
-        NinePointLinearOp(const Disposable<NinePointLinearOp>& m);
-        #endif
         NinePointLinearOp& operator=(const NinePointLinearOp& m);
         NinePointLinearOp& operator=(NinePointLinearOp&& m) noexcept;
-        #ifdef QL_USE_DISPOSABLE
-        NinePointLinearOp& operator=(const Disposable<NinePointLinearOp>& m);
-        #endif
 
-        Disposable<Array> apply(const Array& r) const override;
-        Disposable<NinePointLinearOp> mult(const Array& u) const;
+        Array apply(const Array& r) const override;
+        NinePointLinearOp mult(const Array& u) const;
 
         void swap(NinePointLinearOp& m);
 
-        Disposable<SparseMatrix> toMatrix() const override;
+        SparseMatrix toMatrix() const override;
 
       protected:
         NinePointLinearOp() = default;

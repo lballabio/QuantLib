@@ -76,7 +76,7 @@ namespace QuantLib {
                            Size i2, Integer offset2) const;
 
         // smart but sometimes too slow
-        Disposable<FdmLinearOpIterator> iter_neighbourhood(
+        FdmLinearOpIterator iter_neighbourhood(
             const FdmLinearOpIterator& iterator, Size i, Integer offset) const;
 
       private:

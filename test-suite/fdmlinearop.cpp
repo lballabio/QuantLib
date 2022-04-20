@@ -1202,16 +1202,14 @@ void FdmLinearOpTest::testFdmHestonHullWhiteOp() {
 }
 
 namespace {
-    Disposable<Array> axpy(
-        const boost::numeric::ublas::compressed_matrix<Real>& A,
-        const Array& x) {
+    Array axpy(const boost::numeric::ublas::compressed_matrix<Real>& A,
+               const Array& x) {
         
         boost::numeric::ublas::vector<Real> tmpX(x.size()), y(x.size());
         std::copy(x.begin(), x.end(), tmpX.begin());
         boost::numeric::ublas::axpy_prod(A, tmpX, y);
 
-        Array retVal(y.begin(), y.end());
-        return retVal;
+        return Array(y.begin(), y.end());
     }
 
     boost::numeric::ublas::compressed_matrix<Real> createTestMatrix(
@@ -1252,11 +1250,11 @@ void FdmLinearOpTest::testBiCGstab() {
     const boost::numeric::ublas::compressed_matrix<Real> a
         = createTestMatrix(n, m, theta);
 
-    const ext::function<Disposable<Array>(const Array&)> matmult
+    const ext::function<Array(const Array&)> matmult
         = [&](const Array& _x) { return axpy(a, _x); };
 
     SparseILUPreconditioner ilu(a, 4);
-    ext::function<Disposable<Array>(const Array&)> precond
+    ext::function<Array(const Array&)> precond
         = [&](const Array& _x) { return ilu.apply(_x); };
 
     Array b(n*m);
@@ -1288,11 +1286,11 @@ void FdmLinearOpTest::testGMRES() {
     const boost::numeric::ublas::compressed_matrix<Real> a
         = createTestMatrix(n, m, theta);
 
-    const ext::function<Disposable<Array>(const Array&)> matmult
+    const ext::function<Array(const Array&)> matmult
         = [&](const Array& _x) { return axpy(a, _x); };
     
     SparseILUPreconditioner ilu(a, 4);
-    ext::function<Disposable<Array>(const Array&)> precond
+    ext::function<Array(const Array&)> precond
         = [&](const Array& _x) { return ilu.apply(_x); };
     
     Array b(n*m);

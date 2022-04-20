@@ -32,8 +32,8 @@ namespace QuantLib {
     http://de.mathworks.com/help/matlab/ref/pinv.html
     https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_pseudoinverse */
 
-inline Disposable<Matrix> moorePenroseInverse(const Matrix &A,
-                                              const Real tol = Null<Real>()) {
+inline Matrix moorePenroseInverse(const Matrix &A,
+                                  const Real tol = Null<Real>()) {
 
     Size m = A.rows();
     Size n = A.columns();

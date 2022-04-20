@@ -167,14 +167,6 @@ jobs:
             configureflags: --disable-std-unique-ptr
             tests: true
             gitsetup: true
-          - name: "Disposable re-enabled"
-            shortname: disposable
-            tag: rolling
-            cc: gcc
-            cxx: g++
-            configureflags: --enable-disposable
-            tests: true
-            gitsetup: true
           - name: "Thread-safe observer enabled"
             shortname: threadsafe
             tag: rolling

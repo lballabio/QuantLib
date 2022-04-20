@@ -51,7 +51,7 @@ namespace QuantLib {
 
     }
 
-    Disposable<Array> Projection::project(const Array &parameters) const {
+    Array Projection::project(const Array &parameters) const {
 
         QL_REQUIRE(parameters.size() == fixParameters_.size(),
                    "parameters.size()!=parametersFreedoms_.size()");
@@ -64,8 +64,7 @@ namespace QuantLib {
 
     }
 
-    Disposable<Array>
-    Projection::include(const Array &projectedParameters) const {
+    Array Projection::include(const Array &projectedParameters) const {
 
         QL_REQUIRE(projectedParameters.size() == numberOfFreeParameters_,
                    "projectedParameters.size()!=numberOfFreeParameters");

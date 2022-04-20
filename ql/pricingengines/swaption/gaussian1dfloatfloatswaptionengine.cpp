@@ -69,7 +69,7 @@ namespace QuantLib {
     }
 
     // NOLINTNEXTLINE(readability-const-return-type)
-    const Disposable<Array> Gaussian1dFloatFloatSwaptionEngine::initialGuess(const Date &expiry) const {
+    const Array Gaussian1dFloatFloatSwaptionEngine::initialGuess(const Date &expiry) const {
 
         Size idx1 =
             std::upper_bound(arguments_.leg1ResetDates.begin(),
@@ -79,7 +79,6 @@ namespace QuantLib {
         // very simple initial guess
         // check guess for nominal and weighted maturity !
 
-        Array initial(3);
         Real nominalSum1 = 0.0;
         for (Size i = idx1; i < arguments_.leg1ResetDates.size(); i++) {
             nominalSum1 += arguments_.nominal1[i];
@@ -93,11 +92,11 @@ namespace QuantLib {
         }
         weightedMaturity1 /= nominalAvg1;
 
-        initial[0] = nominalAvg1;
-        initial[1] = weightedMaturity1;
-        initial[2] = 0.03; // ???
-
-        return initial;
+        return {
+            nominalAvg1,
+            weightedMaturity1,
+            0.03 // ???
+        };
     }
 
     // calculate npv and underlying npv as of expiry date

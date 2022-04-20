@@ -47,8 +47,8 @@ namespace QuantLib {
         LmLinearExponentialCorrelationModel(Size size, Real rho, Real beta,
                                             Size factors = Null<Size>());
 
-        Disposable<Matrix> correlation(Time t, const Array& x = Null<Array>()) const override;
-        Disposable<Matrix> pseudoSqrt(Time t, const Array& x = Null<Array>()) const override;
+        Matrix correlation(Time t, const Array& x = Null<Array>()) const override;
+        Matrix pseudoSqrt(Time t, const Array& x = Null<Array>()) const override;
         Real correlation(Size i, Size j, Time t, const Array& x) const override;
 
         Size factors() const override;

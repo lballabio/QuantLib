@@ -38,7 +38,7 @@ namespace QuantLib {
     */
 
     //! returns the matrix exponential exp(t*M)
-    Disposable<Matrix> Expm(const Matrix& M, Real t=1.0, Real tol=QL_EPSILON);
+    Matrix Expm(const Matrix& M, Real t=1.0, Real tol=QL_EPSILON);
 }
 
 #endif

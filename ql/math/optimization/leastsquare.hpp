@@ -66,7 +66,7 @@ namespace QuantLib {
 
         //! compute value of the least square function
         Real value(const Array& x) const override;
-        Disposable<Array> values(const Array&) const override;
+        Array values(const Array&) const override;
         //! compute vector of derivatives of the least square function
         void gradient(Array& grad_f, const Array& x) const override;
         //! compute value and gradient of the least square function
