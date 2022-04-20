@@ -42,12 +42,14 @@ jobs:
             tag: hirsute
             cc: gcc
             cxx: g++
+            gitsetup: true
           - name: "gcc 11.x"
             shortname: gcc11
             tag: impish
             cc: gcc
             cxx: g++
             tests: true
+            gitsetup: true
           - name: "Clang 6 (Boost 1.72)"
             shortname: clang6
             tag: bionic
@@ -83,47 +85,55 @@ jobs:
             tag: hirsute
             cc: clang
             cxx: clang++
+            gitsetup: true
           - name: "Clang 13"
             shortname: clang13
             tag: impish
             cc: clang
             cxx: clang++
+            gitsetup: true
           - name: "Clang 14"
             shortname: clang14
             tag: jammy
             cc: clang
             cxx: clang++
             tests: true
+            gitsetup: true
           - name: "C++11 mode"
             shortname: c++11
             tag: rolling
             cc: gcc
             cxx: g++
             cxxflags: "-std=c++11"
+            gitsetup: true
           - name: "C++14 mode"
             shortname: c++14
             tag: rolling
             cc: gcc
             cxx: g++
             cxxflags: "-std=c++14"
+            gitsetup: true
           - name: "C++17 mode"
             shortname: c++17
             tag: rolling
             cc: gcc
             cxx: g++
             cxxflags: "-std=c++17"
+            gitsetup: true
           - name: "C++20 mode"
             shortname: c++20
             tag: rolling
             cc: gcc
             cxx: g++
             cxxflags: "-std=c++20"
+            gitsetup: true
           - name: "Unity build enabled"
             shortname: unity
             tag: rolling
             cc: gcc
             cxx: g++
             configureflags: --enable-unity-build
+            gitsetup: true
           - name: "Intraday calculations enabled"
             shortname: intraday
             tag: rolling
@@ -131,6 +141,7 @@ jobs:
             cxx: g++
             configureflags: --enable-intraday
             tests: true
+            gitsetup: true
           - name: "Indexed coupons enabled"
             shortname: indexed
             tag: rolling
@@ -138,6 +149,7 @@ jobs:
             cxx: g++
             configureflags: --enable-indexed-coupons
             tests: true
+            gitsetup: true
           - name: "C++11 classes enabled"
             shortname: stdclasses
             tag: rolling
@@ -145,6 +157,7 @@ jobs:
             cxx: g++
             configureflags: --enable-std-classes
             tests: true
+            gitsetup: true
           - name: "auto_ptr re-enabled"
             shortname: autoptr
             tag: rolling
@@ -153,6 +166,7 @@ jobs:
             cxxflags: "-Wno-deprecated-declarations"
             configureflags: --disable-std-unique-ptr
             tests: true
+            gitsetup: true
           - name: "Thread-safe observer enabled"
             shortname: threadsafe
             tag: rolling
@@ -160,6 +174,7 @@ jobs:
             cxx: g++
             configureflags: --enable-thread-safe-observer-pattern
             tests: true
+            gitsetup: true
           - name: "Thread-safe singleton init enabled"
             shortname: threadsafeinit
             tag: rolling
@@ -167,6 +182,7 @@ jobs:
             cxx: g++
             configureflags: --enable-thread-safe-singleton-init
             tests: true
+            gitsetup: true
           - name: "Sessions enabled"
             shortname: sessions
             tag: rolling
@@ -174,6 +190,7 @@ jobs:
             cxx: g++
             configureflags: --enable-sessions
             tests: true
+            gitsetup: true
           - name: "OpenMP enabled"
             shortname: openmp
             tag: rolling
@@ -181,6 +198,7 @@ jobs:
             cxx: g++
             configureflags: --enable-openmp
             tests: true
+            gitsetup: true
           - name: "Parallel unit-test runner"
             shortname: paralleltests
             tag: rolling
@@ -188,8 +206,13 @@ jobs:
             cxx: g++
             configureflags: --enable-parallel-unit-test-runner
             moreflags: -lrt
+            gitsetup: true
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
+    - name: Set up git permissions
+      if: ${{ matrix.gitsetup }}
+      run: |
+        git config --global --add safe.directory $GITHUB_WORKSPACE
     - uses: actions/checkout@v3
     - name: Cache
       uses: actions/cache@v3
