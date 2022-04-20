@@ -25,8 +25,8 @@
 #include <ql/userconfig.hpp>
 
 // first things first
-#if (_MSC_VER < 1800)
-#  error "versions of Visual C++ prior to VC++12.0 (2013) are no longer supported"
+#if (_MSC_VER < 1900)
+#  error "versions of Visual C++ prior to VC++ 2015 are no longer supported"
 #endif
 
 /*******************************************
@@ -47,9 +47,6 @@
 
 // conditionally work around compiler glitches
 #define QL_PATCH_MSVC
-#if (_MSC_VER < 1900)
-#  define QL_PATCH_MSVC_2013
-#endif
 
 // Compilation on the x64 platform throws a lot of warnings assigning
 // QuantLib::Size == size_t (64 bit) to QuantLib::Integer == int (32

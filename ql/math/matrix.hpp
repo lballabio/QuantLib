@@ -55,11 +55,11 @@ namespace QuantLib {
         template <class Iterator>
         Matrix(Size rows, Size columns, Iterator begin, Iterator end);
         Matrix(const Matrix&);
-        Matrix(Matrix&&) QL_NOEXCEPT;
+        Matrix(Matrix&&) noexcept;
         Matrix(std::initializer_list<std::initializer_list<Real>>);
 
         Matrix& operator=(const Matrix&);
-        Matrix& operator=(Matrix&&) QL_NOEXCEPT;
+        Matrix& operator=(Matrix&&) noexcept;
         //@}
 
         //! \name Algebraic operators
@@ -221,7 +221,7 @@ namespace QuantLib {
         std::copy(from.begin(),from.end(),begin());
     }
 
-    inline Matrix::Matrix(Matrix&& from) QL_NOEXCEPT
+    inline Matrix::Matrix(Matrix&& from) noexcept
     : data_((Real*)nullptr) {
         swap(from);
     }
@@ -248,7 +248,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline Matrix& Matrix::operator=(Matrix&& from) QL_NOEXCEPT {
+    inline Matrix& Matrix::operator=(Matrix&& from) noexcept {
         swap(from);
         return *this;
     }

@@ -63,14 +63,14 @@ namespace QuantLib {
         */
         Array(Size size, Real value, Real increment);
         Array(const Array&);
-        Array(Array&&) QL_NOEXCEPT;
+        Array(Array&&) noexcept;
         Array(std::initializer_list<Real>);
         //! creates the array from an iterable sequence
         template <class ForwardIterator>
         Array(ForwardIterator begin, ForwardIterator end);
 
         Array& operator=(const Array&);
-        Array& operator=(Array&&) QL_NOEXCEPT;
+        Array& operator=(Array&&) noexcept;
 
         bool operator==(const Array&) const;
         bool operator!=(const Array&) const;
@@ -237,7 +237,7 @@ namespace QuantLib {
         std::copy(from.begin(),from.end(),begin());
     }
 
-    inline Array::Array(Array&& from) QL_NOEXCEPT
+    inline Array::Array(Array&& from) noexcept
     : data_((Real*)nullptr), n_(0) {
         swap(from);
     }
@@ -299,7 +299,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline Array& Array::operator=(Array&& from) QL_NOEXCEPT {
+    inline Array& Array::operator=(Array&& from) noexcept {
         swap(from);
         return *this;
     }

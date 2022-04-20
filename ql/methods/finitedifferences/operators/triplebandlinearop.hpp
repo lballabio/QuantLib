@@ -43,9 +43,9 @@ namespace QuantLib {
                            const ext::shared_ptr<FdmMesher>& mesher);
 
         TripleBandLinearOp(const TripleBandLinearOp& m);
-        TripleBandLinearOp(TripleBandLinearOp&& m) QL_NOEXCEPT;
+        TripleBandLinearOp(TripleBandLinearOp&& m) noexcept;
         TripleBandLinearOp& operator=(const TripleBandLinearOp& m);
-        TripleBandLinearOp& operator=(TripleBandLinearOp&& m) QL_NOEXCEPT;
+        TripleBandLinearOp& operator=(TripleBandLinearOp&& m) noexcept;
 
         Array apply(const Array& r) const override;
         Array solve_splitting(const Array& r, Real a, Real b = 1.0) const;
@@ -83,7 +83,7 @@ namespace QuantLib {
     };
 
 
-    inline TripleBandLinearOp::TripleBandLinearOp(TripleBandLinearOp&& m) QL_NOEXCEPT {
+    inline TripleBandLinearOp::TripleBandLinearOp(TripleBandLinearOp&& m) noexcept {
         swap(m);
     }
 
@@ -93,7 +93,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline TripleBandLinearOp& TripleBandLinearOp::operator=(TripleBandLinearOp&& m) QL_NOEXCEPT {
+    inline TripleBandLinearOp& TripleBandLinearOp::operator=(TripleBandLinearOp&& m) noexcept {
         swap(m);
         return *this;
     }

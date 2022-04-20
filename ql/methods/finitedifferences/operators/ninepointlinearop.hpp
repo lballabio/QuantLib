@@ -42,9 +42,9 @@ namespace QuantLib {
         NinePointLinearOp(Size d0, Size d1,
                 const ext::shared_ptr<FdmMesher>& mesher);
         NinePointLinearOp(const NinePointLinearOp& m);
-        NinePointLinearOp(NinePointLinearOp&& m) QL_NOEXCEPT;
+        NinePointLinearOp(NinePointLinearOp&& m) noexcept;
         NinePointLinearOp& operator=(const NinePointLinearOp& m);
-        NinePointLinearOp& operator=(NinePointLinearOp&& m) QL_NOEXCEPT;
+        NinePointLinearOp& operator=(NinePointLinearOp&& m) noexcept;
 
         Array apply(const Array& r) const override;
         NinePointLinearOp mult(const Array& u) const;
@@ -77,7 +77,7 @@ namespace QuantLib {
     };
 
 
-    inline NinePointLinearOp::NinePointLinearOp(NinePointLinearOp&& m) QL_NOEXCEPT {
+    inline NinePointLinearOp::NinePointLinearOp(NinePointLinearOp&& m) noexcept {
         swap(m);
     }
 
@@ -87,7 +87,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline NinePointLinearOp& NinePointLinearOp::operator=(NinePointLinearOp&& m) QL_NOEXCEPT {
+    inline NinePointLinearOp& NinePointLinearOp::operator=(NinePointLinearOp&& m) noexcept {
         swap(m);
         return *this;
     }

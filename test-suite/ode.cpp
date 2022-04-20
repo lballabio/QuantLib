@@ -196,8 +196,8 @@ void OdeTest::testMatrixExponentialOfZero() {
 
     Matrix m(3, 3, 0.0);
 
-    QL_CONSTEXPR Real tol = 100*QL_EPSILON;
-    QL_CONSTEXPR Time t=1.0;
+    constexpr Real tol = 100*QL_EPSILON;
+    constexpr Time t=1.0;
     const Matrix calculated = Expm(m, t);
 
     for (Size i=0; i < calculated.rows(); ++i) {

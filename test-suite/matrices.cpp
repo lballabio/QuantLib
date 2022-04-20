@@ -593,7 +593,7 @@ void MatricesTest::testMoorePenroseInverse() {
 
     Real cached[6] = {1.153846153846152, 1.461538461538463, 1.384615384615384,
                       1.384615384615385, 1.461538461538462, 1.153846153846152};
-    QL_CONSTEXPR Real tol = 500.0 * QL_EPSILON;
+    constexpr Real tol = 500.0 * QL_EPSILON;
 
     for (Size i = 0; i < 6; ++i) {
         if (std::abs(x[i] - cached[i]) > tol) {
@@ -606,7 +606,7 @@ void MatricesTest::testMoorePenroseInverse() {
     }
 
     Array y = A*x;
-    QL_CONSTEXPR Real tol2 = 2000.0 * QL_EPSILON;
+    constexpr Real tol2 = 2000.0 * QL_EPSILON;
     for (Size i = 0; i < 6; ++i) {
         if (std::abs(y[i] - 260.0) > tol2) {
             BOOST_FAIL(
@@ -647,7 +647,7 @@ void MatricesTest::testIterativeSolvers() {
     Array b(3);
     b[0] = 1.0; b[1] = 0.5; b[2] = 3.0;
 
-    QL_CONSTEXPR Real relTol = 1e4*QL_EPSILON;
+    constexpr Real relTol = 1e4*QL_EPSILON;
 
     const Array x = BiCGstab(MatrixMult(M1), 3, relTol).solve(b).x;
     if (norm2(M1*x-b)/norm2(b) > relTol) {
