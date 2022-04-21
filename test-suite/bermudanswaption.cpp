@@ -354,7 +354,7 @@ void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
             bermudanSwaption->setPricingEngine(ext::make_shared<FdHullWhiteSwaptionEngine>(model));
             auto npvFD = bermudanSwaption->NPV();
 
-            QL_CONSTEXPR auto timesteps = 14 * 4 * 4;
+            constexpr auto timesteps = 14 * 4 * 4;
 
             bermudanSwaption->setPricingEngine(
                 ext::make_shared<TreeSwaptionEngine>(model, timesteps));

@@ -53,7 +53,7 @@ namespace QuantLib {
           rateHelpersStart_(rateHelpersStart), rateHelpersEnd_(rateHelpersEnd) {}
 
         Real value(const Array& x) const override;
-        Disposable<Array> values(const Array& x) const override;
+        Array values(const Array& x) const override;
 
       private:
         Curve* curve_;
@@ -272,7 +272,7 @@ namespace QuantLib {
     }
 
     template <class Curve>
-    Disposable<Array> PenaltyFunction<Curve>::values(const Array& x) const {
+    Array PenaltyFunction<Curve>::values(const Array& x) const {
         Array::const_iterator guessIt = x.begin();
         Size i = initialIndex_;
         while (guessIt != x.end()) {

@@ -28,7 +28,6 @@
 #define quantlib_exp_correlations_hpp
 
 #include <ql/math/matrix.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
 
 namespace QuantLib {
@@ -39,12 +38,11 @@ namespace QuantLib {
         gamma = exponent for time to go
         t = time dependence
     */
-    Disposable<Matrix> exponentialCorrelations(
-                                    const std::vector<Time>& rateTimes,
-                                    Real longTermCorr = 0.5,
-                                    Real beta = 0.2,
-                                    Real gamma = 1.0,
-                                    Time t = 0.0);
+    Matrix exponentialCorrelations(const std::vector<Time>& rateTimes,
+                                   Real longTermCorr = 0.5,
+                                   Real beta = 0.2,
+                                   Real gamma = 1.0,
+                                   Time t = 0.0);
 
     class ExponentialForwardCorrelation :
         public PiecewiseConstantCorrelation {

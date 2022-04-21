@@ -102,7 +102,7 @@ namespace QuantLib {
             std::vector<Period> swapTenors_;
             Size nLayers_;
             std::vector<Matrix> points_;
-            mutable std::vector<Disposable<Matrix> > transposedPoints_;
+            mutable std::vector<Matrix> transposedPoints_;
             bool extrapolation_;
             bool backwardFlat_;
             mutable std::vector< ext::shared_ptr<Interpolation2D> > interpolators_;

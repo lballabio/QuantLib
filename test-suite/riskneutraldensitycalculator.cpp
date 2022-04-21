@@ -266,7 +266,7 @@ namespace {
         const ext::shared_ptr<RiskNeutralDensityCalculator> calc_;
     };
 
-    Disposable<std::vector<Time> > adaptiveTimeGrid(
+    std::vector<Time> adaptiveTimeGrid(
         Size maxStepsPerYear, Size minStepsPerYear, Real decay, Time endTime) {
         const Time maxDt = 1.0/maxStepsPerYear;
         const Time minDt = 1.0/minStepsPerYear;

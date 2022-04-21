@@ -60,7 +60,7 @@
 
 namespace QuantLib {
 
-    Disposable<Matrix> inverse(const Matrix& m) {
+    Matrix inverse(const Matrix& m) {
         QL_REQUIRE(m.rows() == m.columns(), "matrix is not square");
 
         boost::numeric::ublas::matrix<Real> a(m.rows(), m.columns());

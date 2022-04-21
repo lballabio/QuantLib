@@ -40,7 +40,7 @@ namespace QuantLib {
 
     FdmTimeDepDirichletBoundary::FdmTimeDepDirichletBoundary(
         const ext::shared_ptr<FdmMesher>& mesher,
-        ext::function<Disposable<Array>(Real)> valuesOnBoundary,
+        ext::function<Array(Real)> valuesOnBoundary,
         Size direction,
         Side side)
     : indices_(FdmIndicesOnBoundary(mesher->layout(), direction, side).getIndices()),

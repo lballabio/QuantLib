@@ -42,7 +42,7 @@ namespace QuantLib {
                       Real exchRateATMlevel);
 
       Rate quantoAdjustment(Volatility equityVol, Time t1, Time t2) const;
-      Disposable<Array> quantoAdjustment(const Array& equityVol, Time t1, Time t2) const;
+      Array quantoAdjustment(const Array& equityVol, Time t1, Time t2) const;
 
       const ext::shared_ptr<YieldTermStructure> rTS_, fTS_;
       const ext::shared_ptr<BlackVolTermStructure> fxVolTS_;

@@ -74,7 +74,7 @@ namespace QuantLib {
         return names_;
     }
 
-    Disposable<std::vector<DefaultProbKey> > Pool::defaultKeys() const {
+    std::vector<DefaultProbKey> Pool::defaultKeys() const {
         std::vector<DefaultProbKey> defaultKeys;
         defaultKeys.reserve(defaultKeys_.size());
         for (const auto & i : defaultKeys_)

@@ -72,12 +72,11 @@ namespace QuantLib {
           d2CdK2_(dxMap_.mult(Array(mesher->layout()->size(), -1.0)).add(dxxMap_)),
           mapT_(0, mesher_) {}
 
-        Disposable<Array> d2CdK2(const Array& c) const {
+        Array d2CdK2(const Array& c) const {
             return d2CdK2_.apply(c);
         }
 
-        Disposable<Array> solveFor(
-            Time dT, const Array& sig, const Array& b) const {
+        Array solveFor(Time dT, const Array& sig, const Array& b) const {
 
             Array x(lnMarketStrikes_.size());
             Interpolation sigInterpl;
@@ -127,11 +126,11 @@ namespace QuantLib {
 
         }
 
-        Disposable<Array> apply(const Array& c) const {
+        Array apply(const Array& c) const {
             return -mapT_.apply(c);
         }
 
-        Disposable<Array> values(const Array& sig) const override {
+        Array values(const Array& sig) const override {
             Array newNPVs = solveFor(dT_, sig, previousNPVs_);
 
             const std::vector<Real>& gridPoints =
@@ -148,13 +147,12 @@ namespace QuantLib {
             return retVal;
         }
 
-        Disposable<Array> vegaCalibrationError(const Array& sig) const {
+        Array vegaCalibrationError(const Array& sig) const {
             return values(sig)/marketVegas_;
         }
 
-        Disposable<Array> initialValues() const {
-            Array retVal(lnMarketStrikes_.size(), 0.25);
-            return retVal;
+        Array initialValues() const {
+            return Array(lnMarketStrikes_.size(), 0.25);
         }
 
 
@@ -179,7 +177,7 @@ namespace QuantLib {
                              ext::shared_ptr<AndreasenHugeCostFunction> callCostFct)
         : putCostFct_(std::move(putCostFct)), callCostFct_(std::move(callCostFct)) {}
 
-        Disposable<Array> values(const Array& sig) const override {
+        Array values(const Array& sig) const override {
             if ((putCostFct_ != nullptr) && (callCostFct_ != nullptr)) {
                 const Array pv = putCostFct_->values(sig);
                 const Array cv = callCostFct_->values(sig);
@@ -197,7 +195,7 @@ namespace QuantLib {
                 QL_FAIL("internal error: cost function not set");
         }
 
-        Disposable<Array> initialValues() const {
+        Array initialValues() const {
             if ((putCostFct_ != nullptr) && (callCostFct_ != nullptr))
                 return 0.5*(  putCostFct_->initialValues()
                             + callCostFct_->initialValues());
@@ -501,7 +499,7 @@ namespace QuantLib {
         return (*(ext::get<2>(f->second)))(s);
     }
 
-    Disposable<Array> AndreasenHugeVolatilityInterpl::getPriceSlice(
+    Array AndreasenHugeVolatilityInterpl::getPriceSlice(
         Time t, Option::Type optionType) const {
 
         const Size iu = getExerciseTimeIdx(t);
@@ -563,7 +561,7 @@ namespace QuantLib {
         return this->optionPrice(t, strike, optionType);
     }
 
-    Disposable<Array> AndreasenHugeVolatilityInterpl::getLocalVolSlice(
+    Array AndreasenHugeVolatilityInterpl::getLocalVolSlice(
         Time t, Option::Type optionType) const {
 
         const Size iu = getExerciseTimeIdx(t);

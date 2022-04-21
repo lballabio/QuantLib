@@ -1,5 +1,5 @@
 image:
-  - Visual Studio 2013
+  - Visual Studio 2015
   - Visual Studio 2022
 
 platform: x64
@@ -16,9 +16,9 @@ for:
 -
   matrix:
     only:
-      - image: Visual Studio 2013
+      - image: Visual Studio 2015
   before_build:
-    - COPY .appveyor\VS2013.props .\Build.props
+    - COPY .appveyor\VS2015.props .\Build.props
   test_script:
     - .\test-suite\bin\QuantLib-test-suite-x64-mt.exe --log_level=message --build_info=yes -- --faster
 -

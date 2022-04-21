@@ -46,7 +46,7 @@ namespace QuantLib {
                             Size direction) const = 0;
         virtual Real location(const FdmLinearOpIterator& iter ,
                               Size direction) const = 0;
-        virtual Disposable<Array> locations(Size direction) const = 0;
+        virtual Array locations(Size direction) const = 0;
 
         const ext::shared_ptr<FdmLinearOpLayout>& layout() const {
             return layout_;

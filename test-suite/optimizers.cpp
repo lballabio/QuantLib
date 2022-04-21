@@ -67,11 +67,9 @@ namespace {
             return y;
         }
 
-        Disposable<Array> values(const Array& x) const override {
+        Array values(const Array& x) const override {
             QL_REQUIRE(x.size()==1,"independent variable must be 1 dimensional");
-            Array y(1);
-            y[0] = value(x);
-            return y;
+            return Array(1, value(x));
         }
 
       private:
@@ -86,7 +84,7 @@ namespace {
       public:
         Real value(const Array&) const override { return 1.0; }
 
-        Disposable<Array> values(const Array&) const override {
+        Array values(const Array&) const override {
             // dummy nested optimization
             Array coefficients(3, 1.0);
             OneDimensionalPolynomialDegreeN oneDimensionalPolynomialDegreeN(coefficients);
@@ -101,8 +99,7 @@ namespace {
             EndCriteria endCriteria(1000, 100, 1e-5, 1e-5, 1e-5);
             optimizationMethod.minimize(problem, endCriteria);
             // return dummy result
-            Array dummy(1,0);
-            return dummy;
+            return Array(1, 0);
         }
     };
 
@@ -369,18 +366,16 @@ namespace {
 
     class FirstDeJong : public CostFunction {
       public:
-        Disposable<Array> values(const Array& x) const override {
-            Array retVal(x.size(),value(x));
-            return retVal;
+        Array values(const Array& x) const override {
+            return Array(x.size(),value(x));
         }
         Real value(const Array& x) const override { return DotProduct(x, x); }
     };
 
     class SecondDeJong : public CostFunction {
       public:
-        Disposable<Array> values(const Array& x) const override {
-            Array retVal(x.size(),value(x));
-            return retVal;
+        Array values(const Array& x) const override {
+            return Array(x.size(),value(x));
         }
         Real value(const Array& x) const override {
             return  100.0*(x[0]*x[0]-x[1])*(x[0]*x[0]-x[1])
@@ -390,9 +385,8 @@ namespace {
 
     class ModThirdDeJong : public CostFunction {
       public:
-        Disposable<Array> values(const Array& x) const override {
-            Array retVal(x.size(),value(x));
-            return retVal;
+        Array values(const Array& x) const override {
+            return Array(x.size(),value(x));
         }
         Real value(const Array& x) const override {
             Real fx = 0.0;
@@ -408,9 +402,8 @@ namespace {
         ModFourthDeJong()
         : uniformRng_(MersenneTwisterUniformRng(4711)) {
         }
-        Disposable<Array> values(const Array& x) const override {
-            Array retVal(x.size(),value(x));
-            return retVal;
+        Array values(const Array& x) const override {
+            return Array(x.size(),value(x));
         }
         Real value(const Array& x) const override {
             Real fx = 0.0;
@@ -424,9 +417,8 @@ namespace {
 
     class Griewangk : public CostFunction {
       public:
-        Disposable<Array> values(const Array& x) const override {
-            Array retVal(x.size(),value(x));
-            return retVal;
+        Array values(const Array& x) const override {
+            return Array(x.size(),value(x));
         }
         Real value(const Array& x) const override {
             Real fx = 0.0;

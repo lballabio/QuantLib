@@ -63,7 +63,7 @@ namespace QuantLib {
             MaturityStrikeByDeltaGamma
         } CalibrationBasketType;
 
-        Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
+        std::vector<ext::shared_ptr<BlackCalibrationHelper>>
         calibrationBasket(const ext::shared_ptr<Exercise>& exercise,
                           const ext::shared_ptr<SwapIndex>& standardSwapBase,
                           const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
@@ -89,9 +89,8 @@ namespace QuantLib {
 
         virtual const Date underlyingLastDate() const = 0;
 
-        virtual const Disposable<Array>
-        initialGuess(const Date &expiry) const = 0; // return (nominal,
-                                                    // maturity, rate)
+        virtual const Array initialGuess(const Date &expiry) const = 0; // return (nominal,
+                                                                        // maturity, rate)
 
       private:
 
@@ -151,7 +150,7 @@ namespace QuantLib {
                 return std::sqrt(res / vals.size());
             }
 
-            Disposable<Array> values(const Array& v) const override {
+            Array values(const Array& v) const override {
                 // transformations
                 int type = type_; // start with same type as non standard
                                   // underlying (1 means payer, -1 receiver)

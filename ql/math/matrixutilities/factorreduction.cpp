@@ -23,9 +23,8 @@
 
 namespace QuantLib {
 
-    Disposable<std::vector<Real> >
-    factorReduction(Matrix mtrx,
-                    Size maxIters) {
+    std::vector<Real> factorReduction(Matrix mtrx,
+                                      Size maxIters) {
         static Real tolerance = 1.e-6;
 
         QL_REQUIRE(mtrx.rows() == mtrx.columns(),

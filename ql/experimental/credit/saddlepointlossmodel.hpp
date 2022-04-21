@@ -263,7 +263,7 @@ namespace QuantLib {
     public:
       Probability probOverLoss(const Date& d, Real trancheLossFract) const override;
 
-      Disposable<std::map<Real, Probability> > lossDistribution(const Date& d) const override;
+      std::map<Real, Probability> lossDistribution(const Date& d) const override;
 
     protected:
         /*! 
@@ -297,7 +297,7 @@ namespace QuantLib {
     public:
         Probability probDensity(const Date& d, Real loss) const;
     protected:
-        Disposable<std::vector<Real> > splitLossCond(
+        std::vector<Real> splitLossCond(
             const std::vector<Real>& invUncondProbs,
             Real loss, std::vector<Real> mktFactor) const;
         Real expectedShortfallFullPortfolioCond(
@@ -307,7 +307,7 @@ namespace QuantLib {
             const std::vector<Real>& invUncondProbs,
             Real lossPerc, Probability percentile, 
             const std::vector<Real>& mktFactor) const;
-        Disposable<std::vector<Real> > expectedShortfallSplitCond(
+        std::vector<Real> expectedShortfallSplitCond(
             const std::vector<Real>& invUncondProbs,
             Real lossPerc, const std::vector<Real>& mktFactor) const;
     public:
@@ -324,7 +324,7 @@ namespace QuantLib {
             The passed loss is the loss amount level at which we want
             to request the sensitivity. Equivalent to a percentile.
         */
-      Disposable<std::vector<Real> > splitVaRLevel(const Date& date, Real loss) const override;
+      std::vector<Real> splitVaRLevel(const Date& date, Real loss) const override;
       Real expectedShortfall(const Date& d, Probability percentile) const override;
 
     protected:
@@ -533,8 +533,7 @@ namespace QuantLib {
     }
 
     template<class CP>
-    inline Disposable<std::vector<Real> > 
-    SaddlePointLossModel<CP>::splitVaRLevel(const Date& date, Real s) const 
+    inline std::vector<Real> SaddlePointLossModel<CP>::splitVaRLevel(const Date& date, Real s) const 
     {
         std::vector<Real> invUncondProbs = 
             basket_->remainingProbabilities(date);
@@ -697,8 +696,7 @@ namespace QuantLib {
     }
 
     template<class CP>
-    ext::tuple<Real, Real, Real, Real> /// DISPOSABLE????
-        SaddlePointLossModel<CP>::CumGen0234DerivCond(
+    ext::tuple<Real, Real, Real, Real> SaddlePointLossModel<CP>::CumGen0234DerivCond(
         const std::vector<Real>& invUncondProbs,
         Real saddle, 
         const std::vector<Real>&  mktFactor) const 
@@ -740,8 +738,7 @@ namespace QuantLib {
     }
 
     template<class CP>
-    ext::tuple<Real, Real> /// DISPOSABLE???? 
-        SaddlePointLossModel<CP>::CumGen02DerivCond(
+    ext::tuple<Real, Real> SaddlePointLossModel<CP>::CumGen02DerivCond(
         const std::vector<Real>& invUncondProbs,
         Real saddle, 
         const std::vector<Real>&  mktFactor) const 
@@ -896,8 +893,7 @@ namespace QuantLib {
     }
 
     template<class CP>
-    Disposable<std::map<Real, Probability> > 
-        SaddlePointLossModel<CP>::lossDistribution(const Date& d) const {
+    std::map<Real, Probability> SaddlePointLossModel<CP>::lossDistribution(const Date& d) const {
         std::map<Real, Probability> distrib;
         static const Real numPts = 500.;
         for(Real lossFraction=1./numPts; lossFraction<0.45; 
@@ -1128,7 +1124,7 @@ namespace QuantLib {
     request the sensitivity.  Equivalent to a percentile.
     */
     template<class CP>
-    Disposable<std::vector<Real> > SaddlePointLossModel<CP>::splitLossCond(
+    std::vector<Real> SaddlePointLossModel<CP>::splitLossCond(
         const std::vector<Real>& invUncondProbs,
         Real loss, 
         std::vector<Real> mktFactor) const 
@@ -1196,8 +1192,7 @@ namespace QuantLib {
     }
 
     template<class CP>
-    Disposable<std::vector<Real> > 
-        SaddlePointLossModel<CP>::expectedShortfallSplitCond(
+    std::vector<Real> SaddlePointLossModel<CP>::expectedShortfallSplitCond(
             const std::vector<Real>& invUncondProbs,
             Real lossPerc, const std::vector<Real>& mktFactor) const 
     {

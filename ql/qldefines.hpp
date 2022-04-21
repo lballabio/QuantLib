@@ -215,15 +215,21 @@
 #endif
 // clang-format on
 
+/*! \deprecated Use the noexcept keyword instead.
+                Deprecated in version 1.27.
+*/
+#define QL_NOEXCEPT noexcept
 
-// until we stop supporting Visual C++ 2013
-#if defined(QL_PATCH_MSVC_2013)
-#  define QL_NOEXCEPT
-#  define QL_CONSTEXPR
-#else
-#  define QL_NOEXCEPT noexcept
-#  define QL_CONSTEXPR constexpr
+/*! \deprecated Use the constexpr keyword instead.
+                Deprecated in version 1.27.
+*/
+#define QL_CONSTEXPR constexpr
+
+/*! \deprecated Do not check; always use std::unique_ptr.
+                Deprecated in version 1.27
+*/
+#ifndef QL_USE_STD_UNIQUE_PTR
+#define QL_USE_STD_UNIQUE_PTR 1
 #endif
-
 
 #endif

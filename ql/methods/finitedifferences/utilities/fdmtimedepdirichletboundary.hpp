@@ -47,7 +47,7 @@ namespace QuantLib {
                                     Side side);
 
         FdmTimeDepDirichletBoundary(const ext::shared_ptr<FdmMesher>& mesher,
-                                    ext::function<Disposable<Array>(Real)> valueOnBoundary,
+                                    ext::function<Array(Real)> valueOnBoundary,
                                     Size direction,
                                     Side side);
 
@@ -60,7 +60,7 @@ namespace QuantLib {
       private:
         const std::vector<Size> indices_;
         const ext::function<Real (Real)> valueOnBoundary_;
-        const ext::function<Disposable<Array>(Real)> valuesOnBoundary_;
+        const ext::function<Array(Real)> valuesOnBoundary_;
 
         Array values_;
     };

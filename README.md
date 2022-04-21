@@ -4,7 +4,7 @@
 [![Download](https://img.shields.io/github/v/release/lballabio/QuantLib?label=Download&sort=semver)](https://github.com/lballabio/QuantLib/releases/latest)
 [![Licensed under the BSD 3-Clause License](https://img.shields.io/badge/License-BSD--3--Clause-blue.svg)](https://github.com/lballabio/QuantLib/blob/master/LICENSE.TXT)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1440997.svg)](https://doi.org/10.5281/zenodo.1440997)
-[![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](#contributing)
+[![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)](https://github.com/lballabio/QuantLib/blob/master/CONTRIBUTING.md)
 
 [![Linux build status](https://github.com/lballabio/QuantLib/workflows/Linux%20build/badge.svg?branch=master)](https://github.com/lballabio/QuantLib/actions?query=workflow%3A%22Linux+build%22)
 [![Windows build status](https://ci.appveyor.com/api/projects/status/bmpiucu74eldfkm0/branch/master?svg=true)](https://ci.appveyor.com/project/lballabio/quantlib/branch/master)

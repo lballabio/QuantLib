@@ -145,21 +145,6 @@ jobs:
             cxx: g++
             configureflags: --enable-std-classes
             tests: true
-          - name: "auto_ptr re-enabled"
-            shortname: autoptr
-            tag: rolling
-            cc: gcc
-            cxx: g++
-            cxxflags: "-Wno-deprecated-declarations"
-            configureflags: --disable-std-unique-ptr
-            tests: true
-          - name: "Disposable re-enabled"
-            shortname: disposable
-            tag: rolling
-            cc: gcc
-            cxx: g++
-            configureflags: --enable-disposable
-            tests: true
           - name: "Thread-safe observer enabled"
             shortname: threadsafe
             tag: rolling

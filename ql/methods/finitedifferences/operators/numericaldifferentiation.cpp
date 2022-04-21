@@ -37,7 +37,7 @@
 namespace QuantLib {
 
     namespace {
-        Disposable<Array> calcOffsets(
+        Array calcOffsets(
             Real h, Size n, NumericalDifferentiation::Scheme scheme) {
             QL_REQUIRE(n > 1, "number of steps must be greater than one");
 
@@ -68,7 +68,7 @@ namespace QuantLib {
         // B. Fornberg, 1998. Calculation of Weights
         //                    in Finite Difference Formulas
         // https://amath.colorado.edu/faculty/fornberg/Docs/sirev_cl.pdf
-        Disposable<Array> calcWeights(const Array& x, Size M) {
+        Array calcWeights(const Array& x, Size M) {
             const Size N = x.size();
             QL_REQUIRE(N > M, "number of points must be greater "
                                "than the order of the derivative");

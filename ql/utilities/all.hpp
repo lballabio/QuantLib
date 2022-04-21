@@ -4,7 +4,6 @@
 #include <ql/utilities/clone.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/utilities/dataparsers.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/utilities/null_deleter.hpp>
 #include <ql/utilities/observablevalue.hpp>

@@ -21,7 +21,6 @@
 #define quantlib_tcopula_policy_hpp
 
 #include <ql/errors.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <ql/experimental/math/convolvedstudentt.hpp>
 #include <ql/functional.hpp>
 #include <boost/math/distributions/students_t.hpp>
@@ -145,15 +144,12 @@ namespace QuantLib {
                 * varianceFactors_[iFactor];
         }
         //to use this (by default) version, the generator must be a uniform one.
-        Disposable<std::vector<Real> > 
-            allFactorCumulInverter(const std::vector<Real>& probs) const;
+        std::vector<Real> allFactorCumulInverter(const std::vector<Real>& probs) const;
     private:
-        mutable std::vector<boost::math::students_t_distribution<> > 
-            distributions_;
+        mutable std::vector<boost::math::students_t_distribution<> > distributions_;
         mutable std::vector<Real> varianceFactors_;
         mutable std::vector<CumulativeBehrensFisher> latentVarsCumul_;
-        mutable std::vector<InverseCumulativeBehrensFisher> 
-            latentVarsInverters_;
+        mutable std::vector<InverseCumulativeBehrensFisher> latentVarsInverters_;
     };
 
 }

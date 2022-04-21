@@ -25,11 +25,9 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-    Disposable<Matrix>
-        ForwardForwardMappings::ForwardForwardJacobian(const CurveState& cs,
-        Size multiplier,
-        Size offset)
-        {
+    Matrix ForwardForwardMappings::ForwardForwardJacobian(const CurveState& cs,
+                                                          Size multiplier,
+                                                          Size offset) {
 
         Size n = cs.numberOfRates();
 
@@ -58,16 +56,13 @@ namespace QuantLib {
             }
 
         return jacobian;
-        }
+    }
 
-    Disposable<Matrix>
-        ForwardForwardMappings::YMatrix(const CurveState& cs,
-        const std::vector<Spread>& shortDisplacements,
-        const std::vector<Spread>& longDisplacements,
-        Size multiplier,
-        Size offset
-        )
-        {
+    Matrix ForwardForwardMappings::YMatrix(const CurveState& cs,
+                                           const std::vector<Spread>& shortDisplacements,
+                                           const std::vector<Spread>& longDisplacements,
+                                           Size multiplier,
+                                           Size offset) {
         Size n = cs.numberOfRates();
 
         QL_REQUIRE(offset < multiplier, "offset  must be less than period in"
@@ -101,15 +96,11 @@ namespace QuantLib {
             }
 
         return jacobian;
+    }
 
-        }
-
-    LMMCurveState
-        ForwardForwardMappings::RestrictCurveState(const CurveState& cs,
-                                 Size multiplier,
-                                 Size offset
-                                )
-        {
+    LMMCurveState ForwardForwardMappings::RestrictCurveState(const CurveState& cs,
+                                                             Size multiplier,
+                                                             Size offset) {
            Size n = cs.numberOfRates();
 
            QL_REQUIRE(offset < multiplier, "offset  must be less than period in"
@@ -130,5 +121,5 @@ namespace QuantLib {
            newState.setOnDiscountRatios(discRatios);
            return newState;
 
-        }
+    }
 }

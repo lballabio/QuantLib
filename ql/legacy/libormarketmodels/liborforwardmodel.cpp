@@ -102,7 +102,7 @@ namespace QuantLib {
         return npv / (1.0 + capRate*tenor);
     }
 
-    Disposable<Array> LiborForwardModel::w_0(Size alpha, Size beta) const {
+    Array LiborForwardModel::w_0(Size alpha, Size beta) const {
         Array omega(beta+1,0.0);
         QL_REQUIRE(alpha<beta, "alpha needs to be smaller than beta");
 

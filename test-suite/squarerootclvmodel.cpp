@@ -294,7 +294,7 @@ namespace square_root_clv_model {
             return retVal;
         }
 
-        Disposable<Array> values(const Array& params) const override {
+        Array values(const Array& params) const override {
             const Real theta = params[0];
             const Real kappa = params[1];
             const Real sigma = params[2];

@@ -43,9 +43,8 @@ namespace QuantLib {
     namespace detail {
         // havent figured out how to do this in-place
         struct multiplyV {
-            typedef Disposable<std::vector<Real> > result_type;
-            Disposable<std::vector<Real> > 
-                operator()(Real d,  Disposable<std::vector<Real> > v) 
+            typedef std::vector<Real> result_type;
+            std::vector<Real> operator()(Real d, std::vector<Real> v) 
             {
                 std::transform(v.begin(), v.end(), v.begin(), 
                                multiply_by<Real>(d));
@@ -79,8 +78,8 @@ namespace QuantLib {
         why the overload fails....
                     FIX ME
         */
-        virtual Disposable<std::vector<Real> > integrateV(
-            const ext::function<Disposable<std::vector<Real> >  (
+        virtual std::vector<Real> integrateV(
+            const ext::function<std::vector<Real>  (
             const std::vector<Real>& arg)>& f) const {
             QL_FAIL("No vector integration provided");
         }
@@ -123,10 +122,10 @@ namespace QuantLib {
         Real integrate(const ext::function<Real(const std::vector<Real>& arg)>& f) const override {
             return GaussianQuadMultidimIntegrator::integrate<Real>(f);
         }
-        Disposable<std::vector<Real> > integrateV(
-            const ext::function<Disposable<std::vector<Real> >(const std::vector<Real>& arg)>& f)
+        std::vector<Real> integrateV(
+            const ext::function<std::vector<Real>(const std::vector<Real>& arg)>& f)
             const override {
-            return GaussianQuadMultidimIntegrator::integrate<Disposable<std::vector<Real> > >(f);
+            return GaussianQuadMultidimIntegrator::integrate<std::vector<Real>>(f);
         }
         ~IntegrationBase() override = default;
     };
@@ -144,7 +143,7 @@ namespace QuantLib {
         Real integrate(const ext::function<Real(const std::vector<Real>& arg)>& f) const override {
             return MultidimIntegral::operator()(f, a_, b_);
         }
-        // disposable vector version here....
+        // vector version here....
         ~IntegrationBase() override = default;
         const std::vector<Real> a_, b_;
     };
@@ -324,8 +323,7 @@ namespace QuantLib {
             model. These are all the systemic factors plus all the idiosyncratic
             ones, so the size of the inversion is the number of systemic factors
             plus the number of latent modelled variables*/
-        Disposable<std::vector<Real> > 
-            allFactorCumulInverter(const std::vector<Real>& probs) const {
+        std::vector<Real> allFactorCumulInverter(const std::vector<Real>& probs) const {
             return copula_.allFactorCumulInverter(probs);
         }
         //@}
@@ -430,8 +428,6 @@ namespace QuantLib {
             const sample_type& nextSequence() const {
                 typename USNG::sample_type sample =
                     sequenceGen_.nextSequence();
-                //Not possible to overload operator member access in Disposable
-                //return copula_.allFactorCumulInverter(sample.value).value;
                 x_.value = copula_.allFactorCumulInverter(sample.value);
                 return x_;
             }
@@ -594,9 +590,9 @@ namespace QuantLib {
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).
         */
-        Disposable<std::vector<Real> > integratedExpectedValueV(
+        std::vector<Real> integratedExpectedValueV(
             // const ext::function<std::vector<Real>(
-            const ext::function<Disposable<std::vector<Real> >(
+            const ext::function<std::vector<Real>(
                 const std::vector<Real>& v1)>& f ) const {
             detail::multiplyV M;
             return integration()->integrateV(//see note in LMIntegrators base class

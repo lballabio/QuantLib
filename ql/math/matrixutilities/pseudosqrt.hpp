@@ -61,8 +61,8 @@ namespace QuantLib {
         - the correctness of the results is tested by checking
           returned values against numerical calculations.
     */
-    Disposable<Matrix> pseudoSqrt(const Matrix&,
-                                  SalvagingAlgorithm::Type = SalvagingAlgorithm::None);
+    Matrix pseudoSqrt(const Matrix&,
+                      SalvagingAlgorithm::Type = SalvagingAlgorithm::None);
 
     //! Returns the rank-reduced pseudo square root of a real symmetric matrix
     /*! The result matrix has rank<=maxRank. If maxRank>=size, then the
@@ -77,10 +77,10 @@ namespace QuantLib {
 
         \relates Matrix
     */
-    Disposable<Matrix> rankReducedSqrt(const Matrix&,
-                                       Size maxRank,
-                                       Real componentRetainedPercentage,
-                                       SalvagingAlgorithm::Type);
+    Matrix rankReducedSqrt(const Matrix&,
+                           Size maxRank,
+                           Real componentRetainedPercentage,
+                           SalvagingAlgorithm::Type);
 }
 
 

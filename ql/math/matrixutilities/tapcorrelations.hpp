@@ -25,7 +25,6 @@
 #include <ql/math/matrix.hpp>
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/types.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <utility>
 #include <vector>
 
@@ -43,27 +42,23 @@ namespace QuantLib {
         - the correctness of the results is tested by checking
           returned values against numerical calculations.
     */
-    Disposable<Matrix>
-    triangularAnglesParametrization(const Array& angles,
-                                    Size matrixSize,
-                                    Size rank);
+    Matrix triangularAnglesParametrization(const Array& angles,
+                                           Size matrixSize,
+                                           Size rank);
 
-    Disposable<Matrix>
-    lmmTriangularAnglesParametrization(const Array& angles,
-                                       Size matrixSize,
-                                       Size rank);
+    Matrix lmmTriangularAnglesParametrization(const Array& angles,
+                                              Size matrixSize,
+                                              Size rank);
 
     // the same function using the angles parameterized by the following
     // transformation \f[ \teta_i = \frac{\Pi}{2} - arctan(x_i)\f]
-    Disposable<Matrix>
-    triangularAnglesParametrizationUnconstrained(const Array& x,
-                                                 Size matrixSize,
-                                                 Size rank);
+    Matrix triangularAnglesParametrizationUnconstrained(const Array& x,
+                                                        Size matrixSize,
+                                                        Size rank);
 
-    Disposable<Matrix>
-    lmmTriangularAnglesParametrizationUnconstrained(const Array& x,
-                                                    Size matrixSize,
-                                                    Size rank);
+    Matrix lmmTriangularAnglesParametrizationUnconstrained(const Array& x,
+                                                           Size matrixSize,
+                                                           Size rank);
 
 
     //! Returns the rank reduced Triangular Angles Parametrized correlation matrix
@@ -79,32 +74,30 @@ namespace QuantLib {
         - the correctness of the results is tested by checking
           returned values against numerical calculations.
     */
-    Disposable<Matrix>
-    triangularAnglesParametrizationRankThree(Real alpha,
-                                             Real t0,
-                                             Real epsilon,
-                                             Size nbRows);
+    Matrix triangularAnglesParametrizationRankThree(Real alpha,
+                                                    Real t0,
+                                                    Real epsilon,
+                                                    Size nbRows);
 
     // the same function with parameters packed in an Array
-    Disposable<Matrix>
-    triangularAnglesParametrizationRankThreeVectorial(const Array& parameters,
-                                                      Size nbRows);
+    Matrix triangularAnglesParametrizationRankThreeVectorial(const Array& parameters,
+                                                             Size nbRows);
 
     // Cost function associated with Frobenius norm.
     // <http://en.wikipedia.org/wiki/Matrix_norm>
     class FrobeniusCostFunction : public CostFunction{
       public:
         FrobeniusCostFunction(Matrix target,
-                              ext::function<Disposable<Matrix>(const Array&, Size, Size)> f,
+                              ext::function<Matrix(const Array&, Size, Size)> f,
                               Size matrixSize,
                               Size rank)
         : target_(std::move(target)), f_(std::move(f)), matrixSize_(matrixSize), rank_(rank) {}
         Real value(const Array& x) const override;
-        Disposable<Array> values(const Array& x) const override;
+        Array values(const Array& x) const override;
 
       private:
         Matrix target_;
-        ext::function<Disposable<Matrix>(const Array&, Size, Size)> f_;
+        ext::function<Matrix(const Array&, Size, Size)> f_;
         Size matrixSize_;
         Size rank_;
     };

@@ -28,8 +28,8 @@
 namespace QuantLib {
 
     namespace {
-        Disposable<Array> g(Real sigma, const Array& x,
-                            const ext::function<Real(Real)>& invCDF) {
+        Array g(Real sigma, const Array& x,
+                const ext::function<Real(Real)>& invCDF) {
 
             Array y(x.size());
             const CumulativeNormalDistribution normalCDF;

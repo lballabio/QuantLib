@@ -2047,7 +2047,7 @@ void HestonModelTest::testCharacteristicFct() {
     const COSHestonEngine cosEngine(model);
     const AnalyticHestonEngine analyticEngine(model);
 
-    QL_CONSTEXPR Real tol = 100*QL_EPSILON;
+    constexpr Real tol = 100*QL_EPSILON;
     for (double i : u) {
         for (double j : t) {
             const std::complex<Real> c = cosEngine.chF(i, j);
@@ -2422,7 +2422,7 @@ void HestonModelTest::testPiecewiseTimeDependentChFvsHestonChF() {
                 TimeGrid(dayCounter.yearFraction(settlementDate, maturityDate),
                          10))));
 
-    QL_CONSTEXPR Real tol = 100*QL_EPSILON;
+    constexpr Real tol = 100*QL_EPSILON;
     for (Real r = 0.1; r < 4; r+=0.25) {
         for (Real phi = 0; phi < 360; phi+=60) {
             for (Time t=0.1; t <= 1.0; t+=0.3) {

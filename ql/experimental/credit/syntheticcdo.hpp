@@ -161,7 +161,7 @@ namespace QuantLib {
         /*!
           Expected tranche loss for all payment dates
          */
-        Disposable<std::vector<Real> > expectedTrancheLoss() const;
+        std::vector<Real> expectedTrancheLoss() const;
         Size error () const;
 
         void setupArguments(PricingEngine::arguments*) const override;

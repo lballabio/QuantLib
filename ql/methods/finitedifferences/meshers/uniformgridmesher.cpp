@@ -45,7 +45,7 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> UniformGridMesher::locations(Size d) const {
+    Array UniformGridMesher::locations(Size d) const {
         Array retVal(layout_->size());
 
         const FdmLinearOpIterator endIter = layout_->end();

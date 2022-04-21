@@ -61,9 +61,9 @@ namespace QuantLib {
         //! \name covariance and correlation
         //@{
         //! returns the covariance Matrix
-        Disposable<Matrix> covariance() const;
+        Matrix covariance() const;
         //! returns the correlation Matrix
-        Disposable<Matrix> correlation() const;
+        Matrix correlation() const;
         //@}
         //! \name 1-D inspectors lifted from underlying statistics class
         //@{
@@ -244,7 +244,7 @@ namespace QuantLib {
     }
 
     template <class Stat>
-    Disposable<Matrix> GenericSequenceStatistics<Stat>::covariance() const {
+    Matrix GenericSequenceStatistics<Stat>::covariance() const {
         Real sampleWeight = weightSum();
         QL_REQUIRE(sampleWeight > 0.0,
                    "sampleWeight=0, unsufficient");
@@ -266,7 +266,7 @@ namespace QuantLib {
 
 
     template <class Stat>
-    Disposable<Matrix> GenericSequenceStatistics<Stat>::correlation() const {
+    Matrix GenericSequenceStatistics<Stat>::correlation() const {
         Matrix correlation = covariance();
         Array variances = correlation.diagonal();
         for (Size i=0; i<dimension_; i++){
