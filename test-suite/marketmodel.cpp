@@ -84,7 +84,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/functional.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/auto_ptr.hpp>
 
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductswaption.hpp>

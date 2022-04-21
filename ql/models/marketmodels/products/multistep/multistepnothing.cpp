@@ -18,7 +18,6 @@
 */
 
 #include <ql/models/marketmodels/products/multistep/multistepnothing.hpp>
-#include <ql/auto_ptr.hpp>
 
 namespace QuantLib {
 
@@ -39,10 +38,9 @@ namespace QuantLib {
         return (currentIndex_ >= doneIndex_);
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     MultiStepNothing::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
-                                                 new MultiStepNothing(*this));
+        return std::unique_ptr<MarketModelMultiProduct>(new MultiStepNothing(*this));
     }
 
 }

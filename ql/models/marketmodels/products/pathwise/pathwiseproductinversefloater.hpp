@@ -73,11 +73,7 @@ class MarketModelPathwiseInverseFloater : public MarketModelPathwiseMultiProduct
                              cashFlowsGenerated) override;
 
         //! returns a newly-allocated copy of itself
-        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const override;
-#else
-        virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
-        #endif
 
     private:
         std::vector<Real> rateTimes_,fixedAccruals_, floatingAccruals_,fixedStrikes_, fixedMultipliers_, floatingSpreads_;

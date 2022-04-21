@@ -17,7 +17,6 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepforwards.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp>
@@ -92,11 +91,10 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    std::unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseMultiCaplet::clone() const 
     {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
-                                   new MarketModelPathwiseMultiCaplet(*this));
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(new MarketModelPathwiseMultiCaplet(*this));
     }
 
     std::vector<Size> MarketModelPathwiseMultiCaplet::suggestedNumeraires() const
@@ -240,11 +238,10 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    std::unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseMultiDeflatedCaplet::clone() const 
     {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
-                           new MarketModelPathwiseMultiDeflatedCaplet(*this));
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(new MarketModelPathwiseMultiDeflatedCaplet(*this));
     }
 
     std::vector<Size> MarketModelPathwiseMultiDeflatedCaplet::suggestedNumeraires() const
@@ -375,11 +372,10 @@ namespace QuantLib {
         return done;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>
+    std::unique_ptr<MarketModelPathwiseMultiProduct>
     MarketModelPathwiseMultiDeflatedCap::clone() const
     {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelPathwiseMultiProduct>(
-                              new MarketModelPathwiseMultiDeflatedCap(*this));
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(new MarketModelPathwiseMultiDeflatedCap(*this));
     }
 
 }

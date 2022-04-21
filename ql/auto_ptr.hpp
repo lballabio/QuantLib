@@ -17,24 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file auto_ptr.hpp
-    \brief Facilities to switch from auto_ptr to unique_ptr
-*/
-
 #ifndef quantlib_auto_ptr_hpp
 #define quantlib_auto_ptr_hpp
 
 #include <ql/qldefines.hpp>
 
-#if defined(QL_USE_STD_UNIQUE_PTR)
-#    define QL_UNIQUE_OR_AUTO_PTR std::unique_ptr
-#else
-#    pragma message("Warning: using auto_ptr in QuantLib is now deprecated.")
-#    pragma message("    If you're using --disable-std-unique-ptr in your build")
-#    pragma message("    or if you undefined QL_USE_STD_UNIQUE_PTR in ql/userconfig.hpp,")
-#    pragma message("    please restore the default compilation options in the near future.")
-#    define QL_UNIQUE_OR_AUTO_PTR std::auto_ptr
-#endif
+#pragma message("Warning: the deprecated QL_UNIQUE_OR_AUTO_PTR macro is no longer used. Replace it with std::unique_ptr.")
+#pragma message("    For the time being, the QL_USE_STD_UNIQUE_PTR macro is set to 1.  However, do not check for it, since it will disappear in a future release.")
+#pragma message("    This file will also disappear in a future release; do not include it.")
+
+/*! \deprecated Use std::unique_ptr instead.
+                Deprecated in version 1.27
+*/
+#define QL_UNIQUE_OR_AUTO_PTR std::unique_ptr
 
 
 #endif

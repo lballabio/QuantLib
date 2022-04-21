@@ -37,11 +37,7 @@ namespace QuantLib {
         void reset() override;
         std::valarray<bool> isExerciseTime() const override;
         void values(const CurveState&, std::vector<Real>& results) const override;
-#if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<MarketModelBasisSystem> clone() const override;
-#else
-        std::auto_ptr<MarketModelBasisSystem> clone() const;
-        #endif
       private:
         std::vector<Time> rateTimes_, exerciseTimes_;
         Size currentIndex_;

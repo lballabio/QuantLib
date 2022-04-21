@@ -90,11 +90,6 @@
 //#    define QL_USE_STD_SHARED_PTR
 #endif
 
-/* Undefine this to use std::auto_ptr instead of std::unique_ptr. */
-#ifndef QL_USE_STD_UNIQUE_PTR
-#    define QL_USE_STD_UNIQUE_PTR
-#endif
-
 /* Define this to use std::function and std::bind instead of
    boost::function and boost::bind. */
 #ifndef QL_USE_STD_FUNCTION
