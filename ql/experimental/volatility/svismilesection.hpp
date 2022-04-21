@@ -37,12 +37,12 @@ class SviSmileSection : public SmileSection {
     //@{
     /*! @param timeToExpiry Time to expiry
         @param forward Forward price corresponding to the expiry date
-        @param sviParameters Expects SVI parameters as a vector composed of a, b, sigma, rho, s, m
+        @param sviParameters Expects SVI parameters as a vector composed of a, b, sigma, rho, m
     */
     SviSmileSection(Time timeToExpiry, Rate forward, std::vector<Real> sviParameters);
     /*! @param d Date of expiry
         @param forward Forward price corresponding to the expiry date
-        @param sviParameters Expects SVI parameters as a vector composed of a, b, sigma, rho, s, m
+        @param sviParameters Expects SVI parameters as a vector composed of a, b, sigma, rho, m
         @param dc Day count method used to compute the time to expiry
     */
     SviSmileSection(const Date& d,
