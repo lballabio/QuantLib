@@ -44,7 +44,7 @@ void SviSmileSection::init() {
                                params_[4]);
 }
 
-Real SviSmileSection::volatilityImpl(Rate strike) const {
+Volatility SviSmileSection::volatilityImpl(Rate strike) const {
 
     Real k = std::log(std::max(strike, 1E-6) / forward_);
     Real totalVariance = detail::sviTotalVariance(params_[0], params_[1], params_[2],
