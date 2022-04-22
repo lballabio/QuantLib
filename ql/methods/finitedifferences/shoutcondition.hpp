@@ -33,12 +33,10 @@
 namespace QuantLib {
 
     //! Shout option condition
-    /*! A shout option is an option where the holder has the right to
-        lock in a minimum value for the payoff at one (shout) time
-        during the option's life. The minimum value is the option's
-        intrinsic value at the shout time.
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.27.
     */
-    class ShoutCondition : public StandardStepCondition {
+    class QL_DEPRECATED ShoutCondition : public StandardStepCondition {
       public:
         ShoutCondition(const Array& intrinsicValues,
                        Time resTime,
