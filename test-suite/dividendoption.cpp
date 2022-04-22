@@ -25,7 +25,6 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/pricingengines/vanilla/fddividendshoutengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
