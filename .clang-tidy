@@ -32,8 +32,6 @@ FormatStyle: file
 CheckOptions:
   - key:   modernize-use-default-member-init.UseAssignment
     value: 1
-  - key:   modernize-use-noexcept.ReplacementString
-    value: QL_NOEXCEPT
   - key:   readability-identifier-length.MinimumParameterNameLength
     value: 1
   - key:   readability-identifier-length.MinimumVariableNameLength
