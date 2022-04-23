@@ -119,8 +119,7 @@ namespace QuantLib {
         const Real sigma2 = sigma_*sigma_;
 
         const std::complex<Real> D = std::sqrt(
-            square<std::complex<Real> >()(
-                std::complex<Real>(kappa_, -rho_*sigma_*u))
+            squared(std::complex<Real>(kappa_, -rho_*sigma_*u))
             + std::complex<Real>(u*u, u)*sigma2);
 
         const std::complex<Real> g(kappa_, -rho_*sigma_*u);
@@ -281,9 +280,8 @@ namespace QuantLib {
        return c3(t)/std::pow(c2(t), 1.5);
    }
    Real COSHestonEngine::kurtosis(Time t) const {
-       return c4(t)/square<Real>()(c2(t));
+       return c4(t)/squared(c2(t));
    }
+
 }
-
-
 

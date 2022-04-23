@@ -38,7 +38,7 @@ namespace QuantLib {
 
         const Real npv = volInterpl_->optionPrice(t, strike, optionType);
 
-        return square<Real>()(blackFormulaImpliedStdDevLiRS(
+        return squared(blackFormulaImpliedStdDevLiRS(
             optionType, strike, fwd, npv,
             volInterpl_->riskFreeRate()->discount(t),
             0.0, Null<Real>(), 1.0, eps_, 1000));

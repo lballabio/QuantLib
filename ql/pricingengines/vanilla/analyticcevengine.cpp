@@ -36,7 +36,7 @@ namespace QuantLib {
       x0_(X(f0)) { }
 
     Real CEVCalculator::X(Real f) const {
-        return std::pow(f, 2.0*(1.0-beta_))/square<Real>()(alpha_*(1.0-beta_));
+        return std::pow(f, 2.0*(1.0-beta_))/squared(alpha_*(1.0-beta_));
     }
 
     Real CEVCalculator::value(

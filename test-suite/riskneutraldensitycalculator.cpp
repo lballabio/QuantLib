@@ -22,7 +22,6 @@
 #include "utilities.hpp"
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>

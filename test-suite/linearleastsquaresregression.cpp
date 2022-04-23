@@ -20,7 +20,6 @@
 
 #include "linearleastsquaresregression.hpp"
 #include "utilities.hpp"
-#include <ql/math/functional.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/linearleastsquaresregression.hpp>
 #include <ql/functional.hpp>
@@ -140,7 +139,7 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
     PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234U));
 
     std::vector<ext::function<Real(Array)> > v;
-    v.emplace_back(constant<Array, Real>(1.0));
+    v.emplace_back([](Array x){ return 1.0; });
     for (Size i=0; i < dims; ++i) {
         v.emplace_back(get_item(i));
     }

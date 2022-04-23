@@ -24,7 +24,6 @@
 
 #include <ql/experimental/processes/hestonslvprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 #include <utility>
 

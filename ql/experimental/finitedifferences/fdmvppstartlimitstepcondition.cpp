@@ -21,7 +21,6 @@
 */
 
 #include <ql/math/array.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmvppstartlimitstepcondition.hpp>

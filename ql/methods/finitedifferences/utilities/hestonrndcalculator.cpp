@@ -59,7 +59,7 @@ namespace {
             CpxPv_Helper(const HestonParams& p, Real x, Time t)
               : p_(p), t_(t), x_(x),
                 c_inf_(std::min(10.0, std::max(0.0001,
-                      std::sqrt(1.0-square<Real>()(p_.rho))/p_.sigma))
+                      std::sqrt(1.0-squared(p_.rho))/p_.sigma))
                       *(p_.v0 + p_.kappa*p_.theta*t))  {}
 
             Real operator()(Real x) const {

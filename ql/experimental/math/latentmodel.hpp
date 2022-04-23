@@ -28,7 +28,6 @@
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/experimental/math/polarstudenttrng.hpp>
 #include <ql/handle.hpp>
 #include <ql/quote.hpp>
@@ -47,7 +46,7 @@ namespace QuantLib {
             std::vector<Real> operator()(Real d, std::vector<Real> v) 
             {
                 std::transform(v.begin(), v.end(), v.begin(), 
-                               multiply_by<Real>(d));
+                               [=](Real x){ return x*d; });
                 return v;
             }
         };

@@ -19,7 +19,6 @@
 */
 
 #include <ql/math/autocovariance.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/optimization/leastsquare.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/models/volatility/garch.hpp>
@@ -112,7 +111,7 @@ namespace QuantLib {
                 sigma2prev = sigma2;
             }
             std::transform(grad.begin(), grad.end(), grad.begin(),
-                           divide_by<Real>(norm));
+                           [=](Real x){ return x/norm; });
         }
 
         Real Garch11CostFunction::valueAndGradient(Array& grad,
@@ -136,7 +135,7 @@ namespace QuantLib {
                 sigma2prev = sigma2;
             }
             std::transform(grad.begin(), grad.end(), grad.begin(),
-                           divide_by<Real>(norm));
+                           [=](Real x){ return x/norm; });
             return retval / norm;
         }
 
@@ -419,7 +418,7 @@ namespace QuantLib {
         Array acf(maxLag+1);
         std::vector<Volatility> tmp(r2.size());
         std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        subtract<Real>(mean_r2));
+                        [=](Real x){ return x - mean_r2; });
         autocovariances (tmp.begin(), tmp.end(), acf.begin(), maxLag);
         QL_REQUIRE (acf[0] > 0, "Data series is constant");
 
@@ -518,8 +517,8 @@ namespace QuantLib {
                const EndCriteria &endCriteria,
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         std::vector<Volatility> tmp(r2.size());
-        std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        subtract<Real>(mean_r2));
+        std::transform(r2.begin(), r2.end(), tmp.begin(),
+                       [=](Real x){ return x - mean_r2; });
         return calibrate_r2(tmp, method, endCriteria, initGuess,
                             alpha, beta, omega);
     }
@@ -551,8 +550,8 @@ namespace QuantLib {
                const EndCriteria &endCriteria,
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         std::vector<Volatility> tmp(r2.size());
-        std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        subtract<Real>(mean_r2));
+        std::transform(r2.begin(), r2.end(), tmp.begin(),
+                       [=](Real x){ return x - mean_r2; });
         return calibrate_r2(tmp, method, constraints, endCriteria,
                             initGuess, alpha, beta, omega);
     }

@@ -21,7 +21,6 @@
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/piecewiseconstantcorrelation.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
-#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -93,7 +92,7 @@ namespace QuantLib {
             QL_ENSURE(piecewiseConstantCorrelation.times()
                 == piecewiseConstantVariances.front()->rateTimes(),
                 "correlations and volatilities intertave");
-            std::vector<Matrix> peudoRoots;
+            std::vector<Matrix> pseudoRoots;
             const std::vector<Time>& rateTimes
                 = piecewiseConstantVariances.front()->rateTimes();
             for (Size i=1; i<rateTimes.size(); ++i) {
@@ -107,11 +106,11 @@ namespace QuantLib {
                     std::transform(correlations.row_begin(j),
                                    correlations.row_end(j),
                                    pseudoRoot.row_begin(j),
-                                   multiply_by<Real>(volatility));
+                                   [=](Real x){ return x * volatility; });
                 }
-                peudoRoots.push_back(pseudoRoot);
+                pseudoRoots.push_back(pseudoRoot);
             }
-            return peudoRoots;
+            return pseudoRoots;
     }
 
 }

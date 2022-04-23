@@ -30,7 +30,6 @@
 #ifndef QL_PATCH_SOLARIS
 
 #include <ql/math/integrals/gaussianquadratures.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/functional.hpp>
 
 namespace QuantLib {
@@ -60,8 +59,8 @@ namespace QuantLib {
                 //first one, we do not know the size of the vector returned by f
                 Integer i = order()-1;
                 std::vector<Real> term = f(x_[i]);// potential copy! @#$%^!!!
-                std::for_each(term.begin(), term.end(), 
-                              multiply_by<Real>(w_[i]));
+                std::for_each(term.begin(), term.end(),
+                              [&](Real x){ return x * w_[i]; });
                 std::vector<Real> sum = term;
            
                 for (i--; i >= 0; --i) {

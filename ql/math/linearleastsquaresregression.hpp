@@ -56,8 +56,8 @@ namespace QuantLib {
             typedef typename xContainer::value_type ArgumentType;
             LinearFcts (const xContainer &x, Real intercept) {
                 if (intercept != 0.0)
-                    v.push_back(constant<ArgumentType, Real>(intercept));
-                v.push_back(identity<ArgumentType>());
+                    v.push_back([=](ArgumentType x){ return intercept; });
+                v.push_back([](ArgumentType x){ return x; });
             }
 
             const std::vector< ext::function<Real(ArgumentType)> > & fcts() {
@@ -75,7 +75,7 @@ namespace QuantLib {
             typedef typename xContainer::value_type ArgumentType;
             LinearFcts (const xContainer &x, Real intercept) {
                 if (intercept != 0.0)
-                    v.push_back(constant<ArgumentType, Real>(intercept));
+                    v.push_back([=](ArgumentType x){ return intercept; });
                 Size m = x.begin()->size();
                 for (Size i = 0; i < m; ++i)
                     v.push_back(LinearFct<ArgumentType>(i));

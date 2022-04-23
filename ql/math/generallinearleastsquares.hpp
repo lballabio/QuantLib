@@ -30,7 +30,6 @@
 #include <ql/qldefines.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/math/array.hpp>
-#include <ql/math/functional.hpp>
 #include <boost/type_traits.hpp>
 #include <vector>
 
@@ -143,10 +142,10 @@ namespace QuantLib {
                        yBegin, residuals_.begin(), std::minus<Real>());
 
         const Real chiSq
-            = std::inner_product(residuals_.begin(), residuals_.end(),
-            residuals_.begin(), 0.0);
+            = std::inner_product(residuals_.begin(), residuals_.end(), residuals_.begin(), 0.0);
+        const Real multiplier = std::sqrt(chiSq/(n-2));
         std::transform(err_.begin(), err_.end(), standardErrors_.begin(),
-                       multiply_by<Real>(std::sqrt(chiSq/(n-2))));
+                       [=](Real x){ return x * multiplier; });
     }
 
 }

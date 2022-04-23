@@ -50,8 +50,7 @@ namespace QuantLib {
             iter != endIter; ++iter) {
             const Size i = iter.index();
 
-            v[i] = square<Real>()(
-                localVol_->localVol(0.5*(t1+t2), x_[i], true));
+            v[i] = squared(localVol_->localVol(0.5*(t1+t2), x_[i], true));
         }
         mapT_.axpyb(Array(1, 1.0), dxMap_.multR(- r + q + 0.5*v),
                     dxxMap_.multR(0.5*v), Array(1, 0.0));

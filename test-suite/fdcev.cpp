@@ -19,8 +19,6 @@
 
 #include "fdcev.hpp"
 #include "utilities.hpp"
-
-#include <ql/math/functional.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/statistics/generalstatistics.hpp>

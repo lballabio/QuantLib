@@ -28,7 +28,6 @@
 #include <ql/experimental/math/latentmodel.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/beta.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/math/solvers1d/brent.hpp>
@@ -288,7 +287,7 @@ namespace QuantLib {
         }
         std::transform(hitsByDate.begin(), hitsByDate.end(),
                        hitsByDate.begin(),
-                       divide_by<Real>(Real(nSims_)));
+                       [this](Real x){ return x/nSims_; });
         return hitsByDate;
         // \todo Provide confidence interval
     }
@@ -503,7 +502,7 @@ namespace QuantLib {
         /*
         std::vector<Real>::iterator itPastPerc =
             std::find_if(losses.begin() + position, losses.end(),
-                         greater_or_equal_to<Real>(perctlInf));
+                         [=](Real x){ return x >= perctlInf; });
         // notice if the sample is flat at the end this might be zero
         Size pointsOverVal = nSims_ - std::distance(itPastPerc, losses.end());
         return pointsOverVal == 0 ? 0. :
@@ -625,7 +624,7 @@ namespace QuantLib {
         std::vector<Real> varLevels = splitVaRAndError(date, loss, 0.95)[0];
         // turn relative units into absolute:
         std::transform(varLevels.begin(), varLevels.end(), varLevels.begin(),
-                       multiply_by<Real>(loss));
+                       [=](Real x){ return x * loss; });
         return varLevels;
     }
 

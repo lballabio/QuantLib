@@ -111,8 +111,7 @@ namespace QuantLib {
                 h[i+1][j] = h1;
             }
 
-            const Real nu = std::sqrt(  square<Real>()(h[j][j])
-                                      + square<Real>()(h[j+1][j]));
+            const Real nu = std::sqrt(squared(h[j][j]) + squared(h[j+1][j]));
 
             c[j] = h[j][j]/nu;
             s[j] = h[j+1][j]/nu;

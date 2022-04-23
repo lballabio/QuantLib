@@ -41,7 +41,7 @@ namespace QuantLib {
     : mesher_(mesher), process_(std::move(process)), rTS_(std::move(rTS)), bcSet_(std::move(bcSet)),
       direction_(direction), x_(mesher->locations(direction)), dxMap_(direction, mesher),
       dxxMap_(SecondDerivativeOp(direction, mesher)
-                  .mult(0.5 * square<Real>()(process_->volatility()) *
+                  .mult(0.5 * squared(process_->volatility()) *
                         Array(mesher->layout()->size(), 1.))),
       mapX_(direction, mesher) {}
 

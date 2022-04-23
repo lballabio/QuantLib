@@ -23,15 +23,12 @@
     \brief Fokker-Planck forward operator for an square root process
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
-
 #include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
 #include <ql/experimental/finitedifferences/modtriplebandlinearop.hpp>
-
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 

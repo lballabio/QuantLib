@@ -52,7 +52,7 @@ namespace QuantLib {
 
         m_.axpyb(drift, FirstDerivativeOp(direction, mesher),
             SecondDerivativeOp(direction, mesher)
-                .mult(0.5*square<Real>()(process_->volatility())
+                .mult(0.5*squared(process_->volatility())
                       *Array(mesher->layout()->size(), 1.0)), Array());
     }
 

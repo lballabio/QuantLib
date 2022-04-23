@@ -92,8 +92,8 @@ namespace QuantLib {
 
     Real NonCentralCumulativeChiSquareSankaranApprox::operator()(Real x) const {
 
-        const Real h = 1-2*(df_+ncp_)*(df_+3*ncp_)/(3*square<Real>()(df_+2*ncp_));
-        const Real p = (df_+2*ncp_)/square<Real>()(df_+ncp_);
+        const Real h = 1-2*(df_+ncp_)*(df_+3*ncp_)/(3*squared(df_+2*ncp_));
+        const Real p = (df_+2*ncp_)/squared(df_+ncp_);
         const Real m = (h-1)*(1-3*h);
 
         const Real u= (std::pow(x/(df_+ncp_), h) - (1 + h*p*(h-1-0.5*(2-h)*m*p)))/
@@ -125,8 +125,7 @@ namespace QuantLib {
         // use a Brent solver for the rest
         Brent solver;
         solver.setMaxEvaluations(evaluations);
-        return solver.solve(compose(subtract<Real>(x),
-                                    nonCentralDist_),
+        return solver.solve([&](Real y) { return nonCentralDist_(y) - x; },
                             accuracy_, 0.75*upper, 
                             (evaluations == maxEvaluations_)? 0.0: 0.5*upper,
                             upper);
