@@ -93,7 +93,11 @@
 
 #include <ql/types.hpp>
 #include <ql/version.hpp>
+#ifdef QL_USE_HEADER_ONLY_BOOST_TEST
+#include <boost/test/included/unit_test.hpp>
+#else
 #include <boost/test/unit_test.hpp>
+#endif
 #include <iomanip>
 #include <iostream>
 #include <list>

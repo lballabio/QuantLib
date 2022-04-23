@@ -57,6 +57,7 @@ option(QL_INSTALL_EXAMPLES "Install examples" ON)
 option(QL_INSTALL_TEST_SUITE "Install test suite" ON)
 option(QL_TAGGED_LAYOUT "Library names use layout tags" ${MSVC})
 option(QL_USE_CLANG_TIDY "Use clang-tidy when building" OFF)
+option(QL_USE_HEADER_ONLY_BOOST_TEST "Use header-only Boost.Test" OFF)
 option(QL_USE_INDEXED_COUPON "Use indexed coupons instead of par coupons" OFF)
 option(QL_USE_STD_CLASSES "Enable all QL_USE_STD_ options" OFF)
 option(QL_USE_STD_SHARED_PTR "Use standard smart pointers instead of Boost ones" OFF)
@@ -124,8 +125,8 @@ endif()
 
 if (NOT DEFINED QL_BOOST_COMPONENTS)
     set(QL_BOOST_COMPONENTS "")
-    # Boost unit_test_framework needed for tests and benchmark
-    if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
+    # Boost unit_test_framework needed for tests and benchmark when linking against Boost.Test
+    if ((QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK) AND NOT QL_USE_HEADER_ONLY_BOOST_TEST)
         set(QL_BOOST_COMPONENTS "${QL_BOOST_COMPONENTS};unit_test_framework")
     endif()
     # Boost thread needed for sessions, singleton thread-safe init and thread-safe observer pattern

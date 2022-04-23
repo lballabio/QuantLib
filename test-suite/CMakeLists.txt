@@ -337,7 +337,6 @@ set(QL_TEST_HEADERS
 )
 
 set(QL_BENCHMARK_SOURCES
-    main.cpp 
     quantlibbenchmark.cpp
     
     americanoption.cpp                  americanoption.hpp
@@ -364,16 +363,21 @@ set(QL_BENCHMARK_SOURCES
                                         swaptionvolstructuresutilities.hpp
 )
 
-if (QL_BUILD_TEST_SUITE)
+if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
     add_library(ql_unit_test_main STATIC main.cpp)
     target_include_directories(ql_unit_test_main PRIVATE
         ${PROJECT_BINARY_DIR}
         ${PROJECT_SOURCE_DIR}
         ${Boost_INCLUDE_DIRS})
+    if (NOT Boost_USE_STATIC_LIBS)
+        target_compile_definitions(ql_unit_test_main PRIVATE BOOST_TEST_DYN_LINK)
+    endif()
+endif()
+
+if (QL_BUILD_TEST_SUITE)
     add_executable(ql_test_suite ${QL_TEST_SOURCES} ${QL_TEST_HEADERS})
     set_target_properties(ql_test_suite PROPERTIES OUTPUT_NAME "quantlib-test-suite")
     if (NOT Boost_USE_STATIC_LIBS)
-        target_compile_definitions(ql_unit_test_main PRIVATE BOOST_TEST_DYN_LINK)
         target_compile_definitions(ql_test_suite PRIVATE BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
     endif()
     if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER OR QL_ENABLE_SESSIONS OR
@@ -383,8 +387,10 @@ if (QL_BUILD_TEST_SUITE)
     target_link_libraries(ql_test_suite PRIVATE
         ql_library
         ql_unit_test_main
-        Boost::unit_test_framework
         ${QL_TEST_SUITE_LIBRARIES})
+    if (NOT QL_USE_HEADER_ONLY_BOOST_TEST)
+        target_link_libraries(ql_test_suite PRIVATE Boost::unit_test_framework)
+    endif()
     if (QL_INSTALL_TEST_SUITE)
         install(TARGETS ql_test_suite RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()
@@ -397,14 +403,17 @@ IF (QL_BUILD_BENCHMARK)
     if (NOT Boost_USE_STATIC_LIBS)
         target_compile_definitions(ql_benchmark PRIVATE BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
     endif()
-    if (QL_ENABLE_SESSIONS OR QL_ENABLE_SINGLETON_THREAD_SAFE_INIT OR
-            QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
+    if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER OR QL_ENABLE_SESSIONS OR
+            QL_ENABLE_SINGLETON_THREAD_SAFE_INIT OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
         set(QL_BENCHMARK_LIBRARIES Boost::thread ${RT_LIBRARY})
     endif()
     target_link_libraries(ql_benchmark PRIVATE
         ql_library
-        Boost::unit_test_framework
+        ql_unit_test_main
         ${QL_BENCHMARK_LIBRARIES})
+    if (NOT QL_USE_HEADER_ONLY_BOOST_TEST)
+        target_link_libraries(ql_benchmark PRIVATE Boost::unit_test_framework)
+    endif()
     if (QL_INSTALL_BENCHMARK)
         install(TARGETS ql_benchmark RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()
