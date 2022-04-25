@@ -31,7 +31,8 @@ namespace QuantLib {
     /*! Turnbull Wakeman two moment-matching Asian option Engine
         Analytical pricing based on the two-moment Turnbull-Wakeman
         approximation.
-        References: Iain Clark, Commodity Option Pricing, Wiley, section 2.7.4.
+        References: "Commodity Option Pricing", Iain Clark, Wiley, section 2.7.4.
+                    "Option Pricing Formulas, Second Edition", E.G. Haug, 2006, pp. 192-202.
 
         \test
         - the correctness of the returned value is tested by reproducing
