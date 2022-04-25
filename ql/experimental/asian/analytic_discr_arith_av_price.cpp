@@ -78,21 +78,18 @@ void AnalyticDiscreteArithmeticAveragePriceAsianEngine::calculate() const {
     std::vector<Real> spotVars;
     std::vector<Real> spotVolsVec; // additional results only
     for (const auto& fd : arguments_.fixingDates) {
-        if (fd >= today) {
-            Real spot = process_->stateVariable()->value();
-            DiscountFactor dividendDiscount = process_->dividendYield()->discount(fd);
-            DiscountFactor riskFreeDiscountForFwdEstimation =
-                process_->riskFreeRate()->discount(fd);
+        Real spot = process_->stateVariable()->value();
+        DiscountFactor dividendDiscount = process_->dividendYield()->discount(fd);
+        DiscountFactor riskFreeDiscountForFwdEstimation = process_->riskFreeRate()->discount(fd);
 
-            forwards.push_back(spot * dividendDiscount / riskFreeDiscountForFwdEstimation);
-            times.push_back(process_->blackVolatility()->timeFromReference(fd));
+        forwards.push_back(spot * dividendDiscount / riskFreeDiscountForFwdEstimation);
+        times.push_back(process_->blackVolatility()->timeFromReference(fd));
 
-            spotVars.push_back(
-                process_->blackVolatility()->blackVariance(times.back(), effectiveStrike));
-            spotVolsVec.push_back(std::sqrt(spotVars.back() / times.back()));
+        spotVars.push_back(
+            process_->blackVolatility()->blackVariance(times.back(), effectiveStrike));
+        spotVolsVec.push_back(std::sqrt(spotVars.back() / times.back()));
 
-            EA += forwards.back();
-        }
+        EA += forwards.back();
     }
     EA /= m;
 
