@@ -15,10 +15,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/asian/analytic_discr_arith_av_price.hpp>
-
-#include <ql/pricingengines/blackformula.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/asian/analytic_discr_arith_av_price.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 
 using namespace QuantLib;
 
@@ -32,23 +31,23 @@ void AnalyticDiscreteArithmeticAveragePriceAsianEngine::calculate() const {
     // Calculate the accrued portion
     Real runningAccumulator = arguments_.runningAccumulator;
     Size pastFixings = arguments_.pastFixings;
+    Size futureFixings = arguments_.fixingDates.size();
     Real accruedAverage = 0;
     if (pastFixings != 0) {
-        accruedAverage = runningAccumulator / (pastFixings + arguments_.fixingDates.size());
+        accruedAverage = runningAccumulator / (pastFixings + futureFixings);
     }
 
     // Populate some additional results that don't change
-    auto& addRes = results_.additionalResults;
     Real discount = process_->riskFreeRate()->discount(arguments_.exercise->lastDate());
-    addRes["discount"] = discount;
-    addRes["accrued"] = accruedAverage;
+    results_.additionalResults["discount"] = discount;
+    results_.additionalResults["accrued"] = accruedAverage;
 
     ext::shared_ptr<PlainVanillaPayoff> payoff =
         ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
     QL_REQUIRE(payoff, "non-plain payoff given");
 
     // TODO: If not model dependent, return early.
-    Size m = arguments_.fixingDates.size() + pastFixings;
+    Size m = futureFixings + pastFixings;
     /*if (pastFixings > 0) {
 
         if (accruedAverage > 1.0 * arguments_.fixingDates.size() / pastFixings * payoff->strike()) {
@@ -108,7 +107,6 @@ void AnalyticDiscreteArithmeticAveragePriceAsianEngine::calculate() const {
             EA2 += 2 * forwards[i] * forwards[j] * exp(spotVars[j]);
         }
     }
-    addRes["spotVols"] = spotVolsVec;
 
     EA2 /= m * m;
 
@@ -119,14 +117,13 @@ void AnalyticDiscreteArithmeticAveragePriceAsianEngine::calculate() const {
     // Populate results
     results_.value =
         blackFormula(payoff->optionType(), effectiveStrike, EA, sigma * sqrt(tn), discount);
-
-    // Add more additional results
-    addRes["strike"] = payoff->strike();
-    addRes["effective_strike"] = effectiveStrike;
-    addRes["forward"] = EA;
-    addRes["exp_A_2"] = EA2;
-    addRes["tte"] = tn;
-    addRes["sigma"] = sigma;
-    addRes["times"] = times;
-    addRes["forwards"] = forwards;
+    results_.additionalResults["strike"] = payoff->strike();
+    results_.additionalResults["effective_strike"] = effectiveStrike;
+    results_.additionalResults["forward"] = EA;
+    results_.additionalResults["exp_A_2"] = EA2;
+    results_.additionalResults["tte"] = tn;
+    results_.additionalResults["sigma"] = sigma;
+    results_.additionalResults["times"] = times;
+    results_.additionalResults["spotVols"] = spotVolsVec;
+    results_.additionalResults["forwards"] = forwards;
 }
