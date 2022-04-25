@@ -116,7 +116,7 @@ namespace QuantLib {
         bcSet_.applyBeforeSolving(*map_, fn);
 
         const array_type f =
-            (1/alpha_*fStar - square<Real>()(1-alpha_)/alpha_*fn)/(2-alpha_);
+            (1/alpha_*fStar - squared(1-alpha_)/alpha_*fn)/(2-alpha_);
 
         if (map_->size() == 1) {
             fn = map_->solve_splitting(0, f, -beta_);

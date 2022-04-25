@@ -23,7 +23,6 @@
 
 #include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
 #include <ql/experimental/finitedifferences/modtriplebandlinearop.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/firstderivativeop.hpp>

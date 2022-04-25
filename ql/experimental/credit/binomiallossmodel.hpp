@@ -23,7 +23,6 @@
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
-#include <ql/functional.hpp>
 #include <ql/handle.hpp>
 #include <algorithm>
 #include <numeric>
@@ -192,7 +191,7 @@ namespace QuantLib {
         std::vector<Probability> oneMinusDefProb;//: 1.-condDefProb[j]
         std::transform(condDefProb.begin(), condDefProb.end(), 
                        std::back_inserter(oneMinusDefProb), 
-                       subtract_from<Real>(1.0));
+                       [](Real x){ return 1.0-x; });
 
         //breaks condDefProb and lgdsLeft to spare memory
         std::transform(condDefProb.begin(), condDefProb.end(), 

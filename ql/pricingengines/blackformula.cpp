@@ -293,11 +293,11 @@ namespace QuantLib {
         const Real R2 = R*R;
 
         const Real a = std::exp((1.0-M_2_PI)*y);
-        const Real A = square<Real>()(a - 1.0/a);
+        const Real A = squared(a - 1.0/a);
         const Real b = std::exp(M_2_PI*y);
         const Real B = 4.0*(b + 1/b)
             - 2*K/F*(a + 1.0/a)*(ey2 + 1 - R2);
-        const Real C = (R2-square<Real>()(ey-1))*(square<Real>()(ey+1)-R2)/ey2;
+        const Real C = (R2-squared(ey-1))*(squared(ey+1)-R2)/ey2;
 
         const Real beta = 2*C/(B+std::sqrt(B*B+4*A*C));
         const Real gamma = -M_PI_2*std::log(beta);

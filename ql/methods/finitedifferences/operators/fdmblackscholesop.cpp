@@ -62,17 +62,14 @@ namespace QuantLib {
                 const Size i = iter.index();
 
                 if (illegalLocalVolOverwrite_ < 0.0) {
-                    v[i] = square<Real>()(
-                        localVol_->localVol(0.5*(t1+t2), x_[i], true));
+                    v[i] = squared(localVol_->localVol(0.5*(t1+t2), x_[i], true));
                 }
                 else {
                     try {
-                        v[i] = square<Real>()(
-                            localVol_->localVol(0.5*(t1+t2), x_[i], true));
+                        v[i] = squared(localVol_->localVol(0.5*(t1+t2), x_[i], true));
                     } catch (Error&) {
-                        v[i] = square<Real>()(illegalLocalVolOverwrite_);
+                        v[i] = squared(illegalLocalVolOverwrite_);
                     }
-
                 }
             }
 

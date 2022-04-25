@@ -27,6 +27,7 @@
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
 #include <ql/math/optimization/simplex.hpp>
@@ -1157,8 +1158,7 @@ namespace hybrid_heston_hullwhite_process_test {
             bool test(const Array& params) const override {
                 const Real rho = params[3];
 
-                return (  square<Real>()(rho)
-                        + square<Real>()(equityShortRateCorr_) <= 1.0);
+                return (squared(rho) + squared(equityShortRateCorr_) <= 1.0);
             }
 
           private:

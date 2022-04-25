@@ -24,7 +24,6 @@
 #include <ql/experimental/models/normalclvmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/solvers1d/brent.hpp>

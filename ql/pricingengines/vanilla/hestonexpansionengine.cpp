@@ -21,9 +21,7 @@
     \brief analytic Heston expansion engine
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-
 #include <ql/instruments/payoffs.hpp>
 #include <ql/pricingengines/vanilla/hestonexpansionengine.hpp>
 

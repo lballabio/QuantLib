@@ -2303,8 +2303,7 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
         }
 
         const Real calculatedDeriv = interpl.derivative(x, true);
-        const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x))
-                / square<Real>()(std::cos(x));
+        const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x)) / squared(std::cos(x));
 
         const Real diffDeriv = std::fabs(expectedDeriv - calculatedDeriv);
         if (std::isnan(calculated) || diffDeriv > tolDeriv) {

@@ -70,7 +70,7 @@ namespace QuantLib {
     }
 
     Real HestonBlackVolSurface::blackVarianceImpl(Time t, Real strike) const {
-        return square<Real>()(blackVolImpl(t, strike))*t;
+        return squared(blackVolImpl(t, strike))*t;
     }
 
     Volatility HestonBlackVolSurface::blackVolImpl(Time t, Real strike) const {

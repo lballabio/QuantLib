@@ -24,7 +24,6 @@
 */
 
 #include <ql/instruments/basketoption.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>

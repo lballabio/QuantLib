@@ -177,8 +177,7 @@ namespace QuantLib {
                 sum/=inc;
 
                 vStrikes[n]->at(i) = 0.5*(pairs[e-1].first + pairs[s].first);
-                (*L)[i][n] = std::sqrt(square<Real>()(
-                     localVol_->localVol(t, vStrikes[n]->at(i), true))/sum);
+                (*L)[i][n] = std::sqrt(squared(localVol_->localVol(t, vStrikes[n]->at(i), true))/sum);
 
                 s = e;
             }

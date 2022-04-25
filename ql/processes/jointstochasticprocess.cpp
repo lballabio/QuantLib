@@ -21,7 +21,6 @@
     \brief multi model process for hybrid products
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/processes/jointstochasticprocess.hpp>
@@ -216,7 +215,7 @@ namespace QuantLib {
                     if (vol > 0.0) {
                         std::transform(stdDev.row_begin(i), stdDev.row_end(i),
                                        stdDev.row_begin(i),
-                                       divide_by<Real>(vol));
+                                       [=](Real x){ return x/vol; });
                     }
                     else {
                         // keep the svd happy

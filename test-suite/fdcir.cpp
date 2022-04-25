@@ -21,7 +21,6 @@
 #include "fdheston.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/barrieroption.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>

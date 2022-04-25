@@ -32,6 +32,7 @@
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <utility>
@@ -495,14 +496,14 @@ namespace QuantLib {
                     /(2.*kappa*kappa)*sigma
                    + (std::exp(-2*kt - ((theta - v0 + ekt
                 *((-1 + kt)*theta + v0))*z*zpi)/(2.*ekt*kappa))*z*z*zpi
-                *(-2*rho2*square<Real>()(2*theta + kt*theta - v0 -
+                *(-2*rho2*squared(2*theta + kt*theta - v0 -
                     kt*v0 + ekt*((-2 + kt)*theta + v0))
                   *z*z*zpi + 2*kappa*v0*(-zpi
                     + e2kt*(zpi + 4*rho2*z) - 2*ekt*(2*rho2*z
                     + kt*(zpi + rho2*(2 + kt)*z))) + kappa*theta*(zpi + e2kt
                 *(-5.0*zpi - 24*rho2*z+ 2*kt*(zpi + 4*rho2*z)) +
                 4*ekt*(zpi + 6*rho2*z + kt*(zpi + rho2*(4 + kt)*z)))))
-                /(16.*square<Real>()(square<Real>()(kappa)))*sigma2;
+                /(16.*squared(squared(kappa)))*sigma2;
         }
     }
 

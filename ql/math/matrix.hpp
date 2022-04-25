@@ -283,14 +283,14 @@ namespace QuantLib {
     }
 
     inline const Matrix& Matrix::operator*=(Real x) {
-        std::transform(begin(),end(),begin(),
-                       multiply_by<Real>(x));
+        std::transform(begin(), end(), begin(),
+                       [=](Real y) { return y*x; });
         return *this;
     }
 
     inline const Matrix& Matrix::operator/=(Real x) {
         std::transform(begin(),end(),begin(),
-                       divide_by<Real>(x));
+                       [=](Real y) { return y/x; });
         return *this;
     }
 
@@ -519,22 +519,22 @@ namespace QuantLib {
 
     inline Matrix operator*(const Matrix& m, Real x) {
         Matrix temp(m.rows(),m.columns());
-        std::transform(m.begin(),m.end(),temp.begin(),
-                       multiply_by<Real>(x));
+        std::transform(m.begin(), m.end(), temp.begin(),
+                       [=](Real y) { return y*x; });
         return temp;
     }
 
     inline Matrix operator*(Real x, const Matrix& m) {
         Matrix temp(m.rows(),m.columns());
-        std::transform(m.begin(),m.end(),temp.begin(),
-                       multiply_by<Real>(x));
+        std::transform(m.begin(), m.end(), temp.begin(),
+                       [=](Real y) { return x*y; });
         return temp;
     }
 
     inline Matrix operator/(const Matrix& m, Real x) {
         Matrix temp(m.rows(),m.columns());
-        std::transform(m.begin(),m.end(),temp.begin(),
-                       divide_by<Real>(x));
+        std::transform(m.begin(), m.end(), temp.begin(),
+                       [=](Real y) { return y/x; });
         return temp;
     }
 
@@ -607,7 +607,7 @@ namespace QuantLib {
 
         for (Size i=0; v1begin!=v1end; i++, v1begin++)
             std::transform(v2begin, v2end, result.row_begin(i),
-                           multiply_by<Real>(*v1begin));
+                           [=](Real y) { return y * (*v1begin); });
 
         return result;
     }

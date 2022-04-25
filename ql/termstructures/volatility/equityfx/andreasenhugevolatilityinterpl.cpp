@@ -21,7 +21,6 @@
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/array.hpp>
 #include <ql/math/comparison.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
@@ -305,10 +304,11 @@ namespace QuantLib {
         const DiscountFactor discount = rTS_->discount(expiryTime);
         const Real fwd = spot_->value()*qTS_->discount(expiryTime)/discount;
 
+        Size null = Null<Size>();
         const Size nOptions = std::count_if(
             calibrationMatrix_[iExpiry].begin(),
             calibrationMatrix_[iExpiry].end(),
-            not_null<Size>());
+            [=](Size n){ return n != null; });
 
         Array lnMarketStrikes(nOptions),
             marketNPVs(nOptions), marketVegas(nOptions);
@@ -317,7 +317,7 @@ namespace QuantLib {
         for (Size j=0, k=0; j < strikes_.size(); ++j) {
             const Size idx = calibrationMatrix_[iExpiry][j];
 
-            if (idx != Null<Size>()) {
+            if (idx != null) {
 
                 const Volatility vol = calibrationSet_[idx].second->value();
                 const Real stdDev = vol*std::sqrt(expiryTime);

@@ -21,7 +21,6 @@
 #define quantlib_longstaff_schwartz_multi_path_pricer_hpp
 
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/methods/montecarlo/pathpricer.hpp>
 #include <ql/methods/montecarlo/multipath.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>

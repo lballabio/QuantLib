@@ -23,7 +23,6 @@
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/legacy/libormarketmodels/lfmprocess.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/schedule.hpp>

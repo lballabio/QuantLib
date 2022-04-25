@@ -49,8 +49,8 @@ namespace QuantLib {
         const Real theta3 = theta2*theta;
 
         const Real alpha = 1/theta + std::sin(2*theta)/(2*theta2)
-            - 2*square<Real>()(std::sin(theta))/theta3;
-        const Real beta = 2*( (1+square<Real>()(std::cos(theta)))/theta2
+            - 2*squared(std::sin(theta))/theta3;
+        const Real beta = 2*( (1+squared(std::cos(theta)))/theta2
             - std::sin(2*theta)/theta3);
         const Real gamma = 4*(std::sin(theta)/theta3 - std::cos(theta)/theta2);
 

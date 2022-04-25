@@ -27,7 +27,6 @@
 #define quantlib_longstaff_schwartz_path_pricer_hpp
 
 #include <ql/functional.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/generallinearleastsquares.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
 #include <ql/methods/montecarlo/earlyexercisepathpricer.hpp>

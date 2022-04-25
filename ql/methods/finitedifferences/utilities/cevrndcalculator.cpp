@@ -23,9 +23,7 @@
 #include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-
 #include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
-
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/math/distributions/non_central_chi_squared.hpp>
 
@@ -48,11 +46,11 @@ namespace QuantLib {
     }
 
     Real CEVRNDCalculator::X(Real f) const {
-        return std::pow(f, 2.0*(1.0-beta_))/square<Real>()(alpha_*(1.0-beta_));
+        return std::pow(f, 2.0*(1.0-beta_))/squared(alpha_*(1.0-beta_));
     }
 
     Real CEVRNDCalculator::invX(Real x) const {
-        return std::pow(x*square<Real>()(alpha_*(1.0-beta_)),
+        return std::pow(x*squared(alpha_*(1.0-beta_)),
                         1.0/(2.0*(1.0-beta_)));
     }
 
@@ -90,8 +88,8 @@ namespace QuantLib {
 
         c = std::max(c, -0.45*b);
 
-        const Real h = 1 - 2*(b+c)*(b+3*c)/(3*square<Real>()(b+2*c));
-        const Real p = (b+2*c)/square<Real>()(b+c);
+        const Real h = 1 - 2*(b+c)*(b+3*c)/(3*squared(b+2*c));
+        const Real p = (b+2*c)/squared(b+c);
         const Real m = (h-1)*(1-3*h);
 
         const Real u = (std::pow(a/(b+c), h) - (1 + h*p*(h-1-0.5*(2-h)*m*p)))/

@@ -205,13 +205,13 @@ namespace QuantLib {
 
             Real Dint(Real k) const {
                 return 1/nu*std::log( ( std::sqrt(1+2*rho*nu/alpha*y(k)
-                    + square<Real>()(nu/alpha*y(k)) )
+                    + squared(nu/alpha*y(k)) )
                     - rho - nu/alpha*y(k) ) / (1-rho) );
             }
 
             Real D(Real k) const {
                 return std::sqrt(alpha*alpha+2*alpha*rho*nu*y(k)
-                    + square<Real>()(nu*y(k)))*std::pow(k,beta);
+                    + squared(nu*y(k)))*std::pow(k,beta);
             }
 
             Real omega0(Real k) const {
@@ -223,7 +223,7 @@ namespace QuantLib {
                 if (m > 1.0025 || m < 0.9975) {
                     return omega0(k)*(1+0.25*rho*nu*alpha*
                        (std::pow(k,beta)-std::pow(F,beta))/(k-F)*t)
-                       -omega0(k)/square<Real>()(Dint(k))*(std::log(
+                       -omega0(k)/squared(Dint(k))*(std::log(
                            omega0(k)) + 0.5*std::log((F*k/(D(F)*D(k))) ))*t;
                 }
                 else {
@@ -236,7 +236,7 @@ namespace QuantLib {
                 const Real alpha2 = alpha*alpha;
                 const Real rho2 = rho*rho;
                 return
-                    (alpha*std::pow(F,-3 + beta)*(alpha2*square<Real>()(-1 + beta)*std::pow(F,2*beta)*t + 6*alpha*beta*nu*std::pow(F,1 + beta)*rho*t +
+                    (alpha*std::pow(F,-3 + beta)*(alpha2*squared(-1 + beta)*std::pow(F,2*beta)*t + 6*alpha*beta*nu*std::pow(F,1 + beta)*rho*t +
                         F2*(24 + nu*nu*(2 - 3*rho2)*t)))/24.0 +
                      (3*alpha2*alpha*std::pow(-1 + beta,3)*std::pow(F,3*beta)*t +
                         3*alpha2*(-1 + beta)*(-1 + 5*beta)*nu*std::pow(F,1 + 2*beta)*rho*t + nu*F2*F*rho*(24 + nu*nu*(-4 + 3*rho2)*t) +

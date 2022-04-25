@@ -22,7 +22,6 @@
 
 #include <ql/types.hpp>
 #include <ql/math/matrix.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/integrals/momentbasedgaussianpolynomial.hpp>
@@ -98,11 +97,11 @@ namespace gaussian_quadratures_test {
     template <class T>
     void testSingleJacobi(const T& I) {
         testSingle(I, "f(x) = 1",
-                   constant<Real,Real>(1.0), 2.0);
+                   [](Real x){ return 1.0; },   2.0);
         testSingle(I, "f(x) = x",
-                   identity<Real>(),         0.0);
+                   [](Real x){ return x; },     0.0);
         testSingle(I, "f(x) = x^2",
-                   square<Real>(),           2/3.);
+                   [](Real x){ return x * x; }, 2/3.);
         testSingle(I, "f(x) = sin(x)",
                    static_cast<Real(*)(Real)>(std::sin), 0.0);
         testSingle(I, "f(x) = cos(x)",
@@ -198,15 +197,15 @@ void GaussianQuadraturesTest::testTabulated() {
 
      using namespace gaussian_quadratures_test;
 
-     testSingleTabulated(constant<Real,Real>(1.0), "f(x) = 1",
+     testSingleTabulated([](Real x){ return 1.0; }, "f(x) = 1",
                          2.0,       1.0e-13);
-     testSingleTabulated(identity<Real>(), "f(x) = x",
+     testSingleTabulated([](Real x){ return x; }, "f(x) = x",
                          0.0,       1.0e-13);
-     testSingleTabulated(square<Real>(), "f(x) = x^2",
+     testSingleTabulated([](Real x){ return x * x; }, "f(x) = x^2",
                          (2.0/3.0), 1.0e-13);
-     testSingleTabulated(cube<Real>(), "f(x) = x^3",
+     testSingleTabulated([](Real x){ return x * x * x; }, "f(x) = x^3",
                          0.0,       1.0e-13);
-     testSingleTabulated(fourth_power<Real>(), "f(x) = x^4",
+     testSingleTabulated([](Real x){ return x * x * x * x; }, "f(x) = x^4",
                          (2.0/5.0), 1.0e-13);
 }
 

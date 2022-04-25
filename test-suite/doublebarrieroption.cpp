@@ -365,8 +365,8 @@ void DoubleBarrierOptionTest::testEuropeanHaugValues() {
                         Handle<YieldTermStructure>(rTS),
                         Handle<YieldTermStructure>(qTS),
                         Handle<Quote>(spot),
-                        square<Real>()(vol->value()), 1.0,
-                        square<Real>()(vol->value()), 0.001, 0.0)), 251, 76, 3);
+                        squared(vol->value()), 1.0,
+                        squared(vol->value()), 0.001, 0.0)), 251, 76, 3);
 
             opt.setPricingEngine(engine);
             calculated = opt.NPV();

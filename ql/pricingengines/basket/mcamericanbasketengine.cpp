@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <utility>
