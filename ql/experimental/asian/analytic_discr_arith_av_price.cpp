@@ -36,35 +36,42 @@ void AnalyticDiscreteArithmeticAveragePriceAsianEngine::calculate() const {
     if (pastFixings != 0) {
         accruedAverage = runningAccumulator / (pastFixings + futureFixings);
     }
+    results_.additionalResults["accrued"] = accruedAverage;
 
     // Populate some additional results that don't change
     Real discount = process_->riskFreeRate()->discount(arguments_.exercise->lastDate());
     results_.additionalResults["discount"] = discount;
-    results_.additionalResults["accrued"] = accruedAverage;
 
     ext::shared_ptr<PlainVanillaPayoff> payoff =
         ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
     QL_REQUIRE(payoff, "non-plain payoff given");
 
-    // TODO: If not model dependent, return early.
-    Size m = futureFixings + pastFixings;
-    /*if (pastFixings > 0) {
-
-        if (accruedAverage > 1.0 * arguments_.fixingDates.size() / pastFixings * payoff->strike()) {
-            if (payoff->optionType() == Option::Type::Call) {
-                results_.value = 1010101;
-            } else if (payoff->optionType() == Option::Type::Put) {
-                results_.value = 0;
-                return;
-            } else {
-                QL_FAIL("unexpected option type " << payoff->optionType());
-            }
-        }
-    }*/
-
     // We will read the volatility off the surface at the effective strike
-    // We should only get this far when the effectiveStrike > 0 but will check anyway
     Real effectiveStrike = payoff->strike() - accruedAverage;
+    results_.additionalResults["strike"] = payoff->strike();
+    results_.additionalResults["effective_strike"] = effectiveStrike;
+
+    // If the effective strike is negative, exercise resp. permanent OTM is guaranteed and the
+    // valuation is made easy
+    Size m = futureFixings + pastFixings;
+    if (effectiveStrike <= 0.0) {
+        // For a reference, see "Option Pricing Formulas", Haug, 2nd ed, p. 193
+        if (payoff->optionType() == Option::Type::Call) {
+            Real spot = process_->stateVariable()->value();
+            Real S_A_hat = accruedAverage;
+            for (const auto& fd : arguments_.fixingDates) {
+                S_A_hat += (spot * process_->dividendYield()->discount(fd) /
+                            process_->riskFreeRate()->discount(fd)) /
+                           m;
+            }
+            results_.value = discount * (S_A_hat - payoff->strike());
+        } else if (payoff->optionType() == Option::Type::Put) {
+            results_.value = 0;
+        }
+        return;
+    }
+
+    // We should only get this far when the effectiveStrike > 0 but will check anyway
     QL_REQUIRE(effectiveStrike > 0.0, "expected effectiveStrike to be positive");
 
     // Valuation date
@@ -98,7 +105,6 @@ void AnalyticDiscreteArithmeticAveragePriceAsianEngine::calculate() const {
     Real EA2 = 0.0;
     Size n = forwards.size();
 
-    // References spot prices
     for (Size i = 0; i < n; ++i) {
         EA2 += forwards[i] * forwards[i] * exp(spotVars[i]);
         for (Size j = 0; j < i; ++j) {
@@ -115,8 +121,6 @@ void AnalyticDiscreteArithmeticAveragePriceAsianEngine::calculate() const {
     // Populate results
     results_.value =
         blackFormula(payoff->optionType(), effectiveStrike, EA, sigma * sqrt(tn), discount);
-    results_.additionalResults["strike"] = payoff->strike();
-    results_.additionalResults["effective_strike"] = effectiveStrike;
     results_.additionalResults["forward"] = EA;
     results_.additionalResults["exp_A_2"] = EA2;
     results_.additionalResults["tte"] = tn;
