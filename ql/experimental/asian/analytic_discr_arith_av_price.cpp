@@ -29,16 +29,14 @@ void AnalyticDiscreteArithmeticAveragePriceAsianEngine::calculate() const {
                "must be Arithmetic Average::Type");
 
     // Calculate the accrued portion
-    Real runningAccumulator = arguments_.runningAccumulator;
     Size pastFixings = arguments_.pastFixings;
     Size futureFixings = arguments_.fixingDates.size();
     Real accruedAverage = 0;
     if (pastFixings != 0) {
-        accruedAverage = runningAccumulator / (pastFixings + futureFixings);
+        accruedAverage = arguments_.runningAccumulator / (pastFixings + futureFixings);
     }
     results_.additionalResults["accrued"] = accruedAverage;
 
-    // Populate some additional results that don't change
     Real discount = process_->riskFreeRate()->discount(arguments_.exercise->lastDate());
     results_.additionalResults["discount"] = discount;
 
