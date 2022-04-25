@@ -77,8 +77,9 @@ void AnalyticDiscreteArithmeticAveragePriceAsianEngine::calculate() const {
     std::vector<Time> times;
     std::vector<Real> spotVars;
     std::vector<Real> spotVolsVec; // additional results only
+    Real spot = process_->stateVariable()->value();
+
     for (const auto& fd : arguments_.fixingDates) {
-        Real spot = process_->stateVariable()->value();
         DiscountFactor dividendDiscount = process_->dividendYield()->discount(fd);
         DiscountFactor riskFreeDiscountForFwdEstimation = process_->riskFreeRate()->discount(fd);
 
