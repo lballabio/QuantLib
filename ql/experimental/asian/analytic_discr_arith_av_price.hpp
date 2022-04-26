@@ -38,8 +38,7 @@ namespace QuantLib {
         - the correctness of the returned value is tested by reproducing
           results in literature with flat as well as upward and downward
           sloping volatility term structures.
-
-        \todo Add support for Asian options on futures
+        - the pricing of trades with guaranteed exercise/OTM is also tested.
     */
     class AnalyticDiscreteArithmeticAveragePriceAsianEngine
     : public DiscreteAveragingAsianOption::engine {
