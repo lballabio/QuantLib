@@ -1638,6 +1638,63 @@ void AsianOptionTest::testPastFixings() {
 
 }
 
+void AsianOptionTest::testPastFixingsModelDependency() {
+
+    BOOST_TEST_MESSAGE(
+        "Testing use of past fixings in Asian options where model dependency is flagged...");
+
+    DayCounter dc = Actual360();
+    Date today = Settings::instance().evaluationDate();
+
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    ext::shared_ptr<StrikedTypePayoff> call_payoff(new PlainVanillaPayoff(Option::Call, 20.0));
+    ext::shared_ptr<StrikedTypePayoff> put_payoff(new PlainVanillaPayoff(Option::Put, 20.0));
+
+    std::vector<Date> fixingDates = {today - 6 * Weeks, today - 2 * Weeks, today + 2 * Weeks,
+                                     today + 6 * Weeks};
+
+    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(today + 6 * Weeks));
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new BlackScholesMertonProcess(
+        Handle<Quote>(spot), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
+        Handle<BlackVolTermStructure>(volTS)));
+
+    // Test guaranteed exercise (calls) and permanent OTMness (puts), with the average price TW
+    // engine
+
+    ext::shared_ptr<PricingEngine> engine = ext::shared_ptr<PricingEngine>(
+        new AnalyticDiscreteArithmeticAveragePriceAsianEngine(stochProcess));
+
+    std::vector<Real> allPastFixings = {spot->value(), spot->value()};
+
+    DiscreteAveragingAsianOption call_option(Average::Arithmetic, fixingDates, call_payoff,
+                                             exercise, allPastFixings);
+    DiscreteAveragingAsianOption put_option(Average::Arithmetic, fixingDates, put_payoff, exercise,
+                                            allPastFixings);
+
+    call_option.setPricingEngine(engine);
+    put_option.setPricingEngine(engine);
+
+    // The expected call NPV is equal to that of an averaging forward over the same fixing dates,
+    // since exercise is guaranteed
+    Real expected_call_option_npv =
+        rTS->discount(exercise->lastDate()) *
+        ((100.0 + 100.0 + 100.0 * qTS->discount(fixingDates[2]) / rTS->discount(fixingDates[2]) +
+          100.0 * qTS->discount(fixingDates[3]) / rTS->discount(fixingDates[3])) /
+             size(fixingDates) -
+         call_payoff->strike());
+
+    BOOST_CHECK_EQUAL(call_option.NPV(), expected_call_option_npv);
+    BOOST_CHECK_EQUAL(put_option.NPV(), 0.0);
+}
+
 
 void AsianOptionTest::testAllFixingsInThePast() {
 
@@ -2275,6 +2332,7 @@ test_suite* AsianOptionTest::experimental(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceHeston));
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testDiscreteGeometricAveragePriceHestonPastFixings));
     suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testAnalyticDiscreteArithmeticAveragePrice));
+    suite->add(QUANTLIB_TEST_CASE(&AsianOptionTest::testPastFixingsModelDependency));
 
     return suite;
 }
