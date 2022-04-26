@@ -5,11 +5,13 @@ this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
     analytic_cont_geom_av_price_heston.hpp \
-    analytic_discr_geom_av_price_heston.hpp
+    analytic_discr_geom_av_price_heston.hpp \
+    analytic_discr_arith_av_price.hpp
 
 cpp_files = \
     analytic_cont_geom_av_price_heston.cpp \
-    analytic_discr_geom_av_price_heston.cpp
+    analytic_discr_geom_av_price_heston.cpp \
+    analytic_discr_arith_av_price.cpp
 
 if UNITY_BUILD
 
