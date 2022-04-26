@@ -72,9 +72,6 @@ void AnalyticDiscreteArithmeticAveragePriceAsianEngine::calculate() const {
     // We should only get this far when the effectiveStrike > 0 but will check anyway
     QL_REQUIRE(effectiveStrike > 0.0, "expected effectiveStrike to be positive");
 
-    // Valuation date
-    Date today = Settings::instance().evaluationDate();
-
     // Expected value of the non-accrued portion of the average prices
     // In general, m will equal n below if there is no accrued. If accrued, m > n.
     Real EA = 0.0;
