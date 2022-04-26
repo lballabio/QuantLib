@@ -1688,7 +1688,7 @@ void AsianOptionTest::testPastFixingsModelDependency() {
         rTS->discount(exercise->lastDate()) *
         ((100.0 + 100.0 + 100.0 * qTS->discount(fixingDates[2]) / rTS->discount(fixingDates[2]) +
           100.0 * qTS->discount(fixingDates[3]) / rTS->discount(fixingDates[3])) /
-             size(fixingDates) -
+             fixingDates.size() -
          call_payoff->strike());
 
     BOOST_CHECK_EQUAL(call_option.NPV(), expected_call_option_npv);
