@@ -43,7 +43,7 @@ namespace QuantLib {
     class AnalyticDiscreteArithmeticAveragePriceAsianEngine
     : public DiscreteAveragingAsianOption::engine {
       public:
-        AnalyticDiscreteArithmeticAveragePriceAsianEngine(
+        explicit AnalyticDiscreteArithmeticAveragePriceAsianEngine(
             ext::shared_ptr<GeneralizedBlackScholesProcess> process)
         : process_(process) {
             registerWith(process_);
