@@ -139,7 +139,7 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
     PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234U));
 
     std::vector<ext::function<Real(Array)> > v;
-    v.emplace_back([](Array x){ return 1.0; });
+    v.emplace_back([](const Array& x) { return 1.0; });
     for (Size i=0; i < dims; ++i) {
         v.emplace_back(get_item(i));
     }
