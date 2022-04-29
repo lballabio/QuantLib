@@ -53,9 +53,8 @@ using boost::posix_time::time_duration;
 
 namespace QuantLib {
 #ifndef QL_HIGH_RESOLUTION_DATE
+
     // constructors
-    Date::Date()
-    : serialNumber_(Date::serial_type(0)) {}
 
     Date::Date(Date::serial_type serialNumber)
     : serialNumber_(serialNumber) {
@@ -511,9 +510,6 @@ namespace QuantLib {
         }
     }
 
-
-    Date::Date()
-    : dateTime_(serialNumberDateReference()) {}
 
     Date::Date(const ptime& dateTime)
     : dateTime_(dateTime) {}

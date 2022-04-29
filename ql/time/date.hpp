@@ -129,7 +129,12 @@ namespace QuantLib {
         //! \name constructors
         //@{
         //! Default constructor returning a null date.
-        Date();
+        constexpr Date()
+#ifdef QL_HIGH_RESOLUTION_DATE
+        : dateTime_(serialNumberDateReference()) {}
+#else
+        : serialNumber_(Date::serial_type(0)) {}
+#endif
         //! Constructor taking a serial number as given by Applix or Excel.
         explicit Date(Date::serial_type serialNumber);
         //! More traditional constructor.

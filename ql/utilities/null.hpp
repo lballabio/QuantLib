@@ -54,7 +54,7 @@ namespace QuantLib {
         // null value for floating-point types
         template <>
         struct FloatingPointNull<true> {
-            static float nullValue() {
+            constexpr static float nullValue() {
                 return QL_NULL_REAL;
             }
         };
@@ -62,7 +62,7 @@ namespace QuantLib {
         // null value for integer types
         template <>
         struct FloatingPointNull<false> {
-            static int nullValue() {
+            constexpr static int nullValue() {
                 return QL_NULL_INTEGER;
             }
         };
@@ -73,8 +73,8 @@ namespace QuantLib {
     template <typename T>
     class Null {
       public:
-        Null() = default;
-        operator T() const {
+        constexpr Null() = default;
+        constexpr operator T() const {
             return T(detail::FloatingPointNull<
                          boost::is_floating_point<T>::value>::nullValue());
         }
