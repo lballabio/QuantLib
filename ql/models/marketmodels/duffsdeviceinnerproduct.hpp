@@ -38,8 +38,14 @@ namespace QuantLib {
               <boost/numeric/ublas/functional.hpp>
               <boostnumeric/ublas/detail/matrix_assign.hpp>
               <boost/numeric/ublas/detail/vector_assign.hpp>
+
+    \deprecated To be removed as unused.
+                Copy it in your codebase if you need it.
+                Deprecated in version 1.27.
+
     */
     template <class InputIterator1, class InputIterator2, class T>
+    QL_DEPRECATED
     inline T inner_product(InputIterator1 f1, InputIterator1 l1,
                            InputIterator2 f2, T init) {
 
