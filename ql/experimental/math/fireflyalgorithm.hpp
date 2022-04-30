@@ -35,18 +35,18 @@ http://arxiv.org/pdf/1003.1464.pdf
 #include <ql/math/randomnumbers/seedgenerator.hpp>
 
 #include <boost/random/mersenne_twister.hpp>
-typedef boost::mt19937 base_generator_type;
-
 #include <boost/random/normal_distribution.hpp>
-typedef boost::random::normal_distribution<QuantLib::Real> BoostNormalDistribution;
 #include <boost/random/uniform_int_distribution.hpp>
-typedef boost::random::uniform_int_distribution<QuantLib::Size> uniform_integer;
 #include <boost/random/variate_generator.hpp>
-typedef boost::variate_generator<base_generator_type, uniform_integer> variate_integer;
 
 #include <cmath>
 
 namespace QuantLib {
+
+    typedef boost::mt19937 base_generator_type;
+    typedef boost::random::normal_distribution<QuantLib::Real> BoostNormalDistribution;
+    typedef boost::random::uniform_int_distribution<QuantLib::Size> uniform_integer;
+    typedef boost::variate_generator<base_generator_type, uniform_integer> variate_integer;
 
     /*! The main process is as follows:
     M individuals are used to explore the N-dimensional parameter space:
