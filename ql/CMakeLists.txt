@@ -2350,9 +2350,6 @@ target_include_directories(ql_library SYSTEM PUBLIC
     ${Boost_INCLUDE_DIRS}
     ${OpenMP_CXX_INCLUDE_DIRS})
 
-target_link_directories(ql_library PUBLIC
-    ${BOOST_LIBRARY_DIRS})
-
 target_link_libraries(ql_library PUBLIC
     ${OpenMP_CXX_LIBRARIES})
 
