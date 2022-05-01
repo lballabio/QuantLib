@@ -27,17 +27,8 @@
 #define quantlib_null_hpp
 
 #include <ql/types.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-
-#include <boost/type_traits.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <type_traits>
+#include <limits>
 
 namespace QuantLib {
 
@@ -55,7 +46,8 @@ namespace QuantLib {
         template <>
         struct FloatingPointNull<true> {
             constexpr static float nullValue() {
-                return QL_NULL_REAL;
+                // a specific values that should fit into any Real
+                return (std::numeric_limits<float>::max)();
             }
         };
 
@@ -63,7 +55,8 @@ namespace QuantLib {
         template <>
         struct FloatingPointNull<false> {
             constexpr static int nullValue() {
-                return QL_NULL_INTEGER;
+                // a specific values that should fit into any Integer
+                return (std::numeric_limits<int>::max)();
             }
         };
 
@@ -75,8 +68,7 @@ namespace QuantLib {
       public:
         constexpr Null() = default;
         constexpr operator T() const {
-            return T(detail::FloatingPointNull<
-                         boost::is_floating_point<T>::value>::nullValue());
+            return T(detail::FloatingPointNull<std::is_floating_point<T>::value>::nullValue());
         }
     };
 

@@ -25,7 +25,7 @@
 #define quantlib_data_formatters_hpp
 
 #include <ql/utilities/null.hpp>
-#include <iosfwd>
+#include <ostream>
 
 namespace QuantLib {
 
