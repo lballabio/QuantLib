@@ -29,14 +29,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-typedef GenericGaussianStatistics<IncrementalStatistics>
-    IncrementalGaussianStatistics;
-
 void RiskStatisticsTest::testResults() {
 
     BOOST_TEST_MESSAGE("Testing risk measures...");
 
-    IncrementalGaussianStatistics igs;
+    GenericGaussianStatistics<IncrementalStatistics> igs;
     RiskStatistics s;
 
     Real averages[] = { -100.0, -1.0, 0.0, 1.0, 100.0 };

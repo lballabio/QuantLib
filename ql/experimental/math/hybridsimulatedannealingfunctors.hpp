@@ -29,22 +29,11 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/optimization/problem.hpp>
 
 #include <boost/random/mersenne_twister.hpp>
-typedef boost::mt19937 base_generator_type;
-
 #include <boost/random/normal_distribution.hpp>
 #include <boost/random/lognormal_distribution.hpp>
 #include <boost/random/cauchy_distribution.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
-typedef boost::random::uniform_real_distribution<double> uniform;
-typedef boost::random::normal_distribution<> normal_random;
-typedef boost::random::lognormal_distribution<> lognormal_random;
-typedef boost::random::cauchy_distribution<> cauchy_random;
-
 #include <boost/random/variate_generator.hpp>
-typedef boost::variate_generator<base_generator_type&, uniform > uniform_variate;
-typedef boost::variate_generator<base_generator_type, normal_random > normal_variate;
-typedef boost::variate_generator<base_generator_type&, lognormal_random > lognormal_variate;
-typedef boost::variate_generator<base_generator_type&, cauchy_random > cauchy_variate;
 
 #include <algorithm> //for std::max
 #include <cmath>     //for log
@@ -53,6 +42,16 @@ typedef boost::variate_generator<base_generator_type&, cauchy_random > cauchy_va
 
 namespace QuantLib
 {
+    typedef boost::mt19937 base_generator_type;
+    typedef boost::random::uniform_real_distribution<double> uniform;
+    typedef boost::random::normal_distribution<> normal_random;
+    typedef boost::random::lognormal_distribution<> lognormal_random;
+    typedef boost::random::cauchy_distribution<> cauchy_random;
+    typedef boost::variate_generator<base_generator_type&, uniform > uniform_variate;
+    typedef boost::variate_generator<base_generator_type, normal_random > normal_variate;
+    typedef boost::variate_generator<base_generator_type&, lognormal_random > lognormal_variate;
+    typedef boost::variate_generator<base_generator_type&, cauchy_random > cauchy_variate;
+
     //! Lognormal Sampler
     /*!    Sample from lognormal distribution. This means that the parameter space
     must have support on the positve side of the real line only.
