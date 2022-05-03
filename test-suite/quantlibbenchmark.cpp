@@ -93,11 +93,7 @@
 
 #include <ql/types.hpp>
 #include <ql/version.hpp>
-#ifdef QL_USE_HEADER_ONLY_BOOST_TEST
 #include <boost/test/included/unit_test.hpp>
-#else
-#include <boost/test/unit_test.hpp>
-#endif
 #include <iomanip>
 #include <iostream>
 #include <list>
@@ -115,9 +111,6 @@
 */
 #if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
-#  define BOOST_LIB_NAME boost_unit_test_framework
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
 #endif
 
 #include "utilities.hpp"
