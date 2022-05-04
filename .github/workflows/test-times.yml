@@ -18,7 +18,7 @@ jobs:
     - name: Setup
       run: |
         sudo apt update
-        sudo apt install -y libboost-all-dev autoconf automake libtool ccache
+        sudo apt install -y libboost-dev autoconf automake libtool ccache
     - name: Build
       run: |
         ./autogen.sh

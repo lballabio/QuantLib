@@ -124,10 +124,6 @@ endif()
 
 if (NOT DEFINED QL_BOOST_COMPONENTS)
     set(QL_BOOST_COMPONENTS "")
-    # Boost unit_test_framework needed for tests and benchmark
-    if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
-        set(QL_BOOST_COMPONENTS "${QL_BOOST_COMPONENTS};unit_test_framework")
-    endif()
     # Boost thread needed for sessions, singleton thread-safe init and thread-safe observer pattern
     if(QL_ENABLE_SESSIONS OR QL_ENABLE_SINGLETON_THREAD_SAFE_INIT OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
         set(QL_BOOST_COMPONENTS "${QL_BOOST_COMPONENTS};thread")

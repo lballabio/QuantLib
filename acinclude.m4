@@ -106,26 +106,14 @@ AC_DEFUN([QL_CHECK_BOOST_VERSION_1_59_OR_HIGHER],
 AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
 [AC_MSG_CHECKING([for Boost.Test])
  AC_REQUIRE([AC_PROG_CC])
- ql_original_LIBS=$LIBS
  ql_original_CXXFLAGS=$CXXFLAGS
- CC_BASENAME=`basename $CC`
- CC_VERSION=`echo "__GNUC__ __GNUC_MINOR__" | $CC -E -x c - | tail -n 1 | $SED -e "s/ //"`
- for suffix in "" \
-               "-$CC_BASENAME$CC_VERSION" \
-               "-$CC_BASENAME" \
-               "-mt-$CC_BASENAME$CC_VERSION" \
-               "-$CC_BASENAME$CC_VERSION-mt" \
-               "-x$CC_BASENAME$CC_VERSION-mt" \
-               "-mt-$CC_BASENAME" \
-               "-$CC_BASENAME-mt" \
-               "-mt" ; do
-     boost_libs="-lboost_unit_test_framework$suffix"
-     LIBS="$ql_original_LIBS $boost_libs"
+ for test_flags in "" \
+                   "-DBOOST_TEST_MAIN -DBOOST_TEST_DYN_LINK" ; do
      # static version
-     CXXFLAGS="$ql_original_CXXFLAGS"
+     CXXFLAGS="$ql_original_CXXFLAGS $test_flags"
      boost_unit_found=no
      AC_LINK_IFELSE([AC_LANG_SOURCE(
-         [@%:@include <boost/test/unit_test.hpp>
+         [@%:@include <boost/test/included/unit_test.hpp>
           using namespace boost::unit_test_framework;
           test_suite*
           init_unit_test_suite(int argc, char** argv)
@@ -133,38 +121,21 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
               return (test_suite*) 0;
           }
          ])],
-         [boost_unit_found=$boost_libs
-          boost_defines=""
-          break],
-         [])
-     # shared version
-     CXXFLAGS="$ql_original_CXXFLAGS -DBOOST_TEST_MAIN -DBOOST_TEST_DYN_LINK"
-     boost_unit_found=no
-     AC_LINK_IFELSE([AC_LANG_SOURCE(
-         [@%:@include <boost/test/unit_test.hpp>
-          using namespace boost::unit_test_framework;
-          test_suite*
-          init_unit_test_suite(int argc, char** argv)
-          {
-              return (test_suite*) 0;
-          }
-         ])],
-         [boost_unit_found=$boost_libs
-          boost_defines="-DBOOST_TEST_DYN_LINK"
+         [boost_unit_found=yes
+          boost_defines=$test_flags
           break],
          [])
  done
- LIBS="$ql_original_LIBS"
  CXXFLAGS="$ql_original_CXXFLAGS"
  if test "$boost_unit_found" = no ; then
      AC_MSG_RESULT([no])
-     AC_SUBST([BOOST_UNIT_TEST_LIB],[""])
+     AC_SUBST([HAVE_BOOST_TEST],[""])
      AC_SUBST([BOOST_UNIT_TEST_MAIN_CXXFLAGS],[""])
      AC_MSG_WARN([Boost unit-test framework not found.])
      AC_MSG_WARN([The test suite will be disabled.])
  else
      AC_MSG_RESULT([yes])
-     AC_SUBST([BOOST_UNIT_TEST_LIB],[$boost_libs])
+     AC_SUBST([HAVE_BOOST_TEST],["yes"])
      AC_SUBST([BOOST_UNIT_TEST_MAIN_CXXFLAGS],[$boost_defines])
  fi
 ])
