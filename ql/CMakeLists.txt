@@ -48,7 +48,6 @@ set(QL_SOURCES
     experimental/amortizingbonds/amortizingfixedratebond.cpp
     experimental/amortizingbonds/amortizingfloatingratebond.cpp
     experimental/asian/analytic_cont_geom_av_price_heston.cpp
-    experimental/asian/analytic_discr_arith_av_price.cpp
     experimental/asian/analytic_discr_geom_av_price_heston.cpp
     experimental/averageois/arithmeticaverageois.cpp
     experimental/averageois/arithmeticoisratehelper.cpp
@@ -661,6 +660,7 @@ set(QL_SOURCES
     pricingengines/asian/mc_discr_arith_av_strike.cpp
     pricingengines/asian/mc_discr_geom_av_price.cpp
     pricingengines/asian/mc_discr_geom_av_price_heston.cpp
+    pricingengines/asian/turnbullwakemanasianengine.cpp
     pricingengines/barrier/analyticbarrierengine.cpp
     pricingengines/barrier/analyticbinarybarrierengine.cpp
     pricingengines/barrier/discretizedbarrieroption.cpp
@@ -979,7 +979,6 @@ set(QL_HEADERS
     experimental/amortizingbonds/amortizingfixedratebond.hpp
     experimental/amortizingbonds/amortizingfloatingratebond.hpp
     experimental/asian/analytic_cont_geom_av_price_heston.hpp
-    experimental/asian/analytic_discr_arith_av_price.hpp
     experimental/asian/analytic_discr_geom_av_price_heston.hpp
     experimental/averageois/arithmeticaverageois.hpp
     experimental/averageois/arithmeticoisratehelper.hpp
@@ -1842,6 +1841,7 @@ set(QL_HEADERS
     pricingengines/asian/mc_discr_geom_av_price.hpp
     pricingengines/asian/mc_discr_geom_av_price_heston.hpp
     pricingengines/asian/mcdiscreteasianenginebase.hpp
+    pricingengines/asian/turnbullwakemanasianengine.hpp
     pricingengines/barrier/analyticbarrierengine.hpp
     pricingengines/barrier/analyticbinarybarrierengine.hpp
     pricingengines/barrier/binomialbarrierengine.hpp
