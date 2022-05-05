@@ -4389,8 +4389,8 @@
       <Filter>instruments</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\bond\riskybondengine.hpp" />
-    <ClInclude Include="ql\experimental\asian\analytic_discr_arith_av_price.hpp">
-      <Filter>experimental\asian</Filter>
+    <ClInclude Include="ql\pricingengines\asian\turnbullwakemanasianengine.hpp">
+      <Filter>pricingengines\asian</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -7104,8 +7104,8 @@
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\bond\riskybondengine.cpp" />
-    <ClCompile Include="ql\experimental\asian\analytic_discr_arith_av_price.cpp">
-      <Filter>experimental\asian</Filter>
+    <ClCompile Include="ql\pricingengines\asian\turnbullwakemanasianengine.cpp">
+      <Filter>pricingengines\asian</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -15,13 +15,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file ql/experimental/asian/analytic_discr_arith_av_price.hpp
+/*! \file ql/pricingengines/asian/turnbullwakemanasianengine.hpp
     \brief Turnbull Wakeman moment-matching Asian option Engine
     \ingroup asianengines
 */
 
-#ifndef quantlib_analytic_discrete_arithmetic_average_price_asian_engine_hpp
-#define quantlib_analytic_discrete_arithmetic_average_price_asian_engine_hpp
+#ifndef quantlib_turnbull_wakeman_asian_engine_hpp
+#define quantlib_turnbull_wakeman_asian_engine_hpp
 
 #include <ql/instruments/asianoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
@@ -40,10 +40,9 @@ namespace QuantLib {
           sloping volatility term structures.
         - the pricing of trades with guaranteed exercise/OTM is also tested.
     */
-    class AnalyticDiscreteArithmeticAveragePriceAsianEngine
-    : public DiscreteAveragingAsianOption::engine {
+    class TurnbullWakemanAsianEngine : public DiscreteAveragingAsianOption::engine {
       public:
-        explicit AnalyticDiscreteArithmeticAveragePriceAsianEngine(
+        explicit TurnbullWakemanAsianEngine(
             ext::shared_ptr<GeneralizedBlackScholesProcess> process)
         : process_(process) {
             registerWith(process_);

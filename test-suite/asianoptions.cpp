@@ -40,7 +40,7 @@
 #include <ql/experimental/exoticoptions/continuousarithmeticasianvecerengine.hpp>
 #include <ql/experimental/asian/analytic_cont_geom_av_price_heston.hpp>
 #include <ql/experimental/asian/analytic_discr_geom_av_price_heston.hpp>
-#include <ql/experimental/asian/analytic_discr_arith_av_price.hpp>
+#include <ql/pricingengines/asian/turnbullwakemanasianengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -978,7 +978,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
             }
         }
 
-        engine = ext::make_shared<AnalyticDiscreteArithmeticAveragePriceAsianEngine>(stochProcess);
+        engine = ext::make_shared<TurnbullWakemanAsianEngine>(stochProcess);
         option.setPricingEngine(engine);
         calculated = option.NPV();
         tolerance = 3.0e-2;
@@ -1670,7 +1670,7 @@ void AsianOptionTest::testPastFixingsModelDependency() {
     // engine
 
     ext::shared_ptr<PricingEngine> engine = ext::shared_ptr<PricingEngine>(
-        new AnalyticDiscreteArithmeticAveragePriceAsianEngine(stochProcess));
+        new TurnbullWakemanAsianEngine(stochProcess));
 
     std::vector<Real> allPastFixings = {spot->value(), spot->value()};
 
@@ -2179,7 +2179,7 @@ namespace {
     };
 }
 
-void AsianOptionTest::testAnalyticDiscreteArithmeticAveragePrice() {
+void AsianOptionTest::testTurnbullWakemanAsianEngine() {
 
     BOOST_TEST_MESSAGE("Testing Turnbull-Wakeman engine for discrete-time arithmetic average-rate "
                        "Asians options with term structure support...");
@@ -2276,7 +2276,7 @@ void AsianOptionTest::testAnalyticDiscreteArithmeticAveragePrice() {
 
         // Construct engine
         ext::shared_ptr<PricingEngine> engine(
-            new AnalyticDiscreteArithmeticAveragePriceAsianEngine(stochProcess));
+            new TurnbullWakemanAsianEngine(stochProcess));
 
         DiscreteAveragingAsianOption option(averageType, 0, 0, fixingDates, payoff, exercise);
         option.setPricingEngine(engine);

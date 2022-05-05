@@ -16,12 +16,12 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/asian/analytic_discr_arith_av_price.hpp>
+#include <ql/pricingengines/asian/turnbullwakemanasianengine.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 
 using namespace QuantLib;
 
-void AnalyticDiscreteArithmeticAveragePriceAsianEngine::calculate() const {
+void TurnbullWakemanAsianEngine::calculate() const {
 
     // Enforce a few required things
     QL_REQUIRE(arguments_.exercise->type() == Exercise::European, "not a European Option");
