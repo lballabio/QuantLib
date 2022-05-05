@@ -19,6 +19,7 @@
 
 #include <ql/experimental/catbonds/catrisk.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <random>
 #include <utility>
 
 namespace QuantLib {
@@ -84,9 +85,9 @@ namespace QuantLib {
     BetaRiskSimulation::BetaRiskSimulation(Date start, Date end, Real maxLoss, Real lambda, Real alpha, Real beta) 
               : CatSimulation(start, end), 
                 maxLoss_(maxLoss), 
-                exponential_(rng_, boost::exponential_distribution<>(lambda)),
-                gammaAlpha_(rng_, boost::gamma_distribution<>(alpha)),
-                gammaBeta_(rng_, boost::gamma_distribution<>(beta))
+                exponential_(lambda),
+                gammaAlpha_(alpha),
+                gammaBeta_(beta)
     {
         DayCounter dayCounter = ActualActual(ActualActual::ISDA);
         dayCount_ = dayCounter.dayCount(start, end);
@@ -95,15 +96,15 @@ namespace QuantLib {
 
     Real BetaRiskSimulation::generateBeta()
     {
-        Real X = gammaAlpha_();
-        Real Y = gammaBeta_();
+        Real X = gammaAlpha_(rng_);
+        Real Y = gammaBeta_(rng_);
         return X*maxLoss_/(X+Y);
     }
 
     bool BetaRiskSimulation::nextPath(std::vector<std::pair<Date, Real> > &path)
     {        
         path.resize(0);
-        Real eventFraction = exponential_();       
+        Real eventFraction = exponential_(rng_);
         while(eventFraction<=yearFraction_)
         {
             Integer days = round(eventFraction*dayCount_/yearFraction_);
@@ -113,7 +114,7 @@ namespace QuantLib {
                 path.emplace_back(eventDate, generateBeta());
             }
             else break;
-            eventFraction = exponential_();
+            eventFraction = exponential_(rng_);
         }
         return true;
     }
