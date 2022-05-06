@@ -14,7 +14,7 @@ this_include_HEADERS = \
 	mc_discr_geom_av_price.hpp \
 	mc_discr_geom_av_price_heston.hpp \
 	mcdiscreteasianenginebase.hpp \
-	turnbullwakemanasianengine.cpp
+	turnbullwakemanasianengine.hpp
 
 cpp_files = \
 	analytic_cont_geom_av_price.cpp \
