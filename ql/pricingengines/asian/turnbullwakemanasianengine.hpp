@@ -33,6 +33,9 @@ namespace QuantLib {
         approximation.
         References: "Commodity Option Pricing", Iain Clark, Wiley, section 2.7.4.
                     "Option Pricing Formulas, Second Edition", E.G. Haug, 2006, pp. 192-202.
+                    Some parts of the implementation were modeled after calculations from the
+                    CommodityAveragePriceOptionAnalyticalEngine class in Open Source Risk Engine
+                    (https://github.com/OpenSourceRisk/Engine).
 
         \test
         - the correctness of the returned value is tested by reproducing
