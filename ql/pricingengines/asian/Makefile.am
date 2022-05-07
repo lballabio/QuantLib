@@ -13,7 +13,8 @@ this_include_HEADERS = \
 	mc_discr_arith_av_strike.hpp \
 	mc_discr_geom_av_price.hpp \
 	mc_discr_geom_av_price_heston.hpp \
-	mcdiscreteasianenginebase.hpp
+	mcdiscreteasianenginebase.hpp \
+	turnbullwakemanasianengine.hpp
 
 cpp_files = \
 	analytic_cont_geom_av_price.cpp \
@@ -24,7 +25,8 @@ cpp_files = \
 	mc_discr_arith_av_price_heston.cpp \
 	mc_discr_arith_av_strike.cpp \
 	mc_discr_geom_av_price.cpp \
-	mc_discr_geom_av_price_heston.cpp
+	mc_discr_geom_av_price_heston.cpp \
+	turnbullwakemanasianengine.cpp
 
 if UNITY_BUILD
 
