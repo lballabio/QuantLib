@@ -47,7 +47,7 @@ namespace QuantLib {
     class TurnbullWakemanAsianEngine : public DiscreteAveragingAsianOption::engine {
       public:
         explicit TurnbullWakemanAsianEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process)
-        : process_(std::move(std::move(process))) {
+        : process_(std::move(process)) {
             registerWith(process_);
         }
 
