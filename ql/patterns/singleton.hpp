@@ -103,6 +103,14 @@ namespace QuantLib {
         //! access to the unique instance
         static T& instance();
 
+#ifdef QL_ENABLE_SESSIONS
+        //! remove the session-local instance, return true if there was such an instance
+        static bool remove() {
+            boost::unique_lock<boost::shared_mutex> uniqueLock(m_mutex());
+            return m_instances().erase(sessionId()) != 0;
+        }
+#endif
+
       protected:
         Singleton() = default;
 
