@@ -25,6 +25,7 @@
 
 #include <ql/instruments/asianoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -45,13 +46,12 @@ namespace QuantLib {
     */
     class TurnbullWakemanAsianEngine : public DiscreteAveragingAsianOption::engine {
       public:
-        explicit TurnbullWakemanAsianEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process)
-        : process_(process) {
+        explicit TurnbullWakemanAsianEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+        : process_(std::move(std::move(process))) {
             registerWith(process_);
         }
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
