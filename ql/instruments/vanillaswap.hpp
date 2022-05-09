@@ -78,6 +78,17 @@ namespace QuantLib {
                     DayCounter floatingDayCount,
                     boost::optional<BusinessDayConvention> paymentConvention = boost::none,
                     boost::optional<bool> useIndexedCoupons = boost::none);
+        VanillaSwap(Type type,
+                    std::vector<Real> nominals,
+                    Schedule fixedSchedule,
+                    Rate fixedRate,
+                    DayCounter fixedDayCount,
+                    Schedule floatSchedule,
+                    ext::shared_ptr<IborIndex> iborIndex,
+                    Spread spread,
+                    DayCounter floatingDayCount,
+                    boost::optional<BusinessDayConvention> paymentConvention = boost::none,
+                    boost::optional<bool> useIndexedCoupons = boost::none);
         //! \name Inspectors
         //@{
         Type type() const;
@@ -112,18 +123,23 @@ namespace QuantLib {
         void setupArguments(PricingEngine::arguments* args) const override;
         void fetchResults(const PricingEngine::results*) const override;
 
-      private:
-        void setupExpired() const override;
-        Type type_;
-        Real nominal_;
+      protected:
+        std::vector<Real> nominals_;
         Schedule fixedSchedule_;
         Rate fixedRate_;
         DayCounter fixedDayCount_;
         Schedule floatingSchedule_;
-        ext::shared_ptr<IborIndex> iborIndex_;
         Spread spread_;
         DayCounter floatingDayCount_;
         BusinessDayConvention paymentConvention_;
+
+
+      private:
+        void setupExpired() const override;
+        virtual void init_legs(boost::optional<bool> flag);
+        Type type_;
+        ext::shared_ptr<IborIndex> iborIndex_;
+
         // results
         mutable Rate fairRate_;
         mutable Spread fairSpread_;
@@ -169,7 +185,8 @@ namespace QuantLib {
     }
 
     inline Real VanillaSwap::nominal() const {
-        return nominal_;
+        QL_REQUIRE(nominals_.size()==1, "varying nominals");
+        return nominals_[0];
     }
 
     inline const Schedule& VanillaSwap::fixedSchedule() const {

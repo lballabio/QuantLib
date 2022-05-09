@@ -37,16 +37,15 @@ namespace QuantLib {
                                                Natural paymentLag,
                                                BusinessDayConvention paymentAdjustment,
                                                const Calendar& paymentCalendar,
-                                               bool telescopicValueDates, 
+                                               bool telescopicValueDates,
                                                RateAveraging::Type averagingMethod)
-    : Swap(2), type_(type), nominals_(std::vector<Real>(1, nominal)),
+    : VanillaSwap(type, nominal, schedule, fixedRate, fixedDC, schedule, overnightIndex, spread, fixedDC),
       paymentFrequency_(schedule.tenor().frequency()),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
-      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag), fixedRate_(fixedRate),
-      fixedDC_(std::move(fixedDC)), overnightIndex_(std::move(overnightIndex)), spread_(spread),
-      telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
-
-        initialize(schedule);
+      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag),
+      overnightIndex_(std::move(overnightIndex)),
+      averagingMethod_(averagingMethod) {
+        init_legs(telescopicValueDates);
     }
 
     OvernightIndexedSwap::OvernightIndexedSwap(Type type,
@@ -59,32 +58,31 @@ namespace QuantLib {
                                                Natural paymentLag,
                                                BusinessDayConvention paymentAdjustment,
                                                const Calendar& paymentCalendar,
-                                               bool telescopicValueDates, 
+                                               bool telescopicValueDates,
                                                RateAveraging::Type averagingMethod)
-    : Swap(2), type_(type), nominals_(std::move(nominals)),
+    : VanillaSwap(type, nominals, schedule, fixedRate, fixedDC, schedule, overnightIndex, spread, fixedDC),
       paymentFrequency_(schedule.tenor().frequency()),
       paymentCalendar_(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar),
-      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag), fixedRate_(fixedRate),
-      fixedDC_(std::move(fixedDC)), overnightIndex_(std::move(overnightIndex)), spread_(spread),
-      telescopicValueDates_(telescopicValueDates), averagingMethod_(averagingMethod) {
-
-        initialize(schedule);
+      paymentAdjustment_(paymentAdjustment), paymentLag_(paymentLag),
+       overnightIndex_(std::move(overnightIndex)),
+      averagingMethod_(averagingMethod) {
+        init_legs(telescopicValueDates);
     }
 
-    void OvernightIndexedSwap::initialize(const Schedule& schedule) {
-        if (fixedDC_==DayCounter())
-            fixedDC_ = overnightIndex_->dayCounter();
-        legs_[0] = FixedRateLeg(schedule)
+    void OvernightIndexedSwap::init_legs(boost::optional<bool> flag) {
+        if (fixedDayCount_==DayCounter())
+            fixedDayCount_ = overnightIndex_->dayCounter();
+        legs_[0] = FixedRateLeg(fixedSchedule_)
             .withNotionals(nominals_)
-            .withCouponRates(fixedRate_, fixedDC_)
+            .withCouponRates(fixedRate_, fixedDayCount_)
             .withPaymentLag(paymentLag_)
             .withPaymentAdjustment(paymentAdjustment_)
             .withPaymentCalendar(paymentCalendar_);
 
-		legs_[1] = OvernightLeg(schedule, overnightIndex_)
+		legs_[1] = OvernightLeg(floatingSchedule_, overnightIndex_)
             .withNotionals(nominals_)
             .withSpreads(spread_)
-            .withTelescopicValueDates(telescopicValueDates_)
+            .withTelescopicValueDates(*flag)
             .withPaymentLag(paymentLag_)
             .withPaymentAdjustment(paymentAdjustment_)
             .withPaymentCalendar(paymentCalendar_)
@@ -95,18 +93,6 @@ namespace QuantLib {
                 registerWith(i);
         }
 
-        switch (type_) {
-          case Payer:
-            payer_[0] = -1.0;
-            payer_[1] = +1.0;
-            break;
-          case Receiver:
-            payer_[0] = +1.0;
-            payer_[1] = -1.0;
-            break;
-          default:
-            QL_FAIL("Unknown overnight-swap type");
-        }
     }
 
     Real OvernightIndexedSwap::fairRate() const {

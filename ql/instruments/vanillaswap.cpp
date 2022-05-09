@@ -32,7 +32,7 @@
 namespace QuantLib {
 
     VanillaSwap::VanillaSwap(Type type,
-                             Real nominal,
+                             std::vector<Real> nominals,
                              Schedule fixedSchedule,
                              Rate fixedRate,
                              DayCounter fixedDayCount,
@@ -42,29 +42,74 @@ namespace QuantLib {
                              DayCounter floatingDayCount,
                              boost::optional<BusinessDayConvention> paymentConvention,
                              boost::optional<bool> useIndexedCoupons)
-    : Swap(2), type_(type), nominal_(nominal), fixedSchedule_(std::move(fixedSchedule)),
+    : Swap(2), nominals_(std::move(nominals)),
+      fixedSchedule_(std::move(fixedSchedule)),
       fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
-      floatingSchedule_(std::move(floatSchedule)), iborIndex_(std::move(iborIndex)),
-      spread_(spread), floatingDayCount_(std::move(floatingDayCount)) {
+      floatingSchedule_(std::move(floatSchedule)),
+      spread_(spread), floatingDayCount_(std::move(floatingDayCount)), type_(type),
+      iborIndex_(std::move(iborIndex)) {
 
         if (paymentConvention) // NOLINT(readability-implicit-bool-conversion)
             paymentConvention_ = *paymentConvention;
         else
             paymentConvention_ = floatingSchedule_.businessDayConvention();
 
+        init_legs(useIndexedCoupons);
+
+        switch (type_) {
+          case Payer:
+            payer_[0] = -1.0;
+            payer_[1] = +1.0;
+            break;
+          case Receiver:
+            payer_[0] = +1.0;
+            payer_[1] = -1.0;
+            break;
+          default:
+            QL_FAIL("Unknown vanilla-swap type");
+        }
+    }
+
+    void VanillaSwap::init_legs(boost::optional<bool> flag) {
         legs_[0] = FixedRateLeg(fixedSchedule_)
-            .withNotionals(nominal_)
+            .withNotionals(nominals_)
             .withCouponRates(fixedRate_, fixedDayCount_)
             .withPaymentAdjustment(paymentConvention_);
 
         legs_[1] = IborLeg(floatingSchedule_, iborIndex_)
-            .withNotionals(nominal_)
+            .withNotionals(nominals_)
             .withPaymentDayCounter(floatingDayCount_)
             .withPaymentAdjustment(paymentConvention_)
             .withSpreads(spread_)
-            .withIndexedCoupons(useIndexedCoupons);
+            .withIndexedCoupons(flag);
         for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
+    }
+
+    VanillaSwap::VanillaSwap(Type type,
+                             Real nominal,
+                             Schedule fixedSchedule,
+                             Rate fixedRate,
+                             DayCounter fixedDayCount,
+                             Schedule floatSchedule,
+                             ext::shared_ptr<IborIndex> iborIndex,
+                             Spread spread,
+                             DayCounter floatingDayCount,
+                             boost::optional<BusinessDayConvention> paymentConvention,
+                             boost::optional<bool> useIndexedCoupons) :
+        Swap(2), nominals_(std::move(std::vector<Real>(1, nominal))),
+      fixedSchedule_(std::move(fixedSchedule)),
+      fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
+      floatingSchedule_(std::move(floatSchedule)),
+      spread_(spread), floatingDayCount_(std::move(floatingDayCount)), type_(type),
+      iborIndex_(std::move(iborIndex)) {
+
+        if (paymentConvention) // NOLINT(readability-implicit-bool-conversion)
+            paymentConvention_ = *paymentConvention;
+        else
+            paymentConvention_ = floatingSchedule_.businessDayConvention();
+
+        init_legs(useIndexedCoupons);
 
         switch (type_) {
           case Payer:
@@ -90,7 +135,7 @@ namespace QuantLib {
             return;
 
         arguments->type = type_;
-        arguments->nominal = nominal_;
+        arguments->nominal = nominals_[0];
 
         const Leg& fixedCoupons = fixedLeg();
 
@@ -118,8 +163,8 @@ namespace QuantLib {
             std::vector<Spread>(floatingCoupons.size());
         arguments->floatingCoupons = std::vector<Real>(floatingCoupons.size());
         for (Size i=0; i<floatingCoupons.size(); ++i) {
-            ext::shared_ptr<IborCoupon> coupon =
-                ext::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
+            ext::shared_ptr<FloatingRateCoupon> coupon =
+                ext::dynamic_pointer_cast<FloatingRateCoupon>(floatingCoupons[i]);
 
             arguments->floatingResetDates[i] = coupon->accrualStartDate();
             arguments->floatingPayDates[i] = coupon->date();

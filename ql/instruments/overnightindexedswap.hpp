@@ -27,7 +27,7 @@
 #ifndef quantlib_overnight_indexed_swap_hpp
 #define quantlib_overnight_indexed_swap_hpp
 
-#include <ql/instruments/swap.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 #include <ql/cashflows/rateaveraging.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/businessdayconvention.hpp>
@@ -39,7 +39,7 @@ namespace QuantLib {
     class OvernightIndex;
 
     //! Overnight indexed swap: fix vs compounded overnight rate
-    class OvernightIndexedSwap : public Swap {
+    class OvernightIndexedSwap : public VanillaSwap {
       public:
         OvernightIndexedSwap(Type type,
                              Real nominal,
@@ -69,19 +69,13 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        Type type() const { return type_; }
-        Real nominal() const;
-        std::vector<Real> nominals() const { return nominals_; }
 
         Frequency paymentFrequency() const { return paymentFrequency_; }
 
-        Rate fixedRate() const { return fixedRate_; }
-        const DayCounter& fixedDayCount() const { return fixedDC_; }
+        const ext::shared_ptr<OvernightIndex>& overnightIndex() const {
+            return overnightIndex_;
+        }
 
-        const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
-        Spread spread() const { return spread_; }
-
-        const Leg& fixedLeg() const { return legs_[0]; }
         const Leg& overnightLeg() const { return legs_[1]; }
 
         RateAveraging::Type averagingMethod() const { return averagingMethod_; }
@@ -98,33 +92,16 @@ namespace QuantLib {
         Spread fairSpread() const;
         //@}
       private:
-        void initialize(const Schedule& schedule);
-        Type type_;
-        std::vector<Real> nominals_;
-
+        void init_legs(boost::optional<bool> flag) override;
         Frequency paymentFrequency_;
         Calendar paymentCalendar_;
         BusinessDayConvention paymentAdjustment_;
         Natural paymentLag_;
-
-        //Schedule schedule_;
-
-        Rate fixedRate_;
-        DayCounter fixedDC_;
-
         ext::shared_ptr<OvernightIndex> overnightIndex_;
-        Spread spread_;
-        bool telescopicValueDates_;
         RateAveraging::Type averagingMethod_;
     };
 
 
-    // inline
-
-    inline Real OvernightIndexedSwap::nominal() const {
-        QL_REQUIRE(nominals_.size()==1, "varying nominals");
-        return nominals_[0];
-    }
 
 }
 
