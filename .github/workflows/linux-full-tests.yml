@@ -194,5 +194,9 @@ jobs:
     - name: Check global header
       run: |
         echo "#include <ql/quantlib.hpp>" > test1.cpp && echo "int main() { return 0; }" >> test1.cpp
+        echo "#include <ql/quantlib.hpp>" > test2.cpp
+        if test ${{ matrix.shortname }} = sessions ; then
+            echo "namespace QuantLib { ThreadKey sessionId() { return 0; } }" >> test2.cpp
+        fi
         make install
-        ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp `quantlib-config --libs`
+        ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs`
