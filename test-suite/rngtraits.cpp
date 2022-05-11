@@ -92,7 +92,6 @@ void RngTraitsTest::testCustomPoisson() {
                    << "    expected:   " << stored);
 }
 
-#include <iostream>
 void RngTraitsTest::testRanLux() {
     BOOST_TEST_MESSAGE("Testing known RanLux sequence...");
 
