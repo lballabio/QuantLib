@@ -251,14 +251,6 @@ namespace {
 
 }
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
 QuantLib::Date evaluation_date(int argc, char** argv) {
     /*! Dead simple parser:
         - passing --date=YYYY-MM-DD causes the test suite to run on
