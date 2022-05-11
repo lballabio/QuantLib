@@ -208,10 +208,9 @@ AC_DEFUN([QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM],
 AC_DEFUN([QL_CHECK_BOOST_TEST_INTERPROCESS],
 [AC_MSG_CHECKING([whether Boost interprocess is available])
  AC_REQUIRE([AC_PROG_CC])
- AC_REQUIRE([QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM])
  ql_original_LIBS=$LIBS
- for boost_interprocess_lib in "" "-lrt"; do 
-     LIBS="$ql_original_LIBS $boost_thread_lib $boost_interprocess_lib"
+ for boost_interprocess_lib in "-pthread" "-pthread -lrt"; do
+     LIBS="$ql_original_LIBS $boost_interprocess_lib"
      boost_interprocess_found=no
         
 	 AC_LINK_IFELSE([AC_LANG_SOURCE(
@@ -239,6 +238,8 @@ AC_DEFUN([QL_CHECK_BOOST_TEST_INTERPROCESS],
  else
      AC_MSG_RESULT([yes])
      AC_SUBST([BOOST_INTERPROCESS_LIB],[$boost_interprocess_lib])
+     AC_SUBST([PTHREAD_CXXFLAGS],["-pthread"])
+     AC_SUBST([CXXFLAGS],["${CXXFLAGS} -pthread"])
  fi
 ])
      
