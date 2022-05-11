@@ -49,7 +49,7 @@ namespace QuantLib {
             return locations_[direction][iter.coordinates()[direction]];
         }
 
-        Disposable<Array> locations(Size direction) const override;
+        Array locations(Size direction) const override;
 
       private:
         std::unique_ptr<Real[]> dx_;

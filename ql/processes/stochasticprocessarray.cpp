@@ -20,7 +20,6 @@
 
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
-#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -44,63 +43,63 @@ namespace QuantLib {
         return processes_.size();
     }
 
-    Disposable<Array> StochasticProcessArray::initialValues() const {
+    Array StochasticProcessArray::initialValues() const {
         Array tmp(size());
         for (Size i=0; i<size(); ++i)
             tmp[i] = processes_[i]->x0();
         return tmp;
     }
 
-    Disposable<Array> StochasticProcessArray::drift(Time t,
-                                                    const Array& x) const {
+    Array StochasticProcessArray::drift(Time t,
+                                        const Array& x) const {
         Array tmp(size());
         for (Size i=0; i<size(); ++i)
             tmp[i] = processes_[i]->drift(t, x[i]);
         return tmp;
     }
 
-    Disposable<Matrix> StochasticProcessArray::diffusion(
-                                               Time t, const Array& x) const {
+    Matrix StochasticProcessArray::diffusion(Time t,
+                                             const Array& x) const {
         Matrix tmp = sqrtCorrelation_;
         for (Size i=0; i<size(); ++i) {
             Real sigma = processes_[i]->diffusion(t, x[i]);
             std::transform(tmp.row_begin(i), tmp.row_end(i),
                            tmp.row_begin(i),
-                           multiply_by<Real>(sigma));
+                           [=](Real x){ return x * sigma; });
         }
         return tmp;
     }
 
-    Disposable<Array> StochasticProcessArray::expectation(Time t0,
-                                                          const Array& x0,
-                                                          Time dt) const {
+    Array StochasticProcessArray::expectation(Time t0,
+                                              const Array& x0,
+                                              Time dt) const {
         Array tmp(size());
         for (Size i=0; i<size(); ++i)
             tmp[i] = processes_[i]->expectation(t0, x0[i], dt);
         return tmp;
     }
 
-    Disposable<Matrix> StochasticProcessArray::stdDeviation(Time t0,
-                                                            const Array& x0,
-                                                            Time dt) const {
+    Matrix StochasticProcessArray::stdDeviation(Time t0,
+                                                const Array& x0,
+                                                Time dt) const {
         Matrix tmp = sqrtCorrelation_;
         for (Size i=0; i<size(); ++i) {
             Real sigma = processes_[i]->stdDeviation(t0, x0[i], dt);
             std::transform(tmp.row_begin(i), tmp.row_end(i),
                            tmp.row_begin(i),
-                           multiply_by<Real>(sigma));
+                           [=](Real x){ return x * sigma; });
         }
         return tmp;
     }
 
-    Disposable<Matrix> StochasticProcessArray::covariance(Time t0,
-                                                          const Array& x0,
-                                                          Time dt) const {
+    Matrix StochasticProcessArray::covariance(Time t0,
+                                              const Array& x0,
+                                              Time dt) const {
         Matrix tmp = stdDeviation(t0, x0, dt);
         return tmp*transpose(tmp);
     }
 
-    Disposable<Array> StochasticProcessArray::evolve(
+    Array StochasticProcessArray::evolve(
                   Time t0, const Array& x0, Time dt, const Array& dw) const {
         const Array dz = sqrtCorrelation_ * dw;
 
@@ -110,8 +109,8 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Array> StochasticProcessArray::apply(const Array& x0,
-                                                    const Array& dx) const {
+    Array StochasticProcessArray::apply(const Array& x0,
+                                        const Array& dx) const {
         Array tmp(size());
         for (Size i=0; i<size(); ++i)
             tmp[i] = processes_[i]->apply(x0[i],dx[i]);
@@ -127,7 +126,7 @@ namespace QuantLib {
         return processes_[i];
     }
 
-    Disposable<Matrix> StochasticProcessArray::correlation() const {
+    Matrix StochasticProcessArray::correlation() const {
         return sqrtCorrelation_ * transpose(sqrtCorrelation_);
     }
 

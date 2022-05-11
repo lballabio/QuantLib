@@ -19,7 +19,6 @@
 
 #include <ql/pricingengines/swaption/gaussian1dnonstandardswaptionengine.hpp>
 #include <ql/rebatedexercise.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
@@ -98,7 +97,7 @@ namespace QuantLib {
     }
 
     // NOLINTNEXTLINE(readability-const-return-type)
-    const Disposable<Array> Gaussian1dNonstandardSwaptionEngine::initialGuess(const Date &expiry) const {
+    const Array Gaussian1dNonstandardSwaptionEngine::initialGuess(const Date &expiry) const {
 
         Size fixedIdx =
             std::upper_bound(arguments_.fixedResetDates.begin(),

@@ -713,7 +713,7 @@ namespace QuantLib {
         return modelOutputs_;
     }
 
-    Disposable<Array> MarkovFunctional::numeraireArray(const Time t, const Array& y) const {
+    Array MarkovFunctional::numeraireArray(const Time t, const Array& y) const {
 
         calculate();
         Array res(y.size(), termStructure()->discount(numeraireTime_, true));
@@ -752,14 +752,12 @@ namespace QuantLib {
         return res;
     }
 
-    Disposable<Array>
-    MarkovFunctional::zerobondArray(const Time T, const Time t, const Array& y) const {
+    Array MarkovFunctional::zerobondArray(const Time T, const Time t, const Array& y) const {
 
         return deflatedZerobondArray(T, t, y) * numeraireArray(t, y);
     }
 
-    Disposable<Array>
-    MarkovFunctional::deflatedZerobondArray(const Time T, const Time t, const Array& y) const {
+    Array MarkovFunctional::deflatedZerobondArray(const Time T, const Time t, const Array& y) const {
 
         calculate();
 

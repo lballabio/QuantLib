@@ -114,12 +114,6 @@
     does not check access and can cause segmentation faults.
 
     \code
-    #define QL_USE_STD_UNIQUE_PTR
-    \endcode
-    If defined (the default), `std::unique_ptr` is
-    used instead of `std::auto_ptr`. If disabled, `std::auto_ptr` is used.
-
-    \code
     #define QL_USE_STD_FUNCTION
     \endcode
     If defined, `std::function`, `std::bind` and related classes and functions
@@ -132,14 +126,6 @@
     If defined, `std::tuple` and related classes and functions
     are used instead of `boost::tuple`. If disabled (the
     default) the Boost facilities are used.
-
-    \code
-    #define QL_USE_DISPOSABLE
-    \endcode
-    If defined, the old `Disposable` class template is used; this
-    should be no longer necessary in C++11 and might interfere with
-    compiler optimizations. If disabled (the default) `Disposable<T>` is
-    still available but is just an alias to `T`.
 
     \code
     #define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER

@@ -168,7 +168,7 @@
 /*! \def QL_EPSILON
     Defines the machine precision for operations over doubles
 */
-#include <boost/limits.hpp>
+#include <limits>
 // limits used as such
 #define QL_MIN_INTEGER         ((std::numeric_limits<QL_INTEGER>::min)())
 #define QL_MAX_INTEGER         ((std::numeric_limits<QL_INTEGER>::max)())
@@ -176,8 +176,15 @@
 #define QL_MAX_REAL            ((std::numeric_limits<QL_REAL>::max)())
 #define QL_MIN_POSITIVE_REAL   ((std::numeric_limits<QL_REAL>::min)())
 #define QL_EPSILON             ((std::numeric_limits<QL_REAL>::epsilon)())
-// specific values---these should fit into any Integer or Real
+/*! \def QL_NULL_INTEGER
+    \deprecated Don't use this macro.
+                Deprecated in version 1.27.
+*/
 #define QL_NULL_INTEGER        ((std::numeric_limits<int>::max)())
+/*! \def QL_NULL_REAL
+    \deprecated Don't use this macro.
+                Deprecated in version 1.27.
+*/
 #define QL_NULL_REAL           ((std::numeric_limits<float>::max)())
 /*! @} */
 
@@ -215,15 +222,21 @@
 #endif
 // clang-format on
 
+/*! \deprecated Use the noexcept keyword instead.
+                Deprecated in version 1.27.
+*/
+#define QL_NOEXCEPT noexcept
 
-// until we stop supporting Visual C++ 2013
-#if defined(QL_PATCH_MSVC_2013)
-#  define QL_NOEXCEPT
-#  define QL_CONSTEXPR
-#else
-#  define QL_NOEXCEPT noexcept
-#  define QL_CONSTEXPR constexpr
+/*! \deprecated Use the constexpr keyword instead.
+                Deprecated in version 1.27.
+*/
+#define QL_CONSTEXPR constexpr
+
+/*! \deprecated Do not check; always use std::unique_ptr.
+                Deprecated in version 1.27
+*/
+#ifndef QL_USE_STD_UNIQUE_PTR
+#define QL_USE_STD_UNIQUE_PTR 1
 #endif
-
 
 #endif

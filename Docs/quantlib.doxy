@@ -161,8 +161,7 @@ HTML_HEADER            = quantlibheader.html
 HTML_FOOTER            = quantlibfooter.html
 HTML_STYLESHEET        =
 HTML_EXTRA_STYLESHEET  = quantlibextra.css
-HTML_EXTRA_FILES       = images/QL-title.jpg \
-                         images/favicon.ico
+HTML_EXTRA_FILES       = images/favicon.ico
 HTML_COLORSTYLE_HUE    = 220
 HTML_COLORSTYLE_SAT    = 100
 HTML_COLORSTYLE_GAMMA  = 80

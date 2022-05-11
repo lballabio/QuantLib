@@ -2192,7 +2192,7 @@ void InterpolationTest::testLagrangeInterpolation() {
         0.5130076920869246
     };
 
-    QL_CONSTEXPR Real tol = 50*QL_EPSILON;
+    constexpr Real tol = 50*QL_EPSILON;
     for (Size i=0; i < 79; ++i) {
         const Real xx = -1.0 + i*0.025;
         const Real calculated = interpl(xx);
@@ -2304,8 +2304,7 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
         }
 
         const Real calculatedDeriv = interpl.derivative(x, true);
-        const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x))
-                / square<Real>()(std::cos(x));
+        const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x)) / squared(std::cos(x));
 
         const Real diffDeriv = std::fabs(expectedDeriv - calculatedDeriv);
         if (std::isnan(calculated) || diffDeriv > tolDeriv) {

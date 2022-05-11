@@ -38,8 +38,8 @@ namespace QuantLib {
                                            const Real l0)
     : l0_(l0), mesher_(std::move(mesher)), process_(std::move(process)), trafoType_(trafoType_) {}
 
-    Disposable<Array> FdmHestonGreensFct::get(Time t, Algorithm algorithm)
-    const {
+    Array FdmHestonGreensFct::get(Time t, Algorithm algorithm) const {
+
         const Rate r = process_->riskFreeRate()->forwardRate(0, t, Continuous);
         const Rate q = process_->dividendYield()->forwardRate(0,t, Continuous);
 
@@ -69,7 +69,7 @@ namespace QuantLib {
               {
                 const Real sd_x = l0_*std::sqrt(v0*t);
                   const Real p_x = M_1_SQRTPI*M_SQRT1_2/sd_x
-                          * std::exp(-0.5*square<Real>()((x - x0)/sd_x));
+                          * std::exp(-0.5*squared((x - x0)/sd_x));
                   const Real p_v = SquareRootProcessRNDCalculator(
                       v0, kappa, theta, sigma).pdf(v, t);
 
@@ -85,8 +85,8 @@ namespace QuantLib {
                 const Real sd_v = sigma*std::sqrt(v0*t);
                 const Real z0 = v0 + kappa*(theta - v0)*t;
                 retVal = 1.0/(M_TWOPI*sd_x*sd_v*std::sqrt(1-rho*rho))
-                    *std::exp(-(  square<Real>()((x-x0)/sd_x)
-                                + square<Real>()((v-z0)/sd_v)
+                    *std::exp(-(  squared((x-x0)/sd_x)
+                                + squared((v-z0)/sd_v)
                                 - 2*rho*(x-x0)*(v-z0)/(sd_x*sd_v))
                               /(2*(1-rho*rho)) );
               }

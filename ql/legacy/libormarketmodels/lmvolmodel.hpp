@@ -40,10 +40,8 @@ namespace QuantLib {
         std::vector<Parameter> & params();
         void setParams(const std::vector<Parameter> & arguments);
 
-        virtual Disposable<Array> volatility(
-             Time t, const Array& x = Null<Array>()) const = 0;
-        virtual Volatility volatility(
-             Size i, Time t, const Array& x = Null<Array>()) const;
+        virtual Array volatility(Time t, const Array& x = Null<Array>()) const = 0;
+        virtual Volatility volatility(Size i, Time t, const Array& x = Null<Array>()) const;
         virtual Real integratedVariance(Size i, Size j, Time u,
                                         const Array& x = Null<Array>()) const;
 

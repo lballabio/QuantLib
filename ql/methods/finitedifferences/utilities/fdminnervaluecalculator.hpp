@@ -28,7 +28,6 @@
 
 #include <ql/types.hpp>
 #include <ql/shared_ptr.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/functional.hpp>
 #include <vector>
 
@@ -55,7 +54,7 @@ namespace QuantLib {
         FdmCellAveragingInnerValue(ext::shared_ptr<Payoff> payoff,
                                    ext::shared_ptr<FdmMesher> mesher,
                                    Size direction,
-                                   ext::function<Real(Real)> gridMapping = identity<Real>());
+                                   ext::function<Real(Real)> gridMapping = [](Real x){ return x; });
 
         Real innerValue(const FdmLinearOpIterator& iter, Time) override;
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override;

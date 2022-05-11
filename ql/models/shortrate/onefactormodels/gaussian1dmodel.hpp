@@ -150,8 +150,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
        consisting of
         2*gridPoints+1 points */
 
-    Disposable<Array>
-    yGrid(Real yStdDevs, int gridPoints, Real T = 1.0, Real t = 0, Real y = 0) const;
+    Array yGrid(Real yStdDevs, int gridPoints, Real T = 1.0, Real t = 0, Real y = 0) const;
 
   private:
     // It is of great importance for performance reasons to cache underlying

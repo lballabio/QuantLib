@@ -36,11 +36,7 @@ namespace QuantLib {
         void reset() override;
         bool exercise(const CurveState& currentState) const override;
         void nextStep(const CurveState& currentState) override;
-#if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<ExerciseStrategy<CurveState> > clone() const override;
-#else
-        std::auto_ptr<ExerciseStrategy<CurveState> > clone() const;
-        #endif
       private:
         std::vector<Time> rateTimes_;
         std::vector<Rate> swapTriggers_;

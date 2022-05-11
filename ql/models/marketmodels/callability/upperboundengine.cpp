@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/accountingengine.hpp>
 #include <ql/models/marketmodels/callability/exercisevalue.hpp>
 #include <ql/models/marketmodels/callability/upperboundengine.hpp>
@@ -74,9 +73,8 @@ namespace QuantLib {
                                                      cashFlowsGenerated);
             }
 
-            QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct> clone() const override {
-                return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
-                                                   new DecoratedHedge(*this));
+            std::unique_ptr<MarketModelMultiProduct> clone() const override {
+                return std::unique_ptr<MarketModelMultiProduct>(new DecoratedHedge(*this));
             }
 
             void save() {

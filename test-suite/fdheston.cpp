@@ -80,7 +80,7 @@ namespace fd_heston_test {
 
       protected:
         Volatility localVolImpl(Time t, Real s) const override {
-            return alpha_*(square<Real>()(s0_ - s) + 25.0);
+            return alpha_*(squared(s0_ - s) + 25.0);
         }
 
       private:

@@ -70,11 +70,7 @@ namespace QuantLib {
         const std::vector<Rate>& coterminalSwapRates() const override;
         const std::vector<Rate>& cmSwapRates(Size spanningForwards) const override;
         //@}
-        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<CurveState> clone() const override;
-#else
-        std::auto_ptr<CurveState> clone() const;
-        #endif
       private:
         Size first_;
         std::vector<DiscountFactor> discRatios_;

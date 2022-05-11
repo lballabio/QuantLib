@@ -132,6 +132,15 @@ namespace QuantLib {
                 return std::make_pair(num/den,N);
         }
 
+        /*! Expectation value of a function \f$ f \f$ over the whole
+            set of samples; equivalent to passing the other overload
+            a range function always returning <tt>true</tt>.
+        */
+        template <class Func>
+        std::pair<Real,Size> expectationValue(const Func& f) const {
+            return expectationValue(f, [](Real x) { return true; });
+        }
+        
         /*! \f$ y \f$-th percentile, defined as the value \f$ \bar{x} \f$
             such that
             \f[ y = \frac{\sum_{x_i < \bar{x}} w_i}{

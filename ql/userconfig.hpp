@@ -90,11 +90,6 @@
 //#    define QL_USE_STD_SHARED_PTR
 #endif
 
-/* Undefine this to use std::auto_ptr instead of std::unique_ptr. */
-#ifndef QL_USE_STD_UNIQUE_PTR
-#    define QL_USE_STD_UNIQUE_PTR
-#endif
-
 /* Define this to use std::function and std::bind instead of
    boost::function and boost::bind. */
 #ifndef QL_USE_STD_FUNCTION
@@ -104,13 +99,6 @@
 /* Define this to use std::tuple instead of boost::tuple. */
 #ifndef QL_USE_STD_TUPLE
 //#    define QL_USE_STD_TUPLE
-#endif
-
-/* Define this if you want to use the Disposable class template.
-   This should be no longer necessary in C++11
-   and might interfere with compiler optimizations. */
-#ifndef QL_USE_DISPOSABLE
-//#    define QL_USE_DISPOSABLE
 #endif
 
 /* Define this to enable the parallel unit test runner */

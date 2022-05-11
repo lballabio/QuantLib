@@ -79,15 +79,13 @@ namespace QuantLib {
         }
     }
 
-    Disposable<NthOrderDerivativeOp::array_type>
-    NthOrderDerivativeOp::apply(const array_type& r) const {
+    NthOrderDerivativeOp::array_type NthOrderDerivativeOp::apply(const array_type& r) const {
         return prod(m_, r);
     }
 
 
-    Disposable<SparseMatrix> NthOrderDerivativeOp::toMatrix() const {
-        SparseMatrix tmp(m_);
-        return tmp;
+    SparseMatrix NthOrderDerivativeOp::toMatrix() const {
+        return m_;
     }
 
 }

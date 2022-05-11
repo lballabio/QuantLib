@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/pricingengines/swaption/discretizedswaption.hpp>
 #include <ql/pricingengines/swaption/treeswaptionengine.hpp>
 #include <utility>
@@ -89,9 +88,8 @@ namespace QuantLib {
         swaption.initialize(lattice, stoppingTimes.back());
 
         Time nextExercise =
-            *std::find_if(stoppingTimes.begin(),
-                          stoppingTimes.end(),
-                          greater_or_equal_to<Time>(0.0));
+            *std::find_if(stoppingTimes.begin(), stoppingTimes.end(),
+                          [](Time t){ return t >= 0.0; });
         swaption.rollback(nextExercise);
 
         results_.value = swaption.presentValue();

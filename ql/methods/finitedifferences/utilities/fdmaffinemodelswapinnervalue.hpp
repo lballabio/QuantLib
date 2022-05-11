@@ -50,10 +50,9 @@ namespace QuantLib {
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override;
 
       private:
-        Disposable<Array> getState(
-            const ext::shared_ptr<ModelType>& model,
-            Time t,
-            const FdmLinearOpIterator& iter) const;
+        Array getState(const ext::shared_ptr<ModelType>& model,
+                       Time t,
+                       const FdmLinearOpIterator& iter) const;
 
         RelinkableHandle<YieldTermStructure> disTs_, fwdTs_;
         const ext::shared_ptr<ModelType> disModel_, fwdModel_;

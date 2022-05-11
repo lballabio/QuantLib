@@ -35,7 +35,7 @@ namespace QuantLib {
         Day em = easterMonday(y);
         if (isWeekend(w)
             // New Year's Day (possibly moved to Monday)
-            || (d == 1  && m == January)
+            || ((d == 1 || d == 2)  && m == January)
             // Australia Day, January 26th (possibly moved to Monday)
             || ((d == 26 || ((d == 27 || d == 28) && w == Monday)) &&
                 m == January)
@@ -43,8 +43,8 @@ namespace QuantLib {
             || (dd == em-3)
             // Easter Monday
             || (dd == em)
-            // ANZAC Day, April 25th (possibly moved to Monday)
-            || ((d == 25 || (d == 26 && w == Monday)) && m == April)
+            // ANZAC Day, April 25th
+            || (d == 25 && m == April)
             // Queen's Birthday, second Monday in June
             || ((d > 7 && d <= 14) && w == Monday && m == June)
             // Bank Holiday, first Monday in August

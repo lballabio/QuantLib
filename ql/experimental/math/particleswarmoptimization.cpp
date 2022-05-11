@@ -367,8 +367,7 @@ namespace QuantLib {
     }
 
     void ClubsTopology::leaveRandomClub(Size particle, Size currentClubs) {
-        Size randIndex = distribution_(generator_,
-            uniform_integer::param_type(1, currentClubs));
+        Size randIndex = distribution_(generator_, param_type(1, currentClubs));
         Size index = 1;
         std::vector<bool> &clubSet = clubs4particles_[particle];
         for (Size j = 0; j < totalClubs_; j++) {
@@ -385,7 +384,7 @@ namespace QuantLib {
 
     void ClubsTopology::joinRandomClub(Size particle, Size currentClubs) {
         Size randIndex = totalClubs_ == currentClubs ? 1 :
-            distribution_(generator_, uniform_integer::param_type(1, totalClubs_ - currentClubs));
+            distribution_(generator_, param_type(1, totalClubs_ - currentClubs));
         Size index = 1;
         std::vector<bool> &clubSet = clubs4particles_[particle];
         for (Size j = 0; j < totalClubs_; j++) {

@@ -227,7 +227,7 @@ namespace QuantLib {
         values_ += couponAmounts_[i];
     }
 
-    Disposable<Array> DiscretizedConvertible::adjustedGrid() const {
+    Array DiscretizedConvertible::adjustedGrid() const {
         Time t = time();
         Array grid = method()->grid(t);
         // add back all dividend amounts in the future

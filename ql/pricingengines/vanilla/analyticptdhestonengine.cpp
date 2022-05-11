@@ -300,7 +300,7 @@ namespace QuantLib {
         switch(cpxLog_) {
           case Gatheral: {
             const Real c_inf = std::min(0.2, std::max(0.0001,
-                std::sqrt(1.0-square<Real>()(rhoAvg))/sigmaAvg))
+                std::sqrt(1.0-squared(rhoAvg))/sigmaAvg))
                 *(v0 + kappaAvg*thetaAvg*term);
 
             const Real p1 = integration_->calculate(c_inf,
@@ -335,7 +335,7 @@ namespace QuantLib {
 
               const std::complex<Real> D_u_inf =
                   -std::complex<Real>(
-                      std::sqrt(1-square<Real>()(model_->rho(t05))),
+                      std::sqrt(1-squared(model_->rho(t05))),
                       model_->rho(t05)) / model_->sigma(t05);
 
               const Size lastI = std::distance(timeGrid.begin(),

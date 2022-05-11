@@ -45,14 +45,8 @@ namespace QuantLib {
               long line,
               const std::string& functionName,
               const std::string& message = "");
-        #ifdef QL_PATCH_MSVC_2013
-        /*! the automatically generated destructor would
-            not have the throw specifier.
-        */
-        ~Error() throw() override {}
-        #endif
         //! returns the error message.
-        const char* what() const QL_NOEXCEPT override;
+        const char* what() const noexcept override;
 
       private:
         ext::shared_ptr<std::string> message_;
@@ -76,27 +70,17 @@ namespace QuantLib {
 #endif
 
 
-/* on MSVC++13 the do { ... } while(false) construct fails inside a
-   for loop without brackets, so we use a dangling else instead */
-#if defined(QL_PATCH_MSVC_2013)
-#define QL_MULTILINE_ASSERTION_BEGIN
-#else
 #define QL_MULTILINE_ASSERTION_BEGIN do {
-#endif
 
 /* Disable warning C4127 (conditional expression is constant) when
    wrapping macros with the do { ... } while(false) construct on MSVC
 */
 #if defined(BOOST_MSVC)
-    #if defined(QL_PATCH_MSVC_2013)
-    #define QL_MULTILINE_ASSERTION_END else
-    #else
     #define QL_MULTILINE_ASSERTION_END \
         __pragma(warning(push)) \
         __pragma(warning(disable:4127)) \
         } while(false) \
         __pragma(warning(pop))
-    #endif
 #else
     #define QL_MULTILINE_ASSERTION_END } while(false)
 #endif

@@ -31,7 +31,7 @@ using namespace boost::unit_test_framework;
 
 namespace {
     bool isTheSame(Real a, Real b) {
-        QL_CONSTEXPR Real eps = 500*QL_EPSILON;
+        constexpr Real eps = 500*QL_EPSILON;
 
         if (std::fabs(b) < QL_EPSILON)
             return std::fabs(a) < eps;
@@ -253,7 +253,7 @@ void NumericalDifferentiationTest::testDerivativesOfSineFunction() {
 }
 
 namespace {
-    Disposable<Array> vandermondeCoefficients(
+    Array vandermondeCoefficients(
         Size order, Real x, const Array& gridPoints) {
 
         const Array q = gridPoints - x;

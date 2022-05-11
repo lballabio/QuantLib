@@ -62,11 +62,11 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #endif
 
 namespace QuantLib {
-    typedef boost::numeric::ublas::compressed_matrix<Real> SparseMatrix;
-    typedef boost::numeric::ublas::matrix_reference<SparseMatrix>
-        SparseMatrixReference;
 
-    inline Disposable<Array> prod(const SparseMatrix& A, const Array& x) {
+    typedef boost::numeric::ublas::compressed_matrix<Real> SparseMatrix;
+    typedef boost::numeric::ublas::matrix_reference<SparseMatrix> SparseMatrixReference;
+
+    inline Array prod(const SparseMatrix& A, const Array& x) {
         QL_REQUIRE(x.size() == A.size2(),
                    "vectors and sparse matrices with different sizes ("
                    << x.size() << ", " << A.size1() << "x" << A.size2() <<

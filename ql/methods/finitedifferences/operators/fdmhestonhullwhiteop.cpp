@@ -102,15 +102,14 @@ namespace QuantLib {
         return 3;
     }
 
-    Disposable<Array> FdmHestonHullWhiteOp::apply(const Array& u) const {
+    Array FdmHestonHullWhiteOp::apply(const Array& u) const {
         return  dyMap_.apply(u) + dxMap_.getMap().apply(u)
               + hullWhiteOp_.apply(u)
               + hestonCorrMap_.apply(u) + equityIrCorrMap_.apply(u);
     }
 
-    Disposable<Array>
-    FdmHestonHullWhiteOp::apply_direction(Size direction,
-                                          const Array& r) const {
+    Array FdmHestonHullWhiteOp::apply_direction(Size direction,
+                                                const Array& r) const {
         if (direction == 0)
             return dxMap_.getMap().apply(r);
         else if (direction == 1)
@@ -121,13 +120,12 @@ namespace QuantLib {
             QL_FAIL("direction too large");
     }
 
-    Disposable<Array> FdmHestonHullWhiteOp::apply_mixed(const Array& r) const {
+    Array FdmHestonHullWhiteOp::apply_mixed(const Array& r) const {
         return hestonCorrMap_.apply(r) + equityIrCorrMap_.apply(r);
     }
 
-    Disposable<Array>
-    FdmHestonHullWhiteOp::solve_splitting(Size direction, const Array& r,
-                                          Real a) const {
+    Array FdmHestonHullWhiteOp::solve_splitting(Size direction, const Array& r,
+                                                Real a) const {
         if (direction == 0) {
             return dxMap_.getMap().solve_splitting(r, a, 1.0);
         }
@@ -141,20 +139,18 @@ namespace QuantLib {
             QL_FAIL("direction too large");
     }
     
-    Disposable<Array> FdmHestonHullWhiteOp::preconditioner(const Array& r, 
-                                                           Real dt) const {
+    Array FdmHestonHullWhiteOp::preconditioner(const Array& r, 
+                                               Real dt) const {
         return solve_splitting(0, r, dt);
     }
 
-    Disposable<std::vector<SparseMatrix> >
-    FdmHestonHullWhiteOp::toMatrixDecomp() const {
-        std::vector<SparseMatrix> retVal(4);
-        retVal[0] = dxMap_.getMap().toMatrix();
-        retVal[1] = dyMap_.toMatrix();
-        retVal[2] = hullWhiteOp_.toMatrixDecomp().front();
-        retVal[3] = hestonCorrMap_.toMatrix() + equityIrCorrMap_.toMatrix();
-
-        return retVal;
+    std::vector<SparseMatrix> FdmHestonHullWhiteOp::toMatrixDecomp() const {
+        return {
+            dxMap_.getMap().toMatrix(),
+            dyMap_.toMatrix(),
+            hullWhiteOp_.toMatrixDecomp().front(),
+            hestonCorrMap_.toMatrix() + equityIrCorrMap_.toMatrix()
+        };
     }
 
 }

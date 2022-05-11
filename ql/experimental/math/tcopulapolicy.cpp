@@ -62,8 +62,7 @@ namespace QuantLib {
         }
     }
 
-    Disposable<std::vector<Real> > 
-    TCopulaPolicy::allFactorCumulInverter(
+    std::vector<Real> TCopulaPolicy::allFactorCumulInverter(
         const std::vector<Real>& probs) const 
     {
     #if defined(QL_EXTRA_SAFETY_CHECKS)

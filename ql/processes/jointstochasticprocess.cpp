@@ -21,7 +21,6 @@
     \brief multi model process for hybrid products
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/math/matrixutilities/svd.hpp>
 #include <ql/processes/jointstochasticprocess.hpp>
@@ -66,8 +65,8 @@ namespace QuantLib {
         return factors_;
     }
 
-    Disposable<Array> JointStochasticProcess::slice(const Array& x,
-                                                    Size i) const {
+    Array JointStochasticProcess::slice(const Array& x,
+                                        Size i) const {
         // cut out the ith process' variables
         Size n = vsize_[i+1]-vsize_[i];
         Array y(n);
@@ -75,7 +74,7 @@ namespace QuantLib {
         return y;
     }
 
-    Disposable<Array> JointStochasticProcess::initialValues() const {
+    Array JointStochasticProcess::initialValues() const {
         Array retVal(size());
 
         for (auto iter = l_.begin(); iter != l_.end(); ++iter) {
@@ -89,8 +88,8 @@ namespace QuantLib {
     }
 
 
-    Disposable<Array> JointStochasticProcess::drift(Time t,
-                                                    const Array& x) const {
+    Array JointStochasticProcess::drift(Time t,
+                                        const Array& x) const {
         Array retVal(size());
 
         for (Size i=0; i < l_.size(); ++i) {
@@ -104,9 +103,9 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<Array> JointStochasticProcess::expectation(Time t0,
-                                                          const Array& x0,
-                                                          Time dt) const {
+    Array JointStochasticProcess::expectation(Time t0,
+                                              const Array& x0,
+                                              Time dt) const {
         Array retVal(size());
 
         for (Size i=0; i < l_.size(); ++i) {
@@ -121,17 +120,16 @@ namespace QuantLib {
     }
 
 
-    Disposable<Matrix> JointStochasticProcess::diffusion(
-                                               Time t, const Array& x) const {
+    Matrix JointStochasticProcess::diffusion(Time t, const Array& x) const {
         // might need some improvement in the future
         const Time dt = 0.001;
         return pseudoSqrt(covariance(t, x, dt)/dt);
     }
 
 
-    Disposable<Matrix> JointStochasticProcess::covariance(Time t0,
-                                                          const Array& x0,
-                                                          Time dt) const {
+    Matrix JointStochasticProcess::covariance(Time t0,
+                                              const Array& x0,
+                                              Time dt) const {
 
         // get the model intrinsic covariance matrix
         Matrix retVal(size(), size(), 0.0);
@@ -163,15 +161,15 @@ namespace QuantLib {
     }
 
 
-    Disposable<Matrix> JointStochasticProcess::stdDeviation(Time t0,
-                                                            const Array& x0,
-                                                            Time dt) const {
+    Matrix JointStochasticProcess::stdDeviation(Time t0,
+                                                const Array& x0,
+                                                Time dt) const {
         return pseudoSqrt(covariance(t0, x0, dt));
     }
 
 
-    Disposable<Array> JointStochasticProcess::apply(const Array& x0,
-                                                    const Array& dx) const {
+    Array JointStochasticProcess::apply(const Array& x0,
+                                        const Array& dx) const {
         Array retVal(size());
 
         for (Size i=0; i < l_.size(); ++i) {
@@ -184,7 +182,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<Array> JointStochasticProcess::evolve(
+    Array JointStochasticProcess::evolve(
         Time t0, const Array& x0, Time dt, const Array& dw) const {
         Array dv(modelFactors_);
 
@@ -217,7 +215,7 @@ namespace QuantLib {
                     if (vol > 0.0) {
                         std::transform(stdDev.row_begin(i), stdDev.row_end(i),
                                        stdDev.row_begin(i),
-                                       divide_by<Real>(vol));
+                                       [=](Real x){ return x/vol; });
                     }
                     else {
                         // keep the svd happy

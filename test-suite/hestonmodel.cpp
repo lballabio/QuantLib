@@ -26,6 +26,7 @@
 #include <ql/math/optimization/differentialevolution.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
@@ -2047,7 +2048,7 @@ void HestonModelTest::testCharacteristicFct() {
     const COSHestonEngine cosEngine(model);
     const AnalyticHestonEngine analyticEngine(model);
 
-    QL_CONSTEXPR Real tol = 100*QL_EPSILON;
+    constexpr Real tol = 100*QL_EPSILON;
     for (double i : u) {
         for (double j : t) {
             const std::complex<Real> c = cosEngine.chF(i, j);
@@ -2282,18 +2283,18 @@ void HestonModelTest::testAndersenPiterbargControlVariateIntegrand() {
         // Corrado C. and T. Su, (1996-b),
         // “Skewness and Kurtosis in S&P 500 IndexReturns Implied by Option Prices”,
         // Journal of Financial Research 19 (2), 175-192.
-        square<Real>()(blackFormulaImpliedStdDev(
+        squared(blackFormulaImpliedStdDev(
             Option::Call, strike, fwd, bsNPV + skew*q3, df)),
-        square<Real>()(blackFormulaImpliedStdDev(
+        squared(blackFormulaImpliedStdDev(
             Option::Call, strike, fwd, bsNPV + skew*q3 + kurt*q4, df)),
         // Moment matching based on
         // Rubinstein M., (1998), “Edgeworth Binomial Trees”,
         // Journal of Derivatives 5 (3), 20-27.
-        square<Real>()(blackFormulaImpliedStdDev(
+        squared(blackFormulaImpliedStdDev(
             Option::Call, strike, fwd,
             bsNPV + skew*q3 + kurt*q4 + skew*skew*q5, df)),
         // implied vol as control variate
-        square<Real>()(implStdDev),
+        squared(implStdDev),
         // remaining function becomes zero for u -> 0
         -8.0*std::log(engine->chF(std::complex<Real>(0, -0.5), maturity).real())
     };
@@ -2422,7 +2423,7 @@ void HestonModelTest::testPiecewiseTimeDependentChFvsHestonChF() {
                 TimeGrid(dayCounter.yearFraction(settlementDate, maturityDate),
                          10))));
 
-    QL_CONSTEXPR Real tol = 100*QL_EPSILON;
+    constexpr Real tol = 100*QL_EPSILON;
     for (Real r = 0.1; r < 4; r+=0.25) {
         for (Real phi = 0; phi < 360; phi+=60) {
             for (Time t=0.1; t <= 1.0; t+=0.3) {
@@ -3077,13 +3078,15 @@ namespace {
 void HestonModelTest::testHestonEngineIntegration() {
     BOOST_TEST_MESSAGE("Testing Heston engine integration signature...");
 
+    auto square = [](Real x){ return x*x; };
+
     const AnalyticHestonEngine::Integration integration =
         AnalyticHestonEngine::Integration::gaussLobatto(1e-12, 1e-12);
 
-    const Real c1 = integration.calculate(1.0, square<Real>(), 1.0);
+    const Real c1 = integration.calculate(1.0, square, 1.0);
 
     HestonIntegrationMaxBoundTestFct testFct(1.0);
-    const Real c2 = integration.calculate(1.0, square<Real>(), testFct);
+    const Real c2 = integration.calculate(1.0, square, testFct);
 
     if (testFct.getCallCounter() == 0 ||
             std::fabs(c1 - 1/3.) > 1e-10 || std::fabs(c2 - 1/3.) > 1e-10) {

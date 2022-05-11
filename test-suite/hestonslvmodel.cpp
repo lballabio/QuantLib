@@ -396,8 +396,8 @@ void HestonSLVModelTest::testTransformedZeroFlowBC() {
         const Real hp = v[i+2] - v[i+1];
 
         const Real eta=1.0/(hm*(hm+hp)*hp);
-        const Real a = -eta*(square<Real>()(hm+hp) - hm*hm);
-        const Real b  = eta*square<Real>()(hm+hp);
+        const Real a = -eta*(squared(hm+hp) - hm*hm);
+        const Real b  = eta*squared(hm+hp);
         const Real c = -eta*hm*hm;
 
         const Real df = a*q[i] + b*q[i+1] + c*q[i+2];
@@ -1131,8 +1131,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
 
     Real v=-Null<Real>(), p_v(0.0);
     Array p(mesher->layout()->size(), 0.0);
-    const Real bsV0 = square<Real>()(
-        lvProcess->blackVolatility()->blackVol(0.0, s0, true));
+    const Real bsV0 = squared(lvProcess->blackVolatility()->blackVol(0.0, s0, true));
 
     SquareRootProcessRNDCalculator rndCalculator(v0, kappa, theta, sigma);
     const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
@@ -1150,7 +1149,7 @@ void HestonSLVModelTest::testHestonFokkerPlanckFwdEquationLogLVLeverage() {
                 p_v = 0.0;
         }
         const Real p_x = 1.0/(std::sqrt(M_TWOPI*bsV0*eT))
-            * std::exp(-0.5*square<Real>()(x - x0)/(bsV0*eT));
+            * std::exp(-0.5*squared(x - x0)/(bsV0*eT));
         p[iter.index()] = p_v*p_x;
     }
     const Time dt = (maturity-eT)/tGrid;

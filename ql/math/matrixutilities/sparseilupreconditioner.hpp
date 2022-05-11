@@ -40,14 +40,14 @@ namespace QuantLib {
         const SparseMatrix& L() const;
         const SparseMatrix& U() const;
 
-        Disposable<Array> apply(const Array& b) const;
+        Array apply(const Array& b) const;
 
       private:
         SparseMatrix L_, U_;
         std::vector<Size> lBands_, uBands_;
 
-        Disposable<Array> forwardSolve(const Array& b) const;
-        Disposable<Array> backwardSolve(const Array& y) const;
+        Array forwardSolve(const Array& b) const;
+        Array backwardSolve(const Array& y) const;
     };
 
 }

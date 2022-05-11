@@ -19,7 +19,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/experimental/variancegamma/fftvariancegammaengine.hpp>
 #include <ql/exercise.hpp>
-#include <ql/auto_ptr.hpp>
 #include <complex>
 
 namespace QuantLib {
@@ -30,12 +29,11 @@ namespace QuantLib {
     {
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<FFTEngine> FFTVarianceGammaEngine::clone() const
+    std::unique_ptr<FFTEngine> FFTVarianceGammaEngine::clone() const
     {
         ext::shared_ptr<VarianceGammaProcess> process =
             ext::dynamic_pointer_cast<VarianceGammaProcess>(process_);
-        return QL_UNIQUE_OR_AUTO_PTR<FFTEngine>(
-                                new FFTVarianceGammaEngine(process, lambda_));
+        return std::unique_ptr<FFTEngine>(new FFTVarianceGammaEngine(process, lambda_));
     }
 
     void FFTVarianceGammaEngine::precalculateExpiry(Date d)

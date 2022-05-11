@@ -71,11 +71,7 @@ namespace QuantLib {
                                   const Array& weights = Array() );
 
 
-        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
-#else
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
-        #endif
       private:
         Natural numCoeffs_;
         Real fixedKappa_;
@@ -107,11 +103,7 @@ namespace QuantLib {
                             const Array& l2,
                             Real minCutoffTime = 0.0,
                             Real maxCutoffTime = QL_MAX_REAL);
-        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
-#else
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
-        #endif
       private:
         Size size() const override;
         DiscountFactor discountFunction(const Array& x, Time t) const override;
@@ -143,11 +135,7 @@ namespace QuantLib {
                         const Array& l2,
                         Real minCutoffTime = 0.0,
                         Real maxCutoffTime = QL_MAX_REAL);
-        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
-#else
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
-        #endif
       private:
         Size size() const override;
         DiscountFactor discountFunction(const Array& x, Time t) const override;
@@ -192,11 +180,7 @@ namespace QuantLib {
                              Real maxCutoffTime = QL_MAX_REAL);
         //! cubic B-spline basis functions
         Real basisFunction(Integer i, Time t) const;
-        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
-#else
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
-        #endif
       private:
         Size size() const override;
         DiscountFactor discountFunction(const Array& x, Time t) const override;
@@ -234,11 +218,7 @@ namespace QuantLib {
                                 const Array& l2,
                                 Real minCutoffTime = 0.0,
                                 Real maxCutoffTime = QL_MAX_REAL);
-        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
-#else
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
-        #endif
       private:
         Size size() const override;
         DiscountFactor discountFunction(const Array& x, Time t) const override;
@@ -256,11 +236,7 @@ namespace QuantLib {
                             Handle<YieldTermStructure> discountCurve,
                             Real minCutoffTime = 0.0,
                             Real maxCutoffTime = QL_MAX_REAL);
-#if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<FittedBondDiscountCurve::FittingMethod> clone() const override;
-#else
-        std::auto_ptr<FittedBondDiscountCurve::FittingMethod> clone() const;
-        #endif
     protected:
       void init() override;
 

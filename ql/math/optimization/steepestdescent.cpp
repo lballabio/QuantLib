@@ -24,9 +24,9 @@
 
 namespace QuantLib {
 
-    Disposable<Array> SteepestDescent::getUpdatedDirection(const Problem&,
-                                                           Real,
-                                                           const Array&) {
+    Array SteepestDescent::getUpdatedDirection(const Problem&,
+                                               Real,
+                                               const Array&) {
         return -lineSearch_->lastGradient();
     }
 

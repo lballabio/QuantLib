@@ -661,6 +661,7 @@ set(QL_SOURCES
     pricingengines/asian/mc_discr_arith_av_strike.cpp
     pricingengines/asian/mc_discr_geom_av_price.cpp
     pricingengines/asian/mc_discr_geom_av_price_heston.cpp
+    pricingengines/asian/turnbullwakemanasianengine.cpp
     pricingengines/barrier/analyticbarrierengine.cpp
     pricingengines/barrier/analyticbinarybarrierengine.cpp
     pricingengines/barrier/discretizedbarrieroption.cpp
@@ -1844,6 +1845,7 @@ set(QL_HEADERS
     pricingengines/asian/mc_discr_geom_av_price.hpp
     pricingengines/asian/mc_discr_geom_av_price_heston.hpp
     pricingengines/asian/mcdiscreteasianenginebase.hpp
+    pricingengines/asian/turnbullwakemanasianengine.hpp
     pricingengines/barrier/analyticbarrierengine.hpp
     pricingengines/barrier/analyticbinarybarrierengine.hpp
     pricingengines/barrier/binomialbarrierengine.hpp

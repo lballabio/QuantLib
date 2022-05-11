@@ -19,7 +19,6 @@
 */
 
 #include <ql/math/statistics/generalstatistics.hpp>
-#include <ql/math/functional.hpp>
 
 namespace QuantLib {
 
@@ -35,9 +34,7 @@ namespace QuantLib {
     Real GeneralStatistics::mean() const {
         Size N = samples();
         QL_REQUIRE(N != 0, "empty sample set");
-        // eat our own dog food
-        return expectationValue(identity<Real>(),
-                                everywhere()).first;
+        return expectationValue([](Real x) { return x; }).first;
     }
 
     Real GeneralStatistics::variance() const {
@@ -46,9 +43,8 @@ namespace QuantLib {
                    "sample number <=1, unsufficient");
         // Subtract the mean and square. Repeat on the whole range.
         // Hopefully, the whole thing will be inlined in a single loop.
-        Real s2 = expectationValue(compose(square<Real>(),
-                                           subtract<Real>(mean())),
-                                   everywhere()).first;
+        Real m = mean();
+        Real s2 = expectationValue([=](Real x) { Real d = x - m; return d * d; }).first;
         return s2*N/(N-1.0);
     }
 
@@ -57,12 +53,11 @@ namespace QuantLib {
         QL_REQUIRE(N > 2,
                    "sample number <=2, unsufficient");
 
-        Real x = expectationValue(compose(cube<Real>(),
-                                          subtract<Real>(mean())),
-                                  everywhere()).first;
+        Real m = mean();
+        Real X = expectationValue([=](Real x) { Real d = x - m; return d * d * d; }).first;
         Real sigma = standardDeviation();
 
-        return (x/(sigma*sigma*sigma))*(N/(N-1.0))*(N/(N-2.0));
+        return (X/(sigma*sigma*sigma))*(N/(N-1.0))*(N/(N-2.0));
     }
 
     Real GeneralStatistics::kurtosis() const {
@@ -70,15 +65,14 @@ namespace QuantLib {
         QL_REQUIRE(N > 3,
                    "sample number <=3, unsufficient");
 
-        Real x = expectationValue(compose(fourth_power<Real>(),
-                                          subtract<Real>(mean())),
-                                  everywhere()).first;
+        Real m = mean();
+        Real X = expectationValue([=](Real x) { Real d = x - m; Real d2 = d * d ; return d2 * d2; }).first;
         Real sigma2 = variance();
 
         Real c1 = (N/(N-1.0)) * (N/(N-2.0)) * ((N+1.0)/(N-3.0));
         Real c2 = 3.0 * ((N-1.0)/(N-2.0)) * ((N-1.0)/(N-3.0));
 
-        return c1*(x/(sigma2*sigma2))-c2;
+        return c1*(X/(sigma2*sigma2))-c2;
     }
 
     Real GeneralStatistics::percentile(Real percent) const {

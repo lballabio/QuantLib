@@ -50,8 +50,6 @@ using namespace boost::unit_test_framework;
 
 using std::exp;
 
-typedef PiecewiseYieldCurve<Discount,LogLinear> PiecewiseFlatForward;
-
 namespace overnight_indexed_swap_test {
 
     struct Datum {
@@ -351,8 +349,7 @@ namespace overnight_indexed_swap_test {
         eoniaHelpers.push_back(helper);
     }
 
-    ext::shared_ptr<PiecewiseFlatForward> eoniaTS(
-        new PiecewiseFlatForward (vars.today, eoniaHelpers, Actual365Fixed()));
+    auto eoniaTS = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(vars.today, eoniaHelpers, Actual365Fixed());
 
     vars.eoniaTermStructure.linkTo(eoniaTS);
 

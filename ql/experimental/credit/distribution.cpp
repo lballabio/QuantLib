@@ -19,11 +19,10 @@
 
 /*! \file distribution.cpp
     \brief Discretized probability density and cumulative probability
- */
+*/
 
 #include <ql/experimental/credit/distribution.hpp>
 #include <ql/math/comparison.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/errors.hpp>
 #include <algorithm>
 #include <functional>
@@ -255,7 +254,7 @@ namespace QuantLib {
         }
 
         // remove losses over detachment point:
-        auto detachPosit = std::find_if(x_.begin(), x_.end(), greater_than<Real>(detachmentPoint));
+        auto detachPosit = std::find_if(x_.begin(), x_.end(), [=](Real x){ return x > detachmentPoint; });
         if(detachPosit != x_.end())
             x_.erase(detachPosit + 1, x_.end());
 

@@ -63,29 +63,24 @@ namespace QuantLib {
                 || discretization_ == BroadieKayaExactSchemeLaguerre) ? 3 : 2;
     }
 
-    Disposable<Array> HestonProcess::initialValues() const {
-        Array tmp(2);
-        tmp[0] = s0_->value();
-        tmp[1] = v0_;
-        return tmp;
+    Array HestonProcess::initialValues() const {
+        return { s0_->value(), v0_ };
     }
 
-    Disposable<Array> HestonProcess::drift(Time t, const Array& x) const {
-        Array tmp(2);
+    Array HestonProcess::drift(Time t, const Array& x) const {
         const Real vol = (x[1] > 0.0) ? std::sqrt(x[1])
                          : (discretization_ == Reflection) ? - std::sqrt(-x[1])
                          : 0.0;
 
-        tmp[0] = riskFreeRate_->forwardRate(t, t, Continuous)
+        return {
+            riskFreeRate_->forwardRate(t, t, Continuous)
                - dividendYield_->forwardRate(t, t, Continuous)
-               - 0.5 * vol * vol;
-
-        tmp[1] = kappa_*
-           (theta_-((discretization_==PartialTruncation) ? x[1] : vol*vol));
-        return tmp;
+               - 0.5 * vol * vol,
+            kappa_* (theta_-((discretization_==PartialTruncation) ? x[1] : vol*vol))
+        };
     }
 
-    Disposable<Matrix> HestonProcess::diffusion(Time, const Array& x) const {
+    Matrix HestonProcess::diffusion(Time, const Array& x) const {
         /* the correlation matrix is
            |  1   rho |
            | rho   1  |
@@ -106,12 +101,12 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Array> HestonProcess::apply(const Array& x0,
-                                           const Array& dx) const {
-        Array tmp(2);
-        tmp[0] = x0[0] * std::exp(dx[0]);
-        tmp[1] = x0[1] + dx[1];
-        return tmp;
+    Array HestonProcess::apply(const Array& x0,
+                               const Array& dx) const {
+        return {
+            x0[0] * std::exp(dx[0]),
+            x0[1] + dx[1]
+        };
     }
 
     namespace {
@@ -186,8 +181,7 @@ namespace QuantLib {
             return gaussLaguerreIntegration(
                 [&](Real u){ return ph(process, y, u, nu_0, nu_t, t); })
                 / std::sqrt(2*M_PI*(1-rho*rho)*y)
-                * std::exp(-0.5*square<Real>()(  x - x0 - a
-                                               + y*(0.5-rho*kappa/sigma))
+                * std::exp(-0.5*squared(x - x0 - a + y*(0.5-rho*kappa/sigma))
                            /(y*(1-rho*rho)));
         }
 
@@ -399,8 +393,8 @@ namespace QuantLib {
                      v/k) / k;
      }
 
-    Disposable<Array> HestonProcess::evolve(Time t0, const Array& x0,
-                                            Time dt, const Array& dw) const {
+    Array HestonProcess::evolve(Time t0, const Array& x0,
+                                Time dt, const Array& dw) const {
         Array retVal(2);
         Real vol, vol2, mu, nu, dy;
 

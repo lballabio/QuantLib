@@ -43,7 +43,7 @@ namespace QuantLib {
         return klugeProcess_->factors() + 1;
     }
 
-    Disposable<Array> KlugeExtOUProcess::initialValues() const {
+    Array KlugeExtOUProcess::initialValues() const {
         Array retVal(size());
         const Array x0 = klugeProcess_->initialValues();
         std::copy(x0.begin(), x0.end(), retVal.begin());
@@ -52,7 +52,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<Array> KlugeExtOUProcess::drift(Time t, const Array& x) const {
+    Array KlugeExtOUProcess::drift(Time t, const Array& x) const {
         Array retVal(size());
         Array mu = klugeProcess_->drift(t, x);
         std::copy(mu.begin(), mu.end(), retVal.begin());
@@ -61,8 +61,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<Matrix> KlugeExtOUProcess::diffusion(Time t, const Array& x)
-        const{
+    Matrix KlugeExtOUProcess::diffusion(Time t, const Array& x) const{
         Matrix retVal(size(), factors(), 0.0);
 
         Volatility vol = ouProcess_->diffusion(t, x.back());
@@ -74,7 +73,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<Array> KlugeExtOUProcess::evolve(Time t0, const Array& x0,
+    Array KlugeExtOUProcess::evolve(Time t0, const Array& x0,
                                                 Time dt, const Array& dw) const{
         Array retVal(size());
 

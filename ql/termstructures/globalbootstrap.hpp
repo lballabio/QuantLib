@@ -26,7 +26,6 @@
 #define quantlib_global_bootstrap_hpp
 
 #include <ql/functional.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/termstructures/bootstraperror.hpp>
@@ -263,11 +262,11 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
         Real value(const Array& x) const override {
             Array v = values(x);
-            std::transform(v.begin(), v.end(), v.begin(), square<Real>());
+            std::transform(v.begin(), v.end(), v.begin(), [](Real x){ return x*x; });
             return std::sqrt(std::accumulate(v.begin(), v.end(), 0.0) / static_cast<Real>(v.size()));
         }
 
-        Disposable<Array> values(const Array& x) const override {
+        Array values(const Array& x) const override {
             for (Size i = 0; i < x.size(); ++i) {
                 Traits::updateGuess(ts_->data_, transformDirect(x[i], i), i + 1);
             }
@@ -284,8 +283,7 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
                     result[numberHelpers_ + i] = tmp[i];
                 }
             }
-            Array asArray(result.begin(), result.end());
-            return asArray;
+            return Array(result.begin(), result.end());
         }
 
       private:

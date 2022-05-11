@@ -28,7 +28,6 @@
 #include <ql/experimental/math/latentmodel.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/beta.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/math/solvers1d/brent.hpp>
@@ -170,14 +169,13 @@ namespace QuantLib {
         Chen, Z., Glasserman, P. 'Fast pricing of basket default swaps' in
         Operations Research Vol. 56, No. 2, March/April 2008, pp. 286-303
         */
-        Disposable<std::vector<Probability> > probsBeingNthEvent(Size n,
-                                                                 const Date& d) const override;
+        std::vector<Probability> probsBeingNthEvent(Size n, const Date& d) const override;
         //! Pearsons' default probability correlation.
         Real defaultCorrelation(const Date& d, Size iName, Size jName) const override;
         Real expectedTrancheLoss(const Date& d) const override;
         virtual std::pair<Real, Real> expectedTrancheLossInterval(const Date& d,
             Probability confidencePerc) const;
-        Disposable<std::map<Real, Probability> > lossDistribution(const Date& d) const override;
+        std::map<Real, Probability> lossDistribution(const Date& d) const override;
         virtual Histogram computeHistogram(const Date& d) const;
         Real expectedShortfall(const Date& d, Real percent) const override;
         Real percentile(const Date& d, Real percentile) const override;
@@ -188,7 +186,7 @@ namespace QuantLib {
         /*! Distributes the total VaR amount along the portfolio counterparties.
             The passed loss amount is in loss units.
         */
-        Disposable<std::vector<Real> > splitVaRLevel(const Date& date, Real loss) const override;
+        std::vector<Real> splitVaRLevel(const Date& date, Real loss) const override;
         /*! Distributes the total VaR amount along the portfolio
             counterparties.
 
@@ -197,7 +195,7 @@ namespace QuantLib {
 
             The passed loss amount is in loss units.
         */
-        virtual Disposable<std::vector<std::vector<Real> > > splitVaRAndError(
+        virtual std::vector<std::vector<Real> > splitVaRAndError(
             const Date& date, Real loss, Probability confInterval) const;
         //@}
     public:
@@ -253,9 +251,8 @@ namespace QuantLib {
     }
 
     template<template <class, class> class D, class C, class URNG>
-    Disposable<std::vector<Probability> >
-        RandomLM<D, C, URNG>::probsBeingNthEvent(Size n,
-            const Date& d) const
+    std::vector<Probability> RandomLM<D, C, URNG>::probsBeingNthEvent(Size n,
+                                                                      const Date& d) const
     {
         calculate();
         Size basketSize = basket_->size();
@@ -290,7 +287,7 @@ namespace QuantLib {
         }
         std::transform(hitsByDate.begin(), hitsByDate.end(),
                        hitsByDate.begin(),
-                       divide_by<Real>(Real(nSims_)));
+                       [this](Real x){ return x/nSims_; });
         return hitsByDate;
         // \todo Provide confidence interval
     }
@@ -384,8 +381,7 @@ namespace QuantLib {
 
 
     template<template <class, class> class D, class C, class URNG>
-    Disposable<std::map<Real, Probability> >
-        RandomLM<D, C, URNG>::lossDistribution(const Date& d) const {
+    std::map<Real, Probability> RandomLM<D, C, URNG>::lossDistribution(const Date& d) const {
 
         Histogram hist = computeHistogram(d);
         std::map<Real, Probability> distrib;
@@ -506,7 +502,7 @@ namespace QuantLib {
         /*
         std::vector<Real>::iterator itPastPerc =
             std::find_if(losses.begin() + position, losses.end(),
-                         greater_or_equal_to<Real>(perctlInf));
+                         [=](Real x){ return x >= perctlInf; });
         // notice if the sample is flat at the end this might be zero
         Size pointsOverVal = nSims_ - std::distance(itPastPerc, losses.end());
         return pointsOverVal == 0 ? 0. :
@@ -539,9 +535,8 @@ namespace QuantLib {
     of the stimator just computed. See the reference for a discussion.
     */
     template<template <class, class> class D, class C, class URNG>
-    ext::tuple<Real, Real, Real> // disposable?
-        RandomLM<D, C, URNG>::percentileAndInterval(const Date& d,
-            Real percentile) const {
+    ext::tuple<Real, Real, Real> RandomLM<D, C, URNG>::percentileAndInterval(const Date& d,
+                                                                             Real percentile) const {
 
         QL_REQUIRE(percentile >= 0. && percentile <= 1.,
             "Incorrect percentile");
@@ -623,13 +618,13 @@ namespace QuantLib {
 
 
     template<template <class, class> class D, class C, class URNG>
-    Disposable<std::vector<Real> > RandomLM<D, C, URNG>::splitVaRLevel(
+    std::vector<Real> RandomLM<D, C, URNG>::splitVaRLevel(
         const Date& date, Real loss) const
     {
         std::vector<Real> varLevels = splitVaRAndError(date, loss, 0.95)[0];
         // turn relative units into absolute:
         std::transform(varLevels.begin(), varLevels.end(), varLevels.begin(),
-                       multiply_by<Real>(loss));
+                       [=](Real x){ return x * loss; });
         return varLevels;
     }
 
@@ -638,9 +633,8 @@ namespace QuantLib {
     template<template <class, class> class D, class C, class URNG>
     /* FIX ME: some trouble on limit cases, like zero loss or no losses over the
     requested level.*/
-    Disposable<std::vector<std::vector<Real> > >
-        RandomLM<D, C, URNG>::splitVaRAndError(const Date& date, Real loss,
-            Probability confInterval) const
+    std::vector<std::vector<Real> > RandomLM<D, C, URNG>::splitVaRAndError(const Date& date, Real loss,
+                                                                           Probability confInterval) const
     {
         /* Check 'loss' value integrity: i.e. is within tranche limits? (should
             have been done basket...)*/

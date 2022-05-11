@@ -38,7 +38,7 @@ namespace QuantLib {
                            FdmSquareRootFwdOp::TransformationType trafoType_,
                            Real l0 = 1.0);
 
-        Disposable<Array> get(Time t, Algorithm algorithm) const;
+        Array get(Time t, Algorithm algorithm) const;
 
       private:
         const Real l0_;

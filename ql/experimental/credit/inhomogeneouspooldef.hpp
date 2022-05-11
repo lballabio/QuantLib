@@ -25,7 +25,6 @@
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
-#include <ql/math/functional.hpp>
 
 // Intended to replace InhomogeneousPoolCDOEngine in syntheticcdoengines.hpp
 
@@ -138,7 +137,7 @@ namespace QuantLib {
         std::vector<Real> recoveries = copula_->recoveries();
         std::transform(recoveries.begin(), recoveries.end(), 
                        std::back_inserter(lgd),
-                       subtract_from<Real>(1.0));
+                       [](Real x){ return 1.0-x; });
         std::transform(lgd.begin(), lgd.end(), notionals_.begin(), 
                        lgd.begin(), std::multiplies<Real>());
         std::vector<Real> prob = basket_->remainingProbabilities(d);

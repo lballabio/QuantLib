@@ -24,7 +24,6 @@
 
 #include <ql/experimental/processes/hestonslvprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 #include <utility>
 
@@ -48,7 +47,7 @@ namespace QuantLib {
         mixedSigma_ = mixingFactor_ * sigma_;
     }
 
-    Disposable<Array> HestonSLVProcess::drift(Time t, const Array& x) const {
+    Array HestonSLVProcess::drift(Time t, const Array& x) const {
         Array tmp(2);
 
         const Volatility vol =
@@ -63,8 +62,7 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Matrix> HestonSLVProcess::diffusion(Time t, const Array& x)
-    const {
+    Matrix HestonSLVProcess::diffusion(Time t, const Array& x) const {
 
         const Real vol =
             std::max(1e-8, std::sqrt(x[1])*leverageFct_->localVol(t, x[0], true));
@@ -79,7 +77,7 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Array> HestonSLVProcess::evolve(
+    Array HestonSLVProcess::evolve(
         Time t0, const Array& x0, Time dt, const Array& dw) const {
         Array retVal(2);
 

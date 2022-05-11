@@ -60,7 +60,7 @@ namespace QuantLib {
 
         Size numberOfIterations() const;
       protected:
-        Disposable<Array> apply(const Array& r) const;
+        Array apply(const Array& r) const;
 
         Time dt_;
         Real beta_;
@@ -98,8 +98,7 @@ namespace QuantLib {
     }
 
     template <class TrapezoidalScheme>
-    inline Disposable<Array> TrBDF2Scheme<TrapezoidalScheme>::apply(
-        const Array& r) const {
+    inline Array TrBDF2Scheme<TrapezoidalScheme>::apply(const Array& r) const {
         return r - beta_*map_->apply(r);
     }
 
@@ -117,7 +116,7 @@ namespace QuantLib {
         bcSet_.applyBeforeSolving(*map_, fn);
 
         const array_type f =
-            (1/alpha_*fStar - square<Real>()(1-alpha_)/alpha_*fn)/(2-alpha_);
+            (1/alpha_*fStar - squared(1-alpha_)/alpha_*fn)/(2-alpha_);
 
         if (map_->size() == 1) {
             fn = map_->solve_splitting(0, f, -beta_);

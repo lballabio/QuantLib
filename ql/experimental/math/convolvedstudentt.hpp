@@ -21,7 +21,6 @@
 #define convolved_student_t_hpp
 
 #include <ql/types.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <vector>
 #include <numeric>
 #include <functional>
@@ -99,9 +98,9 @@ namespace QuantLib {
              T is then \f$ \nu=2n+1 \f$
         */
         // move outside of the class, as a separate problem?
-        Disposable<std::vector<Real> > polynCharactT(Natural n) const;
+        std::vector<Real> polynCharactT(Natural n) const;
 
-        Disposable<std::vector<Real> > convolveVectorPolynomials(
+        std::vector<Real> convolveVectorPolynomials(
             const std::vector<Real>& v1,
             const std::vector<Real>& v2) const ;
     public:

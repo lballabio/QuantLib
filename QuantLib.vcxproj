@@ -549,6 +549,7 @@
     <ClInclude Include="ql\experimental\asian\all.hpp" />
     <ClInclude Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.hpp" />
     <ClInclude Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.hpp" />
+    <ClInclude Include="ql\pricingengines\asian\turnbullwakemanasianengine.hpp" />
     <ClInclude Include="ql\experimental\averageois\all.hpp" />
     <ClInclude Include="ql\experimental\averageois\arithmeticaverageois.hpp" />
     <ClInclude Include="ql\experimental\averageois\arithmeticoisratehelper.hpp" />
@@ -1922,6 +1923,7 @@
     <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp" />
     <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.cpp" />
     <ClCompile Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.cpp" />
+    <ClCompile Include="ql\pricingengines\asian\turnbullwakemanasianengine.cpp" />
     <ClCompile Include="ql\experimental\averageois\arithmeticaverageois.cpp" />
     <ClCompile Include="ql\experimental\averageois\arithmeticoisratehelper.cpp" />
     <ClCompile Include="ql\experimental\averageois\averageoiscouponpricer.cpp" />

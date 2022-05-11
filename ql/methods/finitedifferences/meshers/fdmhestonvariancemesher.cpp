@@ -55,17 +55,15 @@ namespace QuantLib {
 
         std::vector<Real> vGrid(size, 0.0), pGrid(size, 0.0);
         const Real mixedSigma = process->sigma()*mixingFactor;
-        const Real df  = 4*process->theta()*process->kappa()/
-                            square<Real>()(mixedSigma);
+        const Real df  = 4*process->theta()*process->kappa()/squared(mixedSigma);
         try {
             std::multiset<std::pair<Real, Real> > grid;
             
             for (Size l=1; l<=tAvgSteps; ++l) {
                 const Real t = (maturity*l)/tAvgSteps;
-                const Real ncp = 4*process->kappa()*std::exp(-process->kappa()*t)
-                    /(square<Real>()(mixedSigma)
+                const Real ncp = 4*process->kappa()*std::exp(-process->kappa()*t)/(squared(mixedSigma)
                     *(1-std::exp(-process->kappa()*t)))*process->v0();
-                const Real k = square<Real>()(mixedSigma)
+                const Real k = squared(mixedSigma)
                     *(1-std::exp(-process->kappa()*t))/(4*process->kappa());
 
                 const Real qMin = 0.0; // v_min = 0.0;
@@ -199,7 +197,7 @@ namespace QuantLib {
                     const Real gf = x*vol*std::sqrt(t);
                     const Real f = fwd*std::exp(gf);
 
-                    sig[i] = square<Real>()(leverageFct->localVol(t, f, true));
+                    sig[i] = squared(leverageFct->localVol(t, f, true));
                 }
 
                 const Real leverageAvg =

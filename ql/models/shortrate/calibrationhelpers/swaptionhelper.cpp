@@ -142,7 +142,6 @@ namespace QuantLib {
     void SwaptionHelper::performCalculations() const {
 
         Calendar calendar = index_->fixingCalendar();
-        Natural fixingDays = index_->fixingDays();
 
         Date exerciseDate = exerciseDate_;
         if (exerciseDate == Null<Date>())
@@ -150,9 +149,7 @@ namespace QuantLib {
                                             maturity_,
                                             index_->businessDayConvention());
 
-        Date startDate = calendar.advance(exerciseDate,
-                                    fixingDays, Days,
-                                    index_->businessDayConvention());
+        Date startDate = index_->valueDate(index_->fixingCalendar().adjust(exerciseDate));
 
         Date endDate = endDate_;
         if (endDate == Null<Date>())

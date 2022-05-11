@@ -58,8 +58,8 @@ namespace QuantLib {
                          = HestonProcess::FullTruncation);
 
         Size factors() const override;
-        Disposable<Array> drift(Time t, const Array& x) const override;
-        Disposable<Array> evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
+        Array drift(Time t, const Array& x) const override;
+        Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
         Real lambda() const;
         Real nu()     const;

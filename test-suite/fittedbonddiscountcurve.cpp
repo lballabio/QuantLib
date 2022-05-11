@@ -28,7 +28,6 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/canada.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/math/initializers.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 
 using namespace QuantLib;

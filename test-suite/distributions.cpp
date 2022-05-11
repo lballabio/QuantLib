@@ -31,7 +31,6 @@
 #include <ql/math/distributions/poissondistribution.hpp>
 #include <ql/math/randomnumbers/stochasticcollocationinvcdf.hpp>
 #include <ql/math/comparison.hpp>
-#include <ql/math/functional.hpp>
 
 #if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
 #pragma GCC diagnostic push
@@ -273,9 +272,10 @@ void DistributionTest::testNormal() {
     }
 
     MaddockInverseCumulativeNormal mInvCum(average, sigma);
-    std::transform(x.begin(),x.end(), x.begin(), diff.begin(),
-    			   compose3(std::minus<Real>(),
-    				  identity<Real>(), compose(mInvCum, cum)));
+    std::transform(x.begin(), x.end(), diff.begin(),
+                   [&](Real x) {
+                       return x - mInvCum(cum(x));
+                   });
 
     e = norm(diff.begin(), diff.end(), h);
     if (e > 1.0e-7) {

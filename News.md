@@ -1,110 +1,112 @@
-Changes for QuantLib 1.25:
+Changes for QuantLib 1.26:
 ==========================
 
-QuantLib 1.25 includes 35 pull requests from several contributors.
+QuantLib 1.26 includes 26 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/21?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/22?closed=1>.
 
 Portability
 -----------
 
-- **End of support:** this release and the next will be the last two
-  to support Visual Studio 2013.
+- **End of support:** as announced in the notes for the previous
+  release, this release is the last to support Visual Studio 2013.
 
-- Added a few CMake presets for building the library (thanks to Jonathan Sweemer).
+- **End of support:** this release is the last to support the
+  long-deprecated configure switches `--enable-disposable` and
+  `--enable-std-unique-ptr`.  From the next release, `Disposable` will
+  always be disabled (and eventually removed) and `std::unique_ptr`
+  will always be used instead of `std::auto_ptr`.  This has already
+  been the default in the last few releases.
 
-- When built and installed through CMake, the library now installs a `QuantLibConfig.cmake` file
-  that allows other CMake projects to find and use QuantLib (thanks to Jonathan Sweemer).
+- **Future end of support:** this release and the next will be the
+  last to avoid C++14 syntax.  This should still support most
+  compilers released in the past several years (except for Visual
+  Studio 2013, which we're already dropping in this release).
 
-Cashflows
----------
+- If tagged libraries are specified, as is the default on Windows,
+  CMake now gives the built libraries the same names as the Visual
+  Studio solution (for instance, `QuantLib-x64-mt-s` instead of
+  `QuantLib-mt-s-x64`) so that the pragma in `ql/auto_link.hpp` works.
 
-- Fixed the accrual calculation in overnight-indexed coupons (thanks to Mohammad Shojatalab).
-
-- Fixed fixing-days usage in `SubPeriodsCoupon` class (thanks to Marcin Rybacki).
-
-- IBOR coupons fixed in the past no longer need a forecast curve to return their amount.
-
-Indexes
--------
-
-- **Important change:** inflation indexes inherited from the `ZeroInflationIndex`
-  class no longer rely on their forecast curve for interpolation.  For coupons
-  that already took care of interpolation (as in the case of `CPICoupon` and
-  `ZeroInflationCashFlow`) this should not change the results. In other cases,
-  figures will change but should be more correct as the interpolation is now
-  performed according to market conventions.
-  Also, most inflation curves now assume that the index is not implemented.
-  Year-on-year inflation indexes and curves are not affected.
-
-Instruments
------------
-
-- **Breaking change:** convertible bonds were moved out of the `ql/experimental` folder.
-  Also, being market values and not part of the contract, dividends and credit spread
-  were moved from the bond to the `BinomialConvertibleEngine` class
-  (thanks to Lew Wei Hao).
-
-- The `ForwardRateAgreement` no longer inherits from `Forward`.  This also made it
-  possible to implement the `amount` method returning the expected cash settlement
-  (thanks to Lew Wei Hao).  The methods from `Forward` were kept available but
-  deprecated so code using them won't break.  Client code might break if it
-  performed casts to `Forward`.
-
-Models
-------
-
-- Fixed formula for discount bond option in CIR++ model (thanks to Magnus Mencke).
-
-Term structures
----------------
-
-- It is now possible to use normal volatilities in SABR smile sections,
-  and thus in the `SwaptionVolCube1` class (thanks to Lew Wei Hao).
+- QuantLib can now also be built as a subproject in a larger CMake
+  build (thanks to Peter Caspers).
 
 Date/time
 ---------
 
-- Added Chinese holidays for 2022 (thanks to Cheng Li).
+- When printed, `Period` instances now display transparently what
+  their units and length are, instead of doing more fancy formatting
+  (e.g., "16 months" is now displayed instead of "1 year 4 months").
+  Also, `Period` instances that compare as equal now return the same
+  period from their `normalize` method.
 
-Currencies
+Indexes
+-------
+
+- Added Tona (Tokyo overnight average) index (thanks to Jonghee Lee).
+
+- Added static `laggedFixing` method to `CPI` structure which provides
+  interpolation of inflation index fixings.
+
+Cash flows
 ----------
 
-- Added a number of African, American, Asian and European currencies from
-  Quaternion's `QuantExt` project (thanks to Ole Bueker).
+- The `CPICoupon` and `CPICashFlow` classes now take into account the
+  correct dates and observation lag for interpolation.
 
-Experimental folder
--------------------
+Instruments
+-----------
 
-The `ql/experimental` folder contains code whose interface is not
-fully stable, but is released in order to get user
-feedback. Experimental classes make no guarantees of backward
-compatibility; their interfaces might change in future releases.
+- Added a `BondForward` class that generalizes the existing
+  `FixedRateBondForward` to any kind of bond (thanks to Marcin
+  Rybacki).
 
-- Added experimental rate helpers for LIBOR-LIBOR and Overnight-LIBOR basis swaps.
+- Avoided unexpected jumps in callable bond OAS (thanks to Ralf Konrad).
 
-- Renamed `WulinYongDoubleBarrierEngine` to `SuoWangDoubleBarrierEngine`
- (thanks to Adityakumar Sinha for the fix and Ruilong Xu for the heads-up).
+- Fixed `TreeSwaptionEngine` mispricing when adjusting the instrument
+  schedule to a near exercise date (thanks to Ralf Konrad).
+
+- the `ForwardRateAgreement` class now works correctly without an
+  explicit discount curve.
+
+Term structures
+---------------
+
+- Dates explixitly passed to `InterpolatedZeroInflationCurve` are no
+  longer adjusted automatically to the beginning of their inflation period.
 
 Deprecated features
 -------------------
 
-- Deprecated the constructors of zero-coupon inflation term structures taking
-  an `indexIsInterpolated` boolean argument.
+- **Removed** the `MCDiscreteAveragingAsianEngine` class, deprecated
+  in version 1.21.
 
-- Deprecated a number of methods in the `ForwardRateAgreement` class that used
-  to be inherited from `Forward`.
+- Deprecated the `LsmBasisSystem::PolynomType` typedef, now renamed to
+  `PolynomialType`; `MakeMCAmericanEngine::withPolynomOrder` was also
+  deprecated and renamed to `withPolynomialOrder`.
 
-- Deprecated a couple of constructors in the `SofrFutureRateHelper` class.
+- Deprecated the `ZeroInflationCashFlow` constructor taking an unused
+  calendar and business-day convention.
 
-- Deprecated the `WulinYongDoubleBarrierEngine` alias for `SuoWangDoubleBarrierEngine`.
+- Deprecated the `CPICoupon` constructor taking a number of fixing
+  days, as well as the `CPICoupon::indexObservation`,
+  `CPICoupon::adjustedFixing` and `CPICoupon::indexFixing` methods
+  and the `CPILeg::withFixingDays` method.
 
-- Deprecated the protected `spreadLegValue_` data member
-  in the `BlackIborCouponPricer` class.
+- Deprecated the `CPICashFlow` constructor taking a precalculated fixing date and a frequency.
+
+- Deprecated the `Observer::set_type` and `Observable::set_type` typedefs.
+
+- Deprecated the unused `Curve` class.
+
+- Deprecated the unused `LexicographicalView` class.
+
+- Deprecated the unused `Composite` class.
+
+- Deprecated the unused `DriftTermStructure` class.
 
 
-Thanks go also to Tom Anderson, Francois Botha, Matthew Kolbe, Benson
-Luk, Marcin Rybacki, Henning Segger, Klaus Spanderen, and GitHub users
-@jxcv0 and @azsrz for smaller fixes, enhancements and bug reports.
+**Thanks go also** to Matthias Groncki, Jonathan Sweemer and Li Zhong
+for smaller fixes, enhancements and bug reports.
