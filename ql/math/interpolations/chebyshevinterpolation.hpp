@@ -39,9 +39,6 @@ namespace QuantLib {
 
     class ChebyshevInterpolation {
       public:
-        typedef Real argument_type;
-        typedef Real result_type;
-
         ChebyshevInterpolation(const Array& f);
         ChebyshevInterpolation(Size n, const ext::function<Real(Real)>& f);
 

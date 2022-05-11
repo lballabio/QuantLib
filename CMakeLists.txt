@@ -39,7 +39,7 @@ set(QL_INSTALL_CMAKEDIR "lib/cmake/${PACKAGE_NAME}" CACHE STRING
     "Installation directory for CMake scripts")
 
 # Options
-option(QL_BUILD_BENCHMARK "Build benchmark" ON)
+option(QL_BUILD_BENCHMARK "Build benchmark" OFF)
 option(QL_BUILD_EXAMPLES "Build examples" ON)
 option(QL_BUILD_TEST_SUITE "Build test suite" ON)
 option(QL_ENABLE_OPENMP "Detect and use OpenMP" OFF)

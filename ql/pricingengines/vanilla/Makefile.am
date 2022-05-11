@@ -48,7 +48,8 @@ this_include_HEADERS = \
     mceuropeanhestonengine.hpp \
     mceuropeangjrgarchengine.hpp \
     mchestonhullwhiteengine.hpp \
-    mcvanillaengine.hpp
+    mcvanillaengine.hpp \
+    qrplusamericanengine.hpp
 
 cpp_files = \
     analyticbsmhullwhiteengine.cpp \
@@ -84,7 +85,8 @@ cpp_files = \
     fdvanillaengine.cpp \
     mcamericanengine.cpp \
     mcdigitalengine.cpp \
-    mchestonhullwhiteengine.cpp
+    mchestonhullwhiteengine.cpp \
+    qrplusamericanengine.cpp    
 
 if UNITY_BUILD
 

@@ -752,6 +752,7 @@ set(QL_SOURCES
     pricingengines/vanilla/mcamericanengine.cpp
     pricingengines/vanilla/mcdigitalengine.cpp
     pricingengines/vanilla/mchestonhullwhiteengine.cpp
+    pricingengines/vanilla/qrplusamericanengine.cpp
     processes/batesprocess.cpp
     processes/blackscholesprocess.cpp
     processes/endeulerdiscretization.cpp
@@ -1958,6 +1959,7 @@ set(QL_HEADERS
     pricingengines/vanilla/mceuropeanhestonengine.hpp
     pricingengines/vanilla/mchestonhullwhiteengine.hpp
     pricingengines/vanilla/mcvanillaengine.hpp
+    pricingengines/vanilla/qrplusamericanengine.hpp
     processes/batesprocess.hpp
     processes/blackscholesprocess.hpp
     processes/endeulerdiscretization.hpp
