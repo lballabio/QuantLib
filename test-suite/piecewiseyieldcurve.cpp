@@ -1159,6 +1159,9 @@ void PiecewiseYieldCurveTest::testBadPreviousCurve() {
         { 50, Years,   0.01185 }
     };
 
+    //make this test run standalone
+    Settings::instance().evaluationDate() = Date(10, May, 2022);
+
     std::vector<ext::shared_ptr<RateHelper> > helpers;
     ext::shared_ptr<Euribor> euribor1m(new Euribor1M);
     for (auto& i : data) {
