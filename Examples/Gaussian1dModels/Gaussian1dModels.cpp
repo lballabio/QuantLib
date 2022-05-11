@@ -48,14 +48,6 @@
 
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
 // helper function that prints a basket of calibrating swaptions to std::cout
 
 void printBasket(

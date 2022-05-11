@@ -34,14 +34,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 using namespace QuantLib;
 using namespace std;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
 // Correct value is: (e^{-.25} \sqrt{\pi})^{dimension}
 struct integrand {
     Real operator()(const std::vector<Real>& arg) const {

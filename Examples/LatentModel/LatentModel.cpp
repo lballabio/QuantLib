@@ -33,15 +33,6 @@
 using namespace std;
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
-
 /* This sample code shows basic usage of a Latent variable model.
    The data and correlation problem presented is the same as in:
      'Modelling Dependent Defaults: Asset Correlations Are Not Enough!'

@@ -46,15 +46,6 @@
 
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
-
 //Number of swaptions to be calibrated to...
 
 Size numRows = 5;

@@ -39,14 +39,6 @@
 using namespace std;
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
 /*
   This example reproduces Table 2 on page 11 of 
   A Formula for Interest Rate Swaps Valuation under

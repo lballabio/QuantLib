@@ -47,12 +47,6 @@
 using namespace std;
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-    ThreadKey sessionId() { return {}; }
-}
-#endif
-
 // par-rate approximation
 Rate parRate(const YieldTermStructure& yts,
              const std::vector<Date>& dates,
