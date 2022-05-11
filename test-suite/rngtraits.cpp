@@ -21,6 +21,7 @@
 #include "rngtraits.hpp"
 #include "utilities.hpp"
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/math/randomnumbers/ranluxuniformrng.hpp>
 #include <ql/math/comparison.hpp>
 
 using namespace QuantLib;
@@ -91,12 +92,46 @@ void RngTraitsTest::testCustomPoisson() {
                    << "    expected:   " << stored);
 }
 
+void RngTraitsTest::testRanLux() {
+    BOOST_TEST_MESSAGE("Testing known RanLux sequence...");
+
+    Ranlux3UniformRng ranlux3(2938723U);
+    Ranlux4UniformRng ranlux4(4390109U);
+
+    const Real ranlux3_expected[] = {
+        0.307448851544538826, 0.666313657894363587, 0.698528013702823358,
+        0.0217381272445322793,0.862964516238161394, 0.909193419106014034,
+        0.674484308686746914, 0.849607570377191479, 0.054626078713596371,
+        0.416474163715683687
+    };
+
+    const Real ranlux4_expected[] = {
+        0.222209169374078641, 0.420181950405986271, 0.0302156663005135329,
+        0.0836259809475237148,0.480549766594993599, 0.723472021829124401,
+        0.905819507194266293,  0.54072519936540786, 0.445908421479817463,
+        0.651084788437518824
+    };
+
+    for (Size i=0; i < 10010; ++i) {
+        ranlux3.next();
+        ranlux4.next();
+    }
+
+    for (Size i =0; i < 10; ++i) {
+        if (!close_enough(ranlux3.next().value, ranlux3_expected[i]))
+            BOOST_FAIL("failed to reproduce ranlux3 numbers...");
+
+        if (!close_enough(ranlux4.next().value, ranlux4_expected[i]))
+            BOOST_FAIL("failed to reproduce ranlux4 numbers...");
+    }
+}
 
 test_suite* RngTraitsTest::suite() {
     auto* suite = BOOST_TEST_SUITE("RNG traits tests");
     suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testGaussian));
     suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testDefaultPoisson));
     suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testCustomPoisson));
+    suite->add(QUANTLIB_TEST_CASE(&RngTraitsTest::testRanLux));
     return suite;
 }
 
