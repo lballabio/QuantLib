@@ -37,6 +37,7 @@ namespace QuantLib {
     }
 
 void SviSmileSection::init() {
+    QL_REQUIRE(exerciseTime() > 0.0, "svi expects a strictly positive expiry time");
     QL_REQUIRE(params_.size() == 5,
                "svi expects 5 parameters (a,b,sigma,rho,m) but ("
                    << params_.size() << ") given");
