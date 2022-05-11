@@ -33,24 +33,17 @@
 namespace QuantLib {
 
     //! Basic support for the singleton pattern.
-    /*! The typical use of this class is:
-        \code
-        class Foo : public Singleton<Foo> {
-            friend class Singleton<Foo>;
-          private:
-            Foo() {}
-          public:
-            ...
-        };
-        \endcode
-        which, albeit sub-optimal, frees one from the concerns of
-        creating and managing the unique instance and can serve later
-        as a single implemementation point should synchronization
+    /*! The typical use of this class is: \code class Foo : public Singleton<Foo> { friend class Singleton<Foo>;
+        private: Foo() {} public: ...  }; \endcode which, albeit sub-optimal, frees one from the concerns of creating
+        and managing the unique instance and can serve later as a single implemementation point should synchronization
         features be added.
 
-        Global can be used to distinguish Singletons that are local to a session
-        (Global = false) or that are global across all sessions (B = true).
-        This is only relevant if QL_ENABLE_SESSIONS is enabled.
+        Global can be used to distinguish Singletons that are local to a session (Global = false) or that are global
+        across all sessions (B = true).  This is only relevant if QL_ENABLE_SESSIONS is enabled.
+
+        Notice that the creation and retrieval of (local or global) singleton instances through instance() is thread
+        safe, but obviously subsequent operatinos on the singleton have to be synchronized within the singleton
+        implementation itself.
 
         \ingroup patterns
     */
