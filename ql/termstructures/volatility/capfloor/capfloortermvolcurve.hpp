@@ -79,7 +79,7 @@ namespace QuantLib {
         CapFloorTermVolCurve& operator=(CapFloorTermVolCurve&&) = delete;
         CapFloorTermVolCurve& operator=(const CapFloorTermVolCurve&) = delete;
 
-        ~CapFloorTermVolCurve() = default;
+        ~CapFloorTermVolCurve() override = default;
 
         //! \name TermStructure interface
         //@{

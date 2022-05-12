@@ -112,7 +112,7 @@ namespace QuantLib {
         SwaptionVolatilityMatrix& operator=(SwaptionVolatilityMatrix&&) = delete;
         SwaptionVolatilityMatrix& operator=(const SwaptionVolatilityMatrix&) = delete;
 
-        ~SwaptionVolatilityMatrix() = default;
+        ~SwaptionVolatilityMatrix() override = default;
 
         //! \name LazyObject interface
         //@{
