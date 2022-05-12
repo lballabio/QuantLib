@@ -777,6 +777,7 @@
     <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="subperiodcoupons.cpp" />
+    <ClCompile Include="svivolatility.cpp" />
     <ClCompile Include="swap.cpp" />
     <ClCompile Include="swapforwardmappings.cpp" />
     <ClCompile Include="swaption.cpp" />
@@ -946,6 +947,7 @@
     <ClInclude Include="squarerootclvmodel.hpp" />
     <ClInclude Include="stats.hpp" />
     <ClInclude Include="subperiodcoupons.hpp" />
+    <ClInclude Include="svivolatility.hpp" />
     <ClInclude Include="swap.hpp" />
     <ClInclude Include="swapforwardmappings.hpp" />
     <ClInclude Include="swaption.hpp" />

@@ -33,7 +33,7 @@ namespace QuantLib {
 namespace detail {
 
 inline void checkSviParameters(const Real a, const Real b, const Real sigma,
-                               const Real rho, const Real m) {
+                               const Real rho, const Real m, const Time tte) {
     QL_REQUIRE(b >= 0.0, "b (" << b << ") must be non negative");
     QL_REQUIRE(std::fabs(rho) < 1.0, "rho (" << rho << ") must be in (-1,1)");
     QL_REQUIRE(sigma > 0.0, "sigma (" << sigma << ") must be positive");
@@ -41,8 +41,10 @@ inline void checkSviParameters(const Real a, const Real b, const Real sigma,
                "a + b sigma sqrt(1-rho^2) (a=" << a << ", b=" << b << ", sigma="
                                                << sigma << ", rho=" << rho
                                                << ") must be non negative");
-    QL_REQUIRE(b * (1.0 + std::fabs(rho)) < 4.0,
-               "b(1+|rho|) must be less than 4");
+    if (tte != 0.0) {
+        QL_REQUIRE(b * (1.0 + std::fabs(rho)) <= 4.0 / tte,
+                   "b(1+|rho|) must be less than or equal to 4/T");
+    }
 }
 
 inline Real sviTotalVariance(const Real a, const Real b, const Real sigma,
