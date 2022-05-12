@@ -73,6 +73,17 @@
       }
     },
     {
+      "name": "linux-gcc-debug-with-clang-tidy",
+      "binaryDir": "${sourceDir}/build",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "g++",
+        "QL_CLANG_TIDY_OPTIONS": "-warnings-as-errors=*",
+        "QL_USE_CLANG_TIDY": "ON"
+      }
+    },
+    {
       "name": "linux-ci-build-with-clang-tidy",
       "binaryDir": "${sourceDir}/build",
       "generator": "Unix Makefiles",
@@ -144,6 +155,10 @@
     {
       "name": "linux-gcc-release",
       "configurePreset": "linux-gcc-release"
+    },
+    {
+      "name": "linux-gcc-debug-with-clang-tidy",
+      "configurePreset": "linux-gcc-debug-with-clang-tidy"
     },
     {
       "name": "windows-clang-x64-debug",
