@@ -11,4 +11,5 @@
 #include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_geom_av_price_heston.hpp>
 #include <ql/pricingengines/asian/mcdiscreteasianenginebase.hpp>
+#include <ql/pricingengines/asian/turnbullwakemanasianengine.hpp>
 
