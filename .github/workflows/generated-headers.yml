@@ -15,6 +15,7 @@ jobs:
         ./configure
     - name: Update headers
       run: |
+        find ql -name *.am | xargs touch
         make dist
         rm QuantLib-*.tar.gz
     - uses: peter-evans/create-pull-request@v4
