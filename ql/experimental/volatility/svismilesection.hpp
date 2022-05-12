@@ -30,6 +30,10 @@
 
 namespace QuantLib {
 
+//! Stochastic Volatility Inspired Smile Section
+/*! \test the correctness of the result is tested by checking it
+          against known good values.
+*/
 class SviSmileSection : public SmileSection {
 
   public:

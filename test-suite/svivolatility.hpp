@@ -1,8 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2004 StatPro Italia srl
- Copyright (C) 2004 Walter Penschke
+ Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,21 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_rng_traits_hpp
-#define quantlib_test_rng_traits_hpp
+#ifndef quantlib_test_svi_volatility_hpp
+#define quantlib_test_svi_volatility_hpp
 
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
 
-class RngTraitsTest {
+class SviVolatilityTest {
   public:
-    static void testGaussian();
-    static void testDefaultPoisson();
-    static void testCustomPoisson();
-    static void testRanLux();
-    static boost::unit_test_framework::test_suite* suite();
+    static void testSviSmileSection();
+    static boost::unit_test_framework::test_suite* experimental();
 };
 
 

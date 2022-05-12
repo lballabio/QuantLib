@@ -37,11 +37,12 @@ namespace QuantLib {
     }
 
 void SviSmileSection::init() {
+    QL_REQUIRE(exerciseTime() > 0.0, "svi expects a strictly positive expiry time");
     QL_REQUIRE(params_.size() == 5,
                "svi expects 5 parameters (a,b,sigma,rho,m) but ("
                    << params_.size() << ") given");
-    detail::checkSviParameters(params_[0], params_[1], params_[2], params_[3],
-                               params_[4]);
+    detail::checkSviParameters(params_[0], params_[1], params_[2], params_[3], params_[4],
+                               exerciseTime());
 }
 
 Volatility SviSmileSection::volatilityImpl(Rate strike) const {
