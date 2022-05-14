@@ -38,14 +38,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/termstructures/volatility/smilesectionutils.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
 #include <boost/math/distributions/normal.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
 #include <vector>
 #include <utility>
 

@@ -29,16 +29,9 @@
 #if defined(QL_USE_STD_FUNCTION)
 #include <functional>
 #else
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
 #include <boost/function.hpp>
 #include <boost/bind/bind.hpp>
 #include <boost/ref.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
 #endif
 
 namespace QuantLib {

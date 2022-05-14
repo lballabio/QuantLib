@@ -24,16 +24,9 @@
 #include <ql/utilities/null.hpp>
 #include <ql/time/period.hpp>
 #include <ql/errors.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
 #ifndef QL_PATCH_SOLARIS
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
-#endif
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
 #endif
 #include <string>
 #include <locale>

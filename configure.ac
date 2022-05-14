@@ -38,8 +38,8 @@ AC_ARG_WITH([boost-include],
             [ql_boost_include_path="`cd ${withval} 2>/dev/null && pwd`"],
             [ql_boost_include_path=""])
 if test [ -n "$ql_boost_include_path" ] ; then
-   AC_SUBST([BOOST_INCLUDE],["-I${ql_boost_include_path}"])
-   AC_SUBST([CPPFLAGS],["${CPPFLAGS} -I${ql_boost_include_path}"])
+   AC_SUBST([BOOST_INCLUDE],["-isystem ${ql_boost_include_path}"])
+   AC_SUBST([CPPFLAGS],["${CPPFLAGS} -isystem ${ql_boost_include_path}"])
 fi
 AC_ARG_WITH([boost-lib],
             AS_HELP_STRING([--with-boost-lib=LIB_PATH],
