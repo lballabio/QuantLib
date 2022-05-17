@@ -156,8 +156,8 @@ QuantLib is
 
     Copyright (C) 2021 Anubhav Pandey
     Copyright (C) 2021 Magnus Mencke
-    Copyright (C) 2021 Skandinaviska Enskilda Banken AB (publ)
     Copyright (C) 2021, 2022 Ralf Konrad Eckel
+    Copyright (C) 2021, 2022 Skandinaviska Enskilda Banken AB (publ)
 
     Copyright (C) 2022 Jonghee Lee
 
