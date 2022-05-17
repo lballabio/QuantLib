@@ -79,6 +79,7 @@
 #include "commodityunitofmeasure.hpp"
 #include "compiledboostversion.hpp"
 #include "compoundoption.hpp"
+#include "constparamprocess.hpp"
 #include "convertiblebonds.hpp"
 #include "covariance.hpp"
 #include "creditdefaultswap.hpp"
@@ -384,6 +385,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(CashFlowsTest::suite());
     test->add(CliquetOptionTest::suite());
     test->add(CmsTest::suite());
+    test->add(ConstParamProcessTest::suite());
     test->add(ConvertibleBondTest::suite());
     test->add(CovarianceTest::suite());
     test->add(CPISwapTest::suite());

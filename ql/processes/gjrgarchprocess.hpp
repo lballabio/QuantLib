@@ -24,12 +24,11 @@
 #ifndef quantlib_gjrgarch_process_hpp
 #define quantlib_gjrgarch_process_hpp
 
+#include <ql/quote.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/quote.hpp>
 
 namespace QuantLib {
-
     //! Stochastic-volatility GJR-GARCH(1,1) process
     // parameters supplied should be daily constants
     // they are annualized by setting the parameter daysPerYear
@@ -38,20 +37,20 @@ namespace QuantLib {
         \f[
         \begin{array}{rcl}
         dS(t, S)  &=& \mu S dt + \sqrt{v} S dW_1 \\
-        dv(t, S)  &=& (\omega + (\beta + \alpha * q_{2} 
-        + \gamma * q_{3} - 1) v) dt + (\alpha \sigma_{12} 
-        + \gamma \sigma_{13}) v dW_1 
-        + \sqrt{\alpha^{2} (\sigma^{2}_{2} - \sigma^{2}_{12}) 
-        + \gamma^{2} (\sigma^{2}_{3} - \sigma^{2}_{13}) 
+        dv(t, S)  &=& (\omega + (\beta + \alpha * q_{2}
+        + \gamma * q_{3} - 1) v) dt + (\alpha \sigma_{12}
+        + \gamma \sigma_{13}) v dW_1
+        + \sqrt{\alpha^{2} (\sigma^{2}_{2} - \sigma^{2}_{12})
+        + \gamma^{2} (\sigma^{2}_{3} - \sigma^{2}_{13})
         + 2 \alpha \gamma (\sigma_{23} - \sigma_{12} \sigma_{13})} v dW_2 \ \
         N = normalCDF(\lambda) \\
         n &=& \exp{-\lambda^{2}/2} / \sqrt{2 \pi} \\
         q_{2} &=& 1 + \lambda^{2} \\
         q_{3} &=& \lambda n + N + \lambda^2 N \\
         \sigma^{2}_{2} = 2 + 4 \lambda^{4} \\
-        \sigma^{2}_{3} = \lambda^{3} n + 5 \lambda n + 3N 
-        + \lambda^{4} N + 6 \lambda^{2} N -\\lambda^{2} n^{2} - N^{2} 
-        - \lambda^{4} N^{2} - 2 \lambda n N - 2 \lambda^{3} nN 
+        \sigma^{2}_{3} = \lambda^{3} n + 5 \lambda n + 3N
+        + \lambda^{4} N + 6 \lambda^{2} N -\\lambda^{2} n^{2} - N^{2}
+        - \lambda^{4} N^{2} - 2 \lambda n N - 2 \lambda^{3} nN
         - 2 \lambda^{2} N^{2} \                 \
         \sigma_{12} = -2 \lambda \\
         \sigma_{13} = -2 n - 2 \lambda N \\
@@ -99,14 +98,23 @@ namespace QuantLib {
 
         Time time(const Date&) const override;
 
-      private:
+        // forward cost of carry = forward risk free rate - forward dividend yield
+        virtual Spread forwardCarryCost(Time t1,
+                                        Time t2,
+                                        Compounding comp,
+                                        Frequency freq = Annual,
+                                        bool extrapolate = false) const {
+            Real spread = riskFreeRate_->forwardRate(t1, t2, comp, freq, extrapolate) -
+                          dividendYield_->forwardRate(t1, t2, comp, freq, extrapolate);
+            return spread;
+        }
+
+      protected:
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<Quote> s0_;
         Real v0_, omega_, alpha_, beta_, gamma_, lambda_, daysPerYear_;
         Discretization discretization_;
     };
-
 }
-
 
 #endif

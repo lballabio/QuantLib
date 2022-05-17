@@ -3,16 +3,13 @@
 /*
  Copyright (C) 2015 Johannes Göttker-Schnetmann
  Copyright (C) 2015 Klaus Spanderen
-
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
-
  QuantLib is free software: you can redistribute it and/or modify it
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
  <http://quantlib.org/license.shtml>.
-
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
@@ -54,9 +51,7 @@ namespace QuantLib {
         const Volatility vol =
            std::max(1e-8, std::sqrt(x[1])*leverageFct_->localVol(t, x[0], true));
 
-        tmp[0] = riskFreeRate()->forwardRate(t, t, Continuous)
-               - dividendYield()->forwardRate(t, t, Continuous)
-               - 0.5*vol*vol;
+        tmp[0] = hestonProcess_->forwardCarryCost(t, t, Continuous) - 0.5*vol*vol;
 
         tmp[1] = kappa_*(theta_ - x[1]);
 
@@ -105,8 +100,7 @@ namespace QuantLib {
             retVal[1] = ((u <= p) ? 0.0 : std::log((1-p)/(1-u))/beta);
         }
 
-        const Real mu = riskFreeRate()->forwardRate(t0, t0+dt, Continuous)
-             - dividendYield()->forwardRate(t0, t0+dt, Continuous);
+        const Real mu = hestonProcess_->forwardCarryCost(t0, t0 + dt, Continuous);
 
         const Real rho1 = std::sqrt(1-rho_*rho_);
 

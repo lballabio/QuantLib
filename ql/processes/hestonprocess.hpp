@@ -24,12 +24,11 @@
 #ifndef quantlib_heston_process_hpp
 #define quantlib_heston_process_hpp
 
+#include <ql/quote.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/quote.hpp>
 
 namespace QuantLib {
-
     //! Square-root stochastic-volatility Heston process
     /*! This class describes the square root stochastic volatility
         process governed by
@@ -90,7 +89,18 @@ namespace QuantLib {
         // semi-analytical solution of the Fokker-Planck equation in x=ln(s)
         Real pdf(Real x, Real v, Time t, Real eps=1e-3) const;
 
-      private:
+        // forward cost of carry = forward risk free rate - forward dividend yield
+        virtual Spread forwardCarryCost(Time t1,
+                                        Time t2,
+                                        Compounding comp,
+                                        Frequency freq = Annual,
+                                        bool extrapolate = false) const {
+            Real spread = riskFreeRate_->forwardRate(t1, t2, comp, freq, extrapolate) -
+                          dividendYield_->forwardRate(t1, t2, comp, freq, extrapolate);
+            return spread;
+        }
+
+      protected:
         Real varianceDistribution(Real v, Real dw, Time dt) const;
 
         Handle<YieldTermStructure> riskFreeRate_, dividendYield_;

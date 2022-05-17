@@ -2,16 +2,13 @@
 
 /*
  Copyright (C) 2005, 2007, 2009, 2014 Klaus Spanderen
-
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
-
  QuantLib is free software: you can redistribute it and/or modify it
  under the terms of the QuantLib license.  You should have received a
  copy of the license along with this program; if not, please email
  <quantlib-dev@lists.sf.net>. The license is also available online at
  <http://quantlib.org/license.shtml>.
-
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
@@ -76,9 +73,7 @@ namespace QuantLib {
                          : (discretization_ == Reflection) ? - std::sqrt(-x[1])
                          : 0.0;
 
-        tmp[0] = riskFreeRate_->forwardRate(t, t, Continuous)
-               - dividendYield_->forwardRate(t, t, Continuous)
-               - 0.5 * vol * vol;
+        tmp[0] = forwardCarryCost(t, t, Continuous) - 0.5 * vol * vol;
 
         tmp[1] = kappa_*
            (theta_-((discretization_==PartialTruncation) ? x[1] : vol*vol));
@@ -416,9 +411,7 @@ namespace QuantLib {
           case PartialTruncation:
             vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
             vol2 = sigma_ * vol;
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
-                    - 0.5 * vol * vol;
+            mu = forwardCarryCost(t0, t0 + dt, Continuous) - 0.5 * vol * vol;
             nu = kappa_*(theta_ - x0[1]);
 
             retVal[0] = x0[0] * std::exp(mu*dt+vol*dw[0]*sdt);
@@ -427,9 +420,7 @@ namespace QuantLib {
           case FullTruncation:
             vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
             vol2 = sigma_ * vol;
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
-                    - 0.5 * vol * vol;
+            mu = forwardCarryCost(t0, t0 + dt, Continuous) - 0.5 * vol * vol;
             nu = kappa_*(theta_ - vol*vol);
 
             retVal[0] = x0[0] * std::exp(mu*dt+vol*dw[0]*sdt);
@@ -438,9 +429,7 @@ namespace QuantLib {
           case Reflection:
             vol = std::sqrt(std::fabs(x0[1]));
             vol2 = sigma_ * vol;
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
-                    - 0.5 * vol*vol;
+            mu = forwardCarryCost(t0, t0 + dt, Continuous) - 0.5 * vol * vol;
             nu = kappa_*(theta_ - vol*vol);
 
             retVal[0] = x0[0]*std::exp(mu*dt+vol*dw[0]*sdt);
@@ -454,9 +443,7 @@ namespace QuantLib {
             // process. For further details please read the Wilmott thread
             // "QuantLib code is very high quality"
             vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
-            mu =   riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
-                 - dividendYield_->forwardRate(t0, t0+dt, Continuous)
-                   - 0.5 * vol*vol;
+            mu = forwardCarryCost(t0, t0 + dt, Continuous) - 0.5 * vol * vol;
 
             retVal[1] = varianceDistribution(x0[1], dw[1], dt);
             dy = (mu - rho_/sigma_*kappa_
@@ -513,9 +500,8 @@ namespace QuantLib {
                 retVal[1] = ((u <= p) ? 0.0 : std::log((1-p)/(1-u))/beta);
             }
 
-            mu =   riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
-                 - dividendYield_->forwardRate(t0, t0+dt, Continuous);
-
+            mu = forwardCarryCost(t0, t0 + dt, Continuous);
+            
             retVal[0] = x0[0]*std::exp(mu*dt + k0 + k1*x0[1] + k2*retVal[1]
                                        +std::sqrt(k3*x0[1]+k4*retVal[1])*dw[0]);
           }
@@ -537,9 +523,7 @@ namespace QuantLib {
             const Real vdw
                 = (nu_t - nu_0 - kappa_*theta_*dt + kappa_*vds)/sigma_;
 
-            mu = ( riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
-                  -dividendYield_->forwardRate(t0, t0+dt, Continuous))*dt
-                - 0.5*vds + rho_*vdw;
+            mu = forwardCarryCost(t0, t0 + dt, Continuous) * dt - 0.5*vds + rho_*vdw;
 
             const Volatility sig = std::sqrt((1-rho_*rho_)*vds);
             const Real s = x0[0]*std::exp(mu + sig*dw[0]);
