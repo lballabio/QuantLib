@@ -57,6 +57,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <thread>
+#include <limits>
 
 using boost::unit_test::test_results;
 using namespace boost::interprocess;
@@ -300,8 +301,7 @@ int main( int argc, char* argv[] )
                         }
                         else {
                             testsSortedByRunTime.insert(
-                                std::make_pair(
-                                    std::numeric_limits<Time>::max(), *it));
+                                std::make_pair((std::numeric_limits<Time>::max)(), *it));
                         }
                     }
                 }
