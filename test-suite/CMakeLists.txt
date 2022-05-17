@@ -141,6 +141,7 @@ set(QL_TEST_SOURCES
     squarerootclvmodel.cpp
     stats.cpp
     subperiodcoupons.cpp
+    svivolatility.cpp
     swap.cpp
     swapforwardmappings.cpp
     swaption.cpp
@@ -310,6 +311,7 @@ set(QL_TEST_HEADERS
     squarerootclvmodel.hpp
     stats.hpp
     subperiodcoupons.hpp
+    svivolatility.hpp
     swap.hpp
     swapforwardmappings.hpp
     swaption.hpp
@@ -380,14 +382,10 @@ if (QL_BUILD_TEST_SUITE)
     if (NOT Boost_USE_STATIC_LIBS)
         target_compile_definitions(ql_test_suite PRIVATE BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
     endif()
-    if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER OR QL_ENABLE_SESSIONS OR
-            QL_ENABLE_SINGLETON_THREAD_SAFE_INIT OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
-        set(QL_TEST_SUITE_LIBRARIES Boost::thread ${RT_LIBRARY})
-    endif()
     target_link_libraries(ql_test_suite PRIVATE
         ql_library
         ql_unit_test_main
-        ${QL_TEST_SUITE_LIBRARIES})
+        ${QL_THREAD_LIBRARIES})
     if (QL_INSTALL_TEST_SUITE)
         install(TARGETS ql_test_suite RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()
@@ -400,14 +398,10 @@ IF (QL_BUILD_BENCHMARK)
     if (NOT Boost_USE_STATIC_LIBS)
         target_compile_definitions(ql_benchmark PRIVATE BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
     endif()
-    if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER OR QL_ENABLE_SESSIONS OR
-            QL_ENABLE_SINGLETON_THREAD_SAFE_INIT OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
-        set(QL_BENCHMARK_LIBRARIES Boost::thread ${RT_LIBRARY})
-    endif()
     target_link_libraries(ql_benchmark PRIVATE
         ql_library
         ql_unit_test_main
-        ${QL_BENCHMARK_LIBRARIES})
+        ${QL_THREAD_LIBRARIES})
     if (QL_INSTALL_BENCHMARK)
         install(TARGETS ql_benchmark RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()

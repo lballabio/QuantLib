@@ -142,6 +142,7 @@ QL_TEST_SRCS = \
 	squarerootclvmodel.cpp \
 	stats.cpp \
 	subperiodcoupons.cpp \
+	svivolatility.cpp \
 	swap.cpp \
 	swapforwardmappings.cpp \
 	swaption.cpp \
@@ -309,6 +310,7 @@ QL_TEST_HDRS = \
 	squarerootclvmodel.hpp \
 	stats.hpp \
 	subperiodcoupons.hpp \
+	svivolatility.hpp \
 	swap.hpp \
 	swapforwardmappings.hpp \
 	swaption.hpp \

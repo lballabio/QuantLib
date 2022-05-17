@@ -292,9 +292,6 @@ if test "$ql_use_parallel_test" = "yes" ; then
              [Define this if you want to enable 
               the parallel unit test runner.])
    QL_CHECK_BOOST_VERSION_1_59_OR_HIGHER
-   if test "$ql_use_tsop" != "yes" ; then
-      QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM
-   fi
    QL_CHECK_BOOST_TEST_INTERPROCESS
 else
    AC_SUBST([BOOST_INTERPROCESS_LIB],[""])
