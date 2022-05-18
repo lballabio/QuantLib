@@ -61,6 +61,11 @@ namespace QuantLib {
             impl_->removedHolidays.insert(_d);
     }
 
+    void Calendar::resetAddedAndRemovedHolidays() {
+        impl_->addedHolidays.clear();
+        impl_->removedHolidays_.clear();
+    }
+
     Date Calendar::adjust(const Date& d,
                           BusinessDayConvention c) const {
         QL_REQUIRE(d != Date(), "null date");
