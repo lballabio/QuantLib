@@ -63,7 +63,7 @@ namespace QuantLib {
 
     void Calendar::resetAddedAndRemovedHolidays() {
         impl_->addedHolidays.clear();
-        impl_->removedHolidays_.clear();
+        impl_->removedHolidays.clear();
     }
 
     Date Calendar::adjust(const Date& d,
