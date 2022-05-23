@@ -29,7 +29,7 @@ jobs:
     - name: Build
       run: |
         ./autogen.sh
-        ./configure --disable-shared --with-boost-include=/usr/local/include ${{ matrix.configureflags }} CC="ccache $(brew --prefix llvm)/bin/clang" CXX="ccache $(brew --prefix llvm)/bin/clang++" CXXFLAGS="-O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9 ${{ matrix.cxxflags }}" LDFLAGS="-stdlib=libc++ -mmacosx-version-min=10.9"
+        ./configure --disable-shared ${{ matrix.configureflags }} CC="ccache clang" CXX="ccache clang++" CXXFLAGS="-O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9 ${{ matrix.cxxflags }}" LDFLAGS="-stdlib=libc++ -mmacosx-version-min=10.9"
         make -j 2
     - name: Run tests
       run: |

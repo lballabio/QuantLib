@@ -77,6 +77,9 @@ fi
 # Check for C++11 support
 QL_CHECK_CPP11
 
+# Check for other compiler flags
+QL_CHECK_SYSTEM_HEADER_PREFIX
+
 # Check for Boost components
 QL_CHECK_BOOST
 AM_CONDITIONAL(BOOST_UNIT_TEST_FOUND, test "x${HAVE_BOOST_TEST}" != "x")
