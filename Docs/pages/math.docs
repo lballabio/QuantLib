@@ -36,7 +36,7 @@
     Press, Teukolsky, Vetterling, Flannery - Chapter 9
 
     Some work is needed to resolve the ambiguity of the root finding accuracy
-    defition: for some algorithms it is the x-accuracy, for others it is
+    definition: for some algorithms it is the x-accuracy, for others it is
     f(x)-accuracy.
 */
 
