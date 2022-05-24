@@ -238,7 +238,7 @@ int main(int, char* []) {
         std::cout << "Random Loss T Expected 10-Yr Losses: "  << std::endl;
         std::cout << theBskt->expectedTrancheLoss(calcDate) << std::endl;
 
-        // Base Correlation model set up to test cocherence with base LHP model
+        // Base Correlation model set up to test coherence with base LHP model
         std::vector<Period> bcTenors;
         bcTenors.emplace_back(1, Years);
         bcTenors.emplace_back(5, Years);
