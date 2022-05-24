@@ -43,27 +43,15 @@
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 
+#include <boost/numeric/ublas/banded.hpp>
+#include <boost/numeric/ublas/operation_sparse.hpp>
+#include <boost/numeric/ublas/matrix_proxy.hpp>
 
 #include <numeric>
 #include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-
-#include <boost/numeric/ublas/banded.hpp>
-
-#if defined(__clang__) || defined(__GNUC__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-local-typedef"
-#endif
-
-#include <boost/numeric/ublas/operation_sparse.hpp>
-
-#if defined(__clang__) || defined(__GNUC__)
-#pragma clang diagnostic pop
-#endif
-
-#include <boost/numeric/ublas/matrix_proxy.hpp>
 
 void NthOrderDerivativeOpTest::testSparseMatrixApply() {
     BOOST_TEST_MESSAGE("Testing sparse matrix apply...");
