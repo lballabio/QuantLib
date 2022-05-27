@@ -27,6 +27,7 @@
 #include <ql/termstructures/volatility/optionlet/strippedoptionlet.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 
 
 using namespace QuantLib;
@@ -319,6 +320,87 @@ void ObservableTest::testEmptyObserverList() {
     dummyObserver->unregisterWith(ext::make_shared<SimpleQuote>(10.0));
 }
 
+void ObservableTest::testAddAndDeleteObserverDuringNotifyObservers() {
+    BOOST_TEST_MESSAGE("Testing add and delete observer during notifyObserver");
+
+    const ext::shared_ptr<MersenneTwisterUniformRng> rng
+        = ext::make_shared<MersenneTwisterUniformRng>();
+
+    const Size nrInitialObserver = 20;
+    const Size nrDeleteDuringUpdate = 5;
+    const Size nrAdditionalObserver = 100;
+    const Size testRuns = 100;
+
+    class TestSetup {
+      public:
+        explicit TestSetup(const ext::shared_ptr<MersenneTwisterUniformRng>& m)
+        : rng(m),
+          observable(ext::make_shared<Observable>()) {}
+
+        ext::shared_ptr<MersenneTwisterUniformRng> rng;
+        ext::shared_ptr<Observable> observable;
+        std::vector<ext::shared_ptr<Observer> > expected;
+        std::vector<ext::shared_ptr<Observer> > additinalObservers;
+    };
+
+    class TestObserver: public Observer {
+      public:
+        explicit TestObserver(const ext::shared_ptr<TestSetup>& setup
+            = ext::shared_ptr<TestSetup>())
+          : setup_(setup), updates_(0) {}
+
+        void update() {
+            ++updates_;
+
+            if (setup_) {
+                for (Size i=0; i < nrAdditionalObserver; ++i) {
+                    const ext::shared_ptr<Observer> obs
+                        = ext::make_shared<TestObserver>();
+
+                    obs->registerWith(setup_->observable);
+                    setup_->additinalObservers.push_back(obs);
+                }
+
+                for (Size i=0; i < nrDeleteDuringUpdate; ++i) {
+                    const unsigned int j
+                        = setup_->rng->nextInt32() % setup_->expected.size();
+
+                    if (setup_->expected[j].get() != this)
+                        setup_->expected.erase(setup_->expected.begin()+j);
+                }
+            }
+        }
+
+        Size getUpdates() const { return updates_; }
+
+      private:
+        const ext::shared_ptr<TestSetup> setup_;
+        Size updates_;
+    };
+
+    for (Size t=0; t < testRuns; ++t) {
+        const ext::shared_ptr<TestSetup> setup = ext::make_shared<TestSetup>(rng);
+
+        for (Size i=0; i < nrInitialObserver; ++i) {
+            const ext::shared_ptr<Observer> obs = 
+                (i == nrInitialObserver/3 || i == nrInitialObserver/2)
+                ? ext::make_shared<TestObserver>(setup)
+                : ext::make_shared<TestObserver>();
+
+            obs->registerWith(setup->observable);
+            setup->expected.push_back(obs);
+        }
+
+        setup->observable->notifyObservers();
+
+        for (auto obs: setup->expected)
+            if (ext::dynamic_pointer_cast<TestObserver>(obs)->getUpdates() == 0) {
+                BOOST_FAIL("missed observer update detected");
+            }
+    }
+}
+
+
 test_suite* ObservableTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Observer tests");
 
@@ -332,6 +414,8 @@ test_suite* ObservableTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&ObservableTest::testDeepUpdate));
     suite->add(QUANTLIB_TEST_CASE(&ObservableTest::testEmptyObserverList));
+    suite->add(QUANTLIB_TEST_CASE(
+        &ObservableTest::testAddAndDeleteObserverDuringNotifyObservers));
     return suite;
 }
 
