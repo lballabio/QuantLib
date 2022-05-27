@@ -1509,56 +1509,56 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     // unstable
     //suite->add(QUANTLIB_TEST_CASE(
     //             &PiecewiseYieldCurveTest::testLogCubicDiscountConsistency));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                 &PiecewiseYieldCurveTest::testLogLinearDiscountConsistency));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                 &PiecewiseYieldCurveTest::testLinearDiscountConsistency));
-//
-//    suite->add(QUANTLIB_TEST_CASE(
-//                 &PiecewiseYieldCurveTest::testLinearZeroConsistency));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                 &PiecewiseYieldCurveTest::testSplineZeroConsistency));
-//
-//    suite->add(QUANTLIB_TEST_CASE(
-//                 &PiecewiseYieldCurveTest::testLinearForwardConsistency));
-//    suite->add(QUANTLIB_TEST_CASE(
-//                 &PiecewiseYieldCurveTest::testFlatForwardConsistency));
-//    // unstable
-//    //suite->add(QUANTLIB_TEST_CASE(
-//    //             &PiecewiseYieldCurveTest::testSplineForwardConsistency));
-//
-//    suite->add(QUANTLIB_TEST_CASE(
-//             &PiecewiseYieldCurveTest::testConvexMonotoneForwardConsistency));
-//    suite->add(QUANTLIB_TEST_CASE(
-//             &PiecewiseYieldCurveTest::testLocalBootstrapConsistency));
-//
-//    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
-//    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLiborFixing));
-//
-//    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testJpyLibor));
-//
-//    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testDiscountCopy));
-//    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testForwardCopy));
-//    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testZeroCopy));
-//
-//    suite->add(QUANTLIB_TEST_CASE(
-//               &PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
-//    suite->add(QUANTLIB_TEST_CASE(
-//               &PiecewiseYieldCurveTest::testSwapRateHelperSpotDate));
-//
+    suite->add(QUANTLIB_TEST_CASE(
+                 &PiecewiseYieldCurveTest::testLogLinearDiscountConsistency));
+    suite->add(QUANTLIB_TEST_CASE(
+                 &PiecewiseYieldCurveTest::testLinearDiscountConsistency));
+
+    suite->add(QUANTLIB_TEST_CASE(
+                 &PiecewiseYieldCurveTest::testLinearZeroConsistency));
+    suite->add(QUANTLIB_TEST_CASE(
+                 &PiecewiseYieldCurveTest::testSplineZeroConsistency));
+
+    suite->add(QUANTLIB_TEST_CASE(
+                 &PiecewiseYieldCurveTest::testLinearForwardConsistency));
+    suite->add(QUANTLIB_TEST_CASE(
+                 &PiecewiseYieldCurveTest::testFlatForwardConsistency));
+    // unstable
+    //suite->add(QUANTLIB_TEST_CASE(
+    //             &PiecewiseYieldCurveTest::testSplineForwardConsistency));
+
+    suite->add(QUANTLIB_TEST_CASE(
+             &PiecewiseYieldCurveTest::testConvexMonotoneForwardConsistency));
+    suite->add(QUANTLIB_TEST_CASE(
+             &PiecewiseYieldCurveTest::testLocalBootstrapConsistency));
+
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLiborFixing));
+
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testJpyLibor));
+
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testDiscountCopy));
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testForwardCopy));
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testZeroCopy));
+
+    suite->add(QUANTLIB_TEST_CASE(
+               &PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));
+    suite->add(QUANTLIB_TEST_CASE(
+               &PiecewiseYieldCurveTest::testSwapRateHelperSpotDate));
+
     if (IborCoupon::Settings::instance().usingAtParCoupons()) {
         // This regression test didn't work with indexed coupons anyway.
         suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testBadPreviousCurve));
     }
-//
-//    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap));
-//    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLargeRates));
-//
-//    if (IborCoupon::Settings::instance().usingAtParCoupons()) {
-//        suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testGlobalBootstrap));
-//    }
-//
-//    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testIterativeBootstrapRetries));
+
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testConstructionWithExplicitBootstrap));
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLargeRates));
+
+    if (IborCoupon::Settings::instance().usingAtParCoupons()) {
+        suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testGlobalBootstrap));
+    }
+
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testIterativeBootstrapRetries));
 
     return suite;
 }
