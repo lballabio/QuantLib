@@ -321,7 +321,7 @@ void ObservableTest::testEmptyObserverList() {
 }
 
 void ObservableTest::testAddAndDeleteObserverDuringNotifyObservers() {
-    BOOST_TEST_MESSAGE("Testing add and delete observer during notifyObserver");
+    BOOST_TEST_MESSAGE("Testing addition and deletion of observers during notifyObserver...");
 
     const ext::shared_ptr<MersenneTwisterUniformRng> rng
         = ext::make_shared<MersenneTwisterUniformRng>();
