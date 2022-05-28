@@ -345,14 +345,13 @@ void ObservableTest::testAddAndDeleteObserverDuringNotifyObservers() {
 
     class TestObserver: public Observer {
       public:
-        explicit TestObserver(const ext::shared_ptr<TestSetup>& setup
-            = ext::shared_ptr<TestSetup>())
+        explicit TestObserver(TestSetup* setup = nullptr)
           : setup_(setup), updates_(0) {}
 
         void update() {
             ++updates_;
 
-            if (setup_) {
+            if (setup_ != nullptr) {
                 for (Size i=0; i < nrAdditionalObserver; ++i) {
                     const ext::shared_ptr<Observer> obs
                         = ext::make_shared<TestObserver>();
@@ -374,7 +373,7 @@ void ObservableTest::testAddAndDeleteObserverDuringNotifyObservers() {
         Size getUpdates() const { return updates_; }
 
       private:
-        const ext::shared_ptr<TestSetup> setup_;
+        TestSetup* const setup_;
         Size updates_;
     };
 
@@ -384,7 +383,7 @@ void ObservableTest::testAddAndDeleteObserverDuringNotifyObservers() {
         for (Size i=0; i < nrInitialObserver; ++i) {
             const ext::shared_ptr<Observer> obs = 
                 (i == nrInitialObserver/3 || i == nrInitialObserver/2)
-                ? ext::make_shared<TestObserver>(setup)
+                ? ext::make_shared<TestObserver>(setup.get())
                 : ext::make_shared<TestObserver>();
 
             obs->registerWith(setup->observable);
