@@ -20,14 +20,15 @@
 #include "observable.hpp"
 #include "utilities.hpp"
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
-#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/termstructures/volatility/optionlet/strippedoptionlet.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
-#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <utility>
 
 
 using namespace QuantLib;
@@ -333,9 +334,8 @@ void ObservableTest::testAddAndDeleteObserverDuringNotifyObservers() {
 
     class TestSetup {
       public:
-        explicit TestSetup(const ext::shared_ptr<MersenneTwisterUniformRng>& m)
-        : rng(m),
-          observable(ext::make_shared<Observable>()) {}
+        explicit TestSetup(ext::shared_ptr<MersenneTwisterUniformRng> m)
+        : rng(std::move(m)), observable(ext::make_shared<Observable>()) {}
 
         ext::shared_ptr<MersenneTwisterUniformRng> rng;
         ext::shared_ptr<Observable> observable;
@@ -345,10 +345,9 @@ void ObservableTest::testAddAndDeleteObserverDuringNotifyObservers() {
 
     class TestObserver: public Observer {
       public:
-        explicit TestObserver(TestSetup* setup = nullptr)
-          : setup_(setup), updates_(0) {}
+        explicit TestObserver(TestSetup* setup = nullptr) : setup_(setup) {}
 
-        void update() {
+        void update() override {
             ++updates_;
 
             if (setup_ != nullptr) {
@@ -374,7 +373,7 @@ void ObservableTest::testAddAndDeleteObserverDuringNotifyObservers() {
 
       private:
         TestSetup* const setup_;
-        Size updates_;
+        Size updates_ = 0;
     };
 
     for (Size t=0; t < testRuns; ++t) {
@@ -392,7 +391,7 @@ void ObservableTest::testAddAndDeleteObserverDuringNotifyObservers() {
 
         setup->observable->notifyObservers();
 
-        for (auto obs: setup->expected)
+        for (const auto& obs : setup->expected)
             if (ext::dynamic_pointer_cast<TestObserver>(obs)->getUpdates() == 0) {
                 BOOST_FAIL("missed observer update detected");
             }
