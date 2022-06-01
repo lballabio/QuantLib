@@ -51,7 +51,7 @@ namespace QuantLib {
           omega(2*(r-q)/sigma2),
           lambda(0.5*(-(omega-1)
                 - std::sqrt(squared(omega - 1) + 8*r/(sigma2 * (1-dr))))),
-          lambdaPrime(2*r/(sigma2*square<Real>()(1-dr)
+          lambdaPrime(2*r/(sigma2*squared(1-dr)
                   *std::sqrt(squared(omega-1) + 8*r/(sigma2*(1-dr))))),
           alpha(2*dr*r/(sigma2*(2*lambda+omega - 1))),
           beta(alpha*(1/(1-dr)+lambdaPrime/(2*lambda+omega-1)) - lambda),
