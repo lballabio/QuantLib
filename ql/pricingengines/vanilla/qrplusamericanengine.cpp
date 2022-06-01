@@ -226,7 +226,7 @@ namespace QuantLib {
 
         const auto interp = ChebyshevInterpolation(
             interpolationPoints_,
-            [=](Real x) {
+            [&T, &K, &xmax, this](Real x) {
                 return squared(
                     std::log(exerciseBoundary(x*x, T, K).second / xmax));
             }
