@@ -43,9 +43,10 @@ namespace QuantLib {
     class TanhSinhIntegral : public Integrator {
       public:
         TanhSinhIntegral(
+            Real tolerance = std::sqrt(std::numeric_limits<Real>::epsilon()),
             Size maxRefinements = 15,
-            Real minComplement = std::numeric_limits<Real>::min() * 4,
-            Real tolerance = std::sqrt(std::numeric_limits<Real>::epsilon()))
+            Real minComplement = std::numeric_limits<Real>::min() * 4
+            )
       : Integrator(tolerance, Null<Size>()),
         tanh_sinh_(maxRefinements, minComplement) {}
 

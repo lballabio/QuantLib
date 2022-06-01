@@ -50,9 +50,9 @@ namespace QuantLib {
           dq(std::exp(-q*tau)),
           omega(2*(r-q)/sigma2),
           lambda(0.5*(-(omega-1)
-                - std::sqrt(square<Real>()(omega - 1) + 8*r/(sigma2 * (1-dr))))),
+                - std::sqrt(squared(omega - 1) + 8*r/(sigma2 * (1-dr))))),
           lambdaPrime(2*r/(sigma2*square<Real>()(1-dr)
-                  *std::sqrt(square<Real>()(omega-1) + 8*r/(sigma2*(1-dr))))),
+                  *std::sqrt(squared(omega-1) + 8*r/(sigma2*(1-dr))))),
           alpha(2*dr*r/(sigma2*(2*lambda+omega - 1))),
           beta(alpha*(1/(1-dr)+lambdaPrime/(2*lambda+omega-1)) - lambda),
           xMin(0.5*(strike + process->x0())*1e3*QL_EPSILON),
@@ -227,7 +227,7 @@ namespace QuantLib {
         const auto interp = ChebyshevInterpolation(
             interpolationPoints_,
             [=](Real x) {
-                return square<Real>()(
+                return squared(
                     std::log(exerciseBoundary(x*x, T, K).second / xmax));
             }
         );
