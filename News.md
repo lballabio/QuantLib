@@ -74,7 +74,7 @@ Instruments
 Term structures
 ---------------
 
-- Dates explixitly passed to `InterpolatedZeroInflationCurve` are no
+- Dates explicitly passed to `InterpolatedZeroInflationCurve` are no
   longer adjusted automatically to the beginning of their inflation period.
 
 Deprecated features

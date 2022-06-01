@@ -2340,7 +2340,9 @@ target_compile_options(ql_library PRIVATE
 target_include_directories(ql_library PUBLIC
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
-    $<INSTALL_INTERFACE:${QL_INSTALL_INCLUDEDIR}>
+    $<INSTALL_INTERFACE:${QL_INSTALL_INCLUDEDIR}>)
+
+target_include_directories(ql_library SYSTEM PUBLIC
     ${Boost_INCLUDE_DIRS}
     ${OpenMP_CXX_INCLUDE_DIRS})
 

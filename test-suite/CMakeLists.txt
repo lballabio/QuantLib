@@ -369,7 +369,8 @@ if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
     add_library(ql_unit_test_main STATIC main.cpp)
     target_include_directories(ql_unit_test_main PRIVATE
         ${PROJECT_BINARY_DIR}
-        ${PROJECT_SOURCE_DIR}
+        ${PROJECT_SOURCE_DIR})
+    target_include_directories(ql_unit_test_main SYSTEM PRIVATE
         ${Boost_INCLUDE_DIRS})
     if (NOT Boost_USE_STATIC_LIBS)
         target_compile_definitions(ql_unit_test_main PRIVATE BOOST_TEST_DYN_LINK)

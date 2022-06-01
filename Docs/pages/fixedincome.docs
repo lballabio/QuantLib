@@ -20,7 +20,7 @@
 
     This framework (corresponding to the ql/ShortRateModels directory)
     implements some single-factor and two-factor short rate models. The models 
-    implemented in this library are widely used by practitionners. For the 
+    implemented in this library are widely used by practitioners. For the 
     moment, the ShortRateModels::Model class defines the short-rate dynamics
     with stochastic equations of the type 
     \f[ 
@@ -56,7 +56,7 @@
     \section calibration Calibration
 
     The class CalibrationHelper is a base class that facilitates the 
-    instanciation of market instruments used for calibration. It has
+    instantiation of market instruments used for calibration. It has
     a method marketValue() that gives the market price using a Black
     formula, and a modelValue() method that gives the price according to
     a model
