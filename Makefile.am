@@ -40,15 +40,9 @@ check-examples:
 benchmark:
 	$(MAKE) -C test-suite benchmark
 
-.PHONY: docs docs-online docs-dist docs-clean
+.PHONY: docs
 docs:
-	$(MAKE) -C Docs docs-all
-html-local:
-	$(MAKE) -C Docs docs-html
-docs-dist:
-	$(MAKE) -C Docs docs-dist
-docs-clean:
-	$(MAKE) -C Docs docs-clean
+	$(MAKE) -C Docs docs
 
 dist-hook:
 	mkdir -p $(distdir)/build

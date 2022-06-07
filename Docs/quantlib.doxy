@@ -1,4 +1,4 @@
-# Doxyfile 1.9.3
+# Doxyfile 1.9.4
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -10,6 +10,7 @@ PROJECT_BRIEF          = "A free/open-source library for quantitative finance"
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       =
 CREATE_SUBDIRS         = NO
+CREATE_SUBDIRS_LEVEL   = 8
 ALLOW_UNICODE_NAMES    = NO
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
@@ -108,23 +109,24 @@ WARN_IF_INCOMPLETE_DOC = NO
 WARN_NO_PARAMDOC       = NO
 WARN_AS_ERROR          = YES
 WARN_FORMAT            = "$file:$line: $text"
+WARN_LINE_FORMAT       = "at line $line of file $file"
 WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ./pages \
-                         ../ql
+INPUT                  = ql_basepath/Docs//pages \
+                         ql_basepath/ql
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.docs \
                          *.hpp \
                          *.h
 RECURSIVE              = YES
-EXCLUDE                = ../ql/config.hpp \
-                         ../ql/config.msvc.hpp
+EXCLUDE                = ql_basepath//ql/config.hpp \
+                         ql_basepath//ql/config.msvc.hpp
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = */all.hpp
 EXCLUDE_SYMBOLS        =
-EXAMPLE_PATH           = ../Examples \
+EXAMPLE_PATH           = ql_basepath/Examples \
                          .
 EXAMPLE_PATTERNS       = *.cpp
 EXAMPLE_RECURSIVE      = YES
@@ -157,11 +159,11 @@ IGNORE_PREFIX          =
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
-HTML_HEADER            = quantlibheader.html
-HTML_FOOTER            = quantlibfooter.html
+HTML_HEADER            = ql_basepath/Docs/quantlibheader.html
+HTML_FOOTER            = ql_basepath/Docs/quantlibfooter.html
 HTML_STYLESHEET        =
-HTML_EXTRA_STYLESHEET  = quantlibextra.css
-HTML_EXTRA_FILES       = images/favicon.ico
+HTML_EXTRA_STYLESHEET  = ql_basepath/Docs/quantlibextra.css
+HTML_EXTRA_FILES       = ql_basepath/Docs/images/favicon.ico
 HTML_COLORSTYLE_HUE    = 220
 HTML_COLORSTYLE_SAT    = 100
 HTML_COLORSTYLE_GAMMA  = 80
