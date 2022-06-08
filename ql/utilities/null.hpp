@@ -32,9 +32,9 @@
 
 namespace QuantLib {
 
-    //! template class providing a null value for a given type.
+    //! template function providing a null value for a given type.
     template <class Type>
-    class Null;
+    Type Null();
 
 
     namespace detail {
@@ -64,13 +64,9 @@ namespace QuantLib {
 
     // default implementation for built-in types
     template <typename T>
-    class Null {
-      public:
-        constexpr Null() = default;
-        constexpr operator T() const {
-            return T(detail::FloatingPointNull<std::is_floating_point<T>::value>::nullValue());
-        }
-    };
+    T Null() {
+        return T(detail::FloatingPointNull<std::is_floating_point<T>::value>::nullValue());
+    }
 
 }
 
