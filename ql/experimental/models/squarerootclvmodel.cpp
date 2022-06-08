@@ -94,7 +94,7 @@ namespace QuantLib {
         const Real b = xMin - x.front();
         const Real a = (xMax - xMin)/(x.back() - x.front());
 
-        for (double& i : x) {
+        for (Real& i : x) {
             i = a * i + b;
         }
 

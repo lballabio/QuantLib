@@ -258,7 +258,7 @@ void GaussianQuadraturesTest::testNonCentralChiSquaredSumOfNodes() {
 
 	 for (Size n = 4; n < 10; ++n) {
 		 const Array x = GaussianQuadrature(n, orthPoly).x();
-         const Real calculated = std::accumulate(x.begin(), x.end(), 0.0);
+         const Real calculated = std::accumulate(x.begin(), x.end(), Real(0.0));
 
 
          if (std::fabs(calculated - expected[n-4]) > tol) {

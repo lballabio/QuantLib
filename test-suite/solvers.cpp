@@ -57,7 +57,7 @@ namespace {
                             const F& f, Real guess) {
         Real accuracy[] = { 1.0e-4, 1.0e-6, 1.0e-8 };
         Real expected = 1.0;
-        for (double& i : accuracy) {
+        for (Real& i : accuracy) {
             Real root = solver.solve(f, i, guess, 0.1);
             if (std::fabs(root - expected) > i) {
                 BOOST_FAIL(name << " solver (not bracketed):\n"
@@ -73,7 +73,7 @@ namespace {
                         const F& f, Real guess) {
         Real accuracy[] = { 1.0e-4, 1.0e-6, 1.0e-8 };
         Real expected = 1.0;
-        for (double& i : accuracy) {
+        for (Real& i : accuracy) {
             // guess on the left side of the root, increasing function
             Real root = solver.solve(f, i, guess, 0.0, 2.0);
             if (std::fabs(root - expected) > i) {

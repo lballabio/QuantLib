@@ -141,7 +141,7 @@ void SwaptionTest::testStrikeDependency() {
                 std::vector<Real> values;
                 std::vector<Real> values_cash;
                 Volatility vol = 0.20;
-                for (double strike : strikes) {
+                for (Real strike : strikes) {
                     ext::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(length, vars.index, strike)
                             .withEffectiveDate(startDate)
@@ -238,7 +238,7 @@ void SwaptionTest::testSpreadDependency() {
                 // store the results for different rates...
                 std::vector<Real> values;
                 std::vector<Real> values_cash;
-                for (double spread : spreads) {
+                for (Real spread : spreads) {
                     ext::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(length, vars.index, 0.06)
                             .withFixedLegTenor(1 * Years)
@@ -326,7 +326,7 @@ void SwaptionTest::testSpreadTreatment() {
                 Date startDate =
                     vars.calendar.advance(exerciseDate,
                                           vars.settlementDays,Days);
-                for (double spread : spreads) {
+                for (Real spread : spreads) {
                     ext::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(length, vars.index, 0.06)
                             .withFixedLegTenor(1 * Years)
@@ -427,7 +427,7 @@ void SwaptionTest::testVega() {
         Date startDate = vars.calendar.advance(exerciseDate,
                                            vars.settlementDays*Days);
         for (auto& length : lengths) {
-            for (double strike : strikes) {
+            for (Real strike : strikes) {
                 for (Size h=0; h<LENGTH(type); h++) {
                     ext::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(length, vars.index, strike)
@@ -436,7 +436,7 @@ void SwaptionTest::testVega() {
                             .withFixedLegDayCount(vars.fixedDayCount)
                             .withFloatingLegSpread(0.0)
                             .withType(type[h]);
-                    for (double vol : vols) {
+                    for (Real vol : vols) {
                         ext::shared_ptr<Swaption> swaption =
                             vars.makeSwaption(swap, exerciseDate, vol, types[h], methods[h]);
                         // FLOATING_POINT_EXCEPTION
@@ -805,7 +805,7 @@ void SwaptionTest::testImpliedVolatility() {
             Date startDate = vars.calendar.advance(exerciseDate,
                                                    vars.settlementDays, Days);
 
-            for (double& strike : strikes) {
+            for (Real& strike : strikes) {
                 for (auto& k : type) {
                     ext::shared_ptr<VanillaSwap> swap =
                         MakeVanillaSwap(length, vars.index, strike)
@@ -815,7 +815,7 @@ void SwaptionTest::testImpliedVolatility() {
                             .withFloatingLegSpread(0.0)
                             .withType(k);
                     for (Size h=0; h<LENGTH(types); h++) {
-                        for (double vol : vols) {
+                        for (Real vol : vols) {
                             ext::shared_ptr<Swaption> swaption =
                                 vars.makeSwaption(swap, exerciseDate, vol, types[h], methods[h],
                                                   BlackSwaptionEngine::DiscountCurve);
@@ -920,10 +920,10 @@ void checkSwaptionDelta(bool useBachelierVol)
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
     Volatility vols[] = { 0.0, 0.10, 0.20, 0.30, 0.70, 0.90 };
 
-    for (double vol : vols) {
+    for (Real vol : vols) {
         for (auto exercise : exercises) {
             for (auto& length : lengths) {
-                for (double& strike : strikes) {
+                for (Real& strike : strikes) {
                     for (Size h=0; h<LENGTH(type); h++) {
                         Volatility volatility = useBachelierVol ? vol / 100.0 : vol;
                         ext::shared_ptr<Engine> swaptionEngine = makeConstVolEngine<Engine>(

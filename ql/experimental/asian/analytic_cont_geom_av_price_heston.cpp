@@ -38,8 +38,8 @@ namespace QuantLib {
                   Real xiRightLimit) : t_(0.0), T_(T), K_(K), logK_(std::log(K)), cutoff_(cutoff),
                                        parent_(parent), xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {}
 
-        double operator()(double xi) const {
-            double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
+        Real operator()(Real xi) const {
+            Real xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
 
             std::complex<Real> inner1 = parent_->Phi(1.0 + xiDash*i_, 0, T_, t_, cutoff_);
             std::complex<Real> inner2 = - K_*parent_->Phi(xiDash*i_, 0, T_, t_, cutoff_);
@@ -63,8 +63,8 @@ namespace QuantLib {
             denominator_ = std::log(riskFreeRate_->discount(t_)) - std::log(dividendYield_->discount(t_));
         }
 
-        double operator()(double u) const {
-            double uDash = (0.5+1e-8+0.5*u) * (T_ - t_) + t_; // Map u to full range
+        Real operator()(Real u) const {
+            Real uDash = (0.5+1e-8+0.5*u) * (T_ - t_) + t_; // Map u to full range
             return 0.5*(T_ - t_)*(-std::log(riskFreeRate_->discount(uDash))
                                + std::log(dividendYield_->discount(uDash)) + denominator_);
         }
@@ -172,7 +172,7 @@ namespace QuantLib {
         for (Size i=0; i<cutoff; i++) {
             temp = f(z1, z2, z3, z4, i, tau);
             runningSum1 += temp;
-            runningSum2 += temp*double(i)/tau;
+            runningSum2 += temp*Real(i)/tau;
         }
 
         std::pair<std::complex<Real>, std::complex<Real> > result(runningSum1, runningSum2);

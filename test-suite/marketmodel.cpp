@@ -487,7 +487,7 @@ namespace market_model_test {
                     Real minError = QL_MAX_REAL;
                     Real maxError = QL_MIN_REAL;
                     Real errorThreshold = subProductExpectedValue->errorThreshold;
-                    for (double value : subProductExpectedValue->values) {
+                    for (Real value : subProductExpectedValue->values) {
                         Real stdDev =
                             (results[currentResultIndex] - value) / errors[currentResultIndex];
                         stdDevs.push_back(stdDev);

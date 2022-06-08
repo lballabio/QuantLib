@@ -46,7 +46,7 @@ namespace QuantLib {
 struct integrand {
     Real operator()(const std::vector<Real>& arg) const {
         Real sum = 1.;
-        for (double i : arg)
+        for (Real i : arg)
             sum *= std::exp(-i * i) * std::cos(i);
         return sum;
     }

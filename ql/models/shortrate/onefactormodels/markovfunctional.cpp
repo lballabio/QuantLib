@@ -382,7 +382,7 @@ namespace QuantLib {
                             << k.size() << ")");
                     std::vector<Real> v;
                     v.reserve(k.size());
-                    for (double j : k) {
+                    for (Real j : k) {
                         v.push_back(i->second.rawSmileSection_->volatility(j));
                     }
 

@@ -56,7 +56,7 @@ Real ackley(const Array& x) {
     //Minimum is found at 0
     Real p1 = 0.0, p2 = 0.0;
 
-    for (double i : x) {
+    for (Real i : x) {
         p1 += i * i;
         p2 += std::cos(M_TWOPI * i);
     }
@@ -103,7 +103,7 @@ Real rosenbrock(const Array& x) {
 Real easom(const Array& x) {
     //Minimum is found at f(\pi, \pi, ...)
     Real p1 = 1.0, p2 = 0.0;
-    for (double i : x) {
+    for (Real i : x) {
         p1 *= std::cos(i);
         p2 += (i - M_PI) * (i - M_PI);
     }

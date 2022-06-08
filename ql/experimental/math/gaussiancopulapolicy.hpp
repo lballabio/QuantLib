@@ -45,7 +45,7 @@ namespace QuantLib {
             /* check factors in LM are normalized. */
             for (const auto& factorWeight : factorWeights) {
                 Real factorsNorm = std::inner_product(factorWeight.begin(), factorWeight.end(),
-                                                      factorWeight.begin(), 0.);
+                                                      factorWeight.begin(), Real(0.));
                 QL_REQUIRE(factorsNorm < 1., 
                     "Non normal random factor combination.");
             }

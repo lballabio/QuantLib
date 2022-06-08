@@ -712,8 +712,8 @@ void InflationCapFlooredCouponTest::testInstrumentEquality() {
     // floored coupon = fwd + floor
     for (Size whichPricer = 0; whichPricer < 3; whichPricer++) {
         for (int& length : lengths) {
-            for (double& strike : strikes) {
-                for (double vol : vols) {
+            for (Real& strike : strikes) {
+                for (Real vol : vols) {
 
                     Leg leg = vars.makeYoYLeg(vars.evaluationDate, length);
 

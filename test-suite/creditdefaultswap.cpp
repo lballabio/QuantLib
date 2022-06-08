@@ -675,8 +675,8 @@ void CreditDefaultSwapTest::testIsdaEngine() {
     size_t l = 0;
 
     for (auto termDate : termDates) {
-        for (double spread : spreads) {
-            for (double& recoverie : recoveries) {
+        for (Real spread : spreads) {
+            for (Real& recoverie : recoveries) {
 
                 ext::shared_ptr<CreditDefaultSwap> quotedTrade =
                     MakeCreditDefaultSwap(termDate, spread).withNominal(10000000.);

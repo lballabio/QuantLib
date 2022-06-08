@@ -601,7 +601,7 @@ namespace QuantLib {
 
     Real GFunctionFactory::GFunctionExactYield::operator()(Real x) {
         Real product = 1.;
-        for (double accrual : accruals_) {
+        for (Real accrual : accruals_) {
             product *= 1. / (1. + accrual * x);
         }
         return x*std::pow(1.+ accruals_[0]*x,-delta_)*(1./(1.-product));
@@ -612,7 +612,7 @@ namespace QuantLib {
         Real derC = 0.;
         std::vector<Real> b;
         b.reserve(accruals_.size());
-        for (double accrual : accruals_) {
+        for (Real accrual : accruals_) {
             Real temp = 1.0 / (1.0 + accrual * x);
             b.push_back(temp);
             c *= temp;
@@ -634,7 +634,7 @@ namespace QuantLib {
         Real sumOfSquare = 0.;
         std::vector<Real> b;
         b.reserve(accruals_.size());
-        for (double accrual : accruals_) {
+        for (Real accrual : accruals_) {
             Real temp = 1.0 / (1.0 + accrual * x);
             b.push_back(temp);
             c *= temp;
@@ -699,7 +699,7 @@ namespace QuantLib {
                 ext::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
             accruals_.push_back(cpn->accrualPeriod());
             const Date paymentDate(cpn->date());
-            const double swapPaymentTime(dc.yearFraction(rateCurve->referenceDate(), paymentDate));
+            const Real swapPaymentTime(dc.yearFraction(rateCurve->referenceDate(), paymentDate));
             shapedSwapPaymentTimes_.push_back(shapeOfShift(swapPaymentTime));
             swapPaymentDiscounts_.push_back(rateCurve->discount(paymentDate));
         }

@@ -172,7 +172,7 @@ namespace QuantLib {
         }
         duration_ = std::inner_product(basket_->weights().begin(),
                                        basket_->weights().end(),
-                                       durations_.begin(), 0.0);
+                                       durations_.begin(), Real(0.0));
 
         Natural settlDays = 2;
         DayCounter fixedDayCount = swaps_[0]->fixedDayCount();

@@ -126,13 +126,13 @@ void ArrayTest::testArrayFunctions() {
         a[i] = std::sin(Real(i))+1.1;
     }
 
-    constexpr Real exponential = -2.3;
+    const Real exponential = -2.3;
     const Array p = Pow(a, exponential);
     const Array e = Exp(a);
     const Array l = Log(a);
     const Array s = Sqrt(a);
 
-    constexpr Real tol = 10*QL_EPSILON;
+    const Real tol = 10*QL_EPSILON;
     for (Size i=0; i < a.size(); ++i) {
         if (std::fabs(p[i]-std::pow(a[i], exponential)) > tol) {
             BOOST_FAIL("Array function test Pow failed");

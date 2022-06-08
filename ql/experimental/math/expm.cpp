@@ -41,7 +41,7 @@ namespace QuantLib {
                 std::vector<Real> result(m_.rows());
                 for (Size i=0; i < result.size(); i++) {
                     result[i] = std::inner_product(y.begin(), y.end(),
-                                                   m_.row_begin(i), 0.0);
+                                                   m_.row_begin(i), Real(0.0));
                 }
                 return result;
             }

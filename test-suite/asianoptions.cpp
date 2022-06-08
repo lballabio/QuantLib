@@ -212,7 +212,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
 
                 ext::shared_ptr<EuropeanExercise> maturity(
@@ -229,10 +229,10 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
                 Size pastFixings = Null<Size>();
                 Real runningAverage = Null<Real>();
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
 
                                 Rate q = m, r = n;
                                 spot->setValue(u);
@@ -1357,7 +1357,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
 
                 ext::shared_ptr<EuropeanExercise> maturity(
@@ -1380,10 +1380,10 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                                                     fixingDates, payoff, maturity);
                 option.setPricingEngine(engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
 
                                 Rate q = m, r = n;
                                 spot->setValue(u);

@@ -140,7 +140,7 @@ Real mcReferenceValue(const ext::shared_ptr<CmsCoupon>& cpn1,
                       const Handle<SwaptionVolatilityStructure>& vol,
                       const Real correlation) {
     Size samples = 1000000;
-    accumulator_set<double, stats<tag::mean> > acc;
+    accumulator_set<Real, stats<tag::mean> > acc;
     Matrix Cov(2, 2);
     Cov(0, 0) = vol->blackVariance(cpn1->fixingDate(), cpn1->index()->tenor(),
                                    cpn1->indexFixing());
@@ -219,9 +219,9 @@ void CmsSpreadTest::testCouponPricing() {
     cpn1->setPricer(d.cmsspPricerLn);
 
 #ifndef __FAST_MATH__
-    constexpr Real eqTol = 100*QL_EPSILON;
+    const Real eqTol = 100*QL_EPSILON;
 #else
-    constexpr Real eqTol = 1e-13;
+    const Real eqTol = 1e-13;
 #endif
     BOOST_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
     cms10y->addFixing(d.refDate, 0.05);

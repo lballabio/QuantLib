@@ -179,7 +179,7 @@ namespace QuantLib {
         // of full portfolio:
         Real avgProb = avgLgd <= QL_EPSILON ? 0. : // only if all are 0
                 std::inner_product(condDefProb.begin(), 
-                    condDefProb.end(), lgdsLeft.begin(), 0.)
+                    condDefProb.end(), lgdsLeft.begin(), Real(0.))
                 / (avgLgd * bsktSize);
         // model parameters:
         Real m = avgProb * bsktSize;
@@ -200,7 +200,7 @@ namespace QuantLib {
         std::transform(lgdsLeft.begin(), lgdsLeft.end(), 
             lgdsLeft.begin(), lgdsLeft.begin(), std::multiplies<Real>());
         Real variance = std::inner_product(condDefProb.begin(), 
-            condDefProb.end(), lgdsLeft.begin(), 0.);
+            condDefProb.end(), lgdsLeft.begin(), Real(0.));
 
         variance = avgLgd <= QL_EPSILON ? 0. : 
             variance / (bsktSize * bsktSize * avgLgd * avgLgd );

@@ -43,7 +43,7 @@ void BlackFormulaTest::testBachelierImpliedVol(){
     Real discount = 0.95;
 
     Real d[] = {-3.0, -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0, 3.0};
-    for (double i : d) {
+    for (Real i : d) {
 
 
         Real strike = forward - i * bpvol * std::sqrt(tte);
@@ -74,11 +74,11 @@ void BlackFormulaTest::testChambersImpliedVol() {
     Real tol = 5.0E-4;
 
     for (auto& type : types) {
-        for (double& displacement : displacements) {
-            for (double& forward : forwards) {
-                for (double& strike : strikes) {
-                    for (double& stdDev : stdDevs) {
-                        for (double& discount : discounts) {
+        for (Real& displacement : displacements) {
+            for (Real& forward : forwards) {
+                for (Real& strike : strikes) {
+                    for (Real& stdDev : stdDevs) {
+                        for (Real& discount : discounts) {
                             if (forward + displacement > 0.0 && strike + displacement > 0.0) {
                                 Real premium = blackFormula(type, strike, forward, stdDev, discount,
                                                             displacement);
@@ -127,7 +127,7 @@ void BlackFormulaTest::testRadoicicStefanicaImpliedVol() {
 
     const Real tol = 0.02;
 
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         for (auto type : types) {
             const ext::shared_ptr<PlainVanillaPayoff> payoff(
                 ext::make_shared<PlainVanillaPayoff>(type, strike));
@@ -225,12 +225,12 @@ void BlackFormulaTest::testImpliedVolAdaptiveSuccessiveOverRelaxation() {
 
     const Real tol = 1e-8;
 
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         for (auto type : types) {
             const ext::shared_ptr<PlainVanillaPayoff> payoff(
                 ext::make_shared<PlainVanillaPayoff>(type, strike));
 
-            for (double displacement : displacements) {
+            for (Real displacement : displacements) {
 
                 const Real marketValue = blackFormula(payoff, forward, stdDev, df, displacement);
 
@@ -269,7 +269,7 @@ void assertBlackFormulaForwardDerivative(
     Real epsilon = 1.e-10;
     std::string type = optionType == Option::Call ? "Call" : "Put";
 
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         Real delta = blackFormulaForwardDerivative(optionType, strike, forward, stdDev, discount,
                                                    displacement);
         Real bumpedDelta = blackFormulaForwardDerivative(
@@ -360,7 +360,7 @@ void assertBachelierBlackFormulaForwardDerivative(
     Real epsilon = 1.e-10;
     std::string type = optionType == Option::Call ? "Call" : "Put";
 
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         Real delta =
             bachelierBlackFormulaForwardDerivative(optionType, strike, forward, stdDev, discount);
         Real bumpedDelta = bachelierBlackFormulaForwardDerivative(

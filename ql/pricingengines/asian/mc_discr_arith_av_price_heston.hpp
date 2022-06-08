@@ -162,7 +162,7 @@ namespace QuantLib {
         std::vector<Time> fixingTimes = timeGrid.mandatoryTimes();
         std::vector<Size> fixingIndexes;
         fixingIndexes.reserve(fixingTimes.size());
-        for (double fixingTime : fixingTimes) {
+        for (Real fixingTime : fixingTimes) {
             fixingIndexes.push_back(timeGrid.closestIndex(fixingTime));
         }
 
@@ -201,7 +201,7 @@ namespace QuantLib {
         std::vector<Time> fixingTimes = timeGrid.mandatoryTimes();
         std::vector<Size> fixingIndexes;
         fixingIndexes.reserve(fixingTimes.size());
-        for (double fixingTime : fixingTimes) {
+        for (Real fixingTime : fixingTimes) {
             fixingIndexes.push_back(timeGrid.closestIndex(fixingTime));
         }
 

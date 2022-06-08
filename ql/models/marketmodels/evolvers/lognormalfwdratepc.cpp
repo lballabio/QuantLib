@@ -63,7 +63,7 @@ namespace QuantLib {
             for (Size k=0; k<numberOfRates_; ++k) {
                 Real variance =
                     std::inner_product(A.row_begin(k), A.row_end(k),
-                                       A.row_begin(k), 0.0);
+                                       A.row_begin(k), Real(0.0));
                 fixed[k] = -0.5*variance;
             }
             fixedDrifts_.push_back(fixed);
@@ -119,7 +119,7 @@ namespace QuantLib {
             logForwards_[i] += drifts1_[i] + fixedDrift[i];
             logForwards_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),
-                                   brownians_.begin(), 0.0);
+                                   brownians_.begin(), Real(0.0));
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
         }
 

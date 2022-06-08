@@ -155,7 +155,7 @@ namespace distributions_test {
         const Real x(0.0);
         const Real y(0.0);
 
-        for (double i : rho) {
+        for (Real i : rho) {
             for (Integer sgn=-1; sgn < 2; sgn+=2) {
                 Bivariate bvn(sgn * i);
                 Real expected = 0.25 + std::asin(sgn * i) / (2 * M_PI);
@@ -720,8 +720,8 @@ void DistributionTest::testSankaranApproximation() {
     const Real ncps[] = {1,2,3,1,2,3};
 
     const Real tol = 0.01;
-    for (double df : dfs) {
-        for (double ncp : ncps) {
+    for (Real df : dfs) {
+        for (Real ncp : ncps) {
             const NonCentralCumulativeChiSquareDistribution d(df, ncp);
             const NonCentralCumulativeChiSquareSankaranApprox sankaran(df, ncp);
 

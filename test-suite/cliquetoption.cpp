@@ -142,7 +142,7 @@ namespace {
                                                           qTS, rTS, volTS));
 
         for (auto& type : types) {
-            for (double moneynes : moneyness) {
+            for (Real moneynes : moneyness) {
                 for (int length : lengths) {
                     for (auto& frequencie : frequencies) {
 
@@ -162,10 +162,10 @@ namespace {
                         CliquetOption option(payoff, maturity, reset);
                         option.setPricingEngine(engine);
 
-                        for (double u : underlyings) {
-                            for (double m : qRates) {
-                                for (double n : rRates) {
-                                    for (double v : vols) {
+                        for (Real u : underlyings) {
+                            for (Real m : qRates) {
+                                for (Real n : rRates) {
+                                    for (Real v : vols) {
 
                                         Rate q = m, r = n;
                                         spot->setValue(u);
@@ -300,7 +300,7 @@ void CliquetOptionTest::testMcPerformance() {
                                                           qTS, rTS, volTS));
 
     for (auto& type : types) {
-        for (double moneynes : moneyness) {
+        for (Real moneynes : moneyness) {
             for (int length : lengths) {
                 for (auto& frequencie : frequencies) {
 
@@ -326,10 +326,10 @@ void CliquetOptionTest::testMcPerformance() {
                             .withAbsoluteTolerance(5.0e-3)
                             .withSeed(42);
 
-                    for (double u : underlyings) {
-                        for (double m : qRates) {
-                            for (double n : rRates) {
-                                for (double v : vols) {
+                    for (Real u : underlyings) {
+                        for (Real m : qRates) {
+                            for (Real n : rRates) {
+                                for (Real v : vols) {
 
                                     Rate q = m, r = n;
                                     spot->setValue(u);

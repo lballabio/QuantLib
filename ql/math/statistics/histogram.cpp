@@ -157,7 +157,7 @@ namespace QuantLib {
         counts_.resize(bins_);
         std::fill(counts_.begin(), counts_.end(), 0);
 
-        for (double p : data_) {
+        for (Real p : data_) {
             bool processed = false;
             for (Size i=0; i<breaks_.size(); ++i) {
                 if (p < breaks_[i]) {
