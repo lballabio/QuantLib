@@ -373,7 +373,7 @@ namespace QuantLib {
     //! specialization of Null template for the Date class
     template <>
     inline Date Null<Date>() {
-        return Date();
+        return {};
     }
 
 

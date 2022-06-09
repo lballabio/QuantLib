@@ -103,7 +103,7 @@ namespace QuantLib {
     
     template <>
     inline IntervalPrice Null<IntervalPrice>() {
-        return IntervalPrice();
+        return {};
     };
 
 }
