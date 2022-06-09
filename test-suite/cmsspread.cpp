@@ -219,9 +219,9 @@ void CmsSpreadTest::testCouponPricing() {
     cpn1->setPricer(d.cmsspPricerLn);
 
 #ifndef __FAST_MATH__
-    const Real eqTol = 100*QL_EPSILON;
+    constexpr double eqTol = 100*QL_EPSILON;
 #else
-    const Real eqTol = 1e-13;
+    constexpr double eqTol = 1e-13;
 #endif
     BOOST_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
     cms10y->addFixing(d.refDate, 0.05);

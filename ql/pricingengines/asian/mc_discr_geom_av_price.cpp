@@ -43,7 +43,7 @@ namespace QuantLib {
             product *= path.front();
         }
         // care must be taken not to overflow product
-        const Real maxValue = QL_MAX_REAL;
+        constexpr double maxValue = QL_MAX_REAL;
         averagePrice = 1.0;
         for (Size i=1; i<n+1; i++) {
             Real price = path[i];

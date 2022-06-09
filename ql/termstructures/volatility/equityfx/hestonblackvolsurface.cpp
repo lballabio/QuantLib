@@ -111,7 +111,7 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(10000);
         const Volatility guess = std::sqrt(theta);
-        const Real accuracy = std::numeric_limits<Real>::epsilon();
+        constexpr double accuracy = std::numeric_limits<double>::epsilon();
 
         return solver.solve([&](Volatility _v) { return blackValue(payoff.optionType(), strike, fwd,
                                                                    t, _v, df, npv); },

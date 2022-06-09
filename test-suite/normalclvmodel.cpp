@@ -81,7 +81,7 @@ void NormalCLVModelTest::testBSCumlativeDistributionFunction() {
     const BSMRNDCalculator rndCalculator(bsProcess);
 
 
-    const Real tol = 1e5 * QL_EPSILON;
+    constexpr double tol = 1e5 * QL_EPSILON;
     const Time t = dc.yearFraction(today, maturity);
     for (Real x=10; x < 400; x+=10) {
         const Real calculated = m.cdf(maturity, x);
