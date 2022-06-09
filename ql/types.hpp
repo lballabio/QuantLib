@@ -83,8 +83,8 @@ namespace QuantLib {
 
     //! type conversions wrapper Real -> T, to allow specialisations for custom Real types
     /*! \ingroup types */
-    template <class T>
-    T ql_cast(const Real& x) {
+    template <class T, class F>
+    T ql_cast(const F& x) {
         return static_cast<T>(x);
     };
 }
