@@ -185,15 +185,6 @@ namespace QuantLib {
         Real freq_;
     };
 
-    // helper to avoid relying on implicit conversion to Rate
-    inline Rate operator-(const InterestRate& a, const InterestRate& b) {
-        return a.rate() - b.rate();
-    }
-
-    inline Rate operator+(const InterestRate& a, const InterestRate& b) {
-        return a.rate() + b.rate();
-    }
-
     /*! \relates InterestRate */
     std::ostream& operator<<(std::ostream&,
                              const InterestRate&);

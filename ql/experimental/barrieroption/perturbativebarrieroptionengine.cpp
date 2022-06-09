@@ -1457,8 +1457,8 @@ namespace QuantLib {
                 const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
             : r(*(process->riskFreeRate())), q(*(process->dividendYield())) {}
             Real operator()(Real t1,Real t2) const {
-                Real alpha = r->forwardRate(t1,t2,Continuous)
-                           - q->forwardRate(t1,t2,Continuous);
+                Real alpha = r->forwardRate(t1,t2,Continuous).rate()
+                           - q->forwardRate(t1,t2,Continuous).rate();
                 return alpha * (t2-t1);
             }
         };

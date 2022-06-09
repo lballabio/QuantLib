@@ -348,8 +348,8 @@ namespace QuantLib {
 
                      Real H = arguments_.barrier_hi;
                      Real L = arguments_.barrier_lo;
-                     Real theta_tilt_minus = ((domesticTS_->zeroRate(T_, Continuous) -
-                                               foreignTS_->zeroRate(T_, Continuous)) /
+                     Real theta_tilt_minus = ((domesticTS_->zeroRate(T_, Continuous).rate() -
+                                               foreignTS_->zeroRate(T_, Continuous).rate()) /
                                                   atmVol_->value() -
                                               atmVol_->value() / 2.0) *
                                              std::sqrt(T_);

@@ -93,8 +93,8 @@ namespace QuantLib {
                 && d <= arguments_.exercise->lastDate()) {
 
                 delta_theta -= arguments_.cashFlow[i]->amount() *
-                  (  process_->riskFreeRate()->zeroRate(d,rfdc,Continuous,Annual)
-                   - process_->dividendYield()->zeroRate(d,dydc,Continuous,Annual)) *
+                  (  process_->riskFreeRate()->zeroRate(d,rfdc,Continuous,Annual).rate()
+                   - process_->dividendYield()->zeroRate(d,dydc,Continuous,Annual).rate()) *
                   process_->riskFreeRate()->discount(d) /
                   process_->dividendYield()->discount(d);
 

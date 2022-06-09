@@ -64,8 +64,8 @@ namespace QuantLib {
                          : 0.0;
 
         return {
-            riskFreeRate_->forwardRate(t, t, Continuous)
-               - dividendYield_->forwardRate(t, t, Continuous)
+            riskFreeRate_->forwardRate(t, t, Continuous).rate()
+               - dividendYield_->forwardRate(t, t, Continuous).rate()
                - 0.5 * vol * vol,
             daysPerYear_*daysPerYear_*omega_ + daysPerYear_*(beta_ 
                                              + alpha_*q2 + gamma_*q3 - 1.0) *

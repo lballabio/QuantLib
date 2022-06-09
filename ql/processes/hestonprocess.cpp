@@ -73,8 +73,8 @@ namespace QuantLib {
                          : 0.0;
 
         return {
-            riskFreeRate_->forwardRate(t, t, Continuous)
-               - dividendYield_->forwardRate(t, t, Continuous)
+            riskFreeRate_->forwardRate(t, t, Continuous).rate()
+               - dividendYield_->forwardRate(t, t, Continuous).rate()
                - 0.5 * vol * vol,
             kappa_* (theta_-((discretization_==PartialTruncation) ? x[1] : vol*vol))
         };
