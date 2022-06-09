@@ -178,7 +178,7 @@ void LiborMarketModelProcessTest::testLambdaBootstrapping() {
     std::vector<Time> tmp = process->fixingTimes();
     TimeGrid grid(tmp.begin(), tmp.end(), 14);
 
-    for (double t : grid) {
+    for (Real t : grid) {
         Matrix diff = (param->integratedCovariance(t) -
                        param->LfmCovarianceParameterization::integratedCovariance(t));
 

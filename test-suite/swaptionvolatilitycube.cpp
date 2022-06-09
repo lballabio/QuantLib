@@ -307,7 +307,7 @@ void SwaptionVolatilityCubeTest::testSpreadedCube() {
                 volCube->smileSection(vars.cube.tenors.options[i], vars.cube.tenors.swaps[j]);
             ext::shared_ptr<SmileSection> smileSectionBySpreadedCube =
                 spreadedVolCube->smileSection(vars.cube.tenors.options[i], vars.cube.tenors.swaps[j]);
-            for (double strike : strikes) {
+            for (Real strike : strikes) {
                 Real diff = spreadedVolCube->volatility(vars.cube.tenors.options[i],
                                                         vars.cube.tenors.swaps[j], strike) -
                             volCube->volatility(vars.cube.tenors.options[i],

@@ -211,7 +211,7 @@ namespace QuantLib {
                     const Volatility vol = std::sqrt(
                         std::inner_product(stdDev.row_begin(i),
                                            stdDev.row_end(i),
-                                           stdDev.row_begin(i), 0.0));
+                                           stdDev.row_begin(i), Real(0.0)));
                     if (vol > 0.0) {
                         std::transform(stdDev.row_begin(i), stdDev.row_end(i),
                                        stdDev.row_begin(i),
