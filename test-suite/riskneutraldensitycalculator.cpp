@@ -427,7 +427,7 @@ void RiskNeutralDensityCalculatorTest::testLocalVolatilityRND() {
 
         const ext::shared_ptr<PricingEngine> engine(
             new FdBlackScholesVanillaEngine(
-                bsmProcess, std::max(Size(51), Size(expiry*101)),
+                bsmProcess, std::max(Size(51), ql_cast<Size>(expiry*101)),
                 201, 0, FdmSchemeDesc::Douglas(), true, b1));
 
         const ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));

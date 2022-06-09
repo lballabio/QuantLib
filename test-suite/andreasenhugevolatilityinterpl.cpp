@@ -126,8 +126,8 @@ namespace andreasen_huge_volatility_interpl_test {
 
             for (Size j=1; j < LENGTH(i); ++j) {
                 if (i[j] > QL_EPSILON) {
-                    const Date maturity
-                        = today + Period(Size(365*maturityTimes[j-1]), Days);
+                    const Date maturity =
+                        today + Period(ql_cast<Size>(365 * maturityTimes[j - 1]), Days);
 
                     const Volatility impliedVol = i[j];
 
@@ -230,7 +230,7 @@ namespace andreasen_huge_volatility_interpl_test {
 
             const ext::shared_ptr<PricingEngine> fdEngine(
                 ext::make_shared<FdBlackScholesVanillaEngine>(
-                    localVolProcess, std::max<Size>(30, Size(100*t)),
+                    localVolProcess, std::max<Size>(30, ql_cast<Size>(100 * t)),
                     200, 0, FdmSchemeDesc::Douglas(), true));
 
             option->setPricingEngine(fdEngine);

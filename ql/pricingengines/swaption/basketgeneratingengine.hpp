@@ -162,10 +162,10 @@ namespace QuantLib {
                 Real fixedRate = v[2]; // allow for negative rates explicitly
                 // (though it might not be reasonable for calibration depending
                 // on the model to calibrate and the market instrument quotation)
-                Size years = (Size)std::floor(maturity);
+                Size years = ql_cast<Size>(std::floor(maturity));
                 maturity -= (Real)years;
                 maturity *= 12.0;
-                Size months = (Size)std::floor(maturity);
+                Size months = ql_cast<Size>(std::floor(maturity));
                 Real alpha = 1.0 - (maturity - (Real)months);
                 if (years == 0 && months == 0) {
                     months = 1;  // ensure a maturity of at least one month ...

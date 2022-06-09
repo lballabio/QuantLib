@@ -57,7 +57,7 @@ namespace QuantLib {
         Real oneDayAsYear =
             volTS.dayCounter().yearFraction(volTS.referenceDate(), volTS.referenceDate() + 1);
         Date exerciseDate =
-            volTS.referenceDate() + ((BigInteger)ClosestRounding(0)(optionTime / oneDayAsYear));
+            volTS.referenceDate() + (ql_cast<BigInteger>(ClosestRounding(0)(optionTime / oneDayAsYear)));
         Date effectiveDate = volTS.baseIndex_->fixingCalendar().advance(
             exerciseDate, volTS.baseIndex_->fixingDays() * Days);
         Date maturityDate = volTS.baseIndex_->fixingCalendar().advance(

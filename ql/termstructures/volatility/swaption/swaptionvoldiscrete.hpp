@@ -117,7 +117,7 @@ namespace QuantLib {
     }
 
     inline Date SwaptionVolatilityDiscrete::optionDateFromTime(Time optionTime) const {
-        return Date(static_cast<Date::serial_type>(optionInterpolator_(optionTime)));
+        return Date(ql_cast<Date::serial_type>(optionInterpolator_(optionTime)));
     }
 }
 

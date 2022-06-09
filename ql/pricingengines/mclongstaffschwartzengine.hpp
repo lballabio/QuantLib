@@ -230,7 +230,7 @@ namespace QuantLib {
             return TimeGrid(requiredTimes.begin(), requiredTimes.end(),
                             this->timeSteps_);
         } else if (this->timeStepsPerYear_ != Null<Size>()) {
-            Size steps = static_cast<Size>(this->timeStepsPerYear_ *
+            Size steps = ql_cast<Size>(this->timeStepsPerYear_ *
                                            requiredTimes.back());
             return TimeGrid(requiredTimes.begin(), requiredTimes.end(),
                             std::max<Size>(steps, 1));

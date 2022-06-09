@@ -197,7 +197,7 @@ namespace QuantLib {
                             makeSwaptionCalibrationPoint(
                                 *j,
                                 Period(
-                                    static_cast<Integer>(rounder(
+                                    ql_cast<Integer>(rounder(
                                         (swapIndexBase_->dayCounter()
                                              .yearFraction(*j, numeraireKnown) -
                                          0.5 / 365) *

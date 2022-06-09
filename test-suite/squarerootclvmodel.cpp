@@ -196,7 +196,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
             spot, qTS, rTS, sabrVol));
 
     std::vector<Date> calibrationDates(1, todaysDate + Period(3, Months));
-    calibrationDates.reserve(Size(daysBetween(todaysDate, maturityDate)/7 + 1));
+    calibrationDates.reserve(ql_cast<Size>(daysBetween(todaysDate, maturityDate)/7 + 1));
     while (calibrationDates.back() < maturityDate)
         calibrationDates.push_back(calibrationDates.back() + Period(1, Weeks));
 

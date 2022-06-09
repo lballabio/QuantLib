@@ -67,7 +67,7 @@ namespace QuantLib {
                 k /= b;
             }
             sequence_.value[i] = h+randomShift_[i];
-            sequence_.value[i] -= long(sequence_.value[i]);
+            sequence_.value[i] -= ql_cast<long>(sequence_.value[i]);
         }
         return sequence_;
     }

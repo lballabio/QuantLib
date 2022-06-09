@@ -768,7 +768,7 @@ namespace {
 
         const Array strikes = {100};
 
-        const Size yGrid = Size(1/h);
+        const Size yGrid = ql_cast<Size>(1/h);
         const GridSetup setup = {
               5.50966, 0.0130581,
              true, false,

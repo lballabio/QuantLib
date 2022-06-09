@@ -56,7 +56,7 @@ namespace QuantLib {
         const DayCounter& dayCounter() const { return dc_; }
         Compounding compounding() const { return comp_; }
         Frequency frequency() const {
-            return freqMakesSense_ ? Frequency(Integer(freq_)) : NoFrequency;
+            return freqMakesSense_ ? Frequency(ql_cast<Integer>(freq_)) : NoFrequency;
         }
         //@}
 

@@ -407,7 +407,7 @@ void MatricesTest::testDeterminant() {
 
         if ((j % 3) == 0U) {
             // every third matrix is a singular matrix
-            Size row = Size(3*rng.next().value);
+            Size row = ql_cast<Size>(3*rng.next().value);
             std::fill(m.row_begin(row), m.row_end(row), 0.0);
         }
 

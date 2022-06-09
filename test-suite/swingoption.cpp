@@ -468,7 +468,7 @@ namespace swing_option_test {
             option_->setPricingEngine(
                 ext::make_shared<FdExtOUJumpVanillaEngine>(
                     process_, rTS,
-                    Size(gridT/x), Size(gridX/x), Size(gridY/x), shape_));
+                    ql_cast<Size>(gridT/x), ql_cast<Size>(gridX/x), ql_cast<Size>(gridY/x), shape_));
 
             return option_->NPV();
         }

@@ -145,12 +145,12 @@ namespace QuantLib {
 
     template <typename T>
     inline Period operator*(T n, TimeUnit units) {
-        return {Integer(n), units};
+        return {ql_cast<Integer>(n), units};
     }
 
     template <typename T>
     inline Period operator*(TimeUnit units, T n) {
-        return {Integer(n), units};
+        return {ql_cast<Integer>(n), units};
     }
 
     inline Period operator-(const Period& p) { return {-p.length(), p.units()}; }

@@ -177,9 +177,9 @@ int test(OptimizationMethod& method, CostFunction& f, const EndCriteria& endCrit
         std::cout << "Global optimum: ";
         Real optimVal = printFunction(p, optimum);
         if(std::abs(optimVal) < 1e-13)
-            return static_cast<int>(std::abs(val - optimVal) < 1e-6);
+            return ql_cast<int>(std::abs(val - optimVal) < 1e-6);
         else
-            return static_cast<int>(std::abs((val - optimVal) / optimVal) < 1e-6);
+            return ql_cast<int>(std::abs((val - optimVal) / optimVal) < 1e-6);
     }
     return 1;
 }

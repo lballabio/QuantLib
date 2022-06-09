@@ -71,7 +71,7 @@ namespace QuantLib {
         calculate();
         Date optionDate = optionDateFromTime(optionTime);
         Rounding rounder(0);
-        Period swapTenor(static_cast<Integer>(rounder(swapLength*12.0)), Months);
+        Period swapTenor(ql_cast<Integer>(rounder(swapLength*12.0)), Months);
         // ensure that option date is valid fixing date
         optionDate =
             swapTenor > shortSwapIndexBase_->tenor()

@@ -124,7 +124,8 @@ namespace QuantLib {
         std::map<unsigned long, Real, std::less<unsigned long> >::iterator iter;
 
         for (Size k = 0; k < m_; ++k) {
-            auto exUnit = (unsigned long)(std::floor(0.5 + exposure_[k] / unit_)); // round
+            auto exUnit =
+                ql_cast<unsigned long>(std::floor(0.5 + exposure_[k] / unit_)); // round
             if (exposure_[k] > 0 && exUnit == 0)
                 exUnit = 1; // but avoid zero exposure
             if (exUnit > maxNu_)

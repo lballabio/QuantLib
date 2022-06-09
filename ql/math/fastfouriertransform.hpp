@@ -40,7 +40,7 @@ namespace QuantLib {
 
         //! the minimum order required for the given input size
         static std::size_t min_order(std::size_t inputSize) {
-            return static_cast<std::size_t>(
+            return ql_cast<std::size_t>(
                 std::ceil(std::log(static_cast<Real>(inputSize)) / M_LN2));
         }
 

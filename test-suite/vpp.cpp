@@ -160,7 +160,7 @@ void VPPTest::testGemanRoncoroniProcess() {
 
     const Time T = 10.0;
     const Size stepsPerYear = 250;
-    const Size steps = Size(T*Real(stepsPerYear));
+    const Size steps = ql_cast<Size>(T*Real(stepsPerYear));
 
     TimeGrid grid(T, steps);
 
@@ -470,7 +470,7 @@ namespace vpp_test {
             QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  shape_->back().first,
                         "invalid time");
 
-            const Size i = Size(t * 365U * 24U);
+            const Size i = ql_cast<Size>(t * 365U * 24U);
             const Real f = std::lower_bound(shape_->begin(), shape_->end(),
                 std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
 
@@ -500,7 +500,7 @@ namespace vpp_test {
             QL_REQUIRE(t-std::sqrt(QL_EPSILON) <=  powerShape_->back().first,
                         "invalid time");
 
-            const Size i = Size(t * 365U * 24U);
+            const Size i = ql_cast<Size>(t * 365U * 24U);
             const Real f = std::lower_bound(
                 powerShape_->begin(), powerShape_->end(),
                 std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;

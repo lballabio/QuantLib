@@ -55,7 +55,7 @@ namespace {
             const Size nSims = 64*1024;
 
             const Real timeStepsPerYear = 1./dt;
-            const Size timeSteps = Size(maturity_*timeStepsPerYear+1e-8);
+            const Size timeSteps = ql_cast<Size>(maturity_*timeStepsPerYear+1e-8);
 
             const Real sqrtDt = std::sqrt(dt);
             const Real w = std::sqrt(1.0-rho_*rho_);
@@ -393,7 +393,7 @@ void FdSabrTest::testOosterleeTestCaseIV() {
         const Date maturityDate = today + maturities[i];
         const Time maturityTime = dc.yearFraction(today, maturityDate);
 
-        const Size timeSteps = Size(5*maturityTime);
+        const Size timeSteps = ql_cast<Size>(5*maturityTime);
 
         const ext::shared_ptr<PricingEngine> engine =
             ext::make_shared<FdSabrVanillaEngine>(
@@ -497,9 +497,9 @@ void FdSabrTest::testBenchOpSabrCase() {
 
             option.setPricingEngine(ext::make_shared<FdSabrVanillaEngine>(
                     f0, alpha, beta, nu, rho, rTS,
-                    Size(gridT*factor),
-                    Size(gridX*factor),
-                    Size(gridY*std::sqrt(factor))));
+                    ql_cast<Size>(gridT*factor),
+                    ql_cast<Size>(gridX*factor),
+                    ql_cast<Size>(gridY*std::sqrt(factor))));
 
             const Real calculated = option.NPV();
             const Real diff = std::fabs(calculated - expected[i][j]);

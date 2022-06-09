@@ -1037,10 +1037,10 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePriceHeston() {
         std::vector<Time> timeIncrements(l.fixings);
         std::vector<Date> fixingDates(l.fixings);
         timeIncrements[0] = l.first;
-        fixingDates[0] = today + Integer(timeIncrements[0]*365.25);
+        fixingDates[0] = today + ql_cast<Integer>(timeIncrements[0] * 365.25);
         for (Size i = 1; i < l.fixings; i++) {
             timeIncrements[i] = i * dt + l.first;
-            fixingDates[i] = today + Integer(timeIncrements[i]*365.25);
+            fixingDates[i] = today + ql_cast<Integer>(timeIncrements[i] * 365.25);
         }
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(fixingDates[l.fixings - 1]));
 

@@ -130,7 +130,7 @@ namespace QuantLib {
         if (this->timeSteps_ != Null<Size>()) {
             totalSteps = timeSteps_;
         } else if (this->timeStepsPerYear_ != Null<Size>()) {
-            totalSteps = static_cast<Size>(this->timeStepsPerYear_*t2);
+            totalSteps = ql_cast<Size>(this->timeStepsPerYear_*t2);
         }
 
         std::vector<Time> fixingTimes;

@@ -201,7 +201,7 @@ namespace QuantLib {
         if (timeSteps_ != Null<Size>()) {
             return TimeGrid(t, this->timeSteps_);
         } else if (timeStepsPerYear_ != Null<Size>()) {
-            Size steps = static_cast<Size>(timeStepsPerYear_*t);
+            Size steps = ql_cast<Size>(timeStepsPerYear_*t);
             return TimeGrid(t, std::max<Size>(steps, 1));
         } else {
             QL_FAIL("time steps not specified");
@@ -317,7 +317,7 @@ namespace QuantLib {
             Integrand(Path path, ext::shared_ptr<GeneralizedBlackScholesProcess> process)
             : path_(std::move(path)), process_(std::move(process)) {}
             Real operator()(Time t) const {
-                Size i =  static_cast<Size>(t/path_.timeGrid().dt(0));
+                Size i =  ql_cast<Size>(t/path_.timeGrid().dt(0));
                 Real sigma = process_->diffusion(t,path_[i]);
                 return sigma*sigma;
             }
@@ -334,7 +334,7 @@ namespace QuantLib {
         Time t0 = path.timeGrid().front();
         Time t = path.timeGrid().back();
         Time dt = path.timeGrid().dt(0);
-        SegmentIntegral integrator(static_cast<Size>(t/dt));
+        SegmentIntegral integrator(ql_cast<Size>(t/dt));
         detail::Integrand f(path, process_);
         return integrator(f,t0,t)/t;
     }

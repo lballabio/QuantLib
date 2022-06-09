@@ -220,7 +220,7 @@ namespace QuantLib {
         if (timeSteps_ != Null<Size>()) {
             return TimeGrid(residualTime, timeSteps_);
         } else if (timeStepsPerYear_ != Null<Size>()) {
-            Size steps = static_cast<Size>(timeStepsPerYear_*residualTime);
+            Size steps = ql_cast<Size>(timeStepsPerYear_*residualTime);
             return TimeGrid(residualTime, std::max<Size>(steps, 1));
         } else {
             QL_FAIL("time steps not specified");

@@ -1436,8 +1436,8 @@ void FdmLinearOpTest::testSpareMatrixReference() {
     for (auto& i : v) {
         SparseMatrixReference m(i);
         for (Size j=0; j < nElements; ++j) {
-            const Size row    = Size(rng.next().value*rows);
-            const Size column = Size(rng.next().value*columns);
+            const Size row    = ql_cast<Size>(rng.next().value*rows);
+            const Size column = ql_cast<Size>(rng.next().value*columns);
 
             const Real value = rng.next().value;
             m(row, column)        += value;

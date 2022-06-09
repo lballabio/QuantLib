@@ -60,7 +60,7 @@ namespace QuantLib {
         do {
             // skip the even numbers
             m += 2;
-            n = static_cast<BigNatural>(std::sqrt(Real(m)));
+            n = ql_cast<BigNatural>(std::sqrt(Real(m)));
             // i=1 since the even numbers have already been skipped
             Size i = 1;
             do {

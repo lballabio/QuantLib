@@ -191,7 +191,7 @@ namespace QuantLib
                 newPoint[i] = lower_[i] - 1.0;
                 while (newPoint[i] < lower_[i] || newPoint[i] > upper_[i]) {
                     Real draw = distribution_(generator_);
-                    Real sign = static_cast<int>(0.5 < draw) - static_cast<int>(draw < 0.5);
+                    Real sign = ql_cast<int>(0.5 < draw) - ql_cast<int>(draw < 0.5);
                     Real y = sign*temp[i] * (std::pow(1.0 + 1.0 / temp[i],
                                                       std::abs(2 * draw - 1.0)) - 1.0);
                     newPoint[i] = currentPoint[i] + y*(upper_[i] - lower_[i]);

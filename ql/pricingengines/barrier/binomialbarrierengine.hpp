@@ -139,7 +139,7 @@ namespace QuantLib {
                divisor = std::pow(std::log(arguments_.barrier / s0), 2);
             if (!close(divisor,0)) {
                 for (Size i=1; i < timeSteps_ ; ++i) {
-                    Size optimum = Size(( i*i * v*v * maturity) / divisor);
+                    Size optimum = ql_cast<Size>(( i*i * v*v * maturity) / divisor);
                     if (timeSteps_ < optimum) {
                         optimum_steps = optimum;
                         break; // found first minimum with iterations>=timesteps

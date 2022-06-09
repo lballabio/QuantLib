@@ -488,7 +488,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         ext::shared_ptr<PlainVanillaPayoff> payoff(
             new PlainVanillaPayoff(value.type, value.strike));
 
-        Date exDate = today + Integer(value.t) * 30;
+        Date exDate = today + ql_cast<Integer>(value.t) * 30;
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
         ext::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate));

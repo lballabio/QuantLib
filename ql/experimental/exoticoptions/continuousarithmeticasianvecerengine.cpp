@@ -183,7 +183,7 @@ namespace QuantLib {
             } // End Time Loop
 
             DownRounding Rounding(0);
-            auto lowerI = Integer(Rounding((Z_0 - z_min_) / h));
+            auto lowerI = ql_cast<Integer>(Rounding((Z_0 - z_min_) / h));
             // Interpolate solution
             Real pv;
 

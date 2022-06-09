@@ -480,7 +480,7 @@ namespace QuantLib {
         std::sort(losses.begin(), losses.end());
         Real posit = std::ceil(percent * nSims_);
         posit = posit >= 0. ? posit : 0.;
-        Size position = static_cast<Size>(posit);
+        Size position = ql_cast<Size>(posit);
         Real perctlInf = losses[position];//q_{\alpha}
 
         // the prob of values strictly larger than the quantile value.
@@ -570,7 +570,7 @@ namespace QuantLib {
         }
 
         std::sort(rankLosses.begin(), rankLosses.end());
-        Size quantilePosition = static_cast<Size>(floor(nSims_*percentile));
+        Size quantilePosition = ql_cast<Size>(floor(nSims_ * percentile));
         Real quantileValue = rankLosses[quantilePosition];
 
         // compute confidence interval:
@@ -765,7 +765,7 @@ namespace QuantLib {
                 read only)
                 */
                 return dts_->defaultProbability(curveRef_ +
-                    Period(static_cast<Integer>(t), Days), true) - pd_;
+                    Period(ql_cast<Integer>(t), Days), true) - pd_;
             }
           private:
             const Handle<DefaultProbabilityTermStructure> dts_;
@@ -937,7 +937,7 @@ namespace QuantLib {
                 // compute and store default time with respect to the
                 //  curve ref date:
                 Size dateSTride =
-                    static_cast<Size>(Brent().solve(// casted from Real:
+                    ql_cast<Size>(Brent().solve( // casted from Real:
                         detail::Root(dfts, simDefaultProb),
                             accuracy_,0.,1.));
                    /*
@@ -946,7 +946,7 @@ namespace QuantLib {
                    // \todo: see how to include this 'polymorphically'.
                    // While not the case in pricing in risk metrics/real
                    //   probabilities the curves are often flat
-                    static_cast<Size>(ceil(maxHorizon_ *
+                    ql_cast<Size>(ceil(maxHorizon_ *
                                         std::log(1.-simDefaultProb)
                     /std::log(1.-data_.horizonDefaultPs_[iName])));
                    */

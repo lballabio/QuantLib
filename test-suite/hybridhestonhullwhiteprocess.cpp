@@ -987,7 +987,7 @@ namespace hybrid_heston_hullwhite_process_test {
                                             const VanillaOptionData& params) {
 
         Date maturity = Date(Settings::instance().evaluationDate())
-                                          + Period(Size(params.maturity*365), Days);
+                                          + Period(ql_cast<Size>(params.maturity*365), Days);
         ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturity));
         ext::shared_ptr<StrikedTypePayoff> payoff(
                     new PlainVanillaPayoff(params.optionType, params.strike));
@@ -1046,7 +1046,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
         SchemeData scheme = schemes[l];
         for (bool i : controlVariate) {
             for (unsigned long u : listOfTimeStepsPerYear) {
-                Size tSteps = Size(maturity * u);
+                Size tSteps = ql_cast<Size>(maturity * u);
 
                 ext::shared_ptr<FdHestonHullWhiteVanillaEngine> fdEngine(
                     new FdHestonHullWhiteVanillaEngine(hestonModel, hwProcess, equityIrCorr, tSteps,
@@ -1111,7 +1111,7 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
                 ext::shared_ptr<PricingEngine> analyticEngine(
                                new AnalyticHestonEngine(hestonModel, 172));
 
-                Size tSteps = Size(maturity * u);
+                Size tSteps = ql_cast<Size>(maturity * u);
 
                 ext::shared_ptr<FdHestonVanillaEngine> fdEngine(
                     new FdHestonVanillaEngine(
@@ -1302,7 +1302,7 @@ void HybridHestonHullWhiteProcessTest::testHestonHullWhiteCalibration() {
     fdmHestonModel->setParams(analyticHestonModel->params());
 
     for (Size i=0; i < maturities.size(); ++i) {
-        const Size tGrid = static_cast<Size>(std::max(5.0, maturities[i]*5.0));
+        const Size tGrid = ql_cast<Size>(std::max(5.0, maturities[i]*5.0));
         ext::shared_ptr<FdHestonHullWhiteVanillaEngine> engine(
             new FdHestonHullWhiteVanillaEngine(fdmHestonModel, hwProcess,
                                                equityShortRateCorr,

@@ -329,7 +329,7 @@ namespace QuantLib {
 
         Time tIdx=0.0;
         std::vector<Time> times(1, tIdx);
-        times.reserve(Size(T*params_.tMinStepsPerYear));
+        times.reserve(ql_cast<Size>(T * params_.tMinStepsPerYear));
         while (tIdx < T) {
             const Real decayFactor = std::exp(-params_.tStepNumberDecay*tIdx);
             const Time dt = maxDt*decayFactor + minDt*(1.0-decayFactor);

@@ -127,7 +127,7 @@ std::vector<Real> ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
     const Size size = 500;                    // grid points
     const Real density = 0.1; // density for concentrating mesher
     const Size steps =
-        (Size)std::ceil(expiryTime_ * 24); // number of steps in dimension t
+        ql_cast<Size>(std::ceil(expiryTime_ * 24)); // number of steps in dimension t
     const Size dampingSteps = 5;           // thereof damping steps
 
     // Layout
@@ -210,7 +210,7 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
 
     const Size sizef = 100;
     const Size sizev = 100;
-    const Size steps = Size(24 * expiryTime_ + 1);
+    const Size steps = ql_cast<Size>(24 * expiryTime_ + 1);
     const Size dampingSteps = 5;
     const Real densityf = 0.1;
     const Real densityv = 0.1;
@@ -231,7 +231,7 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
     const Real x0 = std::min(forward_, strike);
     const Real x1 = std::max(forward_, strike);
     const Size sizefa = std::max<Size>(
-        4, (Size)std::ceil(((x0 + x1) / 2.0 - f0) / (f1 - f0) * (Real)sizef));
+        4, ql_cast<Size>(std::ceil(((x0 + x1) / 2.0 - f0) / (f1 - f0) * (Real)sizef)));
     const Size sizefb = sizef - sizefa + 1; // common point, so we can spend
     // one more here
     const ext::shared_ptr<Fdm1dMesher> mfa(

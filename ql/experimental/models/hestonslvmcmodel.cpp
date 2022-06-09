@@ -57,7 +57,7 @@ namespace QuantLib {
         gridTimes.push_back(dc.yearFraction(refDate, endDate));
 
         timeGrid_ = ext::make_shared<TimeGrid>(gridTimes.begin(), gridTimes.end(),
-                std::max(Size(2), Size(gridTimes.back()*timeStepsPerYear)));
+            std::max(Size(2), ql_cast<Size>(gridTimes.back() * timeStepsPerYear)));
     }
 
     ext::shared_ptr<HestonProcess> HestonSLVMCModel::hestonProcess() const {

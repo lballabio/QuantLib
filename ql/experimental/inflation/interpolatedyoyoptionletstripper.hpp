@@ -113,7 +113,7 @@ namespace QuantLib {
         lag_ = surf_->observationLag();
         capfloor_ =
             MakeYoYInflationCapFloor(type, anIndex,
-                                     (Size)std::floor(0.5+surf->timeFromReference(surf->minMaturity())),
+                                     ql_cast<Size>(std::floor(0.5+surf->timeFromReference(surf->minMaturity()))),
                                      surf->calendar(), lag)
             .withNominal(10000.0)
             .withStrike(K);
@@ -127,7 +127,7 @@ namespace QuantLib {
         tvec_[1] = surf_->dayCounter().yearFraction(surf_->referenceDate(),
                                                     dvec_[1]);
 
-        Size n = (Size)std::floor(0.5 + surf->timeFromReference(surf_->minMaturity()));
+        Size n = ql_cast<Size>(std::floor(0.5 + surf->timeFromReference(surf_->minMaturity())));
         QL_REQUIRE( n > 0,
                     "first maturity in price surface not > 0: "
                     << n);
@@ -232,7 +232,7 @@ namespace QuantLib {
                                                new SimpleQuote( nextPrice )));
                 // helper should be an integer number of periods away,
                 // this is enforced by rounding
-                Size nT = (Size)floor(s->timeFromReference(s->yoyOptionDateFromTenor(Tp))+0.5);
+                Size nT = ql_cast<Size>(floor(s->timeFromReference(s->yoyOptionDateFromTenor(Tp))+0.5));
                 helpers.push_back(ext::shared_ptr<YoYOptionletHelper>(
                           new YoYOptionletHelper(quote1, notional, useType,
                                                  lag_,

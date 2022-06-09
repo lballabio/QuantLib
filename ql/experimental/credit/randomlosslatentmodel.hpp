@@ -182,7 +182,7 @@ namespace QuantLib {
                 // compute and store default time with respect to the 
                 //  curve ref date:
                 Size dateSTride =
-                    static_cast<Size>(Brent().solve(// casted from Real:
+                    ql_cast<Size>(Brent().solve( // casted from Real:
                     detail::Root(dfts, simDefaultProb), accuracy_, 0., 1.));
                 /*
                 // value if one approximates to a flat HR; 
@@ -190,7 +190,7 @@ namespace QuantLib {
                 // \todo: see how to include this 'polymorphically'. While
                 //   not the case in pricing in risk metrics/real  
                 //   probabilities the curves are often flat
-                static_cast<Size>(ceil(maxHorizon_ * 
+                ql_cast<Size>(ceil(maxHorizon_ * 
                                     std::log(1.-simDefaultProb)
                 /std::log(1.-data_.horizonDefaultPs_[iName])));
                 */
@@ -203,7 +203,7 @@ namespace QuantLib {
                 Unless the gap is ridiculous this has no practical effect for 
                 the RR value*/
                 Date today = Settings::instance().evaluationDate();
-                Date eventDate = today+Period(static_cast<Integer>(dateSTride), 
+                Date eventDate = today+Period(ql_cast<Integer>(dateSTride), 
                     Days);
                 if(eventDate<dfts->referenceDate()) 
                     eventDate = dfts->referenceDate();

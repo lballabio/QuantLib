@@ -26,7 +26,7 @@ namespace QuantLib {
 
     namespace {
         Integer round(Real r) {
-            return (r > 0.0) ? Integer(std::floor(r + 0.5)) : Integer(std::ceil(r - 0.5));
+            return (r > 0.0) ? ql_cast<Integer>(std::floor(r + 0.5)) : ql_cast<Integer>(std::ceil(r - 0.5));
         }
     }
 

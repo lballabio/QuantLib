@@ -47,12 +47,12 @@ Gaussian1dSwaptionVolatility::smileSectionImpl(Time optionTime,
                                                Time swapLength) const {
     DateHelper hlp(*this, optionTime);
     NewtonSafe newton;
-    Date d(static_cast<Date::serial_type>(newton.solve(
+    Date d(ql_cast<Date::serial_type>(newton.solve(
         hlp, 0.1,
         365.25 * optionTime + static_cast<Real>(referenceDate().serialNumber()),
         1.0)));
     Period tenor(
-        static_cast<Integer>(Rounding(0)(swapLength * 12.0)),
+        ql_cast<Integer>(Rounding(0)(swapLength * 12.0)),
         Months);
     d = indexBase_->fixingCalendar().adjust(d);
     return smileSectionImpl(d, tenor);

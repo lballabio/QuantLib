@@ -54,7 +54,7 @@ void VarianceOptionTest::testIntegralHeston() {
     Real strike = 0.05;
     Real nominal = 1.0;
     Time T = 1.5;
-    Date exDate = today + int(360*T);
+    Date exDate = today + ql_cast<int>(360*T);
 
     ext::shared_ptr<Payoff> payoff(new PlainVanillaPayoff(Option::Call,
                                                             strike));
@@ -88,7 +88,7 @@ void VarianceOptionTest::testIntegralHeston() {
     strike = 0.7;
     nominal = 1.0;
     T = 1.0;
-    exDate = today + int(360*T);
+    exDate = today + ql_cast<int>(360*T);
 
     payoff = ext::shared_ptr<Payoff>(new PlainVanillaPayoff(Option::Put,
                                                               strike));

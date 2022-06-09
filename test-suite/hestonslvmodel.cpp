@@ -2018,7 +2018,7 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
 
             const ext::shared_ptr<PricingEngine> fdEngine
                 = ext::make_shared<FdHestonVanillaEngine>(
-                    hestonModel, std::max(Size(26), Size(maturityTime*51)),
+                    hestonModel, std::max(Size(26), ql_cast<Size>(maturityTime*51)),
                     201, 51, 0,
                     FdmSchemeDesc::ModifiedCraigSneyd(), leverageFct);
 

@@ -235,8 +235,8 @@ namespace QuantLib {
             // adjust average
             Real epsilon = (1.-alpha)*(ceilAveProb-m);
             Real epsilonPlus = 1.-alpha-epsilon;
-            lossProbDensity[static_cast<Size>(floorAveProb)] += epsilon;
-            lossProbDensity[static_cast<Size>(ceilAveProb)]  += epsilonPlus;
+            lossProbDensity[ql_cast<Size>(floorAveProb)] += epsilon;
+            lossProbDensity[ql_cast<Size>(ceilAveProb)] += epsilonPlus;
         }
         return lossProbDensity;
     }

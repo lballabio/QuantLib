@@ -172,7 +172,7 @@ namespace QuantLib {
             return TimeGrid(fixingTimes.begin(), fixingTimes.end(), timeSteps_);
         } else if (this->timeStepsPerYear_ != Null<Size>()) {
             return TimeGrid(fixingTimes.begin(), fixingTimes.end(),
-                static_cast<Size>(this->timeStepsPerYear_*t));
+                ql_cast<Size>(this->timeStepsPerYear_*t));
         }
 
         return TimeGrid(fixingTimes.begin(), fixingTimes.end());

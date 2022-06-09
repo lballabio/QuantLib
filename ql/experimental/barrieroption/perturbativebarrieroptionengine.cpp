@@ -1182,8 +1182,8 @@ namespace QuantLib {
                         XNKH = 0.0;
                     }
 
-                HS =(int)SIGN( ONE, DH - R*DK );
-                KS =(int)SIGN( ONE, DK - R*DH );
+                HS = QuantLib::ql_cast<int>(SIGN(ONE, DH - R * DK));
+                KS = QuantLib::ql_cast<int>(SIGN(ONE, DK - R * DH));
                 if((NU-2*(int)(NU/2))==0 )
                     {
                         BVT = atan2( POW(ORS,0.5), -R )/TPI;

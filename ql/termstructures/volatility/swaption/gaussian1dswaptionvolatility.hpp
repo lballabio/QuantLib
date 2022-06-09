@@ -73,11 +73,11 @@ class Gaussian1dSwaptionVolatility : public SwaptionVolatilityStructure {
       public:
         DateHelper(const TermStructure &ts, const Time t) : ts_(ts), t_(t) {}
         Real operator()(Real date) const {
-            Date d1(static_cast<Date::serial_type>(date));
-            Date d2(static_cast<Date::serial_type>(date) + 1);
+            Date d1(ql_cast<Date::serial_type>(date));
+            Date d2(ql_cast<Date::serial_type>(date) + 1);
             Real t1 = ts_.timeFromReference(d1) - t_;
             Real t2 = ts_.timeFromReference(d2) - t_;
-            Real h = date - static_cast<Date::serial_type>(date);
+            Real h = date - ql_cast<Date::serial_type>(date);
             return h * t2 + (1.0 - h) * t1;
         }
         Real derivative(Real date) const {

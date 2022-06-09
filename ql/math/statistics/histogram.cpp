@@ -51,7 +51,7 @@ namespace QuantLib {
                 return *std::max_element(samples.begin(), samples.end());
 
             // general situation: middle region and nsample >= 2
-            Size index = static_cast<Size>(std::floor((nsample+a)*prob+a));
+            Size index = ql_cast<Size>(std::floor((nsample + a) * prob + a));
             std::vector<Real> sorted(index+1);
             std::partial_sort_copy(samples.begin(), samples.end(),
                                    sorted.begin(), sorted.end());
@@ -106,7 +106,7 @@ namespace QuantLib {
         if (bins_ == Null<Size>()) {
             switch (algorithm_) {
               case Sturges: {
-                  bins_ = static_cast<Size>(
+                  bins_ = ql_cast<Size>(
                            std::ceil(std::log(static_cast<Real>(data_.size()))
                                      /std::log(2.0) + 1));
                   break;
@@ -115,7 +115,7 @@ namespace QuantLib {
                   Real r1 = quantile(data_, 0.25);
                   Real r2 = quantile(data_, 0.75);
                   Real h = 2.0 * (r2-r1) * std::pow(static_cast<Real>(data_.size()), -1.0/3.0);
-                  bins_ = static_cast<Size>(std::ceil((max-min)/h));
+                  bins_ = ql_cast<Size>(std::ceil((max-min)/h));
                   break;
               }
               case Scott: {
@@ -124,7 +124,7 @@ namespace QuantLib {
                   Real variance = summary.variance();
                   Real h = 3.5 * std::sqrt(variance)
                          * std::pow(static_cast<Real>(data_.size()), -1.0/3.0);
-                  bins_ = static_cast<Size>(std::ceil((max-min)/h));
+                  bins_ = ql_cast<Size>(std::ceil((max-min)/h));
                   break;
               }
               case None:

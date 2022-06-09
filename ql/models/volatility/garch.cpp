@@ -414,7 +414,7 @@ namespace QuantLib {
         omega = mean_r2 * dataSize / (dataSize - 1);
 
         // ACF
-        Size maxLag = (Size)std::sqrt(dataSize);
+        Size maxLag = ql_cast<Size>(std::sqrt(dataSize));
         Array acf(maxLag+1);
         std::vector<Volatility> tmp(r2.size());
         std::transform (r2.begin(), r2.end(), tmp.begin(),

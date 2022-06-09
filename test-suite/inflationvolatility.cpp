@@ -135,8 +135,8 @@ namespace inflation_volatility_test {
         Size nTimesGBP = LENGTH(timesGBP);
         for (Size i = 0; i < nTimesEUR; i++) {
             r.push_back(ratesEUR[i]);
-            Size ys = (Size)floor(timesEUR[i]);
-            Size ds = (Size)((timesEUR[i]-(Real)ys)*365);
+            Size ys = ql_cast<Size>(floor(timesEUR[i]));
+            Size ds = ql_cast<Size>((timesEUR[i]-(Real)ys)*365);
             Date dd = eval + Period(ys,Years) + Period(ds,Days);
             d.push_back( dd );
         }
@@ -150,8 +150,8 @@ namespace inflation_volatility_test {
         r.clear();
         for (Size i = 0; i < nTimesGBP; i++) {
             r.push_back(ratesGBP[i]);
-            Size ys = (Size)floor(timesGBP[i]);
-            Size ds = (Size)((timesGBP[i]-(Real)ys)*365);
+            Size ys = ql_cast<Size>(floor(timesGBP[i]));
+            Size ds = ql_cast<Size>((timesGBP[i]-(Real)ys)*365);
             Date dd = eval + Period(ys,Years) + Period(ds,Days);
             d.push_back( dd );
         }

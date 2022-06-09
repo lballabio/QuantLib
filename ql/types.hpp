@@ -81,6 +81,12 @@ namespace QuantLib {
     /*! \ingroup types */
     typedef Real Probability;
 
+    //! type conversions wrapper Real -> T, to allow specialisations for custom Real types
+    /*! \ingroup types */
+    template <class T>
+    T ql_cast(const Real& x) {
+        return static_cast<T>(x);
+    };
 }
 
 

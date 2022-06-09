@@ -684,7 +684,7 @@ void FdHestonTest::testFdmHestonConvergence() {
                         rTS, qTS, s0, k, value.kappa, value.theta, value.sigma, value.rho));
 
                     Date exerciseDate =
-                        todaysDate + Period(static_cast<Integer>(value.T * 365), Days);
+                        todaysDate + Period(ql_cast<Integer>(value.T * 365), Days);
                     ext::shared_ptr<Exercise> exercise(
                                           new EuropeanExercise(exerciseDate));
 

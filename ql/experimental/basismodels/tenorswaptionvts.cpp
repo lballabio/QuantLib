@@ -41,11 +41,11 @@ namespace QuantLib {
         Real oneDayAsYear =
             volTS.dayCounter().yearFraction(volTS.referenceDate(), volTS.referenceDate() + 1);
         Date exerciseDate =
-            volTS.referenceDate() + ((BigInteger)ClosestRounding(0)(optionTime / oneDayAsYear));
+            volTS.referenceDate() + (ql_cast<BigInteger>(ClosestRounding(0)(optionTime / oneDayAsYear)));
         Date effectiveDate = volTS.baseIndex_->fixingCalendar().advance(
             exerciseDate, volTS.baseIndex_->fixingDays() * Days);
         Date maturityDate = volTS.baseIndex_->fixingCalendar().advance(
-            effectiveDate, ((BigInteger)swapLength * 12.0) * Months, Unadjusted, false);
+            effectiveDate, (ql_cast<BigInteger>(swapLength) * 12.0) * Months, Unadjusted, false);
         // now we can set up the schedules
         Schedule baseFixedSchedule(effectiveDate, maturityDate, volTS.baseFixedFreq_,
                                    volTS.baseIndex_->fixingCalendar(), ModifiedFollowing,

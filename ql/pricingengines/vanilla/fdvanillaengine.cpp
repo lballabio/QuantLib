@@ -133,7 +133,7 @@ namespace QuantLib {
         static const Size minGridPointsPerYear = 2;
         return std::max(gridPoints,
                         residualTime > 1.0 ?
-                            static_cast<Size>((minGridPoints +
+                            ql_cast<Size>((minGridPoints +
                                                (residualTime-1.0) *
                                                 minGridPointsPerYear))
                             : minGridPoints);

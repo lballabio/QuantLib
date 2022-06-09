@@ -1177,7 +1177,7 @@ void QuantoOptionTest::testPDEOptionValues()  {
 
         const ext::shared_ptr<PricingEngine> pdeEngine =
             ext::make_shared<FdBlackScholesVanillaEngine>(bsmProcess, quantoHelper,
-                                                          Size(value.t * 200), 500, 1);
+                                                          ql_cast<Size>(value.t * 200), 500, 1);
 
         option.setPricingEngine(pdeEngine);
 
