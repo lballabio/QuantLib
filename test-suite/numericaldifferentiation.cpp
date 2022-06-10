@@ -193,7 +193,7 @@ void NumericalDifferentiationTest::testDerivativesOfSineFunction() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation"
                        " of sin function...");
 
-    const ext::function<Real(Real)> f = static_cast<Real(*)(Real)>(std::sin);
+    const ext::function<Real(Real)> f = [](Real x) { return std::sin(x); };
 
     const ext::function<Real(Real)> df_central
         = NumericalDifferentiation(f, 1, std::sqrt(QL_EPSILON), 3,

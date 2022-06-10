@@ -118,8 +118,7 @@ namespace QuantLib {
         Size direction)
     : FdmCellAveragingInnerValue(
         payoff, mesher, direction,
-        ext::function<Real(Real)>(static_cast<Real2RealFct>(std::exp))) {
-    }
+        ext::function<Real(Real)>([](Real x) { return std::exp(x); })) {}
 
 
     FdmLogBasketInnerValue::FdmLogBasketInnerValue(ext::shared_ptr<BasketPayoff> payoff,

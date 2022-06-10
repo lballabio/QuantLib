@@ -91,7 +91,7 @@ void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
     ext::function<Real (Real)> f[] 
         = { [=](Real x){ return level; },
             [ ](Real x){ return x + 1.0; },
-            static_cast<Real(*)(Real)>(std::sin) }; 
+            [ ](Real x) { return std::sin(x); }}; 
 
     for (Size n=0; n < LENGTH(f); ++n) {
         ExtendedOrnsteinUhlenbeckProcess refProcess(

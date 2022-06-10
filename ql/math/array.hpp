@@ -624,29 +624,29 @@ namespace QuantLib {
 
     inline Array Abs(const Array& v) {
         Array result(v.size());
-        std::transform(v.begin(),v.end(),result.begin(),
-                       static_cast<Real(*)(Real)>(std::fabs));
+        std::transform(v.begin(), v.end(), result.begin(),
+                       [](Real x) { return std::fabs(x); });
         return result;
     }
 
     inline Array Sqrt(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
-                       static_cast<Real(*)(Real)>(std::sqrt));
+                       [](Real x) { return std::sqrt(x); });
         return result;
     }
 
     inline Array Log(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
-                       static_cast<Real(*)(Real)>(std::log));
+                       [](Real x) { return std::log(x); });
         return result;
     }
 
     inline Array Exp(const Array& v) {
         Array result(v.size());
-        std::transform(v.begin(),v.end(),result.begin(),
-                       static_cast<Real(*)(Real)>(std::exp));
+        std::transform(v.begin(), v.end(), result.begin(),
+                       [](Real x) { return std::exp(x); });
         return result;
     }
 

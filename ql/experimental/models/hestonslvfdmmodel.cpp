@@ -416,7 +416,7 @@ namespace QuantLib {
                 std::transform(xMesher[i]->locations().begin(),
                                xMesher[i]->locations().end(),
                                vStrikes[i]->begin(),
-                               static_cast<Real(*)(Real)>(std::exp));
+                               [](Real x) { return std::exp(x); });
             }
         }
 
