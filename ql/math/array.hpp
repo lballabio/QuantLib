@@ -498,7 +498,7 @@ namespace QuantLib {
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be multiplied");
-        return std::inner_product(v1.begin(),v1.end(),v2.begin(),0.0);
+        return std::inner_product(v1.begin(),v1.end(),v2.begin(),Real(0.0));
     }
 
     inline Real Norm2(const Array& v) {
