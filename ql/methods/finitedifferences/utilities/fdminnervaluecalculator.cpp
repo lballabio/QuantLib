@@ -108,17 +108,13 @@ namespace QuantLib {
         return retVal;
     }
 
-    namespace {
-        typedef Real (*Real2RealFct)(Real);
-    }
-
     FdmLogInnerValue::FdmLogInnerValue(
         const ext::shared_ptr<Payoff>& payoff,
         const ext::shared_ptr<FdmMesher>& mesher,
         Size direction)
     : FdmCellAveragingInnerValue(
         payoff, mesher, direction,
-        ext::function<Real(Real)>([](Real x) { return std::exp(x); })) {}
+        [](Real x) { return std::exp(x); }) {}
 
 
     FdmLogBasketInnerValue::FdmLogBasketInnerValue(ext::shared_ptr<BasketPayoff> payoff,
