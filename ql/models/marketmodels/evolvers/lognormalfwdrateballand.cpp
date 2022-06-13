@@ -118,7 +118,7 @@ namespace QuantLib {
         {
             logForwards_[i] += drifts1_[i] + fixedDrift[i];
             logForwards_[i] += std::inner_product(A.row_begin(i), A.row_end(i),
-                                                  brownians_.begin(), 0.0);
+                                                  brownians_.begin(), Real(0.0));
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
         }
 

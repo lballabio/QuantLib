@@ -111,7 +111,7 @@ void SwapTest::testFairRate() {
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
 
     for (int& length : lengths) {
-        for (double spread : spreads) {
+        for (Real spread : spreads) {
 
             ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(length, 0.0, spread);
             swap = vars.makeSwap(length, swap->fairRate(), spread);
@@ -138,7 +138,7 @@ void SwapTest::testFairSpread() {
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
 
     for (int& length : lengths) {
-        for (double j : rates) {
+        for (Real j : rates) {
 
             ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(length, j, 0.0);
             swap = vars.makeSwap(length, j, swap->fairSpread());
@@ -165,10 +165,10 @@ void SwapTest::testRateDependency() {
     Rate rates[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
     for (int& length : lengths) {
-        for (double spread : spreads) {
+        for (Real spread : spreads) {
             // store the results for different rates...
             std::vector<Real> swap_values;
-            for (double rate : rates) {
+            for (Real rate : rates) {
                 ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(length, rate, spread);
                 swap_values.push_back(swap->NPV());
             }
@@ -200,10 +200,10 @@ void SwapTest::testSpreadDependency() {
     Spread spreads[] = { -0.01, -0.002, -0.001, 0.0, 0.001, 0.002, 0.01 };
 
     for (int& length : lengths) {
-        for (double j : rates) {
+        for (Real j : rates) {
             // store the results for different spreads...
             std::vector<Real> swap_values;
-            for (double spread : spreads) {
+            for (Real spread : spreads) {
                 ext::shared_ptr<VanillaSwap> swap = vars.makeSwap(length, j, spread);
                 swap_values.push_back(swap->NPV());
             }

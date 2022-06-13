@@ -53,7 +53,7 @@ namespace QuantLib {
         // for shifted smile sections we shift the forward and the strikes
         // and do as if we were in a lognormal setting
 
-        for (double& i : k_) {
+        for (Real& i : k_) {
             i += shift();
         }
 

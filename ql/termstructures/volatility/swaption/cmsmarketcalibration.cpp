@@ -202,7 +202,7 @@ namespace {
         for (Size i = 0; i < nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin() + (i * nSwapLengths),
                                    x.begin() + ((i + 1) * nSwapLengths));
-            for (double& j : beta)
+            for (Real& j : beta)
                 j = CmsMarketCalibration::betaTransformDirect(j);
             volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
         }
@@ -229,7 +229,7 @@ namespace {
         for (Size i = 0; i < nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin() + (i * nSwapLengths),
                                    x.begin() + ((i + 1) * nSwapLengths));
-            for (double& j : beta)
+            for (Real& j : beta)
                 j = CmsMarketCalibration::betaTransformDirect(j);
             volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
         }

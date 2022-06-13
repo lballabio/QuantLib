@@ -70,7 +70,7 @@ namespace {
         for (auto term : terms)
             dates.push_back(NullCalendar().advance(today, term, Unadjusted));
         std::vector<Real> ratesPlusSpread(rates);
-        for (double& k : ratesPlusSpread)
+        for (Real& k : ratesPlusSpread)
             k += spread;
         ext::shared_ptr<YieldTermStructure> ts =
             ext::shared_ptr<YieldTermStructure>(new InterpolatedZeroCurve<Cubic>(
@@ -113,7 +113,7 @@ namespace {
         for (auto& capletVol : capletVols) {
             std::vector<Handle<Quote> > row;
             row.reserve(capletVol.size());
-            for (double j : capletVol)
+            for (Real j : capletVol)
                 row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
             capletVolQuotes.push_back(row);
         }
@@ -144,7 +144,7 @@ namespace {
         for (auto& swaptionVol : swaptionVols) {
             std::vector<Handle<Quote> > row;
             row.reserve(swaptionVol.size());
-            for (double j : swaptionVol)
+            for (Real j : swaptionVol)
                 row.push_back(RelinkableHandle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(j))));
             swaptionVolQuotes.push_back(row);
         }
@@ -265,7 +265,7 @@ void BasismodelsTest::testTenoroptionletvts() {
         ext::shared_ptr<OptionletVolatilityStructure> optionletVTS6m(
             new TenorOptionletVTS(optionletVTS3m, euribor3m, euribor6m, corr));
         for (auto& capletTerm : capletTerms) {
-            for (double& capletStrike : capletStrikes) {
+            for (Real& capletStrike : capletStrikes) {
                 Real vol3m = optionletVTS3m->volatility(capletTerm, capletStrike, true);
                 Real vol6m = optionletVTS6m->volatility(capletTerm, capletStrike, true);
                 Real vol6mShifted =
@@ -300,7 +300,7 @@ void BasismodelsTest::testTenoroptionletvts() {
         ext::shared_ptr<OptionletVolatilityStructure> optionletVTS6m(
             new TenorOptionletVTS(optionletVTS3m, euribor3m, euribor6m, corr));
         for (Size i = 0; i < capletTerms.size(); ++i) {
-            for (double& capletStrike : capletStrikes) {
+            for (Real& capletStrike : capletStrikes) {
                 Real vol3m = optionletVTS3m->volatility(capletTerms[i], capletStrike, true);
                 Real vol6m = optionletVTS6m->volatility(capletTerms[i], capletStrike, true);
                 Real vol6mShifted =

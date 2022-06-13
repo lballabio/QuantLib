@@ -46,8 +46,8 @@ namespace QuantLib {
         }
 
         // QL Gaussian Quadrature - map phi from [-1 to 1] to {0, phiRightLimit] 
-        double operator()(double phi) const {
-            double phiDash = (0.5+1e-8+0.5*phi) * phiRightLimit_; // Map phi to full range
+        Real operator()(Real phi) const {
+            Real phiDash = (0.5+1e-8+0.5*phi) * phiRightLimit_; // Map phi to full range
             return 0.5*phiRightLimit_*std::real((std::exp(-phiDash*logK_*i_) / (phiDash*i_)) * engine_->chF(phiDash+adj_, tenor_));
         }
     };
@@ -72,7 +72,7 @@ namespace QuantLib {
                         Real nuRightLimit) : tenor_(tenor), resetTime_(resetTime),
             s0_(s0), P1_(P1), logK_(logK), phiRightLimit_(phiRightLimit),
             nuRightLimit_(nuRightLimit), parent_(parent), innerIntegrator_(128) {}
-        double operator()(double nu) const {
+        Real operator()(Real nu) const {
 
             // Rescale nu to [-1, 1]
             Real nuDash = nuRightLimit_ * (0.5 * nu + 0.5 + 1e-8);
@@ -224,7 +224,7 @@ namespace QuantLib {
         // Now construct equation (18) from the paper term-by-term
         term1 = std::exp(-0.5*(B * varReset + Lambda)) * B / 2;
         term2 = std::pow(B * varReset / Lambda, 0.5*(R_/2 - 1));
-        term3 = modifiedBesselFunction_i(R_/2 - 1,std::sqrt(Lambda * B * varReset));
+        term3 = modifiedBesselFunction_i(Real(R_/2 - 1),Real(std::sqrt(Lambda * B * varReset)));
 
         return term1 * term2 * term3;
     }

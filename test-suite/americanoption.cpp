@@ -459,7 +459,7 @@ namespace {
         ext::shared_ptr<StrikedTypePayoff> payoff;
 
         for (auto& type : types) {
-            for (double strike : strikes) {
+            for (Real strike : strikes) {
                 for (int year : years) {
                     Date exDate = today + year * Years;
                     ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
@@ -472,10 +472,10 @@ namespace {
                     VanillaOption option(payoff, exercise);
                     option.setPricingEngine(engine);
 
-                    for (double u : underlyings) {
-                        for (double m : qRates) {
-                            for (double n : rRates) {
-                                for (double v : vols) {
+                    for (Real u : underlyings) {
+                        for (Real m : qRates) {
+                            for (Real n : rRates) {
+                                for (Real v : vols) {
                                     Rate q = m, r = n;
                                     spot->setValue(u);
                                     qRate->setValue(q);

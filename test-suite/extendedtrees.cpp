@@ -172,7 +172,7 @@ namespace {
         ext::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
 
         for (auto& type : types) {
-            for (double strike : strikes) {
+            for (Real strike : strikes) {
                 for (int length : lengths) {
                     Date exDate = today + length * 360;
                     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -184,10 +184,10 @@ namespace {
                     ext::shared_ptr<VanillaOption> option =
                         makeOption(payoff, exercise, spot, qTS, rTS, volTS, engine, binomialSteps);
 
-                    for (double u : underlyings) {
-                        for (double m : qRates) {
-                            for (double n : rRates) {
-                                for (double v : vols) {
+                    for (Real u : underlyings) {
+                        for (Real m : qRates) {
+                            for (Real n : rRates) {
+                                for (Real v : vols) {
                                     Rate q = m, r = n;
                                     spot->setValue(u);
                                     qRate->setValue(q);

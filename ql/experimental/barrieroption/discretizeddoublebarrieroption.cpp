@@ -70,7 +70,7 @@ namespace QuantLib {
                 stoppingTime = true;
             break;
           case Exercise::Bermudan:
-              for (double i : stoppingTimes_) {
+              for (Real i : stoppingTimes_) {
                   if (isOnTime(i)) {
                       stoppingTime = true;
                       break;

@@ -122,7 +122,7 @@ namespace QuantLib {
             Array newValues = new_grid;
             std::transform(newValues.begin(), newValues.end(),
                            newValues.begin(), func);
-            for (double& newValue : newValues) {
+            for (Real& newValue : newValues) {
                 newValue = priceSpline(newValue, true);
             }
             values_.swap(newValues);

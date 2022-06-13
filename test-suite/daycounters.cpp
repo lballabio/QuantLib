@@ -242,7 +242,7 @@ void DayCounterTest::testActualActualIsma()
 
     DayCounter dayCounter = ActualActual(ActualActual::ISMA, schedule);
 
-    double calculated(dayCounter.yearFraction(d1, d2));
+    Real calculated(dayCounter.yearFraction(d1, d2));
 
     if (std::fabs(calculated - expected) > 1.0e-10) {
         std::ostringstream period;

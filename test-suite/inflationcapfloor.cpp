@@ -291,9 +291,9 @@ void InflationCapFloorTest::testConsistency() {
 
     for (Size whichPricer = 0; whichPricer < 3; whichPricer++) {
         for (int& length : lengths) {
-            for (double& cap_rate : cap_rates) {
-                for (double& floor_rate : floor_rates) {
-                    for (double vol : vols) {
+            for (Real& cap_rate : cap_rates) {
+                for (Real& floor_rate : floor_rates) {
+                    for (Real vol : vols) {
 
                         Leg leg = vars.makeYoYLeg(vars.evaluationDate, length);
 
@@ -413,8 +413,8 @@ void InflationCapFloorTest::testParity() {
     // cap-floor-swap parity is model-independent
     for (Size whichPricer = 0; whichPricer < 3; whichPricer++) {
         for (int& length : lengths) {
-            for (double strike : strikes) {
-                for (double vol : vols) {
+            for (Real strike : strikes) {
+                for (Real vol : vols) {
 
                     Leg leg = vars.makeYoYLeg(vars.evaluationDate, length);
 

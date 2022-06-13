@@ -547,7 +547,7 @@ namespace QuantLib {
         for (Size i=0; i<result.size(); i++)
             result[i] =
                 std::inner_product(v.begin(),v.end(),
-                                   m.column_begin(i),0.0);
+                                   m.column_begin(i),Real(0.0));
         return result;
     }
 
@@ -559,7 +559,7 @@ namespace QuantLib {
         Array result(m.rows());
         for (Size i=0; i<result.size(); i++)
             result[i] =
-                std::inner_product(v.begin(),v.end(),m.row_begin(i),0.0);
+                std::inner_product(v.begin(),v.end(),m.row_begin(i),Real(0.0));
         return result;
     }
 

@@ -144,7 +144,7 @@ namespace QuantLib {
             Real value(const Array& v) const override {
                 Array vals = values(v);
                 Real res = 0.0;
-                for (double val : vals) {
+                for (Real val : vals) {
                     res += val * val;
                 }
                 return std::sqrt(res / vals.size());

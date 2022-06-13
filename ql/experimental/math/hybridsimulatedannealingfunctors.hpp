@@ -244,7 +244,7 @@ namespace QuantLib
         inline bool operator()(Real currentValue, Real newValue, const Array &temp) {
             if (newValue < currentValue)
                 return true;
-            double mTemperature = *std::max_element(temp.begin(), temp.end());
+            Real mTemperature = *std::max_element(temp.begin(), temp.end());
             return (1.0 / (1.0 + exp((newValue - currentValue) / mTemperature))) > distribution_(generator_);
         }
     private:
@@ -383,7 +383,7 @@ namespace QuantLib
             QL_REQUIRE(steps.size() == N_, "Incompatible input");
 
             Array finiteDiffs(N_, 0.0);
-            double finiteDiffMax = 0.0;
+            Real finiteDiffMax = 0.0;
             Array ofssetPoint(currentPoint);
             for (Size i = 0; i < N_; i++) {
                 ofssetPoint[i] += stepSize_;

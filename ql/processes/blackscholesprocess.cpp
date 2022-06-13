@@ -76,8 +76,8 @@ namespace QuantLib {
         // we could be more anticipatory if we know the right dt
         // for which the drift will be used
         Time t1 = t + 0.0001;
-        return riskFreeRate_->forwardRate(t,t1,Continuous,NoFrequency,true)
-             - dividendYield_->forwardRate(t,t1,Continuous,NoFrequency,true)
+        return riskFreeRate_->forwardRate(t,t1,Continuous,NoFrequency,true).rate()
+             - dividendYield_->forwardRate(t,t1,Continuous,NoFrequency,true).rate()
              - 0.5 * sigma * sigma;
     }
 

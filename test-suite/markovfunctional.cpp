@@ -241,7 +241,7 @@ namespace {
         };
 
         q6m.reserve(10 + 15 + 35);
-        for (double i : q6mh) {
+        for (Real i : q6mh) {
             q6m.push_back(ext::shared_ptr<Quote>(new SimpleQuote(i)));
         }
 
@@ -650,7 +650,7 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     std::vector<Real> money;
     std::vector<Real> calls0;
 
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         money.push_back(strike / atm);
         calls0.push_back(blackFormula(Option::Call, strike, atm, 0.50 * std::sqrt(t), 1.0, 0.0));
     }

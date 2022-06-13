@@ -240,7 +240,7 @@ namespace {
                             new Engine<AnalyticEuropeanEngine>(stochProcess));
 
         for (auto& type : types) {
-            for (double& moneynes : moneyness) {
+            for (Real& moneynes : moneyness) {
                 for (int length : lengths) {
                     for (int startMonth : startMonths) {
 
@@ -255,10 +255,10 @@ namespace {
                         ForwardVanillaOption option(moneynes, reset, payoff, exercise);
                         option.setPricingEngine(engine);
 
-                        for (double u : underlyings) {
-                            for (double m : qRates) {
-                                for (double n : rRates) {
-                                    for (double v : vols) {
+                        for (Real u : underlyings) {
+                            for (Real m : qRates) {
+                                for (Real n : rRates) {
+                                    for (Real v : vols) {
 
                                         Rate q = m, r = n;
                                         spot->setValue(u);

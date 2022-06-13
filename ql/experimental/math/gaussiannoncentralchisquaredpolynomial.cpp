@@ -32,7 +32,7 @@ namespace QuantLib {
 
         #define NM 28
 
-        #define moment_(n, x) Real f_##n(double _nu, double _lambda) \
+        #define moment_(n, x) Real f_##n(Real _nu, Real _lambda) \
           {                                                          \
              const Real lambda(_lambda);                             \
              const Real nu(_nu);                                     \

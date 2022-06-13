@@ -89,12 +89,12 @@ int main(int, char* []) {
         const Size numberOfBonds = 15;
         Real cleanPrice[numberOfBonds];
 
-        for (double& i : cleanPrice) {
+        for (Real& i : cleanPrice) {
             i = 100.0;
         }
 
         std::vector< ext::shared_ptr<SimpleQuote> > quote;
-        for (double i : cleanPrice) {
+        for (Real i : cleanPrice) {
             ext::shared_ptr<SimpleQuote> cp(new SimpleQuote(i));
             quote.push_back(cp);
         }
@@ -227,7 +227,7 @@ int main(int, char* []) {
                            20.0,  25.0, 30.0, 40.0, 50.0 };
 
         std::vector<Time> knotVector;
-        for (double& knot : knots) {
+        for (Real& knot : knots) {
             knotVector.push_back(knot);
         }
 

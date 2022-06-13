@@ -940,7 +940,7 @@ void HestonModelTest::testDifferentIntegrals() {
             ext::shared_ptr<Exercise> exercise(
                 ext::make_shared<EuropeanExercise>(settlementDate + Period(maturitie, Months)));
 
-            for (double strike : strikes) {
+            for (Real strike : strikes) {
                 for (auto type : types) {
 
                     ext::shared_ptr<StrikedTypePayoff> payoff(
@@ -1026,7 +1026,7 @@ void HestonModelTest::testMultipleStrikesEngine() {
     multiStrikeEngine->enableMultipleStrikesCaching(strikes);
 
     Real relTol = 5e-3;
-    for (double& strike : strikes) {
+    for (Real& strike : strikes) {
         ext::shared_ptr<StrikedTypePayoff> payoff(
             ext::make_shared<PlainVanillaPayoff>(Option::Put, strike));
 
@@ -2048,9 +2048,9 @@ void HestonModelTest::testCharacteristicFct() {
     const COSHestonEngine cosEngine(model);
     const AnalyticHestonEngine analyticEngine(model);
 
-    constexpr Real tol = 100*QL_EPSILON;
-    for (double i : u) {
-        for (double j : t) {
+    constexpr double tol = 100*QL_EPSILON;
+    for (Real i : u) {
+        for (Real j : t) {
             const std::complex<Real> c = cosEngine.chF(i, j);
             const std::complex<Real> a = analyticEngine.chF(i, j);
 
@@ -2169,7 +2169,7 @@ void HestonModelTest::testAndersenPiterbargPricing() {
         const ext::shared_ptr<Exercise> exercise = ext::make_shared<EuropeanExercise>(maturityDate);
 
         for (auto optionType : optionTypes) {
-            for (double strike : strikes) {
+            for (Real strike : strikes) {
                 VanillaOption option(ext::make_shared<PlainVanillaPayoff>(optionType, strike),
                                      exercise);
 
@@ -2423,7 +2423,7 @@ void HestonModelTest::testPiecewiseTimeDependentChFvsHestonChF() {
                 TimeGrid(dayCounter.yearFraction(settlementDate, maturityDate),
                          10))));
 
-    constexpr Real tol = 100*QL_EPSILON;
+    constexpr double tol = 100 * QL_EPSILON;
     for (Real r = 0.1; r < 4; r+=0.25) {
         for (Real phi = 0; phi < 360; phi+=60) {
             for (Time t=0.1; t <= 1.0; t+=0.3) {
@@ -2868,9 +2868,9 @@ void HestonModelTest::testSmallSigmaExpansion4ExpFitting() {
 
         Option::Type optionType = Option::Call;
 
-        for (double kappa : kappas) {
-            for (double theta : thetas) {
-                for (double v0 : v0s) {
+        for (Real kappa : kappas) {
+            for (Real theta : thetas) {
+                for (Real v0 : v0s) {
                     const ext::shared_ptr<PricingEngine> engine =
                         ext::make_shared<ExponentialFittingHestonEngine>(
                             ext::make_shared<HestonModel>(ext::make_shared<HestonProcess>(
