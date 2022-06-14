@@ -372,11 +372,9 @@ namespace QuantLib {
 
     //! specialization of Null template for the Date class
     template <>
-    class Null<Date> {
-      public:
-        Null() = default;
-        operator Date() const { return {}; }
-    };
+    inline Date Null<Date>() {
+        return {};
+    }
 
 
 #ifndef QL_HIGH_RESOLUTION_DATE
