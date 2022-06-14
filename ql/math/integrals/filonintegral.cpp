@@ -60,12 +60,12 @@ namespace QuantLib {
         ext::function<Real(Real)> f1, f2;
         switch(type_) {
           case Cosine:
-            f1 = static_cast<Real(*)(Real)>(std::sin);
-            f2 = static_cast<Real(*)(Real)>(std::cos);
+            f1 = [](Real x) { return std::sin(x); };
+            f2 = [](Real x) { return std::cos(x); };
             break;
           case Sine:
-            f1 = static_cast<Real(*)(Real)>(std::cos);
-            f2 = static_cast<Real(*)(Real)>(std::sin);
+            f1 = [](Real x) { return std::cos(x); };
+            f2 = [](Real x) { return std::sin(x); };
             break;
           default:
             QL_FAIL("unknown integration type");

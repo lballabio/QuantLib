@@ -103,9 +103,9 @@ namespace gaussian_quadratures_test {
         testSingle(I, "f(x) = x^2",
                    [](Real x){ return x * x; }, 2/3.);
         testSingle(I, "f(x) = sin(x)",
-                   static_cast<Real(*)(Real)>(std::sin), 0.0);
+                   [](Real x) { return std::sin(x); }, 0.0);
         testSingle(I, "f(x) = cos(x)",
-                   static_cast<Real(*)(Real)>(std::cos),
+                   [](Real x) { return std::cos(x); },
                    std::sin(1.0)-std::sin(-1.0));
         testSingle(I, "f(x) = Gaussian(x)",
                    NormalDistribution(),
