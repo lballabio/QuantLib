@@ -53,8 +53,10 @@ namespace QuantLib {
       public:
         //! \name Constructors, destructor, and assignment
         //@{
+        //! creates the array with size 0
+        Array() : Array(static_cast<Size>(0)) {}
         //! creates the array with the given dimension
-        explicit Array(Size size = 0);
+        explicit Array(Size size);
         //! creates the array and fills it with <tt>value</tt>
         Array(Size size, Real value);
         /*! \brief creates the array and fills it according to
@@ -146,7 +148,7 @@ namespace QuantLib {
     //! specialization of null template for this class
     template <>
     inline Array Null<Array>() {
-        return Array();
+        return {};
     }
 
 
