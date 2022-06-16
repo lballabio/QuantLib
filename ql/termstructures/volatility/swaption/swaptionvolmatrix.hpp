@@ -30,7 +30,6 @@
 #include <ql/termstructures/volatility/swaption/swaptionvoldiscrete.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/math/matrix.hpp>
-#include <boost/noncopyable.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -49,8 +48,7 @@ namespace QuantLib {
         - <tt>M[i][j]</tt> contains the volatility corresponding
           to the <tt>i</tt>-th option and <tt>j</tt>-th tenor.
     */
-    class SwaptionVolatilityMatrix : public SwaptionVolatilityDiscrete,
-                                     private boost::noncopyable {
+    class SwaptionVolatilityMatrix : public SwaptionVolatilityDiscrete {
       public:
         //! floating reference date, floating market data
         SwaptionVolatilityMatrix(
@@ -107,6 +105,14 @@ namespace QuantLib {
                                  bool flatExtrapolation = false,
                                  VolatilityType type = ShiftedLognormal,
                                  const Matrix& shifts = Matrix());
+
+        // make class non-copyable and non-movable
+        SwaptionVolatilityMatrix(SwaptionVolatilityMatrix&&) = delete;
+        SwaptionVolatilityMatrix(const SwaptionVolatilityMatrix&) = delete;
+        SwaptionVolatilityMatrix& operator=(SwaptionVolatilityMatrix&&) = delete;
+        SwaptionVolatilityMatrix& operator=(const SwaptionVolatilityMatrix&) = delete;
+
+        ~SwaptionVolatilityMatrix() = default;
 
         //! \name LazyObject interface
         //@{
