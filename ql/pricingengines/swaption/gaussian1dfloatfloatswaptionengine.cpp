@@ -83,7 +83,7 @@ namespace QuantLib {
         for (Size i = idx1; i < arguments_.leg1ResetDates.size(); i++) {
             nominalSum1 += arguments_.nominal1[i];
         }
-        Real nominalAvg1 = nominalSum1 /=
+        Real nominalAvg1 = nominalSum1 /
             (arguments_.leg1ResetDates.size() - idx1);
         Real weightedMaturity1 = 0.0;
         for (Size i = idx1; i < arguments_.leg1ResetDates.size(); i++) {

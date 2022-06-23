@@ -537,7 +537,6 @@ void InflationTest::testZeroTermStructure() {
 
     // For interpolated fixings, the zero rates on the curve no longer match the data.
     // The helpers still give the correct implied rates, of course.
-    forceLinearInterpolation = false;   // still
     for (Size i=0; i<zcData.size(); i++) {
         BOOST_CHECK_MESSAGE(std::fabs(helpersyes[i]->impliedQuote()
                         - zcData[i].rate/100.0) < eps,
