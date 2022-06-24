@@ -654,7 +654,7 @@ namespace QuantLib {
             idiosyncFctrs_.push_back(std::sqrt(1.-
                     std::inner_product(factorWeights[i].begin(), 
                 factorWeights[i].end(), 
-                factorWeights[i].begin(), 0.)));
+                factorWeights[i].begin(), Real(0.))));
             // while at it, check sizes are coherent:
             QL_REQUIRE(factorWeights[i].size() == nFactors_, 
                 "Name " << i << " provides a different number of factors");
@@ -668,9 +668,9 @@ namespace QuantLib {
     : nFactors_(1),
       nVariables_(factorWeights.size())
     {
-        for (double factorWeight : factorWeights)
+        for (Real factorWeight : factorWeights)
             factorWeights_.emplace_back(1, factorWeight);
-        for (double factorWeight : factorWeights)
+        for (Real factorWeight : factorWeights)
             idiosyncFctrs_.push_back(std::sqrt(1. - factorWeight * factorWeight));
         //convert row to column vector....
         copula_ = copulaType(factorWeights_, ini);
@@ -778,7 +778,7 @@ namespace QuantLib {
           urng_(seed) {
             // 1 == urng.dimension() is enforced by the sample type
             const std::vector<Real>& varF = copula.varianceFactors();
-            for (double i : varF) // ...use back inserter lambda
+            for (Real i : varF) // ...use back inserter lambda
                 trng_.push_back(PolarStudentTRng<urng_type>(2. / (1. - i * i), urng_));
         }
         const sample_type& nextSequence() const {

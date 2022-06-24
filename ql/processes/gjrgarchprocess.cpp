@@ -147,9 +147,9 @@ namespace QuantLib {
           //  stochastic volatility models",
           // Working Paper, Tinbergen Institute
           case PartialTruncation:
-            vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
+            vol = (x0[1] > 0.0) ? Real(std::sqrt(x0[1])) : 0.0;
+            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
                     - 0.5 * vol * vol;
             nu = daysPerYear_*daysPerYear_*omega_ 
                 + daysPerYear_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * x0[1];
@@ -158,9 +158,9 @@ namespace QuantLib {
             retVal[1] = x0[1] + nu*dt + sdt*vol*vol*(rho1*dw[0] + rho2*dw[1]);
             break;
           case FullTruncation:
-            vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
+            vol = (x0[1] > 0.0) ? Real(std::sqrt(x0[1])) : 0.0;
+            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
                     - 0.5 * vol * vol;
             nu = daysPerYear_*daysPerYear_*omega_ 
                 + daysPerYear_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * vol *vol;
@@ -170,8 +170,8 @@ namespace QuantLib {
             break;
           case Reflection:
             vol = std::sqrt(std::fabs(x0[1]));
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
+            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
                     - 0.5 * vol*vol;
             nu = daysPerYear_*daysPerYear_*omega_ 
                 + daysPerYear_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * vol * vol;

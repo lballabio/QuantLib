@@ -97,9 +97,9 @@ namespace QuantLib {
             // exact value for curves
             return x0 *
                 std::exp(dt * (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
-                                                          NoFrequency, true) -
+                                                          NoFrequency, true).rate() -
                              dividendYield_->forwardRate(
-                                 t0, t0 + dt, Continuous, NoFrequency, true)));
+                                 t0, t0 + dt, Continuous, NoFrequency, true).rate()));
         } else {
             QL_FAIL("not implemented");
         }
@@ -135,9 +135,9 @@ namespace QuantLib {
             // exact value for curves
             Real var = variance(t0, x0, dt);
             Real drift = (riskFreeRate_->forwardRate(t0, t0 + dt, Continuous,
-                                                     NoFrequency, true) -
+                                                     NoFrequency, true).rate() -
                           dividendYield_->forwardRate(t0, t0 + dt, Continuous,
-                                                      NoFrequency, true)) *
+                                                      NoFrequency, true).rate()) *
                              dt -
                          0.5 * var;
             return apply(x0, std::sqrt(var) * dw + drift);

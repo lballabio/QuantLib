@@ -169,7 +169,7 @@ namespace QuantLib {
                 this->process_->time(fixings[i]);
         }
 
-        const Size numberOfTimeSteps = timeSteps_ != Null<Size>() ? timeSteps_ : timeStepsPerYear_ * fixingTimes.back();
+        const Size numberOfTimeSteps = timeSteps_ != Null<Size>() ? timeSteps_ : static_cast<Size>(timeStepsPerYear_ * fixingTimes.back());
 
         return TimeGrid(fixingTimes.begin(), fixingTimes.end(), numberOfTimeSteps);
     }
