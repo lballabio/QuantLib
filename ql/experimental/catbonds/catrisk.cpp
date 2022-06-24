@@ -25,7 +25,7 @@
 namespace QuantLib {
 
     namespace {
-        Integer round(Real r) {
+        Integer int_round(Real r) {
             return (r > 0.0) ? Integer(std::floor(r + 0.5)) : Integer(std::ceil(r - 0.5));
         }
     }
@@ -107,7 +107,7 @@ namespace QuantLib {
         Real eventFraction = exponential_(rng_);
         while(eventFraction<=yearFraction_)
         {
-            Integer days = round(eventFraction*dayCount_/yearFraction_);
+            Integer days = int_round(eventFraction*dayCount_/yearFraction_);
             Date eventDate = start_ + days*Days;
             if(eventDate<=end_)
             {

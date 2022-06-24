@@ -3083,7 +3083,7 @@ void HestonModelTest::testHestonEngineIntegration() {
     const AnalyticHestonEngine::Integration integration =
         AnalyticHestonEngine::Integration::gaussLobatto(1e-12, 1e-12);
 
-    const Real c1 = integration.calculate(1.0, square, 1.0);
+    const Real c1 = integration.calculate(1.0, square, Real(1.0));
 
     HestonIntegrationMaxBoundTestFct testFct(1.0);
     const Real c2 = integration.calculate(1.0, square, testFct);

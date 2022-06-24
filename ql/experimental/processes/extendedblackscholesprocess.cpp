@@ -70,14 +70,14 @@ namespace QuantLib {
             sigma0 = diffusion(t0,x0);
             sigma1 = diffusion(t0+dt,predictor);
             rate0 =
-                riskFreeRate()->forwardRate(t0,t1,Continuous,NoFrequency,true)
-              - dividendYield()->forwardRate(t0,t1,Continuous,NoFrequency,true)
+                riskFreeRate()->forwardRate(t0,t1,Continuous,NoFrequency,true).rate()
+              - dividendYield()->forwardRate(t0,t1,Continuous,NoFrequency,true).rate()
               - 0.5*std::pow(sigma0,2);
             rate1 =
                 riskFreeRate()->forwardRate(t0+dt,t1+dt,Continuous,
-                                            NoFrequency,true)
+                                            NoFrequency,true).rate()
               - dividendYield()->forwardRate(t0+dt,t1+dt,
-                                             Continuous,NoFrequency,true)
+                                             Continuous,NoFrequency,true).rate()
               - 0.5*std::pow(sigma1,2);
             driftterm = 0.5*rate1+0.5*rate0;
             diffusionterm = 0.5*(sigma1+sigma0);

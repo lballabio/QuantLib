@@ -103,8 +103,8 @@ namespace QuantLib {
             retVal[1] = ((u <= p) ? 0.0 : std::log((1-p)/(1-u))/beta);
         }
 
-        const Real mu = riskFreeRate()->forwardRate(t0, t0+dt, Continuous)
-             - dividendYield()->forwardRate(t0, t0+dt, Continuous);
+        const Real mu = riskFreeRate()->forwardRate(t0, t0+dt, Continuous).rate()
+             - dividendYield()->forwardRate(t0, t0+dt, Continuous).rate();
 
         const Real rho1 = std::sqrt(1-rho_*rho_);
 
