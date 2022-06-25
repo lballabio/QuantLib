@@ -53,7 +53,7 @@ namespace QuantLib {
                          BigNatural seed);
         void calculate() const override {
             Real spot = process_->x0();
-            QL_REQUIRE(spot >= 0.0, "negative or null underlying given");
+            QL_REQUIRE(spot > 0.0, "negative or null underlying given");
             McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
                                                          requiredSamples_,
                                                          maxSamples_);

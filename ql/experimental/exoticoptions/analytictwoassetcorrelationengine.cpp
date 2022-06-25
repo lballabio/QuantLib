@@ -46,7 +46,7 @@ namespace QuantLib {
         ext::shared_ptr<Exercise> exercise = arguments_.exercise;
         Real strike = payoff->strike();//X1
         Real spot = p1_->x0();
-        QL_REQUIRE(spot >= 0.0, "negative or null underlying given");
+        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
 
         Volatility sigma1 =
             p1_->blackVolatility()->blackVol(p1_->time(exercise->lastDate()),
