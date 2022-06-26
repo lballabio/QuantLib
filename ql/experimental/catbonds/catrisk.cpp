@@ -102,7 +102,8 @@ namespace QuantLib {
         Real eventFraction = exponential_(rng_);
         while(eventFraction<=yearFraction_)
         {
-            Integer days = static_cast<Integer>(std::lround(eventFraction*dayCount_/yearFraction_));
+            auto days =
+                static_cast<Integer>(std::lround(eventFraction * dayCount_ / yearFraction_));
             Date eventDate = start_ + days*Days;
             if(eventDate<=end_)
             {
