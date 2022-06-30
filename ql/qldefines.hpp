@@ -58,21 +58,6 @@
 #undef INCLUDE_FILE_
 #undef INCLUDE_FILE
 
-/* Eventually these might go into userconfig.hpp.
-   For the time being, we hard code them here.
-   They can be overridden by passing the #define to the compiler.
-*/
-#ifndef QL_INTEGER
-#    define QL_INTEGER int
-#endif
-
-#ifndef QL_BIG_INTEGER
-#    define QL_BIG_INTEGER long
-#endif
-
-#ifndef QL_REAL
-#   define QL_REAL double
-#endif
 
 
 /*! \defgroup macros QuantLib macros
@@ -102,6 +87,22 @@
    #include <ql/config.ansi.hpp>
 #endif
 
+/* Eventually these might go into userconfig.hpp.
+   For the time being, we hard code them here.
+   They can be overridden by passing the #define to the compiler
+   or by defining them in config.hpp.
+*/
+#ifndef QL_INTEGER
+#    define QL_INTEGER int
+#endif
+
+#ifndef QL_BIG_INTEGER
+#    define QL_BIG_INTEGER long
+#endif
+
+#ifndef QL_REAL
+#   define QL_REAL double
+#endif
 
 // extra debug checks
 #ifdef QL_DEBUG
