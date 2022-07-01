@@ -223,11 +223,11 @@ void CmsSpreadTest::testCouponPricing() {
 #else
     constexpr double eqTol = 1e-13;
 #endif
-    BOOST_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
+    QL_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
     cms10y->addFixing(d.refDate, 0.05);
-    BOOST_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
+    QL_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
     cms2y->addFixing(d.refDate, 0.03);
-    BOOST_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
+    QL_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
     IndexManager::instance().clearHistories();
 
     ext::shared_ptr<CmsCoupon> cpn2a = ext::shared_ptr<CmsCoupon>(
@@ -271,23 +271,23 @@ void CmsSpreadTest::testCouponPricing() {
     flooredCpn->setPricer(d.cmsspPricerLn);
     collaredCpn->setPricer(d.cmsspPricerLn);
 
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         std::abs(plainCpn->rate() - mcReferenceValue(cpn2a, cpn2b, QL_MAX_REAL,
                                                      -QL_MAX_REAL, d.swLn,
                                                      d.correlation->value())),
         tol);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         std::abs(cappedCpn->rate() - mcReferenceValue(cpn2a, cpn2b, 0.03,
                                                       -QL_MAX_REAL, d.swLn,
                                                       d.correlation->value())),
         tol);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         std::abs(flooredCpn->rate() -
                  mcReferenceValue(cpn2a, cpn2b, QL_MAX_REAL, 0.01, d.swLn,
                                   d.correlation->value())),
 
         tol);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         std::abs(collaredCpn->rate() -
                  mcReferenceValue(cpn2a, cpn2b, 0.03, 0.01, d.swLn,
                                   d.correlation->value())),
@@ -300,23 +300,23 @@ void CmsSpreadTest::testCouponPricing() {
     flooredCpn->setPricer(d.cmsspPricerSln);
     collaredCpn->setPricer(d.cmsspPricerSln);
 
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         std::abs(plainCpn->rate() - mcReferenceValue(cpn2a, cpn2b, QL_MAX_REAL,
                                                      -QL_MAX_REAL, d.swSln,
                                                      d.correlation->value())),
         tol);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         std::abs(cappedCpn->rate() - mcReferenceValue(cpn2a, cpn2b, 0.03,
                                                       -QL_MAX_REAL, d.swSln,
                                                       d.correlation->value())),
         tol);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         std::abs(flooredCpn->rate() -
                  mcReferenceValue(cpn2a, cpn2b, QL_MAX_REAL, 0.01, d.swSln,
                                   d.correlation->value())),
 
         tol);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         std::abs(collaredCpn->rate() -
                  mcReferenceValue(cpn2a, cpn2b, 0.03, 0.01, d.swSln,
                                   d.correlation->value())),
@@ -329,22 +329,22 @@ void CmsSpreadTest::testCouponPricing() {
     flooredCpn->setPricer(d.cmsspPricerN);
     collaredCpn->setPricer(d.cmsspPricerN);
 
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         std::abs(plainCpn->rate() - mcReferenceValue(cpn2a, cpn2b, QL_MAX_REAL,
                                                      -QL_MAX_REAL, d.swN,
                                                      d.correlation->value())),
         tol);
-    BOOST_CHECK_SMALL(
+    QL_CHECK_SMALL(
         std::abs(cappedCpn->rate() - mcReferenceValue(cpn2a, cpn2b, 0.03,
                                                       -QL_MAX_REAL, d.swN,
                                                       d.correlation->value())),
         tol);
-    BOOST_CHECK_SMALL(std::abs(flooredCpn->rate() -
+    QL_CHECK_SMALL(std::abs(flooredCpn->rate() -
                                mcReferenceValue(cpn2a, cpn2b, QL_MAX_REAL, 0.01,
                                                 d.swN, d.correlation->value())),
 
                       tol);
-    BOOST_CHECK_SMALL(std::abs(collaredCpn->rate() -
+    QL_CHECK_SMALL(std::abs(collaredCpn->rate() -
                                mcReferenceValue(cpn2a, cpn2b, 0.03, 0.01, d.swN,
                                                 d.correlation->value())),
                       tol);

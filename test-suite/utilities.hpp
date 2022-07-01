@@ -41,16 +41,16 @@
 #include <utility>
 #include <vector>
 
-// this adapts the BOOST_CHECK_SMALL and BOOST_CHECK_CLOSE macro and friends to
+// This adapts the BOOST_CHECK_SMALL and BOOST_CHECK_CLOSE macros to
 // support a struct as Real for arguments, while fully transparant to regular doubles.
-// The macro definitions are taken from the boost test framework - unfortnuately boost
-// does not provide a different way to customize these macro's behaviour.
+// Unfortunately boost does not provide a portable way to customize these macros' behaviour,
+// so we need to define wrapper macros QL_CHECK_SMALL etc.
 //
-// It is required to have a function value defined that returns the double-value
-// of the Real type (or a value function in the real type's namespace).
+// It is required to have a function `value` defined that returns the double-value
+// of the Real type (or a value function in the Real type's namespace for ADT).
 
 namespace QuantLib {
-    // specialize this function in case Real is something different - it should alway return double
+    // overload this function in case Real is something different - it should alway return double
     inline double value(double x) {
         return x;
     }
@@ -58,34 +58,8 @@ namespace QuantLib {
 
 using QuantLib::value;
 
-#undef BOOST_WARN_SMALL
-#undef BOOST_CHECK_SMALL
-#undef BOOST_REQUIRE_SMALL
-#define BOOST_WARN_SMALL(FPV, T)                                                            \
-    BOOST_TEST_TOOL_IMPL(0, ::boost::test_tools::check_is_small_t(), "", WARN, CHECK_SMALL, \
-                         (value(FPV))(value(T)))
-#define BOOST_CHECK_SMALL(FPV, T)                                                            \
-    BOOST_TEST_TOOL_IMPL(0, ::boost::test_tools::check_is_small_t(), "", CHECK, CHECK_SMALL, \
-                         (value(FPV))(value(T)))
-#define BOOST_REQUIRE_SMALL(FPV, T)                                                            \
-    BOOST_TEST_TOOL_IMPL(0, ::boost::test_tools::check_is_small_t(), "", REQUIRE, CHECK_SMALL, \
-                         (value(FPV))(                                                         \
-                             : value(T)))
-
-#undef BOOST_WARN_CLOSE
-#undef BOOST_CHECK_CLOSE
-#undef BOOST_REQUIRE_CLOSE
-#define BOOST_WARN_CLOSE(L, R, T)                                                           \
-    BOOST_TEST_TOOL_IMPL(0, ::boost::test_tools::check_is_close_t(), "", WARN, CHECK_CLOSE, \
-                         (value(L))(value(R))(::boost::math::fpc::percent_tolerance(value(T))))
-
-#define BOOST_CHECK_CLOSE(L, R, T)                                                           \
-    BOOST_TEST_TOOL_IMPL(0, ::boost::test_tools::check_is_close_t(), "", CHECK, CHECK_CLOSE, \
-                         (value(L))(value(R))(::boost::math::fpc::percent_tolerance(value(T))))
-
-#define BOOST_REQUIRE_CLOSE(L, R, T)                                                           \
-    BOOST_TEST_TOOL_IMPL(0, ::boost::test_tools::check_is_close_t(), "", REQUIRE, CHECK_CLOSE, \
-                         (value(L))(value(R))(::boost::math::fpc::percent_tolerance(value(T))))
+#define QL_CHECK_SMALL(FPV, T)  BOOST_CHECK_SMALL(value(FPV), value(T))
+#define QL_CHECK_CLOSE(L, R, T) BOOST_CHECK_CLOSE(value(L), value(R), value(T))
 
 
 // This makes it easier to use array literals (for new code, use std::vector though)
