@@ -28,6 +28,7 @@
 #include <ql/math/rounding.hpp>
 #include <ql/errors.hpp>
 #include <iosfwd>
+#include <set>
 
 namespace QuantLib {
 
@@ -51,7 +52,8 @@ namespace QuantLib {
                  Integer fractionsPerUnit,
                  const Rounding& rounding,
                  const std::string& formatString,
-                 const Currency& triangulationCurrency = Currency());
+                 const Currency& triangulationCurrency = Currency(),
+                 const std::set<std::string>& minorUnitCodes = {});
         //@}
         //! \name Inspectors
         //@{
@@ -81,6 +83,8 @@ namespace QuantLib {
         bool empty() const;
         //! currency used for triangulated exchange when required
         const Currency& triangulationCurrency() const;
+        //! minor unit codes, e.g. GBp, GBX for GBP
+        const std::set<std::string>& minorUnitCodes() const;
         //@}
       protected:
         struct Data;
@@ -97,6 +101,7 @@ namespace QuantLib {
         Rounding rounding;
         Currency triangulated;
         std::string formatString;
+        std::set<std::string> minorUnitCodes;
 
         Data(std::string name,
              std::string code,
@@ -106,7 +111,8 @@ namespace QuantLib {
              Integer fractionsPerUnit,
              const Rounding& rounding,
              std::string formatString,
-             Currency triangulationCurrency = Currency());
+             Currency triangulationCurrency = Currency(),
+             std::set<std::string> minorUnitCodes = {});
     };
 
     /*! \relates Currency */
@@ -175,6 +181,11 @@ namespace QuantLib {
     inline const Currency& Currency::triangulationCurrency() const {
         checkNonEmpty();
         return data_->triangulated;
+    }
+
+    inline const std::set<std::string>& Currency::minorUnitCodes() const {
+        checkNonEmpty();
+        return data_->minorUnitCodes;
     }
 
     inline bool operator==(const Currency& c1, const Currency& c2) {
