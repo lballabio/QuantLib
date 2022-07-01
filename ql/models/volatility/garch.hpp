@@ -244,7 +244,7 @@ namespace QuantLib {
                 u2 = *begin; u2 *= u2;
                 retval += std::log(sigma2) + u2 / sigma2;
             }
-            return N > 0 ? retval / (2*N) : 0.0;
+            return N > 0 ? Real(retval / (2*N)) : 0.0;
         }
         //@}
       private:

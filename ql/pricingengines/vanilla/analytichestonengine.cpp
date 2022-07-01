@@ -196,7 +196,7 @@ namespace QuantLib {
         dd_(x_-std::log(ratio)),
         sigma2_(sigma_*sigma_),
         rsigma_(model->rho()*sigma_),
-        t0_(kappa_ - ((j_== 1)? model->rho()*sigma_ : 0)),
+        t0_(kappa_ - ((j_== 1)? model->rho()*sigma_ : Real(0))),
         b_(0), g_km1_(0),
         engine_(engine)
     {
@@ -223,7 +223,7 @@ namespace QuantLib {
         dd_(x_-std::log(ratio)),
         sigma2_(sigma_*sigma_),
         rsigma_(rho*sigma_),
-        t0_(kappa - ((j== 1)? rho*sigma : 0)),
+        t0_(kappa - ((j== 1)? rho*sigma : Real(0))),
         b_(0),
         g_km1_(0),
         engine_(engine)
@@ -243,7 +243,7 @@ namespace QuantLib {
                                                Size j)
     : j_(j), kappa_(kappa), theta_(theta), sigma_(sigma), v0_(v0), cpxLog_(cpxLog), term_(term),
       x_(std::log(s0)), sx_(std::log(strike)), dd_(x_ - std::log(ratio)), sigma2_(sigma_ * sigma_),
-      rsigma_(rho * sigma_), t0_(kappa - ((j == 1) ? rho * sigma : 0)), b_(0), g_km1_(0),
+      rsigma_(rho * sigma_), t0_(kappa - ((j == 1) ? rho * sigma : Real(0))), b_(0), g_km1_(0),
       engine_(nullptr) {}
 
 

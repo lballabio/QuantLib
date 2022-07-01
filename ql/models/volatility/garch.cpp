@@ -236,7 +236,7 @@ namespace QuantLib {
             Real A = mean_r2*mean_r2/A4; // 1/sigma^2
             Real B = A21 / A4; // rho(1)
 
-            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : tol_level;
+            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : Real(tol_level);
             Garch11Constraint constraints(gammaLower, 1.0 - tol_level);
 
             Real gamma = gammaLower + (1 - gammaLower) * 0.5;
@@ -322,7 +322,7 @@ namespace QuantLib {
             Real A4 = acf[0] + mean_r2*mean_r2;
             Real A = mean_r2*mean_r2/A4; // 1/sigma^2
             Real B = A21 / A4; // rho(1)
-            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : tol_level;
+            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : Real(tol_level);
             Garch11Constraint constraints(gammaLower, 1.0 - tol_level);
 
             // ACF

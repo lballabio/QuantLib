@@ -67,8 +67,8 @@ namespace QuantLib {
         const Real lowerBoundaryFactor = mapY_->lowerBoundaryFactor(type);
         const Real upperBoundaryFactor = mapY_->upperBoundaryFactor(type);
 
-        const Real logFacLow = type == FdmSquareRootFwdOp::Log ? exp(mapY_->v(0)) : 1.0;
-        const Real logFacUpp = type == FdmSquareRootFwdOp::Log ? exp(mapY_->v(n+1)) : 1.0;
+        const Real logFacLow = type == FdmSquareRootFwdOp::Log ? Real(exp(mapY_->v(0))) : 1.0;
+        const Real logFacUpp = type == FdmSquareRootFwdOp::Log ? Real(exp(mapY_->v(n+1))) : 1.0;
 
         const Real alpha = -2*rho_/mixedSigma_*lowerBoundaryFactor*logFacLow;
         const Real beta  = -2*rho_/mixedSigma_*upperBoundaryFactor*logFacUpp;

@@ -100,7 +100,7 @@ namespace QuantLib {
             const Real beta = (1-p)/m;
             const Real u = CumulativeNormalDistribution()(dw[1]);
 
-            retVal[1] = ((u <= p) ? 0.0 : std::log((1-p)/(1-u))/beta);
+            retVal[1] = ((u <= p) ? Real(0.0) : std::log((1-p)/(1-u))/beta);
         }
 
         const Real mu = riskFreeRate()->forwardRate(t0, t0+dt, Continuous).rate()

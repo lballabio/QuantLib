@@ -60,7 +60,7 @@ namespace QuantLib {
         const Real q2 = 1.0 + lambda_*lambda_;
         const Real q3 = lambda_*n + N + lambda_*lambda_*N;
         const Real vol = (x[1] > 0.0) ? std::sqrt(x[1])
-                         : (discretization_ == Reflection) ? - std::sqrt(-x[1])
+                         : (discretization_ == Reflection) ? Real(-std::sqrt(-x[1]))
                          : 0.0;
 
         return {
@@ -94,7 +94,7 @@ namespace QuantLib {
         const Real sigma13 = -2.0*n - 2*lambda_*N;
         const Real sigma23 = 2.0*N + sigma12*sigma13;
         const Real vol = (x[1] > 0.0) ? std::sqrt(x[1])
-                         : (discretization_ == Reflection) ? - std::sqrt(-x[1])
+                         : (discretization_ == Reflection) ? Real(- std::sqrt(-x[1]))
                          : 1e-8; // set vol to (almost) zero but still
                                  // expose some correlation information
         const Real rho1 = std::sqrt(daysPerYear_)*(alpha_*sigma12 

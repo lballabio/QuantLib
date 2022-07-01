@@ -295,7 +295,7 @@ namespace QuantLib {
         Real exponent = -(deltax*deltax)/denominator_;
         // debian alpha had some strange problem in the very-low range
         return exponent <= -690.0 ? 0.0 :  // exp(x) < 1.0e-300 anyway
-            normalizationFactor_*std::exp(exponent);
+            Real(normalizationFactor_*std::exp(exponent));
     }
 
     inline Real NormalDistribution::derivative(Real x) const {

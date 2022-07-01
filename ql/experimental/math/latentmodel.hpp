@@ -569,7 +569,7 @@ namespace QuantLib {
         Real latentVariableCorrel(Size iVar1, Size iVar2) const {
             // true for any normalized combination
             Real init = (iVar1 == iVar2 ? 
-                idiosyncFctrs_[iVar1] * idiosyncFctrs_[iVar1] : 0.);
+                idiosyncFctrs_[iVar1] * idiosyncFctrs_[iVar1] : Real(0.));
             return std::inner_product(factorWeights_[iVar1].begin(), 
                 factorWeights_[iVar1].end(), factorWeights_[iVar2].begin(), 
                     init);

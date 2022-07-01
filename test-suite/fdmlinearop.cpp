@@ -125,7 +125,7 @@ namespace {
 
         Real operator()(Real s) const override {
             return  ((s >= 100.0) ? 108.0 : 100.0)
-                  - ((s <= 75.0) ? 100.0 - s : 0.0);
+                  - ((s <= 75.0) ? Real(100.0 - s) : 0.0);
         }
     };
 

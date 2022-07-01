@@ -491,7 +491,7 @@ namespace QuantLib {
                     const Volatility localVol = localVol_->localVol(t, x[j]);
 
                     const Real l = (scale >= 0.0)
-                      ? localVol*std::sqrt(scale) : 1.0;
+                      ? localVol*std::sqrt(scale) : Real(1.0);
 
                     (*L)[j][i] = std::min(50.0, std::max(0.001, l));
 

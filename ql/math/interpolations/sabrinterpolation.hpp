@@ -71,8 +71,8 @@ struct SABRSpecs {
         if (params[0] == Null<Real>())
             // adapt alpha to beta level
             params[0] = 0.2 * (params[1] < 0.9999 ?
-                                   std::pow(forward + (addParams.empty() ? 0.0 : addParams[0]),
-                                            1.0 - params[1]) :
+                                   Real(std::pow(forward + (addParams.empty() ? 0.0 : addParams[0]),
+                                            1.0 - params[1])) :
                                    1.0);
         if (params[2] == Null<Real>())
             params[2] = std::sqrt(0.4);
@@ -103,29 +103,29 @@ struct SABRSpecs {
     Array inverse(const Array &y, const std::vector<bool> &,
                   const std::vector<Real> &, const Real) {
         Array x(4);
-        x[0] = y[0] < 25.0 + eps1() ? std::sqrt(y[0] - eps1())
-                                    : (y[0] - eps1() + 25.0) / 10.0;
+        x[0] = y[0] < 25.0 + eps1() ? Real(std::sqrt(y[0] - eps1()))
+                                    : Real((y[0] - eps1() + 25.0) / 10.0);
         // y_[1] = std::tan(M_PI*(x[1] - 0.5))/dilationFactor();
         x[1] = std::sqrt(-std::log(y[1]));
-        x[2] = y[2] < 25.0 + eps1() ? std::sqrt(y[2] - eps1())
-                                    : (y[2] - eps1() + 25.0) / 10.0;
+        x[2] = y[2] < 25.0 + eps1() ? Real(std::sqrt(y[2] - eps1()))
+                                    : Real((y[2] - eps1() + 25.0) / 10.0);
         x[3] = std::asin(y[3] / eps2());
         return x;
     }
     Array direct(const Array &x, const std::vector<bool> &,
                  const std::vector<Real> &, const Real) {
         Array y(4);
-        y[0] = std::fabs(x[0]) < 5.0 ? x[0] * x[0] + eps1()
-                                     : (10.0 * std::fabs(x[0]) - 25.0) + eps1();
+        y[0] = std::fabs(x[0]) < 5.0 ? Real(x[0] * x[0] + eps1())
+                                     : Real((10.0 * std::fabs(x[0]) - 25.0) + eps1());
         // y_[1] = std::atan(dilationFactor_*x[1])/M_PI + 0.5;
         y[1] = std::fabs(x[1]) < std::sqrt(-std::log(eps1()))
                    ? std::exp(-(x[1] * x[1]))
                    : eps1();
-        y[2] = std::fabs(x[2]) < 5.0 ? x[2] * x[2] + eps1()
-                                     : (10.0 * std::fabs(x[2]) - 25.0) + eps1();
+        y[2] = std::fabs(x[2]) < 5.0 ? Real(x[2] * x[2] + eps1())
+                                     : Real((10.0 * std::fabs(x[2]) - 25.0) + eps1());
         y[3] = std::fabs(x[3]) < 2.5 * M_PI
-                   ? eps2() * std::sin(x[3])
-                   : eps2() * (x[3] > 0.0 ? 1.0 : (-1.0));
+                   ? Real(eps2() * std::sin(x[3]))
+                   : Real(eps2() * (x[3] > 0.0 ? 1.0 : (-1.0)));
         return y;
     }
     Real weight(const Real strike, const Real forward, const Real stdDev,

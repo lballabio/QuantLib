@@ -77,7 +77,7 @@ namespace QuantLib {
         }
         static Real betaTransformDirect(Real y) {
             return std::max(
-                std::min(std::fabs(y) < 10.0 ? std::exp(-(y * y)) : 0.0,
+                std::min(std::fabs(y) < 10.0 ? Real(std::exp(-(y * y))) : 0.0,
                          0.999999),
                 0.000001);
         }

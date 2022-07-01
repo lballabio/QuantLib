@@ -96,15 +96,15 @@ namespace QuantLib {
                      // in order to not loose too much information
                 if (k < section.minStrike() && !minStrikeAdded) {
                     m_.push_back(section.volatilityType() == Normal
-                                     ? section.minStrike() - f_
-                                     : (section.minStrike() + shift) / f_);
+                                     ? Real(section.minStrike() - f_)
+                                     : Real((section.minStrike() + shift) / f_));
                     k_.push_back(section.minStrike());
                     minStrikeAdded = true;
                 }
                 if (k > section.maxStrike() && !maxStrikeAdded) {
                     m_.push_back(section.volatilityType() == Normal
-                                     ? section.maxStrike() - f_
-                                     : (section.maxStrike() + shift) / f_);
+                                     ? Real(section.maxStrike() - f_)
+                                     : Real((section.maxStrike() + shift) / f_));
                     k_.push_back(section.maxStrike());
                     maxStrikeAdded = true;
                 }
