@@ -3078,7 +3078,7 @@ namespace {
 void HestonModelTest::testHestonEngineIntegration() {
     BOOST_TEST_MESSAGE("Testing Heston engine integration signature...");
 
-    auto square = [](Real x){ return x*x; };
+    auto square = [](Real x) -> Real { return x * x; };
 
     const AnalyticHestonEngine::Integration integration =
         AnalyticHestonEngine::Integration::gaussLobatto(1e-12, 1e-12);

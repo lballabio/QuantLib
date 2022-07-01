@@ -89,9 +89,9 @@ void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
         ExtendedOrnsteinUhlenbeckProcess::GaussLobatto};
 
     ext::function<Real (Real)> f[] 
-        = { [=](Real x){ return level; },
-            [ ](Real x){ return x + 1.0; },
-            [ ](Real x) { return std::sin(x); }}; 
+        = { [=](Real x) -> Real { return level; },
+            [ ](Real x) -> Real { return x + 1.0; },
+            [ ](Real x) -> Real { return std::sin(x); }}; 
 
     for (Size n=0; n < LENGTH(f); ++n) {
         ExtendedOrnsteinUhlenbeckProcess refProcess(

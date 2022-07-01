@@ -137,7 +137,7 @@ namespace QuantLib {
         std::vector<Real> recoveries = copula_->recoveries();
         std::transform(recoveries.begin(), recoveries.end(), 
                        std::back_inserter(lgd),
-                       [](Real x){ return 1.0-x; });
+                       [](Real x) -> Real { return 1.0-x; });
         std::transform(lgd.begin(), lgd.end(), notionals_.begin(), 
                        lgd.begin(), std::multiplies<Real>());
         std::vector<Real> prob = basket_->remainingProbabilities(d);

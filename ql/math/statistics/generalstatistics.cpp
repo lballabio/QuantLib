@@ -44,7 +44,10 @@ namespace QuantLib {
         // Subtract the mean and square. Repeat on the whole range.
         // Hopefully, the whole thing will be inlined in a single loop.
         Real m = mean();
-        Real s2 = expectationValue([=](Real x) { Real d = x - m; return d * d; }).first;
+        Real s2 = expectationValue([=](Real x) -> Real {
+                      Real d = x - m;
+                      return d * d;
+                  }).first;
         return s2*N/(N-1.0);
     }
 
@@ -54,7 +57,10 @@ namespace QuantLib {
                    "sample number <=2, unsufficient");
 
         Real m = mean();
-        Real X = expectationValue([=](Real x) { Real d = x - m; return d * d * d; }).first;
+        Real X = expectationValue([=](Real x) -> Real {
+                     Real d = x - m;
+                     return d * d * d;
+                 }).first;
         Real sigma = standardDeviation();
 
         return (X/(sigma*sigma*sigma))*(N/(N-1.0))*(N/(N-2.0));
@@ -66,7 +72,11 @@ namespace QuantLib {
                    "sample number <=3, unsufficient");
 
         Real m = mean();
-        Real X = expectationValue([=](Real x) { Real d = x - m; Real d2 = d * d ; return d2 * d2; }).first;
+        Real X = expectationValue([=](Real x) -> Real {
+                     Real d = x - m;
+                     Real d2 = d * d;
+                     return d2 * d2;
+                 }).first;
         Real sigma2 = variance();
 
         Real c1 = (N/(N-1.0)) * (N/(N-2.0)) * ((N+1.0)/(N-3.0));

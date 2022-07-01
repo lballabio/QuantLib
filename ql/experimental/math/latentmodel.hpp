@@ -46,7 +46,7 @@ namespace QuantLib {
             std::vector<Real> operator()(Real d, std::vector<Real> v) 
             {
                 std::transform(v.begin(), v.end(), v.begin(), 
-                               [=](Real x){ return x*d; });
+                               [=](Real x) -> Real { return x * d; });
                 return v;
             }
         };
@@ -343,7 +343,7 @@ namespace QuantLib {
                 // systemic term:
                 factorWeights_[iVar].end(), allFactors.begin(),
                 // idiosyncratic term:
-                allFactors[numFactors()+iVar] * idiosyncFctrs_[iVar]);
+                Real(allFactors[numFactors()+iVar] * idiosyncFctrs_[iVar]));
         }
         // \to do write variants of the above, although is the most common case
 

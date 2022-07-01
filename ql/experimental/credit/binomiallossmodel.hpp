@@ -191,7 +191,7 @@ namespace QuantLib {
         std::vector<Probability> oneMinusDefProb;//: 1.-condDefProb[j]
         std::transform(condDefProb.begin(), condDefProb.end(), 
                        std::back_inserter(oneMinusDefProb), 
-                       [](Real x){ return 1.0-x; });
+                       [](Real x) -> Real { return 1.0-x; });
 
         //breaks condDefProb and lgdsLeft to spare memory
         std::transform(condDefProb.begin(), condDefProb.end(), 
