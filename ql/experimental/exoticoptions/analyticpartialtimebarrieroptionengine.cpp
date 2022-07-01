@@ -39,7 +39,7 @@ namespace QuantLib {
                    "strike must be positive");
 
         Real spot = process_->x0();
-        QL_REQUIRE(spot >= 0.0, "negative or null underlying given");
+        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
 
         PartialBarrier::Type barrierType = arguments_.barrierType;
         PartialBarrier::Range barrierRange = arguments_.barrierRange;
