@@ -41,11 +41,6 @@ namespace {
             return -std::fabs(a);
     }
 
-    inline QuantLib::Real ABS(const QuantLib::Real& a) 
-    { 
-        return std::abs(a); 
-    }
-
     inline QuantLib::Real POW(const QuantLib::Real& a, const QuantLib::Real& b) {
         return std::pow(a, b);
     }
