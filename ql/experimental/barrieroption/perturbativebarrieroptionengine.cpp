@@ -31,9 +31,27 @@
 
 using namespace std;
 
-#define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
-#define ABS(x) (((x) < 0) ? -(x) : (x))
-#define POW(x,y) pow( (Real) (x), (Real) (y))
+namespace {
+
+    inline QuantLib::Real SIGN(const QuantLib::Real& a, const QuantLib::Real& b) 
+    {
+        if (b > 0.0) 
+            return std::fabs(a);
+        else
+            return -std::fabs(a);
+    }
+
+    inline QuantLib::Real ABS(const QuantLib::Real& a) 
+    { 
+        return std::abs(a); 
+    }
+
+    inline QuantLib::Real POW(const QuantLib::Real& a, const QuantLib::Real& b) {
+        return std::pow(a, b);
+    }
+
+}
+
 #define PI 3.14159265358979324
 
 namespace QuantLib {
