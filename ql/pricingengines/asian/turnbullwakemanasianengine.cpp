@@ -17,7 +17,6 @@
 
 #include <ql/exercise.hpp>
 #include <ql/pricingengines/asian/turnbullwakemanasianengine.hpp>
-#include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 
 using namespace QuantLib;
