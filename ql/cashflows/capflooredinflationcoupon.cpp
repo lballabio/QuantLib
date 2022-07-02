@@ -70,8 +70,7 @@ namespace QuantLib {
                          underlying->referencePeriodStart(),
                          underlying->referencePeriodEnd()),
       underlying_(underlying), isFloored_(false), isCapped_(false) {
-
-        setCommon(cap, floor);
+        CappedFlooredYoYInflationCoupon::setCommon(cap, floor);
         registerWith(underlying);
     }
 

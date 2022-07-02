@@ -53,7 +53,7 @@ namespace QuantLib {
         registerWith(discountHandle_);
 
         pillarDate_ = customPillarDate;
-        initializeDates();
+        OISRateHelper::initializeDates();
     }
 
     void OISRateHelper::initializeDates() {

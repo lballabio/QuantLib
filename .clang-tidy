@@ -11,7 +11,6 @@ Checks: >
           -clang-analyzer-core.UndefinedBinaryOperatorResult,
           -clang-analyzer-core.uninitialized.Assign,
           -clang-analyzer-optin.cplusplus.UninitializedObject,
-          -clang-analyzer-optin.cplusplus.VirtualCall,
           -clang-analyzer-optin.performance.Padding,
           -clang-analyzer-security.FloatLoopCounter,
         cppcoreguidelines-*,

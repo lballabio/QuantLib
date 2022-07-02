@@ -35,7 +35,7 @@ namespace QuantLib {
     : mixingFactor_(mixingFactor), hestonProcess_(hestonProcess),
       leverageFct_(std::move(leverageFct)) {
         registerWith(hestonProcess);
-        update();
+        HestonSLVProcess::update();
     };
 
     void HestonSLVProcess::update() {

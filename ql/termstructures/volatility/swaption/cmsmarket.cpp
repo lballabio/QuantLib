@@ -102,7 +102,7 @@ namespace QuantLib {
             }
         }
         // probably useless
-        performCalculations();
+        CmsMarket::performCalculations();
     }
 
     void CmsMarket::performCalculations() const {
