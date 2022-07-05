@@ -60,8 +60,7 @@
 
 /* Eventually these might go into userconfig.hpp.
    For the time being, we hard code them here.
-   They can be overridden by passing the #define to the compiler
-   or by defining them in config.hpp.
+   They can be overridden by passing the #define to the compiler.
 */
 #ifndef QL_INTEGER
 #    define QL_INTEGER int
