@@ -131,7 +131,7 @@ namespace QuantLib {
                 maxNu_ = exUnit;
             pdAdj[k] = exposure_[k] > 0.0
                            ? exposure_[k] * pd_[k] / (exUnit * unit_)
-                           : 0.0; // adjusted pd
+                           : Real(0.0); // adjusted pd
             Real el = exUnit * pdAdj[k];
             if (exUnit > 0) {
                 iter = epsNuC_.find(exUnit);

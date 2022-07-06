@@ -46,7 +46,7 @@ namespace QuantLib {
             std::vector<Real> operator()(Real d, std::vector<Real> v) 
             {
                 std::transform(v.begin(), v.end(), v.begin(), 
-                               [=](Real x){ return x*d; });
+                               [=](Real x) -> Real { return x * d; });
                 return v;
             }
         };
@@ -343,7 +343,7 @@ namespace QuantLib {
                 // systemic term:
                 factorWeights_[iVar].end(), allFactors.begin(),
                 // idiosyncratic term:
-                allFactors[numFactors()+iVar] * idiosyncFctrs_[iVar]);
+                Real(allFactors[numFactors()+iVar] * idiosyncFctrs_[iVar]));
         }
         // \to do write variants of the above, although is the most common case
 
@@ -569,7 +569,7 @@ namespace QuantLib {
         Real latentVariableCorrel(Size iVar1, Size iVar2) const {
             // true for any normalized combination
             Real init = (iVar1 == iVar2 ? 
-                idiosyncFctrs_[iVar1] * idiosyncFctrs_[iVar1] : 0.);
+                idiosyncFctrs_[iVar1] * idiosyncFctrs_[iVar1] : Real(0.));
             return std::inner_product(factorWeights_[iVar1].begin(), 
                 factorWeights_[iVar1].end(), factorWeights_[iVar2].begin(), 
                     init);

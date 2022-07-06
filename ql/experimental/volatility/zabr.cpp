@@ -358,10 +358,10 @@ Real ZabrModel::y(const Real strike) const {
         return std::log(forward_ / strike) * std::pow(alpha_, gamma_ - 2.0);
     } else {
         return (strike < 0.0
-                    ? std::pow(forward_, 1.0 - beta_) +
-                          std::pow(-strike, 1.0 - beta_)
-                    : std::pow(forward_, 1.0 - beta_) -
-                          std::pow(strike, 1.0 - beta_)) *
+                    ? Real(std::pow(forward_, 1.0 - beta_) +
+                          std::pow(-strike, 1.0 - beta_))
+                    : Real(std::pow(forward_, 1.0 - beta_) -
+                          std::pow(strike, 1.0 - beta_))) *
                std::pow(alpha_, gamma_ - 2.0) / (1.0 - beta_);
     }
 }

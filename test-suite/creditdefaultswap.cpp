@@ -696,7 +696,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                         .withNominal(10000000.)
                         .withPricingEngine(engine);
 
-                BOOST_CHECK_CLOSE(conventionalTrade->notional() * conventionalTrade->fairUpfront(),
+                QL_CHECK_CLOSE(conventionalTrade->notional() * conventionalTrade->fairUpfront(),
                                   markitValues[l], tolerance);
 
                 l++;
@@ -738,7 +738,7 @@ void CreditDefaultSwapTest::testAccrualRebateAmounts() {
         Settings::instance().evaluationDate() = input.first;
         CreditDefaultSwap cds = MakeCreditDefaultSwap(maturity, spread)
             .withNominal(notional);
-        BOOST_CHECK_SMALL(input.second - cds.accrualRebate()->amount(), 0.01);
+        QL_CHECK_SMALL(input.second - cds.accrualRebate()->amount(), 0.01);
     }
 }
 

@@ -111,7 +111,7 @@ namespace QuantLib {
                 sigma2prev = sigma2;
             }
             std::transform(grad.begin(), grad.end(), grad.begin(),
-                           [=](Real x){ return x/norm; });
+                           [=](Real x) -> Real { return x / norm; });
         }
 
         Real Garch11CostFunction::valueAndGradient(Array& grad,
@@ -135,7 +135,7 @@ namespace QuantLib {
                 sigma2prev = sigma2;
             }
             std::transform(grad.begin(), grad.end(), grad.begin(),
-                           [=](Real x){ return x/norm; });
+                           [=](Real x) -> Real { return x / norm; });
             return retval / norm;
         }
 
@@ -236,7 +236,7 @@ namespace QuantLib {
             Real A = mean_r2*mean_r2/A4; // 1/sigma^2
             Real B = A21 / A4; // rho(1)
 
-            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : tol_level;
+            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : Real(tol_level);
             Garch11Constraint constraints(gammaLower, 1.0 - tol_level);
 
             Real gamma = gammaLower + (1 - gammaLower) * 0.5;
@@ -322,7 +322,7 @@ namespace QuantLib {
             Real A4 = acf[0] + mean_r2*mean_r2;
             Real A = mean_r2*mean_r2/A4; // 1/sigma^2
             Real B = A21 / A4; // rho(1)
-            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : tol_level;
+            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : Real(tol_level);
             Garch11Constraint constraints(gammaLower, 1.0 - tol_level);
 
             // ACF
@@ -418,7 +418,7 @@ namespace QuantLib {
         Array acf(maxLag+1);
         std::vector<Volatility> tmp(r2.size());
         std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        [=](Real x){ return x - mean_r2; });
+                       [=](Real x) -> Real { return x - mean_r2; });
         autocovariances (tmp.begin(), tmp.end(), acf.begin(), maxLag);
         QL_REQUIRE (acf[0] > 0, "Data series is constant");
 
@@ -518,7 +518,7 @@ namespace QuantLib {
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         std::vector<Volatility> tmp(r2.size());
         std::transform(r2.begin(), r2.end(), tmp.begin(),
-                       [=](Real x){ return x - mean_r2; });
+                       [=](Real x) -> Real { return x - mean_r2; });
         return calibrate_r2(tmp, method, endCriteria, initGuess,
                             alpha, beta, omega);
     }
@@ -551,7 +551,7 @@ namespace QuantLib {
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         std::vector<Volatility> tmp(r2.size());
         std::transform(r2.begin(), r2.end(), tmp.begin(),
-                       [=](Real x){ return x - mean_r2; });
+                       [=](Real x) -> Real { return x - mean_r2; });
         return calibrate_r2(tmp, method, constraints, endCriteria,
                             initGuess, alpha, beta, omega);
     }

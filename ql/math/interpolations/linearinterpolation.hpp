@@ -80,7 +80,7 @@ namespace QuantLib {
                 primitiveConst_[0] = 0.0;
                 for (Size i=1; i<Size(this->xEnd_-this->xBegin_); ++i) {
                     Real dx = this->xBegin_[i]-this->xBegin_[i-1];
-                    s_[i-1] = (this->yBegin_[i]-this->yBegin_[i-1])/dx;
+                    s_[i-1] = (Real(this->yBegin_[i])-Real(this->yBegin_[i-1]))/dx;
                     primitiveConst_[i] = primitiveConst_[i-1]
                         + dx*(this->yBegin_[i-1] +0.5*dx*s_[i-1]);
                 }

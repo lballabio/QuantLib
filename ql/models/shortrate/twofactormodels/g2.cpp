@@ -160,7 +160,7 @@ namespace QuantLib {
             Size i;
             for (i=0; i<size_; i++) {
                 Real tau = (i==0 ? t_[0] - T_ : t_[i] - t_[i-1]);
-                Real c = (i==size_-1 ? (1.0+rate_*tau) : rate_*tau);
+                Real c = (i==size_-1 ? Real(1.0+rate_*tau) : rate_*tau);
                 lambda[i] = c*A_[i]*std::exp(-Ba_[i]*x);
             }
 

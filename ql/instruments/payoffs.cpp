@@ -178,9 +178,9 @@ namespace QuantLib {
     Real GapPayoff::operator()(Real price) const {
         switch (type_) {
           case Option::Call:
-            return (price-strike_ >= 0.0 ? price-secondStrike_ : 0.0);
+            return (price-strike_ >= 0.0 ? Real(price-secondStrike_) : 0.0);
           case Option::Put:
-            return (strike_-price >= 0.0 ? secondStrike_-price : 0.0);
+              return (strike_ - price >= 0.0 ? Real(secondStrike_ - price) : 0.0);
           default:
             QL_FAIL("unknown/illegal option type");
         }
@@ -195,7 +195,7 @@ namespace QuantLib {
     }
 
     Real SuperFundPayoff::operator()(Real price) const {
-        return (price>=strike_ && price<secondStrike_) ? price/strike_ : 0.0;
+        return (price>=strike_ && price<secondStrike_) ? Real(price/strike_) : 0.0;
     }
 
     void SuperFundPayoff::accept(AcyclicVisitor& v) {

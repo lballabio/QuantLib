@@ -298,10 +298,10 @@ void ObservableTest::testDeepUpdate() {
     vol->deepUpdate();
     Real v4 = vol->volatility(refDate + 100, 0.01);
 
-    BOOST_CHECK_CLOSE(v1, 0.2, 1E-10);
-    BOOST_CHECK_CLOSE(v2, 0.2, 1E-10);
-    BOOST_CHECK_CLOSE(v3, 0.2, 1E-10);
-    BOOST_CHECK_CLOSE(v4, 0.21, 1E-10);
+    QL_CHECK_CLOSE(v1, 0.2, 1E-10);
+    QL_CHECK_CLOSE(v2, 0.2, 1E-10);
+    QL_CHECK_CLOSE(v3, 0.2, 1E-10);
+    QL_CHECK_CLOSE(v4, 0.21, 1E-10);
 }
 
 namespace {

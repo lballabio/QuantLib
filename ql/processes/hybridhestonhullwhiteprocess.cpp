@@ -112,7 +112,7 @@ namespace QuantLib {
         const Real sigma     = hullWhiteProcess_->sigma();
         const Real rho       = corrEquityShortRate_;
         const Real xi        = hestonProcess_->rho();
-        const Volatility eta = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
+        const Volatility eta = (x0[1] > 0.0) ? Real(std::sqrt(x0[1])) : 0.0;
         const Time s = t0;
         const Time t = t0 + dt;
         const Time T = T_;

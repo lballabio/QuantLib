@@ -97,7 +97,7 @@ namespace QuantLib {
         Real retVal;
         try {
             const Real acc
-                = ((f(a) != 0.0 || f(b) != 0.0) ? (f(a)+f(b))*5e-5 : 1e-4);
+                = ((f(a) != 0.0 || f(b) != 0.0) ? Real((f(a)+f(b))*5e-5) : 1e-4);
             retVal = SimpsonIntegral(acc, 8)(f, a, b)/(b-a);
         }
         catch (Error&) {
@@ -114,7 +114,7 @@ namespace QuantLib {
         Size direction)
     : FdmCellAveragingInnerValue(
         payoff, mesher, direction,
-        [](Real x) { return std::exp(x); }) {}
+        [](Real x) -> Real { return std::exp(x); }) {}
 
 
     FdmLogBasketInnerValue::FdmLogBasketInnerValue(ext::shared_ptr<BasketPayoff> payoff,

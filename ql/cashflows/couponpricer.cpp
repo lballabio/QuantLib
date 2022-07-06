@@ -207,9 +207,9 @@ namespace QuantLib {
             capletVolatility()->volatilityType() == ShiftedLognormal;
 
         Spread adjustment = shiftedLn
-                                ? (fixing + shift) * (fixing + shift) *
-                                      variance * tau / (1.0 + fixing * tau)
-                                : variance * tau / (1.0 + fixing * tau);
+                                ? Real((fixing + shift) * (fixing + shift) *
+                                      variance * tau / (1.0 + fixing * tau))
+                                : Real(variance * tau / (1.0 + fixing * tau));
 
         if (timingAdjustment_ == BivariateLognormal) {
             QL_REQUIRE(!correlation_.empty(), "no correlation given");
@@ -227,11 +227,11 @@ namespace QuantLib {
                      1.0) /
                     tau2;
                 adjustment -= shiftedLn
-                                  ? correlation_->value() * tau2 * variance *
+                                  ? Real(correlation_->value() * tau2 * variance *
                                         (fixing + shift) * (fixing2 + shift) /
-                                        (1.0 + fixing2 * tau2)
-                                  : correlation_->value() * tau2 * variance /
-                                        (1.0 + fixing2 * tau2);
+                                        (1.0 + fixing2 * tau2))
+                                  : Real(correlation_->value() * tau2 * variance /
+                                        (1.0 + fixing2 * tau2));
             }
         }
         return fixing + adjustment;

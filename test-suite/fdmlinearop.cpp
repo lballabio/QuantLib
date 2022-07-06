@@ -125,7 +125,7 @@ namespace {
 
         Real operator()(Real s) const override {
             return  ((s >= 100.0) ? 108.0 : 100.0)
-                  - ((s <= 75.0) ? 100.0 - s : 0.0);
+                  - ((s <= 75.0) ? Real(100.0 - s) : 0.0);
         }
     };
 
@@ -1452,11 +1452,11 @@ void FdmLinearOpTest::testSpareMatrixReference() {
 
     for (Size i=0; i < rows; ++i) {
         for (Size j=0; j < columns; ++j) {
-            if (std::fabs(calculated(i,j) - expected(i,j)) > 100*QL_EPSILON) {
+            if (std::fabs(Real(calculated(i,j)) - Real(expected(i,j))) > 100*QL_EPSILON) {
                 BOOST_FAIL("Error using sparse matrix references in " <<
                            "Element (" << i << ", " << j << ")" <<
-                        "\n expected  : " << expected(i, j) <<
-                        "\n calculated: " << calculated(i, j));
+                        "\n expected  : " << Real(expected(i, j)) <<
+                        "\n calculated: " << Real(calculated(i, j)));
             }
         }
     }

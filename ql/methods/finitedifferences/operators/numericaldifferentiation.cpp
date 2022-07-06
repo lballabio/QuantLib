@@ -78,12 +78,12 @@ namespace QuantLib {
 
                     for (Size m=0; m <= std::min(n, M); ++m) {
                         d[m][n][nu] = (x[n]*d[m][n-1][nu]
-                             - ((m > 0)? m*d[m-1][n-1][nu] : 0.0))/c3;
+                             - ((m > 0)? Real(m*d[m-1][n-1][nu]) : 0.0))/c3;
                     }
                 }
 
                 for (Size m=0; m <= M; ++m) {
-                    d[m][n][n] = c1/c2*( ((m > 0)? m*d[m-1][n-1][n-1] : 0.0) -
+                    d[m][n][n] = c1/c2*( ((m > 0)? Real(m*d[m-1][n-1][n-1]) : 0.0) -
                         x[n-1]*d[m][n-1][n-1] );
                 }
                 c1=c2;

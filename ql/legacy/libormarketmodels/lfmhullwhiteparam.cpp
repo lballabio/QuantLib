@@ -55,7 +55,7 @@ namespace QuantLib {
                                      tmpSqrtCorr[i], Real(0.0)));
                 std::transform(
                     tmpSqrtCorr[i], tmpSqrtCorr[i]+factors_, sqrtCorr[i],
-                    [=](Real x){ return x/p; });
+                               [=](Real x) -> Real { return x / p; });
             }
         }
 

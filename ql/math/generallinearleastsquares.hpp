@@ -145,7 +145,7 @@ namespace QuantLib {
             = std::inner_product(residuals_.begin(), residuals_.end(), residuals_.begin(), Real(0.0));
         const Real multiplier = std::sqrt(chiSq/(n-2));
         std::transform(err_.begin(), err_.end(), standardErrors_.begin(),
-                       [=](Real x){ return x * multiplier; });
+                       [=](Real x) -> Real { return x * multiplier; });
     }
 
 }

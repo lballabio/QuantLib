@@ -1317,7 +1317,7 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
     // check expected zero rates
     for (Size i = 0; i < LENGTH(refZeroRate); ++i) {
         // 0.01 basis points tolerance
-        BOOST_CHECK_SMALL(std::fabs(refZeroRate[i] - curve->zeroRate(refDate[i], Actual360(), Continuous).rate()),
+        QL_CHECK_SMALL(std::fabs(refZeroRate[i] - curve->zeroRate(refDate[i], Actual360(), Continuous).rate()),
                           1E-6);
     }
 }
@@ -1428,7 +1428,7 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
     DiscountFactor oneYearDfArs = arsYts->discount(oneYearFwdDate);
     Real calcFwd = (spotDfArs * arsSpot->value() / oneYearDfArs) / (spotDfUsd / oneYearDfUsd);
     Real expFwd = arsSpot->value() + arsFwdPoints.at(1 * Years);
-    BOOST_CHECK_SMALL(calcFwd - expFwd, 1e-10);
+    QL_CHECK_SMALL(calcFwd - expFwd, 1e-10);
 }
 
 test_suite* PiecewiseYieldCurveTest::suite() {

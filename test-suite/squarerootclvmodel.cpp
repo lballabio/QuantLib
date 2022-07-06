@@ -364,8 +364,8 @@ namespace square_root_clv_model {
                         const Real strike = strikes_[k];
 
                         const Real payoff = (strike < 1.0)
-                            ?  s1 * std::max(0.0, strike - s2/s1)
-                            :  s1 * std::max(0.0, s2/s1 - strike);
+                            ?  Real(s1 * std::max(0.0, strike - s2/s1))
+                            :  Real(s1 * std::max(0.0, s2/s1 - strike));
 
                         stats[k].add(payoff);
                     }
@@ -616,8 +616,8 @@ void SquareRootCLVModelTest::testForwardSkew() {
             for (Size j=0; j < LENGTH(strikes); ++j) {
                 const Real strike = strikes[j];
                     slvStats[i][j].add((strike < 1.0)
-                        ? S_t1 * std::max(0.0, strike - S_T1/S_t1)
-                        : S_t1 * std::max(0.0, S_T1/S_t1 - strike));
+                        ? Real(S_t1 * std::max(0.0, strike - S_T1/S_t1))
+                        : Real(S_t1 * std::max(0.0, S_T1/S_t1 - strike)));
             }
 
         }

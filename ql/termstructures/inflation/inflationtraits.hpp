@@ -77,7 +77,7 @@ namespace QuantLib {
         {
             if (validData) {
                 Rate r = *(std::min_element(c->data().begin(), c->data().end()));
-                return r<0.0 ? r*2.0 : r/2.0;
+                return r<0.0 ? Real(r*2.0) : r/2.0;
             }
             return -detail::maxInflation;
         }
@@ -89,7 +89,7 @@ namespace QuantLib {
         {
             if (validData) {
                 Rate r = *(std::max_element(c->data().begin(), c->data().end()));
-                return r<0.0 ? r/2.0 : r*2.0;
+                return r<0.0 ? Real(r/2.0) : r*2.0;
             }
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
@@ -153,7 +153,7 @@ namespace QuantLib {
         {
             if (validData) {
                 Rate r = *(std::min_element(c->data().begin(), c->data().end()));
-                return r<0.0 ? r*2.0 : r/2.0;
+                return r<0.0 ? Real(r*2.0) : r/2.0;
             }
             return -detail::maxInflation;
         }
@@ -165,7 +165,7 @@ namespace QuantLib {
         {
             if (validData) {
                 Rate r = *(std::max_element(c->data().begin(), c->data().end()));
-                return r<0.0 ? r/2.0 : r*2.0;
+                return r<0.0 ? Real(r/2.0) : r*2.0;
             }
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.

@@ -306,8 +306,8 @@ namespace QuantLib {
                     if (ks == k) {
                         break;
                     }
-                    Real t = (ks != p ? std::fabs(e[ks]) : 0.) +
-                        (ks != k+1 ? std::fabs(e[ks-1]) : 0.);
+                    Real t = (ks != p ? Real(std::fabs(e[ks])) : 0.) +
+                        (ks != k+1 ? Real(std::fabs(e[ks-1])) : 0.);
                     if (std::fabs(s_[ks]) <= eps*t)  {
                         s_[ks] = 0.0;
                         break;
@@ -449,7 +449,7 @@ namespace QuantLib {
                   // Make the singular values positive.
 
                   if (s_[k] <= 0.0) {
-                      s_[k] = (s_[k] < 0.0 ? -s_[k] : 0.0);
+                      s_[k] = (s_[k] < 0.0 ? Real(-s_[k]) : 0.0);
                       for (i = 0; i <= pp; i++) {
                           V_[i][k] = -V_[i][k];
                       }

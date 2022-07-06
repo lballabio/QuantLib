@@ -215,7 +215,7 @@ namespace QuantLib {
     Rate DefaultProbabilityTermStructure::hazardRate(Time t,
                                                      bool extrapolate) const {
         Probability S = survivalProbability(t, extrapolate);
-        return S == 0.0 ? 0.0 : defaultDensity(t, extrapolate)/S;
+        return S == 0.0 ? 0.0 : Real(defaultDensity(t, extrapolate)/S);
     }
 
     inline

@@ -79,7 +79,7 @@ namespace QuantLib {
         // since displacement is non-negative strike==0 iff displacement==0
         // so returning forward*discount is OK
         if (strike==0.0)
-            return (optionType==Option::Call ? forward*discount : 0.0);
+            return (optionType==Option::Call ? Real(forward*discount) : 0.0);
 
         Real d1 = std::log(forward/strike)/stdDev + 0.5*stdDev;
         Real d2 = d1 - stdDev;
@@ -281,7 +281,7 @@ namespace QuantLib {
         const Real ey2 = ey*ey;
         const Real y = std::log(ey);
         const Real alpha = marketValue/(K*df);
-        const Real R = 2*alpha + ((type == Option::Call) ? -ey+1.0 : ey-1.0);
+        const Real R = 2 * alpha + ((type == Option::Call) ? Real(-ey + 1.0) : ey - 1.0);
         const Real R2 = R*R;
 
         const Real a = std::exp((1.0-M_2_PI)*y);
@@ -296,7 +296,7 @@ namespace QuantLib {
 
         if (y >= 0.0) {
             const Real M0 = K*df*(
-                (type == Option::Call) ? ey*Af(std::sqrt(2*y)) - 0.5
+                (type == Option::Call) ? Real(ey*Af(std::sqrt(2*y)) - 0.5)
                                        : 0.5-ey*Af(-std::sqrt(2*y)));
 
             if (marketValue <= M0)
@@ -306,7 +306,7 @@ namespace QuantLib {
         }
         else {
             const Real M0 = K*df*(
-                (type == Option::Call) ? 0.5*ey - Af(-std::sqrt(-2*y))
+                (type == Option::Call) ? Real(0.5*ey - Af(-std::sqrt(-2*y)))
                                        : Af(std::sqrt(-2*y)) - 0.5*ey);
 
             if (marketValue <= M0)
@@ -512,7 +512,7 @@ namespace QuantLib {
 
         Real x = std::log(forward/strike);
         Real cs = (optionType == Option::Call)
-            ? blackPrice / (forward*discount)
+            ? Real(blackPrice / (forward*discount))
             : (blackPrice/ (forward*discount) + 1.0 - strike/forward);
 
         QL_REQUIRE(cs >= 0.0, "normalized call price (" << cs
@@ -824,7 +824,7 @@ namespace QuantLib {
         nu = std::max(-1.0 + QL_EPSILON, std::min(nu,1.0 - QL_EPSILON));
 
         // nu / arctanh(nu) -> 1 as nu -> 0
-        Real eta = (std::fabs(nu) < SQRT_QL_EPSILON) ? 1.0 : nu / boost::math::atanh(nu);
+        Real eta = (std::fabs(nu) < SQRT_QL_EPSILON) ? 1.0 : Real(nu / boost::math::atanh(nu));
 
         Real heta = h(eta);
 

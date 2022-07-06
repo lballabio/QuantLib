@@ -49,7 +49,7 @@ void SviVolatilityTest::testSviSmileSection() {
     BOOST_CHECK_NO_THROW(time_section =
                              ext::make_shared<SviSmileSection>(tte, forward, sviParameters));
     BOOST_CHECK_EQUAL(time_section->atmLevel(), forward);
-    BOOST_CHECK_CLOSE(time_section->variance(strike), a + b * sigma, 1E-10);
+    QL_CHECK_CLOSE(time_section->variance(strike), a + b * sigma, 1E-10);
 
     // Test date based constructor
     Date date = today + Period(11, Days);
@@ -59,7 +59,7 @@ void SviVolatilityTest::testSviSmileSection() {
                              ext::make_shared<SviSmileSection>(date, forward, sviParameters));
 
     BOOST_CHECK_EQUAL(date_section->atmLevel(), forward);
-    BOOST_CHECK_CLOSE(date_section->variance(strike), a + b * sigma, 1E-10);
+    QL_CHECK_CLOSE(date_section->variance(strike), a + b * sigma, 1E-10);
 }
 
 test_suite* SviVolatilityTest::experimental() {

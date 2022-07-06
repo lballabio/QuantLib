@@ -322,8 +322,7 @@ namespace QuantLib {
 
 
     inline const Array& Array::operator+=(Real x) {
-        std::transform(begin(), end(), begin(),
-                       [=](Real y) { return y+x; });
+        std::transform(begin(), end(), begin(), [=](Real y) -> Real { return y + x; });
         return *this;
     }
 
@@ -337,8 +336,7 @@ namespace QuantLib {
     }
 
     inline const Array& Array::operator-=(Real x) {
-        std::transform(begin(),end(),begin(),
-                       [=](Real y) { return y-x; });
+        std::transform(begin(),end(),begin(), [=](Real y) -> Real { return y - x; });
         return *this;
     }
 
@@ -352,8 +350,7 @@ namespace QuantLib {
     }
 
     inline const Array& Array::operator*=(Real x) {
-        std::transform(begin(), end(), begin(),
-                       [=](Real y) { return y*x; });
+        std::transform(begin(), end(), begin(), [=](Real y) -> Real { return y * x; });
         return *this;
     }
 
@@ -370,8 +367,7 @@ namespace QuantLib {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(x != 0.0, "division by zero");
         #endif
-        std::transform(begin(), end(), begin(),
-                       [=](Real y) { return y/x; });
+        std::transform(begin(), end(), begin(), [=](Real y) -> Real { return y / x; });
         return *this;
     }
 
@@ -536,15 +532,13 @@ namespace QuantLib {
 
     inline Array operator+(const Array& v1, Real a) {
         Array result(v1.size());
-        std::transform(v1.begin(), v1.end(), result.begin(),
-                       [=](Real y) { return y+a; });
+        std::transform(v1.begin(), v1.end(), result.begin(), [=](Real y) -> Real { return y + a; });
         return result;
     }
 
     inline Array operator+(Real a, const Array& v2) {
         Array result(v2.size());
-        std::transform(v2.begin(),v2.end(),result.begin(),
-                       [=](Real y) { return a+y; });
+        std::transform(v2.begin(),v2.end(),result.begin(), [=](Real y) -> Real { return a + y; });
         return result;
     }
 
@@ -560,15 +554,13 @@ namespace QuantLib {
 
     inline Array operator-(const Array& v1, Real a) {
         Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),result.begin(),
-                       [=](Real y) { return y-a; });
+        std::transform(v1.begin(),v1.end(),result.begin(), [=](Real y) -> Real { return y - a; });
         return result;
     }
 
     inline Array operator-(Real a, const Array& v2) {
         Array result(v2.size());
-        std::transform(v2.begin(),v2.end(),result.begin(),
-                       [=](Real y) { return a-y; });
+        std::transform(v2.begin(),v2.end(),result.begin(), [=](Real y) -> Real { return a - y; });
         return result;
     }
 
@@ -584,15 +576,13 @@ namespace QuantLib {
 
     inline Array operator*(const Array& v1, Real a) {
         Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),result.begin(),
-                       [=](Real y) { return y*a; });
+        std::transform(v1.begin(),v1.end(),result.begin(), [=](Real y) -> Real { return y * a; });
         return result;
     }
 
     inline Array operator*(Real a, const Array& v2) {
         Array result(v2.size());
-        std::transform(v2.begin(),v2.end(),result.begin(),
-                       [=](Real y) { return a*y; });
+        std::transform(v2.begin(),v2.end(),result.begin(), [=](Real y) -> Real { return a * y; });
         return result;
     }
 
@@ -608,15 +598,13 @@ namespace QuantLib {
 
     inline Array operator/(const Array& v1, Real a) {
         Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),result.begin(),
-                       [=](Real y) { return y/a; });
+        std::transform(v1.begin(),v1.end(),result.begin(), [=](Real y) -> Real { return y / a; });
         return result;
     }
 
     inline Array operator/(Real a, const Array& v2) {
         Array result(v2.size());
-        std::transform(v2.begin(),v2.end(),result.begin(),
-                       [=](Real y) { return a/y; });
+        std::transform(v2.begin(),v2.end(),result.begin(), [=](Real y) -> Real { return a / y; });
         return result;
     }
 
@@ -625,28 +613,28 @@ namespace QuantLib {
     inline Array Abs(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(), v.end(), result.begin(),
-                       [](Real x) { return std::fabs(x); });
+                       [](Real x) -> Real { return std::fabs(x); });
         return result;
     }
 
     inline Array Sqrt(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
-                       [](Real x) { return std::sqrt(x); });
+                       [](Real x) -> Real { return std::sqrt(x); });
         return result;
     }
 
     inline Array Log(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
-                       [](Real x) { return std::log(x); });
+                       [](Real x) -> Real { return std::log(x); });
         return result;
     }
 
     inline Array Exp(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(), v.end(), result.begin(),
-                       [](Real x) { return std::exp(x); });
+                       [](Real x) -> Real { return std::exp(x); });
         return result;
     }
 

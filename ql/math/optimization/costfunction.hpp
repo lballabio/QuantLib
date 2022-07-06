@@ -37,7 +37,7 @@ namespace QuantLib {
         //! method to overload to compute the cost function value in x
         virtual Real value(const Array& x) const {
             Array v = values(x);
-            std::transform(v.begin(), v.end(), v.begin(), [](Real x){ return x*x; });
+            std::transform(v.begin(), v.end(), v.begin(), [](Real x) -> Real { return x*x; });
             return std::sqrt(std::accumulate(v.begin(), v.end(), Real(0.0)) /
                              static_cast<Real>(v.size()));
         }

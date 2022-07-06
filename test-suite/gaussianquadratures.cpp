@@ -97,15 +97,15 @@ namespace gaussian_quadratures_test {
     template <class T>
     void testSingleJacobi(const T& I) {
         testSingle(I, "f(x) = 1",
-                   [](Real x){ return 1.0; },   2.0);
+                   [](Real x) -> Real { return 1.0; }, 2.0);
         testSingle(I, "f(x) = x",
-                   [](Real x){ return x; },     0.0);
+                   [](Real x) -> Real { return x; }, 0.0);
         testSingle(I, "f(x) = x^2",
-                   [](Real x){ return x * x; }, 2/3.);
+                   [](Real x) -> Real{ return x * x; }, 2/3.);
         testSingle(I, "f(x) = sin(x)",
-                   [](Real x) { return std::sin(x); }, 0.0);
+                   [](Real x) -> Real { return std::sin(x); }, 0.0);
         testSingle(I, "f(x) = cos(x)",
-                   [](Real x) { return std::cos(x); },
+                   [](Real x) -> Real { return std::cos(x); },
                    std::sin(1.0)-std::sin(-1.0));
         testSingle(I, "f(x) = Gaussian(x)",
                    NormalDistribution(),
@@ -197,15 +197,15 @@ void GaussianQuadraturesTest::testTabulated() {
 
      using namespace gaussian_quadratures_test;
 
-     testSingleTabulated([](Real x){ return 1.0; }, "f(x) = 1",
+     testSingleTabulated([](Real x) -> Real { return 1.0; }, "f(x) = 1",
                          2.0,       1.0e-13);
-     testSingleTabulated([](Real x){ return x; }, "f(x) = x",
+     testSingleTabulated([](Real x) -> Real { return x; }, "f(x) = x",
                          0.0,       1.0e-13);
-     testSingleTabulated([](Real x){ return x * x; }, "f(x) = x^2",
+     testSingleTabulated([](Real x) -> Real { return x * x; }, "f(x) = x^2",
                          (2.0/3.0), 1.0e-13);
-     testSingleTabulated([](Real x){ return x * x * x; }, "f(x) = x^3",
+     testSingleTabulated([](Real x) -> Real { return x * x * x; }, "f(x) = x^3",
                          0.0,       1.0e-13);
-     testSingleTabulated([](Real x){ return x * x * x * x; }, "f(x) = x^4",
+     testSingleTabulated([](Real x) -> Real { return x * x * x * x; }, "f(x) = x^4",
                          (2.0/5.0), 1.0e-13);
 }
 

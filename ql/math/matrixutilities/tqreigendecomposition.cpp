@@ -64,7 +64,7 @@ namespace QuantLib {
 
                     const Real lambda =
                         (std::fabs(t2+t1 - d_[k]) < std::fabs(t2-t1 - d_[k]))?
-                        t2+t1 : t2-t1;
+                        Real(t2+t1) : Real(t2-t1);
 
                     if (strategy == CloseEigenValue) {
                         q-=lambda;

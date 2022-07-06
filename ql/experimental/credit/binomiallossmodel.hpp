@@ -177,7 +177,7 @@ namespace QuantLib {
                 copula_->conditionalDefaultProbabilityInvP(uncondDefProbInv[j],
                     j, mktFactors);
         // of full portfolio:
-        Real avgProb = avgLgd <= QL_EPSILON ? 0. : // only if all are 0
+        Real avgProb = avgLgd <= QL_EPSILON ? Real(0.) : // only if all are 0
                 std::inner_product(condDefProb.begin(), 
                     condDefProb.end(), lgdsLeft.begin(), Real(0.))
                 / (avgLgd * bsktSize);
@@ -191,7 +191,7 @@ namespace QuantLib {
         std::vector<Probability> oneMinusDefProb;//: 1.-condDefProb[j]
         std::transform(condDefProb.begin(), condDefProb.end(), 
                        std::back_inserter(oneMinusDefProb), 
-                       [](Real x){ return 1.0-x; });
+                       [](Real x) -> Real { return 1.0-x; });
 
         //breaks condDefProb and lgdsLeft to spare memory
         std::transform(condDefProb.begin(), condDefProb.end(), 
@@ -202,7 +202,7 @@ namespace QuantLib {
         Real variance = std::inner_product(condDefProb.begin(), 
             condDefProb.end(), lgdsLeft.begin(), Real(0.));
 
-        variance = avgLgd <= QL_EPSILON ? 0. : 
+        variance = avgLgd <= QL_EPSILON ? Real(0.) : 
             variance / (bsktSize * bsktSize * avgLgd * avgLgd );
         Real sumAves = -std::pow(ceilAveProb-m, 2) 
             - (std::pow(floorAveProb-m, 2) - std::pow(ceilAveProb,2.)) 

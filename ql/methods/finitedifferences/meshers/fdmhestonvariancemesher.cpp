@@ -120,7 +120,7 @@ namespace QuantLib {
         }
 
         Real skewHint = ((process->kappa() != 0.0) 
-                ? std::max(1.0, mixedSigma/process->kappa()) : 1.0);
+                ? Real(std::max(1.0, mixedSigma/process->kappa())) : 1.0);
 
         std::sort(pGrid.begin(), pGrid.end());
         volaEstimate_ = GaussLobattoIntegral(100000, 1e-4)(
