@@ -1,0 +1,50 @@
+name: XAD build
+on: [push, pull_request]
+jobs:
+  xad-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup
+      run: |
+        sudo apt update
+        sudo apt install -y libboost-dev
+    - name: Compile
+      run: |
+        mkdir build
+        cd build
+        cmake -DBOOST_ROOT=/usr -DCMAKE_BUILD_TYPE=Release -DQL_USE_AAD=XAD ..
+        make -j 2
+    - name: Test QuantLib
+      run: |
+        cd build
+        ./test-suite/quantlib-test-suite --log_level=message    
+    - name: Test QlXAD
+      run: |
+        cd build
+        ./qlxad/test-suite/quantlib-xad-test-suite --log_level=message
+  xad-win:
+    runs-on: windows-2022
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup
+      run: |
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
+        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.78.0"
+    - name: Compile
+      env:
+        BOOST_ROOT: C:\local\boost-1.78.0
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DQL_USE_AAD=XAD
+        cmake --build . --config Release
+    - name: Test QuantLib
+      run: |
+        cd build
+        .\test-suite\Release\quantlib-test-suite --log_level=message
+    - name: Test QlXAD
+      run: |
+        cd build
+        .\qlxad\test-suite\Release\quantlib-xad-test-suite --log_level=message

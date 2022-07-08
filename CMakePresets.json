@@ -38,6 +38,26 @@
       }
     },
     {
+      "name": "linux-gcc-debug-xad",
+      "binaryDir": "${sourceDir}/build",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "g++",
+        "QL_USE_AAD": "XAD"
+      }
+    },
+    {
+      "name": "linux-gcc-release-xad",
+      "binaryDir": "${sourceDir}/build",
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "g++",
+        "QL_USE_AAD": "XAD"
+      }
+    },
+    {
       "name": "windows-clang-x64",
       "binaryDir": "${sourceDir}/build",
       "generator": "Visual Studio 17 2022",
@@ -70,6 +90,26 @@
             "Windows"
           ]
         }
+      }
+    },
+    {
+      "name": "windows-msvc-x64-xad",
+      "binaryDir": "${sourceDir}/build",
+      "generator": "Visual Studio 17 2022",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "intelliSenseMode": "windows-msvc-x64",
+          "hostOS": [
+            "Windows"
+          ]
+        }
+      },
+      "cacheVariables": {
+        "QL_USE_AAD": "XAD"
       }
     },
     {
@@ -153,8 +193,16 @@
       "configurePreset": "linux-gcc-debug"
     },
     {
+      "name": "linux-gcc-debug-xad",
+      "configurePreset": "linux-gcc-debug-xad"
+    },
+    {
       "name": "linux-gcc-release",
       "configurePreset": "linux-gcc-release"
+    },
+    {
+      "name": "linux-gcc-release-xad",
+      "configurePreset": "linux-gcc-release-xad"
     },
     {
       "name": "linux-gcc-debug-with-clang-tidy",
@@ -178,6 +226,16 @@
     {
       "name": "windows-msvc-x64-release",
       "configurePreset": "windows-msvc-x64",
+      "configuration": "Release"
+    },
+    {
+      "name": "windows-msvc-x64-xad-debug",
+      "configurePreset": "windows-msvc-x64-xad",
+      "configuration": "Debug"
+    },
+    {
+      "name": "windows-msvc-x64-xad-release",
+      "configurePreset": "windows-msvc-x64-xad",
       "configuration": "Release"
     },
     {

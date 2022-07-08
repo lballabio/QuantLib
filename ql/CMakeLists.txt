@@ -2332,6 +2332,14 @@ target_compile_definitions(ql_library PRIVATE
 target_compile_options(ql_library PRIVATE
     ${OpenMP_CXX_FLAGS})
 
+if("${QL_USE_AAD}" STREQUAL XAD)
+    target_link_libraries(ql_library PUBLIC qlxad)
+    if(MSVC)
+        # with XAD, the object size increases so that -bigobj is needed
+        target_compile_options(ql_library PRIVATE -bigobj)
+    endif()
+endif()
+
 target_include_directories(ql_library PUBLIC
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>

@@ -63,6 +63,13 @@ option(QL_USE_STD_SHARED_PTR "Use standard smart pointers instead of Boost ones"
 option(QL_USE_STD_FUNCTION "Use std::function and std::bind instead of Boost ones" OFF)
 option(QL_USE_STD_TUPLE "Use std::tuple instead of boost::tuple" OFF)
 
+set(QL_USE_AAD "None" CACHE STRING "Use AAD with the given framework (options: None, XAD)")
+# set available drop-down options for AAD tool
+set(_aad_frameworks XAD)
+set_property(CACHE QL_USE_AAD PROPERTY STRINGS None ${_aad_frameworks})
+
+
+
 # Convenience option to activate all STD options
 if (QL_USE_STD_CLASSES)
     set(QL_USE_STD_SHARED_PTR ON)
@@ -203,6 +210,47 @@ endif()
 
 include(CTest)
 include(Platform)
+
+# handle AAD framework download / integration
+if("${QL_USE_AAD}" STREQUAL "XAD")
+    message(STATUS "Using AAD with framework ${QL_USE_AAD}")
+
+    # we fetch from git into the source tree, only if those folders are not
+    # already existing. This is to allow users to clone the repos themselves,
+    # possibly using a fork.
+    
+    # XAD
+    if(NOT EXISTS ${PROJECT_SOURCE_DIR}/xad OR NOT EXISTS ${PROJECT_SOURCE_DIR}/xad/CMakeLists.txt)
+        message(STATUS "Did not find XAD in source tree - attempting to clone")
+        find_package(Git REQUIRED)
+        execute_process(
+            COMMAND ${GIT_EXECUTABLE} clone https://github.com/xcelerit/xad.git --branch main ${PROJECT_SOURCE_DIR}/xad
+            RESULT_VARIABLE _clone_success
+        )    
+        if(NOT "${_clone_success}" EQUAL 0)
+            message(FATAL_ERROR "Error cloning XAD repository - please clone https://github.com/xcelerit/xad.git manually into xad/ folder")
+        endif()
+    endif()
+    # QuantLib uses static runtime in MSVC
+    set(XAD_STATIC_MSVC_RUNTIME ${MSVC} CACHE BOOL "" FORCE)  
+    add_subdirectory(xad)
+
+    # Aaptor module with tests
+    if(NOT EXISTS ${PROJECT_SOURCE_DIR}/qlxad OR NOT EXISTS ${PROJECT_SOURCE_DIR}/qlxad/CMakeLists.txt)
+        message(STATUS "Did not find qlxad in source tree - attempting to clone")
+        find_package(Git REQUIRED)
+        execute_process(
+            COMMAND ${GIT_EXECUTABLE} clone https://github.com/xcelerit/qlxad.git --branch main ${PROJECT_SOURCE_DIR}/qlxad
+            RESULT_VARIABLE _clone_success
+        )    
+        if(NOT "${_clone_success}" EQUAL 0)
+            message(FATAL_ERROR "Error cloning qlxad repository - please clone https://github.com/xcelerit/qlxad.git manually into qlxad/ folder")
+        endif()
+    endif()
+    add_subdirectory(qlxad)
+else()
+    message(STATUS "Not using AAD")
+endif()
 
 # Add subdirectories
 add_subdirectory(ql)

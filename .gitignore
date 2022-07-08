@@ -30,6 +30,7 @@ Examples/*/bin/
 Examples/*/build/
 Examples/*/*.trs
 build/
+/build_*/
 lib/
 test-suite/bin/QuantLib-test-suite-*.manifest
 test-suite/build/
@@ -120,3 +121,8 @@ nbproject
 .dir-locals.el
 Build.props
 Directory.Build.props
+
+# submodules for XAD projects
+/qlxad
+/xad
+
