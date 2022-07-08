@@ -33,6 +33,7 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 
+
 namespace QuantLib {
 
     //! overnight coupon
@@ -60,7 +61,10 @@ namespace QuantLib {
                     const Date& refPeriodEnd = Date(),
                     const DayCounter& dayCounter = DayCounter(),
                     bool telescopicValueDates = false,
-                    RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                    RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                    Natural fixingDays=Null<Natural>(),
+                    bool withObservationShift=false,
+                    Natural lockoutDays=0);
         //! \name Inspectors
         //@{
         //! fixing dates for the rates to be compounded
@@ -71,6 +75,8 @@ namespace QuantLib {
         const std::vector<Rate>& indexFixings() const;
         //! value dates for the rates to be compounded
         const std::vector<Date>& valueDates() const { return valueDates_; }
+        //! accrual dates that determines how many calendar days each rate is compounded for
+        const std::vector<Date>& accrualDates() const { return accrualDates_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
@@ -83,7 +89,7 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
       private:
-        std::vector<Date> valueDates_, fixingDates_;
+        std::vector<Date> valueDates_, accrualDates_, fixingDates_;
         mutable std::vector<Rate> fixings_;
         Size n_;
         std::vector<Time> dt_;
@@ -101,7 +107,10 @@ namespace QuantLib {
         OvernightLeg& withPaymentDayCounter(const DayCounter&);
         OvernightLeg& withPaymentAdjustment(BusinessDayConvention);
         OvernightLeg& withPaymentCalendar(const Calendar&);
-        OvernightLeg& withPaymentLag(Natural lag);
+        OvernightLeg& withPaymentLag(Natural lag, bool lagLastPayment=true);
+        OvernightLeg& withObservationShift(bool flag=true);
+        OvernightLeg& withLockout(Natural lockoutDays, bool lockoutOnlyLastPayment=false);
+        OvernightLeg& withFixingDays(Natural fixingDays);
         OvernightLeg& withGearings(Real gearing);
         OvernightLeg& withGearings(const std::vector<Real>& gearings);
         OvernightLeg& withSpreads(Spread spread);
@@ -117,6 +126,11 @@ namespace QuantLib {
         Calendar paymentCalendar_;
         BusinessDayConvention paymentAdjustment_;
         Natural paymentLag_;
+        bool lagLastPayment_;
+        bool withObservationShift_;
+        Natural lockoutDays_;
+        bool lockoutOnlyLastPayment_;
+        Natural fixingDays_;
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
         bool telescopicValueDates_;

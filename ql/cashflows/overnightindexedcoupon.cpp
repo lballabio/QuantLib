@@ -42,7 +42,7 @@ namespace QuantLib {
                 QL_ENSURE(coupon_, "wrong coupon type");
             }
 
-            Rate averageRate(const Date& date) const {
+            Rate averageRate(const Date& valueDate) const {
 
                 const Date today = Settings::instance().evaluationDate();
 
@@ -52,10 +52,12 @@ namespace QuantLib {
 
                 const vector<Date>& fixingDates = coupon_->fixingDates();
                 const vector<Date>& valueDates = coupon_->valueDates();
+                const vector<Date>& accrualDates = coupon_->accrualDates();
                 const vector<Time>& dt = coupon_->dt();
 
                 Size i = 0;
-                const size_t n = std::lower_bound(valueDates.begin(), valueDates.end(), date) - valueDates.begin();
+                const size_t n = std::lower_bound(valueDates.begin(), valueDates.end(), valueDate) - valueDates.begin();
+                Date accrualToDate = accrualDates.at(n); // to do: replace debug at() with faster []
                 Real compoundFactor = 1.0;
 
                 // already fixed part
@@ -65,9 +67,9 @@ namespace QuantLib {
                     QL_REQUIRE(fixing != Null<Real>(),
                                "Missing " << index->name() <<
                                " fixing for " << fixingDates[i]);
-                    Time span = (date >= valueDates[i+1] ?
+                    Time span = (accrualToDate >= accrualDates[i+1] ?
                                  dt[i] :
-                                 index->dayCounter().yearFraction(valueDates[i], date));
+                                 index->dayCounter().yearFraction(accrualDates[i], accrualToDate));
                     compoundFactor *= (1.0 + fixing * span);
                     ++i;
                 }
@@ -78,9 +80,9 @@ namespace QuantLib {
                     try {
                         Rate fixing = pastFixings[fixingDates[i]];
                         if (fixing != Null<Real>()) {
-                            Time span = (date >= valueDates[i+1] ?
+                            Time span = (accrualToDate >= accrualDates[i+1] ?
                                          dt[i] :
-                                         index->dayCounter().yearFraction(valueDates[i], date));
+                                         index->dayCounter().yearFraction(accrualDates[i], accrualToDate));
                             compoundFactor *= (1.0 + fixing * span);
                             ++i;
                         } else {
@@ -99,7 +101,7 @@ namespace QuantLib {
                                "null term structure set to this instance of " << index->name());
 
                     const DiscountFactor startDiscount = curve->discount(valueDates[i]);
-                    if (valueDates[n] == date) {
+                    if (valueDates[n] == valueDate) {
                         // full telescopic formula
                         const DiscountFactor endDiscount = curve->discount(valueDates[n]);
                         compoundFactor *= startDiscount / endDiscount;
@@ -111,12 +113,15 @@ namespace QuantLib {
                         compoundFactor *= startDiscount / endDiscount;
 
                         Rate fixing = index->fixing(fixingDates[n-1]);
-                        Time span = index->dayCounter().yearFraction(valueDates[n-1], date);
+                        Time span = index->dayCounter().yearFraction(valueDates[n-1], valueDate);
                         compoundFactor *= (1.0 + fixing * span);
                     }
                 }
 
-                const Rate rate = (compoundFactor - 1.0) / coupon_->accruedPeriod(date);
+                // accruedTime not the same as coupon_->accruedPeriod(date) when withObservationShift
+                // also accruedPeriod uses paymentDayCounter while here we should be using index daycounter
+                Time accruedTime = index->dayCounter().yearFraction(accrualDates.front(), accrualToDate);
+                const Rate rate = (compoundFactor - 1.0) / accruedTime;
                 return coupon_->gearing() * rate + coupon_->spread();
             }
 
@@ -146,14 +151,19 @@ namespace QuantLib {
                     const Date& refPeriodStart,
                     const Date& refPeriodEnd,
                     const DayCounter& dayCounter,
-                    bool telescopicValueDates, 
-                    RateAveraging::Type averagingMethod)
+                    bool telescopicValueDates,
+                    RateAveraging::Type averagingMethod,
+                    Natural fixingDays, // aka "lookback period", defaulting to index fixing days
+                    bool withObservationShift, // shift year fraction schedule by fixing days
+                    Natural lockoutDays)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                         overnightIndex ? overnightIndex->fixingDays() : 0,
+                         fixingDays,
                          overnightIndex,
                          gearing, spread,
                          refPeriodStart, refPeriodEnd,
                          dayCounter, false) {
+
+        // to do: consider whether telescopic dates work with observationShift, fixingDays, and lockout
 
         // value dates
         Date tmpEndDate = endDate;
@@ -200,22 +210,46 @@ namespace QuantLib {
 
         QL_ENSURE(valueDates_.size()>=2, "degenerate schedule");
 
-        // fixing dates
+        // fixing dates: use fixingDays_ as per logic in FloatingRateCoupon
         n_ = valueDates_.size()-1;
-        if (overnightIndex->fixingDays()==0) {
+        if (fixingDays_ == 0) {
             fixingDates_ = vector<Date>(valueDates_.begin(),
                                         valueDates_.end() - 1);
         } else {
             fixingDates_.resize(n_);
             for (Size i=0; i<n_; ++i)
-                fixingDates_[i] = overnightIndex->fixingDate(valueDates_[i]);
+                fixingDates_[i] = overnightIndex->fixingCalendar().advance(valueDates_[i], -fixingDays_, Days);
+        }
+
+        // the last lockoutDays in interest period are locked out and uses rate from before the lockout
+        if (lockoutDays != 0) {
+          Date lockoutStart = overnightIndex->fixingCalendar().advance(valueDates_.back(), -lockoutDays, Days, Unadjusted);
+          Date lockoutUses = overnightIndex->fixingCalendar().advance(lockoutStart, -1, Days, Unadjusted);
+          int j = n_ - 1;
+          while (j >= 0 && fixingDates_[j] >= lockoutStart) {
+            fixingDates_[j] = lockoutUses;
+            --j;
+          }
         }
 
         // accrual (compounding) periods
+        if (withObservationShift) {
+            // shift accrual schedule by fixingDays_ (which is determined by FloatingRateCoupon)
+            accrualDates_.resize(valueDates_.size());
+            Calendar cal = overnightIndex->fixingCalendar();
+            for (Size i=0; i<valueDates_.size(); ++i) {
+              accrualDates_[i] = cal.advance(valueDates_[i], -fixingDays_, Days, Unadjusted);
+            }
+        } else {
+          accrualDates_ = valueDates_;
+          // should it be this instead?: accrualDates_ = vector<Date>(valueDates_.begin(), valueDates_.end() - 1);
+        }
+
         dt_.resize(n_);
         const DayCounter& dc = overnightIndex->dayCounter();
-        for (Size i=0; i<n_; ++i)
-            dt_[i] = dc.yearFraction(valueDates_[i], valueDates_[i+1]);
+        for (Size i=0; i<n_; ++i) {
+            dt_[i] = dc.yearFraction(accrualDates_[i], accrualDates_[i+1]);
+        }
 
         switch (averagingMethod) {
             case RateAveraging::Simple:
@@ -271,8 +305,8 @@ namespace QuantLib {
 
     OvernightLeg::OvernightLeg(const Schedule& schedule, ext::shared_ptr<OvernightIndex> i)
     : schedule_(schedule), overnightIndex_(std::move(i)), paymentCalendar_(schedule.calendar()),
-      paymentAdjustment_(Following), paymentLag_(0), telescopicValueDates_(false),
-      averagingMethod_(RateAveraging::Compound) {
+      paymentAdjustment_(Following), paymentLag_(0), lagLastPayment_(true), withObservationShift_(false),
+      lockoutDays_(0), lockoutOnlyLastPayment_(false), fixingDays_(Null<Natural>()), telescopicValueDates_(false), averagingMethod_(RateAveraging::Compound) {
         QL_REQUIRE(overnightIndex_, "no index provided");
     }
 
@@ -302,8 +336,25 @@ namespace QuantLib {
         return *this;
     }
 
-    OvernightLeg& OvernightLeg::withPaymentLag(Natural lag) {
+    OvernightLeg& OvernightLeg::withPaymentLag(Natural lag, bool lagLastPayment) {
         paymentLag_ = lag;
+        lagLastPayment_ = lagLastPayment;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withLockout(Natural lockoutDays, bool lockoutOnlyLastPayment) {
+        lockoutDays_ = lockoutDays;
+        lockoutOnlyLastPayment_ = lockoutOnlyLastPayment;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withObservationShift(bool flag) {
+        withObservationShift_ = flag;
+        return *this;
+    }
+
+    OvernightLeg& OvernightLeg::withFixingDays(Natural fixingDays) {
+        fixingDays_ = fixingDays;
         return *this;
     }
 
@@ -348,12 +399,22 @@ namespace QuantLib {
 
         Date refStart, start, refEnd, end;
         Date paymentDate;
+        bool isLastPayment;
+        Natural lockoutDays;
 
         Size n = schedule_.size()-1;
         for (Size i=0; i<n; ++i) {
+            isLastPayment = (i+1 == schedule_.size()-1);
+
             refStart = start = schedule_.date(i);
             refEnd   =   end = schedule_.date(i+1);
-            paymentDate = paymentCalendar_.advance(end, paymentLag_, Days, paymentAdjustment_);
+
+            // handle payment lag and whether to lag the final payment
+            if (!lagLastPayment_ && isLastPayment) {
+              paymentDate = schedule_.date(i+1);
+            } else {
+              paymentDate = paymentCalendar_.advance(schedule_.date(i+1), paymentLag_, Days, paymentAdjustment_);
+            }
 
             if (i == 0 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1))
                 refStart = calendar.adjust(end - schedule_.tenor(),
@@ -361,6 +422,12 @@ namespace QuantLib {
             if (i == n-1 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1))
                 refEnd = calendar.adjust(start + schedule_.tenor(),
                                          paymentAdjustment_);
+
+            if (lockoutOnlyLastPayment_ && !isLastPayment) {
+              lockoutDays = 0;
+            } else {
+              lockoutDays = lockoutDays_;
+            }
 
             cashflows.push_back(ext::shared_ptr<CashFlow>(new
                 OvernightIndexedCoupon(paymentDate,
@@ -372,8 +439,11 @@ namespace QuantLib {
                                        detail::get(spreads_, i, 0.0),
                                        refStart, refEnd,
                                        paymentDayCounter_,
-                                       telescopicValueDates_, 
-                                       averagingMethod_)));
+                                       telescopicValueDates_,
+                                       averagingMethod_,
+                                       fixingDays_,
+                                       withObservationShift_,
+                                       lockoutDays)));
         }
         return cashflows;
     }
