@@ -29,23 +29,29 @@
 #include <ql/math/solvers1d/newton.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/qrplusamericanengine.hpp>
+#include <ql/math/integrals/tanhsinhintegral.hpp>
+#ifndef QL_BOOST_HAS_TANH_SINH
+#include <ql/math/integrals/gausslobattointegral.hpp>
+#endif
+
+#include <iostream>
 
 namespace QuantLib {
-
 
     class QrPlusBoundaryEvaluator {
       public:
         QrPlusBoundaryEvaluator(
-            ext::shared_ptr<GeneralizedBlackScholesProcess> process,
-            Time t, Time T, Real strike)
+            Real S, Real strike,
+            Rate rf, Rate dy, Volatility vol, Time t, Time T)
         : tau(t),
           K(strike),
-          sigma(process->blackVolatility()->blackVol(T, strike)),
+          sigma(vol),
           sigma2(sigma*sigma),
           v(sigma*std::sqrt(tau)),
-          r(-std::log(process->riskFreeRate()->discount(T))/T),
-          q(-std::log(process->dividendYield()->discount(T))/T),
+          r(rf),
+          q(dy),
           dr(std::exp(-r*tau)),
           dq(std::exp(-q*tau)),
           omega(2*(r-q)/sigma2),
@@ -55,8 +61,8 @@ namespace QuantLib {
                   *std::sqrt(squared(omega-1) + 8*r/(sigma2*(1-dr))))),
           alpha(2*dr*r/(sigma2*(2*lambda+omega - 1))),
           beta(alpha*(1/(1-dr)+lambdaPrime/(2*lambda+omega-1)) - lambda),
-          xMin(0.5*(strike + process->x0())*1e3*QL_EPSILON),
-          xMax(strike*std::min(1.0, r/ ((q != 0.0)? q : QL_EPSILON))),
+          xMin(0.5*(strike + S)*1e3*QL_EPSILON),
+          xMax(calcxMax(strike, r, q)),
           nrEvaluations(0),
           sc(Null<Real>()) {
         }
@@ -66,9 +72,14 @@ namespace QuantLib {
             S = std::max(xMin, S);
             if (S != sc)
                 preCalculate(S);
-            const Real c0 = -beta - lambda + alpha*theta/(dr*r*(K-S-npv));
 
-            return (1-dq*Phi_dp)*S + (lambda+c0)*(K-S-npv);
+            if (close_enough(K-S, npv)) {
+                return (1-dq*Phi_dp)*S + alpha*theta/(dr*r);
+            }
+            else {
+                const Real c0 = -beta - lambda + alpha*theta/(dr*r*(K-S-npv));
+                return (1-dq*Phi_dp)*S + (lambda+c0)*(K-S-npv);
+            }
         }
         Real derivative(Real S) const {
             S = std::max(xMin, S);
@@ -92,6 +103,10 @@ namespace QuantLib {
         Real xmin() const { return xMin; }
         Real xmax() const { return xMax; }
         Size evaluations() const { return nrEvaluations; }
+
+        static Real calcxMax(Real K, Rate r, Rate q) {
+            return K*std::min(1.0, r/ ((q != 0.0)? q : QL_EPSILON));
+        }
 
       private:
         void preCalculate(Real S) const {
@@ -120,8 +135,56 @@ namespace QuantLib {
         mutable Real npv, theta, charm;
     };
 
+
+    class QrPlusAddOnValue {
+      public:
+        QrPlusAddOnValue(Time T,
+                         Real S, Real K, Rate r, Rate q, Volatility vol,
+                         const Real xmax,
+                         const ChebyshevInterpolation& q_z)
+        : T_(T), S_(S), K_(K), xmax_(xmax),
+          r_(r), q_(q), vol_(vol), q_z_(q_z) {}
+
+        Real operator()(Real z) const {
+            const Real t = z*z;
+            const Real q = q_z_(2*std::sqrt(std::max(0.0, T_-t)/T_) - 1);
+            const Real b_t = xmax_*std::exp(-std::sqrt(std::max(0.0, q)));
+
+            const Real dr = std::exp(-r_*t);
+            const Real dq = std::exp(-q_*t);
+            const Real v = vol_*std::sqrt(t);
+
+            Real r;
+            if (v >= QL_EPSILON) {
+                if (b_t > QL_EPSILON) {
+                    const Real dp = std::log(S_*dq/(b_t*dr))/v + 0.5*v;
+                    r = 2*z*(r_*K_*dr*Phi_(-dp+v) - q_*S_*dq*Phi_(-dp));
+                }
+                else
+                    r = 0.0;
+            }
+            else if (close_enough(S_*dq, b_t*dr))
+                r = z*(r_*K_*dr - q_*S_*dq);
+            else if (b_t*dr > S_*dq)
+                r = 2*z*(r_*K_*dr - q_*S_*dq);
+            else
+                r = 0.0;
+
+            return r;
+        }
+
+       private:
+         const Time T_;
+         const Real S_, K_, xmax_;
+         const Rate r_, q_;
+         const Volatility vol_;
+         const ChebyshevInterpolation& q_z_;
+         const CumulativeNormalDistribution Phi_;
+    };
+
+
     QrPlusAmericanEngine::QrPlusAmericanEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
         Size interpolationPoints,
         QrPlusAmericanEngine::SolverType solverType,
         Real eps, Size maxIter)
@@ -133,17 +196,19 @@ namespace QuantLib {
           (solverType == Newton
            || solverType == Brent || solverType== Ridder)? 100 : 10)
           : maxIter ) {
+
+        registerWith(process);
     }
 
     template <class Solver>
     Real QrPlusAmericanEngine::buildInSolver(
         const QrPlusBoundaryEvaluator& eval,
-        Solver solver, Real strike, Size maxIter) const {
+        Solver solver, Real S, Real strike, Size maxIter) const {
 
         solver.setMaxEvaluations(maxIter);
         solver.setLowerBound(eval.xmin());
 
-        Real guess = 0.5*(eval.xmax() + process_->x0());
+        Real guess = 0.5*(eval.xmax() + S);
         if (guess >= eval.xmax())
             guess = std::nextafter(eval.xmax(), -1);
         else if (guess <= eval.xmin())
@@ -152,32 +217,36 @@ namespace QuantLib {
         return solver.solve(eval, eps_, guess, eval.xmin(), eval.xmax());
     }
 
-    std::pair<Size, Real> QrPlusAmericanEngine::exerciseBoundary(
-        Time tau, Time T, Real strike) const {
+    std::pair<Size, Real> QrPlusAmericanEngine::putExerciseBoundary(
+        const PutOptionParam& param, Time tau) const {
 
-        const QrPlusBoundaryEvaluator eval(process_, tau, T, strike);
+        const Real S = param.S;
+        const Real K = param.K;
 
         if (tau < QL_EPSILON)
-            return std::pair<Size, Real>(Size(0), eval.xmax());
+            return std::pair<Size, Real>(
+                Size(0), QrPlusBoundaryEvaluator::calcxMax(K, param.r, param.q));
+
+        const QrPlusBoundaryEvaluator eval(
+            S, K, param.r, param.q, param.vol, tau, param.T);
 
         const Real xmin = eval.xmin();
-        const Real x0 = process_->x0();
 
         Real x;
         switch (solverType_) {
           case Brent:
-            x = buildInSolver(eval, QuantLib::Brent(), strike, maxIter_);
+            x = buildInSolver(eval, QuantLib::Brent(), S, K, maxIter_);
             break;
           case Newton:
-            x = buildInSolver(eval, QuantLib::Newton(), strike, maxIter_);
+            x = buildInSolver(eval, QuantLib::Newton(), S, K, maxIter_);
             break;
           case Ridder:
-            x = buildInSolver(eval, QuantLib::Ridder(), strike, maxIter_);
+            x = buildInSolver(eval, QuantLib::Ridder(), S, K, maxIter_);
             break;
           case Halley:
           case SuperHalley:
             {
-                x = 0.5*(eval.xmax() + x0);
+                x = 0.5*(eval.xmax() + S);
                 Real xOld, fx;
                 do {
                     xOld = x;
@@ -193,12 +262,12 @@ namespace QuantLib {
 
                     x = std::max(xmin, x - step);
                 }
-                while (   std::fabs(x-xOld)/x0  > eps_
+                while (   std::fabs(x-xOld)/S  > eps_
                        && eval.evaluations() < maxIter_);
 
                 // fallback
-                if (std::fabs(x-xOld)/x0 > eps_ && !close(std::fabs(fx), 0.0)) {
-                    x = buildInSolver(eval, QuantLib::Brent(), strike, 10*maxIter_);
+                if (std::fabs(x-xOld)/S > eps_ && !close(std::fabs(fx), 0.0)) {
+                    x = buildInSolver(eval, QuantLib::Brent(), S, K, 10*maxIter_);
                 }
             }
             break;
@@ -207,6 +276,68 @@ namespace QuantLib {
         }
 
         return std::pair<Size, Real>(eval.evaluations(), x);
+    }
+
+    Real QrPlusAmericanEngine::calculate_put(
+        Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
+
+        if (close(S, 0.0))
+            return std::max(K, K*std::exp(-r*T));
+
+        const Real europeanValue = std::max(
+            0.0,
+            BlackCalculator(
+                Option::Put, K,
+                S*std::exp((r-q)*T),
+                vol*std::sqrt(T), std::exp(-r*T)).value()
+        );
+
+        if (r <= 0.0 && r <= q)
+            return europeanValue;
+
+        if (close(vol, 0.0)) {
+            const auto intrinsic = [&](Real t) {
+                return std::max(0.0, K*std::exp(-r*t)-S*std::exp(-q*t));
+            };
+            const Real npv0 = intrinsic(0.0);
+            const Real npvT = intrinsic(T);
+            const Real extremT
+                = close_enough(r, q)? QL_MAX_REAL : std::log(r*K/(q*S))/(r-q);
+
+             if (extremT > 0.0 && extremT < T)
+                return std::max(npv0, std::max(npvT, intrinsic(extremT)));
+            else
+                return std::max(npv0, npvT);
+        }
+
+        QL_REQUIRE(r >= 0 && q >= 0,
+            "positiive interest rates and dividend yields are required");
+
+        const Real xmax = QrPlusBoundaryEvaluator::calcxMax(K, r, q);
+
+        const ChebyshevInterpolation q_z(
+            interpolationPoints_,
+            [&, this](Real z) {
+                const Real x_sq = 0.25*T*squared(1+z);
+                const PutOptionParam param = {S, K, r, q, vol, T};
+                return squared(
+                    std::log(this->putExerciseBoundary(param, x_sq).second/xmax));
+            }
+        );
+
+        const QrPlusAddOnValue aov(T, S, K, r, q, vol, xmax, q_z);
+
+#ifdef QL_BOOST_HAS_TANH_SINH
+        const Real addOn = TanhSinhIntegral(eps_)(aov, 0.0, std::sqrt(T));
+#else
+        const Real addOn = GaussLobattoIntegral(100*maxIter_, QL_MAX_REAL, eps_)
+                (aov, 0.0, std::sqrt(T));
+#endif
+
+        QL_REQUIRE(addOn > -10*eps_,
+            "negative early exercise value " << addOn);
+
+        return europeanValue + std::max(0.0, addOn);
     }
 
     void QrPlusAmericanEngine::calculate() const {
@@ -218,19 +349,26 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         const Real spot = process_->x0();
-        QL_REQUIRE(spot > 0.0, "negative underlying given");
+        QL_REQUIRE(spot >= 0.0, "negative underlying given");
 
-        const Time T = process_->time(arguments_.exercise->lastDate());
+        const auto maturity = arguments_.exercise->lastDate();
+        const Time T = process_->time(maturity);
+        const Real S = process_->x0();
         const Real K = payoff->strike();
-        const Real xmax = QrPlusBoundaryEvaluator(process_, T, T, K).xmax();
+        const Rate r = -std::log(process_->riskFreeRate()->discount(maturity))/T;
+        const Rate q = -std::log(process_->dividendYield()->discount(maturity))/T;
+        const Volatility vol = process_->blackVolatility()->blackVol(T, K);
 
-        const auto interp = ChebyshevInterpolation(
-            interpolationPoints_,
-            [&T, &K, &xmax, this](Real x) {
-                return squared(
-                    std::log(exerciseBoundary(x*x, T, K).second / xmax));
-            }
-        );
+        QL_REQUIRE(S >= 0, "zero or positive underlying value is required");
+        QL_REQUIRE(K >= 0, "zero or positive strike is required");
+        QL_REQUIRE(vol >= 0, "zero or positive volatility is required");
 
+        if (payoff->optionType() == Option::Put)
+            results_.value = calculate_put(S, K, r, q, vol, T);
+        else if (payoff->optionType() == Option::Call)
+            results_.value = calculate_put(K, S, q, r, vol, T);
+        else
+            QL_FAIL("unknown option type");
     }
+
 }
