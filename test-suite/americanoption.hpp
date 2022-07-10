@@ -44,6 +44,7 @@ class AmericanOptionTest {
     static void testCallPutParity();
     static void testQrPlusBoundaryValues();
     static void testQrPlusBoundaryConvergence();
+    static void testQrPlusAmericanEngine();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 

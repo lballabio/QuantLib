@@ -23,6 +23,8 @@
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/vanillaoption.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
@@ -374,7 +376,7 @@ void AmericanOptionTest::testJuValues() {
 
 void AmericanOptionTest::testFdValues() {
 
-    BOOST_TEST_MESSAGE("Testing finite-difference engine "
+    BOOST_TEST_MESSAGE("Testing finite-difference and QR+ engine "
                        "for American options...");
 
     Date today = Date::todaysDate();
@@ -388,6 +390,19 @@ void AmericanOptionTest::testFdValues() {
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     Real tolerance = 8.0e-2;
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+        ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot),
+            Handle<YieldTermStructure>(qTS),
+            Handle<YieldTermStructure>(rTS),
+            Handle<BlackVolTermStructure>(volTS));
+
+    ext::shared_ptr<PricingEngine> pdeEngine =
+        ext::make_shared<FdBlackScholesVanillaEngine>(stochProcess, 100, 400);
+
+    ext::shared_ptr<PricingEngine> qrPlusEngine =
+        ext::make_shared<FdBlackScholesVanillaEngine>(stochProcess);
 
     for (auto& juValue : juValues) {
 
@@ -403,24 +418,32 @@ void AmericanOptionTest::testFdValues() {
         rRate->setValue(juValue.r);
         vol->setValue(juValue.v);
 
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
-            ext::make_shared<BlackScholesMertonProcess>(Handle<Quote>(spot),
-                                                        Handle<YieldTermStructure>(qTS),
-                                                        Handle<YieldTermStructure>(rTS),
-                                                        Handle<BlackVolTermStructure>(volTS));
-
-        ext::shared_ptr<PricingEngine> engine =
-            ext::make_shared<FdBlackScholesVanillaEngine>(stochProcess, 100, 100);
-
         VanillaOption option(payoff, exercise);
-        option.setPricingEngine(engine);
+        option.setPricingEngine(pdeEngine);
 
-        Real calculated = option.NPV();
-        Real error = std::fabs(calculated - juValue.result);
+        Real pdeCalculated = option.NPV();
+        Real error = std::fabs(pdeCalculated - juValue.result);
         if (error > tolerance) {
             REPORT_FAILURE("value", payoff, exercise, juValue.s, juValue.q, juValue.r, today,
-                           juValue.v, juValue.result, calculated, error, tolerance);
+                           juValue.v, juValue.result, pdeCalculated, error, tolerance);
         }
+
+        option.setPricingEngine(qrPlusEngine);
+
+        Real qrPlusCalculated = option.NPV();
+        if (std::abs(pdeCalculated - qrPlusCalculated) > 2e-2)
+            BOOST_FAIL("QR+ boundary approximation failed to "
+                    "reproduce PDE value for "
+                    << "\n    OptionType: " <<
+                    ((juValue.type == Option::Call)? "Call" : "Put")
+                    << std::setprecision(16)
+                    << "\n    spot:       " << spot->value()
+                    << "\n    strike:     " << juValue.strike
+                    << "\n    r:          " << rRate->value()
+                    << "\n    q:          " << qRate->value()
+                    << "\n    vol:        " << vol->value()
+                    << "\n    PDE value:  " << pdeCalculated
+                    << "\n    QR+ value:  " << qrPlusCalculated);
     }
 }
 
@@ -911,8 +934,8 @@ void AmericanOptionTest::testCallPutParity() {
 
     SavedSettings backup;
 
-    const auto dc = Actual365Fixed();
-    const auto today = Date(8, April, 2022);
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(8, April, 2022);
     Settings::instance().evaluationDate() = today;
 
     struct OptionSpec {
@@ -1005,14 +1028,11 @@ void AmericanOptionTest::testQrPlusBoundaryValues() {
     const Volatility sigma = 0.25;
     const Time maturity = 5.0;
 
-    const auto process = ext::make_shared<BlackScholesMertonProcess>(
-        Handle<Quote>(ext::make_shared<SimpleQuote>(S)),
-        Handle<YieldTermStructure>(flatRate(q, dc)),
-        Handle<YieldTermStructure>(flatRate(r, dc)),
-        Handle<BlackVolTermStructure>(flatVol(sigma, dc))
-    );
+    const QrPlusAmericanEngine::PutOptionParam param = {
+        S, K, r, q, sigma, maturity
+    };
 
-    const QrPlusAmericanEngine qrPlusEngine(process);
+    const QrPlusAmericanEngine qrPlusEngine(nullptr, 10);
 
     std::vector<std::pair<Real, Real> > testCaseSpecs = {
         {4.9, 87.76960949965387},
@@ -1023,8 +1043,9 @@ void AmericanOptionTest::testQrPlusBoundaryValues() {
     };
 
     for (const auto& testCaseSpec: testCaseSpecs) {
-        const std::pair<Size, Real> calculated
-            = qrPlusEngine.exerciseBoundary(testCaseSpec.first, maturity, K);
+        const auto calculated
+            = qrPlusEngine.putExerciseBoundary(param, testCaseSpec.first);
+
         const Real boundary = calculated.second;
         const Size nrEvaluations = calculated.first;
 
@@ -1081,30 +1102,20 @@ void AmericanOptionTest::testQrPlusBoundaryConvergence() {
         { QrPlusAmericanEngine::SuperHalley, "SuperHalley" }
     };
 
-    const auto s0 = Handle<Quote>(ext::make_shared<SimpleQuote>(S));
-    const auto vol = Handle<BlackVolTermStructure>(flatVol(sigma, dc));
-
     for (const auto& testCase: testCases) {
-        const Rate r = testCase.r;
-        const Rate q = testCase.q;
-        const Real K = testCase.strike;
-
-        const auto process = ext::make_shared<BlackScholesMertonProcess>(
-                s0,
-                Handle<YieldTermStructure>(flatRate(q, dc)),
-                Handle<YieldTermStructure>(flatRate(r, dc)),
-                vol
-        );
-
+        const QrPlusAmericanEngine::PutOptionParam param = {
+            S, testCase.strike, testCase.r, testCase.q, sigma, maturity
+        };
         for (auto solverType: solverTypes) {
             const QrPlusAmericanEngine qrPlusEngine(
-                process, Null<Size>(), solverType.first, 1e-8);
+                ext::shared_ptr<GeneralizedBlackScholesProcess>(nullptr),
+                Null<Size>(), solverType.first, 1e-8);
 
             Size nrEvaluations = 0;
 
-            for (Real t=0.0; t < 10.0; t+=0.1) {
-                const std::pair<Size, Real> calculated
-                    = qrPlusEngine.exerciseBoundary(t, maturity, K);
+            for (Real t=0.0; t < maturity; t+=0.1) {
+                const auto calculated
+                    = qrPlusEngine.putExerciseBoundary(param, t);
                 nrEvaluations += calculated.first;
             }
 
@@ -1118,12 +1129,260 @@ void AmericanOptionTest::testQrPlusBoundaryConvergence() {
                         << "\n    evaluations: " << nrEvaluations
                         << "\n    max eval:    " << maxEvaluations
                         << "\n    Solver:      " << solverType.second
-                        << "\n    r :          " << r
-                        << "\n    q :          " << q
-                        << "\n    K :          " << K);
+                        << "\n    r :          " << param.r
+                        << "\n    q :          " << param.q
+                        << "\n    K :          " << param.K);
             }
         }
     }
+}
+
+void AmericanOptionTest::testQrPlusAmericanEngine() {
+    BOOST_TEST_MESSAGE("Testing QR+ American Option pricing...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(1, June, 2022);
+    Settings::instance().evaluationDate() = today;
+
+    struct OptionSpec {
+        Option::Type optionType;
+        Real spot;
+        Real strike;
+        Size maturityInDays;
+        Real volatility;
+        Real r;
+        Real q;
+        Real expectedValue;
+        bool highPrecision;
+    };
+
+    // high precision edge cases
+    const OptionSpec edgeTestCases[] = {
+
+        // standard put option
+        {Option::Put, 100.0, 120.0, 3650, 0.25, 0.10, 0.03, 22.97197053274833, true},
+        // call-put parity on standard option
+        {Option::Call, 120.0, 100.0, 3650, 0.25, 0.03, 0.10, 22.97197053274833, true},
+
+        // zero strike put
+        {Option::Put, 100.0, 0.0, 365, 0.25, 0.02, 0.02, 0.0, true},
+        {Option::Put, 100.0, 1e-8, 365, 0.25, 0.02, 0.02, 0.0, true},
+
+        // zero strike call
+        {Option::Call, 100.0, 0.0, 365, 0.25, 0.05, 0.01, 100.0, true},
+        {Option::Call, 100.0, 1e-8, 365, 0.25, 0.05, 0.01, 100.0-1e-8, true},
+
+        // zero vol call
+        {Option::Call, 100.0, 50.0, 365, 0.0, 0.05, 0.01, 51.4435121498811085, true},
+        {Option::Call, 100.0, 50.0, 365, 1e-8, 0.05, 0.01, 51.4435121498811156, true},
+
+        // zero vol put 1
+        {Option::Put, 100.0, 120.0, 4*3650, 1e-6, 0.01, 0.50, 108.980920365700442, true},
+        {Option::Put, 100.0, 120.0, 4*3650, 0.0, 0.01, 0.50, 108.9809045611846, true},
+
+        // zero vol put 2
+        {Option::Put, 100.0, 120.0, 365, 1e-7, 0.05, 0.01, 20.0, true},
+        {Option::Put, 100.0, 120.0, 365, 0.0, 0.05, 0.01, 20.0, true},
+
+        // zero vol put 3
+        {Option::Put, 100.0, 120.0, 365, 1e-7, 0.00, 0.05, 24.8770575499286082, true},
+        {Option::Put, 100.0, 120.0, 365, 0.0, 0.00, 0.05, 24.8770575499286082, true},
+
+        // zero spot put
+        {Option::Put, 1e-6, 120.0, 365, 0.25, -0.075, 0.05, 129.346097154926355, true},
+        {Option::Put, 0.0, 120.0, 365, 0.25, -0.075, 0.05, 129.346098106155779, true},
+
+        // zero spot call
+        {Option::Call, 1e-6, 120.0, 365, 0.25, 0.075, 0.05, 0.0, true},
+        {Option::Call, 0.0, 120.0, 365, 0.25, 0.075, 0.05, 0.0, true},
+
+        // put option with one day left
+        {Option::Put, 100.0, 120.0, 1, 0.25, 0.05, 0.0, 20.0, true},
+
+        // put option at maturity
+        {Option::Put, 100.0, 120.0, 0, 0.25, 0.05, 0.0, 0.0, true},
+
+        // put option at maturity
+        {Option::Put, 100.0, 120.0, 0, 0.25, 0.05, 0.0, 0.0, true},
+
+        // zero everything
+        {Option::Put, 0.0, 0.0, 365, 0.0, 0.0, 0.0, 0.0, true},
+
+        // zero strike call with zero vol
+        {Option::Call, 100.0, 1e-8, 365, 1e-8, 0.05, 0.025, 100.0-1e-8, true},
+        {Option::Call, 100.0, 0.0, 365, 1e-8, 0.05, 0.025, 100.0, true},
+        {Option::Call, 100.0, 1e-8, 365, 0.0, 0.05, 0.025, 100.0-1e-8, true},
+        {Option::Call, 100.0, 0.0, 365, 0.0, 0.05, 0.025, 100.0, true},
+
+        // zero spot call with zero vol
+        {Option::Call, 1e-8, 100, 365, 1e-8, 0.05, 0.025, 0.0, true},
+        {Option::Call, 0.0, 100, 365, 0.0, 0.05, 0.025, 0.0, true},
+
+        // zero interest rate call
+        {Option::Call, 100, 100, 365, 0.25, 0.0, 0.025, 8.87150621240175319, true},
+
+        // zero dividend rate call
+        {Option::Call, 100, 100, 365, 0.25, 0.05, 0.0, 12.3359989303687154, true},
+
+        // extreme spot call
+        {Option::Call, 1e10, 100, 365, 0.25, 0.01, 0.05, 1e10-100.0, false},
+
+        // extreme strike call
+        {Option::Call, 100, 1e10, 365, 0.25, 0.01, 0.05, 0.0, true},
+
+        // extreme vol call
+        {Option::Call, 100, 100, 365, 100.0, 0.01, 0.05, 99.9871892409917393, true},
+
+        // extreme dividend yield call
+        {Option::Call, 100, 100, 365, 0.25, 0.10, 10.0, 0.11226606384050547, true},
+
+        // extreme maturity call
+        {Option::Call, 100, 100, 170*365, 0.25, 0.01, 0.002, 80.3742203184716146, true},
+    };
+
+    // random test cases
+    const Real pde_values[] = {
+        581.46895,113.78442,581.44547,1408.579,49.19448,1060.27367,
+        834.83366,176.48305,120.38008,307.11264,602.7006,233.80171,
+        204.74596,0.30987,0,0,5.36215,0.01711,0,84.51193,0.67131,
+        0.06414,152.67188,54.75257,90.31861,168.50289,18.38926,0,
+        282.4995,0,0.08428,12.30929,42.26359,139.87748,0.28724,0.00421,
+        0,0.00206,0,658.60427,140.51139,23.17387,0.35612,0,909.14828,
+        0,0.11549,5.46749,144.25428,2576.6754,562.16484,0,122.725,
+        383.48463,278.7447,3.52566,82.34348,81.06139,0,10.42824,
+        4.95917,25.28602,31.38869,3.53697,0,0.012,0,0.4263,162.16184,
+        0.4618,97.714,283.03442,0.38176,70.25367,134.94142,2.19293,
+        226.4746,76.74309,46.03123,15.76214,0.01666,1806.26208,0,
+        103.93726,6.82956,337.81301,0.64236,677.63248,25.01763,
+        443.79052,1793.78327,118.6293,185.79849,11.59313,679.01736,
+        17.99005,403.57554,1.67418,0,0.03795,3326.09089,71.1996,
+        0,485.10353,0,1681.25166,0,43.15432,0.75825,0.05895,34.71493,
+        0.00015,5.58671,115.98793,37.7713,399.24494,0.00766,445.42207,
+        152.65397,0,47.05874,0.96921,14.21875,257.84754,109.62533,
+        2553.99295,138.46663,192.33614,81.41877,18.21403,113.926,
+        27.28409,174.77093,42.70527,0.90326,0,967.9901,616.0143,
+        253.56442,0.00397,2493.82098,9.29406,11.00023,0,0,234.12481,
+        0,72.46356,0,9.00932,48.67934,29.42756,13.4271,0,0,0,0,20.71417,
+        48.57474,2.26452,0,109.0243,0,21.26801,1.21164,0,86.25232,
+        36.00437,4.53844,7.40503,313.53602,379.76105,165.84347,77.19665,
+        9.02466,0.10634,214.84982,6.13387,133.44645,303.25953,0,
+        134.26724,246.89804,0,123.32975,32.83429,9.56819,7.42582,0,
+        73.82832,196.84831,0.00001,72.70391,2173.8649,123.00513,
+        153.83539,21.63003,209.84752,30.12425,0,197.6502,0,164.02863,
+        7.65143,56.57631,2392.70018,0,0,34.23457,171.08459,0.49387,
+        31.13395,237.68801,0.01262,0,0,0,0,41.56635,0,8.41535,55.01775,
+        310.50094,0,14.85456,174.34018,7.19772,0.00001,0,91.70874,
+        0.00001,17.51724,0.00587,0,532.24902,2.05553,36.80843,0,
+        33.39288,0.00006,0.04439,1.3434,0,0.41816,926.37642,0,247.61559,
+        151.98965,0.35243,4.33198,23294.47744,0.00791,12.51996,53.47727,
+        167.95572,0.0062,6.8482,0,347.83408,852.85742,558.21422,0,
+        53.89293,78.61011,187.3978,9.18927,0.00553,113.48101,1467.30556,
+        74.82251,94.84476,0,101.3649,59.27007,0,773.81251,0,542.7889,0,
+        68.96209,96.0435,0.00004,0.10738,0.00187,324.97758,245.68455,
+        30.52818,129.84472,0,46.86288,368.41675,139.29763,4.4393,16.29594,
+        25.7554,64.02621,89.41363,0.62751,219.65237,0.26039,0,12.02172,
+        101.97733,69.37456,45.81122,1263.33603,164.31607,15.88788,0,48.77797,
+        0.13153,147.16808,10.31217,7.50634,7.48611,177.95409,225.77562,3.56947,
+        0.02531,4.88869,8.76632,0,0,0.02214,305.08468,44.52185,182.17332,
+        538.31458,0,46.97229,0,31.94202,410.43038,0,70.35432,15.58346,74.14177,
+        953.67663,11.79128,59.83061,0,37.86557,1184.22731,2411.37823,0,0,0,0,
+        49.3179,236.38654,21.36225,218.048,517.57006,0,0,12.52933,256.71967,
+        0.00025,1.47981,158.19166,0,1923.70709,4.94441,1199.81196,45.92353,
+        85.73255,14.91338,88.81459,21.42459,3456.9466,31.97838,233.26863,
+        49.34801,2684.07758,0,0,32.24149,0,111.79552,0.00506,8.77602,0,
+        406.54213,0.32974,365.53998,1.49714,19.65603,37.33877,205.06928,
+        0.01805,589.23478,9.58273,0.02946,286.48706,463.34512,528.21392,0,
+        47.71294,21.0864,114.81771,80.489,21.30905,41.95873,19.03598,156.09295,
+        0,73.6509,0,0,168.17576,0,32.71243,36.75044,177.64583,0.05618,
+        156.38616,1370.4754,24.5976,59.83173,0,354.93074,34.96889,0.00532,
+        16.95287,1259.72993,241.05777,18.9778,0.57635,43.98093,25.2678,
+        369.39896,0.31549,0,31.95512,101.60559,11.22079,970.16273,0,0,
+        1.55445,0,18.6067,0,1124.20117,52.67762,10.38273,0,10.22588,251.27813,
+        0,431.82244,0,1.31252,0,84.72154,100.98411,160.95557,129.51372,
+        0.00026,103.81663,421.64767,0.00031,0,104.48529,162.59225,0,
+        1504.0869,88.11253,4.14052,0.07195,203.78754,0.00002,42.5395,0,
+        17.05087,26.89157,64.64923,0,390.87453,124.55406,0.01018,94.23963};
+
+    std::vector<OptionSpec> testCaseSpecs;
+    testCaseSpecs.reserve(LENGTH(pde_values) + LENGTH(edgeTestCases));
+
+    PseudoRandom::rng_type rng(PseudoRandom::urng_type(12345UL));
+
+    for (Size i=0; i < LENGTH(pde_values); ++i) {
+        const Option::Type optionType
+            = (rng.next().value > 0)? Option::Call : Option::Put;
+        const Real spot = 100*std::exp(1.5*rng.next().value);
+        const Real strike = 100*std::exp(1.5*rng.next().value);
+        const Size maturityInDays = Size(1 + 365*std::exp(2*rng.next().value));
+        const Volatility  vol = 0.5*std::exp(rng.next().value);
+        const Rate r = 0.10*std::exp(rng.next().value);
+        const Rate q = 0.10*std::exp(rng.next().value);
+
+        const OptionSpec spec = {
+            optionType, spot, strike, maturityInDays,
+            vol, r, q, pde_values[i], false
+        };
+
+        testCaseSpecs.push_back(spec);
+    }
+
+    testCaseSpecs.insert(
+        testCaseSpecs.end(),std::begin(edgeTestCases), std::end(edgeTestCases));
+
+    auto spot = ext::make_shared<SimpleQuote>(1.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
+
+    const auto qrPlusAmericanEngine =
+        ext::make_shared<QrPlusAmericanEngine>(
+            ext::make_shared<BlackScholesMertonProcess>(
+                Handle<Quote>(spot),
+                Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+                Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+                Handle<BlackVolTermStructure>(flatVol(today, vol, dc))
+            )
+    );
+
+    for (const auto& testCaseSpec: testCaseSpecs) {
+        const Date maturityDate =
+            today + Period(testCaseSpec.maturityInDays, Days);
+
+        spot->setValue(testCaseSpec.spot);
+        rRate->setValue(testCaseSpec.r);
+        qRate->setValue(testCaseSpec.q);
+        vol->setValue(testCaseSpec.volatility);
+
+        VanillaOption option(
+            ext::make_shared<PlainVanillaPayoff>(
+                testCaseSpec.optionType, testCaseSpec.strike),
+            ext::make_shared<AmericanExercise>(today, maturityDate)
+        );
+        option.setPricingEngine(qrPlusAmericanEngine);
+
+        const Real calculated = option.NPV();
+        const Real expected = testCaseSpec.expectedValue;
+
+        if ((testCaseSpec.highPrecision && std::abs(expected-calculated) > 1e-14)
+            || (!testCaseSpec.highPrecision && expected > 0.1 && std::abs(calculated-expected)/expected > 0.005)
+            || (!testCaseSpec.highPrecision && expected <= 0.1 && std::abs(expected-calculated) > 5e-4)) {
+            BOOST_FAIL("QR+ boundary approximation failed to "
+                    "reproduce cached edge and PDE values for "
+                    << "\n    OptionType: " <<
+                    ((testCaseSpec.optionType == Option::Call)? "Call" : "Put")
+                    << std::setprecision(16)
+                    << "\n    spot:       " << spot->value()
+                    << "\n    strike:     " << testCaseSpec.strike
+                    << "\n    r:          " << rRate->value()
+                    << "\n    q:          " << qRate->value()
+                    << "\n    vol:        " << vol->value()
+                    << "\n    calculated: " << calculated
+                    << "\n    expected:   " << expected);
+        }
+    };
+
 }
 
 test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
@@ -1142,6 +1401,7 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQrPlusBoundaryValues));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQrPlusBoundaryConvergence));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQrPlusAmericanEngine));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));

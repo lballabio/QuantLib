@@ -43,24 +43,26 @@ namespace QuantLib {
     class TanhSinhIntegral : public Integrator {
       public:
         TanhSinhIntegral(
-            Real tolerance = std::sqrt(std::numeric_limits<Real>::epsilon()),
+            Real relTolerance = std::sqrt(std::numeric_limits<Real>::epsilon()),
             Size maxRefinements = 15,
             Real minComplement = std::numeric_limits<Real>::min() * 4
             )
-      : Integrator(tolerance, Null<Size>()),
+      : Integrator(QL_MAX_REAL, Null<Size>()),
+        relTolerance_(relTolerance),
         tanh_sinh_(maxRefinements, minComplement) {}
 
       protected:
         Real integrate(const ext::function<Real(Real)>& f, Real a, Real b)
         const override {
             Real error;
-            Real value = tanh_sinh_.integrate(f, a, b, absoluteAccuracy(), &error);
+            Real value = tanh_sinh_.integrate(f, a, b, relTolerance_, &error);
             setAbsoluteError(error);
 
             return value;
         }
 
       private:
+        const Real relTolerance_;
         mutable tanh_sinh tanh_sinh_;
     };
 }

@@ -33,24 +33,34 @@ namespace QuantLib {
 
     class QrPlusAmericanEngine : public VanillaOption::engine {
       public:
+        struct PutOptionParam {
+            Real S, K;
+            Rate r, q;
+            Volatility vol;
+            Time T;
+        };
         enum SolverType {Brent, Newton, Ridder, Halley, SuperHalley};
 
         explicit QrPlusAmericanEngine(
-            ext::shared_ptr<GeneralizedBlackScholesProcess>,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
             Size interpolationPoints = 8,
             SolverType solverType = Halley,
-            Real eps = 1e4*QL_EPSILON,
+            Real eps = 1e-6,
             Size maxIter = Null<Size>());
 
         void calculate() const override;
 
-        std::pair<Size, Real> exerciseBoundary(
-            Time t, Time maturity, Real strike) const;
+        std::pair<Size, Real> putExerciseBoundary(
+            const PutOptionParam& param, Time tau) const;
 
       private:
         template <class Solver>
-        Real buildInSolver(const QrPlusBoundaryEvaluator& eval,
-                           Solver solver, Real strike, Size maxIter) const;
+        Real buildInSolver(
+            const QrPlusBoundaryEvaluator& eval,
+            Solver solver, Real S, Real strike, Size maxIter) const;
+
+        Real calculate_put(
+            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
 
         const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         const Size interpolationPoints_;
