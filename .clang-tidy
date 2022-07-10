@@ -8,7 +8,6 @@ Checks: >
         clang-analyzer-*,
           -clang-analyzer-core.UndefinedBinaryOperatorResult,
           -clang-analyzer-core.uninitialized.Assign,
-          -clang-analyzer-deadcode.DeadStores,
           -clang-analyzer-optin.cplusplus.UninitializedObject,
           -clang-analyzer-optin.cplusplus.VirtualCall,
           -clang-analyzer-optin.performance.Padding,

@@ -65,7 +65,10 @@ namespace QuantLib {
     //! %Dividend-barrier-option %engine base class
     class DividendBarrierOption::engine
         : public GenericEngine<DividendBarrierOption::arguments,
-                               DividendBarrierOption::results> {};
+                               DividendBarrierOption::results> {
+      protected:
+        bool triggered(Real underlying) const;
+    };
 
 }
 

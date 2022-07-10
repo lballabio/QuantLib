@@ -53,8 +53,10 @@ namespace QuantLib {
       public:
         //! \name Constructors, destructor, and assignment
         //@{
+        //! creates the array with size 0
+        Array() : Array(static_cast<Size>(0)) {}
         //! creates the array with the given dimension
-        explicit Array(Size size = 0);
+        explicit Array(Size size);
         //! creates the array and fills it with <tt>value</tt>
         Array(Size size, Real value);
         /*! \brief creates the array and fills it according to
@@ -145,11 +147,9 @@ namespace QuantLib {
 
     //! specialization of null template for this class
     template <>
-    class Null<Array> {
-      public:
-        Null() = default;
-        operator Array() const { return Array(); }
-    };
+    inline Array Null<Array>() {
+        return {};
+    }
 
 
 
@@ -322,8 +322,7 @@ namespace QuantLib {
 
 
     inline const Array& Array::operator+=(Real x) {
-        std::transform(begin(), end(), begin(),
-                       [=](Real y) { return y+x; });
+        std::transform(begin(), end(), begin(), [=](Real y) -> Real { return y + x; });
         return *this;
     }
 
@@ -337,8 +336,7 @@ namespace QuantLib {
     }
 
     inline const Array& Array::operator-=(Real x) {
-        std::transform(begin(),end(),begin(),
-                       [=](Real y) { return y-x; });
+        std::transform(begin(),end(),begin(), [=](Real y) -> Real { return y - x; });
         return *this;
     }
 
@@ -352,8 +350,7 @@ namespace QuantLib {
     }
 
     inline const Array& Array::operator*=(Real x) {
-        std::transform(begin(), end(), begin(),
-                       [=](Real y) { return y*x; });
+        std::transform(begin(), end(), begin(), [=](Real y) -> Real { return y * x; });
         return *this;
     }
 
@@ -370,8 +367,7 @@ namespace QuantLib {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(x != 0.0, "division by zero");
         #endif
-        std::transform(begin(), end(), begin(),
-                       [=](Real y) { return y/x; });
+        std::transform(begin(), end(), begin(), [=](Real y) -> Real { return y / x; });
         return *this;
     }
 
@@ -498,7 +494,7 @@ namespace QuantLib {
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be multiplied");
-        return std::inner_product(v1.begin(),v1.end(),v2.begin(),0.0);
+        return std::inner_product(v1.begin(),v1.end(),v2.begin(),Real(0.0));
     }
 
     inline Real Norm2(const Array& v) {
@@ -536,15 +532,13 @@ namespace QuantLib {
 
     inline Array operator+(const Array& v1, Real a) {
         Array result(v1.size());
-        std::transform(v1.begin(), v1.end(), result.begin(),
-                       [=](Real y) { return y+a; });
+        std::transform(v1.begin(), v1.end(), result.begin(), [=](Real y) -> Real { return y + a; });
         return result;
     }
 
     inline Array operator+(Real a, const Array& v2) {
         Array result(v2.size());
-        std::transform(v2.begin(),v2.end(),result.begin(),
-                       [=](Real y) { return a+y; });
+        std::transform(v2.begin(),v2.end(),result.begin(), [=](Real y) -> Real { return a + y; });
         return result;
     }
 
@@ -560,15 +554,13 @@ namespace QuantLib {
 
     inline Array operator-(const Array& v1, Real a) {
         Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),result.begin(),
-                       [=](Real y) { return y-a; });
+        std::transform(v1.begin(),v1.end(),result.begin(), [=](Real y) -> Real { return y - a; });
         return result;
     }
 
     inline Array operator-(Real a, const Array& v2) {
         Array result(v2.size());
-        std::transform(v2.begin(),v2.end(),result.begin(),
-                       [=](Real y) { return a-y; });
+        std::transform(v2.begin(),v2.end(),result.begin(), [=](Real y) -> Real { return a - y; });
         return result;
     }
 
@@ -584,15 +576,13 @@ namespace QuantLib {
 
     inline Array operator*(const Array& v1, Real a) {
         Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),result.begin(),
-                       [=](Real y) { return y*a; });
+        std::transform(v1.begin(),v1.end(),result.begin(), [=](Real y) -> Real { return y * a; });
         return result;
     }
 
     inline Array operator*(Real a, const Array& v2) {
         Array result(v2.size());
-        std::transform(v2.begin(),v2.end(),result.begin(),
-                       [=](Real y) { return a*y; });
+        std::transform(v2.begin(),v2.end(),result.begin(), [=](Real y) -> Real { return a * y; });
         return result;
     }
 
@@ -608,15 +598,13 @@ namespace QuantLib {
 
     inline Array operator/(const Array& v1, Real a) {
         Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),result.begin(),
-                       [=](Real y) { return y/a; });
+        std::transform(v1.begin(),v1.end(),result.begin(), [=](Real y) -> Real { return y / a; });
         return result;
     }
 
     inline Array operator/(Real a, const Array& v2) {
         Array result(v2.size());
-        std::transform(v2.begin(),v2.end(),result.begin(),
-                       [=](Real y) { return a/y; });
+        std::transform(v2.begin(),v2.end(),result.begin(), [=](Real y) -> Real { return a / y; });
         return result;
     }
 
@@ -624,29 +612,29 @@ namespace QuantLib {
 
     inline Array Abs(const Array& v) {
         Array result(v.size());
-        std::transform(v.begin(),v.end(),result.begin(),
-                       static_cast<Real(*)(Real)>(std::fabs));
+        std::transform(v.begin(), v.end(), result.begin(),
+                       [](Real x) -> Real { return std::fabs(x); });
         return result;
     }
 
     inline Array Sqrt(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
-                       static_cast<Real(*)(Real)>(std::sqrt));
+                       [](Real x) -> Real { return std::sqrt(x); });
         return result;
     }
 
     inline Array Log(const Array& v) {
         Array result(v.size());
         std::transform(v.begin(),v.end(),result.begin(),
-                       static_cast<Real(*)(Real)>(std::log));
+                       [](Real x) -> Real { return std::log(x); });
         return result;
     }
 
     inline Array Exp(const Array& v) {
         Array result(v.size());
-        std::transform(v.begin(),v.end(),result.begin(),
-                       static_cast<Real(*)(Real)>(std::exp));
+        std::transform(v.begin(), v.end(), result.begin(),
+                       [](Real x) -> Real { return std::exp(x); });
         return result;
     }
 

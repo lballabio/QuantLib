@@ -24,11 +24,6 @@
 
 namespace QuantLib {
 
-    namespace {
-        Integer round(Real r) {
-            return (r > 0.0) ? Integer(std::floor(r + 0.5)) : Integer(std::ceil(r - 0.5));
-        }
-    }
 
     EventSetSimulation::EventSetSimulation(
         ext::shared_ptr<std::vector<std::pair<Date, Real> > > events,
@@ -107,7 +102,8 @@ namespace QuantLib {
         Real eventFraction = exponential_(rng_);
         while(eventFraction<=yearFraction_)
         {
-            Integer days = round(eventFraction*dayCount_/yearFraction_);
+            auto days =
+                static_cast<Integer>(std::lround(eventFraction * dayCount_ / yearFraction_));
             Date eventDate = start_ + days*Days;
             if(eventDate<=end_)
             {

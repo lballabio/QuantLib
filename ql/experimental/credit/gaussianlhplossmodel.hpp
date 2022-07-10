@@ -157,7 +157,7 @@ namespace QuantLib {
             const std::vector<Real> remainingNots = 
                 basket_->remainingNotionals(d);
             return std::inner_product(probs.begin(), probs.end(), 
-                remainingNots.begin(), 0.) / basket_->remainingNotional(d);
+                remainingNots.begin(), Real(0.)) / basket_->remainingNotional(d);
         }
 
         /* One could define the average recovery without the probability
@@ -178,14 +178,14 @@ namespace QuantLib {
                 recoveries.push_back(rrQuotes_[i]->value());
             std::vector<Real> notionals = basket_->remainingNotionals(d);
             Real denominator = std::inner_product(notionals.begin(), 
-                notionals.end(), probs.begin(), 0.);
+                notionals.end(), probs.begin(), Real(0.));
             if(denominator == 0.) return 0.;
 
             std::transform(notionals.begin(), notionals.end(), probs.begin(),
                 notionals.begin(), std::multiplies<Real>());
 
             return std::inner_product(recoveries.begin(), recoveries.end(), 
-                notionals.begin(), 0.) / denominator;
+                notionals.begin(), Real(0.)) / denominator;
         }
 
     private:

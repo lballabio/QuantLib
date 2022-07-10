@@ -100,8 +100,8 @@ namespace QuantLib {
         //          a) all TS have the same daycount.
         //          b) all TS have the same referenceDate
         //          It should be QL_REQUIREd
-        return riskFreeTS_->zeroRate(t, Continuous, NoFrequency, true)
-             - dividendTS_->zeroRate(t, Continuous, NoFrequency, true)
+        return riskFreeTS_->zeroRate(t, Continuous, NoFrequency, true).rate()
+             - dividendTS_->zeroRate(t, Continuous, NoFrequency, true).rate()
              - 0.5 * blackVolTS_->blackVol(t, underlyingLevel_, true)
                    * blackVolTS_->blackVol(t, underlyingLevel_, true);
     }

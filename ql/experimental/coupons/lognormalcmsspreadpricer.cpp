@@ -121,7 +121,7 @@ namespace QuantLib {
                  (rho_ * gearing1_ * vol1_ + gearing2_ * vol2_) * s);
         Real f =
             close_enough(alpha_, 0.0)
-                ? std::max(beta, 0.0)
+                ? Real(std::max(beta, 0.0))
                 : psi_ * alpha_ / (M_SQRTPI * M_SQRT2) *
                           std::exp(-beta * beta / (2.0 * alpha_ * alpha_)) +
                       beta * (1.0 - (*cnd_)(-psi_ * beta / alpha_));

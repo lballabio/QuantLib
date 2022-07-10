@@ -130,7 +130,7 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
     const chi_squared_type dist(df, ncp);
         
     const Real strikes[] = { 50, 75, 100, 125, 150, 200 };
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         const Option::Type optionType = (strike > fwd) ? Option::Call : Option::Put;
 
         const Real expected = BlackCalculator(
@@ -228,7 +228,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
 
         const Real fwd = s0*qTS->discount(m)/rTS->discount(m);
 
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             const Option::Type optionType = (strike > fwd) ? Option::Call : Option::Put;
 
             const Real expected = BlackCalculator(
@@ -281,7 +281,7 @@ namespace square_root_clv_model {
             const Array diff = values(params);
 
             Real retVal = 0.0;
-            for (double i : diff)
+            for (Real i : diff)
                 retVal += i * i;
 
             return retVal;
@@ -364,8 +364,8 @@ namespace square_root_clv_model {
                         const Real strike = strikes_[k];
 
                         const Real payoff = (strike < 1.0)
-                            ?  s1 * std::max(0.0, strike - s2/s1)
-                            :  s1 * std::max(0.0, s2/s1 - strike);
+                            ?  Real(s1 * std::max(0.0, strike - s2/s1))
+                            :  Real(s1 * std::max(0.0, s2/s1 - strike));
 
                         stats[k].add(payoff);
                     }
@@ -616,8 +616,8 @@ void SquareRootCLVModelTest::testForwardSkew() {
             for (Size j=0; j < LENGTH(strikes); ++j) {
                 const Real strike = strikes[j];
                     slvStats[i][j].add((strike < 1.0)
-                        ? S_t1 * std::max(0.0, strike - S_T1/S_t1)
-                        : S_t1 * std::max(0.0, S_T1/S_t1 - strike));
+                        ? Real(S_t1 * std::max(0.0, strike - S_T1/S_t1))
+                        : Real(S_t1 * std::max(0.0, S_T1/S_t1 - strike)));
             }
 
         }

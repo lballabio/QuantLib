@@ -86,13 +86,20 @@ namespace QuantLib {
     template <class T, class D>
     void BinomialBarrierEngine<T,D>::calculate() const {
 
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non-striked payoff given");
+        QL_REQUIRE(payoff->strike() > 0.0, "strike must be positive");
+
+        Real s0 = process_->stateVariable()->value();
+        QL_REQUIRE(s0 > 0.0, "negative or null underlying given");
+        QL_REQUIRE(!triggered(s0), "barrier touched");
+
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
         DayCounter divdc = process_->dividendYield()->dayCounter();
         DayCounter voldc = process_->blackVolatility()->dayCounter();
         Calendar volcal = process_->blackVolatility()->calendar();
 
-        Real s0 = process_->stateVariable()->value();
-        QL_REQUIRE(s0 > 0.0, "negative or null underlying given");
         Volatility v = process_->blackVolatility()->blackVol(
             arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
@@ -112,10 +119,6 @@ namespace QuantLib {
         Handle<BlackVolTermStructure> flatVol(
             ext::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(referenceDate, volcal, v, voldc)));
-
-        ext::shared_ptr<StrikedTypePayoff> payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "non-striked payoff given");
 
         Time maturity = rfdc.yearFraction(referenceDate, maturityDate);
 

@@ -95,7 +95,7 @@ namespace QuantLib {
                 const Real theta = model_->theta(t);
 
                 const Real sigma2 = sigma*sigma;
-                const Real t0 = kappa - ((j_== 1)? rho*sigma : 0);
+                const Real t0 = kappa - ((j_== 1)? Real(rho*sigma) : 0);
                 const Real rpsig = rho*sigma*phi;
 
                 const std::complex<Real> t1 = t0+std::complex<Real>(0, -rpsig);

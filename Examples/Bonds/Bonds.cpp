@@ -163,7 +163,7 @@ int main(int, char* []) {
         };
 
         std::vector< ext::shared_ptr<SimpleQuote> > quote;
-        for (double marketQuote : marketQuotes) {
+        for (Real marketQuote : marketQuotes) {
             ext::shared_ptr<SimpleQuote> cp(new SimpleQuote(marketQuote));
             quote.push_back(cp);
         }

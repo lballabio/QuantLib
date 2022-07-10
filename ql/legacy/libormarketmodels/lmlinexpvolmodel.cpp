@@ -61,7 +61,7 @@ namespace QuantLib {
 
         const Time T = fixingTimes_[i];
 
-        return (T>t) ? (a*(T-t)+d)*std::exp(-b*(T-t)) + c : 0.0;
+        return (T>t) ? (a*(T-t)+d)*std::exp(-b*(T-t)) + c : Real(0.0);
     }
 
     Real LmLinearExponentialVolatilityModel::integratedVariance(

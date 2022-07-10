@@ -179,7 +179,7 @@ namespace QuantLib {
             //Increase steps
             k++;
             kStationary++;
-            for (double& i : annealStep)
+            for (Real& i : annealStep)
                 i++;
 
             //Reanneal if necessary

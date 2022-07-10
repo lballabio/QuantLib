@@ -154,10 +154,10 @@ namespace QuantLib {
                           Compounding compounding,
                           Frequency frequency)
     {
-        double zz=yts->zeroRate(b.maturityDate(),
-                                dayCounter,
-                                Continuous,
-                                NoFrequency);
+        Real zz=yts->zeroRate(b.maturityDate(),
+                              dayCounter,
+                              Continuous,
+                              NoFrequency);
         InterestRate baseRate(zz,
                               dayCounter,
                               Continuous,
@@ -166,16 +166,16 @@ namespace QuantLib {
                                   dayCounter,
                                   Continuous,
                                   NoFrequency);
-        double br=baseRate.equivalentRate(dayCounter,
-                                          compounding,
-                                          frequency,
-                                          yts->referenceDate(),
-                                          b.maturityDate()).rate();
-        double sr=spreadedRate.equivalentRate(dayCounter,
-                                              compounding,
-                                              frequency,
-                                              yts->referenceDate(),
-                                              b.maturityDate()).rate();
+        Real br=baseRate.equivalentRate(dayCounter,
+                                        compounding,
+                                        frequency,
+                                        yts->referenceDate(),
+                                        b.maturityDate()).rate();
+        Real sr=spreadedRate.equivalentRate(dayCounter,
+                                            compounding,
+                                            frequency,
+                                            yts->referenceDate(),
+                                            b.maturityDate()).rate();
         // Return the spread
         return sr-br;
     }
@@ -190,10 +190,10 @@ namespace QuantLib {
                           Compounding compounding,
                           Frequency frequency)
     {
-        double zz=yts->zeroRate(b.maturityDate(),
-                                dayCounter,
-                                compounding,
-                                frequency);
+        Real zz=yts->zeroRate(b.maturityDate(),
+                              dayCounter,
+                              compounding,
+                              frequency);
         InterestRate baseRate(zz,
                               dayCounter,
                               compounding,
@@ -203,16 +203,16 @@ namespace QuantLib {
                                   dayCounter,
                                   compounding,
                                   frequency);
-        double br=baseRate.equivalentRate(dayCounter,
-                                          Continuous,
-                                          NoFrequency,
-                                          yts->referenceDate(),
-                                          b.maturityDate()).rate();
-        double sr=spreadedRate.equivalentRate(dayCounter,
-                                              Continuous,
-                                              NoFrequency,
-                                              yts->referenceDate(),
-                                              b.maturityDate()).rate();
+        Real br=baseRate.equivalentRate(dayCounter,
+                                        Continuous,
+                                        NoFrequency,
+                                        yts->referenceDate(),
+                                        b.maturityDate()).rate();
+        Real sr=spreadedRate.equivalentRate(dayCounter,
+                                            Continuous,
+                                            NoFrequency,
+                                            yts->referenceDate(),
+                                            b.maturityDate()).rate();
         // Return the spread
         return sr-br;
     }

@@ -382,7 +382,7 @@ namespace QuantLib {
                             << k.size() << ")");
                     std::vector<Real> v;
                     v.reserve(k.size());
-                    for (double j : k) {
+                    for (Real j : k) {
                         v.push_back(i->second.rawSmileSection_->volatility(j));
                     }
 
@@ -662,7 +662,7 @@ namespace QuantLib {
                     modelPut, marketVega, marketRawCall, marketRawPut;
                 for (Size j = 0; j < money.size(); j++) {
                     strikes.push_back(sec->volatilityType() == Normal ?
-                                          calibrationPoint.second.atm_ + money[j] :
+                                          Real(calibrationPoint.second.atm_ + money[j]) :
                                           money[j] * (calibrationPoint.second.atm_ + shift) -
                                               shift);
                     try {
@@ -796,7 +796,7 @@ namespace QuantLib {
 
         Array ya(1, y);
         return numeraireArray(t, ya)[0] *
-               (yts.empty() ? 1.0
+               (yts.empty() ? Real(1.0)
                             : (yts->discount(numeraireTime()) /
                                yts->discount(t) * termStructure()->discount(t) /
                                termStructure()->discount(numeraireTime())));
@@ -811,7 +811,7 @@ namespace QuantLib {
                                : yts->discount(T, true);
         Array ya(1, y);
         return zerobondArray(T, t, ya)[0] *
-               (yts.empty() ? 1.0 : (yts->discount(T) / yts->discount(t) *
+               (yts.empty() ? Real(1.0) : (yts->discount(T) / yts->discount(t) *
                                      termStructure()->discount(t) /
                                      termStructure()->discount(T)));
     }

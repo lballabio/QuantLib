@@ -138,7 +138,7 @@ namespace QuantLib {
         
         // avoid 80 bit logic on x86 cpu
         volatile Real dist = acc + (integral1-integral2);
-        if(Real(dist)==acc || mll<=a || b<=mrr) {
+        if(const_cast<Real&>(dist)==acc || mll<=a || b<=mrr) {
             QL_REQUIRE(m>a && b>m,"Interval contains no more machine number");
             return integral1;
         }

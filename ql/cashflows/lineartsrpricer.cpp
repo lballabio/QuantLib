@@ -199,9 +199,11 @@ namespace QuantLib {
         if (optionType == Option::Call) {
             a = swapRateValue_;
             min = referenceStrike;
+            // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
             b = max = k =
                 std::min(smileSection_->maxStrike(), adjustedUpperBound_);
         } else {
+            // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
             a = min = k =
                 std::max(smileSection_->minStrike(), adjustedLowerBound_);
             b = swapRateValue_;
@@ -229,9 +231,11 @@ namespace QuantLib {
         if (optionType == Option::Call) {
             a = swapRateValue_;
             min = referenceStrike;
+            // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
             b = max = k =
                 std::min(smileSection_->maxStrike(), adjustedUpperBound_);
         } else {
+            // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
             a = min = k =
                 std::max(smileSection_->minStrike(), adjustedLowerBound_);
             b = swapRateValue_;

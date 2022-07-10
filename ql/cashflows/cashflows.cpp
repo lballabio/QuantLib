@@ -766,7 +766,7 @@ namespace QuantLib {
         // flows of the opposite sign have been specified (otherwise
         // IRR is nonsensical.)
 
-        Integer lastSign = sign(-npv_),
+        Integer lastSign = sign(Real(-npv_)),
                 signChanges = 0;
         for (const auto& i : leg_) {
             if (!i->hasOccurred(settlementDate_, includeSettlementDateFlows_) &&

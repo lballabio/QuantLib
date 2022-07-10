@@ -41,7 +41,7 @@ namespace QuantLib {
 
         Real K = payoff->strike();
         Real S = process_->x0();
-        QL_REQUIRE(S >= 0.0, "negative or null underlying given");
+        QL_REQUIRE(S > 0.0, "negative or null underlying given");
         QL_REQUIRE(!triggered(S), "barrier touched");
 
         DoubleBarrier::Type barrierType = arguments_.barrierType;

@@ -43,7 +43,7 @@ namespace QuantLib {
             product_->possibleCashFlowTimes();
         const std::vector<Rate>& rateTimes = product_->evolution().rateTimes();
         discounters_.reserve(cashFlowTimes.size());
-        for (double cashFlowTime : cashFlowTimes)
+        for (Real cashFlowTime : cashFlowTimes)
             discounters_.emplace_back(cashFlowTime, rateTimes);
     }
 

@@ -35,7 +35,7 @@ namespace QuantLib {
         Day em = easterMonday(y);
         if (isWeekend(w)
             // New Year's Day (possibly moved to Monday)
-            || ((d == 1 || d == 2)  && m == January)
+            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == January)
             // Australia Day, January 26th (possibly moved to Monday)
             || ((d == 26 || ((d == 27 || d == 28) && w == Monday)) &&
                 m == January)

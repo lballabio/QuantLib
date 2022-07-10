@@ -624,7 +624,7 @@ namespace QuantLib {
         std::vector<Real> varLevels = splitVaRAndError(date, loss, 0.95)[0];
         // turn relative units into absolute:
         std::transform(varLevels.begin(), varLevels.end(), varLevels.begin(),
-                       [=](Real x){ return x * loss; });
+                       [=](Real x) -> Real { return x * loss; });
         return varLevels;
     }
 

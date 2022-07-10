@@ -150,7 +150,7 @@ namespace QuantLib {
         const std::vector<Real>& factors,
         Real accuracy)
     : normSqr_(std::inner_product(factors.begin(), factors.end(),
-        factors.begin(), 0.)),
+        factors.begin(), Real(0.))),
       accuracy_(accuracy), distrib_(degreesFreedom, factors) { }
 
     Real InverseCumulativeBehrensFisher::operator()(const Probability q) const {

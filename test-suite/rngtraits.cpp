@@ -36,7 +36,7 @@ void RngTraitsTest::testGaussian() {
 
     const std::vector<Real>& values = rsg.nextSequence().value;
     Real sum = 0.0;
-    for (double value : values)
+    for (Real value : values)
         sum += value;
 
     Real stored = 4.09916;
@@ -59,7 +59,7 @@ void RngTraitsTest::testDefaultPoisson() {
 
     const std::vector<Real>& values = rsg.nextSequence().value;
     Real sum = 0.0;
-    for (double value : values)
+    for (Real value : values)
         sum += value;
 
     Real stored = 108.0;
@@ -82,7 +82,7 @@ void RngTraitsTest::testCustomPoisson() {
 
     const std::vector<Real>& values = rsg.nextSequence().value;
     Real sum = 0.0;
-    for (double value : values)
+    for (Real value : values)
         sum += value;
 
     Real stored = 409.0;

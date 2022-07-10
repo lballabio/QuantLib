@@ -212,7 +212,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
 
                 ext::shared_ptr<EuropeanExercise> maturity(
@@ -229,10 +229,10 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
                 Size pastFixings = Null<Size>();
                 Real runningAverage = Null<Real>();
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
 
                                 Rate q = m, r = n;
                                 spot->setValue(u);
@@ -1357,7 +1357,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
          new BlackScholesMertonProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
 
                 ext::shared_ptr<EuropeanExercise> maturity(
@@ -1380,10 +1380,10 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                                                     fixingDates, payoff, maturity);
                 option.setPricingEngine(engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
 
                                 Rate q = m, r = n;
                                 spot->setValue(u);
@@ -1693,6 +1693,74 @@ void AsianOptionTest::testPastFixingsModelDependency() {
 
     BOOST_CHECK_EQUAL(call_option.NPV(), expected_call_option_npv);
     BOOST_CHECK_EQUAL(put_option.NPV(), 0.0);
+
+    // Compare greeks to numerical greeks
+    Real dS = 0.001;
+    Real callPrice = call_option.NPV();
+    Real putPrice = put_option.NPV();
+    Real callDelta = call_option.delta();
+    Real callGamma = call_option.gamma();
+    Real putDelta = put_option.delta();
+    Real putGamma = put_option.gamma();
+
+    ext::shared_ptr<SimpleQuote> spotUp(new SimpleQuote(100.0+dS));
+    ext::shared_ptr<SimpleQuote> spotDown(new SimpleQuote(100.0-dS));
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcessUp(new BlackScholesMertonProcess(
+        Handle<Quote>(spotUp), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
+        Handle<BlackVolTermStructure>(volTS)));
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcessDown(new BlackScholesMertonProcess(
+        Handle<Quote>(spotDown), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
+        Handle<BlackVolTermStructure>(volTS)));
+
+    ext::shared_ptr<PricingEngine> engineUp(
+        new TurnbullWakemanAsianEngine(stochProcessUp));
+
+    ext::shared_ptr<PricingEngine> engineDown(
+        new TurnbullWakemanAsianEngine(stochProcessDown));
+
+    call_option.setPricingEngine(engineUp);
+    Real callCalculatedUp = call_option.NPV();
+    put_option.setPricingEngine(engineUp);
+    Real putCalculatedUp = put_option.NPV();
+
+    call_option.setPricingEngine(engineDown);
+    Real callCalculatedDown = call_option.NPV();
+    put_option.setPricingEngine(engineDown);
+    Real putCalculatedDown = put_option.NPV();
+
+    Real callDeltaBump = (callCalculatedUp - callCalculatedDown) / (2 * dS);
+    Real callGammaBump = (callCalculatedUp + callCalculatedDown - 2*callPrice) / (dS * dS);
+
+    Real putDeltaBump = (putCalculatedUp - putCalculatedDown) / (2 * dS);
+    Real putGammaBump = (putCalculatedUp + putCalculatedDown - 2*putPrice) / (dS * dS);
+
+    Real tolerance = 1.0e-8;
+    if (std::fabs(callDeltaBump - callDelta) > tolerance) {
+        BOOST_ERROR(
+            "Seasoned analytic call delta did not match numerical delta:"
+            << "\n    analytic delta:  " << callDelta << "\n    bump delta:      " << callDeltaBump
+            << "\n    error:           " << std::fabs(callDeltaBump - callDelta));
+    }
+    if (std::fabs(callGammaBump - callGamma) > tolerance) {
+        BOOST_ERROR(
+            "Seasoned analytic call gamma did not match numerical gamma:"
+            << "\n    analytic gamma:  " << callGamma << "\n    bump gamma:      " << callGammaBump
+            << "\n    error:           " << std::fabs(callGammaBump - callGamma));
+    }
+    if (std::fabs(putDeltaBump - putDelta) > tolerance) {
+        BOOST_ERROR(
+            "Seasoned analytic put delta did not match numerical delta:"
+            << "\n    analytic delta:  " << putDelta << "\n    bump delta:      " << putDeltaBump
+            << "\n    error:           " << std::fabs(putDeltaBump - putDelta));
+    }
+    if (std::fabs(putGammaBump - putGamma) > tolerance) {
+        BOOST_ERROR(
+            "Seasoned analytic put gamma did not match numerical gamma:"
+            << "\n    analytic gamma:  " << putGamma << "\n    bump gamma:      " << putGammaBump
+            << "\n    error:           " << std::fabs(putGammaBump - putGamma));
+    }
 }
 
 
@@ -2295,6 +2363,64 @@ void AsianOptionTest::testTurnbullWakemanAsianEngine() {
                 << "\n    reference date:  " << today << "\n    expiry:          " << l.expiry
                 << "\n    expected value:  " << expected << "\n    calculated:      " << calculated
                 << "\n    error:           " << error);
+        }
+
+        // Compare greeks to numerical greeks
+        Real dS = 0.001;
+        Real delta = option.delta();
+        Real gamma = option.gamma();
+
+        ext::shared_ptr<SimpleQuote> spotUp(new SimpleQuote(l.underlying+dS));
+        ext::shared_ptr<SimpleQuote> spotDown(new SimpleQuote(l.underlying-dS));
+
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcessUp(new BlackScholesMertonProcess(
+            Handle<Quote>(spotUp), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
+            Handle<BlackVolTermStructure>(volTS)));
+
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcessDown(new BlackScholesMertonProcess(
+            Handle<Quote>(spotDown), Handle<YieldTermStructure>(qTS), Handle<YieldTermStructure>(rTS),
+            Handle<BlackVolTermStructure>(volTS)));
+
+        ext::shared_ptr<PricingEngine> engineUp(
+            new TurnbullWakemanAsianEngine(stochProcessUp));
+
+        ext::shared_ptr<PricingEngine> engineDown(
+            new TurnbullWakemanAsianEngine(stochProcessDown));
+
+        option.setPricingEngine(engineUp);
+        Real calculatedUp = option.NPV();
+
+        option.setPricingEngine(engineDown);
+        Real calculatedDown = option.NPV();
+
+        Real deltaBump = (calculatedUp - calculatedDown) / (2 * dS);
+        Real gammaBump = (calculatedUp + calculatedDown - 2*calculated) / (dS * dS);
+
+        tolerance = 1.0e-6;
+        Real deltaError = std::fabs(deltaBump - delta);
+        if (deltaError > tolerance) {
+            BOOST_ERROR(
+                "Analytical delta failed to match bump delta:"
+                << "\n    type:            " << l.type << "\n    spot:            " << l.underlying
+                << "\n    strike:          " << l.strike << "\n    dividend yield:  "
+                << l.b + l.riskFreeRate << "\n    risk-free rate:  " << l.riskFreeRate
+                << "\n    volatility:      " << l.volatility << "\n    slope:           " << l.slope
+                << "\n    reference date:  " << today << "\n    expiry:          " << l.expiry
+                << "\n    analytic delta:  " << delta << "\n    bump delta:      " << deltaBump
+                << "\n    error:           " << deltaError);
+        }
+
+        Real gammaError = std::fabs(gammaBump - gamma);
+        if (gammaError > tolerance) {
+            BOOST_ERROR(
+                "Analytical gamma failed to match bump gamma:"
+                << "\n    type:            " << l.type << "\n    spot:            " << l.underlying
+                << "\n    strike:          " << l.strike << "\n    dividend yield:  "
+                << l.b + l.riskFreeRate << "\n    risk-free rate:  " << l.riskFreeRate
+                << "\n    volatility:      " << l.volatility << "\n    slope:           " << l.slope
+                << "\n    reference date:  " << today << "\n    expiry:          " << l.expiry
+                << "\n    analytic gamma:  " << gamma << "\n    bump gamma:      " << gammaBump
+                << "\n    error:           " << gammaError);
         }
     }
 }

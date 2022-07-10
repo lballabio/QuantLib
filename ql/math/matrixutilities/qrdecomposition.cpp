@@ -77,7 +77,7 @@ namespace QuantLib {
                     Array w(n, 0.0);
                     for (Size l=0; l < n; ++l)
                         w[l] += std::inner_product(
-                            v.begin()+i, v.end(), q.column_begin(l)+i, 0.0);
+                            v.begin()+i, v.end(), q.column_begin(l)+i, Real(0.0));
 
                     for (Size k=i; k < m; ++k) {
                         const Real a = tau*v[k];
@@ -98,7 +98,7 @@ namespace QuantLib {
                     if (t3 != 0.0) {
                         const Real t
                             = std::inner_product(mT.row_begin(j)+j, mT.row_end(j),
-                                                 w.begin()+j, 0.0)/t3;
+                                                 w.begin()+j, Real(0.0))/t3;
                         for (Size i=j; i<m; ++i) {
                             w[i]-=mT[j][i]*t;
                         }

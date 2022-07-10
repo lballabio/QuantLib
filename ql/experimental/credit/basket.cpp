@@ -59,7 +59,7 @@ namespace QuantLib {
         //   probability term structures for the defultKeys(eventType+
         //   currency+seniority) entering in this basket. This is not
         //   necessarily a problem.
-        for (double notional : notionals_) {
+        for (Real notional : notionals_) {
             basketNotional_ += notional;
             attachmentAmount_ += notional * attachmentRatio_;
             detachmentAmount_ += notional * detachmentRatio_;
@@ -103,7 +103,7 @@ namespace QuantLib {
     }
 
     Real Basket::notional() const {
-        return std::accumulate(notionals_.begin(), notionals_.end(), 0.0);
+        return std::accumulate(notionals_.begin(), notionals_.end(), Real(0.0));
     }
 
     vector<Real> Basket::probabilities(const Date& d) const {

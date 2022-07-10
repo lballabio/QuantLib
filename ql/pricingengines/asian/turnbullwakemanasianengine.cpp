@@ -17,7 +17,7 @@
 
 #include <ql/exercise.hpp>
 #include <ql/pricingengines/asian/turnbullwakemanasianengine.hpp>
-#include <ql/pricingengines/blackformula.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
 
 using namespace QuantLib;
 
@@ -63,9 +63,12 @@ void TurnbullWakemanAsianEngine::calculate() const {
                            m;
             }
             results_.value = discount * (S_A_hat - payoff->strike());
+            results_.delta = discount * (S_A_hat - accruedAverage) / spot;
         } else if (payoff->optionType() == Option::Type::Put) {
             results_.value = 0;
+            results_.delta = 0;
         }
+        results_.gamma = 0;
         return;
     }
 
@@ -114,8 +117,12 @@ void TurnbullWakemanAsianEngine::calculate() const {
     Real sigma = sqrt(log(EA2 / (EA * EA)) / tn);
 
     // Populate results
-    results_.value =
-        blackFormula(payoff->optionType(), effectiveStrike, EA, sigma * sqrt(tn), discount);
+    BlackCalculator black(payoff->optionType(), effectiveStrike, EA, sigma * sqrt(tn), discount);
+
+    results_.value = black.value();
+    results_.delta = black.delta(spot);
+    results_.gamma = black.gamma(spot);
+
     results_.additionalResults["forward"] = EA;
     results_.additionalResults["exp_A_2"] = EA2;
     results_.additionalResults["tte"] = tn;

@@ -304,7 +304,7 @@ void MatricesTest::testQRSolve() {
         Array b(A.rows());
 
         for (Size k=0; k < 10; ++k) {
-            for (double& iter : b) {
+            for (Real& iter : b) {
                 iter = rng.next().value;
             }
             const Array x = qrSolve(A, b, true);
@@ -329,7 +329,7 @@ void MatricesTest::testQRSolve() {
                     if (w[i] > threshold) {
                         const Real u = std::inner_product(U.column_begin(i),
                                                           U.column_end(i),
-                                                          b.begin(), 0.0)/w[i];
+                                                          b.begin(), Real(0.0))/w[i];
 
                         for (Size j=0; j<n; ++j) {
                             xr[j]  +=u*V[j][i];
@@ -402,7 +402,7 @@ void MatricesTest::testDeterminant() {
     MersenneTwisterUniformRng rng(1234);
     for (Size j=0; j<100; ++j) {
         Matrix m(3, 3, 0.0);
-        for (double& iter : m)
+        for (Real& iter : m)
             iter = rng.next().value;
 
         if ((j % 3) == 0U) {
@@ -592,7 +592,7 @@ void MatricesTest::testMoorePenroseInverse() {
 
     Real cached[6] = {1.153846153846152, 1.461538461538463, 1.384615384615384,
                       1.384615384615385, 1.461538461538462, 1.153846153846152};
-    constexpr Real tol = 500.0 * QL_EPSILON;
+    constexpr double tol = 500.0 * QL_EPSILON;
 
     for (Size i = 0; i < 6; ++i) {
         if (std::abs(x[i] - cached[i]) > tol) {
@@ -605,7 +605,7 @@ void MatricesTest::testMoorePenroseInverse() {
     }
 
     Array y = A*x;
-    constexpr Real tol2 = 2000.0 * QL_EPSILON;
+    constexpr double tol2 = 2000.0 * QL_EPSILON;
     for (Size i = 0; i < 6; ++i) {
         if (std::abs(y[i] - 260.0) > tol2) {
             BOOST_FAIL(
@@ -646,7 +646,7 @@ void MatricesTest::testIterativeSolvers() {
     Array b(3);
     b[0] = 1.0; b[1] = 0.5; b[2] = 3.0;
 
-    constexpr Real relTol = 1e4*QL_EPSILON;
+    constexpr double relTol = 1e4 * QL_EPSILON;
 
     const Array x = BiCGstab(MatrixMult(M1), 3, relTol).solve(b).x;
     if (norm2(M1*x-b)/norm2(b) > relTol) {
@@ -662,7 +662,7 @@ void MatricesTest::testIterativeSolvers() {
                 << "\n  rel tolerance : " << relTol);
     }
     const Array errors = Array(u.errors.begin(), u.errors.end());
-    for (double error : errors) {
+    for (Real error : errors) {
         const Array x = GMRES(MatrixMult(M1), 10, 1.01 * error).solve(b, b).x;
 
         const Real calculated = norm2(M1*x-b)/norm2(b);

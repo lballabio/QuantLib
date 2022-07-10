@@ -590,7 +590,7 @@ namespace {
 
                     const Real offset = (specialPoint - 0.5*d) - loc[i];
 
-                    for (double& l : loc)
+                    for (Real& l : loc)
                         l += offset;
 
                     break;
@@ -852,7 +852,7 @@ void NthOrderDerivativeOpTest::testCompareFirstDerivativeOp2dUniformGrid() {
         const Size idx = k*n;
         for (Size i=1; i < n-1; ++i)
             for (Size j=0; j < n*m; ++j)
-                BOOST_CHECK(std::fabs(fm(idx + i, j) - dm(idx + i, j)) < 1e-12);
+                BOOST_CHECK(std::fabs(Real(fm(idx + i, j)) - Real(dm(idx + i, j))) < 1e-12);
     }
 
     fm = FirstDerivativeOp(1, mc).toMatrix();
@@ -860,7 +860,7 @@ void NthOrderDerivativeOpTest::testCompareFirstDerivativeOp2dUniformGrid() {
 
     for (Size i=n; i < n*(m-1); ++i)
         for (Size j=0; j < n*m; ++j)
-            BOOST_CHECK(std::fabs(fm(i, j) - dm(i, j)) < 1e-12);
+            BOOST_CHECK(std::fabs(Real(fm(i, j)) - Real(dm(i, j))) < 1e-12);
 }
 
 void NthOrderDerivativeOpTest::testMixedSecondOrder9PointsOnUniformGrid() {

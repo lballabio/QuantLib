@@ -87,7 +87,7 @@ namespace QuantLib {
 
     Volatility TenorOptionletVTS::TenorOptionletSmileSection::volatilityImpl(Rate strike) const {
         Real sum_v = 0.0;
-        for (double k : v_)
+        for (Real k : v_)
             sum_v += k;
         std::vector<Real> volBase(v_.size());
         for (Size k = 0; k < fraRateBase_.size(); ++k) {

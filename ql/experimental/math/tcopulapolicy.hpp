@@ -146,7 +146,7 @@ namespace QuantLib {
         //to use this (by default) version, the generator must be a uniform one.
         std::vector<Real> allFactorCumulInverter(const std::vector<Real>& probs) const;
     private:
-        mutable std::vector<boost::math::students_t_distribution<> > distributions_;
+        mutable std::vector<boost::math::students_t_distribution<Real> > distributions_;
         mutable std::vector<Real> varianceFactors_;
         mutable std::vector<CumulativeBehrensFisher> latentVarsCumul_;
         mutable std::vector<InverseCumulativeBehrensFisher> latentVarsInverters_;

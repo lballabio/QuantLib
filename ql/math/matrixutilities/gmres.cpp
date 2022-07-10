@@ -132,11 +132,11 @@ namespace QuantLib {
 
         for (Integer i=k-2; i >= 0; --i) {
             y[i] = (z[i] - std::inner_product(
-                 h[i].begin()+i+1, h[i].begin()+k, y.begin()+i+1, 0.0))/h[i][i];
+                 h[i].begin()+i+1, h[i].begin()+k, y.begin()+i+1, Real(0.0)))/h[i][i];
         }
 
         Array xm = std::inner_product(
-            v.begin(), v.begin()+k, y.begin(), Array(x.size(), 0.0));
+            v.begin(), v.begin()+k, y.begin(), Array(x.size(), Real(0.0)));
 
         xm = x + (M_ == QL_NULL_FUNCTION ? xm : M_(xm));
 

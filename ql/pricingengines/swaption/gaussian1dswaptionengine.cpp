@@ -284,7 +284,7 @@ namespace QuantLib {
                                           // the no call probability
                             npvp0.back()[k] =
                                 probabilities_ == Naive
-                                    ? 1.0
+                                    ? Real(1.0)
                                     : 1.0 / (model_->zerobond(expiry0Time, 0.0,
                                                               0.0,
                                                               discountCurve_) *
@@ -293,7 +293,7 @@ namespace QuantLib {
                         if (exerciseValue >= npv0[k]) {
                             npvp0[idx - minIdxAlive][k] =
                                 probabilities_ == Naive
-                                    ? 1.0
+                                    ? Real(1.0)
                                     : 1.0 /
                                           (model_->zerobond(expiry0Time, 0.0,
                                                             0.0,

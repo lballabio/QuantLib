@@ -895,7 +895,7 @@ namespace QuantLib {
     template<class CP>
     std::map<Real, Probability> SaddlePointLossModel<CP>::lossDistribution(const Date& d) const {
         std::map<Real, Probability> distrib;
-        static const Real numPts = 500.;
+        static constexpr double numPts = 500.;
         for(Real lossFraction=1./numPts; lossFraction<0.45; 
             lossFraction+= 1./numPts)
             distrib.insert(std::make_pair<Real, Probability>(

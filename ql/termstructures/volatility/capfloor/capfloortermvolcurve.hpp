@@ -32,7 +32,6 @@
 #include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
-#include <boost/noncopyable.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -43,8 +42,7 @@ namespace QuantLib {
         volatilities of a set of caps/floors with given length.
     */
     class CapFloorTermVolCurve : public LazyObject,
-                                 public CapFloorTermVolatilityStructure,
-                                 private boost::noncopyable {
+                                 public CapFloorTermVolatilityStructure {
       public:
         //! floating reference date, floating market data
         CapFloorTermVolCurve(Natural settlementDays,
@@ -74,6 +72,15 @@ namespace QuantLib {
                              const std::vector<Period>& optionTenors,
                              const std::vector<Volatility>& vols,
                              const DayCounter& dc = Actual365Fixed());
+
+        // make class non-copyable and non-movable
+        CapFloorTermVolCurve(CapFloorTermVolCurve&&) = delete;
+        CapFloorTermVolCurve(const CapFloorTermVolCurve&) = delete;
+        CapFloorTermVolCurve& operator=(CapFloorTermVolCurve&&) = delete;
+        CapFloorTermVolCurve& operator=(const CapFloorTermVolCurve&) = delete;
+
+        ~CapFloorTermVolCurve() override = default;
+
         //! \name TermStructure interface
         //@{
         Date maxDate() const override;

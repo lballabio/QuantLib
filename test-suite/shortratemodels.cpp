@@ -376,7 +376,7 @@ void ShortRateModelTest::testSwaps() {
             Schedule floatSchedule(startDate, maturity, Period(Semiannual),
                                    calendar, Following, Following,
                                    DateGeneration::Forward, false);
-            for (double rate : rates) {
+            for (Real rate : rates) {
 
                 VanillaSwap swap(Swap::Payer, 1000000.0, fixedSchedule, rate,
                                  Thirty360(Thirty360::BondBasis),

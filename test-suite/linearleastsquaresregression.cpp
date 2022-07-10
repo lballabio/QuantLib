@@ -40,10 +40,10 @@ void LinearLeastSquaresRegressionTest::testRegression() {
     PseudoRandom::rng_type rng(PseudoRandom::urng_type(1234U));
 
     std::vector<ext::function<Real(Real)>> v = {
-        [](Real x){ return 1.0; },
-        [](Real x){ return x; },
-        [](Real x){ return x*x; },
-        [](Real x){ return std::sin(x); }
+        [](Real x) -> Real { return 1.0; },
+        [](Real x) -> Real { return x; },
+        [](Real x) -> Real { return x*x; },
+        [](Real x) -> Real { return std::sin(x); }
     };
 
     std::vector<ext::function<Real(Real)>> w(v);

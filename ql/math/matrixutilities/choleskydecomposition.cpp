@@ -55,7 +55,7 @@ namespace QuantLib {
                     // In this case sum happens to be zero as well
                     result[j][i] = close_enough(result[i][i], 0.0)
                                        ? 0.0
-                                       : sum / result[i][i];
+                                       : Real(sum / result[i][i]);
                 }
             }
         }

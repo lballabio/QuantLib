@@ -213,7 +213,7 @@ namespace QuantLib {
     inline Rate RendistatoCalculator::yield() const {
         return std::inner_product(basket_->weights().begin(),
                                   basket_->weights().end(),
-                                  yields().begin(), 0.0);
+                                  yields().begin(), Real(0.0));
     }
 
     inline Time RendistatoCalculator::duration() const {

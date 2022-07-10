@@ -55,7 +55,7 @@ namespace QuantLib {
                 model_->zerobond(arguments_.fixedPayDates[i], expiry, y,
                                  discountCurve_) *
                 (oas_.empty()
-                     ? 1.0
+                     ? Real(1.0)
                      : exp(-oas_->value() *
                            model_->termStructure()->dayCounter().yearFraction(
                                expiry, arguments_.fixedPayDates[i])));
@@ -78,7 +78,7 @@ namespace QuantLib {
                 amount * model_->zerobond(arguments_.floatingPayDates[i],
                                           expiry, y, discountCurve_) *
                 (oas_.empty()
-                     ? 1.0
+                     ? Real(1.0)
                      : exp(-oas_->value() *
                            model_->termStructure()->dayCounter().yearFraction(
                                expiry, arguments_.floatingPayDates[i])));
@@ -206,7 +206,7 @@ namespace QuantLib {
                 Real price = 0.0;
                 if (expiry1Time != Null<Real>()) {
                     Real zSpreadDf =
-                        oas_.empty() ? 1.0
+                        oas_.empty() ? Real(1.0)
                                      : std::exp(-oas_->value() *
                                                 (expiry1Time - expiry0Time));
                     Array yg = model_->yGrid(stddevs_, integrationPoints_,
@@ -276,7 +276,7 @@ namespace QuantLib {
                         if (expiry1Time != Null<Real>()) {
                             Real zSpreadDf =
                                 oas_.empty()
-                                    ? 1.0
+                                    ? Real(1.0)
                                     : std::exp(-oas_->value() *
                                                (expiry1Time - expiry0Time));
                             Array yg = model_->yGrid(
@@ -361,7 +361,7 @@ namespace QuantLib {
                          l++) {
                         Real zSpreadDf =
                             oas_.empty()
-                                ? 1.0
+                                ? Real(1.0)
                                 : std::exp(
                                       -oas_->value() *
                                       (model_->termStructure()
@@ -392,7 +392,7 @@ namespace QuantLib {
                     for (Size l = j1; l < arguments_.fixedCoupons.size(); l++) {
                         Real zSpreadDf =
                             oas_.empty()
-                                ? 1.0
+                                ? Real(1.0)
                                 : std::exp(
                                       -oas_->value() *
                                       (model_->termStructure()
@@ -414,7 +414,7 @@ namespace QuantLib {
                         rebateDate = rebatedExercise->rebatePaymentDate(idx);
                         zSpreadDf =
                             oas_.empty()
-                                ? 1.0
+                                ? Real(1.0)
                                 : std::exp(
                                       -oas_->value() *
                                       (model_->termStructure()
@@ -438,7 +438,7 @@ namespace QuantLib {
                                           // the no call probability
                             npvp0.back()[k] =
                                 probabilities_ == Naive
-                                    ? 1.0
+                                    ? Real(1.0)
                                     : 1.0 / (model_->zerobond(expiry0Time, 0.0,
                                                               0.0,
                                                               discountCurve_) *
@@ -447,7 +447,7 @@ namespace QuantLib {
                         if (exerciseValue >= npv0[k]) {
                             npvp0[idx - minIdxAlive][k] =
                                 probabilities_ == Naive
-                                    ? 1.0
+                                    ? Real(1.0)
                                     : 1.0 /
                                           (model_->zerobond(expiry0Time, 0.0,
                                                             0.0,

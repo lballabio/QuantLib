@@ -157,8 +157,8 @@ namespace crosscurrencyratehelpers_test {
             const Real baseCcyLegNotional = 1.0;
             Real quoteCcyLegNotional = baseCcyLegNotional * fxSpot;
 
-            Spread baseCcyLegBasis = isBasisOnFxBaseCurrencyLeg ? q.basis * basisPoint : 0.0;
-            Spread quoteCcyLegBasis = isBasisOnFxBaseCurrencyLeg ? 0.0 : q.basis * basisPoint;
+            Spread baseCcyLegBasis = isBasisOnFxBaseCurrencyLeg ? Real(q.basis * basisPoint) : 0.0;
+            Spread quoteCcyLegBasis = isBasisOnFxBaseCurrencyLeg ? 0.0 : Real(q.basis * basisPoint);
 
             std::vector<ext::shared_ptr<Swap> > legs;
             bool payer = true;

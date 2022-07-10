@@ -11,6 +11,8 @@ jobs:
             shortname: default
           - os: [macos-11]
             shortname: default-11
+          - os: [macos-12]
+            shortname: default-12
     steps:
     - uses: actions/checkout@v3
     - name: Setup
