@@ -36,8 +36,6 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #endif
 
-#include <iostream>
-
 namespace QuantLib {
 
     class QrPlusBoundaryEvaluator {
@@ -61,15 +59,15 @@ namespace QuantLib {
                   *std::sqrt(squared(omega-1) + 8*r/(sigma2*(1-dr))))),
           alpha(2*dr*r/(sigma2*(2*lambda+omega - 1))),
           beta(alpha*(1/(1-dr)+lambdaPrime/(2*lambda+omega-1)) - lambda),
-          xMin(0.5*(strike + S)*1e3*QL_EPSILON),
           xMax(calcxMax(strike, r, q)),
+          xMin(QL_EPSILON*1e4*std::min(0.5*(strike + S), xMax)),
           nrEvaluations(0),
           sc(Null<Real>()) {
         }
 
         Real operator()(Real S) const {
             ++nrEvaluations;
-            S = std::max(xMin, S);
+
             if (S != sc)
                 preCalculate(S);
 
@@ -82,7 +80,6 @@ namespace QuantLib {
             }
         }
         Real derivative(Real S) const {
-            S = std::max(xMin, S);
             if (S != sc)
                 preCalculate(S);
 
@@ -90,9 +87,9 @@ namespace QuantLib {
                     + alpha/(r*dr)*charm;
         }
         Real fprime2(Real S) const {
-            S = std::max(xMin, S);
             if (S != sc)
                 preCalculate(S);
+
             const Real gamma = phi_dp*dq/(v*S);
             const Real colour = gamma*(q + (r-q)*dp/v + (1-dp*dm)/(2*tau));
 
@@ -110,6 +107,7 @@ namespace QuantLib {
 
       private:
         void preCalculate(Real S) const {
+            S = std::max(QL_EPSILON, S);
             sc = S;
             dp = std::log(S*dq/(K*dr))/v + 0.5*v;
             dm = dp - v;
@@ -129,7 +127,7 @@ namespace QuantLib {
         const Volatility sigma, sigma2, v;
         const Rate r, q;
         const DiscountFactor dr, dq;
-        const Real omega, lambda, lambdaPrime, alpha, beta, xMin, xMax;
+        const Real omega, lambda, lambdaPrime, alpha, beta, xMax, xMin;
         mutable Size nrEvaluations;
         mutable Real sc, dp, dm, Phi_dp, Phi_dm, phi_dp;
         mutable Real npv, theta, charm;
@@ -203,23 +201,30 @@ namespace QuantLib {
     template <class Solver>
     Real QrPlusAmericanEngine::buildInSolver(
         const QrPlusBoundaryEvaluator& eval,
-        Solver solver, Real S, Real strike, Size maxIter) const {
+        Solver solver, Real S, Real strike, Size maxIter,
+        Real guess) const {
 
         solver.setMaxEvaluations(maxIter);
         solver.setLowerBound(eval.xmin());
 
-        Real guess = 0.5*(eval.xmax() + S);
-        if (guess >= eval.xmax())
-            guess = std::nextafter(eval.xmax(), -1);
+        const Real fxmin = eval(eval.xmin());
+        Real xmax = std::max(0.5*(eval.xmax() + S), eval.xmax());
+        while (eval(xmax)*fxmin > 0.0 && eval.evaluations() < maxIter_)
+            xmax*=2;
+
+        if (guess == Null<Real>())
+            guess = 0.5*(xmax + S);
+
+        if (guess >= xmax)
+            guess = std::nextafter(xmax, Real(-1));
         else if (guess <= eval.xmin())
             guess = std::nextafter(eval.xmin(), QL_MAX_REAL);
 
-        return solver.solve(eval, eps_, guess, eval.xmin(), eval.xmax());
+        return solver.solve(eval, eps_, guess, eval.xmin(), xmax);
     }
 
     std::pair<Size, Real> QrPlusAmericanEngine::putExerciseBoundary(
         const PutOptionParam& param, Time tau) const {
-
         const Real S = param.S;
         const Real K = param.K;
 
@@ -246,28 +251,26 @@ namespace QuantLib {
           case Halley:
           case SuperHalley:
             {
+                bool resultCloseEnough;
                 x = 0.5*(eval.xmax() + S);
                 Real xOld, fx;
+
                 do {
                     xOld = x;
                     fx = eval(x);
                     const Real fPrime = eval.derivative(x);
                     const Real lf = fx*eval.fprime2(x)/(fPrime*fPrime);
-                    Real step = (solverType_ == Halley)
+                    const Real step = (solverType_ == Halley)
                         ? 1/(1 - 0.5*lf)*fx/fPrime
                         : (1 + 0.5*lf/(1-lf))*fx/fPrime;
 
-                    while ( (step > xmin) && (x - step < xmin) )
-                        step *= 0.25;
-
                     x = std::max(xmin, x - step);
+                    resultCloseEnough = std::fabs(x-xOld) < 0.5*eps_;
                 }
-                while (   std::fabs(x-xOld)/S  > eps_
-                       && eval.evaluations() < maxIter_);
+                while (!resultCloseEnough && eval.evaluations() < maxIter_);
 
-                // fallback
-                if (std::fabs(x-xOld)/S > eps_ && !close(std::fabs(fx), 0.0)) {
-                    x = buildInSolver(eval, QuantLib::Brent(), S, K, 10*maxIter_);
+                if (!resultCloseEnough && !close(std::fabs(fx), 0.0)) {
+                    x = buildInSolver(eval, QuantLib::Brent(), S, K, 10*maxIter_, x);
                 }
             }
             break;

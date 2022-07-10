@@ -1155,91 +1155,88 @@ void AmericanOptionTest::testQrPlusAmericanEngine() {
         Real r;
         Real q;
         Real expectedValue;
-        bool highPrecision;
+        Real precision;
     };
 
     // high precision edge cases
     const OptionSpec edgeTestCases[] = {
 
         // standard put option
-        {Option::Put, 100.0, 120.0, 3650, 0.25, 0.10, 0.03, 22.97197053274833, true},
+        {Option::Put, 100.0, 120.0, 3650, 0.25, 0.10, 0.03, 22.9719705327658303, 1e-10},
         // call-put parity on standard option
-        {Option::Call, 120.0, 100.0, 3650, 0.25, 0.03, 0.10, 22.97197053274833, true},
+        {Option::Call, 120.0, 100.0, 3650, 0.25, 0.03, 0.10, 22.9719705327658303, 1e-10},
 
         // zero strike put
-        {Option::Put, 100.0, 0.0, 365, 0.25, 0.02, 0.02, 0.0, true},
-        {Option::Put, 100.0, 1e-8, 365, 0.25, 0.02, 0.02, 0.0, true},
+        {Option::Put, 100.0, 0.0, 365, 0.25, 0.02, 0.02, 0.0, 1e-14},
+        {Option::Put, 100.0, 1e-8, 365, 0.25, 0.02, 0.02, 0.0, 1e-14},
 
         // zero strike call
-        {Option::Call, 100.0, 0.0, 365, 0.25, 0.05, 0.01, 100.0, true},
-        {Option::Call, 100.0, 1e-8, 365, 0.25, 0.05, 0.01, 100.0-1e-8, true},
+        {Option::Call, 100.0, 0.0, 365, 0.25, 0.05, 0.01, 100.0, 1e-14},
+        {Option::Call, 100.0, 1e-8, 365, 0.25, 0.05, 0.01, 100.0-1e-8, 1e-10},
 
         // zero vol call
-        {Option::Call, 100.0, 50.0, 365, 0.0, 0.05, 0.01, 51.4435121498811085, true},
-        {Option::Call, 100.0, 50.0, 365, 1e-8, 0.05, 0.01, 51.4435121498811156, true},
+        {Option::Call, 100.0, 50.0, 365, 0.0, 0.05, 0.01, 51.4435121498811085, 1e-14},
+        {Option::Call, 100.0, 50.0, 365, 1e-8, 0.05, 0.01, 51.4435121498811156, 1e-10},
 
         // zero vol put 1
-        {Option::Put, 100.0, 120.0, 4*3650, 1e-6, 0.01, 0.50, 108.980920365700442, true},
-        {Option::Put, 100.0, 120.0, 4*3650, 0.0, 0.01, 0.50, 108.9809045611846, true},
+        {Option::Put, 100.0, 120.0, 4*3650, 1e-6, 0.01, 0.50, 108.980920365700442, 1e-10},
+        {Option::Put, 100.0, 120.0, 4*3650, 0.0, 0.01, 0.50, 108.980904561184602, 1e-14},
 
         // zero vol put 2
-        {Option::Put, 100.0, 120.0, 365, 1e-7, 0.05, 0.01, 20.0, true},
-        {Option::Put, 100.0, 120.0, 365, 0.0, 0.05, 0.01, 20.0, true},
+        {Option::Put, 100.0, 120.0, 365, 1e-7, 0.05, 0.01, 20.0, 1e-14},
+        {Option::Put, 100.0, 120.0, 365, 0.0, 0.05, 0.01, 20.0, 1e-14},
 
         // zero vol put 3
-        {Option::Put, 100.0, 120.0, 365, 1e-7, 0.00, 0.05, 24.8770575499286082, true},
-        {Option::Put, 100.0, 120.0, 365, 0.0, 0.00, 0.05, 24.8770575499286082, true},
+        {Option::Put, 100.0, 120.0, 365, 1e-7, 0.00, 0.05, 24.8770575499286082, 1e-10},
+        {Option::Put, 100.0, 120.0, 365, 0.0, 0.00, 0.05, 24.8770575499286082, 1e-14},
 
         // zero spot put
-        {Option::Put, 1e-6, 120.0, 365, 0.25, -0.075, 0.05, 129.346097154926355, true},
-        {Option::Put, 0.0, 120.0, 365, 0.25, -0.075, 0.05, 129.346098106155779, true},
+        {Option::Put, 1e-6, 120.0, 365, 0.25, -0.075, 0.05, 129.346097154926355, 1e-10},
+        {Option::Put, 0.0, 120.0, 365, 0.25, -0.075, 0.05, 129.346098106155779, 1e-14},
 
         // zero spot call
-        {Option::Call, 1e-6, 120.0, 365, 0.25, 0.075, 0.05, 0.0, true},
-        {Option::Call, 0.0, 120.0, 365, 0.25, 0.075, 0.05, 0.0, true},
+        {Option::Call, 1e-6, 120.0, 365, 0.25, 0.075, 0.05, 0.0, 1e-14},
+        {Option::Call, 0.0, 120.0, 365, 0.25, 0.075, 0.05, 0.0, 1e-14},
 
         // put option with one day left
-        {Option::Put, 100.0, 120.0, 1, 0.25, 0.05, 0.0, 20.0, true},
+        {Option::Put, 100.0, 120.0, 1, 0.25, 0.05, 0.0, 20.0, 1e-10},
 
         // put option at maturity
-        {Option::Put, 100.0, 120.0, 0, 0.25, 0.05, 0.0, 0.0, true},
-
-        // put option at maturity
-        {Option::Put, 100.0, 120.0, 0, 0.25, 0.05, 0.0, 0.0, true},
+        {Option::Put, 100.0, 120.0, 0, 0.25, 0.05, 0.0, 0.0, 1e-14},
 
         // zero everything
-        {Option::Put, 0.0, 0.0, 365, 0.0, 0.0, 0.0, 0.0, true},
+        {Option::Put, 0.0, 0.0, 365, 0.0, 0.0, 0.0, 0.0, 1e-14},
 
         // zero strike call with zero vol
-        {Option::Call, 100.0, 1e-8, 365, 1e-8, 0.05, 0.025, 100.0-1e-8, true},
-        {Option::Call, 100.0, 0.0, 365, 1e-8, 0.05, 0.025, 100.0, true},
-        {Option::Call, 100.0, 1e-8, 365, 0.0, 0.05, 0.025, 100.0-1e-8, true},
-        {Option::Call, 100.0, 0.0, 365, 0.0, 0.05, 0.025, 100.0, true},
+        {Option::Call, 100.0, 1e-8, 365, 1e-8, 0.05, 0.025, 100.0-1e-8, 1e-10},
+        {Option::Call, 100.0, 0.0, 365, 1e-8, 0.05, 0.025, 100.0, 1e-10},
+        {Option::Call, 100.0, 1e-8, 365, 0.0, 0.05, 0.025, 100.0-1e-8, 1e-10},
+        {Option::Call, 100.0, 0.0, 365, 0.0, 0.05, 0.025, 100.0, 1e-10},
 
         // zero spot call with zero vol
-        {Option::Call, 1e-8, 100, 365, 1e-8, 0.05, 0.025, 0.0, true},
-        {Option::Call, 0.0, 100, 365, 0.0, 0.05, 0.025, 0.0, true},
+        {Option::Call, 1e-8, 100, 365, 1e-8, 0.05, 0.025, 0.0, 1e-10},
+        {Option::Call, 0.0, 100, 365, 0.0, 0.05, 0.025, 0.0, 1e-14},
 
         // zero interest rate call
-        {Option::Call, 100, 100, 365, 0.25, 0.0, 0.025, 8.87150621240175319, true},
+        {Option::Call, 100, 100, 365, 0.25, 0.0, 0.025, 8.87150621240174964, 1e-10},
 
         // zero dividend rate call
-        {Option::Call, 100, 100, 365, 0.25, 0.05, 0.0, 12.3359989303687154, true},
+        {Option::Call, 100, 100, 365, 0.25, 0.05, 0.0, 12.3359989303687243, 1e-10},
 
         // extreme spot call
-        {Option::Call, 1e10, 100, 365, 0.25, 0.01, 0.05, 1e10-100.0, false},
+        {Option::Call, 1e10, 100, 365, 0.25, 0.01, 0.05, 1e10-100.0, -1},
 
         // extreme strike call
-        {Option::Call, 100, 1e10, 365, 0.25, 0.01, 0.05, 0.0, true},
+        {Option::Call, 100, 1e10, 365, 0.25, 0.01, 0.05, 0.0, 1e-14},
 
         // extreme vol call
-        {Option::Call, 100, 100, 365, 100.0, 0.01, 0.05, 99.9871892409917393, true},
+        {Option::Call, 100, 100, 365, 100.0, 0.01, 0.05, 99.9871892409427119, 1e-10},
 
         // extreme dividend yield call
-        {Option::Call, 100, 100, 365, 0.25, 0.10, 10.0, 0.11226606384050547, true},
+        {Option::Call, 100, 100, 365, 0.25, 0.10, 10.0, 0.112266063840526981, 1e-10},
 
         // extreme maturity call
-        {Option::Call, 100, 100, 170*365, 0.25, 0.01, 0.002, 80.3742203184716146, true},
+        {Option::Call, 100, 100, 170*365, 0.25, 0.01, 0.002, 80.3742203193159099, 1e-10}
     };
 
     // random test cases
@@ -1322,7 +1319,7 @@ void AmericanOptionTest::testQrPlusAmericanEngine() {
 
         const OptionSpec spec = {
             optionType, spot, strike, maturityInDays,
-            vol, r, q, pde_values[i], false
+            vol, r, q, pde_values[i], -1
         };
 
         testCaseSpecs.push_back(spec);
@@ -1343,7 +1340,8 @@ void AmericanOptionTest::testQrPlusAmericanEngine() {
                 Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
                 Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
                 Handle<BlackVolTermStructure>(flatVol(today, vol, dc))
-            )
+            ),
+            8, QrPlusAmericanEngine::Halley, 1e-10
     );
 
     for (const auto& testCaseSpec: testCaseSpecs) {
@@ -1365,10 +1363,13 @@ void AmericanOptionTest::testQrPlusAmericanEngine() {
         const Real calculated = option.NPV();
         const Real expected = testCaseSpec.expectedValue;
 
-        if ((testCaseSpec.highPrecision && std::abs(expected-calculated) > 1e-14)
-            || (!testCaseSpec.highPrecision && expected > 0.1 && std::abs(calculated-expected)/expected > 0.005)
-            || (!testCaseSpec.highPrecision && expected <= 0.1 && std::abs(expected-calculated) > 5e-4)) {
-            BOOST_FAIL("QR+ boundary approximation failed to "
+        if ((testCaseSpec.precision > 0
+                && std::abs(expected-calculated) > testCaseSpec.precision)
+            || (testCaseSpec.precision < 0
+                    && expected > 0.1 && std::abs(calculated-expected)/expected > 0.005)
+            || (testCaseSpec.precision < 0 && expected <= 0.1
+                    && std::abs(expected-calculated) > 5e-4)) {
+            BOOST_ERROR("QR+ boundary approximation failed to "
                     "reproduce cached edge and PDE values for "
                     << "\n    OptionType: " <<
                     ((testCaseSpec.optionType == Option::Call)? "Call" : "Put")

@@ -57,7 +57,8 @@ namespace QuantLib {
         template <class Solver>
         Real buildInSolver(
             const QrPlusBoundaryEvaluator& eval,
-            Solver solver, Real S, Real strike, Size maxIter) const;
+            Solver solver, Real S, Real strike, Size maxIter,
+            Real guess = Null<Real>()) const;
 
         Real calculate_put(
             Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
