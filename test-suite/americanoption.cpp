@@ -1032,7 +1032,8 @@ void AmericanOptionTest::testQrPlusBoundaryValues() {
         S, K, r, q, sigma, maturity
     };
 
-    const QrPlusAmericanEngine qrPlusEngine(nullptr, 10);
+    const QrPlusAmericanEngine qrPlusEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess>(), 10);
 
     std::vector<std::pair<Real, Real> > testCaseSpecs = {
         {4.9, 87.76960949965387},
@@ -1108,7 +1109,7 @@ void AmericanOptionTest::testQrPlusBoundaryConvergence() {
         };
         for (auto solverType: solverTypes) {
             const QrPlusAmericanEngine qrPlusEngine(
-                ext::shared_ptr<GeneralizedBlackScholesProcess>(nullptr),
+                ext::shared_ptr<GeneralizedBlackScholesProcess>(),
                 Null<Size>(), solverType.first, 1e-8);
 
             Size nrEvaluations = 0;
