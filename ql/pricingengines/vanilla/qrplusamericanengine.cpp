@@ -333,7 +333,7 @@ namespace QuantLib {
 #ifdef QL_BOOST_HAS_TANH_SINH
         const Real addOn = TanhSinhIntegral(eps_)(aov, 0.0, std::sqrt(T));
 #else
-        const Real addOn = GaussLobattoIntegral(100*maxIter_, QL_MAX_REAL, eps_)
+        const Real addOn = GaussLobattoIntegral(100000, QL_MAX_REAL, 0.1*eps_)
                 (aov, 0.0, std::sqrt(T));
 #endif
 

@@ -1089,7 +1089,7 @@ void AmericanOptionTest::testQrPlusBoundaryConvergence() {
         { 0.0001, 0.000002, 120, 2000 },
         { 0.01, 0.75, 120, 2000 },
         { 0.03, 0.0, 30, 2000 },
-        { 0.03, 0.0, 1e7, 2000 },
+        { 0.03, 0.0, 1e7, 2500 },
         { 0.075, 0.0, 1e-8, 2000 }
     };
 
@@ -1122,7 +1122,7 @@ void AmericanOptionTest::testQrPlusBoundaryConvergence() {
             const Size maxEvaluations =
                 (   solverType.first == QrPlusAmericanEngine::Halley
                  || solverType.first == QrPlusAmericanEngine::SuperHalley)
-                 ? 750 : 2000;
+                 ? 750 : testCase.maxEvaluations;
 
             if (nrEvaluations > maxEvaluations) {
                 BOOST_FAIL("QR+ boundary approximation failed to converge "
@@ -1162,37 +1162,37 @@ void AmericanOptionTest::testQrPlusAmericanEngine() {
     const OptionSpec edgeTestCases[] = {
 
         // standard put option
-        {Option::Put, 100.0, 120.0, 3650, 0.25, 0.10, 0.03, 22.9719705327658303, 1e-10},
+        {Option::Put, 100.0, 120.0, 3650, 0.25, 0.10, 0.03, 22.9719705327658303, 1e-8},
         // call-put parity on standard option
-        {Option::Call, 120.0, 100.0, 3650, 0.25, 0.03, 0.10, 22.9719705327658303, 1e-10},
+        {Option::Call, 120.0, 100.0, 3650, 0.25, 0.03, 0.10, 22.9719705327658303, 1e-8},
 
         // zero strike put
         {Option::Put, 100.0, 0.0, 365, 0.25, 0.02, 0.02, 0.0, 1e-14},
         {Option::Put, 100.0, 1e-8, 365, 0.25, 0.02, 0.02, 0.0, 1e-14},
 
         // zero strike call
-        {Option::Call, 100.0, 0.0, 365, 0.25, 0.05, 0.01, 100.0, 1e-14},
-        {Option::Call, 100.0, 1e-8, 365, 0.25, 0.05, 0.01, 100.0-1e-8, 1e-10},
+        {Option::Call, 100.0, 0.0, 365, 0.25, 0.05, 0.01, 100.0, 1e-11},
+        {Option::Call, 100.0, 1e-7, 365, 0.25, 0.05, 0.01, 100.0-1e-7, 1e-9},
 
         // zero vol call
-        {Option::Call, 100.0, 50.0, 365, 0.0, 0.05, 0.01, 51.4435121498811085, 1e-14},
-        {Option::Call, 100.0, 50.0, 365, 1e-8, 0.05, 0.01, 51.4435121498811156, 1e-10},
+        {Option::Call, 100.0, 50.0, 365, 0.0, 0.05, 0.01, 51.4435121498811085, 1e-10},
+        {Option::Call, 100.0, 50.0, 365, 1e-8, 0.05, 0.01, 51.4435121498811156, 1e-8},
 
         // zero vol put 1
-        {Option::Put, 100.0, 120.0, 4*3650, 1e-6, 0.01, 0.50, 108.980920365700442, 1e-10},
-        {Option::Put, 100.0, 120.0, 4*3650, 0.0, 0.01, 0.50, 108.980904561184602, 1e-14},
+        {Option::Put, 100.0, 120.0, 4*3650, 1e-6, 0.01, 0.50, 108.980920365700442, 1e-4},
+        {Option::Put, 100.0, 120.0, 4*3650, 0.0, 0.01, 0.50, 108.980904561184602, 1e-10},
 
         // zero vol put 2
-        {Option::Put, 100.0, 120.0, 365, 1e-7, 0.05, 0.01, 20.0, 1e-14},
-        {Option::Put, 100.0, 120.0, 365, 0.0, 0.05, 0.01, 20.0, 1e-14},
+        {Option::Put, 100.0, 120.0, 365, 1e-7, 0.05, 0.01, 20.0, 1e-9},
+        {Option::Put, 100.0, 120.0, 365, 0.0, 0.05, 0.01, 20.0, 1e-12},
 
         // zero vol put 3
-        {Option::Put, 100.0, 120.0, 365, 1e-7, 0.00, 0.05, 24.8770575499286082, 1e-10},
-        {Option::Put, 100.0, 120.0, 365, 0.0, 0.00, 0.05, 24.8770575499286082, 1e-14},
+        {Option::Put, 100.0, 120.0, 365, 1e-7, 0.00, 0.05, 24.8770575499286082, 1e-8},
+        {Option::Put, 100.0, 120.0, 365, 0.0, 0.00, 0.05, 24.8770575499286082, 1e-10},
 
         // zero spot put
-        {Option::Put, 1e-6, 120.0, 365, 0.25, -0.075, 0.05, 129.346097154926355, 1e-10},
-        {Option::Put, 0.0, 120.0, 365, 0.25, -0.075, 0.05, 129.346098106155779, 1e-14},
+        {Option::Put, 1e-6, 120.0, 365, 0.25, -0.075, 0.05, 129.346097154926355, 1e-9},
+        {Option::Put, 0.0, 120.0, 365, 0.25, -0.075, 0.05, 129.346098106155779, 1e-10},
 
         // zero spot call
         {Option::Call, 1e-6, 120.0, 365, 0.25, 0.075, 0.05, 0.0, 1e-14},
@@ -1208,20 +1208,20 @@ void AmericanOptionTest::testQrPlusAmericanEngine() {
         {Option::Put, 0.0, 0.0, 365, 0.0, 0.0, 0.0, 0.0, 1e-14},
 
         // zero strike call with zero vol
-        {Option::Call, 100.0, 1e-8, 365, 1e-8, 0.05, 0.025, 100.0-1e-8, 1e-10},
-        {Option::Call, 100.0, 0.0, 365, 1e-8, 0.05, 0.025, 100.0, 1e-10},
-        {Option::Call, 100.0, 1e-8, 365, 0.0, 0.05, 0.025, 100.0-1e-8, 1e-10},
-        {Option::Call, 100.0, 0.0, 365, 0.0, 0.05, 0.025, 100.0, 1e-10},
+        {Option::Call, 100.0, 1e-7, 365, 1e-8, 0.05, 0.025, 100.0-1e-7, 1e-8},
+        {Option::Call, 100.0, 0.0, 365, 1e-8, 0.05, 0.025, 100.0, 1e-8},
+        {Option::Call, 100.0, 1e-7, 365, 0.0, 0.05, 0.025, 100.0-1e-7, 1e-8},
+        {Option::Call, 100.0, 0.0, 365, 0.0, 0.05, 0.025, 100.0, 1e-8},
 
         // zero spot call with zero vol
         {Option::Call, 1e-8, 100, 365, 1e-8, 0.05, 0.025, 0.0, 1e-10},
         {Option::Call, 0.0, 100, 365, 0.0, 0.05, 0.025, 0.0, 1e-14},
 
         // zero interest rate call
-        {Option::Call, 100, 100, 365, 0.25, 0.0, 0.025, 8.87150621240174964, 1e-10},
+        {Option::Call, 100, 100, 365, 0.25, 0.0, 0.025, 8.87150621240174964, 1e-8},
 
         // zero dividend rate call
-        {Option::Call, 100, 100, 365, 0.25, 0.05, 0.0, 12.3359989303687243, 1e-10},
+        {Option::Call, 100, 100, 365, 0.25, 0.05, 0.0, 12.3359989303687243, 1e-8},
 
         // extreme spot call
         {Option::Call, 1e10, 100, 365, 0.25, 0.01, 0.05, 1e10-100.0, -1},
@@ -1230,13 +1230,13 @@ void AmericanOptionTest::testQrPlusAmericanEngine() {
         {Option::Call, 100, 1e10, 365, 0.25, 0.01, 0.05, 0.0, 1e-14},
 
         // extreme vol call
-        {Option::Call, 100, 100, 365, 100.0, 0.01, 0.05, 99.9871892409427119, 1e-10},
+        {Option::Call, 100, 100, 365, 100.0, 0.01, 0.05, 99.9871892409427119, 1e-8},
 
         // extreme dividend yield call
-        {Option::Call, 100, 100, 365, 0.25, 0.10, 10.0, 0.112266063840526981, 1e-10},
+        {Option::Call, 100, 100, 365, 0.25, 0.10, 10.0, 0.112266063840526981, 1e-8},
 
         // extreme maturity call
-        {Option::Call, 100, 100, 170*365, 0.25, 0.01, 0.002, 80.3742203193159099, 1e-10}
+        {Option::Call, 100, 100, 170*365, 0.25, 0.01, 0.002, 80.3742203193159099, 1e-8}
     };
 
     // random test cases
