@@ -8,15 +8,21 @@ jobs:
     - name: Setup
       run: |
         sudo apt update
-        sudo apt install -y libboost-dev
+        sudo apt install -y libboost-dev ninja-build ccache
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2.2
+      with:
+        key: cmake-linux-ubuntu-latest
+        max-size: "2000M"
     - name: Compile
-      env:
-        CXXFLAGS: -O2
       run: |
         mkdir build
         cd build
-        cmake -DBOOST_ROOT=/usr ..
-        make -j 2
+        cmake .. -GNinja \
+          -DBOOST_ROOT=/usr \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build .
     - name: Test
       run: |
         cd build
@@ -28,13 +34,16 @@ jobs:
     - name: Setup
       run: |
         sudo apt update
-        sudo apt install -y libboost-all-dev
+        sudo apt install -y libboost-all-dev ninja-build ccache
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2.2
+      with:
+        key: cmake-linux-nonstandard-ubuntu-latest
+        max-size: "2000M"
     - name: Compile
-      env:
-        CXXFLAGS: -O2
       run: |
-        cmake --preset linux-ci-build-with-nonstandard-options
-        cmake --build --preset linux-ci-build-with-nonstandard-options -j2
+        cmake --preset linux-ci-build-with-nonstandard-options -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build --preset linux-ci-build-with-nonstandard-options 
     - name: Test
       run: |
         cd build
@@ -48,18 +57,21 @@ jobs:
         $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
         Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.78.0"
+        choco install -y ninja
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost-1.78.0
+      shell: cmd
       run: |
         mkdir build
         cd build
-        cmake ..
-        cmake --build . --config Release
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
+        cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release
+        cmake --build .
     - name: Test
       run: |
         cd build
-        .\test-suite\Release\quantlib-test-suite --log_level=message
+        .\test-suite\quantlib-test-suite --log_level=message
   cmake-win-with-options:
     runs-on: windows-2022
     steps:
@@ -69,16 +81,19 @@ jobs:
         $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
         Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.78.0"
+        choco install -y ninja
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost-1.78.0
+      shell: cmd
       run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
         cmake --preset windows-ci-build-with-nonstandard-options
         cmake --build --preset windows-ci-build-with-nonstandard-options
     - name: Test
       run: |
         cd build
-        .\test-suite\Release\quantlib-test-suite --log_level=message
+        .\test-suite\quantlib-test-suite --log_level=message
   cmake-macos:
     runs-on: macos-latest
     steps:
@@ -86,14 +101,21 @@ jobs:
     - name: Setup
       run: |
         brew install boost
+        brew install ninja
+        brew install ccache
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2.2
+      with:
+        key: cmake-macos-ubuntu-latest
+        max-size: "2000M"
     - name: Compile
       env:
-        CXXFLAGS: -O2 -stdlib=libc++ -mmacosx-version-min=10.9
+        CXXFLAGS: -stdlib=libc++ -mmacosx-version-min=10.9
       run: |
         mkdir build
         cd build
-        cmake ..
-        make -j 2
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -GNinja
+        cmake --build .
     - name: Test
       run: |
         cd build
