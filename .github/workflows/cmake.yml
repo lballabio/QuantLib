@@ -42,7 +42,7 @@ jobs:
         max-size: "2000M"
     - name: Compile
       run: |
-        cmake --preset linux-ci-build-with-nonstandard-options -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --preset linux-ci-build-with-nonstandard-options
         cmake --build --preset linux-ci-build-with-nonstandard-options 
     - name: Test
       run: |

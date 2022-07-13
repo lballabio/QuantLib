@@ -109,6 +109,7 @@
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_COMPILER": "g++",
         "CMAKE_CXX_STANDARD": "17",
+        "CMAKE_CXX_COMPILER_LAUNCHER": "ccache",
         "QL_ENABLE_SESSIONS": "ON",
         "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
         "QL_HIGH_RESOLUTION_DATE": "ON",
