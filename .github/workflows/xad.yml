@@ -48,3 +48,26 @@ jobs:
       run: |
         cd build
         .\qlxad\test-suite\Release\quantlib-xad-test-suite --log_level=message
+  xad-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup
+      run: |
+        brew install boost
+    - name: Compile
+      env:
+        CXXFLAGS: -O2 -stdlib=libc++ -mmacosx-version-min=10.9
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DQL_USE_AAD=XAD
+        make -j 2
+    - name: Test QuantLib
+      run: |
+        cd build
+        ./test-suite/quantlib-test-suite --log_level=message
+    - name: Test QlXad
+      run: |
+        cd build
+        ./qlxad/test-suite/quantlib-xad-test-suite --log_level=message
