@@ -2332,6 +2332,10 @@ target_compile_definitions(ql_library PRIVATE
 target_compile_options(ql_library PRIVATE
     ${OpenMP_CXX_FLAGS})
 
+if(NOT "${QL_EXTRA_LINK_LIBRARIES}" STREQUAL "")
+    target_link_libraries(ql_library PUBLIC ${QL_EXTRA_LINK_LIBRARIES})
+endif()
+
 target_include_directories(ql_library PUBLIC
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>

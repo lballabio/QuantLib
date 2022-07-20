@@ -62,6 +62,7 @@ option(QL_USE_STD_CLASSES "Enable all QL_USE_STD_ options" OFF)
 option(QL_USE_STD_SHARED_PTR "Use standard smart pointers instead of Boost ones" OFF)
 option(QL_USE_STD_FUNCTION "Use std::function and std::bind instead of Boost ones" OFF)
 option(QL_USE_STD_TUPLE "Use std::tuple instead of boost::tuple" OFF)
+set(QL_EXTRA_LINK_LIBRARIES "" CACHE STRING "Optional extra link libraries to add to QuantLib")
 
 # Convenience option to activate all STD options
 if (QL_USE_STD_CLASSES)
@@ -203,6 +204,11 @@ endif()
 
 include(CTest)
 include(Platform)
+
+# extension subdirectory if it exists (hook for external projects)
+if(EXISTS ${PROJECT_SOURCE_DIR}/ext AND EXISTS ${PROJECT_SOURCE_DIR}/ext/CMakeLists.txt)
+    add_subdirectory(ext)
+endif()
 
 # Add subdirectories
 add_subdirectory(ql)
