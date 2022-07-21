@@ -188,6 +188,10 @@ namespace QuantLib {
     /*! \relates InterestRate */
     std::ostream& operator<<(std::ostream&,
                              const InterestRate&);
+                             
+    InterestRate operator+(InterestRate, InterestRate);
+    
+    InterestRate operator-(InterestRate, InterestRate);
 
 }
 

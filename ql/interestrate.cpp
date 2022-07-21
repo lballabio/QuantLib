@@ -164,5 +164,23 @@ namespace QuantLib {
         }
         return out;
     }
+    
+    InterestRate operator+(InterestRate left, InterestRate right)
+    {
+        QL_REQUIRE(left.dayCounter() == right.dayCounter(), "Interest rates computed using different day counting conventions.");
+        QL_REQUIRE( left.compounding() == right.compounding(), "Interest rates use different compounding methods." );
+        QL_REQUIRE( left.frequency() == right.frequency(), "Interest payment frequencies differ." );
+        
+        return InterestRate( left.rate() + right.rate(), left.dayCounter(), left.compounding(), left.frequency()   );   
+    }
+    
+    InterestRate operator-(InterestRate left, InterestRate right)
+    {
+        QL_REQUIRE(left.dayCounter() == right.dayCounter(), "Interest rates computed using different day counting conventions.");
+        QL_REQUIRE( left.compounding() == right.compounding(), "Interest rates use different compounding methods." );
+        QL_REQUIRE( left.frequency() == right.frequency(), "Interest payment frequencies differ." );
+        
+        return InterestRate( left.rate() - right.rate(), left.dayCounter(), left.compounding(), left.frequency()   );   
+    }
 
 }
