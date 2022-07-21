@@ -1,3 +1,46 @@
+commit ef8aab9646b563af26d6492ac2fbc98850a0683d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.27 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 081d9927ffbe4956668178755e7641e2970f62a9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 15 Jul 2022 12:09:29 +0200
+
+    Add missing header
+
+ ql/math/integrals/gausslobattointegral.cpp                       | 1 +
+ ql/methods/finitedifferences/meshers/exponentialjump1dmesher.cpp | 1 +
+ 2 files changed, 2 insertions(+)
+
+commit 33509640e6d5082ce39229f2e6f535993df6b6ef
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 1 Apr 2021 11:28:16 +0200
+
+    Set version to 1.27 rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 238a8535f50a9c1de6e34d5ead6fa8ea4df5d428
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 13 Jul 2022 16:39:07 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt    | 3311 ++++++++++++++++++++++++++++++++++--------------------
+ Contributors.txt |    3 +
+ News.md          |  136 ++-
+ 3 files changed, 2188 insertions(+), 1262 deletions(-)
+
 commit 438d933bc21627e0863d28b32be2fe4476749a40
 Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
 Date:   Sun, 10 Jul 2022 03:56:56 +0000
