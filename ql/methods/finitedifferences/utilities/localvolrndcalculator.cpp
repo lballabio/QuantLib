@@ -157,6 +157,7 @@ namespace QuantLib {
             {
                   addition=*1.1;
                   xl-=addition;
+            }
 
             return GaussLobattoIntegral(maxIter_, 0.1*localVolProbEps_)(
                 [&](Real _x){ return pdf(_x, t); }, xl, x);
