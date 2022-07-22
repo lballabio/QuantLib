@@ -92,12 +92,6 @@ jobs:
             tag: jammy
             cc: clang
             cxx: clang++
-          - name: "C++11 mode"
-            shortname: c++11
-            tag: rolling
-            cc: gcc
-            cxx: g++
-            cxxflags: "-std=c++11"
           - name: "C++14 mode"
             shortname: c++14
             tag: rolling
@@ -134,7 +128,7 @@ jobs:
             cc: gcc
             cxx: g++
             configureflags: --enable-indexed-coupons
-          - name: "C++11 classes enabled"
+          - name: "Standard Library classes enabled"
             shortname: stdclasses
             tag: rolling
             cc: gcc

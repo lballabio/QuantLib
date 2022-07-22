@@ -99,16 +99,16 @@ if (NOT DEFINED Boost_USE_STATIC_RUNTIME)
     set(Boost_USE_STATIC_RUNTIME ${MSVC})
 endif()
 
-# Require C++11 or higher
+# Require C++14 or higher
 if (NOT DEFINED CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 11)
-elseif(CMAKE_CXX_STANDARD LESS 11)
-    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 11 or higher")
+    set(CMAKE_CXX_STANDARD 14)
+elseif(CMAKE_CXX_STANDARD LESS 14)
+    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 14 or higher")
 endif()
 if (NOT DEFINED CMAKE_CXX_STANDARD_REQUIRED)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
-# Avoid use of compiler language extensions, i.e. -std=c++11 not -std=gnu++11
+# Avoid use of compiler language extensions, i.e. -std=c++14 not -std=gnu++14
 if (NOT DEFINED CMAKE_CXX_EXTENSIONS)
     set(CMAKE_CXX_EXTENSIONS FALSE)
 endif()
