@@ -53,8 +53,8 @@ namespace QuantLib {
         const Volatility vol =
            std::max(1e-8, std::sqrt(x[1])*leverageFct_->localVol(t, x[0], true));
 
-        tmp[0] = riskFreeRate()->forwardRate(t, t, Continuous).rate()
-               - dividendYield()->forwardRate(t, t, Continuous).rate()
+        tmp[0] = (riskFreeRate()->forwardRate(t, t, Continuous)
+               - dividendYield()->forwardRate(t, t, Continuous) ).rate()
                - 0.5*vol*vol;
 
         tmp[1] = kappa_*(theta_ - x[1]);
@@ -103,8 +103,8 @@ namespace QuantLib {
             retVal[1] = ((u <= p) ? Real(0.0) : std::log((1-p)/(1-u))/beta);
         }
 
-        const Real mu = riskFreeRate()->forwardRate(t0, t0+dt, Continuous).rate()
-             - dividendYield()->forwardRate(t0, t0+dt, Continuous).rate();
+        const Real mu = (riskFreeRate()->forwardRate(t0, t0+dt, Continuous)
+             - dividendYield()->forwardRate(t0, t0+dt, Continuous) ).rate();
 
         const Real rho1 = std::sqrt(1-rho_*rho_);
 

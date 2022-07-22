@@ -64,8 +64,8 @@ namespace QuantLib {
                          : 0.0;
 
         return {
-            riskFreeRate_->forwardRate(t, t, Continuous).rate()
-               - dividendYield_->forwardRate(t, t, Continuous).rate()
+            (riskFreeRate_->forwardRate(t, t, Continuous)
+               - dividendYield_->forwardRate(t, t, Continuous) ).rate()
                - 0.5 * vol * vol,
             daysPerYear_*daysPerYear_*omega_ + daysPerYear_*(beta_ 
                                              + alpha_*q2 + gamma_*q3 - 1.0) *
@@ -148,8 +148,8 @@ namespace QuantLib {
           // Working Paper, Tinbergen Institute
           case PartialTruncation:
             vol = (x0[1] > 0.0) ? Real(std::sqrt(x0[1])) : 0.0;
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
+            mu =    (riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous) ).rate()
                     - 0.5 * vol * vol;
             nu = daysPerYear_*daysPerYear_*omega_ 
                 + daysPerYear_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * x0[1];
@@ -159,8 +159,8 @@ namespace QuantLib {
             break;
           case FullTruncation:
             vol = (x0[1] > 0.0) ? Real(std::sqrt(x0[1])) : 0.0;
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
+            mu =    (riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous) ).rate()
                     - 0.5 * vol * vol;
             nu = daysPerYear_*daysPerYear_*omega_ 
                 + daysPerYear_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * vol *vol;
@@ -170,8 +170,8 @@ namespace QuantLib {
             break;
           case Reflection:
             vol = std::sqrt(std::fabs(x0[1]));
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
+            mu =    (riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous) ).rate()
                     - 0.5 * vol*vol;
             nu = daysPerYear_*daysPerYear_*omega_ 
                 + daysPerYear_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * vol * vol;

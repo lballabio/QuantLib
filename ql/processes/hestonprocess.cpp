@@ -410,8 +410,8 @@ namespace QuantLib {
           case PartialTruncation:
             vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : Real(0.0);
             vol2 = sigma_ * vol;
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
+            mu =    (riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous) ).rate()
                     - 0.5 * vol * vol;
             nu = kappa_*(theta_ - x0[1]);
 
@@ -421,8 +421,8 @@ namespace QuantLib {
           case FullTruncation:
             vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : Real(0.0);
             vol2 = sigma_ * vol;
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
+            mu =    (riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous) ).rate()
                     - 0.5 * vol * vol;
             nu = kappa_*(theta_ - vol*vol);
 
@@ -432,8 +432,8 @@ namespace QuantLib {
           case Reflection:
             vol = std::sqrt(std::fabs(x0[1]));
             vol2 = sigma_ * vol;
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
+            mu =    (riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous) ).rate()
                     - 0.5 * vol*vol;
             nu = kappa_*(theta_ - vol*vol);
 
@@ -448,8 +448,8 @@ namespace QuantLib {
             // process. For further details please read the Wilmott thread
             // "QuantLib code is very high quality"
             vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : Real(0.0);
-            mu =   riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
-                 - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
+            mu =   (riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous) ).rate()
                    - 0.5 * vol*vol;
 
             retVal[1] = varianceDistribution(x0[1], dw[1], dt);
@@ -507,8 +507,8 @@ namespace QuantLib {
                 retVal[1] = ((u <= p) ? Real(0.0) : std::log((1-p)/(1-u))/beta);
             }
 
-            mu =   riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
-                 - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate();
+            mu =   (riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous) ).rate();
 
             retVal[0] = x0[0]*std::exp(mu*dt + k0 + k1*x0[1] + k2*retVal[1]
                                        +std::sqrt(k3*x0[1]+k4*retVal[1])*dw[0]);
@@ -531,8 +531,8 @@ namespace QuantLib {
             const Real vdw
                 = (nu_t - nu_0 - kappa_*theta_*dt + kappa_*vds)/sigma_;
 
-            mu = ( riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
-                  -dividendYield_->forwardRate(t0, t0+dt, Continuous).rate())*dt
+            mu = (riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous) ).rate()*dt
                 - 0.5*vds + rho_*vdw;
 
             const Volatility sig = std::sqrt((1-rho_*rho_)*vds);
