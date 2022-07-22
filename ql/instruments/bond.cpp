@@ -368,8 +368,6 @@ namespace QuantLib {
                 lastPaymentDate = coupon->date();
             } else if (!close(notional, notionals_.back())) {
                 // ...or if it has changed.
-                QL_REQUIRE(notional < notionals_.back(),
-                           "increasing coupon notionals");
                 notionals_.push_back(coupon->nominal());
                 // in this case, we also add the last valid date for
                 // the previous one...
