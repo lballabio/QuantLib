@@ -120,6 +120,3 @@ nbproject
 .dir-locals.el
 Build.props
 Directory.Build.props
-
-# optional folder for extension projects
-/ext

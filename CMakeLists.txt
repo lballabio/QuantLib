@@ -62,6 +62,7 @@ option(QL_USE_STD_CLASSES "Enable all QL_USE_STD_ options" OFF)
 option(QL_USE_STD_SHARED_PTR "Use standard smart pointers instead of Boost ones" OFF)
 option(QL_USE_STD_FUNCTION "Use std::function and std::bind instead of Boost ones" OFF)
 option(QL_USE_STD_TUPLE "Use std::tuple instead of boost::tuple" OFF)
+set(QL_EXTERNAL_SUBDIRECTORIES "" CACHE STRING "Optional list of external source directories to be added to the build (semicolon-separated)")
 set(QL_EXTRA_LINK_LIBRARIES "" CACHE STRING "Optional extra link libraries to add to QuantLib")
 
 # Convenience option to activate all STD options
@@ -205,10 +206,11 @@ endif()
 include(CTest)
 include(Platform)
 
-# extension subdirectory if it exists (hook for external projects)
-if(EXISTS ${PROJECT_SOURCE_DIR}/ext AND EXISTS ${PROJECT_SOURCE_DIR}/ext/CMakeLists.txt)
-    add_subdirectory(ext)
-endif()
+# extension subdirectories if they exist (hook for external projects)
+foreach(extdir ${QL_EXTERNAL_SUBDIRECTORIES})
+    get_filename_component(name_without_dir "${extdir}" NAME)
+    add_subdirectory(${extdir} ${name_without_dir})
+endforeach()
 
 # Add subdirectories
 add_subdirectory(ql)
