@@ -1,112 +1,104 @@
-Changes for QuantLib 1.26:
+Changes for QuantLib 1.27:
 ==========================
 
-QuantLib 1.26 includes 26 pull requests from several contributors.
+QuantLib 1.27 includes 37 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/22?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/23?closed=1>.
 
 Portability
 -----------
 
-- **End of support:** as announced in the notes for the previous
-  release, this release is the last to support Visual Studio 2013.
+- **Removed support:** as announced in the notes for the previous
+  release, support for Visual Studio 2013 was dropped.
 
-- **End of support:** this release is the last to support the
-  long-deprecated configure switches `--enable-disposable` and
-  `--enable-std-unique-ptr`.  From the next release, `Disposable` will
-  always be disabled (and eventually removed) and `std::unique_ptr`
-  will always be used instead of `std::auto_ptr`.  This has already
-  been the default in the last few releases.
+- **End of support:** as announced in the notes for the previous
+  release, this release will be the last to avoid C++14 syntax.
+  Allowing the newer (but still oldish) standard should still support
+  most compilers released in the past several years.
 
 - **Future end of support:** this release and the next will be the
-  last to avoid C++14 syntax.  This should still support most
-  compilers released in the past several years (except for Visual
-  Studio 2013, which we're already dropping in this release).
+  last to manage thread-local singletons via a user-provided
+  `sessionId` function.  Future releases will use the built-in
+  language support for thread-local variables.
 
-- If tagged libraries are specified, as is the default on Windows,
-  CMake now gives the built libraries the same names as the Visual
-  Studio solution (for instance, `QuantLib-x64-mt-s` instead of
-  `QuantLib-mt-s-x64`) so that the pragma in `ql/auto_link.hpp` works.
+- The `Real` type is now used consistently throughout the codebase,
+  thanks to the Xcelerit dev team (@xcelerit-dev).  This, along with
+  other changes, allows its default definition to `double` to be
+  replaced with one of the available third-party AAD types.
 
-- QuantLib can now also be built as a subproject in a larger CMake
-  build (thanks to Peter Caspers).
+- The test suite is now built using the header-only version of
+  Boost.Test, thanks to Jonathan Sweemer (@sweemer).  This might
+  simplify Boost installation for some users, since in the default
+  configuration QuantLib now only needs the Boost headers.
+
+- Replaced some Boost facilities with the corresponding C++11
+  counterparts; thanks to Klaus Spanderen (@klausspanderen) and
+  Jonathan Sweemer (@sweemer).
 
 Date/time
 ---------
 
-- When printed, `Period` instances now display transparently what
-  their units and length are, instead of doing more fancy formatting
-  (e.g., "16 months" is now displayed instead of "1 year 4 months").
-  Also, `Period` instances that compare as equal now return the same
-  period from their `normalize` method.
-
-Indexes
--------
-
-- Added Tona (Tokyo overnight average) index (thanks to Jonghee Lee).
-
-- Added static `laggedFixing` method to `CPI` structure which provides
-  interpolation of inflation index fixings.
-
-Cash flows
-----------
-
-- The `CPICoupon` and `CPICashFlow` classes now take into account the
-  correct dates and observation lag for interpolation.
+- Fixed the behavior of a couple of Australian holidays; thanks to
+  Pradeep Krishnamurthy (@pradkrish) and Fredrik Gerdin Börjesson
+  (@gbfredrik).
 
 Instruments
 -----------
 
-- Added a `BondForward` class that generalizes the existing
-  `FixedRateBondForward` to any kind of bond (thanks to Marcin
-  Rybacki).
+- Added the Turnbull-Wakeman engine for discrete Asian options; thanks
+  to Fredrik Gerdin Börjesson (@gbfredrik) for the main engine code
+  and to Jack Gillett (@jackgillett101) for the Greeks.
 
-- Avoided unexpected jumps in callable bond OAS (thanks to Ralf Konrad).
+- Added more validation to barrier options; thanks to Jonathan Sweemer
+  (@sweemer).
 
-- Fixed `TreeSwaptionEngine` mispricing when adjusting the instrument
-  schedule to a near exercise date (thanks to Ralf Konrad).
+Models
+------
 
-- the `ForwardRateAgreement` class now works correctly without an
-  explicit discount curve.
+- Fixed the start date of the underlying swap in swaption calibration
+  helpers; thanks to Peter Caspers (@pcaspers).
 
-Term structures
----------------
+- Fixed parameter checks in SVI volatility smiles; thanks to Fredrik
+  Gerdin Börjesson (@gbfredrik).
 
-- Dates explicitly passed to `InterpolatedZeroInflationCurve` are no
-  longer adjusted automatically to the beginning of their inflation period.
+Patterns
+--------
+
+- Avoid possible iterator invalidation while notifying observers;
+  thanks to Klaus Spanderen (@klausspanderen).
 
 Deprecated features
 -------------------
 
-- **Removed** the `MCDiscreteAveragingAsianEngine` class, deprecated
-  in version 1.21.
+- **Removed** the `--enable-disposable` and `--enable-std-unique-ptr`
+  configure switches.
 
-- Deprecated the `LsmBasisSystem::PolynomType` typedef, now renamed to
-  `PolynomialType`; `MakeMCAmericanEngine::withPolynomOrder` was also
-  deprecated and renamed to `withPolynomialOrder`.
+- **Removed** features deprecated in version 1.22:
+  - the unused `AmericanCondition` and `FDAmericanCondition` classes;
+  - the old-style FD shout and dividend shout engines;
+  - the unused `OneFactorOperator` class;
+  - the `io::to_integer` function;
+  - the `ArrayProxy` and `MatrixProxy` classes.
 
-- Deprecated the `ZeroInflationCashFlow` constructor taking an unused
-  calendar and business-day convention.
+- Deprecated the `QL_NOEXCEPT` and `QL_CONSTEXPR` macros.
 
-- Deprecated the `CPICoupon` constructor taking a number of fixing
-  days, as well as the `CPICoupon::indexObservation`,
-  `CPICoupon::adjustedFixing` and `CPICoupon::indexFixing` methods
-  and the `CPILeg::withFixingDays` method.
+- Deprecated the `QL_NULL_INTEGER` and `QL_NULL_REAL` macros.
 
-- Deprecated the `CPICashFlow` constructor taking a precalculated fixing date and a frequency.
+- Deprecated some unused parts of the old-style FD framework:
+  - the `PdeShortRate` class;
+  - the `ShoutCondition` and `FDShoutCondition` classes;
+  - the `FDDividendEngineBase`, `FDDividendEngineMerton73`,
+    `FDDividendEngineShiftScale` and `FDDividendEngine` classes;
+  - the `FDStepConditionEngine` and `FDEngineAdapter` classes.
 
-- Deprecated the `Observer::set_type` and `Observable::set_type` typedefs.
+- Deprecated a number of function objects in the
+  `ql/math/functional.hpp` header.
 
-- Deprecated the unused `Curve` class.
+- Deprecated the unused `MultiCurveSensitivities` class.
 
-- Deprecated the unused `LexicographicalView` class.
-
-- Deprecated the unused `Composite` class.
-
-- Deprecated the unused `DriftTermStructure` class.
+- Deprecated the unused `inner_product` function.
 
 
-**Thanks go also** to Matthias Groncki, Jonathan Sweemer and Li Zhong
-for smaller fixes, enhancements and bug reports.
+**Thanks go also** to Ryan Russell (@ryanrussell) for documentation fixes.

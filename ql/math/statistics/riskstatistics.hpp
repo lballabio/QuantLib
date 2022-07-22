@@ -151,12 +151,12 @@ namespace QuantLib {
     template <class S>
     Real GenericRiskStatistics<S>::regret(Real target) const {
         // average over the range below the target
-        std::pair<Real,Size> result = this->expectationValue(
+        std::pair<Real, Size> result = this->expectationValue(
             [=](Real xi) -> Real {
                 Real d = (xi - target);
                 return d * d;
             },
-            [=](Real xi) -> Real { return xi < target; });
+            [=](Real xi) -> bool { return xi < target; });
         Real x = result.first;
         Size N = result.second;
         QL_REQUIRE(N > 1,

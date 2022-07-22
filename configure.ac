@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.27-dev],
+AC_INIT([QuantLib], [1.28-dev],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -74,8 +74,8 @@ if test "$ql_openmp" = "yes" ; then
    AC_SUBST([CXXFLAGS],["${CXXFLAGS} ${OPENMP_CXXFLAGS}"])
 fi
 
-# Check for C++11 support
-QL_CHECK_CPP11
+# Check for C++14 support
+QL_CHECK_CPP14
 
 # Check for other compiler flags
 QL_CHECK_SYSTEM_HEADER_PREFIX
