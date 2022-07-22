@@ -140,15 +140,23 @@ namespace QuantLib {
         else if (x > xr)
             return 1.0;
 
+        Real addition = 1.0;
         // left or right hand integral
         if (x > 0.5*(xr+xl)) {
-            while (pdf(xr, t) > 0.01*localVolProbEps_) xr*=1.1;
+            while (pdf(xr, t) > 0.01*localVolProbEps_) 
+            {
+                 addition*=1.1;
+                 xr+=addition;
+            }
 
             return 1.0-GaussLobattoIntegral(maxIter_, 0.1*localVolProbEps_)(
                 [&](Real _x){ return pdf(_x, t); }, x, xr);
         }
         else {
-            while (pdf(xl, t) > 0.01*localVolProbEps_) xl*=0.9;
+            while (pdf(xl, t) > 0.01*localVolProbEps_)
+            {
+                  addition=*1.1;
+                  xl-=addition;
 
             return GaussLobattoIntegral(maxIter_, 0.1*localVolProbEps_)(
                 [&](Real _x){ return pdf(_x, t); }, xl, x);
