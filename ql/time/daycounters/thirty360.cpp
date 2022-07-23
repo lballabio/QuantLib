@@ -32,7 +32,7 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<DayCounter::Impl>
-    Thirty360::implementation(Thirty360::Convention c, const Date& terminationDate, bool isLastPeriod) {
+    Thirty360::implementation(Thirty360::Convention c, const Date& terminationDate) {
         switch (c) {
           case USA:
             return ext::shared_ptr<DayCounter::Impl>(new US_Impl);
@@ -46,7 +46,7 @@ namespace QuantLib {
             return ext::shared_ptr<DayCounter::Impl>(new ISMA_Impl);
           case ISDA:
           case German:
-            return ext::shared_ptr<DayCounter::Impl>(new ISDA_Impl(terminationDate, isLastPeriod));
+            return ext::shared_ptr<DayCounter::Impl>(new ISDA_Impl(terminationDate));
           case NASD:
             return ext::shared_ptr<DayCounter::Impl>(new NASD_Impl);
           default:
@@ -119,9 +119,7 @@ namespace QuantLib {
 
         if (isLastOfFebruary(dd1, mm1, yy1)) { dd1 = 30; }
 
-        bool isTerminationDate =
-            terminationDate_ == Date() ? isLastPeriod_ : d2 == terminationDate_;
-        if (!isTerminationDate && isLastOfFebruary(dd2, mm2, yy2)) { dd2 = 30; }
+        if (d2 != terminationDate_ && isLastOfFebruary(dd2, mm2, yy2)) { dd2 = 30; }
 
         return 360*(yy2-yy1) + 30*(mm2-mm1) + (dd2-dd1);
     }
