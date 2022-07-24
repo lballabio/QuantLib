@@ -71,30 +71,7 @@ namespace QuantLib {
     }
 
 
-    ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
-        const Handle<Quote>& quote,
-        const Period& swapObsLag,
-        const Date& maturity,
-        Calendar calendar,
-        BusinessDayConvention paymentConvention,
-        DayCounter dayCounter,
-        ext::shared_ptr<ZeroInflationIndex> zii,
-        Handle<YieldTermStructure> nominalTermStructure)
-    : ZeroCouponInflationSwapHelper(quote,
-                                    swapObsLag,
-                                    maturity,
-                                    std::move(calendar),
-                                    paymentConvention,
-                                    std::move(dayCounter),
-                                    std::move(zii),
-                                    CPI::AsIndex,
-                                    std::move(nominalTermStructure)) {}
-
-
     Real ZeroCouponInflationSwapHelper::impliedQuote() const {
-        // what does the term structure imply?
-        // in this case just the same value ... trivial case
-        // (would not be so for an inflation-linked bond)
         zciis_->recalculate();
         return zciis_->fairRate();
     }

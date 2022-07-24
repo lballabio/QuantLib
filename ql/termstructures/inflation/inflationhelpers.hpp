@@ -46,20 +46,6 @@ namespace QuantLib {
             CPI::InterpolationType observationInterpolation,
             Handle<YieldTermStructure> nominalTermStructure);
 
-        /*! \deprecated Use the other constructor.
-                        Deprecated in version 1.23.
-        */
-        QL_DEPRECATED
-        ZeroCouponInflationSwapHelper(
-            const Handle<Quote>& quote,
-            const Period& swapObsLag, // lag on swap observation of index
-            const Date& maturity,
-            Calendar calendar, // index may have null calendar as valid on every day
-            BusinessDayConvention paymentConvention,
-            DayCounter dayCounter,
-            ext::shared_ptr<ZeroInflationIndex> zii,
-            Handle<YieldTermStructure> nominalTermStructure);
-
         void setTermStructure(ZeroInflationTermStructure*) override;
         Real impliedQuote() const override;
 
