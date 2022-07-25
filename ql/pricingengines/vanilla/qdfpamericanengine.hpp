@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file qrfpamericanengine.hpp
+/*! \file qdfpamericanengine.hpp
 */
 
 #ifndef quantlib_qr_fp_american_engine_hpp
