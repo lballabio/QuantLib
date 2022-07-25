@@ -26,31 +26,35 @@
 
 #include <ql/functional.hpp>
 #include <ql/math/array.hpp>
+#include <ql/math/interpolation.hpp>
 
 
 namespace QuantLib {
+    class LagrangeInterpolation;
 
     /*! References:
         S.A. Sarra: Chebyshev Interpolation: An Interactive Tour,
         https://www.maa.org/sites/default/files/images/upload_library/4/vol6/Sarra/Chebyshev.html
-
-        https://dsp.stackexchange.com/questions/2807/fast-cosine-transform-via-fft
      */
 
-    class ChebyshevInterpolation {
+    class ChebyshevInterpolation: public Interpolation {
       public:
-        ChebyshevInterpolation(const Array& f);
-        ChebyshevInterpolation(Size n, const ext::function<Real(Real)>& f);
+        enum PointsType {FirstKind, SecondKind};
 
-        Real operator()(Real z) const;
-        static Array nodes(Size n);
+        ChebyshevInterpolation(
+            const Array& y, PointsType pointsType = SecondKind);
+        ChebyshevInterpolation(
+            Size n, const ext::function<Real(Real)>& f,
+            PointsType pointsType = SecondKind);
+
+        // fast interpolate with new set of y values
+        Real value(const Array& y, Real x) const;
+
+        static Array nodes(Size n, PointsType pointsType);
 
       private:
-        static Array apply(const Array& x, const ext::function<Real(Real)>& f);
-
-        const Size n_;
-        const Array nodes_;
-        Array a_;
+        const Array x_, y_;
+        ext::shared_ptr<LagrangeInterpolation> lagrangeInterp_;
     };
 }
 

@@ -30,7 +30,7 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/pricingengines/vanilla/qrplusamericanengine.hpp>
+#include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
 #include <ql/math/integrals/tanhsinhintegral.hpp>
 #ifndef QL_BOOST_HAS_TANH_SINH
 #include <ql/math/integrals/gausslobattointegral.hpp>
@@ -38,9 +38,9 @@
 
 namespace QuantLib {
 
-    class QrPlusBoundaryEvaluator {
+    class QdPlusBoundaryEvaluator {
       public:
-        QrPlusBoundaryEvaluator(
+        QdPlusBoundaryEvaluator(
             Real S, Real strike,
             Rate rf, Rate dy, Volatility vol, Time t, Time T)
         : tau(t),
@@ -181,10 +181,10 @@ namespace QuantLib {
     };
 
 
-    QrPlusAmericanEngine::QrPlusAmericanEngine(
+    QdPlusAmericanEngine::QdPlusAmericanEngine(
         const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
         Size interpolationPoints,
-        QrPlusAmericanEngine::SolverType solverType,
+        QdPlusAmericanEngine::SolverType solverType,
         Real eps, Size maxIter)
     : process_(std::move(process)),
       interpolationPoints_(interpolationPoints),
@@ -199,8 +199,8 @@ namespace QuantLib {
     }
 
     template <class Solver>
-    Real QrPlusAmericanEngine::buildInSolver(
-        const QrPlusBoundaryEvaluator& eval,
+    Real QdPlusAmericanEngine::buildInSolver(
+        const QdPlusBoundaryEvaluator& eval,
         Solver solver, Real S, Real strike, Size maxIter,
         Real guess) const {
 
@@ -223,16 +223,16 @@ namespace QuantLib {
         return solver.solve(eval, eps_, guess, eval.xmin(), xmax);
     }
 
-    std::pair<Size, Real> QrPlusAmericanEngine::putExerciseBoundary(
+    std::pair<Size, Real> QdPlusAmericanEngine::putExerciseBoundary(
         const PutOptionParam& param, Time tau) const {
         const Real S = param.S;
         const Real K = param.K;
 
         if (tau < QL_EPSILON)
             return std::pair<Size, Real>(
-                Size(0), QrPlusBoundaryEvaluator::calcxMax(K, param.r, param.q));
+                Size(0), QdPlusBoundaryEvaluator::calcxMax(K, param.r, param.q));
 
-        const QrPlusBoundaryEvaluator eval(
+        const QdPlusBoundaryEvaluator eval(
             S, K, param.r, param.q, param.vol, tau, param.T);
 
         const Real xmin = eval.xmin();
@@ -281,7 +281,7 @@ namespace QuantLib {
         return std::pair<Size, Real>(eval.evaluations(), x);
     }
 
-    Real QrPlusAmericanEngine::calculate_put(
+    Real QdPlusAmericanEngine::calculate_put(
         Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
 
         if (close(S, 0.0))
@@ -316,7 +316,7 @@ namespace QuantLib {
         QL_REQUIRE(r >= 0 && q >= 0,
             "positiive interest rates and dividend yields are required");
 
-        const Real xmax = QrPlusBoundaryEvaluator::calcxMax(K, r, q);
+        const Real xmax = QdPlusBoundaryEvaluator::calcxMax(K, r, q);
 
         const ChebyshevInterpolation q_z(
             interpolationPoints_,
@@ -343,7 +343,7 @@ namespace QuantLib {
         return europeanValue + std::max(0.0, addOn);
     }
 
-    void QrPlusAmericanEngine::calculate() const {
+    void QdPlusAmericanEngine::calculate() const {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American option");
 

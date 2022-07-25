@@ -30,7 +30,7 @@
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesshoutengine.hpp>
-#include <ql/pricingengines/vanilla/qrplusamericanengine.hpp>
+#include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -1017,8 +1017,8 @@ void AmericanOptionTest::testCallPutParity() {
     }
 }
 
-void AmericanOptionTest::testQrPlusBoundaryValues() {
-    BOOST_TEST_MESSAGE("Testing QR+ boundary approximation...");
+void AmericanOptionTest::testQdPlusBoundaryValues() {
+    BOOST_TEST_MESSAGE("Testing QD+ boundary approximation...");
 
     const DayCounter dc = Actual365Fixed();
     const Real S = 100;
@@ -1028,11 +1028,11 @@ void AmericanOptionTest::testQrPlusBoundaryValues() {
     const Volatility sigma = 0.25;
     const Time maturity = 5.0;
 
-    const QrPlusAmericanEngine::PutOptionParam param = {
+    const QdPlusAmericanEngine::PutOptionParam param = {
         S, K, r, q, sigma, maturity
     };
 
-    const QrPlusAmericanEngine qrPlusEngine(
+    const QdPlusAmericanEngine qrPlusEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess>(), 10);
 
     std::vector<std::pair<Real, Real> > testCaseSpecs = {
@@ -1071,8 +1071,8 @@ void AmericanOptionTest::testQrPlusBoundaryValues() {
     }
 }
 
-void AmericanOptionTest::testQrPlusBoundaryConvergence() {
-    BOOST_TEST_MESSAGE("Testing QR+ boundary convergence...");
+void AmericanOptionTest::testQdPlusBoundaryConvergence() {
+    BOOST_TEST_MESSAGE("Testing QD+ boundary convergence...");
 
     const DayCounter dc = Actual365Fixed();
     const Real S = 100;
@@ -1094,21 +1094,21 @@ void AmericanOptionTest::testQrPlusBoundaryConvergence() {
         { 0.075, 0.0, 1e-8, 2000 }
     };
 
-    const std::vector<std::pair<QrPlusAmericanEngine::SolverType, std::string> >
+    const std::vector<std::pair<QdPlusAmericanEngine::SolverType, std::string> >
         solverTypes{
-        { QrPlusAmericanEngine::Brent, "Brent" },
-        { QrPlusAmericanEngine::Newton, "Newton" },
-        { QrPlusAmericanEngine::Ridder, "Ridder" },
-        { QrPlusAmericanEngine::Halley, "Halley" },
-        { QrPlusAmericanEngine::SuperHalley, "SuperHalley" }
+        { QdPlusAmericanEngine::Brent, "Brent" },
+        { QdPlusAmericanEngine::Newton, "Newton" },
+        { QdPlusAmericanEngine::Ridder, "Ridder" },
+        { QdPlusAmericanEngine::Halley, "Halley" },
+        { QdPlusAmericanEngine::SuperHalley, "SuperHalley" }
     };
 
     for (const auto& testCase: testCases) {
-        const QrPlusAmericanEngine::PutOptionParam param = {
+        const QdPlusAmericanEngine::PutOptionParam param = {
             S, testCase.strike, testCase.r, testCase.q, sigma, maturity
         };
         for (auto solverType: solverTypes) {
-            const QrPlusAmericanEngine qrPlusEngine(
+            const QdPlusAmericanEngine qrPlusEngine(
                 ext::shared_ptr<GeneralizedBlackScholesProcess>(),
                 Null<Size>(), solverType.first, 1e-8);
 
@@ -1121,8 +1121,8 @@ void AmericanOptionTest::testQrPlusBoundaryConvergence() {
             }
 
             const Size maxEvaluations =
-                (   solverType.first == QrPlusAmericanEngine::Halley
-                 || solverType.first == QrPlusAmericanEngine::SuperHalley)
+                (   solverType.first == QdPlusAmericanEngine::Halley
+                 || solverType.first == QdPlusAmericanEngine::SuperHalley)
                  ? 750 : testCase.maxEvaluations;
 
             if (nrEvaluations > maxEvaluations) {
@@ -1138,8 +1138,8 @@ void AmericanOptionTest::testQrPlusBoundaryConvergence() {
     }
 }
 
-void AmericanOptionTest::testQrPlusAmericanEngine() {
-    BOOST_TEST_MESSAGE("Testing QR+ American Option pricing...");
+void AmericanOptionTest::testQdPlusAmericanEngine() {
+    BOOST_TEST_MESSAGE("Testing QD+ American Option pricing...");
 
     SavedSettings backup;
 
@@ -1163,9 +1163,9 @@ void AmericanOptionTest::testQrPlusAmericanEngine() {
     const OptionSpec edgeTestCases[] = {
 
         // standard put option
-        {Option::Put, 100.0, 120.0, 3650, 0.25, 0.10, 0.03, 22.9719705327658303, 1e-8},
+        {Option::Put, 100.0, 120.0, 3650, 0.25, 0.10, 0.03, 22.97383256003585, 1e-8},
         // call-put parity on standard option
-        {Option::Call, 120.0, 100.0, 3650, 0.25, 0.03, 0.10, 22.9719705327658303, 1e-8},
+        {Option::Call, 120.0, 100.0, 3650, 0.25, 0.03, 0.10, 22.97383256003585, 1e-8},
 
         // zero strike put
         {Option::Put, 100.0, 0.0, 365, 0.25, 0.02, 0.02, 0.0, 1e-14},
@@ -1219,7 +1219,7 @@ void AmericanOptionTest::testQrPlusAmericanEngine() {
         {Option::Call, 0.0, 100, 365, 0.0, 0.05, 0.025, 0.0, 1e-14},
 
         // zero interest rate call
-        {Option::Call, 100, 100, 365, 0.25, 0.0, 0.025, 8.87150621240174964, 1e-8},
+        {Option::Call, 100, 100, 365, 0.25, 0.0, 0.025, 8.871505915120776, 1e-8},
 
         // zero dividend rate call
         {Option::Call, 100, 100, 365, 0.25, 0.05, 0.0, 12.3359989303687243, 1e-8},
@@ -1231,13 +1231,13 @@ void AmericanOptionTest::testQrPlusAmericanEngine() {
         {Option::Call, 100, 1e10, 365, 0.25, 0.01, 0.05, 0.0, 1e-14},
 
         // extreme vol call
-        {Option::Call, 100, 100, 365, 100.0, 0.01, 0.05, 99.9871892409427119, 1e-8},
+        {Option::Call, 100, 100, 365, 100.0, 0.01, 0.05, 99.9874942266127, 1e-8},
 
         // extreme dividend yield call
-        {Option::Call, 100, 100, 365, 0.25, 0.10, 10.0, 0.112266063840526981, 1e-8},
+        {Option::Call, 100, 100, 365, 0.25, 0.10, 10.0, 0.1159627202107989, 1e-8},
 
         // extreme maturity call
-        {Option::Call, 100, 100, 170*365, 0.25, 0.01, 0.002, 80.3742203193159099, 1e-8}
+        {Option::Call, 100, 100, 170*365, 0.25, 0.01, 0.002, 80.37468392429741, 1e-8}
     };
 
     // random test cases
@@ -1282,7 +1282,7 @@ void AmericanOptionTest::testQrPlusAmericanEngine() {
         30.52818,129.84472,0,46.86288,368.41675,139.29763,4.4393,16.29594,
         25.7554,64.02621,89.41363,0.62751,219.65237,0.26039,0,12.02172,
         101.97733,69.37456,45.81122,1263.33603,164.31607,15.88788,0,48.77797,
-        0.13153,147.16808,10.31217,7.50634,7.48611,177.95409,225.77562,3.56947,
+        0.13233,147.16808,10.31217,7.50634,7.48611,177.95409,225.77562,3.56947,
         0.02531,4.88869,8.76632,0,0,0.02214,305.08468,44.52185,182.17332,
         538.31458,0,46.97229,0,31.94202,410.43038,0,70.35432,15.58346,74.14177,
         953.67663,11.79128,59.83061,0,37.86557,1184.22731,2411.37823,0,0,0,0,
@@ -1335,14 +1335,14 @@ void AmericanOptionTest::testQrPlusAmericanEngine() {
     auto vol = ext::make_shared<SimpleQuote>(0.0);
 
     const auto qrPlusAmericanEngine =
-        ext::make_shared<QrPlusAmericanEngine>(
+        ext::make_shared<QdPlusAmericanEngine>(
             ext::make_shared<BlackScholesMertonProcess>(
                 Handle<Quote>(spot),
                 Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
                 Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
                 Handle<BlackVolTermStructure>(flatVol(today, vol, dc))
             ),
-            8, QrPlusAmericanEngine::Halley, 1e-10
+            8, QdPlusAmericanEngine::Halley, 1e-10
     );
 
     for (const auto& testCaseSpec: testCaseSpecs) {
@@ -1401,9 +1401,9 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testEscrowedVsSpotAmericanOption));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testTodayIsDividendDate));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQrPlusBoundaryValues));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQrPlusBoundaryConvergence));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQrPlusAmericanEngine));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryConvergence));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusAmericanEngine));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));

@@ -2437,6 +2437,42 @@ void InterpolationTest::testChebyshevInterpolation() {
     }
 }
 
+void InterpolationTest::testChebyshevInterpolationOnNodes() {
+    BOOST_TEST_MESSAGE("Testing Chebyshev interpolation on nodes...");
+
+    const Real tol = 100*QL_EPSILON;
+    const auto testFct = [](Real x) { return std::sin(x);};
+
+    const Size nrNodes = 7;
+    Array y(nrNodes);
+
+    for (auto pointType: std::vector<ChebyshevInterpolation::PointsType>{
+        ChebyshevInterpolation::FirstKind, ChebyshevInterpolation::SecondKind}) {
+
+        const Array nodes = ChebyshevInterpolation::nodes(nrNodes, pointType);
+        std::transform(std::begin(nodes), std::end(nodes), std::begin(y), testFct);
+
+        const ChebyshevInterpolation interp(y, pointType);
+        for (auto node: nodes) {
+            const Real expected = testFct(node);
+            const Real calculated = interp(node);
+            const Real diff = std::abs(expected - calculated);
+
+            if (diff > tol) {
+                BOOST_FAIL("failed to reproduce the node values"
+                        << std::setprecision(16)
+                        << "\n    node      : " << node
+                        << "\n    fct       : " << expected
+                        << "\n    calculated: " << calculated
+                        << "\n    expected  : " << expected
+                        << "\n    difference: " << diff
+                        << "\n    tolerance : " << tol);
+            }
+        }
+    }
+}
+
+
 test_suite* InterpolationTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Interpolation tests");
 
@@ -2470,6 +2506,7 @@ test_suite* InterpolationTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBSplines));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlatOnSinglePoint));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolationOnNodes));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));

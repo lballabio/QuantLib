@@ -17,57 +17,58 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
 
 namespace QuantLib {
-    ChebyshevInterpolation::ChebyshevInterpolation(const Array& f)
-    : n_(f.size()), nodes_(ChebyshevInterpolation::nodes(n_)), a_(n_) {
+    namespace chebyshev_interpolation_detail {
+        Array apply(const Array& x, const ext::function<Real(Real)>& f) {
+            Array t(x.size());
+            std::transform(std::begin(x), std::end(x), std::begin(t), f);
 
-        for (Size k=0; k < n_; ++k) {
-            a_[k] = 0.5*(f[0]*std::pow(-1, int(k)) + f[n_-1]);
-
-            for (Size i=1; i < n_-1; ++i) {
-                a_[k] += f[i]*std::cos(k*M_PI*(1-i/Real(n_-1)));
-            }
-
-            a_[k] *= 2.0/(n_-1);
+            return t;
         }
     }
 
     ChebyshevInterpolation::ChebyshevInterpolation(
-        Size n, const ext::function<Real(Real)>& f)
+        const Array& y, PointsType pointsType)
+    : x_(ChebyshevInterpolation::nodes(y.size(), pointsType)), y_(y) {
+
+        impl_ = ext::make_shared<detail::LagrangeInterpolationImpl<
+            Array::const_iterator, Array::const_iterator> >(
+            std::begin(x_), std::end(x_), std::begin(y_)
+        );
+
+        impl_->update();
+    }
+
+    ChebyshevInterpolation::ChebyshevInterpolation(
+        Size n, const ext::function<Real(Real)>& f, PointsType pointsType)
     : ChebyshevInterpolation(
-          ChebyshevInterpolation::apply(
-              ChebyshevInterpolation::nodes(n), f)) {}
+          chebyshev_interpolation_detail::apply(
+              ChebyshevInterpolation::nodes(n, pointsType), f)) {}
 
-    Real ChebyshevInterpolation::operator()(Real z) const {
-        Real b_kp1 = a_[n_-1];
-        Real b_kp2 = 0.0;
-
-        for (Size k=n_-2; k != 0; --k) {
-            const Real b = a_[k] + 2*z*b_kp1 - b_kp2;
-            b_kp2 = b_kp1;
-            b_kp1 = b;
-        }
-
-        return 0.5*a_[0] + z*b_kp1 - b_kp2;
-    }
-
-    Array ChebyshevInterpolation::nodes(Size n) {
+    Array ChebyshevInterpolation::nodes(Size n, PointsType pointsType) {
         Array t(n);
-        for (Size i=0; i < n; ++i) {
-            t[i] = -std::cos(i*M_PI/(n-1));
-        }
 
+        switch(pointsType) {
+          case FirstKind:
+            for (Size i=0; i < n; ++i)
+                t[i] = -std::cos((i+0.5)*M_PI/n);
+            break;
+          case SecondKind:
+            for (Size i=0; i < n; ++i)
+                t[i] = -std::cos(i*M_PI/(n-1));
+            break;
+          default:
+              QL_FAIL("unknonw Chebyshev interpolation points type");
+        }
         return t;
     }
 
-    Array ChebyshevInterpolation::apply(
-        const Array& x, const ext::function<Real(Real)>& f) {
-        Array t(x.size());
-        std::transform(std::begin(x), std::end(x), std::begin(t), f);
-
-        return t;
+    Real ChebyshevInterpolation::value(const Array& y, Real x) const {
+        return ext::dynamic_pointer_cast<detail::UpdatedYInterpolation>
+            (impl_)->value(y, x);
     }
 }
 

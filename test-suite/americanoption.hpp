@@ -42,9 +42,9 @@ class AmericanOptionTest {
     static void testEscrowedVsSpotAmericanOption();
     static void testTodayIsDividendDate();
     static void testCallPutParity();
-    static void testQrPlusBoundaryValues();
-    static void testQrPlusBoundaryConvergence();
-    static void testQrPlusAmericanEngine();
+    static void testQdPlusBoundaryValues();
+    static void testQdPlusBoundaryConvergence();
+    static void testQdPlusAmericanEngine();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 

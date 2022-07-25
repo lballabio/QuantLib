@@ -29,9 +29,9 @@
 
 
 namespace QuantLib {
-    class QrPlusBoundaryEvaluator;
+    class QdPlusBoundaryEvaluator;
 
-    class QrPlusAmericanEngine : public VanillaOption::engine {
+    class QdPlusAmericanEngine : public VanillaOption::engine {
       public:
         struct PutOptionParam {
             Real S, K;
@@ -41,7 +41,7 @@ namespace QuantLib {
         };
         enum SolverType {Brent, Newton, Ridder, Halley, SuperHalley};
 
-        explicit QrPlusAmericanEngine(
+        explicit QdPlusAmericanEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
             Size interpolationPoints = 8,
             SolverType solverType = Halley,
@@ -56,7 +56,7 @@ namespace QuantLib {
       private:
         template <class Solver>
         Real buildInSolver(
-            const QrPlusBoundaryEvaluator& eval,
+            const QdPlusBoundaryEvaluator& eval,
             Solver solver, Real S, Real strike, Size maxIter,
             Real guess = Null<Real>()) const;
 
