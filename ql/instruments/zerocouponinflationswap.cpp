@@ -117,50 +117,6 @@ namespace QuantLib {
         }
     }
 
-    ZeroCouponInflationSwap::ZeroCouponInflationSwap(
-        Type type,
-        Real nominal,
-        const Date& startDate,
-        const Date& maturity,
-        Calendar fixCalendar,
-        BusinessDayConvention fixConvention,
-        DayCounter dayCounter,
-        Rate fixedRate,
-        const ext::shared_ptr<ZeroInflationIndex>& infIndex,
-        const Period& observationLag,
-        bool adjustInfObsDates,
-        Calendar infCalendar,
-        BusinessDayConvention infConvention)
-    : ZeroCouponInflationSwap(type,
-                              nominal,
-                              startDate,
-                              maturity,
-                              std::move(fixCalendar),
-                              fixConvention,
-                              std::move(dayCounter),
-                              fixedRate,
-                              infIndex,
-                              observationLag,
-                              CPI::AsIndex,
-                              adjustInfObsDates,
-                              std::move(infCalendar),
-                              infConvention) {}
-
-
-    void ZeroCouponInflationSwap::setupArguments(PricingEngine::arguments* args) const {
-        Swap::setupArguments(args);
-        // you don't actually need to do anything else because it is so simple
-    }
-
-    void ZeroCouponInflationSwap::arguments::validate() const {
-        Swap::arguments::validate();
-        // you don't actually need to do anything else because it is so simple
-    }
-
-    void ZeroCouponInflationSwap::fetchResults(const PricingEngine::results* r) const {
-        Swap::fetchResults(r);
-        // you don't actually need to do anything else because it is so simple
-    }
 
     Real ZeroCouponInflationSwap::fairRate() const {
         // What does this mean before or after trade date?

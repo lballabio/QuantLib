@@ -116,13 +116,12 @@ namespace QuantLib {
         };
         class ISDA_Impl : public Thirty360_Impl {
           public:
-            explicit ISDA_Impl(const Date& terminationDate, bool isLastPeriod)
-            : terminationDate_(terminationDate), isLastPeriod_(isLastPeriod) {}
+            explicit ISDA_Impl(const Date& terminationDate)
+            : terminationDate_(terminationDate) {}
             std::string name() const override { return std::string("30E/360 (ISDA)"); }
             Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
           private:
             Date terminationDate_;
-            bool isLastPeriod_;
         };
         class NASD_Impl : public Thirty360_Impl {
           public:
@@ -130,24 +129,10 @@ namespace QuantLib {
             Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
         };
         static ext::shared_ptr<DayCounter::Impl>
-        implementation(Convention c, const Date& terminationDate, bool isLastPeriod);
+        implementation(Convention c, const Date& terminationDate);
       public:
-        /*! \deprecated Use the constructor taking a convention and possibly a termination date.
-                        Deprecated in version 1.23.
-        */
-        QL_DEPRECATED
-        Thirty360()
-        : DayCounter(implementation(Thirty360::BondBasis, Date(), false)) {}
-
-        /*! \deprecated Use the constructor taking a convention and possibly a termination date.
-                        Deprecated in version 1.23.
-        */
-        QL_DEPRECATED
-        Thirty360(Convention c, bool isLastPeriod)
-        : DayCounter(implementation(c, Date(), isLastPeriod)) {}
-
         explicit Thirty360(Convention c, const Date& terminationDate = Date())
-        : DayCounter(implementation(c, terminationDate, false)) {}
+        : DayCounter(implementation(c, terminationDate)) {}
     };
 
 }

@@ -17,7 +17,76 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.26 - April 2022</strong>
+    <strong>Release 1.27 - July 22nd, 2022</strong>
+
+    PORTABILITY
+    - <b>Removed support:</b> as announced in the notes for the previous
+      release, support for Visual Studio 2013 was dropped.
+    - <b>End of support:</b> as announced in the notes for the previous
+      release, this release will be the last to avoid C++14 syntax.
+      Allowing the newer (but still oldish) standard should still support
+      most compilers released in the past several years.
+    - <b>Future end of support:</b> this release and the next will be the
+      last to manage thread-local singletons via a user-provided
+      `sessionId` function.  Future releases will use the built-in
+      language support for thread-local variables.
+    - The `Real` type is now used consistently throughout the codebase,
+      thanks to the Xcelerit dev team.  This, along with
+      other changes, allows its default definition to `double` to be
+      replaced with one of the available third-party AAD types.
+    - The test suite is now built using the header-only version of
+      Boost.Test, thanks to Jonathan Sweemer.  This might
+      simplify Boost installation for some users, since in the default
+      configuration QuantLib now only needs the Boost headers.
+    - Replaced some Boost facilities with the corresponding C++11
+      counterparts; thanks to Klaus Spanderen and
+      Jonathan Sweemer.
+    
+    DATE/TIME
+    - Fixed the behavior of a couple of Australian holidays; thanks to
+      Pradeep Krishnamurthy and Fredrik Gerdin Börjesson.
+    
+    INSTRUMENTS
+    - Added the Turnbull-Wakeman engine for discrete Asian options; thanks
+      to Fredrik Gerdin Börjesson for the main engine code
+      and to Jack Gillett for the Greeks.
+    - Added more validation to barrier options; thanks to Jonathan Sweemer.
+    
+    MODELS
+    - Fixed the start date of the underlying swap in swaption calibration
+      helpers; thanks to Peter Caspers.
+    - Fixed parameter checks in SVI volatility smiles; thanks to Fredrik
+      Gerdin Börjesson.
+    
+    PATTERNS
+    - Avoid possible iterator invalidation while notifying observers;
+      thanks to Klaus Spanderen.
+    
+    DEPRECATED FEATURES
+    - <b>Removed</b> the `--enable-disposable` and `--enable-std-unique-ptr`
+      configure switches.
+    - <b>Removed</b> features deprecated in version 1.22:
+      - the unused `AmericanCondition` and `FDAmericanCondition` classes;
+      - the old-style FD shout and dividend shout engines;
+      - the unused `OneFactorOperator` class;
+      - the `io::to_integer` function;
+      - the `ArrayProxy` and `MatrixProxy` classes.
+    - Deprecated the `QL_NOEXCEPT` and `QL_CONSTEXPR` macros.
+    - Deprecated the `QL_NULL_INTEGER` and `QL_NULL_REAL` macros.
+    - Deprecated some unused parts of the old-style FD framework:
+      - the `PdeShortRate` class;
+      - the `ShoutCondition` and `FDShoutCondition` classes;
+      - the `FDDividendEngineBase`, `FDDividendEngineMerton73`,
+        `FDDividendEngineShiftScale` and `FDDividendEngine` classes;
+      - the `FDStepConditionEngine` and `FDEngineAdapter` classes.
+    - Deprecated a number of function objects in the
+      `ql/math/functional.hpp` header.
+    - Deprecated the unused `MultiCurveSensitivities` class.
+    - Deprecated the unused `inner_product` function.
+    
+    Thanks go also to Ryan Russell for documentation fixes.
+
+    <strong>Release 1.26 - April 20th, 2022</strong>
 
     PORTABILITY
     - <b>End of support:</b> as announced in the notes for the previous

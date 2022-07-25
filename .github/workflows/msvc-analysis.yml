@@ -1,6 +1,9 @@
 name: Microsoft C++ Code Analysis
 
-on: [push, pull_request]
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
 
 env:
   # Path to the CMake build directory.
@@ -38,7 +41,7 @@ jobs:
           ruleset: '${{ github.workspace }}/.msvc-analysis.ruleset'
 
       - name: Upload SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: ${{ steps.run-analysis.outputs.sarif }}
 

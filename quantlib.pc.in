@@ -6,5 +6,5 @@ includedir=@includedir@
 Name: QuantLib
 Description: The free/open-source library for quantitative finance.
 Version: @PACKAGE_VERSION@
-Cflags: -I@includedir@ @BOOST_INCLUDE@ @OPENMP_CXXFLAGS@ @PTHREAD_CXXFLAGS@ @CPP11_CXXFLAGS@
+Cflags: -I@includedir@ @BOOST_INCLUDE@ @OPENMP_CXXFLAGS@ @PTHREAD_CXXFLAGS@ @CPP14_CXXFLAGS@
 Libs: -L@libdir@ @BOOST_LIB@ -lQuantLib @OPENMP_CXXFLAGS@ @BOOST_THREAD_LIB@
