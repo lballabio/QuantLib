@@ -23,6 +23,7 @@
 */
 
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 

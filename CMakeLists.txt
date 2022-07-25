@@ -5,14 +5,14 @@ cmake_policy(SET CMP0091 NEW)
 
 # Version info
 set(QUANTLIB_VERSION_MAJOR 1)
-set(QUANTLIB_VERSION_MINOR 27)
+set(QUANTLIB_VERSION_MINOR 28)
 set(QUANTLIB_VERSION_PATCH 0)
 set(QUANTLIB_VERSION ${QUANTLIB_VERSION_MAJOR}.${QUANTLIB_VERSION_MINOR}.${QUANTLIB_VERSION_PATCH})
 
 # Project Info
 set(PACKAGE_NAME          "QuantLib")
 set(PACKAGE_VERSION       "${QUANTLIB_VERSION}-dev")
-set(PACKAGE_VERSION_HEX   "0x01270000")
+set(PACKAGE_VERSION_HEX   "0x01280000")
 set(PACKAGE_STRING        "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_TARNAME       "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 set(PACKAGE_BUGREPORT     "https://github.com/lballabio/QuantLib/issues/")
@@ -99,16 +99,16 @@ if (NOT DEFINED Boost_USE_STATIC_RUNTIME)
     set(Boost_USE_STATIC_RUNTIME ${MSVC})
 endif()
 
-# Require C++11 or higher
+# Require C++14 or higher
 if (NOT DEFINED CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 11)
-elseif(CMAKE_CXX_STANDARD LESS 11)
-    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 11 or higher")
+    set(CMAKE_CXX_STANDARD 14)
+elseif(CMAKE_CXX_STANDARD LESS 14)
+    message(FATAL_ERROR "Please specify CMAKE_CXX_STANDARD of 14 or higher")
 endif()
 if (NOT DEFINED CMAKE_CXX_STANDARD_REQUIRED)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
-# Avoid use of compiler language extensions, i.e. -std=c++11 not -std=gnu++11
+# Avoid use of compiler language extensions, i.e. -std=c++14 not -std=gnu++14
 if (NOT DEFINED CMAKE_CXX_EXTENSIONS)
     set(CMAKE_CXX_EXTENSIONS FALSE)
 endif()
