@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file qrplusamericanengine.hpp
+/*! \file qdplusamericanengine.hpp
 */
 
 #ifndef quantlib_qr_plus_american_engine_hpp
@@ -31,6 +31,17 @@
 namespace QuantLib {
     class QdPlusBoundaryEvaluator;
 
+    /*! Amercian engine based on the QD+ approximation to the exercise boundary.
+        Main purpose of this engine is to provide a good initial guess to the exercise
+        boundary for the superior fixed point American engine QdFpAmericanEngine
+     */
+    /*! References:
+        Li, M. (2009), “Analytical Approximations for the Critical Stock Prices
+                        of American Options: A Performance Comparison,”
+                        Working paper, Georgia Institute of Technology.
+
+        https://mpra.ub.uni-muenchen.de/15018/1/MPRA_paper_15018.pdf
+    */
     class QdPlusAmericanEngine : public VanillaOption::engine {
       public:
         struct PutOptionParam {
@@ -42,7 +53,7 @@ namespace QuantLib {
         enum SolverType {Brent, Newton, Ridder, Halley, SuperHalley};
 
         explicit QdPlusAmericanEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
+            ext::shared_ptr<GeneralizedBlackScholesProcess>,
             Size interpolationPoints = 8,
             SolverType solverType = Halley,
             Real eps = 1e-6,

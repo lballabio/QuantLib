@@ -182,7 +182,7 @@ namespace QuantLib {
 
 
     QdPlusAmericanEngine::QdPlusAmericanEngine(
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
         Size interpolationPoints,
         QdPlusAmericanEngine::SolverType solverType,
         Real eps, Size maxIter)
@@ -195,7 +195,7 @@ namespace QuantLib {
            || solverType == Brent || solverType== Ridder)? 100 : 10)
           : maxIter ) {
 
-        registerWith(process);
+        registerWith(process_);
     }
 
     template <class Solver>

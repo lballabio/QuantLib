@@ -44,4 +44,5 @@
 #include <ql/pricingengines/vanilla/mceuropeangjrgarchengine.hpp>
 #include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
 #include <ql/pricingengines/vanilla/mcvanillaengine.hpp>
-
+#include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
+#include <ql/pricingengines/vanilla/qdfpamericanengine.hpp>
