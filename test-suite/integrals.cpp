@@ -29,6 +29,7 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/integrals/tanhsinhintegral.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
@@ -147,6 +148,40 @@ void IntegralTest::testTanhSinh() {
     using namespace integrals_test;
     testSeveral(TanhSinhIntegral());
 }
+
+void IntegralTest::testGaussLegendreIntegrator() {
+    BOOST_TEST_MESSAGE("Testing Gauss-Legendre integrator...");
+
+    using namespace integrals_test;
+
+    const GaussLegendreIntegrator integrator(64);
+    testSeveral(integrator);
+    testDegeneratedDomain(integrator);
+}
+
+void IntegralTest::testGaussChebyshevIntegrator() {
+    BOOST_TEST_MESSAGE("Testing Gauss-Chebyshev integrator...");
+
+    using namespace integrals_test;
+
+    const GaussChebyshevIntegrator integrator(64);
+    testSingle(integrator, "f(x) = Gaussian(x)",
+               NormalDistribution(), -10.0, 10.0, 1.0);
+    testDegeneratedDomain(integrator);
+}
+
+void IntegralTest::testGaussChebyshev2ndIntegrator() {
+    BOOST_TEST_MESSAGE("Testing Gauss-Chebyshev 2nd integrator...");
+
+    using namespace integrals_test;
+
+    const GaussChebyshev2ndIntegrator integrator(64);
+    testSingle(integrator, "f(x) = Gaussian(x)",
+               NormalDistribution(), -10.0, 10.0, 1.0);
+    testDegeneratedDomain(integrator);
+}
+
+
 
 void IntegralTest::testGaussKronrodNonAdaptive() {
     BOOST_TEST_MESSAGE("Testing non-adaptive Gauss-Kronrod integration...");
@@ -578,6 +613,9 @@ test_suite* IntegralTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussKronrodAdaptive));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussKronrodNonAdaptive));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussLobatto));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussLegendreIntegrator));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussChebyshevIntegrator));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussChebyshev2ndIntegrator));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testTwoDimensionalIntegration));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testFolinIntegration));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testDiscreteIntegrals));

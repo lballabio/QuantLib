@@ -45,6 +45,7 @@ class AmericanOptionTest {
     static void testQdPlusBoundaryValues();
     static void testQdPlusBoundaryConvergence();
     static void testQdPlusAmericanEngine();
+    static void testAndersenLakeHighPrecisionExample();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
