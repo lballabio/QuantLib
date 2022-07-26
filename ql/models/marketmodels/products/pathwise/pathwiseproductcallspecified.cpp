@@ -30,7 +30,7 @@ namespace QuantLib {
         const Clone<ExerciseStrategy<CurveState> >& strategy,
         Clone<MarketModelPathwiseMultiProduct> rebate)
     : underlying_(underlying), strategy_(strategy), rebate_(std::move(rebate)),
-      rebateOffset_(0UL), wasCalled_(0UL), currentIndex_(0UL), callable_(true) {
+      rebateOffset_(0UL), wasCalled_(false), currentIndex_(0UL), callable_(true) {
         Size products = underlying_->numberOfProducts();
         EvolutionDescription d1 = underlying->evolution();
         const std::vector<Time>& rateTimes1 = d1.rateTimes();
