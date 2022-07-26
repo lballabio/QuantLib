@@ -4,7 +4,7 @@ on:
     - cron: '0 0 * * 0'
   workflow_dispatch:
 jobs:
-  build:
+  sanitize:
     runs-on: ubuntu-latest
     container: ghcr.io/lballabio/quantlib-devenv:rolling
     steps:
@@ -25,7 +25,7 @@ jobs:
     - name: Build
       run: |
         ./autogen.sh
-        ./configure --disable-static CC="ccache gcc" CXX="ccache g++" CXXFLAGS="-O2 -g0 -fsanitize=address -fno-omit-frame-pointer -Wall -Wno-unknown-pragmas -Werror"
+        ./configure --disable-static CC="ccache gcc" CXX="ccache g++" CXXFLAGS="-O2 -g0 -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -Wall -Wno-unknown-pragmas -Werror"
         make -j 2
     - name: Run tests
       run: |
