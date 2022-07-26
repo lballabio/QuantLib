@@ -30,7 +30,7 @@ namespace QuantLib {
 
 
     void QdFpAmericanEngine::calculate() const {
-        results_.value = 42;
+        results_.value = 3.14152;
     }
 }
 
