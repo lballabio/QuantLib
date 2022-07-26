@@ -49,10 +49,9 @@ this_include_HEADERS = \
     mceuropeangjrgarchengine.hpp \
     mchestonhullwhiteengine.hpp \
     mcvanillaengine.hpp \
-    qdfpamericanengine.cpp \
-    qdplusamericanengine.cpp
+    qdfpamericanengine.hpp \
+    qdplusamericanengine.hpp
     
-
 cpp_files = \
     analyticbsmhullwhiteengine.cpp \
     analyticdigitalamericanengine.cpp \
@@ -90,7 +89,7 @@ cpp_files = \
     mchestonhullwhiteengine.cpp \
     qdfpamericanengine.cpp \
     qdplusamericanengine.cpp
-    
+
 if UNITY_BUILD
 
 nodist_libVanillaEngines_la_SOURCES = unity.cpp
