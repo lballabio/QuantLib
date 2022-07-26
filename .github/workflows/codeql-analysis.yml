@@ -5,7 +5,10 @@
 # or to provide custom queries or build logic.
 name: "CodeQL"
 
-on: workflow_dispatch
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
 
 jobs:
   analyze:

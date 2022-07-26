@@ -1,5 +1,8 @@
 name: Linux build with address sanitizer enabled
-on: [push, pull_request]
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
