@@ -157,7 +157,6 @@ set(QL_TEST_SOURCES
     twoassetbarrieroption.cpp
     twoassetcorrelationoption.cpp
     ultimateforwardtermstructure.cpp
-    utilities.cpp
     variancegamma.cpp
     varianceoption.cpp
     varianceswaps.cpp
@@ -366,27 +365,26 @@ set(QL_BENCHMARK_SOURCES
 )
 
 if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
-    add_library(ql_unit_test_main STATIC main.cpp)
-    target_include_directories(ql_unit_test_main PRIVATE
+    add_library(ql_unit_test_main STATIC main.cpp utilities.cpp)
+    target_include_directories(ql_unit_test_main PUBLIC
         ${PROJECT_BINARY_DIR}
-        ${PROJECT_SOURCE_DIR})
-    target_include_directories(ql_unit_test_main SYSTEM PRIVATE
+        ${PROJECT_SOURCE_DIR}
+        .)
+    target_include_directories(ql_unit_test_main SYSTEM PUBLIC
         ${Boost_INCLUDE_DIRS})
     if (NOT Boost_USE_STATIC_LIBS)
-        target_compile_definitions(ql_unit_test_main PRIVATE BOOST_TEST_DYN_LINK)
+        target_compile_definitions(ql_unit_test_main PUBLIC BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
     endif()
+    target_link_libraries(ql_unit_test_main PUBLIC
+        ql_library
+        ${QL_THREAD_LIBRARIES}
+    )
 endif()
 
 if (QL_BUILD_TEST_SUITE)
     add_executable(ql_test_suite ${QL_TEST_SOURCES} ${QL_TEST_HEADERS})
     set_target_properties(ql_test_suite PROPERTIES OUTPUT_NAME "quantlib-test-suite")
-    if (NOT Boost_USE_STATIC_LIBS)
-        target_compile_definitions(ql_test_suite PRIVATE BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
-    endif()
-    target_link_libraries(ql_test_suite PRIVATE
-        ql_library
-        ql_unit_test_main
-        ${QL_THREAD_LIBRARIES})
+    target_link_libraries(ql_test_suite PRIVATE ql_unit_test_main)
     if (QL_INSTALL_TEST_SUITE)
         install(TARGETS ql_test_suite RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()
@@ -396,13 +394,7 @@ endif()
 IF (QL_BUILD_BENCHMARK)
     add_executable(ql_benchmark ${QL_BENCHMARK_SOURCES})
     set_target_properties(ql_benchmark PROPERTIES OUTPUT_NAME "quantlib-benchmark")
-    if (NOT Boost_USE_STATIC_LIBS)
-        target_compile_definitions(ql_benchmark PRIVATE BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
-    endif()
-    target_link_libraries(ql_benchmark PRIVATE
-        ql_library
-        ql_unit_test_main
-        ${QL_THREAD_LIBRARIES})
+    target_link_libraries(ql_benchmark PRIVATE ql_unit_test_main)
     if (QL_INSTALL_BENCHMARK)
         install(TARGETS ql_benchmark RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()
