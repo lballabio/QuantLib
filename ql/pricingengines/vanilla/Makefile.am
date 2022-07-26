@@ -49,7 +49,7 @@ this_include_HEADERS = \
     mceuropeangjrgarchengine.hpp \
     mchestonhullwhiteengine.hpp \
     mcvanillaengine.hpp \
-    qdfpamericanengine.hpp \   
+    qdfpamericanengine.hpp \
     qdplusamericanengine.hpp
 
 cpp_files = \
@@ -87,7 +87,7 @@ cpp_files = \
     mcamericanengine.cpp \
     mcdigitalengine.cpp \
     mchestonhullwhiteengine.cpp \
-    qdfpamericanengine.cpp \   
+    qdfpamericanengine.cpp \
     qdplusamericanengine.cpp
 
 if UNITY_BUILD
