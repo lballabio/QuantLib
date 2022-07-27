@@ -429,10 +429,6 @@ AC_MSG_RESULT([$ql_use_std_classes])
 
 # manual configurations for specific hosts
 case $host in
-  powerpc-apple-darwin*)
-    AC_DEFINE([QL_PATCH_DARWIN],[1],
-              [Define if running on a Mac OS X machine.])
-    ;;
   sparc-sun-solaris*)
     AC_DEFINE([QL_PATCH_SOLARIS],[1],
               [Define if running on a Sun Solaris machine.])
