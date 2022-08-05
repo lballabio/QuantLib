@@ -86,8 +86,8 @@ namespace QuantLib {
 
 
     FixedRateLeg::FixedRateLeg(const Schedule& schedule)
-    : schedule_(schedule), paymentCalendar_(schedule.calendar()),
-      paymentAdjustment_(Following), paymentLag_(0) {}
+    : schedule_(schedule), paymentCalendar_(schedule.calendar()), paymentAdjustment_(Following),
+      paymentLag_(0), exCouponAdjustment_(Following), exCouponEndOfMonth_(false) {}
 
     FixedRateLeg& FixedRateLeg::withNotionals(Real notional) {
         notionals_ = vector<Real>(1,notional);
