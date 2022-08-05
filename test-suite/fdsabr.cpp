@@ -32,7 +32,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
-#include <boost/make_shared.hpp>
+#include <ql/shared_ptr.hpp>
 #include <utility>
 
 using namespace QuantLib;
