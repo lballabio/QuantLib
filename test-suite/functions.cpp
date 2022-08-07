@@ -21,6 +21,7 @@
 
 #include "functions.hpp"
 #include "utilities.hpp"
+#include <ql/math/comparison.hpp>
 #include <ql/math/factorial.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/math/modifiedbessel.hpp>
