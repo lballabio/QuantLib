@@ -40,14 +40,15 @@ namespace QuantLib {
                                  const Spread overnightSpread,
                                  Pillar::Choice pillar,
                                  Date customPillarDate,
-                                 RateAveraging::Type averagingMethod)
+                                 RateAveraging::Type averagingMethod,
+                                 bool endOfMonth)
     : RelativeDateRateHelper(fixedRate), pillarChoice_(pillar), settlementDays_(settlementDays),
       tenor_(tenor), overnightIndex_(std::move(overnightIndex)),
       discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
       paymentLag_(paymentLag), paymentConvention_(paymentConvention),
       paymentFrequency_(paymentFrequency), paymentCalendar_(std::move(paymentCalendar)),
       forwardStart_(forwardStart), overnightSpread_(overnightSpread),
-      averagingMethod_(averagingMethod) {
+      averagingMethod_(averagingMethod), endOfMonth_(endOfMonth) {
         registerWith(overnightIndex_);
         registerWith(discountHandle_);
 
@@ -75,7 +76,8 @@ namespace QuantLib {
             .withPaymentFrequency(paymentFrequency_)
             .withPaymentCalendar(paymentCalendar_)
             .withOvernightLegSpread(overnightSpread_)
-            .withAveragingMethod(averagingMethod_);
+            .withAveragingMethod(averagingMethod_)
+            .withEndOfMonth(endOfMonth_);
 
         earliestDate_ = swap_->startDate();
         maturityDate_ = swap_->maturityDate();
