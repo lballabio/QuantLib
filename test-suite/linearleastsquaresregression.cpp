@@ -120,7 +120,6 @@ void LinearLeastSquaresRegressionTest::testMultiDimRegression() {
     BOOST_TEST_MESSAGE(
         "Testing multi-dimensional linear least-squares regression...");
 
-    using namespace ext::placeholders;
     using namespace linear_least_square_regression_test;
 
     SavedSettings backup;
