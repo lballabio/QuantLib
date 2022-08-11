@@ -47,9 +47,9 @@ namespace QuantLib {
                       const Period& forwardStart = 0 * Days,
                       Spread overnightSpread = 0.0,
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
-                      Date customPillarDate = Date(), 
+                      Date customPillarDate = Date(),
                       RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                      bool endOfMonth = true);
+                      boost::optional<bool> endOfMonth = boost::none);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -85,7 +85,7 @@ namespace QuantLib {
       Period forwardStart_;
       Spread overnightSpread_;
       RateAveraging::Type averagingMethod_;
-      bool endOfMonth_;
+      boost::optional<bool> endOfMonth_;
     };
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates

@@ -41,7 +41,7 @@ namespace QuantLib {
                                  Pillar::Choice pillar,
                                  Date customPillarDate,
                                  RateAveraging::Type averagingMethod,
-                                 bool endOfMonth)
+                                 boost::optional<bool> endOfMonth)
     : RelativeDateRateHelper(fixedRate), pillarChoice_(pillar), settlementDays_(settlementDays),
       tenor_(tenor), overnightIndex_(std::move(overnightIndex)),
       discountHandle_(std::move(discount)), telescopicValueDates_(telescopicValueDates),
@@ -64,10 +64,9 @@ namespace QuantLib {
             overnightIndex_->clone(termStructureHandle_);
         ext::shared_ptr<OvernightIndex> clonedOvernightIndex =
             ext::dynamic_pointer_cast<OvernightIndex>(clonedIborIndex);
-
         // input discount curve Handle might be empty now but it could
         //    be assigned a curve later; use a RelinkableHandle here
-        swap_ = MakeOIS(tenor_, clonedOvernightIndex, 0.0, forwardStart_)
+        MakeOIS tmp = MakeOIS(tenor_, clonedOvernightIndex, 0.0, forwardStart_)
             .withDiscountingTermStructure(discountRelinkableHandle_)
             .withSettlementDays(settlementDays_)
             .withTelescopicValueDates(telescopicValueDates_)
@@ -76,8 +75,12 @@ namespace QuantLib {
             .withPaymentFrequency(paymentFrequency_)
             .withPaymentCalendar(paymentCalendar_)
             .withOvernightLegSpread(overnightSpread_)
-            .withAveragingMethod(averagingMethod_)
-            .withEndOfMonth(endOfMonth_);
+            .withAveragingMethod(averagingMethod_);
+        if (endOfMonth_) {
+            swap_ = tmp.withEndOfMonth(*endOfMonth_);
+        } else {
+            swap_ = tmp;
+        }
 
         earliestDate_ = swap_->startDate();
         maturityDate_ = swap_->maturityDate();
@@ -147,10 +150,10 @@ namespace QuantLib {
                                            const Handle<Quote>& fixedRate,
                                            const ext::shared_ptr<OvernightIndex>& overnightIndex,
                                            Handle<YieldTermStructure> discount,
-                                           bool telescopicValueDates, 
+                                           bool telescopicValueDates,
                                            RateAveraging::Type averagingMethod)
     : RateHelper(fixedRate), discountHandle_(std::move(discount)),
-      telescopicValueDates_(telescopicValueDates), 
+      telescopicValueDates_(telescopicValueDates),
       averagingMethod_(averagingMethod) {
 
         registerWith(overnightIndex);
