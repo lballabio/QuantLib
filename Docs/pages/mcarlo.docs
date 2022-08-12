@@ -18,7 +18,7 @@
 
 /*! \defgroup mcarlo Monte Carlo framework
 
-    This framework (corresponding to the ql/MonteCarlo directory)
+    This framework (corresponding to the ql/methods/montecarlo directory)
     contains basic building blocks for Monte Carlo simulations.
 
 */
