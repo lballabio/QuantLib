@@ -182,7 +182,7 @@ namespace QuantLib {
             if(denominator == 0.) return 0.;
 
             std::transform(notionals.begin(), notionals.end(), probs.begin(),
-                notionals.begin(), std::multiplies<Real>());
+                notionals.begin(), std::multiplies<>());
 
             return std::inner_product(recoveries.begin(), recoveries.end(), 
                 notionals.begin(), Real(0.)) / denominator;

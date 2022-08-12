@@ -131,7 +131,7 @@ namespace QuantLib {
                        std::back_inserter(lgd),
                        [](Real x) -> Real { return 1.0-x; });
         std::transform(lgd.begin(), lgd.end(), notionals_.begin(), 
-            lgd.begin(), std::multiplies<Real>());
+            lgd.begin(), std::multiplies<>());
         std::vector<Real> prob = basket_->remainingProbabilities(d);
         for(Size iName=0; iName<prob.size(); iName++)
             prob[iName] = copula_->inverseCumulativeY(prob[iName], iName);

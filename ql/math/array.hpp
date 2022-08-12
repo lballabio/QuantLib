@@ -315,8 +315,7 @@ namespace QuantLib {
         QL_REQUIRE(n_ == v.n_,
                    "arrays with different sizes (" << n_ << ", "
                    << v.n_ << ") cannot be added");
-        std::transform(begin(),end(),v.begin(),begin(),
-                       std::plus<Real>());
+        std::transform(begin(),end(),v.begin(),begin(), std::plus<>());
         return *this;
     }
 
@@ -330,8 +329,7 @@ namespace QuantLib {
         QL_REQUIRE(n_ == v.n_,
                    "arrays with different sizes (" << n_ << ", "
                    << v.n_ << ") cannot be subtracted");
-        std::transform(begin(),end(),v.begin(),begin(),
-                       std::minus<Real>());
+        std::transform(begin(), end(), v.begin(), begin(), std::minus<>());
         return *this;
     }
 
@@ -344,8 +342,7 @@ namespace QuantLib {
         QL_REQUIRE(n_ == v.n_,
                    "arrays with different sizes (" << n_ << ", "
                    << v.n_ << ") cannot be multiplied");
-        std::transform(begin(),end(),v.begin(),begin(),
-                       std::multiplies<Real>());
+        std::transform(begin(), end(), v.begin(), begin(), std::multiplies<>());
         return *this;
     }
 
@@ -358,8 +355,7 @@ namespace QuantLib {
         QL_REQUIRE(n_ == v.n_,
                    "arrays with different sizes (" << n_ << ", "
                    << v.n_ << ") cannot be divided");
-        std::transform(begin(),end(),v.begin(),begin(),
-                       std::divides<Real>());
+        std::transform(begin(), end(), v.begin(), begin(), std::divides<>());
         return *this;
     }
 
@@ -512,8 +508,7 @@ namespace QuantLib {
 
     inline Array operator-(const Array& v) {
         Array result(v.size());
-        std::transform(v.begin(),v.end(),result.begin(),
-                       std::negate<Real>());
+        std::transform(v.begin(), v.end(), result.begin(), std::negate<>());
         return result;
     }
 
@@ -525,8 +520,7 @@ namespace QuantLib {
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be added");
         Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
-                       std::plus<Real>());
+        std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(), std::plus<>());
         return result;
     }
 
@@ -547,8 +541,7 @@ namespace QuantLib {
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be subtracted");
         Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
-                       std::minus<Real>());
+        std::transform(v1.begin(), v1.end(), v2.begin(), result.begin(), std::minus<>());
         return result;
     }
 
@@ -569,8 +562,7 @@ namespace QuantLib {
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be multiplied");
         Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
-                       std::multiplies<Real>());
+        std::transform(v1.begin(), v1.end(), v2.begin(), result.begin(), std::multiplies<>());
         return result;
     }
 
@@ -591,8 +583,7 @@ namespace QuantLib {
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be divided");
         Array result(v1.size());
-        std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
-                       std::divides<Real>());
+        std::transform(v1.begin(), v1.end(), v2.begin(), result.begin(), std::divides<>());
         return result;
     }
 

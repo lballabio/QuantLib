@@ -166,7 +166,7 @@ void IntegralTest::testTwoDimensionalIntegration() {
             new TrapezoidIntegral<Default>(integrals_test::tolerance, maxEvaluations)),
         ext::shared_ptr<Integrator>(
             new TrapezoidIntegral<Default>(integrals_test::tolerance, maxEvaluations)))(
-        std::multiplies<Real>(),
+        std::multiplies<>(),
         std::make_pair(0.0, 0.0), std::make_pair(1.0, 2.0));
 
     const Real expected = 1.0;

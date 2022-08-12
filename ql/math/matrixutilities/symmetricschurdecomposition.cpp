@@ -121,8 +121,7 @@ namespace QuantLib {
                       eigenVectors_.column_end(col), eigenVector.begin());
             temp[col] = std::make_pair(diagonal_[col], eigenVector);
         }
-        std::sort(temp.begin(), temp.end(),
-            std::greater<std::pair<Real, std::vector<Real> > >());
+        std::sort(temp.begin(), temp.end(), std::greater<>());
         Real maxEv = temp[0].first;
         for (col=0; col<size; col++) {
             // check for round-off errors

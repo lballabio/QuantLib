@@ -138,8 +138,7 @@ namespace QuantLib {
         }
         err_      = Sqrt(err_);
         Array tmp = A*a_;
-        std::transform(tmp.begin(), tmp.end(),
-                       yBegin, residuals_.begin(), std::minus<Real>());
+        std::transform(tmp.begin(), tmp.end(), yBegin, residuals_.begin(), std::minus<>());
 
         const Real chiSq
             = std::inner_product(residuals_.begin(), residuals_.end(), residuals_.begin(), Real(0.0));
