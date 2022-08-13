@@ -14,7 +14,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file actual365.25.hpp
+/*! \file actual36525.hpp
     \brief act/365.25 day counter
 */
 
