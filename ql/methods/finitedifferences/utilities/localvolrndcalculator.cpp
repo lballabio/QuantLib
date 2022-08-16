@@ -156,7 +156,7 @@ namespace QuantLib {
         else {
             while (pdf(xl, t) > 0.01*localVolProbEps_)
             {
-                  addition=*1.1;
+                  addition*=1.1;
                   xl-=addition;
             }
 
