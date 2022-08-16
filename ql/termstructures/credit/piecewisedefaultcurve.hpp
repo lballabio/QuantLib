@@ -199,26 +199,7 @@ namespace QuantLib {
         // methods
         Probability survivalProbabilityImpl(Time) const override;
         Real defaultDensityImpl(Time) const override;
-        #if defined(__clang__)
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Winconsistent-missing-override"
-        #if (defined(__APPLE__) && __clang_major__ > 12) || (!defined(__APPLE__) && __clang_major__ > 10)
-        #pragma clang diagnostic ignored "-Wsuggest-override"
-        #endif
-        #endif
-        #if defined(__GNUC__) && (((__GNUC__ == 5) && (__GNUC_MINOR__ >= 1)) || (__GNUC__ > 5))
-        #pragma GCC diagnostic push
-        #pragma GCC diagnostic ignored "-Wsuggest-override"
-        #endif
-        Real hazardRateImpl(Time) const; // NOLINT(modernize-use-override, cppcoreguidelines-explicit-virtual-functions)
-                                         // (sometimes this method is not virtual,
-                                         //  depending on the base class)
-        #if defined(__clang__)
-        #pragma clang diagnostic pop
-        #endif
-        #if defined(__GNUC__) && (((__GNUC__ == 5) && (__GNUC_MINOR__ >= 1)) || (__GNUC__ > 5))
-        #pragma GCC diagnostic pop
-        #endif
+        Real hazardRateImpl(Time) const override;
         // data members
         std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;

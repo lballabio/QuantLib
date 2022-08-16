@@ -259,8 +259,6 @@ void FunctionsTest::testWeightedModifiedBesselFunctions() {
     for (Real nu = -5.0; nu <= 5.0; nu += 0.5) {
         for (Real x = -5.0; x <= 5.0; x += 0.5) {
             for (Real y = -5.0; y <= 5.0; y += 0.5) {
-                if (close_enough(x, 0.0) && close_enough(y, 0.0))
-                    continue;
                 std::complex<Real> z(x, y);
                 std::complex<Real> calculated_i =
                     modifiedBesselFunction_i_exponentiallyWeighted(nu, z);

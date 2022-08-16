@@ -79,7 +79,7 @@ namespace QuantLib {
         */
         //@{
         //! hazard rate calculation
-        virtual Real hazardRateImpl(Time) const = 0;
+        Real hazardRateImpl(Time) const override;
         //@}
 
         //! \name DefaultProbabilityTermStructure implementation
