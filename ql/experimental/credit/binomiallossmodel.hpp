@@ -166,7 +166,7 @@ namespace QuantLib {
         std::vector<Real> lgdsLeft;
         std::transform(fractionalEL.begin(), fractionalEL.end(), 
             bsktNots.begin(), std::back_inserter(lgdsLeft), 
-            std::multiplies<Real>());
+            std::multiplies<>());
         Real avgLgd = 
             std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), Real(0.)) /
                 bsktSize;
@@ -196,9 +196,9 @@ namespace QuantLib {
         //breaks condDefProb and lgdsLeft to spare memory
         std::transform(condDefProb.begin(), condDefProb.end(), 
             oneMinusDefProb.begin(), condDefProb.begin(), 
-            std::multiplies<Real>());
+            std::multiplies<>());
         std::transform(lgdsLeft.begin(), lgdsLeft.end(), 
-            lgdsLeft.begin(), lgdsLeft.begin(), std::multiplies<Real>());
+            lgdsLeft.begin(), lgdsLeft.begin(), std::multiplies<>());
         Real variance = std::inner_product(condDefProb.begin(), 
             condDefProb.end(), lgdsLeft.begin(), Real(0.));
 
@@ -263,7 +263,7 @@ namespace QuantLib {
         std::vector<Real> lgdsLeft;
         std::transform(fractionalEL.begin(), fractionalEL.end(), 
                        reminingNots.begin(), std::back_inserter(lgdsLeft),
-                       std::multiplies<Real>());
+                       std::multiplies<>());
         return std::accumulate(lgdsLeft.begin(), lgdsLeft.end(), Real(0.)) 
             / (bsktSize*notBskt);
     }

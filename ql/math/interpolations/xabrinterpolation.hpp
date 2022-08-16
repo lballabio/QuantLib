@@ -165,7 +165,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         // there is nothing to optimize
         if (std::accumulate(this->paramIsFixed_.begin(),
                             this->paramIsFixed_.end(), true,
-                            std::logical_and<bool>())) {
+                            std::logical_and<>())) {
             this->error_ = interpolationError();
             this->maxError_ = interpolationMaxError();
             this->XABREndCriteria_ = EndCriteria::None;

@@ -126,8 +126,7 @@ namespace QuantLib {
                           ev_.column_end(i), eigenVector.begin());
             temp[i] = std::make_pair(d_[i], eigenVector);
         }
-        std::sort(temp.begin(), temp.end(),
-                  std::greater<std::pair<Real, std::vector<Real> > >());
+        std::sort(temp.begin(), temp.end(), std::greater<>());
         // first element is positive
         for (Size i=0; i<n; i++) {
             d_[i] = temp[i].first;
