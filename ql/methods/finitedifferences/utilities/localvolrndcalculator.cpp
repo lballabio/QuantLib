@@ -140,7 +140,8 @@ namespace QuantLib {
         else if (x > xr)
             return 1.0;
 
-        Real addition = 1.0;
+        Real addition = 0.1*(xr-xl);
+
         // left or right hand integral
         if (x > 0.5*(xr+xl)) {
             while (pdf(xr, t) > 0.01*localVolProbEps_) 
