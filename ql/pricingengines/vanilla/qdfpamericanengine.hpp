@@ -53,6 +53,8 @@ namespace QuantLib {
             getFixedPointIntegrator() const = 0;
         virtual ext::shared_ptr<Integrator>
             getExerciseBoundaryToPriceIntegrator() const = 0;
+
+        virtual ~QdFpIterationScheme() {}
     };
 
     /* Gauss-Legendre (l,m,n)-p Scheme

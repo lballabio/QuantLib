@@ -1453,7 +1453,7 @@ void AmericanOptionTest::testAndersenLakeHighPrecisionExample() {
     const Real americanNPV = americanOption.NPV();
     const Real americanPremium = americanNPV - europeanNPV;
 
-    std::cout << std::setprecision(16) << americanNPV - europeanNPV << std::endl;
+    std::cout << std::setprecision(16) << americanPremium << std::endl;
 }
 
 test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
