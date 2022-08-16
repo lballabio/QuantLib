@@ -59,7 +59,7 @@ namespace QuantLib {
                   *std::sqrt(squared(omega-1) + 8*r/(sigma2*(1-dr))))),
           alpha(2*dr*r/(sigma2*(2*lambda+omega - 1))),
           beta(alpha*(1/(1-dr)+lambdaPrime/(2*lambda+omega-1)) - lambda),
-          xMax(calcxMax(strike, r, q)),
+          xMax(QdPlusAmericanEngine::xMax(strike, r, q)),
           xMin(QL_EPSILON*1e4*std::min(0.5*(strike + S), xMax)),
           nrEvaluations(0),
           sc(Null<Real>()) {
@@ -101,10 +101,6 @@ namespace QuantLib {
         Real xmax() const { return xMax; }
         Size evaluations() const { return nrEvaluations; }
 
-        static Real calcxMax(Real K, Rate r, Rate q) {
-            return K*std::min(1.0, r/ ((q != 0.0)? q : QL_EPSILON));
-        }
-
       private:
         void preCalculate(Real S) const {
             S = std::max(QL_EPSILON, S);
@@ -134,75 +130,131 @@ namespace QuantLib {
     };
 
 
-    class QrPlusAddOnValue {
-      public:
-        QrPlusAddOnValue(Time T,
-                         Real S, Real K, Rate r, Rate q, Volatility vol,
-                         const Real xmax,
-                         const ChebyshevInterpolation& q_z)
-        : T_(T), S_(S), K_(K), xmax_(xmax),
-          r_(r), q_(q), vol_(vol), q_z_(q_z) {}
+    detail::QdPlusAddOnValue::QdPlusAddOnValue(
+        Time T, Real S, Real K, Rate r, Rate q, Volatility vol,
+        const Real xmax, ext::shared_ptr<Interpolation> q_z)
+    : T_(T), S_(S), K_(K), xmax_(xmax),
+      r_(r), q_(q), vol_(vol), q_z_(std::move(q_z)) {}
 
-        Real operator()(Real z) const {
-            const Real t = z*z;
-            const Real q = q_z_(2*std::sqrt(std::max(0.0, T_-t)/T_) - 1);
-            const Real b_t = xmax_*std::exp(-std::sqrt(std::max(0.0, q)));
 
-            const Real dr = std::exp(-r_*t);
-            const Real dq = std::exp(-q_*t);
-            const Real v = vol_*std::sqrt(t);
+    Real detail::QdPlusAddOnValue::operator()(Real z) const {
+        const Real t = z*z;
+        const Real q = (*q_z_)(2*std::sqrt(std::max(0.0, T_-t)/T_) - 1);
+        const Real b_t = xmax_*std::exp(-std::sqrt(std::max(0.0, q)));
 
-            Real r;
-            if (v >= QL_EPSILON) {
-                if (b_t > QL_EPSILON) {
-                    const Real dp = std::log(S_*dq/(b_t*dr))/v + 0.5*v;
-                    r = 2*z*(r_*K_*dr*Phi_(-dp+v) - q_*S_*dq*Phi_(-dp));
-                }
-                else
-                    r = 0.0;
+        const Real dr = std::exp(-r_*t);
+        const Real dq = std::exp(-q_*t);
+        const Real v = vol_*std::sqrt(t);
+
+        Real r;
+        if (v >= QL_EPSILON) {
+            if (b_t > QL_EPSILON) {
+                const Real dp = std::log(S_*dq/(b_t*dr))/v + 0.5*v;
+                r = 2*z*(r_*K_*dr*Phi_(-dp+v) - q_*S_*dq*Phi_(-dp));
             }
-            else if (close_enough(S_*dq, b_t*dr))
-                r = z*(r_*K_*dr - q_*S_*dq);
-            else if (b_t*dr > S_*dq)
-                r = 2*z*(r_*K_*dr - q_*S_*dq);
             else
                 r = 0.0;
+        }
+        else if (close_enough(S_*dq, b_t*dr))
+            r = z*(r_*K_*dr - q_*S_*dq);
+        else if (b_t*dr > S_*dq)
+            r = 2*z*(r_*K_*dr - q_*S_*dq);
+        else
+            r = 0.0;
 
-            return r;
+        return r;
+    }
+
+
+    detail::QdPutCallParityEngine::QdPutCallParityEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
+        registerWith(process_);
+    }
+
+    void detail::QdPutCallParityEngine::calculate() const {
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
+                   "not an American option");
+
+        const auto payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non-striked payoff given");
+
+        const Real spot = process_->x0();
+        QL_REQUIRE(spot >= 0.0, "negative underlying given");
+
+        const auto maturity = arguments_.exercise->lastDate();
+        const Time T = process_->time(maturity);
+        const Real S = process_->x0();
+        const Real K = payoff->strike();
+        const Rate r = -std::log(process_->riskFreeRate()->discount(maturity))/T;
+        const Rate q = -std::log(process_->dividendYield()->discount(maturity))/T;
+        const Volatility vol = process_->blackVolatility()->blackVol(T, K);
+
+        QL_REQUIRE(S >= 0, "zero or positive underlying value is required");
+        QL_REQUIRE(K >= 0, "zero or positive strike is required");
+        QL_REQUIRE(vol >= 0, "zero or positive volatility is required");
+
+        if (payoff->optionType() == Option::Put)
+            results_.value = calculatePutWithEdgeCases(S, K, r, q, vol, T);
+        else if (payoff->optionType() == Option::Call)
+            results_.value = calculatePutWithEdgeCases(K, S, q, r, vol, T);
+        else
+            QL_FAIL("unknown option type");
+    }
+
+    Real detail::QdPutCallParityEngine::calculatePutWithEdgeCases(
+        Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
+
+        if (close(S, 0.0))
+            return std::max(K, K*std::exp(-r*T));
+
+        if (r <= 0.0 && r <= q)
+            return std::max(0.0,
+                BlackCalculator(Option::Put, K, S*std::exp((r-q)*T),
+                                vol*std::sqrt(T), std::exp(-r*T)).value());
+
+        if (close(vol, 0.0)) {
+            const auto intrinsic = [&](Real t) {
+                return std::max(0.0, K*std::exp(-r*t)-S*std::exp(-q*t));
+            };
+            const Real npv0 = intrinsic(0.0);
+            const Real npvT = intrinsic(T);
+            const Real extremT
+                = close_enough(r, q)? QL_MAX_REAL : std::log(r*K/(q*S))/(r-q);
+
+             if (extremT > 0.0 && extremT < T)
+                return std::max(npv0, std::max(npvT, intrinsic(extremT)));
+            else
+                return std::max(npv0, npvT);
         }
 
-       private:
-         const Time T_;
-         const Real S_, K_, xmax_;
-         const Rate r_, q_;
-         const Volatility vol_;
-         const ChebyshevInterpolation& q_z_;
-         const CumulativeNormalDistribution Phi_;
-    };
+        return calculatePut(S, K, r, q, vol, T);
+    }
 
+
+    Real QdPlusAmericanEngine::xMax(Real K, Rate r, Rate q) {
+        return K*std::min(1.0, r/ ((q != 0.0)? q : QL_EPSILON));
+    }
 
     QdPlusAmericanEngine::QdPlusAmericanEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process,
         Size interpolationPoints,
         QdPlusAmericanEngine::SolverType solverType,
         Real eps, Size maxIter)
-    : process_(std::move(process)),
+    : detail::QdPutCallParityEngine(std::move(process)),
       interpolationPoints_(interpolationPoints),
       solverType_(solverType),
       eps_(eps),
       maxIter_((maxIter == Null<Size>()) ? (
           (solverType == Newton
            || solverType == Brent || solverType== Ridder)? 100 : 10)
-          : maxIter ) {
-
-        registerWith(process_);
-    }
+          : maxIter ) { }
 
     template <class Solver>
     Real QdPlusAmericanEngine::buildInSolver(
         const QdPlusBoundaryEvaluator& eval,
-        Solver solver, Real S, Real strike, Size maxIter,
-        Real guess) const {
+        Solver solver, Real S, Real strike, Size maxIter, Real guess) const {
 
         solver.setMaxEvaluations(maxIter);
         solver.setLowerBound(eval.xmin());
@@ -223,17 +275,15 @@ namespace QuantLib {
         return solver.solve(eval, eps_, guess, eval.xmin(), xmax);
     }
 
-    std::pair<Size, Real> QdPlusAmericanEngine::putExerciseBoundary(
-        const PutOptionParam& param, Time tau) const {
-        const Real S = param.S;
-        const Real K = param.K;
+    std::pair<Size, Real> QdPlusAmericanEngine::putExerciseBoundaryAtTau(
+            Real S, Real K, Rate r, Rate q,
+            Volatility vol, Time T, Time tau) const {
 
         if (tau < QL_EPSILON)
             return std::pair<Size, Real>(
-                Size(0), QdPlusBoundaryEvaluator::calcxMax(K, param.r, param.q));
+                Size(0), xMax(K, r, q));
 
-        const QdPlusBoundaryEvaluator eval(
-            S, K, param.r, param.q, param.vol, tau, param.T);
+        const QdPlusBoundaryEvaluator eval(S, K, r, q, vol, tau, T);
 
         const Real xmin = eval.xmin();
 
@@ -281,54 +331,34 @@ namespace QuantLib {
         return std::pair<Size, Real>(eval.evaluations(), x);
     }
 
-    Real QdPlusAmericanEngine::calculate_put(
+    ext::shared_ptr<ChebyshevInterpolation>
+        QdPlusAmericanEngine::getPutExerciseBoundary(
         Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
 
-        if (close(S, 0.0))
-            return std::max(K, K*std::exp(-r*T));
+        const Real xmax = xMax(K, r, q);
 
-        const Real europeanValue = std::max(
-            0.0,
-            BlackCalculator(
-                Option::Put, K,
-                S*std::exp((r-q)*T),
-                vol*std::sqrt(T), std::exp(-r*T)).value()
+        return ext::make_shared<ChebyshevInterpolation>(
+            interpolationPoints_,
+            [&, this](Real z) {
+                const Real x_sq = 0.25*T*squared(1+z);
+                return squared(std::log(
+                    this->putExerciseBoundaryAtTau(S, K, r, q, vol, T, x_sq)
+                        .second/xmax));
+            }
         );
+    }
 
-        if (r <= 0.0 && r <= q)
-            return europeanValue;
-
-        if (close(vol, 0.0)) {
-            const auto intrinsic = [&](Real t) {
-                return std::max(0.0, K*std::exp(-r*t)-S*std::exp(-q*t));
-            };
-            const Real npv0 = intrinsic(0.0);
-            const Real npvT = intrinsic(T);
-            const Real extremT
-                = close_enough(r, q)? QL_MAX_REAL : std::log(r*K/(q*S))/(r-q);
-
-             if (extremT > 0.0 && extremT < T)
-                return std::max(npv0, std::max(npvT, intrinsic(extremT)));
-            else
-                return std::max(npv0, npvT);
-        }
+    Real QdPlusAmericanEngine::calculatePut(
+        Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
 
         QL_REQUIRE(r >= 0 && q >= 0,
             "positiive interest rates and dividend yields are required");
 
-        const Real xmax = QdPlusBoundaryEvaluator::calcxMax(K, r, q);
+        const ext::shared_ptr<Interpolation> q_z
+            = getPutExerciseBoundary(S, K, r, q, vol, T);
 
-        const ChebyshevInterpolation q_z(
-            interpolationPoints_,
-            [&, this](Real z) {
-                const Real x_sq = 0.25*T*squared(1+z);
-                const PutOptionParam param = {S, K, r, q, vol, T};
-                return squared(
-                    std::log(this->putExerciseBoundary(param, x_sq).second/xmax));
-            }
-        );
-
-        const QrPlusAddOnValue aov(T, S, K, r, q, vol, xmax, q_z);
+        const Real xmax = xMax(K, r, q);
+        const detail::QdPlusAddOnValue aov(T, S, K, r, q, vol, xmax, q_z);
 
 #ifdef QL_BOOST_HAS_TANH_SINH
         const Real addOn = TanhSinhIntegral(eps_)(aov, 0.0, std::sqrt(T));
@@ -340,38 +370,14 @@ namespace QuantLib {
         QL_REQUIRE(addOn > -10*eps_,
             "negative early exercise value " << addOn);
 
+        const Real europeanValue = std::max(
+            0.0,
+            BlackCalculator(
+                Option::Put, K,
+                S*std::exp((r-q)*T),
+                vol*std::sqrt(T), std::exp(-r*T)).value()
+        );
+
         return europeanValue + std::max(0.0, addOn);
     }
-
-    void QdPlusAmericanEngine::calculate() const {
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
-                   "not an American option");
-
-        const auto payoff =
-            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "non-striked payoff given");
-
-        const Real spot = process_->x0();
-        QL_REQUIRE(spot >= 0.0, "negative underlying given");
-
-        const auto maturity = arguments_.exercise->lastDate();
-        const Time T = process_->time(maturity);
-        const Real S = process_->x0();
-        const Real K = payoff->strike();
-        const Rate r = -std::log(process_->riskFreeRate()->discount(maturity))/T;
-        const Rate q = -std::log(process_->dividendYield()->discount(maturity))/T;
-        const Volatility vol = process_->blackVolatility()->blackVol(T, K);
-
-        QL_REQUIRE(S >= 0, "zero or positive underlying value is required");
-        QL_REQUIRE(K >= 0, "zero or positive strike is required");
-        QL_REQUIRE(vol >= 0, "zero or positive volatility is required");
-
-        if (payoff->optionType() == Option::Put)
-            results_.value = calculate_put(S, K, r, q, vol, T);
-        else if (payoff->optionType() == Option::Call)
-            results_.value = calculate_put(K, S, q, r, vol, T);
-        else
-            QL_FAIL("unknown option type");
-    }
-
 }

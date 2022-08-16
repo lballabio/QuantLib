@@ -20,8 +20,8 @@
 /*! \file qdplusamericanengine.hpp
 */
 
-#ifndef quantlib_qr_plus_american_engine_hpp
-#define quantlib_qr_plus_american_engine_hpp
+#ifndef quantlib_qd_plus_american_engine_hpp
+#define quantlib_qd_plus_american_engine_hpp
 
 #include <ql/utilities/null.hpp>
 #include <ql/instruments/vanillaoption.hpp>
@@ -29,6 +29,8 @@
 
 
 namespace QuantLib {
+    class Interpolation;
+    class ChebyshevInterpolation;
     class QdPlusBoundaryEvaluator;
 
     /*! Amercian engine based on the QD+ approximation to the exercise boundary.
@@ -42,14 +44,45 @@ namespace QuantLib {
 
         https://mpra.ub.uni-muenchen.de/15018/1/MPRA_paper_15018.pdf
     */
-    class QdPlusAmericanEngine : public VanillaOption::engine {
-      public:
-        struct PutOptionParam {
-            Real S, K;
-            Rate r, q;
-            Volatility vol;
-            Time T;
+
+    namespace detail {
+        class QdPutCallParityEngine: public VanillaOption::engine {
+          public:
+            explicit QdPutCallParityEngine(
+                ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+
+            void calculate() const override;
+
+          protected:
+            virtual Real calculatePut(
+                Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const = 0;
+
+            const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+
+          private:
+            Real calculatePutWithEdgeCases(
+               Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
         };
+
+        class QdPlusAddOnValue {
+          public:
+            QdPlusAddOnValue(
+                Time T, Real S, Real K, Rate r, Rate q, Volatility vol,
+                const Real xmax, ext::shared_ptr<Interpolation> q_z);
+
+            Real operator()(Real z) const;
+          private:
+            const Time T_;
+            const Real S_, K_, xmax_;
+            const Rate r_, q_;
+            const Volatility vol_;
+            const ext::shared_ptr<Interpolation> q_z_;
+            const CumulativeNormalDistribution Phi_;
+        };
+    }
+
+    class QdPlusAmericanEngine: public detail::QdPutCallParityEngine {
+      public:
         enum SolverType {Brent, Newton, Ridder, Halley, SuperHalley};
 
         explicit QdPlusAmericanEngine(
@@ -59,10 +92,18 @@ namespace QuantLib {
             Real eps = 1e-6,
             Size maxIter = Null<Size>());
 
-        void calculate() const override;
+        std::pair<Size, Real> putExerciseBoundaryAtTau(
+            Real S, Real K, Rate r, Rate q,
+            Volatility vol, Time T, Time tau) const;
 
-        std::pair<Size, Real> putExerciseBoundary(
-            const PutOptionParam& param, Time tau) const;
+        ext::shared_ptr<ChebyshevInterpolation> getPutExerciseBoundary(
+            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
+
+        static Real xMax(Real K, Rate r, Rate q);
+
+      protected:
+        Real calculatePut(
+            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const override;
 
       private:
         template <class Solver>
@@ -71,10 +112,6 @@ namespace QuantLib {
             Solver solver, Real S, Real strike, Size maxIter,
             Real guess = Null<Real>()) const;
 
-        Real calculate_put(
-            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
-
-        const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         const Size interpolationPoints_;
         const SolverType solverType_;
         const Real eps_;

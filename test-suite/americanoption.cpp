@@ -24,6 +24,8 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/integrals/integral.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
@@ -1029,10 +1031,6 @@ void AmericanOptionTest::testQdPlusBoundaryValues() {
     const Volatility sigma = 0.25;
     const Time maturity = 5.0;
 
-    const QdPlusAmericanEngine::PutOptionParam param = {
-        S, K, r, q, sigma, maturity
-    };
-
     const QdPlusAmericanEngine qrPlusEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess>(), 10);
 
@@ -1046,7 +1044,8 @@ void AmericanOptionTest::testQdPlusBoundaryValues() {
 
     for (const auto& testCaseSpec: testCaseSpecs) {
         const auto calculated
-            = qrPlusEngine.putExerciseBoundary(param, testCaseSpec.first);
+            = qrPlusEngine.putExerciseBoundaryAtTau(
+                S, K, r, q, sigma, maturity, testCaseSpec.first);
 
         const Real boundary = calculated.second;
         const Size nrEvaluations = calculated.first;
@@ -1105,9 +1104,6 @@ void AmericanOptionTest::testQdPlusBoundaryConvergence() {
     };
 
     for (const auto& testCase: testCases) {
-        const QdPlusAmericanEngine::PutOptionParam param = {
-            S, testCase.strike, testCase.r, testCase.q, sigma, maturity
-        };
         for (auto solverType: solverTypes) {
             const QdPlusAmericanEngine qrPlusEngine(
                 ext::shared_ptr<GeneralizedBlackScholesProcess>(),
@@ -1116,8 +1112,9 @@ void AmericanOptionTest::testQdPlusBoundaryConvergence() {
             Size nrEvaluations = 0;
 
             for (Real t=0.0; t < maturity; t+=0.1) {
-                const auto calculated
-                    = qrPlusEngine.putExerciseBoundary(param, t);
+                const auto calculated = qrPlusEngine.putExerciseBoundaryAtTau(
+                    S, testCase.strike, testCase.r,
+                    testCase.q, sigma, maturity, t);
                 nrEvaluations += calculated.first;
             }
 
@@ -1131,9 +1128,9 @@ void AmericanOptionTest::testQdPlusBoundaryConvergence() {
                         << "\n    evaluations: " << nrEvaluations
                         << "\n    max eval:    " << maxEvaluations
                         << "\n    Solver:      " << solverType.second
-                        << "\n    r :          " << param.r
-                        << "\n    q :          " << param.q
-                        << "\n    K :          " << param.K);
+                        << "\n    r :          " << testCase.r
+                        << "\n    q :          " << testCase.q
+                        << "\n    K :          " << testCase.strike);
             }
         }
     }
@@ -1387,6 +1384,28 @@ void AmericanOptionTest::testQdPlusAmericanEngine() {
     };
 }
 
+void AmericanOptionTest::testQdFpLegendreIterationScheme() {
+    BOOST_TEST_MESSAGE("Testing Legendre iteration scheme for "
+                       "QD+ Fixed Point American engine...");
+
+    const Size l=32, m=6, n=18, p=36;
+
+    const auto scheme
+        = ext::make_shared<QdFpLegendreIterationScheme>(l, m, n, p);
+
+    BOOST_CHECK_EQUAL(n, scheme->getNumberOfChebyshevInterpolationNodes());
+    BOOST_CHECK_EQUAL(1, scheme->getNumberOfJacobiNewtonFixedPointSteps());
+    BOOST_CHECK_EQUAL(m-1, scheme->getNumberOfNaiveFixedPointSteps());
+
+    const Real tol = 1e-8;
+    const NormalDistribution nd;
+
+    BOOST_CHECK_SMALL(scheme->getFixedPointIntegrator()
+        ->operator()(nd, -10.0, 10.0) - 1.0, tol);
+    BOOST_CHECK_SMALL(scheme->getExerciseBoundaryToPriceIntegrator()
+        ->operator()(nd, -10.0, 10.0) - 1.0, tol);
+}
+
 void AmericanOptionTest::testAndersenLakeHighPrecisionExample() {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "high precision example...");
@@ -1426,10 +1445,15 @@ void AmericanOptionTest::testAndersenLakeHighPrecisionExample() {
     const Real europeanNPV = europeanOption.NPV();
 
     americanOption.setPricingEngine(
-        ext::make_shared<QdFpAmericanEngine>(bsProcess)
+        ext::make_shared<QdFpAmericanEngine>(
+            bsProcess,
+            ext::make_shared<QdFpLegendreIterationScheme>(25, 5, 12, 401))
     );
 
     const Real americanNPV = americanOption.NPV();
+    const Real americanPremium = americanNPV - europeanNPV;
+
+    std::cout << std::setprecision(16) << americanNPV - europeanNPV << std::endl;
 }
 
 test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
@@ -1446,9 +1470,10 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
 //    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testEscrowedVsSpotAmericanOption));
 //    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testTodayIsDividendDate));
 //    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryValues));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryConvergence));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusAmericanEngine));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryConvergence));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusAmericanEngine));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdFpLegendreIterationScheme));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testAndersenLakeHighPrecisionExample));
 //
 //    if (speed <= Fast) {

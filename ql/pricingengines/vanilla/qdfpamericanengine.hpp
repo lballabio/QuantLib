@@ -20,11 +20,10 @@
 /*! \file qdfpamericanengine.hpp
 */
 
-#ifndef quantlib_qr_fp_american_engine_hpp
-#define quantlib_qr_fp_american_engine_hpp
+#ifndef quantlib_qd_fp_american_engine_hpp
+#define quantlib_qd_fp_american_engine_hpp
 
-#include <ql/instruments/vanillaoption.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
+#include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
 
 namespace QuantLib {
     class Integrator;
@@ -44,8 +43,20 @@ namespace QuantLib {
         https://onlinelibrary.wiley.com/doi/abs/10.1002/wilm.10969
     */
 
+    class QdFpIterationScheme {
+      public:
+        virtual Size getNumberOfChebyshevInterpolationNodes() const = 0;
+        virtual Size getNumberOfNaiveFixedPointSteps() const = 0;
+        virtual Size getNumberOfJacobiNewtonFixedPointSteps() const = 0;
+
+        virtual ext::shared_ptr<Integrator>
+            getFixedPointIntegrator() const = 0;
+        virtual ext::shared_ptr<Integrator>
+            getExerciseBoundaryToPriceIntegrator() const = 0;
+    };
+
     /* Gauss-Legendre (l,m,n)-p Scheme
-         l: order of Gauss-Legendre integration in every fixed point iterations
+         l: order of Gauss-Legendre integration within every fixed point iterations
             step.
          m: fixed point iteration steps, first step is a partial Jacobi-Newton,
             the rest are naive Richardson fixed point iterations
@@ -53,27 +64,50 @@ namespace QuantLib {
          p: order of Gauss-Legendre integration in final conversion of the
             exercise boundary into option prices
     */
-
-    class QdFixedPointInterationScheme {
+    class QdFpLegendreIterationScheme: public QdFpIterationScheme {
       public:
-        virtual Size getNumberOfChebyshevNodes() const = 0;
-        virtual Size getNumberOfNaiveFixedPointSteps() const = 0;
-        virtual Size getNumberOfJacobiNewtonFixedPointSteps() const = 0;
+        QdFpLegendreIterationScheme(Size l, Size m, Size n, Size p);
 
-        virtual ext::shared_ptr<Integrator>
-            getFixedPointInteration() const = 0;
-        virtual ext::shared_ptr<Integrator>
-            getExerciseBoundaryToPriceIntegration() const = 0;
+        Size getNumberOfChebyshevInterpolationNodes() const override;
+        Size getNumberOfNaiveFixedPointSteps() const override;
+        Size getNumberOfJacobiNewtonFixedPointSteps() const override;
+
+        ext::shared_ptr<Integrator>
+            getFixedPointIntegrator() const override;
+        ext::shared_ptr<Integrator>
+            getExerciseBoundaryToPriceIntegrator() const override;
+
+      private:
+        const Size m_, n_;
+        const ext::shared_ptr<Integrator> fpIntegrator_;
+        const ext::shared_ptr<Integrator> exerciseBoundaryIntegrator_;
     };
 
-    class QdFpAmericanEngine : public VanillaOption::engine {
+    class QdFpIterationSchemeStdFactory {
+      public:
+        static ext::shared_ptr<QdFpIterationScheme> fastScheme();
+        static ext::shared_ptr<QdFpIterationScheme> accurateScheme();
+        static ext::shared_ptr<QdFpIterationScheme> highPrecisionScheme();
+        static ext::shared_ptr<QdFpIterationScheme> tanhSinhScheme();
+
+      private:
+        static ext::shared_ptr<QdFpIterationScheme>
+            fastScheme_, accurateScheme_, highPrecisionScheme_, tanhSinhScheme_;
+    };
+
+    class QdFpAmericanEngine : public detail::QdPutCallParityEngine {
       public:
         explicit QdFpAmericanEngine(
-          ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess);
+          ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+          ext::shared_ptr<QdFpIterationScheme> iterationScheme =
+              QdFpIterationSchemeStdFactory::fastScheme());
 
-        void calculate() const override;
+      protected:
+        Real calculatePut(
+            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const override;
+
       private:
-        const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess_;
+        const ext::shared_ptr<QdFpIterationScheme> iterationScheme_;
     };
 }
 

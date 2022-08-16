@@ -48,6 +48,11 @@ namespace QuantLib {
           chebyshev_interpolation_detail::apply(
               ChebyshevInterpolation::nodes(n, pointsType), f)) {}
 
+
+    Array ChebyshevInterpolation::nodes() const {
+        return x_;
+    }
+
     Array ChebyshevInterpolation::nodes(Size n, PointsType pointsType) {
         Array t(n);
 

@@ -50,6 +50,7 @@ namespace QuantLib {
         // fast interpolate with new set of y values
         Real value(const Array& y, Real x) const;
 
+        Array nodes() const;
         static Array nodes(Size n, PointsType pointsType);
 
       private:
