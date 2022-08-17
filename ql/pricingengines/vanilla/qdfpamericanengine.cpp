@@ -95,7 +95,7 @@ namespace QuantLib {
         const Size n = iterationScheme_->getNumberOfChebyshevInterpolationNodes();
 
         ext::shared_ptr<ChebyshevInterpolation> interp =
-            QdPlusAmericanEngine(process_, n+1, QdPlusAmericanEngine::Halley, 1e-4)
+            QdPlusAmericanEngine(process_, n+1, QdPlusAmericanEngine::Halley, 1e-2)
                 .getPutExerciseBoundary(S, K, r, q, vol, T);
 
         const Array z = interp->nodes();
@@ -117,7 +117,7 @@ namespace QuantLib {
             return std::make_pair(m, m-v);
         };
 
-        const auto K12 = [=](Real tau, const ext::shared_ptr<Interpolation>& interp)
+        const auto K12 = [=, this](Real tau, const ext::shared_ptr<Interpolation>& interp)
             -> Real {
             const Real stv = std::sqrt(tau)/vol;
 
@@ -133,7 +133,7 @@ namespace QuantLib {
                 }, -1, 1);
         };
 
-        const auto K3 = [=](Real tau, const ext::shared_ptr<Interpolation>& interp)
+        const auto K3 = [=, this](Real tau, const ext::shared_ptr<Interpolation>& interp)
             -> Real {
             const Real stv = std::sqrt(tau)/vol;
 
