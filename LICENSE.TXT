@@ -159,6 +159,7 @@ QuantLib is
     Copyright (C) 2021, 2022 Ralf Konrad Eckel
     Copyright (C) 2021, 2022 Skandinaviska Enskilda Banken AB (publ)
 
+    Copyright (C) 2022 Ignacio Anguita
     Copyright (C) 2022 Jonghee Lee
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
