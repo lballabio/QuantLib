@@ -26,6 +26,8 @@
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/actual36525.hpp>
+#include <ql/time/daycounters/actual366.hpp>
 #include <ql/time/daycounters/one.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/time/daycounters/business252.hpp>
@@ -1084,6 +1086,119 @@ void DayCounterTest::testActualActualOutOfScheduleRange() {
     Settings::instance().evaluationDate() = temp;
 }
 
+
+void DayCounterTest::testAct366() {
+
+    BOOST_TEST_MESSAGE("Testing Act/366 day counter...");
+
+    std::vector<Date> testDates = {
+        Date(1, February, 2002),
+        Date(4, February, 2002),
+        Date(16, May, 2003),
+        Date(17, December, 2003),
+        Date(17, December, 2004),
+        Date(19, December, 2005),
+        Date(2, January, 2006),
+        Date(13, March, 2006),
+        Date(15, May, 2006),
+        Date(17, March, 2006),
+        Date(15, May, 2006),
+        Date(26, July, 2006),
+        Date(28, June, 2007),
+        Date(16, September, 2009),
+        Date(26, July, 2016)
+    };
+
+    Time expected[] = {
+        0.00819672131147541,
+        1.27322404371585,
+        0.587431693989071,
+        1.0000000000000,
+        1.00273224043716,
+        0.0382513661202186,
+        0.191256830601093,
+        0.172131147540984,
+        -0.16120218579235,
+        0.16120218579235,
+        0.19672131147541,
+        0.920765027322404,
+        2.21584699453552,
+        6.84426229508197
+        };
+
+    DayCounter dayCounter = Actual366();
+
+    Time calculated;
+
+    for (Size i=1; i<testDates.size(); i++) {
+        calculated = dayCounter.yearFraction(testDates[i-1],testDates[i]);
+        if (std::fabs(calculated-expected[i-1]) > 1.0e-12) {
+                BOOST_ERROR("from " << testDates[i-1]
+                            << " to " << testDates[i] << ":\n"
+                            << std::setprecision(14)
+                            << "    calculated: " << calculated << "\n"
+                            << "    expected:   " << expected[i-1]);
+        }
+    }
+}
+
+void DayCounterTest::testAct36525() {
+
+    BOOST_TEST_MESSAGE("Testing Act/365.25 day counter...");
+
+    std::vector<Date> testDates = {
+        Date(1, February, 2002),
+        Date(4, February, 2002),
+        Date(16, May, 2003),
+        Date(17, December, 2003),
+        Date(17, December, 2004),
+        Date(19, December, 2005),
+        Date(2, January, 2006),
+        Date(13, March, 2006),
+        Date(15, May, 2006),
+        Date(17, March, 2006),
+        Date(15, May, 2006),
+        Date(26, July, 2006),
+        Date(28, June, 2007),
+        Date(16, September, 2009),
+        Date(26, July, 2016)
+    };
+
+    Time expected[] = {
+        0.0082135523613963,
+        1.27583846680356,
+        0.588637919233402,
+        1.00205338809035,
+        1.00479123887748,
+        0.0383299110198494,
+        0.191649555099247,
+        0.172484599589322,
+        -0.161533196440794,
+        0.161533196440794,
+        0.197125256673511,
+        0.922655715263518,
+        2.22039698836413,
+        6.85831622176591
+        };
+
+    DayCounter dayCounter = Actual36525();
+
+    Time calculated;
+
+    for (Size i=1; i<testDates.size(); i++) {
+        calculated = dayCounter.yearFraction(testDates[i-1],testDates[i]);
+        if (std::fabs(calculated-expected[i-1]) > 1.0e-12) {
+                BOOST_ERROR("from " << testDates[i-1]
+                            << " to " << testDates[i] << ":\n"
+                            << std::setprecision(14)
+                            << "    calculated: " << calculated << "\n"
+                            << "    expected:   " << expected[i-1]);
+        }
+    }
+}
+
+
+
 test_suite* DayCounterTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Day counter tests");
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActual));
@@ -1103,6 +1218,8 @@ test_suite* DayCounterTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testThirty360_ISDA));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActual365_Canadian));
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testActualActualOutOfScheduleRange));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testAct366));
+    suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testAct36525));
 
 #ifdef QL_HIGH_RESOLUTION_DATE
     suite->add(QUANTLIB_TEST_CASE(&DayCounterTest::testIntraday));
