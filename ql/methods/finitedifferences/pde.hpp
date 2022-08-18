@@ -94,6 +94,7 @@ namespace QuantLib {
                     T process,
                     Time residualTime = 0.0) :
             TridiagonalOperator(grid.size()) {
+            // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
             timeSetter_ =
                 ext::shared_ptr<GenericTimeSetter<PdeClass> >(
                      new GenericTimeSetter<PdeClass>(grid, process));
