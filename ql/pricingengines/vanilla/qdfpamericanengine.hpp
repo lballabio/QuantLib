@@ -54,7 +54,7 @@ namespace QuantLib {
         virtual ext::shared_ptr<Integrator>
             getExerciseBoundaryToPriceIntegrator() const = 0;
 
-        virtual ~QdFpIterationScheme() {}
+        virtual ~QdFpIterationScheme()  = default;
     };
 
     /* Gauss-Legendre (l,m,n)-p Scheme
@@ -85,16 +85,58 @@ namespace QuantLib {
         const ext::shared_ptr<Integrator> exerciseBoundaryIntegrator_;
     };
 
+    /* Legendre-Tanh-Sinh (l,m,n)-eps Scheme
+         l: order of Gauss-Legendre integration within every fixed point iterations
+            step.
+         m: fixed point iteration steps, first step is a partial Jacobi-Newton,
+            the rest are naive Richardson fixed point iterations
+         n: number of Chebyshev nodes to interpolate the exercise boundary
+         eps: final conversion of the exercise boundary into option prices
+               is carried out with a tanh-sinh integration with accuracy eps
+    */
+    class QdFpLegendreTanhSinhScheme: public QdFpLegendreIterationScheme {
+      public:
+        QdFpLegendreTanhSinhScheme(Size l, Size m, Size n, Real eps);
+
+        ext::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator()
+            const override;
+
+      private:
+        const Real eps_;
+    };
+
+    /* tanh-sinh (m,n)-eps Scheme
+         m: fixed point iteration steps, first step is a partial Jacobi-Newton,
+            the rest are naive Richardson fixed point iterations
+         n: number of Chebyshev nodes to interpolate the exercise boundary
+         eps: tanh-sinh integration precision
+    */
+    class QdFpTanhSinhIterationScheme: public QdFpIterationScheme {
+      public:
+        QdFpTanhSinhIterationScheme(Size m, Size n, Real eps);
+
+        Size getNumberOfChebyshevInterpolationNodes() const override;
+        Size getNumberOfNaiveFixedPointSteps() const override;
+        Size getNumberOfJacobiNewtonFixedPointSteps() const override;
+
+        ext::shared_ptr<Integrator>
+            getFixedPointIntegrator() const override;
+        ext::shared_ptr<Integrator>
+            getExerciseBoundaryToPriceIntegrator() const override;
+      private:
+        const Size m_, n_;
+        const ext::shared_ptr<Integrator> integrator_;
+    };
+
     class QdFpIterationSchemeStdFactory {
       public:
         static ext::shared_ptr<QdFpIterationScheme> fastScheme();
         static ext::shared_ptr<QdFpIterationScheme> accurateScheme();
         static ext::shared_ptr<QdFpIterationScheme> highPrecisionScheme();
-        static ext::shared_ptr<QdFpIterationScheme> tanhSinhScheme();
 
       private:
         static ext::shared_ptr<QdFpIterationScheme>
-            fastScheme_, accurateScheme_, highPrecisionScheme_, tanhSinhScheme_;
+            fastScheme_, accurateScheme_, highPrecisionScheme_;
     };
 
     class QdFpAmericanEngine : public detail::QdPutCallParityEngine {
@@ -102,7 +144,7 @@ namespace QuantLib {
         explicit QdFpAmericanEngine(
           ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
           ext::shared_ptr<QdFpIterationScheme> iterationScheme =
-              QdFpIterationSchemeStdFactory::fastScheme());
+              QdFpIterationSchemeStdFactory::accurateScheme());
 
       protected:
         Real calculatePut(

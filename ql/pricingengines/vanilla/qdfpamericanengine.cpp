@@ -26,19 +26,14 @@
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/qdfpamericanengine.hpp>
+#include <ql/math/integrals/tanhsinhintegral.hpp>
+#ifndef QL_BOOST_HAS_TANH_SINH
+#include <ql/math/integrals/gausslobattointegral.hpp>
+#endif
 
 #include <iostream>
 
 namespace QuantLib {
-    /* Gauss-Legendre (l,m,n)-p Scheme
-         l: order of Gauss-Legendre integration within every fixed point iterations
-            step.
-         m: fixed point iteration steps, first step is a partial Jacobi-Newton,
-            the rest are naive Richardson fixed point iterations
-         n: number of Chebyshev nodes to interpolate the exercise boundary
-         p: order of Gauss-Legendre integration in final conversion of the
-            exercise boundary into option prices
-    */
     QdFpLegendreIterationScheme::QdFpLegendreIterationScheme(
         Size l, Size m, Size n, Size p):
         m_(m), n_(n),
@@ -72,14 +67,80 @@ namespace QuantLib {
         return exerciseBoundaryIntegrator_;
     }
 
+    QdFpTanhSinhIterationScheme::QdFpTanhSinhIterationScheme(
+        Size m, Size n, Real eps)
+    : m_(m), n_(n),
+#ifdef QL_BOOST_HAS_TANH_SINH
+      integrator_(ext::make_shared<TanhSinhIntegral>(eps))
+#else
+      integrator_(ext::make_shared<GaussLobattoIntegral>(
+          100000, QL_MAX_REAL, 0.1*eps))
+#endif
+    {}
+
+    Size QdFpTanhSinhIterationScheme::getNumberOfChebyshevInterpolationNodes()
+        const {
+        return n_;
+    }
+    Size QdFpTanhSinhIterationScheme::getNumberOfNaiveFixedPointSteps() const {
+        return m_-1;
+    }
+    Size QdFpTanhSinhIterationScheme::getNumberOfJacobiNewtonFixedPointSteps()
+        const {
+        return Size(1);
+    }
+
+    ext::shared_ptr<Integrator>
+    QdFpTanhSinhIterationScheme::getFixedPointIntegrator() const {
+        return integrator_;
+    }
+    ext::shared_ptr<Integrator>
+    QdFpTanhSinhIterationScheme::getExerciseBoundaryToPriceIntegrator()
+        const {
+        return integrator_;
+    }
+
+    QdFpLegendreTanhSinhScheme::QdFpLegendreTanhSinhScheme(
+        Size l, Size m, Size n, Real eps)
+    : QdFpLegendreIterationScheme(l, m, n, 1),
+      eps_(eps) {}
+
+    ext::shared_ptr<Integrator>
+    QdFpLegendreTanhSinhScheme::getExerciseBoundaryToPriceIntegrator() const {
+#ifdef QL_BOOST_HAS_TANH_SINH
+            return ext::make_shared<TanhSinhIntegral>(eps_);
+#else
+            return ext::make_shared<GaussLobattoIntegral>(
+                100000, QL_MAX_REAL, 0.1*eps_);
+#endif
+    }
+
     ext::shared_ptr<QdFpIterationScheme>
         QdFpIterationSchemeStdFactory::fastScheme_
-            = ext::make_shared<QdFpLegendreIterationScheme>(12, 1, 12, 24);
+            = ext::make_shared<QdFpLegendreIterationScheme>(11, 1, 5, 15);
 
     ext::shared_ptr<QdFpIterationScheme>
     QdFpIterationSchemeStdFactory::fastScheme() {
         return QdFpIterationSchemeStdFactory::fastScheme_;
     }
+
+    ext::shared_ptr<QdFpIterationScheme>
+        QdFpIterationSchemeStdFactory::accurateScheme_
+            = ext::make_shared<QdFpLegendreTanhSinhScheme>(25, 3, 9, 1e-10);
+
+    ext::shared_ptr<QdFpIterationScheme>
+    QdFpIterationSchemeStdFactory::accurateScheme() {
+        return QdFpIterationSchemeStdFactory::accurateScheme_;
+    }
+
+    ext::shared_ptr<QdFpIterationScheme>
+    QdFpIterationSchemeStdFactory::highPrecisionScheme() {
+        return QdFpIterationSchemeStdFactory::highPrecisionScheme_;
+    }
+
+    ext::shared_ptr<QdFpIterationScheme>
+        QdFpIterationSchemeStdFactory::highPrecisionScheme_
+            = ext::make_shared<QdFpTanhSinhIterationScheme>(1, 32, 1e-10);
 
     QdFpAmericanEngine::QdFpAmericanEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
@@ -117,7 +178,7 @@ namespace QuantLib {
             return std::make_pair(m, m-v);
         };
 
-        const auto K12 = [=, this](Real tau, const ext::shared_ptr<Interpolation>& interp)
+        const auto K12 = [&, this](Real tau, const ext::shared_ptr<Interpolation>& interp)
             -> Real {
             const Real stv = std::sqrt(tau)/vol;
 
@@ -133,14 +194,14 @@ namespace QuantLib {
                 }, -1, 1);
         };
 
-        const auto K3 = [=, this](Real tau, const ext::shared_ptr<Interpolation>& interp)
+        const auto K3 = [&, this](Real tau, const ext::shared_ptr<Interpolation>& interp)
             -> Real {
             const Real stv = std::sqrt(tau)/vol;
 
             return (*iterationScheme_->getFixedPointIntegrator())(
                 [=](Real y) -> Real {
-
                     const Real m = 0.25*tau*squared(1+y);
+
                     return stv*std::exp(r*tau-r*m)*phi(
                         d(0.25*tau*squared(1+y), B(tau, interp)/B(tau-m, interp)).second);
                 }, -1, 1);
@@ -238,9 +299,10 @@ namespace QuantLib {
         };
 
         Array y(x.size());
+
         const Size n_newton = iterationScheme_->getNumberOfJacobiNewtonFixedPointSteps();
         for (Size k=0; k < n_newton; ++k) {
-            for (Size i=0; i < x.size(); ++i) {
+            for (Size i=1; i < x.size(); ++i) {
                 const Real tau = squared(x[i]);
                 const Real b = B(tau, interp);
                 const Real fv = f(tau, b , interp);
@@ -262,7 +324,7 @@ namespace QuantLib {
 
         const Size n_fp = iterationScheme_->getNumberOfNaiveFixedPointSteps();
         for (Size k=0; k < n_fp; ++k) {
-            for (Size i=0; i < x.size(); ++i) {
+            for (Size i=1; i < x.size(); ++i) {
                 const Real tau = squared(x[i]);
                 y[i] = h(f(tau, B(tau, interp), interp));
             }

@@ -206,6 +206,9 @@ namespace QuantLib {
     Real detail::QdPutCallParityEngine::calculatePutWithEdgeCases(
         Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
 
+        if (close(K, 0.0))
+            return 0.0;
+
         if (close(S, 0.0))
             return std::max(K, K*std::exp(-r*T));
 
