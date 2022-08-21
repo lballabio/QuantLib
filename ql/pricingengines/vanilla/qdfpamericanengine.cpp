@@ -236,7 +236,7 @@ namespace QuantLib {
                 }, 0, tau);
         };
 
-        const auto ND = [&, this](
+        const auto ND = [&](
             Real tau, Real b, const ext::shared_ptr<Interpolation>& interp)
             -> std::pair<Real, Real> {
 
@@ -262,12 +262,11 @@ namespace QuantLib {
             return alpha*nd.first/nd.second;
         };
 
-        const auto Nd = [&, this](Real tau, Real b) -> Real {
-
+        const auto Nd = [=](Real tau, Real b) -> Real {
             return phi(d(tau, b/K).second) / (b*vol*std::sqrt(tau));
         };
 
-        const auto Dd = [&, this](Real tau, Real b) -> Real {
+        const auto Dd = [=](Real tau, Real b) -> Real {
             return phi(d(tau, b/K).first) / (b*vol*std::sqrt(tau));
         };
 
@@ -336,8 +335,8 @@ namespace QuantLib {
         const Array z = interp->nodes();
         const Array x = 0.5*std::sqrt(T)*(1.0+z);
 
-        const auto B = [xmax, T](Real tau, const ext::shared_ptr<Interpolation>& interp)
-            -> Real {
+        const auto B = [xmax, T](
+            Real tau, const ext::shared_ptr<Interpolation>& interp) -> Real {
             const Real z = 2*std::sqrt(std::abs(tau)/T)-1;
             return xmax*std::exp(-std::sqrt(std::max(Real(0), (*interp)(z, true))));
         };
