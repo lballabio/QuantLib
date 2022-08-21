@@ -26,6 +26,7 @@
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/integral.hpp>
+#include <ql/math/statistics/incrementalstatistics.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
@@ -37,6 +38,10 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <ql/math/integrals/tanhsinhintegral.hpp>
+#ifndef QL_BOOST_HAS_TANH_SINH
+#include <ql/math/integrals/gausslobattointegral.hpp>
+#endif
 #include <map>
 
 using namespace QuantLib;
@@ -1136,7 +1141,7 @@ void AmericanOptionTest::testQdPlusBoundaryConvergence() {
     }
 }
 
-void AmericanOptionTest::testQdPlusAmericanEngine() {
+void AmericanOptionTest::testQdAmericanEngines() {
     BOOST_TEST_MESSAGE("Testing QD+ American Option pricing...");
 
     SavedSettings backup;
@@ -1327,21 +1332,28 @@ void AmericanOptionTest::testQdPlusAmericanEngine() {
     testCaseSpecs.insert(
         testCaseSpecs.end(),std::begin(edgeTestCases), std::end(edgeTestCases));
 
-    auto spot = ext::make_shared<SimpleQuote>(1.0);
-    auto rRate = ext::make_shared<SimpleQuote>(0.0);
-    auto qRate = ext::make_shared<SimpleQuote>(0.0);
-    auto vol = ext::make_shared<SimpleQuote>(0.0);
+    const auto spot = ext::make_shared<SimpleQuote>(1.0);
+    const auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    const auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    const auto vol = ext::make_shared<SimpleQuote>(0.0);
+
+    const auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc))
+    );
 
     const auto qrPlusAmericanEngine =
         ext::make_shared<QdPlusAmericanEngine>(
-            ext::make_shared<BlackScholesMertonProcess>(
-                Handle<Quote>(spot),
-                Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
-                Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
-                Handle<BlackVolTermStructure>(flatVol(today, vol, dc))
-            ),
-            8, QdPlusAmericanEngine::Halley, 1e-10
-    );
+            bsProcess, 8, QdPlusAmericanEngine::Halley, 1e-10
+        );
+
+    const auto qdFpAmericanEngine =
+        ext::make_shared<QdFpAmericanEngine>(
+            bsProcess,
+            QdFpIterationSchemeStdFactory::fastScheme()
+        );
 
     for (const auto& testCaseSpec: testCaseSpecs) {
         const Date maturityDate =
@@ -1358,6 +1370,7 @@ void AmericanOptionTest::testQdPlusAmericanEngine() {
             ext::make_shared<AmericanExercise>(today, maturityDate)
         );
         option.setPricingEngine(qrPlusAmericanEngine);
+        //option.setPricingEngine(qdFpAmericanEngine);
 
         const Real calculated = option.NPV();
         const Real expected = testCaseSpec.expectedValue;
@@ -1384,27 +1397,33 @@ void AmericanOptionTest::testQdPlusAmericanEngine() {
     };
 }
 
-void AmericanOptionTest::testQdFpLegendreIterationScheme() {
-    BOOST_TEST_MESSAGE("Testing Legendre iteration scheme for "
-                       "QD+ Fixed Point American engine...");
-
-    const Size l=32, m=6, n=18, p=36;
-
-    const auto scheme
-        = ext::make_shared<QdFpLegendreIterationScheme>(l, m, n, p);
-
-    BOOST_CHECK_EQUAL(n, scheme->getNumberOfChebyshevInterpolationNodes());
-    BOOST_CHECK_EQUAL(1, scheme->getNumberOfJacobiNewtonFixedPointSteps());
-    BOOST_CHECK_EQUAL(m-1, scheme->getNumberOfNaiveFixedPointSteps());
+void AmericanOptionTest::testQdFpIterationScheme() {
+    BOOST_TEST_MESSAGE("Testing Legendre and tanh-sinh iteration "
+                       "scheme for QD+ Fixed Point American engine...");
 
     const Real tol = 1e-8;
+    const Size l=32, m=6, n=18, p=36;
+
+    const ext::shared_ptr<QdFpIterationScheme> schemes[] = {
+        ext::make_shared<QdFpLegendreScheme>(l, m, n, p),
+        ext::make_shared<QdFpLegendreTanhSinhScheme>(l, m, n, tol),
+        ext::make_shared<QdFpTanhSinhIterationScheme>(m, n, tol)
+    };
+
     const NormalDistribution nd;
 
-    BOOST_CHECK_SMALL(scheme->getFixedPointIntegrator()
-        ->operator()(nd, -10.0, 10.0) - 1.0, tol);
-    BOOST_CHECK_SMALL(scheme->getExerciseBoundaryToPriceIntegrator()
-        ->operator()(nd, -10.0, 10.0) - 1.0, tol);
+    for (const auto& scheme: schemes) {
+        BOOST_CHECK_EQUAL(n, scheme->getNumberOfChebyshevInterpolationNodes());
+        BOOST_CHECK_EQUAL(1, scheme->getNumberOfJacobiNewtonFixedPointSteps());
+        BOOST_CHECK_EQUAL(m-1, scheme->getNumberOfNaiveFixedPointSteps());
+
+        BOOST_CHECK_SMALL(scheme->getFixedPointIntegrator()
+            ->operator()(nd, -10.0, 10.0) - 1.0, tol);
+        BOOST_CHECK_SMALL(scheme->getExerciseBoundaryToPriceIntegrator()
+            ->operator()(nd, -10.0, 10.0) - 1.0, tol);
+    }
 }
+
 
 void AmericanOptionTest::testAndersenLakeHighPrecisionExample() {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
@@ -1412,29 +1431,125 @@ void AmericanOptionTest::testAndersenLakeHighPrecisionExample() {
 
     SavedSettings backup;
 
+    // Example and results are taken from
+    //    Leif Andersen, Mark Lake and Dimitri Offengenden (2015)
+    //    "High Performance American Option Pricing",
+    //    https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2547027
+
+    struct SchemeSpec {
+        Size l, m, n;
+        Rate r;
+        Real expected[2];
+        Real tol;
+    };
+    
+    const SchemeSpec testCases[] = {
+        { 24, 3, 9,  0.05, {0.1069528125898476, 0.1069524359360852}, 1e-6},
+        {  5, 1, 4,  0.05, {0.1070237787625299, 0.1070042740171235}, 1e-3},
+        { 11, 2, 5,  0.05, {0.106938750864602, 0.1069479057531648}, 1e-4},
+        { 35, 8, 16, 0.05, {0.1069527032381714, 0.106952558361499}, 1e-9},
+        { 65, 8, 32, 0.05, {0.1069527028247546, 0.1069526779971959}, 1e-11},
+        {  5, 1, 4, 0.075, {0.3674420299196104, 0.3674766444325588}, 1e-3},
+        { 11, 2, 5, 0.075, {0.3671056766787473, 0.3671024005532715}, 1e-4},
+        { 35, 8, 16,0.075, {0.3671116758420414, 0.3671111055677869}, 1e-9},
+        { 65, 8, 32,0.075, {0.3671112309062572, 0.3671111267813689}, 1e-11}
+    };
+
     const DayCounter dc = Actual365Fixed();
     const Date today = Date(25, July, 2022);
     Settings::instance().evaluationDate() = today;
 
     const auto spot = ext::make_shared<SimpleQuote>(100.0);
     const Real strike = 100.0;
-    const Rate r = 0.05;
     const Rate q = 0.05;
     const Volatility vol = 0.25;
     const Date maturityDate = today + Period(1, Years);
 
-    const auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(
-        Handle<Quote>(spot),
-        Handle<YieldTermStructure>(flatRate(today, q, dc)),
-        Handle<YieldTermStructure>(flatRate(today, r, dc)),
-        Handle<BlackVolTermStructure>(flatVol(today, vol, dc))
-    );
-
     const auto payoff =
         ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
 
-    VanillaOption americanOption(
-        payoff, ext::make_shared<AmericanExercise>(today, maturityDate));
+    for (const auto& testCase: testCases) {
+        const Size l = testCase.l;
+        const Size m = testCase.m;
+        const Size n = testCase.n;
+        const Rate r = testCase.r;
+        const Real tol = testCase.tol;
+
+        const auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(spot),
+            Handle<YieldTermStructure>(flatRate(today, q, dc)),
+            Handle<YieldTermStructure>(flatRate(today, r, dc)),
+            Handle<BlackVolTermStructure>(flatVol(today, vol, dc))
+        );
+
+        VanillaOption americanOption(
+            payoff, ext::make_shared<AmericanExercise>(today, maturityDate));
+
+        VanillaOption europeanOption(
+            payoff, ext::make_shared<EuropeanExercise>(maturityDate));
+
+        europeanOption.setPricingEngine(
+            ext::make_shared<AnalyticEuropeanEngine>(bsProcess));
+
+        const Real europeanNPV = europeanOption.NPV();
+
+        const QdFpAmericanEngine::FixedPointScheme schemes[] = {
+            QdFpAmericanEngine::FP_A, QdFpAmericanEngine::FP_B
+        };
+
+        for (Size i=0; i < LENGTH(schemes); ++i) {
+
+            americanOption.setPricingEngine(
+                ext::make_shared<QdFpAmericanEngine>(
+                    bsProcess,
+                    ext::make_shared<QdFpLegendreTanhSinhScheme>(l, m, n, tol),
+                    schemes[i])
+            );
+
+            const Real americanNPV = americanOption.NPV();
+            const Real americanPremium = americanNPV - europeanNPV;
+
+            const Real diff = std::abs(americanPremium - testCase.expected[i]);
+            if (diff > tol) {
+                BOOST_ERROR("failed to reproduce high precision literature values"
+                        << "\n    FP-Scheme: " <<
+                        ((schemes[i] == QdFpAmericanEngine::FP_A)? "FP-A" : "FP-B")
+                        << "\n    r        : " << r
+                        << "\n    (l,m,n)  : (" << l << "," << m << "," << n << ")"
+                        << "\n    diff     : " << diff
+                        << "\n    tol      : " << tol);
+            }
+        }
+    }
+}
+
+
+void AmericanOptionTest::testQdEngineStandardExample() {
+    BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
+                        "standard example...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(1, June, 2022);
+    Settings::instance().evaluationDate() = today;
+
+    const Real S = 100;
+    const Real K = 95;
+    const Rate r = 0.075;
+    const Rate q = 0.05;
+    const Volatility sigma = 0.25;
+    const Date maturityDate = today + Period(1, Years);
+
+    const auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(S)),
+        Handle<YieldTermStructure>(flatRate(today, q, dc)),
+        Handle<YieldTermStructure>(flatRate(today, r, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, sigma, dc))
+    );
+
+    const auto payoff =
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, K);
 
     VanillaOption europeanOption(
         payoff, ext::make_shared<EuropeanExercise>(maturityDate));
@@ -1442,19 +1557,110 @@ void AmericanOptionTest::testAndersenLakeHighPrecisionExample() {
     europeanOption.setPricingEngine(
         ext::make_shared<AnalyticEuropeanEngine>(bsProcess));
 
-    const Real europeanNPV = europeanOption.NPV();
+    VanillaOption americanOption(
+        payoff, ext::make_shared<AmericanExercise>(today, maturityDate));
 
-    americanOption.setPricingEngine(
-        ext::make_shared<QdFpAmericanEngine>(
-            bsProcess,
-            ext::make_shared<QdFpLegendreIterationScheme>(25, 5, 12, 401))
+
+    const QdFpAmericanEngine::FixedPointScheme schemes[] = {
+        QdFpAmericanEngine::FP_A, QdFpAmericanEngine::FP_B
+    };
+    const Real expected[] = { 0.2386475283369327, 0.2386596962737606 };
+
+    for (Size i=0; i < LENGTH(schemes); ++i) {
+        americanOption.setPricingEngine(
+            ext::make_shared<QdFpAmericanEngine>(
+                bsProcess,
+                ext::make_shared<QdFpLegendreScheme>(32, 2, 15, 48),
+                schemes[i])
+        );
+        const Real calculated = americanOption.NPV() - europeanOption.NPV();
+
+        const Real tol = 1e-15;
+        const Real diff = std::abs(calculated - expected[i]);
+        std::cout << std::setprecision(16) << calculated << std::endl;
+        if (diff > tol) {
+            BOOST_ERROR("failed to reproduce high precision test values"
+                    << "\n    diff     : " << diff
+                    << "\n    tol      : " << tol);
+        }
+    }
+}
+
+void AmericanOptionTest::testBulkQdFpAmericanEngine() {
+    BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
+                        "bulk examples...");
+
+    // Example and results are taken from
+    //    Leif Andersen, Mark Lake and Dimitri Offengenden (2015)
+    //    "High Performance American Option Pricing",
+    //    https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2547027
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(1, June, 2022);
+    Settings::instance().evaluationDate() = today;
+
+    const auto spot = ext::make_shared<SimpleQuote>(1.0);
+    const auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    const auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    const auto vol = ext::make_shared<SimpleQuote>(0.0);
+
+    const Size T[] = {30, 91, 182, 273, 365};
+    const Rate rf[] = {0.02, 0.04, 0.06, 0.08, 0.1};
+    const Rate qy[] = {0, 0.04, 0.08, 0.12};
+    const Real S[] = {25, 50, 80, 90, 100, 110, 120, 150, 175, 200};
+    const Volatility sig[] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
+
+    const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 100);
+
+    const auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(flatRate(today, qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(today, rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, vol, dc))
     );
 
-    const Real americanNPV = americanOption.NPV();
-    const Real americanPremium = americanNPV - europeanNPV;
+    const auto qdFpFastAmericanEngine =
+        ext::make_shared<QdFpAmericanEngine>(
+            bsProcess, QdFpIterationSchemeStdFactory::fastScheme());
 
-    std::cout << std::setprecision(16) << americanPremium << std::endl;
+    const auto qdFpAccurateAmericanEngine =
+        ext::make_shared<QdFpAmericanEngine>(
+            bsProcess, QdFpIterationSchemeStdFactory::accurateScheme());
+
+
+    IncrementalStatistics stats;
+
+    for (auto t: T) {
+        const Date maturityDate = today + Period(t, Days);
+        VanillaOption option(
+            payoff, ext::make_shared<AmericanExercise>(today, maturityDate));
+
+        for (auto r: rf) {
+            rRate->setValue(r);
+            for (auto q: qy) {
+                qRate->setValue(q);
+                for (auto v: sig) {
+                    vol->setValue(v);
+                    for (auto s: S) {
+                        spot->setValue(s);
+                        option.setPricingEngine(qdFpFastAmericanEngine);
+                        const Real fast = option.NPV();
+                        option.setPricingEngine(qdFpAccurateAmericanEngine);
+                        const Real accurate = option.NPV();
+                        const Real diff = std::abs(fast-accurate);
+
+                        stats.add(diff);
+                    }
+                }
+            }
+        }
+    }
+
+    std::cout << stats.standardDeviation() << std::endl;
 }
+
 
 test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("American option tests");
@@ -1469,12 +1675,14 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
 //    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testLargeDividendShoutNPV));
 //    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testEscrowedVsSpotAmericanOption));
 //    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testTodayIsDividendDate));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryValues));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryConvergence));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusAmericanEngine));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdFpLegendreIterationScheme));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdAmericanEngines));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdFpIterationScheme));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testAndersenLakeHighPrecisionExample));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineStandardExample));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBulkQdFpAmericanEngine));
 //
 //    if (speed <= Fast) {
 //        suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));

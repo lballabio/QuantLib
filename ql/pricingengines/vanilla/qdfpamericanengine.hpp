@@ -66,9 +66,9 @@ namespace QuantLib {
          p: order of Gauss-Legendre integration in final conversion of the
             exercise boundary into option prices
     */
-    class QdFpLegendreIterationScheme: public QdFpIterationScheme {
+    class QdFpLegendreScheme: public QdFpIterationScheme {
       public:
-        QdFpLegendreIterationScheme(Size l, Size m, Size n, Size p);
+        QdFpLegendreScheme(Size l, Size m, Size n, Size p);
 
         Size getNumberOfChebyshevInterpolationNodes() const override;
         Size getNumberOfNaiveFixedPointSteps() const override;
@@ -94,7 +94,7 @@ namespace QuantLib {
          eps: final conversion of the exercise boundary into option prices
                is carried out with a tanh-sinh integration with accuracy eps
     */
-    class QdFpLegendreTanhSinhScheme: public QdFpLegendreIterationScheme {
+    class QdFpLegendreTanhSinhScheme: public QdFpLegendreScheme {
       public:
         QdFpLegendreTanhSinhScheme(Size l, Size m, Size n, Real eps);
 
@@ -141,17 +141,27 @@ namespace QuantLib {
 
     class QdFpAmericanEngine : public detail::QdPutCallParityEngine {
       public:
+        enum FixedPointScheme { FP_A, FP_B, Auto };
+
         explicit QdFpAmericanEngine(
           ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
           ext::shared_ptr<QdFpIterationScheme> iterationScheme =
-              QdFpIterationSchemeStdFactory::accurateScheme());
+              QdFpIterationSchemeStdFactory::accurateScheme(),
+          FixedPointScheme fpScheme = Auto);
 
       protected:
         Real calculatePut(
             Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const override;
 
+        Real calculatePutFP_A(
+            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
+
+        Real calculatePutFP_B(
+            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
+
       private:
         const ext::shared_ptr<QdFpIterationScheme> iterationScheme_;
+        const FixedPointScheme fpScheme_;
     };
 }
 
