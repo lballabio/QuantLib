@@ -25,8 +25,8 @@
 namespace QuantLib {
 
     Projection::Projection(const Array& parameterValues, std::vector<bool> fixParameters)
-    : numberOfFreeParameters_(0), fixedParameters_(parameterValues),
-      actualParameters_(parameterValues), fixParameters_(std::move(fixParameters)) {
+    : fixedParameters_(parameterValues), actualParameters_(parameterValues),
+      fixParameters_(std::move(fixParameters)) {
 
         if (fixParameters_.empty())
             fixParameters_ =

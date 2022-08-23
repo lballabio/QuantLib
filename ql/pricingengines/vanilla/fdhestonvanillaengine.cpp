@@ -210,10 +210,8 @@ namespace QuantLib {
 
 
     MakeFdHestonVanillaEngine::MakeFdHestonVanillaEngine(ext::shared_ptr<HestonModel> hestonModel)
-    : hestonModel_(std::move(hestonModel)), tGrid_(100), xGrid_(100), vGrid_(50), dampingSteps_(0),
-      schemeDesc_(ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::Hundsdorfer())),
-      leverageFct_(ext::shared_ptr<LocalVolTermStructure>()),
-      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()) {}
+    : hestonModel_(std::move(hestonModel)),
+      schemeDesc_(ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::Hundsdorfer())) {}
 
     MakeFdHestonVanillaEngine& MakeFdHestonVanillaEngine::withQuantoHelper(
         const ext::shared_ptr<FdmQuantoHelper>& quantoHelper) {

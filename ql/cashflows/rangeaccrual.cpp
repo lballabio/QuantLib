@@ -176,8 +176,7 @@ namespace QuantLib {
                                                      bool withSmile,
                                                      bool byCallSpread)
     : correlation_(correlation), withSmile_(withSmile), byCallSpread_(byCallSpread),
-      smilesOnExpiry_(std::move(smilesOnExpiry)), smilesOnPayment_(std::move(smilesOnPayment)),
-      eps_(1.0e-8) {}
+      smilesOnExpiry_(std::move(smilesOnExpiry)), smilesOnPayment_(std::move(smilesOnPayment)) {}
     Real RangeAccrualPricerByBgm::swapletPrice() const{
 
         Real result = 0.;
@@ -525,8 +524,7 @@ namespace QuantLib {
 
 
     RangeAccrualLeg::RangeAccrualLeg(Schedule schedule, ext::shared_ptr<IborIndex> index)
-    : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following),
-      observationConvention_(ModifiedFollowing) {}
+    : schedule_(std::move(schedule)), index_(std::move(index)) {}
 
     RangeAccrualLeg& RangeAccrualLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);

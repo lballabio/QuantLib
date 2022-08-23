@@ -107,17 +107,14 @@ namespace QuantLib {
     }
 
 
-    SobolBrownianGenerator::SobolBrownianGenerator(
-                                        Size factors,
-                                        Size steps,
-                                        Ordering ordering,
-                                        unsigned long seed,
-                                        SobolRsg::DirectionIntegers integers)
+    SobolBrownianGenerator::SobolBrownianGenerator(Size factors,
+                                                   Size steps,
+                                                   Ordering ordering,
+                                                   unsigned long seed,
+                                                   SobolRsg::DirectionIntegers integers)
     : factors_(factors), steps_(steps), ordering_(ordering),
-      generator_(SobolRsg(factors*steps, seed, integers),
-                 InverseCumulativeNormal()),
-      bridge_(steps), lastStep_(0),
-      orderedIndices_(factors, std::vector<Size>(steps)),
+      generator_(SobolRsg(factors * steps, seed, integers), InverseCumulativeNormal()),
+      bridge_(steps), orderedIndices_(factors, std::vector<Size>(steps)),
       bridgedVariates_(factors, std::vector<Real>(steps)) {
 
         switch (ordering_) {

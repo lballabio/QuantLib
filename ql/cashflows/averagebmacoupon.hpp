@@ -97,7 +97,7 @@ namespace QuantLib {
         ext::shared_ptr<BMAIndex> index_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
-        BusinessDayConvention paymentAdjustment_;
+        BusinessDayConvention paymentAdjustment_ = Following;
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
     };

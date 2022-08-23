@@ -98,10 +98,10 @@ namespace QuantLib {
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<P> process_;
-        bool antithetic_, controlVariate_;
+        bool antithetic_ = false, controlVariate_ = false;
         Size samples_, maxSamples_, steps_, stepsPerYear_;
         Real tolerance_;
-        BigNatural seed_;
+        BigNatural seed_ = 0;
     };
 
 
@@ -235,10 +235,9 @@ namespace QuantLib {
 
     template <class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG, S, P>::
-    MakeMCDiscreteArithmeticAPHestonEngine(ext::shared_ptr<P> process)
-    : process_(std::move(process)), antithetic_(false), controlVariate_(false),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()), steps_(Null<Size>()),
-      stepsPerYear_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
+        MakeMCDiscreteArithmeticAPHestonEngine(ext::shared_ptr<P> process)
+    : process_(std::move(process)), samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), tolerance_(Null<Real>()) {}
 
     template<class RNG, class S, class P>
     inline MakeMCDiscreteArithmeticAPHestonEngine<RNG,S,P>&

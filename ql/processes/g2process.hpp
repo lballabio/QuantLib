@@ -52,7 +52,7 @@ namespace QuantLib {
         Real eta() const;
         Real rho() const;
       private:
-        Real x0_, y0_, a_, sigma_, b_, eta_, rho_;
+        Real x0_ = 0.0, y0_ = 0.0, a_, sigma_, b_, eta_, rho_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> xProcess_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> yProcess_;
     };
@@ -73,7 +73,7 @@ namespace QuantLib {
         Matrix covariance(Time t0, const Array& x0, Time dt) const override;
         //@}
       protected:
-        Real x0_, y0_, a_, sigma_, b_, eta_, rho_;
+        Real x0_ = 0.0, y0_ = 0.0, a_, sigma_, b_, eta_, rho_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> xProcess_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> yProcess_;
         Real xForwardDrift(Time t, Time T) const;

@@ -69,7 +69,7 @@ namespace QuantLib {
         Year years_;
         Date periodStart_;
         Date periodEnd_;
-        unsigned int i_;
+        unsigned int i_ = 0;
     };
 
     class EventSet : public CatRisk {        

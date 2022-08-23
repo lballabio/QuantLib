@@ -240,15 +240,15 @@ namespace QuantLib {
         }
     }
 
-    ClubsTopology::ClubsTopology(
-        Size defaultClubs, Size totalClubs,
-        Size maxClubs, Size minClubs,
-        Size resetIteration, unsigned long seed) :
-        totalClubs_(totalClubs), maxClubs_(maxClubs),
-        minClubs_(minClubs), defaultClubs_(defaultClubs),
-        iteration_(0), resetIteration_(resetIteration),
-        bestByClub_(totalClubs, 0), worstByClub_(totalClubs, 0),
-        generator_(seed), distribution_(1, totalClubs_) {
+    ClubsTopology::ClubsTopology(Size defaultClubs,
+                                 Size totalClubs,
+                                 Size maxClubs,
+                                 Size minClubs,
+                                 Size resetIteration,
+                                 unsigned long seed)
+    : totalClubs_(totalClubs), maxClubs_(maxClubs), minClubs_(minClubs),
+      defaultClubs_(defaultClubs), resetIteration_(resetIteration), bestByClub_(totalClubs, 0),
+      worstByClub_(totalClubs, 0), generator_(seed), distribution_(1, totalClubs_) {
         QL_REQUIRE(totalClubs_ >= defaultClubs_,
             "Total number of clubs must be larger or equal than default clubs");
         QL_REQUIRE(defaultClubs_ >= minClubs_,

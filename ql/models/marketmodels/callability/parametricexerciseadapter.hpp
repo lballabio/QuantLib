@@ -44,7 +44,7 @@ namespace QuantLib {
         Clone<MarketModelParametricExercise> exercise_;
         std::vector<std::vector<Real> > parameters_;
         std::vector<Time> exerciseTimes_;
-        Size currentStep_, currentExercise_;
+        Size currentStep_ = 0, currentExercise_ = 0;
         std::valarray<bool> isExerciseTime_;
         std::vector<Size> numberOfVariables_;
         mutable std::vector<Real> variables_;

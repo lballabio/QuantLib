@@ -92,12 +92,12 @@ namespace QuantLib {
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<StochasticProcessArray> process_;
-        bool brownianBridge_, antithetic_;
-        Size steps_, stepsPerYear_, samples_,
-            maxSamples_, calibrationSamples_, polynomialOrder_;
-        LsmBasisSystem::PolynomialType polynomialType_;
+        bool brownianBridge_ = false, antithetic_ = false;
+        Size steps_, stepsPerYear_, samples_, maxSamples_, calibrationSamples_,
+            polynomialOrder_ = 2;
+        LsmBasisSystem::PolynomialType polynomialType_ = LsmBasisSystem::Monomial;
         Real tolerance_;
-        BigNatural seed_;
+        BigNatural seed_ = 0;
     };
 
 
@@ -121,7 +121,7 @@ namespace QuantLib {
         const Size assetNumber_;
         const ext::shared_ptr<Payoff> payoff_;
 
-        Real scalingValue_;
+        Real scalingValue_ = 1.0;
         std::vector<ext::function<Real(Array)> > v_;
     };
 
@@ -192,10 +192,9 @@ namespace QuantLib {
     template <class RNG>
     inline MakeMCAmericanBasketEngine<RNG>::MakeMCAmericanBasketEngine(
         ext::shared_ptr<StochasticProcessArray> process)
-    : process_(std::move(process)), brownianBridge_(false), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
-      maxSamples_(Null<Size>()), calibrationSamples_(Null<Size>()), polynomialOrder_(2),
-      polynomialType_(LsmBasisSystem::Monomial), tolerance_(Null<Real>()), seed_(0) {}
+    : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), calibrationSamples_(Null<Size>()),
+      tolerance_(Null<Real>()) {}
 
     template <class RNG>
     inline MakeMCAmericanBasketEngine<RNG>&

@@ -25,7 +25,6 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
 
 using namespace std;
 

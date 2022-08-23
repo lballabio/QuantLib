@@ -54,7 +54,7 @@ namespace QuantLib {
 
       private:
         Size factors_, steps_;
-        Size lastStep_;
+        Size lastStep_ = 0;
         RandomSequenceGenerator<MersenneTwisterUniformRng> generator_;
         InverseCumulativeNormal inverseCumulative_;
     };

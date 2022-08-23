@@ -63,7 +63,7 @@ namespace QuantLib {
             Array & exercises_;
             std::vector<Array> & states_;
 
-            Size maximumTimeRead_;
+            Size maximumTimeRead_ = 0;
         };
 
         void value(const Matrix& path,

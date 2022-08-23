@@ -136,8 +136,8 @@ namespace QuantLib {
             Real swapRateValue_;
             Handle<Quote> meanReversion_;
 
-            Real calibratedShift_, tmpRs_;
-            const Real accuracy_;
+            Real calibratedShift_ = 0.03, tmpRs_ = 10000000.0;
+            const Real accuracy_ = 1.0e-14;
 
             //* function describing the non-parallel shape of the curve shift*/
             Real shapeOfShift(Real s) const;
@@ -232,7 +232,7 @@ namespace QuantLib {
         Real gearing_;
         Spread spread_;
         Real spreadLegValue_;
-        Rate cutoffForCaplet_, cutoffForFloorlet_;
+        Rate cutoffForCaplet_ = 2, cutoffForFloorlet_ = 0;
         Handle<Quote> meanReversion_;
         Period swapTenor_;
         ext::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
@@ -308,7 +308,8 @@ namespace QuantLib {
         Real refineIntegration(Real integralValue, const ConundrumIntegrand& integrand) const;
 
         mutable Real upperLimit_, stdDeviationsForUpperLimit_;
-        const Real lowerLimit_, requiredStdDeviations_, precision_, refiningIntegrationTolerance_;
+        const Real lowerLimit_, requiredStdDeviations_ = 8, precision_,
+                                refiningIntegrationTolerance_ = .0001;
         const Real hardUpperLimit_;
     };
 

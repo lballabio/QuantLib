@@ -31,22 +31,12 @@ namespace QuantLib {
                      const ext::shared_ptr<OvernightIndex>& overnightIndex,
                      Rate fixedRate,
                      const Period& forwardStart)
-    : swapTenor_(swapTenor), overnightIndex_(overnightIndex),
-      fixedRate_(fixedRate), forwardStart_(forwardStart),
-      settlementDays_(2),
+    : swapTenor_(swapTenor), overnightIndex_(overnightIndex), fixedRate_(fixedRate),
+      forwardStart_(forwardStart),
+
       calendar_(overnightIndex->fixingCalendar()),
-      paymentFrequency_(Annual),
-      paymentCalendar_(Calendar()),
-      paymentAdjustment_(Following),
-      paymentLag_(0),
-      rule_(DateGeneration::Backward),
-      // any value here for endOfMonth_ would not be actually used
-      isDefaultEOM_(true),
-      type_(Swap::Payer), nominal_(1.0),
-      overnightSpread_(0.0),
-      fixedDayCount_(overnightIndex->dayCounter()), 
-      telescopicValueDates_(false), 
-      averagingMethod_(RateAveraging::Compound) {}
+
+      fixedDayCount_(overnightIndex->dayCounter()) {}
 
     MakeOIS::operator OvernightIndexedSwap() const {
         ext::shared_ptr<OvernightIndexedSwap> ois = *this;

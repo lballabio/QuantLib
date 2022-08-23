@@ -64,7 +64,7 @@ namespace QuantLib {
       private:
         bool offDiagIsZero(Size k, Array& e);
 
-        Size iter_;
+        Size iter_ = 0;
         Array d_;
         Matrix ev_;
     };

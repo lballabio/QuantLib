@@ -21,34 +21,31 @@
 
 #include "inflationcapfloor.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/inflationcouponpricer.hpp>
+#include <ql/cashflows/yoyinflationcoupon.hpp>
+#include <ql/indexes/inflation/euhicp.hpp>
+#include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/instruments/inflationcapfloor.hpp>
 #include <ql/instruments/vanillaswap.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/math/matrix.hpp>
+#include <ql/models/marketmodels/correlations/expcorrelations.hpp>
+#include <ql/models/marketmodels/models/flatvol.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/inflation/inflationcapfloorengines.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/models/marketmodels/models/flatvol.hpp>
-#include <ql/models/marketmodels/correlations/expcorrelations.hpp>
-#include <ql/math/matrix.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/inflation/inflationhelpers.hpp>
+#include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
+#include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/cashflows/cashflows.hpp>
-#include <ql/quotes/simplequote.hpp>
-
-#include <ql/indexes/inflation/ukrpi.hpp>
-#include <ql/indexes/inflation/euhicp.hpp>
-#include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
-#include <ql/cashflows/yoyinflationcoupon.hpp>
-#include <ql/cashflows/inflationcouponpricer.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/time/daycounters/thirty360.hpp>
-#include <ql/time/calendars/unitedkingdom.hpp>
-#include <ql/time/schedule.hpp>
-#include <ql/termstructures/inflation/inflationhelpers.hpp>
-#include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
-#include <ql/pricingengines/blackformula.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
