@@ -44,8 +44,7 @@ namespace QuantLib {
       capletCalibrated_(false), reversion_(ConstantParameter(reversion, NoConstraint())),
       sigma_(arguments_[0]), volstepdates_(std::move(volstepdates)),
       volatilities_(std::move(volatilities)), swaptionVol_(swaptionVol),
-      capletVol_(Handle<OptionletVolatilityStructure>()), swaptionExpiries_(swaptionExpiries),
-      capletExpiries_(std::vector<Date>()), swaptionTenors_(swaptionTenors),
+      swaptionExpiries_(swaptionExpiries), swaptionTenors_(swaptionTenors),
       swapIndexBase_(swapIndexBase), iborIndex_(swapIndexBase->iborIndex()) {
 
         QL_REQUIRE(swaptionExpiries.size() == swaptionTenors.size(),
@@ -74,10 +73,8 @@ namespace QuantLib {
     : Gaussian1dModel(termStructure), CalibratedModel(1), modelSettings_(std::move(modelSettings)),
       capletCalibrated_(true), reversion_(ConstantParameter(reversion, NoConstraint())),
       sigma_(arguments_[0]), volstepdates_(std::move(volstepdates)),
-      volatilities_(std::move(volatilities)), swaptionVol_(Handle<SwaptionVolatilityStructure>()),
-      capletVol_(capletVol), swaptionExpiries_(std::vector<Date>()),
-      capletExpiries_(capletExpiries), swaptionTenors_(std::vector<Period>()),
-      iborIndex_(std::move(iborIndex)) {
+      volatilities_(std::move(volatilities)), capletVol_(capletVol),
+      capletExpiries_(capletExpiries), iborIndex_(std::move(iborIndex)) {
 
         QL_REQUIRE(!capletExpiries.empty(),
                    "need at least one caplet expiry to calibrate numeraire");

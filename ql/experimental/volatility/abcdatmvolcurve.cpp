@@ -37,9 +37,7 @@ namespace QuantLib {
       optionTenors_(optionTenors), optionDates_(nOptionTenors_), optionTimes_(nOptionTenors_),
       actualOptionTimes_(nOptionTenors_), volHandles_(volsHandles), vols_(volsHandles.size()),
       actualVols_(volsHandles.size()),
-      inclusionInInterpolation_(std::move(inclusionInInterpolationFlag)),
-      interpolation_(ext::shared_ptr<AbcdInterpolation>()) // do not initialize with nOptionTenors_
-    {
+      inclusionInInterpolation_(std::move(inclusionInInterpolationFlag)) {
         checkInputs();
         initializeOptionDatesAndTimes();
         initializeVolatilities();

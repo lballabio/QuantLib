@@ -356,26 +356,25 @@ namespace QuantLib
     */
     class ReannealingFiniteDifferences {
     public:
-        ReannealingFiniteDifferences(Real initialTemp,
-            Size dimension,
-            const Array & lower = Array(),
-            const Array & upper = Array(),
-            Real stepSize = 1e-7,
-            Real minSize = 1e-10,
-            Real functionTol = 1e-10)
-            : stepSize_(stepSize), minSize_(minSize),
-            functionTol_(functionTol), N_(dimension), bound_(false),
-            lower_(lower), upper_(upper), initialTemp_(dimension, initialTemp),
-            bounded_(dimension, 1.0) {
-            if (!lower.empty() && !upper.empty()) {
-                QL_REQUIRE(lower.size() == N_, "Incompatible input");
-                QL_REQUIRE(upper.size() == N_, "Incompatible input");
-                bound_ = true;
-                for (Size i = 0; i < N_; i++) {
-                    bounded_[i] = upper[i] - lower[i];
-                }
-            }
-        }
+      ReannealingFiniteDifferences(Real initialTemp,
+                                   Size dimension,
+                                   const Array& lower = Array(),
+                                   const Array& upper = Array(),
+                                   Real stepSize = 1e-7,
+                                   Real minSize = 1e-10,
+                                   Real functionTol = 1e-10)
+      : stepSize_(stepSize), minSize_(minSize), functionTol_(functionTol), N_(dimension),
+        lower_(lower), upper_(upper), initialTemp_(dimension, initialTemp),
+        bounded_(dimension, 1.0) {
+          if (!lower.empty() && !upper.empty()) {
+              QL_REQUIRE(lower.size() == N_, "Incompatible input");
+              QL_REQUIRE(upper.size() == N_, "Incompatible input");
+              bound_ = true;
+              for (Size i = 0; i < N_; i++) {
+                  bounded_[i] = upper[i] - lower[i];
+              }
+          }
+      }
         inline void setProblem(Problem &P) { problem_ = &P; };
         inline void operator()(Array & steps, const Array &currentPoint,
             Real currentValue, const Array & currTemp) {
@@ -409,7 +408,7 @@ namespace QuantLib
         Problem *problem_;
         Real stepSize_, minSize_, functionTol_;
         Size N_;
-        bool bound_;
+        bool bound_ = false;
         Array lower_, upper_, initialTemp_, bounded_;
     };
 }

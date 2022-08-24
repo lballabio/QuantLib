@@ -46,7 +46,7 @@ namespace QuantLib {
 
       protected:
         void mapFreeParameters(const Array &parameterValues) const;
-        Size numberOfFreeParameters_;
+        Size numberOfFreeParameters_ = 0;
         const Array fixedParameters_;
         mutable Array actualParameters_;
         std::vector<bool> fixParameters_;

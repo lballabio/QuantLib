@@ -42,7 +42,7 @@ namespace QuantLib {
         Array discounts,
         Size polynomialOrder,
         LsmBasisSystem::PolynomialType polynomialType)
-    : calibrationPhase_(true), payoff_(payoff), coeff_(new Array[timePositions.size() - 1]),
+    : payoff_(payoff), coeff_(new Array[timePositions.size() - 1]),
       lowerBounds_(new Real[timePositions.size()]), timePositions_(timePositions),
       forwardTermStructures_(std::move(forwardTermStructures)), dF_(std::move(discounts)),
       v_(LsmBasisSystem::multiPathBasisSystem(

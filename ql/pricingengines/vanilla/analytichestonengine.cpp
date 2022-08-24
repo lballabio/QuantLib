@@ -86,9 +86,7 @@ namespace QuantLib {
 
         class u_Max {
           public:
-            u_Max(Real c_inf, Real epsilon)
-            : c_inf_(c_inf), logEpsilon_(std::log(epsilon)),
-              evaluations_(0) {}
+            u_Max(Real c_inf, Real epsilon) : c_inf_(c_inf), logEpsilon_(std::log(epsilon)) {}
 
             Real operator()(Real u) const {
                 ++evaluations_;
@@ -99,15 +97,13 @@ namespace QuantLib {
 
           private:
             const Real c_inf_, logEpsilon_;
-            mutable Size evaluations_;
+            mutable Size evaluations_ = 0;
         };
 
 
         class uHat_Max {
           public:
-            uHat_Max(Real v0T2, Real epsilon)
-            : v0T2_(v0T2), logEpsilon_(std::log(epsilon)),
-              evaluations_(0) {}
+            uHat_Max(Real v0T2, Real epsilon) : v0T2_(v0T2), logEpsilon_(std::log(epsilon)) {}
 
             Real operator()(Real u) const {
                 ++evaluations_;
@@ -118,7 +114,7 @@ namespace QuantLib {
 
           private:
             const Real v0T2_, logEpsilon_;
-            mutable Size evaluations_;
+            mutable Size evaluations_ = 0;
         };
     }
 

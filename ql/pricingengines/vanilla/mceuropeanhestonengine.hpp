@@ -74,10 +74,10 @@ namespace QuantLib {
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<P> process_;
-        bool antithetic_;
+        bool antithetic_ = false;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
-        BigNatural seed_;
+        BigNatural seed_ = 0;
     };
 
 
@@ -135,9 +135,8 @@ namespace QuantLib {
     template <class RNG, class S, class P>
     inline MakeMCEuropeanHestonEngine<RNG, S, P>::MakeMCEuropeanHestonEngine(
         ext::shared_ptr<P> process)
-    : process_(std::move(process)), antithetic_(false), steps_(Null<Size>()),
-      stepsPerYear_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+    : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()) {}
 
     template <class RNG, class S,class P>
     inline MakeMCEuropeanHestonEngine<RNG,S,P>&

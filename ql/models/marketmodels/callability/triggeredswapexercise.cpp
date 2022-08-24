@@ -28,7 +28,7 @@ namespace QuantLib {
                                                  const std::vector<Time>& exerciseTimes,
                                                  std::vector<Rate> strikes)
     : rateTimes_(rateTimes), exerciseTimes_(exerciseTimes), strikes_(std::move(strikes)),
-      currentStep_(0), rateIndex_(exerciseTimes.size()), evolution_(rateTimes, exerciseTimes) {
+      rateIndex_(exerciseTimes.size()), evolution_(rateTimes, exerciseTimes) {
         Size j = 0;
         for (Size i=0; i<exerciseTimes.size(); ++i) {
             while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i])

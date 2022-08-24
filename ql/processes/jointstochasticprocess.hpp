@@ -78,7 +78,7 @@ namespace QuantLib {
         typedef std::vector<ext::shared_ptr<StochasticProcess> >::iterator
             iterator;
 
-        Size size_, factors_, modelFactors_;
+        Size size_ = 0, factors_, modelFactors_ = 0;
         std::vector<Size> vsize_, vfactors_;
 
         struct CachingKey {

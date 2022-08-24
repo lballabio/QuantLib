@@ -21,16 +21,15 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #ifndef quantlib_market_model_pathwise_call_specified_hpp
 #define quantlib_market_model_pathwise_call_specified_hpp
 
-#include <ql/types.hpp>
-#include <ql/models/marketmodels/pathwisemultiproduct.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/methods/montecarlo/exercisestrategy.hpp>
+#include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/pathwisemultiproduct.hpp>
+#include <ql/types.hpp>
 #include <ql/utilities/clone.hpp>
+#include <memory>
 #include <valarray>
 #include <vector>
-#include <memory>
 
 namespace QuantLib
 {
@@ -75,12 +74,12 @@ namespace QuantLib
         EvolutionDescription evolution_;
         std::vector<std::valarray<bool> > isPresent_;
         std::vector<Time> cashFlowTimes_;
-        Size rebateOffset_;
-        bool wasCalled_;
+        Size rebateOffset_ = 0UL;
+        bool wasCalled_ = false;
         std::vector<Size> dummyCashFlowsThisStep_;
         std::vector<std::vector<CashFlow> > dummyCashFlowsGenerated_;
-        Size currentIndex_;
-        bool callable_;
+        Size currentIndex_ = 0UL;
+        bool callable_ = true;
     };
 
 }

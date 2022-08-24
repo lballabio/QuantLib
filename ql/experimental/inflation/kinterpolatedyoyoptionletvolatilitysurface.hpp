@@ -80,7 +80,7 @@ namespace QuantLib {
 
         mutable Interpolator1D factory1D_;
         mutable Real slope_;
-        mutable bool lastDateisSet_;
+        mutable bool lastDateisSet_ = false;
         mutable Date lastDate_;
         mutable Interpolation tempKinterpolation_;
         mutable std::pair<std::vector<Rate>, std::vector<Volatility> > slice_;
@@ -117,7 +117,7 @@ namespace QuantLib {
                                     displacement),
       capFloorPrices_(capFloorPrices), yoyInflationCouponPricer_(std::move(pricer)),
       yoyOptionletStripper_(std::move(yoyOptionletStripper)), factory1D_(interpolator),
-      slope_(slope), lastDateisSet_(false) {
+      slope_(slope) {
         performCalculations();
     }
 

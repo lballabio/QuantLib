@@ -44,7 +44,7 @@ namespace QuantLib {
       private:
         Size dimensionality_;
         Size N_;
-        Size i_;
+        Size i_ = 0;
         std::vector<Real> z_;
         
         sample_type sequence_;
