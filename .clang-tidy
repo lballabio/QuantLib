@@ -54,6 +54,7 @@ Checks: >
           -readability-magic-numbers,
           -readability-named-parameter,
           -readability-simplify-boolean-expr,
+          -readability-suspicious-call-argument,
           -readability-use-anyofallof,
 HeaderFilterRegex: '.*'
 FormatStyle: file
