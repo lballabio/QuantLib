@@ -62,8 +62,8 @@ namespace QuantLib {
                                DayCounter dc,
                                const VolatilityType type,
                                const Rate shift)
-    : isFloating_(false), referenceDate_(Date()), dc_(std::move(dc)), exerciseTime_(exerciseTime),
-      volatilityType_(type), shift_(shift) {
+    : isFloating_(false), dc_(std::move(dc)), exerciseTime_(exerciseTime), volatilityType_(type),
+      shift_(shift) {
         QL_REQUIRE(exerciseTime_>=0.0,
                    "expiry time must be positive: " <<
                    exerciseTime_ << " not allowed");

@@ -24,9 +24,9 @@
 
 namespace QuantLib {
 
-    CappedFlooredCoupon::CappedFlooredCoupon(
-                  const ext::shared_ptr<FloatingRateCoupon>& underlying,
-                  Rate cap, Rate floor)
+    CappedFlooredCoupon::CappedFlooredCoupon(const ext::shared_ptr<FloatingRateCoupon>& underlying,
+                                             Rate cap,
+                                             Rate floor)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
                          underlying->accrualStartDate(),
@@ -40,8 +40,7 @@ namespace QuantLib {
                          underlying->dayCounter(),
                          underlying->isInArrears(),
                          underlying->exCouponDate()),
-      underlying_(underlying),
-      isCapped_(false), isFloored_(false) {
+      underlying_(underlying) {
 
         if (gearing_ > 0) {
             if (cap != Null<Rate>()) {

@@ -115,7 +115,7 @@ namespace QuantLib {
         Period observationLag_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
-        BusinessDayConvention paymentAdjustment_;
+        BusinessDayConvention paymentAdjustment_ = ModifiedFollowing;
         Calendar paymentCalendar_;
         std::vector<Natural> fixingDays_;
         std::vector<Real> gearings_;

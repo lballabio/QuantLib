@@ -43,7 +43,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> termStructure,
         Handle<SwaptionVolatilityStructure> volatilityStructure)
     : swap_(std::move(swap)), termStructure_(std::move(termStructure)),
-      volatilityStructure_(std::move(volatilityStructure)), targetNPV_(0.0), lambda_(0.0) {
+      volatilityStructure_(std::move(volatilityStructure)) {
 
         engine_ = ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(termStructure_));
 

@@ -71,8 +71,8 @@ namespace QuantLib {
     HaganPricer::HaganPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol,
                              GFunctionFactory::YieldCurveModel modelOfYieldCurve,
                              Handle<Quote> meanReversion)
-    : CmsCouponPricer(swaptionVol), modelOfYieldCurve_(modelOfYieldCurve), cutoffForCaplet_(2),
-      cutoffForFloorlet_(0), meanReversion_(std::move(meanReversion)) {
+    : CmsCouponPricer(swaptionVol), modelOfYieldCurve_(modelOfYieldCurve),
+      meanReversion_(std::move(meanReversion)) {
         registerWith(meanReversion_);
     }
 
@@ -239,23 +239,19 @@ namespace QuantLib {
 
     }
 
-    NumericHaganPricer::NumericHaganPricer(
-        const Handle<SwaptionVolatilityStructure>& swaptionVol,
-        GFunctionFactory::YieldCurveModel modelOfYieldCurve,
-        const Handle<Quote>& meanReversion,
-        Real lowerLimit,
-        Real upperLimit,
-        Real precision,
-        Real hardUpperLimit)
-    : HaganPricer(swaptionVol, modelOfYieldCurve, meanReversion),
-       upperLimit_(upperLimit),
-       lowerLimit_(lowerLimit),
-       requiredStdDeviations_(8),
-       precision_(precision),
-       refiningIntegrationTolerance_(.0001),
-       hardUpperLimit_(hardUpperLimit) {
+    NumericHaganPricer::NumericHaganPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol,
+                                           GFunctionFactory::YieldCurveModel modelOfYieldCurve,
+                                           const Handle<Quote>& meanReversion,
+                                           Real lowerLimit,
+                                           Real upperLimit,
+                                           Real precision,
+                                           Real hardUpperLimit)
+    : HaganPricer(swaptionVol, modelOfYieldCurve, meanReversion), upperLimit_(upperLimit),
+      lowerLimit_(lowerLimit),
 
-    }
+      precision_(precision),
+
+      hardUpperLimit_(hardUpperLimit) {}
 
     Real NumericHaganPricer::integrate(Real a, Real b, const ConundrumIntegrand& integrand) const {
 
@@ -665,8 +661,7 @@ namespace QuantLib {
 
     GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const CmsCoupon& coupon,
                                                                Handle<Quote> meanReversion)
-    : meanReversion_(std::move(meanReversion)), calibratedShift_(0.03), tmpRs_(10000000.0),
-      accuracy_(1.0e-14) {
+    : meanReversion_(std::move(meanReversion)) {
 
         const ext::shared_ptr<SwapIndex>& swapIndex = coupon.swapIndex();
         const ext::shared_ptr<VanillaSwap>& swap = swapIndex->underlyingSwap(coupon.fixingDate());

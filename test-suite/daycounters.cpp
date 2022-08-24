@@ -56,11 +56,10 @@ namespace day_counters_test {
             : convention(convention), start(start), end(end),
             refStart(refStart), refEnd(refEnd), result(result) {}
         SingleCase(ActualActual::Convention convention,
-            const Date& start,
-            const Date& end,
-            Time result)
-            : convention(convention), start(start), end(end),
-            refStart(Date()), refEnd(Date()), result(result) {}
+                   const Date& start,
+                   const Date& end,
+                   Time result)
+        : convention(convention), start(start), end(end), result(result) {}
         ActualActual::Convention convention;
         Date start;
         Date end;

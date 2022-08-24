@@ -30,7 +30,7 @@ namespace QuantLib {
 
     JointStochasticProcess::JointStochasticProcess(
         std::vector<ext::shared_ptr<StochasticProcess> > l, Size factors)
-    : l_(std::move(l)), size_(0), factors_(factors), modelFactors_(0) {
+    : l_(std::move(l)), factors_(factors) {
 
         for (const auto& iter : l_) {
             registerWith(iter);

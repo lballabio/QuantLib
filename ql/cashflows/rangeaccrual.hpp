@@ -189,7 +189,7 @@ namespace QuantLib {
 
         ext::shared_ptr<SmileSection> smilesOnExpiry_;
         ext::shared_ptr<SmileSection> smilesOnPayment_;
-        Real eps_;
+        Real eps_ = 1.0e-8;
     };
 
 
@@ -219,13 +219,13 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> index_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
-        BusinessDayConvention paymentAdjustment_;
+        BusinessDayConvention paymentAdjustment_ = Following;
         std::vector<Natural> fixingDays_;
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
         std::vector<Rate> lowerTriggers_, upperTriggers_;
         Period observationTenor_;
-        BusinessDayConvention observationConvention_;
+        BusinessDayConvention observationConvention_ = ModifiedFollowing;
     };
 
 }

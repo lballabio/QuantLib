@@ -81,28 +81,28 @@ namespace QuantLib {
         Rate fixedRate_;
         Period forwardStart_;
 
-        Natural settlementDays_;
+        Natural settlementDays_ = 2;
         Date effectiveDate_, terminationDate_;
         Calendar calendar_;
 
-        Frequency paymentFrequency_;
+        Frequency paymentFrequency_ = Annual;
         Calendar paymentCalendar_;
-        BusinessDayConvention paymentAdjustment_;
-        Natural paymentLag_;
+        BusinessDayConvention paymentAdjustment_ = Following;
+        Natural paymentLag_ = 0;
 
-        DateGeneration::Rule rule_;
-        bool endOfMonth_, isDefaultEOM_;
+        DateGeneration::Rule rule_ = DateGeneration::Backward;
+        bool endOfMonth_, isDefaultEOM_ = true;
 
-        Swap::Type type_;
-        Real nominal_;
+        Swap::Type type_ = Swap::Payer;
+        Real nominal_ = 1.0;
 
-        Spread overnightSpread_;
+        Spread overnightSpread_ = 0.0;
         DayCounter fixedDayCount_;
 
         ext::shared_ptr<PricingEngine> engine_;
 
-        bool telescopicValueDates_;
-        RateAveraging::Type averagingMethod_;
+        bool telescopicValueDates_ = false;
+        RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
     };
 
 }

@@ -46,7 +46,7 @@ namespace QuantLib {
         std::valarray<bool> isExerciseTime_;
         EvolutionDescription evolution_;
         // evolving
-        Size currentIndex_;
+        Size currentIndex_ = 0;
         MarketModelMultiProduct::CashFlow cf_;
     };
 

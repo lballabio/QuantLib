@@ -52,9 +52,7 @@ namespace QuantLib {
 
 
     DigitalIborLeg::DigitalIborLeg(Schedule schedule, ext::shared_ptr<IborIndex> index)
-    : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following),
-      inArrears_(false), longCallOption_(Position::Long), callATM_(false),
-      longPutOption_(Position::Long), putATM_(false) {}
+    : schedule_(std::move(schedule)), index_(std::move(index)) {}
 
     DigitalIborLeg& DigitalIborLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);

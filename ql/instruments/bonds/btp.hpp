@@ -159,7 +159,7 @@ namespace QuantLib {
         mutable Time duration_;
         mutable Size equivalentSwapIndex_;
 
-        Size nSwaps_;
+        Size nSwaps_ = 15;
         mutable std::vector<ext::shared_ptr<VanillaSwap> > swaps_;
         std::vector<Time> swapLengths_;
         mutable std::vector<Time> swapBondDurations_;
