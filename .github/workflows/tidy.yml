@@ -5,13 +5,13 @@ on:
   workflow_dispatch:
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
     - name: Setup
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang-tidy-12 libboost-dev
+        sudo apt-get install -y clang-tidy-14 libboost-dev
     - name: Check
       run: |
         cmake --preset linux-ci-build-with-clang-tidy

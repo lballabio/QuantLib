@@ -92,7 +92,6 @@ namespace QuantLib {
      // this class template always to be fully specialized:
      private:
        IntegrationBase() = default;
-       ~IntegrationBase() override = default;
     };
     //@}
     

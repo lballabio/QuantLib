@@ -63,6 +63,8 @@ namespace QuantLib {
             MaturityStrikeByDeltaGamma
         } CalibrationBasketType;
 
+        virtual ~BasketGeneratingEngine() = default;
+
         std::vector<ext::shared_ptr<BlackCalibrationHelper>>
         calibrationBasket(const ext::shared_ptr<Exercise>& exercise,
                           const ext::shared_ptr<SwapIndex>& standardSwapBase,
@@ -80,8 +82,6 @@ namespace QuantLib {
                                Handle<YieldTermStructure> discountCurve)
         : onefactormodel_(std::move(model)), oas_(std::move(oas)),
           discountCurve_(std::move(discountCurve)) {}
-
-        virtual ~BasketGeneratingEngine() = default;
 
         virtual Real underlyingNpv(const Date& expiry, Real y) const = 0;
 
