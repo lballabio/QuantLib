@@ -48,7 +48,7 @@ namespace QuantLib {
         //@}
       private:
         Real reversion_;
-        bool reversionZero_;
+        bool reversionZero_ = false;
         const Array &times_;
         const Array &vols_;
     };

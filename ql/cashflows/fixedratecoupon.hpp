@@ -113,12 +113,12 @@ namespace QuantLib {
         std::vector<InterestRate> couponRates_;
         DayCounter firstPeriodDC_ , lastPeriodDC_;
         Calendar paymentCalendar_;
-        BusinessDayConvention paymentAdjustment_;
-        Natural paymentLag_;
+        BusinessDayConvention paymentAdjustment_ = Following;
+        Natural paymentLag_ = 0;
         Period exCouponPeriod_;
         Calendar exCouponCalendar_;
-        BusinessDayConvention exCouponAdjustment_;
-        bool exCouponEndOfMonth_;
+        BusinessDayConvention exCouponAdjustment_ = Following;
+        bool exCouponEndOfMonth_ = false;
     };
 
     inline void FixedRateCoupon::accept(AcyclicVisitor& v) {

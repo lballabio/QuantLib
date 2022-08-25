@@ -71,7 +71,7 @@ namespace QuantLib {
         InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal> generator_;
         BrownianBridge bridge_;
         // work variables
-        Size lastStep_;
+        Size lastStep_ = 0;
         std::vector<std::vector<Size> > orderedIndices_;
         std::vector<std::vector<Real> > bridgedVariates_;
     };

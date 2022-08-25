@@ -78,8 +78,8 @@ namespace QuantLib {
         mutable std::vector<Real> atmCapFloorPrices_;
         mutable std::vector<Volatility> spreadsVolImplied_;
         mutable std::vector<ext::shared_ptr<CapFloor> > caps_;
-        Size maxEvaluations_;
-        Real accuracy_;
+        Size maxEvaluations_ = 10000;
+        Real accuracy_ = 1.e-6;
     };
 
 }

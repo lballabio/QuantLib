@@ -72,8 +72,8 @@ namespace QuantLib {
             ext::shared_ptr<IrregularSwap> swap_;
             Handle<YieldTermStructure>          termStructure_;
             Handle<SwaptionVolatilityStructure> volatilityStructure_;
-            
-            Real targetNPV_;  
+
+            Real targetNPV_ = 0.0;
 
             ext::shared_ptr<PricingEngine> engine_;
 
@@ -81,8 +81,7 @@ namespace QuantLib {
             std::vector<Real> annuities_;
             std::vector<Date> expiries_;
 
-            mutable Real lambda_;   
-
+            mutable Real lambda_ = 0.0;
         };
 
         Real HKPrice(Basket& basket,ext::shared_ptr<Exercise>& exercise)  const;

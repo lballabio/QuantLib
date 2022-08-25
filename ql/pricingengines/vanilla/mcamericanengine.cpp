@@ -31,7 +31,7 @@ namespace QuantLib {
     AmericanPathPricer::AmericanPathPricer(ext::shared_ptr<Payoff> payoff,
                                            Size polynomialOrder,
                                            LsmBasisSystem::PolynomialType polynomialType)
-    : scalingValue_(1.0), payoff_(std::move(payoff)),
+    : payoff_(std::move(payoff)),
       v_(LsmBasisSystem::pathBasisSystem(polynomialOrder, polynomialType)) {
 
         QL_REQUIRE(   polynomialType == LsmBasisSystem::Monomial

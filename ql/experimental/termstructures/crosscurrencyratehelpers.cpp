@@ -98,7 +98,7 @@ namespace QuantLib {
           public:
             explicit ResettingLegCalculator(const YieldTermStructure& discountCurve,
                                             const YieldTermStructure& foreignCurve)
-            : helper_(discountCurve, foreignCurve), npv_(0.0), bps_(0.0) {}
+            : helper_(discountCurve, foreignCurve) {}
             void visit(Coupon& c) override {
                 Date start = c.accrualStartDate();
                 Date end = c.accrualEndDate();
@@ -124,8 +124,8 @@ namespace QuantLib {
 
           private:
             ResettingLegHelper helper_;
-            Real npv_;
-            Real bps_;
+            Real npv_ = 0.0;
+            Real bps_ = 0.0;
         };
 
         void npvbpsResettingLeg(const Leg& iborLeg,

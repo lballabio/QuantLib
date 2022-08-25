@@ -30,10 +30,11 @@ namespace QuantLib {
                                                  const Array& sub,
                                                  EigenVectorCalculation calc,
                                                  ShiftStrategy strategy)
-    : iter_(0), d_(diag),
-      ev_((calc == WithEigenVector)? d_.size() :
-          (calc == WithoutEigenVector)? 0 : 1, d_.size(), 0)
-    {
+    : d_(diag), ev_((calc == WithEigenVector)    ? d_.size() :
+                    (calc == WithoutEigenVector) ? 0 :
+                                                   1,
+                    d_.size(),
+                    0) {
         Size n = diag.size();
 
         QL_REQUIRE(n == sub.size()+1, "Wrong dimensions");

@@ -30,9 +30,7 @@ using std::vector;
 namespace QuantLib {
 
     CalibratedModel::CalibratedModel(Size nArguments)
-    : arguments_(nArguments),
-      constraint_(new PrivateConstraint(arguments_)),
-      shortRateEndCriteria_(EndCriteria::None) {}
+    : arguments_(nArguments), constraint_(new PrivateConstraint(arguments_)) {}
 
     class CalibratedModel::CalibrationFunction : public CostFunction {
       public:

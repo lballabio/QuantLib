@@ -95,7 +95,7 @@ namespace QuantLib {
       protected:
         Real payoff(Real state) const;
 
-        Real scalingValue_;
+        Real scalingValue_ = 1.0;
         const ext::shared_ptr<Payoff> payoff_;
         std::vector<ext::function<Real(Real)> > v_;
     };
@@ -132,13 +132,13 @@ namespace QuantLib {
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        bool antithetic_, controlVariate_;
+        bool antithetic_ = false, controlVariate_ = false;
         Size steps_, stepsPerYear_;
-        Size samples_, maxSamples_, calibrationSamples_;
+        Size samples_, maxSamples_, calibrationSamples_ = 2048;
         Real tolerance_;
-        BigNatural seed_;
-        Size polynomialOrder_;
-        LsmBasisSystem::PolynomialType polynomialType_;
+        BigNatural seed_ = 0;
+        Size polynomialOrder_ = 2;
+        LsmBasisSystem::PolynomialType polynomialType_ = LsmBasisSystem::Monomial;
         boost::optional<bool> antitheticCalibration_;
         BigNatural seedCalibration_;
     };
@@ -272,11 +272,9 @@ namespace QuantLib {
     template <class RNG, class S, class RNG_Calibration>
     inline MakeMCAmericanEngine<RNG, S, RNG_Calibration>::MakeMCAmericanEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process)
-    : process_(std::move(process)), antithetic_(false), controlVariate_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
-      maxSamples_(Null<Size>()), calibrationSamples_(2048), tolerance_(Null<Real>()), seed_(0),
-      polynomialOrder_(2), polynomialType_(LsmBasisSystem::Monomial), antitheticCalibration_(boost::none),
-      seedCalibration_(Null<Size>()) {}
+    : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()),
+      antitheticCalibration_(boost::none), seedCalibration_(Null<Size>()) {}
 
     template <class RNG, class S, class RNG_Calibration>
     inline MakeMCAmericanEngine<RNG, S, RNG_Calibration> &

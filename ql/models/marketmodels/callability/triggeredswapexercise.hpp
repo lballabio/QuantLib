@@ -52,7 +52,7 @@ namespace QuantLib {
       private:
         std::vector<Time> rateTimes_, exerciseTimes_;
         std::vector<Rate> strikes_;
-        Size currentStep_;
+        Size currentStep_ = 0;
         std::vector<Size> rateIndex_;
         EvolutionDescription evolution_;
     };

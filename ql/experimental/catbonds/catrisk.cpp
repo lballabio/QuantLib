@@ -32,7 +32,7 @@ namespace QuantLib {
         Date start,
         Date end)
     : CatSimulation(start, end), events_(std::move(events)), eventsStart_(eventsStart),
-      eventsEnd_(eventsEnd), i_(0) {
+      eventsEnd_(eventsEnd) {
         years_ = end_.year()-start_.year();
         if(eventsStart_.month()<start_.month() 
                             || (eventsStart_.month()==start_.month() 
