@@ -68,7 +68,7 @@ namespace QuantLib {
                                      const std::vector<StateType> &state,
                                      const std::vector<Real> &price,
                                      const std::vector<Real> &exercise) {}
-        bool  calibrationPhase_;
+        bool calibrationPhase_ = true;
         const ext::shared_ptr<EarlyExercisePathPricer<PathType> >
             pathPricer_;
 
@@ -88,9 +88,9 @@ namespace QuantLib {
         const TimeGrid& times,
         ext::shared_ptr<EarlyExercisePathPricer<PathType> > pathPricer,
         const ext::shared_ptr<YieldTermStructure>& termStructure)
-    : calibrationPhase_(true), pathPricer_(std::move(pathPricer)),
-      coeff_(new Array[times.size() - 2]), dF_(new DiscountFactor[times.size() - 1]),
-      v_(pathPricer_->basisSystem()), len_(times.size()) {
+    : pathPricer_(std::move(pathPricer)), coeff_(new Array[times.size() - 2]),
+      dF_(new DiscountFactor[times.size() - 1]), v_(pathPricer_->basisSystem()),
+      len_(times.size()) {
 
         for (Size i=0; i<times.size()-1; ++i) {
             dF_[i] =   termStructure->discount(times[i+1])

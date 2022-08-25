@@ -19,17 +19,16 @@
 
 #include "cliquetoption.hpp"
 #include "utilities.hpp"
-#include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/cliquetoption.hpp>
 #include <ql/pricingengines/cliquet/analyticcliquetengine.hpp>
 #include <ql/pricingengines/cliquet/analyticperformanceengine.hpp>
 #include <ql/pricingengines/cliquet/mcperformanceengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <ql/utilities/dataformatters.hpp>
 #include <ql/time/period.hpp>
+#include <ql/utilities/dataformatters.hpp>
 #include <map>
 
 using namespace QuantLib;

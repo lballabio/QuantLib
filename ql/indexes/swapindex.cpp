@@ -38,8 +38,7 @@ namespace QuantLib {
     : InterestRateIndex(
           familyName, tenor, settlementDays, currency, fixingCalendar, fixedLegDayCounter),
       tenor_(tenor), iborIndex_(std::move(iborIndex)), fixedLegTenor_(fixedLegTenor),
-      fixedLegConvention_(fixedLegConvention), exogenousDiscount_(false),
-      discount_(Handle<YieldTermStructure>()) {
+      fixedLegConvention_(fixedLegConvention), exogenousDiscount_(false) {
         registerWith(iborIndex_);
     }
 

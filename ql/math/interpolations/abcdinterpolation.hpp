@@ -50,12 +50,8 @@ namespace QuantLib {
                             bool cIsFixed,
                             bool dIsFixed)
             : a_(a), b_(b), c_(c), d_(d),
-              aIsFixed_(false), bIsFixed_(false),
-              cIsFixed_(false), dIsFixed_(false),
-              k_(std::vector<Real>()),
-              error_(Null<Real>()),
-              maxError_(Null<Real>()),
-              abcdEndCriteria_(EndCriteria::None) {
+
+              error_(Null<Real>()), maxError_(Null<Real>()) {
                 if (a_ != Null<Real>())
                     aIsFixed_ = aIsFixed;
                 else a_ = -0.06;
@@ -73,10 +69,10 @@ namespace QuantLib {
             }
             virtual ~AbcdCoeffHolder() = default;
             Real a_, b_, c_, d_;
-            bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
+            bool aIsFixed_ = false, bIsFixed_ = false, cIsFixed_ = false, dIsFixed_ = false;
             std::vector<Real> k_;
             Real error_, maxError_;
-            EndCriteria::Type abcdEndCriteria_;
+            EndCriteria::Type abcdEndCriteria_ = EndCriteria::None;
         };
 
         template <class I1, class I2>

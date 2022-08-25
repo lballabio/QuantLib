@@ -34,8 +34,7 @@ namespace QuantLib {
         const ext::shared_ptr<Exercise>& exercise)
     : OneAssetOption(payoff, exercise), averageType_(averageType),
       runningAccumulator_(runningAccumulator), pastFixings_(pastFixings),
-      fixingDates_(std::move(fixingDates)), allPastFixingsProvided_(false),
-      allPastFixings_(std::vector<Real>()) {
+      fixingDates_(std::move(fixingDates)), allPastFixingsProvided_(false) {
         std::sort(fixingDates_.begin(), fixingDates_.end());
 
         // Add a hard override to the runningAccumulator if pastFixings is 0

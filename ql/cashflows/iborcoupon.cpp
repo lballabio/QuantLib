@@ -162,10 +162,7 @@ namespace QuantLib {
     }
 
     IborLeg::IborLeg(Schedule schedule, ext::shared_ptr<IborIndex> index)
-    : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following),
-      paymentLag_(0), paymentCalendar_(Calendar()), inArrears_(false), zeroPayments_(false),
-      exCouponPeriod_(Period()), exCouponCalendar_(Calendar()), exCouponAdjustment_(Unadjusted),
-      exCouponEndOfMonth_(false) {
+    : schedule_(std::move(schedule)), index_(std::move(index)) {
         QL_REQUIRE(index_, "no index provided");
     }
 

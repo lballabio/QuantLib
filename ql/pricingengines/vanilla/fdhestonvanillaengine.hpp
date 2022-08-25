@@ -118,7 +118,7 @@ namespace QuantLib {
 
       private:
         ext::shared_ptr<HestonModel> hestonModel_;
-        Size tGrid_, xGrid_, vGrid_, dampingSteps_;
+        Size tGrid_ = 100, xGrid_ = 100, vGrid_ = 50, dampingSteps_ = 0;
         ext::shared_ptr<FdmSchemeDesc> schemeDesc_;
         ext::shared_ptr<LocalVolTermStructure> leverageFct_;
         ext::shared_ptr<FdmQuantoHelper> quantoHelper_;

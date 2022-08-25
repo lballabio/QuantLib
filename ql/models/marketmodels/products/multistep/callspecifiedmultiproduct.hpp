@@ -60,12 +60,12 @@ namespace QuantLib {
         EvolutionDescription evolution_;
         std::vector<std::valarray<bool> > isPresent_;
         std::vector<Time> cashFlowTimes_;
-        Size rebateOffset_;
-        bool wasCalled_;
+        Size rebateOffset_ = 0UL;
+        bool wasCalled_ = false;
         std::vector<Size> dummyCashFlowsThisStep_;
         std::vector<std::vector<CashFlow> > dummyCashFlowsGenerated_;
-        Size currentIndex_;
-        bool callable_;
+        Size currentIndex_ = 0UL;
+        bool callable_ = true;
     };
 
 }
