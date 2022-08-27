@@ -97,7 +97,7 @@ jobs:
             tag: rolling
             cc: gcc
             cxx: g++
-            cxxflags: "-std=c++11"
+            cxxflags: "-std=c++11 -Wno-cpp"
           - name: "C++14 mode"
             shortname: c++14
             tag: rolling
