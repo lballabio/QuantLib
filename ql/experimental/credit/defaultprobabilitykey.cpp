@@ -56,7 +56,7 @@ namespace QuantLib {
         return true;
     }
 
-    DefaultProbKey::DefaultProbKey() {}
+    DefaultProbKey::DefaultProbKey() = default;
 
     DefaultProbKey::DefaultProbKey(std::vector<ext::shared_ptr<DefaultType> > eventTypes,
                                    Currency cur,
