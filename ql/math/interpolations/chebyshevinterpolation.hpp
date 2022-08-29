@@ -47,14 +47,14 @@ namespace QuantLib {
             Size n, const ext::function<Real(Real)>& f,
             PointsType pointsType = SecondKind);
 
-        // fast interpolate with new set of y values
-        Real value(const Array& y, Real x) const;
+        void updateY(const Array& y);
 
         Array nodes() const;
         static Array nodes(Size n, PointsType pointsType);
 
       private:
-        const Array x_, y_;
+        const Array x_;
+        Array y_;
         ext::shared_ptr<LagrangeInterpolation> lagrangeInterp_;
     };
 }

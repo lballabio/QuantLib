@@ -142,19 +142,175 @@ namespace QuantLib {
         QdFpIterationSchemeStdFactory::highPrecisionScheme_
             = ext::make_shared<QdFpTanhSinhIterationScheme>(8, 32, 1e-10);
 
+
+    class DqFpEquation {
+      public:
+        DqFpEquation(Rate _r, Rate _q, Volatility _vol)
+        : r(_r), q(_q), vol(_vol) {}
+
+        virtual std::pair<Real, Real> NDd(Real tau, Real b) const = 0;
+        virtual std::tuple<Real, Real, Real> f(Real tau, Real b) const = 0;
+
+        virtual ~DqFpEquation() = default;
+
+      protected:
+        std::pair<Real, Real> d(Time t, Real z) const {
+            const Real v = vol * std::sqrt(t);
+            const Real m = (std::log(z) + (r-q)*t)/v + 0.5*v;
+
+            return std::make_pair(m, m-v);
+        }
+
+        const Rate r, q;
+        const Volatility vol;
+
+        const NormalDistribution phi;
+        const CumulativeNormalDistribution Phi;
+    };
+
+    class DqFpEquation_B: public DqFpEquation {
+      public:
+        DqFpEquation_B(
+            Real _S, Real _K, Rate _r, Rate _q,
+            Volatility _vol, Time _T,
+            std::function<Real(Real)> _B,
+            ext::shared_ptr<Integrator> _integrator);
+
+        std::pair<Real, Real> NDd(Real tau, Real b) const override;
+        std::tuple<Real, Real, Real> f(Real tau, Real b) const override;
+
+      private:
+          const Real S, K;
+          const Time T;
+          const std::function<Real(Real)> B;
+          const ext::shared_ptr<Integrator> integrator;
+    };
+
+    class DqFpEquation_A: public DqFpEquation {
+      public:
+        DqFpEquation_A(
+            Real _S, Real _K, Rate _r, Rate _q,
+            Volatility _vol, Time _T,
+            std::function<Real(Real)> _B,
+            ext::shared_ptr<Integrator> _integrator);
+
+        std::pair<Real, Real> NDd(Real tau, Real b) const override;
+        std::tuple<Real, Real, Real> f(Real tau, Real b) const override;
+
+      private:
+          const Real S, K;
+          const Time T;
+          const std::function<Real(Real)> B;
+          const ext::shared_ptr<Integrator> integrator;
+    };
+
+    DqFpEquation_A::DqFpEquation_A(
+        Real _S, Real _K, Rate _r, Rate _q, Volatility _vol, Time _T,
+        std::function<Real(Real)> _B,
+        ext::shared_ptr<Integrator> _integrator)
+    : DqFpEquation(_r, _q, _vol),
+      S(_S), K(_K), T(_T),
+      B(std::move(_B)),
+      integrator(_integrator) {
+    }
+
+    std::tuple<Real, Real, Real> DqFpEquation_A::f(Real tau, Real b) const {
+        const std::pair<Real, Real> dpm = d(tau, b/K);
+
+        Real N, D;
+        if (tau < squared(QL_EPSILON)) {
+            if (close_enough(b, K)) {
+                N = 1/(M_SQRT2*M_SQRTPI * v);
+                D = N + 0.5;
+            }
+            else {
+                N = 0.0;
+                D = (b > K)? 1.0: 0.0;
+            }
+        }
+        else {
+
+            const std::pair<Real, Real> dpm = d(tau, b/K);
+            N = phi(dpm.second)/v + r*K3(tau, interp);
+            D = phi(dpm.first)/v + Phi(dpm.first) + q*K12(tau, interp);
+        }
+
+    }
+
+    DqFpEquation_B::DqFpEquation_B(
+        Real _S, Real _K, Rate _r, Rate _q, Volatility _vol, Time _T,
+        std::function<Real(Real)> _B,
+        ext::shared_ptr<Integrator> _integrator)
+    : DqFpEquation(_r, _q, _vol),
+      S(_S), K(_K), T(_T),
+      B(std::move(_B)),
+      integrator(_integrator) {
+    }
+
+
+    std::tuple<Real, Real, Real> DqFpEquation_B::f(Real tau, Real b) const {
+        Real N, D;
+        if (tau < squared(QL_EPSILON)) {
+            if (close_enough(b, K))
+                N = D = 0.5;
+            else if (b < K)
+                N = D = 0.0;
+            else
+                N = D = 1.0;
+        }
+        else {
+            const std::pair<Real, Real> dpm = d(tau, b/K);
+
+            N = Phi(dpm.second)
+                + r*(*integrator)([=](Real u) -> Real {
+                    return std::exp(r*u)*Phi(d(tau - u, b/B(u)).second);
+                }, 0, tau);
+
+            D = Phi(dpm.first)
+                + q*(*integrator)([=](Real u) -> Real {
+                    return std::exp(q*u)*Phi(d(tau - u, b/B(u)).first);
+                }, 0, tau);
+        }
+
+        Real fv;
+        const Real alpha = K*std::exp(-(r-q)*tau);
+        if (tau < squared(QL_EPSILON)) {
+            if (close_enough(b, K) || b > K)
+                fv = alpha;
+            else {
+                if (close_enough(q, Real(0)))
+                    fv = alpha*r*((q < 0)? -1.0 : 1.0)/QL_EPSILON;
+                else
+                    fv = alpha*r/q;
+            }
+        }
+        else
+            fv = alpha*N/D;
+
+        return std::make_tuple(N, D, fv);
+    }
+
+    std::pair<Real, Real> DqFpEquation_B::NDd(Real tau, Real b) const {
+        const std::pair<Real, Real> dpm = d(tau, b/K);
+        return std::make_pair(
+            phi(dpm.second) / (b*vol*std::sqrt(tau)),
+            phi(dpm.first)  / (b*vol*std::sqrt(tau))
+        );
+    }
+
     QdFpAmericanEngine::QdFpAmericanEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
         ext::shared_ptr<QdFpIterationScheme> iterationScheme,
-        FixedPointScheme fpScheme)
+        FixedPointEquation fpEquation)
     : detail::QdPutCallParityEngine(std::move(bsProcess)),
       iterationScheme_(std::move(iterationScheme)),
-      fpScheme_(fpScheme) {
+      fpEquation_(fpEquation) {
     }
 
     Real QdFpAmericanEngine::calculatePut(
             Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
 
-        if (fpScheme_ == FP_A || (fpScheme_ == Auto && std::abs(r-q) < 0.001))
+        if (fpEquation_ == FP_A || (fpEquation_ == Auto && std::abs(r-q) < 0.001))
             return calculatePutFP_A(S, K, r, q, vol, T);
         else
             return calculatePutFP_B(S, K, r, q, vol, T);
@@ -167,145 +323,66 @@ namespace QuantLib {
         const Real xmax =  QdPlusAmericanEngine::xMax(K, r, q);
         const Size n = iterationScheme_->getNumberOfChebyshevInterpolationNodes();
 
-        ext::shared_ptr<ChebyshevInterpolation> interp =
+        const ext::shared_ptr<ChebyshevInterpolation> interp =
             QdPlusAmericanEngine(process_, n+1, QdPlusAmericanEngine::Halley, 1e-8)
                 .getPutExerciseBoundary(S, K, r, q, vol, T);
 
         const Array z = interp->nodes();
         const Array x = 0.5*std::sqrt(T)*(1.0+z);
 
-        const auto B = [xmax, T](Real tau, const ext::shared_ptr<Interpolation>& interp)
-            -> Real {
+        const auto B = [xmax, T, &interp](Real tau) -> Real {
             const Real z = 2*std::sqrt(std::abs(tau)/T)-1;
             return xmax*std::exp(-std::sqrt(std::max(Real(0), (*interp)(z, true))));
-        };
-
-        const NormalDistribution phi;
-        const CumulativeNormalDistribution Phi;
-
-        const auto d = [=](Time t, Real z) -> std::pair<Real, Real>  {
-            const Real v = vol * std::sqrt(t);
-            const Real m = (std::log(z) + (r-q)*t)/v + 0.5*v;
-
-            return std::make_pair(m, m-v);
-        };
-
-        const auto N = [&, this](
-            Real tau, Real b, const ext::shared_ptr<Interpolation>& interp) -> Real {
-
-            if (tau < squared(QL_EPSILON)) {
-                if (close_enough(b, K))
-                    return 0.5;
-                else if (b < K)
-                    return 0.0;
-                else
-                    return 1.0;
-            }
-
-            const Real b_tau = B(tau, interp);
-
-            return Phi(d(tau, b/K).second) +
-                r*(*iterationScheme_->getFixedPointIntegrator())(
-                    [=](Real u) -> Real {
-
-                    return std::exp(r*u)
-                        * Phi(d(tau - u, b_tau/B(u, interp)).second);
-                }, 0, tau);
-        };
-
-        const auto D = [&, this](
-            Real tau, Real b, const ext::shared_ptr<Interpolation>& interp) -> Real {
-
-            if (tau < squared(QL_EPSILON)) {
-                if (close_enough(b, K))
-                    return 0.5;
-                else if (b < K)
-                    return 0.0;
-                else
-                    return 1.0;
-            }
-
-            const Real b_tau = B(tau, interp);
-
-            return Phi(d(tau, b/K).first) +
-                q*(*iterationScheme_->getFixedPointIntegrator())(
-                    [=](Real u) -> Real {
-
-                    return std::exp(q*u)
-                        * Phi(d(tau - u, b_tau/B(u, interp)).first);
-                }, 0, tau);
-        };
-
-        const auto ND = [&](
-            Real tau, Real b, const ext::shared_ptr<Interpolation>& interp)
-            -> std::pair<Real, Real> {
-
-            return std::make_pair(N(tau, b, interp), D(tau, b, interp));
-        };
-
-        const auto f = [=](
-            Real tau, Real b, const ext::shared_ptr<Interpolation>& interp) -> Real {
-            const Real alpha = K*std::exp(-(r-q)*tau);
-
-            if (tau < squared(QL_EPSILON)) {
-                if (close_enough(b, K) || b > K)
-                    return alpha;
-                else {
-                    if (close_enough(q, Real(0)))
-                        return alpha*r*((q < 0)? -1.0 : 1.0)/QL_EPSILON;
-                    else
-                        return alpha*r/q;
-                }
-            }
-
-            const std::pair<Real, Real> nd = ND(tau, b, interp);
-            return alpha*nd.first/nd.second;
-        };
-
-        const auto Nd = [=](Real tau, Real b) -> Real {
-            return phi(d(tau, b/K).second) / (b*vol*std::sqrt(tau));
-        };
-
-        const auto Dd = [=](Real tau, Real b) -> Real {
-            return phi(d(tau, b/K).first) / (b*vol*std::sqrt(tau));
         };
 
         const auto h = [=](Real fv) -> Real {
             return squared(std::log(fv/xmax));
         };
 
+        const ext::shared_ptr<DqFpEquation> eqn
+            = ext::make_shared<DqFpEquation_B>(
+                S, K, r, q, vol, T, B,
+                iterationScheme_->getFixedPointIntegrator());
+
         Array y(x.size());
+        y[0] = 0.0;
 
         const Size n_newton
             = iterationScheme_->getNumberOfJacobiNewtonFixedPointSteps();
         for (Size k=0; k < n_newton; ++k) {
             for (Size i=1; i < x.size(); ++i) {
                 const Real tau = squared(x[i]);
-                const Real b = B(tau, interp);
-                const Real fv = f(tau, b , interp);
+                const Real b = B(tau);
+
+                const std::tuple<Real, Real, Real> results = eqn->f(tau, b);
+                const Real N = std::get<0>(results);
+                const Real D = std::get<1>(results);
+                const Real fv = std::get<2>(results);
 
                 if (tau < QL_EPSILON)
                     y[i] = h(fv);
                 else {
-                    const std::pair<Real, Real> nd = ND(tau, b, interp);
+                    const std::pair<Real, Real> ndd = eqn->NDd(tau, b);
+                    const Real Nd = std::get<0>(ndd);
+                    const Real Dd = std::get<1>(ndd);
 
-                    const Real fd = K*std::exp(-(r-q)*tau)
-                        * (Nd(tau, b)/nd.second
-                              - Dd(tau, b)*nd.first/squared(nd.second));
+                    const Real fd = K*std::exp(-(r-q)*tau) * (Nd/D - Dd*N/(D*D));
 
                     y[i] = h(b - (fv - b)/ (fd-1));
                 }
             }
-            interp = ext::make_shared<ChebyshevInterpolation>(y);
+            interp->updateY(y);
         }
 
         const Size n_fp = iterationScheme_->getNumberOfNaiveFixedPointSteps();
         for (Size k=0; k < n_fp; ++k) {
             for (Size i=1; i < x.size(); ++i) {
                 const Real tau = squared(x[i]);
-                y[i] = h(f(tau, B(tau, interp), interp));
+                const Real fv = std::get<2>(eqn->f(tau, B(tau)));
+
+                y[i] = h(fv);
             }
-            interp = ext::make_shared<ChebyshevInterpolation>(y);
+            interp->updateY(y);
         }
 
         const detail::QdPlusAddOnValue aov(T, S, K, r, q, vol, xmax, interp);
@@ -473,7 +550,7 @@ namespace QuantLib {
         };
 
         Array y(x.size());
-
+        y[0] = 0.0;
         const Size n_newton
             = iterationScheme_->getNumberOfJacobiNewtonFixedPointSteps();
         for (Size k=0; k < n_newton; ++k) {

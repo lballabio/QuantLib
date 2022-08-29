@@ -2446,8 +2446,8 @@ void InterpolationTest::testChebyshevInterpolationOnNodes() {
     const Size nrNodes = 7;
     Array y(nrNodes);
 
-    for (auto pointType: std::vector<ChebyshevInterpolation::PointsType>{
-        ChebyshevInterpolation::FirstKind, ChebyshevInterpolation::SecondKind}) {
+    for (auto pointType: {ChebyshevInterpolation::FirstKind,
+        ChebyshevInterpolation::SecondKind}) {
 
         const Array nodes = ChebyshevInterpolation::nodes(nrNodes, pointType);
         std::transform(std::begin(nodes), std::end(nodes), std::begin(y), testFct);
@@ -2459,7 +2459,7 @@ void InterpolationTest::testChebyshevInterpolationOnNodes() {
             const Real diff = std::abs(expected - calculated);
 
             if (diff > tol) {
-                BOOST_FAIL("failed to reproduce the node values"
+                BOOST_ERROR("failed to reproduce the node values"
                         << std::setprecision(16)
                         << "\n    node      : " << node
                         << "\n    fct       : " << expected
@@ -2468,6 +2468,34 @@ void InterpolationTest::testChebyshevInterpolationOnNodes() {
                         << "\n    difference: " << diff
                         << "\n    tolerance : " << tol);
             }
+        }
+    }
+}
+
+void InterpolationTest::testChebyshevInterpolationUpdateY() {
+    BOOST_TEST_MESSAGE("Testing Y update for Chebyshev interpolation...");
+
+    Array y({1, 4, 7, 4});
+    ChebyshevInterpolation interp(y);
+
+    Array yd({6, 4, 5, 6});
+    interp.updateY(yd);
+
+    const Real tol = 10*QL_EPSILON;
+
+    for (Size i=0; i < y.size(); ++i) {
+        const Real expected = yd[i];
+        const Real calculated = interp(interp.nodes()[i], true);
+        const Real diff = std::abs(calculated - expected);
+
+        if (diff > tol) {
+            BOOST_ERROR("failed to reproduce updated node values"
+                    << std::setprecision(16)
+                    << "\n    node      : " << i
+                    << "\n    expected  : " << expected
+                    << "\n    calculated: " << calculated
+                    << "\n    difference: " << diff
+                    << "\n    tolerance : " << tol);
         }
     }
 }
@@ -2507,7 +2535,7 @@ test_suite* InterpolationTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlatOnSinglePoint));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolation));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolationOnNodes));
-
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolationUpdateY));
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));
     }

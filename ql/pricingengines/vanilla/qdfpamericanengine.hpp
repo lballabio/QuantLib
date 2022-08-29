@@ -141,13 +141,13 @@ namespace QuantLib {
 
     class QdFpAmericanEngine : public detail::QdPutCallParityEngine {
       public:
-        enum FixedPointScheme { FP_A, FP_B, Auto };
+        enum FixedPointEquation { FP_A, FP_B, Auto };
 
         explicit QdFpAmericanEngine(
           ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
           ext::shared_ptr<QdFpIterationScheme> iterationScheme =
               QdFpIterationSchemeStdFactory::accurateScheme(),
-          FixedPointScheme fpScheme = Auto);
+          FixedPointEquation fpEquation = Auto);
 
       protected:
         Real calculatePut(
@@ -159,9 +159,12 @@ namespace QuantLib {
         Real calculatePutFP_B(
             Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
 
+        Real calculatePutFP_both(
+            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
+
       private:
         const ext::shared_ptr<QdFpIterationScheme> iterationScheme_;
-        const FixedPointScheme fpScheme_;
+        const FixedPointEquation fpEquation_;
     };
 }
 

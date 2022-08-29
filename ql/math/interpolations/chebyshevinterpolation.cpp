@@ -71,9 +71,11 @@ namespace QuantLib {
         return t;
     }
 
-    Real ChebyshevInterpolation::value(const Array& y, Real x) const {
-        return ext::dynamic_pointer_cast<detail::UpdatedYInterpolation>
-            (impl_)->value(y, x);
+    void ChebyshevInterpolation::updateY(const Array& y) {
+        QL_REQUIRE(y.size() == y_.size(),
+            "interpolation override has the wrong length");
+
+        std::copy(y.begin(), y.end(), y_.begin());
     }
 }
 

@@ -38,10 +38,7 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/math/integrals/tanhsinhintegral.hpp>
-#ifndef QL_BOOST_HAS_TANH_SINH
-#include <ql/math/integrals/gausslobattointegral.hpp>
-#endif
+
 #include <map>
 
 using namespace QuantLib;
@@ -1493,7 +1490,7 @@ void AmericanOptionTest::testAndersenLakeHighPrecisionExample() {
 
         const Real europeanNPV = europeanOption.NPV();
 
-        const QdFpAmericanEngine::FixedPointScheme schemes[] = {
+        const QdFpAmericanEngine::FixedPointEquation schemes[] = {
             QdFpAmericanEngine::FP_A, QdFpAmericanEngine::FP_B
         };
 
@@ -1561,7 +1558,7 @@ void AmericanOptionTest::testQdEngineStandardExample() {
         payoff, ext::make_shared<AmericanExercise>(today, maturityDate));
 
 
-    const QdFpAmericanEngine::FixedPointScheme schemes[] = {
+    const QdFpAmericanEngine::FixedPointEquation schemes[] = {
         QdFpAmericanEngine::FP_A, QdFpAmericanEngine::FP_B
     };
     const Real expected[] = { 0.2386475283369327, 0.2386596962737606 };
@@ -1570,7 +1567,7 @@ void AmericanOptionTest::testQdEngineStandardExample() {
         americanOption.setPricingEngine(
             ext::make_shared<QdFpAmericanEngine>(
                 bsProcess,
-                ext::make_shared<QdFpLegendreScheme>(32, 2, 15, 48),
+                ext::make_shared<QdFpLegendreScheme>(32, 2, 15, 48),//(16, 2, 15, 48)
                 schemes[i])
         );
         const Real calculated = americanOption.NPV() - europeanOption.NPV();
@@ -1675,10 +1672,10 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
 //    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testLargeDividendShoutNPV));
 //    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testEscrowedVsSpotAmericanOption));
 //    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testTodayIsDividendDate));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryValues));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryConvergence));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdAmericanEngines));
+//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
+//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryValues));
+//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryConvergence));
+//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdAmericanEngines));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdFpIterationScheme));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testAndersenLakeHighPrecisionExample));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineStandardExample));
