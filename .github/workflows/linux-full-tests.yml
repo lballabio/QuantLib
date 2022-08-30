@@ -153,6 +153,12 @@ jobs:
             cc: gcc
             cxx: g++
             configureflags: --enable-openmp
+          - name: "Null as function template"
+            shortname: nullfunctions
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            configureflags: --enable-null-as-functions
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
     - uses: actions/checkout@v3
