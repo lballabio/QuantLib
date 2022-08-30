@@ -23,21 +23,11 @@ jobs:
     - uses: actions/checkout@v3
     - name: Setup
       run: |
-        brew install automake boost ccache
-    - name: Cache
-      uses: actions/cache@v3
-      with:
-        path: ~/Library/Caches/ccache
-        key: ${{ matrix.os }}-${{ matrix.shortname }}-nondef-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp', '**/macos.yml') }}
-        restore-keys: |
-          ${{ matrix.os }}-${{ matrix.shortname }}-nondef-build-${{ github.ref }}-${{ github.head_ref }}-
-          ${{ matrix.os }}-${{ matrix.shortname }}-nondef-build-${{ github.ref }}-
-          ${{ matrix.os }}-${{ matrix.shortname }}-nondef-build-refs/heads/master-
-          ${{ matrix.os }}-${{ matrix.shortname }}-nondef-build-
+        brew install automake boost
     - name: Build
       run: |
         ./autogen.sh
-        ./configure --disable-shared --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday --enable-null-as-functions ${{ matrix.configureflags }}  CC="ccache clang" CXX="ccache clang++" CXXFLAGS="-O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9 ${{ matrix.cxxflags }}" LDFLAGS="-stdlib=libc++ -mmacosx-version-min=10.9"
+        ./configure --disable-shared --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday --enable-null-as-functions ${{ matrix.configureflags }}  CC="clang" CXX="clang++" CXXFLAGS="-O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9 ${{ matrix.cxxflags }}" LDFLAGS="-stdlib=libc++ -mmacosx-version-min=10.9"
         make -j 2
     - name: Run tests
       run: |
