@@ -1,6 +1,6 @@
 ---
 Language:        Cpp
-Standard:        Cpp03
+Standard:        c++14
 
 
 # The following is close to the style we've been using all these years
