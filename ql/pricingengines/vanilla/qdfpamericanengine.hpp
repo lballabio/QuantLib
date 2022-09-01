@@ -153,15 +153,6 @@ namespace QuantLib {
         Real calculatePut(
             Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const override;
 
-        Real calculatePutFP_A(
-            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
-
-        Real calculatePutFP_B(
-            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
-
-        Real calculatePutFP_both(
-            Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const;
-
       private:
         const ext::shared_ptr<QdFpIterationScheme> iterationScheme_;
         const FixedPointEquation fpEquation_;
