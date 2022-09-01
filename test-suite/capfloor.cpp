@@ -68,8 +68,7 @@ namespace capfloor_test {
             index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             calendar = index->fixingCalendar();
             convention = ModifiedFollowing;
-            Date today = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = today;
+            Date today = Settings::instance().evaluationDate();
             Natural settlementDays = 2;
             fixingDays = 2;
             settlement = calendar.advance(today,settlementDays,Days);

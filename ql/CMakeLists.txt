@@ -2162,6 +2162,8 @@ set(QL_HEADERS
     time/daycounters/actual360.hpp
     time/daycounters/actual364.hpp
     time/daycounters/actual365fixed.hpp
+    time/daycounters/actual366.hpp
+    time/daycounters/actual36525.hpp
     time/daycounters/actualactual.hpp
     time/daycounters/business252.hpp
     time/daycounters/one.hpp

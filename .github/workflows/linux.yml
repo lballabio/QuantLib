@@ -169,19 +169,25 @@ jobs:
             cxx: g++
             configureflags: --enable-parallel-unit-test-runner
             moreflags: -lrt
+          - name: "Null as function template"
+            shortname: nullfunctions
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            configureflags: --enable-null-as-functions
+            tests: true
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
     - uses: actions/checkout@v3
     - name: Cache
-      uses: actions/cache@v3
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
-        path: ~/.ccache
-        key: linux-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        key: linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
         restore-keys: |
-          linux-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-
-          linux-build-${{ matrix.shortname }}-${{ github.ref }}-
-          linux-build-${{ matrix.shortname }}-refs/heads/master-
-          linux-build-${{ matrix.shortname }}-
+          linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-
+          linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}-
+          linux-ci-build-${{ matrix.shortname }}-refs/heads/master-
+          linux-ci-build-${{ matrix.shortname }}-
     - name: Compiler version
       run: |
         ${{ matrix.cc }} --version

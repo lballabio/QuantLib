@@ -128,6 +128,15 @@
     default) the Boost facilities are used.
 
     \code
+    #define QL_NULL_AS_FUNCTIONS
+    \endcode
+    If defined, `Null` will be implemented as a set of template
+    functions.  This allows the code to work with user-defined `Real`
+    types but was reported to cause internal compiler errors with
+    Visual C++ 2022 in some cases.  If disabled (the default) `Null`
+    will be implemented as a class template, as in previous releases.
+
+    \code
     #define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
     \endcode
     Define this to enable the parallel unit test runner. Undefined by

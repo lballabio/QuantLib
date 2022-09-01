@@ -125,12 +125,12 @@ namespace QuantLib {
         ext::shared_ptr<SwapSpreadIndex> swapSpreadIndex_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
-        BusinessDayConvention paymentAdjustment_;
+        BusinessDayConvention paymentAdjustment_ = Following;
         std::vector<Natural> fixingDays_;
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
         std::vector<Rate> caps_, floors_;
-        bool inArrears_, zeroPayments_;
+        bool inArrears_ = false, zeroPayments_ = false;
     };
 
 

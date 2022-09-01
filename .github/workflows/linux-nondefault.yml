@@ -127,23 +127,13 @@ jobs:
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
     - uses: actions/checkout@v3
-    - name: Cache
-      uses: actions/cache@v3
-      with:
-        path: ~/.ccache
-        key: linux-nondef-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
-        restore-keys: |
-          linux-nondef-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-
-          linux-nondef-build-${{ matrix.shortname }}-${{ github.ref }}-
-          linux-nondef-build-${{ matrix.shortname }}-refs/heads/master-
-          linux-nondef-build-${{ matrix.shortname }}-
     - name: Compiler version
       run: |
         ${{ matrix.cc }} --version
     - name: Build
       run: |
         ./autogen.sh
-        ./configure --disable-static --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday ${{ matrix.configureflags }} CC="ccache ${{ matrix.cc }}" CXX="ccache ${{ matrix.cxx }}" CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }}"
+        ./configure --disable-static --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday --enable-null-as-functions ${{ matrix.configureflags }} CC="${{ matrix.cc }}" CXX="${{ matrix.cxx }}" CXXFLAGS="-O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }}"
         make -j 2
     - name: Run tests
       run: |

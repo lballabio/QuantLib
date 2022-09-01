@@ -401,7 +401,7 @@ namespace QuantLib {
                               public Visitor<Coupon> {
           public:
             explicit BPSCalculator(const YieldTermStructure& discountCurve)
-            : discountCurve_(discountCurve), bps_(0.0), nonSensNPV_(0.0) {}
+            : discountCurve_(discountCurve) {}
             void visit(Coupon& c) override {
                 Real bps = c.nominal() *
                            c.accrualPeriod() *
@@ -416,7 +416,7 @@ namespace QuantLib {
             Real nonSensNPV() const { return nonSensNPV_; }
           private:
             const YieldTermStructure& discountCurve_;
-            Real bps_, nonSensNPV_;
+            Real bps_ = 0.0, nonSensNPV_ = 0.0;
         };
 
         const Spread basisPoint_ = 1.0e-4;

@@ -33,12 +33,12 @@
 
 namespace QuantLib {
 
-    HaltonRsg::HaltonRsg(Size dimensionality, unsigned long seed,
-                         bool randomStart, bool randomShift)
-    : dimensionality_(dimensionality), sequenceCounter_(0),
-      sequence_(std::vector<Real> (dimensionality), 1.0),
-      randomStart_(dimensionality, 0UL),
-      randomShift_(dimensionality, 0.0) {
+    HaltonRsg::HaltonRsg(Size dimensionality,
+                         unsigned long seed,
+                         bool randomStart,
+                         bool randomShift)
+    : dimensionality_(dimensionality), sequence_(std::vector<Real>(dimensionality), 1.0),
+      randomStart_(dimensionality, 0UL), randomShift_(dimensionality, 0.0) {
 
         QL_REQUIRE(dimensionality>0, 
                    "dimensionality must be greater than 0");
@@ -51,7 +51,6 @@ namespace QuantLib {
             if (randomShift)
                 randomShift_ = uniformRsg.nextSequence().value;
         }
-
     }
 
     const HaltonRsg::sample_type& HaltonRsg::nextSequence() const {

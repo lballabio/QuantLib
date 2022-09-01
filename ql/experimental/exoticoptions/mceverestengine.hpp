@@ -116,10 +116,10 @@ namespace QuantLib {
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<StochasticProcessArray> process_;
-        bool brownianBridge_, antithetic_;
+        bool brownianBridge_ = false, antithetic_ = false;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
-        BigNatural seed_;
+        BigNatural seed_ = 0;
     };
 
 
@@ -209,9 +209,8 @@ namespace QuantLib {
     template <class RNG, class S>
     inline MakeMCEverestEngine<RNG, S>::MakeMCEverestEngine(
         ext::shared_ptr<StochasticProcessArray> process)
-    : process_(std::move(process)), brownianBridge_(false), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
-      maxSamples_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
+    : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()) {}
 
     template <class RNG, class S>
     inline MakeMCEverestEngine<RNG,S>&

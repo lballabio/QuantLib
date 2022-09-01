@@ -135,8 +135,8 @@ namespace QuantLib {
         static const int bits_;
         static const double normalizationFactor_;
         Size dimensionality_;
-        mutable std::uint_least32_t sequenceCounter_;
-        mutable bool firstDraw_;
+        mutable std::uint_least32_t sequenceCounter_ = 0;
+        mutable bool firstDraw_ = true;
         mutable sample_type sequence_;
         mutable std::vector<std::uint_least32_t> integerSequence_;
         std::vector<std::vector<std::uint_least32_t>> directionIntegers_;

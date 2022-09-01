@@ -410,7 +410,7 @@ namespace QuantLib {
 
       private:
         Size totalClubs_, maxClubs_, minClubs_, defaultClubs_;
-        Size iteration_, resetIteration_;
+        Size iteration_ = 0, resetIteration_;
         Size M_;
         std::vector<std::vector<bool> > clubs4particles_;
         std::vector<std::vector<bool> > particles4clubs_;

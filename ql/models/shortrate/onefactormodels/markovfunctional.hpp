@@ -129,9 +129,7 @@ namespace QuantLib {
                 CustomSmile = 1 << 9
             };
 
-            ModelSettings()
-            : adjustments_(KahaleSmile | SmileExponentialExtrapolation),
-              smileMoneynessCheckpoints_(std::vector<Real>()) {}
+            ModelSettings() : adjustments_(KahaleSmile | SmileExponentialExtrapolation) {}
 
             ModelSettings(Size yGridPoints,
                           Real yStdDevs,

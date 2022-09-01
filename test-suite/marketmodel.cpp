@@ -141,11 +141,10 @@ namespace market_model_test {
 
     // a simple structure to store some data which will be used during tests
     struct SubProductExpectedValues {
-        explicit SubProductExpectedValues(std::string descr)
-        : description(std::move(descr)), testBias(false) {}
+        explicit SubProductExpectedValues(std::string descr) : description(std::move(descr)) {}
         std::string description;
         std::vector<Real> values;
-        bool testBias;
+        bool testBias = false;
         Real errorThreshold;
     };
 
