@@ -138,7 +138,7 @@ namespace QuantLib {
 
     ext::shared_ptr<QdFpIterationScheme>
         QdFpIterationSchemeStdFactory::highPrecisionScheme_
-            = ext::make_shared<QdFpTanhSinhIterationScheme>(8, 32, 1e-10);
+            = ext::make_shared<QdFpTanhSinhIterationScheme>(10, 72, 1e-14);
 
 
     class DqFpEquation {
@@ -194,8 +194,7 @@ namespace QuantLib {
     class DqFpEquation_B: public DqFpEquation {
       public:
         DqFpEquation_B(
-            Real _S, Real _K, Rate _r, Rate _q,
-            Volatility _vol, Time _T,
+            Real _K, Rate _r, Rate _q, Volatility _vol,
             std::function<Real(Real)> _B,
             ext::shared_ptr<Integrator> _integrator);
 
@@ -203,15 +202,13 @@ namespace QuantLib {
         std::tuple<Real, Real, Real> f(Real tau, Real b) const override;
 
       private:
-          const Real S, K;
-          const Time T;
+          const Real K;
     };
 
     class DqFpEquation_A: public DqFpEquation {
       public:
         DqFpEquation_A(
-            Real _S, Real _K, Rate _r, Rate _q,
-            Volatility _vol, Time _T,
+            Real _K, Rate _r, Rate _q, Volatility _vol,
             std::function<Real(Real)> _B,
             ext::shared_ptr<Integrator> _integrator);
 
@@ -219,16 +216,15 @@ namespace QuantLib {
         std::tuple<Real, Real, Real> f(Real tau, Real b) const override;
 
       private:
-          const Real S, K;
-          const Time T;
+          const Real K;
     };
 
     DqFpEquation_A::DqFpEquation_A(
-        Real _S, Real _K, Rate _r, Rate _q, Volatility _vol, Time _T,
+        Real _K, Rate _r, Rate _q, Volatility _vol,
         std::function<Real(Real)> _B,
         ext::shared_ptr<Integrator> _integrator)
     : DqFpEquation(_r, _q, _vol, _B, _integrator),
-      S(_S), K(_K), T(_T) {
+      K(_K) {
     }
 
     std::tuple<Real, Real, Real> DqFpEquation_A::f(Real tau, Real b) const {
@@ -330,11 +326,11 @@ namespace QuantLib {
 
 
     DqFpEquation_B::DqFpEquation_B(
-        Real _S, Real _K, Rate _r, Rate _q, Volatility _vol, Time _T,
+        Real _K, Rate _r, Rate _q, Volatility _vol,
         std::function<Real(Real)> _B,
         ext::shared_ptr<Integrator> _integrator)
     : DqFpEquation(_r, _q, _vol, _B, _integrator),
-      S(_S), K(_K), T(_T) {
+      K(_K) {
     }
 
 
@@ -440,10 +436,10 @@ namespace QuantLib {
             = (fpEquation_ == FP_A
                || (fpEquation_ == Auto && std::abs(r-q) < 0.001))?
               ext::shared_ptr<DqFpEquation>(new DqFpEquation_A(
-                  S, K, r, q, vol, T, B,
+                  K, r, q, vol, B,
                   iterationScheme_->getFixedPointIntegrator()))
             : ext::shared_ptr<DqFpEquation>(new DqFpEquation_B(
-                    S, K, r, q, vol, T, B,
+                    K, r, q, vol, B,
                     iterationScheme_->getFixedPointIntegrator()));
 
         Array y(x.size());
