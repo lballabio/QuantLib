@@ -31,8 +31,6 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #endif
 
-#include <iostream>
-
 namespace QuantLib {
     QdFpLegendreScheme::QdFpLegendreScheme(
         Size l, Size m, Size n, Size p):
@@ -145,8 +143,21 @@ namespace QuantLib {
 
     class DqFpEquation {
       public:
-        DqFpEquation(Rate _r, Rate _q, Volatility _vol)
-        : r(_r), q(_q), vol(_vol) {}
+        DqFpEquation(
+            Rate _r, Rate _q, Volatility _vol,
+            std::function<Real(Real)> _B,
+            ext::shared_ptr<Integrator> _integrator)
+        : r(_r), q(_q), vol(_vol),
+          B(std::move(_B)),
+          integrator(std::move(_integrator)) {
+            const auto legendreIntegrator =
+                ext::dynamic_pointer_cast<GaussLegendreIntegrator>(integrator);
+
+            if (legendreIntegrator != nullptr) {
+                x_i = legendreIntegrator->getIntegration()->x();
+                w_i = legendreIntegrator->getIntegration()->weights();
+            }
+        }
 
         virtual std::pair<Real, Real> NDd(Real tau, Real b) const = 0;
         virtual std::tuple<Real, Real, Real> f(Real tau, Real b) const = 0;
@@ -161,12 +172,24 @@ namespace QuantLib {
             return std::make_pair(m, m-v);
         }
 
+        void updateY(const Array& y);
+
+        Array x_i, w_i;
         const Rate r, q;
         const Volatility vol;
+
+        const std::function<Real(Real)> B;
+        const ext::shared_ptr<Integrator> integrator;
 
         const NormalDistribution phi;
         const CumulativeNormalDistribution Phi;
     };
+
+    void DqFpEquation::updateY(const Array& y) {
+        if (x_i.size()) {
+
+        }
+    }
 
     class DqFpEquation_B: public DqFpEquation {
       public:
@@ -182,8 +205,6 @@ namespace QuantLib {
       private:
           const Real S, K;
           const Time T;
-          const std::function<Real(Real)> B;
-          const ext::shared_ptr<Integrator> integrator;
     };
 
     class DqFpEquation_A: public DqFpEquation {
@@ -200,18 +221,14 @@ namespace QuantLib {
       private:
           const Real S, K;
           const Time T;
-          const std::function<Real(Real)> B;
-          const ext::shared_ptr<Integrator> integrator;
     };
 
     DqFpEquation_A::DqFpEquation_A(
         Real _S, Real _K, Rate _r, Rate _q, Volatility _vol, Time _T,
         std::function<Real(Real)> _B,
         ext::shared_ptr<Integrator> _integrator)
-    : DqFpEquation(_r, _q, _vol),
-      S(_S), K(_K), T(_T),
-      B(std::move(_B)),
-      integrator(_integrator) {
+    : DqFpEquation(_r, _q, _vol, _B, _integrator),
+      S(_S), K(_K), T(_T) {
     }
 
     std::tuple<Real, Real, Real> DqFpEquation_A::f(Real tau, Real b) const {
@@ -229,38 +246,42 @@ namespace QuantLib {
             }
         }
         else {
-            const auto K12 = [&, this](Real tau)
-                -> Real {
-                const Real stv = std::sqrt(tau)/vol;
+            const Real stv = std::sqrt(tau)/vol;
 
-                return (*integrator)([=](Real y) -> Real {
+            Real K12, K3;
+            if (x_i.size()) {
+                K12 = K3 = 0.0;
+
+                for (Integer i = x_i.size()-1; i >= 0; --i) {
+                    const Real y = x_i[i];
                     const Real m = 0.25*tau*squared(1+y);
-                    const Real dp =
-                        d(0.25*tau*squared(1+y), b/B(tau-m)).first;
+                    const std::pair<Real, Real> dpm = d(m, b/B(tau-m));
+
+                    K12 += w_i[i] * std::exp(q*tau - q*m)
+                        *(0.5*tau*(y+1)*Phi(dpm.first) + stv*phi(dpm.first));
+                    K3 += w_i[i] * stv*std::exp(r*tau-r*m)*phi(dpm.second);
+                }
+            }
+            else {
+                K12 = (*integrator)([=](Real y) -> Real {
+                    const Real m = 0.25*tau*squared(1+y);
+                    const Real dp = d(m, b/B(tau-m)).first;
 
                     return std::exp(q*tau - q*m)
                         *(0.5*tau*(y+1)*Phi(dp) + stv*phi(dp));
                 }, -1, 1);
-            };
 
-            const auto K3 = [&, this](Real tau)
-                -> Real {
-                const Real stv = std::sqrt(tau)/vol;
-
-                return (*integrator)([=](Real y) -> Real {
+                K3 = (*integrator)([=](Real y) -> Real {
                     const Real m = 0.25*tau*squared(1+y);
 
-                    return stv*std::exp(r*tau-r*m)*phi(
-                        d(0.25*tau*squared(1+y), b/B(tau-m)).second);
+                    return stv*std::exp(r*tau-r*m)
+                        *phi(d(m, b/B(tau-m)).second);
                 }, -1, 1);
-            };
-
-
+            }
             const std::pair<Real, Real> dpm = d(tau, b/K);
-            N = phi(dpm.second)/v + r*K3(tau);
-            D = phi(dpm.first)/v + Phi(dpm.first) + q*K12(tau);
+            N = phi(dpm.second)/v + r*K3;
+            D = phi(dpm.first)/v + Phi(dpm.first) + q*K12;
         }
-
 
         const Real alpha = K*std::exp(-(r-q)*tau);
         Real fv;
@@ -312,10 +333,8 @@ namespace QuantLib {
         Real _S, Real _K, Rate _r, Rate _q, Volatility _vol, Time _T,
         std::function<Real(Real)> _B,
         ext::shared_ptr<Integrator> _integrator)
-    : DqFpEquation(_r, _q, _vol),
-      S(_S), K(_K), T(_T),
-      B(std::move(_B)),
-      integrator(_integrator) {
+    : DqFpEquation(_r, _q, _vol, _B, _integrator),
+      S(_S), K(_K), T(_T) {
     }
 
 
@@ -332,15 +351,31 @@ namespace QuantLib {
         else {
             const std::pair<Real, Real> dpm = d(tau, b/K);
 
-            N = Phi(dpm.second)
-                + r*(*integrator)([=](Real u) -> Real {
-                    return std::exp(r*u)*Phi(d(tau - u, b/B(u)).second);
-                }, 0, tau);
+            Real ni, di;
+            if (x_i.size()) {
+                const Real c = 0.5*tau;
 
-            D = Phi(dpm.first)
-                + q*(*integrator)([=](Real u) -> Real {
-                    return std::exp(q*u)*Phi(d(tau - u, b/B(u)).first);
-                }, 0, tau);
+                ni = di = 0.0;
+                for (Integer i = x_i.size()-1; i >= 0; --i) {
+                    const Real u = c*x_i[i] + c;
+                    const std::pair<Real, Real> dpm = d(tau - u, b/B(u));
+                    ni += w_i[i] * std::exp(r*u)*Phi(dpm.second);
+                    di += w_i[i] * std::exp(q*u)*Phi(dpm.first);
+                }
+                ni *= c;
+                di *= c;
+            }
+            else {
+                ni = (*integrator)([=](Real u) -> Real {
+                        return std::exp(r*u)*Phi(d(tau - u, b/B(u)).second);
+                    }, 0, tau);
+                di = (*integrator)([=](Real u) -> Real {
+                        return std::exp(q*u)*Phi(d(tau - u, b/B(u)).first);
+                    }, 0, tau);
+            }
+
+            N = Phi(dpm.second) + r*ni;
+            D = Phi(dpm.first) + q*di;
         }
 
         Real fv;
@@ -385,7 +420,8 @@ namespace QuantLib {
         const Size n = iterationScheme_->getNumberOfChebyshevInterpolationNodes();
 
         const ext::shared_ptr<ChebyshevInterpolation> interp =
-            QdPlusAmericanEngine(process_, n+1, QdPlusAmericanEngine::Halley, 1e-8)
+            QdPlusAmericanEngine(
+                    process_, n+1, QdPlusAmericanEngine::Halley, 1e-8)
                 .getPutExerciseBoundary(S, K, r, q, vol, T);
 
         const Array z = interp->nodes();
@@ -462,204 +498,6 @@ namespace QuantLib {
 
         return std::max(europeanValue, 0.0) + std::max(0.0, addOn);
     }
-
-
-
-//    Real QdFpAmericanEngine::calculatePutFP_A(
-//        Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
-//
-//        const Real xmax =  QdPlusAmericanEngine::xMax(K, r, q);
-//        const Size n = iterationScheme_->getNumberOfChebyshevInterpolationNodes();
-//
-//        ext::shared_ptr<ChebyshevInterpolation> interp =
-//            QdPlusAmericanEngine(process_, n+1, QdPlusAmericanEngine::Halley, 1e-8)
-//                .getPutExerciseBoundary(S, K, r, q, vol, T);
-//
-//        const Array z = interp->nodes();
-//        const Array x = 0.5*std::sqrt(T)*(1.0+z);
-//
-//        const auto B = [xmax, T](
-//            Real tau, const ext::shared_ptr<Interpolation>& interp) -> Real {
-//            const Real z = 2*std::sqrt(std::abs(tau)/T)-1;
-//            return xmax*std::exp(-std::sqrt(std::max(Real(0), (*interp)(z, true))));
-//        };
-//
-//        const NormalDistribution phi;
-//        const CumulativeNormalDistribution Phi;
-//
-//        const auto d = [=](Time t, Real z) -> std::pair<Real, Real>  {
-//            const Real v = vol * std::sqrt(t);
-//            const Real m = (std::log(z) + (r-q)*t)/v + 0.5*v;
-//
-//            return std::make_pair(m, m-v);
-//        };
-//
-//        const auto K12 = [&, this](Real tau, const ext::shared_ptr<Interpolation>& interp)
-//            -> Real {
-//            const Real stv = std::sqrt(tau)/vol;
-//            const Real b_tau = B(tau, interp);
-//
-//            return (*iterationScheme_->getFixedPointIntegrator())(
-//                [=](Real y) -> Real {
-//
-//                    const Real m = 0.25*tau*squared(1+y);
-//                    const Real dp =
-//                        d(0.25*tau*squared(1+y),
-//                                b_tau/B(tau-m, interp)).first;
-//
-//                    return std::exp(q*tau - q*m)
-//                        *(0.5*tau*(y+1)*Phi(dp) + stv*phi(dp));
-//                }, -1, 1);
-//        };
-//
-//        const auto K3 = [&, this](Real tau, const ext::shared_ptr<Interpolation>& interp)
-//            -> Real {
-//            const Real stv = std::sqrt(tau)/vol;
-//            const Real b_tau = B(tau, interp);
-//
-//            return (*iterationScheme_->getFixedPointIntegrator())(
-//                [=](Real y) -> Real {
-//                    const Real m = 0.25*tau*squared(1+y);
-//
-//                    return stv*std::exp(r*tau-r*m)*phi(
-//                        d(0.25*tau*squared(1+y), b_tau/B(tau-m, interp)).second);
-//                }, -1, 1);
-//        };
-//
-//        const auto ND = [=](
-//            Real tau, Real b, const ext::shared_ptr<Interpolation>& interp)
-//            -> std::pair<Real, Real> {
-//
-//            const Real v = vol * std::sqrt(tau);
-//
-//            Real N, D;
-//            if (tau < squared(QL_EPSILON)) {
-//                if (close_enough(b, K)) {
-//                    N = 1/(M_SQRT2*M_SQRTPI * v);
-//                    D = N + 0.5;
-//                }
-//                else {
-//                    N = 0.0;
-//                    D = (b > K)? 1.0: 0.0;
-//                }
-//            }
-//            else {
-//                const std::pair<Real, Real> dpm = d(tau, b/K);
-//                N = phi(dpm.second)/v + r*K3(tau, interp);
-//                D = phi(dpm.first)/v + Phi(dpm.first) + q*K12(tau, interp);
-//            }
-//
-//            return std::make_pair(N, D);
-//        };
-//
-//        const auto f = [=](
-//            Real tau, Real b, const ext::shared_ptr<Interpolation>& interp) -> Real {
-//            const Real alpha = K*std::exp(-(r-q)*tau);
-//
-//            if (tau < squared(QL_EPSILON)) {
-//                if (close_enough(b, K))
-//                    return alpha;
-//                else if (b > K)
-//                    return 0.0;
-//                else {
-//                    if (close_enough(q, Real(0)))
-//                        return alpha*r*((q < 0)? -1.0 : 1.0)/QL_EPSILON;
-//                    else
-//                        return alpha*r/q;
-//                }
-//            }
-//
-//            const std::pair<Real, Real> nd = ND(tau, b, interp);
-//            return alpha*nd.first/nd.second;
-//        };
-//
-//
-//        const auto Dd = [=](Real tau, Real b) -> Real {
-//            if (tau < squared(QL_EPSILON)) {
-//                if (close_enough(b, K)) {
-//                    const Real sqTau = std::sqrt(tau);
-//                    const Real vol2 = vol*vol;
-//                    return  M_1_SQRTPI*M_SQRT_2*(
-//                                -(0.5*vol2 + r-q) / (b*vol*vol2*sqTau)
-//                                + 1 / (b*vol*sqTau));
-//                }
-//                else
-//                    return 0.0;
-//            }
-//            else {
-//                const Real dp = d(tau, b/K).first;
-//
-//                return -phi(dp) * dp / (b*vol*vol*tau) +
-//                        phi(dp) / (b*vol * std::sqrt(tau));
-//            }
-//        };
-//
-//
-//        const auto Nd = [=](Real tau, Real b) -> Real {
-//            if (tau < squared(QL_EPSILON)) {
-//                if (close_enough(b, K)) {
-//                    const Real vol2 = vol*vol;
-//                    return M_1_SQRTPI*M_SQRT_2 * (-0.5 * vol2 + r - q)
-//                            / (b*vol*vol2*std::sqrt(tau));
-//                }
-//                else
-//                    return 0.0;
-//            }
-//            else {
-//                const Real dm = d(tau, b/K).second;
-//                return -phi(dm) * dm / (b*vol*vol*tau);
-//            }
-//        };
-//
-//        const auto h = [=](Real fv) -> Real {
-//            return squared(std::log(fv/xmax));
-//        };
-//
-//        Array y(x.size());
-//        y[0] = 0.0;
-//        const Size n_newton
-//            = iterationScheme_->getNumberOfJacobiNewtonFixedPointSteps();
-//        for (Size k=0; k < n_newton; ++k) {
-//            for (Size i=1; i < x.size(); ++i) {
-//                const Real tau = squared(x[i]);
-//                const Real b = B(tau, interp);
-//                const Real fv = f(tau, b , interp);
-//
-//                if (tau < QL_EPSILON)
-//                    y[i] = h(fv);
-//                else {
-//                    const std::pair<Real, Real> nd = ND(tau, b, interp);
-//
-//                    const Real fd = K*std::exp(-(r-q)*tau)
-//                        * (Nd(tau, b)/nd.second
-//                              - Dd(tau, b)*nd.first/squared(nd.second));
-//
-//                    y[i] = h(b - (fv - b)/ (fd-1));
-//                }
-//            }
-//            interp = ext::make_shared<ChebyshevInterpolation>(y);
-//        }
-//
-//        const Size n_fp = iterationScheme_->getNumberOfNaiveFixedPointSteps();
-//        for (Size k=0; k < n_fp; ++k) {
-//            for (Size i=1; i < x.size(); ++i) {
-//                const Real tau = squared(x[i]);
-//                y[i] = h(f(tau, B(tau, interp), interp));
-//            }
-//            interp = ext::make_shared<ChebyshevInterpolation>(y);
-//        }
-//
-//        const detail::QdPlusAddOnValue aov(T, S, K, r, q, vol, xmax, interp);
-//        const Real addOn =
-//           (*iterationScheme_->getExerciseBoundaryToPriceIntegrator())(
-//               aov, 0.0, std::sqrt(T));
-//
-//        const Real europeanValue = BlackCalculator(
-//            Option::Put, K, S*std::exp((r-q)*T),
-//            vol*std::sqrt(T), std::exp(-r*T)).value();
-//
-//        return std::max(europeanValue, 0.0) + std::max(0.0, addOn);
-//    }
 }
 
 

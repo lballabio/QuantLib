@@ -20,6 +20,8 @@
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
 
+#include <iostream>
+
 namespace QuantLib {
     namespace chebyshev_interpolation_detail {
         Array apply(const Array& x, const ext::function<Real(Real)>& f) {
@@ -46,7 +48,9 @@ namespace QuantLib {
         Size n, const ext::function<Real(Real)>& f, PointsType pointsType)
     : ChebyshevInterpolation(
           chebyshev_interpolation_detail::apply(
-              ChebyshevInterpolation::nodes(n, pointsType), f)) {}
+              ChebyshevInterpolation::nodes(n, pointsType), f),
+              pointsType) {
+    }
 
 
     Array ChebyshevInterpolation::nodes() const {

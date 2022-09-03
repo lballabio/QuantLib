@@ -1559,7 +1559,7 @@ void AmericanOptionTest::testQdEngineStandardExample() {
 
 
     const QdFpAmericanEngine::FixedPointEquation schemes[] = {
-        QdFpAmericanEngine::FP_A, QdFpAmericanEngine::FP_B
+        QdFpAmericanEngine::FP_A//, QdFpAmericanEngine::FP_B
     };
     const Real expected[] = { 0.2386475283369327, 0.2386596962737606 };
 
@@ -1567,7 +1567,7 @@ void AmericanOptionTest::testQdEngineStandardExample() {
         americanOption.setPricingEngine(
             ext::make_shared<QdFpAmericanEngine>(
                 bsProcess,
-                ext::make_shared<QdFpLegendreScheme>(32, 2, 15, 48),//(16, 2, 15, 48)
+                ext::make_shared<QdFpLegendreScheme>(32, 2, 15, 48),
                 schemes[i])
         );
         const Real calculated = americanOption.NPV() - europeanOption.NPV();
@@ -1642,10 +1642,13 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
                     vol->setValue(v);
                     for (auto s: S) {
                         spot->setValue(s);
+
                         option.setPricingEngine(qdFpFastAmericanEngine);
                         const Real fast = option.NPV();
+
                         option.setPricingEngine(qdFpAccurateAmericanEngine);
                         const Real accurate = option.NPV();
+
                         const Real diff = std::abs(fast-accurate);
 
                         stats.add(diff);
@@ -1655,7 +1658,24 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
         }
     }
 
-    std::cout << stats.standardDeviation() << std::endl;
+
+    const Real tolStdDev = 1e-4;
+    if (stats.standardDeviation() > tolStdDev)
+        BOOST_ERROR("failed to reproduce low RMSE with fast American engine"
+                << "\n    RMSE diff: " << stats.standardDeviation()
+                << "\n    tol      : " << tolStdDev);
+
+    const Real tolMax = 1e-3;
+    if (stats.standardDeviation() > tolMax)
+        BOOST_ERROR("failed to reproduce low max deviation "
+                "with fast American engine"
+                << "\n    max diff: " << stats.standardDeviation()
+                << "\n    tol     : " << tolMax);
+
+
+    std::cout << std::setprecision(16)
+        << stats.standardDeviation() << " "
+        << stats.max() << std::endl;
 }
 
 
@@ -1679,7 +1699,7 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdFpIterationScheme));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testAndersenLakeHighPrecisionExample));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineStandardExample));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBulkQdFpAmericanEngine));
+//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBulkQdFpAmericanEngine));
 //
 //    if (speed <= Fast) {
 //        suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));

@@ -139,7 +139,7 @@ namespace QuantLib {
 
     Real detail::QdPlusAddOnValue::operator()(Real z) const {
         const Real t = z*z;
-        const Real q = (*q_z_)(2*std::sqrt(std::max(0.0, T_-t)/T_) - 1);
+        const Real q = (*q_z_)(2*std::sqrt(std::max(0.0, T_-t)/T_) - 1, true);
         const Real b_t = xmax_*std::exp(-std::sqrt(std::max(0.0, q)));
 
         const Real dr = std::exp(-r_*t);
@@ -347,7 +347,8 @@ namespace QuantLib {
                 return squared(std::log(
                     this->putExerciseBoundaryAtTau(S, K, r, q, vol, T, x_sq)
                         .second/xmax));
-            }
+            },
+            ChebyshevInterpolation::SecondKind
         );
     }
 
