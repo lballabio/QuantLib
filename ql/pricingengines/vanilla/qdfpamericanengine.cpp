@@ -138,7 +138,7 @@ namespace QuantLib {
 
     ext::shared_ptr<QdFpIterationScheme>
         QdFpIterationSchemeStdFactory::highPrecisionScheme_
-            = ext::make_shared<QdFpTanhSinhIterationScheme>(10, 72, 1e-14);
+            = ext::make_shared<QdFpTanhSinhIterationScheme>(8, 32, 1e-10);
 
 
     class DqFpEquation {
@@ -259,7 +259,7 @@ namespace QuantLib {
                 }
             }
             else {
-                K12 = (*integrator)([=](Real y) -> Real {
+                K12 = (*integrator)([&, this](Real y) -> Real {
                     const Real m = 0.25*tau*squared(1+y);
                     const Real dp = d(m, b/B(tau-m)).first;
 
@@ -267,7 +267,7 @@ namespace QuantLib {
                         *(0.5*tau*(y+1)*Phi(dp) + stv*phi(dp));
                 }, -1, 1);
 
-                K3 = (*integrator)([=](Real y) -> Real {
+                K3 = (*integrator)([&, this](Real y) -> Real {
                     const Real m = 0.25*tau*squared(1+y);
 
                     return stv*std::exp(r*tau-r*m)
@@ -362,10 +362,10 @@ namespace QuantLib {
                 di *= c;
             }
             else {
-                ni = (*integrator)([=](Real u) -> Real {
+                ni = (*integrator)([&, this](Real u) -> Real {
                         return std::exp(r*u)*Phi(d(tau - u, b/B(u)).second);
                     }, 0, tau);
-                di = (*integrator)([=](Real u) -> Real {
+                di = (*integrator)([&, this](Real u) -> Real {
                         return std::exp(q*u)*Phi(d(tau - u, b/B(u)).first);
                     }, 0, tau);
             }
