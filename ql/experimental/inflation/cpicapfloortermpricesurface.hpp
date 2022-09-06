@@ -72,7 +72,6 @@ namespace QuantLib {
         //@{
         Period observationLag() const override;
         Date baseDate() const override;
-        bool indexIsInterpolated() const override;
         //@}
 
         //! is based on
@@ -342,12 +341,6 @@ namespace QuantLib {
     inline BusinessDayConvention
     CPICapFloorTermPriceSurface::businessDayConvention() const {
         return bdc_;
-    }
-
-    inline bool CPICapFloorTermPriceSurface::indexIsInterpolated() const {
-        QL_DEPRECATED_DISABLE_WARNING
-        return indexIsInterpolated_;
-        QL_DEPRECATED_ENABLE_WARNING
     }
 
 }
