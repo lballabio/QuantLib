@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2017 Klaus Spanderen
+ Copyright (C) 2022 Ignacio Anguita
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -83,6 +84,21 @@ namespace QuantLib {
 
         const Real a = x + cum1 - L_*w;
         const Real b = x + cum1 + L_*w;
+        
+        // Check if it exceeds the truncation bound
+        
+        if (x >= b/2 || x <= a/2){
+        	//returns lower/upper bounds              	
+        	if (payoff->optionType() == Option::Put)
+            	results_.value = std::max(-spot*qf+k*df,0.0);            	
+            else if (payoff->optionType() == Option::Call) {            	
+           		results_.value = std::max(spot*qf-k*df,0.0);
+        	}
+       		else
+            	QL_FAIL("unknown payoff type");
+            return;
+		}
+		
 
         const Real d = 1.0/(b-a);
 
