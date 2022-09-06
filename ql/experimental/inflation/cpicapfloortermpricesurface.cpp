@@ -111,6 +111,17 @@ namespace QuantLib {
 
     QL_DEPRECATED_ENABLE_WARNING
 
+    Rate CPICapFloorTermPriceSurface::atmRate(Date maturity) const {
+        Real F0 = CPI::laggedFixing(*zii_, referenceDate(), observationLag_, CPI::AsIndex);
+        Real F1 = CPI::laggedFixing(*zii_, maturity, observationLag_, CPI::AsIndex);
+
+        Time T = inflationYearFraction(
+            zii_->frequency(),
+            detail::CPI::isInterpolated(*zii_, CPI::AsIndex), dayCounter(),
+            referenceDate() - observationLag_, maturity - observationLag_);
+
+        return T > 0.0 ? std::pow(F1 / F0, 1 / T) - 1.0 : baseRate();
+    }
 
     Date CPICapFloorTermPriceSurface::cpiOptionDateFromTenor(const Period& p) const
     {

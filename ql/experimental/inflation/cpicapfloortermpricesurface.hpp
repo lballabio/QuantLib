@@ -87,6 +87,8 @@ namespace QuantLib {
         virtual BusinessDayConvention businessDayConvention() const;
         //@}
 
+        Rate atmRate(Date maturity) const;
+
         //! \warning you MUST remind the compiler in any descendants with the using:: mechanism
         //!          because you overload the names
         //! remember that the strikes use the quoting convention
@@ -233,15 +235,13 @@ namespace QuantLib {
         fPriceB_ =
             Matrix(cfStrikes_.size(), cfMaturities_.size(), Null<Real>());
 
-        Handle<ZeroInflationTermStructure> zts = zii_->zeroInflationTermStructure();
         Handle<YieldTermStructure> yts = nominalTS_;
-        QL_REQUIRE(!zts.empty(), "Zts is empty!!!");
         QL_REQUIRE(!yts.empty(), "Yts is empty!!!");
 
         for (Size j = 0; j < cfMaturities_.size(); ++j) {
             Period mat = cfMaturities_[j];
             Real df = yts->discount(cpiOptionDateFromTenor(mat));
-            Real atm_quote = zts->zeroRate(cpiOptionDateFromTenor(mat));
+            Real atm_quote = atmRate(cpiOptionDateFromTenor(mat));
             Real atm = std::pow(1.0 + atm_quote, mat.length());
             Real S = atm * df;
             for (Size i = 0; i < cfStrikes_.size(); ++i) {
@@ -304,7 +304,7 @@ namespace QuantLib {
     Real InterpolatedCPICapFloorTermPriceSurface<I2D>::
     price(const Date &d, Rate k) const {
 
-        Rate atm = zeroInflationIndex()->zeroInflationTermStructure()->zeroRate(d);
+        Rate atm = atmRate(d);
         return k > atm ? capPrice(d,k): floorPrice(d,k);
     }
 
