@@ -18,20 +18,7 @@
 */
 
 /*! \file cpicapfloortermpricesurface.hpp
-    \brief cpi inflation cap and floor term price structure.  N.B.
-           cpi cap/floors have a single (one) flow (unlike nominal
-           caps) because they observe cumulative inflation up to
-           their maturity.  Options are on CPI(T)/CPI(0) but strikes
-           are quoted for yearly average inflation, so require transformation
-           via (1+quote)^T to obtain actual strikes.  These are consistent
-           with ZCIIS quoting conventions.
-
-    The single-flow property of CPI cap/floors means that no stripping
-    is required.  Additionally CPI swaps, i.e. ZCIIS zero coupon inflation
-    indexed swaps are usually the most liquid of all the inflation products.
-    These two facts mean that we can use a Zero Inflation term structure to
-    give ATM.
-
+    \brief cpi inflation cap and floor term price structure.
 */
 
 #ifndef quantlib_cpi_capfloor_term_price_surface_hpp
@@ -47,8 +34,7 @@
 namespace QuantLib {
 
     //! Provides cpi cap/floor prices by interpolation and put/call parity (not cap/floor/swap* parity).
-    /*!
-        The inflation index MUST contain a ZeroInflationTermStructure as
+    /*! The inflation index MUST contain a ZeroInflationTermStructure as
         this is used to create ATM.  Unlike YoY price surfaces we
         assume that 1) an ATM ZeroInflationTermStructure is available
         and 2) that it is safe to use it.  This is supported by the

@@ -131,9 +131,6 @@ namespace QuantLib {
     Real CPICapFloorTermPriceSurface::floorPrice(const Period &d, Rate k) const {
         return this->floorPrice(cpiOptionDateFromTenor(d), k);
     }
-    
-    
-    
 
 }
 
