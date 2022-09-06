@@ -60,7 +60,8 @@ namespace QuantLib {
             const Calendar& cal, // calendar in index may not be useful
             const BusinessDayConvention& bdc,
             const DayCounter& dc,
-            const Handle<ZeroInflationIndex>& zii,
+            const ext::shared_ptr<ZeroInflationIndex>& zii,
+            CPI::InterpolationType interpolationType,
             Handle<YieldTermStructure> yts,
             const std::vector<Rate>& cStrikes,
             const std::vector<Rate>& fStrikes,
@@ -74,10 +75,6 @@ namespace QuantLib {
         Date baseDate() const override;
         //@}
 
-        //! is based on
-        Handle<ZeroInflationIndex> zeroInflationIndex() const { return zii_; }
-
-
         //! inspectors
         /*! \note you don't know if price() is a cap or a floor
                   without checking the ZeroInflation ATM level.
@@ -85,6 +82,7 @@ namespace QuantLib {
         //@{
         virtual Real nominal() const;
         virtual BusinessDayConvention businessDayConvention() const;
+        ext::shared_ptr<ZeroInflationIndex> zeroInflationIndex() const { return zii_; }
         //@}
 
         Rate atmRate(Date maturity) const;
@@ -115,7 +113,6 @@ namespace QuantLib {
         Date maxDate() const override { return referenceDate() + cfMaturities_.back(); }
         //@}
 
-
         virtual Date cpiOptionDateFromTenor(const Period& p) const;
 
       protected:
@@ -126,9 +123,8 @@ namespace QuantLib {
             return ( minDate() <= d && d <= maxDate() );
         }
 
-
-
-        Handle<ZeroInflationIndex> zii_;
+        ext::shared_ptr<ZeroInflationIndex> zii_;
+        CPI::InterpolationType interpolationType_;
         Handle<YieldTermStructure> nominalTS_;
         // data
         std::vector<Rate> cStrikes_;
@@ -156,7 +152,8 @@ namespace QuantLib {
                                                 const Calendar &cal,
                                                 const BusinessDayConvention &bdc,
                                                 const DayCounter &dc,
-                                                const Handle<ZeroInflationIndex>& zii,
+                                                const ext::shared_ptr<ZeroInflationIndex>& zii,
+                                                CPI::InterpolationType interpolationType,
                                                 const Handle<YieldTermStructure>& yts,
                                                 const std::vector<Rate> &cStrikes,
                                                 const std::vector<Rate> &fStrikes,
@@ -206,7 +203,8 @@ namespace QuantLib {
                                             const Calendar &cal,
                                             const BusinessDayConvention &bdc,
                                             const DayCounter &dc,
-                                            const Handle<ZeroInflationIndex>& zii,
+                                            const ext::shared_ptr<ZeroInflationIndex>& zii,
+                                            CPI::InterpolationType interpolationType,
                                             const Handle<YieldTermStructure>& yts,
                                             const std::vector<Rate> &cStrikes,
                                             const std::vector<Rate> &fStrikes,
@@ -215,7 +213,8 @@ namespace QuantLib {
                                             const Matrix &fPrice,
                                             const Interpolator2D &interpolator2d)
     : CPICapFloorTermPriceSurface(nominal, startRate, observationLag, cal, bdc, dc,
-                                  zii, yts, cStrikes, fStrikes, cfMaturities, cPrice, fPrice),
+                                  zii, interpolationType, yts, cStrikes, fStrikes,
+                                  cfMaturities, cPrice, fPrice),
       interpolator2d_(interpolator2d) {
         performCalculations();
     }
