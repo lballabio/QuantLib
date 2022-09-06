@@ -2056,12 +2056,12 @@ void HestonModelTest::testCosHestonEngineTruncation() {
     const Real tol = 1e-7;
     const Real error = std::fabs(europeanOption.NPV() - 0.0);
 
-        if (error > tol) {
-            BOOST_ERROR(" failed to reproduce prices with COSHestonEngine"
-                    << "\n    expected:   " << 0.0
-                    << "\n    calculated: " << europeanOption.NPV()
-                    << "\n    difference: " << error);
-        }
+    if (error > tol) {
+        BOOST_ERROR(" failed to reproduce prices with COSHestonEngine"
+                << "\n    expected:   " << 0.0
+                << "\n    calculated: " << europeanOption.NPV()
+                << "\n    difference: " << error);
+    }
     
 }
 
