@@ -65,7 +65,7 @@ namespace QuantLib {
 
 
         } else {
-            std::pair<Date,Date> dd = inflationPeriod(effectiveMaturity, arguments_.infIndex->frequency());
+            std::pair<Date,Date> dd = inflationPeriod(effectiveMaturity, arguments_.index->frequency());
             Real priceStart = 0.0;
 
             if (arguments_.type == Option::Call) {
