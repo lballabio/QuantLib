@@ -58,12 +58,12 @@ namespace QuantLib {
      We do not inherit from Option, although this would be reasonable,
      because we do not have that degree of generality.
 
-     */
+    */
     class CPICapFloor : public Instrument {
-    public:
+      public:
         class arguments;
-        class results;
         class engine;
+
         CPICapFloor(Option::Type type,
                     Real nominal,
                     const Date& startDate, // start date of contract (only)
@@ -74,9 +74,31 @@ namespace QuantLib {
                     Calendar payCalendar,
                     BusinessDayConvention payConvention,
                     Rate strike,
-                    Handle<ZeroInflationIndex> infIndex,
+                    const ext::shared_ptr<ZeroInflationIndex>& inflationIndex,
                     const Period& observationLag,
                     CPI::InterpolationType observationInterpolation = CPI::AsIndex);
+
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.28.
+        */
+        QL_DEPRECATED
+        CPICapFloor(Option::Type type,
+                    Real nominal,
+                    const Date& startDate, // start date of contract (only)
+                    Real baseCPI,
+                    const Date& maturity, // this is pre-adjustment!
+                    Calendar fixCalendar,
+                    BusinessDayConvention fixConvention,
+                    Calendar payCalendar,
+                    BusinessDayConvention payConvention,
+                    Rate strike,
+                    const Handle<ZeroInflationIndex>& infIndex,
+                    const Period& observationLag,
+                    CPI::InterpolationType observationInterpolation = CPI::AsIndex);
+
+        QL_DEPRECATED_DISABLE_WARNING
+        ~CPICapFloor() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
 
         //! \name Inspectors
         //@{
@@ -86,18 +108,27 @@ namespace QuantLib {
         Rate strike() const { return strike_; }
         Date fixingDate() const;
         Date payDate() const;
-        Handle<ZeroInflationIndex> inflationIndex() const { return infIndex_; }
+        const ext::shared_ptr<ZeroInflationIndex>& index() const { return index_; }
         Period observationLag() const { return observationLag_; }
         //@}
+
+        /*! \deprecated Use the `index` method instead.
+                        Deprecated in version 1.28.
+        */
+        QL_DEPRECATED
+        Handle<ZeroInflationIndex> inflationIndex() const {
+            QL_DEPRECATED_DISABLE_WARNING
+            return infIndex_;
+            QL_DEPRECATED_ENABLE_WARNING
+        }
 
         //! \name Instrument interface
         //@{
         bool isExpired() const override;
         void setupArguments(PricingEngine::arguments*) const override;
-        void fetchResults(const PricingEngine::results* r) const override;
         //@}
 
-    protected:
+      protected:
         Option::Type type_;
         Real nominal_;
         Date startDate_, fixDate_, payDate_;
@@ -108,14 +139,25 @@ namespace QuantLib {
         Calendar payCalendar_;
         BusinessDayConvention payConvention_;
         Rate strike_;
-        Handle<ZeroInflationIndex> infIndex_;
+        ext::shared_ptr<ZeroInflationIndex> index_;
         Period observationLag_;
         CPI::InterpolationType observationInterpolation_;
+
+        /*! \deprecated Use the `index_` data member instead.
+                        Deprecated in version 1.28.
+        */
+        QL_DEPRECATED
+        Handle<ZeroInflationIndex> infIndex_;
     };
 
 
-    class CPICapFloor::arguments : public virtual PricingEngine::arguments{
-    public:
+    class CPICapFloor::arguments : public virtual PricingEngine::arguments {
+      public:
+        QL_DEPRECATED_DISABLE_WARNING
+        arguments() = default;
+        ~arguments() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
+
         Option::Type type;
         Real nominal;
         Date startDate, fixDate, payDate;
@@ -124,23 +166,21 @@ namespace QuantLib {
         Calendar fixCalendar, payCalendar;
         BusinessDayConvention fixConvention, payConvention;
         Rate strike;
-        Handle<ZeroInflationIndex> infIndex;
+        ext::shared_ptr<ZeroInflationIndex> index;
         Period observationLag;
         CPI::InterpolationType observationInterpolation;
+
+        /*! \deprecated Use the `index` data member instead.
+                        Deprecated in version 1.28.
+        */
+        QL_DEPRECATED
+        Handle<ZeroInflationIndex> infIndex;
 
         void validate() const override;
     };
 
-
-    class CPICapFloor::results : public Instrument::results {
-    public:
-      void reset() override;
-    };
-
-
     class CPICapFloor::engine : public GenericEngine<CPICapFloor::arguments,
-                                                     CPICapFloor::results> {
-    };
+                                                     CPICapFloor::results> {};
 
 }
 
