@@ -149,6 +149,8 @@ namespace QuantLib {
     /*! \relates Matrix */
     Matrix operator+(const Matrix&, const Matrix&);
     /*! \relates Matrix */
+    Matrix operator-(const Matrix&);
+    /*! \relates Matrix */
     Matrix operator-(const Matrix&, const Matrix&);
     /*! \relates Matrix */
     Matrix operator*(const Matrix&, Real);
@@ -496,6 +498,12 @@ namespace QuantLib {
                    "added");
         Matrix temp(m1.rows(),m1.columns());
         std::transform(m1.begin(), m1.end(), m2.begin(), temp.begin(), std::plus<>());
+        return temp;
+    }
+
+    inline Matrix operator-(const Matrix& m1) {
+        Matrix temp(m1.rows(), m1.columns());
+        std::transform(m1.begin(), m1.end(), temp.begin(), std::negate<Real>());
         return temp;
     }
 
