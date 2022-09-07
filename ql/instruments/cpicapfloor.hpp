@@ -96,6 +96,10 @@ namespace QuantLib {
                     const Period& observationLag,
                     CPI::InterpolationType observationInterpolation = CPI::AsIndex);
 
+        QL_DEPRECATED_DISABLE_WARNING
+        ~CPICapFloor() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
+
         //! \name Inspectors
         //@{
         Option::Type type() const { return type_; }
@@ -149,6 +153,11 @@ namespace QuantLib {
 
     class CPICapFloor::arguments : public virtual PricingEngine::arguments {
       public:
+        QL_DEPRECATED_DISABLE_WARNING
+        arguments() = default;
+        ~arguments() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
+
         Option::Type type;
         Real nominal;
         Date startDate, fixDate, payDate;
