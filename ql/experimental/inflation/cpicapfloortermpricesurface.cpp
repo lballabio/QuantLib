@@ -24,8 +24,6 @@
 
 namespace QuantLib {
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     CPICapFloorTermPriceSurface::CPICapFloorTermPriceSurface(
         Real nominal,
         Real baseRate, // avoids an uncontrolled crash if index has no TS
@@ -33,17 +31,18 @@ namespace QuantLib {
         const Calendar& cal, // calendar in index may not be useful
         const BusinessDayConvention& bdc,
         const DayCounter& dc,
-        const Handle<ZeroInflationIndex>& zii,
+        const ext::shared_ptr<ZeroInflationIndex>& zii,
+        CPI::InterpolationType interpolationType,
         Handle<YieldTermStructure> yts,
         const std::vector<Rate>& cStrikes,
         const std::vector<Rate>& fStrikes,
         const std::vector<Period>& cfMaturities,
         const Matrix& cPrice,
         const Matrix& fPrice)
-    : InflationTermStructure(
-          0, cal, baseRate, observationLag, zii->frequency(), zii->interpolated(), dc),
-      zii_(zii), nominalTS_(std::move(yts)), cStrikes_(cStrikes), fStrikes_(fStrikes),
-      cfMaturities_(cfMaturities), cPrice_(cPrice), fPrice_(fPrice), nominal_(nominal), bdc_(bdc) {
+    : InflationTermStructure(0, cal, baseRate, observationLag, zii->frequency(), dc),
+      zii_(zii), interpolationType_(interpolationType), nominalTS_(std::move(yts)),
+      cStrikes_(cStrikes), fStrikes_(fStrikes), cfMaturities_(cfMaturities),
+      cPrice_(cPrice), fPrice_(fPrice), nominal_(nominal), bdc_(bdc) {
 
         // does the index have a TS?
         QL_REQUIRE(!zii_->zeroInflationTermStructure().empty(), "ZITS missing from index");
@@ -109,8 +108,17 @@ namespace QuantLib {
                         "cfStrikes not increasing");
     }
 
-    QL_DEPRECATED_ENABLE_WARNING
+    Rate CPICapFloorTermPriceSurface::atmRate(Date maturity) const {
+        Real F0 = CPI::laggedFixing(zii_, referenceDate(), observationLag_, interpolationType_);
+        Real F1 = CPI::laggedFixing(zii_, maturity, observationLag_, interpolationType_);
 
+        Time T = inflationYearFraction(
+            zii_->frequency(),
+            detail::CPI::isInterpolated(zii_, interpolationType_), dayCounter(),
+            referenceDate() - observationLag_, maturity - observationLag_);
+
+        return T > 0.0 ? std::pow(F1 / F0, 1 / T) - 1.0 : baseRate();
+    }
 
     Date CPICapFloorTermPriceSurface::cpiOptionDateFromTenor(const Period& p) const
     {
@@ -131,9 +139,6 @@ namespace QuantLib {
     Real CPICapFloorTermPriceSurface::floorPrice(const Period &d, Rate k) const {
         return this->floorPrice(cpiOptionDateFromTenor(d), k);
     }
-    
-    
-    
 
 }
 
