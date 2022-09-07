@@ -58,11 +58,10 @@ namespace QuantLib {
      We do not inherit from Option, although this would be reasonable,
      because we do not have that degree of generality.
 
-     */
+    */
     class CPICapFloor : public Instrument {
-    public:
+      public:
         class arguments;
-        class results;
         class engine;
         CPICapFloor(Option::Type type,
                     Real nominal,
@@ -94,10 +93,9 @@ namespace QuantLib {
         //@{
         bool isExpired() const override;
         void setupArguments(PricingEngine::arguments*) const override;
-        void fetchResults(const PricingEngine::results* r) const override;
         //@}
 
-    protected:
+      protected:
         Option::Type type_;
         Real nominal_;
         Date startDate_, fixDate_, payDate_;
@@ -114,8 +112,8 @@ namespace QuantLib {
     };
 
 
-    class CPICapFloor::arguments : public virtual PricingEngine::arguments{
-    public:
+    class CPICapFloor::arguments : public virtual PricingEngine::arguments {
+      public:
         Option::Type type;
         Real nominal;
         Date startDate, fixDate, payDate;
@@ -131,16 +129,8 @@ namespace QuantLib {
         void validate() const override;
     };
 
-
-    class CPICapFloor::results : public Instrument::results {
-    public:
-      void reset() override;
-    };
-
-
     class CPICapFloor::engine : public GenericEngine<CPICapFloor::arguments,
-                                                     CPICapFloor::results> {
-    };
+                                                     CPICapFloor::results> {};
 
 }
 

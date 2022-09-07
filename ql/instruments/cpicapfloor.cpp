@@ -119,16 +119,4 @@ namespace QuantLib {
 
     }
 
-
-    void CPICapFloor::results::reset() {
-        Instrument::results::reset();
-    }
-
-
-    void CPICapFloor::fetchResults(const PricingEngine::results* r) const {
-        Instrument::fetchResults(r);
-    }
-
-
-
 }
