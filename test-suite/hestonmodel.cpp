@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005, 2007, 2009, 2010, 2012, 2014, 2017 Klaus Spanderen
+ Copyright (C) 2022 Ignacio Anguita
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -2016,6 +2017,54 @@ void HestonModelTest::testCosHestonEngine() {
     }
 }
 
+void HestonModelTest::testCosHestonEngineTruncation() {
+    BOOST_TEST_MESSAGE("Testing Heston pricing via COS method outside truncation bounds");
+    
+    SavedSettings backup;
+    
+    const Date todaysDate(22, August, 2022);
+    const Date maturity(23, August, 2022);
+    Settings::instance().evaluationDate() = todaysDate;
+
+    Option::Type type(Option::Call);
+    Real underlying = 100;
+    Real strike = 200;
+    Rate dividendYield = 0;
+    Rate riskFreeRate = 0;
+    DayCounter dayCounter = Actual365Fixed();
+
+    ext::shared_ptr<Exercise> europeanExercise(new EuropeanExercise(maturity));
+    Handle<Quote> underlyingH(ext::shared_ptr<Quote>(new SimpleQuote(underlying)));
+    Handle<YieldTermStructure> riskFreeTS(
+        ext::shared_ptr<YieldTermStructure>(
+            new FlatForward(todaysDate, riskFreeRate, dayCounter)));
+    Handle<YieldTermStructure> dividendTS(
+        ext::shared_ptr<YieldTermStructure>(
+            new FlatForward(todaysDate, dividendYield, dayCounter)));
+
+    ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+    VanillaOption europeanOption(payoff, europeanExercise);
+
+    ext::shared_ptr<HestonProcess> hestonProcess(
+            new HestonProcess(riskFreeTS, dividendTS, underlyingH, .007, .8, .007, .1, -.2));
+    ext::shared_ptr<HestonModel> hestonModel(
+            new HestonModel(hestonProcess));
+    
+    europeanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+                new COSHestonEngine(hestonModel)));
+                
+    const Real tol = 1e-7;
+    const Real error = std::fabs(europeanOption.NPV() - 0.0);
+
+    if (error > tol) {
+        BOOST_ERROR(" failed to reproduce prices with COSHestonEngine"
+                << "\n    expected:   " << 0.0
+                << "\n    calculated: " << europeanOption.NPV()
+                << "\n    difference: " << error);
+    }
+    
+}
+
 void HestonModelTest::testCharacteristicFct() {
     BOOST_TEST_MESSAGE("Testing Heston characteristic function...");
 
@@ -3332,6 +3381,7 @@ test_suite* HestonModelTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAllIntegrationMethods));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonCumulants));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonEngine));
+    suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCosHestonEngineTruncation));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testCharacteristicFct));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAndersenPiterbargPricing));
     suite->add(QUANTLIB_TEST_CASE(&HestonModelTest::testAndersenPiterbargControlVariateIntegrand));
