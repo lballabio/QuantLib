@@ -4398,6 +4398,18 @@
     <ClInclude Include="ql\pricingengines\asian\turnbullwakemanasianengine.hpp">
       <Filter>pricingengines\asian</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\integrals\tanhsinhintegral.hpp">
+      <Filter>math\integrals</Filter>
+    </ClInclude>    
+    <ClInclude Include="ql\math\interpolations\chebyshevinterpolation.hpp">
+      <Filter>math\interpolations</Filter>
+    </ClInclude>    
+    <ClInclude Include="ql\pricingengines\vanilla\qdfpamericanengine.hpp">
+          <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>    
+    <ClInclude Include="ql\pricingengines\vanilla\qdplusamericanengine.hpp">
+          <Filter>pricingengines\vanilla</Filter>
+    </ClInclude>    
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7112,6 +7124,15 @@
     <ClCompile Include="ql\pricingengines\bond\riskybondengine.cpp" />
     <ClCompile Include="ql\pricingengines\asian\turnbullwakemanasianengine.cpp">
       <Filter>pricingengines\asian</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\interpolations\chebyshevinterpolation.cpp">
+      <Filter>math\interpolations</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\vanilla\qdfpamericanengine.cpp">
+          <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\vanilla\qdplusamericanengine.cpp">
+          <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

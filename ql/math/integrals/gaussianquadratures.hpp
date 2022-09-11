@@ -58,7 +58,7 @@ namespace QuantLib {
         template <class F>
         Real operator()(const F& f) const {
             Real sum = 0.0;
-            for (Integer i = order()-1; i >= 0; --i) {
+            for (Integer i = Integer(order())-1; i >= 0; --i) {
                 sum += w_[i] * f(x_[i]);
             }
             return sum;

@@ -115,7 +115,7 @@ namespace QuantLib {
 
     ext::shared_ptr<QdFpIterationScheme>
         QdFpIterationSchemeStdFactory::fastScheme_
-            = ext::make_shared<QdFpLegendreScheme>(7, 2, 6, 15);
+            = ext::make_shared<QdFpLegendreScheme>(7, 2, 7, 27);
 
     ext::shared_ptr<QdFpIterationScheme>
     QdFpIterationSchemeStdFactory::fastScheme() {
@@ -124,7 +124,7 @@ namespace QuantLib {
 
     ext::shared_ptr<QdFpIterationScheme>
         QdFpIterationSchemeStdFactory::accurateScheme_
-            = ext::make_shared<QdFpLegendreTanhSinhScheme>(25, 3, 13, 1e-8);
+            = ext::make_shared<QdFpLegendreTanhSinhScheme>(25, 5, 13, 1e-8);
 
     ext::shared_ptr<QdFpIterationScheme>
     QdFpIterationSchemeStdFactory::accurateScheme() {
@@ -132,13 +132,13 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<QdFpIterationScheme>
+        QdFpIterationSchemeStdFactory::highPrecisionScheme_
+            = ext::make_shared<QdFpTanhSinhIterationScheme>(10, 30, 1e-10);
+
+    ext::shared_ptr<QdFpIterationScheme>
     QdFpIterationSchemeStdFactory::highPrecisionScheme() {
         return QdFpIterationSchemeStdFactory::highPrecisionScheme_;
     }
-
-    ext::shared_ptr<QdFpIterationScheme>
-        QdFpIterationSchemeStdFactory::highPrecisionScheme_
-            = ext::make_shared<QdFpTanhSinhIterationScheme>(8, 32, 1e-10);
 
 
     class DqFpEquation {

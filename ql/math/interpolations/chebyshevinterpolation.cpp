@@ -20,8 +20,6 @@
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
 
-#include <iostream>
-
 namespace QuantLib {
     namespace chebyshev_interpolation_detail {
         Array apply(const Array& x, const ext::function<Real(Real)>& f) {

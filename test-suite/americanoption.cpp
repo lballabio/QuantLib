@@ -1559,7 +1559,7 @@ void AmericanOptionTest::testQdEngineStandardExample() {
 
 
     const QdFpAmericanEngine::FixedPointEquation schemes[] = {
-        QdFpAmericanEngine::FP_A//, QdFpAmericanEngine::FP_B
+        QdFpAmericanEngine::FP_A, QdFpAmericanEngine::FP_B
     };
     const Real expected[] = { 0.2386475283369327, 0.2386596962737606 };
 
@@ -1574,7 +1574,7 @@ void AmericanOptionTest::testQdEngineStandardExample() {
 
         const Real tol = 1e-15;
         const Real diff = std::abs(calculated - expected[i]);
-        std::cout << std::setprecision(16) << calculated << std::endl;
+
         if (diff > tol) {
             BOOST_ERROR("failed to reproduce high precision test values"
                     << "\n    diff     : " << diff
@@ -1603,11 +1603,18 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
     const auto qRate = ext::make_shared<SimpleQuote>(0.0);
     const auto vol = ext::make_shared<SimpleQuote>(0.0);
 
-    const Size T[] = {30, 91, 182, 273, 365};
-    const Rate rf[] = {0.02, 0.04, 0.06, 0.08, 0.1};
-    const Rate qy[] = {0, 0.04, 0.08, 0.12};
-    const Real S[] = {25, 50, 80, 90, 100, 110, 120, 150, 175, 200};
-    const Volatility sig[] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
+    // original test set from the article, takes too long
+    // const Size T[] = {30, 91, 182, 273, 365};
+    // const Rate rf[] = {0.02, 0.04, 0.06, 0.08, 0.1};
+    // const Rate qy[] = {0, 0.04, 0.08, 0.12};
+    // const Real S[] = {25, 50, 80, 90, 100, 110, 120, 150, 175, 200};
+    // const Volatility sig[] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
+
+     const Size T[] = {30, 182, 365};
+     const Rate rf[] = {0.02, 0.04, 0.06, 0.1};
+     const Rate qy[] = {0, 0.04, 0.08, 0.12};
+     const Real S[] = {25, 50, 90, 100, 110, 150, 200};
+     const Volatility sig[] = {0.1, 0.2, 0.4, 0.6};
 
     const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 100);
 
@@ -1626,9 +1633,7 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
         ext::make_shared<QdFpAmericanEngine>(
             bsProcess, QdFpIterationSchemeStdFactory::accurateScheme());
 
-
     IncrementalStatistics stats;
-
     for (auto t: T) {
         const Date maturityDate = today + Period(t, Days);
         VanillaOption option(
@@ -1650,7 +1655,6 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
                         const Real accurate = option.NPV();
 
                         const Real diff = std::abs(fast-accurate);
-
                         stats.add(diff);
                     }
                 }
@@ -1665,45 +1669,40 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
                 << "\n    RMSE diff: " << stats.standardDeviation()
                 << "\n    tol      : " << tolStdDev);
 
-    const Real tolMax = 1e-3;
-    if (stats.standardDeviation() > tolMax)
+    const Real tolMax = 2.5e-3;
+    if (stats.max() > tolMax)
         BOOST_ERROR("failed to reproduce low max deviation "
                 "with fast American engine"
-                << "\n    max diff: " << stats.standardDeviation()
+                << "\n    max diff: " << stats.max()
                 << "\n    tol     : " << tolMax);
-
-
-    std::cout << std::setprecision(16)
-        << stats.standardDeviation() << " "
-        << stats.max() << std::endl;
 }
 
 
 test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("American option tests");
 
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testJuValues));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdValues));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testZeroVolFDShoutNPV));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testLargeDividendShoutNPV));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testEscrowedVsSpotAmericanOption));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testTodayIsDividendDate));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryValues));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryConvergence));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdAmericanEngines));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testJuValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testZeroVolFDShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testLargeDividendShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testEscrowedVsSpotAmericanOption));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testTodayIsDividendDate));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryConvergence));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdAmericanEngines));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdFpIterationScheme));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testAndersenLakeHighPrecisionExample));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineStandardExample));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBulkQdFpAmericanEngine));
-//
-//    if (speed <= Fast) {
-//        suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
-//    }
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBulkQdFpAmericanEngine));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
+    }
 
     return suite;
 }
