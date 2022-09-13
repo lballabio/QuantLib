@@ -27,7 +27,6 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/ridder.hpp>
 #include <ql/math/solvers1d/newton.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
