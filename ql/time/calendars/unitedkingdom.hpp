@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     //! United Kingdom calendars
-    /*! Public holidays (data from http://www.dti.gov.uk/er/bankhol.htm):
+    /*! Repeating Public holidays (data from https://www.gov.uk/bank-holidays):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
