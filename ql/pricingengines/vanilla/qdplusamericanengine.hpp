@@ -26,6 +26,7 @@
 #include <ql/utilities/null.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 
 
 namespace QuantLib {
