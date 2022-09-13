@@ -48,9 +48,19 @@ namespace QuantLib {
                              const ext::shared_ptr<ZeroInflationIndex>& infIndex,
                              const Period& observationLag,
                              CPI::InterpolationType observationInterpolation)
-    : CPICapFloor(type, nominal, startDate, baseCPI, maturity, fixCalendar, fixConvention,
-                  payCalendar, payConvention, strike, Handle<ZeroInflationIndex>(infIndex),
-                  observationLag, observationInterpolation) {}
+    : CPICapFloor(type,
+                  nominal,
+                  startDate,
+                  baseCPI,
+                  maturity,
+                  std::move(fixCalendar),
+                  fixConvention,
+                  std::move(payCalendar),
+                  payConvention,
+                  strike,
+                  Handle<ZeroInflationIndex>(infIndex),
+                  observationLag,
+                  observationInterpolation) {}
 
     CPICapFloor::CPICapFloor(Option::Type type,
                              Real nominal,

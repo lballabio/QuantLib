@@ -91,7 +91,7 @@ namespace QuantLib {
         Natural paymentLag_ = 0;
 
         DateGeneration::Rule rule_ = DateGeneration::Backward;
-        bool endOfMonth_, isDefaultEOM_ = true;
+        bool endOfMonth_ = false, isDefaultEOM_ = true;
 
         Swap::Type type_ = Swap::Payer;
         Real nominal_ = 1.0;
