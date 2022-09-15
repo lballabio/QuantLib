@@ -7,6 +7,7 @@ this_include_HEADERS = \
 	brownianbridge.hpp \
 	earlyexercisepathpricer.hpp \
 	exercisestrategy.hpp \
+	fractionalpathgenerator.hpp \
 	genericlsregression.hpp \
 	longstaffschwartzpathpricer.hpp \
 	lsmbasissystem.hpp \

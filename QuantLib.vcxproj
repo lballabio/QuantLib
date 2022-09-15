@@ -1107,6 +1107,7 @@
     <ClInclude Include="ql\math\randomnumbers\boxmullergaussianrng.hpp" />
     <ClInclude Include="ql\math\randomnumbers\centrallimitgaussianrng.hpp" />
     <ClInclude Include="ql\math\randomnumbers\faurersg.hpp" />
+    <ClInclude Include="ql\math\randomnumbers\fractionalnoisersg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\haltonrsg.hpp" />
     <ClInclude Include="ql\math\randomnumbers\inversecumulativerng.hpp" />
     <ClInclude Include="ql\math\randomnumbers\inversecumulativersg.hpp" />
@@ -1283,6 +1284,7 @@
     <ClInclude Include="ql\methods\montecarlo\brownianbridge.hpp" />
     <ClInclude Include="ql\methods\montecarlo\earlyexercisepathpricer.hpp" />
     <ClInclude Include="ql\methods\montecarlo\exercisestrategy.hpp" />
+    <ClInclude Include="ql\methods\montecarlo\fractionalpathgenerator.hpp" />
     <ClInclude Include="ql\methods\montecarlo\genericlsregression.hpp" />
     <ClInclude Include="ql\methods\montecarlo\longstaffschwartzpathpricer.hpp" />
     <ClInclude Include="ql\methods\montecarlo\lsmbasissystem.hpp" />

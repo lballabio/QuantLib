@@ -7,6 +7,7 @@ this_include_HEADERS = \
 	boxmullergaussianrng.hpp \
 	centrallimitgaussianrng.hpp \
 	faurersg.hpp \
+	fractionalnoisersg.hpp \
 	haltonrsg.hpp \
 	inversecumulativerng.hpp \
 	inversecumulativersg.hpp \

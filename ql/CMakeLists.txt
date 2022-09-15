@@ -1501,6 +1501,7 @@ set(QL_HEADERS
     math/randomnumbers/boxmullergaussianrng.hpp
     math/randomnumbers/centrallimitgaussianrng.hpp
     math/randomnumbers/faurersg.hpp
+    math/randomnumbers/fractionalnoisersg.hpp
     math/randomnumbers/haltonrsg.hpp
     math/randomnumbers/inversecumulativerng.hpp
     math/randomnumbers/inversecumulativersg.hpp
@@ -1666,6 +1667,7 @@ set(QL_HEADERS
     methods/montecarlo/brownianbridge.hpp
     methods/montecarlo/earlyexercisepathpricer.hpp
     methods/montecarlo/exercisestrategy.hpp
+    methods/montecarlo/fractionalpathgenerator.hpp
     methods/montecarlo/genericlsregression.hpp
     methods/montecarlo/longstaffschwartzpathpricer.hpp
     methods/montecarlo/lsmbasissystem.hpp

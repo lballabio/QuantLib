@@ -2,6 +2,9 @@
 
 /*
  Copyright (C) 2003, 2004, 2005, 2006, 2007 Ferdinando Ametrano
+ Copyright (C) 2022 Chester Wong
+ Copyright (C) 2022 Wojciech Czernous
+
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -43,8 +46,23 @@ namespace QuantLib {
         requested to the 1-D underlying StatisticsType class, with the
         usual compile-time checks provided by the template approach.
 
+        The likelihood-ratio test statistic for covariance matrix 
+        under p-variate normal distribution assumption, is based on 
+        <i>
+        Tiefeng Jiang, Fan Yang "Central limit theorems for classical 
+        likelihood ratio tests for high-dimensional normal distributions," 
+        The Annals of Statistics, Ann. Statist. 41(4), 2029-2074, (August 2013)
+        https://dx.doi.org/10.1214/13-AOS1134
+        Section 2.5 is relevant here.
+        </i>
+        For this statistic, we produce the cdf value of N(0,1) distribution,
+        so the result should be distributed uniformly on (0,1).
+
+
         \test the correctness of the returned values is tested by
-              checking them against numerical calculations.
+              checking them against numerical calculations; 
+              LRT statistic for covariance matrix
+              is calculated for a standard normal sequence generator
     */
     template <class StatisticsType>
     class GenericSequenceStatistics {
@@ -60,10 +78,12 @@ namespace QuantLib {
         //@}
         //! \name covariance and correlation
         //@{
-        //! returns the covariance Matrix
+        //! returns the sample covariance Matrix (unbiased)
         Matrix covariance() const;
         //! returns the correlation Matrix
         Matrix correlation() const;
+        //! returns the likelihood-ratio test statistic for covariance
+        Real likelihoodratiotest(const Matrix& expectedCovariance) const;
         //@}
         //! \name 1-D inspectors lifted from underlying statistics class
         //@{
@@ -294,6 +314,50 @@ namespace QuantLib {
         return correlation;
     }
 
+
+    template <class Stat>
+    Real GenericSequenceStatistics<Stat>::likelihoodratiotest(const Matrix& expectedCovariance) const {
+        QL_REQUIRE(
+            expectedCovariance.columns() == dimension_ &&
+            expectedCovariance.rows() == dimension_, 
+            "The given (expected) covariance matrix has a wrong size:"
+            << expectedCovariance.rows() 
+            << " x "
+            << expectedCovariance.columns() 
+            << ", while dimension = "
+            << dimension_);
+        Real p = dimension_;
+        Real n = samples();
+        QL_REQUIRE(
+            n > 1+p,
+            "The sample size"
+            " (n = " << n << ")"
+            "should be larger than one plus dimension"
+            " (p = " << p << ")"
+        );
+        Matrix expCovInv = inverse(expectedCovariance);
+        // This should be multiplied by (n-1) to match the notation of Jiang&Yang:
+        Matrix A_cov = covariance();
+        Matrix A = expCovInv * A_cov; 
+        const Array& diag = A.diagonal();
+        Real trace = 0.0;
+        for (Size i = 0; i < dimension_; ++i)
+            trace += diag[i];
+        trace *= n - 1;
+        Real logdet = std::log(determinant(A)) + p * std::log(n-1);
+        Real logn = std::log(n);
+        std::vector<Real> ms = mean();
+        Real means2 = std::inner_product(ms.begin(),ms.end(),ms.begin(),Real(0.0));
+        Real log_Lambda_n_by_n = p/2*(1-logn) + logdet/2 - trace/2/n - means2/2;
+        Real mu_n_by_n = -0.25;
+        mu_n_by_n *= (2*n-2*p-3)*std::log(1-p/(n-1)) + 2*p + 2*p/n;
+
+        Real sigma_n_sq = -0.5;
+        sigma_n_sq *= p/(n-1) + std::log(1-p/(n-1));
+        Real sigma_n = std::sqrt(sigma_n_sq);
+
+        return (log_Lambda_n_by_n - mu_n_by_n) / sigma_n; 
+    }
 }
 
 

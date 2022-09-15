@@ -179,6 +179,9 @@
     <ClCompile Include="forwardrateagreement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fractionalnoisersg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="garch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -675,6 +678,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="forwardrateagreement.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fractionalnoisersg.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="garch.hpp">

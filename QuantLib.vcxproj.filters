@@ -357,6 +357,9 @@
     <ClInclude Include="ql\methods\montecarlo\exercisestrategy.hpp">
       <Filter>methods\montecarlo</Filter>
     </ClInclude>
+    <ClInclude Include="ql\methods\montecarlo\fractionalpathgenerator.hpp">
+      <Filter>methods\montecarlo</Filter>
+    </ClInclude>
     <ClInclude Include="ql\methods\montecarlo\genericlsregression.hpp">
       <Filter>methods\montecarlo</Filter>
     </ClInclude>
@@ -1216,6 +1219,9 @@
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\randomnumbers\faurersg.hpp">
+      <Filter>math\randomnumbers</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\math\randomnumbers\fractionalnoisersg.hpp">
       <Filter>math\randomnumbers</Filter>
     </ClInclude>
     <ClInclude Include="ql\math\randomnumbers\haltonrsg.hpp">

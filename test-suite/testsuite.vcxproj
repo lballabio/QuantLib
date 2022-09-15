@@ -702,6 +702,7 @@
     <ClCompile Include="fdmlinearop.cpp" />
     <ClCompile Include="forwardoption.cpp" />
     <ClCompile Include="forwardrateagreement.cpp" />
+    <ClCompile Include="fractionalnoisersg.cpp" />
     <ClCompile Include="garch.cpp" />
     <ClCompile Include="gaussianquadratures.cpp" />
     <ClCompile Include="gjrgarchmodel.cpp" />
@@ -870,6 +871,7 @@
     <ClInclude Include="fdmlinearop.hpp" />
     <ClInclude Include="forwardoption.hpp" />
     <ClInclude Include="forwardrateagreement.hpp" />
+    <ClInclude Include="fractionalnoisersg.hpp" />
     <ClInclude Include="garch.hpp" />
     <ClInclude Include="gaussianquadratures.hpp" />
     <ClInclude Include="gjrgarchmodel.hpp" />

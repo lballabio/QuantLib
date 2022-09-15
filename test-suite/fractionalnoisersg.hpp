@@ -1,8 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2003 RiskMap srl
  Copyright (C) 2022 Chester Wong
  Copyright (C) 2022 Wojciech Czernous
 
@@ -20,20 +18,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_covariance_hpp
-#define quantlib_test_covariance_hpp
+#ifndef quantlib_test_fractional_gaussian_noise_hpp
+#define quantlib_test_fractional_gaussian_noise_hpp
 
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
 
-class CovarianceTest {
+class FractionalGaussianNoiseTest {
   public:
-    static void testCovariance();
-    static void testSalvagingMatrix();
-    static void testRankReduction();
-    static void testLRTCovariance();
+    static void testVariates();
     static boost::unit_test_framework::test_suite* suite();
 };
 

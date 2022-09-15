@@ -66,6 +66,7 @@ QL_TEST_SRCS = \
 	fittedbonddiscountcurve.cpp \
 	forwardoption.cpp \
 	forwardrateagreement.cpp \
+	fractionalnoisersg.cpp \
 	functions.cpp \
 	garch.cpp \
 	gaussianquadratures.cpp \
@@ -234,6 +235,7 @@ QL_TEST_HDRS = \
 	fittedbonddiscountcurve.hpp \
 	forwardoption.hpp \
 	forwardrateagreement.hpp \
+	fractionalnoisersg.hpp \
 	functions.hpp \
 	garch.hpp \
 	gaussianquadratures.hpp \

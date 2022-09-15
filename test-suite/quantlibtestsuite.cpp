@@ -104,6 +104,7 @@
 #include "fittedbonddiscountcurve.hpp"
 #include "forwardoption.hpp"
 #include "forwardrateagreement.hpp"
+#include "fractionalnoisersg.hpp"
 #include "functions.hpp"
 #include "gaussianquadratures.hpp"
 #include "garch.hpp"
@@ -405,6 +406,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(FittedBondDiscountCurveTest::suite());
     test->add(ForwardOptionTest::suite(speed));
     test->add(ForwardRateAgreementTest::suite());
+    test->add(FractionalGaussianNoiseTest::suite());
     test->add(FunctionsTest::suite());
     test->add(GARCHTest::suite());
     test->add(GaussianQuadraturesTest::suite());

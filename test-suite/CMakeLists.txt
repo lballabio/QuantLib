@@ -64,6 +64,7 @@ set(QL_TEST_SOURCES
     fittedbonddiscountcurve.cpp
     forwardoption.cpp
     forwardrateagreement.cpp
+    fractionalnoisersg.cpp
     functions.cpp
     garch.cpp
     gaussianquadratures.cpp
@@ -233,6 +234,7 @@ set(QL_TEST_HEADERS
     fittedbonddiscountcurve.hpp
     forwardoption.hpp
     forwardrateagreement.hpp
+    fractionalnoisersg.hpp
     functions.hpp
     garch.hpp
     gaussianquadratures.hpp

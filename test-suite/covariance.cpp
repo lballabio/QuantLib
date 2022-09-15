@@ -3,6 +3,8 @@
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2022 Chester Wong
+ Copyright (C) 2022 Wojciech Czernous
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +24,7 @@
 #include "utilities.hpp"
 #include <ql/math/matrixutilities/getcovariance.hpp>
 #include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
 
 using namespace QuantLib;
@@ -269,12 +272,44 @@ void CovarianceTest::testCovariance() {
 
 }
 
+void CovarianceTest::testLRTCovariance() {
+
+    BOOST_TEST_MESSAGE("Testing N(0,1) random generator with likelihood-ratio test for covariance ...");
+
+    BigNatural seed = 42;
+    Size dimension = 100; // length of the Gaussian sequence 
+    Size samples = dimension + 3;
+
+    PseudoRandom::rsg_type gsg = PseudoRandom::make_sequence_generator(dimension, seed);
+    typedef PseudoRandom::rsg_type::sample_type sample_type;
+    SequenceStatistics stats(dimension);
+    for (Size j = 0; j < samples; ++j)
+    {
+        const sample_type& sample = gsg.nextSequence(); 
+        stats.add(sample.value.begin(), sample.value.end());
+    }
+
+    Matrix expCov(dimension, dimension, 0.0); // expected covariance is the identity matrix (iid N(0,1))
+    for (Size i = 0; i < dimension; ++i)
+        expCov[i][i] = 1.0;
+
+    Real calculated = stats.likelihoodratiotest(expCov);
+
+    if (fabs(calculated) > 3)
+        BOOST_ERROR("The value of the LRT statistic for covariance matrix"
+                    " is: \n" << calculated << ", which is drawn from"
+                    " a distribution close to N(0,1).\n"
+                    "This value is outside the interval [-3,3], which is weird.");
+}
+
+
 
 test_suite* CovarianceTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Covariance and correlation tests");
     suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testCovariance));
     suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testSalvagingMatrix));
     suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testRankReduction));
+    suite->add(QUANTLIB_TEST_CASE(&CovarianceTest::testLRTCovariance));
     return suite;
 }
 
