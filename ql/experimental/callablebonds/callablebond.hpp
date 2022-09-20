@@ -134,37 +134,10 @@ namespace QuantLib {
         DayCounter paymentDayCounter_;
         Frequency frequency_;
         CallabilitySchedule putCallSchedule_;
-        //! must be set by derived classes for impliedVolatility() to work
-        mutable ext::shared_ptr<PricingEngine> blackEngine_;
-        //! Black fwd yield volatility quote handle to internal blackEngine_
-        mutable RelinkableHandle<Quote> blackVolQuote_;
-        //! Black fwd yield volatility quote handle to internal blackEngine_
-        mutable RelinkableHandle<YieldTermStructure> blackDiscountCurve_;
-        //! helper class for Black implied volatility calculation
+        // helper class for Black implied volatility calculation
         class ImpliedVolHelper;
-        friend class ImpliedVolHelper;
-        class ImpliedVolHelper {
-          public:
-            ImpliedVolHelper(const CallableBond& bond,
-                             Real targetValue);
-            Real operator()(Volatility x) const;
-          private:
-            ext::shared_ptr<PricingEngine> engine_;
-            Real targetValue_;
-            ext::shared_ptr<SimpleQuote> vol_;
-            const Instrument::results* results_;
-        };
-        //! Helper class for option adjusted spread calculations
+        // helper class for option adjusted spread calculations
         class NPVSpreadHelper;
-        friend class NPVSpreadHelper;
-        class NPVSpreadHelper {
-        public:
-            explicit NPVSpreadHelper(CallableBond& bond);
-            Real operator()(Spread x) const;
-        private:
-            CallableBond& bond_;
-            const Instrument::results* results_;
-        };
     };
 
     class CallableBond::arguments : public Bond::arguments {

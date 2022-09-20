@@ -697,10 +697,6 @@ void CallableBondTest::testImpliedVol() {
                                 vars.rollingConvention, 100.0,
                                 vars.issueDate(), callabilities);
 
-    Size timeSteps = 120;
-    bond.setPricingEngine(ext::make_shared<TreeCallableZeroCouponBondEngine>(
-        *(vars.model), timeSteps, vars.termStructure));
-
     Real targetPrice = 73.5;
     Real volatility = bond.impliedVolatility(targetPrice,
                                              vars.termStructure,

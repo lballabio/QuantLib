@@ -68,29 +68,40 @@ namespace QuantLib {
     }
 
 
+    class CallableBond::ImpliedVolHelper {
+      public:
+        ImpliedVolHelper(const CallableBond& bond,
+                         const Handle<YieldTermStructure>& discountCurve,
+                         Real targetValue);
+        Real operator()(Volatility x) const;
+      private:
+        ext::shared_ptr<PricingEngine> engine_;
+        Real targetValue_;
+        ext::shared_ptr<SimpleQuote> vol_;
+        const Instrument::results* results_;
+    };
+
     CallableBond::ImpliedVolHelper::ImpliedVolHelper(
                               const CallableBond& bond,
+                              const Handle<YieldTermStructure>& discountCurve,
                               Real targetValue)
     : targetValue_(targetValue) {
 
         vol_ = ext::make_shared<SimpleQuote>(0.0);
-        bond.blackVolQuote_.linkTo(vol_);
+        engine_ = ext::make_shared<BlackCallableFixedRateBondEngine>(Handle<Quote>(vol_),
+                                                                     discountCurve);
 
-        QL_REQUIRE(bond.blackEngine_,
-                   "Must set blackEngine_ to use impliedVolatility");
-
-        engine_ = bond.blackEngine_;
         bond.setupArguments(engine_->getArguments());
         results_ =
             dynamic_cast<const Instrument::results*>(engine_->getResults());
     }
-
 
     Real CallableBond::ImpliedVolHelper::operator()(Volatility x) const {
         vol_->setValue(x);
         engine_->calculate(); // get the Black NPV based on vol x
         return results_->value-targetValue_;
     }
+
 
     Volatility CallableBond::impliedVolatility(
                               Real targetValue,
@@ -99,15 +110,14 @@ namespace QuantLib {
                               Size maxEvaluations,
                               Volatility minVol,
                               Volatility maxVol) const {
-        calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
-        Volatility guess = 0.5*(minVol + maxVol);
-        blackDiscountCurve_.linkTo(*discountCurve, false);
-        ImpliedVolHelper f(*this,targetValue);
+        Volatility guess = 0.5 * (minVol + maxVol);
+        ImpliedVolHelper f(*this, discountCurve, targetValue);
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
     }
+
 
     namespace {
 
@@ -220,6 +230,15 @@ namespace QuantLib {
     }
 
 
+    class CallableBond::NPVSpreadHelper {
+      public:
+        explicit NPVSpreadHelper(CallableBond& bond);
+        Real operator()(Spread x) const;
+      private:
+        CallableBond& bond_;
+        const Instrument::results* results_;
+    };
+
     CallableBond::NPVSpreadHelper::NPVSpreadHelper(CallableBond& bond):
         bond_(bond),
         results_(dynamic_cast<const Instrument::results*>(bond.engine_->getResults()))
@@ -227,15 +246,15 @@ namespace QuantLib {
         bond.setupArguments(bond.engine_->getArguments());
     }
 
-   Real CallableBond::NPVSpreadHelper::operator()(Real x) const
-   {
-       auto* args = dynamic_cast<CallableBond::arguments*>(bond_.engine_->getArguments());
-       // Pops the original value when function finishes
-       RestoreVal<Spread> restorer(args->spread);
-       args->spread=x;
-       bond_.engine_->calculate();
-       return results_->value;
-   }
+    Real CallableBond::NPVSpreadHelper::operator()(Real x) const
+    {
+        auto* args = dynamic_cast<CallableBond::arguments*>(bond_.engine_->getArguments());
+        // Pops the original value when function finishes
+        RestoreVal<Spread> restorer(args->spread);
+        args->spread=x;
+        bond_.engine_->calculate();
+        return results_->value;
+    }
 
     Spread CallableBond::OAS(Real cleanPrice,
                              const Handle<YieldTermStructure>& engineTS,
@@ -399,13 +418,6 @@ namespace QuantLib {
                                                    paymentConvention);
             setSingleRedemption(faceAmount, redemption, redemptionDate);
         }
-
-        // used for impliedVolatility() calculation
-        ext::shared_ptr<SimpleQuote> dummyVolQuote(new SimpleQuote(0.));
-        blackVolQuote_.linkTo(dummyVolQuote);
-        blackEngine_ = ext::shared_ptr<PricingEngine>(
-                   new BlackCallableFixedRateBondEngine(blackVolQuote_,
-                                                        blackDiscountCurve_));
     }
 
 
