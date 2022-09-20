@@ -22,6 +22,7 @@
 #include "utilities.hpp"
 #include <ql/experimental/callablebonds/callablebond.hpp>
 #include <ql/experimental/callablebonds/treecallablebondengine.hpp>
+#include <ql/experimental/callablebonds/blackcallablebondengine.hpp>
 #include <ql/instruments/bonds/zerocouponbond.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
@@ -674,6 +675,53 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
     }
 }
 
+
+void CallableBondTest::testImpliedVol() {
+
+    BOOST_TEST_MESSAGE("Testing implied volatility calculation for callable bonds...");
+
+    Globals vars;
+
+    vars.termStructure.linkTo(vars.makeFlatCurve(0.03));
+    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));
+
+    CallabilitySchedule callabilities = {
+        ext::make_shared<Callability>(
+                         Bond::Price(100.0, Bond::Price::Clean),
+                         Callability::Call,
+                         vars.calendar.advance(vars.issueDate(),4,Years))
+    };
+
+    CallableZeroCouponBond bond(3, 100.0, vars.calendar,
+                                vars.maturityDate(), Thirty360(Thirty360::BondBasis),
+                                vars.rollingConvention, 100.0,
+                                vars.issueDate(), callabilities);
+
+    Size timeSteps = 120;
+    bond.setPricingEngine(ext::make_shared<TreeCallableZeroCouponBondEngine>(
+        *(vars.model), timeSteps, vars.termStructure));
+
+    Real targetPrice = 73.5;
+    Real volatility = bond.impliedVolatility(targetPrice,
+                                             vars.termStructure,
+                                             1e-4,  // accuracy
+                                             200,   // max evaluations
+                                             1e-4,  // min vol
+                                             1.0);  // max vol
+
+    bond.setPricingEngine(ext::make_shared<BlackCallableZeroCouponBondEngine>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(volatility)), vars.termStructure));
+
+    if (std::fabs(bond.NPV() - targetPrice) > 1.0e-4)
+        BOOST_ERROR(
+            "callability not exercised correctly:\n"
+            << std::setprecision(5)
+            << "    calculated NPV: " << bond.NPV() << "\n"
+            << "    expected:       " << targetPrice << "\n"
+            << "    difference:     " << bond.NPV() - targetPrice);
+}
+
+
 test_suite* CallableBondTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Callable-bond tests");
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testConsistency));
@@ -682,5 +730,6 @@ test_suite* CallableBondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testDegenerate));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testCached));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testSnappingExerciseDate2ClosestCouponDate));
+    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testImpliedVol));
     return suite;
 }

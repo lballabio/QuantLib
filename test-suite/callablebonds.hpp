@@ -31,6 +31,7 @@ class CallableBondTest {
     static void testDegenerate();
     static void testCached();
     static void testSnappingExerciseDate2ClosestCouponDate();
+    static void testImpliedVol();
     static boost::unit_test_framework::test_suite* suite();
 };
 
