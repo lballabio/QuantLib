@@ -55,6 +55,7 @@ namespace QuantLib {
         class arguments;
         class results;
         class engine;
+
         //! \name Inspectors
         //@{
         //! return the bond's put/call schedule
@@ -62,6 +63,7 @@ namespace QuantLib {
             return putCallSchedule_;
         }
         //@}
+
         //! \name Calculations
         //@{
         //! returns the Black implied forward yield volatility
@@ -138,6 +140,8 @@ namespace QuantLib {
                                 Real bump=2e-4);
         //@}
 
+        void setupArguments(PricingEngine::arguments* args) const override;
+
       protected:
         CallableBond(Natural settlementDays,
                      const Schedule& schedule,
@@ -154,6 +158,16 @@ namespace QuantLib {
         class ImpliedVolHelper;
         // helper class for option adjusted spread calculations
         class NPVSpreadHelper;
+
+      private:
+        /*  Used internally.
+            same as Bond::accruedAmount() but with enable early
+            payments true.  Forces accrued to be calculated in a
+            consistent way for future put/ call dates, which can be
+            problematic in lattice engines when option dates are also
+            coupon dates.
+        */
+        Real accrued(Date settlement) const;
     };
 
     class CallableBond::arguments : public Bond::arguments {
@@ -212,18 +226,6 @@ namespace QuantLib {
                               const Calendar& exCouponCalendar = Calendar(),
                               BusinessDayConvention exCouponConvention = Unadjusted,
                               bool exCouponEndOfMonth = false);
-
-        void setupArguments(PricingEngine::arguments* args) const override;
-
-      private:
-        //! accrued interest used internally, where includeToday = false
-        /*! same as Bond::accruedAmount() but with enable early
-            payments true.  Forces accrued to be calculated in a
-            consistent way for future put/ call dates, which can be
-            problematic in lattice engines when option dates are also
-            coupon dates.
-        */
-        Real accrued(Date settlement) const;
     };
 
     //! callable/puttable zero coupon bond

@@ -414,72 +414,9 @@ namespace QuantLib {
     }
 
 
-    CallableFixedRateBond::CallableFixedRateBond(
-                              Natural settlementDays,
-                              Real faceAmount,
-                              const Schedule& schedule,
-                              const std::vector<Rate>& coupons,
-                              const DayCounter& accrualDayCounter,
-                              BusinessDayConvention paymentConvention,
-                              Real redemption,
-                              const Date& issueDate,
-                              const CallabilitySchedule& putCallSchedule,
-                              const Period& exCouponPeriod,
-                              const Calendar& exCouponCalendar,
-                              BusinessDayConvention exCouponConvention,
-                              bool exCouponEndOfMonth)
-    : CallableBond(settlementDays, schedule, accrualDayCounter, faceAmount,
-                   issueDate, putCallSchedule) {
+    void CallableBond::setupArguments(PricingEngine::arguments* args) const {
 
-        frequency_ = schedule.tenor().frequency();
-
-        bool isZeroCouponBond = (coupons.size() == 1 && close(coupons[0], 0.0));
-
-        if (!isZeroCouponBond) {
-            cashflows_ =
-                FixedRateLeg(schedule)
-                .withNotionals(faceAmount)
-                .withCouponRates(coupons, accrualDayCounter)
-                .withPaymentAdjustment(paymentConvention)
-                .withExCouponPeriod(exCouponPeriod,
-                                    exCouponCalendar,
-                                    exCouponConvention,
-                                    exCouponEndOfMonth);
-
-            addRedemptionsToCashflows(std::vector<Real>(1, redemption));
-        } else {
-            Date redemptionDate = calendar_.adjust(maturityDate_,
-                                                   paymentConvention);
-            setSingleRedemption(faceAmount, redemption, redemptionDate);
-        }
-    }
-
-
-    Real CallableFixedRateBond::accrued(Date settlement) const {
-
-        if (settlement == Date()) settlement = settlementDate();
-
-        const bool IncludeToday = false;
-        for (const auto& cashflow : cashflows_) {
-            // the first coupon paying after d is the one we're after
-            if (!cashflow->hasOccurred(settlement, IncludeToday)) {
-                ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(cashflow);
-                if (coupon != nullptr)
-                    // !!!
-                    return coupon->accruedAmount(settlement) /
-                           notional(settlement) * 100.0;
-                else
-                    return 0.0;
-            }
-        }
-        return 0.0;
-    }
-
-
-    void CallableFixedRateBond::setupArguments(
-                                       PricingEngine::arguments* args) const {
-
-        CallableBond::setupArguments(args);
+        Bond::setupArguments(args);
 
         auto* arguments = dynamic_cast<CallableBond::arguments*>(args);
 
@@ -532,6 +469,68 @@ namespace QuantLib {
         }
 
         arguments->spread = 0.0;
+    }
+
+
+    Real CallableBond::accrued(Date settlement) const {
+
+        if (settlement == Date()) settlement = settlementDate();
+
+        const bool IncludeToday = false;
+        for (const auto& cashflow : cashflows_) {
+            // the first coupon paying after d is the one we're after
+            if (!cashflow->hasOccurred(settlement, IncludeToday)) {
+                ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(cashflow);
+                if (coupon != nullptr)
+                    // !!!
+                    return coupon->accruedAmount(settlement) /
+                           notional(settlement) * 100.0;
+                else
+                    return 0.0;
+            }
+        }
+        return 0.0;
+    }
+
+
+    CallableFixedRateBond::CallableFixedRateBond(
+                              Natural settlementDays,
+                              Real faceAmount,
+                              const Schedule& schedule,
+                              const std::vector<Rate>& coupons,
+                              const DayCounter& accrualDayCounter,
+                              BusinessDayConvention paymentConvention,
+                              Real redemption,
+                              const Date& issueDate,
+                              const CallabilitySchedule& putCallSchedule,
+                              const Period& exCouponPeriod,
+                              const Calendar& exCouponCalendar,
+                              BusinessDayConvention exCouponConvention,
+                              bool exCouponEndOfMonth)
+    : CallableBond(settlementDays, schedule, accrualDayCounter, faceAmount,
+                   issueDate, putCallSchedule) {
+
+        frequency_ = schedule.tenor().frequency();
+
+        bool isZeroCouponBond = (coupons.size() == 1 && close(coupons[0], 0.0));
+
+        if (!isZeroCouponBond) {
+            cashflows_ =
+                FixedRateLeg(schedule)
+                .withNotionals(faceAmount)
+                .withCouponRates(coupons, accrualDayCounter)
+                .withPaymentAdjustment(paymentConvention)
+                .withExCouponPeriod(exCouponPeriod,
+                                    exCouponCalendar,
+                                    exCouponConvention,
+                                    exCouponEndOfMonth);
+
+            addRedemptionsToCashflows(std::vector<Real>(1, redemption));
+        } else {
+            Date redemptionDate = calendar_.adjust(maturityDate_,
+                                                   paymentConvention);
+            setSingleRedemption(faceAmount, redemption, redemptionDate);
+        }
     }
 
 
