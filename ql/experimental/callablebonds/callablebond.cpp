@@ -28,16 +28,17 @@
 namespace QuantLib {
 
     CallableBond::CallableBond(Natural settlementDays,
-                               const Schedule& schedule,
+                               const Date& maturityDate,
+                               const Calendar& calendar,
                                DayCounter paymentDayCounter,
                                Real faceAmount,
                                const Date& issueDate,
                                CallabilitySchedule putCallSchedule)
-    : Bond(settlementDays, schedule.calendar(), issueDate),
+    : Bond(settlementDays, calendar, issueDate),
       paymentDayCounter_(std::move(paymentDayCounter)),
       putCallSchedule_(std::move(putCallSchedule)), faceAmount_(faceAmount) {
 
-        maturityDate_ = schedule.dates().back();
+        maturityDate_ = maturityDate;
 
         if (!putCallSchedule_.empty()) {
             Date finalOptionDate = Date::minDate();
@@ -507,30 +508,22 @@ namespace QuantLib {
                               const Calendar& exCouponCalendar,
                               BusinessDayConvention exCouponConvention,
                               bool exCouponEndOfMonth)
-    : CallableBond(settlementDays, schedule, accrualDayCounter, faceAmount,
-                   issueDate, putCallSchedule) {
+    : CallableBond(settlementDays, schedule.dates().back(), schedule.calendar(),
+                   accrualDayCounter, faceAmount, issueDate, putCallSchedule) {
 
         frequency_ = schedule.tenor().frequency();
 
-        bool isZeroCouponBond = (coupons.size() == 1 && close(coupons[0], 0.0));
+        cashflows_ =
+            FixedRateLeg(schedule)
+            .withNotionals(faceAmount)
+            .withCouponRates(coupons, accrualDayCounter)
+            .withPaymentAdjustment(paymentConvention)
+            .withExCouponPeriod(exCouponPeriod,
+                                exCouponCalendar,
+                                exCouponConvention,
+                                exCouponEndOfMonth);
 
-        if (!isZeroCouponBond) {
-            cashflows_ =
-                FixedRateLeg(schedule)
-                .withNotionals(faceAmount)
-                .withCouponRates(coupons, accrualDayCounter)
-                .withPaymentAdjustment(paymentConvention)
-                .withExCouponPeriod(exCouponPeriod,
-                                    exCouponCalendar,
-                                    exCouponConvention,
-                                    exCouponEndOfMonth);
-
-            addRedemptionsToCashflows(std::vector<Real>(1, redemption));
-        } else {
-            Date redemptionDate = calendar_.adjust(maturityDate_,
-                                                   paymentConvention);
-            setSingleRedemption(faceAmount, redemption, redemptionDate);
-        }
+        addRedemptionsToCashflows({redemption});
     }
 
 
@@ -544,17 +537,15 @@ namespace QuantLib {
                               Real redemption,
                               const Date& issueDate,
                               const CallabilitySchedule& putCallSchedule)
-    : CallableFixedRateBond(settlementDays,faceAmount,
-                            Schedule(issueDate, maturityDate,
-                                     Period(Once),
-                                     calendar,
-                                     paymentConvention,
-                                     paymentConvention,
-                                     DateGeneration::Backward,
-                                     false),
-                            std::vector<Rate>(1, 0.0), dayCounter,
-                            paymentConvention, redemption,
-                            issueDate, putCallSchedule) {}
+    : CallableBond(settlementDays, maturityDate, calendar,
+                   dayCounter, faceAmount, issueDate, putCallSchedule) {
+
+        frequency_ = Once;
+
+        Date redemptionDate = calendar_.adjust(maturityDate_,
+                                               paymentConvention);
+        setSingleRedemption(faceAmount, redemption, redemptionDate);
+    }
 
 }
 
