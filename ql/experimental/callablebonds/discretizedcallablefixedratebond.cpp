@@ -94,6 +94,7 @@ namespace QuantLib {
                 }
             }
 
+            adjustedCallabilityPrices_[i] *= arguments_.faceAmount / 100.0;
             callabilityTimes_[i] = callabilityTime;
         }
     }
