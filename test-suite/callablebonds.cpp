@@ -89,8 +89,7 @@ namespace {
             dayCounter = Actual365Fixed();
             rollingConvention = ModifiedFollowing;
 
-            today = Date::todaysDate();
-            Settings::instance().evaluationDate() = today;
+            today = Settings::instance().evaluationDate();
             settlement = calendar.advance(today,2,Days);
         }
     };
@@ -525,7 +524,7 @@ void CallableBondTest::testCached() {
     double tolerance = 1.0e-8;
 
     double storedPrice1 = 110.60975477;
-    CallableFixedRateBond bond1(3, 100.0, schedule,
+    CallableFixedRateBond bond1(3, 10000.0, schedule,
                                 coupons, Thirty360(Thirty360::BondBasis),
                                 vars.rollingConvention,
                                 100.0, vars.issueDate(),
@@ -540,7 +539,7 @@ void CallableBondTest::testCached() {
             << "    expected:   " << storedPrice1);
 
     double storedPrice2 = 115.16559362;
-    CallableFixedRateBond bond2(3, 100.0, schedule,
+    CallableFixedRateBond bond2(3, 10000.0, schedule,
                                 coupons, Thirty360(Thirty360::BondBasis),
                                 vars.rollingConvention,
                                 100.0, vars.issueDate(),
@@ -555,7 +554,7 @@ void CallableBondTest::testCached() {
             << "    expected:   " << storedPrice2);
 
     double storedPrice3 = 110.97509625;
-    CallableFixedRateBond bond3(3, 100.0, schedule,
+    CallableFixedRateBond bond3(3, 10000.0, schedule,
                                 coupons, Thirty360(Thirty360::BondBasis),
                                 vars.rollingConvention,
                                 100.0, vars.issueDate(),
@@ -676,14 +675,53 @@ void CallableBondTest::testSnappingExerciseDate2ClosestCouponDate() {
 }
 
 
+void CallableBondTest::testBlackEngine() {
+
+    BOOST_TEST_MESSAGE("Testing Black engine for European callable bonds...");
+
+    Globals vars;
+
+    vars.today = Date(20, September, 2022);
+    Settings::instance().evaluationDate() = vars.today;
+    vars.settlement = vars.calendar.advance(vars.today, 3, Days);
+
+    vars.termStructure.linkTo(vars.makeFlatCurve(0.03));
+
+    CallabilitySchedule callabilities = {
+        ext::make_shared<Callability>(
+                         Bond::Price(100.0, Bond::Price::Clean),
+                         Callability::Call,
+                         vars.calendar.advance(vars.issueDate(),4,Years))
+    };
+
+    CallableZeroCouponBond bond(3, 10000.0, vars.calendar,
+                                vars.maturityDate(), Thirty360(Thirty360::BondBasis),
+                                vars.rollingConvention, 100.0,
+                                vars.issueDate(), callabilities);
+
+    bond.setPricingEngine(ext::make_shared<BlackCallableZeroCouponBondEngine>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(0.3)), vars.termStructure));
+
+    Real expected = 74.52915084;
+    Real calculated = bond.cleanPrice();
+
+    if (std::fabs(calculated - expected) > 1.0e-4)
+        BOOST_ERROR(
+            "failed to reproduce cached price:\n"
+            << std::setprecision(5)
+            << "    calculated NPV: " << calculated << "\n"
+            << "    expected:       " << expected << "\n"
+            << "    difference:     " << calculated - expected);
+}
+
+
 void CallableBondTest::testImpliedVol() {
 
-    BOOST_TEST_MESSAGE("Testing implied volatility calculation for callable bonds...");
+    BOOST_TEST_MESSAGE("Testing implied-volatility calculation for callable bonds...");
 
     Globals vars;
 
     vars.termStructure.linkTo(vars.makeFlatCurve(0.03));
-    vars.model.linkTo(ext::make_shared<HullWhite>(vars.termStructure));
 
     CallabilitySchedule callabilities = {
         ext::make_shared<Callability>(
@@ -710,7 +748,7 @@ void CallableBondTest::testImpliedVol() {
 
     if (std::fabs(bond.NPV() - targetPrice) > 1.0e-4)
         BOOST_ERROR(
-            "callability not exercised correctly:\n"
+            "failed to reproduce target price with implied volatility:\n"
             << std::setprecision(5)
             << "    calculated NPV: " << bond.NPV() << "\n"
             << "    expected:       " << targetPrice << "\n"
@@ -726,6 +764,7 @@ test_suite* CallableBondTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testDegenerate));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testCached));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testSnappingExerciseDate2ClosestCouponDate));
+    suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testBlackEngine));
     suite->add(QUANTLIB_TEST_CASE(&CallableBondTest::testImpliedVol));
     return suite;
 }

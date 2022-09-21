@@ -128,12 +128,14 @@ namespace QuantLib {
         CallableBond(Natural settlementDays,
                      const Schedule& schedule,
                      DayCounter paymentDayCounter,
+                     Real faceAmount,
                      const Date& issueDate = Date(),
                      CallabilitySchedule putCallSchedule = CallabilitySchedule());
 
         DayCounter paymentDayCounter_;
         Frequency frequency_;
         CallabilitySchedule putCallSchedule_;
+        Real faceAmount_;
         // helper class for Black implied volatility calculation
         class ImpliedVolHelper;
         // helper class for option adjusted spread calculations
@@ -145,6 +147,7 @@ namespace QuantLib {
         arguments() = default;
         std::vector<Date> couponDates;
         std::vector<Real> couponAmounts;
+        Real faceAmount;
         //! redemption = face amount * redemption / 100.
         Real redemption;
         Date redemptionDate;

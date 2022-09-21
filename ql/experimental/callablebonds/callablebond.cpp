@@ -30,11 +30,12 @@ namespace QuantLib {
     CallableBond::CallableBond(Natural settlementDays,
                                const Schedule& schedule,
                                DayCounter paymentDayCounter,
+                               Real faceAmount,
                                const Date& issueDate,
                                CallabilitySchedule putCallSchedule)
     : Bond(settlementDays, schedule.calendar(), issueDate),
       paymentDayCounter_(std::move(paymentDayCounter)),
-      putCallSchedule_(std::move(putCallSchedule)) {
+      putCallSchedule_(std::move(putCallSchedule)), faceAmount_(faceAmount) {
 
         maturityDate_ = schedule.dates().back();
 
@@ -394,7 +395,7 @@ namespace QuantLib {
                               const Calendar& exCouponCalendar,
                               BusinessDayConvention exCouponConvention,
                               bool exCouponEndOfMonth)
-    : CallableBond(settlementDays, schedule, accrualDayCounter,
+    : CallableBond(settlementDays, schedule, accrualDayCounter, faceAmount,
                    issueDate, putCallSchedule) {
 
         frequency_ = schedule.tenor().frequency();
@@ -453,6 +454,7 @@ namespace QuantLib {
 
         Date settlement = arguments->settlementDate;
 
+        arguments->faceAmount = faceAmount_;
         arguments->redemption = redemption()->amount();
         arguments->redemptionDate = redemption()->date();
 
