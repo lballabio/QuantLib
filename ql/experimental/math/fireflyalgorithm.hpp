@@ -81,8 +81,6 @@ namespace QuantLib {
       public:
         class RandomWalk;
         class Intensity;
-        friend class RandomWalk;
-        friend class Intensity;
         FireflyAlgorithm(Size M,
                          ext::shared_ptr<Intensity> intensity,
                          ext::shared_ptr<RandomWalk> randomWalk,

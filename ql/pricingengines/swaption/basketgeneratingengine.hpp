@@ -98,8 +98,6 @@ namespace QuantLib {
         const Handle<Quote> oas_;
         const Handle<YieldTermStructure> discountCurve_;
 
-        class MatchHelper;
-        friend class MatchHelper;
         class MatchHelper : public CostFunction {
           public:
             MatchHelper(const Swap::Type type,

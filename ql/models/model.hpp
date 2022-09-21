@@ -134,7 +134,6 @@ namespace QuantLib {
         class PrivateConstraint;
         //! Calibration cost function class
         class CalibrationFunction;
-        friend class CalibrationFunction;
     };
 
     //! Abstract short-rate model class

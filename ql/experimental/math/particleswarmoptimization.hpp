@@ -93,8 +93,6 @@ namespace QuantLib {
       public:
         class Inertia;
         class Topology;
-        friend class Inertia;
-        friend class Topology;
         ParticleSwarmOptimization(Size M,
                                   ext::shared_ptr<Topology> topology,
                                   ext::shared_ptr<Inertia> inertia,
