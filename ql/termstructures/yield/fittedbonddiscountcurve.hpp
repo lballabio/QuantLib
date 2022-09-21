@@ -81,7 +81,6 @@ namespace QuantLib {
                                     public LazyObject {
       public:
         class FittingMethod;
-        friend class FittingMethod;
 
         //! \name Constructors
         //@{

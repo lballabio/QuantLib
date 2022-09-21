@@ -477,8 +477,6 @@ namespace QuantLib {
             bool zeroFixingDays = false,
             const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
-        class ZeroHelper;
-        friend class ZeroHelper;
         class ZeroHelper {
           public:
             ZeroHelper(const MarkovFunctional *model, const Date &expiry,

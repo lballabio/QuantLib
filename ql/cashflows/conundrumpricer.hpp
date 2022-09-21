@@ -149,8 +149,6 @@ namespace QuantLib {
             Real der2Rs_derX2(Real x);
             Real der2Z_derX2(Real x);
 
-            class ObjectiveFunction;
-            friend class ObjectiveFunction;
             class ObjectiveFunction {
                 const GFunctionWithShifts& o_;
                 Real Rs_;
