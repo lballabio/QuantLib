@@ -70,6 +70,20 @@ namespace QuantLib {
             schedules
         */
         Volatility impliedVolatility(
+                              const Bond::Price& targetPrice,
+                              const Handle<YieldTermStructure>& discountCurve,
+                              Real accuracy,
+                              Size maxEvaluations,
+                              Volatility minVol,
+                              Volatility maxVol) const;
+
+        /*! \warning This version of the method takes an NPV as target, not a price.
+
+            \deprecated Use the other overload.
+                        Deprecated in version 1.28.
+        */
+        QL_DEPRECATED
+        Volatility impliedVolatility(
                               Real targetValue,
                               const Handle<YieldTermStructure>& discountCurve,
                               Real accuracy,

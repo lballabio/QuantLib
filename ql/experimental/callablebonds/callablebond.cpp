@@ -73,20 +73,23 @@ namespace QuantLib {
       public:
         ImpliedVolHelper(const CallableBond& bond,
                          const Handle<YieldTermStructure>& discountCurve,
-                         Real targetValue);
+                         Real targetValue,
+                         bool matchNPV);
         Real operator()(Volatility x) const;
       private:
         ext::shared_ptr<PricingEngine> engine_;
         Real targetValue_;
+        bool matchNPV_;
         ext::shared_ptr<SimpleQuote> vol_;
-        const Instrument::results* results_;
+        const CallableBond::results* results_;
     };
 
     CallableBond::ImpliedVolHelper::ImpliedVolHelper(
                               const CallableBond& bond,
                               const Handle<YieldTermStructure>& discountCurve,
-                              Real targetValue)
-    : targetValue_(targetValue) {
+                              Real targetValue,
+                              bool matchNPV)
+    : targetValue_(targetValue), matchNPV_(matchNPV) {
 
         vol_ = ext::make_shared<SimpleQuote>(0.0);
         engine_ = ext::make_shared<BlackCallableFixedRateBondEngine>(Handle<Quote>(vol_),
@@ -94,15 +97,45 @@ namespace QuantLib {
 
         bond.setupArguments(engine_->getArguments());
         results_ =
-            dynamic_cast<const Instrument::results*>(engine_->getResults());
+            dynamic_cast<const CallableBond::results*>(engine_->getResults());
     }
 
     Real CallableBond::ImpliedVolHelper::operator()(Volatility x) const {
         vol_->setValue(x);
         engine_->calculate(); // get the Black NPV based on vol x
-        return results_->value-targetValue_;
+        Real value = matchNPV_ ? results_->value : results_->settlementValue;
+        return value - targetValue_;
     }
 
+
+    Volatility CallableBond::impliedVolatility(
+                              const Bond::Price& targetPrice,
+                              const Handle<YieldTermStructure>& discountCurve,
+                              Real accuracy,
+                              Size maxEvaluations,
+                              Volatility minVol,
+                              Volatility maxVol) const {
+        QL_REQUIRE(!isExpired(), "instrument expired");
+
+        Real dirtyTargetPrice;
+        switch (targetPrice.type()) {
+          case Bond::Price::Dirty:
+            dirtyTargetPrice = targetPrice.amount();
+            break;
+          case Bond::Price::Clean:
+            dirtyTargetPrice = targetPrice.amount() + accruedAmount();
+            break;
+          default:
+            QL_FAIL("unknown price type");
+        }
+
+        Real targetValue = dirtyTargetPrice * faceAmount_ / 100.0;
+        Volatility guess = 0.5 * (minVol + maxVol);
+        ImpliedVolHelper f(*this, discountCurve, targetValue, false);
+        Brent solver;
+        solver.setMaxEvaluations(maxEvaluations);
+        return solver.solve(f, accuracy, guess, minVol, maxVol);
+    }
 
     Volatility CallableBond::impliedVolatility(
                               Real targetValue,
@@ -113,7 +146,7 @@ namespace QuantLib {
                               Volatility maxVol) const {
         QL_REQUIRE(!isExpired(), "instrument expired");
         Volatility guess = 0.5 * (minVol + maxVol);
-        ImpliedVolHelper f(*this, discountCurve, targetValue);
+        ImpliedVolHelper f(*this, discountCurve, targetValue, true);
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);

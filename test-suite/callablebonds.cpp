@@ -723,22 +723,34 @@ void CallableBondTest::testImpliedVol() {
 
     vars.termStructure.linkTo(vars.makeFlatCurve(0.03));
 
+    Schedule schedule =
+        MakeSchedule()
+        .from(vars.issueDate())
+        .to(vars.maturityDate())
+        .withCalendar(vars.calendar)
+        .withFrequency(Semiannual)
+        .withConvention(vars.rollingConvention)
+        .withRule(DateGeneration::Backward);
+
+    std::vector<Rate> coupons = { 0.01 };
+
     CallabilitySchedule callabilities = {
         ext::make_shared<Callability>(
                          Bond::Price(100.0, Bond::Price::Clean),
                          Callability::Call,
-                         vars.calendar.advance(vars.issueDate(),4,Years))
+                         schedule.at(8))
     };
 
-    CallableZeroCouponBond bond(3, 100.0, vars.calendar,
-                                vars.maturityDate(), Thirty360(Thirty360::BondBasis),
-                                vars.rollingConvention, 100.0,
-                                vars.issueDate(), callabilities);
+    CallableFixedRateBond bond(3, 10000.0, schedule,
+                               coupons, Thirty360(Thirty360::BondBasis),
+                               vars.rollingConvention,
+                               100.0, vars.issueDate(),
+                               callabilities);
 
-    Real targetPrice = 73.5;
+    auto targetPrice = Bond::Price(78.50, Bond::Price::Dirty);
     Real volatility = bond.impliedVolatility(targetPrice,
                                              vars.termStructure,
-                                             1e-4,  // accuracy
+                                             1e-8,  // accuracy
                                              200,   // max evaluations
                                              1e-4,  // min vol
                                              1.0);  // max vol
@@ -746,13 +758,56 @@ void CallableBondTest::testImpliedVol() {
     bond.setPricingEngine(ext::make_shared<BlackCallableZeroCouponBondEngine>(
         Handle<Quote>(ext::make_shared<SimpleQuote>(volatility)), vars.termStructure));
 
-    if (std::fabs(bond.NPV() - targetPrice) > 1.0e-4)
+    if (std::fabs(bond.dirtyPrice() - targetPrice.amount()) > 1.0e-4)
         BOOST_ERROR(
-            "failed to reproduce target price with implied volatility:\n"
+            "failed to reproduce target dirty price with implied volatility:\n"
+            << std::setprecision(5)
+            << "    calculated price: " << bond.dirtyPrice() << "\n"
+            << "    expected:         " << targetPrice.amount() << "\n"
+            << "    difference:       " << bond.dirtyPrice() - targetPrice.amount());
+
+    targetPrice = Bond::Price(78.50, Bond::Price::Clean);
+    volatility = bond.impliedVolatility(targetPrice,
+                                        vars.termStructure,
+                                        1e-8,  // accuracy
+                                        200,   // max evaluations
+                                        1e-4,  // min vol
+                                        1.0);  // max vol
+
+    bond.setPricingEngine(ext::make_shared<BlackCallableZeroCouponBondEngine>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(volatility)), vars.termStructure));
+
+    if (std::fabs(bond.cleanPrice() - targetPrice.amount()) > 1.0e-4)
+        BOOST_ERROR(
+            "failed to reproduce target clean price with implied volatility:\n"
+            << std::setprecision(5)
+            << "    calculated price: " << bond.cleanPrice() << "\n"
+            << "    expected:         " << targetPrice.amount() << "\n"
+            << "    difference:       " << bond.cleanPrice() - targetPrice.amount());
+
+
+    QL_DEPRECATED_DISABLE_WARNING
+
+    Real targetNPV = 7850.0;
+    volatility = bond.impliedVolatility(targetNPV,
+                                        vars.termStructure,
+                                        1e-8,  // accuracy
+                                        200,   // max evaluations
+                                        1e-4,  // min vol
+                                        1.0);  // max vol
+
+    QL_DEPRECATED_ENABLE_WARNING
+
+    bond.setPricingEngine(ext::make_shared<BlackCallableZeroCouponBondEngine>(
+        Handle<Quote>(ext::make_shared<SimpleQuote>(volatility)), vars.termStructure));
+
+    if (std::fabs(bond.NPV() - targetNPV) > 1.0e-4)
+        BOOST_ERROR(
+            "failed to reproduce target NPV with implied volatility:\n"
             << std::setprecision(5)
             << "    calculated NPV: " << bond.NPV() << "\n"
-            << "    expected:       " << targetPrice << "\n"
-            << "    difference:     " << bond.NPV() - targetPrice);
+            << "    expected:       " << targetNPV << "\n"
+            << "    difference:     " << bond.NPV() - targetNPV);
 }
 
 
