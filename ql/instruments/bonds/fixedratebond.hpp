@@ -60,8 +60,11 @@ namespace QuantLib {
                       BusinessDayConvention exCouponConvention = Unadjusted,
                       bool exCouponEndOfMonth = false,
                       const DayCounter& firstPeriodDayCounter = DayCounter());
-        /*! simple annual compounding coupon rates
-            with internal schedule calculation */
+
+        /*! \deprecated Use the constructor taking a schedule.
+                        Deprecated in version 1.28.
+        */
+        QL_DEPRECATED
         FixedRateBond(Natural settlementDays,
                       const Calendar& couponCalendar,
                       Real faceAmount,
@@ -83,7 +86,12 @@ namespace QuantLib {
                       BusinessDayConvention exCouponConvention = Unadjusted,
                       bool exCouponEndOfMonth = false,
                       const DayCounter& firstPeriodDayCounter = DayCounter());
-        //! generic compounding and frequency InterestRate coupons
+
+        /*! \deprecated Build a FixedRateLeg instead and use it
+                        to create an instance of the base Bond class.
+                        Deprecated in version 1.28.
+        */
+        QL_DEPRECATED
         FixedRateBond(Natural settlementDays,
                       Real faceAmount,
                       const Schedule& schedule,
