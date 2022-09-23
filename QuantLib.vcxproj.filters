@@ -915,6 +915,15 @@
     <ClInclude Include="ql\instruments\bonds\all.hpp">
       <Filter>instruments\bonds</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\bonds\amortizingcmsratebond.hpp">
+      <Filter>instruments\bonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\bonds\amortizingfixedratebond.hpp">
+      <Filter>instruments\bonds</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\bonds\amortizingfloatingratebond.hpp">
+      <Filter>instruments\bonds</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\bonds\btp.hpp">
       <Filter>instruments\bonds</Filter>
     </ClInclude>
@@ -4718,6 +4727,15 @@
     <ClCompile Include="ql\instruments\zerocouponinflationswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
+    <ClCompile Include="ql\instruments\bonds\amortizingcmsratebond.cpp">
+      <Filter>instruments\bonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\bonds\amortizingfixedratebond.cpp">
+      <Filter>instruments\bonds</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\bonds\amortizingfloatingratebond.cpp">
+      <Filter>instruments\bonds</Filter>
+    </ClCompile>
     <ClCompile Include="ql\instruments\bonds\btp.cpp">
       <Filter>instruments\bonds</Filter>
     </ClCompile>
@@ -6499,15 +6517,6 @@
     </ClCompile>
     <ClCompile Include="ql\experimental\commodities\unitofmeasureconversionmanager.cpp">
       <Filter>experimental\commodities</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\amortizingbonds\amortizingcmsratebond.cpp">
-      <Filter>experimental\amortizingbonds</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\amortizingbonds\amortizingfixedratebond.cpp">
-      <Filter>experimental\amortizingbonds</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp">
-      <Filter>experimental\amortizingbonds</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\averageois\arithmeticaverageois.cpp">
       <Filter>experimental\averageois</Filter>

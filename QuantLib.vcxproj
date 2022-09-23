@@ -903,6 +903,9 @@
     <ClInclude Include="ql\instruments\bond.hpp" />
     <ClInclude Include="ql\instruments\bondforward.hpp" />
     <ClInclude Include="ql\instruments\bonds\all.hpp" />
+    <ClInclude Include="ql\instruments\bonds\amortizingcmsratebond.hpp" />
+    <ClInclude Include="ql\instruments\bonds\amortizingfixedratebond.hpp" />
+    <ClInclude Include="ql\instruments\bonds\amortizingfloatingratebond.hpp" />
     <ClInclude Include="ql\instruments\bonds\btp.hpp" />
     <ClInclude Include="ql\instruments\bonds\cmsratebond.hpp" />
     <ClInclude Include="ql\instruments\bonds\convertiblebonds.hpp" />
@@ -1920,9 +1923,6 @@
     <ClCompile Include="ql\currencies\europe.cpp" />
     <ClCompile Include="ql\currencies\exchangeratemanager.cpp" />
     <ClCompile Include="ql\currencies\oceania.cpp" />
-    <ClCompile Include="ql\experimental\amortizingbonds\amortizingcmsratebond.cpp" />
-    <ClCompile Include="ql\experimental\amortizingbonds\amortizingfixedratebond.cpp" />
-    <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp" />
     <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.cpp" />
     <ClCompile Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.cpp" />
     <ClCompile Include="ql\pricingengines\asian\turnbullwakemanasianengine.cpp" />
@@ -2158,6 +2158,9 @@
     <ClCompile Include="ql\instruments\bmaswap.cpp" />
     <ClCompile Include="ql\instruments\bond.cpp" />
     <ClCompile Include="ql\instruments\bondforward.cpp" />
+    <ClCompile Include="ql\instruments\bonds\amortizingcmsratebond.cpp" />
+    <ClCompile Include="ql\instruments\bonds\amortizingfixedratebond.cpp" />
+    <ClCompile Include="ql\instruments\bonds\amortizingfloatingratebond.cpp" />
     <ClCompile Include="ql\instruments\bonds\btp.cpp" />
     <ClCompile Include="ql\instruments\bonds\cmsratebond.cpp" />
     <ClCompile Include="ql\instruments\bonds\convertiblebonds.cpp" />
