@@ -26,11 +26,10 @@
 
 #include <ql/instruments/bond.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/time/schedule.hpp>
 #include <ql/interestrate.hpp>
 
 namespace QuantLib {
-
-    class Schedule;
 
     //! amortizing fixed-rate bond
     class AmortizingFixedRateBond : public Bond {
@@ -46,11 +45,12 @@ namespace QuantLib {
                                 const Calendar& exCouponCalendar = Calendar(),
                                 BusinessDayConvention exCouponConvention = Unadjusted,
                                 bool exCouponEndOfMonth = false);
-        /*! Automatically generates a set of equal coupons, with an
-            amortizing bond.  The coupons are equal and the accrual
-            daycount is only used for quoting/settlement purposes -
-            not for calculating the coupons.
+
+        /*! \deprecated Use the other constructor after calling sinkingSchedule
+                        and sinkingNotionals to generate the required parameters.
+                        Deprecated in version 1.28.
         */
+        QL_DEPRECATED
         AmortizingFixedRateBond(Natural settlementDays,
                                 const Calendar& calendar,
                                 Real faceAmount,
@@ -61,6 +61,12 @@ namespace QuantLib {
                                 const DayCounter& accrualDayCounter,
                                 BusinessDayConvention paymentConvention = Following,
                                 const Date& issueDate = Date());
+
+        /*! \deprecated Build a FixedRateLeg instead and use it
+                        to create an instance of the base Bond class.
+                        Deprecated in version 1.28.
+        */
+        QL_DEPRECATED
         AmortizingFixedRateBond(Natural settlementDays,
                                 const std::vector<Real>& notionals,
                                 const Schedule& schedule,
@@ -72,12 +78,25 @@ namespace QuantLib {
                                 const Calendar& exCouponCalendar = Calendar(),
                                 BusinessDayConvention exCouponConvention = Unadjusted,
                                 bool exCouponEndOfMonth = false);
+
         Frequency frequency() const { return frequency_; }
         const DayCounter& dayCounter() const { return dayCounter_; }
       protected:
         Frequency frequency_;
         DayCounter dayCounter_;
     };
+
+    //! returns a schedule for French amortization
+    Schedule sinkingSchedule(const Date& startDate,
+                             const Period& bondLength,
+                             const Frequency& frequency,
+                             const Calendar& paymentCalendar);
+
+    //! returns a sequence of notionals for French amortization
+    std::vector<Real> sinkingNotionals(const Period& bondLength,
+                                       const Frequency& frequency,
+                                       Rate couponRate,
+                                       Real initialNotional);
 
 }
 
