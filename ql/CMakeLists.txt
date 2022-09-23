@@ -44,9 +44,6 @@ set(QL_SOURCES
     event.cpp
     exchangerate.cpp
     exercise.cpp
-    experimental/amortizingbonds/amortizingcmsratebond.cpp
-    experimental/amortizingbonds/amortizingfixedratebond.cpp
-    experimental/amortizingbonds/amortizingfloatingratebond.cpp
     experimental/asian/analytic_cont_geom_av_price_heston.cpp
     experimental/asian/analytic_discr_geom_av_price_heston.cpp
     experimental/averageois/arithmeticaverageois.cpp
@@ -282,6 +279,9 @@ set(QL_SOURCES
     instruments/bmaswap.cpp
     instruments/bond.cpp
     instruments/bondforward.cpp
+    instruments/bonds/amortizingcmsratebond.cpp
+    instruments/bonds/amortizingfixedratebond.cpp
+    instruments/bonds/amortizingfloatingratebond.cpp
     instruments/bonds/btp.cpp
     instruments/bonds/cmsratebond.cpp
     instruments/bonds/convertiblebonds.cpp
@@ -1307,6 +1307,9 @@ set(QL_HEADERS
     instruments/bmaswap.hpp
     instruments/bond.hpp
     instruments/bondforward.hpp
+    instruments/bonds/amortizingcmsratebond.hpp
+    instruments/bonds/amortizingfixedratebond.hpp
+    instruments/bonds/amortizingfloatingratebond.hpp
     instruments/bonds/btp.hpp
     instruments/bonds/cmsratebond.hpp
     instruments/bonds/convertiblebonds.hpp

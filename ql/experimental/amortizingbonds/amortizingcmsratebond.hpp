@@ -17,39 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file amortizingcmsratebond.hpp
-    \brief amortizing CMS-rate bond
-*/
+// Deprecated in version 1.28
+#pragma message("Warning: this file will disappear in a future release; include <ql/instruments/bonds/amortizingcmsratebond.hpp instead>.")
 
-#ifndef quantlib_amortizing_cms_rate_bond_hpp
-#define quantlib_amortizing_cms_rate_bond_hpp
-
-#include <ql/instruments/bond.hpp>
-
-namespace QuantLib {
-
-    class Schedule;
-    class SwapIndex;
-
-    //! amortizing CMS-rate bond
-    class AmortizingCmsRateBond : public Bond {
-      public:
-        AmortizingCmsRateBond(
-                    Natural settlementDays,
-                    const std::vector<Real>& notionals,
-                    const Schedule& schedule,
-                    const ext::shared_ptr<SwapIndex>& index,
-                    const DayCounter& paymentDayCounter,
-                    BusinessDayConvention paymentConvention = Following,
-                    Natural fixingDays = Null<Natural>(),
-                    const std::vector<Real>& gearings = { 1.0 },
-                    const std::vector<Spread>& spreads = { 0.0 },
-                    const std::vector<Rate>& caps = {},
-                    const std::vector<Rate>& floors = {},
-                    bool inArrears = false,
-                    const Date& issueDate = Date());
-    };
-
-}
-
-#endif
+#include <ql/instruments/bonds/amortizingcmsratebond.hpp>

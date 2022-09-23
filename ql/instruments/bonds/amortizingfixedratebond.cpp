@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/amortizingbonds/amortizingfixedratebond.hpp>
+#include <ql/instruments/bonds/amortizingfixedratebond.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/time/schedule.hpp>

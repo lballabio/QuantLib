@@ -17,7 +17,7 @@
 
 #include "amortizingbond.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/amortizingbonds/amortizingfixedratebond.hpp>
+#include <ql/instruments/bonds/amortizingfixedratebond.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
