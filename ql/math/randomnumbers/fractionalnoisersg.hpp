@@ -35,7 +35,7 @@ using std::pow;
 namespace QuantLib {
 
     //! Fractional Gaussian noise (sequence) generator
-    /*! Using the method by Davis & Harte, improved by Chan & Wood, of finding
+    /*! Using the method by Davies & Harte, improved by Chan & Wood, of finding
         the square root of the autocovariance matrix by means of embedding 
         it in a circulant matrix.
         -# Andrew T. A. Wood, & Chan, G. (1994). Simulation of Stationary 

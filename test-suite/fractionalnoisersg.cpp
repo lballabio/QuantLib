@@ -56,7 +56,7 @@ void FractionalGaussianNoiseTest::testVariates() {
         stats.add(sample.begin(), sample.end());
     }
     
-    Real LRT = stats.likelihoodratiotest(expCov);
+    Real LRT = stats.likelihoodratiotest(Array(dimension, 0.0), expCov);
     CumulativeNormalDistribution cdf; // of N(0,1)
 
     Real statQuantile = cdf(LRT);

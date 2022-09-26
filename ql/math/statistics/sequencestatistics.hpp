@@ -46,7 +46,7 @@ namespace QuantLib {
         requested to the 1-D underlying StatisticsType class, with the
         usual compile-time checks provided by the template approach.
 
-        The likelihood-ratio test statistic for covariance matrix 
+        The likelihood-ratio test statistic for mean and covariance matrix 
         under p-variate normal distribution assumption, is based on 
         <i>
         Tiefeng Jiang, Fan Yang "Central limit theorems for classical 
@@ -55,9 +55,6 @@ namespace QuantLib {
         https://dx.doi.org/10.1214/13-AOS1134
         Section 2.5 is relevant here.
         </i>
-        For this statistic, we produce the cdf value of N(0,1) distribution,
-        so the result should be distributed uniformly on (0,1).
-
 
         \test the correctness of the returned values is tested by
               checking them against numerical calculations; 
@@ -83,7 +80,7 @@ namespace QuantLib {
         //! returns the correlation Matrix
         Matrix correlation() const;
         //! returns the likelihood-ratio test statistic for covariance
-        Real likelihoodratiotest(const Matrix& expectedCovariance) const;
+        Real likelihoodratiotest(const Array& expectedMean, const Matrix& expectedCovariance) const;
         //@}
         //! \name 1-D inspectors lifted from underlying statistics class
         //@{
@@ -316,7 +313,13 @@ namespace QuantLib {
 
 
     template <class Stat>
-    Real GenericSequenceStatistics<Stat>::likelihoodratiotest(const Matrix& expectedCovariance) const {
+    Real GenericSequenceStatistics<Stat>::likelihoodratiotest(const Array& expectedMean, const Matrix& expectedCovariance) const {
+        QL_REQUIRE(
+            expectedMean.size() == dimension_,
+            "The given (expected) mean vector has a wrong size:"
+            << expectedMean.size()
+            << ", while dimension = "
+            << dimension_);
         QL_REQUIRE(
             expectedCovariance.columns() == dimension_ &&
             expectedCovariance.rows() == dimension_, 
@@ -347,7 +350,8 @@ namespace QuantLib {
         Real logdet = std::log(determinant(A)) + p * std::log(n-1);
         Real logn = std::log(n);
         std::vector<Real> ms = mean();
-        Real means2 = std::inner_product(ms.begin(),ms.end(),ms.begin(),Real(0.0));
+        Array meanCentred = Array(ms.begin(), ms.end()) - expectedMean;
+        Real means2 = DotProduct(meanCentred * expCovInv, meanCentred);
         Real log_Lambda_n_by_n = p/2*(1-logn) + logdet/2 - trace/2/n - means2/2;
         Real mu_n_by_n = -0.25;
         mu_n_by_n *= (2*n-2*p-3)*std::log(1-p/(n-1)) + 2*p + 2*p/n;

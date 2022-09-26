@@ -293,7 +293,7 @@ void CovarianceTest::testLRTCovariance() {
     for (Size i = 0; i < dimension; ++i)
         expCov[i][i] = 1.0;
 
-    Real calculated = stats.likelihoodratiotest(expCov);
+    Real calculated = stats.likelihoodratiotest(Array(dimension, 0.0), expCov);
 
     if (fabs(calculated) > 3)
         BOOST_ERROR("The value of the LRT statistic for covariance matrix"
