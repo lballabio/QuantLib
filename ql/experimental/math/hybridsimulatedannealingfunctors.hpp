@@ -262,7 +262,7 @@ namespace QuantLib
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
-                newTemp[i] = initialTemp_[i] / log(steps[i]);
+                newTemp[i] = initialTemp_[i] / std::log(steps[i]);
         }
     private:
         Array initialTemp_;
@@ -324,7 +324,7 @@ namespace QuantLib
             finalTemp_(dimension, finalTemp), exponent_(dimension, 0.0) {
             Real coeff = std::pow(maxSteps, -inverseN_);
             for (Size i = 0; i < initialTemp_.size(); i++)
-                exponent_[i] = -log(finalTemp_[i] / initialTemp_[i])*coeff;
+                exponent_[i] = -std::log(finalTemp_[i] / initialTemp_[i])*coeff;
         }
         inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
