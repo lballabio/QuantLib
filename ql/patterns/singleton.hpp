@@ -27,13 +27,16 @@
 #include <ql/qldefines.hpp>
 
 #ifdef QL_ENABLE_SESSIONS
-#    include <boost/thread/locks.hpp>
-#    include <boost/thread/shared_mutex.hpp>
+#    include <mutex>
+#    include <shared_mutex>
+#    include <thread>
 #else
 #    ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-#        include <boost/atomic.hpp>
-#        include <boost/thread/mutex.hpp>
-#        if !defined(BOOST_ATOMIC_ADDRESS_LOCK_FREE)
+#        include <atomic>
+#        include <mutex>
+#        include <shared_mutex>
+#        include <thread>
+#        if ATOMIC_POINTER_LOCK_FREE < 2
 #            ifdef BOOST_MSVC
 #                pragma message("Thread-safe singleton initialization may degrade performances.")
 #            else
@@ -99,6 +102,7 @@ namespace QuantLib {
         Singleton(Singleton&&) = delete;
         Singleton& operator=(const Singleton&) = delete;
         Singleton& operator=(Singleton&&) = delete;
+        ~Singleton() = default;
 
         //! access to the unique instance
         static T& instance();
@@ -106,7 +110,7 @@ namespace QuantLib {
 #ifdef QL_ENABLE_SESSIONS
         //! remove the session-local instance, return true if there was such an instance
         static bool remove() {
-            boost::unique_lock<boost::shared_mutex> uniqueLock(m_mutex());
+            std::unique_lock<std::shared_mutex> uniqueLock(m_mutex());
             return m_instances().erase(sessionId()) != 0;
         }
 #endif
@@ -121,18 +125,18 @@ namespace QuantLib {
             static std::map<ThreadKey, ext::shared_ptr<T> > instances;
             return instances;
         }
-        static boost::shared_mutex& m_mutex() {
-            static boost::shared_mutex mutex;
+        static std::shared_timed_mutex& m_mutex() {
+            static std::shared_timed_mutex mutex;
             return mutex;
         }
 #else
 #    ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-        static boost::atomic<T*>& m_instance() {
-            static boost::atomic<T*> instance;
+        static std::atomic<T*>& m_instance() {
+            static std::atomic<T*> instance;
             return instance;
         }
-        static boost::mutex& m_mutex() {
-            static boost::mutex mutex;
+        static std::mutex& m_mutex() {
+            static std::mutex mutex;
             return mutex;
         }
 #    else
@@ -152,13 +156,13 @@ namespace QuantLib {
 #ifdef QL_ENABLE_SESSIONS
         ThreadKey id = sessionId();
         {
-            boost::shared_lock<boost::shared_mutex> shared_lock(m_mutex());
+            std::shared_lock<std::shared_timed_mutex> shared_lock(m_mutex());
             auto instance = Global() ? m_instances().begin() : m_instances().find(id);
             if (instance != m_instances().end())
                 return *instance->second;
         }
         {
-            boost::unique_lock<boost::shared_mutex> uniqueLock(m_mutex());
+            std::unique_lock<std::shared_timed_mutex> uniqueLock(m_mutex());
             auto instance = Global() ? m_instances().begin() : m_instances().find(id);
             if (instance != m_instances().end())
                 return *instance->second;
@@ -169,13 +173,13 @@ namespace QuantLib {
 #else
 #    ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
         // thread safe double checked locking pattern with atomic memory calls
-        T* instance = m_instance().load(boost::memory_order_consume);
+        T* instance = m_instance().load(std::memory_order_consume);
         if (!instance) {
-            boost::mutex::scoped_lock guard(m_mutex());
-            instance = m_instance().load(boost::memory_order_consume);
+            std::lock_guard<std::mutex> guard(m_mutex());
+            instance = m_instance().load(std::memory_order_consume);
             if (!instance) {
                 instance = new T();
-                m_instance().store(instance, boost::memory_order_release);
+                m_instance().store(instance, std::memory_order_release);
             }
         }
         return *instance;
