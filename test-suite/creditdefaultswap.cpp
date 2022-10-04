@@ -647,26 +647,29 @@ void CreditDefaultSwapTest::testIsdaEngine() {
     Rate spreads[] = {0.001, 0.1};
     Rate recoveries[] = {0.2, 0.4};
 
-    double markitValues[] = {97798.29358, //0.001
-                             97776.11889, //0.001
-                             -914971.5977, //0.1
-                             -894985.6298, //0.1
-                             186921.3594, //0.001
-                             186839.8148, //0.001
-                             -1646623.672, //0.1
-                             -1579803.626, //0.1
-                             274298.9203,
-                             274122.4725,
-                             -2279730.93,
-                             -2147972.527,
-                             592420.2297,
-                             591571.2294,
-                             -3993550.206,
-                             -3545843.418,
-                             797501.1422,
-                             795915.9787,
-                             -4702034.688,
-                             -4042340.999};
+    double markitValues[] = {
+         -97798.29358, //0.001
+         -97776.11889, //0.001
+         914971.5977,  //0.1
+         894985.6298,  //0.1
+        -186921.3594,  //0.001
+        -186839.8148,  //0.001
+        1646623.672,   //0.1
+        1579803.626,   //0.1
+        -274298.9203,
+        -274122.4725,
+        2279730.93,
+        2147972.527,
+        -592420.2297,
+        -591571.2294,
+        3993550.206,
+        3545843.418,
+        -797501.1422,
+        -795915.9787,
+        4702034.688,
+        4042340.999
+    };
+
     /* When using indexes coupons, the risk-free curve is a bit off.
        We might skip the tests altogether and rely on running them
        with indexed coupons disabled, but leaving them can be useful anyway. */
@@ -676,19 +679,19 @@ void CreditDefaultSwapTest::testIsdaEngine() {
 
     for (auto termDate : termDates) {
         for (Real spread : spreads) {
-            for (Real& recoverie : recoveries) {
+            for (Real& recovery : recoveries) {
 
                 ext::shared_ptr<CreditDefaultSwap> quotedTrade =
                     MakeCreditDefaultSwap(termDate, spread).withNominal(10000000.);
 
                 Rate h = quotedTrade->impliedHazardRate(0., discountCurve, Actual365Fixed(),
-                                                        recoverie, 1e-10, CreditDefaultSwap::ISDA);
+                                                        recovery, 1e-10, CreditDefaultSwap::ISDA);
 
                 probabilityCurve.linkTo(
                     ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
 
                 ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
-                    probabilityCurve, recoverie, discountCurve, boost::none, IsdaCdsEngine::Taylor,
+                    probabilityCurve, recovery, discountCurve, boost::none, IsdaCdsEngine::Taylor,
                     IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
 
                 ext::shared_ptr<CreditDefaultSwap> conventionalTrade =
@@ -697,7 +700,27 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                         .withPricingEngine(engine);
 
                 QL_CHECK_CLOSE(conventionalTrade->notional() * conventionalTrade->fairUpfront(),
-                                  markitValues[l], tolerance);
+                               markitValues[l], tolerance);
+
+                // Now testing that with the calculated fair-upfront, both Buyer and Seller sides
+                // price close to zero
+                ext::shared_ptr<CreditDefaultSwap> conventionalTradeBuy =
+                    MakeCreditDefaultSwap(termDate, 0.01)
+                        .withNominal(10000000.)
+                        .withUpfrontRate(conventionalTrade->fairUpfront())
+                        .withSide(Protection::Buyer)
+                        .withPricingEngine(engine);
+
+                BOOST_CHECK_SMALL(conventionalTradeBuy->NPV(), tolerance);
+
+                ext::shared_ptr<CreditDefaultSwap> conventionalTradeSell =
+                    MakeCreditDefaultSwap(termDate, 0.01)
+                        .withNominal(10000000.)
+                        .withUpfrontRate(conventionalTrade->fairUpfront())
+                        .withSide(Protection::Seller)
+                        .withPricingEngine(engine);
+
+                BOOST_CHECK_SMALL(conventionalTradeSell->NPV(), tolerance);
 
                 l++;
             }
