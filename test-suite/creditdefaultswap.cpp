@@ -37,6 +37,7 @@
 #include <ql/time/calendars/unitedstates.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <ql/currencies/america.hpp>
+#include <ql/currencies/europe.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <map>
@@ -765,16 +766,222 @@ void CreditDefaultSwapTest::testAccrualRebateAmounts() {
     }
 }
 
+void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleQuote ()
+{
+    BOOST_TEST_MESSAGE(
+        "Testing ISDA engine calculations for a single credit-default swap record (reconciliation)...");
+
+    SavedSettings backup;
+
+    Date tradeDate(26, July, 2021);
+    Settings::instance().evaluationDate() = tradeDate;
+
+    //build an ISDA compliant yield curve
+    //data comes from Markit published rates
+    std::vector<ext::shared_ptr<RateHelper> > isdaRateHelpers;
+    int dep_tenors[] = {1, 3, 6, 12};
+    double dep_quotes[] = {-0.0056,-0.005440,-0.005190,-0.004930};
+
+    for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
+        isdaRateHelpers.push_back(ext::make_shared<DepositRateHelper>(
+                                     dep_quotes[i], dep_tenors[i] * Months, 2,
+                                     WeekendsOnly(), ModifiedFollowing,
+                                     false, Actual360()
+                                     )
+            );
+    }
+    int swap_tenors[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 30};
+    double swap_quotes[] = {-0.004820,
+                            -0.004420,
+                            -0.003990,
+                            -0.003520,
+                            -0.002970,
+                            -0.002370,
+                            -0.001760,
+                            -0.001140,
+                            -0.000540,
+                            0.000570,
+                            0.001880,
+                            0.002940,
+                            0.002820};
+
+    ext::shared_ptr<IborIndex> isda_ibor = ext::make_shared<IborIndex>(
+        "IsdaIbor", 6 * Months, 2, EURCurrency(), WeekendsOnly(),
+        ModifiedFollowing, false, Actual360());
+    for(size_t i = 0; i < sizeof(swap_tenors) / sizeof(int); i++) {
+        isdaRateHelpers.push_back(ext::make_shared<SwapRateHelper>(
+                                      swap_quotes[i], swap_tenors[i] * Years,
+                                      WeekendsOnly(),
+                                      Annual,
+                                      ModifiedFollowing, Thirty360(Thirty360::BondBasis), isda_ibor
+                                      )
+            );
+    }
+
+    RelinkableHandle<YieldTermStructure> discountCurve;
+    discountCurve.linkTo(
+            ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
+                0, WeekendsOnly(), isdaRateHelpers, Actual365Fixed())
+        );
+
+    RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve;
+    Date instrumentMaturity = Date(20, June, 2026);
+    Rate coupon = 0.01, conventionalSpread = 0.006713, recovery = 0.4;
+    double nominal = 1e6, markitValue = -16070.7, expected_accrual = 1000, tolerance = 1.0e-3;
+
+    ext::shared_ptr<CreditDefaultSwap> quotedTrade =
+        MakeCreditDefaultSwap(instrumentMaturity, conventionalSpread).withNominal(nominal);
+
+    Rate h = quotedTrade->impliedHazardRate(0., discountCurve, Actual365Fixed(),
+                                            recovery, 1e-10, CreditDefaultSwap::ISDA);
+
+    probabilityCurve.linkTo(
+        ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
+
+    ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
+        probabilityCurve, recovery, discountCurve, boost::none, IsdaCdsEngine::Taylor,
+        IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
+
+    ext::shared_ptr<CreditDefaultSwap> conventionalTrade =
+        MakeCreditDefaultSwap(instrumentMaturity, coupon)
+            .withNominal(nominal)
+            .withPricingEngine(engine);
+
+
+    double npv = conventionalTrade->NPV();
+    double calculated_upfront = conventionalTrade->notional() * conventionalTrade->fairUpfront();
+    double df = calculated_upfront / npv;  //to take into account of the discount to cash settlement
+    double derived_accrual = df * (npv -
+                                   conventionalTrade->defaultLegNPV() -
+                                   conventionalTrade->couponLegNPV());
+
+    double calculated_accrual = conventionalTrade->accrualRebate()->amount();
+
+    auto settlement_date = conventionalTrade->accrualRebate()->date();
+
+    BOOST_CHECK_CLOSE(npv, markitValue, tolerance);
+
+    BOOST_CHECK_CLOSE(calculated_upfront, df*markitValue, tolerance);
+
+    BOOST_CHECK_CLOSE(derived_accrual, expected_accrual, tolerance);
+
+    BOOST_CHECK_CLOSE(calculated_accrual, expected_accrual, tolerance);
+
+    BOOST_CHECK_EQUAL(settlement_date, WeekendsOnly().advance(tradeDate,3, TimeUnit::Days));
+
+}
+
+void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleWithIssueDateInThePast ()
+{
+    BOOST_TEST_MESSAGE(
+        "Testing ISDA engine calculations for a single credit-default swap with issue date in the past...");
+
+    SavedSettings backup;
+
+    Date valueDate(26, July, 2021);
+    Settings::instance().evaluationDate() = valueDate;
+
+    //this is not IMM date but the settlement date is in the past so the accrual rebate
+    //should not be part of the NPV
+    Date tradeDate(20, July, 2019);
+
+    //build an ISDA compliant yield curve
+    //data comes from Markit published rates
+    std::vector<ext::shared_ptr<RateHelper> > isdaRateHelpers;
+    int dep_tenors[] = {1, 3, 6, 12};
+    double dep_quotes[] = {-0.0056,-0.005440,-0.005190,-0.004930};
+
+    for(size_t i = 0; i < sizeof(dep_tenors) / sizeof(int); i++) {
+        isdaRateHelpers.push_back(ext::make_shared<DepositRateHelper>(
+                                     dep_quotes[i], dep_tenors[i] * Months, 2,
+                                     WeekendsOnly(), ModifiedFollowing,
+                                     false, Actual360()
+                                     )
+            );
+    }
+    int swap_tenors[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 30};
+    double swap_quotes[] = {-0.004820,
+                            -0.004420,
+                            -0.003990,
+                            -0.003520,
+                            -0.002970,
+                            -0.002370,
+                            -0.001760,
+                            -0.001140,
+                            -0.000540,
+                            0.000570,
+                            0.001880,
+                            0.002940,
+                            0.002820};
+
+    ext::shared_ptr<IborIndex> isda_ibor = ext::make_shared<IborIndex>(
+        "IsdaIbor", 6 * Months, 2, EURCurrency(), WeekendsOnly(),
+        ModifiedFollowing, false, Actual360());
+    for(size_t i = 0; i < sizeof(swap_tenors) / sizeof(int); i++) {
+        isdaRateHelpers.push_back(ext::make_shared<SwapRateHelper>(
+                                      swap_quotes[i], swap_tenors[i] * Years,
+                                      WeekendsOnly(),
+                                      Annual,
+                                      ModifiedFollowing, Thirty360(Thirty360::BondBasis), isda_ibor
+                                      )
+            );
+    }
+
+    RelinkableHandle<YieldTermStructure> discountCurve;
+    discountCurve.linkTo(
+            ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear> >(
+                0, WeekendsOnly(), isdaRateHelpers, Actual365Fixed())
+        );
+
+    RelinkableHandle<DefaultProbabilityTermStructure> probabilityCurve;
+    Date instrumentMaturity = Date(20, June, 2026);
+    Rate coupon = 0.01, conventionalSpread = 0.006713, recovery = 0.4;
+
+    //because there is no accrual involved, the markit value is decreased as compared to the
+    //previous test (old_markit_value - old_accrual or -16070.7 - 1000)
+    double nominal = 1e6, markitValue = -17070.77, expected_accrual = 0, tolerance = 1.0e-3;
+
+    ext::shared_ptr<CreditDefaultSwap> quotedTrade =
+        MakeCreditDefaultSwap(instrumentMaturity, conventionalSpread)
+        .withNominal(nominal);
+
+    Rate h = quotedTrade->impliedHazardRate(0., discountCurve, Actual365Fixed(),
+                                            recovery, 1e-10, CreditDefaultSwap::ISDA);
+
+    probabilityCurve.linkTo(
+        ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
+
+    ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
+        probabilityCurve, recovery, discountCurve, boost::none, IsdaCdsEngine::Taylor,
+        IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
+
+    ext::shared_ptr<CreditDefaultSwap> conventionalTrade =
+        MakeCreditDefaultSwap(instrumentMaturity, coupon)
+            .withNominal(nominal)
+            .withPricingEngine(engine)
+            .withTradeDate(tradeDate);
+
+
+    double npv = conventionalTrade->NPV();
+    double calculated_accrual = npv -
+                                conventionalTrade->defaultLegNPV() -
+                                conventionalTrade->couponLegNPV();
+
+    BOOST_CHECK_CLOSE(npv, markitValue, tolerance);
+
+    BOOST_CHECK_CLOSE(calculated_accrual, expected_accrual, tolerance);
+}
+
 test_suite* CreditDefaultSwapTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Credit-default swap tests");
     suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testCachedValue));
-    suite->add(QUANTLIB_TEST_CASE(
-                              &CreditDefaultSwapTest::testCachedMarketValue));
-    suite->add(QUANTLIB_TEST_CASE(
-                              &CreditDefaultSwapTest::testImpliedHazardRate));
+    suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testCachedMarketValue));
+    suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testImpliedHazardRate));
     suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testFairSpread));
     suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testFairUpfront));
     suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testIsdaEngine));
     suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testAccrualRebateAmounts));
+    suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleQuote));
+    suite->add(QUANTLIB_TEST_CASE(&CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleWithIssueDateInThePast));
     return suite;
 }
