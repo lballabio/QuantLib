@@ -46,7 +46,7 @@ namespace QuantLib {
 
     MakeCreditDefaultSwap::operator ext::shared_ptr<CreditDefaultSwap>() const {
 
-        Date tradeDate = Settings::instance().evaluationDate();
+        Date tradeDate = (tradeDate_ != Null<Date>()) ? tradeDate_ : Settings::instance().evaluationDate();
         Date upfrontDate = WeekendsOnly().advance(tradeDate, cashSettlementDays_, Days);
 
         Date protectionStart;
@@ -131,4 +131,10 @@ namespace QuantLib {
         engine_ = engine;
         return *this;
     }
+
+    MakeCreditDefaultSwap& MakeCreditDefaultSwap::withTradeDate(const Date& tradeDate) {
+        tradeDate_ = tradeDate;
+        return *this;
+    }
+
 }
