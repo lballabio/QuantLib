@@ -41,9 +41,21 @@ namespace QuantLib {
         SabrSmileSection(const Date& d,
                          Rate forward,
                          const std::vector<Real>& sabrParameters,
+                         const Date& referenceDate = Date(),
                          const DayCounter& dc = Actual365Fixed(),
                          Real shift = 0.0,
                          VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
+        /*! \deprecated Use the constructor taking an optional reference date.
+                        Deprecated in version 1.28.
+        */
+        QL_DEPRECATED
+        SabrSmileSection(const Date& d,
+                         Rate forward,
+                         const std::vector<Real>& sabrParameters,
+                         const DayCounter& dc,
+                         Real shift = 0.0,
+                         VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
+
         Real minStrike() const override { return -shift_; }
         Real maxStrike() const override { return QL_MAX_REAL; }
         Real atmLevel() const override { return forward_; }
