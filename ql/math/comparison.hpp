@@ -62,7 +62,7 @@ namespace QuantLib {
             return true;
 
         Real diff = std::fabs(x-y);
-        constexpr tolerance = 42 * QL_EPSILON;
+        constexpr Real tolerance = 42 * QL_EPSILON;
 
         if (x == 0.0 || y == 0.0)
             return diff < (tolerance * tolerance);
