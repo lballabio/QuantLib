@@ -57,6 +57,10 @@ namespace QuantLib {
     // inline definitions
 
     inline bool close(Real x, Real y) {
+        // we're duplicating the code here instead of calling close(x,y,42)
+        // for optimization; this allows us to make tolerance constexpr
+        // and shave a few more cycles.
+
         // Deals with +infinity and -infinity representations etc.
         if (x == y)
             return true;
@@ -86,6 +90,8 @@ namespace QuantLib {
     }
 
     inline bool close_enough(Real x, Real y) {
+        // see close() for a note on duplication
+
         // Deals with +infinity and -infinity representations etc.
         if (x == y)
             return true;
