@@ -21,10 +21,13 @@
 
 #include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
 
-#ifndef QL_EXTRA_SAFETY_CHECKS
-#define BOOST_DISABLE_ASSERTS 1
+#pragma push_macro("BOOST_DISABLE_ASSERTS")
+#ifndef BOOST_DISABLE_ASSERTS
+#define BOOST_DISABLE_ASSERTS
 #endif
 #include <boost/multi_array.hpp>
+#pragma pop_macro("BOOST_DISABLE_ASSERTS")
+
 #include <utility>
 
 namespace QuantLib {

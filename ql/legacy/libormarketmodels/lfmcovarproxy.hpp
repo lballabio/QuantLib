@@ -53,7 +53,6 @@ namespace QuantLib {
 
       private:
         class Var_Helper;
-        friend class Var_Helper;
     };
 
 }

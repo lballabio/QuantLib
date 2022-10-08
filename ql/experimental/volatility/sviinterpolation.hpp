@@ -41,10 +41,9 @@ inline void checkSviParameters(const Real a, const Real b, const Real sigma,
                "a + b sigma sqrt(1-rho^2) (a=" << a << ", b=" << b << ", sigma="
                                                << sigma << ", rho=" << rho
                                                << ") must be non negative");
-    if (tte != 0.0) {
-        QL_REQUIRE(b * (1.0 + std::fabs(rho)) <= 4.0 / tte,
-                   "b(1+|rho|) must be less than or equal to 4/T");
-    }
+    QL_REQUIRE(b * (1.0 + std::fabs(rho)) <= 4.0,
+               "b(1+|rho|) must be less than or equal to 4, (b=" << b << ", rho=" << rho << ")");
+
 }
 
 inline Real sviTotalVariance(const Real a, const Real b, const Real sigma,

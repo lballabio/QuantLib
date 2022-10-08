@@ -91,7 +91,6 @@ namespace QuantLib {
         Handle<YieldTermStructure>          termStructure_;
         Handle<SwaptionVolatilityStructure> volatilityStructure_;
         class rStarFinder;
-        friend class rStarFinder;
     };
 
 }

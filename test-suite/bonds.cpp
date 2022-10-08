@@ -1025,7 +1025,6 @@ void BondTest::testBrazilianCached() {
 
     Natural settlementDays = 1;
     Real faceAmount = 1000.0;
-    Real redemption = 100.0;
     Date today(6,June,2007);
     Date issueDate(1,January,2007);
 
@@ -1077,13 +1076,15 @@ void BondTest::testBrazilianCached() {
                           Unadjusted, Unadjusted,
                           DateGeneration::Backward, false);
 
-        FixedRateBond bond(settlementDays,
-            faceAmount,
-            schedule,
-            couponRates,
-            Following,
-            redemption,
-            issueDate);
+        Leg coupons = FixedRateLeg(schedule)
+            .withNotionals(faceAmount)
+            .withCouponRates(couponRates)
+            .withPaymentAdjustment(Following);
+
+        Bond bond(settlementDays,
+                  schedule.calendar(),
+                  issueDate,
+                  coupons);
 
         Real cachedPrice = prices[bondIndex];
         Real price = faceAmount *

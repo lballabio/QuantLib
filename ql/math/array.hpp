@@ -242,10 +242,8 @@ namespace QuantLib {
 
     inline Array::Array(const Array& from)
     : data_(from.n_ != 0U ? new Real[from.n_] : (Real*)nullptr), n_(from.n_) {
-#if defined(QL_PATCH_MSVC) && defined(QL_DEBUG)
-        if (n_)
-        #endif
-        std::copy(from.begin(),from.end(),begin());
+        if (data_)
+            std::copy(from.begin(),from.end(),begin());
     }
 
     inline Array::Array(Array&& from) noexcept

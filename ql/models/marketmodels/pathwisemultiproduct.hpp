@@ -54,7 +54,7 @@ namespace QuantLib {
     {
     public:
         struct CashFlow {
-            Size timeIndex;
+            Size timeIndex = 0;
             std::vector<Real > amount;
         };
         virtual ~MarketModelPathwiseMultiProduct() = default;

@@ -14,7 +14,6 @@ this_include_HEADERS = \
 libExperimental_la_SOURCES =
 
 libExperimental_la_LIBADD = \
-    amortizingbonds/libAmortizingBonds.la \
     asian/libAsian.la \
     averageois/libAverageOIS.la \
     barrieroption/libBarrierOption.la \

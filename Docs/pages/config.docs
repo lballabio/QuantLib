@@ -22,6 +22,8 @@
     or undefining such macros triggers variations in some library
     functionality.
 
+    When using CMake, they can be set to `ON` or `OFF` as properties.
+
     Under a Linux/Unix system, they are (un)set by `configure`;
     run
     \code

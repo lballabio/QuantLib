@@ -125,6 +125,7 @@
       },
       "cacheVariables": {
         "CMAKE_CXX_STANDARD": "17",
+        "CMAKE_UNITY_BUILD": "ON",
         "QL_ENABLE_SESSIONS": "ON",
         "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
         "QL_HIGH_RESOLUTION_DATE": "ON",
