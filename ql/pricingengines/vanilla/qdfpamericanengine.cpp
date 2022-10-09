@@ -337,8 +337,6 @@ namespace QuantLib {
                 N = D = 1.0;
         }
         else {
-            const std::pair<Real, Real> dpm = d(tau, b/K);
-
             Real ni, di;
             if (x_i.size()) {
                 const Real c = 0.5*tau;
@@ -361,6 +359,8 @@ namespace QuantLib {
                         return std::exp(q*u)*Phi(d(tau - u, b/B(u)).first);
                     }, 0, tau);
             }
+
+            const std::pair<Real, Real> dpm = d(tau, b/K);
 
             N = Phi(dpm.second) + r*ni;
             D = Phi(dpm.first) + q*di;

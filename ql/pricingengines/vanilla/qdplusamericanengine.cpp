@@ -304,7 +304,7 @@ namespace QuantLib {
           case SuperHalley:
             {
                 bool resultCloseEnough;
-                x = 0.5*(eval.xmax() + S);
+                x = eval.xmax();
                 Real xOld, fx;
 
                 do {
