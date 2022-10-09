@@ -18,7 +18,7 @@
 */
 
 /*! \file chebyshevinterpolation.hpp
-    \brief chebyshev interpolation between discrete points z_i=-cos(i*pi/n)
+    \brief chebyshev interpolation between discrete Chebyshev nodes
 */
 
 #ifndef quantlib_chebyshev_interpolation_hpp

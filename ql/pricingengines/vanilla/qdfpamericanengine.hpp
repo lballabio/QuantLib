@@ -58,7 +58,7 @@ namespace QuantLib {
     };
 
     /* Gauss-Legendre (l,m,n)-p Scheme
-         l: order of Gauss-Legendre integration within every fixed point iterations
+         l: order of Gauss-Legendre integration within every fixed point iteration
             step.
          m: fixed point iteration steps, first step is a partial Jacobi-Newton,
             the rest are naive Richardson fixed point iterations
@@ -86,13 +86,13 @@ namespace QuantLib {
     };
 
     /* Legendre-Tanh-Sinh (l,m,n)-eps Scheme
-         l: order of Gauss-Legendre integration within every fixed point iterations
+         l: order of Gauss-Legendre integration within every fixed point iteration
             step.
          m: fixed point iteration steps, first step is a partial Jacobi-Newton,
             the rest are naive Richardson fixed point iterations
          n: number of Chebyshev nodes to interpolate the exercise boundary
          eps: final conversion of the exercise boundary into option prices
-               is carried out with a tanh-sinh integration with accuracy eps
+               is carried out by a tanh-sinh integration with accuracy eps
     */
     class QdFpLegendreTanhSinhScheme: public QdFpLegendreScheme {
       public:

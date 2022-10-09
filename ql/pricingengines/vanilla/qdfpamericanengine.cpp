@@ -40,7 +40,7 @@ namespace QuantLib {
             ext::make_shared<GaussLegendreIntegrator>(p)) {
 
         QL_REQUIRE(m_ > 0, "at least one fixed point iteration step is needed");
-        QL_REQUIRE(n_ > 0, "at least one interpolation points is needed");
+        QL_REQUIRE(n_ > 0, "at least one interpolation point is needed");
     }
 
     Size QdFpLegendreScheme::getNumberOfChebyshevInterpolationNodes()
@@ -172,8 +172,6 @@ namespace QuantLib {
             return std::make_pair(m, m-v);
         }
 
-        void updateY(const Array& y);
-
         Array x_i, w_i;
         const Rate r, q;
         const Volatility vol;
@@ -184,12 +182,6 @@ namespace QuantLib {
         const NormalDistribution phi;
         const CumulativeNormalDistribution Phi;
     };
-
-    void DqFpEquation::updateY(const Array& y) {
-        if (x_i.size()) {
-
-        }
-    }
 
     class DqFpEquation_B: public DqFpEquation {
       public:

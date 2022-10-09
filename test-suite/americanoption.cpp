@@ -1346,12 +1346,6 @@ void AmericanOptionTest::testQdAmericanEngines() {
             bsProcess, 8, QdPlusAmericanEngine::Halley, 1e-10
         );
 
-    const auto qdFpAmericanEngine =
-        ext::make_shared<QdFpAmericanEngine>(
-            bsProcess,
-            QdFpIterationSchemeStdFactory::fastScheme()
-        );
-
     for (const auto& testCaseSpec: testCaseSpecs) {
         const Date maturityDate =
             today + Period(testCaseSpec.maturityInDays, Days);
@@ -1367,7 +1361,6 @@ void AmericanOptionTest::testQdAmericanEngines() {
             ext::make_shared<AmericanExercise>(today, maturityDate)
         );
         option.setPricingEngine(qrPlusAmericanEngine);
-        //option.setPricingEngine(qdFpAmericanEngine);
 
         const Real calculated = option.NPV();
         const Real expected = testCaseSpec.expectedValue;
@@ -1587,7 +1580,7 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "bulk examples...");
 
-    // Example and results are taken from
+    // Examples are taken from
     //    Leif Andersen, Mark Lake and Dimitri Offengenden (2015)
     //    "High Performance American Option Pricing",
     //    https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2547027

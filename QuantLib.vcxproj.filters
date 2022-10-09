@@ -4414,10 +4414,10 @@
       <Filter>math\interpolations</Filter>
     </ClInclude>    
     <ClInclude Include="ql\pricingengines\vanilla\qdfpamericanengine.hpp">
-          <Filter>pricingengines\vanilla</Filter>
+      <Filter>pricingengines\vanilla</Filter>
     </ClInclude>    
     <ClInclude Include="ql\pricingengines\vanilla\qdplusamericanengine.hpp">
-          <Filter>pricingengines\vanilla</Filter>
+      <Filter>pricingengines\vanilla</Filter>
     </ClInclude>    
   </ItemGroup>
   <ItemGroup>
@@ -7138,10 +7138,10 @@
       <Filter>math\interpolations</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\qdfpamericanengine.cpp">
-          <Filter>pricingengines\vanilla</Filter>
+      <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\qdplusamericanengine.cpp">
-          <Filter>pricingengines\vanilla</Filter>
+      <Filter>pricingengines\vanilla</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

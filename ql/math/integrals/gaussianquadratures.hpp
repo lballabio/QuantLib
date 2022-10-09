@@ -215,7 +215,7 @@ namespace QuantLib {
           public:
             explicit GaussianQuadratureIntegrator(Size n);
 
-            const ext::shared_ptr<Integration>& getIntegration() const {
+            const ext::shared_ptr<Integration> getIntegration() const {
                 return integration_;
             }
           private:
