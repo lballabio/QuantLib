@@ -2018,7 +2018,7 @@ void HestonModelTest::testCosHestonEngine() {
 }
 
 void HestonModelTest::testCosHestonEngineTruncation() {
-    BOOST_TEST_MESSAGE("Testing Heston pricing via COS method outside truncation bounds");
+    BOOST_TEST_MESSAGE("Testing Heston pricing via COS method outside truncation bounds...");
     
     SavedSettings backup;
     
