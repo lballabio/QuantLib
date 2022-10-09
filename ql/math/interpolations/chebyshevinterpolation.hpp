@@ -41,7 +41,7 @@ namespace QuantLib {
       public:
         enum PointsType {FirstKind, SecondKind};
 
-        ChebyshevInterpolation(
+        explicit ChebyshevInterpolation(
             const Array& y, PointsType pointsType = SecondKind);
         ChebyshevInterpolation(
             Size n, const ext::function<Real(Real)>& f,
