@@ -219,7 +219,7 @@ namespace QuantLib {
    inline
     Rate DefaultProbabilityTermStructure::hazardRateImpl(Time t) const {
         Probability S = survivalProbability(t, true);
-        return S == 0.0 ? 0.0 : defaultDensity(t, true)/S;
+        return S == 0.0 ? Rate(0.0) : defaultDensity(t, true)/S;
     }
 
     inline Rate DefaultProbabilityTermStructure::hazardRate(Time t,

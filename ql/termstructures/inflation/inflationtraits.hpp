@@ -33,8 +33,8 @@
 namespace QuantLib {
 
     namespace detail {
-        constexpr Rate avgInflation = 0.02;
-        constexpr Rate maxInflation = 0.5;
+        constexpr double avgInflation = 0.02;
+        constexpr double maxInflation = 0.5;
     }
 
     //! Bootstrap traits to use for PiecewiseZeroInflationCurve
