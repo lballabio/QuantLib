@@ -28,8 +28,8 @@
 #include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
-#include <chrono>
-#include <thread>
+#include <utility>
+
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -110,9 +110,10 @@ void ObservableTest::testObservableSettings() {
 
 #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 
-#include <atomic>
-#include <mutex>
-#include <thread>
+#include <boost/atomic.hpp>
+#include <boost/thread/locks.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/thread.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 
 #include <list>
@@ -134,18 +135,18 @@ namespace {
         static int instanceCounter() { return instanceCounter_; }
 
       private:
-        std::atomic<int> counter_;
-        static std::atomic<int> instanceCounter_;
+        boost::atomic<int> counter_;
+        static boost::atomic<int> instanceCounter_;
     };
 
-    std::atomic<int> MTUpdateCounter::instanceCounter_(0);
+    boost::atomic<int> MTUpdateCounter::instanceCounter_(0);
 
     class GarbageCollector {
       public:
         GarbageCollector() : terminate_(false) { }
 
         void addObj(const ext::shared_ptr<MTUpdateCounter>& updateCounter) {
-            std::lock_guard<std::mutex> lock(mutex_);
+            boost::lock_guard<boost::mutex> lock(mutex_);
             objList.push_back(updateCounter);
         }
 
@@ -153,20 +154,20 @@ namespace {
             while(!terminate_) {
                 Size objListSize;
                 {
-                    std::lock_guard<std::mutex> lock(mutex_);
+                    boost::lock_guard<boost::mutex> lock(mutex_);
                     objListSize = objList.size();
                 }
 
                 if (objListSize > 20) {
                     // trigger gc
                     while (objListSize > 0) {
-                        std::lock_guard<std::mutex> lock(mutex_);
+                        boost::lock_guard<boost::mutex> lock(mutex_);
                         objList.pop_front();
                         objListSize = objList.size();
                     }
                 }
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(2));
+                boost::this_thread::sleep(boost::posix_time::milliseconds(2));
             }
             objList.clear();
         }
@@ -175,8 +176,8 @@ namespace {
             terminate_ = true;
         }
       private:
-        std::mutex mutex_;
-        std::atomic<bool> terminate_;
+        boost::mutex mutex_;
+        boost::atomic<bool> terminate_;
 
         std::list<ext::shared_ptr<MTUpdateCounter> > objList;
     };
@@ -194,7 +195,7 @@ void ObservableTest::testAsyncGarbagCollector() {
     const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(-1.0));
 
     GarbageCollector gc;
-    std::thread workerThread(&GarbageCollector::run, &gc);
+    boost::thread workerThread(&GarbageCollector::run, &gc);
 
     for (Size i=0; i < 10000; ++i) {
         const ext::shared_ptr<MTUpdateCounter> observer(new MTUpdateCounter);
@@ -223,7 +224,7 @@ void ObservableTest::testMultiThreadingGlobalSettings() {
     ObservableSettings::instance().disableUpdates(true);
 
     GarbageCollector gc;
-    std::thread workerThread(&GarbageCollector::run, &gc);
+    boost::thread workerThread(&GarbageCollector::run, &gc);
 
     typedef std::list<ext::shared_ptr<MTUpdateCounter> > local_list_type;
     local_list_type localList;
