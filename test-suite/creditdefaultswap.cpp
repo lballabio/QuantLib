@@ -712,7 +712,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                         .withSide(Protection::Buyer)
                         .withPricingEngine(engine);
 
-                BOOST_CHECK_SMALL(conventionalTradeBuy->NPV(), tolerance);
+                QL_CHECK_SMALL(conventionalTradeBuy->NPV(), tolerance);
 
                 ext::shared_ptr<CreditDefaultSwap> conventionalTradeSell =
                     MakeCreditDefaultSwap(termDate, 0.01)
@@ -721,7 +721,7 @@ void CreditDefaultSwapTest::testIsdaEngine() {
                         .withSide(Protection::Seller)
                         .withPricingEngine(engine);
 
-                BOOST_CHECK_SMALL(conventionalTradeSell->NPV(), tolerance);
+                QL_CHECK_SMALL(conventionalTradeSell->NPV(), tolerance);
 
                 l++;
             }
@@ -848,24 +848,25 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleQuote ()
             .withPricingEngine(engine);
 
 
-    double npv = conventionalTrade->NPV();
-    double calculated_upfront = conventionalTrade->notional() * conventionalTrade->fairUpfront();
-    double df = calculated_upfront / npv;  //to take into account of the discount to cash settlement
-    double derived_accrual = df * (npv -
+    Real npv = conventionalTrade->NPV();
+    Real calculated_upfront = conventionalTrade->notional() * conventionalTrade->fairUpfront();
+    Real df = calculated_upfront / npv; // to take into account of the discount to cash settlement
+    Real derived_accrual =
+        df * (npv -
                                    conventionalTrade->defaultLegNPV() -
                                    conventionalTrade->couponLegNPV());
 
-    double calculated_accrual = conventionalTrade->accrualRebate()->amount();
+    Real calculated_accrual = conventionalTrade->accrualRebate()->amount();
 
     auto settlement_date = conventionalTrade->accrualRebate()->date();
 
-    BOOST_CHECK_CLOSE(npv, markitValue, tolerance);
+    QL_CHECK_CLOSE(npv, markitValue, tolerance);
 
-    BOOST_CHECK_CLOSE(calculated_upfront, df*markitValue, tolerance);
+    QL_CHECK_CLOSE(calculated_upfront, df * markitValue, tolerance);
 
-    BOOST_CHECK_CLOSE(derived_accrual, expected_accrual, tolerance);
+    QL_CHECK_CLOSE(derived_accrual, expected_accrual, tolerance);
 
-    BOOST_CHECK_CLOSE(calculated_accrual, expected_accrual, tolerance);
+    QL_CHECK_CLOSE(calculated_accrual, expected_accrual, tolerance);
 
     BOOST_CHECK_EQUAL(settlement_date, WeekendsOnly().advance(tradeDate,3, TimeUnit::Days));
 
@@ -962,14 +963,14 @@ void CreditDefaultSwapTest::testIsdaCalculatorReconcileSingleWithIssueDateInTheP
             .withTradeDate(tradeDate);
 
 
-    double npv = conventionalTrade->NPV();
-    double calculated_accrual = npv -
+    Real npv = conventionalTrade->NPV();
+    Real calculated_accrual = npv -
                                 conventionalTrade->defaultLegNPV() -
                                 conventionalTrade->couponLegNPV();
 
-    BOOST_CHECK_CLOSE(npv, markitValue, tolerance);
+    QL_CHECK_CLOSE(npv, markitValue, tolerance);
 
-    BOOST_CHECK_CLOSE(calculated_accrual, expected_accrual, tolerance);
+    QL_CHECK_CLOSE(calculated_accrual, expected_accrual, tolerance);
 }
 
 test_suite* CreditDefaultSwapTest::suite() {
