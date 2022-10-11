@@ -2269,7 +2269,7 @@ void InterpolationTest::testLagrangeInterpolationDerivative() {
 
 void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     BOOST_TEST_MESSAGE(
-        "Testing Lagrange interpolation on Chebyshev points...");
+        "Testing Lagrange interpolation on Chebyshev nodes...");
 
     // Test example taken from
     // J.P. Berrut, L.N. Trefethen, Barycentric Lagrange Interpolation
@@ -2278,7 +2278,7 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     const Size n=50;
     Array x(n+1), y(n+1);
     for (Size i=0; i <= n; ++i) {
-        // Chebyshev points
+        // Chebyshev nodes
         x[i] = std::cos( (2*i+1)*M_PI/(2*n+2) );
         y[i] = std::exp(x[i])/std::cos(x[i]);
     }
@@ -2295,7 +2295,7 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
         const Real diff = std::fabs(expected - calculated);
         if (std::isnan(calculated) || diff > tol) {
             BOOST_FAIL("failed to reproduce the Lagrange"
-                    " interpolation on Chebyshev points"
+                    " interpolation on Chebyshev nodes"
                     << "\n    x         : " << x
                     << "\n    calculated: " << calculated
                     << "\n    expected  : " << expected
@@ -2309,7 +2309,7 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
         const Real diffDeriv = std::fabs(expectedDeriv - calculatedDeriv);
         if (std::isnan(calculated) || diffDeriv > tolDeriv) {
             BOOST_FAIL("failed to reproduce the Lagrange"
-                    " interpolation derivative on Chebyshev points"
+                    " interpolation derivative on Chebyshev nodes"
                     << "\n    x         : " << x
                     << "\n    calculated: " << calculatedDeriv
                     << "\n    expected  : " << expectedDeriv
@@ -2438,22 +2438,23 @@ void InterpolationTest::testChebyshevInterpolation() {
 }
 
 void InterpolationTest::testChebyshevInterpolationOnNodes() {
-    BOOST_TEST_MESSAGE("Testing Chebyshev interpolation on nodes...");
+    BOOST_TEST_MESSAGE("Testing Chebyshev interpolation on and around nodes...");
 
-    const Real tol = 100*QL_EPSILON;
+    const Real tol = 10*QL_EPSILON;
     const auto testFct = [](Real x) { return std::sin(x);};
 
     const Size nrNodes = 7;
     Array y(nrNodes);
 
     for (auto pointType: {ChebyshevInterpolation::FirstKind,
-        ChebyshevInterpolation::SecondKind}) {
+                          ChebyshevInterpolation::SecondKind}) {
 
         const Array nodes = ChebyshevInterpolation::nodes(nrNodes, pointType);
         std::transform(std::begin(nodes), std::end(nodes), std::begin(y), testFct);
 
         const ChebyshevInterpolation interp(y, pointType);
         for (auto node: nodes) {
+            // test on Chebyshev node
             const Real expected = testFct(node);
             const Real calculated = interp(node);
             const Real diff = std::abs(expected - calculated);
@@ -2462,11 +2463,30 @@ void InterpolationTest::testChebyshevInterpolationOnNodes() {
                 BOOST_ERROR("failed to reproduce the node values"
                         << std::setprecision(16)
                         << "\n    node      : " << node
-                        << "\n    fct       : " << expected
                         << "\n    calculated: " << calculated
                         << "\n    expected  : " << expected
                         << "\n    difference: " << diff
                         << "\n    tolerance : " << tol);
+            }
+
+
+            // check around Chebyshev node
+            for (Integer i=-50; i < 50; ++i) {
+                const Real x = node + i*QL_EPSILON;
+                const Real expected = testFct(x);
+                const Real calculated = interp(x, true);
+                const Real diff = std::abs(expected - calculated);
+
+                if (diff > tol) {
+                    BOOST_ERROR("failed to reproduce values around nodes"
+                            << std::setprecision(16)
+                            << "\n    node      : " << node
+                            << "\n    epsilon   : " << x - node
+                            << "\n    calculated: " << calculated
+                            << "\n    expected  : " << expected
+                            << "\n    difference: " << diff
+                            << "\n    tolerance : " << tol);
+                }
             }
         }
     }
