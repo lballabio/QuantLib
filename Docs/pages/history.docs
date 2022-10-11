@@ -34,11 +34,6 @@
       using `ext::tuple` etc. in your code (which is suggested), this
       should be a transparent change.  If not, you'll still be able to
       choose the `boost` versions via a configure switch for a while.
-    - A few non-standard configuration switches (`--enable-sessions`,
-      `--enable-thread-safe-observer-pattern` and
-      `--enable-thread-safe-singleton-init`) used to require the
-      Boost.Thread library.  Thanks to Jonathan Sweemer, this
-      is no longer the case.
 
     DATE/TIME
     - Added Act/366 and Act/365.25 day counters; thanks to Ignacio Anguita.

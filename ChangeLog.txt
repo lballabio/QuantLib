@@ -1,3 +1,75 @@
+commit 90881f8891f98cc805e6331450a59787f30c1bbe
+Merge: 92e6ff079 c6620359b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Oct 2022 18:44:10 +0200
+
+    Consistent use of Real and testing macros (#1496)
+
+commit c6620359bfb9b69fd1cb1dc3a7972705ef48bfdd
+Author: Xcelerit Dev Team <github@xcelerit.com>
+Date:   Tue, 11 Oct 2022 14:05:02 +0100
+
+    Consistent use of Real and testing macros
+
+ ql/math/comparison.hpp                          |  4 ++--
+ ql/termstructures/defaulttermstructure.hpp      |  2 +-
+ ql/termstructures/inflation/inflationtraits.hpp |  4 ++--
+ test-suite/creditdefaultswap.cpp                | 31 +++++++++++++------------
+ 4 files changed, 21 insertions(+), 20 deletions(-)
+
+commit 92e6ff079e429e8ea16cdd9fcba18c7f210497f1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Oct 2022 13:44:59 +0200
+
+    Revert pull request #1491.
+
+ CMakeLists.txt             | 26 ++++++++++++-----
+ Examples/Makefile.am       |  2 +-
+ acinclude.m4               | 69 +++++++++++++++++++++++++++++++---------------
+ configure.ac               | 14 ++++++++--
+ ql/CMakeLists.txt          |  3 ++
+ ql/auto_link.hpp           | 11 ++++++++
+ ql/patterns/observable.cpp | 12 ++++----
+ ql/patterns/observable.hpp | 41 +++++++++++++--------------
+ ql/patterns/singleton.hpp  | 40 ++++++++++++---------------
+ quantlib-config.in         |  2 +-
+ quantlib.pc.in             |  2 +-
+ test-suite/Makefile.am     |  4 +--
+ test-suite/observable.cpp  | 33 +++++++++++-----------
+ 13 files changed, 159 insertions(+), 100 deletions(-)
+
+commit 6cf1ac869e26ed0bb79db4d5277b29878b5cc70a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 1 Apr 2021 11:28:16 +0200
+
+    Set version to 1.28 rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit e73405c065ab23c6d4e421b2a86807427b146d35
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Oct 2022 20:29:06 +0200
+
+    Update Doxygen configuration
+
+ Docs/quantlib.doxy | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+commit 22966ae4b6412436e18401568bcf74a0831725b7
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Oct 2022 19:12:54 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt           | 1558 +++++++++++++++++++++++++++++++++++++++++++++--
+ Contributors.txt        |    4 +
+ Docs/pages/history.docs |   97 ++-
+ News.md                 |  148 ++++-
+ 4 files changed, 1753 insertions(+), 54 deletions(-)
+
 commit adf048b6086c842010933c5240c315c349a8fa97
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Sun, 9 Oct 2022 15:59:31 +0200

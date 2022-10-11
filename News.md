@@ -27,12 +27,6 @@ Portability
   should be a transparent change.  If not, you'll still be able to
   choose the `boost` versions via a configure switch for a while.
 
-- A few non-standard configuration switches (`--enable-sessions`,
-  `--enable-thread-safe-observer-pattern` and
-  `--enable-thread-safe-singleton-init`) used to require the
-  Boost.Thread library.  Thanks to Jonathan Sweemer (@sweemer), this
-  is no longer the case.
-
 Date/time
 ---------
 
