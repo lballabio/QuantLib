@@ -354,8 +354,8 @@ namespace QuantLib {
     Real QdPlusAmericanEngine::calculatePut(
         Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
 
-        QL_REQUIRE(r >= 0 && q >= 0,
-            "positiive interest rates and dividend yields are required");
+        if (r < 0.0 && q < r)
+            QL_FAIL("double-boundary case q<r<0 given");
 
         const ext::shared_ptr<Interpolation> q_z
             = getPutExerciseBoundary(S, K, r, q, vol, T);

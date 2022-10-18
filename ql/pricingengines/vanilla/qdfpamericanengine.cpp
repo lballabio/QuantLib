@@ -404,6 +404,9 @@ namespace QuantLib {
     Real QdFpAmericanEngine::calculatePut(
             Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
 
+        if (r < 0.0 && q < r)
+            QL_FAIL("double-boundary case q<r<0 given");
+
         const Real xmax =  QdPlusAmericanEngine::xMax(K, r, q);
         const Size n = iterationScheme_->getNumberOfChebyshevInterpolationNodes();
 
