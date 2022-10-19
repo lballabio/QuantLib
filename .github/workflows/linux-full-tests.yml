@@ -92,6 +92,11 @@ jobs:
             tag: jammy
             cc: clang
             cxx: clang++
+          - name: "Clang 15"
+            shortname: clang15
+            tag: kinetic
+            cc: clang
+            cxx: clang++
           - name: "C++14 mode"
             shortname: c++14
             tag: rolling

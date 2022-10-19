@@ -797,7 +797,7 @@ namespace QuantLib {
                                   Real RUB, Real AR, Real RUC,
                                   int NUC));
 
-    Real tvtl(int NU, const Real limit[], const Real sigmarho[], Real epsi) {
+    Real tvtl(int NU, const Real limit[4], const Real sigmarho[4], Real epsi) {
         /*
           A function for computing trivariate normal and t-probabilities.
 

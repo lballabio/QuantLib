@@ -91,3 +91,7 @@ namespace QuantLib {
     }
 
 }
+
+#if defined(QL_PATCH_MSVC)
+#pragma warning(pop)
+#endif

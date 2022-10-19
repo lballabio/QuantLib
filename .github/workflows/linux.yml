@@ -95,6 +95,12 @@ jobs:
             cc: clang
             cxx: clang++
             tests: true
+          - name: "Clang 15"
+            shortname: clang15
+            tag: kinetic
+            cc: clang
+            cxx: clang++
+            tests: true
           - name: "C++14 mode"
             shortname: c++14
             tag: rolling
