@@ -207,6 +207,15 @@ namespace QuantLib {
             return notional() * (I1 / I0);
     }
 
+    Real CPICashFlow::indexFixing() const {
+        if (observationDate_ != Date()) {
+            return CPI::laggedFixing(cpiIndex(), observationDate_, observationLag_, interpolation_);
+        } else {
+            // we get to this branch when the deprecated constructor was used; it will be phased out
+            return CPI::laggedFixing(cpiIndex(), fixingDate() + observationLag_, observationLag_,
+                                     interpolation_);
+        }
+    }
 
     CPILeg::CPILeg(const Schedule& schedule,
                    ext::shared_ptr<ZeroInflationIndex> index,

@@ -191,6 +191,8 @@ namespace QuantLib {
 
         ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
 
+        virtual Real indexFixing() const override;
+
         //! redefined to use baseFixing() and interpolation
         Real amount() const override;
 
