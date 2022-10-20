@@ -1,7 +1,7 @@
 Changes for QuantLib 1.28:
 ==========================
 
-QuantLib 1.28 includes 32 pull requests from several contributors.
+QuantLib 1.28 includes 33 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
@@ -122,8 +122,8 @@ Deprecated features
 
 
 **Thanks go also** to Konstantin Novitsky (@novitk), Peter Caspers
-(@pcaspers), Klaus Spanderen (@klausspanderen) and Fredrik Gerdin
-Börjesson (@gbfredrik) for a number of smaller fixes, and to Jonathan
-Sweemer (@sweemer) for various improvements to the automated CI
-builds.
+(@pcaspers), Klaus Spanderen (@klausspanderen), Fredrik Gerdin
+Börjesson (@gbfredrik) and Dirk Eddelbuettel (@eddelbuettel) for a
+number of smaller fixes, and to Jonathan Sweemer (@sweemer) for
+various improvements to the automated CI builds.
 

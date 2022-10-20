@@ -1,3 +1,65 @@
+commit bb64ee1618dff745a3e9a5b3151cf8ed87144ffb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.28 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit d14da28dced9ee899331f603badfa93739a95405
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 19 Oct 2022 22:51:51 +0200
+
+    Add clang 15 to test matrix
+
+ .github/workflows/linux-full-tests.yml                         |  5 +++++
+ .github/workflows/linux-nondefault.yml                         |  5 +++++
+ .github/workflows/linux.yml                                    |  6 ++++++
+ .../barrieroption/perturbativebarrieroptionengine.cpp          |  2 +-
+ ql/experimental/credit/defaultprobabilitykey.cpp               |  4 ++++
+ test-suite/tracing.cpp                                         | 10 +++++++++-
+ 6 files changed, 30 insertions(+), 2 deletions(-)
+
+commit 379f5a2850087b149efb6af9a5abf181fed3e6ac
+Merge: dbc7b5f65 d0add71fc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 20 Oct 2022 07:21:29 +0200
+
+    Convert argentina.cpp to utf-8 to appease clang-15 (#1500)
+
+commit d0add71fcc2a63b2337417b1ad41ebaed1d1c164
+Author: Dirk Eddelbuettel <edd@debian.org>
+Date:   Wed, 19 Oct 2022 14:35:51 -0500
+
+    Convert argentina.cpp to utf-8 to appease clang-15
+
+ ql/time/calendars/argentina.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit dbc7b5f65fdb38d1fe7b1e1ecb5b157c173b1e4b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 13 Oct 2022 18:24:07 +0200
+
+    Avoid warnings from deprecated headers
+
+ ql/experimental/Makefile.am | 2 +-
+ ql/experimental/all.hpp     | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+commit 1f066933d52d0ee269e1ab907d2cab8a5a4ea07d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Oct 2022 18:45:45 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt           | 72 +++++++++++++++++++++++++++++++++++++++++++++++++
+ Docs/pages/history.docs |  5 ----
+ News.md                 |  6 -----
+ 3 files changed, 72 insertions(+), 11 deletions(-)
+
 commit 90881f8891f98cc805e6331450a59787f30c1bbe
 Merge: 92e6ff079 c6620359b
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
