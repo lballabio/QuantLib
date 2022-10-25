@@ -122,18 +122,16 @@ namespace QuantLib {
         spread_ = coupon_->spread();
         paymentDate_ = coupon_->date();
 
-        rateCurve_ = nominalTermStructure_;
-
         // past or future fixing is managed in YoYInflationIndex::fixing()
         // use yield curve from index (which sets discount)
 
         discount_ = 1.0;
-        if (rateCurve_.empty()) {
+        if (nominalTermStructure_.empty()) {
             // allow to extract rates, but mark the discount as invalid for prices
             discount_ = Null<Real>();
         } else {
-            if (paymentDate_ > rateCurve_->referenceDate())
-                discount_ = rateCurve_->discount(paymentDate_);
+            if (paymentDate_ > nominalTermStructure_->referenceDate())
+                discount_ = nominalTermStructure_->discount(paymentDate_);
         }
     }
 
