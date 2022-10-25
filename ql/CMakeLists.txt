@@ -125,7 +125,6 @@ set(QL_SOURCES
     experimental/credit/recoveryratequote.cpp
     experimental/credit/riskyassetswap.cpp
     experimental/credit/riskyassetswapoption.cpp
-    experimental/credit/riskybond.cpp
     experimental/credit/syntheticcdo.cpp
     experimental/exoticoptions/analyticamericanmargrabeengine.cpp
     experimental/exoticoptions/analyticcomplexchooserengine.cpp

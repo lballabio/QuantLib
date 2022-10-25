@@ -31,18 +31,6 @@
 
 namespace QuantLib {
 
-    void IborCoupon::createAtParCoupons() {
-        Settings::instance().createAtParCoupons();
-    }
-
-    void IborCoupon::createIndexedCoupons() {
-        Settings::instance().createIndexedCoupons();
-    }
-
-    bool IborCoupon::usingAtParCoupons() {
-        return Settings::instance().usingAtParCoupons();
-    }
-
     IborCoupon::IborCoupon(const Date& paymentDate,
                            Real nominal,
                            const Date& startDate,

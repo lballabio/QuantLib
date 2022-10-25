@@ -130,14 +130,6 @@ namespace QuantLib {
         virtual Date baseDate() const = 0;
         //@}
 
-        /*! \deprecated Don't use this method.  Objects such as pricers
-                        or bootstrap helpers that need a nominal curve
-                        should be passed one explicitly.
-                        Deprecated in version 1.24.
-        */
-        QL_DEPRECATED
-        virtual Handle<YieldTermStructure> nominalTermStructure() const;
-
         //! Functions to set and get seasonality.
         /*! Calling setSeasonality with no arguments means unsetting
             as the default is used to choose unsetting.
@@ -176,16 +168,6 @@ namespace QuantLib {
         */
         QL_DEPRECATED
         bool indexIsInterpolated_;
-        /*! \deprecated Don't use this data member.  If you're
-                        inheriting from InflationTermStructure, don't
-                        have your class take a nominal curve.  Objects
-                        such as pricers or bootstrap helpers that need
-                        a nominal curve should be passed one
-                        explicitly.
-                        Deprecated in version 1.24.
-        */
-        QL_DEPRECATED
-        Handle<YieldTermStructure> nominalTermStructure_;
     };
 
     QL_DEPRECATED_ENABLE_WARNING
@@ -381,13 +363,6 @@ namespace QuantLib {
 
     inline Rate InflationTermStructure::baseRate() const {
         return baseRate_;
-    }
-
-    inline Handle<YieldTermStructure>
-    InflationTermStructure::nominalTermStructure() const {
-        QL_DEPRECATED_DISABLE_WARNING
-        return nominalTermStructure_;
-        QL_DEPRECATED_ENABLE_WARNING
     }
 
     inline ext::shared_ptr<Seasonality> InflationTermStructure::seasonality() const {

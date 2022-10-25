@@ -99,18 +99,6 @@ namespace QuantLib {
       public:
         // IborCoupon::Settings forward declaration
         class Settings;
-        /*! \deprecated Use IborCouponSettings::Settings::instance().createAtParCoupons() instead
-                        Deprecated in version 1.24.
-        */
-        QL_DEPRECATED static void createAtParCoupons();
-        /*! \deprecated Use IborCouponSettings::Settings::instance().createIndexedCoupons() instead
-                        Deprecated in version 1.24.
-        */
-        QL_DEPRECATED static void createIndexedCoupons();
-        /*! \deprecated Use IborCouponSettings::Settings::instance().usingAtParCoupons() instead
-                        Deprecated in version 1.24.
-        */
-        QL_DEPRECATED static bool usingAtParCoupons();
     };
 
 
