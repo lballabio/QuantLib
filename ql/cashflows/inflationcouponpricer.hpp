@@ -54,6 +54,7 @@ namespace QuantLib {
                                  public virtual Observable {
     public:
       QL_DEPRECATED_DISABLE_WARNING
+      InflationCouponPricer() = default;
       ~InflationCouponPricer() override = default;
       QL_DEPRECATED_ENABLE_WARNING
       //! \name Interface
