@@ -24,7 +24,7 @@
 #ifndef quantlib_singleton_hpp
 #define quantlib_singleton_hpp
 
-#include <ql/qldefines.hpp>
+#include <ql/types.hpp>
 #include <type_traits>
 
 namespace QuantLib {
@@ -88,6 +88,24 @@ namespace QuantLib {
         return instance;
 #endif
     }
+
+
+    // backwards compatibility
+
+#if defined(QL_THREAD_KEY)
+    /*! \deprecated This typedef is obsolete. Do not use it.
+                    Deprecated in version 1.29.
+    */
+    QL_DEPRECATED
+    typedef QL_THREAD_KEY ThreadKey;
+#else
+    /*! \deprecated This typedef is obsolete. Do not use it.
+                    Deprecated in version 1.29.
+    */
+    QL_DEPRECATED
+    typedef Integer ThreadKey;
+#endif
+
 }
 
 #endif
