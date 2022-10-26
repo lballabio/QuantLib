@@ -173,20 +173,20 @@ namespace QuantLib {
                                                       rightCond,
                                                       rightConditionValue));
             impl_->update();
-            coeffs_ =
-                ext::dynamic_pointer_cast<detail::CoefficientHolder>(impl_);
         }
         const std::vector<Real>& primitiveConstants() const {
-            return coeffs_->primitiveConst_;
+            return coeffs().primitiveConst_;
         }
-        const std::vector<Real>& aCoefficients() const { return coeffs_->a_; }
-        const std::vector<Real>& bCoefficients() const { return coeffs_->b_; }
-        const std::vector<Real>& cCoefficients() const { return coeffs_->c_; }
+        const std::vector<Real>& aCoefficients() const { return coeffs().a_; }
+        const std::vector<Real>& bCoefficients() const { return coeffs().b_; }
+        const std::vector<Real>& cCoefficients() const { return coeffs().c_; }
         const std::vector<bool>& monotonicityAdjustments() const {
-            return coeffs_->monotonicityAdjustments_;
+            return coeffs().monotonicityAdjustments_;
         }
       private:
-        ext::shared_ptr<detail::CoefficientHolder> coeffs_;
+        const detail::CoefficientHolder& coeffs() const {
+            return *dynamic_cast<detail::CoefficientHolder*>(impl_.get());
+        }
     };
 
 

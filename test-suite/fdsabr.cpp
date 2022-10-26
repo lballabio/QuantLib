@@ -32,7 +32,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
-#include <boost/make_shared.hpp>
+#include <ql/shared_ptr.hpp>
 #include <utility>
 
 using namespace QuantLib;
@@ -144,7 +144,7 @@ void FdSabrTest::testFdmSabrOp() {
             Handle<Quote>(ext::make_shared<SimpleQuote>(f0)),
             rTS, rTS, Handle<BlackVolTermStructure>(flatVol(0.2, dc)));
 
-    for (double beta : betas) {
+    for (Real beta : betas) {
 
         const ext::shared_ptr<PricingEngine> pdeEngine =
             ext::make_shared<FdSabrVanillaEngine>(f0, alpha, beta, nu, rho, rTS, 100, 400, 100);
@@ -230,13 +230,13 @@ void FdSabrTest::testFdmSabrCevPricing() {
     const Real tol = 5e-5;
 
     for (auto optionType : optionTypes) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             const ext::shared_ptr<PlainVanillaPayoff> payoff =
                 ext::make_shared<PlainVanillaPayoff>(optionType, strike);
 
             VanillaOption option(payoff, exercise);
 
-            for (double beta : betas) {
+            for (Real beta : betas) {
                 option.setPricingEngine(ext::make_shared<FdSabrVanillaEngine>(
                     f0, alpha, beta, nu, rho, rTS, 100, 400, 3));
 
@@ -297,7 +297,7 @@ void FdSabrTest::testFdmSabrVsVolApproximation() {
 
     const Real tol = 2.5e-3;
     for (auto optionType : optionTypes) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             VanillaOption option(ext::make_shared<PlainVanillaPayoff>(optionType, strike),
                                  ext::make_shared<EuropeanExercise>(maturityDate));
 

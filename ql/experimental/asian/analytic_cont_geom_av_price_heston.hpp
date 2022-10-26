@@ -87,7 +87,7 @@ namespace QuantLib {
 
         // Some intermediate calculation constant parameters
         Real a1_, a2_;
-        mutable Real a3_, a4_, a5_;
+        mutable Real a3_ = 0.0, a4_ = 0.0, a5_ = 0.0;
 
         // A lookup table for the reuslts of f() to avoid repeated calls
         mutable std::map<int, std::complex<Real> > fLookupTable_;

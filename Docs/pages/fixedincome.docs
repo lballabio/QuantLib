@@ -18,10 +18,10 @@
 
 /*! \defgroup shortrate Short-rate modelling framework
 
-    This framework (corresponding to the ql/ShortRateModels directory)
+    This framework (corresponding to the ql/models/shortrate directory)
     implements some single-factor and two-factor short rate models. The models 
-    implemented in this library are widely used by practitionners. For the 
-    moment, the ShortRateModels::Model class defines the short-rate dynamics
+    implemented in this library are widely used by practitioners. For the 
+    moment, the ShortRateModel class defines the short-rate dynamics
     with stochastic equations of the type 
     \f[ 
         dx_i = \mu(t,x_i) dt + \sigma(t,x_i) dW_t 
@@ -56,7 +56,7 @@
     \section calibration Calibration
 
     The class CalibrationHelper is a base class that facilitates the 
-    instanciation of market instruments used for calibration. It has
+    instantiation of market instruments used for calibration. It has
     a method marketValue() that gives the market price using a Black
     formula, and a modelValue() method that gives the price according to
     a model
@@ -86,25 +86,6 @@
     In the case of single-factor affine models, swaptions can be priced using
     the Jamshidian decomposition, implemented in 
     QuantLib::JamshidianSwaption.
-
-    \par Using Finite Differences
-
-    (Doesn't work for the moment)
-    For the moment, this is only available for single-factor affine models.
-    If \f$ x = x(t, r) \f$ is the state variable and follows this stochastic 
-    process:
-    \f[
-        dx_t = \mu(t,x)dt + \sigma(t,x)dW_t
-    \f]
-    any european-style instrument will follow the following PDE:
-
-    \f[
-        \frac{\partial P}{\partial t} + \mu \frac{\partial P}{\partial x}
-        + \frac{1}{2} \sigma^2 \frac{\partial^2 P}{\partial x^2} = r(t,x)P
-    \f]
-    
-    The adequate operator to feed a Finite Difference Model instance is defined
-    in the QuantLib::OneFactorOperator class.
 
     \par Using Trees
 

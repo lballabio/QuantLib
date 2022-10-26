@@ -21,25 +21,19 @@
     \brief Ornstein Uhlenbeck process plus jumps (Kluge Model)
 */
 
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
+#include <ql/experimental/finitedifferences/fdmextoujumpop.hpp>
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
+#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
-#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/experimental/finitedifferences/fdmextoujumpop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
-#include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(push)
 #pragma warning(disable:4180)
-#endif
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 
 #include <boost/numeric/ublas/vector.hpp>
@@ -47,10 +41,6 @@
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(pop)
-#endif
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
 #endif
 
 namespace QuantLib {

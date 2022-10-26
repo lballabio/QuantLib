@@ -23,15 +23,7 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/functional.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
 #include <boost/math/distributions/students_t.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
 
 namespace QuantLib {
 
@@ -158,7 +150,7 @@ namespace QuantLib {
         const std::vector<Real>& factors,
         Real accuracy)
     : normSqr_(std::inner_product(factors.begin(), factors.end(),
-        factors.begin(), 0.)),
+        factors.begin(), Real(0.))),
       accuracy_(accuracy), distrib_(degreesFreedom, factors) { }
 
     Real InverseCumulativeBehrensFisher::operator()(const Probability q) const {

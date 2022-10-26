@@ -41,7 +41,7 @@ namespace QuantLib {
         const Matrix m = param_->diffusion(t);
 
         return std::inner_product(m.row_begin(i_), m.row_end(i_),
-                                  m.row_begin(j_), 0.0);
+                                  m.row_begin(j_), Real(0.0));
     }
 
     Matrix LfmCovarianceParameterization::covariance(Time t, const Array& x) const {

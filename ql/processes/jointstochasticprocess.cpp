@@ -30,7 +30,7 @@ namespace QuantLib {
 
     JointStochasticProcess::JointStochasticProcess(
         std::vector<ext::shared_ptr<StochasticProcess> > l, Size factors)
-    : l_(std::move(l)), size_(0), factors_(factors), modelFactors_(0) {
+    : l_(std::move(l)), factors_(factors) {
 
         for (const auto& iter : l_) {
             registerWith(iter);
@@ -195,7 +195,7 @@ namespace QuantLib {
                 for (Size j=i; j < cov.columns(); ++j) {
                     const Real div = sqrtDiag[i]*sqrtDiag[j];
 
-                    cov[i][j] = cov[j][i] = ( div > 0) ? cov[i][j]/div : 0.0;
+                    cov[i][j] = cov[j][i] = ( div > 0) ? Real(cov[i][j]/div) : 0.0;
                 }
             }
 
@@ -211,11 +211,11 @@ namespace QuantLib {
                     const Volatility vol = std::sqrt(
                         std::inner_product(stdDev.row_begin(i),
                                            stdDev.row_end(i),
-                                           stdDev.row_begin(i), 0.0));
+                                           stdDev.row_begin(i), Real(0.0)));
                     if (vol > 0.0) {
                         std::transform(stdDev.row_begin(i), stdDev.row_end(i),
                                        stdDev.row_begin(i),
-                                       [=](Real x){ return x/vol; });
+                                       [=](Real x) -> Real { return x / vol; });
                     }
                     else {
                         // keep the svd happy

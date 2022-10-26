@@ -71,30 +71,7 @@ namespace QuantLib {
     }
 
 
-    ZeroCouponInflationSwapHelper::ZeroCouponInflationSwapHelper(
-        const Handle<Quote>& quote,
-        const Period& swapObsLag,
-        const Date& maturity,
-        Calendar calendar,
-        BusinessDayConvention paymentConvention,
-        DayCounter dayCounter,
-        ext::shared_ptr<ZeroInflationIndex> zii,
-        Handle<YieldTermStructure> nominalTermStructure)
-    : ZeroCouponInflationSwapHelper(quote,
-                                    swapObsLag,
-                                    maturity,
-                                    std::move(calendar),
-                                    paymentConvention,
-                                    std::move(dayCounter),
-                                    std::move(zii),
-                                    CPI::AsIndex,
-                                    std::move(nominalTermStructure)) {}
-
-
     Real ZeroCouponInflationSwapHelper::impliedQuote() const {
-        // what does the term structure imply?
-        // in this case just the same value ... trivial case
-        // (would not be so for an inflation-linked bond)
         zciis_->recalculate();
         return zciis_->fairRate();
     }
@@ -116,13 +93,8 @@ namespace QuantLib {
 
         ext::shared_ptr<ZeroInflationIndex> new_zii = zii_->clone(zits);
 
-        QL_DEPRECATED_DISABLE_WARNING
-        Handle<YieldTermStructure> nominalTS =
-            !nominalTermStructure_.empty() ? nominalTermStructure_ : z->nominalTermStructure();
-        QL_DEPRECATED_ENABLE_WARNING
-
         Real nominal = 1000000.0; // has to be something but doesn't matter what
-        Date start = nominalTS->referenceDate();
+        Date start = nominalTermStructure_->referenceDate();
         zciis_.reset(new ZeroCouponInflationSwap(Swap::Payer, nominal, start,
                                                  maturity_, calendar_, paymentConvention_,
                                                  dayCounter_, K, // fixed side & fixed rate
@@ -130,7 +102,7 @@ namespace QuantLib {
         // Because very simple instrument only takes
         // standard discounting swap engine.
         zciis_->setPricingEngine(
-            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(nominalTS)));
+            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(nominalTermStructure_)));
     }
 
 
@@ -225,13 +197,9 @@ namespace QuantLib {
 
         // The instrument takes a standard discounting swap engine.
         // The inflation-related work is done by the coupons.
-        QL_DEPRECATED_DISABLE_WARNING
-        Handle<YieldTermStructure> nominalTS =
-            !nominalTermStructure_.empty() ? nominalTermStructure_ : y->nominalTermStructure();
-        QL_DEPRECATED_ENABLE_WARNING
 
         yyiis_->setPricingEngine(
-            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(nominalTS)));
+            ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(nominalTermStructure_)));
     }
 
 }

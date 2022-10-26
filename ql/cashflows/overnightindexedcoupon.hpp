@@ -115,12 +115,12 @@ namespace QuantLib {
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         Calendar paymentCalendar_;
-        BusinessDayConvention paymentAdjustment_;
-        Natural paymentLag_;
+        BusinessDayConvention paymentAdjustment_ = Following;
+        Natural paymentLag_ = 0;
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
-        bool telescopicValueDates_;
-        RateAveraging::Type averagingMethod_;
+        bool telescopicValueDates_ = false;
+        RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
     };
 
 }

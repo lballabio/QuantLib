@@ -921,7 +921,7 @@ void VPPTest::testKlugeExtOUMatrixDecomposition() {
     Array x(mesher->layout()->size());
 
     PseudoRandom::rng_type rng(PseudoRandom::urng_type(12345UL));
-    for (double& i : x) {
+    for (Real& i : x) {
         i = rng.next().value;
     }
 

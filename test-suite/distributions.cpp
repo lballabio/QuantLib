@@ -31,15 +31,7 @@
 #include <ql/math/distributions/poissondistribution.hpp>
 #include <ql/math/randomnumbers/stochasticcollocationinvcdf.hpp>
 #include <ql/math/comparison.hpp>
-
-#if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif
 #include <boost/math/distributions/non_central_chi_squared.hpp>
-#if defined(__GNUC__) && !defined(__clang__) && BOOST_VERSION > 106300
-#pragma GCC diagnostic pop
-#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -163,7 +155,7 @@ namespace distributions_test {
         const Real x(0.0);
         const Real y(0.0);
 
-        for (double i : rho) {
+        for (Real i : rho) {
             for (Integer sgn=-1; sgn < 2; sgn+=2) {
                 Bivariate bvn(sgn * i);
                 Real expected = 0.25 + std::asin(sgn * i) / (2 * M_PI);
@@ -249,10 +241,9 @@ void DistributionTest::testNormal() {
     std::transform(x.begin(), x.end(), yd.begin(), gaussianDerivative);
 
     // check that normal = Gaussian
-    std::transform(x.begin(),x.end(),temp.begin(),normal);
-    std::transform(y.begin(),y.end(),temp.begin(),diff.begin(),
-                   std::minus<Real>());
-    Real e = norm(diff.begin(),diff.end(),h);
+    std::transform(x.begin(), x.end(), temp.begin(), normal);
+    std::transform(y.begin(), y.end(), temp.begin(), diff.begin(), std::minus<>());
+    Real e = norm(diff.begin(), diff.end(), h);
     if (e > 1.0e-16) {
         BOOST_ERROR("norm of C++ NormalDistribution minus analytic Gaussian: "
                     << std::scientific << e << "\n"
@@ -260,11 +251,10 @@ void DistributionTest::testNormal() {
     }
 
     // check that invCum . cum = identity
-    std::transform(x.begin(),x.end(),temp.begin(),cum);
-    std::transform(temp.begin(),temp.end(),temp.begin(),invCum);
-    std::transform(x.begin(),x.end(),temp.begin(),diff.begin(),
-                   std::minus<Real>());
-    e = norm(diff.begin(),diff.end(),h);
+    std::transform(x.begin(), x.end(), temp.begin(), cum);
+    std::transform(temp.begin(), temp.end(), temp.begin(), invCum);
+    std::transform(x.begin(), x.end(), temp.begin(), diff.begin(), std::minus<>());
+    e = norm(diff.begin(), diff.end(), h);
     if (e > 1.0e-7) {
         BOOST_ERROR("norm of invCum . cum minus identity: "
                     << std::scientific << e << "\n"
@@ -287,9 +277,8 @@ void DistributionTest::testNormal() {
     // check that cum.derivative = Gaussian
     for (i=0; i<x.size(); i++)
         temp[i] = cum.derivative(x[i]);
-    std::transform(y.begin(),y.end(),temp.begin(),diff.begin(),
-                   std::minus<Real>());
-    e = norm(diff.begin(),diff.end(),h);
+    std::transform(y.begin(), y.end(), temp.begin(), diff.begin(), std::minus<>());
+    e = norm(diff.begin(), diff.end(), h);
     if (e > 1.0e-16) {
         BOOST_ERROR(
             "norm of C++ Cumulative.derivative minus analytic Gaussian: "
@@ -300,9 +289,8 @@ void DistributionTest::testNormal() {
     // check that normal.derivative = gaussianDerivative
     for (i=0; i<x.size(); i++)
         temp[i] = normal.derivative(x[i]);
-    std::transform(yd.begin(),yd.end(),temp.begin(),diff.begin(),
-                   std::minus<Real>());
-    e = norm(diff.begin(),diff.end(),h);
+    std::transform(yd.begin(), yd.end(), temp.begin(), diff.begin(), std::minus<>());
+    e = norm(diff.begin(), diff.end(), h);
     if (e > 1.0e-16) {
         BOOST_ERROR("norm of C++ Normal.derivative minus analytic derivative: "
                     << std::scientific << e << "\n"
@@ -728,8 +716,8 @@ void DistributionTest::testSankaranApproximation() {
     const Real ncps[] = {1,2,3,1,2,3};
 
     const Real tol = 0.01;
-    for (double df : dfs) {
-        for (double ncp : ncps) {
+    for (Real df : dfs) {
+        for (Real ncp : ncps) {
             const NonCentralCumulativeChiSquareDistribution d(df, ncp);
             const NonCentralCumulativeChiSquareSankaranApprox sankaran(df, ncp);
 

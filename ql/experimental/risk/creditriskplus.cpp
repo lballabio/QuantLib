@@ -119,9 +119,9 @@ namespace QuantLib {
         upperIndex_ = 0;
 
         // map of nuC_ to expected loss
-        std::map<unsigned long, Real, std::less<unsigned long> > epsNuC_;
+        std::map<unsigned long, Real, std::less<> > epsNuC_;
 
-        std::map<unsigned long, Real, std::less<unsigned long> >::iterator iter;
+        std::map<unsigned long, Real, std::less<> >::iterator iter;
 
         for (Size k = 0; k < m_; ++k) {
             auto exUnit = (unsigned long)(std::floor(0.5 + exposure_[k] / unit_)); // round
@@ -131,7 +131,7 @@ namespace QuantLib {
                 maxNu_ = exUnit;
             pdAdj[k] = exposure_[k] > 0.0
                            ? exposure_[k] * pd_[k] / (exUnit * unit_)
-                           : 0.0; // adjusted pd
+                           : Real(0.0); // adjusted pd
             Real el = exUnit * pdAdj[k];
             if (exUnit > 0) {
                 iter = epsNuC_.find(exUnit);

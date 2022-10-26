@@ -44,7 +44,7 @@ namespace QuantLib {
                    "strike must be positive");
 
         Real spot = underlying();
-        QL_REQUIRE(spot >= 0.0, "negative or null underlying given");
+        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
         QL_REQUIRE(!triggered(spot), "barrier(s) already touched");
 
         DoubleBarrier::Type barrierType = arguments_.barrierType;

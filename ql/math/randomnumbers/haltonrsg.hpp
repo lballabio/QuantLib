@@ -54,7 +54,7 @@ namespace QuantLib {
         Size dimension() const {return dimensionality_;}
       private:
         Size dimensionality_;
-        mutable unsigned long sequenceCounter_;
+        mutable unsigned long sequenceCounter_ = 0;
         mutable sample_type sequence_;
         std::vector<unsigned long> randomStart_;
         std::vector<Real>  randomShift_;

@@ -1,6 +1,9 @@
 name: Microsoft C++ Code Analysis
 
-on: [push, pull_request]
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
 
 env:
   # Path to the CMake build directory.
@@ -27,7 +30,7 @@ jobs:
         run: cmake -B ${{ env.build }} -DQL_USE_STD_CLASSES=ON
 
       - name: Initialize MSVC Code Analysis
-        uses: microsoft/msvc-code-analysis-action@v0.1.0
+        uses: microsoft/msvc-code-analysis-action@v0.1.1
         # Provide a unique ID to access the sarif output path
         id: run-analysis
         env:
@@ -38,7 +41,7 @@ jobs:
           ruleset: '${{ github.workspace }}/.msvc-analysis.ruleset'
 
       - name: Upload SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: ${{ steps.run-analysis.outputs.sarif }}
 

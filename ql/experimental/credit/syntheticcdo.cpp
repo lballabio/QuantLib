@@ -41,7 +41,7 @@ namespace QuantLib {
                                BusinessDayConvention paymentConvention,
                                boost::optional<Real> notional)
     : basket_(basket), side_(side), upfrontRate_(upfrontRate), runningRate_(runningRate),
-      leverageFactor_(notional ? notional.get() / basket->trancheNotional() : 1.), // NOLINT(readability-implicit-bool-conversion)
+      leverageFactor_(notional ? notional.get() / basket->trancheNotional() : Real(1.)), // NOLINT(readability-implicit-bool-conversion)
       dayCounter_(dayCounter), paymentConvention_(paymentConvention) {
         QL_REQUIRE(!basket->names().empty(), "basket is empty");
         // Basket inception must lie before contract protection start.

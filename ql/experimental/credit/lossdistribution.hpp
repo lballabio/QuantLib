@@ -145,24 +145,21 @@ namespace QuantLib {
      */
     class LossDistHomogeneous : public LossDist {
     public:
-        LossDistHomogeneous (Size nBuckets, Real maximum)
-            : nBuckets_(nBuckets), maximum_(maximum),
-              n_(0), volume_(0.0) {}
-        Distribution operator()(Real volume, 
-                                const std::vector<Real>& probabilities) const;
-        Distribution operator()(const std::vector<Real>& volumes,
-                                const std::vector<Real>& probabilities) const override;
-        Size buckets() const override { return nBuckets_; }
-        Real maximum() const override { return maximum_; }
-        Size size () const { return n_; }
-        Real volume() const { return volume_; }
-        std::vector<Real> probability() const { return probability_; }
-        std::vector<Real> excessProbability() const { return excessProbability_; }
+      LossDistHomogeneous(Size nBuckets, Real maximum) : nBuckets_(nBuckets), maximum_(maximum) {}
+      Distribution operator()(Real volume, const std::vector<Real>& probabilities) const;
+      Distribution operator()(const std::vector<Real>& volumes,
+                              const std::vector<Real>& probabilities) const override;
+      Size buckets() const override { return nBuckets_; }
+      Real maximum() const override { return maximum_; }
+      Size size() const { return n_; }
+      Real volume() const { return volume_; }
+      std::vector<Real> probability() const { return probability_; }
+      std::vector<Real> excessProbability() const { return excessProbability_; }
     private:
         Size nBuckets_;
         Real maximum_;
-        mutable Size n_;
-        mutable Real volume_;
+        mutable Size n_ = 0;
+        mutable Real volume_ = 0.0;
         mutable std::vector<Real> probability_;
         mutable std::vector<Real> excessProbability_;
     };

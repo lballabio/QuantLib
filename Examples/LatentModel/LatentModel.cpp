@@ -62,7 +62,7 @@ int main(int, char* []) {
             names.push_back(std::string("Acme") + std::to_string(i));
         std::vector<Handle<DefaultProbabilityTermStructure> > defTS;
         defTS.reserve(hazardRates.size());
-        for (double& hazardRate : hazardRates)
+        for (Real& hazardRate : hazardRates)
             defTS.emplace_back(
                 ext::make_shared<FlatHazardRate>(0, TARGET(), hazardRate, Actual365Fixed()));
         std::vector<Issuer> issuers;

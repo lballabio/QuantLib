@@ -102,6 +102,10 @@
     \example MarketModels.cpp
     This example shows the use of interest-rate market models.
 
+    \example MulticurveBootstrapping.cpp
+    This example prices an interest rate swap over a term structure
+    and calculates its fair fixed rate and floating spread.
+
     \example MultidimIntegral.cpp
     This example shows multi-dimensional numerical integration.
 
@@ -116,10 +120,6 @@
     delivery price is also obtained using this repo rate. All this is
     done by supplying the FixedCouponBondForward constructor with a
     flat repo YieldTermStructure.
-
-    \example MulticurveBootstrapping.cpp
-    This example prices an interest rate swap over a term structure
-    and calculates its fair fixed rate and floating spread.
 
 */
 

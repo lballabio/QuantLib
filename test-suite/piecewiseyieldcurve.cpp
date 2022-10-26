@@ -1017,77 +1017,6 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
     }
 }
 
-namespace piecewise_yield_curve_test {
-
-    template <class T, class I>
-    void testCurveCopy(CommonVars& vars,
-                       const I& interpolator = I()) {
-
-        PiecewiseYieldCurve<T,I> curve(vars.settlement, vars.instruments,
-                                       Actual360(),
-                                       interpolator);
-        // necessary to trigger bootstrap
-        curve.recalculate();
-
-        typedef typename T::template curve<I>::type base_curve;
-
-        base_curve copiedCurve = curve;
-
-        // the two curves should be the same.
-        Time t = 2.718;
-        Rate r1 = curve.zeroRate(t, Continuous);
-        Rate r2 = copiedCurve.zeroRate(t, Continuous);
-        if (!close(r1, r2)) {
-            BOOST_ERROR("failed to link original and copied curve");
-        }
-
-        for (auto& rate : vars.rates) {
-            rate->setValue(rate->value() + 0.001);
-        }
-
-        // now the original curve should have changed; the copied
-        // curve should not.
-        Rate r3 = curve.zeroRate(t, Continuous);
-        Rate r4 = copiedCurve.zeroRate(t, Continuous);
-        if (close(r1, r3)) {
-            BOOST_ERROR("failed to modify original curve");
-        }
-        if (!close(r2,r4)) {
-            BOOST_ERROR(
-                    "failed to break link between original and copied curve");
-        }
-    }
-
-}
-
-
-void PiecewiseYieldCurveTest::testDiscountCopy() {
-    BOOST_TEST_MESSAGE("Testing copying of discount curve...");
-
-    using namespace piecewise_yield_curve_test;
-
-    CommonVars vars;
-    testCurveCopy<Discount,LogLinear>(vars);
-}
-
-void PiecewiseYieldCurveTest::testForwardCopy() {
-    BOOST_TEST_MESSAGE("Testing copying of forward-rate curve...");
-
-    using namespace piecewise_yield_curve_test;
-
-    CommonVars vars;
-    testCurveCopy<ForwardRate,BackwardFlat>(vars);
-}
-
-void PiecewiseYieldCurveTest::testZeroCopy() {
-    BOOST_TEST_MESSAGE("Testing copying of zero-rate curve...");
-
-    using namespace piecewise_yield_curve_test;
-
-    CommonVars vars;
-    testCurveCopy<ZeroYield,Linear>(vars);
-}
-
 void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
     BOOST_TEST_MESSAGE("Testing SwapRateHelper last relevant date...");
 
@@ -1388,7 +1317,7 @@ void PiecewiseYieldCurveTest::testGlobalBootstrap() {
     // check expected zero rates
     for (Size i = 0; i < LENGTH(refZeroRate); ++i) {
         // 0.01 basis points tolerance
-        BOOST_CHECK_SMALL(std::fabs(refZeroRate[i] - curve->zeroRate(refDate[i], Actual360(), Continuous).rate()),
+        QL_CHECK_SMALL(std::fabs(refZeroRate[i] - curve->zeroRate(refDate[i], Actual360(), Continuous).rate()),
                           1E-6);
     }
 }
@@ -1499,7 +1428,7 @@ void PiecewiseYieldCurveTest::testIterativeBootstrapRetries() {
     DiscountFactor oneYearDfArs = arsYts->discount(oneYearFwdDate);
     Real calcFwd = (spotDfArs * arsSpot->value() / oneYearDfArs) / (spotDfUsd / oneYearDfUsd);
     Real expFwd = arsSpot->value() + arsFwdPoints.at(1 * Years);
-    BOOST_CHECK_SMALL(calcFwd - expFwd, 1e-10);
+    QL_CHECK_SMALL(calcFwd - expFwd, 1e-10);
 }
 
 test_suite* PiecewiseYieldCurveTest::suite() {
@@ -1536,10 +1465,6 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLiborFixing));
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testJpyLibor));
-
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testDiscountCopy));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testForwardCopy));
-    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testZeroCopy));
 
     suite->add(QUANTLIB_TEST_CASE(
                &PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate));

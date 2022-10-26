@@ -126,7 +126,7 @@ namespace QuantLib {
             logForwards_[i] += 0.5*(drifts1_[i]+drifts2) + fixedDrift[i];
             logForwards_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),
-                                   brownians_.begin(), 0.0);
+                                   brownians_.begin(), Real(0.0));
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
             g_[i] = rateTaus_[i]*(forwards_[i]+displacements_[i])/
                 (1.0+rateTaus_[i]*forwards_[i]);

@@ -50,12 +50,8 @@ namespace QuantLib {
                             bool cIsFixed,
                             bool dIsFixed)
             : a_(a), b_(b), c_(c), d_(d),
-              aIsFixed_(false), bIsFixed_(false),
-              cIsFixed_(false), dIsFixed_(false),
-              k_(std::vector<Real>()),
-              error_(Null<Real>()),
-              maxError_(Null<Real>()),
-              abcdEndCriteria_(EndCriteria::None) {
+
+              error_(Null<Real>()), maxError_(Null<Real>()) {
                 if (a_ != Null<Real>())
                     aIsFixed_ = aIsFixed;
                 else a_ = -0.06;
@@ -73,10 +69,10 @@ namespace QuantLib {
             }
             virtual ~AbcdCoeffHolder() = default;
             Real a_, b_, c_, d_;
-            bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
+            bool aIsFixed_ = false, bIsFixed_ = false, cIsFixed_ = false, dIsFixed_ = false;
             std::vector<Real> k_;
             Real error_, maxError_;
-            EndCriteria::Type abcdEndCriteria_;
+            EndCriteria::Type abcdEndCriteria_ = EndCriteria::None;
         };
 
         template <class I1, class I2>
@@ -188,26 +184,26 @@ namespace QuantLib {
                                                      endCriteria,
                                                      optMethod));
             impl_->update();
-            coeffs_ =
-                ext::dynamic_pointer_cast<detail::AbcdCoeffHolder>(impl_);
         }
         //! \name Inspectors
         //@{
-        Real a() const { return coeffs_->a_; }
-        Real b() const { return coeffs_->b_; }
-        Real c() const { return coeffs_->c_; }
-        Real d() const { return coeffs_->d_; }
-        std::vector<Real> k() const { return coeffs_->k_; }
-        Real rmsError() const { return coeffs_->error_; }
-        Real maxError() const { return coeffs_->maxError_; }
-        EndCriteria::Type endCriteria(){ return coeffs_->abcdEndCriteria_; }
+        Real a() const { return coeffs().a_; }
+        Real b() const { return coeffs().b_; }
+        Real c() const { return coeffs().c_; }
+        Real d() const { return coeffs().d_; }
+        std::vector<Real> k() const { return coeffs().k_; }
+        Real rmsError() const { return coeffs().error_; }
+        Real maxError() const { return coeffs().maxError_; }
+        EndCriteria::Type endCriteria(){ return coeffs().abcdEndCriteria_; }
         template <class I1>
         Real k(Time t, const I1& xBegin, const I1& xEnd) const {
-            LinearInterpolation li(xBegin, xEnd, (coeffs_->k_).begin());
+            LinearInterpolation li(xBegin, xEnd, (coeffs().k_).begin());
             return li(t);
         }
       private:
-        ext::shared_ptr<detail::AbcdCoeffHolder> coeffs_;
+        const detail::AbcdCoeffHolder& coeffs() const {
+          return *dynamic_cast<detail::AbcdCoeffHolder*>(impl_.get());
+        }
     };
 
     //! %Abcd interpolation factory and traits

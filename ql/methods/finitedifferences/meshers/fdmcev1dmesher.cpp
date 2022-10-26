@@ -46,7 +46,7 @@ namespace QuantLib {
 
         const Real lowerBound = (massAtZero > eps)
             ? ((beta < 0)? QL_EPSILON : 0.0)
-            : rndCalculator.invcdf(eps, maturity)/scaleFactor;
+            : Real(rndCalculator.invcdf(eps, maturity)/scaleFactor);
 
 
         ext::shared_ptr<Fdm1dMesher> helper;

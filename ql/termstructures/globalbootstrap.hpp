@@ -262,8 +262,8 @@ template <class Curve> void GlobalBootstrap<Curve>::calculate() const {
 
         Real value(const Array& x) const override {
             Array v = values(x);
-            std::transform(v.begin(), v.end(), v.begin(), [](Real x){ return x*x; });
-            return std::sqrt(std::accumulate(v.begin(), v.end(), 0.0) / static_cast<Real>(v.size()));
+            std::transform(v.begin(), v.end(), v.begin(), [](Real x) -> Real { return x*x; });
+            return std::sqrt(std::accumulate(v.begin(), v.end(), Real(0.0)) / static_cast<Real>(v.size()));
         }
 
         Array values(const Array& x) const override {

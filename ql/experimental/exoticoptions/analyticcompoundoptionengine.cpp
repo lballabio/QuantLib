@@ -67,7 +67,7 @@ namespace QuantLib {
         QL_REQUIRE(strikeMother()>0.0,
                    "Mother strike must be positive");
 
-        QL_REQUIRE(spot() >= 0.0, "negative or null underlying given");
+        QL_REQUIRE(spot() > 0.0, "negative or null underlying given");
 
         /* Solver Setup ***************************************************/
         Date helpDate(process_->riskFreeRate()->referenceDate());

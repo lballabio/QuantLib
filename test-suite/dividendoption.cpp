@@ -22,15 +22,14 @@
 
 #include "dividendoption.hpp"
 #include "utilities.hpp"
-#include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
 
@@ -87,7 +86,7 @@ void DividendOptionTest::testEuropeanValues() {
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -115,10 +114,10 @@ void DividendOptionTest::testEuropeanValues() {
                 VanillaOption ref_option(payoff, exercise);
                 ref_option.setPricingEngine(ref_engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
                                 Rate q = m, r = n;
                                 spot->setValue(u);
                                 qRate->setValue(q);
@@ -237,7 +236,7 @@ void DividendOptionTest::testEuropeanStartLimit() {
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -261,10 +260,10 @@ void DividendOptionTest::testEuropeanStartLimit() {
                 VanillaOption ref_option(payoff, exercise);
                 ref_option.setPricingEngine(ref_engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
                                 Rate q = m, r = n;
                                 spot->setValue(u);
                                 qRate->setValue(q);
@@ -319,7 +318,7 @@ void DividendOptionTest::testEuropeanEndLimit() {
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -347,10 +346,10 @@ void DividendOptionTest::testEuropeanEndLimit() {
                 VanillaOption ref_option(refPayoff, exercise);
                 ref_option.setPricingEngine(ref_engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
                                 Rate q = m, r = n;
                                 spot->setValue(u);
                                 qRate->setValue(q);
@@ -408,7 +407,7 @@ void DividendOptionTest::testEuropeanGreeks() {
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -431,10 +430,10 @@ void DividendOptionTest::testEuropeanGreeks() {
                 DividendVanillaOption option(payoff, exercise, dividendDates, dividends);
                 option.setPricingEngine(engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
                                 Rate q = m, r = n;
                                 spot->setValue(u);
                                 qRate->setValue(q);
@@ -541,7 +540,7 @@ void DividendOptionTest::testFdEuropeanValues() {
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -573,10 +572,10 @@ void DividendOptionTest::testFdEuropeanValues() {
                 DividendVanillaOption ref_option(payoff, exercise, dividendDates, dividends);
                 ref_option.setPricingEngine(ref_engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
                                 Rate q = m, r = n;
                                 spot->setValue(u);
                                 qRate->setValue(q);
@@ -631,7 +630,7 @@ namespace {
         Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
         for (auto& type : types) {
-            for (double strike : strikes) {
+            for (Real strike : strikes) {
 
                 std::vector<Date> dividendDates;
                 std::vector<Real> dividends;
@@ -656,10 +655,10 @@ namespace {
                                              dividendDates, dividends);
                 option.setPricingEngine(engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
                                 Rate q = m, r = n;
                                 spot->setValue(u);
                                 qRate->setValue(q);

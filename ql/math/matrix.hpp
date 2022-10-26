@@ -149,6 +149,8 @@ namespace QuantLib {
     /*! \relates Matrix */
     Matrix operator+(const Matrix&, const Matrix&);
     /*! \relates Matrix */
+    Matrix operator-(const Matrix&);
+    /*! \relates Matrix */
     Matrix operator-(const Matrix&, const Matrix&);
     /*! \relates Matrix */
     Matrix operator*(const Matrix&, Real);
@@ -266,8 +268,7 @@ namespace QuantLib {
                    m.rows_ << "x" << m.columns_ << ", " <<
                    rows_ << "x" << columns_ << ") cannot be "
                    "added");
-        std::transform(begin(),end(),m.begin(),
-                       begin(),std::plus<Real>());
+        std::transform(begin(), end(), m.begin(), begin(), std::plus<>());
         return *this;
     }
 
@@ -277,20 +278,17 @@ namespace QuantLib {
                    m.rows_ << "x" << m.columns_ << ", " <<
                    rows_ << "x" << columns_ << ") cannot be "
                    "subtracted");
-        std::transform(begin(),end(),m.begin(),begin(),
-                       std::minus<Real>());
+        std::transform(begin(), end(), m.begin(), begin(), std::minus<>());
         return *this;
     }
 
     inline const Matrix& Matrix::operator*=(Real x) {
-        std::transform(begin(), end(), begin(),
-                       [=](Real y) { return y*x; });
+        std::transform(begin(), end(), begin(), [=](Real y) -> Real { return y * x; });
         return *this;
     }
 
     inline const Matrix& Matrix::operator/=(Real x) {
-        std::transform(begin(),end(),begin(),
-                       [=](Real y) { return y/x; });
+        std::transform(begin(),end(),begin(), [=](Real y) -> Real { return y / x; });
         return *this;
     }
 
@@ -499,8 +497,13 @@ namespace QuantLib {
                    m2.rows() << "x" << m2.columns() << ") cannot be "
                    "added");
         Matrix temp(m1.rows(),m1.columns());
-        std::transform(m1.begin(),m1.end(),m2.begin(),temp.begin(),
-                       std::plus<Real>());
+        std::transform(m1.begin(), m1.end(), m2.begin(), temp.begin(), std::plus<>());
+        return temp;
+    }
+
+    inline Matrix operator-(const Matrix& m1) {
+        Matrix temp(m1.rows(), m1.columns());
+        std::transform(m1.begin(), m1.end(), temp.begin(), std::negate<Real>());
         return temp;
     }
 
@@ -512,29 +515,25 @@ namespace QuantLib {
                    m2.rows() << "x" << m2.columns() << ") cannot be "
                    "subtracted");
         Matrix temp(m1.rows(),m1.columns());
-        std::transform(m1.begin(),m1.end(),m2.begin(),temp.begin(),
-                       std::minus<Real>());
+        std::transform(m1.begin(), m1.end(), m2.begin(), temp.begin(), std::minus<>());
         return temp;
     }
 
     inline Matrix operator*(const Matrix& m, Real x) {
         Matrix temp(m.rows(),m.columns());
-        std::transform(m.begin(), m.end(), temp.begin(),
-                       [=](Real y) { return y*x; });
+        std::transform(m.begin(), m.end(), temp.begin(), [=](Real y) -> Real { return y * x; });
         return temp;
     }
 
     inline Matrix operator*(Real x, const Matrix& m) {
         Matrix temp(m.rows(),m.columns());
-        std::transform(m.begin(), m.end(), temp.begin(),
-                       [=](Real y) { return x*y; });
+        std::transform(m.begin(), m.end(), temp.begin(), [=](Real y) -> Real { return x * y; });
         return temp;
     }
 
     inline Matrix operator/(const Matrix& m, Real x) {
         Matrix temp(m.rows(),m.columns());
-        std::transform(m.begin(), m.end(), temp.begin(),
-                       [=](Real y) { return y/x; });
+        std::transform(m.begin(), m.end(), temp.begin(), [=](Real y) -> Real { return y / x; });
         return temp;
     }
 
@@ -547,7 +546,7 @@ namespace QuantLib {
         for (Size i=0; i<result.size(); i++)
             result[i] =
                 std::inner_product(v.begin(),v.end(),
-                                   m.column_begin(i),0.0);
+                                   m.column_begin(i),Real(0.0));
         return result;
     }
 
@@ -559,7 +558,7 @@ namespace QuantLib {
         Array result(m.rows());
         for (Size i=0; i<result.size(); i++)
             result[i] =
-                std::inner_product(v.begin(),v.end(),m.row_begin(i),0.0);
+                std::inner_product(v.begin(),v.end(),m.row_begin(i),Real(0.0));
         return result;
     }
 
@@ -607,7 +606,7 @@ namespace QuantLib {
 
         for (Size i=0; v1begin!=v1end; i++, v1begin++)
             std::transform(v2begin, v2end, result.row_begin(i),
-                           [=](Real y) { return y * (*v1begin); });
+                           [=](Real y) -> Real { return y * (*v1begin); });
 
         return result;
     }

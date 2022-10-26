@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/amortizingbonds/amortizingfloatingratebond.hpp>
+#include <ql/instruments/bonds/amortizingfloatingratebond.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/time/schedule.hpp>

@@ -17,10 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
-#include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
-#include <ql/instruments/impliedvolatility.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
+#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/instruments/impliedvolatility.hpp>
 #include <memory>
 
 namespace QuantLib {
@@ -68,8 +68,8 @@ namespace QuantLib {
         std::unique_ptr<PricingEngine> engine;
         switch (exercise_->type()) {
           case Exercise::European:
-            engine.reset(new AnalyticDoubleBarrierEngine(newProcess));
-            break;
+              engine = std::make_unique<AnalyticDoubleBarrierEngine>(newProcess);
+              break;
           case Exercise::American:
           case Exercise::Bermudan:
             QL_FAIL("engine not available for non-European barrier option");

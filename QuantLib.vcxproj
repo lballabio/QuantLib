@@ -135,7 +135,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (static runtime)|x64'">QuantLib-x64-mt-s</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">QuantLib-mt</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">QuantLib-x64-mt</TargetName>
-  </PropertyGroup>
+  </PropertyGroup>  
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
@@ -903,6 +903,9 @@
     <ClInclude Include="ql\instruments\bond.hpp" />
     <ClInclude Include="ql\instruments\bondforward.hpp" />
     <ClInclude Include="ql\instruments\bonds\all.hpp" />
+    <ClInclude Include="ql\instruments\bonds\amortizingcmsratebond.hpp" />
+    <ClInclude Include="ql\instruments\bonds\amortizingfixedratebond.hpp" />
+    <ClInclude Include="ql\instruments\bonds\amortizingfloatingratebond.hpp" />
     <ClInclude Include="ql\instruments\bonds\btp.hpp" />
     <ClInclude Include="ql\instruments\bonds\cmsratebond.hpp" />
     <ClInclude Include="ql\instruments\bonds\convertiblebonds.hpp" />
@@ -1808,6 +1811,8 @@
     <ClInclude Include="ql\time\daycounter.hpp" />
     <ClInclude Include="ql\time\daycounters\actual360.hpp" />
     <ClInclude Include="ql\time\daycounters\actual364.hpp" />
+    <ClInclude Include="ql\time\daycounters\actual366.hpp" />
+    <ClInclude Include="ql\time\daycounters\actual36525.hpp" />
     <ClInclude Include="ql\time\daycounters\actual365fixed.hpp" />
     <ClInclude Include="ql\time\daycounters\actualactual.hpp" />
     <ClInclude Include="ql\time\daycounters\all.hpp" />
@@ -1918,9 +1923,6 @@
     <ClCompile Include="ql\currencies\europe.cpp" />
     <ClCompile Include="ql\currencies\exchangeratemanager.cpp" />
     <ClCompile Include="ql\currencies\oceania.cpp" />
-    <ClCompile Include="ql\experimental\amortizingbonds\amortizingcmsratebond.cpp" />
-    <ClCompile Include="ql\experimental\amortizingbonds\amortizingfixedratebond.cpp" />
-    <ClCompile Include="ql\experimental\amortizingbonds\amortizingfloatingratebond.cpp" />
     <ClCompile Include="ql\experimental\asian\analytic_cont_geom_av_price_heston.cpp" />
     <ClCompile Include="ql\experimental\asian\analytic_discr_geom_av_price_heston.cpp" />
     <ClCompile Include="ql\pricingengines\asian\turnbullwakemanasianengine.cpp" />
@@ -2003,7 +2005,6 @@
     <ClCompile Include="ql\experimental\credit\recoveryratequote.cpp" />
     <ClCompile Include="ql\experimental\credit\riskyassetswap.cpp" />
     <ClCompile Include="ql\experimental\credit\riskyassetswapoption.cpp" />
-    <ClCompile Include="ql\experimental\credit\riskybond.cpp" />
     <ClCompile Include="ql\experimental\credit\syntheticcdo.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticamericanmargrabeengine.cpp" />
     <ClCompile Include="ql\experimental\exoticoptions\analyticcomplexchooserengine.cpp" />
@@ -2156,6 +2157,9 @@
     <ClCompile Include="ql\instruments\bmaswap.cpp" />
     <ClCompile Include="ql\instruments\bond.cpp" />
     <ClCompile Include="ql\instruments\bondforward.cpp" />
+    <ClCompile Include="ql\instruments\bonds\amortizingcmsratebond.cpp" />
+    <ClCompile Include="ql\instruments\bonds\amortizingfixedratebond.cpp" />
+    <ClCompile Include="ql\instruments\bonds\amortizingfloatingratebond.cpp" />
     <ClCompile Include="ql\instruments\bonds\btp.cpp" />
     <ClCompile Include="ql\instruments\bonds\cmsratebond.cpp" />
     <ClCompile Include="ql\instruments\bonds\convertiblebonds.cpp" />

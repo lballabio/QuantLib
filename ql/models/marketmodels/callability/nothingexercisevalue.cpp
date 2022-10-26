@@ -26,7 +26,7 @@ namespace QuantLib {
 
     NothingExerciseValue::NothingExerciseValue(const std::vector<Time>& rateTimes,
                                                std::valarray<bool> isExerciseTime)
-    : rateTimes_(rateTimes), isExerciseTime_(std::move(isExerciseTime)), currentIndex_(0) {
+    : rateTimes_(rateTimes), isExerciseTime_(std::move(isExerciseTime)) {
 
         checkIncreasingTimes(rateTimes);
         QL_REQUIRE(rateTimes.size() >= 2,

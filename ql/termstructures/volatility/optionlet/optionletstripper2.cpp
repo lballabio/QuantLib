@@ -34,29 +34,24 @@
 namespace QuantLib {
 
     OptionletStripper2::OptionletStripper2(
-            const ext::shared_ptr<OptionletStripper1>& optionletStripper1,
-            const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve)
+        const ext::shared_ptr<OptionletStripper1>& optionletStripper1,
+        const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve)
     : OptionletStripper(optionletStripper1->termVolSurface(),
                         optionletStripper1->iborIndex(),
                         Handle<YieldTermStructure>(),
                         optionletStripper1->volatilityType(),
                         optionletStripper1->displacement()),
-      stripper1_(optionletStripper1),
-      atmCapFloorTermVolCurve_(atmCapFloorTermVolCurve),
+      stripper1_(optionletStripper1), atmCapFloorTermVolCurve_(atmCapFloorTermVolCurve),
       dc_(stripper1_->termVolSurface()->dayCounter()),
       nOptionExpiries_(atmCapFloorTermVolCurve->optionTenors().size()),
-      atmCapFloorStrikes_(nOptionExpiries_),
-      atmCapFloorPrices_(nOptionExpiries_),
-      spreadsVolImplied_(nOptionExpiries_),
-      caps_(nOptionExpiries_),
-      maxEvaluations_(10000),
-      accuracy_(1.e-6) {
+      atmCapFloorStrikes_(nOptionExpiries_), atmCapFloorPrices_(nOptionExpiries_),
+      spreadsVolImplied_(nOptionExpiries_), caps_(nOptionExpiries_) {
         registerWith(stripper1_);
         registerWith(atmCapFloorTermVolCurve_);
 
         QL_REQUIRE(dc_ == atmCapFloorTermVolCurve->dayCounter(),
                    "different day counters provided");
-     }
+    }
 
     void OptionletStripper2::performCalculations() const {
 

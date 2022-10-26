@@ -85,24 +85,6 @@ namespace QuantLib {
                                 Calendar infCalendar = Calendar(),
                                 BusinessDayConvention infConvention = BusinessDayConvention());
 
-        /*! \deprecated Use the other constructor.
-                        Deprecated in version 1.23.
-        */
-        QL_DEPRECATED
-        ZeroCouponInflationSwap(Type type,
-                                Real nominal,
-                                const Date& startDate, // start date of contract (only)
-                                const Date& maturity,  // this is pre-adjustment!
-                                Calendar fixCalendar,
-                                BusinessDayConvention fixConvention,
-                                DayCounter dayCounter,
-                                Rate fixedRate,
-                                const ext::shared_ptr<ZeroInflationIndex>& infIndex,
-                                const Period& observationLag,
-                                bool adjustInfObsDates = false,
-                                Calendar infCalendar = Calendar(),
-                                BusinessDayConvention infConvention = BusinessDayConvention());
-
         //! \name Inspectors
         //@{
         //! "Payer" or "Receiver" refers to the inflation leg
@@ -135,12 +117,6 @@ namespace QuantLib {
         const Leg& inflationLeg() const;
         //@}
 
-        //! \name Instrument interface
-        //@{
-        void setupArguments(PricingEngine::arguments*) const override;
-        void fetchResults(const PricingEngine::results* r) const override;
-        //@}
-
         //! \name Results
         //@{
         Real fixedLegNPV() const;
@@ -169,13 +145,12 @@ namespace QuantLib {
     class ZeroCouponInflationSwap::arguments : public Swap::arguments {
       public:
         Rate fixedRate;
-        void validate() const override;
     };
 
 
     class ZeroCouponInflationSwap::engine
     : public GenericEngine<ZeroCouponInflationSwap::arguments,
-    ZeroCouponInflationSwap::results> {};
+                           ZeroCouponInflationSwap::results> {};
 
 }
 

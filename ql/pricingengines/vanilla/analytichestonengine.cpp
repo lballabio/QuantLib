@@ -86,9 +86,7 @@ namespace QuantLib {
 
         class u_Max {
           public:
-            u_Max(Real c_inf, Real epsilon)
-            : c_inf_(c_inf), logEpsilon_(std::log(epsilon)),
-              evaluations_(0) {}
+            u_Max(Real c_inf, Real epsilon) : c_inf_(c_inf), logEpsilon_(std::log(epsilon)) {}
 
             Real operator()(Real u) const {
                 ++evaluations_;
@@ -99,15 +97,13 @@ namespace QuantLib {
 
           private:
             const Real c_inf_, logEpsilon_;
-            mutable Size evaluations_;
+            mutable Size evaluations_ = 0;
         };
 
 
         class uHat_Max {
           public:
-            uHat_Max(Real v0T2, Real epsilon)
-            : v0T2_(v0T2), logEpsilon_(std::log(epsilon)),
-              evaluations_(0) {}
+            uHat_Max(Real v0T2, Real epsilon) : v0T2_(v0T2), logEpsilon_(std::log(epsilon)) {}
 
             Real operator()(Real u) const {
                 ++evaluations_;
@@ -118,7 +114,7 @@ namespace QuantLib {
 
           private:
             const Real v0T2_, logEpsilon_;
-            mutable Size evaluations_;
+            mutable Size evaluations_ = 0;
         };
     }
 
@@ -196,7 +192,7 @@ namespace QuantLib {
         dd_(x_-std::log(ratio)),
         sigma2_(sigma_*sigma_),
         rsigma_(model->rho()*sigma_),
-        t0_(kappa_ - ((j_== 1)? model->rho()*sigma_ : 0)),
+        t0_(kappa_ - ((j_== 1)? model->rho()*sigma_ : Real(0))),
         b_(0), g_km1_(0),
         engine_(engine)
     {
@@ -223,7 +219,7 @@ namespace QuantLib {
         dd_(x_-std::log(ratio)),
         sigma2_(sigma_*sigma_),
         rsigma_(rho*sigma_),
-        t0_(kappa - ((j== 1)? rho*sigma : 0)),
+        t0_(kappa - ((j== 1)? rho*sigma : Real(0))),
         b_(0),
         g_km1_(0),
         engine_(engine)
@@ -243,7 +239,7 @@ namespace QuantLib {
                                                Size j)
     : j_(j), kappa_(kappa), theta_(theta), sigma_(sigma), v0_(v0), cpxLog_(cpxLog), term_(term),
       x_(std::log(s0)), sx_(std::log(strike)), dd_(x_ - std::log(ratio)), sigma2_(sigma_ * sigma_),
-      rsigma_(rho * sigma_), t0_(kappa - ((j == 1) ? rho * sigma : 0)), b_(0), g_km1_(0),
+      rsigma_(rho * sigma_), t0_(kappa - ((j == 1) ? rho * sigma : Real(0))), b_(0), g_km1_(0),
       engine_(nullptr) {}
 
 

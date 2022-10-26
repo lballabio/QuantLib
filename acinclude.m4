@@ -1,31 +1,44 @@
 
-# QL_CHECK_CPP11
+# QL_CHECK_CPP14
 # --------------------
-# Check whether C++11 features are supported by default.
-# If not (e.g., with Clang on Mac OS) add -std=c++11
-AC_DEFUN([QL_CHECK_CPP11],
-[AC_MSG_CHECKING([for C++11 support])
+# Check whether C++14 features are supported by default.
+# If not (e.g., with Clang on Mac OS) add -std=c++14
+AC_DEFUN([QL_CHECK_CPP14],
+[AC_MSG_CHECKING([for C++14 support])
  AC_COMPILE_IFELSE(
     [AC_LANG_PROGRAM(
-        [[@%:@include <initializer_list>
-          struct S {
-            int i = 3;
-            double x = 3.5;
-          };
-
+        [[@%:@include <memory>
           class C {
             public:
               C(int) noexcept;
-              C(std::initializer_list<int>);
-              S f() { return { 2, 1.5 }; }
+              auto f() { return std::make_unique<C>(1); }
           };
           ]],
         [[]])],
     [AC_MSG_RESULT([yes])],
-    [AC_MSG_RESULT([no: adding -std=c++11 to CXXFLAGS])
-     AC_SUBST([CPP11_CXXFLAGS],["-std=c++11"])
-     AC_SUBST([CXXFLAGS],["${CXXFLAGS} -std=c++11"])
+    [AC_MSG_RESULT([no: adding -std=c++14 to CXXFLAGS])
+     AC_SUBST([CPP14_CXXFLAGS],["-std=c++14"])
+     AC_SUBST([CXXFLAGS],["${CXXFLAGS} -std=c++14"])
     ])
+])
+
+# QL_CHECK_SYSTEM_HEADER_PREFIX
+# -----------------------------
+# Check whether the compiler supports the --system-header-prefix flag
+AC_DEFUN([QL_CHECK_SYSTEM_HEADER_PREFIX],
+[AC_MSG_CHECKING([if ${CXX} supports --system-header-prefix])
+ AC_REQUIRE([AC_PROG_CC])
+ ql_original_CXXFLAGS=$CXXFLAGS
+ CXXFLAGS="$ql_original_CXXFLAGS --system-header-prefix=boost/"
+ AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+        [[int foo() { return 0; }]],
+        [[]])],
+    [AC_MSG_RESULT([yes])
+     AC_SUBST([SYSTEM_HEADER_CXXFLAGS],["--system-header-prefix=boost/"])
+    ],
+    [AC_MSG_RESULT([no])])
+ CXXFLAGS="$ql_original_CXXFLAGS ${SYSTEM_HEADER_CXXFLAGS}"
 ])
 
 # QL_CHECK_BOOST_DEVEL

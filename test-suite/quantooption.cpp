@@ -346,7 +346,7 @@ void QuantoOptionTest::testGreeks() {
                                                   Handle<Quote>(correlation)));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
 
                 Date exDate = today + length * Years;
@@ -357,13 +357,13 @@ void QuantoOptionTest::testGreeks() {
                 QuantoVanillaOption option(payoff, exercise);
                 option.setPricingEngine(engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
-                                for (double fxr : rRates) {
-                                    for (double fxv : vols) {
-                                        for (double corr : correlations) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
+                                for (Real fxr : rRates) {
+                                    for (Real fxv : vols) {
+                                        for (Real corr : correlations) {
 
                                             Rate q = m, r = n;
                                             spot->setValue(u);
@@ -624,7 +624,7 @@ void QuantoOptionTest::testForwardGreeks() {
                                                  Handle<Quote>(correlation)));
 
     for (auto& type : types) {
-        for (double moneynes : moneyness) {
+        for (Real moneynes : moneyness) {
             for (int length : lengths) {
                 for (int startMonth : startMonths) {
 
@@ -638,13 +638,13 @@ void QuantoOptionTest::testForwardGreeks() {
                     QuantoForwardVanillaOption option(moneynes, reset, payoff, exercise);
                     option.setPricingEngine(engine);
 
-                    for (double u : underlyings) {
-                        for (double m : qRates) {
-                            for (double n : rRates) {
-                                for (double v : vols) {
-                                    for (double fxr : rRates) {
-                                        for (double fxv : vols) {
-                                            for (double corr : correlations) {
+                    for (Real u : underlyings) {
+                        for (Real m : qRates) {
+                            for (Real n : rRates) {
+                                for (Real v : vols) {
+                                    for (Real fxr : rRates) {
+                                        for (Real fxv : vols) {
+                                            for (Real corr : correlations) {
 
                                                 Rate q = m, r = n;
                                                 spot->setValue(u);

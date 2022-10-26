@@ -65,8 +65,7 @@ namespace QuantLib {
                                       Kernel kernel)
             : Interpolation2D::templateImpl<I1, I2, M>(xBegin, xEnd, yBegin, yEnd, zData),
               xSize_(Size(xEnd - xBegin)), ySize_(Size(yEnd - yBegin)), xySize_(xSize_ * ySize_),
-              invPrec_(1.0e-10), alphaVec_(xySize_), yVec_(xySize_), M_(xySize_, xySize_),
-              kernel_(std::move(kernel)) {
+              alphaVec_(xySize_), yVec_(xySize_), M_(xySize_, xySize_), kernel_(std::move(kernel)) {
 
                 QL_REQUIRE(zData.rows()==xSize_,
                            "Z value matrix has wrong number of rows");
@@ -166,14 +165,14 @@ namespace QuantLib {
                 // I've chosen not to check determinant(M_)!=0 before solving
 
                 Array diffVec=Abs(M_*alphaVec_ - yVec_);
-                for (double i : diffVec) {
+                for (Real i : diffVec) {
                     QL_REQUIRE(i < invPrec_, "inversion failed in 2d kernel interpolation");
                 }
             }
 
 
             Size xSize_,ySize_,xySize_;
-            Real invPrec_;
+            Real invPrec_ = 1.0e-10;
             Array alphaVec_, yVec_;
             Matrix M_;
             Kernel kernel_;

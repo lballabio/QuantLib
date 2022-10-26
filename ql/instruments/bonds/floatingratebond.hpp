@@ -48,10 +48,10 @@ namespace QuantLib {
                          const DayCounter& accrualDayCounter,
                          BusinessDayConvention paymentConvention = Following,
                          Natural fixingDays = Null<Natural>(),
-                         const std::vector<Real>& gearings = std::vector<Real>(1, 1.0),
-                         const std::vector<Spread>& spreads = std::vector<Spread>(1, 0.0),
-                         const std::vector<Rate>& caps = std::vector<Rate>(),
-                         const std::vector<Rate>& floors = std::vector<Rate>(),
+                         const std::vector<Real>& gearings = { 1.0 },
+                         const std::vector<Spread>& spreads = { 0.0 },
+                         const std::vector<Rate>& caps = {},
+                         const std::vector<Rate>& floors = {},
                          bool inArrears = false,
                          Real redemption = 100.0,
                          const Date& issueDate = Date(),
@@ -59,6 +59,11 @@ namespace QuantLib {
                          const Calendar& exCouponCalendar = Calendar(),
                          BusinessDayConvention exCouponConvention = Unadjusted,
                          bool exCouponEndOfMonth = false);
+        
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.28.
+        */
+        QL_DEPRECATED
         FloatingRateBond(Natural settlementDays,
                          Real faceAmount,
                          const Date& startDate,
@@ -70,10 +75,10 @@ namespace QuantLib {
                          BusinessDayConvention accrualConvention = Following,
                          BusinessDayConvention paymentConvention = Following,
                          Natural fixingDays = Null<Natural>(),
-                         const std::vector<Real>& gearings = std::vector<Real>(1, 1.0),
-                         const std::vector<Spread>& spreads = std::vector<Spread>(1, 0.0),
-                         const std::vector<Rate>& caps = std::vector<Rate>(),
-                         const std::vector<Rate>& floors = std::vector<Rate>(),
+                         const std::vector<Real>& gearings = { 1.0 },
+                         const std::vector<Spread>& spreads = { 0.0 },
+                         const std::vector<Rate>& caps = {},
+                         const std::vector<Rate>& floors = {},
                          bool inArrears = false,
                          Real redemption = 100.0,
                          const Date& issueDate = Date(),

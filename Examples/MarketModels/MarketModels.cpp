@@ -313,7 +313,7 @@ int Bermudan()
 
     std::vector<Real> means(stats.mean());
 
-    for (double mean : means)
+    for (Real mean : means)
         std::cout << mean << "\n";
 
     std::cout << " time to build strategy, " << (t2-t1)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";
@@ -646,7 +646,7 @@ int InverseFloater(Real rateLevel)
 
     std::vector<Real> means(stats.mean());
 
-    for (double mean : means)
+    for (Real mean : means)
         std::cout << mean << "\n";
 
     std::cout << " time to build strategy, " << (t2-t1)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";

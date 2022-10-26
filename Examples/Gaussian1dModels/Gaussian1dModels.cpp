@@ -81,7 +81,7 @@ void printBasket(
     }
 }
 
-// helper function that prints the result of a model calibraiton to std::cout
+// helper function that prints the result of a model calibration to std::cout
 
 void printModelCalibration(
     const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &basket,

@@ -99,18 +99,6 @@ namespace QuantLib {
       public:
         // IborCoupon::Settings forward declaration
         class Settings;
-        /*! \deprecated Use IborCouponSettings::Settings::instance().createAtParCoupons() instead
-                        Deprecated in version 1.24.
-        */
-        QL_DEPRECATED static void createAtParCoupons();
-        /*! \deprecated Use IborCouponSettings::Settings::instance().createIndexedCoupons() instead
-                        Deprecated in version 1.24.
-        */
-        QL_DEPRECATED static void createIndexedCoupons();
-        /*! \deprecated Use IborCouponSettings::Settings::instance().usingAtParCoupons() instead
-                        Deprecated in version 1.24.
-        */
-        QL_DEPRECATED static bool usingAtParCoupons();
     };
 
 
@@ -175,18 +163,18 @@ namespace QuantLib {
         ext::shared_ptr<IborIndex> index_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
-        BusinessDayConvention paymentAdjustment_;
-        Natural paymentLag_;
+        BusinessDayConvention paymentAdjustment_ = Following;
+        Natural paymentLag_ = 0;
         Calendar paymentCalendar_;
         std::vector<Natural> fixingDays_;
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
         std::vector<Rate> caps_, floors_;
-        bool inArrears_, zeroPayments_;
+        bool inArrears_ = false, zeroPayments_ = false;
         Period exCouponPeriod_;
         Calendar exCouponCalendar_;
-        BusinessDayConvention exCouponAdjustment_;
-        bool exCouponEndOfMonth_;
+        BusinessDayConvention exCouponAdjustment_ = Unadjusted;
+        bool exCouponEndOfMonth_ = false;
         boost::optional<bool> useIndexedCoupons_;
     };
 

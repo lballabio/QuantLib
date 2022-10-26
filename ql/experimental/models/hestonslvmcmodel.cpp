@@ -26,15 +26,14 @@
 #include <ql/experimental/models/hestonslvmcmodel.hpp>
 #include <ql/experimental/processes/hestonslvprocess.hpp>
 
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#pragma push_macro("BOOST_DISABLE_ASSERTS")
+#ifndef BOOST_DISABLE_ASSERTS
+#define BOOST_DISABLE_ASSERTS
 #endif
 #include <boost/multi_array.hpp>
+#pragma pop_macro("BOOST_DISABLE_ASSERTS")
+
 #include <utility>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#    pragma GCC diagnostic pop
-#endif
 
 namespace QuantLib {
     HestonSLVMCModel::HestonSLVMCModel(

@@ -37,7 +37,6 @@ namespace QuantLib {
     class BlackCalculator {
       private:
         class Calculator;
-        friend class Calculator;
       public:
         BlackCalculator(const ext::shared_ptr<StrikedTypePayoff>& payoff,
                         Real forward,

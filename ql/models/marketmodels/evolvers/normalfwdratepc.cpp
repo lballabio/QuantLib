@@ -113,7 +113,7 @@ namespace QuantLib {
             forwards_[i] += drifts1_[i] ;
             forwards_[i] +=
                 std::inner_product(A.row_begin(i), A.row_end(i),
-                                   brownians_.begin(), 0.0);
+                                   brownians_.begin(), Real(0.0));
         }
 
         // c) recompute drifts D2 using the predicted forwards;

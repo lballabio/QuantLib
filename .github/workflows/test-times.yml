@@ -6,15 +6,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Cache
-      uses: actions/cache@v3
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
-        path: ~/.ccache
-        key: linux-build-times-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        key: linux-ci-build-times-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
         restore-keys: |
-          linux-build-times-${{ github.ref }}-${{ github.head_ref }}-
-          linux-build-times-${{ github.ref }}-
-          linux-build-times-refs/heads/master-
-          linux-build-times-
+          linux-ci-build-times-${{ github.ref }}-${{ github.head_ref }}-
+          linux-ci-build-times-${{ github.ref }}-
+          linux-ci-build-times-refs/heads/master-
+          linux-ci-build-times-
     - name: Setup
       run: |
         sudo apt update

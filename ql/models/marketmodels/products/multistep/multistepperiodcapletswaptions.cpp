@@ -42,7 +42,7 @@ namespace QuantLib {
 
         checkIncreasingTimes(forwardOptionPaymentTimes);
         checkIncreasingTimes(swaptionPaymentTimes);
-        for (double& swaptionPaymentTime : swaptionPaymentTimes_)
+        for (Real& swaptionPaymentTime : swaptionPaymentTimes_)
             paymentTimes_.push_back(swaptionPaymentTime);
         lastIndex_ = rateTimes.size()-1;
         numberFRAs_ = rateTimes.size()-1;

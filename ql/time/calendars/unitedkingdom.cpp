@@ -44,6 +44,8 @@ namespace QuantLib {
                 || (d >= 25 && w == Monday && m == August)
                 // April 29th, 2011 only (Royal Wedding Bank Holiday)
                 || (d == 29 && m == April && y == 2011)
+                // September 19th, 2022 only (The Queen's Funeral Bank Holiday)
+                || (d == 19 && m == September && y == 2022)
                 ;
         }
 

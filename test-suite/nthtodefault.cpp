@@ -148,7 +148,7 @@ void NthToDefaultTest::testGauss() {
 
     vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
-    for (double i : lambda) {
+    for (Real i : lambda) {
         Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(i)));
         ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
@@ -294,7 +294,7 @@ void NthToDefaultTest::testStudent() {
 
     vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
-    for (double i : lambda) {
+    for (Real i : lambda) {
         Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(i)));
         ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));

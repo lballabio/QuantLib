@@ -146,9 +146,8 @@ void OperatorTest::testConsistency() {
 
     // check that the derivative of cum is Gaussian
     temp = D.applyTo(yi);
-    std::transform(y.begin(),y.end(),temp.begin(),diff.begin(),
-                   std::minus<Real>());
-    Real e = norm(diff.begin(),diff.end(),h);
+    std::transform(y.begin(), y.end(), temp.begin(), diff.begin(), std::minus<>());
+    Real e = norm(diff.begin(), diff.end(), h);
     if (e > 1.0e-6) {
         BOOST_FAIL("norm of 1st derivative of cum minus Gaussian: " << e
                    << "\ntolerance exceeded");
@@ -156,9 +155,8 @@ void OperatorTest::testConsistency() {
 
     // check that the second derivative of cum is normal.derivative
     temp = D2.applyTo(yi);
-    std::transform(yd.begin(),yd.end(),temp.begin(),diff.begin(),
-                   std::minus<Real>());
-    e = norm(diff.begin(),diff.end(),h);
+    std::transform(yd.begin(), yd.end(), temp.begin(), diff.begin(), std::minus<>());
+    e = norm(diff.begin(), diff.end(), h);
     if (e > 1.0e-4) {
         BOOST_FAIL("norm of 2nd derivative of cum minus Gaussian derivative: "
                    << e << "\ntolerance exceeded");

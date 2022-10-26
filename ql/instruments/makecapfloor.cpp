@@ -29,13 +29,13 @@ namespace QuantLib {
                                const ext::shared_ptr<IborIndex>& iborIndex,
                                Rate strike,
                                const Period& forwardStart)
-    : capFloorType_(capFloorType), strike_(strike),
-      firstCapletExcluded_(forwardStart==0*Days), asOptionlet_(false),
+    : capFloorType_(capFloorType), strike_(strike), firstCapletExcluded_(forwardStart == 0 * Days),
       // setting the fixed leg tenor avoids that MakeVanillaSwap throws
       // because of an unknown fixed leg default tenor for a currency,
       // notice that only the floating leg of the swap is used anyway
       makeVanillaSwap_(MakeVanillaSwap(tenor, iborIndex, 0.0, forwardStart)
-                       .withFixedLegTenor(1*Years).withFixedLegDayCount(Actual365Fixed())) {}
+                           .withFixedLegTenor(1 * Years)
+                           .withFixedLegDayCount(Actual365Fixed())) {}
 
     MakeCapFloor::operator CapFloor() const {
         ext::shared_ptr<CapFloor> capfloor = *this;

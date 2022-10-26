@@ -1,4 +1,4 @@
-# Doxyfile 1.9.3
+# Doxyfile 1.9.5
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -10,6 +10,7 @@ PROJECT_BRIEF          = "A free/open-source library for quantitative finance"
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       =
 CREATE_SUBDIRS         = NO
+CREATE_SUBDIRS_LEVEL   = 8
 ALLOW_UNICODE_NAMES    = NO
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
@@ -108,23 +109,25 @@ WARN_IF_INCOMPLETE_DOC = NO
 WARN_NO_PARAMDOC       = NO
 WARN_AS_ERROR          = YES
 WARN_FORMAT            = "$file:$line: $text"
+WARN_LINE_FORMAT       = "at line $line of file $file"
 WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ./pages \
-                         ../ql
+INPUT                  = ql_basepath/Docs//pages \
+                         ql_basepath/ql
 INPUT_ENCODING         = UTF-8
+INPUT_FILE_ENCODING    =
 FILE_PATTERNS          = *.docs \
                          *.hpp \
                          *.h
 RECURSIVE              = YES
-EXCLUDE                = ../ql/config.hpp \
-                         ../ql/config.msvc.hpp
+EXCLUDE                = ql_basepath//ql/config.hpp \
+                         ql_basepath//ql/config.msvc.hpp
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = */all.hpp
 EXCLUDE_SYMBOLS        =
-EXAMPLE_PATH           = ../Examples \
+EXAMPLE_PATH           = ql_basepath/Examples \
                          .
 EXAMPLE_PATTERNS       = *.cpp
 EXAMPLE_RECURSIVE      = YES
@@ -134,6 +137,7 @@ FILTER_PATTERNS        =
 FILTER_SOURCE_FILES    = NO
 FILTER_SOURCE_PATTERNS =
 USE_MDFILE_AS_MAINPAGE =
+FORTRAN_COMMENT_AFTER  = 72
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
 #---------------------------------------------------------------------------
@@ -157,11 +161,12 @@ IGNORE_PREFIX          =
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
-HTML_HEADER            = quantlibheader.html
-HTML_FOOTER            = quantlibfooter.html
+HTML_HEADER            = ql_basepath/Docs/quantlibheader.html
+HTML_FOOTER            = ql_basepath/Docs/quantlibfooter.html
 HTML_STYLESHEET        =
-HTML_EXTRA_STYLESHEET  = quantlibextra.css
-HTML_EXTRA_FILES       = images/favicon.ico
+HTML_EXTRA_STYLESHEET  = ql_basepath/Docs/quantlibextra.css
+HTML_EXTRA_FILES       = ql_basepath/Docs/images/favicon.ico
+HTML_COLORSTYLE        = AUTO_LIGHT
 HTML_COLORSTYLE_HUE    = 220
 HTML_COLORSTYLE_SAT    = 100
 HTML_COLORSTYLE_GAMMA  = 80
@@ -201,7 +206,6 @@ EXT_LINKS_IN_WINDOW    = NO
 OBFUSCATE_EMAILS       = YES
 HTML_FORMULA_FORMAT    = png
 FORMULA_FONTSIZE       = 12
-FORMULA_TRANSPARENT    = YES
 FORMULA_MACROFILE      =
 USE_MATHJAX            = YES
 MATHJAX_VERSION        = MathJax_2
@@ -305,8 +309,9 @@ DIA_PATH               =
 HIDE_UNDOC_RELATIONS   = NO
 HAVE_DOT               = YES
 DOT_NUM_THREADS        = 0
-DOT_FONTNAME           = Helvetica
-DOT_FONTSIZE           = 10
+DOT_COMMON_ATTR        = "fontname=Helvetica,fontsize=10"
+DOT_EDGE_ATTR          = "labelfontname=Helvetica,labelfontsize=10"
+DOT_NODE_ATTR          = "shape=box,height=0.2,width=0.4"
 DOT_FONTPATH           =
 CLASS_GRAPH            = YES
 COLLABORATION_GRAPH    = NO
@@ -334,7 +339,6 @@ PLANTUML_CFG_FILE      =
 PLANTUML_INCLUDE_PATH  =
 DOT_GRAPH_MAX_NODES    = 150
 MAX_DOT_GRAPH_DEPTH    = 2
-DOT_TRANSPARENT        = NO
 DOT_MULTI_TARGETS      = NO
 GENERATE_LEGEND        = YES
 DOT_CLEANUP            = YES

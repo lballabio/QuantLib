@@ -24,10 +24,8 @@
 #include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/pricingengines/vanilla/analyticcevengine.hpp>
 #include <ql/pricingengines/vanilla/fdcevvanillaengine.hpp>
-
 #include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
-
-#include <boost/make_shared.hpp>
+#include <ql/shared_ptr.hpp>
 
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;
@@ -57,7 +55,7 @@ void FdCevTest::testLocalMartingale() {
     const Real alpha = 1.75;
     const Real betas[] = {-2.4, 0.23, 0.9, 1.1, 1.5};
 
-    for (double beta : betas) {
+    for (Real beta : betas) {
         const CEVRNDCalculator rndCalculator(f0, alpha, beta);
 
         const Real eps = 1e-10;
@@ -154,7 +152,7 @@ void FdCevTest::testFdmCevOp() {
         const Real alpha = 0.75;
 
         const Real betas[] = { -2.0, -0.5, 0.45, 0.6, 0.9, 1.45 };
-        for (double beta : betas) {
+        for (Real beta : betas) {
 
             VanillaOption option(payoff, exercise);
             option.setPricingEngine(ext::make_shared<AnalyticCEVEngine>(

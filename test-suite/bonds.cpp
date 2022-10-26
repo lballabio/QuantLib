@@ -120,7 +120,7 @@ void BondTest::testYield() {
 
     for (int issueMonth : issueMonths) {
         for (int length : lengths) {
-            for (double& coupon : coupons) {
+            for (Real& coupon : coupons) {
                 for (auto& frequencie : frequencies) {
                     for (auto& n : compounding) {
 
@@ -136,7 +136,7 @@ void BondTest::testYield() {
                                            std::vector<Rate>(1, coupon), bondDayCount,
                                            paymentConvention, redemption, issue);
 
-                        for (double m : yields) {
+                        for (Real m : yields) {
 
                             Real price =
                                 BondFunctions::cleanPrice(bond, m, bondDayCount, n, frequencie);
@@ -218,7 +218,7 @@ void BondTest::testAtmRate() {
 
     for (int issueMonth : issueMonths) {
         for (int length : lengths) {
-            for (double& coupon : coupons) {
+            for (Real& coupon : coupons) {
                 for (auto& frequencie : frequencies) {
                     Date dated = vars.calendar.advance(vars.today, issueMonth, Months);
                     Date issue = dated;
@@ -283,7 +283,7 @@ void BondTest::testZspread() {
 
     for (int issueMonth : issueMonths) {
         for (int length : lengths) {
-            for (double& coupon : coupons) {
+            for (Real& coupon : coupons) {
                 for (auto& frequencie : frequencies) {
                     for (auto& n : compounding) {
 
@@ -299,7 +299,7 @@ void BondTest::testZspread() {
                                            std::vector<Rate>(1, coupon), bondDayCount,
                                            paymentConvention, redemption, issue);
 
-                        for (double spread : spreads) {
+                        for (Real spread : spreads) {
 
                             Real price = BondFunctions::cleanPrice(bond, *discountCurve, spread,
                                                                    bondDayCount, n, frequencie);
@@ -358,7 +358,7 @@ void BondTest::testTheoretical() {
     Rate yields[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
     for (unsigned long length : lengths) {
-        for (double& coupon : coupons) {
+        for (Real& coupon : coupons) {
             for (auto& frequencie : frequencies) {
 
                 Date dated = vars.today;
@@ -378,7 +378,7 @@ void BondTest::testTheoretical() {
                 ext::shared_ptr<PricingEngine> bondEngine(new DiscountingBondEngine(discountCurve));
                 bond.setPricingEngine(bondEngine);
 
-                for (double m : yields) {
+                for (Real m : yields) {
 
                     rate->setValue(m);
 
@@ -1025,7 +1025,6 @@ void BondTest::testBrazilianCached() {
 
     Natural settlementDays = 1;
     Real faceAmount = 1000.0;
-    Real redemption = 100.0;
     Date today(6,June,2007);
     Date issueDate(1,January,2007);
 
@@ -1077,13 +1076,15 @@ void BondTest::testBrazilianCached() {
                           Unadjusted, Unadjusted,
                           DateGeneration::Backward, false);
 
-        FixedRateBond bond(settlementDays,
-            faceAmount,
-            schedule,
-            couponRates,
-            Following,
-            redemption,
-            issueDate);
+        Leg coupons = FixedRateLeg(schedule)
+            .withNotionals(faceAmount)
+            .withCouponRates(couponRates)
+            .withPaymentAdjustment(Following);
+
+        Bond bond(settlementDays,
+                  schedule.calendar(),
+                  issueDate,
+                  coupons);
 
         Real cachedPrice = prices[bondIndex];
         Real price = faceAmount *

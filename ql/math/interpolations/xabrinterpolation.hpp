@@ -57,8 +57,7 @@ template <typename Model> class XABRCoeffHolder {
                     const std::vector<bool>& paramIsFixed,
                     std::vector<Real> addParams)
     : t_(t), forward_(forward), params_(params), paramIsFixed_(paramIsFixed.size(), false),
-      weights_(std::vector<Real>()), error_(Null<Real>()), maxError_(Null<Real>()),
-      XABREndCriteria_(EndCriteria::None), addParams_(std::move(addParams)) {
+      error_(Null<Real>()), maxError_(Null<Real>()), addParams_(std::move(addParams)) {
         QL_REQUIRE(t > 0.0, "expiry time must be positive: " << t
                                                              << " not allowed");
         QL_REQUIRE(params.size() == Model().dimension(),
@@ -92,7 +91,7 @@ template <typename Model> class XABRCoeffHolder {
     std::vector<Real> weights_;
     /*! Interpolation results */
     Real error_, maxError_;
-    EndCriteria::Type XABREndCriteria_;
+    EndCriteria::Type XABREndCriteria_ = EndCriteria::None;
     /*! Model instance (if required) */
     ext::shared_ptr<typename Model::type> modelInstance_;
     /*! additional parameters */
@@ -165,7 +164,7 @@ class XABRInterpolationImpl : public Interpolation::templateImpl<I1, I2>,
         // there is nothing to optimize
         if (std::accumulate(this->paramIsFixed_.begin(),
                             this->paramIsFixed_.end(), true,
-                            std::logical_and<bool>())) {
+                            std::logical_and<>())) {
             this->error_ = interpolationError();
             this->maxError_ = interpolationMaxError();
             this->XABREndCriteria_ = EndCriteria::None;

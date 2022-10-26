@@ -55,8 +55,7 @@ namespace QuantLib {
 
 
     CmsLeg::CmsLeg(Schedule schedule, ext::shared_ptr<SwapIndex> swapIndex)
-    : schedule_(std::move(schedule)), swapIndex_(std::move(swapIndex)),
-      paymentAdjustment_(Following), inArrears_(false), zeroPayments_(false) {
+    : schedule_(std::move(schedule)), swapIndex_(std::move(swapIndex)) {
         QL_REQUIRE(swapIndex_, "no index provided");
     }
 

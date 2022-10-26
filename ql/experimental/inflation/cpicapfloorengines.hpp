@@ -21,7 +21,6 @@
 /*!
     \file cpicapfloorengines.hpp
     \brief Engines for CPI options
-    \ingroup PricingEngines
 */
 
 #ifndef quantlib_cpicapfloorengines_hpp
@@ -33,12 +32,12 @@
 
 namespace QuantLib {
 
-
     class CPICapFloorTermPriceSurface;
 
-
-    //! This engine only adds timing functionality (e.g. different lag)
-    //! w.r.t. an existing interpolated price surface.
+    //! Engine for CPI cap/floors based on a price surface
+    /*! This engine only adds timing functionality (e.g. different lag)
+        w.r.t. an existing interpolated price surface.
+    */
     class InterpolatingCPICapFloorEngine : public CPICapFloor::engine {
         public:
           explicit InterpolatingCPICapFloorEngine(Handle<CPICapFloorTermPriceSurface>);
@@ -52,13 +51,6 @@ namespace QuantLib {
           Handle<CPICapFloorTermPriceSurface> priceSurf_;
     };
 
+}
 
-
-
-
-
-
-
-} // namespace QuantLib
-
-#endif // cpicapfloorengines_hpp
+#endif

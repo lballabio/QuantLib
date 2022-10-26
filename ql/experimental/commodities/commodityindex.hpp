@@ -93,7 +93,7 @@ namespace QuantLib {
         Real lotQuantity_;
         TimeSeries<Real> quotes_;
         ext::shared_ptr<CommodityCurve> forwardCurve_;
-        Real forwardCurveUomConversionFactor_;
+        Real forwardCurveUomConversionFactor_ = 1;
         ext::shared_ptr<ExchangeContracts> exchangeContracts_;
         Integer nearbyOffset_;
     };

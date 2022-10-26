@@ -67,7 +67,7 @@ namespace QuantLib {
 
         PathInfo transformPath(const MultiPath& path) const;
 
-        bool  calibrationPhase_;
+        bool calibrationPhase_ = true;
 
         const ext::shared_ptr<PathPayoff> payoff_;
 

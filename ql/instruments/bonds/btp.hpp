@@ -159,7 +159,7 @@ namespace QuantLib {
         mutable Time duration_;
         mutable Size equivalentSwapIndex_;
 
-        Size nSwaps_;
+        Size nSwaps_ = 15;
         mutable std::vector<ext::shared_ptr<VanillaSwap> > swaps_;
         std::vector<Time> swapLengths_;
         mutable std::vector<Time> swapBondDurations_;
@@ -213,7 +213,7 @@ namespace QuantLib {
     inline Rate RendistatoCalculator::yield() const {
         return std::inner_product(basket_->weights().begin(),
                                   basket_->weights().end(),
-                                  yields().begin(), 0.0);
+                                  yields().begin(), Real(0.0));
     }
 
     inline Time RendistatoCalculator::duration() const {

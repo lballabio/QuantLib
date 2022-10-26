@@ -522,7 +522,7 @@ void FdHestonTest::testFdmHestonBlackScholes() {
     Real strikes[]  = { 8, 9, 10, 11, 12 };
     const Real tol = 0.0001;
 
-    for (double& strike : strikes) {
+    for (Real& strike : strikes) {
         Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(strike)));
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
@@ -676,7 +676,7 @@ void FdHestonTest::testFdmHestonConvergence() {
     for (const auto& scheme : schemes) {
         for (auto& value : values) {
             for (unsigned long j : tn) {
-                for (double k : v0) {
+                for (Real k : v0) {
                     Handle<YieldTermStructure> rTS(flatRate(value.r, Actual365Fixed()));
                     Handle<YieldTermStructure> qTS(flatRate(value.q, Actual365Fixed()));
 

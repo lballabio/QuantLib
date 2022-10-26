@@ -126,13 +126,13 @@ void ArrayTest::testArrayFunctions() {
         a[i] = std::sin(Real(i))+1.1;
     }
 
-    constexpr Real exponential = -2.3;
+    constexpr double exponential = -2.3;
     const Array p = Pow(a, exponential);
     const Array e = Exp(a);
     const Array l = Log(a);
     const Array s = Sqrt(a);
 
-    constexpr Real tol = 10*QL_EPSILON;
+    constexpr double tol = 10*QL_EPSILON;
     for (Size i=0; i < a.size(); ++i) {
         if (std::fabs(p[i]-std::pow(a[i], exponential)) > tol) {
             BOOST_FAIL("Array function test Pow failed");
@@ -155,19 +155,19 @@ void ArrayTest::testArrayResize() {
     Array a(10,1.0,1.0);
 
     for (Size i=0; i < 10; ++i)
-        BOOST_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
+        QL_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
 
     a.resize(5);
     BOOST_CHECK(a.size() == 5);
 
     for (Size i=0; i < 5; ++i)
-        BOOST_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
+        QL_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
 
     a.resize(15);
     BOOST_CHECK(a.size() == 15);
 
     for (Size i=0; i < 5; ++i)
-        BOOST_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
+        QL_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
 
     const Array::const_iterator iter = a.begin();
     a.resize(a.size());

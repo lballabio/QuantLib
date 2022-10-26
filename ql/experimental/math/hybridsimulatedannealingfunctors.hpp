@@ -244,7 +244,7 @@ namespace QuantLib
         inline bool operator()(Real currentValue, Real newValue, const Array &temp) {
             if (newValue < currentValue)
                 return true;
-            double mTemperature = *std::max_element(temp.begin(), temp.end());
+            Real mTemperature = *std::max_element(temp.begin(), temp.end());
             return (1.0 / (1.0 + exp((newValue - currentValue) / mTemperature))) > distribution_(generator_);
         }
     private:
@@ -262,7 +262,7 @@ namespace QuantLib
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
-                newTemp[i] = initialTemp_[i] / log(steps[i]);
+                newTemp[i] = initialTemp_[i] / std::log(steps[i]);
         }
     private:
         Array initialTemp_;
@@ -324,7 +324,7 @@ namespace QuantLib
             finalTemp_(dimension, finalTemp), exponent_(dimension, 0.0) {
             Real coeff = std::pow(maxSteps, -inverseN_);
             for (Size i = 0; i < initialTemp_.size(); i++)
-                exponent_[i] = -log(finalTemp_[i] / initialTemp_[i])*coeff;
+                exponent_[i] = -std::log(finalTemp_[i] / initialTemp_[i])*coeff;
         }
         inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
@@ -356,26 +356,25 @@ namespace QuantLib
     */
     class ReannealingFiniteDifferences {
     public:
-        ReannealingFiniteDifferences(Real initialTemp,
-            Size dimension,
-            const Array & lower = Array(),
-            const Array & upper = Array(),
-            Real stepSize = 1e-7,
-            Real minSize = 1e-10,
-            Real functionTol = 1e-10)
-            : stepSize_(stepSize), minSize_(minSize),
-            functionTol_(functionTol), N_(dimension), bound_(false),
-            lower_(lower), upper_(upper), initialTemp_(dimension, initialTemp),
-            bounded_(dimension, 1.0) {
-            if (!lower.empty() && !upper.empty()) {
-                QL_REQUIRE(lower.size() == N_, "Incompatible input");
-                QL_REQUIRE(upper.size() == N_, "Incompatible input");
-                bound_ = true;
-                for (Size i = 0; i < N_; i++) {
-                    bounded_[i] = upper[i] - lower[i];
-                }
-            }
-        }
+      ReannealingFiniteDifferences(Real initialTemp,
+                                   Size dimension,
+                                   const Array& lower = Array(),
+                                   const Array& upper = Array(),
+                                   Real stepSize = 1e-7,
+                                   Real minSize = 1e-10,
+                                   Real functionTol = 1e-10)
+      : stepSize_(stepSize), minSize_(minSize), functionTol_(functionTol), N_(dimension),
+        lower_(lower), upper_(upper), initialTemp_(dimension, initialTemp),
+        bounded_(dimension, 1.0) {
+          if (!lower.empty() && !upper.empty()) {
+              QL_REQUIRE(lower.size() == N_, "Incompatible input");
+              QL_REQUIRE(upper.size() == N_, "Incompatible input");
+              bound_ = true;
+              for (Size i = 0; i < N_; i++) {
+                  bounded_[i] = upper[i] - lower[i];
+              }
+          }
+      }
         inline void setProblem(Problem &P) { problem_ = &P; };
         inline void operator()(Array & steps, const Array &currentPoint,
             Real currentValue, const Array & currTemp) {
@@ -383,7 +382,7 @@ namespace QuantLib
             QL_REQUIRE(steps.size() == N_, "Incompatible input");
 
             Array finiteDiffs(N_, 0.0);
-            double finiteDiffMax = 0.0;
+            Real finiteDiffMax = 0.0;
             Array ofssetPoint(currentPoint);
             for (Size i = 0; i < N_; i++) {
                 ofssetPoint[i] += stepSize_;
@@ -409,7 +408,7 @@ namespace QuantLib
         Problem *problem_;
         Real stepSize_, minSize_, functionTol_;
         Size N_;
-        bool bound_;
+        bool bound_ = false;
         Array lower_, upper_, initialTemp_, bounded_;
     };
 }

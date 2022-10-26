@@ -90,7 +90,7 @@ namespace QuantLib {
         // the right level is needed in order to interpolate
         // the vol
         Handle<Quote> spot = process_->stateVariable();
-        QL_REQUIRE(spot->value() >= 0.0, "negative or null underlting given");
+        QL_REQUIRE(spot->value() > 0.0, "negative or null underlying given");
         Handle<YieldTermStructure> dividendYield(
             ext::shared_ptr<YieldTermStructure>(
                new ImpliedTermStructure(process_->dividendYield(),

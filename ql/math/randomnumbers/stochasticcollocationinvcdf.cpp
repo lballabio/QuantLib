@@ -49,7 +49,7 @@ namespace QuantLib {
       sigma_( (pMax != Null<Real>())
               ? x_.back() / InverseCumulativeNormal()(pMax)
               : (pMin != Null<Real>())
-                  ? x_.front() / InverseCumulativeNormal()(pMin)
+                  ? Real(x_.front() / InverseCumulativeNormal()(pMin))
                   : 1.0),
       y_(g(sigma_, x_, invCDF)),
       interpl_(x_.begin(), x_.end(), y_.begin()) {

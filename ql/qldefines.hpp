@@ -50,7 +50,7 @@
    The idea is to provide a hook for defining QL_REAL and at the
    same time including any necessary headers for the new type.
 */
-#define INCLUDE_FILE(F) INCLUDE_FILE__(F)
+#define INCLUDE_FILE(F) INCLUDE_FILE_(F)
 #define INCLUDE_FILE_(F) #F
 #ifdef QL_INCLUDE_FIRST
 #    include INCLUDE_FILE(QL_INCLUDE_FIRST)

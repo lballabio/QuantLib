@@ -125,7 +125,7 @@ namespace QuantLib {
         virtual void generateArguments() {}
         std::vector<Parameter> arguments_;
         ext::shared_ptr<Constraint> constraint_;
-        EndCriteria::Type shortRateEndCriteria_;
+        EndCriteria::Type shortRateEndCriteria_ = EndCriteria::None;
         Array problemValues_;
         Integer functionEvaluation_;
 
@@ -134,7 +134,6 @@ namespace QuantLib {
         class PrivateConstraint;
         //! Calibration cost function class
         class CalibrationFunction;
-        friend class CalibrationFunction;
     };
 
     //! Abstract short-rate model class

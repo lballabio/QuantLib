@@ -256,16 +256,16 @@ namespace QuantLib {
         std::vector<Real> notionals_;
         std::vector<Real> fixedRates_;  // aka gearing
         DayCounter paymentDayCounter_;
-        BusinessDayConvention paymentAdjustment_;
+        BusinessDayConvention paymentAdjustment_ = ModifiedFollowing;
         Calendar paymentCalendar_;
-        CPI::InterpolationType observationInterpolation_;
-        bool subtractInflationNominal_;
+        CPI::InterpolationType observationInterpolation_ = CPI::AsIndex;
+        bool subtractInflationNominal_ = true;
         std::vector<Spread> spreads_;
         std::vector<Rate> caps_, floors_;
         Period exCouponPeriod_;
         Calendar exCouponCalendar_;
-        BusinessDayConvention exCouponAdjustment_;
-        bool exCouponEndOfMonth_;
+        BusinessDayConvention exCouponAdjustment_ = Following;
+        bool exCouponEndOfMonth_ = false;
     };
 
 

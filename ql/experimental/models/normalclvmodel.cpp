@@ -45,7 +45,7 @@ namespace QuantLib {
     : x_(M_SQRT2 * GaussHermiteIntegration(lagrangeOrder).x()),
       sigma_((pMax != Null<Real>()) ?
                  x_.back() / InverseCumulativeNormal()(pMax) :
-                 (pMin != Null<Real>()) ? x_.front() / InverseCumulativeNormal()(pMin) : 1.0),
+                 (pMin != Null<Real>()) ? x_.front() / InverseCumulativeNormal()(pMin) : Real(1.0)),
       bsProcess_(bsProcess), ouProcess_(std::move(ouProcess)), maturityDates_(maturityDates),
       rndCalculator_(ext::make_shared<GBSMRNDCalculator>(bsProcess)),
       maturityTimes_(maturityDates.size()) {

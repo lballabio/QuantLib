@@ -22,23 +22,7 @@
 #include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/math/comparison.hpp>
 
-#if defined(__clang__) && (defined(__APPLE__) && __clang_major__ > 12) || (!defined(__APPLE__) && __clang_major__ > 10)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wsuggest-override"
-#endif
-#if defined(__GNUC__) && (((__GNUC__ == 5) && (__GNUC_MINOR__ >= 1)) || (__GNUC__ > 5))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wsuggest-override"
-#endif
-
 #include <boost/format.hpp>
-
-#if defined(__clang__) && (defined(__APPLE__) && __clang_major__ > 12) || (!defined(__APPLE__) && __clang_major__ > 10)
-#pragma clang diagnostic pop
-#endif
-#if defined(__GNUC__) && (((__GNUC__ == 5) && (__GNUC_MINOR__ >= 1)) || (__GNUC__ > 5))
-#pragma GCC diagnostic pop
-#endif
 
 namespace QuantLib {
 
@@ -268,9 +252,5 @@ namespace QuantLib {
     Money::ConversionTypeProxy::operator Money::ConversionType() const {
         return Money::Settings::instance().conversionType();
     }
-
-    Money::BaseCurrencyProxy Money::baseCurrency;
-    Money::ConversionTypeProxy Money::conversionType;
-
 
 }

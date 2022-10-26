@@ -242,7 +242,7 @@ namespace QuantLib {
                                                        const Array& x) const {
         Real squaredError = 0.0;
         Array vals = values(x);
-        for (double val : vals) {
+        for (Real val : vals) {
             squaredError += val;
         }
         return squaredError;

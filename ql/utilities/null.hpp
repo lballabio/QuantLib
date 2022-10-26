@@ -32,11 +32,6 @@
 
 namespace QuantLib {
 
-    //! template class providing a null value for a given type.
-    template <class Type>
-    class Null;
-
-
     namespace detail {
 
         template <bool>
@@ -62,15 +57,31 @@ namespace QuantLib {
 
     }
 
+    #ifdef QL_NULL_AS_FUNCTIONS
+
+    //! template function providing a null value for a given type.
+    template <typename T>
+    T Null() {
+        return T(detail::FloatingPointNull<std::is_floating_point<T>::value>::nullValue());
+    }
+
+    #else
+
+    //! template class providing a null value for a given type.
+    template <class Type>
+    class Null;
+
     // default implementation for built-in types
     template <typename T>
     class Null {
       public:
-        constexpr Null() = default;
-        constexpr operator T() const {
+        Null() = default;
+        operator T() const {
             return T(detail::FloatingPointNull<std::is_floating_point<T>::value>::nullValue());
         }
     };
+
+    #endif
 
 }
 

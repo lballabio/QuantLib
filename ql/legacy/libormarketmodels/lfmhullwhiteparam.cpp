@@ -52,10 +52,10 @@ namespace QuantLib {
             for (Size i=0; i < size_-1; ++i) {
                 Real p = std::sqrt(std::inner_product(
                                      tmpSqrtCorr[i],tmpSqrtCorr[i]+factors_,
-                                     tmpSqrtCorr[i], 0.0));
+                                     tmpSqrtCorr[i], Real(0.0)));
                 std::transform(
                     tmpSqrtCorr[i], tmpSqrtCorr[i]+factors_, sqrtCorr[i],
-                    [=](Real x){ return x/p; });
+                               [=](Real x) -> Real { return x / p; });
             }
         }
 

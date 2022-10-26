@@ -41,10 +41,22 @@ namespace QuantLib {
                                        const DayCounter& dc,
                                        const Real shift,
                                        VolatilityType volatilityType)
-        : SmileSection(d, dc,Date(),volatilityType,shift),
+        : SmileSection(d, dc, Date(), volatilityType, shift),
           forward_(forward), shift_(shift) {
         initialise(sabrParams);
-     }
+    }
+
+    SabrSmileSection::SabrSmileSection(const Date& d,
+                                       Rate forward,
+                                       const std::vector<Real>& sabrParams,
+                                       const Date& referenceDate,
+                                       const DayCounter& dc,
+                                       const Real shift,
+                                       VolatilityType volatilityType)
+    : SmileSection(d, dc, referenceDate, volatilityType, shift),
+      forward_(forward), shift_(shift) {
+        initialise(sabrParams);
+    }
 
     void SabrSmileSection::initialise(const std::vector<Real>& sabrParams) {
 

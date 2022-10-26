@@ -75,7 +75,7 @@ namespace QuantLib {
         for (Size k=m; k<size_; ++k) {
             m1[k] = accrualPeriod_[k]*x[k]/(1+accrualPeriod_[k]*x[k]);
             f[k]  = std::inner_product(m1.begin()+m, m1.begin()+k+1,
-                                       covariance.column_begin(k)+m,0.0)
+                                       covariance.column_begin(k)+m,Real(0.0))
                     - 0.5*covariance[k][k];
         }
 
@@ -127,17 +127,17 @@ namespace QuantLib {
             m1[k] = y/(1+y);
             const Real d = (
                 std::inner_product(m1.begin()+m, m1.begin()+k+1,
-                                   covariance.column_begin(k)+m,0.0)
+                                   covariance.column_begin(k)+m,Real(0.0))
                 -0.5*covariance[k][k]) * dt;
 
             const Real r = std::inner_product(
-                diff.row_begin(k), diff.row_end(k), dw.begin(), 0.0)*sdt;
+                diff.row_begin(k), diff.row_end(k), dw.begin(), Real(0.0))*sdt;
 
             const Real x = y*std::exp(d + r);
             m2[k] = x/(1+x);
             f[k] = x0[k] * std::exp(0.5*(d+
                  (std::inner_product(m2.begin()+m, m2.begin()+k+1,
-                                     covariance.column_begin(k)+m,0.0)
+                                     covariance.column_begin(k)+m,Real(0.0))
                   -0.5*covariance[k][k])*dt)+ r);
         }
 

@@ -26,6 +26,7 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
+#include <algorithm>
 
 namespace QuantLib {
     ExponentialJump1dMesher::ExponentialJump1dMesher(

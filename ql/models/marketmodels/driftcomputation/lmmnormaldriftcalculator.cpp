@@ -94,7 +94,7 @@ namespace QuantLib {
         for (i=alive_; i<numberOfRates_; ++i) {
             drifts[i] = std::inner_product(tmp_.begin()+downs_[i],
                                            tmp_.begin()+ups_[i],
-                                           C_.row_begin(i)+downs_[i], 0.0);
+                                           C_.row_begin(i)+downs_[i], Real(0.0));
             if (numeraire_>i+1)
                 drifts[i] = -drifts[i];
         }

@@ -38,7 +38,7 @@ namespace QuantLib {
 
         for (auto& currentBasi : currentBasis_) {
             Real innerProd =
-                std::inner_product(newVector_.begin(), newVector_.end(), currentBasi.begin(), 0.0);
+                std::inner_product(newVector_.begin(), newVector_.end(), currentBasi.begin(), Real(0.0));
 
             for (Size k=0; k<euclideanDimension_; ++k)
                 newVector_[k] -= innerProd * currentBasi[k];
@@ -46,7 +46,7 @@ namespace QuantLib {
 
         Real norm = std::sqrt(std::inner_product(newVector_.begin(),
             newVector_.end(),
-            newVector_.begin(), 0.0));
+            newVector_.begin(), Real(0.0)));
 
         if (norm<1e-12) // maybe this should be a tolerance
             return false;

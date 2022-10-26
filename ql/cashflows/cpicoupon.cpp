@@ -214,9 +214,9 @@ namespace QuantLib {
                    const Period& observationLag)
     : schedule_(schedule), index_(std::move(index)), baseCPI_(baseCPI),
       observationLag_(observationLag), paymentDayCounter_(Thirty360(Thirty360::BondBasis)),
-      paymentAdjustment_(ModifiedFollowing), paymentCalendar_(schedule.calendar()),
-      observationInterpolation_(CPI::AsIndex),
-      subtractInflationNominal_(true), spreads_(std::vector<Real>(1, 0)) {}
+      paymentCalendar_(schedule.calendar()),
+
+      spreads_(std::vector<Real>(1, 0)) {}
 
 
     CPILeg& CPILeg::withObservationInterpolation(CPI::InterpolationType interp) {

@@ -35,6 +35,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/types.hpp>
 #include <boost/unordered_set.hpp>
 #include <unordered_set>
+#include <set>
 
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 
@@ -59,7 +60,7 @@ namespace QuantLib {
         */
         void notifyObservers();
       private:
-        typedef std::unordered_set<Observer*> set_type;
+        typedef std::set<Observer*> set_type;
         typedef set_type::iterator iterator;
         std::pair<iterator, bool> registerObserver(Observer*);
         Size unregisterObserver(Observer*);

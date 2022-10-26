@@ -86,17 +86,8 @@
 #include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
 #include <boost/math/special_functions/gamma.hpp>
-#include <iomanip>
-
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
 #include <boost/multi_array.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <iomanip>
 
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;
@@ -221,7 +212,7 @@ void HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation() {
 		ext::make_shared<EuropeanExercise>(maturityDate));
     const Real strikes[] = { 50, 80, 100, 130, 150 };
 
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         const ext::shared_ptr<StrikedTypePayoff> payoff(
             ext::make_shared<PlainVanillaPayoff>(Option::Call, strike));
 
@@ -837,7 +828,7 @@ namespace {
             }
 
             Real avg=0, min=QL_MAX_REAL, max=0;
-            for (double strike : strikes) {
+            for (Real strike : strikes) {
                 const ext::shared_ptr<StrikedTypePayoff> payoff(
                     ext::make_shared<PlainVanillaPayoff>((strike > s0) ? Option::Call : Option::Put,
                                                          strike));
@@ -1442,7 +1433,7 @@ namespace {
                         hestonModel.currentLink(), Size(std::max(51.0, 51 * time / 12.0)), 201, 101,
                         0, FdmSchemeDesc::ModifiedCraigSneyd(), l));
 
-            for (double strike : strikes) {
+            for (Real strike : strikes) {
                 const ext::shared_ptr<StrikedTypePayoff> payoff(
                     ext::make_shared<PlainVanillaPayoff>((strike > s0) ? Option::Call : Option::Put,
                                                          strike));
@@ -1668,7 +1659,7 @@ void HestonSLVModelTest::testBarrierPricingViaHestonLocalVol() {
     const ext::shared_ptr<PricingEngine> hestonEngine(
 		ext::make_shared<AnalyticHestonEngine>(hestonModel.currentLink(), 164));
 
-    for (double strike : strikeValues) {
+    for (Real strike : strikeValues) {
         for (auto maturitie : maturities) {
             const Date exerciseDate = todaysDate + maturitie;
             const Time t = dc.yearFraction(todaysDate, exerciseDate);
@@ -1914,7 +1905,7 @@ void HestonSLVModelTest::testMonteCarloVsFdmPricing() {
             FdmSchemeDesc::ModifiedCraigSneyd(), leverageFct, 0.1);
 
     const Real strikes[] = { s0, 1.1*s0 };
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
 
@@ -2034,7 +2025,7 @@ void HestonSLVModelTest::testMonteCarloCalibration() {
             const ext::shared_ptr<Exercise> exercise
                 = ext::make_shared<EuropeanExercise>(maturity);
 
-            for (double strike : strikes) {
+            for (Real strike : strikes) {
                 const ext::shared_ptr<StrikedTypePayoff> payoff =
                     ext::make_shared<PlainVanillaPayoff>(strike < s0 ? Option::Put : Option::Call,
                                                          strike);
@@ -2663,7 +2654,7 @@ void HestonSLVModelTest::testBarrierPricingMixedModelsMonteCarloVsFdmPricing() {
         ext::make_shared<SobolBrownianGeneratorFactory>(SobolBrownianGenerator::Diagonal, 1234UL,
                                                         SobolRsg::JoeKuoD7));
 
-    for (double mixingFactor : mixingFactors) {
+    for (Real mixingFactor : mixingFactors) {
 
         // Finite Difference calibration
         const HestonSLVFokkerPlanckFdmParams logParams = {

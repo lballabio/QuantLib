@@ -38,7 +38,7 @@ using namespace std;
 struct integrand {
     Real operator()(const std::vector<Real>& arg) const {
         Real sum = 1.;
-        for (double i : arg)
+        for (Real i : arg)
             sum *= std::exp(-i * i) * std::cos(i);
         return sum;
     }
@@ -54,7 +54,7 @@ int main() {
     Integrates the function above over several dimensions, the size of the 
     vector argument is the dimension one.
     Both algorithms are not really on the same stand since the quadrature 
-    will be incorrect to use if the integrand is not appropiately behaved. Over 
+    will be incorrect to use if the integrand is not appropriately behaved. Over 
     dimension 3 you might need to modify the points in the integral to retain a 
     sensible computing time.
     */

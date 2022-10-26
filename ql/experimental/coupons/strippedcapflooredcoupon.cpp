@@ -54,8 +54,8 @@ namespace QuantLib {
         // collar, otherwise the value of a long floor or a long cap respectively
 
         return (underlying_->isFloored() && underlying_->isCapped())
-                   ? floorletRate - capletRate
-                   : floorletRate + capletRate;
+                   ? Real(floorletRate - capletRate)
+                   : Real(floorletRate + capletRate);
     }
 
     Rate StrippedCappedFlooredCoupon::convexityAdjustment() const {

@@ -87,17 +87,9 @@ namespace QuantLib {
             Time
             yearFraction(const Date& d1, const Date& d2, const Date&, const Date&) const override;
         };
-        static ext::shared_ptr<DayCounter::Impl> implementation(
-                                                               Convention c, 
-                                                               const Schedule& schedule);
+        static ext::shared_ptr<DayCounter::Impl> implementation(Convention c, 
+                                                                const Schedule& schedule);
       public:
-        /*! \deprecated Use the other constructor.
-                        Deprecated in version 1.23.
-        */
-        QL_DEPRECATED
-        ActualActual()
-        : DayCounter(implementation(ActualActual::ISDA, Schedule())) {}
-
         explicit ActualActual(Convention c,
                               const Schedule& schedule = Schedule())
         : DayCounter(implementation(c, schedule)) {}

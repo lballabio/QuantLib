@@ -41,10 +41,9 @@ inline void checkSviParameters(const Real a, const Real b, const Real sigma,
                "a + b sigma sqrt(1-rho^2) (a=" << a << ", b=" << b << ", sigma="
                                                << sigma << ", rho=" << rho
                                                << ") must be non negative");
-    if (tte != 0.0) {
-        QL_REQUIRE(b * (1.0 + std::fabs(rho)) <= 4.0 / tte,
-                   "b(1+|rho|) must be less than or equal to 4/T");
-    }
+    QL_REQUIRE(b * (1.0 + std::fabs(rho)) <= 4.0,
+               "b(1+|rho|) must be less than or equal to 4, (b=" << b << ", rho=" << rho << ")");
+
 }
 
 inline Real sviTotalVariance(const Real a, const Real b, const Real sigma,
@@ -167,25 +166,25 @@ class SviInterpolation : public Interpolation {
                 {aIsFixed, bIsFixed, sigmaIsFixed, rhoIsFixed, mIsFixed},
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses));
-        coeffs_ = ext::dynamic_pointer_cast<
-            detail::XABRCoeffHolder<detail::SviSpecs> >(impl_);
     }
-    Real expiry() const { return coeffs_->t_; }
-    Real forward() const { return coeffs_->forward_; }
-    Real a() const { return coeffs_->params_[0]; }
-    Real b() const { return coeffs_->params_[1]; }
-    Real sigma() const { return coeffs_->params_[2]; }
-    Real rho() const { return coeffs_->params_[3]; }
-    Real m() const { return coeffs_->params_[4]; }
-    Real rmsError() const { return coeffs_->error_; }
-    Real maxError() const { return coeffs_->maxError_; }
+    Real expiry() const { return coeffs().t_; }
+    Real forward() const { return coeffs().forward_; }
+    Real a() const { return coeffs().params_[0]; }
+    Real b() const { return coeffs().params_[1]; }
+    Real sigma() const { return coeffs().params_[2]; }
+    Real rho() const { return coeffs().params_[3]; }
+    Real m() const { return coeffs().params_[4]; }
+    Real rmsError() const { return coeffs().error_; }
+    Real maxError() const { return coeffs().maxError_; }
     const std::vector<Real> &interpolationWeights() const {
-        return coeffs_->weights_;
+        return coeffs().weights_;
     }
-    EndCriteria::Type endCriteria() { return coeffs_->XABREndCriteria_; }
+    EndCriteria::Type endCriteria() { return coeffs().XABREndCriteria_; }
 
   private:
-    ext::shared_ptr<detail::XABRCoeffHolder<detail::SviSpecs> > coeffs_;
+    const detail::XABRCoeffHolder<detail::SviSpecs>& coeffs() const {
+        return *dynamic_cast<detail::XABRCoeffHolder<detail::SviSpecs>*>(impl_.get());
+    }
 };
 
 //! %Svi interpolation factory and traits
