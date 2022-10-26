@@ -24,53 +24,14 @@
 #ifndef quantlib_singleton_hpp
 #define quantlib_singleton_hpp
 
-#include <ql/qldefines.hpp>
-
-#ifdef QL_ENABLE_SESSIONS
-#    include <boost/thread/locks.hpp>
-#    include <boost/thread/shared_mutex.hpp>
-#else
-#    ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-#        include <boost/atomic.hpp>
-#        include <boost/thread/mutex.hpp>
-#        if !defined(BOOST_ATOMIC_ADDRESS_LOCK_FREE)
-#            ifdef BOOST_MSVC
-#                pragma message("Thread-safe singleton initialization may degrade performances.")
-#            else
-#                warning Thread-safe singleton initialization may degrade performances.
-#            endif
-#        endif
-#    endif
-#endif
-
-#include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
-#include <map>
+#include <type_traits>
 
 namespace QuantLib {
 
-// This allows to define a different type if needed, while keeping
-// backwards compatibility with the current implementation.
-// For instance, one might create a file threadkey.hpp with:
-//
-// #include <pthread.h>
-// #define QL_THREAD_KEY pthread_t
-//
-// and then compile QuantLib with the option -DQL_INCLUDE_FIRST=threadkey.hpp
-// to have that file included by qldefines.hpp and thus this one.
-#if defined(QL_THREAD_KEY)
-    typedef QL_THREAD_KEY ThreadKey;
-#else
-    typedef Integer ThreadKey;
-#endif
-
-#if defined(QL_ENABLE_SESSIONS)
-    // definition must be provided by the user
-    ThreadKey sessionId();
-#endif
-
     //! Basic support for the singleton pattern.
     /*! The typical use of this class is:
+
         \code
         class Foo : public Singleton<Foo> {
             friend class Singleton<Foo>;
@@ -80,14 +41,16 @@ namespace QuantLib {
             ...
         };
         \endcode
-        which, albeit sub-optimal, frees one from the concerns of
-        creating and managing the unique instance and can serve later
-        as a single implemementation point should synchronization
-        features be added.
 
-        Global can be used to distinguish Singletons that are local to a session
-        (Global = false) or that are global across all sessions (B = true).
-        This is only relevant if QL_ENABLE_SESSIONS is enabled.
+        which, albeit sub-optimal, frees one from the concerns of creating and managing the unique instance
+        and can serve later as a single implemementation point should synchronization features be added.
+
+        Global can be used to distinguish Singletons that are local to a session (Global = false) or that are global
+        across all sessions (B = true).  This is only relevant if QL_ENABLE_SESSIONS is enabled.
+
+        Notice that the creation and retrieval of (local or global) singleton instances through instance() is thread
+        safe, but obviously subsequent operations on the singleton have to be synchronized within the singleton
+        implementation itself.
 
         \ingroup patterns
     */
@@ -103,45 +66,8 @@ namespace QuantLib {
         //! access to the unique instance
         static T& instance();
 
-#ifdef QL_ENABLE_SESSIONS
-        //! remove the session-local instance, return true if there was such an instance
-        static bool remove() {
-            boost::unique_lock<boost::shared_mutex> uniqueLock(m_mutex());
-            return m_instances().erase(sessionId()) != 0;
-        }
-#endif
-
       protected:
         Singleton() = default;
-
-      private:
-#ifdef QL_ENABLE_SESSIONS
-        // construct on first use to avoid static initialization order fiasco
-        static std::map<ThreadKey, ext::shared_ptr<T> >& m_instances() {
-            static std::map<ThreadKey, ext::shared_ptr<T> > instances;
-            return instances;
-        }
-        static boost::shared_mutex& m_mutex() {
-            static boost::shared_mutex mutex;
-            return mutex;
-        }
-#else
-#    ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-        static boost::atomic<T*>& m_instance() {
-            static boost::atomic<T*> instance;
-            return instance;
-        }
-        static boost::mutex& m_mutex() {
-            static boost::mutex mutex;
-            return mutex;
-        }
-#    else
-        static ext::shared_ptr<T>& m_instance() {
-            static ext::shared_ptr<T> instance;
-            return instance;
-        }
-#    endif
-#endif
     };
 
     // template definitions
@@ -150,42 +76,36 @@ namespace QuantLib {
     T& Singleton<T, Global>::instance() {
 
 #ifdef QL_ENABLE_SESSIONS
-        ThreadKey id = sessionId();
-        {
-            boost::shared_lock<boost::shared_mutex> shared_lock(m_mutex());
-            auto instance = Global() ? m_instances().begin() : m_instances().find(id);
-            if (instance != m_instances().end())
-                return *instance->second;
-        }
-        {
-            boost::unique_lock<boost::shared_mutex> uniqueLock(m_mutex());
-            auto instance = Global() ? m_instances().begin() : m_instances().find(id);
-            if (instance != m_instances().end())
-                return *instance->second;
-            auto tmp = ext::shared_ptr<T>(new T);
-            m_instances()[id] = tmp;
-            return *tmp;
+        if(Global()) {
+            static T global_instance;
+            return global_instance;
+        } else {
+            thread_local static T local_instance;
+            return local_instance;
         }
 #else
-#    ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-        // thread safe double checked locking pattern with atomic memory calls
-        T* instance = m_instance().load(boost::memory_order_consume);
-        if (!instance) {
-            boost::mutex::scoped_lock guard(m_mutex());
-            instance = m_instance().load(boost::memory_order_consume);
-            if (!instance) {
-                instance = new T();
-                m_instance().store(instance, boost::memory_order_release);
-            }
-        }
-        return *instance;
-#    else
-        if (m_instance() == nullptr)
-            m_instance() = ext::shared_ptr<T>(new T);
-        return *m_instance();
-#    endif
+        static T instance;
+        return instance;
 #endif
     }
+
+
+    // backwards compatibility
+
+#if defined(QL_THREAD_KEY)
+    /*! \deprecated This typedef is obsolete. Do not use it.
+                    Deprecated in version 1.29.
+    */
+    QL_DEPRECATED
+    typedef QL_THREAD_KEY ThreadKey;
+#else
+    /*! \deprecated This typedef is obsolete. Do not use it.
+                    Deprecated in version 1.29.
+    */
+    QL_DEPRECATED
+    typedef Integer ThreadKey;
+#endif
+
 }
 
 #endif

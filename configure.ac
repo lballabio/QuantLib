@@ -258,22 +258,6 @@ if test "$ql_use_tsop" = "yes" ; then
               thread-safe observer pattern.])
 fi
 
-AC_MSG_CHECKING([whether to enable thread-safe singleton initialization])
-AC_ARG_ENABLE([thread-safe-singleton-init],
-              AS_HELP_STRING([--enable-thread-safe-singleton-init],
-                             [If enabled, singleton initialization will
-                              be thread-safe. This requires Boost 1.58
-                              or later.  Note that --enable-sessions
-                              implies thread-safe initialization,
-                              whether this is defined or not]),
-              [ql_use_safe_singleton_init=$enableval],
-              [ql_use_safe_singleton_init=no])
-if test "$ql_use_safe_singleton_init" = "yes" ; then
-   AC_DEFINE([QL_ENABLE_SINGLETON_THREAD_SAFE_INIT],[1],
-             [Define this if you want thread-safe singleton initialization.])
-fi
-AC_MSG_RESULT([$ql_use_safe_singleton_init])
-
 if test "$ql_use_sessions" = "yes" || test "$ql_use_tsop" = "yes" || test "$ql_use_safe_singleton_init" = "yes"; then
    QL_CHECK_BOOST_VERSION_1_58_OR_HIGHER
    QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM

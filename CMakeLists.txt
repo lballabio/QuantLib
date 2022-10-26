@@ -45,7 +45,6 @@ option(QL_BUILD_TEST_SUITE "Build test suite" ON)
 option(QL_ENABLE_OPENMP "Detect and use OpenMP" OFF)
 option(QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER "Enable the parallel unit test runner" OFF)
 option(QL_ENABLE_SESSIONS "Singletons return different instances for different sessions" OFF)
-option(QL_ENABLE_SINGLETON_THREAD_SAFE_INIT "Enable thread-safe singleton initialization" OFF)
 option(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN "Enable the thread-safe observer pattern" OFF)
 option(QL_ENABLE_TRACING "Tracing messages should be allowed" OFF)
 option(QL_ERROR_FUNCTIONS "Error messages should include current function information" OFF)
@@ -127,8 +126,8 @@ endif()
 
 if (NOT DEFINED QL_BOOST_COMPONENTS)
     set(QL_BOOST_COMPONENTS "")
-    # Boost thread needed for sessions, singleton thread-safe init and thread-safe observer pattern
-    if(QL_ENABLE_SESSIONS OR QL_ENABLE_SINGLETON_THREAD_SAFE_INIT OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
+    # Boost thread needed for thread-safe observer pattern
+    if(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
         set(QL_BOOST_COMPONENTS "${QL_BOOST_COMPONENTS};thread")
     endif()
 endif()
@@ -162,7 +161,7 @@ if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER)
     endif()
 endif()
 
-if (QL_ENABLE_SESSIONS OR QL_ENABLE_SINGLETON_THREAD_SAFE_INIT OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
+if (QL_ENABLE_SESSIONS OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
     set(QL_THREAD_LIBRARIES Boost::thread ${QL_THREAD_LIBRARIES})
 endif()
 
