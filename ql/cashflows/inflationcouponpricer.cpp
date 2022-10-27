@@ -96,7 +96,7 @@ namespace QuantLib {
     Real YoYInflationCouponPricer::optionletRate(Option::Type optionType,
                                                  Real effStrike) const {
         Date fixingDate = coupon_->fixingDate();
-        if (fixingDate <= Settings::instance().evaluationDate()) {
+        if (fixingDate <= capletVolatility()->baseDate()) {
             // the amount is determined
             Real a, b;
             if (optionType==Option::Call) {
@@ -109,11 +109,12 @@ namespace QuantLib {
             return std::max(a - b, 0.0);
         } else {
             // not yet determined, use Black/DD1/Bachelier/whatever from Impl
-            QL_REQUIRE(!capletVolatility().empty(),
-                       "missing optionlet volatility");
+            QL_REQUIRE(!capletVolatility().empty(), "missing optionlet volatility");
+
             Real stdDev =
-            std::sqrt(capletVolatility()->totalVariance(fixingDate,
-                                                        effStrike));
+                std::sqrt(capletVolatility()->totalVariance(fixingDate,
+                                                            effStrike,
+                                                            Period(0, Days)));
             return optionletPriceImp(optionType,
                                      effStrike,
                                      adjustedFixing(),
