@@ -62,7 +62,7 @@ namespace QuantLib {
                            << pShift << " and index availability " << infIndex_->availabilityLag()
                            << ": need (obsLag-index period) >= availLag");
         } else {
-            QL_REQUIRE(infIndex_->availabilityLag() < observationLag_,
+            QL_REQUIRE(infIndex_->availabilityLag() <= observationLag_,
                        "index tries to observe inflation fixings that do not yet exist: "
                            << " availability lag " << infIndex_->availabilityLag()
                            << " versus obs lag = " << observationLag_);
