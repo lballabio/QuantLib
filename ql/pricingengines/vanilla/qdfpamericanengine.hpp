@@ -113,10 +113,6 @@ namespace QuantLib {
         static ext::shared_ptr<QdFpIterationScheme> fastScheme();
         static ext::shared_ptr<QdFpIterationScheme> accurateScheme();
         static ext::shared_ptr<QdFpIterationScheme> highPrecisionScheme();
-
-      private:
-        static ext::shared_ptr<QdFpIterationScheme>
-            fastScheme_, accurateScheme_, highPrecisionScheme_;
     };
 
 

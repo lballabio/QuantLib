@@ -114,30 +114,21 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<QdFpIterationScheme>
-        QdFpIterationSchemeStdFactory::fastScheme_
-            = ext::make_shared<QdFpLegendreScheme>(7, 2, 7, 27);
-
-    ext::shared_ptr<QdFpIterationScheme>
     QdFpIterationSchemeStdFactory::fastScheme() {
-        return QdFpIterationSchemeStdFactory::fastScheme_;
+        static auto scheme = ext::make_shared<QdFpLegendreScheme>(7, 2, 7, 27);
+        return scheme;
     }
-
-    ext::shared_ptr<QdFpIterationScheme>
-        QdFpIterationSchemeStdFactory::accurateScheme_
-            = ext::make_shared<QdFpLegendreTanhSinhScheme>(25, 5, 13, 1e-8);
 
     ext::shared_ptr<QdFpIterationScheme>
     QdFpIterationSchemeStdFactory::accurateScheme() {
-        return QdFpIterationSchemeStdFactory::accurateScheme_;
+        static auto scheme = ext::make_shared<QdFpLegendreTanhSinhScheme>(25, 5, 13, 1e-8);
+        return scheme;
     }
 
     ext::shared_ptr<QdFpIterationScheme>
-        QdFpIterationSchemeStdFactory::highPrecisionScheme_
-            = ext::make_shared<QdFpTanhSinhIterationScheme>(10, 30, 1e-10);
-
-    ext::shared_ptr<QdFpIterationScheme>
     QdFpIterationSchemeStdFactory::highPrecisionScheme() {
-        return QdFpIterationSchemeStdFactory::highPrecisionScheme_;
+        static auto scheme = ext::make_shared<QdFpTanhSinhIterationScheme>(10, 30, 1e-10);
+        return scheme;
     }
 
 
