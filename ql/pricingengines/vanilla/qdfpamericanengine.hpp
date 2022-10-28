@@ -26,39 +26,24 @@
 #include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
 
 namespace QuantLib {
+
     class Integrator;
 
-    /*! High performance/precision American engine based on
-        fixed point iteration for the exercise boundary
-     */
-
-    /*! References:
-        Leif Andersen, Mark Lake and Dimitri Offengenden (2015)
-        "High Performance American Option Pricing",
-        https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2547027
-
-        Leif Andersen, Mark Lake (2021)
-        "Fast American Option Pricing: The Double-Boundary Case"
-
-        https://onlinelibrary.wiley.com/doi/abs/10.1002/wilm.10969
-    */
-
+    //! Iteration scheme for fixed-point QD American engine
     class QdFpIterationScheme {
       public:
         virtual Size getNumberOfChebyshevInterpolationNodes() const = 0;
         virtual Size getNumberOfNaiveFixedPointSteps() const = 0;
         virtual Size getNumberOfJacobiNewtonFixedPointSteps() const = 0;
 
-        virtual ext::shared_ptr<Integrator>
-            getFixedPointIntegrator() const = 0;
-        virtual ext::shared_ptr<Integrator>
-            getExerciseBoundaryToPriceIntegrator() const = 0;
+        virtual ext::shared_ptr<Integrator> getFixedPointIntegrator() const = 0;
+        virtual ext::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator() const = 0;
 
-        virtual ~QdFpIterationScheme()  = default;
+        virtual ~QdFpIterationScheme() = default;
     };
 
-    /* Gauss-Legendre (l,m,n)-p Scheme
-         l: order of Gauss-Legendre integration within every fixed point iteration
+    //! Gauss-Legendre (l,m,n)-p Scheme
+    /*!  l: order of Gauss-Legendre integration within every fixed point iteration
             step.
          m: fixed point iteration steps, first step is a partial Jacobi-Newton,
             the rest are naive Richardson fixed point iterations
@@ -74,10 +59,8 @@ namespace QuantLib {
         Size getNumberOfNaiveFixedPointSteps() const override;
         Size getNumberOfJacobiNewtonFixedPointSteps() const override;
 
-        ext::shared_ptr<Integrator>
-            getFixedPointIntegrator() const override;
-        ext::shared_ptr<Integrator>
-            getExerciseBoundaryToPriceIntegrator() const override;
+        ext::shared_ptr<Integrator> getFixedPointIntegrator() const override;
+        ext::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator() const override;
 
       private:
         const Size m_, n_;
@@ -85,8 +68,8 @@ namespace QuantLib {
         const ext::shared_ptr<Integrator> exerciseBoundaryIntegrator_;
     };
 
-    /* Legendre-Tanh-Sinh (l,m,n)-eps Scheme
-         l: order of Gauss-Legendre integration within every fixed point iteration
+    //! Legendre-Tanh-Sinh (l,m,n)-eps Scheme
+    /*!  l: order of Gauss-Legendre integration within every fixed point iteration
             step.
          m: fixed point iteration steps, first step is a partial Jacobi-Newton,
             the rest are naive Richardson fixed point iterations
@@ -98,15 +81,14 @@ namespace QuantLib {
       public:
         QdFpLegendreTanhSinhScheme(Size l, Size m, Size n, Real eps);
 
-        ext::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator()
-            const override;
+        ext::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator() const override;
 
       private:
         const Real eps_;
     };
 
-    /* tanh-sinh (m,n)-eps Scheme
-         m: fixed point iteration steps, first step is a partial Jacobi-Newton,
+    //! tanh-sinh (m,n)-eps Scheme
+    /*!  m: fixed point iteration steps, first step is a partial Jacobi-Newton,
             the rest are naive Richardson fixed point iterations
          n: number of Chebyshev nodes to interpolate the exercise boundary
          eps: tanh-sinh integration precision
@@ -119,10 +101,8 @@ namespace QuantLib {
         Size getNumberOfNaiveFixedPointSteps() const override;
         Size getNumberOfJacobiNewtonFixedPointSteps() const override;
 
-        ext::shared_ptr<Integrator>
-            getFixedPointIntegrator() const override;
-        ext::shared_ptr<Integrator>
-            getExerciseBoundaryToPriceIntegrator() const override;
+        ext::shared_ptr<Integrator> getFixedPointIntegrator() const override;
+        ext::shared_ptr<Integrator> getExerciseBoundaryToPriceIntegrator() const override;
       private:
         const Size m_, n_;
         const ext::shared_ptr<Integrator> integrator_;
@@ -139,6 +119,18 @@ namespace QuantLib {
             fastScheme_, accurateScheme_, highPrecisionScheme_;
     };
 
+
+    //! High performance/precision American engine based on fixed point iteration for the exercise boundary
+    /*! References:
+        Leif Andersen, Mark Lake and Dimitri Offengenden (2015)
+        "High Performance American Option Pricing",
+        https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2547027
+
+        Leif Andersen, Mark Lake (2021)
+        "Fast American Option Pricing: The Double-Boundary Case"
+
+        https://onlinelibrary.wiley.com/doi/abs/10.1002/wilm.10969
+    */
     class QdFpAmericanEngine : public detail::QdPutCallParityEngine {
       public:
         enum FixedPointEquation { FP_A, FP_B, Auto };
@@ -157,6 +149,7 @@ namespace QuantLib {
         const ext::shared_ptr<QdFpIterationScheme> iterationScheme_;
         const FixedPointEquation fpEquation_;
     };
+
 }
 
 #endif

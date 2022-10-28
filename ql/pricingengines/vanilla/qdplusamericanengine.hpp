@@ -30,23 +30,13 @@
 
 
 namespace QuantLib {
+
     class Interpolation;
     class ChebyshevInterpolation;
     class QdPlusBoundaryEvaluator;
 
-    /*! Amercian engine based on the QD+ approximation to the exercise boundary.
-        Main purpose of this engine is to provide a good initial guess to the exercise
-        boundary for the superior fixed point American engine QdFpAmericanEngine
-     */
-    /*! References:
-        Li, M. (2009), “Analytical Approximations for the Critical Stock Prices
-                        of American Options: A Performance Comparison,”
-                        Working paper, Georgia Institute of Technology.
-
-        https://mpra.ub.uni-muenchen.de/15018/1/MPRA_paper_15018.pdf
-    */
-
     namespace detail {
+
         class QdPutCallParityEngine: public VanillaOption::engine {
           public:
             explicit QdPutCallParityEngine(
@@ -82,6 +72,18 @@ namespace QuantLib {
         };
     }
 
+
+    //! American engine based on the QD+ approximation to the exercise boundary.
+    /*! The main purpose of this engine is to provide a good initial guess to the exercise
+        boundary for the superior fixed point American engine QdFpAmericanEngine
+
+        References:
+        Li, M. (2009), “Analytical Approximations for the Critical Stock Prices
+                        of American Options: A Performance Comparison,”
+                        Working paper, Georgia Institute of Technology.
+
+        https://mpra.ub.uni-muenchen.de/15018/1/MPRA_paper_15018.pdf
+    */
     class QdPlusAmericanEngine: public detail::QdPutCallParityEngine {
       public:
         enum SolverType {Brent, Newton, Ridder, Halley, SuperHalley};
