@@ -124,15 +124,7 @@ if (NOT DEFINED QL_BOOST_VERSION)
     endif()
 endif()
 
-if (NOT DEFINED QL_BOOST_COMPONENTS)
-    set(QL_BOOST_COMPONENTS "")
-    # Boost thread needed for thread-safe observer pattern
-    if(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
-        set(QL_BOOST_COMPONENTS "${QL_BOOST_COMPONENTS};thread")
-    endif()
-endif()
-
-find_package(Boost ${QL_BOOST_VERSION} REQUIRED COMPONENTS ${QL_BOOST_COMPONENTS})
+find_package(Boost ${QL_BOOST_VERSION} REQUIRED)
 
 # Do not warn about Boost versions higher than 1.58.0
 set(Boost_NO_WARN_NEW_VERSIONS ON)
@@ -149,20 +141,16 @@ if (NOT DEFINED THREADS_PREFER_PTHREAD_FLAG)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
 endif()
 
-set(QL_THREAD_LIBRARIES)
-
-if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER)
+# Add Threads dependency when any of the threading features are enabled
+if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER OR QL_ENABLE_SESSIONS OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
     find_package(Threads REQUIRED)
-    set(QL_THREAD_LIBRARIES Threads::Threads ${QL_THREAD_LIBRARIES})
     # Parallel test runner needs library rt on *nix for shm_open, etc.
-    if (UNIX AND NOT APPLE)
+    if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER AND UNIX AND NOT APPLE)
         find_library(RT_LIBRARY rt REQUIRED)
-        set(QL_THREAD_LIBRARIES ${RT_LIBRARY} ${QL_THREAD_LIBRARIES})
+        set(QL_THREAD_LIBRARIES Threads::Threads ${RT_LIBRARY})
+    else()
+        set(QL_THREAD_LIBRARIES Threads::Threads)
     endif()
-endif()
-
-if (QL_ENABLE_SESSIONS OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
-    set(QL_THREAD_LIBRARIES Boost::thread ${QL_THREAD_LIBRARIES})
 endif()
 
 # If available, use PIC for shared libs and PIE for executables
