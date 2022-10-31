@@ -106,13 +106,6 @@ namespace QuantLib {
         const ext::shared_ptr<Integrator> integrator_;
     };
 
-    class QdFpIterationSchemeStdFactory {
-      public:
-        static ext::shared_ptr<QdFpIterationScheme> fastScheme();
-        static ext::shared_ptr<QdFpIterationScheme> accurateScheme();
-        static ext::shared_ptr<QdFpIterationScheme> highPrecisionScheme();
-    };
-
 
     //! High performance/precision American engine based on fixed point iteration for the exercise boundary
     /*! References:
@@ -131,9 +124,12 @@ namespace QuantLib {
 
         explicit QdFpAmericanEngine(
           ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
-          ext::shared_ptr<QdFpIterationScheme> iterationScheme =
-              QdFpIterationSchemeStdFactory::accurateScheme(),
+          ext::shared_ptr<QdFpIterationScheme> iterationScheme = accurateScheme(),
           FixedPointEquation fpEquation = Auto);
+
+        static ext::shared_ptr<QdFpIterationScheme> fastScheme();
+        static ext::shared_ptr<QdFpIterationScheme> accurateScheme();
+        static ext::shared_ptr<QdFpIterationScheme> highPrecisionScheme();
 
       protected:
         Real calculatePut(

@@ -1620,11 +1620,11 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
 
     const auto qdFpFastAmericanEngine =
         ext::make_shared<QdFpAmericanEngine>(
-            bsProcess, QdFpIterationSchemeStdFactory::fastScheme());
+            bsProcess, QdFpAmericanEngine::fastScheme());
 
     const auto qdFpAccurateAmericanEngine =
         ext::make_shared<QdFpAmericanEngine>(
-            bsProcess, QdFpIterationSchemeStdFactory::accurateScheme());
+            bsProcess, QdFpAmericanEngine::accurateScheme());
 
     IncrementalStatistics stats;
     for (auto t: T) {

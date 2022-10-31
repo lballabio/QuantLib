@@ -32,6 +32,7 @@
 #endif
 
 namespace QuantLib {
+
     QdFpLegendreScheme::QdFpLegendreScheme(
         Size l, Size m, Size n, Size p):
         m_(m), n_(n),
@@ -111,24 +112,6 @@ namespace QuantLib {
             return ext::make_shared<GaussLobattoIntegral>(
                 100000, QL_MAX_REAL, 0.1*eps_);
 #endif
-    }
-
-    ext::shared_ptr<QdFpIterationScheme>
-    QdFpIterationSchemeStdFactory::fastScheme() {
-        static auto scheme = ext::make_shared<QdFpLegendreScheme>(7, 2, 7, 27);
-        return scheme;
-    }
-
-    ext::shared_ptr<QdFpIterationScheme>
-    QdFpIterationSchemeStdFactory::accurateScheme() {
-        static auto scheme = ext::make_shared<QdFpLegendreTanhSinhScheme>(25, 5, 13, 1e-8);
-        return scheme;
-    }
-
-    ext::shared_ptr<QdFpIterationScheme>
-    QdFpIterationSchemeStdFactory::highPrecisionScheme() {
-        static auto scheme = ext::make_shared<QdFpTanhSinhIterationScheme>(10, 30, 1e-10);
-        return scheme;
     }
 
 
@@ -392,6 +375,24 @@ namespace QuantLib {
       fpEquation_(fpEquation) {
     }
 
+    ext::shared_ptr<QdFpIterationScheme>
+    QdFpAmericanEngine::fastScheme() {
+        static auto scheme = ext::make_shared<QdFpLegendreScheme>(7, 2, 7, 27);
+        return scheme;
+    }
+
+    ext::shared_ptr<QdFpIterationScheme>
+    QdFpAmericanEngine::accurateScheme() {
+        static auto scheme = ext::make_shared<QdFpLegendreTanhSinhScheme>(25, 5, 13, 1e-8);
+        return scheme;
+    }
+
+    ext::shared_ptr<QdFpIterationScheme>
+    QdFpAmericanEngine::highPrecisionScheme() {
+        static auto scheme = ext::make_shared<QdFpTanhSinhIterationScheme>(10, 30, 1e-10);
+        return scheme;
+    }
+
     Real QdFpAmericanEngine::calculatePut(
             Real S, Real K, Rate r, Rate q, Volatility vol, Time T) const {
 
@@ -480,6 +481,7 @@ namespace QuantLib {
 
         return std::max(europeanValue, 0.0) + std::max(0.0, addOn);
     }
+
 }
 
 
