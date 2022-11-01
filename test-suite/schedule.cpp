@@ -289,12 +289,13 @@ void ScheduleTest::testNextToLastWithEomAdjustment() {
                             .backwards()
                             .endOfMonth();
 
-    std::vector<Date> expected(5);
+    std::vector<Date> expected(6);
     expected[0] = Date(12, August, 1996);
-    expected[1] = Date(28, February, 1997);
-    expected[2] = Date(29, August, 1997);
-    expected[3] = Date(27, February, 1998);
-    expected[4] = Date(10, August, 1998);
+    expected[1] = Date(30, August, 1996);
+    expected[2] = Date(28, February, 1997);
+    expected[3] = Date(29, August, 1997);
+    expected[4] = Date(27, February, 1998);
+    expected[5] = Date(10, August, 1998);
 
     check_dates(schedule, expected);
 }

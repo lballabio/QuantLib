@@ -364,27 +364,33 @@ namespace QuantLib {
                 for (Size i=1; i<dates_.size()-1; ++i)
                     dates_[i] = Date::endOfMonth(dates_[i]);
             } else {
+                dates_.front() = calendar_.adjust(dates_.front(), convention);
                 for (Size i=1; i<dates_.size()-1; ++i)
                     dates_[i] = calendar_.endOfMonth(dates_[i]);
             }
-            Date d1 = dates_.front(), d2 = dates_.back();
+
             if (terminationDateConvention != Unadjusted) {
-                d1 = calendar_.endOfMonth(dates_.front());
-                d2 = calendar_.endOfMonth(dates_.back());
-            } else {
-                // the termination date is the first if going backwards,
-                // the last otherwise.
-                if (*rule_ == DateGeneration::Backward)
-                    d2 = Date::endOfMonth(dates_.back());
-                else
-                    d1 = Date::endOfMonth(dates_.front());
+                dates_.back() = calendar_.adjust(dates_.back(), terminationDateConvention);
             }
-            // if the eom adjustment leads to a single date schedule
-            // we do not apply it
-            if(d1 != d2) {
-                dates_.front() = d1;
-                dates_.back() = d2;
-            }
+
+            //Date d1 = dates_.front(), d2 = dates_.back();
+            //if (terminationDateConvention != Unadjusted) {
+            //    d1 = calendar_.endOfMonth(dates_.front());
+            //    d2 = calendar_.endOfMonth(dates_.back());
+            //} else {
+            //    // the termination date is the first if going backwards,
+            //    // the last otherwise.
+            //    if (*rule_ == DateGeneration::Backward)
+            //        d2 = Date::endOfMonth(dates_.back());
+            //    else
+            //        d1 = Date::endOfMonth(dates_.front());
+            //}
+            //// if the eom adjustment leads to a single date schedule
+            //// we do not apply it
+            //if(d1 != d2) {
+            //    dates_.front() = d1;
+            //    dates_.back() = d2;
+            //}
         } else {
             // first date not adjusted for old CDS schedules
             if (*rule_ != DateGeneration::OldCDS)
