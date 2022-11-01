@@ -251,6 +251,54 @@ void ScheduleTest::testDoubleFirstDateWithEomAdjustment() {
     check_dates(s, expected);
 }
 
+void ScheduleTest::testFirstDateWithEomAdjustment() {
+    BOOST_TEST_MESSAGE("Testing schedule with first date and EOM adjustments ...");
+
+    Schedule schedule = MakeSchedule()
+                            .from(Date(10, August, 1996))
+                            .to(Date(10, August, 1998))
+                            .withFirstDate(Date(28, February, 1997))
+                            .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
+                            .withTenor(6 * Months)
+                            .withConvention(Following)
+                            .withTerminationDateConvention(Following)
+                            .forwards()
+                            .endOfMonth();
+
+    std::vector<Date> expected(5);
+    expected[0] = Date(12, August, 1996);
+    expected[1] = Date(28, February, 1997);
+    expected[2] = Date(29, August, 1997);
+    expected[3] = Date(27, February, 1998);
+    expected[4] = Date(10, August, 1998);
+
+    check_dates(schedule, expected);
+}
+
+void ScheduleTest::testNextToLastWithEomAdjustment() {
+    BOOST_TEST_MESSAGE("Testing schedule with next to last date and EOM adjustments ...");
+
+    Schedule schedule = MakeSchedule()
+                            .from(Date(10, August, 1996))
+                            .to(Date(10, August, 1998))
+                            .withNextToLastDate(Date(28, February, 1998))
+                            .withCalendar(UnitedStates(UnitedStates::GovernmentBond))
+                            .withTenor(6 * Months)
+                            .withConvention(Following)
+                            .withTerminationDateConvention(Following)
+                            .backwards()
+                            .endOfMonth();
+
+    std::vector<Date> expected(5);
+    expected[0] = Date(12, August, 1996);
+    expected[1] = Date(28, February, 1997);
+    expected[2] = Date(29, August, 1997);
+    expected[3] = Date(27, February, 1998);
+    expected[4] = Date(10, August, 1998);
+
+    check_dates(schedule, expected);
+}
+
 namespace CdsTests {
 
     Schedule makeCdsSchedule(const Date& from, const Date& to, DateGeneration::Rule rule) {
@@ -1088,6 +1136,8 @@ test_suite* ScheduleTest::suite() {
         &ScheduleTest::testBackwardDatesWithEomAdjustment));
     suite->add(QUANTLIB_TEST_CASE(
         &ScheduleTest::testDoubleFirstDateWithEomAdjustment));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testFirstDateWithEomAdjustment));
+    suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testNextToLastWithEomAdjustment));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testCDS2015Convention));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testCDS2015ConventionGrid));
     suite->add(QUANTLIB_TEST_CASE(&ScheduleTest::testCDSConventionGrid));
