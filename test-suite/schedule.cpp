@@ -96,28 +96,12 @@ void ScheduleTest::testEndDateWithEomAdjustment() {
                       .endOfMonth();
 
     std::vector<Date> expected(7);
-    // The end date is adjusted, so it should also be moved to the end
-    // of the month.
     expected[0] = Date(30,September,2009);
     expected[1] = Date(31,March,2010);
     expected[2] = Date(30,September,2010);
     expected[3] = Date(31,March,2011);
     expected[4] = Date(30,September,2011);
     expected[5] = Date(30,March,2012);
-    expected[6] = Date(29,June,2012);
-
-    check_dates(s, expected);
-
-    // now with unadjusted termination date...
-    s = MakeSchedule().from(Date(30,September,2009))
-                      .to(Date(15,June,2012))
-                      .withCalendar(Japan())
-                      .withTenor(6*Months)
-                      .withConvention(Following)
-                      .withTerminationDateConvention(Unadjusted)
-                      .forwards()
-                      .endOfMonth();
-    // ...which should leave it alone.
     expected[6] = Date(15,June,2012);
 
     check_dates(s, expected);
@@ -139,7 +123,7 @@ void ScheduleTest::testDatesPastEndDateWithEomAdjustment() {
                       .endOfMonth();
 
     std::vector<Date> expected(3);
-    expected[0] = Date(31,March,2013);
+    expected[0] = Date(28,March,2013);
     expected[1] = Date(31,March,2014);
     // March 31st 2015, coming from the EOM adjustment of March 28th,
     // should be discarded as past the end date.
@@ -167,7 +151,7 @@ void ScheduleTest::testDatesSameAsEndDateWithEomAdjustment() {
                       .endOfMonth();
 
     std::vector<Date> expected(3);
-    expected[0] = Date(31,March,2013);
+    expected[0] = Date(28,March,2013);
     expected[1] = Date(31,March,2014);
     // March 31st 2015, coming from the EOM adjustment of March 28th,
     // should be discarded as the same as the end date.
@@ -243,10 +227,11 @@ void ScheduleTest::testDoubleFirstDateWithEomAdjustment() {
                       .backwards()
                       .endOfMonth();
 
-    std::vector<Date> expected(3);
-    expected[0] = Date(30,August,1996);
-    expected[1] = Date(28,February,1997);
-    expected[2] = Date(29,August,1997);
+    std::vector<Date> expected(4);
+    expected[0] = Date(22, August, 1996);
+    expected[1] = Date(30,August,1996);
+    expected[2] = Date(28,February,1997);
+    expected[3] = Date(2,September,1997);
 
     check_dates(s, expected);
 }
@@ -1107,7 +1092,7 @@ void ScheduleTest::testTruncation() {
     expected[11] = Date(29, March, 2019);
     expected[12] = Date(30, September, 2019);
     expected[13] = Date(31, March, 2020);
-    expected[14] = Date(30, June, 2020);
+    expected[14] = Date(15, June, 2020);
     check_dates(t, expected);
     BOOST_CHECK(t.isRegular().front() == false);
 
@@ -1118,7 +1103,7 @@ void ScheduleTest::testTruncation() {
     expected[1] = Date(29, March, 2019);
     expected[2] = Date(30, September, 2019);
     expected[3] = Date(31, March, 2020);
-    expected[4] = Date(30, June, 2020);
+    expected[4] = Date(15, June, 2020);
     check_dates(t, expected);
     BOOST_CHECK(t.isRegular().front() == true);
 }
