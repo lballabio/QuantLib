@@ -1,5 +1,8 @@
 name: Linux build with full test matrix
-on: workflow_dispatch
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
