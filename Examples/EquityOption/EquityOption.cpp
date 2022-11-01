@@ -22,20 +22,20 @@
 #  include <ql/auto_link.hpp>
 #endif
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanvasicekengine.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
-#include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <ql/pricingengines/vanilla/batesengine.hpp>
-#include <ql/pricingengines/vanilla/integralengine.hpp>
+#include <ql/pricingengines/vanilla/binomialengine.hpp>
+#include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/integralengine.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanvasicekengine.hpp>
+#include <ql/pricingengines/vanilla/mceuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/qdfpamericanengine.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/models/shortrate/onefactormodels/vasicek.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -205,6 +205,37 @@ int main(int, char* []) {
         method = "Bjerksund/Stensland";
         americanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
                       new BjerksundStenslandApproximationEngine(bsmProcess)));
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << "N/A"
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << americanOption.NPV()
+                  << std::endl;
+
+        // QD+ fixed-point engine for American
+        method = "QD+ fixed-point (fast)";
+        americanOption.setPricingEngine(ext::make_shared<QdFpAmericanEngine>
+                                        (bsmProcess, QdFpAmericanEngine::fastScheme()));
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << "N/A"
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << americanOption.NPV()
+                  << std::endl;
+
+        method = "QD+ fixed-point (accurate)";
+        americanOption.setPricingEngine(ext::make_shared<QdFpAmericanEngine>
+                                        (bsmProcess, QdFpAmericanEngine::accurateScheme()));
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << "N/A"
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << americanOption.NPV()
+                  << std::endl;
+
+        method = "QD+ fixed-point (high precision)";
+        americanOption.setPricingEngine(ext::make_shared<QdFpAmericanEngine>
+                                        (bsmProcess, QdFpAmericanEngine::highPrecisionScheme()));
         std::cout << std::setw(widths[0]) << std::left << method
                   << std::fixed
                   << std::setw(widths[1]) << std::left << "N/A"

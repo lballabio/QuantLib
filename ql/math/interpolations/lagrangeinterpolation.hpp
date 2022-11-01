@@ -112,14 +112,18 @@ namespace QuantLib {
 
           private:
             template <class Iterator>
-            Real _value(const Iterator& yBegin, Real x) const {
+            inline Real _value(const Iterator& yBegin, Real x) const {
+
+                const Real eps = 10*QL_EPSILON*std::abs(x);
+                const auto iter = std::lower_bound(
+                    this->xBegin_, this->xEnd_, x - eps);
+                if (iter != this->xEnd_ && *iter - x < eps) {
+                    return yBegin[std::distance(this->xBegin_, iter)];
+                }
+
                 Real n = 0.0, d = 0.0;
                 for (Size i = 0; i < n_; ++i) {
-                    const Real x_i = this->xBegin_[i];
-                    if (close_enough(x, x_i))
-                        return yBegin[i];
-
-                    const Real alpha = lambda_[i] / (x - x_i);
+                    const Real alpha = lambda_[i] / (x - this->xBegin_[i]);
                     n += alpha * yBegin[i];
                     d += alpha;
                 }

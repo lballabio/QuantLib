@@ -26,6 +26,7 @@
 #define quantlib_gaussian_quadratures_hpp
 
 #include <ql/math/array.hpp>
+#include <ql/math/integrals/integral.hpp>
 #include <ql/math/integrals/gaussianorthogonalpolynomial.hpp>
 
 namespace QuantLib {
@@ -57,7 +58,7 @@ namespace QuantLib {
         template <class F>
         Real operator()(const F& f) const {
             Real sum = 0.0;
-            for (Integer i = order()-1; i >= 0; --i) {
+            for (Integer i = Integer(order())-1; i >= 0; --i) {
                 sum += w_[i] * f(x_[i]);
             }
             return sum;
@@ -207,6 +208,33 @@ namespace QuantLib {
         {}
     };
 
+
+    namespace detail {
+        template <class Integration>
+        class GaussianQuadratureIntegrator: public Integrator {
+          public:
+            explicit GaussianQuadratureIntegrator(Size n);
+
+            const ext::shared_ptr<Integration> getIntegration() const {
+                return integration_;
+            }
+          private:
+            Real integrate(const ext::function<Real (Real)>& f,
+                                           Real a,
+                                           Real b) const override;
+
+            const ext::shared_ptr<Integration> integration_;
+        };
+    }
+
+    typedef detail::GaussianQuadratureIntegrator<GaussLegendreIntegration>
+        GaussLegendreIntegrator;
+
+    typedef detail::GaussianQuadratureIntegrator<GaussChebyshevIntegration>
+        GaussChebyshevIntegrator;
+
+    typedef detail::GaussianQuadratureIntegrator<GaussChebyshev2ndIntegration>
+        GaussChebyshev2ndIntegrator;
 
     //! tabulated Gauss-Legendre quadratures
     class TabulatedGaussLegendre {

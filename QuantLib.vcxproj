@@ -1033,6 +1033,7 @@
     <ClInclude Include="ql\math\integrals\momentbasedgaussianpolynomial.hpp" />
     <ClInclude Include="ql\math\integrals\segmentintegral.hpp" />
     <ClInclude Include="ql\math\integrals\simpsonintegral.hpp" />
+    <ClInclude Include="ql\math\integrals\tanhsinhintegral.hpp" />
     <ClInclude Include="ql\math\integrals\trapezoidintegral.hpp" />
     <ClInclude Include="ql\math\integrals\twodimensionalintegral.hpp" />
     <ClInclude Include="ql\math\interpolation.hpp" />
@@ -1042,6 +1043,7 @@
     <ClInclude Include="ql\math\interpolations\backwardflatlinearinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\bicubicsplineinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\bilinearinterpolation.hpp" />
+    <ClInclude Include="ql\math\interpolations\chebyshevinterpolation.hpp" />    
     <ClInclude Include="ql\math\interpolations\convexmonotoneinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\cubicinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\extrapolation.hpp" />
@@ -1606,6 +1608,8 @@
     <ClInclude Include="ql\pricingengines\vanilla\mceuropeanhestonengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\mchestonhullwhiteengine.hpp" />
     <ClInclude Include="ql\pricingengines\vanilla\mcvanillaengine.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\qdfpamericanengine.hpp" />
+    <ClInclude Include="ql\pricingengines\vanilla\qdplusamericanengine.hpp" />
     <ClInclude Include="ql\processes\all.hpp" />
     <ClInclude Include="ql\processes\batesprocess.hpp" />
     <ClInclude Include="ql\processes\blackscholesprocess.hpp" />
@@ -2262,6 +2266,7 @@
     <ClCompile Include="ql\math\integrals\integral.cpp" />
     <ClCompile Include="ql\math\integrals\kronrodintegral.cpp" />
     <ClCompile Include="ql\math\integrals\segmentintegral.cpp" />
+    <ClCompile Include="ql\math\interpolations\chebyshevinterpolation.cpp" />    
     <ClCompile Include="ql\math\matrix.cpp" />
     <ClCompile Include="ql\math\matrixutilities\basisincompleteordered.cpp" />
     <ClCompile Include="ql\math\matrixutilities\bicgstab.cpp" />
@@ -2625,6 +2630,8 @@
     <ClCompile Include="ql\pricingengines\vanilla\mcamericanengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\mcdigitalengine.cpp" />
     <ClCompile Include="ql\pricingengines\vanilla\mchestonhullwhiteengine.cpp" />
+    <ClCompile Include="ql\pricingengines\vanilla\qdfpamericanengine.cpp" />
+    <ClCompile Include="ql\pricingengines\vanilla\qdplusamericanengine.cpp" />
     <ClCompile Include="ql\processes\batesprocess.cpp" />
     <ClCompile Include="ql\processes\blackscholesprocess.cpp" />
     <ClCompile Include="ql\processes\coxingersollrossprocess.cpp" />
