@@ -72,10 +72,18 @@ namespace QuantLib {
 
     // template definitions
 
+#ifdef QL_ENABLE_SESSIONS
+
+#if (defined(__GNUC__) && !defined(__clang__)) && (((__GNUC__ == 8) && (__GNUC_MINOR__ < 4)) || (__GNUC__ < 8))
+#pragma message("Singleton::instance() is always compiled with `-O0` for versions of GCC below 8.4 when sessions are enabled.")
+#pragma message("This is to work around the following compiler bug: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91757")
+#pragma message("If possible, please update your compiler to a more recent version.")
+#pragma GCC push_options
+#pragma GCC optimize("-O0")
+#endif
+
     template <class T, class Global>
     T& Singleton<T, Global>::instance() {
-
-#ifdef QL_ENABLE_SESSIONS
         if(Global()) {
             static T global_instance;
             return global_instance;
@@ -83,12 +91,21 @@ namespace QuantLib {
             thread_local static T local_instance;
             return local_instance;
         }
-#else
-        static T instance;
-        return instance;
-#endif
     }
 
+#if (defined(__GNUC__) && !defined(__clang__)) && (((__GNUC__ == 8) && (__GNUC_MINOR__ < 4)) || (__GNUC__ < 8))
+#pragma GCC pop_options
+#endif
+
+#else
+
+    template <class T, class Global>
+    T& Singleton<T, Global>::instance() {
+        static T instance;
+        return instance;
+    }
+
+#endif
 
     // backwards compatibility
 
