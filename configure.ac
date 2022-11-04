@@ -41,16 +41,6 @@ if test [ -n "$ql_boost_include_path" ] ; then
    AC_SUBST([BOOST_INCLUDE],["-isystem ${ql_boost_include_path}"])
    AC_SUBST([CPPFLAGS],["${CPPFLAGS} -isystem ${ql_boost_include_path}"])
 fi
-AC_ARG_WITH([boost-lib],
-            AS_HELP_STRING([--with-boost-lib=LIB_PATH],
-                           [Supply the location of Boost libraries]),
-            [ql_boost_lib_path="`cd ${withval} 2>/dev/null && pwd`"],
-            [ql_boost_lib_path=""])
-if test [ -n "$ql_boost_lib_path" ] ; then
-   AC_SUBST([BOOST_LIB],["-L${ql_boost_lib_path}"])
-   AC_SUBST([LDFLAGS],["${LDFLAGS} -L${ql_boost_lib_path}"])
-fi
-
 
 # Continue setup
 
@@ -258,11 +248,11 @@ if test "$ql_use_tsop" = "yes" ; then
               thread-safe observer pattern.])
 fi
 
-if test "$ql_use_sessions" = "yes" || test "$ql_use_tsop" = "yes" || test "$ql_use_safe_singleton_init" = "yes"; then
+if test "$ql_use_sessions" = "yes" || test "$ql_use_tsop" = "yes"; then
    QL_CHECK_BOOST_VERSION_1_58_OR_HIGHER
-   QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM
+   QL_CHECK_BOOST_SIGNALS2
 else
-   AC_SUBST([BOOST_THREAD_LIB],[""])
+   AC_SUBST([PTHREAD_LIB],[""])
 fi
 
 AC_MSG_CHECKING([whether to enable parallel unit test runner])

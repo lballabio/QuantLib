@@ -153,63 +153,38 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
  fi
 ])
 
-# QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM
+# QL_CHECK_BOOST_SIGNALS2
 # ------------------------
-# Check whether the Boost thread and system is available
-AC_DEFUN([QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM],
-[AC_MSG_CHECKING([whether Boost thread, signals2 and system are available])
+# Check whether Boost signals2 is available
+AC_DEFUN([QL_CHECK_BOOST_SIGNALS2],
+[AC_MSG_CHECKING([whether Boost signals2 is available])
  AC_REQUIRE([AC_PROG_CC])
  ql_original_LIBS=$LIBS
  ql_original_CXXFLAGS=$CXXFLAGS
- CC_BASENAME=`basename $CC`
- CC_VERSION=`echo "__GNUC__ __GNUC_MINOR__" | $CC -E -x c - | tail -n 1 | $SED -e "s/ //"`
- for suffix in "" \
-               "-$CC_BASENAME$CC_VERSION" \
-               "-$CC_BASENAME" \
-               "-mt-$CC_BASENAME$CC_VERSION" \
-               "-$CC_BASENAME$CC_VERSION-mt" \
-               "-x$CC_BASENAME$CC_VERSION-mt" \
-               "-mt-$CC_BASENAME" \
-               "-$CC_BASENAME-mt" \
-               "-mt" ; do
-     boost_thread_lib="-lboost_thread$suffix -lboost_system$suffix"
-     LIBS="$ql_original_LIBS $boost_thread_lib"
-     CXXFLAGS="$ql_original_CXXFLAGS -pthread"
-     boost_thread_found=no
-     AC_LINK_IFELSE([AC_LANG_SOURCE(
-         [@%:@include <boost/thread/locks.hpp>
-          @%:@include <boost/thread/recursive_mutex.hpp>
-          @%:@include <boost/signals2/signal.hpp>
-          
-          #ifndef BOOST_THREAD_PLATFORM_PTHREAD
-          #error only pthread is supported on this plattform
-          #endif
-    
-          int main() {
-            boost::recursive_mutex m;
-            boost::lock_guard<boost::recursive_mutex> lock(m);
-      
-            boost::signals2::signal<void()> sig;
-      
-            return 0;
-          }
-         ])],
-         [boost_thread_found=$boost_thread_lib
-          break],
-         [])
- done
+ LIBS="$ql_original_LIBS -pthread"
+ CXXFLAGS="$ql_original_CXXFLAGS -pthread"
+ boost_signals2_found=no
+ AC_LINK_IFELSE([AC_LANG_SOURCE(
+     [@%:@include <boost/signals2/signal.hpp>
+
+      int main() {
+        boost::signals2::signal<void()> sig;
+      }
+     ])],
+     [boost_signals2_found=yes
+      break],
+     [])
  LIBS="$ql_original_LIBS"
  CXXFLAGS="$ql_original_CXXFLAGS"
      
- if test "$boost_thread_found" = no ; then
+ if test "$boost_signals2_found" = no ; then
      AC_MSG_RESULT([no])
-     AC_SUBST([BOOST_THREAD_LIB],[""])
-     AC_MSG_ERROR([Boost thread, signals2 and system libraries not found. 
-         These libraries are required by the thread-safe observer pattern
-         or by the parallel unit test runner.])
+     AC_SUBST([PTHREAD_LIB],[""])
+     AC_MSG_ERROR([Boost signals2 library not found.
+         This library is required by the thread-safe observer pattern.])
  else
      AC_MSG_RESULT([yes])
-     AC_SUBST([BOOST_THREAD_LIB],[$boost_thread_lib])
+     AC_SUBST([PTHREAD_LIB],["-pthread"])
      AC_SUBST([PTHREAD_CXXFLAGS],["-pthread"])
      AC_SUBST([CXXFLAGS],["${CXXFLAGS} -pthread"])
  fi
