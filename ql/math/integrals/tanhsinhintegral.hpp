@@ -70,18 +70,19 @@ namespace QuantLib {
 #else
 
 namespace QuantLib {
+
     class TanhSinhIntegral : public Integrator {
       public:
-        TanhSinhIntegral(Size m = 0, Real a = 0, Real b = 0)
+        TanhSinhIntegral(Real relTolerance = 0, Size maxRefinements = 0, Real minComplement = 0)
         : Integrator(Null<Real>(), Null<Size>()) {
-            QL_FAIL("boost version 1.66 or higher is required to "
-                    "use TanhSinhIntegraion");
+            QL_FAIL("boost version 1.69 or higher is required in order to use TanhSinhIntegral");
         }
 
       protected:
         Real integrate(const ext::function<Real(Real)>& f, Real a, Real b)
         const override { return 0.0; }
     };
+
 }
 
 #endif
