@@ -26,6 +26,7 @@
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/integral.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
@@ -1576,6 +1577,38 @@ void AmericanOptionTest::testQdEngineStandardExample() {
     }
 }
 
+namespace {
+    class QdFpGaussLobattoScheme: public QdFpIterationScheme {
+      public:
+        QdFpGaussLobattoScheme(Size m, Size n, Real eps)
+        : m_(m), n_(n),
+          integrator_(ext::make_shared<GaussLobattoIntegral>(
+            100000, QL_MAX_REAL, 0.1*eps)) {
+        }
+        Size getNumberOfChebyshevInterpolationNodes() const override {
+            return n_;
+        }
+        Size getNumberOfNaiveFixedPointSteps() const override {
+            return m_-1;
+        }
+        Size getNumberOfJacobiNewtonFixedPointSteps() const override {
+            return Size(1);
+        }
+        ext::shared_ptr<Integrator>
+        getFixedPointIntegrator() const override {
+            return integrator_;
+        }
+        ext::shared_ptr<Integrator>
+        getExerciseBoundaryToPriceIntegrator() const override {
+            return integrator_;
+        }
+
+      private:
+        const Size m_, n_;
+        const ext::shared_ptr<Integrator> integrator_;
+    };
+}
+
 void AmericanOptionTest::testBulkQdFpAmericanEngine() {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
                         "bulk examples...");
@@ -1606,8 +1639,8 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
      const Size T[] = {30, 182, 365};
      const Rate rf[] = {0.02, 0.04, 0.06, 0.1};
      const Rate qy[] = {0, 0.04, 0.08, 0.12};
-     const Real S[] = {25, 50, 90, 100, 110, 150, 200};
-     const Volatility sig[] = {0.1, 0.2, 0.4, 0.6};
+     const Real S[] = {25, 75, 100, 125, 200};
+     const Volatility sig[] = {0.1, 0.25, 0.6};
 
     const auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, 100);
 
@@ -1626,7 +1659,11 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
         ext::make_shared<QdFpAmericanEngine>(
             bsProcess, QdFpAmericanEngine::accurateScheme());
 
-    IncrementalStatistics stats;
+    const auto qdFpGaussLobattoAmericanEngine =
+        ext::make_shared<QdFpAmericanEngine>(
+            bsProcess,ext::make_shared<QdFpGaussLobattoScheme>(3, 7, 1e-5));
+
+    IncrementalStatistics statsAccurate, statsLobatto;
     for (auto t: T) {
         const Date maturityDate = today + Period(t, Days);
         VanillaOption option(
@@ -1646,9 +1683,11 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
 
                         option.setPricingEngine(qdFpAccurateAmericanEngine);
                         const Real accurate = option.NPV();
+                        statsAccurate.add(std::abs(fast-accurate));
 
-                        const Real diff = std::abs(fast-accurate);
-                        stats.add(diff);
+                        option.setPricingEngine(qdFpGaussLobattoAmericanEngine);
+                        const Real lobatto = option.NPV();
+                        statsLobatto.add(std::abs(accurate-lobatto));
                     }
                 }
             }
@@ -1657,19 +1696,98 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
 
 
     const Real tolStdDev = 1e-4;
-    if (stats.standardDeviation() > tolStdDev)
+    if (statsAccurate.standardDeviation() > tolStdDev)
         BOOST_ERROR("failed to reproduce low RMSE with fast American engine"
-                << "\n    RMSE diff: " << stats.standardDeviation()
+                << "\n    RMSE diff: " << statsAccurate.standardDeviation()
+                << "\n    tol      : " << tolStdDev);
+
+    if (statsLobatto.standardDeviation() > tolStdDev)
+        BOOST_ERROR("failed to reproduce low RMSE with fast Lobatto American engine"
+                << "\n    RMSE diff: " << statsLobatto.standardDeviation()
                 << "\n    tol      : " << tolStdDev);
 
     const Real tolMax = 2.5e-3;
-    if (stats.max() > tolMax)
+    if (statsAccurate.max() > tolMax)
         BOOST_ERROR("failed to reproduce low max deviation "
                 "with fast American engine"
-                << "\n    max diff: " << stats.max()
+                << "\n    max diff: " << statsAccurate.max()
+                << "\n    tol     : " << tolMax);
+
+    if (statsLobatto.max() > tolMax)
+        BOOST_ERROR("failed to reproduce low max deviation "
+                "with fast Lobatto American engine"
+                << "\n    max diff: " << statsLobatto.max()
                 << "\n    tol     : " << tolMax);
 }
 
+void AmericanOptionTest::testQdEngineWithLobattoIntegral() {
+    BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
+                        "with high precision Gauss-Lobatto-Integration...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(5, November, 2022);
+    Settings::instance().evaluationDate() = today;
+
+    const auto spot = ext::make_shared<SimpleQuote>(36);
+    const Real K = 40;
+    const Rate r = 0.075;
+    const Rate q = 0.01;
+    const Volatility sigma = 0.40;
+    const Date maturityDate = today + Period(2, Years);
+
+    const auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(flatRate(today, q, dc)),
+        Handle<YieldTermStructure>(flatRate(today, r, dc)),
+        Handle<BlackVolTermStructure>(flatVol(today, sigma, dc))
+    );
+
+    VanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, K),
+        ext::make_shared<AmericanExercise>(today, maturityDate)
+    );
+
+    const QdFpAmericanEngine::FixedPointEquation schemes[] = {
+        QdFpAmericanEngine::FP_A, QdFpAmericanEngine::FP_B
+    };
+
+    const auto gaussLobattoScheme =
+        ext::make_shared<QdFpGaussLobattoScheme>(10, 30, 1e-10);
+
+    for (auto scheme: schemes) {
+        const auto highPrecisionEngine =
+            ext::make_shared<QdFpAmericanEngine>(
+                bsProcess, QdFpAmericanEngine::highPrecisionScheme(), scheme);
+        const auto lobattoEngine =
+            ext::make_shared<QdFpAmericanEngine>(
+                bsProcess, gaussLobattoScheme, scheme);
+
+        for (Real s: std::list<Real>{36, 40-1e-8, 40, 40+1e-8, 50}) {
+            spot->setValue(s);
+
+            option.setPricingEngine(highPrecisionEngine);
+            const Real highPrecisionNPV = option.NPV();
+
+            option.setPricingEngine(lobattoEngine);
+            const Real lobattoNPV = option.NPV();
+
+            const Real diff = std::abs(lobattoNPV - highPrecisionNPV);
+            const Real tol = 1e-11;
+
+            if (diff > tol || std::isnan(lobattoNPV)) {
+                BOOST_ERROR("failed to reproduce high precision American "
+                        "option values with QD+ fixed point and Lobatto integration"
+                        << "\n    FP-Scheme: " <<
+                        ((scheme == QdFpAmericanEngine::FP_A)? "FP-A" : "FP-B")
+                        << "\n    spot     : " << s
+                        << "\n    diff     : " << diff
+                        << "\n    tol      : " << tol);
+            }
+        }
+    }
+}
 
 test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("American option tests");
@@ -1692,6 +1810,7 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testAndersenLakeHighPrecisionExample));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineStandardExample));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBulkQdFpAmericanEngine));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineWithLobattoIntegral));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));

@@ -227,17 +227,32 @@ namespace QuantLib {
             else {
                 K12 = (*integrator)([&, this](Real y) -> Real {
                     const Real m = 0.25*tau*squared(1+y);
-                    const Real dp = d(m, b/B(tau-m)).first;
+                    const Real df = std::exp(q*tau - q*m);
 
-                    return std::exp(q*tau - q*m)
-                        *(0.5*tau*(y+1)*Phi(dp) + stv*phi(dp));
+                    if (y <= 5*QL_EPSILON - 1) {
+                        if (close_enough(b, B(tau-m)))
+                            return df*stv/(M_SQRT2*M_SQRTPI);
+                        else
+                            return 0.0;
+                    }
+                    else {
+                        const Real dp = d(m, b/B(tau-m)).first;
+                        return df*(0.5*tau*(y+1)*Phi(dp) + stv*phi(dp));
+                    }
                 }, -1, 1);
 
                 K3 = (*integrator)([&, this](Real y) -> Real {
                     const Real m = 0.25*tau*squared(1+y);
+                    const Real df = std::exp(r*tau-r*m);
 
-                    return stv*std::exp(r*tau-r*m)
-                        *phi(d(m, b/B(tau-m)).second);
+                    if (y <= 5*QL_EPSILON - 1) {
+                        if (close_enough(b, B(tau-m)))
+                            return df*stv/(M_SQRT2*M_SQRTPI);
+                        else
+                            return 0.0;
+                    }
+                    else
+                        return df*stv*phi(d(m, b/B(tau-m)).second);
                 }, -1, 1);
             }
             const std::pair<Real, Real> dpm = d(tau, b/K);
@@ -327,10 +342,26 @@ namespace QuantLib {
             }
             else {
                 ni = (*integrator)([&, this](Real u) -> Real {
-                        return std::exp(r*u)*Phi(d(tau - u, b/B(u)).second);
-                    }, 0, tau);
+                	const Real df = std::exp(r*u);
+                    if (u >= tau*(1 - 5*QL_EPSILON)) {
+                        if (close_enough(b, B(u)))
+                            return 0.5*df;
+                        else
+                            return df*((b < B(u)? 0.0: 1.0));
+                    }
+                    else
+                        return df*Phi(d(tau - u, b/B(u)).second);
+                }, 0, tau);
                 di = (*integrator)([&, this](Real u) -> Real {
-                        return std::exp(q*u)*Phi(d(tau - u, b/B(u)).first);
+                	const Real df = std::exp(q*u);
+                    if (u >= tau*(1 - 5*QL_EPSILON)) {
+                        if (close_enough(b, B(u)))
+                            return 0.5*df;
+                        else
+                            return df*((b < B(u)? 0.0: 1.0));
+                    }
+                    else
+                        return df*Phi(d(tau - u, b/B(u)).first);
                     }, 0, tau);
             }
 
