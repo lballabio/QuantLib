@@ -1106,7 +1106,7 @@ void AmericanOptionTest::testQdPlusBoundaryConvergence() {
     };
 
     for (const auto& testCase: testCases) {
-        for (auto solverType: solverTypes) {
+        for (const auto& solverType : solverTypes) {
             const QdPlusAmericanEngine qrPlusEngine(
                 ext::shared_ptr<GeneralizedBlackScholesProcess>(),
                 Null<Size>(), solverType.first, 1e-8);
@@ -1308,7 +1308,7 @@ void AmericanOptionTest::testQdAmericanEngines() {
 
     PseudoRandom::rng_type rng(PseudoRandom::urng_type(12345UL));
 
-    for (Size i=0; i < LENGTH(pde_values); ++i) {
+    for (double pde_value : pde_values) {
         const Option::Type optionType
             = (rng.next().value > 0)? Option::Call : Option::Put;
         const Real spot = 100*std::exp(1.5*rng.next().value);
@@ -1318,10 +1318,8 @@ void AmericanOptionTest::testQdAmericanEngines() {
         const Rate r = 0.10*std::exp(rng.next().value);
         const Rate q = 0.10*std::exp(rng.next().value);
 
-        const OptionSpec spec = {
-            optionType, spot, strike, maturityInDays,
-            vol, r, q, pde_values[i], -1
-        };
+        const OptionSpec spec = {optionType, spot,      strike, maturityInDays, vol, r,
+                                 q,          pde_value, -1};
 
         testCaseSpecs.push_back(spec);
     }

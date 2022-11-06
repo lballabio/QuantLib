@@ -215,9 +215,8 @@ namespace QuantLib {
           public:
             explicit GaussianQuadratureIntegrator(Size n);
 
-            const ext::shared_ptr<Integration> getIntegration() const {
-                return integration_;
-            }
+            ext::shared_ptr<Integration> getIntegration() const { return integration_; }
+
           private:
             Real integrate(const ext::function<Real (Real)>& f,
                                            Real a,

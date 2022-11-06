@@ -20,15 +20,16 @@
 /*! \file qrfpamericanengine.cpp
 */
 
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/integrals/tanhsinhintegral.hpp>
 #include <ql/math/interpolations/chebyshevinterpolation.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/qdfpamericanengine.hpp>
-#include <ql/math/integrals/tanhsinhintegral.hpp>
+#include <utility>
 #ifndef QL_BOOST_HAS_TANH_SINH
-#include <ql/math/integrals/gausslobattointegral.hpp>
+#    include <ql/math/integrals/gausslobattointegral.hpp>
 #endif
 
 namespace QuantLib {
@@ -117,13 +118,12 @@ namespace QuantLib {
 
     class DqFpEquation {
       public:
-        DqFpEquation(
-            Rate _r, Rate _q, Volatility _vol,
-            std::function<Real(Real)> _B,
-            ext::shared_ptr<Integrator> _integrator)
-        : r(_r), q(_q), vol(_vol),
-          B(std::move(_B)),
-          integrator(std::move(_integrator)) {
+        DqFpEquation(Rate _r,
+                     Rate _q,
+                     Volatility _vol,
+                     std::function<Real(Real)> B,
+                     ext::shared_ptr<Integrator> _integrator)
+        : r(_r), q(_q), vol(_vol), B(std::move(B)), integrator(std::move(_integrator)) {
             const auto legendreIntegrator =
                 ext::dynamic_pointer_cast<GaussLegendreIntegrator>(integrator);
 
@@ -159,10 +159,12 @@ namespace QuantLib {
 
     class DqFpEquation_B: public DqFpEquation {
       public:
-        DqFpEquation_B(
-            Real _K, Rate _r, Rate _q, Volatility _vol,
-            std::function<Real(Real)> _B,
-            ext::shared_ptr<Integrator> _integrator);
+        DqFpEquation_B(Real K,
+                       Rate _r,
+                       Rate _q,
+                       Volatility _vol,
+                       std::function<Real(Real)> B,
+                       ext::shared_ptr<Integrator> _integrator);
 
         std::pair<Real, Real> NDd(Real tau, Real b) const override;
         std::tuple<Real, Real, Real> f(Real tau, Real b) const override;
@@ -173,10 +175,12 @@ namespace QuantLib {
 
     class DqFpEquation_A: public DqFpEquation {
       public:
-        DqFpEquation_A(
-            Real _K, Rate _r, Rate _q, Volatility _vol,
-            std::function<Real(Real)> _B,
-            ext::shared_ptr<Integrator> _integrator);
+        DqFpEquation_A(Real K,
+                       Rate _r,
+                       Rate _q,
+                       Volatility _vol,
+                       std::function<Real(Real)> B,
+                       ext::shared_ptr<Integrator> _integrator);
 
         std::pair<Real, Real> NDd(Real tau, Real b) const override;
         std::tuple<Real, Real, Real> f(Real tau, Real b) const override;
@@ -185,13 +189,13 @@ namespace QuantLib {
           const Real K;
     };
 
-    DqFpEquation_A::DqFpEquation_A(
-        Real _K, Rate _r, Rate _q, Volatility _vol,
-        std::function<Real(Real)> _B,
-        ext::shared_ptr<Integrator> _integrator)
-    : DqFpEquation(_r, _q, _vol, _B, _integrator),
-      K(_K) {
-    }
+    DqFpEquation_A::DqFpEquation_A(Real K,
+                                   Rate _r,
+                                   Rate _q,
+                                   Volatility _vol,
+                                   std::function<Real(Real)> B,
+                                   ext::shared_ptr<Integrator> _integrator)
+    : DqFpEquation(_r, _q, _vol, std::move(B), std::move(_integrator)), K(K) {}
 
     std::tuple<Real, Real, Real> DqFpEquation_A::f(Real tau, Real b) const {
         const Real v = vol * std::sqrt(tau);
@@ -211,7 +215,7 @@ namespace QuantLib {
             const Real stv = std::sqrt(tau)/vol;
 
             Real K12, K3;
-            if (x_i.size()) {
+            if (!x_i.empty()) {
                 K12 = K3 = 0.0;
 
                 for (Integer i = x_i.size()-1; i >= 0; --i) {
@@ -223,8 +227,7 @@ namespace QuantLib {
                         *(0.5*tau*(y+1)*Phi(dpm.first) + stv*phi(dpm.first));
                     K3 += w_i[i] * stv*std::exp(r*tau-r*m)*phi(dpm.second);
                 }
-            }
-            else {
+            } else {
                 K12 = (*integrator)([&, this](Real y) -> Real {
                     const Real m = 0.25*tau*squared(1+y);
                     const Real dp = d(m, b/B(tau-m)).first;
@@ -291,13 +294,13 @@ namespace QuantLib {
     }
 
 
-    DqFpEquation_B::DqFpEquation_B(
-        Real _K, Rate _r, Rate _q, Volatility _vol,
-        std::function<Real(Real)> _B,
-        ext::shared_ptr<Integrator> _integrator)
-    : DqFpEquation(_r, _q, _vol, _B, _integrator),
-      K(_K) {
-    }
+    DqFpEquation_B::DqFpEquation_B(Real K,
+                                   Rate _r,
+                                   Rate _q,
+                                   Volatility _vol,
+                                   std::function<Real(Real)> B,
+                                   ext::shared_ptr<Integrator> _integrator)
+    : DqFpEquation(_r, _q, _vol, std::move(B), std::move(_integrator)), K(K) {}
 
 
     std::tuple<Real, Real, Real> DqFpEquation_B::f(Real tau, Real b) const {
@@ -312,7 +315,7 @@ namespace QuantLib {
         }
         else {
             Real ni, di;
-            if (x_i.size()) {
+            if (!x_i.empty()) {
                 const Real c = 0.5*tau;
 
                 ni = di = 0.0;
@@ -324,8 +327,7 @@ namespace QuantLib {
                 }
                 ni *= c;
                 di *= c;
-            }
-            else {
+            } else {
                 ni = (*integrator)([&, this](Real u) -> Real {
                         return std::exp(r*u)*Phi(d(tau - u, b/B(u)).second);
                     }, 0, tau);
