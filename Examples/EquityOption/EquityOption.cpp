@@ -234,8 +234,6 @@ int main(int, char* []) {
                   << std::setw(widths[3]) << std::left << americanOption.NPV()
                   << std::endl;
 
-        #ifdef QL_BOOST_HAS_TANH_SINH
-
         method = "QD+ fixed-point (high precision)";
         americanOption.setPricingEngine(ext::make_shared<QdFpAmericanEngine>
                                         (bsmProcess, QdFpAmericanEngine::highPrecisionScheme()));
@@ -245,8 +243,6 @@ int main(int, char* []) {
                   << std::setw(widths[2]) << std::left << "N/A"
                   << std::setw(widths[3]) << std::left << americanOption.NPV()
                   << std::endl;
-
-        #endif
 
         // Integral
         method = "Integral";
