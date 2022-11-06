@@ -40,29 +40,20 @@ namespace QuantLib {
     class QdPlusBoundaryEvaluator {
       public:
         QdPlusBoundaryEvaluator(
-            Real S, Real strike,
-            Rate rf, Rate dy, Volatility vol, Time t, Time T)
-        : tau(t),
-          K(strike),
-          sigma(vol),
-          sigma2(sigma*sigma),
-          v(sigma*std::sqrt(tau)),
-          r(rf),
-          q(dy),
-          dr(std::exp(-r*tau)),
-          dq(std::exp(-q*tau)),
-          omega(2*(r-q)/sigma2),
-          lambda(0.5*(-(omega-1)
-                - std::sqrt(squared(omega - 1) + 8*r/(sigma2 * (1-dr))))),
-          lambdaPrime(2*r/(sigma2*squared(1-dr)
-                  *std::sqrt(squared(omega-1) + 8*r/(sigma2*(1-dr))))),
-          alpha(2*dr*r/(sigma2*(2*lambda+omega - 1))),
-          beta(alpha*(1/(1-dr)+lambdaPrime/(2*lambda+omega-1)) - lambda),
+            Real S, Real strike, Rate rf, Rate dy, Volatility vol, Time t, Time T)
+        : tau(t), K(strike), sigma(vol), sigma2(sigma * sigma), v(sigma * std::sqrt(tau)), r(rf),
+          q(dy), dr(std::exp(-r * tau)), dq(std::exp(-q * tau)), omega(2 * (r - q) / sigma2),
+          lambda(0.5 *
+                 (-(omega - 1) - std::sqrt(squared(omega - 1) + 8 * r / (sigma2 * (1 - dr))))),
+          lambdaPrime(2 * r /
+                      (sigma2 * squared(1 - dr) *
+                       std::sqrt(squared(omega - 1) + 8 * r / (sigma2 * (1 - dr))))),
+          alpha(2 * dr * r / (sigma2 * (2 * lambda + omega - 1))),
+          beta(alpha * (1 / (1 - dr) + lambdaPrime / (2 * lambda + omega - 1)) - lambda),
           xMax(QdPlusAmericanEngine::xMax(strike, r, q)),
-          xMin(QL_EPSILON*1e4*std::min(0.5*(strike + S), xMax)),
-          nrEvaluations(0),
-          sc(Null<Real>()) {
-        }
+          xMin(QL_EPSILON * 1e4 * std::min(0.5 * (strike + S), xMax)),
+
+          sc(Null<Real>()) {}
 
         Real operator()(Real S) const {
             ++nrEvaluations;
@@ -123,7 +114,7 @@ namespace QuantLib {
         const Rate r, q;
         const DiscountFactor dr, dq;
         const Real omega, lambda, lambdaPrime, alpha, beta, xMax, xMin;
-        mutable Size nrEvaluations;
+        mutable Size nrEvaluations = 0;
         mutable Real sc, dp, dm, Phi_dp, Phi_dm, phi_dp;
         mutable Real npv, theta, charm;
     };

@@ -57,9 +57,14 @@ namespace QuantLib {
 
         class QdPlusAddOnValue {
           public:
-            QdPlusAddOnValue(
-                Time T, Real S, Real K, Rate r, Rate q, Volatility vol,
-                const Real xmax, ext::shared_ptr<Interpolation> q_z);
+            QdPlusAddOnValue(Time T,
+                             Real S,
+                             Real K,
+                             Rate r,
+                             Rate q,
+                             Volatility vol,
+                             Real xmax,
+                             ext::shared_ptr<Interpolation> q_z);
 
             Real operator()(Real z) const;
           private:
