@@ -78,6 +78,9 @@ namespace QuantLib {
             Tuesday)</li>
         </ul>
 
+        Note that there are some one-off holidays not listed above.
+        See the implementation for the complete list.
+
         \ingroup calendars
 
         \todo add LIFFE
