@@ -25,6 +25,11 @@
 
 namespace QuantLib {
 
+    Date Exercise::lastDate() const {
+        QL_REQUIRE(!dates_.empty(), "no exercise date given");
+        return dates_.back();
+    }
+
     AmericanExercise::AmericanExercise(const Date& earliest,
                                        const Date& latest,
                                        bool payoffAtExpiry)
