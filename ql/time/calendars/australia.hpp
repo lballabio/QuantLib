@@ -44,6 +44,7 @@ namespace QuantLib {
         <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
         <li>Boxing Day, December 26th (possibly moved to Monday or
             Tuesday)</li>
+        <li>National Day of Mourning for Her Majesty, September 22, 2022</li>
         </ul>
 
         \ingroup calendars
