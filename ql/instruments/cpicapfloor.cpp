@@ -140,7 +140,7 @@ namespace QuantLib {
         arguments->maturity = maturity_;
         arguments->fixCalendar = fixCalendar_;
         arguments->fixConvention = fixConvention_;
-        arguments->payCalendar = fixCalendar_;
+        arguments->payCalendar = payCalendar_;
         arguments->payConvention = payConvention_;
         arguments->fixDate = fixingDate();
         arguments->payDate = payDate();
