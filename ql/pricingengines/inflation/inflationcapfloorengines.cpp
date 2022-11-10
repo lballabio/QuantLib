@@ -20,6 +20,7 @@
 
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/pricingengines/inflation/inflationcapfloorengines.hpp>
+#include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
 #include <utility>
 

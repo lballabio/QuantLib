@@ -18,6 +18,7 @@
  */
 
 #include <ql/cashflows/cpicouponpricer.hpp>
+#include <ql/termstructures/inflationtermstructure.hpp>
 #include <utility>
 
 namespace QuantLib {

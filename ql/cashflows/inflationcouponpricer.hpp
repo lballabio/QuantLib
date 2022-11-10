@@ -27,6 +27,7 @@
 #include <ql/cashflow.hpp>
 #include <ql/option.hpp>
 #include <ql/cashflows/yoyinflationcoupon.hpp>
+#include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/termstructures/volatility/inflation/yoyinflationoptionletvolatilitystructure.hpp>
 
 namespace QuantLib {
