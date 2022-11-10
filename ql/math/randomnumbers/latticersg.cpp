@@ -26,7 +26,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 namespace QuantLib {
 
     LatticeRsg::LatticeRsg(Size dimensionality, std::vector<Real> z, Size N)
-    : dimensionality_(dimensionality), N_(N), i_(0), z_(std::move(z)),
+    : dimensionality_(dimensionality), N_(N), z_(std::move(z)),
       sequence_(std::vector<Real>(dimensionality), 1.0) {}
     /*! skip to the n-th sample in the low-discrepancy sequence */
     void LatticeRsg::skipTo(unsigned long n)

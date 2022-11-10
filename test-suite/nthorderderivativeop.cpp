@@ -43,27 +43,15 @@
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 
+#include <boost/numeric/ublas/banded.hpp>
+#include <boost/numeric/ublas/operation_sparse.hpp>
+#include <boost/numeric/ublas/matrix_proxy.hpp>
 
 #include <numeric>
 #include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-
-#include <boost/numeric/ublas/banded.hpp>
-
-#if defined(__clang__) || defined(__GNUC__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-local-typedef"
-#endif
-
-#include <boost/numeric/ublas/operation_sparse.hpp>
-
-#if defined(__clang__) || defined(__GNUC__)
-#pragma clang diagnostic pop
-#endif
-
-#include <boost/numeric/ublas/matrix_proxy.hpp>
 
 void NthOrderDerivativeOpTest::testSparseMatrixApply() {
     BOOST_TEST_MESSAGE("Testing sparse matrix apply...");
@@ -458,38 +446,35 @@ namespace {
                     theta*identity_matrix<Real>(n) - u, dv);
         }
 
-        Disposable<SparseMatrix> toMatrix() const override {
-            SparseMatrix tmp(map_);
-            return tmp;
+        SparseMatrix toMatrix() const override {
+            return map_;
         }
 
         Size size() const override { return 2; }
         void setTime(Time t1, Time t2) override { }
 
-        Disposable<Array> apply(const Array& r) const override {
+        Array apply(const Array& r) const override {
             return prod(map_, r);
         }
 
-        Disposable<Array> apply_mixed(const Array& r) const override {
+        Array apply_mixed(const Array& r) const override {
             QL_FAIL("operator splitting is not supported");
         }
 
-        Disposable<Array> apply_direction(
-            Size direction, const Array& r) const override {
+        Array apply_direction(Size direction, const Array& r) const override {
             QL_FAIL("operator splitting is not supported");
         }
 
-        Disposable<Array> solve_splitting(
-            Size direction, const Array& r, Real dt) const override {
+        Array solve_splitting(Size direction, const Array& r, Real dt) const override {
             QL_FAIL("operator splitting is not supported");
         }
 
-        Disposable<Array> preconditioner(const Array& r, Real dt) const override {
+        Array preconditioner(const Array& r, Real dt) const override {
             return preconditioner_.solve_splitting(r, dt, 1.0);
         }
 
       private:
-        Disposable<Array> solve_apply(const Array& r, Real dt) const {
+        Array solve_apply(const Array& r, Real dt) const {
             return r - dt*apply(r);
         }
 
@@ -525,8 +510,8 @@ namespace {
                                ext::shared_ptr<YieldTermStructure> qTS,
                                Volatility vol,
                                Size direction)
-        : payoff_(std::move(std::move(payoff))), mesher_(std::move(std::move(mesher))),
-          rTS_(std::move(std::move(rTS))), qTS_(std::move(std::move(qTS))), vol_(vol),
+        : payoff_(std::move(payoff)), mesher_(std::move(mesher)),
+          rTS_(std::move(rTS)), qTS_(std::move(qTS)), vol_(vol),
           direction_(direction) {}
 
         Real innerValue(const FdmLinearOpIterator& iter, Time t)  override {
@@ -548,7 +533,7 @@ namespace {
         const Size direction_;
     };
 
-    Disposable<Array> priceReport(
+    Array priceReport(
         const GridSetup& setup, const Array& strikes) {
 
         const Date today(2, May, 2018);
@@ -605,7 +590,7 @@ namespace {
 
                     const Real offset = (specialPoint - 0.5*d) - loc[i];
 
-                    for (double& l : loc)
+                    for (Real& l : loc)
                         l += offset;
 
                     break;
@@ -704,7 +689,7 @@ namespace {
             const GridSetup& setup, Array strikes)
         : setup_(setup), strikes_(std::move(strikes)) { }
 
-        Disposable<Array> values(const Array& x) const override {
+        Array values(const Array& x) const override {
             const GridSetup g = {
                 x[0], x[1],
                 setup_.cellAvg, setup_.midPoint,
@@ -867,7 +852,7 @@ void NthOrderDerivativeOpTest::testCompareFirstDerivativeOp2dUniformGrid() {
         const Size idx = k*n;
         for (Size i=1; i < n-1; ++i)
             for (Size j=0; j < n*m; ++j)
-                BOOST_CHECK(std::fabs(fm(idx + i, j) - dm(idx + i, j)) < 1e-12);
+                BOOST_CHECK(std::fabs(Real(fm(idx + i, j)) - Real(dm(idx + i, j))) < 1e-12);
     }
 
     fm = FirstDerivativeOp(1, mc).toMatrix();
@@ -875,7 +860,7 @@ void NthOrderDerivativeOpTest::testCompareFirstDerivativeOp2dUniformGrid() {
 
     for (Size i=n; i < n*(m-1); ++i)
         for (Size j=0; j < n*m; ++j)
-            BOOST_CHECK(std::fabs(fm(i, j) - dm(i, j)) < 1e-12);
+            BOOST_CHECK(std::fabs(Real(fm(i, j)) - Real(dm(i, j))) < 1e-12);
 }
 
 void NthOrderDerivativeOpTest::testMixedSecondOrder9PointsOnUniformGrid() {

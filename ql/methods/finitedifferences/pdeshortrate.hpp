@@ -31,7 +31,10 @@
 
 namespace QuantLib {
 
-    class PdeShortRate : public PdeSecondOrderParabolic {
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.27.
+    */
+    class QL_DEPRECATED PdeShortRate : public PdeSecondOrderParabolic {
       public:
         typedef ext::shared_ptr<OneFactorModel::ShortRateDynamics>
                                                                 argument_type;

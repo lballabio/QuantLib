@@ -44,10 +44,9 @@ namespace QuantLib {
 
       protected:
         //! computes the new search direction
-        virtual Disposable<Array>
-        getUpdatedDirection(const Problem &P,
-                            Real gold2,
-                            const Array& gradient) = 0;
+        virtual Array getUpdatedDirection(const Problem &P,
+                                          Real gold2,
+                                          const Array& gradient) = 0;
         //! line search
         ext::shared_ptr<LineSearch> lineSearch_;
     };

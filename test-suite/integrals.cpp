@@ -20,7 +20,6 @@
 
 #include "integrals.hpp"
 #include "utilities.hpp"
-#include <ql/math/functional.hpp>
 #include <ql/math/integrals/exponentialintegrals.hpp>
 #include <ql/math/integrals/filonintegral.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
@@ -29,6 +28,8 @@
 #include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
+#include <ql/math/integrals/tanhsinhintegral.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
@@ -58,18 +59,16 @@ namespace integrals_test {
 
     template <class T>
     void testSeveral(const T& I) {
-        testSingle(I, "f(x) = 0",
-                   constant<Real,Real>(0.0), 0.0, 1.0, 0.0);
-        testSingle(I, "f(x) = 1",
-                   constant<Real,Real>(1.0), 0.0, 1.0, 1.0);
-        testSingle(I, "f(x) = x",
-                   identity<Real>(),           0.0, 1.0, 0.5);
+        testSingle(I, "f(x) = 0", [](Real x) -> Real { return 0.0; }, 0.0, 1.0, 0.0);
+        testSingle(I, "f(x) = 1", [](Real x) -> Real { return 1.0; }, 0.0, 1.0, 1.0);
+        testSingle(I, "f(x) = x", [](Real x) -> Real { return x; }, 0.0, 1.0, 0.5);
         testSingle(I, "f(x) = x^2",
-                   square<Real>(),             0.0, 1.0, 1.0/3.0);
+                   [](Real x) -> Real { return x * x; }, 0.0, 1.0, 1.0/3.0);
         testSingle(I, "f(x) = sin(x)",
-                   static_cast<Real(*)(Real)>(std::sin), 0.0, M_PI, 2.0);
+                   [](Real x) -> Real { return std::sin(x); }, 0.0, M_PI, 2.0);
         testSingle(I, "f(x) = cos(x)",
-                   static_cast<Real(*)(Real)>(std::cos), 0.0, M_PI, 0.0);
+                   [](Real x) -> Real { return std::cos(x); }, 0.0, M_PI, 0.0);
+
         testSingle(I, "f(x) = Gaussian(x)",
                    NormalDistribution(), -10.0, 10.0, 1.0);
         testSingle(I, "f(x) = Abcd2(x)",
@@ -79,8 +78,8 @@ namespace integrals_test {
 
     template <class T>
     void testDegeneratedDomain(const T& I) {
-        testSingle(I, "f(x) = 0 over [1, 1 + macheps]",
-                   constant<Real, Real>(0.0), 1.0, 1.0 + QL_EPSILON, 0.0);
+        testSingle(I, "f(x) = 0 over [1, 1 + macheps]", [](Real x) -> Real { return 0.0; }, 1.0,
+            1.0 + QL_EPSILON, 0.0);
     }
 
 }
@@ -143,6 +142,47 @@ void IntegralTest::testGaussLobatto() {
     // which is also ok, but not tested here
 }
 
+void IntegralTest::testTanhSinh() {
+    BOOST_TEST_MESSAGE("Testing tanh-sinh integration...");
+
+    using namespace integrals_test;
+    testSeveral(TanhSinhIntegral());
+}
+
+void IntegralTest::testGaussLegendreIntegrator() {
+    BOOST_TEST_MESSAGE("Testing Gauss-Legendre integrator...");
+
+    using namespace integrals_test;
+
+    const GaussLegendreIntegrator integrator(64);
+    testSeveral(integrator);
+    testDegeneratedDomain(integrator);
+}
+
+void IntegralTest::testGaussChebyshevIntegrator() {
+    BOOST_TEST_MESSAGE("Testing Gauss-Chebyshev integrator...");
+
+    using namespace integrals_test;
+
+    const GaussChebyshevIntegrator integrator(64);
+    testSingle(integrator, "f(x) = Gaussian(x)",
+               NormalDistribution(), -10.0, 10.0, 1.0);
+    testDegeneratedDomain(integrator);
+}
+
+void IntegralTest::testGaussChebyshev2ndIntegrator() {
+    BOOST_TEST_MESSAGE("Testing Gauss-Chebyshev 2nd integrator...");
+
+    using namespace integrals_test;
+
+    const GaussChebyshev2ndIntegrator integrator(64);
+    testSingle(integrator, "f(x) = Gaussian(x)",
+               NormalDistribution(), -10.0, 10.0, 1.0);
+    testDegeneratedDomain(integrator);
+}
+
+
+
 void IntegralTest::testGaussKronrodNonAdaptive() {
     BOOST_TEST_MESSAGE("Testing non-adaptive Gauss-Kronrod integration...");
 
@@ -169,7 +209,7 @@ void IntegralTest::testTwoDimensionalIntegration() {
             new TrapezoidIntegral<Default>(integrals_test::tolerance, maxEvaluations)),
         ext::shared_ptr<Integrator>(
             new TrapezoidIntegral<Default>(integrals_test::tolerance, maxEvaluations)))(
-        std::multiplies<Real>(),
+        std::multiplies<>(),
         std::make_pair(0.0, 0.0), std::make_pair(1.0, 2.0));
 
     const Real expected = 1.0;
@@ -559,7 +599,7 @@ void IntegralTest::testRealSiCiIntegrals() {
         si = Si(x);
         diff = std::fabs(si + i[1]);
         if (diff > tol) {
-            integrals_test::reportSiCiFail("SineIntegral", x, si, -i[1], diff, tol);
+            integrals_test::reportSiCiFail("SineIntegral", x, si, Real(-i[1]), diff, tol);
         }
     }
 }
@@ -573,6 +613,9 @@ test_suite* IntegralTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussKronrodAdaptive));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussKronrodNonAdaptive));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussLobatto));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussLegendreIntegrator));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussChebyshevIntegrator));
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testGaussChebyshev2ndIntegrator));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testTwoDimensionalIntegration));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testFolinIntegration));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testDiscreteIntegrals));
@@ -580,6 +623,11 @@ test_suite* IntegralTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testPiecewiseIntegral));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testExponentialIntegral));
     suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testRealSiCiIntegrals));
+
+#ifdef QL_BOOST_HAS_TANH_SINH
+    suite->add(QUANTLIB_TEST_CASE(&IntegralTest::testTanhSinh));
+#endif
+
     return suite;
 }
 

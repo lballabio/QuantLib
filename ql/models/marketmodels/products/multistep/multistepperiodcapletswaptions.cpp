@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepperiodcapletswaptions.hpp>
@@ -43,7 +42,7 @@ namespace QuantLib {
 
         checkIncreasingTimes(forwardOptionPaymentTimes);
         checkIncreasingTimes(swaptionPaymentTimes);
-        for (double& swaptionPaymentTime : swaptionPaymentTimes_)
+        for (Real& swaptionPaymentTime : swaptionPaymentTimes_)
             paymentTimes_.push_back(swaptionPaymentTime);
         lastIndex_ = rateTimes.size()-1;
         numberFRAs_ = rateTimes.size()-1;
@@ -131,10 +130,9 @@ namespace QuantLib {
     return terminate;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     MultiStepPeriodCapletSwaptions::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
-                                         new MultiStepPeriodCapletSwaptions(*this));
+        return std::unique_ptr<MarketModelMultiProduct>(new MultiStepPeriodCapletSwaptions(*this));
     }
 
 }

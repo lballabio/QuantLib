@@ -21,10 +21,9 @@
 
 namespace QuantLib {
 
-    Disposable<Array> EulerDiscretization::drift(
-                                      const StochasticProcess& process,
-                                      Time t0, const Array& x0,
-                                      Time dt) const {
+    Array EulerDiscretization::drift(const StochasticProcess& process,
+                                     Time t0, const Array& x0,
+                                     Time dt) const {
         return process.drift(t0, x0)*dt;
     }
 
@@ -33,10 +32,10 @@ namespace QuantLib {
         return process.drift(t0, x0)*dt;
     }
 
-    Disposable<Matrix> EulerDiscretization::diffusion(
-                                      const StochasticProcess& process,
-                                      Time t0, const Array& x0,
-                                      Time dt) const {
+    Matrix EulerDiscretization::diffusion(const StochasticProcess& process,
+                                          Time t0,
+                                          const Array& x0,
+                                          Time dt) const {
         return process.diffusion(t0, x0) * std::sqrt(dt);
     }
 
@@ -45,10 +44,10 @@ namespace QuantLib {
         return process.diffusion(t0, x0) * std::sqrt(dt);
     }
 
-    Disposable<Matrix> EulerDiscretization::covariance(
-                                      const StochasticProcess& process,
-                                      Time t0, const Array& x0,
-                                      Time dt) const {
+    Matrix EulerDiscretization::covariance(const StochasticProcess& process,
+                                           Time t0,
+                                           const Array& x0,
+                                           Time dt) const {
         Matrix sigma = process.diffusion(t0, x0);
         Matrix result = sigma*transpose(sigma)*dt;
         return result;

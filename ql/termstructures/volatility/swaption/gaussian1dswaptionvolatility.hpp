@@ -67,8 +67,6 @@ class Gaussian1dSwaptionVolatility : public SwaptionVolatilityStructure {
     ext::shared_ptr<Gaussian1dSwaptionEngine> engine_;
     const Period maxSwapTenor_;
 
-    class DateHelper;
-    friend class DateHelper;
     class DateHelper {
       public:
         DateHelper(const TermStructure &ts, const Time t) : ts_(ts), t_(t) {}

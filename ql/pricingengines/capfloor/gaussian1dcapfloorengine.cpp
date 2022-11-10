@@ -25,7 +25,7 @@ namespace QuantLib {
 
     void Gaussian1dCapFloorEngine::calculate() const {
 
-        for (double spread : arguments_.spreads)
+        for (Real spread : arguments_.spreads)
             QL_REQUIRE(spread == 0.0, "Non zero spreads (" << spread << ") are not allowed.");
 
         Size optionlets = arguments_.startDates.size();
@@ -99,7 +99,7 @@ namespace QuantLib {
                             CubicInterpolation::Lagrange, 0.0);
                         Real price = 0.0;
                         for (Size j = 0; j < z.size() - 1; j++) {
-                            price += model_->gaussianShiftedPolynomialIntegral(
+                            price += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                 0.0, payoff.cCoefficients()[j],
                                 payoff.bCoefficients()[j],
                                 payoff.aCoefficients()[j], p[j], z[j], z[j],
@@ -108,17 +108,17 @@ namespace QuantLib {
                         if (extrapolatePayoff_) {
                             if (flatPayoffExtrapolation_) {
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, 0.0, 0.0, 0.0, p[z.size() - 2],
                                         z[z.size() - 2], z[z.size() - 1],
                                         100.0);
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0,
                                         z[0]);
                             } else {
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0,
                                         payoff.cCoefficients()[z.size() - 2],
                                         payoff.bCoefficients()[z.size() - 2],
@@ -171,7 +171,7 @@ namespace QuantLib {
                             CubicInterpolation::Lagrange, 0.0);
                         Real price = 0.0;
                         for (Size j = 0; j < z.size() - 1; j++) {
-                            price += model_->gaussianShiftedPolynomialIntegral(
+                            price += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                 0.0, payoff.cCoefficients()[j],
                                 payoff.bCoefficients()[j],
                                 payoff.aCoefficients()[j], p[j], z[j], z[j],
@@ -180,17 +180,17 @@ namespace QuantLib {
                         if (extrapolatePayoff_) {
                             if (flatPayoffExtrapolation_) {
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, 0.0, 0.0, 0.0, p[z.size() - 2],
                                         z[z.size() - 2], z[z.size() - 1],
                                         100.0);
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0,
                                         z[0]);
                             } else {
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, payoff.cCoefficients()[0],
                                         payoff.bCoefficients()[0],
                                         payoff.aCoefficients()[0], p[0], z[0],

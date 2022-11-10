@@ -122,7 +122,7 @@ namespace QuantLib {
             Real jac(Real a, Real, Real y) const {
                 Real s=0.0;
                 for (Size i=0; i < points_.size(); ++i) {
-                    s+=1.0/(betas_[i] + square<Real>()(y - points_[i]));
+                    s+=1.0/(betas_[i] + squared(y - points_[i]));
                 }
                 return a/std::sqrt(s);
             }
@@ -149,7 +149,7 @@ namespace QuantLib {
         std::vector<Real> points, betas;
         for (const auto& cPoint : cPoints) {
             points.push_back(ext::get<0>(cPoint));
-            betas.push_back(square<Real>()(ext::get<1>(cPoint) * (end - start)));
+            betas.push_back(squared(ext::get<1>(cPoint) * (end - start)));
         }
 
         // get scaling factor a so that y(1) = end

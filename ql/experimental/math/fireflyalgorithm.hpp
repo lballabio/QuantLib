@@ -34,17 +34,8 @@ http://arxiv.org/pdf/1003.1464.pdf
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/randomnumbers/seedgenerator.hpp>
 
-#include <boost/random/mersenne_twister.hpp>
-typedef boost::mt19937 base_generator_type;
-
-#include <boost/random/normal_distribution.hpp>
-typedef boost::random::normal_distribution<QuantLib::Real> BoostNormalDistribution;
-#include <boost/random/uniform_int_distribution.hpp>
-typedef boost::random::uniform_int_distribution<QuantLib::Size> uniform_integer;
-#include <boost/random/variate_generator.hpp>
-typedef boost::variate_generator<base_generator_type, uniform_integer> variate_integer;
-
 #include <cmath>
+#include <random>
 
 namespace QuantLib {
 
@@ -90,8 +81,6 @@ namespace QuantLib {
       public:
         class RandomWalk;
         class Intensity;
-        friend class RandomWalk;
-        friend class Intensity;
         FireflyAlgorithm(Size M,
                          ext::shared_ptr<Intensity> intensity,
                          ext::shared_ptr<RandomWalk> randomWalk,
@@ -110,7 +99,8 @@ namespace QuantLib {
         Size M_, N_, Mde_, Mfa_;
         ext::shared_ptr<Intensity> intensity_;
         ext::shared_ptr<RandomWalk> randomWalk_;
-        variate_integer drawIndex_;
+        std::mt19937 generator_;
+        std::uniform_int_distribution<QuantLib::Size> distribution_;
         MersenneTwisterUniformRng rng_;
     };
 
@@ -211,17 +201,15 @@ namespace QuantLib {
 
     //! Distribution Walk
     /*  Random walk given by distribution template parameter. The
-        distribution must be compatible with boost's Random 
-        variate_generator
+        distribution must be compatible with std::mt19937.
     */
     template <class Distribution>
     class DistributionRandomWalk : public FireflyAlgorithm::RandomWalk {
       public:
-        typedef IsotropicRandomWalk<Distribution, base_generator_type> WalkRandom;
         explicit DistributionRandomWalk(Distribution dist, 
                                         Real delta = 0.9, 
                                         unsigned long seed = SeedGenerator::instance().get())
-        : walkRandom_(base_generator_type(seed), dist, 1, Array(1, 1.0), seed),
+        : walkRandom_(std::mt19937(seed), std::move(dist), 1, Array(1, 1.0), seed),
           delta_(delta) {}
       protected:
         void walkImpl(Array& xRW) override {
@@ -232,20 +220,20 @@ namespace QuantLib {
             FireflyAlgorithm::RandomWalk::init(fa);
             walkRandom_.setDimension(N_, *lX_, *uX_);
         }
-        WalkRandom walkRandom_;
+        IsotropicRandomWalk<Distribution, std::mt19937> walkRandom_;
         Real delta_;
     };
     
     //! Gaussian Walk
     /*  Gaussian random walk
     */
-    class GaussianWalk : public DistributionRandomWalk<BoostNormalDistribution> {
+    class GaussianWalk : public DistributionRandomWalk<std::normal_distribution<QuantLib::Real>> {
       public:
         explicit GaussianWalk(Real sigma, 
                               Real delta = 0.9, 
                               unsigned long seed = SeedGenerator::instance().get())
-        : DistributionRandomWalk<BoostNormalDistribution>(
-                           BoostNormalDistribution(0.0, sigma), delta, seed){}
+        : DistributionRandomWalk<std::normal_distribution<QuantLib::Real>>(
+                           std::normal_distribution<QuantLib::Real>(0.0, sigma), delta, seed){}
     };
 
     //! Levy Flight Random Walk

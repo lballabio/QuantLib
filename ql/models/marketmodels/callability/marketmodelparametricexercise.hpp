@@ -31,11 +31,7 @@ namespace QuantLib {
                                           public ParametricExercise {
       public:
         std::vector<Size> numberOfData() const override { return numberOfVariables(); }
-#if defined(QL_USE_STD_UNIQUE_PTR)
         virtual std::unique_ptr<MarketModelParametricExercise> clone() const = 0;
-        #else
-        virtual std::auto_ptr<MarketModelParametricExercise> clone() const = 0;
-        #endif
     };
 
 }

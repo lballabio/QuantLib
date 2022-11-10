@@ -45,8 +45,9 @@ namespace QuantLib {
     }
 
     CmsSpreadLeg::CmsSpreadLeg(Schedule schedule, ext::shared_ptr<SwapSpreadIndex> index)
-    : schedule_(std::move(schedule)), swapSpreadIndex_(std::move(index)),
-      paymentAdjustment_(Following), inArrears_(false), zeroPayments_(false) {}
+    : schedule_(std::move(schedule)), swapSpreadIndex_(std::move(index)) {
+        QL_REQUIRE(swapSpreadIndex_, "no index provided");
+    }
 
     CmsSpreadLeg &CmsSpreadLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1, notional);

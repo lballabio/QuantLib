@@ -16,7 +16,6 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/products/multistep/multisteptarn.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
@@ -84,10 +83,9 @@ namespace QuantLib {
         return true;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     MultiStepTarn::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
-                                                 new MultiStepTarn(*this));
+        return std::unique_ptr<MarketModelMultiProduct>(new MultiStepTarn(*this));
     }
 
 

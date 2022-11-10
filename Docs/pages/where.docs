@@ -21,11 +21,11 @@
     \section download QuantLib releases
     Source code, documentation, modules, etc. of current and previous
     %QuantLib releases can be downloaded from
-    http://quantlib.org/download.shtml
+    https://www.quantlib.org/download.shtml
 
     \section cvs Current snapshot
     Instructions for Git access are available at
-    http://quantlib.org/git.shtml
+    https://www.quantlib.org/git.shtml
 
     Access to the Git repository is intended mainly for
     developers and is not recommended to end users which should

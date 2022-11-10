@@ -120,10 +120,76 @@ void PeriodTest::testWeeksDaysAlgebra() {
                     " instead of " << Days);
 }
 
+void PeriodTest::testNormalization() {
+
+    BOOST_TEST_MESSAGE("Testing period normalization...");
+
+    Period test_values[] = {
+        0 * Days,
+        0 * Weeks,
+        0 * Months,
+        0 * Years,
+        3 * Days,
+        7 * Days,
+        14 * Days,
+        30 * Days,
+        60 * Days,
+        365 * Days,
+        1 * Weeks,
+        2 * Weeks,
+        4 * Weeks,
+        8 * Weeks,
+        52 * Weeks,
+        1 * Months,
+        2 * Months,
+        6 * Months,
+        12 * Months,
+        18 * Months,
+        24 * Months,
+        1 * Years,
+        2 * Years
+    };
+
+    for (Period p1 : test_values) {
+        auto n1 = p1.normalized();
+        if (n1 != p1) {
+            BOOST_ERROR("Normalizing " << p1 << " yields " << n1 << ", which compares different");
+        }
+
+        for (Period p2 : test_values) {
+            auto n2 = p2.normalized();
+            boost::optional<bool> comparison;
+            try {
+                comparison = (p1 == p2);
+            } catch (Error&) {
+                ;
+            }
+
+            if (comparison && *comparison) {
+                // periods which compare equal must normalize to exactly the same period
+                if (n1.units() != n2.units() || n1.length() != n2.length()) {
+                    BOOST_ERROR(p1 << " and " << p2 << " compare equal, but normalize to "
+                                << n1 << " and " << n2 << " respectively");
+                }
+            }
+
+            if (n1.units() == n2.units() && n1.length() == n2.length()) {
+                // periods normalizing to exactly the same period must compare equal
+                if (p1 != p2) {
+                    BOOST_ERROR(p1 << " and " << p2 << " compare different, but normalize to "
+                                << n1 << " and " << n2 << " respectively");
+                }
+            }
+        }
+    }
+
+}
+
 test_suite* PeriodTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Period tests");
     suite->add(QUANTLIB_TEST_CASE(&PeriodTest::testYearsMonthsAlgebra));
     suite->add(QUANTLIB_TEST_CASE(&PeriodTest::testWeeksDaysAlgebra));
+    suite->add(QUANTLIB_TEST_CASE(&PeriodTest::testNormalization));
     return suite;
 }
 

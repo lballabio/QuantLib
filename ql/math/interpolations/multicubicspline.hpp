@@ -102,8 +102,7 @@ namespace QuantLib {
         };
 
         template<> struct Data<std::vector<Real>, EmptyArg> {
-            Data()
-            : first(std::vector<Real>()) {}
+            Data() = default;
             Data(const SplineGrid::const_iterator &i)
             : first(*i) {}
             Data(const SplineGrid &v)

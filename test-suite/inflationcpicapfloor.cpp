@@ -114,7 +114,6 @@ namespace inflation_cpi_capfloor_test {
         std::vector<Date> zciisD;
         std::vector<Rate> zciisR;
         ext::shared_ptr<UKRPI> ii;
-        RelinkableHandle<ZeroInflationIndex> hii;
         Size zciisDataLength;
 
         RelinkableHandle<YieldTermStructure> nominalUK;
@@ -275,7 +274,6 @@ namespace inflation_cpi_capfloor_test {
                                     ii->frequency(), baseZeroRate, helpers));
             pCPIts->recalculate();
             cpiUK.linkTo(pCPIts);
-            hii.linkTo(ii);
 
             // make sure that the index has the latest zero inflation term structure
             hcpi.linkTo(pCPIts);
@@ -348,7 +346,8 @@ void InflationCPICapFloorTest::cpicapfloorpricesurface() {
                        common.calendar,
                        common.convention,
                        common.dcZCIIS,
-                       common.hii,
+                       common.ii,
+                       CPI::Flat,
                        common.nominalUK,
                        common.cStrikesUK,
                        common.fStrikesUK,
@@ -419,7 +418,8 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
                                                                common.calendar,
                                                                common.convention,
                                                                common.dcZCIIS,
-                                                               common.hii,
+                                                               common.ii,
+                                                               CPI::Flat,
                                                                common.nominalUK,
                                                                common.cStrikesUK,
                                                                common.fStrikesUK,
@@ -437,7 +437,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
     Calendar fixCalendar = UnitedKingdom(), payCalendar = UnitedKingdom();
     BusinessDayConvention fixConvention(Unadjusted), payConvention(ModifiedFollowing);
     Rate strike(0.03);
-    Real baseCPI = common.hii->fixing(fixCalendar.adjust(startDate-common.observationLag,fixConvention));
+    Real baseCPI = common.ii->fixing(fixCalendar.adjust(startDate-common.observationLag,fixConvention));
     CPI::InterpolationType observationInterpolation = CPI::AsIndex;
     CPICapFloor aCap(Option::Call,
                      nominal,
@@ -449,7 +449,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
                      payCalendar,
                      payConvention,
                      strike,
-                     common.hii,
+                     common.ii,
                      common.observationLag,
                      observationInterpolation);
 

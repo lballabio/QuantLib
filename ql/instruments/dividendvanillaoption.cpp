@@ -17,13 +17,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/exercise.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/exercise.hpp>
 #include <memory>
 
 namespace QuantLib {
@@ -56,11 +56,11 @@ namespace QuantLib {
         std::unique_ptr<PricingEngine> engine;
         switch (exercise_->type()) {
           case Exercise::European:
-            engine.reset(new AnalyticDividendEuropeanEngine(newProcess));
-            break;
+              engine = std::make_unique<AnalyticDividendEuropeanEngine>(newProcess);
+              break;
           case Exercise::American:
-            engine.reset(new FdBlackScholesVanillaEngine(newProcess));
-            break;
+              engine = std::make_unique<FdBlackScholesVanillaEngine>(newProcess);
+              break;
           case Exercise::Bermudan:
             QL_FAIL("engine not available for Bermudan option with dividends");
             break;

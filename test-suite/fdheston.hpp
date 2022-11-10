@@ -40,6 +40,7 @@ public:
     static void testFdmHestonIntradayPricing();
     static void testMethodOfLinesAndCN();
     static void testSpuriousOscillations();
+    static void testAmericanCallPutParity();
 
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };

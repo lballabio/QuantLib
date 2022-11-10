@@ -645,12 +645,14 @@
     <ClCompile Include="autocovariances.cpp" />
     <ClCompile Include="barrieroption.cpp" />
     <ClCompile Include="basismodels.cpp" />
+    <ClCompile Include="basisswapratehelpers.cpp" />
     <ClCompile Include="basketoption.cpp" />
     <ClCompile Include="batesmodel.cpp" />
     <ClCompile Include="bermudanswaption.cpp" />
     <ClCompile Include="binaryoption.cpp" />
     <ClCompile Include="blackdeltacalculator.cpp" />
     <ClCompile Include="blackformula.cpp" />
+    <ClCompile Include="bondforward.cpp" />
     <ClCompile Include="bonds.cpp" />
     <ClCompile Include="brownianbridge.cpp" />
     <ClCompile Include="businessdayconventions.cpp" />
@@ -673,6 +675,7 @@
     <ClCompile Include="covariance.cpp" />
     <ClCompile Include="creditdefaultswap.cpp" />
     <ClCompile Include="creditriskplus.cpp" />
+    <ClCompile Include="crosscurrencyratehelpers.cpp" />
     <ClCompile Include="currency.cpp" />
     <ClCompile Include="curvestates.cpp" />
     <ClCompile Include="dates.cpp" />
@@ -749,6 +752,7 @@
     <ClCompile Include="operators.cpp" />
     <ClCompile Include="optimizers.cpp" />
     <ClCompile Include="optionletstripper.cpp" />
+    <ClCompile Include="overnightindexedcoupon.cpp" />
     <ClCompile Include="overnightindexedswap.cpp" />
     <ClCompile Include="pagodaoption.cpp" />
     <ClCompile Include="partialtimebarrieroption.cpp" />
@@ -773,6 +777,7 @@
     <ClCompile Include="squarerootclvmodel.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="subperiodcoupons.cpp" />
+    <ClCompile Include="svivolatility.cpp" />
     <ClCompile Include="swap.cpp" />
     <ClCompile Include="swapforwardmappings.cpp" />
     <ClCompile Include="swaption.cpp" />
@@ -794,10 +799,9 @@
     <ClCompile Include="varianceswaps.cpp" />
     <ClCompile Include="volatilitymodels.cpp" />
     <ClCompile Include="vpp.cpp" />
-    <ClCompile Include="crosscurrencyratehelpers.cpp" />
     <ClCompile Include="zabr.cpp" />
-    <ClCompile Include="quantlibtestsuite.cpp" />
     <ClCompile Include="zerocouponswap.cpp" />
+    <ClCompile Include="quantlibtestsuite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="americanoption.hpp" />
@@ -809,12 +813,14 @@
     <ClInclude Include="autocovariances.hpp" />
     <ClInclude Include="barrieroption.hpp" />
     <ClInclude Include="basismodels.hpp" />
+    <ClInclude Include="basisswapratehelpers.hpp" />
     <ClInclude Include="basketoption.hpp" />
     <ClInclude Include="batesmodel.hpp" />
     <ClInclude Include="bermudanswaption.hpp" />
     <ClInclude Include="binaryoption.hpp" />
     <ClInclude Include="blackdeltacalculator.hpp" />
     <ClInclude Include="blackformula.hpp" />
+    <ClInclude Include="bondforward.hpp" />
     <ClInclude Include="bonds.hpp" />
     <ClInclude Include="brownianbridge.hpp" />
     <ClInclude Include="businessdayconventions.hpp" />
@@ -837,6 +843,7 @@
     <ClInclude Include="covariance.hpp" />
     <ClInclude Include="creditdefaultswap.hpp" />
     <ClInclude Include="creditriskplus.hpp" />
+    <ClInclude Include="crosscurrencyratehelpers.hpp" />
     <ClInclude Include="currency.hpp" />
     <ClInclude Include="curvestates.hpp" />
     <ClInclude Include="dates.hpp" />
@@ -913,6 +920,7 @@
     <ClInclude Include="operators.hpp" />
     <ClInclude Include="optimizers.hpp" />
     <ClInclude Include="optionletstripper.hpp" />
+    <ClInclude Include="overnightindexedcoupon.hpp" />
     <ClInclude Include="overnightindexedswap.hpp" />
     <ClInclude Include="pagodaoption.hpp" />
     <ClInclude Include="partialtimebarrieroption.hpp" />
@@ -939,6 +947,7 @@
     <ClInclude Include="squarerootclvmodel.hpp" />
     <ClInclude Include="stats.hpp" />
     <ClInclude Include="subperiodcoupons.hpp" />
+    <ClInclude Include="svivolatility.hpp" />
     <ClInclude Include="swap.hpp" />
     <ClInclude Include="swapforwardmappings.hpp" />
     <ClInclude Include="swaption.hpp" />
@@ -961,7 +970,6 @@
     <ClInclude Include="varianceswaps.hpp" />
     <ClInclude Include="volatilitymodels.hpp" />
     <ClInclude Include="vpp.hpp" />
-    <ClInclude Include="crosscurrencyratehelpers.hpp" />
     <ClInclude Include="zabr.hpp" />
     <ClInclude Include="zerocouponswap.hpp" />
   </ItemGroup>

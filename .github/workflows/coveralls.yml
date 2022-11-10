@@ -1,14 +1,18 @@
 name: Coverage report
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
         sudo apt update
-        sudo apt install -y lcov libboost-all-dev
+        sudo apt install -y lcov libboost-dev
     - name: Compile
       run: |
         ./autogen.sh

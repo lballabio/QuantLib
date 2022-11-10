@@ -28,6 +28,7 @@
 
 class SwaptionVolatilityCubeTest {
   public:
+    static void testSabrNormalVolatility();
     static void testAtmVols();
     static void testSmile();
     static void testSabrVols();

@@ -8,12 +8,14 @@ set(QL_TEST_SOURCES
     autocovariances.cpp
     barrieroption.cpp
     basismodels.cpp
+    basisswapratehelpers.cpp
     basketoption.cpp
     batesmodel.cpp
     bermudanswaption.cpp
     binaryoption.cpp
     blackdeltacalculator.cpp
     blackformula.cpp
+    bondforward.cpp
     bonds.cpp
     brownianbridge.cpp
     businessdayconventions.cpp
@@ -113,6 +115,7 @@ set(QL_TEST_SOURCES
     operators.cpp
     optimizers.cpp
     optionletstripper.cpp
+    overnightindexedcoupon.cpp
     overnightindexedswap.cpp
     pagodaoption.cpp
     partialtimebarrieroption.cpp
@@ -138,6 +141,7 @@ set(QL_TEST_SOURCES
     squarerootclvmodel.cpp
     stats.cpp
     subperiodcoupons.cpp
+    svivolatility.cpp
     swap.cpp
     swapforwardmappings.cpp
     swaption.cpp
@@ -173,12 +177,14 @@ set(QL_TEST_HEADERS
     autocovariances.hpp
     barrieroption.hpp
     basismodels.hpp
+    basisswapratehelpers.hpp
     basketoption.hpp
     batesmodel.hpp
     bermudanswaption.hpp
     binaryoption.hpp
     blackdeltacalculator.hpp
     blackformula.hpp
+    bondforward.hpp
     bonds.hpp
     brownianbridge.hpp
     businessdayconventions.hpp
@@ -278,6 +284,7 @@ set(QL_TEST_HEADERS
     operators.hpp
     optimizers.hpp
     optionletstripper.hpp
+    overnightindexedcoupon.hpp
     overnightindexedswap.hpp
     pagodaoption.hpp
     paralleltestrunner.hpp
@@ -304,6 +311,7 @@ set(QL_TEST_HEADERS
     squarerootclvmodel.hpp
     stats.hpp
     subperiodcoupons.hpp
+    svivolatility.hpp
     swap.hpp
     swapforwardmappings.hpp
     swaption.hpp
@@ -331,7 +339,6 @@ set(QL_TEST_HEADERS
 )
 
 set(QL_BENCHMARK_SOURCES
-    main.cpp 
     quantlibbenchmark.cpp
     
     americanoption.cpp                  americanoption.hpp
@@ -358,31 +365,32 @@ set(QL_BENCHMARK_SOURCES
                                         swaptionvolstructuresutilities.hpp
 )
 
-if (QL_BUILD_TEST_SUITE)
+if (QL_BUILD_TEST_SUITE OR QL_BUILD_BENCHMARK)
     add_library(ql_unit_test_main STATIC main.cpp)
     target_include_directories(ql_unit_test_main PRIVATE
-        ${CMAKE_BINARY_DIR}
-        ${CMAKE_SOURCE_DIR}
+        ${PROJECT_BINARY_DIR}
+        ${PROJECT_SOURCE_DIR})
+    target_include_directories(ql_unit_test_main SYSTEM PRIVATE
         ${Boost_INCLUDE_DIRS})
+    if (NOT Boost_USE_STATIC_LIBS)
+        target_compile_definitions(ql_unit_test_main PRIVATE BOOST_TEST_DYN_LINK)
+    endif()
+endif()
+
+if (QL_BUILD_TEST_SUITE)
     add_executable(ql_test_suite ${QL_TEST_SOURCES} ${QL_TEST_HEADERS})
     set_target_properties(ql_test_suite PROPERTIES OUTPUT_NAME "quantlib-test-suite")
     if (NOT Boost_USE_STATIC_LIBS)
-        target_compile_definitions(ql_unit_test_main PRIVATE BOOST_TEST_DYN_LINK)
         target_compile_definitions(ql_test_suite PRIVATE BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
-    endif()
-    if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER OR QL_ENABLE_SESSIONS OR
-            QL_ENABLE_SINGLETON_THREAD_SAFE_INIT OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
-        set(QL_TEST_SUITE_LIBRARIES Boost::thread ${RT_LIBRARY})
     endif()
     target_link_libraries(ql_test_suite PRIVATE
         ql_library
         ql_unit_test_main
-        Boost::unit_test_framework
-        ${QL_TEST_SUITE_LIBRARIES})
+        ${QL_THREAD_LIBRARIES})
     if (QL_INSTALL_TEST_SUITE)
         install(TARGETS ql_test_suite RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()
-    add_test(NAME test_suite COMMAND ql_test_suite --log_level=message)
+    add_test(NAME quantlib_test_suite COMMAND ql_test_suite --log_level=message)
 endif()
 
 IF (QL_BUILD_BENCHMARK)
@@ -391,14 +399,10 @@ IF (QL_BUILD_BENCHMARK)
     if (NOT Boost_USE_STATIC_LIBS)
         target_compile_definitions(ql_benchmark PRIVATE BOOST_ALL_DYN_LINK BOOST_TEST_DYN_LINK)
     endif()
-    if (QL_ENABLE_SESSIONS OR QL_ENABLE_SINGLETON_THREAD_SAFE_INIT OR
-            QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
-        set(QL_BENCHMARK_LIBRARIES Boost::thread ${RT_LIBRARY})
-    endif()
     target_link_libraries(ql_benchmark PRIVATE
         ql_library
-        Boost::unit_test_framework
-        ${QL_BENCHMARK_LIBRARIES})
+        ql_unit_test_main
+        ${QL_THREAD_LIBRARIES})
     if (QL_INSTALL_BENCHMARK)
         install(TARGETS ql_benchmark RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()

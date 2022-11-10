@@ -1,6 +1,6 @@
 image:
-  - Visual Studio 2013
-  - Visual Studio 2019
+  - Visual Studio 2015
+  - Visual Studio 2022
 
 platform: x64
 configuration: Release
@@ -16,17 +16,17 @@ for:
 -
   matrix:
     only:
-      - image: Visual Studio 2013
+      - image: Visual Studio 2015
   before_build:
-    - COPY .appveyor\VS2013.props .\Build.props
+    - COPY .appveyor\VS2015.props .\Build.props
   test_script:
     - .\test-suite\bin\QuantLib-test-suite-x64-mt.exe --log_level=message --build_info=yes -- --faster
 -
   matrix:
     only:
-      - image: Visual Studio 2019
+      - image: Visual Studio 2022
   before_build:
-    - COPY .appveyor\VS2019.props .\Build.props
+    - COPY .appveyor\VS2022.props .\Build.props
     - COPY .appveyor\Unity.props .\Directory.Build.props
   test_script:
     - .\test-suite\bin\QuantLib-test-suite-x64-mt.exe --log_level=message --build_info=yes

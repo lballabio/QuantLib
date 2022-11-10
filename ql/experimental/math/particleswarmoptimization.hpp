@@ -34,11 +34,7 @@ Computation, 6(2): 58–73.
 #include <ql/experimental/math/levyflightdistribution.hpp>
 #include <ql/math/randomnumbers/seedgenerator.hpp>
 
-#include <boost/random/mersenne_twister.hpp>
-typedef boost::mt19937 base_generator_type;
-
-#include <boost/random/uniform_int_distribution.hpp>
-typedef boost::random::uniform_int_distribution<QuantLib::Size> uniform_integer;
+#include <random>
 
 namespace QuantLib {
 
@@ -97,8 +93,6 @@ namespace QuantLib {
       public:
         class Inertia;
         class Topology;
-        friend class Inertia;
-        friend class Topology;
         ParticleSwarmOptimization(Size M,
                                   ext::shared_ptr<Topology> topology,
                                   ext::shared_ptr<Inertia> inertia,
@@ -267,10 +261,9 @@ namespace QuantLib {
     */
     class LevyFlightInertia : public ParticleSwarmOptimization::Inertia {
       public:
-        typedef IsotropicRandomWalk<LevyFlightDistribution, base_generator_type> IsotropicLevyFlight;
         LevyFlightInertia(Real alpha, Size threshold,
                           unsigned long seed = SeedGenerator::instance().get())
-            :rng_(seed), flight_(base_generator_type(seed), LevyFlightDistribution(1.0, alpha),
+            :rng_(seed), generator_(seed), flight_(generator_, LevyFlightDistribution(1.0, alpha),
                 1, Array(1, 1.0), seed),
             threshold_(threshold) {};
         inline void setSize(Size M, Size N, Real c0, const EndCriteria& endCriteria) override {
@@ -309,7 +302,8 @@ namespace QuantLib {
 
       private:
         MersenneTwisterUniformRng rng_;
-        IsotropicLevyFlight flight_;
+        std::mt19937 generator_;
+        IsotropicRandomWalk<LevyFlightDistribution, std::mt19937> flight_;
         Array personalBestF_;
         std::vector<Size> adaptiveCounter_;
         Real c0_;
@@ -414,14 +408,15 @@ namespace QuantLib {
 
       private:
         Size totalClubs_, maxClubs_, minClubs_, defaultClubs_;
-        Size iteration_, resetIteration_;
+        Size iteration_ = 0, resetIteration_;
         Size M_;
         std::vector<std::vector<bool> > clubs4particles_;
         std::vector<std::vector<bool> > particles4clubs_;
         std::vector<Size> bestByClub_;
         std::vector<Size> worstByClub_;
-        base_generator_type generator_;
-        uniform_integer distribution_;
+        std::mt19937 generator_;
+        std::uniform_int_distribution<QuantLib::Size> distribution_;
+        using param_type = decltype(distribution_)::param_type;
 
         void leaveRandomClub(Size particle, Size currentClubs);
         void joinRandomClub(Size particle, Size currentClubs);

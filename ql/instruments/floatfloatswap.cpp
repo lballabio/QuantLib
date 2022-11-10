@@ -217,10 +217,10 @@ namespace QuantLib {
         // if the gearing is zero then the ibor / cms leg will be set up with
         // fixed coupons which makes trouble here in this context. We therefore
         // use a dirty trick and enforce the gearing to be non zero.
-        for (double& i : gearing1_)
+        for (Real& i : gearing1_)
             if (close(i, 0.0))
                 i = QL_EPSILON;
-        for (double& i : gearing2_)
+        for (Real& i : gearing2_)
             if (close(i, 0.0))
                 i = QL_EPSILON;
 

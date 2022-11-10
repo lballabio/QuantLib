@@ -29,6 +29,7 @@ class PeriodTest {
   public:
     static void testYearsMonthsAlgebra();
     static void testWeeksDaysAlgebra();
+    static void testNormalization();
     static boost::unit_test_framework::test_suite* suite();
 };
 

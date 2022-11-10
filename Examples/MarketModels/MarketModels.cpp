@@ -61,7 +61,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/statistics/convergencestatistics.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/termstructures/volatility/abcdcalibration.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <sstream>
@@ -69,15 +68,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ctime>
 
 using namespace QuantLib;
-
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
 
 std::vector<std::vector<Matrix> >
 theVegaBumps(bool factorwiseBumping, const ext::shared_ptr<MarketModel>& marketModel, bool doCaps) {
@@ -323,7 +313,7 @@ int Bermudan()
 
     std::vector<Real> means(stats.mean());
 
-    for (double mean : means)
+    for (Real mean : means)
         std::cout << mean << "\n";
 
     std::cout << " time to build strategy, " << (t2-t1)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";
@@ -656,7 +646,7 @@ int InverseFloater(Real rateLevel)
 
     std::vector<Real> means(stats.mean());
 
-    for (double mean : means)
+    for (Real mean : means)
         std::cout << mean << "\n";
 
     std::cout << " time to build strategy, " << (t2-t1)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";

@@ -86,13 +86,13 @@ namespace QuantLib {
 
         if (!grid.empty()) {
             // adjust times to grid
-            for (double& stoppingTime : stoppingTimes_)
+            for (Real& stoppingTime : stoppingTimes_)
                 stoppingTime = grid.closestTime(stoppingTime);
-            for (double& couponTime : couponTimes_)
+            for (Real& couponTime : couponTimes_)
                 couponTime = grid.closestTime(couponTime);
-            for (double& callabilityTime : callabilityTimes_)
+            for (Real& callabilityTime : callabilityTimes_)
                 callabilityTime = grid.closestTime(callabilityTime);
-            for (double& dividendTime : dividendTimes_)
+            for (Real& dividendTime : dividendTimes_)
                 dividendTime = grid.closestTime(dividendTime);
         }
     }
@@ -142,7 +142,7 @@ namespace QuantLib {
                 convertible = true;
             break;
           case Exercise::Bermudan:
-              for (double stoppingTime : stoppingTimes_) {
+              for (Real stoppingTime : stoppingTimes_) {
                   if (isOnTime(stoppingTime))
                       convertible = true;
               }
@@ -227,7 +227,7 @@ namespace QuantLib {
         values_ += couponAmounts_[i];
     }
 
-    Disposable<Array> DiscretizedConvertible::adjustedGrid() const {
+    Array DiscretizedConvertible::adjustedGrid() const {
         Time t = time();
         Array grid = method()->grid(t);
         // add back all dividend amounts in the future
@@ -238,7 +238,7 @@ namespace QuantLib {
                 DiscountFactor dividendDiscount =
                     process_->riskFreeRate()->discount(dividendTime) /
                     process_->riskFreeRate()->discount(t);
-                for (double& j : grid)
+                for (Real& j : grid)
                     j += d->amount(j) * dividendDiscount;
             }
         }

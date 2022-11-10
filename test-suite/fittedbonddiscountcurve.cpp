@@ -28,7 +28,6 @@
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/canada.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/math/initializers.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 
 using namespace QuantLib;
@@ -191,7 +190,7 @@ void FittedBondDiscountCurveTest::testFlatExtrapolation() {
         // Real curveYield1 = curve1->zeroRate(t, Continuous).rate();
         Real curveYield2 = curve2->zeroRate(t, Continuous).rate();
 
-        BOOST_CHECK_CLOSE(modelYield2, curveYield2, 1.0); // 1.0 percent relative tolerance
+        QL_CHECK_CLOSE(modelYield2, curveYield2, 1.0); // 1.0 percent relative tolerance
     }
     
 }

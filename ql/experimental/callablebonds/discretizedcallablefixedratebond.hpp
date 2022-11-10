@@ -42,7 +42,6 @@ namespace QuantLib {
         void postAdjustValuesImpl() override;
 
       private:
-        enum class CouponAdjustment { pre, post };
         CallableBond::arguments arguments_;
         Time redemptionTime_;
         std::vector<Time> couponTimes_;

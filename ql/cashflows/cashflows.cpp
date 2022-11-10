@@ -401,7 +401,7 @@ namespace QuantLib {
                               public Visitor<Coupon> {
           public:
             explicit BPSCalculator(const YieldTermStructure& discountCurve)
-            : discountCurve_(discountCurve), bps_(0.0), nonSensNPV_(0.0) {}
+            : discountCurve_(discountCurve) {}
             void visit(Coupon& c) override {
                 Real bps = c.nominal() *
                            c.accrualPeriod() *
@@ -416,7 +416,7 @@ namespace QuantLib {
             Real nonSensNPV() const { return nonSensNPV_; }
           private:
             const YieldTermStructure& discountCurve_;
-            Real bps_, nonSensNPV_;
+            Real bps_ = 0.0, nonSensNPV_ = 0.0;
         };
 
         const Spread basisPoint_ = 1.0e-4;
@@ -766,7 +766,7 @@ namespace QuantLib {
         // flows of the opposite sign have been specified (otherwise
         // IRR is nonsensical.)
 
-        Integer lastSign = sign(-npv_),
+        Integer lastSign = sign(Real(-npv_)),
                 signChanges = 0;
         for (const auto& i : leg_) {
             if (!i->hasOccurred(settlementDate_, includeSettlementDateFlows_) &&

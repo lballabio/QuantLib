@@ -18,25 +18,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
 #include <utility>
 
 namespace QuantLib {
 
-    AmericanBasketPathPricer::AmericanBasketPathPricer(Size assetNumber,
-                                                       ext::shared_ptr<Payoff> payoff,
-                                                       Size polynomOrder,
-                                                       LsmBasisSystem::PolynomType polynomType)
-    : assetNumber_(assetNumber), payoff_(std::move(payoff)), scalingValue_(1.0),
-      v_(LsmBasisSystem::multiPathBasisSystem(assetNumber_, polynomOrder, polynomType)) {
-        QL_REQUIRE(   polynomType == LsmBasisSystem::Monomial
-                   || polynomType == LsmBasisSystem::Laguerre
-                   || polynomType == LsmBasisSystem::Hermite
-                   || polynomType == LsmBasisSystem::Hyperbolic
-                   || polynomType == LsmBasisSystem::Chebyshev2nd,
-                   "insufficient polynom type");
+    AmericanBasketPathPricer::AmericanBasketPathPricer(
+        Size assetNumber,
+        ext::shared_ptr<Payoff> payoff,
+        Size polynomialOrder,
+        LsmBasisSystem::PolynomialType polynomialType)
+    : assetNumber_(assetNumber), payoff_(std::move(payoff)),
+      v_(LsmBasisSystem::multiPathBasisSystem(assetNumber_, polynomialOrder, polynomialType)) {
+        QL_REQUIRE(   polynomialType == LsmBasisSystem::Monomial
+                   || polynomialType == LsmBasisSystem::Laguerre
+                   || polynomialType == LsmBasisSystem::Hermite
+                   || polynomialType == LsmBasisSystem::Hyperbolic
+                   || polynomialType == LsmBasisSystem::Chebyshev2nd,
+                   "insufficient polynomial type");
 
         const ext::shared_ptr<BasketPayoff> basketPayoff
             = ext::dynamic_pointer_cast<BasketPayoff>(payoff_);

@@ -82,7 +82,7 @@ namespace QuantLib {
     }
 
     Real GaussHermitePolynomial::beta(Size i) const {
-        return (i % 2) != 0U ? i / 2.0 + mu_ : i / 2.0;
+        return (i % 2) != 0U ? Real(i / 2.0 + mu_) : Real(i / 2.0);
     }
 
     Real GaussHermitePolynomial::w(Real x) const {

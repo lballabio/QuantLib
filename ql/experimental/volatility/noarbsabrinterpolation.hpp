@@ -217,24 +217,24 @@ class NoArbSabrInterpolation : public Interpolation {
                 {alphaIsFixed, betaIsFixed, nuIsFixed, rhoIsFixed},
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses));
-        coeffs_ = ext::dynamic_pointer_cast<
-            detail::XABRCoeffHolder<detail::NoArbSabrSpecs> >(impl_);
     }
-    Real expiry() const { return coeffs_->t_; }
-    Real forward() const { return coeffs_->forward_; }
-    Real alpha() const { return coeffs_->params_[0]; }
-    Real beta() const { return coeffs_->params_[1]; }
-    Real nu() const { return coeffs_->params_[2]; }
-    Real rho() const { return coeffs_->params_[3]; }
-    Real rmsError() const { return coeffs_->error_; }
-    Real maxError() const { return coeffs_->maxError_; }
+    Real expiry() const { return coeffs().t_; }
+    Real forward() const { return coeffs().forward_; }
+    Real alpha() const { return coeffs().params_[0]; }
+    Real beta() const { return coeffs().params_[1]; }
+    Real nu() const { return coeffs().params_[2]; }
+    Real rho() const { return coeffs().params_[3]; }
+    Real rmsError() const { return coeffs().error_; }
+    Real maxError() const { return coeffs().maxError_; }
     const std::vector<Real> &interpolationWeights() const {
-        return coeffs_->weights_;
+        return coeffs().weights_;
     }
-    EndCriteria::Type endCriteria() { return coeffs_->XABREndCriteria_; }
+    EndCriteria::Type endCriteria() { return coeffs().XABREndCriteria_; }
 
   private:
-    ext::shared_ptr<detail::XABRCoeffHolder<detail::NoArbSabrSpecs> > coeffs_;
+    const detail::XABRCoeffHolder<detail::NoArbSabrSpecs>& coeffs() const {
+        return *dynamic_cast<detail::XABRCoeffHolder<detail::NoArbSabrSpecs>*>(impl_.get());
+    }
 };
 
 //! no arbtrage sabr interpolation factory and traits

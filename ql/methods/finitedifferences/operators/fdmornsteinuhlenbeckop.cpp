@@ -52,7 +52,7 @@ namespace QuantLib {
 
         m_.axpyb(drift, FirstDerivativeOp(direction, mesher),
             SecondDerivativeOp(direction, mesher)
-                .mult(0.5*square<Real>()(process_->volatility())
+                .mult(0.5*squared(process_->volatility())
                       *Array(mesher->layout()->size(), 1.0)), Array());
     }
 
@@ -66,50 +66,38 @@ namespace QuantLib {
         mapX_.axpyb(Array(), m_, m_, Array(1, -r));
     }
 
-    Disposable<Array> FdmOrnsteinUhlenbeckOp::apply(const Array& r) const {
+    Array FdmOrnsteinUhlenbeckOp::apply(const Array& r) const {
         return mapX_.apply(r);
     }
 
-    Disposable<Array> FdmOrnsteinUhlenbeckOp::apply_mixed(
-        const Array& r) const {
-
-        Array retVal(r.size(), 0.0);
-        return retVal;
+    Array FdmOrnsteinUhlenbeckOp::apply_mixed(const Array& r) const {
+        return Array(r.size(), 0.0);
     }
 
-    Disposable<Array> FdmOrnsteinUhlenbeckOp::apply_direction(
-        Size direction, const Array& r) const {
-
+    Array FdmOrnsteinUhlenbeckOp::apply_direction(Size direction, const Array& r) const {
         if (direction == direction_) {
             return mapX_.apply(r);
         }
         else {
-            Array retVal(r.size(), 0.0);
-            return retVal;
+            return Array(r.size(), 0.0);
         }
     }
 
-    Disposable<Array> FdmOrnsteinUhlenbeckOp::solve_splitting(
-        Size direction, const Array& r, Real a) const {
-
+    Array FdmOrnsteinUhlenbeckOp::solve_splitting(Size direction, const Array& r, Real a) const {
         if (direction == direction_) {
             return mapX_.solve_splitting(r, a, 1.0);
         }
         else {
-            Array retVal(r);
-            return retVal;
+            return r;
         }
     }
 
-    Disposable<Array> FdmOrnsteinUhlenbeckOp::preconditioner(
-        const Array& r, Real dt) const {
+    Array FdmOrnsteinUhlenbeckOp::preconditioner(const Array& r, Real dt) const {
         return solve_splitting(direction_, r, dt);
     }
 
-    Disposable<std::vector<SparseMatrix> >
-    FdmOrnsteinUhlenbeckOp::toMatrixDecomp() const {
-        std::vector<SparseMatrix> retVal(1, mapX_.toMatrix());
-        return retVal;
+    std::vector<SparseMatrix> FdmOrnsteinUhlenbeckOp::toMatrixDecomp() const {
+        return std::vector<SparseMatrix>(1, mapX_.toMatrix());
     }
 
 }

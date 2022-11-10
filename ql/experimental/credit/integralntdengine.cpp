@@ -34,7 +34,7 @@ namespace QuantLib {
         results_.upfrontPremiumValue = 0.;
         Real accrualValue = 0.0;
         Real claimValue = 0.0;
-        Date d, d0;
+        Date d0;
         /* Given the expense of probsBeingNthEvent both in integrable and 
         monte carlo algorithms this engine tests who to call.
         Warning: This is not entirely a basket property but of the model too.

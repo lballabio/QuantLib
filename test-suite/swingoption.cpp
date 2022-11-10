@@ -50,6 +50,11 @@ using namespace boost::unit_test_framework;
 
 
 namespace swing_option_test {
+
+    ext::function<Real(Real)> constant_b(Real b) {
+        return [=](Real x){ return b; };
+    }
+
     ext::shared_ptr<ExtOUWithJumpsProcess> createKlugeProcess() {
         Array x0(2);
         x0[0] = 3.0; x0[1] = 0.0;
@@ -62,7 +67,7 @@ namespace swing_option_test {
 
         ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
             new ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0[0],
-                                                 constant<Real, Real>(x0[0])));
+                                                 constant_b(x0[0])));
         return ext::make_shared<ExtOUWithJumpsProcess>(
             ouProcess, x0[1], beta, jumpIntensity, eta);
     }
@@ -84,9 +89,9 @@ void SwingOptionTest::testExtendedOrnsteinUhlenbeckProcess() {
         ExtendedOrnsteinUhlenbeckProcess::GaussLobatto};
 
     ext::function<Real (Real)> f[] 
-        = { constant<Real, Real>(level),
-            add<Real>(1.0),
-            static_cast<Real(*)(Real)>(std::sin) }; 
+        = { [=](Real x) -> Real { return level; },
+            [ ](Real x) -> Real { return x + 1.0; },
+            [ ](Real x) -> Real { return std::sin(x); }}; 
 
     for (Size n=0; n < LENGTH(f); ++n) {
         ExtendedOrnsteinUhlenbeckProcess refProcess(
@@ -128,6 +133,8 @@ void SwingOptionTest::testFdmExponentialJump1dMesher() {
 
     BOOST_TEST_MESSAGE("Testing finite difference mesher for the Kluge model...");
 
+    using namespace swing_option_test;
+
     SavedSettings backup;
 
     Array x(2, 1.0);
@@ -140,7 +147,7 @@ void SwingOptionTest::testFdmExponentialJump1dMesher() {
 
     ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess(
         new ExtendedOrnsteinUhlenbeckProcess(1.0, 1.0, x[0],
-                                             constant<Real, Real>(1.0)));
+                                             constant_b(1.0)));
     ext::shared_ptr<ExtOUWithJumpsProcess> jumpProcess(
         new ExtOUWithJumpsProcess(ouProcess, x[1], beta, jumpIntensity, eta));
 
@@ -421,8 +428,7 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
 
                 exerciseValues[k] =(*payoff)(s)*rTS->discount(exerciseDates[k]);
             }
-            std::sort(exerciseValues.begin(), exerciseValues.end(),
-                      std::greater<Real>());
+            std::sort(exerciseValues.begin(), exerciseValues.end(), std::greater<>());
 
             Real npCashFlows
                 = std::accumulate(exerciseValues.begin(),
@@ -501,7 +507,7 @@ void SwingOptionTest::testKlugeChFVanillaPricing() {
     const ext::shared_ptr<ExtOUWithJumpsProcess> klugeProcess =
         ext::make_shared<ExtOUWithJumpsProcess>(
             ext::make_shared<ExtendedOrnsteinUhlenbeckProcess>(
-                    alpha, sig, x0, constant<Real, Real>(0.0)),
+                    alpha, sig, x0, constant_b(0.0)),
             y0, beta, lambda, eta);
 
     const Real strike = f0;
@@ -533,7 +539,7 @@ void SwingOptionTest::testKlugeChFVanillaPricing() {
         / (stdDev*stdDev*stdDev);
 
     const Real g2 = 3*(std::exp((alpha + beta)*t)
-        *  square<Real>()(2*alpha*std::exp(2*alpha*t)*(-1 + std::exp(2*beta*t))
+        *  squared(2*alpha*std::exp(2*alpha*t)*(-1 + std::exp(2*beta*t))
                   *lambda + beta*std::exp(2*beta*t)*(-1 + std::exp(2*alpha*t))
                   *eta*eta*sig*sig)
             + 16*alpha*alpha*beta*std::exp((5*alpha + 3*beta)*t)*lambda

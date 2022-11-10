@@ -30,19 +30,43 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #define quantlib_observable_hpp
 
 #include <ql/errors.hpp>
-#include <ql/types.hpp>
 #include <ql/patterns/singleton.hpp>
-
 #include <ql/shared_ptr.hpp>
+#include <ql/types.hpp>
 #include <boost/unordered_set.hpp>
-
+#include <unordered_set>
+#include <set>
 
 #ifndef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 
 namespace QuantLib {
 
     class Observer;
-    class Observable;
+    class ObservableSettings;
+
+    //! Object that notifies its changes to a set of observers
+    /*! \ingroup patterns */
+    class Observable {
+        friend class Observer;
+        friend class ObservableSettings;
+      public:
+        // constructors, assignment, destructor
+        Observable();
+        Observable(const Observable&);
+        Observable& operator=(const Observable&);
+        virtual ~Observable() = default;
+        /*! This method should be called at the end of non-const methods
+            or when the programmer desires to notify any changes.
+        */
+        void notifyObservers();
+      private:
+        typedef std::set<Observer*> set_type;
+        typedef set_type::iterator iterator;
+        std::pair<iterator, bool> registerObserver(Observer*);
+        Size unregisterObserver(Observer*);
+        set_type observers_;
+        ObservableSettings& settings_;
+    };
 
     //! global repository for run-time library settings
     class ObservableSettings : public Singleton<ObservableSettings> {
@@ -59,49 +83,34 @@ namespace QuantLib {
         bool updatesDeferred() const { return updatesDeferred_; }
 
       private:
-        ObservableSettings()
+        ObservableSettings() = default;
 
-            = default;
+        typedef std::unordered_set<Observer*> set_type;
+        typedef set_type::iterator iterator;
 
-        void registerDeferredObservers(
-            const boost::unordered_set<Observer*>& observers);
+        void registerDeferredObservers(const Observable::set_type& observers);
         void unregisterDeferredObserver(Observer*);
 
-        typedef boost::unordered_set<Observer*> set_type;
-        typedef set_type::iterator iterator;
         set_type deferredObservers_;
 
         bool updatesEnabled_ = true, updatesDeferred_ = false;
-    };
-
-    //! Object that notifies its changes to a set of observers
-    /*! \ingroup patterns */
-    class Observable {
-        friend class Observer;
-      public:
-        // constructors, assignment, destructor
-        Observable() : settings_(ObservableSettings::instance()) {}
-        Observable(const Observable&);
-        Observable& operator=(const Observable&);
-        virtual ~Observable() = default;
-        /*! This method should be called at the end of non-const methods
-            or when the programmer desires to notify any changes.
-        */
-        void notifyObservers();
-      private:
-        typedef boost::unordered_set<Observer*>::iterator iterator;
-        std::pair<iterator, bool> registerObserver(Observer*);
-        Size unregisterObserver(Observer*);
-        boost::unordered_set<Observer*> observers_;
-        ObservableSettings& settings_;
     };
 
     //! Object that gets notified when a given observable changes
     /*! \ingroup patterns */
     class Observer {
       public:
+        /*! \deprecated Don't use `set_type`; it's not used in the public interface
+                        anyway.  Use `Observer::iterator` if you need to
+                        capture the return value from `registerWith`.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED  // to be moved to private section, not removed
         typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
+
+        QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
+        QL_DEPRECATED_ENABLE_WARNING
 
         // constructors, assignment, destructor
         Observer() = default;
@@ -111,7 +120,7 @@ namespace QuantLib {
 
         // observer interface
         std::pair<iterator, bool>
-            registerWith(const ext::shared_ptr<Observable>&);
+        registerWith(const ext::shared_ptr<Observable>&);
 
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
@@ -134,14 +143,17 @@ namespace QuantLib {
         virtual void deepUpdate();
 
       private:
+        QL_DEPRECATED_DISABLE_WARNING
         set_type observables_;
+        QL_DEPRECATED_ENABLE_WARNING
     };
 
 
     // inline definitions
 
-    inline void ObservableSettings::registerDeferredObservers(
-        const boost::unordered_set<Observer*>& observers) {
+    inline Observable::Observable() : settings_(ObservableSettings::instance()) {}
+
+    inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         if (updatesDeferred()) {
             deferredObservers_.insert(observers.begin(), observers.end());
         }
@@ -173,7 +185,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline std::pair<boost::unordered_set<Observer*>::iterator, bool>
+    inline std::pair<Observable::iterator, bool>
     Observable::registerObserver(Observer* o) {
         return observers_.insert(o);
     }
@@ -193,12 +205,11 @@ namespace QuantLib {
     }
 
     inline Observer& Observer::operator=(const Observer& o) {
-        iterator i;
-        for (i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->unregisterObserver(this);
+        for (const auto& observable : observables_)
+            observable->unregisterObserver(this);
         observables_ = o.observables_;
-        for (i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->registerObserver(this);
+        for (const auto& observable : observables_)
+            observable->registerObserver(this);
         return *this;
     }
 
@@ -219,9 +230,8 @@ namespace QuantLib {
     inline void
     Observer::registerWithObservables(const ext::shared_ptr<Observer> &o) {
         if (o != nullptr) {
-            iterator i;
-            for (i = o->observables_.begin(); i != o->observables_.end(); ++i)
-                registerWith(*i);
+            for (const auto& observable : o->observables_)
+                registerWith(observable);
         }
     }
 
@@ -246,16 +256,14 @@ namespace QuantLib {
 
 #else
 
-#include <boost/atomic.hpp>
-#include <boost/thread/locks.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/recursive_mutex.hpp>
 #include <boost/smart_ptr/owner_less.hpp>
+#include <atomic>
+#include <mutex>
 #include <set>
-
-
+#include <thread>
 
 namespace QuantLib {
+
     class Observable;
     class ObservableSettings;
 
@@ -265,8 +273,16 @@ namespace QuantLib {
         friend class Observable;
         friend class ObservableSettings;
       public:
+        /*! \deprecated Don't use `set_type`; it's not used in the public interface
+                        anyway.  Use `Observer::iterator` if you need to capture
+                        the return value from `registerWith`.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED  // to be moved to private section, not removed
         typedef boost::unordered_set<ext::shared_ptr<Observable> > set_type;
+        QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
+        QL_DEPRECATED_ENABLE_WARNING
 
         // constructors, assignment, destructor
         Observer() {}
@@ -275,7 +291,7 @@ namespace QuantLib {
         virtual ~Observer();
         // observer interface
         std::pair<iterator, bool>
-            registerWith(const ext::shared_ptr<Observable>&);
+        registerWith(const ext::shared_ptr<Observable>&);
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
             itself. */
@@ -306,7 +322,7 @@ namespace QuantLib {
             }
 
             void update() const {
-                boost::lock_guard<boost::recursive_mutex> lock(mutex_);
+                std::lock_guard<std::recursive_mutex> lock(mutex_);
                 if (active_) {
                     // c++17 is required if used with std::shared_ptr<T>
                     const ext::weak_ptr<Observer> o
@@ -327,20 +343,22 @@ namespace QuantLib {
             }
 
             void deactivate() {
-                boost::lock_guard<boost::recursive_mutex> lock(mutex_);
+                std::lock_guard<std::recursive_mutex> lock(mutex_);
                 active_ = false;
             }
 
         private:
             bool active_;
-            mutable boost::recursive_mutex mutex_;
+            mutable std::recursive_mutex mutex_;
             Observer* const observer_;
         };
 
         ext::shared_ptr<Proxy> proxy_;
-        mutable boost::recursive_mutex mutex_;
+        mutable std::recursive_mutex mutex_;
 
+        QL_DEPRECATED_DISABLE_WARNING
         set_type observables_;
+        QL_DEPRECATED_ENABLE_WARNING
     };
 
 	namespace detail {
@@ -352,9 +370,14 @@ namespace QuantLib {
     class Observable {
         friend class Observer;
       public:
-        typedef boost::unordered_set<ext::shared_ptr<Observer::Proxy> >
-            set_type;
+        /*! \deprecated Don't use `set_type`; it's not used in the public interface anyway.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED  // to be moved to private section, not removed
+        typedef boost::unordered_set<ext::shared_ptr<Observer::Proxy>> set_type;
+        QL_DEPRECATED_DISABLE_WARNING
         typedef set_type::iterator iterator;
+        QL_DEPRECATED_ENABLE_WARNING
 
         // constructors, assignment, destructor
         Observable();
@@ -372,8 +395,11 @@ namespace QuantLib {
 
         ext::shared_ptr<detail::Signal> sig_;
 
+        QL_DEPRECATED_DISABLE_WARNING
         set_type observers_;
-        mutable boost::recursive_mutex mutex_;
+        QL_DEPRECATED_ENABLE_WARNING
+
+        mutable std::recursive_mutex mutex_;
 
         ObservableSettings& settings_;
     };
@@ -383,9 +409,9 @@ namespace QuantLib {
         friend class Singleton<ObservableSettings>;
         friend class Observable;
 
-    public:
+      public:
         void disableUpdates(bool deferred=false) {
-            boost::lock_guard<boost::mutex> lock(mutex_);
+            std::lock_guard<std::mutex> lock(mutex_);
             updatesType_ = (deferred) ? UpdatesDeferred : 0;
         }
         void enableUpdates();
@@ -398,26 +424,27 @@ namespace QuantLib {
         typedef std::set<ext::weak_ptr<Observer::Proxy>,
                          boost::owner_less<ext::weak_ptr<Observer::Proxy> > >
             set_type;
-        typedef set_type::iterator iterator;
 
+        QL_DEPRECATED_DISABLE_WARNING
         void registerDeferredObservers(const Observable::set_type& observers);
-        void unregisterDeferredObserver(
-            const ext::shared_ptr<Observer::Proxy>& proxy);
+        QL_DEPRECATED_ENABLE_WARNING
+        void unregisterDeferredObserver(const ext::shared_ptr<Observer::Proxy>& proxy);
 
         set_type deferredObservers_;
-        mutable boost::mutex mutex_;
+        mutable std::mutex mutex_;
 
         enum UpdateType { UpdatesEnabled = 1, UpdatesDeferred = 2} ;
-        boost::atomic<int> updatesType_;
+        std::atomic<int> updatesType_;
     };
 
 
     // inline definitions
 
-    inline void ObservableSettings::registerDeferredObservers(
-        const Observable::set_type& observers) {
+    QL_DEPRECATED_DISABLE_WARNING
+    inline void ObservableSettings::registerDeferredObservers(const Observable::set_type& observers) {
         deferredObservers_.insert(observers.begin(), observers.end());
     }
+    QL_DEPRECATED_ENABLE_WARNING
 
     inline void ObservableSettings::unregisterDeferredObserver(
         const ext::shared_ptr<Observer::Proxy>& o) {
@@ -425,7 +452,7 @@ namespace QuantLib {
     }
 
     inline void ObservableSettings::enableUpdates() {
-        boost::lock_guard<boost::mutex> lock(mutex_);
+        std::lock_guard<std::mutex> lock(mutex_);
 
         // if there are outstanding deferred updates, do the notification
         updatesType_ = UpdatesEnabled;
@@ -434,7 +461,7 @@ namespace QuantLib {
             bool successful = true;
             std::string errMsg;
 
-            for (iterator i=deferredObservers_.begin();
+            for (auto i=deferredObservers_.begin();
                 i!=deferredObservers_.end(); ++i) {
                 try {
                     const ext::shared_ptr<Observer::Proxy> proxy = i->lock();
@@ -476,46 +503,45 @@ namespace QuantLib {
         proxy_.reset(new Proxy(this));
 
         {
-             boost::lock_guard<boost::recursive_mutex> lock(o.mutex_);
+             std::lock_guard<std::recursive_mutex> lock(o.mutex_);
              observables_ = o.observables_;
         }
 
-        for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->registerObserver(proxy_);
+        for (const auto& observable : observables_)
+            observable->registerObserver(proxy_);
     }
 
     inline Observer& Observer::operator=(const Observer& o) {
-        boost::lock_guard<boost::recursive_mutex> lock(mutex_);
+        std::lock_guard<std::recursive_mutex> lock(mutex_);
         if (!proxy_) {
             proxy_.reset(new Proxy(this));
         }
 
-        iterator i;
-        for (i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->unregisterObserver(proxy_, true);
+        for (const auto& observable : observables_)
+            observable->unregisterObserver(proxy_, true);
 
         {
-            boost::lock_guard<boost::recursive_mutex> lock(o.mutex_);
+            std::lock_guard<std::recursive_mutex> lock(o.mutex_);
             observables_ = o.observables_;
         }
-        for (i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->registerObserver(proxy_);
+        for (const auto& observable : observables_)
+            observable->registerObserver(proxy_);
 
         return *this;
     }
 
     inline Observer::~Observer() {
-        boost::lock_guard<boost::recursive_mutex> lock(mutex_);
+        std::lock_guard<std::recursive_mutex> lock(mutex_);
         if (proxy_)
             proxy_->deactivate();
 
-        for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->unregisterObserver(proxy_, false);
+        for (const auto& observable : observables_)
+            observable->unregisterObserver(proxy_, false);
     }
 
     inline std::pair<Observer::iterator, bool>
     Observer::registerWith(const ext::shared_ptr<Observable>& h) {
-        boost::lock_guard<boost::recursive_mutex> lock(mutex_);
+        std::lock_guard<std::recursive_mutex> lock(mutex_);
         if (!proxy_) {
             proxy_.reset(new Proxy(this));
         }
@@ -530,17 +556,16 @@ namespace QuantLib {
     inline void
     Observer::registerWithObservables(const ext::shared_ptr<Observer>& o) {
         if (o) {
-            boost::lock_guard<boost::recursive_mutex> lock(o->mutex_);
+            std::lock_guard<std::recursive_mutex> lock(o->mutex_);
 
-            for (iterator i = o->observables_.begin();
-                 i != o->observables_.end(); ++i)
-                registerWith(*i);
+            for (const auto& observable : o->observables_)
+                registerWith(observable);
         }
     }
 
     inline
     Size Observer::unregisterWith(const ext::shared_ptr<Observable>& h) {
-        boost::lock_guard<boost::recursive_mutex> lock(mutex_);
+        std::lock_guard<std::recursive_mutex> lock(mutex_);
 
         if (h && proxy_)  {
             h->unregisterObserver(proxy_, true);
@@ -550,10 +575,10 @@ namespace QuantLib {
     }
 
     inline void Observer::unregisterWithAll() {
-        boost::lock_guard<boost::recursive_mutex> lock(mutex_);
+        std::lock_guard<std::recursive_mutex> lock(mutex_);
 
-        for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
-            (*i)->unregisterObserver(proxy_, true);
+        for (const auto& observable : observables_)
+            observable->unregisterObserver(proxy_, true);
 
         observables_.clear();
     }

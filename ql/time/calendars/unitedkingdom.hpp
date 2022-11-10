@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     //! United Kingdom calendars
-    /*! Public holidays (data from http://www.dti.gov.uk/er/bankhol.htm):
+    /*! Repeating Public holidays (data from https://www.gov.uk/bank-holidays):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -77,6 +77,9 @@ namespace QuantLib {
         <li>Boxing Day, December 26th (possibly moved to Monday or
             Tuesday)</li>
         </ul>
+
+        Note that there are some one-off holidays not listed above.
+        See the implementation for the complete list.
 
         \ingroup calendars
 

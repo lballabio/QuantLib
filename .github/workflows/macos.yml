@@ -7,19 +7,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: [macos-10.15]
-            shortname: default
           - os: [macos-11]
             shortname: default-11
+          - os: [macos-12]
+            shortname: default-12
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
         brew install automake boost ccache
     - name: Cache
-      uses: actions/cache@v2
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
-        path: ~/Library/Caches/ccache
         key: ${{ matrix.os }}-${{ matrix.shortname }}-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp', '**/macos.yml') }}
         restore-keys: |
           ${{ matrix.os }}-${{ matrix.shortname }}-build-${{ github.ref }}-${{ github.head_ref }}-

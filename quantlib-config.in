@@ -39,10 +39,10 @@ while test $# -gt 0; do
       echo @PACKAGE_VERSION@
       ;;
     --cflags)
-      echo -I@includedir@ @BOOST_INCLUDE@ @OPENMP_CXXFLAGS@ @PTHREAD_CXXFLAGS@ @CPP11_CXXFLAGS@
+      echo -I@includedir@ @BOOST_INCLUDE@ @OPENMP_CXXFLAGS@ @PTHREAD_CXXFLAGS@ @CPP14_CXXFLAGS@
       ;;
     --libs)
-      echo -L@libdir@ @BOOST_LIB@ -lQuantLib @OPENMP_CXXFLAGS@ @BOOST_THREAD_LIB@
+      echo -L@libdir@ -lQuantLib @OPENMP_CXXFLAGS@ @PTHREAD_LIB@
       ;;
     *)
       echo "${usage}" 1>&2

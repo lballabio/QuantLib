@@ -27,7 +27,7 @@
 #define quantlib_sobol_ld_rsg_hpp
 
 #include <ql/methods/montecarlo/sample.hpp>
-#include <boost/cstdint.hpp>
+#include <cstdint>
 #include <vector>
 
 namespace QuantLib {
@@ -119,11 +119,11 @@ namespace QuantLib {
                           unsigned long seed = 0,
                           DirectionIntegers directionIntegers = Jaeckel);
         /*! skip to the n-th sample in the low-discrepancy sequence */
-        void skipTo(boost::uint_least32_t n);
-        const std::vector<boost::uint_least32_t>& nextInt32Sequence() const;
+        void skipTo(std::uint_least32_t n);
+        const std::vector<std::uint_least32_t>& nextInt32Sequence() const;
 
         const SobolRsg::sample_type& nextSequence() const {
-            const std::vector<boost::uint_least32_t>& v = nextInt32Sequence();
+            const std::vector<std::uint_least32_t>& v = nextInt32Sequence();
             // normalize to get a double in (0,1)
             for (Size k=0; k<dimensionality_; ++k)
                 sequence_.value[k] = v[k] * normalizationFactor_;
@@ -135,11 +135,11 @@ namespace QuantLib {
         static const int bits_;
         static const double normalizationFactor_;
         Size dimensionality_;
-        mutable boost::uint_least32_t sequenceCounter_;
-        mutable bool firstDraw_;
+        mutable std::uint_least32_t sequenceCounter_ = 0;
+        mutable bool firstDraw_ = true;
         mutable sample_type sequence_;
-        mutable std::vector<boost::uint_least32_t> integerSequence_;
-        std::vector<std::vector<boost::uint_least32_t> > directionIntegers_;
+        mutable std::vector<std::uint_least32_t> integerSequence_;
+        std::vector<std::vector<std::uint_least32_t>> directionIntegers_;
     };
 
 }

@@ -1,12 +1,64 @@
 ---
-Checks:          '-*,readability-*,bugprone-*,misc-*,performance-*,modernize-*,-readability-else-after-return,-readability-named-parameter,-readability-braces-around-statements,-readability-inconsistent-declaration-parameter-name,-readability-isolate-declaration,-readability-magic-numbers,-readability-convert-member-functions-to-static,-bugprone-macro-parentheses,-bugprone-narrowing-conversions,-bugprone-branch-clone,-misc-non-private-member-variables-in-classes,-misc-unused-parameters,-modernize-avoid-c-arrays,-modernize-make-shared,,-modernize-use-trailing-return-type,-modernize-use-using'
-WarningsAsErrors: ''
+Checks: >
+        -*,
+        bugprone-*,
+          -bugprone-branch-clone,
+          -bugprone-easily-swappable-parameters,
+          -bugprone-implicit-widening-of-multiplication-result,
+          -bugprone-macro-parentheses,
+          -bugprone-narrowing-conversions,
+        clang-analyzer-*,
+          -clang-analyzer-core.UndefinedBinaryOperatorResult,
+          -clang-analyzer-core.uninitialized.Assign,
+          -clang-analyzer-optin.cplusplus.UninitializedObject,
+          -clang-analyzer-optin.cplusplus.VirtualCall,
+          -clang-analyzer-optin.performance.Padding,
+          -clang-analyzer-security.FloatLoopCounter,
+        cppcoreguidelines-*,
+          -cppcoreguidelines-avoid-c-arrays,
+          -cppcoreguidelines-avoid-goto,
+          -cppcoreguidelines-avoid-magic-numbers,
+          -cppcoreguidelines-avoid-non-const-global-variables,
+          -cppcoreguidelines-init-variables,
+          -cppcoreguidelines-macro-usage,
+          -cppcoreguidelines-narrowing-conversions,
+          -cppcoreguidelines-non-private-member-variables-in-classes,
+          -cppcoreguidelines-owning-memory,
+          -cppcoreguidelines-prefer-member-initializer,
+          -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+          -cppcoreguidelines-pro-bounds-constant-array-index,
+          -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+          -cppcoreguidelines-pro-type-const-cast,
+          -cppcoreguidelines-pro-type-member-init,
+          -cppcoreguidelines-pro-type-vararg,
+          -cppcoreguidelines-special-member-functions,
+        misc-*,
+          -misc-no-recursion,
+          -misc-non-private-member-variables-in-classes,
+          -misc-unused-parameters,
+        modernize-*,
+          -modernize-avoid-c-arrays,
+          -modernize-make-shared,
+          -modernize-return-braced-init-list,
+          -modernize-use-trailing-return-type,
+          -modernize-use-using,
+        performance-*,
+        readability-*,
+          -readability-braces-around-statements,
+          -readability-convert-member-functions-to-static,
+          -readability-else-after-return,
+          -readability-function-cognitive-complexity,
+          -readability-identifier-length,
+          -readability-inconsistent-declaration-parameter-name,
+          -readability-isolate-declaration,
+          -readability-magic-numbers,
+          -readability-named-parameter,
+          -readability-simplify-boolean-expr,
+          -readability-suspicious-call-argument,
+          -readability-use-anyofallof,
 HeaderFilterRegex: '.*'
-AnalyzeTemporaryDtors: false
-FormatStyle:     file
+FormatStyle: file
 CheckOptions:
   - key:   modernize-use-default-member-init.UseAssignment
     value: 1
-  - key:   modernize-use-noexcept.ReplacementString
-    value: QL_NOEXCEPT
 ...

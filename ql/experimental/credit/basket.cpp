@@ -59,7 +59,7 @@ namespace QuantLib {
         //   probability term structures for the defultKeys(eventType+
         //   currency+seniority) entering in this basket. This is not
         //   necessarily a problem.
-        for (double notional : notionals_) {
+        for (Real notional : notionals_) {
             basketNotional_ += notional;
             attachmentAmount_ += notional * attachmentRatio_;
             detachmentAmount_ += notional * detachmentRatio_;
@@ -103,10 +103,10 @@ namespace QuantLib {
     }
 
     Real Basket::notional() const {
-        return std::accumulate(notionals_.begin(), notionals_.end(), 0.0);
+        return std::accumulate(notionals_.begin(), notionals_.end(), Real(0.0));
     }
 
-    Disposable<vector<Real> > Basket::probabilities(const Date& d) const {
+    vector<Real> Basket::probabilities(const Date& d) const {
         vector<Real> prob(size());
         vector<DefaultProbKey> defKeys = defaultKeys();
         for (Size j = 0; j < size(); j++)
@@ -168,8 +168,7 @@ namespace QuantLib {
         return evalDateRemainingNot_;
     }
 
-    Disposable<std::vector<Size> > 
-        Basket::liveList(const Date& endDate) const {
+    std::vector<Size> Basket::liveList(const Date& endDate) const {
         std::vector<Size> calcBufferLiveList;
         for (Size i = 0; i < size(); i++)
             if (!pool_->get(pool_->names()[i]).defaultedBetween(
@@ -193,8 +192,7 @@ namespace QuantLib {
         return notional;
     }
 
-    Disposable<vector<Real> > 
-        Basket::remainingNotionals(const Date& endDate) const 
+    vector<Real> Basket::remainingNotionals(const Date& endDate) const 
     {
         QL_REQUIRE(endDate >= refDate_, 
             "Target date lies before basket inception");
@@ -208,8 +206,7 @@ namespace QuantLib {
         return calcBufferNotionals;
     }
 
-    Disposable<std::vector<Probability> > 
-        Basket::remainingProbabilities(const Date& d) const 
+    std::vector<Probability> Basket::remainingProbabilities(const Date& d) const 
     {
         QL_REQUIRE(d >= refDate_, "Target date lies before basket inception");
         vector<Real> prob;
@@ -245,8 +242,7 @@ namespace QuantLib {
         //return positions_[position]->expectedExposure(d);
     }
 
-    Disposable<std::vector<std::string> >
-        Basket::remainingNames(const Date& endDate) const 
+    std::vector<std::string> Basket::remainingNames(const Date& endDate) const 
     {
         // maybe return zero directly instead?:
         QL_REQUIRE(endDate >= refDate_, 
@@ -260,8 +256,7 @@ namespace QuantLib {
         return calcBufferNames;
     }
 
-    Disposable<vector<DefaultProbKey> >
-        Basket::remainingDefaultKeys(const Date& endDate) const 
+    vector<DefaultProbKey> Basket::remainingDefaultKeys(const Date& endDate) const 
     {
         QL_REQUIRE(endDate >= refDate_,
             "Target date lies before basket inception");
@@ -286,6 +281,8 @@ namespace QuantLib {
     amortized or changed in value and the total outstanding notional might 
     differ from the inception one.*/
     Real Basket::remainingDetachmentAmount(const Date& endDate) const {
+        QL_REQUIRE(endDate >= refDate_, 
+            "Target date lies before basket inception");
         return detachmentAmount_;
     }
 
@@ -327,8 +324,7 @@ namespace QuantLib {
         return cumulatedLoss() + lossModel_->expectedTrancheLoss(d);
     }
 
-    Disposable<std::vector<Real> > 
-        Basket::splitVaRLevel(const Date& date, Real loss) const {
+    std::vector<Real> Basket::splitVaRLevel(const Date& date, Real loss) const {
         calculate();
         return lossModel_->splitVaRLevel(date, loss);
     }
@@ -338,8 +334,7 @@ namespace QuantLib {
         return lossModel_->expectedShortfall(d, prob);
     }
 
-    Disposable<std::map<Real, Probability> > 
-        Basket::lossDistribution(const Date& d) const {
+    std::map<Real, Probability> Basket::lossDistribution(const Date& d) const {
         calculate();
         return lossModel_->lossDistribution(d);
     }

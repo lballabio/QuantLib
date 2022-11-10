@@ -77,7 +77,7 @@ namespace QuantLib {
         Real accumulate(const Array& a) const override {
             return std::inner_product(weights_.begin(),
                                       weights_.end(),
-                                      a.begin(), 0.0);
+                                      a.begin(), Real(0.0));
         }
 
       private:

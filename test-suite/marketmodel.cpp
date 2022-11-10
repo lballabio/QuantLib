@@ -81,10 +81,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/statistics/convergencestatistics.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/termstructures/volatility/abcdcalibration.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/auto_ptr.hpp>
 
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductcaplet.hpp>
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductswaption.hpp>
@@ -143,11 +141,10 @@ namespace market_model_test {
 
     // a simple structure to store some data which will be used during tests
     struct SubProductExpectedValues {
-        explicit SubProductExpectedValues(std::string descr)
-        : description(std::move(descr)), testBias(false) {}
+        explicit SubProductExpectedValues(std::string descr) : description(std::move(descr)) {}
         std::string description;
         std::vector<Real> values;
-        bool testBias;
+        bool testBias = false;
         Real errorThreshold;
     };
 
@@ -312,17 +309,17 @@ namespace market_model_test {
             std::vector<Rate> bumpedForwards(todaysForwards.size());
             std::transform(todaysForwards.begin(), todaysForwards.end(),
                            bumpedForwards.begin(),
-                           add<Rate>(forwardBump));
+                           [=](Rate r){ return r + forwardBump; });
 
             std::vector<Volatility> bumpedVols(volatilities.size());
             if (logNormal)
                 std::transform(volatilities.begin(), volatilities.end(),
                                bumpedVols.begin(),
-                               add<Volatility>(volBump));
+                               [=](Volatility v){ return v + volBump; });
             else
                 std::transform(normalVols.begin(), normalVols.end(),
                                bumpedVols.begin(),
-                               add<Volatility>(volBump));
+                               [=](Volatility v){ return v + volBump; });
 
             Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
                 longTermCorrelation,
@@ -489,7 +486,7 @@ namespace market_model_test {
                     Real minError = QL_MAX_REAL;
                     Real maxError = QL_MIN_REAL;
                     Real errorThreshold = subProductExpectedValue->errorThreshold;
-                    for (double value : subProductExpectedValue->values) {
+                    for (Real value : subProductExpectedValue->values) {
                         Real stdDev =
                             (results[currentResultIndex] - value) / errors[currentResultIndex];
                         stdDevs.push_back(stdDev);

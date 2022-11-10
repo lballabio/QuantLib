@@ -222,9 +222,9 @@ namespace inflation_volatility_test {
         cStrikesEU.clear();
         fStrikesEU.clear();
         cfMaturitiesEU.clear();
-        for (double& i : capStrikesEU)
+        for (Real& i : capStrikesEU)
             cStrikesEU.push_back(i);
-        for (double& i : floorStrikesEU)
+        for (Real& i : floorStrikesEU)
             fStrikesEU.push_back(i);
         for (auto& i : capMaturitiesEU)
             cfMaturitiesEU.push_back(i);

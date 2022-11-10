@@ -44,7 +44,7 @@ template <typename Evaluation> struct ZabrSpecs {
             // adapt alpha to beta level
             params[0] =
                 0.2 *
-                (params[1] < 0.9999 ? std::pow(forward, 1.0 - params[1]) : 1.0);
+                (params[1] < 0.9999 ? std::pow(forward, 1.0 - params[1]) : Real(1.0));
         if (params[2] == Null<Real>())
             params[2] = std::sqrt(0.4);
         if (params[3] == Null<Real>())
@@ -78,7 +78,7 @@ template <typename Evaluation> struct ZabrSpecs {
                   const std::vector<Real> &, const Real) {
         Array x(5);
         x[0] = y[0] < 25.0 + eps1() ? std::sqrt(y[0] - eps1())
-                                    : (y[0] - eps1() + 25.0) / 10.0;
+                                    : Real((y[0] - eps1() + 25.0) / 10.0);
         x[1] = std::sqrt(-std::log(y[1]));
         x[2] = std::tan(M_PI*(y[4]/5.0-0.5));
         x[3] = std::asin(y[3] / eps2());
@@ -88,7 +88,7 @@ template <typename Evaluation> struct ZabrSpecs {
     Array direct(const Array &x, const std::vector<bool> &,
                  const std::vector<Real> &, const Real) {
         Array y(5);
-        y[0] = std::fabs(x[0]) < 5.0 ? x[0] * x[0] + eps1()
+        y[0] = std::fabs(x[0]) < 5.0 ? Real(x[0] * x[0] + eps1())
                                      : (10.0 * std::fabs(x[0]) - 25.0) + eps1();
         y[1] = std::fabs(x[1]) < std::sqrt(-std::log(eps1()))
                    ? std::exp(-(x[1] * x[1]))
@@ -97,7 +97,7 @@ template <typename Evaluation> struct ZabrSpecs {
         y[2] = (std::atan(x[2])/M_PI + 0.5) * 5.0;
         y[3] = std::fabs(x[3]) < 2.5 * M_PI
                    ? eps2() * std::sin(x[3])
-                   : eps2() * (x[3] > 0.0 ? 1.0 : (-1.0));
+                   : Real(eps2() * (x[3] > 0.0 ? 1.0 : (-1.0)));
         // limit gamma to 1.9
         y[4] = (std::atan(x[4])/M_PI + 0.5) * 1.9;
         return y;
@@ -143,25 +143,25 @@ template <class Evaluation> class ZabrInterpolation : public Interpolation {
                 {alphaIsFixed, betaIsFixed, nuIsFixed, rhoIsFixed, gammaIsFixed},
                 vegaWeighted, endCriteria, optMethod, errorAccept, useMaxError,
                 maxGuesses));
-            coeffs_ = ext::dynamic_pointer_cast<detail::XABRCoeffHolder<
-                detail::ZabrSpecs<Evaluation> > >(impl_);
     }
-    Real expiry() const { return coeffs_->t_; }
-    Real forward() const { return coeffs_->forward_; }
-    Real alpha() const { return coeffs_->params_[0]; }
-    Real beta() const { return coeffs_->params_[1]; }
-    Real nu() const { return coeffs_->params_[2]; }
-    Real rho() const { return coeffs_->params_[3]; }
-    Real gamma() const { return coeffs_->params_[4]; }
-    Real rmsError() const { return coeffs_->error_; }
-    Real maxError() const { return coeffs_->maxError_; }
+    Real expiry() const { return coeffs().t_; }
+    Real forward() const { return coeffs().forward_; }
+    Real alpha() const { return coeffs().params_[0]; }
+    Real beta() const { return coeffs().params_[1]; }
+    Real nu() const { return coeffs().params_[2]; }
+    Real rho() const { return coeffs().params_[3]; }
+    Real gamma() const { return coeffs().params_[4]; }
+    Real rmsError() const { return coeffs().error_; }
+    Real maxError() const { return coeffs().maxError_; }
     const std::vector<Real> &interpolationWeights() const {
-        return coeffs_->weights_;
+        return coeffs().weights_;
     }
-    EndCriteria::Type endCriteria() { return coeffs_->XABREndCriteria_; }
+    EndCriteria::Type endCriteria() { return coeffs().XABREndCriteria_; }
 
   private:
-    ext::shared_ptr<detail::XABRCoeffHolder<detail::ZabrSpecs<Evaluation> > > coeffs_;
+    const detail::XABRCoeffHolder<detail::ZabrSpecs<Evaluation>>& coeffs() const {
+        return *dynamic_cast<detail::XABRCoeffHolder<detail::ZabrSpecs<Evaluation>>*>(impl_.get());
+    }
 };
 
 //! no arbtrage sabr interpolation factory and traits

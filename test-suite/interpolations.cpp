@@ -30,6 +30,7 @@
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/math/interpolations/chebyshevinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation.hpp>
@@ -1406,7 +1407,7 @@ void InterpolationTest::testKernelInterpolation() {
 
     // Check that y-values at knots are exactly the feeded y-values,
     // irrespective of kernel parameters
-    for (double i : lambdaVec) {
+    for (Real i : lambdaVec) {
         GaussianKernel myKernel(0, i);
 
         for (auto currY : yd) {
@@ -2191,7 +2192,7 @@ void InterpolationTest::testLagrangeInterpolation() {
         0.5130076920869246
     };
 
-    QL_CONSTEXPR Real tol = 50*QL_EPSILON;
+    constexpr double tol = 50*QL_EPSILON;
     for (Size i=0; i < 79; ++i) {
         const Real xx = -1.0 + i*0.025;
         const Real calculated = interpl(xx);
@@ -2268,7 +2269,7 @@ void InterpolationTest::testLagrangeInterpolationDerivative() {
 
 void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     BOOST_TEST_MESSAGE(
-        "Testing Lagrange interpolation on Chebyshev points...");
+        "Testing Lagrange interpolation on Chebyshev nodes...");
 
     // Test example taken from
     // J.P. Berrut, L.N. Trefethen, Barycentric Lagrange Interpolation
@@ -2277,7 +2278,7 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     const Size n=50;
     Array x(n+1), y(n+1);
     for (Size i=0; i <= n; ++i) {
-        // Chebyshev points
+        // Chebyshev nodes
         x[i] = std::cos( (2*i+1)*M_PI/(2*n+2) );
         y[i] = std::exp(x[i])/std::cos(x[i]);
     }
@@ -2294,7 +2295,7 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
         const Real diff = std::fabs(expected - calculated);
         if (std::isnan(calculated) || diff > tol) {
             BOOST_FAIL("failed to reproduce the Lagrange"
-                    " interpolation on Chebyshev points"
+                    " interpolation on Chebyshev nodes"
                     << "\n    x         : " << x
                     << "\n    calculated: " << calculated
                     << "\n    expected  : " << expected
@@ -2303,13 +2304,12 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
         }
 
         const Real calculatedDeriv = interpl.derivative(x, true);
-        const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x))
-                / square<Real>()(std::cos(x));
+        const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x)) / squared(std::cos(x));
 
         const Real diffDeriv = std::fabs(expectedDeriv - calculatedDeriv);
         if (std::isnan(calculated) || diffDeriv > tolDeriv) {
             BOOST_FAIL("failed to reproduce the Lagrange"
-                    " interpolation derivative on Chebyshev points"
+                    " interpolation derivative on Chebyshev nodes"
                     << "\n    x         : " << x
                     << "\n    calculated: " << calculatedDeriv
                     << "\n    expected  : " << expectedDeriv
@@ -2374,7 +2374,7 @@ void InterpolationTest::testBackwardFlatOnSinglePoint() {
 
     const Real x[] = { -1.0, 1.0, 2.0, 3.0 };
 
-    for (double i : x) {
+    for (Real i : x) {
         const Real calculated = impl(i, true);
         const Real expected = values[0];
 
@@ -2396,6 +2396,130 @@ void InterpolationTest::testBackwardFlatOnSinglePoint() {
         }
     }
 }
+
+void InterpolationTest::testChebyshevInterpolation() {
+    BOOST_TEST_MESSAGE("Testing Chebyshev interpolation...");
+
+    const auto fcts =
+        std::vector<std::pair<std::function<Real(Real)>, std::string> >{
+        {[](Real x) { return std::sin(x); }, "sin"},
+        {[](Real x) { return std::cos(x); }, "cos"},
+        {[](Real x) { return std::exp(-x*x); }, "e^(-x*x)"}
+    };
+
+    const auto tests = std::vector<std::pair<Size, Real> >{
+        {11, 1e-5},
+        {20, 1e-11}
+    };
+
+    for (const auto& t: tests) {
+        for (const auto& fct: fcts) {
+            ChebyshevInterpolation interp(t.first, fct.first);
+
+            for (Real x=-0.99; x < 1.0; x+=0.01) {
+                const Real expected = fct.first(x);
+                const Real calculated = interp(x);
+                const Real diff = std::fabs(expected-calculated);
+                const Real tol = t.second;
+
+                if (   std::isnan(calculated)
+                    || std::fabs(calculated - expected) > tol) {
+                    BOOST_FAIL("failed to reproduce the Chebyshev interpolation values"
+                            << "\n    x         : " << x
+                            << "\n    fct       : " << fct.second
+                            << "\n    calculated: " << calculated
+                            << "\n    expected  : " << expected
+                            << "\n    difference: " << diff
+                            << "\n    tolerance : " << tol);
+                }
+            }
+        }
+    }
+}
+
+void InterpolationTest::testChebyshevInterpolationOnNodes() {
+    BOOST_TEST_MESSAGE("Testing Chebyshev interpolation on and around nodes...");
+
+    const Real tol = 10*QL_EPSILON;
+    const auto testFct = [](Real x) { return std::sin(x);};
+
+    const Size nrNodes = 7;
+    Array y(nrNodes);
+
+    for (auto pointType: {ChebyshevInterpolation::FirstKind,
+                          ChebyshevInterpolation::SecondKind}) {
+
+        const Array nodes = ChebyshevInterpolation::nodes(nrNodes, pointType);
+        std::transform(std::begin(nodes), std::end(nodes), std::begin(y), testFct);
+
+        const ChebyshevInterpolation interp(y, pointType);
+        for (auto node: nodes) {
+            // test on Chebyshev node
+            const Real expected = testFct(node);
+            const Real calculated = interp(node);
+            const Real diff = std::abs(expected - calculated);
+
+            if (diff > tol) {
+                BOOST_ERROR("failed to reproduce the node values"
+                        << std::setprecision(16)
+                        << "\n    node      : " << node
+                        << "\n    calculated: " << calculated
+                        << "\n    expected  : " << expected
+                        << "\n    difference: " << diff
+                        << "\n    tolerance : " << tol);
+            }
+
+
+            // check around Chebyshev node
+            for (Integer i=-50; i < 50; ++i) {
+                const Real x = node + i*QL_EPSILON;
+                const Real expected = testFct(x);
+                const Real calculated = interp(x, true);
+                const Real diff = std::abs(expected - calculated);
+
+                if (diff > tol) {
+                    BOOST_ERROR("failed to reproduce values around nodes"
+                            << std::setprecision(16)
+                            << "\n    node      : " << node
+                            << "\n    epsilon   : " << x - node
+                            << "\n    calculated: " << calculated
+                            << "\n    expected  : " << expected
+                            << "\n    difference: " << diff
+                            << "\n    tolerance : " << tol);
+                }
+            }
+        }
+    }
+}
+
+void InterpolationTest::testChebyshevInterpolationUpdateY() {
+    BOOST_TEST_MESSAGE("Testing Y update for Chebyshev interpolation...");
+
+    Array y({1, 4, 7, 4});
+    ChebyshevInterpolation interp(y);
+
+    Array yd({6, 4, 5, 6});
+    interp.updateY(yd);
+
+    const Real tol = 10*QL_EPSILON;
+
+    for (Size i=0; i < y.size(); ++i) {
+        const Real expected = yd[i];
+        const Real calculated = interp(interp.nodes()[i], true);
+        const Real diff = std::abs(calculated - expected);
+
+        if (diff > tol) {
+            BOOST_ERROR("failed to reproduce updated node values"
+                    << std::setprecision(16)
+                    << "\n    node      : " << i
+                    << "\n    expected  : " << expected
+                    << "\n    calculated: " << calculated
+                    << "\n    difference: " << diff
+                    << "\n    tolerance : " << tol);
+        }
+    }
+}
+
 
 test_suite* InterpolationTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Interpolation tests");
@@ -2429,7 +2553,9 @@ test_suite* InterpolationTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBSplines));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlatOnSinglePoint));
-
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolationOnNodes));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolationUpdateY));
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));
     }

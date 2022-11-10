@@ -73,12 +73,12 @@ namespace QuantLib {
         Real nominal() const;
         std::vector<Real> nominals() const { return nominals_; }
 
-        Frequency paymentFrequency() { return paymentFrequency_; }
+        Frequency paymentFrequency() const { return paymentFrequency_; }
 
         Rate fixedRate() const { return fixedRate_; }
-        const DayCounter& fixedDayCount() { return fixedDC_; }
+        const DayCounter& fixedDayCount() const { return fixedDC_; }
 
-        const ext::shared_ptr<OvernightIndex>& overnightIndex() { return overnightIndex_; }
+        const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
         Spread spread() const { return spread_; }
 
         const Leg& fixedLeg() const { return legs_[0]; }

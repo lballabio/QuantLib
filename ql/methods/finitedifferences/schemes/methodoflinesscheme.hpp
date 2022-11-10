@@ -50,8 +50,7 @@ namespace QuantLib {
 
       protected:
         //apply for QuantLib's Runge-Kutta implementation
-        Disposable<std::vector<Real> >
-            apply(Time, const std::vector<Real>&) const;
+        std::vector<Real> apply(Time, const std::vector<Real>&) const;
 
         Time dt_;
         const Real eps_, relInitStepSize_;

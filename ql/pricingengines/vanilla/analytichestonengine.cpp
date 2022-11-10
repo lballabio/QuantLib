@@ -32,6 +32,7 @@
 #include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <utility>
@@ -85,9 +86,7 @@ namespace QuantLib {
 
         class u_Max {
           public:
-            u_Max(Real c_inf, Real epsilon)
-            : c_inf_(c_inf), logEpsilon_(std::log(epsilon)),
-              evaluations_(0) {}
+            u_Max(Real c_inf, Real epsilon) : c_inf_(c_inf), logEpsilon_(std::log(epsilon)) {}
 
             Real operator()(Real u) const {
                 ++evaluations_;
@@ -98,15 +97,13 @@ namespace QuantLib {
 
           private:
             const Real c_inf_, logEpsilon_;
-            mutable Size evaluations_;
+            mutable Size evaluations_ = 0;
         };
 
 
         class uHat_Max {
           public:
-            uHat_Max(Real v0T2, Real epsilon)
-            : v0T2_(v0T2), logEpsilon_(std::log(epsilon)),
-              evaluations_(0) {}
+            uHat_Max(Real v0T2, Real epsilon) : v0T2_(v0T2), logEpsilon_(std::log(epsilon)) {}
 
             Real operator()(Real u) const {
                 ++evaluations_;
@@ -117,7 +114,7 @@ namespace QuantLib {
 
           private:
             const Real v0T2_, logEpsilon_;
-            mutable Size evaluations_;
+            mutable Size evaluations_ = 0;
         };
     }
 
@@ -195,7 +192,7 @@ namespace QuantLib {
         dd_(x_-std::log(ratio)),
         sigma2_(sigma_*sigma_),
         rsigma_(model->rho()*sigma_),
-        t0_(kappa_ - ((j_== 1)? model->rho()*sigma_ : 0)),
+        t0_(kappa_ - ((j_== 1)? model->rho()*sigma_ : Real(0))),
         b_(0), g_km1_(0),
         engine_(engine)
     {
@@ -222,7 +219,7 @@ namespace QuantLib {
         dd_(x_-std::log(ratio)),
         sigma2_(sigma_*sigma_),
         rsigma_(rho*sigma_),
-        t0_(kappa - ((j== 1)? rho*sigma : 0)),
+        t0_(kappa - ((j== 1)? rho*sigma : Real(0))),
         b_(0),
         g_km1_(0),
         engine_(engine)
@@ -242,7 +239,7 @@ namespace QuantLib {
                                                Size j)
     : j_(j), kappa_(kappa), theta_(theta), sigma_(sigma), v0_(v0), cpxLog_(cpxLog), term_(term),
       x_(std::log(s0)), sx_(std::log(strike)), dd_(x_ - std::log(ratio)), sigma2_(sigma_ * sigma_),
-      rsigma_(rho * sigma_), t0_(kappa - ((j == 1) ? rho * sigma : 0)), b_(0), g_km1_(0),
+      rsigma_(rho * sigma_), t0_(kappa - ((j == 1) ? rho * sigma : Real(0))), b_(0), g_km1_(0),
       engine_(nullptr) {}
 
 
@@ -495,14 +492,14 @@ namespace QuantLib {
                     /(2.*kappa*kappa)*sigma
                    + (std::exp(-2*kt - ((theta - v0 + ekt
                 *((-1 + kt)*theta + v0))*z*zpi)/(2.*ekt*kappa))*z*z*zpi
-                *(-2*rho2*square<Real>()(2*theta + kt*theta - v0 -
+                *(-2*rho2*squared(2*theta + kt*theta - v0 -
                     kt*v0 + ekt*((-2 + kt)*theta + v0))
                   *z*z*zpi + 2*kappa*v0*(-zpi
                     + e2kt*(zpi + 4*rho2*z) - 2*ekt*(2*rho2*z
                     + kt*(zpi + rho2*(2 + kt)*z))) + kappa*theta*(zpi + e2kt
                 *(-5.0*zpi - 24*rho2*z+ 2*kt*(zpi + 4*rho2*z)) +
                 4*ekt*(zpi + 6*rho2*z + kt*(zpi + rho2*(4 + kt)*z)))))
-                /(16.*square<Real>()(square<Real>()(kappa)))*sigma2;
+                /(16.*squared(squared(kappa)))*sigma2;
         }
     }
 

@@ -24,7 +24,7 @@ namespace QuantLib {
 
     class AnalyticContinuousGeometricAveragePriceAsianHestonEngine::Integrand {
       private:
-        Real t_, T_, K_, logK_;
+        Real t_ = 0.0, T_, K_, logK_;
         Size cutoff_;
         const AnalyticContinuousGeometricAveragePriceAsianHestonEngine* const parent_;
         Real xiRightLimit_;
@@ -35,11 +35,12 @@ namespace QuantLib {
                   Size cutoff,
                   Real K,
                   const AnalyticContinuousGeometricAveragePriceAsianHestonEngine* const parent,
-                  Real xiRightLimit) : t_(0.0), T_(T), K_(K), logK_(std::log(K)), cutoff_(cutoff),
-                                       parent_(parent), xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {}
+                  Real xiRightLimit)
+        : T_(T), K_(K), logK_(std::log(K)), cutoff_(cutoff), parent_(parent),
+          xiRightLimit_(xiRightLimit), i_(std::complex<Real>(0.0, 1.0)) {}
 
-        double operator()(double xi) const {
-            double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
+        Real operator()(Real xi) const {
+            Real xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
 
             std::complex<Real> inner1 = parent_->Phi(1.0 + xiDash*i_, 0, T_, t_, cutoff_);
             std::complex<Real> inner2 = - K_*parent_->Phi(xiDash*i_, 0, T_, t_, cutoff_);
@@ -63,8 +64,8 @@ namespace QuantLib {
             denominator_ = std::log(riskFreeRate_->discount(t_)) - std::log(dividendYield_->discount(t_));
         }
 
-        double operator()(double u) const {
-            double uDash = (0.5+1e-8+0.5*u) * (T_ - t_) + t_; // Map u to full range
+        Real operator()(Real u) const {
+            Real uDash = (0.5+1e-8+0.5*u) * (T_ - t_) + t_; // Map u to full range
             return 0.5*(T_ - t_)*(-std::log(riskFreeRate_->discount(uDash))
                                + std::log(dividendYield_->discount(uDash)) + denominator_);
         }
@@ -74,8 +75,8 @@ namespace QuantLib {
     AnalyticContinuousGeometricAveragePriceAsianHestonEngine::
         AnalyticContinuousGeometricAveragePriceAsianHestonEngine(
             ext::shared_ptr<HestonProcess> process, Size summationCutoff, Real xiRightLimit)
-    : process_(std::move(process)), a3_(0.0), a4_(0.0), a5_(0.0), summationCutoff_(summationCutoff),
-      xiRightLimit_(xiRightLimit), integrator_(128) {
+    : process_(std::move(process)), summationCutoff_(summationCutoff), xiRightLimit_(xiRightLimit),
+      integrator_(128) {
         registerWith(process_);
 
         v0_ = process_->v0();
@@ -172,7 +173,7 @@ namespace QuantLib {
         for (Size i=0; i<cutoff; i++) {
             temp = f(z1, z2, z3, z4, i, tau);
             runningSum1 += temp;
-            runningSum2 += temp*double(i)/tau;
+            runningSum2 += temp*Real(i)/tau;
         }
 
         std::pair<std::complex<Real>, std::complex<Real> > result(runningSum1, runningSum2);

@@ -140,15 +140,25 @@ namespace QuantLib {
         else if (x > xr)
             return 1.0;
 
+        Real addition = 0.1*(xr-xl);
+
         // left or right hand integral
         if (x > 0.5*(xr+xl)) {
-            while (pdf(xr, t) > 0.01*localVolProbEps_) xr*=1.1;
+            while (pdf(xr, t) > 0.01*localVolProbEps_) 
+            {
+                 addition*=1.1;
+                 xr+=addition;
+            }
 
             return 1.0-GaussLobattoIntegral(maxIter_, 0.1*localVolProbEps_)(
                 [&](Real _x){ return pdf(_x, t); }, x, xr);
         }
         else {
-            while (pdf(xl, t) > 0.01*localVolProbEps_) xl*=0.9;
+            while (pdf(xl, t) > 0.01*localVolProbEps_)
+            {
+                  addition*=1.1;
+                  xl-=addition;
+            }
 
             return GaussLobattoIntegral(maxIter_, 0.1*localVolProbEps_)(
                 [&](Real _x){ return pdf(_x, t); }, xl, x);
@@ -175,8 +185,7 @@ namespace QuantLib {
                           xm_[idx]->locations().end());
             const Real stepSize = 0.005*(x.back() - x.front());
 
-            std::transform(x.begin(), x.end(), pm_->row_begin(idx), xp.begin(),
-                           std::multiplies<Real>());
+            std::transform(x.begin(), x.end(), pm_->row_begin(idx), xp.begin(), std::multiplies<>());
 
             const Real xm = DiscreteSimpsonIntegral()(x, xp);
             return RiskNeutralDensityCalculator::InvCDFHelper(
@@ -322,8 +331,7 @@ namespace QuantLib {
     }
 
 
-    Disposable<std::vector<Size> > LocalVolRNDCalculator::rescaleTimeSteps()
-    const {
+    std::vector<Size> LocalVolRNDCalculator::rescaleTimeSteps() const {
         calculate();
 
         return rescaleTimeSteps_;
@@ -340,11 +348,9 @@ namespace QuantLib {
             return (*pFct_[idx])(x);
     }
 
-    Disposable<Array> LocalVolRNDCalculator::rescalePDF(
-        const Array& x, const Array& p) const {
-
-        Array retVal = p/DiscreteSimpsonIntegral()(x, p);
-        return retVal;
+    Array LocalVolRNDCalculator::rescalePDF(const Array& x, const Array& p) const {
+        return p/DiscreteSimpsonIntegral()(x, p);
     }
+
 }
 

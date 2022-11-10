@@ -101,8 +101,7 @@ namespace QuantLib {
       protected:
         mp_real m0() const override { return 1 / (1 + this->u_ * this->u_); }
         mp_real m1() const override {
-            return (1 - this->u_*this->u_)
-                    /square<mp_real>()(1 + this->u_*this->u_);
+            return (1 - this->u_*this->u_) / squared(1 + this->u_*this->u_);
         }
 
       private:
@@ -134,7 +133,7 @@ namespace QuantLib {
       protected:
         mp_real m0() const override { return this->u_ / (1 + this->u_ * this->u_); }
         mp_real m1() const override {
-            return 2*this->u_/square<mp_real>()(1 + this->u_*this->u_);
+            return 2*this->u_ / squared(1 + this->u_*this->u_);
         }
 
       private:

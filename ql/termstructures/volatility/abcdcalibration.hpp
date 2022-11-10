@@ -53,7 +53,7 @@ namespace QuantLib {
                 abcd_->d_ = y[3];
                 return abcd_->error();
             }
-            Disposable<Array> values(const Array& x) const override {
+            Array values(const Array& x) const override {
                 const Array y = abcd_->transformation_->direct(x);
                 abcd_->a_ = y[0];
                 abcd_->b_ = y[1];
@@ -103,7 +103,7 @@ namespace QuantLib {
         Real value(Real x) const;
         Real error() const;
         Real maxError() const;
-        Disposable<Array> errors() const;
+        Array errors() const;
         EndCriteria::Type endCriteria() const;
         Real a() const { return a_; }
         Real b() const { return b_; }

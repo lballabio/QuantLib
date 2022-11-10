@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/products/multistep/callspecifiedmultiproduct.hpp>
 #include <ql/models/marketmodels/products/multistep/cashrebate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
@@ -29,8 +28,7 @@ namespace QuantLib {
         const Clone<MarketModelMultiProduct>& underlying,
         const Clone<ExerciseStrategy<CurveState> >& strategy,
         Clone<MarketModelMultiProduct> rebate)
-    : underlying_(underlying), strategy_(strategy), rebate_(std::move(rebate)), callable_(true) {
-
+    : underlying_(underlying), strategy_(strategy), rebate_(std::move(rebate)) {
         Size products = underlying_->numberOfProducts();
         EvolutionDescription d1 = underlying->evolution();
         const std::vector<Time>& rateTimes1 = d1.rateTimes();
@@ -169,11 +167,10 @@ namespace QuantLib {
         return done || currentIndex_ == evolution_.evolutionTimes().size();
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     CallSpecifiedMultiProduct::clone() const 
     {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
-                                        new CallSpecifiedMultiProduct(*this));
+        return std::unique_ptr<MarketModelMultiProduct>(new CallSpecifiedMultiProduct(*this));
     }
 
     const MarketModelMultiProduct&

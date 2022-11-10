@@ -20,21 +20,16 @@
 // TODO: Figure out why tests for options with both continuous and discrete
 // dividends fail.
 
-// TODO: Make the known value test work.  It is slightly off from the
-// answer in Hull probably due to date conventions.
-
 #include "dividendoption.hpp"
 #include "utilities.hpp"
-#include <ql/time/daycounters/actual360.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/pricingengines/vanilla/fddividendshoutengine.hpp>
-#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <map>
 
@@ -91,7 +86,7 @@ void DividendOptionTest::testEuropeanValues() {
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -119,10 +114,10 @@ void DividendOptionTest::testEuropeanValues() {
                 VanillaOption ref_option(payoff, exercise);
                 ref_option.setPricingEngine(ref_engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
                                 Rate q = m, r = n;
                                 spot->setValue(u);
                                 qRate->setValue(q);
@@ -151,8 +146,7 @@ void DividendOptionTest::testEuropeanValues() {
 
 void DividendOptionTest::testEuropeanKnownValue() {
 
-    BOOST_TEST_MESSAGE(
-              "Testing dividend European option values with known value...");
+    BOOST_TEST_MESSAGE("Testing dividend European option against known value...");
 
     SavedSettings backup;
 
@@ -171,10 +165,10 @@ void DividendOptionTest::testEuropeanKnownValue() {
     ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
-    Date exDate = today + 6*Months;
+    Date exDate = today + 180 * Days;
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-    std::vector<Date> dividendDates = {today + 2*Months, today + 5*Months};
+    std::vector<Date> dividendDates = {today + 2 * 30 * Days, today + 5 * 30 * Days};
     std::vector<Real> dividends = {0.50, 0.50};
 
     ext::shared_ptr<StrikedTypePayoff> payoff(
@@ -242,7 +236,7 @@ void DividendOptionTest::testEuropeanStartLimit() {
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -266,10 +260,10 @@ void DividendOptionTest::testEuropeanStartLimit() {
                 VanillaOption ref_option(payoff, exercise);
                 ref_option.setPricingEngine(ref_engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
                                 Rate q = m, r = n;
                                 spot->setValue(u);
                                 qRate->setValue(q);
@@ -324,7 +318,7 @@ void DividendOptionTest::testEuropeanEndLimit() {
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -352,10 +346,10 @@ void DividendOptionTest::testEuropeanEndLimit() {
                 VanillaOption ref_option(refPayoff, exercise);
                 ref_option.setPricingEngine(ref_engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
                                 Rate q = m, r = n;
                                 spot->setValue(u);
                                 qRate->setValue(q);
@@ -413,7 +407,7 @@ void DividendOptionTest::testEuropeanGreeks() {
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -436,10 +430,10 @@ void DividendOptionTest::testEuropeanGreeks() {
                 DividendVanillaOption option(payoff, exercise, dividendDates, dividends);
                 option.setPricingEngine(engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
                                 Rate q = m, r = n;
                                 spot->setValue(u);
                                 qRate->setValue(q);
@@ -546,7 +540,7 @@ void DividendOptionTest::testFdEuropeanValues() {
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (int length : lengths) {
                 Date exDate = today + length * Years;
                 ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -578,10 +572,10 @@ void DividendOptionTest::testFdEuropeanValues() {
                 DividendVanillaOption ref_option(payoff, exercise, dividendDates, dividends);
                 ref_option.setPricingEngine(ref_engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
                                 Rate q = m, r = n;
                                 spot->setValue(u);
                                 qRate->setValue(q);
@@ -636,7 +630,7 @@ namespace {
         Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
         for (auto& type : types) {
-            for (double strike : strikes) {
+            for (Real strike : strikes) {
 
                 std::vector<Date> dividendDates;
                 std::vector<Real> dividends;
@@ -661,10 +655,10 @@ namespace {
                                              dividendDates, dividends);
                 option.setPricingEngine(engine);
 
-                for (double u : underlyings) {
-                    for (double m : qRates) {
-                        for (double n : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
                                 Rate q = m, r = n;
                                 spot->setValue(u);
                                 qRate->setValue(q);
@@ -1034,8 +1028,7 @@ void DividendOptionTest::testEscrowedDividendModel() {
 test_suite* DividendOptionTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Dividend European option tests");
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanValues));
-    // Doesn't quite work.  Need to deal with date conventions
-    //  suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanKnownValue));
+    suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanKnownValue));
     suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanStartLimit));
     // Doesn't quite work.  Need to use discounted values
     //suite->add(QUANTLIB_TEST_CASE(&DividendOptionTest::testEuropeanEndLimit));

@@ -27,7 +27,6 @@
 
 #include <ql/exercise.hpp>
 #include <ql/math/comparison.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/numericalmethod.hpp>
 #include <utility>
 
@@ -125,6 +124,9 @@ namespace QuantLib {
         virtual std::vector<Time> mandatoryTimes() const = 0;
         //@}
       protected:
+        /*! Indicates if a coupon should be adjusted in preAdjustValues() or postAdjustValues(). */
+        enum class CouponAdjustment { pre, post };
+
         /*! This method checks whether the asset was rolled at the
             given time. */
         bool isOnTime(Time t) const;
@@ -228,7 +230,7 @@ namespace QuantLib {
         std::vector<Time> times = underlying_->mandatoryTimes();
         // discard negative times...
         auto i = std::find_if(exerciseTimes_.begin(), exerciseTimes_.end(),
-                              greater_or_equal_to<Time>(0.0));
+                              [](Time t){ return t >= 0.0; });
         // and add the positive ones
         times.insert(times.end(), i, exerciseTimes_.end());
         return times;

@@ -35,8 +35,8 @@ namespace QuantLib {
             Size direction, Size order, Integer nPoints,
             const ext::shared_ptr<FdmMesher>& mesher);
 
-        Disposable<array_type> apply(const array_type& r) const override;
-        Disposable<SparseMatrix> toMatrix() const override;
+        array_type apply(const array_type& r) const override;
+        SparseMatrix toMatrix() const override;
 
       private:
         SparseMatrix m_;

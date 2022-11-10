@@ -34,14 +34,6 @@
 
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
 unsigned long seed = 127;
 
 /*
@@ -56,7 +48,7 @@ Real ackley(const Array& x) {
     //Minimum is found at 0
     Real p1 = 0.0, p2 = 0.0;
 
-    for (double i : x) {
+    for (Real i : x) {
         p1 += i * i;
         p2 += std::cos(M_TWOPI * i);
     }
@@ -65,7 +57,7 @@ Real ackley(const Array& x) {
     return M_E + 20.0 - 20.0*std::exp(p1)-std::exp(p2);
 }
 
-Disposable<Array> ackleyValues(const Array& x) {
+Array ackleyValues(const Array& x) {
     Array y(x.size());
     for (Size i = 0; i < x.size(); i++) {
         Real p1 = x[i] * x[i];
@@ -81,7 +73,7 @@ Real sphere(const Array& x) {
     return DotProduct(x, x);
 }
 
-Disposable<Array> sphereValues(const Array& x) {
+Array sphereValues(const Array& x) {
     Array y(x.size());
     for (Size i = 0; i < x.size(); i++) {
         y[i] = x[i]*x[i];
@@ -103,14 +95,14 @@ Real rosenbrock(const Array& x) {
 Real easom(const Array& x) {
     //Minimum is found at f(\pi, \pi, ...)
     Real p1 = 1.0, p2 = 0.0;
-    for (double i : x) {
+    for (Real i : x) {
         p1 *= std::cos(i);
         p2 += (i - M_PI) * (i - M_PI);
     }
     return -p1*std::exp(-p2);
 }
 
-Disposable<Array> easomValues(const Array& x) {
+Array easomValues(const Array& x) {
     Array y(x.size());
     for (Size i = 0; i < x.size(); i++) {
         Real p1 = std::cos(x[i]);
@@ -141,14 +133,14 @@ Real printFunction(Problem& p, const Array& x) {
 class TestFunction : public CostFunction {
 public:
     typedef ext::function<Real(const Array&)> RealFunc;
-    typedef ext::function<Disposable<Array>(const Array&)> ArrayFunc;
+    typedef ext::function<Array(const Array&)> ArrayFunc;
     explicit TestFunction(RealFunc f, ArrayFunc fs = ArrayFunc())
     : f_(std::move(f)), fs_(std::move(fs)) {}
-    explicit TestFunction(Real (*f)(const Array&), Disposable<Array> (*fs)(const Array&) = nullptr)
+    explicit TestFunction(Real (*f)(const Array&), Array (*fs)(const Array&) = nullptr)
     : f_(f), fs_(fs) {}
     ~TestFunction() override = default;
     Real value(const Array& x) const override { return f_(x); }
-    Disposable<Array> values(const Array& x) const override {
+    Array values(const Array& x) const override {
         if(!fs_)
             throw std::runtime_error("Invalid function");
         return fs_(x);

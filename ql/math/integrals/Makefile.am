@@ -15,6 +15,7 @@ this_include_HEADERS = \
 	momentbasedgaussianpolynomial.hpp  \
 	segmentintegral.hpp \
 	simpsonintegral.hpp \
+	tanhsinhintegral.hpp \
 	trapezoidintegral.hpp \
 	twodimensionalintegral.hpp
 

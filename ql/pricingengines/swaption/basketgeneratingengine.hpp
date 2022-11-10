@@ -63,7 +63,9 @@ namespace QuantLib {
             MaturityStrikeByDeltaGamma
         } CalibrationBasketType;
 
-        Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
+        virtual ~BasketGeneratingEngine() = default;
+
+        std::vector<ext::shared_ptr<BlackCalibrationHelper>>
         calibrationBasket(const ext::shared_ptr<Exercise>& exercise,
                           const ext::shared_ptr<SwapIndex>& standardSwapBase,
                           const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
@@ -81,17 +83,14 @@ namespace QuantLib {
         : onefactormodel_(std::move(model)), oas_(std::move(oas)),
           discountCurve_(std::move(discountCurve)) {}
 
-        virtual ~BasketGeneratingEngine() = default;
-
         virtual Real underlyingNpv(const Date& expiry, Real y) const = 0;
 
         virtual Swap::Type underlyingType() const = 0;
 
         virtual const Date underlyingLastDate() const = 0;
 
-        virtual const Disposable<Array>
-        initialGuess(const Date &expiry) const = 0; // return (nominal,
-                                                    // maturity, rate)
+        virtual const Array initialGuess(const Date &expiry) const = 0; // return (nominal,
+                                                                        // maturity, rate)
 
       private:
 
@@ -99,8 +98,6 @@ namespace QuantLib {
         const Handle<Quote> oas_;
         const Handle<YieldTermStructure> discountCurve_;
 
-        class MatchHelper;
-        friend class MatchHelper;
         class MatchHelper : public CostFunction {
           public:
             MatchHelper(const Swap::Type type,
@@ -145,13 +142,13 @@ namespace QuantLib {
             Real value(const Array& v) const override {
                 Array vals = values(v);
                 Real res = 0.0;
-                for (double val : vals) {
+                for (Real val : vals) {
                     res += val * val;
                 }
                 return std::sqrt(res / vals.size());
             }
 
-            Disposable<Array> values(const Array& v) const override {
+            Array values(const Array& v) const override {
                 // transformations
                 int type = type_; // start with same type as non standard
                                   // underlying (1 means payer, -1 receiver)

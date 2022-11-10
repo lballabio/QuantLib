@@ -59,19 +59,17 @@ namespace QuantLib {
       the date for performance reasons (if in the future other magnitudes
       -e.g. lgd- are contingent on the date they shouldd be passed too).
       */
-      Disposable<std::map<Real, Probability> >
-      conditionalLossDistrib(const std::vector<Probability>& pDefDate,
-                             const std::vector<Real>& mktFactor) const;
+      std::map<Real, Probability> conditionalLossDistrib(const std::vector<Probability>& pDefDate,
+                                                         const std::vector<Real>& mktFactor) const;
       Real expectedConditionalLoss(const std::vector<Probability>& pDefDate, //<< never used!!
                                    const std::vector<Real>& mktFactor) const;
-      Disposable<std::vector<Real> > conditionalLossProb(const std::vector<Probability>& pDefDate,
-                                                         // const Date& date,
-                                                         const std::vector<Real>& mktFactor) const;
+      std::vector<Real> conditionalLossProb(const std::vector<Probability>& pDefDate,
+                                            // const Date& date,
+                                            const std::vector<Real>& mktFactor) const;
       // versions using the P-inverse, deprecate the former
-      Disposable<std::map<Real, Probability> >
-      conditionalLossDistribInvP(const std::vector<Real>& pDefDate,
-                                 // const Date& date,
-                                 const std::vector<Real>& mktFactor) const;
+      std::map<Real, Probability> conditionalLossDistribInvP(const std::vector<Real>& pDefDate,
+                                                             // const Date& date,
+                                                             const std::vector<Real>& mktFactor) const;
       Real expectedConditionalLossInvP(const std::vector<Real>& pDefDate,
                                        // const Date& date,
                                        const std::vector<Real>& mktFactor) const;
@@ -95,9 +93,9 @@ namespace QuantLib {
             makes it easier this way.
         */
       Real expectedTrancheLoss(const Date& date) const override;
-      Disposable<std::vector<Real> > lossProbability(const Date& date) const;
+      std::vector<Real> lossProbability(const Date& date) const;
       // REMEBER THIS HAS TO BE MOVED TO A DISTRIBUTION OBJECT.............
-      Disposable<std::map<Real, Probability> > lossDistribution(const Date& d) const override;
+      std::map<Real, Probability> lossDistribution(const Date& d) const override;
       // INTEGRATE THEN SEARCH RATHER THAN SEARCH AND THEN INTEGRATE:
       // Here I am not using a search because the point might not be attainable
       //  (loss distrib is not continuous)
@@ -177,8 +175,7 @@ namespace QuantLib {
     }
 
     template<class CP>
-    inline Disposable<std::vector<Real> > 
-    RecursiveLossModel<CP>::lossProbability(const Date& date) const {
+    inline std::vector<Real> RecursiveLossModel<CP>::lossProbability(const Date& date) const {
 
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
@@ -216,8 +213,7 @@ namespace QuantLib {
 
     // make it return a distribution object?
     template<class CP>
-    Disposable<std::map<Real, Probability> > 
-        RecursiveLossModel<CP>::lossDistribution(const Date& d) const 
+    std::map<Real, Probability> RecursiveLossModel<CP>::lossDistribution(const Date& d) const 
     {
         std::map<Real, Probability> distrib;
         std::vector<Real> values  = lossProbability(d);
@@ -303,8 +299,7 @@ namespace QuantLib {
     }
 
     template<class CP>
-    Disposable<std::map<Real, Probability> >
-        RecursiveLossModel<CP>::conditionalLossDistrib(
+    std::map<Real, Probability> RecursiveLossModel<CP>::conditionalLossDistrib(
             const std::vector<Probability>& pDefDate, 
             //const Date& date,
             const std::vector<Real>& mktFactor) const 
@@ -350,10 +345,9 @@ namespace QuantLib {
         return pIndepDistrib;
     }
 
+    // twice?! rewrite one in terms of the other, this is a duplicate!
     template<class CP>
-    Disposable<std::map<Real, Probability> >
-        // twice?! rewrite one in terms of the other, this is a duplicate!
-        RecursiveLossModel<CP>::conditionalLossDistribInvP(
+    std::map<Real, Probability> RecursiveLossModel<CP>::conditionalLossDistribInvP(
             const std::vector<Real>& invpDefDate, 
             //const Date& date,
             const std::vector<Real>& mktFactor) const 
@@ -472,7 +466,7 @@ namespace QuantLib {
     }
 
     template<class CP>
-    Disposable<std::vector<Real> > RecursiveLossModel<CP>::conditionalLossProb(
+    std::vector<Real> RecursiveLossModel<CP>::conditionalLossProb(
         const std::vector<Probability>& pDefDate, 
         //const Date& date,
         const std::vector<Real>& mktFactor) const 

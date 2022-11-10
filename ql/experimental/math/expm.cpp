@@ -36,13 +36,12 @@ namespace QuantLib {
             explicit MatrixVectorProductFct(Matrix m) : m_(std::move(m)) {}
 
             // implements x = M*y
-            Disposable<std::vector<Real> > operator()(
-                Real t, const std::vector<Real>& y) {
+            std::vector<Real> operator()(Real t, const std::vector<Real>& y) {
 
                 std::vector<Real> result(m_.rows());
                 for (Size i=0; i < result.size(); i++) {
                     result[i] = std::inner_product(y.begin(), y.end(),
-                                                   m_.row_begin(i), 0.0);
+                                                   m_.row_begin(i), Real(0.0));
                 }
                 return result;
             }
@@ -51,7 +50,7 @@ namespace QuantLib {
         };
     }
 
-    Disposable<Matrix> Expm(const Matrix& M, Real t, Real tol) {
+    Matrix Expm(const Matrix& M, Real t, Real tol) {
         const Size n = M.rows();
         QL_REQUIRE(n == M.columns(), "Expm expects a square matrix");
 

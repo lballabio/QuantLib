@@ -21,7 +21,6 @@
 #define quantlib_longstaff_schwartz_multi_path_pricer_hpp
 
 #include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/methods/montecarlo/pathpricer.hpp>
 #include <ql/methods/montecarlo/multipath.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
@@ -45,12 +44,12 @@ namespace QuantLib {
     */
     class LongstaffSchwartzMultiPathPricer : public PathPricer<MultiPath> {
       public:
-        LongstaffSchwartzMultiPathPricer(const ext::shared_ptr<PathPayoff>&,
-                                         const std::vector<Size>&,
-                                         std::vector<Handle<YieldTermStructure> >,
-                                         Array,
-                                         Size,
-                                         LsmBasisSystem::PolynomType);
+        LongstaffSchwartzMultiPathPricer(const ext::shared_ptr<PathPayoff>& payoff,
+                                         const std::vector<Size>& timePositions,
+                                         std::vector<Handle<YieldTermStructure> > forwardTermStructure,
+                                         Array discounts,
+                                         Size polynomialOrder,
+                                         LsmBasisSystem::PolynomialType polynomialType);
 
         Real operator()(const MultiPath& multiPath) const override;
         virtual void calibrate();
@@ -68,7 +67,7 @@ namespace QuantLib {
 
         PathInfo transformPath(const MultiPath& path) const;
 
-        bool  calibrationPhase_;
+        bool calibrationPhase_ = true;
 
         const ext::shared_ptr<PathPayoff> payoff_;
 

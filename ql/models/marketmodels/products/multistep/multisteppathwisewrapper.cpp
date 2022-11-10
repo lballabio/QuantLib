@@ -21,7 +21,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/auto_ptr.hpp>
 
 namespace QuantLib 
 {
@@ -84,11 +83,10 @@ namespace QuantLib
             return innerProduct_->evolution();
         }
 
-        QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+        std::unique_ptr<MarketModelMultiProduct>
         MultiProductPathwiseWrapper::clone() const
         {
-                return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
-                                      new MultiProductPathwiseWrapper(*this));
+            return std::unique_ptr<MarketModelMultiProduct>(new MultiProductPathwiseWrapper(*this));
         }
 
       

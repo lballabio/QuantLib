@@ -95,11 +95,11 @@ void DigitalCouponTest::testAssetOrNothing() {
                         with black formula result */
     ext::shared_ptr<DigitalReplication>
         replication(new DigitalReplication(Replication::Central, gap));
-    for (double capletVol : vols) {
+    for (Real capletVol : vols) {
         RelinkableHandle<OptionletVolatilityStructure> vol;
         vol.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new ConstantOptionletVolatility(
             vars.today, vars.calendar, Following, capletVol, Actual360())));
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (Size k = 9; k < 10; k++) {
                 Date startDate = vars.calendar.advance(vars.settlement,(k+1)*Years);
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);
@@ -510,11 +510,11 @@ void DigitalCouponTest::testCashOrNothing() {
     ext::shared_ptr<DigitalReplication> replication(new
         DigitalReplication(Replication::Central, gap));
 
-    for (double capletVol : vols) {
+    for (Real capletVol : vols) {
         RelinkableHandle<OptionletVolatilityStructure> vol;
         vol.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new ConstantOptionletVolatility(
             vars.today, vars.calendar, Following, capletVol, Actual360())));
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (Size k = 0; k < 10; k++) {
                 Date startDate = vars.calendar.advance(vars.settlement,(k+1)*Years);
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);
@@ -880,12 +880,12 @@ void DigitalCouponTest::testCallPutParity() {
     ext::shared_ptr<DigitalReplication> replication(new
         DigitalReplication(Replication::Central, gap));
 
-    for (double capletVolatility : vols) {
+    for (Real capletVolatility : vols) {
         RelinkableHandle<OptionletVolatilityStructure> volatility;
         volatility.linkTo(
             ext::shared_ptr<OptionletVolatilityStructure>(new ConstantOptionletVolatility(
                 vars.today, vars.calendar, Following, capletVolatility, Actual360())));
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (Size k = 0; k < 10; k++) {
                 Date startDate = vars.calendar.advance(vars.settlement,(k+1)*Years);
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);
@@ -987,12 +987,12 @@ void DigitalCouponTest::testReplicationType() {
     ext::shared_ptr<DigitalReplication> superReplication(new
         DigitalReplication(Replication::Super, gap));
 
-    for (double capletVolatility : vols) {
+    for (Real capletVolatility : vols) {
         RelinkableHandle<OptionletVolatilityStructure> volatility;
         volatility.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new
         ConstantOptionletVolatility(vars.today, vars.calendar, Following,
                                     capletVolatility, Actual360())));
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (Size k = 0; k < 10; k++) {
                 Date startDate = vars.calendar.advance(vars.settlement,(k+1)*Years);
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);

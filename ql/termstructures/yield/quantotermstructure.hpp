@@ -123,9 +123,9 @@ namespace QuantLib {
     inline Rate QuantoTermStructure::zeroYieldImpl(Time t) const {
         // warning: here it is assumed that all TS have the same daycount.
         //          It should be QL_REQUIREd
-        return underlyingDividendTS_->zeroRate(t, Continuous, NoFrequency, true)
-            +            riskFreeTS_->zeroRate(t, Continuous, NoFrequency, true)
-            -     foreignRiskFreeTS_->zeroRate(t, Continuous, NoFrequency, true)
+        return underlyingDividendTS_->zeroRate(t, Continuous, NoFrequency, true).rate()
+            +            riskFreeTS_->zeroRate(t, Continuous, NoFrequency, true).rate()
+            -     foreignRiskFreeTS_->zeroRate(t, Continuous, NoFrequency, true).rate()
             + underlyingExchRateCorrelation_
             * underlyingBlackVolTS_->blackVol(t, strike_, true)
             *   exchRateBlackVolTS_->blackVol(t, exchRateATMlevel_, true);

@@ -138,7 +138,7 @@ namespace QuantLib {
               Array jitter(population[0].values.size(), 0.0);
 
               for (Size popIter = 0; popIter < population.size(); popIter++) {
-                  for (double& jitterIter : jitter) {
+                  for (Real& jitterIter : jitter) {
                       jitterIter = rng_.nextReal();
                   }
                   population[popIter].values = bestMemberEver_.values
@@ -174,7 +174,7 @@ namespace QuantLib {
               randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
               Array FWeight = Array(population.front().values.size(), 0.0);
-              for (double& fwIter : FWeight)
+              for (Real& fwIter : FWeight)
                   fwIter = (1.0 - configuration().stepsizeWeight) * rng_.nextReal() +
                            configuration().stepsizeWeight;
               for (Size popIter = 0; popIter < population.size(); popIter++) {
@@ -361,7 +361,7 @@ namespace QuantLib {
          // [=tau1] A Comparative Study on Numerical Benchmark
          // Problems." page 649 for reference
         Real sizeWeightChangeProb = 0.1;
-        for (double& currGenSizeWeight : currGenSizeWeights_) {
+        for (Real& currGenSizeWeight : currGenSizeWeights_) {
             if (rng_.nextReal() < sizeWeightChangeProb)
                 currGenSizeWeight = sizeWeightLowerBound + rng_.nextReal() * sizeWeightUpperBound;
         }
@@ -369,7 +369,7 @@ namespace QuantLib {
 
     void DifferentialEvolution::adaptCrossover() const {
         Real crossoverChangeProb = 0.1; // [=tau2]
-        for (double& coIter : currGenCrossover_) {
+        for (Real& coIter : currGenCrossover_) {
             if (rng_.nextReal() < crossoverChangeProb)
                 coIter = rng_.nextReal();
         }

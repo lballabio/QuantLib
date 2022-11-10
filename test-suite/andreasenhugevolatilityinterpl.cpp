@@ -119,7 +119,7 @@ namespace andreasen_huge_volatility_interpl_test {
 
         calibrationSet.reserve(std::count_if(
             &raw[0][0], &raw[nStrikes-1][nMaturities]+1,
-            not_zero<Real>()) - nStrikes);
+            [](Real x) { return x != 0.0; }) - nStrikes);
 
         for (const auto & i : raw) {
             const Real strike = spot->value()*i[0];
@@ -285,7 +285,7 @@ namespace andreasen_huge_volatility_interpl_test {
 
         AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
 
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             for (unsigned long maturityMonth : maturityMonths) {
                 const Date maturityDate = today + Period(maturityMonth, Months);
                 const Time t = dc.yearFraction(today, maturityDate);
@@ -647,7 +647,7 @@ void AndreasenHugeVolatilityInterplTest::testArbitrageFree() {
                 const Real w1 = (w_p - w_m)/(2*eps);
                 const Real w2 = (w_p + w_m - 2*w)/(eps*eps);
 
-                const Real g_k = square<Real>()(1-m*w1/(2*w))
+                const Real g_k = squared(1-m*w1/(2*w))
                     - w1*w1/4*(1/w + 0.25) + 0.5*w2;
 
                 if (g_k < 0) {
@@ -713,7 +713,7 @@ void AndreasenHugeVolatilityInterplTest::testBarrierOptionPricing() {
 
     AndreasenHugeVolatilityInterpl::CalibrationSet calibrationSet;
 
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         for (unsigned long maturityMonth : maturityMonths) {
             const Date maturityDate = today + Period(maturityMonth, Months);
             const Time t = dc.yearFraction(today, maturityDate);
@@ -806,7 +806,7 @@ namespace andreasen_huge_volatility_interpl_test {
 
         const Real strikes[] = { 0.02, 0.025, 0.03, 0.035, 0.04, 0.05, 0.06 };
 
-        for (double strike : strikes) {
+        for (Real strike : strikes) {
             const Volatility vol = sabrVolatility(strike, forward, maturity, alpha, beta, nu, rho);
 
             calibrationSet.push_back(std::make_pair(
@@ -1024,7 +1024,7 @@ void AndreasenHugeVolatilityInterplTest::testFlatVolCalibration() {
         const Time t = rTS->timeFromReference(expiry);
         const Real fwd = spot->value() / rTS->discount(t) * qTS->discount(t);
 
-        for (double m : moneyness) {
+        for (Real m : moneyness) {
             const Real strike = fwd * m;
             const Real mn = std::log(fwd/strike)/std::sqrt(t);
 

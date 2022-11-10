@@ -240,15 +240,15 @@ namespace QuantLib {
         }
     }
 
-    ClubsTopology::ClubsTopology(
-        Size defaultClubs, Size totalClubs,
-        Size maxClubs, Size minClubs,
-        Size resetIteration, unsigned long seed) :
-        totalClubs_(totalClubs), maxClubs_(maxClubs),
-        minClubs_(minClubs), defaultClubs_(defaultClubs),
-        iteration_(0), resetIteration_(resetIteration),
-        bestByClub_(totalClubs, 0), worstByClub_(totalClubs, 0),
-        generator_(seed), distribution_(1, totalClubs_) {
+    ClubsTopology::ClubsTopology(Size defaultClubs,
+                                 Size totalClubs,
+                                 Size maxClubs,
+                                 Size minClubs,
+                                 Size resetIteration,
+                                 unsigned long seed)
+    : totalClubs_(totalClubs), maxClubs_(maxClubs), minClubs_(minClubs),
+      defaultClubs_(defaultClubs), resetIteration_(resetIteration), bestByClub_(totalClubs, 0),
+      worstByClub_(totalClubs, 0), generator_(seed), distribution_(1, totalClubs_) {
         QL_REQUIRE(totalClubs_ >= defaultClubs_,
             "Total number of clubs must be larger or equal than default clubs");
         QL_REQUIRE(defaultClubs_ >= minClubs_,
@@ -367,8 +367,7 @@ namespace QuantLib {
     }
 
     void ClubsTopology::leaveRandomClub(Size particle, Size currentClubs) {
-        Size randIndex = distribution_(generator_,
-            uniform_integer::param_type(1, currentClubs));
+        Size randIndex = distribution_(generator_, param_type(1, currentClubs));
         Size index = 1;
         std::vector<bool> &clubSet = clubs4particles_[particle];
         for (Size j = 0; j < totalClubs_; j++) {
@@ -385,7 +384,7 @@ namespace QuantLib {
 
     void ClubsTopology::joinRandomClub(Size particle, Size currentClubs) {
         Size randIndex = totalClubs_ == currentClubs ? 1 :
-            distribution_(generator_, uniform_integer::param_type(1, totalClubs_ - currentClubs));
+            distribution_(generator_, param_type(1, totalClubs_ - currentClubs));
         Size index = 1;
         std::vector<bool> &clubSet = clubs4particles_[particle];
         for (Size j = 0; j < totalClubs_; j++) {

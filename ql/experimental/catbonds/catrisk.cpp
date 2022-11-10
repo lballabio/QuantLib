@@ -19,15 +19,11 @@
 
 #include <ql/experimental/catbonds/catrisk.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
+#include <random>
 #include <utility>
 
 namespace QuantLib {
 
-    namespace {
-        Integer round(Real r) {
-            return (r > 0.0) ? Integer(std::floor(r + 0.5)) : Integer(std::ceil(r - 0.5));
-        }
-    }
 
     EventSetSimulation::EventSetSimulation(
         ext::shared_ptr<std::vector<std::pair<Date, Real> > > events,
@@ -36,7 +32,7 @@ namespace QuantLib {
         Date start,
         Date end)
     : CatSimulation(start, end), events_(std::move(events)), eventsStart_(eventsStart),
-      eventsEnd_(eventsEnd), i_(0) {
+      eventsEnd_(eventsEnd) {
         years_ = end_.year()-start_.year();
         if(eventsStart_.month()<start_.month() 
                             || (eventsStart_.month()==start_.month() 
@@ -84,9 +80,9 @@ namespace QuantLib {
     BetaRiskSimulation::BetaRiskSimulation(Date start, Date end, Real maxLoss, Real lambda, Real alpha, Real beta) 
               : CatSimulation(start, end), 
                 maxLoss_(maxLoss), 
-                exponential_(rng_, boost::exponential_distribution<>(lambda)),
-                gammaAlpha_(rng_, boost::gamma_distribution<>(alpha)),
-                gammaBeta_(rng_, boost::gamma_distribution<>(beta))
+                exponential_(lambda),
+                gammaAlpha_(alpha),
+                gammaBeta_(beta)
     {
         DayCounter dayCounter = ActualActual(ActualActual::ISDA);
         dayCount_ = dayCounter.dayCount(start, end);
@@ -95,25 +91,26 @@ namespace QuantLib {
 
     Real BetaRiskSimulation::generateBeta()
     {
-        Real X = gammaAlpha_();
-        Real Y = gammaBeta_();
+        Real X = gammaAlpha_(rng_);
+        Real Y = gammaBeta_(rng_);
         return X*maxLoss_/(X+Y);
     }
 
     bool BetaRiskSimulation::nextPath(std::vector<std::pair<Date, Real> > &path)
     {        
         path.resize(0);
-        Real eventFraction = exponential_();       
+        Real eventFraction = exponential_(rng_);
         while(eventFraction<=yearFraction_)
         {
-            Integer days = round(eventFraction*dayCount_/yearFraction_);
+            auto days =
+                static_cast<Integer>(std::lround(eventFraction * dayCount_ / yearFraction_));
             Date eventDate = start_ + days*Days;
             if(eventDate<=end_)
             {
                 path.emplace_back(eventDate, generateBeta());
             }
             else break;
-            eventFraction = exponential_();
+            eventFraction = exponential_(rng_);
         }
         return true;
     }

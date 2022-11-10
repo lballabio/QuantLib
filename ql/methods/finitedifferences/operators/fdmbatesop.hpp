@@ -45,14 +45,14 @@ namespace QuantLib {
         Size size() const override;
         void setTime(Time t1, Time t2) override;
 
-        Disposable<Array> apply(const Array& r) const override;
-        Disposable<Array> apply_mixed(const Array& r) const override;
+        Array apply(const Array& r) const override;
+        Array apply_mixed(const Array& r) const override;
 
-        Disposable<Array> apply_direction(Size direction, const Array& r) const override;
-        Disposable<Array> solve_splitting(Size direction, const Array& r, Real s) const override;
-        Disposable<Array> preconditioner(const Array& r, Real s) const override;
+        Array apply_direction(Size direction, const Array& r) const override;
+        Array solve_splitting(Size direction, const Array& r, Real s) const override;
+        Array preconditioner(const Array& r, Real s) const override;
 
-        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const override;
+        std::vector<SparseMatrix> toMatrixDecomp() const override;
 
       private:
         class IntegroIntegrand {
@@ -68,7 +68,7 @@ namespace QuantLib {
             const ext::shared_ptr<LinearInterpolation>& interpl_;
         };
           
-        Disposable<Array> integro(const Array& r) const;  
+        Array integro(const Array& r) const;  
         
         Array x_, weights_;
         
@@ -89,28 +89,27 @@ namespace QuantLib {
         hestonOp_->setTime(t1, t2);
     }
     
-    inline Disposable<Array> FdmBatesOp::apply(const Array& r) const {
+    inline Array FdmBatesOp::apply(const Array& r) const {
         return hestonOp_->apply(r) + integro(r);
     }
     
-    inline Disposable<Array> FdmBatesOp::apply_mixed(const Array& r) const {
+    inline Array FdmBatesOp::apply_mixed(const Array& r) const {
         return hestonOp_->apply_mixed(r) + integro(r);
     }
 
-    inline
-    Disposable<Array> FdmBatesOp::apply_direction(Size direction,
-                                                  const Array& r) const {
+    inline Array FdmBatesOp::apply_direction(Size direction,
+                                             const Array& r) const {
         return hestonOp_->apply_direction(direction, r);
     }
 
-    inline Disposable<Array> FdmBatesOp::solve_splitting(Size direction,
-                                                         const Array& r,
-                                                         Real s) const{
+    inline Array FdmBatesOp::solve_splitting(Size direction,
+                                             const Array& r,
+                                             Real s) const{
         return hestonOp_->solve_splitting(direction, r, s);
     }
  
-    inline Disposable<Array> FdmBatesOp::preconditioner(const Array& r,
-                                                 Real s) const {
+    inline Array FdmBatesOp::preconditioner(const Array& r,
+                                            Real s) const {
         return hestonOp_->preconditioner(r, s);
     }
     

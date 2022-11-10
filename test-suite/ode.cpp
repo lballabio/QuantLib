@@ -24,6 +24,7 @@
 #include <ql/math/ode/adaptiverungekutta.hpp>
 #include <complex>
 
+
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
@@ -44,8 +45,7 @@ namespace {
     };
 
     struct ode3 {
-        Disposable<std::vector<Real> > operator()(Real x,
-                                                  const std::vector<Real>& y) {
+        std::vector<Real> operator()(Real x, const std::vector<Real>& y) {
             std::vector<Real> r(2);
             r[0] = y[1]; r[1] = -y[0];
             return r;
@@ -53,7 +53,7 @@ namespace {
     };
 
     struct ode4 {
-        Disposable<std::vector<std::complex<Real> > > operator()(
+        std::vector<std::complex<Real> > operator()(
                                   const std::complex<Real>& x,
                                   const std::vector<std::complex<Real> >& y) {
             std::vector<std::complex<Real> > r(2);
@@ -197,8 +197,8 @@ void OdeTest::testMatrixExponentialOfZero() {
 
     Matrix m(3, 3, 0.0);
 
-    QL_CONSTEXPR Real tol = 100*QL_EPSILON;
-    QL_CONSTEXPR Time t=1.0;
+    constexpr double tol = 100*QL_EPSILON;
+    constexpr double t=1.0;
     const Matrix calculated = Expm(m, t);
 
     for (Size i=0; i < calculated.rows(); ++i) {

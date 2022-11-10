@@ -21,25 +21,19 @@
     \brief Ornstein Uhlenbeck process plus jumps (Kluge Model)
 */
 
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
+#include <ql/experimental/finitedifferences/fdmextoujumpop.hpp>
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
+#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
-#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/experimental/finitedifferences/fdmextoujumpop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
-#include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(push)
 #pragma warning(disable:4180)
-#endif
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #endif
 
 #include <boost/numeric/ublas/vector.hpp>
@@ -47,10 +41,6 @@
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(pop)
-#endif
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
 #endif
 
 namespace QuantLib {
@@ -125,29 +115,27 @@ namespace QuantLib {
         ouOp_->setTime(t1, t2);
     }
 
-    Disposable<Array> FdmExtOUJumpOp::apply(const Array& r) const {
+    Array FdmExtOUJumpOp::apply(const Array& r) const {
         return ouOp_->apply(r) + dyMap_.apply(r) + integro(r);
     }
 
-    Disposable<Array> FdmExtOUJumpOp::apply_mixed(const Array& r) const {
-        return  integro(r);
+    Array FdmExtOUJumpOp::apply_mixed(const Array& r) const {
+        return integro(r);
     }
 
-    Disposable<Array> FdmExtOUJumpOp::apply_direction(Size direction,
-                                                      const Array& r) const {
+    Array FdmExtOUJumpOp::apply_direction(Size direction,
+                                          const Array& r) const {
         if (direction == 0)
             return ouOp_->apply_direction(direction, r);
         else if (direction == 1)
             return dyMap_.apply(r);
         else {
-            Array retVal(r.size(), 0.0);
-            return retVal;
+            return Array(r.size(), 0.0);
         }
     }
 
-    Disposable<Array>
-        FdmExtOUJumpOp::solve_splitting(Size direction,
-                                        const Array& r, Real a) const {
+    Array FdmExtOUJumpOp::solve_splitting(Size direction,
+                                          const Array& r, Real a) const {
         if (direction == 0) {
             return ouOp_->solve_splitting(direction, r, a);
         }
@@ -155,22 +143,19 @@ namespace QuantLib {
             return dyMap_.solve_splitting(r, a, 1.0);
         }
         else {
-            Array retVal(r);
-            return retVal;
+            return r;
         }
     }
 
-    Disposable<Array>
-    FdmExtOUJumpOp::preconditioner(const Array& r, Real dt) const {
+    Array FdmExtOUJumpOp::preconditioner(const Array& r, Real dt) const {
         return ouOp_->solve_splitting(0, r, dt);
     }
 
-    Disposable<Array> FdmExtOUJumpOp::integro(const Array& r) const {
+    Array FdmExtOUJumpOp::integro(const Array& r) const {
         return prod(integroPart_, r);
     }
 
-    Disposable<std::vector<SparseMatrix> >
-    FdmExtOUJumpOp::toMatrixDecomp() const {
+    std::vector<SparseMatrix> FdmExtOUJumpOp::toMatrixDecomp() const {
         QL_REQUIRE(bcSet_.empty(), "boundary conditions are not supported");
 
         std::vector<SparseMatrix> retVal(1, ouOp_->toMatrixDecomp().front());

@@ -66,7 +66,7 @@ namespace QuantLib {
       private:
         CapFloor::Type capFloorType_;
         Rate strike_;
-        bool firstCapletExcluded_, asOptionlet_;
+        bool firstCapletExcluded_, asOptionlet_ = false;
 
         MakeVanillaSwap makeVanillaSwap_;
 

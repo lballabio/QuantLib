@@ -84,8 +84,11 @@ namespace QuantLib {
         static const Real safetyZoneFactor_;
     };
 
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.27.
+    */
     template <typename base, typename engine>
-    class FDEngineAdapter : public base, public engine {
+    class QL_DEPRECATED FDEngineAdapter : public base, public engine {
       public:
         FDEngineAdapter(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,

@@ -132,7 +132,7 @@ namespace QuantLib {
         const std::vector<Rate>& rates,
         const Interpolator& interpolator)
     : InterpolatedZeroInflationCurve(
-          referenceDate, calendar, dayCounter, lag, frequency, dates, rates, false) {}
+          referenceDate, calendar, dayCounter, lag, frequency, false, dates, rates, interpolator) {}
 
     template <class Interpolator>
     InterpolatedZeroInflationCurve<Interpolator>::InterpolatedZeroInflationCurve(
@@ -160,13 +160,6 @@ namespace QuantLib {
         QL_REQUIRE(lim.first <= dates_[0] && dates_[0] <= lim.second,
                    "first data date is not in base period, date: "
                        << dates_[0] << " not within [" << lim.first << "," << lim.second << "]");
-
-        // by convention, we pull all the dates
-        // back to the start of their inflation periods
-        // otherwise the time calculations will be inconsistent
-        for (auto& date : dates_) {
-            date = inflationPeriod(date, frequency).first;
-        }
 
         QL_REQUIRE(this->data_.size() == dates_.size(),
                    "indices/dates count mismatch: " << this->data_.size() << " vs "

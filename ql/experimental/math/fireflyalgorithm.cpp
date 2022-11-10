@@ -33,7 +33,7 @@ namespace QuantLib {
                                        unsigned long seed)
     : mutation_(mutation), crossover_(crossover), M_(M), Mde_(Mde), Mfa_(M_ - Mde_),
       intensity_(std::move(intensity)), randomWalk_(std::move(randomWalk)),
-      drawIndex_(base_generator_type(seed), uniform_integer(Mfa_, Mde > 0 ? M_ - 1 : M_)),
+      generator_(seed), distribution_(Mfa_, Mde > 0 ? M_ - 1 : M_),
       rng_(seed) {
         QL_REQUIRE(M_ >= Mde_,
             "Differential Evolution subpopulation cannot be larger than total population");
@@ -87,7 +87,7 @@ namespace QuantLib {
         //Variables for DE
         Array z(N_, 0.0);
         Size indexR1, indexR2;
-        uniform_integer::param_type nParam(0, N_ - 1);
+        decltype(distribution_)::param_type nParam(0, N_ - 1);
 
         //Set best value & position
         Real bestValue = values_[0].first;
@@ -119,21 +119,21 @@ namespace QuantLib {
                 for (Size i = Mfa_; i < M_; i++) { 
                     if (!isFA) {
                         //Pure DE requires random index
-                        indexBest = drawIndex_();
+                        indexBest = distribution_(generator_);
                         xBest = x_[indexBest];
                     }
                     do { 
-                        indexR1 = drawIndex_(); 
+                        indexR1 = distribution_(generator_);
                     } while(indexR1 == indexBest);
                     do { 
-                        indexR2 = drawIndex_(); 
+                        indexR2 = distribution_(generator_);
                     } while(indexR2 == indexBest || indexR2 == indexR1);
                     
                     Size index = values_[i].second;
                     Array& x   = x_[index];
                     Array& xR1 = x_[indexR1];
                     Array& xR2 = x_[indexR2];
-					Size rIndex = drawIndex_(nParam);
+					Size rIndex = distribution_(generator_, nParam);
                     for (Size j = 0; j < N_; j++) {
                         if (j == rIndex || rng_.nextReal() <= crossover_) {
                             //Change x[j] according to crossover

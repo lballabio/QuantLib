@@ -9,7 +9,7 @@ using namespace boost::unit_test;
 test_suite* init_unit_test_suite(int, char* []);
 
 bool init_function() {
-    framework::master_test_suite().add(init_unit_test_suite(0,0));
+    framework::master_test_suite().add(init_unit_test_suite(0, nullptr));
     return true;
 }
 

@@ -33,16 +33,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #pragma warning(disable:4127)
 #endif
 
-#if defined(__clang__) && BOOST_VERSION > 105300
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-function"
-#endif
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-
 #if BOOST_VERSION == 106400
 #include <boost/serialization/array_wrapper.hpp>
 #endif
@@ -53,20 +43,12 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #pragma warning(pop)
 #endif
 
-#if defined(__clang__) && BOOST_VERSION > 105300
-#pragma clang diagnostic pop
-#endif
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
-
 namespace QuantLib {
-    typedef boost::numeric::ublas::compressed_matrix<Real> SparseMatrix;
-    typedef boost::numeric::ublas::matrix_reference<SparseMatrix>
-        SparseMatrixReference;
 
-    inline Disposable<Array> prod(const SparseMatrix& A, const Array& x) {
+    typedef boost::numeric::ublas::compressed_matrix<Real> SparseMatrix;
+    typedef boost::numeric::ublas::matrix_reference<SparseMatrix> SparseMatrixReference;
+
+    inline Array prod(const SparseMatrix& A, const Array& x) {
         QL_REQUIRE(x.size() == A.size2(),
                    "vectors and sparse matrices with different sizes ("
                    << x.size() << ", " << A.size1() << "x" << A.size2() <<

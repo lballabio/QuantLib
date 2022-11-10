@@ -197,7 +197,7 @@ namespace QuantLib {
     }
 
     // calculate weighted differences
-    Disposable<Array> AbcdCalibration::errors() const {
+    Array AbcdCalibration::errors() const {
         Array results(times_.size());
         for (Size i=0; i<times_.size() ; i++) {
             results[i] = (value(times_[i]) - blackVols_[i])* std::sqrt(weights_[i]);

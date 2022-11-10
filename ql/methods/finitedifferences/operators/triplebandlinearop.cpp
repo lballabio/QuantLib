@@ -80,20 +80,6 @@ namespace QuantLib {
         std::copy(m.upper_.get(), m.upper_.get() + len, upper_.get());
     }
 
-
-    #ifdef QL_USE_DISPOSABLE
-    TripleBandLinearOp::TripleBandLinearOp(
-        const Disposable<TripleBandLinearOp>& from) {
-        swap(const_cast<Disposable<TripleBandLinearOp>&>(from));
-    }
-
-    TripleBandLinearOp& TripleBandLinearOp::operator=(
-        const Disposable<TripleBandLinearOp>& m) {
-        swap(const_cast<Disposable<TripleBandLinearOp>&>(m));
-        return *this;
-    }
-    #endif
-
     void TripleBandLinearOp::swap(TripleBandLinearOp& m) {
         std::swap(mesher_, m.mesher_);
         std::swap(direction_, m.direction_);
@@ -174,8 +160,7 @@ namespace QuantLib {
         }
     }
 
-    Disposable<TripleBandLinearOp>
-    TripleBandLinearOp::add(const TripleBandLinearOp& m) const {
+    TripleBandLinearOp TripleBandLinearOp::add(const TripleBandLinearOp& m) const {
 
         TripleBandLinearOp retVal(direction_, mesher_);
         const Size size = mesher_->layout()->size();
@@ -190,7 +175,7 @@ namespace QuantLib {
     }
 
 
-    Disposable<TripleBandLinearOp> TripleBandLinearOp::mult(const Array& u) const {
+    TripleBandLinearOp TripleBandLinearOp::mult(const Array& u) const {
 
         TripleBandLinearOp retVal(direction_, mesher_);
 
@@ -206,7 +191,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<TripleBandLinearOp> TripleBandLinearOp::multR(const Array& u) const {
+    TripleBandLinearOp TripleBandLinearOp::multR(const Array& u) const {
         const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         const Size size = layout->size();
         QL_REQUIRE(u.size() == size, "inconsistent size of rhs");
@@ -225,7 +210,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<TripleBandLinearOp> TripleBandLinearOp::add(const Array& u) const {
+    TripleBandLinearOp TripleBandLinearOp::add(const Array& u) const {
 
         TripleBandLinearOp retVal(direction_, mesher_);
 
@@ -240,7 +225,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<Array> TripleBandLinearOp::apply(const Array& r) const {
+    Array TripleBandLinearOp::apply(const Array& r) const {
         const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
 
         QL_REQUIRE(r.size() == index->size(), "inconsistent length of r");
@@ -260,7 +245,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<SparseMatrix> TripleBandLinearOp::toMatrix() const {
+    SparseMatrix TripleBandLinearOp::toMatrix() const {
         const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
         const Size n = index->size();
 
@@ -275,8 +260,7 @@ namespace QuantLib {
     }
 
 
-    Disposable<Array>
-    TripleBandLinearOp::solve_splitting(const Array& r, Real a, Real b) const {
+    Array TripleBandLinearOp::solve_splitting(const Array& r, Real a, Real b) const {
         const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         QL_REQUIRE(r.size() == layout->size(), "inconsistent size of rhs");
 

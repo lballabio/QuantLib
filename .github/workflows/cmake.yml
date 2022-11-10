@@ -4,19 +4,28 @@ jobs:
   cmake-linux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
         sudo apt update
-        sudo apt install -y libboost-all-dev
+        sudo apt install -y libboost-dev ccache
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: cmake-linux-ci-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        restore-keys: |
+          cmake-linux-ci-build-${{ github.ref }}-${{ github.head_ref }}-
+          cmake-linux-ci-build-${{ github.ref }}-
+          cmake-linux-ci-build-refs/heads/master-
+          cmake-linux-ci-build-
     - name: Compile
       env:
         CXXFLAGS: -O2
       run: |
         mkdir build
         cd build
-        cmake -DBOOST_ROOT=/usr ..
-        make -j 2
+        cmake .. -DBOOST_ROOT=/usr -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build . -j2
     - name: Test
       run: |
         cd build
@@ -24,11 +33,20 @@ jobs:
   cmake-linux-with-options:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
         sudo apt update
-        sudo apt install -y libboost-all-dev
+        sudo apt install -y libboost-all-dev ccache
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: cmake-linux-ci-opts-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        restore-keys: |
+          cmake-linux-ci-opts-${{ github.ref }}-${{ github.head_ref }}-
+          cmake-linux-ci-opts-${{ github.ref }}-
+          cmake-linux-ci-opts-refs/heads/master-
+          cmake-linux-ci-opts-
     - name: Compile
       env:
         CXXFLAGS: -O2
@@ -40,17 +58,17 @@ jobs:
         cd build
         ./test-suite/quantlib-test-suite --log_level=message
   cmake-win:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.75.0/binaries/boost_1_75_0-msvc-14.2-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.75.0"
+        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.78.0"
     - name: Compile
       env:
-        BOOST_ROOT: C:\local\boost-1.75.0
+        BOOST_ROOT: C:\local\boost-1.78.0
       run: |
         mkdir build
         cd build
@@ -61,17 +79,17 @@ jobs:
         cd build
         .\test-suite\Release\quantlib-test-suite --log_level=message
   cmake-win-with-options:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.75.0/binaries/boost_1_75_0-msvc-14.2-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.75.0"
+        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.78.0"
     - name: Compile
       env:
-        BOOST_ROOT: C:\local\boost-1.75.0
+        BOOST_ROOT: C:\local\boost-1.78.0
       run: |
         cmake --preset windows-ci-build-with-nonstandard-options
         cmake --build --preset windows-ci-build-with-nonstandard-options
@@ -82,18 +100,27 @@ jobs:
   cmake-macos:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
-        brew install boost
+        brew install boost ccache
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: cmake-macos-ci-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        restore-keys: |
+          cmake-macos-ci-${{ github.ref }}-${{ github.head_ref }}-
+          cmake-macos-ci-${{ github.ref }}-
+          cmake-macos-ci-refs/heads/master-
+          cmake-macos-ci-
     - name: Compile
       env:
         CXXFLAGS: -O2 -stdlib=libc++ -mmacosx-version-min=10.9
       run: |
         mkdir build
         cd build
-        cmake ..
-        make -j 2
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build . -j2
     - name: Test
       run: |
         cd build

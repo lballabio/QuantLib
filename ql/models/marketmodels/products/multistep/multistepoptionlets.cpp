@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepoptionlets.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
@@ -53,10 +52,9 @@ namespace QuantLib {
         return (currentIndex_ == payoffs_.size());
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     MultiStepOptionlets::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
-                                                 new MultiStepOptionlets(*this));
+        return std::unique_ptr<MarketModelMultiProduct>(new MultiStepOptionlets(*this));
     }
 
 }

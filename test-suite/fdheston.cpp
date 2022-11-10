@@ -80,7 +80,7 @@ namespace fd_heston_test {
 
       protected:
         Volatility localVolImpl(Time t, Real s) const override {
-            return alpha_*(square<Real>()(s0_ - s) + 25.0);
+            return alpha_*(squared(s0_ - s) + 25.0);
         }
 
       private:
@@ -522,7 +522,7 @@ void FdHestonTest::testFdmHestonBlackScholes() {
     Real strikes[]  = { 8, 9, 10, 11, 12 };
     const Real tol = 0.0001;
 
-    for (double& strike : strikes) {
+    for (Real& strike : strikes) {
         Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(strike)));
 
         ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
@@ -676,7 +676,7 @@ void FdHestonTest::testFdmHestonConvergence() {
     for (const auto& scheme : schemes) {
         for (auto& value : values) {
             for (unsigned long j : tn) {
-                for (double k : v0) {
+                for (Real k : v0) {
                     Handle<YieldTermStructure> rTS(flatRate(value.r, Actual365Fixed()));
                     Handle<YieldTermStructure> qTS(flatRate(value.q, Actual365Fixed()));
 
@@ -979,6 +979,117 @@ void FdHestonTest::testSpuriousOscillations() {
     }
 }
 
+
+void FdHestonTest::testAmericanCallPutParity() {
+    BOOST_TEST_MESSAGE("Testing Call/Put parity for American option "
+            "under the Heston model...");
+
+    // A. Battauz, M. De Donno,m A. Sbuelz:
+    // The put-call symmetry for American options in
+    // the Heston stochastic volatility model
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(15, April, 2022);
+
+    Settings::instance().evaluationDate() = today;
+
+    struct OptionSpec {
+        Real spot;
+        Real strike;
+        Size maturityInDays;
+        Real r, q;
+        Real v0, kappa, theta, sig, rho;
+    };
+
+    auto buildStochProcess = [&dc](const OptionSpec& testCase) {
+        return ext::make_shared<HestonProcess>(
+            Handle<YieldTermStructure>(flatRate(testCase.r, dc)),
+            Handle<YieldTermStructure>(flatRate(testCase.q, dc)),
+            Handle<Quote>(ext::make_shared<SimpleQuote>(testCase.spot)),
+            testCase.v0, testCase.kappa,
+            testCase.theta, testCase.sig, testCase.rho
+        );
+    };
+
+    const OptionSpec testCaseSpecs[] = {
+        {100.0, 90.0, 365, 0.02, 0.15, 0.25, 1.0, 0.09, 0.5, -0.75},
+        {100.0, 90.0, 365, 0.05, 0.20, 0.5, 1.0, 0.05, 0.75, -0.9}
+    };
+
+    const Size xGrid = 200;
+    const Size vGrid = 25;
+    const Size timeStepsPerYear = 50;
+
+    for (const auto& testCaseSpec: testCaseSpecs) {
+        const auto maturityDate =
+            today + Period(testCaseSpec.maturityInDays, Days);
+        const Time maturityTime = dc.yearFraction(today,  maturityDate);
+        const Size tGrid = Size(maturityTime * timeStepsPerYear);
+
+        const auto exercise =
+            ext::make_shared<AmericanExercise>(today, maturityDate);
+
+        VanillaOption callOption(
+            ext::make_shared<PlainVanillaPayoff>(
+                Option::Call, testCaseSpec.strike),
+            exercise
+        );
+
+        callOption.setPricingEngine(
+            ext::make_shared<FdHestonVanillaEngine>(
+                ext::make_shared<HestonModel>(
+                    buildStochProcess(testCaseSpec)),
+                tGrid, xGrid, vGrid
+            )
+        );
+
+        const Real callNpv = callOption.NPV();
+
+        OptionSpec putOptionSpec = {
+            testCaseSpec.strike,
+            testCaseSpec.spot,
+            testCaseSpec.maturityInDays,
+            testCaseSpec.q,
+            testCaseSpec.r,
+            testCaseSpec.v0,
+            testCaseSpec.kappa - testCaseSpec.sig*testCaseSpec.rho,
+            testCaseSpec.kappa*testCaseSpec.theta/
+                (testCaseSpec.kappa - testCaseSpec.sig*testCaseSpec.rho),
+            testCaseSpec.sig,
+            -testCaseSpec.rho
+        };
+
+        VanillaOption putOption(
+            ext::make_shared<PlainVanillaPayoff>(
+                Option::Put, putOptionSpec.strike),
+            exercise
+        );
+
+        putOption.setPricingEngine(
+            ext::make_shared<FdHestonVanillaEngine>(
+                ext::make_shared<HestonModel>(
+                    buildStochProcess(putOptionSpec)),
+                tGrid, xGrid, vGrid
+            )
+        );
+
+        const Real putNpv = putOption.NPV();
+
+        const Real diff = std::fabs(putNpv -callNpv);
+        const Real tol = 0.025;
+
+        if (diff > tol) {
+            BOOST_FAIL("failed to reproduce American Call/Put parity"
+                    << "\n    Put NPV   : " << putNpv
+                    << "\n    Call NPV  : " << callNpv
+                    << "\n    difference: " << diff
+                    << "\n    tolerance : " << tol);
+        }
+    }
+}
+
 test_suite* FdHestonTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Finite Difference Heston tests");
 
@@ -992,6 +1103,7 @@ test_suite* FdHestonTest::suite(SpeedLevel speed) {
         &FdHestonTest::testFdmHestonIntradayPricing));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testMethodOfLinesAndCN));
     suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testSpuriousOscillations));
+    suite->add(QUANTLIB_TEST_CASE(&FdHestonTest::testAmericanCallPutParity));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(

@@ -113,7 +113,6 @@ namespace QuantLib {
         Real V(Time t) const;
 
         class SwaptionPricingFunction;
-        friend class SwaptionPricingFunction;
     };
 
     class G2::Dynamics : public TwoFactorModel::ShortRateDynamics {

@@ -19,21 +19,20 @@
 /*! \page resources Additional resources
 
     The main %QuantLib resource is the %QuantLib web site
-    (http://quantlib.org).
+    (https://www.quantlib.org).
 
     Additional resources available from the above site include:
 
-    - available documentation (http://quantlib.org/docs.shtml);
-    - current news (http://sourceforge.net/news/?group_id=12740);
+    - available documentation (https://www.quantlib.org/docs.shtml);
     - the %QuantLib mailing lists and forums
-      (http://quantlib.org/mailinglists.shtml);
+      (https://www.quantlib.org/mailinglists.shtml);
     - the %QuantLib programming style guidelines
-      (http://quantlib.org/style.shtml);
+      (https://www.quantlib.org/style.shtml);
     - links to pages for reporting issues
       (https://github.com/lballabio/QuantLib/issues)
       and submitting changes
       (https://github.com/lballabio/QuantLib/pulls);
-    - a page (http://quantlib.org/extensions.shtml) about how to use %QuantLib
+    - a page (https://www.quantlib.org/extensions.shtml) about how to use %QuantLib
       in other languages/platforms.
 */
 

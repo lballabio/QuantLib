@@ -38,14 +38,7 @@
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/termstructures/volatility/smilesectionutils.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
 #include <boost/math/distributions/normal.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
 #include <vector>
 #include <utility>
 
@@ -71,7 +64,7 @@ namespace QuantLib {
                     return std::exp(-a_ * k + b_);
                 if (s_ < QL_EPSILON)
                     return std::max(f_ - k, 0.0) + a_ * k + b_;
-                boost::math::normal normal;
+                boost::math::normal_distribution<Real> normal;
                 Real d1 = std::log(f_ / k) / s_ + s_ / 2.0;
                 Real d2 = d1 - s_;
                 return f_ * boost::math::cdf(normal, d1) -
@@ -85,7 +78,7 @@ namespace QuantLib {
             aHelper(Real k0, Real k1, Real c0, Real c1, Real c0p, Real c1p)
                 : k0_(k0), k1_(k1), c0_(c0), c1_(c1), c0p_(c0p), c1p_(c1p) {}
             Real operator()(Real a) const {
-                boost::math::normal normal;
+                boost::math::normal_distribution<Real> normal;
                 Real d20 = boost::math::quantile(normal, -c0p_ + a);
                 Real d21 = boost::math::quantile(normal, -c1p_ + a);
                 Real alpha = (d20 - d21) / (std::log(k0_) - std::log(k1_));
@@ -106,7 +99,7 @@ namespace QuantLib {
             sHelper(Real k0, Real c0, Real c0p) : k0_(k0), c0_(c0), c0p_(c0p) {}
             Real operator()(Real s) const {
                 s = std::max(s, 0.0);
-                boost::math::normal normal;
+                boost::math::normal_distribution<Real> normal;
                 Real d20 = boost::math::quantile(normal, -c0p_);
                 f_ = k0_ * std::exp(s * d20 + s * s / 2.0);
                 QL_REQUIRE(f_ < QL_KAHALE_FMAX, "dummy"); // this is caught
@@ -122,7 +115,7 @@ namespace QuantLib {
                 : k1_(k1), c0_(c0), c1_(c1), c1p_(c1p) {}
             Real operator()(Real s) const {
                 s = std::max(s, 0.0);
-                boost::math::normal normal;
+                boost::math::normal_distribution<Real> normal;
                 Real d21 = boost::math::quantile(normal, -c1p_);
                 f_ = k1_ * std::exp(s * d21 + s * s / 2.0);
                 QL_REQUIRE(f_ < QL_KAHALE_FMAX, "dummy"); // this is caught

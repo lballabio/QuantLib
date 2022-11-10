@@ -39,27 +39,26 @@ namespace QuantLib {
         Size size() const override;
         Size factors() const override;
 
-        Disposable<Array> initialValues() const override;
-        Disposable<Array> drift(Time t, const Array& x) const override;
-        Disposable<Array> expectation(Time t0, const Array& x0, Time dt) const override;
+        Array initialValues() const override;
+        Array drift(Time t, const Array& x) const override;
+        Array expectation(Time t0, const Array& x0, Time dt) const override;
 
-        Disposable<Matrix> diffusion(Time t, const Array& x) const override;
-        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const override;
-        Disposable<Matrix> stdDeviation(Time t0, const Array& x0, Time dt) const override;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Matrix covariance(Time t0, const Array& x0, Time dt) const override;
+        Matrix stdDeviation(Time t0, const Array& x0, Time dt) const override;
 
-        Disposable<Array> apply(const Array& x0, const Array& dx) const override;
-        Disposable<Array> evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
+        Array apply(const Array& x0, const Array& dx) const override;
+        Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
         virtual void preEvolve(Time t0, const Array& x0,
                                Time dt, const Array& dw) const = 0;
-        virtual Disposable<Array> postEvolve(Time t0, const Array& x0,
-                                             Time dt, const Array& dw,
-                                             const Array& y0) const = 0;
+        virtual Array postEvolve(Time t0, const Array& x0,
+                                 Time dt, const Array& dw,
+                                 const Array& y0) const = 0;
 
         virtual DiscountFactor numeraire(Time t, const Array& x) const = 0;
         virtual bool correlationIsStateDependent() const = 0;
-        virtual Disposable<Matrix> crossModelCorrelation(
-                                Time t0, const Array& x0) const = 0;
+        virtual Matrix crossModelCorrelation(Time t0, const Array& x0) const = 0;
 
         const std::vector<ext::shared_ptr<StochasticProcess> > &
                                                        constituents() const;
@@ -69,7 +68,7 @@ namespace QuantLib {
 
       protected:
         std::vector<ext::shared_ptr<StochasticProcess> > l_;
-        Disposable<Array> slice(const Array& x, Size i) const;
+        Array slice(const Array& x, Size i) const;
 
       private:
         typedef
@@ -79,7 +78,7 @@ namespace QuantLib {
         typedef std::vector<ext::shared_ptr<StochasticProcess> >::iterator
             iterator;
 
-        Size size_, factors_, modelFactors_;
+        Size size_ = 0, factors_, modelFactors_ = 0;
         std::vector<Size> vsize_, vfactors_;
 
         struct CachingKey {

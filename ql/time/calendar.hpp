@@ -96,6 +96,9 @@ namespace QuantLib {
         /*! Returns the set of removed holidays for the given calendar */
         const std::set<Date>& removedHolidays() const;
 
+        /*! Clear the set of added and removed holidays */
+        void resetAddedAndRemovedHolidays();
+
         bool isBusinessDay(const Date& d) const;
         /*! Returns <tt>true</tt> iff the date is a holiday for the given
             market.

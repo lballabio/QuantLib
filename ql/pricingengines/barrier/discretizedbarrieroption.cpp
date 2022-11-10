@@ -27,7 +27,7 @@ namespace QuantLib {
                                          const StochasticProcess& process,
                                          const TimeGrid& grid)
     : arguments_(args), vanilla_(arguments_, process, grid) {
-        QL_REQUIRE(args.exercise->dates().size(), "specify at least one stopping date");
+        QL_REQUIRE(!args.exercise->dates().empty(), "specify at least one stopping date");
 
         stoppingTimes_.resize(args.exercise->dates().size());
         for (Size i=0; i<stoppingTimes_.size(); ++i) {
@@ -71,7 +71,7 @@ namespace QuantLib {
                 stoppingTime = true;
             break;
           case Exercise::Bermudan:
-              for (double i : stoppingTimes_) {
+              for (Real i : stoppingTimes_) {
                   if (isOnTime(i)) {
                       stoppingTime = true;
                       break;

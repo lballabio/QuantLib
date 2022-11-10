@@ -31,18 +31,6 @@
 
 namespace QuantLib {
 
-    void IborCoupon::createAtParCoupons() {
-        Settings::instance().createAtParCoupons();
-    }
-
-    void IborCoupon::createIndexedCoupons() {
-        Settings::instance().createIndexedCoupons();
-    }
-
-    bool IborCoupon::usingAtParCoupons() {
-        return Settings::instance().usingAtParCoupons();
-    }
-
     IborCoupon::IborCoupon(const Date& paymentDate,
                            Real nominal,
                            const Date& startDate,
@@ -162,10 +150,9 @@ namespace QuantLib {
     }
 
     IborLeg::IborLeg(Schedule schedule, ext::shared_ptr<IborIndex> index)
-    : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following),
-      paymentLag_(0), paymentCalendar_(Calendar()), inArrears_(false), zeroPayments_(false),
-      exCouponPeriod_(Period()), exCouponCalendar_(Calendar()), exCouponAdjustment_(Unadjusted),
-      exCouponEndOfMonth_(false) {}
+    : schedule_(std::move(schedule)), index_(std::move(index)) {
+        QL_REQUIRE(index_, "no index provided");
+    }
 
     IborLeg& IborLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);

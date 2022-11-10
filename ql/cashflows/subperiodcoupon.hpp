@@ -85,6 +85,8 @@ namespace QuantLib {
         void accept(AcyclicVisitor&) override;
         //@}
       private:
+        Date fixingDate(const Date& valueDate) const;
+
         std::vector<Date> valueDates_, fixingDates_;
         Size n_;
         std::vector<Time> dt_;
@@ -146,17 +148,17 @@ namespace QuantLib {
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
         Calendar paymentCalendar_;
-        BusinessDayConvention paymentAdjustment_;
-        Natural paymentLag_;
+        BusinessDayConvention paymentAdjustment_ = Following;
+        Natural paymentLag_ = 0;
         std::vector<Natural> fixingDays_;
         std::vector<Real> gearings_;
         std::vector<Spread> couponSpreads_;
         std::vector<Spread> rateSpreads_;
-        RateAveraging::Type averagingMethod_;
+        RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
         Period exCouponPeriod_;
         Calendar exCouponCalendar_;
-        BusinessDayConvention exCouponAdjustment_;
-        bool exCouponEndOfMonth_;
+        BusinessDayConvention exCouponAdjustment_ = Unadjusted;
+        bool exCouponEndOfMonth_ = false;
     };
 }
 

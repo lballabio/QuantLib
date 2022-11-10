@@ -40,19 +40,19 @@ namespace QuantLib {
         const std::vector<Size>& timePositions,
         std::vector<Handle<YieldTermStructure> > forwardTermStructures,
         Array discounts,
-        Size polynomOrder,
-        LsmBasisSystem::PolynomType polynomType)
-    : calibrationPhase_(true), payoff_(payoff), coeff_(new Array[timePositions.size() - 1]),
+        Size polynomialOrder,
+        LsmBasisSystem::PolynomialType polynomialType)
+    : payoff_(payoff), coeff_(new Array[timePositions.size() - 1]),
       lowerBounds_(new Real[timePositions.size()]), timePositions_(timePositions),
       forwardTermStructures_(std::move(forwardTermStructures)), dF_(std::move(discounts)),
       v_(LsmBasisSystem::multiPathBasisSystem(
-          payoff->basisSystemDimension(), polynomOrder, polynomType)) {
-        QL_REQUIRE(   polynomType == LsmBasisSystem::Monomial
-                   || polynomType == LsmBasisSystem::Laguerre
-                   || polynomType == LsmBasisSystem::Hermite
-                   || polynomType == LsmBasisSystem::Hyperbolic
-                   || polynomType == LsmBasisSystem::Chebyshev2nd,
-                   "insufficient polynom type");
+          payoff->basisSystemDimension(), polynomialOrder, polynomialType)) {
+        QL_REQUIRE(   polynomialType == LsmBasisSystem::Monomial
+                   || polynomialType == LsmBasisSystem::Laguerre
+                   || polynomialType == LsmBasisSystem::Hermite
+                   || polynomialType == LsmBasisSystem::Hyperbolic
+                   || polynomialType == LsmBasisSystem::Chebyshev2nd,
+                   "insufficient polynomial type");
     }
 
     /*

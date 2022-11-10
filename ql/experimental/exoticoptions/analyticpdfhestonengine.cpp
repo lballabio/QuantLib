@@ -78,7 +78,7 @@ namespace QuantLib {
         const Real s_t = std::exp(x_t);
         const Real payoff = (*arguments_.payoff)(s_t);
 
-        return (payoff != 0.0) ? payoff*Pv(x_t, t)*rD : 0.0;
+        return (payoff != 0.0) ? payoff*Pv(x_t, t)*rD : Real(0.0);
     }
 }
 

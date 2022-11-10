@@ -177,7 +177,7 @@ Real NoArbSabrModel::p(const Real f) const {
         std::exp(-(xz * xz) / (2.0 * expiryTime_) +
                  (h + kappa1 * expiryTime_)) *
         modifiedBesselFunction_i_exponentiallyWeighted(gamma,
-                                                       zF * zf / expiryTime_);
+                                                       Real(zF * zf / expiryTime_));
     return res;
 }
 

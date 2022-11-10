@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/amortizingbonds/amortizingcmsratebond.hpp>
+#include <ql/instruments/bonds/amortizingcmsratebond.hpp>
 #include <ql/cashflows/cmscoupon.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/indexes/swapindex.hpp>

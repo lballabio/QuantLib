@@ -50,8 +50,6 @@ using namespace boost::unit_test_framework;
 
 using std::exp;
 
-typedef PiecewiseYieldCurve<Discount,LogLinear> PiecewiseFlatForward;
-
 namespace overnight_indexed_swap_test {
 
     struct Datum {
@@ -191,7 +189,7 @@ void OvernightIndexedSwapTest::testFairRate() {
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
 
     for (auto& length : lengths) {
-        for (double spread : spreads) {
+        for (Real spread : spreads) {
 
             ext::shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(length, 0.0, spread, false);
             ext::shared_ptr<OvernightIndexedSwap> swap2 = vars.makeSwap(length, 0.0, spread, true);
@@ -236,7 +234,7 @@ void OvernightIndexedSwapTest::testFairSpread() {
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
 
     for (auto& length : lengths) {
-        for (double j : rates) {
+        for (Real j : rates) {
 
             ext::shared_ptr<OvernightIndexedSwap> swap = vars.makeSwap(length, j, 0.0, false);
             ext::shared_ptr<OvernightIndexedSwap> swap2 = vars.makeSwap(length, j, 0.0, true);
@@ -351,8 +349,7 @@ namespace overnight_indexed_swap_test {
         eoniaHelpers.push_back(helper);
     }
 
-    ext::shared_ptr<PiecewiseFlatForward> eoniaTS(
-        new PiecewiseFlatForward (vars.today, eoniaHelpers, Actual365Fixed()));
+    auto eoniaTS = ext::make_shared<PiecewiseYieldCurve<Discount, LogLinear>>(vars.today, eoniaHelpers, Actual365Fixed());
 
     vars.eoniaTermStructure.linkTo(eoniaTS);
 
@@ -421,7 +418,7 @@ void OvernightIndexedSwapTest::testSeasonedSwaps() {
     vars.eoniaIndex->addFixing(Date(5,February,2009), 0.0013);
 
     for (auto& length : lengths) {
-        for (double spread : spreads) {
+        for (Real spread : spreads) {
 
             ext::shared_ptr<OvernightIndexedSwap> swap =
                 vars.makeSwap(length, 0.0, spread, false, effectiveDate);

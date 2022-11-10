@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2004, 2007 StatPro Italia srl
+ Copyright (C) 2022 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,16 +26,22 @@
 #ifndef quantlib_discretized_swap_hpp
 #define quantlib_discretized_swap_hpp
 
-#include <ql/instruments/vanillaswap.hpp>
 #include <ql/discretizedasset.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 
 namespace QuantLib {
 
     class DiscretizedSwap : public DiscretizedAsset {
       public:
-        DiscretizedSwap(const VanillaSwap::arguments&,
+        DiscretizedSwap(const VanillaSwap::arguments& args,
                         const Date& referenceDate,
                         const DayCounter& dayCounter);
+
+        DiscretizedSwap(const VanillaSwap::arguments& args,
+                        const Date& referenceDate,
+                        const DayCounter& dayCounter,
+                        std::vector<CouponAdjustment> fixedCouponAdjustments,
+                        std::vector<CouponAdjustment> floatingCouponAdjustments);
         void reset(Size size) override;
         std::vector<Time> mandatoryTimes() const override;
 
@@ -46,13 +53,18 @@ namespace QuantLib {
         VanillaSwap::arguments arguments_;
         std::vector<Time> fixedResetTimes_;
         std::vector<Time> fixedPayTimes_;
+        std::vector<CouponAdjustment> fixedCouponAdjustments_;
+        std::vector<bool> fixedResetTimeIsInPast_;
         std::vector<Time> floatingResetTimes_;
         std::vector<Time> floatingPayTimes_;
-        bool includeTodaysCashFlows_;
+        std::vector<CouponAdjustment> floatingCouponAdjustments_;
+        std::vector<bool> floatingResetTimeIsInPast_;
+
+        void addFixedCoupon(Size i);
+        void addFloatingCoupon(Size i);
     };
 
 }
 
 
 #endif
-

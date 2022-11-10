@@ -41,7 +41,7 @@
     determining whether a date is a business day or a holiday for a
     given exchange or a given country, and for incrementing/decrementing
     a date of a given number of business days. A number of calendars is
-    contained in the <tt>ql/Calendars</tt> directory.
+    contained in the <tt>ql/time/calendars</tt> directory.
 */
 
 /*! \defgroup daycounters Day counters
@@ -50,7 +50,7 @@
     means of measuring the distance between two dates according to a
     given market convention, both as number of days of fraction of
     year. A number of such conventions is contained in the
-    <tt>ql/DayCounters</tt> directory.
+    <tt>ql/time/daycounters</tt> directory.
 */
 
 /*! @} */

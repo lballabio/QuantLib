@@ -36,7 +36,7 @@ namespace QuantLib {
         return DotProduct(diff, diff);
     }
 
-    Disposable<Array> LeastSquareFunction::values(const Array& x) const {
+    Array LeastSquareFunction::values(const Array& x) const {
         // size of target and function to fit vectors
         Array target(lsp_.size()), fct2fit(lsp_.size());
         // compute its values

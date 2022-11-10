@@ -37,7 +37,7 @@ namespace QuantLib {
         : dim_(dim), spacing_(dim.size()) {
             spacing_[0] = 1;
             std::partial_sum(dim.begin(), dim.end()-1,
-                spacing_.begin()+1, std::multiplies<Size>());
+                spacing_.begin()+1, std::multiplies<>());
 
             size_ = spacing_.back()*dim.back();
         }
@@ -76,7 +76,7 @@ namespace QuantLib {
                            Size i2, Integer offset2) const;
 
         // smart but sometimes too slow
-        Disposable<FdmLinearOpIterator> iter_neighbourhood(
+        FdmLinearOpIterator iter_neighbourhood(
             const FdmLinearOpIterator& iterator, Size i, Integer offset) const;
 
       private:

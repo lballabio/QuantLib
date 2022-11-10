@@ -140,7 +140,7 @@ namespace QuantLib {
             integralType, nVariables,ini) {}
 
     protected:
-        //Disposable<std::vector<Probability> > probsBeingNthEvent(
+        //std::vector<Probability> probsBeingNthEvent(
         //    Size n, const Date& d) const {
         //    return 
         //      ConstantLossLatentmodel<copulaPolicy>::probsBeingNthEvent(n, d);

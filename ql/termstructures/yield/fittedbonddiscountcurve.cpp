@@ -39,7 +39,7 @@ namespace QuantLib {
         explicit FittingCost(
                        FittedBondDiscountCurve::FittingMethod* fittingMethod);
         Real value(const Array& x) const override;
-        Disposable<Array> values(const Array& x) const override;
+        Array values(const Array& x) const override;
 
       private:
         FittedBondDiscountCurve::FittingMethod* fittingMethod_;
@@ -242,15 +242,13 @@ namespace QuantLib {
                                                        const Array& x) const {
         Real squaredError = 0.0;
         Array vals = values(x);
-        for (double val : vals) {
+        for (Real val : vals) {
             squaredError += val;
         }
         return squaredError;
     }
 
-    Disposable<Array>
-    FittedBondDiscountCurve::FittingMethod::FittingCost::values(
-                                                       const Array &x) const {
+    Array FittedBondDiscountCurve::FittingMethod::FittingCost::values(const Array &x) const {
         Size n = fittingMethod_->curve_->bondHelpers_.size();
         Size N = fittingMethod_->l2_.size();
 

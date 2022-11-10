@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/products/onestep/onestepcoterminalswaps.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
@@ -29,7 +28,7 @@ namespace QuantLib {
                                                    std::vector<Real> fixedAccruals,
                                                    std::vector<Real> floatingAccruals,
                                                    const std::vector<Time>& paymentTimes,
-                                                   double fixedRate)
+                                                   Real fixedRate)
     : MultiProductOneStep(rateTimes), fixedAccruals_(std::move(fixedAccruals)),
       floatingAccruals_(std::move(floatingAccruals)), paymentTimes_(paymentTimes),
       fixedRate_(fixedRate) {
@@ -64,10 +63,9 @@ namespace QuantLib {
         return true ;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     OneStepCoterminalSwaps::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
-                                           new OneStepCoterminalSwaps(*this));
+        return std::unique_ptr<MarketModelMultiProduct>(new OneStepCoterminalSwaps(*this));
     }
 
 }

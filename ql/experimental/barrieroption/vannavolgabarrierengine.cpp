@@ -317,7 +317,7 @@ namespace QuantLib {
 
             //touch probability
             CumulativeNormalDistribution cnd;
-            Real mu = domesticTS_->zeroRate(T_, Continuous) - foreignTS_->zeroRate(T_, Continuous) - pow(atmVol_->value(), 2.0)/2.0;
+            Real mu = domesticTS_->zeroRate(T_, Continuous).rate() - foreignTS_->zeroRate(T_, Continuous).rate() - pow(atmVol_->value(), 2.0)/2.0;
             Real h2 = (log(arguments_.barrier/x0Quote->value()) + mu*T_)/(atmVol_->value()*sqrt(T_));
             Real h2Prime = (log(x0Quote->value()/arguments_.barrier) + mu*T_)/(atmVol_->value()*sqrt(T_));
             Real probTouch = 0.0;
