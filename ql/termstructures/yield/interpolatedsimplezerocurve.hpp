@@ -43,9 +43,9 @@ class InterpolatedSimpleZeroCurve : public YieldTermStructure, protected Interpo
     // constructor
     InterpolatedSimpleZeroCurve(const std::vector<Date> &dates, const std::vector<Rate> &yields,
                                 const DayCounter &dayCounter, const Calendar &calendar = Calendar(),
-                                const std::vector<Handle<Quote> > &jumps = std::vector<Handle<Quote> >(),
-                                const std::vector<Date> &jumpDates = std::vector<Date>(),
-                                const Interpolator &interpolator = Interpolator());
+                                const std::vector<Handle<Quote> > &jumps = {},
+                                const std::vector<Date> &jumpDates = {},
+                                const Interpolator &interpolator = {});
     InterpolatedSimpleZeroCurve(const std::vector<Date> &dates, const std::vector<Rate> &yields,
                                 const DayCounter &dayCounter, const Calendar &calendar,
                                 const Interpolator &interpolator);
@@ -65,15 +65,15 @@ class InterpolatedSimpleZeroCurve : public YieldTermStructure, protected Interpo
     //@}
   protected:
     explicit InterpolatedSimpleZeroCurve(const DayCounter &,
-                                         const Interpolator &interpolator = Interpolator());
+                                         const Interpolator &interpolator = {});
     InterpolatedSimpleZeroCurve(const Date &referenceDate, const DayCounter &,
-                                const std::vector<Handle<Quote> > &jumps = std::vector<Handle<Quote> >(),
-                                const std::vector<Date> &jumpDates = std::vector<Date>(),
-                                const Interpolator &interpolator = Interpolator());
+                                const std::vector<Handle<Quote> > &jumps = {},
+                                const std::vector<Date> &jumpDates = {},
+                                const Interpolator &interpolator = {});
     InterpolatedSimpleZeroCurve(Natural settlementDays, const Calendar &, const DayCounter &,
-                                const std::vector<Handle<Quote> > &jumps = std::vector<Handle<Quote> >(),
-                                const std::vector<Date> &jumpDates = std::vector<Date>(),
-                                const Interpolator &interpolator = Interpolator());
+                                const std::vector<Handle<Quote> > &jumps = {},
+                                const std::vector<Date> &jumpDates = {},
+                                const Interpolator &interpolator = {});
 
     //! \name YieldTermStructure implementation
     //@{

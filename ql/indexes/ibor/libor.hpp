@@ -43,8 +43,7 @@ namespace QuantLib {
               const Currency& currency,
               const Calendar& financialCenterCalendar,
               const DayCounter& dayCounter,
-              const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+              const Handle<YieldTermStructure>& h = {});
         /*! \name Date calculations
 
             See <https://www.theice.com/marketdata/reports/170>.
@@ -78,8 +77,7 @@ namespace QuantLib {
                         const Currency& currency,
                         const Calendar& financialCenterCalendar,
                         const DayCounter& dayCounter,
-                        const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+                        const Handle<YieldTermStructure>& h = {});
     };
 
 }
