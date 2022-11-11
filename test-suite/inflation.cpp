@@ -246,9 +246,9 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
 
 void InflationTest::testZeroIndex() {
     BOOST_TEST_MESSAGE("Testing zero inflation indices...");
-    
+
     QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
-    
+
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
@@ -338,7 +338,7 @@ void InflationTest::testZeroTermStructure() {
     BOOST_TEST_MESSAGE("Testing zero inflation term structure...");
 
     QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
-    
+
     using namespace inflation_test;
 
     SavedSettings backup;
@@ -599,7 +599,7 @@ void InflationTest::testZeroIndexFutureFixing() {
     BOOST_TEST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
 
     QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
-    
+
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
@@ -1075,39 +1075,48 @@ void InflationTest::testCpiFlatInterpolation() {
 
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
-    auto testIndex = ext::make_shared<UKRPI>(false);
-    testIndex->addFixing(Date(1, November, 2020), 293.5);
-    testIndex->addFixing(Date(1, December, 2020), 295.4);
-    testIndex->addFixing(Date(1, January,  2021), 294.6);
-    testIndex->addFixing(Date(1, February, 2021), 296.0);
-    testIndex->addFixing(Date(1, March,    2021), 296.9);
+    QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
 
-    Real calculated = CPI::laggedFixing(testIndex, Date(10, February, 2021), 3 * Months, CPI::Flat);
-    Real expected = 293.5;
+    auto testIndex1 = ext::shared_ptr<UKRPI>(new UKRPI(false));
+    auto testIndex2 = ext::shared_ptr<UKRPI>(new UKRPI(true));
 
-    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
-                        "failed to retrieve inflation fixing" <<
-                        "\n    expected:   " << expected <<
-                        "\n    calculated: " << calculated);
+    QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
 
-    calculated = CPI::laggedFixing(testIndex, Date(12, May, 2021), 3 * Months, CPI::Flat);
-    expected = 296.0;
+    testIndex1->addFixing(Date(1, November, 2020), 293.5);
+    testIndex1->addFixing(Date(1, December, 2020), 295.4);
+    testIndex1->addFixing(Date(1, January,  2021), 294.6);
+    testIndex1->addFixing(Date(1, February, 2021), 296.0);
+    testIndex1->addFixing(Date(1, March,    2021), 296.9);
 
-    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
-                        "failed to retrieve inflation fixing" <<
-                        "\n    expected:   " << expected <<
-                        "\n    calculated: " << calculated);
+    for (auto testIndex: { testIndex1, testIndex2 }) {
 
-    calculated = CPI::laggedFixing(testIndex, Date(25, June, 2021), 3 * Months, CPI::Flat);
-    expected = 296.9;
+        Real calculated = CPI::laggedFixing(testIndex, Date(10, February, 2021), 3 * Months, CPI::Flat);
+        Real expected = 293.5;
 
-    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
-                        "failed to retrieve inflation fixing" <<
-                        "\n    expected:   " << expected <<
-                        "\n    calculated: " << calculated);
+        BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
+                            "failed to retrieve inflation fixing" <<
+                            "\n    expected:   " << expected <<
+                            "\n    calculated: " << calculated);
+
+        calculated = CPI::laggedFixing(testIndex, Date(12, May, 2021), 3 * Months, CPI::Flat);
+        expected = 296.0;
+
+        BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
+                            "failed to retrieve inflation fixing" <<
+                            "\n    expected:   " << expected <<
+                            "\n    calculated: " << calculated);
+
+        calculated = CPI::laggedFixing(testIndex, Date(25, June, 2021), 3 * Months, CPI::Flat);
+        expected = 296.9;
+
+        BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
+                            "failed to retrieve inflation fixing" <<
+                            "\n    expected:   " << expected <<
+                            "\n    calculated: " << calculated);
+    }
 }
 
-void InflationTest::testCpiInterpolation() {
+void InflationTest::testCpiLinearInterpolation() {
     BOOST_TEST_MESSAGE("Testing CPI linear interpolation...");
 
     SavedSettings backup;
@@ -1115,22 +1124,106 @@ void InflationTest::testCpiInterpolation() {
 
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
-    auto testIndex = ext::make_shared<UKRPI>(false);
-    testIndex->addFixing(Date(1, November, 2020), 293.5);
-    testIndex->addFixing(Date(1, December, 2020), 295.4);
-    testIndex->addFixing(Date(1, January,  2021), 294.6);
-    testIndex->addFixing(Date(1, February, 2021), 296.0);
-    testIndex->addFixing(Date(1, March,    2021), 296.9);
+    QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
 
-    Real calculated = CPI::laggedFixing(testIndex, Date(10, February, 2021), 3 * Months, CPI::Linear);
-    Real expected = 293.5 * (19/28.0) + 295.4 * (9/28.0);
+    auto testIndex1 = ext::shared_ptr<UKRPI>(new UKRPI(false));
+    auto testIndex2 = ext::shared_ptr<UKRPI>(new UKRPI(true));
+
+    QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
+
+    testIndex1->addFixing(Date(1, November, 2020), 293.5);
+    testIndex1->addFixing(Date(1, December, 2020), 295.4);
+    testIndex1->addFixing(Date(1, January,  2021), 294.6);
+    testIndex1->addFixing(Date(1, February, 2021), 296.0);
+    testIndex1->addFixing(Date(1, March,    2021), 296.9);
+
+    for (auto testIndex : { testIndex1, testIndex2 }) {
+        Real calculated = CPI::laggedFixing(testIndex, Date(10, February, 2021), 3 * Months, CPI::Linear);
+        Real expected = 293.5 * (19/28.0) + 295.4 * (9/28.0);
+
+        BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
+                            "failed to retrieve inflation fixing" <<
+                            "\n    expected:   " << expected <<
+                            "\n    calculated: " << calculated);
+
+        calculated = CPI::laggedFixing(testIndex, Date(12, May, 2021), 3 * Months, CPI::Linear);
+        expected = 296.0 * (20/31.0) + 296.9 * (11/31.0);
+
+        BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
+                            "failed to retrieve inflation fixing" <<
+                            "\n    expected:   " << expected <<
+                            "\n    calculated: " << calculated);
+
+        // this would require April's fixing
+        BOOST_CHECK_THROW(
+                          calculated = CPI::laggedFixing(testIndex, Date(25, June, 2021), 3 * Months, CPI::Linear),
+                          Error);
+
+        // however, this is a special case
+        calculated = CPI::laggedFixing(testIndex, Date(1, June, 2021), 3 * Months, CPI::Linear);
+        expected = 296.9;
+
+        BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
+                            "failed to retrieve inflation fixing" <<
+                            "\n    expected:   " << expected <<
+                            "\n    calculated: " << calculated);
+    }
+}
+
+void InflationTest::testCpiAsIndexInterpolation() {
+    BOOST_TEST_MESSAGE("Testing CPI as-index interpolation...");
+
+    SavedSettings backup;
+    IndexHistoryCleaner cleaner;
+
+    Date today = Date(10, February, 2022);
+    Settings::instance().evaluationDate() = today;
+
+    // AsIndex requires a term structure, even for fixings in the past
+    std::vector<Date> dates = { today - 3*Months, today + 5*Years };
+    std::vector<Rate> rates = { 0.02, 0.02 };
+    Handle<ZeroInflationTermStructure> mock_curve(
+            ext::make_shared<ZeroInflationCurve>(today, TARGET(), Actual360(),
+                                                 3 * Months, Monthly, dates, rates));
+
+    QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+
+    auto testIndex1 = ext::shared_ptr<UKRPI>(new UKRPI(false, mock_curve));
+    auto testIndex2 = ext::shared_ptr<UKRPI>(new UKRPI(true, mock_curve));
+
+    QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
+
+    testIndex1->addFixing(Date(1, November, 2020), 293.5);
+    testIndex1->addFixing(Date(1, December, 2020), 295.4);
+    testIndex1->addFixing(Date(1, January,  2021), 294.6);
+    testIndex1->addFixing(Date(1, February, 2021), 296.0);
+    testIndex1->addFixing(Date(1, March,    2021), 296.9);
+
+    Real calculated = CPI::laggedFixing(testIndex1, Date(10, February, 2021), 3 * Months, CPI::AsIndex);
+    Real expected = 293.5;
 
     BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
                         "failed to retrieve inflation fixing" <<
                         "\n    expected:   " << expected <<
                         "\n    calculated: " << calculated);
 
-    calculated = CPI::laggedFixing(testIndex, Date(12, May, 2021), 3 * Months, CPI::Linear);
+    calculated = CPI::laggedFixing(testIndex2, Date(10, February, 2021), 3 * Months, CPI::AsIndex);
+    expected = 293.5 * (19/28.0) + 295.4 * (9/28.0);
+
+    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
+                        "failed to retrieve inflation fixing" <<
+                        "\n    expected:   " << expected <<
+                        "\n    calculated: " << calculated);
+
+    calculated = CPI::laggedFixing(testIndex1, Date(12, May, 2021), 3 * Months, CPI::AsIndex);
+    expected = 296.0;
+
+    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
+                        "failed to retrieve inflation fixing" <<
+                        "\n    expected:   " << expected <<
+                        "\n    calculated: " << calculated);
+
+    calculated = CPI::laggedFixing(testIndex2, Date(12, May, 2021), 3 * Months, CPI::AsIndex);
     expected = 296.0 * (20/31.0) + 296.9 * (11/31.0);
 
     BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
@@ -1138,13 +1231,7 @@ void InflationTest::testCpiInterpolation() {
                         "\n    expected:   " << expected <<
                         "\n    calculated: " << calculated);
 
-    // this would require April's fixing
-    BOOST_CHECK_THROW(
-        calculated = CPI::laggedFixing(testIndex, Date(25, June, 2021), 3 * Months, CPI::Linear),
-        Error);
-
-    // however, this is a special case
-    calculated = CPI::laggedFixing(testIndex, Date(1, June, 2021), 3 * Months, CPI::Linear);
+    calculated = CPI::laggedFixing(testIndex1, Date(25, June, 2021), 3 * Months, CPI::AsIndex);
     expected = 296.9;
 
     BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
@@ -1152,6 +1239,18 @@ void InflationTest::testCpiInterpolation() {
                         "\n    expected:   " << expected <<
                         "\n    calculated: " << calculated);
 
+    // this would require April's fixing
+    BOOST_CHECK_THROW(calculated = CPI::laggedFixing(testIndex2, Date(25, June, 2021), 3 * Months, CPI::AsIndex),
+                      Error);
+
+    // however, this is a special case
+    calculated = CPI::laggedFixing(testIndex2, Date(1, June, 2021), 3 * Months, CPI::AsIndex);
+    expected = 296.9;
+
+    BOOST_CHECK_MESSAGE(std::fabs(calculated-expected) < 1e-8,
+                        "failed to retrieve inflation fixing" <<
+                        "\n    expected:   " << expected <<
+                        "\n    calculated: " << calculated);
 }
 
 test_suite* InflationTest::suite() {
@@ -1169,7 +1268,8 @@ test_suite* InflationTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testYYTermStructure));
 
     suite->add(QUANTLIB_TEST_CASE(&InflationTest::testCpiFlatInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testCpiInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testCpiLinearInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InflationTest::testCpiAsIndexInterpolation));
 
     return suite;
 }
