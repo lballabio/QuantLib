@@ -41,8 +41,7 @@ namespace QuantLib {
     class EurLiborSwapIsdaFixA : public SwapIndex {
       public:
         EurLiborSwapIsdaFixA(const Period& tenor,
-                             const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+                             const Handle<YieldTermStructure>& h = {});
         EurLiborSwapIsdaFixA(const Period& tenor,
                              const Handle<YieldTermStructure>& forwarding,
                              const Handle<YieldTermStructure>& discounting);
@@ -61,8 +60,7 @@ namespace QuantLib {
     class EurLiborSwapIsdaFixB : public SwapIndex {
       public:
         EurLiborSwapIsdaFixB(const Period& tenor,
-                             const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+                             const Handle<YieldTermStructure>& h = {});
         EurLiborSwapIsdaFixB(const Period& tenor,
                              const Handle<YieldTermStructure>& forwarding,
                              const Handle<YieldTermStructure>& discounting);
@@ -79,8 +77,7 @@ namespace QuantLib {
     class EurLiborSwapIfrFix : public SwapIndex {
       public:
         EurLiborSwapIfrFix(const Period& tenor,
-                           const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+                           const Handle<YieldTermStructure>& h = {});
         EurLiborSwapIfrFix(const Period& tenor,
                            const Handle<YieldTermStructure>& forwarding,
                            const Handle<YieldTermStructure>& discounting);

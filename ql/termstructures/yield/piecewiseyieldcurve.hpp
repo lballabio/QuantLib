@@ -76,10 +76,10 @@ namespace QuantLib {
             const Date& referenceDate,
             std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
             const DayCounter& dayCounter,
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>(),
-            const Interpolator& i = Interpolator(),
-            bootstrap_type bootstrap = bootstrap_type())
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& i = {},
+            bootstrap_type bootstrap = {})
         : base_curve(referenceDate, dayCounter, jumps, jumpDates, i),
           instruments_(std::move(instruments)), accuracy_(1.0e-12),
           bootstrap_(std::move(bootstrap)) {
@@ -92,7 +92,7 @@ namespace QuantLib {
                             const Interpolator& i,
                             bootstrap_type bootstrap = bootstrap_type())
         : base_curve(
-              referenceDate, dayCounter, std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+              referenceDate, dayCounter, {}, {}, i),
           instruments_(std::move(instruments)), accuracy_(1.0e-12),
           bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
@@ -103,10 +103,7 @@ namespace QuantLib {
                             const DayCounter& dayCounter,
                             bootstrap_type bootstrap)
         : base_curve(referenceDate,
-                     dayCounter,
-                     std::vector<Handle<Quote> >(),
-                     std::vector<Date>(),
-                     Interpolator()),
+                     dayCounter),
           instruments_(std::move(instruments)), accuracy_(1.0e-12),
           bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
@@ -117,10 +114,10 @@ namespace QuantLib {
             const Calendar& calendar,
             std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
             const DayCounter& dayCounter,
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>(),
-            const Interpolator& i = Interpolator(),
-            bootstrap_type bootstrap = bootstrap_type())
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& i = {},
+            bootstrap_type bootstrap = {})
         : base_curve(settlementDays, calendar, dayCounter, jumps, jumpDates, i),
           instruments_(std::move(instruments)), accuracy_(1.0e-12),
           bootstrap_(std::move(bootstrap)) {
@@ -136,8 +133,8 @@ namespace QuantLib {
         : base_curve(settlementDays,
                      calendar,
                      dayCounter,
-                     std::vector<Handle<Quote> >(),
-                     std::vector<Date>(),
+                     {},
+                     {},
                      i),
           instruments_(std::move(instruments)), accuracy_(1.0e-12),
           bootstrap_(std::move(bootstrap)) {
@@ -151,9 +148,7 @@ namespace QuantLib {
                                                                   instruments,
                const DayCounter& dayCounter,
                const bootstrap_type& bootstrap)
-        : base_curve(settlementDays, calendar, dayCounter,
-                     std::vector<Handle<Quote> >(), std::vector<Date>(),
-                     Interpolator()),
+        : base_curve(settlementDays, calendar, dayCounter),
           instruments_(instruments),
           accuracy_(1.0e-12), bootstrap_(bootstrap) {
             bootstrap_.setup(this);

@@ -43,8 +43,7 @@ namespace QuantLib {
     class Zibor : public IborIndex {
       public:
         Zibor(const Period& tenor,
-              const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>())
+              const Handle<YieldTermStructure>& h = {})
         : IborIndex("Zibor", tenor, 2, CHFCurrency(),
                 Switzerland(), ModifiedFollowing, false,
                 Actual360(), h) {}
