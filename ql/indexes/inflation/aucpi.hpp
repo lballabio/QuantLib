@@ -33,22 +33,25 @@ namespace QuantLib {
     //! AU CPI index (either quarterly or annual)
     class AUCPI : public ZeroInflationIndex {
       public:
-        QL_DEPRECATED_III_CONSTRUCTOR
+        AUCPI(Frequency frequency,
+              bool revised,
+              const Handle<ZeroInflationTermStructure>& ts = {})
+        : ZeroInflationIndex(
+              "CPI", AustraliaRegion(), revised, frequency, Period(2, Months), AUDCurrency(), ts) {}
+
+        /*! \deprecated Use the constructor without the "interpolated" parameter.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         AUCPI(Frequency frequency,
               bool revised,
               bool interpolated,
-              const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+              const Handle<ZeroInflationTermStructure>& ts = {})
         : AUCPI(frequency, revised, ts) {
             QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
             interpolated_ = interpolated;
             QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
         }
-
-        AUCPI(Frequency frequency,
-              bool revised,
-              const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
-        : ZeroInflationIndex(
-              "CPI", AustraliaRegion(), revised, frequency, Period(2, Months), AUDCurrency(), ts) {}
     };
 
 
@@ -58,7 +61,7 @@ namespace QuantLib {
         YYAUCPI(Frequency frequency,
                 bool revised,
                 bool interpolated,
-                const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+                const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_CPI",
                             AustraliaRegion(),
                             revised,
@@ -77,7 +80,7 @@ namespace QuantLib {
         YYAUCPIr(Frequency frequency,
                  bool revised,
                  bool interpolated,
-                 const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+                 const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YYR_CPI",
                             AustraliaRegion(),
                             revised,

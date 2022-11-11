@@ -41,19 +41,6 @@
     QL_DEPRECATED_ENABLE_WARNING
 
 
-#define QL_DEPRECATED_III_CONSTRUCTOR \
-    /**/                              \
-    QL_DEPRECATED
-
-#define QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR \
-    /**/                                              \
-    QL_DEPRECATED_DISABLE_WARNING_III
-
-#define QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR \
-    /**/                                             \
-    QL_DEPRECATED_ENABLE_WARNING_III
-
-
 #define QL_DEPRECATED_III_INTERPOLATED_METHOD \
     /**/                                      \
     QL_DEPRECATED
@@ -113,28 +100,21 @@ namespace QuantLib {
     //! Base class for inflation-rate indexes,
     class InflationIndex : public Index, public Observer {
       public:
-        /*! An inflation index may return interpolated
-         values.  These are linearly interpolated
-         values with act/act convention within a period.
-         Note that stored "fixings" are always flat (constant)
-         within a period and interpolated as needed.  This
-         is because interpolation adds an addional availability
-         lag (because you always need the next period to
-         give the previous period's value)
-         and enables storage of the most recent uninterpolated value.
-         */
-        QL_DEPRECATED_III_CONSTRUCTOR
         InflationIndex(std::string familyName,
                        Region region,
                        bool revised,
-                       bool interpolated,
                        Frequency frequency,
                        const Period& availabilitiyLag,
                        Currency currency);
 
+        /*! \deprecated Use the constructor without the "interpolated" parameter.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         InflationIndex(std::string familyName,
                        Region region,
                        bool revised,
+                       bool interpolated,
                        Frequency frequency,
                        const Period& availabilitiyLag,
                        Currency currency);
@@ -223,23 +203,24 @@ namespace QuantLib {
     //! Base class for zero inflation indices.
     class ZeroInflationIndex : public InflationIndex {
       public:
-        //! Always use the evaluation date as the reference date
-        QL_DEPRECATED_III_CONSTRUCTOR
         ZeroInflationIndex(
             const std::string& familyName,
             const Region& region,
             bool revised,
-            bool interpolated,
             Frequency frequency,
             const Period& availabilityLag,
             const Currency& currency,
             Handle<ZeroInflationTermStructure> ts = Handle<ZeroInflationTermStructure>());
 
-        //! Always use the evaluation date as the reference date
+        /*! \deprecated Use the constructor without the "interpolated" parameter.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         ZeroInflationIndex(
             const std::string& familyName,
             const Region& region,
             bool revised,
+            bool interpolated,
             Frequency frequency,
             const Period& availabilityLag,
             const Currency& currency,

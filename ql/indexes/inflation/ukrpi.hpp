@@ -33,20 +33,22 @@ namespace QuantLib {
     //! UK Retail Price Inflation Index
     class UKRPI : public ZeroInflationIndex {
       public:
-        QL_DEPRECATED_III_CONSTRUCTOR
+        explicit UKRPI(const Handle<ZeroInflationTermStructure>& ts = {})
+        : ZeroInflationIndex(
+              "RPI", UKRegion(), false, Monthly, Period(1, Months), GBPCurrency(), ts) {}
+
+        /*! \deprecated Use the constructor without the "interpolated" parameter.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         explicit UKRPI(
             bool interpolated,
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+            const Handle<ZeroInflationTermStructure>& ts = {})
         : UKRPI(ts) {
             QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
             interpolated_ = interpolated;
             QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
         }
-
-        explicit UKRPI(
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
-        : ZeroInflationIndex(
-              "RPI", UKRegion(), false, Monthly, Period(1, Months), GBPCurrency(), ts) {}
     };
 
 
@@ -55,7 +57,7 @@ namespace QuantLib {
       public:
         explicit YYUKRPI(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_RPI",
                             UKRegion(),
                             false,
@@ -73,7 +75,7 @@ namespace QuantLib {
       public:
         explicit YYUKRPIr(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YYR_RPI",
                             UKRegion(),
                             false,

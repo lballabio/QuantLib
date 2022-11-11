@@ -33,20 +33,22 @@ namespace QuantLib {
     //! FR HICP index
     class FRHICP : public ZeroInflationIndex {
       public:
-        QL_DEPRECATED_III_CONSTRUCTOR
+        explicit FRHICP(const Handle<ZeroInflationTermStructure>& ts = {})
+        : ZeroInflationIndex(
+              "HICP", FranceRegion(), false, Monthly, Period(1, Months), EURCurrency(), ts) {}
+
+        /*! \deprecated Use the constructor without the "interpolated" parameter.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         explicit FRHICP(
             bool interpolated,
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+            const Handle<ZeroInflationTermStructure>& ts = {})
         : FRHICP(ts) {
             QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
             interpolated_ = interpolated;
             QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
         }
-
-        explicit FRHICP(
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
-        : ZeroInflationIndex(
-              "HICP", FranceRegion(), false, Monthly, Period(1, Months), EURCurrency(), ts) {}
     };
 
 
@@ -55,7 +57,7 @@ namespace QuantLib {
       public:
         explicit YYFRHICP(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_HICP",
                             FranceRegion(),
                             false,
@@ -73,7 +75,7 @@ namespace QuantLib {
       public:
         explicit YYFRHICPr(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YYR_HICP",
                             FranceRegion(),
                             false,

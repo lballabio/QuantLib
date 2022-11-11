@@ -33,20 +33,22 @@ namespace QuantLib {
     //! South African Consumer Price Inflation Index
     class ZACPI : public ZeroInflationIndex {
       public:
-        QL_DEPRECATED_III_CONSTRUCTOR
+        explicit ZACPI(const Handle<ZeroInflationTermStructure>& ts = {})
+        : ZeroInflationIndex(
+              "CPI", ZARegion(), false, Monthly, Period(1, Months), ZARCurrency(), ts) {}
+
+        /*! \deprecated Use the constructor without the "interpolated" parameter.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         explicit ZACPI(
             bool interpolated,
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+            const Handle<ZeroInflationTermStructure>& ts = {})
         : ZACPI(ts) {
             QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
             interpolated_ = interpolated;
             QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
         }
-
-        explicit ZACPI(
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
-        : ZeroInflationIndex(
-              "CPI", ZARegion(), false, Monthly, Period(1, Months), ZARCurrency(), ts) {}
     };
 
 
@@ -55,7 +57,7 @@ namespace QuantLib {
       public:
         explicit YYZACPI(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_CPI",
                             ZARegion(),
                             false,
@@ -73,7 +75,7 @@ namespace QuantLib {
       public:
         explicit YYZACPIr(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YYR_CPI",
                             ZARegion(),
                             false,

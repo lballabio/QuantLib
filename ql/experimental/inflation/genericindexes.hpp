@@ -43,27 +43,29 @@ namespace QuantLib {
     //! Generic CPI index
     class GenericCPI : public ZeroInflationIndex {
       public:
-        QL_DEPRECATED_III_CONSTRUCTOR
-        GenericCPI(Frequency frequency,
-                   bool revised,
-                   bool interpolated,
-                   const Period &lag,
-                   const Currency &ccy,
-                   const Handle<ZeroInflationTermStructure>& ts =
-                                         Handle<ZeroInflationTermStructure>())
-        : GenericCPI(frequency, revised, lag, ccy, ts) {
-            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
-            interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
-        }
-
         GenericCPI(
             Frequency frequency,
             bool revised,
             const Period& lag,
             const Currency& ccy,
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+            const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex("CPI", GenericRegion(), revised, frequency, lag, ccy, ts) {}
+
+        /*! \deprecated Use the constructor without the "interpolated" parameter.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
+        GenericCPI(Frequency frequency,
+                   bool revised,
+                   bool interpolated,
+                   const Period &lag,
+                   const Currency &ccy,
+                   const Handle<ZeroInflationTermStructure>& ts = {})
+        : GenericCPI(frequency, revised, lag, ccy, ts) {
+            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            interpolated_ = interpolated;
+            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        }
     };
 
 
@@ -75,8 +77,7 @@ namespace QuantLib {
                      bool interpolated,
                      const Period &lag,
                      const Currency &ccy,
-                     const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                     const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_CPI",
                             GenericRegion(),
                             revised,
@@ -96,8 +97,7 @@ namespace QuantLib {
                       bool interpolated,
                       const Period &lag,
                       const Currency &ccy,
-                      const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                      const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YYR_CPI",
                             GenericRegion(),
                             revised,

@@ -33,18 +33,7 @@ namespace QuantLib {
     //! US CPI index
     class USCPI : public ZeroInflationIndex {
       public:
-        QL_DEPRECATED_III_CONSTRUCTOR
-        explicit USCPI(
-            bool interpolated,
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
-        : USCPI(ts) {
-            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
-            interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
-        }
-
-        explicit USCPI(
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        explicit USCPI(const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex("CPI",
                              USRegion(),
                              false,
@@ -52,6 +41,19 @@ namespace QuantLib {
                              Period(1, Months), // availability
                              USDCurrency(),
                              ts) {}
+
+        /*! \deprecated Use the constructor without the "interpolated" parameter.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
+        explicit USCPI(
+            bool interpolated,
+            const Handle<ZeroInflationTermStructure>& ts = {})
+        : USCPI(ts) {
+            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            interpolated_ = interpolated;
+            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        }
     };
 
 
@@ -60,7 +62,7 @@ namespace QuantLib {
       public:
         explicit YYUSCPI(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_CPI",
                             USRegion(),
                             false,
@@ -78,7 +80,7 @@ namespace QuantLib {
       public:
         explicit YYUSCPIr(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YYR_CPI",
                             USRegion(),
                             false,

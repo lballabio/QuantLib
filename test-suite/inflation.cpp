@@ -247,10 +247,10 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
 void InflationTest::testZeroIndex() {
     BOOST_TEST_MESSAGE("Testing zero inflation indices...");
 
-    QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
-
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
+
+    QL_DEPRECATED_DISABLE_WARNING
 
     EUHICP euhicp(true);
     if (euhicp.name() != "EU HICP"
@@ -266,7 +266,7 @@ void InflationTest::testZeroIndex() {
                     << euhicp.availabilityLag() << ")");
     }
 
-    UKRPI ukrpi(false);
+    UKRPI ukrpi;
     if (ukrpi.name() != "UK RPI"
         || ukrpi.frequency() != Monthly
         || ukrpi.revised()
@@ -279,6 +279,8 @@ void InflationTest::testZeroIndex() {
                     << ukrpi.interpolated() << ", "
                     << ukrpi.availabilityLag() << ")");
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     // Retrieval test.
     //----------------
@@ -302,8 +304,7 @@ void InflationTest::testZeroIndex() {
         202.7, 201.6, 203.1, 204.4, 205.4, 206.2,
         207.3, 206.1 };
 
-    bool interp = false;
-    ext::shared_ptr<UKRPI> iir(new UKRPI(interp));
+    auto iir = ext::make_shared<UKRPI>();
     for (Size i=0; i<LENGTH(fixData); i++) {
         iir->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -328,16 +329,12 @@ void InflationTest::testZeroIndex() {
             }
         }
     }
-
-    QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
 }
 
 
 
 void InflationTest::testZeroTermStructure() {
     BOOST_TEST_MESSAGE("Testing zero inflation term structure...");
-
-    QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
 
     using namespace inflation_test;
 
@@ -367,8 +364,7 @@ void InflationTest::testZeroTermStructure() {
         207.3};
 
     RelinkableHandle<ZeroInflationTermStructure> hz;
-    bool interp = false;
-    ext::shared_ptr<UKRPI> iiUKRPI(new UKRPI(interp, hz));
+    auto iiUKRPI = ext::make_shared<UKRPI>(hz);
     for (Size i=0; i<LENGTH(fixData); i++) {
         iiUKRPI->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -422,7 +418,6 @@ void InflationTest::testZeroTermStructure() {
             "ZITS zeroRate != instrument "
             << pZITS->zeroRate(zcData[i].date, observationLag, forceLinearInterpolation)
             << " vs " << zcData[i].rate/100.0
-            << " interpolation: " << ii->interpolated()
             << " forceLinearInterpolation " << forceLinearInterpolation);
         BOOST_REQUIRE_MESSAGE(std::fabs(helpers[i]->impliedQuote()
             - zcData[i].rate/100.0) < eps,
@@ -448,9 +443,11 @@ void InflationTest::testZeroTermStructure() {
     for (const auto& d : testIndex) {
         Real z = hz->zeroRate(d, Period(0, Days));
         Real t = hz->dayCounter().yearFraction(bd, d);
+        QL_DEPRECATED_DISABLE_WARNING
         if(!ii->interpolated()) // because fixing constant over period
             t = hz->dayCounter().yearFraction(bd,
                 inflationPeriod(d, ii->frequency()).first);
+        QL_DEPRECATED_ENABLE_WARNING
         Real calc = bf * pow( 1+z, t);
         if (t<=0)
             calc = ii->fixing(d,false); // still historical
@@ -521,7 +518,9 @@ void InflationTest::testZeroTermStructure() {
     // UKRPI (to save making another term structure)
 
     bool interpYES = true;
+    QL_DEPRECATED_DISABLE_WARNING
     ext::shared_ptr<UKRPI> iiUKRPIyes(new UKRPI(interpYES, hz));
+    QL_DEPRECATED_ENABLE_WARNING
     for (Size i=0; i<LENGTH(fixData);i++) {
         iiUKRPIyes->addFixing(rpiSchedule[i], fixData[i]);
     }
@@ -591,19 +590,15 @@ void InflationTest::testZeroTermStructure() {
 
     // remove circular refernce
     hz.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
-
-    QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
 }
 
 void InflationTest::testZeroIndexFutureFixing() {
     BOOST_TEST_MESSAGE("Testing that zero inflation indices forecast future fixings...");
 
-    QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
-
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
-    EUHICP euhicp(false);
+    EUHICP euhicp;
 
     Date sample_date = Date(1,December,2013);
     Real sample_fixing = 117.48;
@@ -632,8 +627,6 @@ void InflationTest::testZeroIndexFutureFixing() {
     if (retrieved)
         BOOST_ERROR("Retrieved future fixing: "
                     << "\n    returned: " << fixing);
-
-    QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
 }
 
 void InflationTest::testInterpolatedZeroTermStructure() {
@@ -1075,12 +1068,12 @@ void InflationTest::testCpiFlatInterpolation() {
 
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
-    QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+    QL_DEPRECATED_DISABLE_WARNING
 
     auto testIndex1 = ext::shared_ptr<UKRPI>(new UKRPI(false));
     auto testIndex2 = ext::shared_ptr<UKRPI>(new UKRPI(true));
 
-    QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
+    QL_DEPRECATED_ENABLE_WARNING
 
     testIndex1->addFixing(Date(1, November, 2020), 293.5);
     testIndex1->addFixing(Date(1, December, 2020), 295.4);
@@ -1124,12 +1117,12 @@ void InflationTest::testCpiLinearInterpolation() {
 
     Settings::instance().evaluationDate() = Date(10, February, 2022);
 
-    QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+    QL_DEPRECATED_DISABLE_WARNING
 
     auto testIndex1 = ext::shared_ptr<UKRPI>(new UKRPI(false));
     auto testIndex2 = ext::shared_ptr<UKRPI>(new UKRPI(true));
 
-    QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
+    QL_DEPRECATED_ENABLE_WARNING
 
     testIndex1->addFixing(Date(1, November, 2020), 293.5);
     testIndex1->addFixing(Date(1, December, 2020), 295.4);
@@ -1186,12 +1179,12 @@ void InflationTest::testCpiAsIndexInterpolation() {
             ext::make_shared<ZeroInflationCurve>(today, TARGET(), Actual360(),
                                                  3 * Months, Monthly, dates, rates));
 
-    QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
+    QL_DEPRECATED_DISABLE_WARNING
 
     auto testIndex1 = ext::shared_ptr<UKRPI>(new UKRPI(false, mock_curve));
     auto testIndex2 = ext::shared_ptr<UKRPI>(new UKRPI(true, mock_curve));
 
-    QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
+    QL_DEPRECATED_ENABLE_WARNING
 
     testIndex1->addFixing(Date(1, November, 2020), 293.5);
     testIndex1->addFixing(Date(1, December, 2020), 295.4);

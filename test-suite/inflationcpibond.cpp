@@ -78,8 +78,6 @@ namespace inflation_cpi_bond_test {
 
 
     struct CommonVars {
-
-        QL_DEPRECATED_DISABLE_WARNING_III_CONSTRUCTOR
     
         Calendar calendar;
         BusinessDayConvention convention;
@@ -115,8 +113,7 @@ namespace inflation_cpi_bond_test {
                 .withCalendar(UnitedKingdom())
                 .withConvention(ModifiedFollowing);
 
-            bool interp = false;
-            ii = ext::shared_ptr<UKRPI>(new UKRPI(interp, cpiTS));
+            ii = ext::make_shared<UKRPI>(cpiTS);
 
             Real fixData[] = {
                 206.1, 207.3, 208.0, 208.9, 209.7, 210.9,
@@ -171,8 +168,6 @@ namespace inflation_cpi_bond_test {
             // break circular references and allow curves to be destroyed
             cpiTS.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
         }
-    
-        QL_DEPRECATED_ENABLE_WARNING_III_CONSTRUCTOR
     };
 
 }

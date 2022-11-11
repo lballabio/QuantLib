@@ -34,18 +34,7 @@ namespace QuantLib {
     //! EU HICP index
     class EUHICP : public ZeroInflationIndex {
       public:
-        QL_DEPRECATED_III_CONSTRUCTOR
-        explicit EUHICP(
-            bool interpolated,
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
-        : EUHICP(ts) {
-            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
-            interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
-        }
-
-        explicit EUHICP(
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        explicit EUHICP(const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex("HICP",
                              EURegion(),
                              false,
@@ -53,23 +42,25 @@ namespace QuantLib {
                              Period(1, Months), // availability
                              EURCurrency(),
                              ts) {}
+
+        /*! \deprecated Use the constructor without the "interpolated" parameter.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
+        explicit EUHICP(
+            bool interpolated,
+            const Handle<ZeroInflationTermStructure>& ts = {})
+        : EUHICP(ts) {
+            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            interpolated_ = interpolated;
+            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        }
     };
 
     //! EU HICPXT index
     class EUHICPXT : public ZeroInflationIndex {
       public:
-        QL_DEPRECATED_III_CONSTRUCTOR
-        explicit EUHICPXT(
-            bool interpolated,
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
-        : EUHICPXT(ts) {
-            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
-            interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
-        }
-
-        explicit EUHICPXT(
-            const Handle<ZeroInflationTermStructure>& ts = Handle<ZeroInflationTermStructure>())
+        explicit EUHICPXT(const Handle<ZeroInflationTermStructure>& ts = {})
         : ZeroInflationIndex("HICPXT",
                              EURegion(),
                              false,
@@ -77,6 +68,19 @@ namespace QuantLib {
                              Period(1, Months), // availability
                              EURCurrency(),
                              ts) {}
+
+        /*! \deprecated Use the constructor without the "interpolated" parameter.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
+        explicit EUHICPXT(
+            bool interpolated,
+            const Handle<ZeroInflationTermStructure>& ts = {})
+        : EUHICPXT(ts) {
+            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            interpolated_ = interpolated;
+            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        }
     };
 
 
@@ -85,7 +89,7 @@ namespace QuantLib {
       public:
         explicit YYEUHICP(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_HICP",
                             EURegion(),
                             false,
@@ -102,7 +106,7 @@ namespace QuantLib {
       public:
         explicit YYEUHICPXT(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_HICPXT",
                             EURegion(),
                             false,
@@ -120,7 +124,7 @@ namespace QuantLib {
       public:
         explicit YYEUHICPr(
             bool interpolated,
-            const Handle<YoYInflationTermStructure>& ts = Handle<YoYInflationTermStructure>())
+            const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YYR_HICP",
                             EURegion(),
                             false,
