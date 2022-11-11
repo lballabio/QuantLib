@@ -73,7 +73,9 @@ namespace QuantLib {
                      destroyed before the pointed object does.
         */
         //@{
-        explicit Handle(const ext::shared_ptr<T>& p = ext::shared_ptr<T>(),
+        Handle()
+        : Handle(ext::shared_ptr<T>()) {}
+        explicit Handle(const ext::shared_ptr<T>& p,
                         bool registerAsObserver = true)
         : link_(new Link(p,registerAsObserver)) {}
         //@}

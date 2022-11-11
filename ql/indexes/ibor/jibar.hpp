@@ -40,8 +40,7 @@ namespace QuantLib {
     class Jibar : public IborIndex {
       public:
         Jibar(const Period& tenor,
-              const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>())
+              const Handle<YieldTermStructure>& h = {})
         : IborIndex("Jibar", tenor, 0, ZARCurrency(),
                 SouthAfrica(), ModifiedFollowing, false,
                 Actual365Fixed(), h) {}

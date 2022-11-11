@@ -42,9 +42,9 @@ namespace QuantLib {
             const std::vector<Probability>& probabilities,
             const DayCounter& dayCounter,
             const Calendar& calendar = Calendar(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>(),
-            const Interpolator& interpolator = Interpolator());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& interpolator = {});
         InterpolatedSurvivalProbabilityCurve(
             const std::vector<Date>& dates,
             const std::vector<Probability>& probabilities,
@@ -71,22 +71,22 @@ namespace QuantLib {
       protected:
         InterpolatedSurvivalProbabilityCurve(
             const DayCounter&,
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>(),
-            const Interpolator& interpolator = Interpolator());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& interpolator = {});
         InterpolatedSurvivalProbabilityCurve(
             const Date& referenceDate,
             const DayCounter&,
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>(),
-            const Interpolator& interpolator = Interpolator());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& interpolator = {});
         InterpolatedSurvivalProbabilityCurve(
             Natural settlementDays,
             const Calendar&,
             const DayCounter&,
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>(),
-            const Interpolator& interpolator = Interpolator());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& interpolator = {});
         //! \name DefaultProbabilityTermStructure implementation
         //@{
         Probability survivalProbabilityImpl(Time) const override;

@@ -31,8 +31,7 @@ namespace QuantLib {
     //! %Sofr (Secured Overnight Financing Rate) index.
     class Sofr : public OvernightIndex {
       public:
-        explicit Sofr(const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+        explicit Sofr(const Handle<YieldTermStructure>& h = {});
     };
 
 }
