@@ -29,6 +29,7 @@
 #include <ql/handle.hpp>
 #include <ql/index.hpp>
 #include <ql/indexes/region.hpp>
+#include <ql/termstructures/inflationtermstructure.hpp>
 
 
 #define QL_DEPRECATED_DISABLE_WARNING_III \
@@ -80,9 +81,6 @@
 
 
 namespace QuantLib {
-
-    class ZeroInflationTermStructure;
-    class YoYInflationTermStructure;
 
     class ZeroInflationIndex;
 

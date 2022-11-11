@@ -21,7 +21,6 @@
 #include <ql/instruments/inflationcapfloor.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <utility>
 

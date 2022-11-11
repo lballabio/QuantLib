@@ -22,7 +22,6 @@
 #include <ql/cashflows/zeroinflationcashflow.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
-#include <ql/termstructures/inflationtermstructure.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <utility>
 
