@@ -41,19 +41,6 @@
     QL_DEPRECATED_ENABLE_WARNING
 
 
-#define QL_DEPRECATED_III_INTERPOLATED_MEMBER \
-    /**/                                      \
-    QL_DEPRECATED
-
-#define QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER \
-    /**/                                                      \
-    QL_DEPRECATED_DISABLE_WARNING_III
-
-#define QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER \
-    /**/                                                     \
-    QL_DEPRECATED_ENABLE_WARNING_III
-
-
 namespace QuantLib {
 
     class ZeroInflationIndex;
@@ -185,7 +172,13 @@ namespace QuantLib {
         Period availabilityLag_;
         Currency currency_;
 
-        QL_DEPRECATED_III_INTERPOLATED_MEMBER
+        /*! \deprecated Don't use this data member.  Indexes should
+                        only be asked monthly fixings (by convention,
+                        on the first of the month); interpolation is
+                        delegated to coupons.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         bool interpolated_ = false;
 
       private:

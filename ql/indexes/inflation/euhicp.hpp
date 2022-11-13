@@ -51,9 +51,9 @@ namespace QuantLib {
             bool interpolated,
             const Handle<ZeroInflationTermStructure>& ts = {})
         : EUHICP(ts) {
-            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            QL_DEPRECATED_DISABLE_WARNING
             interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+            QL_DEPRECATED_ENABLE_WARNING
         }
     };
 
@@ -77,9 +77,9 @@ namespace QuantLib {
             bool interpolated,
             const Handle<ZeroInflationTermStructure>& ts = {})
         : EUHICPXT(ts) {
-            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            QL_DEPRECATED_DISABLE_WARNING
             interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+            QL_DEPRECATED_ENABLE_WARNING
         }
     };
 

@@ -62,9 +62,9 @@ namespace QuantLib {
                    const Currency &ccy,
                    const Handle<ZeroInflationTermStructure>& ts = {})
         : GenericCPI(frequency, revised, lag, ccy, ts) {
-            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            QL_DEPRECATED_DISABLE_WARNING
             interpolated_ = interpolated;
-            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+            QL_DEPRECATED_ENABLE_WARNING
         }
     };
 

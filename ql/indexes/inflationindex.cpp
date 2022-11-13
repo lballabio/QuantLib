@@ -76,15 +76,15 @@ namespace QuantLib {
                      frequency,
                      availabilityLag,
                      std::move(currency)) {
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+        QL_DEPRECATED_DISABLE_WARNING
         interpolated_ = interpolated;
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     /* gcc complains in the constructor about the deprecated call of initializing
      * `bool InflationIndex::interpolated_ = false;` that's why we need to disable the warning here.
      */
-    QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+    QL_DEPRECATED_DISABLE_WARNING
     InflationIndex::InflationIndex(std::string familyName,
                                    Region region,
                                    bool revised,
@@ -97,12 +97,12 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(name()));
     }
-    QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+    QL_DEPRECATED_ENABLE_WARNING
 
     bool InflationIndex::interpolated() const {
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+        QL_DEPRECATED_DISABLE_WARNING
         return interpolated_;
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     Calendar InflationIndex::fixingCalendar() const {
@@ -137,9 +137,9 @@ namespace QuantLib {
                                            Handle<ZeroInflationTermStructure> zeroInflation)
     : ZeroInflationIndex(
           familyName, region, revised, frequency, availabilityLag, currency, std::move(zeroInflation)) {
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+        QL_DEPRECATED_DISABLE_WARNING
         interpolated_ = interpolated;
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
     ZeroInflationIndex::ZeroInflationIndex(const std::string& familyName,
@@ -164,9 +164,9 @@ namespace QuantLib {
             QL_REQUIRE(I1 != Null<Real>(),
                        "Missing " << name() << " fixing for " << p.first);
 
-            QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+            QL_DEPRECATED_DISABLE_WARNING
             if (interpolated_ && fixingDate > p.first) {
-            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+            QL_DEPRECATED_ENABLE_WARNING
 
                 Real I2 = ts[p.second+1];
                 QL_REQUIRE(I2 != Null<Real>(),
@@ -205,13 +205,13 @@ namespace QuantLib {
             inflationPeriod(todayMinusLag, frequency_).first-1;
         Date latestNeededDate = fixingDate;
 
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+        QL_DEPRECATED_DISABLE_WARNING
         if (interpolated_) { // might need the next one too
-            QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
             std::pair<Date,Date> p = inflationPeriod(fixingDate, frequency_);
             if (fixingDate > p.first)
                 latestNeededDate += Period(frequency_);
         }
+        QL_DEPRECATED_ENABLE_WARNING
 
         if (latestNeededDate <= historicalFixingKnown) {
             // the fixing date is well before the availability lag, so
@@ -241,7 +241,7 @@ namespace QuantLib {
 
         std::pair<Date, Date> p = inflationPeriod(fixingDate, frequency_);
 
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+        QL_DEPRECATED_DISABLE_WARNING
 
         Date firstDateInPeriod = p.first;
         Rate Z1 = zeroInflation_->zeroRate(firstDateInPeriod, Period(0,Days), false);
@@ -267,7 +267,7 @@ namespace QuantLib {
             return I1;
         }
 
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        QL_DEPRECATED_ENABLE_WARNING
     }
 
 
@@ -277,9 +277,9 @@ namespace QuantLib {
          * error...  */
         auto clonedIndex = ext::make_shared<ZeroInflationIndex>(
             familyName_, region_, revised_, frequency_, availabilityLag_, currency_, h);
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_MEMBER
+        QL_DEPRECATED_DISABLE_WARNING
         clonedIndex->interpolated_ = interpolated_;
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_MEMBER
+        QL_DEPRECATED_ENABLE_WARNING
         return clonedIndex;
     }
 
