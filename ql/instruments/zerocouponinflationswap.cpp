@@ -53,7 +53,6 @@ namespace QuantLib {
       observationInterpolation_(observationInterpolation), adjustInfObsDates_(adjustInfObsDates),
       infCalendar_(std::move(infCalendar)), infConvention_(infConvention),
       dayCounter_(std::move(dayCounter)) {
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
         // first check compatibility of index and swap definitions
         if (detail::CPI::effectiveInterpolationType(infIndex_, observationInterpolation_) == CPI::Linear) {
             Period pShift(infIndex_->frequency());
@@ -68,7 +67,6 @@ namespace QuantLib {
                            << " availability lag " << infIndex_->availabilityLag()
                            << " versus obs lag = " << observationLag_);
         }
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
 
         if (infCalendar_ == Calendar())
             infCalendar_ = fixCalendar_;

@@ -41,19 +41,6 @@
     QL_DEPRECATED_ENABLE_WARNING
 
 
-#define QL_DEPRECATED_III_INTERPOLATED_METHOD \
-    /**/                                      \
-    QL_DEPRECATED
-
-#define QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD \
-    /**/                                                      \
-    QL_DEPRECATED_DISABLE_WARNING_III
-
-#define QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD \
-    /**/                                                     \
-    QL_DEPRECATED_ENABLE_WARNING_III
-
-
 #define QL_DEPRECATED_III_INTERPOLATED_MEMBER \
     /**/                                      \
     QL_DEPRECATED
@@ -168,7 +155,13 @@ namespace QuantLib {
             the mid-period extrapolated value.
         */
 
-        QL_DEPRECATED_III_INTERPOLATED_METHOD
+        /*! \deprecated Don't use this method.  Indexes should only be
+                        asked monthly fixings (by convention, on the
+                        first of the month); interpolation is
+                        delegated to coupons.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         bool interpolated() const;
 
         Frequency frequency() const;

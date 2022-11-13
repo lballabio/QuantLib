@@ -177,9 +177,9 @@ void checkSeasonality(const Handle<ZeroInflationTermStructure>& hz,
     // These are the expected fixings
     vector<Rate> expectedSeasonalityFixings(12, 1.0);
     for (Size i = 0; i < expectedSeasonalityFixings.size(); ++i) {
-        QL_DEPRECATED_DISABLE_WARNING_III_INTERPOLATED_METHOD
+        QL_DEPRECATED_DISABLE_WARNING
         if (!ii->interpolated()) {
-        QL_DEPRECATED_ENABLE_WARNING_III_INTERPOLATED_METHOD
+        QL_DEPRECATED_ENABLE_WARNING
             expectedSeasonalityFixings[i] =
                 ii->fixing(fixingDates[i], true) * seasonalityFactors[i] / baseSeasonality;
         } else {
