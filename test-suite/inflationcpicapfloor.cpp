@@ -19,6 +19,8 @@
 */
 
 
+#include "inflationcpicapfloor.hpp"
+#include "utilities.hpp"
 #include <ql/types.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
@@ -34,16 +36,11 @@
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
-
-#include "utilities.hpp"
-
-#include "inflationcpicapfloor.hpp"
 #include <ql/cashflows/cpicoupon.hpp>
 #include <ql/cashflows/cpicouponpricer.hpp>
 #include <ql/instruments/cpiswap.hpp>
 #include <ql/instruments/bonds/cpibond.hpp>
 #include <ql/instruments/cpicapfloor.hpp>
-
 #include <ql/experimental/inflation/cpicapfloortermpricesurface.hpp>
 #include <ql/experimental/inflation/cpicapfloorengines.hpp>
 
@@ -70,8 +67,6 @@ namespace inflation_cpi_capfloor_test {
         const DayCounter &dc,
         const Handle<YieldTermStructure>& discountCurve) {
 
-        QL_DEPRECATED_DISABLE_WARNING_III
-
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
             Date maturity = iiData[i].date;
@@ -84,8 +79,6 @@ namespace inflation_cpi_capfloor_test {
         }
 
         return instruments;
-        
-        QL_DEPRECATED_ENABLE_WARNING_III
     }
 
 
@@ -326,8 +319,6 @@ namespace inflation_cpi_capfloor_test {
 void InflationCPICapFloorTest::cpicapfloorpricesurface() {
     BOOST_TEST_MESSAGE("Checking CPI cap/floor against price surface...");
     
-    QL_DEPRECATED_DISABLE_WARNING_III
-
     using namespace inflation_cpi_capfloor_test;
     
     CommonVars common;
@@ -391,15 +382,11 @@ void InflationCPICapFloorTest::cpicapfloorpricesurface() {
 
     // remove circular refernce
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
-
-    QL_DEPRECATED_ENABLE_WARNING_III
 }
 
 
 void InflationCPICapFloorTest::cpicapfloorpricer() {
     BOOST_TEST_MESSAGE("Checking CPI cap/floor pricer...");
-
-    QL_DEPRECATED_DISABLE_WARNING_III
     
     using namespace inflation_cpi_capfloor_test;
 
@@ -460,8 +447,6 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
 
     // remove circular refernce
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
-
-    QL_DEPRECATED_ENABLE_WARNING_III
 }
 
 

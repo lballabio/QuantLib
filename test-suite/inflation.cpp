@@ -20,7 +20,6 @@
 
 #include "inflation.hpp"
 #include "utilities.hpp"
-
 #include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
@@ -33,11 +32,9 @@
 #include <ql/time/calendars/unitedkingdom.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/schedule.hpp>
-
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/termstructures/inflation/inflationhelpers.hpp>
-
 #include <ql/cashflows/yoyinflationcoupon.hpp>
 #include <ql/cashflows/inflationcouponpricer.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
@@ -80,8 +77,6 @@ namespace inflation_test {
         std::function<ext::shared_ptr<BootstrapHelper<T> >(const Handle<Quote>&, const Date&)>
             makeHelper) {
 
-        QL_DEPRECATED_DISABLE_WARNING_III
-
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Datum datum : iiData) {
             Date maturity = datum.date;
@@ -91,8 +86,6 @@ namespace inflation_test {
         }
 
         return instruments;
-
-        QL_DEPRECATED_ENABLE_WARNING_III
     }
 }
 

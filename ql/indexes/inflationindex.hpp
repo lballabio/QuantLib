@@ -31,16 +31,6 @@
 #include <ql/indexes/region.hpp>
 #include <ql/termstructures/inflationtermstructure.hpp>
 
-
-#define QL_DEPRECATED_DISABLE_WARNING_III \
-    /**/                                  \
-    QL_DEPRECATED_DISABLE_WARNING
-
-#define QL_DEPRECATED_ENABLE_WARNING_III \
-    /**/                                 \
-    QL_DEPRECATED_ENABLE_WARNING
-
-
 namespace QuantLib {
 
     class ZeroInflationIndex;

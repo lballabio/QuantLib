@@ -61,8 +61,6 @@ namespace inflation_cpi_swap_test {
         const DayCounter &dc,
         const Handle<YieldTermStructure>& discountCurve) {
 
-        QL_DEPRECATED_DISABLE_WARNING_III
-
         std::vector<ext::shared_ptr<BootstrapHelper<T> > > instruments;
         for (Size i=0; i<N; i++) {
             Date maturity = iiData[i].date;
@@ -75,8 +73,6 @@ namespace inflation_cpi_swap_test {
         }
 
         return instruments;
-
-        QL_DEPRECATED_ENABLE_WARNING_III
     }
 
 
@@ -376,8 +372,6 @@ void CPISwapTest::consistency() {
 void CPISwapTest::zciisconsistency() {
     BOOST_TEST_MESSAGE("Checking CPI swap against zero-coupon inflation swap...");
 
-    QL_DEPRECATED_DISABLE_WARNING_III
-
     using namespace inflation_cpi_swap_test;
 
     CommonVars common;
@@ -429,8 +423,6 @@ void CPISwapTest::zciisconsistency() {
     }
     // remove circular refernce
     common.hcpi.linkTo(ext::shared_ptr<ZeroInflationTermStructure>());
-
-    QL_DEPRECATED_ENABLE_WARNING_III
 }
 
 
