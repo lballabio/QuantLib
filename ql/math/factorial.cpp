@@ -25,7 +25,7 @@ namespace QuantLib {
 
     namespace {
 
-        const Real firstFactorials[] = {
+        const double firstFactorials[] = {
                                    1.0,                                   1.0,
                                    2.0,                                   6.0,
                                   24.0,                                 120.0,
