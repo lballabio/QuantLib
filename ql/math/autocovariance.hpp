@@ -48,7 +48,7 @@ namespace QuantLib {
             Array tmp(ft.size(), 0.0);
             std::complex<Real> z = std::complex<Real>();
             for (Size i=0; i<ft.size(); ++i) {
-                tmp[i] = std::norm<Real>(ft[i]);
+                tmp[i] = std::norm(ft[i]);
                 ft[i] = z;
             }
             fft.transform(tmp.begin(), tmp.end(), ft.begin());
