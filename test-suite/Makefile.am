@@ -83,7 +83,6 @@ QL_TEST_SRCS = \
 	inflationcpicapfloor.cpp \
 	inflationcpiswap.cpp \
 	inflationvolatility.cpp \
-	inflationzciisinterpolation.cpp \
 	instruments.cpp \
 	integrals.cpp \
 	interestrates.cpp \
@@ -251,7 +250,6 @@ QL_TEST_HDRS = \
 	inflationcpicapfloor.hpp \
 	inflationcpiswap.hpp \
 	inflationvolatility.hpp \
-	inflationzciisinterpolation.hpp \
 	instruments.hpp \
 	integrals.hpp \
 	interestrates.hpp \

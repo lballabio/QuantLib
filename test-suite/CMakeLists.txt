@@ -81,7 +81,6 @@ set(QL_TEST_SOURCES
     inflationcpicapfloor.cpp
     inflationcpiswap.cpp
     inflationvolatility.cpp
-	inflationzciisinterpolation.cpp
     instruments.cpp
     integrals.cpp
     interestrates.cpp
@@ -250,7 +249,6 @@ set(QL_TEST_HEADERS
     inflationcpicapfloor.hpp
     inflationcpiswap.hpp
     inflationvolatility.hpp
-	inflationzciisinterpolation.hpp
     instruments.hpp
     integrals.hpp
     interestrates.hpp

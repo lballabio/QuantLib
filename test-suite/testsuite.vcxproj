@@ -718,7 +718,6 @@
     <ClCompile Include="inflationcpicapfloor.cpp" />
     <ClCompile Include="inflationcpiswap.cpp" />
     <ClCompile Include="inflationvolatility.cpp" />
-    <ClCompile Include="inflationzciisinterpolation.cpp" />
     <ClCompile Include="instruments.cpp" />
     <ClCompile Include="integrals.cpp" />
     <ClCompile Include="interestrates.cpp" />
@@ -886,7 +885,6 @@
     <ClInclude Include="inflationcpicapfloor.hpp" />
     <ClInclude Include="inflationcpiswap.hpp" />
     <ClInclude Include="inflationvolatility.hpp" />
-    <ClInclude Include="inflationzciisinterpolation.hpp" />
     <ClInclude Include="instruments.hpp" />
     <ClInclude Include="integrals.hpp" />
     <ClInclude Include="interestrates.hpp" />

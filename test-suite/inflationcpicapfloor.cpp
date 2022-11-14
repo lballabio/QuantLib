@@ -19,6 +19,8 @@
 */
 
 
+#include "inflationcpicapfloor.hpp"
+#include "utilities.hpp"
 #include <ql/types.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
@@ -34,16 +36,11 @@
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
-
-#include "utilities.hpp"
-
-#include "inflationcpicapfloor.hpp"
 #include <ql/cashflows/cpicoupon.hpp>
 #include <ql/cashflows/cpicouponpricer.hpp>
 #include <ql/instruments/cpiswap.hpp>
 #include <ql/instruments/bonds/cpibond.hpp>
 #include <ql/instruments/cpicapfloor.hpp>
-
 #include <ql/experimental/inflation/cpicapfloortermpricesurface.hpp>
 #include <ql/experimental/inflation/cpicapfloorengines.hpp>
 
@@ -86,6 +83,7 @@ namespace inflation_cpi_capfloor_test {
 
 
     struct CommonVars {
+    
         // common data
 
         Size length;
@@ -164,9 +162,7 @@ namespace inflation_cpi_capfloor_test {
                 -999};
 
             // link from cpi index to cpi TS
-            bool interp = false;// this MUST be false because the observation lag is only 2 months
-                                // for ZCIIS; but not for contract if the contract uses a bigger lag.
-            ii = ext::make_shared<UKRPI>(interp, hcpi);
+            ii = ext::make_shared<UKRPI>(hcpi);
             for (Size i=0; i<rpiSchedule.size();i++) {
                 ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
             };
