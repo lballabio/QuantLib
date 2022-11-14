@@ -214,7 +214,7 @@ namespace QuantLib {
             const Real npv0 = intrinsic(0.0);
             const Real npvT = intrinsic(T);
             const Real extremT
-                = close_enough(r, q)? QL_MAX_REAL : std::log(r*K/(q*S))/(r-q);
+                = close_enough(r, q)? QL_MAX_REAL : Real(std::log(r*K/(q*S))/(r-q));
 
              if (extremT > 0.0 && extremT < T)
                 return std::max(npv0, std::max(npvT, intrinsic(extremT)));
@@ -304,8 +304,8 @@ namespace QuantLib {
                     const Real fPrime = eval.derivative(x);
                     const Real lf = fx*eval.fprime2(x)/(fPrime*fPrime);
                     const Real step = (solverType_ == Halley)
-                        ? 1/(1 - 0.5*lf)*fx/fPrime
-                        : (1 + 0.5*lf/(1-lf))*fx/fPrime;
+                        ? Real(1/(1 - 0.5*lf)*fx/fPrime)
+                        : Real((1 + 0.5*lf/(1-lf))*fx/fPrime);
 
                     x = std::max(xmin, x - step);
                     resultCloseEnough = std::fabs(x-xOld) < 0.5*eps_;

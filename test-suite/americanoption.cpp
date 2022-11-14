@@ -1242,7 +1242,7 @@ void AmericanOptionTest::testQdAmericanEngines() {
     };
 
     // random test cases
-    const Real pde_values[] = {
+    const double pde_values[] = {
         581.46895,113.78442,581.44547,1408.579,49.19448,1060.27367,
         834.83366,176.48305,120.38008,307.11264,602.7006,233.80171,
         204.74596,0.30987,0,0,5.36215,0.01711,0,84.51193,0.67131,
@@ -1406,9 +1406,9 @@ void AmericanOptionTest::testQdFpIterationScheme() {
         BOOST_CHECK_EQUAL(1, scheme->getNumberOfJacobiNewtonFixedPointSteps());
         BOOST_CHECK_EQUAL(m-1, scheme->getNumberOfNaiveFixedPointSteps());
 
-        BOOST_CHECK_SMALL(scheme->getFixedPointIntegrator()
+        QL_CHECK_SMALL(scheme->getFixedPointIntegrator()
             ->operator()(nd, -10.0, 10.0) - 1.0, tol);
-        BOOST_CHECK_SMALL(scheme->getExerciseBoundaryToPriceIntegrator()
+        QL_CHECK_SMALL(scheme->getExerciseBoundaryToPriceIntegrator()
             ->operator()(nd, -10.0, 10.0) - 1.0, tol);
     }
 }
