@@ -30,10 +30,11 @@ namespace QuantLib {
                                                  const Array& sub,
                                                  EigenVectorCalculation calc,
                                                  ShiftStrategy strategy)
-    : iter_(0), d_(diag),
-      ev_((calc == WithEigenVector)? d_.size() :
-          (calc == WithoutEigenVector)? 0 : 1, d_.size(), 0)
-    {
+    : d_(diag), ev_((calc == WithEigenVector)    ? d_.size() :
+                    (calc == WithoutEigenVector) ? 0 :
+                                                   1,
+                    d_.size(),
+                    0) {
         Size n = diag.size();
 
         QL_REQUIRE(n == sub.size()+1, "Wrong dimensions");
@@ -126,8 +127,7 @@ namespace QuantLib {
                           ev_.column_end(i), eigenVector.begin());
             temp[i] = std::make_pair(d_[i], eigenVector);
         }
-        std::sort(temp.begin(), temp.end(),
-                  std::greater<std::pair<Real, std::vector<Real> > >());
+        std::sort(temp.begin(), temp.end(), std::greater<>());
         // first element is positive
         for (Size i=0; i<n; i++) {
             d_[i] = temp[i].first;

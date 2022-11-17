@@ -92,7 +92,7 @@ namespace QuantLib {
       protected:
         // data
         ext::shared_ptr<FloatingRateCoupon> underlying_;
-        bool isCapped_, isFloored_;
+        bool isCapped_ = false, isFloored_ = false;
         Rate cap_, floor_;
     };
 

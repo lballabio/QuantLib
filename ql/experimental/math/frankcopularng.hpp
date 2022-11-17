@@ -57,7 +57,7 @@ namespace QuantLib {
         typename RNG::sample_type v1 = uniformGenerator_.next();
         typename RNG::sample_type v2 = uniformGenerator_.next();
         Real u1 = v1.value;
-        Real u2 = (-1.0/theta_)*log(1.0+(v2.value*(1.0-exp(-theta_)))/(v2.value*(exp(-theta_*v1.value)-1.0)-exp(-theta_*v1.value)));
+        Real u2 = (-1.0/theta_)*std::log(1.0+(v2.value*(1.0-std::exp(-theta_)))/(v2.value*(std::exp(-theta_*v1.value)-1.0)-std::exp(-theta_*v1.value)));
         std::vector<Real> u;
         u.push_back(u1);
         u.push_back(u2);

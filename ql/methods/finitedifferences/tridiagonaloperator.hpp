@@ -123,7 +123,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline TridiagonalOperator::TridiagonalOperator(TridiagonalOperator&& from) noexcept {
+    inline TridiagonalOperator::TridiagonalOperator(TridiagonalOperator&& from) noexcept : n_(0) {
         swap(from);
     }
 

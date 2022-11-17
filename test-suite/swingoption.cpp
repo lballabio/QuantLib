@@ -428,8 +428,7 @@ void SwingOptionTest::testExtOUJumpSwingOption() {
 
                 exerciseValues[k] =(*payoff)(s)*rTS->discount(exerciseDates[k]);
             }
-            std::sort(exerciseValues.begin(), exerciseValues.end(),
-                      std::greater<Real>());
+            std::sort(exerciseValues.begin(), exerciseValues.end(), std::greater<>());
 
             Real npCashFlows
                 = std::accumulate(exerciseValues.begin(),

@@ -54,14 +54,14 @@ namespace QuantLib {
             const Date& referenceDate,
             const Calendar& calendar = Calendar(),
             const DayCounter& dc = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         ZeroYieldStructure(
             Natural settlementDays,
             const Calendar& calendar,
             const DayCounter& dc = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         //@}
       protected:
         /*! \name Calculations

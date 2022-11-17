@@ -174,10 +174,9 @@ namespace QuantLib {
 
     MakeFdBlackScholesVanillaEngine::MakeFdBlackScholesVanillaEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process)
-    : process_(std::move(process)), tGrid_(100), xGrid_(100), dampingSteps_(0),
-      schemeDesc_(ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::Douglas())), localVol_(false),
-      illegalLocalVolOverwrite_(-Null<Real>()), quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()),
-      cashDividendModel_(FdBlackScholesVanillaEngine::Spot) {}
+    : process_(std::move(process)),
+      schemeDesc_(ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::Douglas())),
+      illegalLocalVolOverwrite_(-Null<Real>()) {}
 
     MakeFdBlackScholesVanillaEngine&
     MakeFdBlackScholesVanillaEngine::withQuantoHelper(

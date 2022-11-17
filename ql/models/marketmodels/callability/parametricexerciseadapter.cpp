@@ -26,7 +26,7 @@ namespace QuantLib {
 
     ParametricExerciseAdapter::ParametricExerciseAdapter(
         const MarketModelParametricExercise& exercise, std::vector<std::vector<Real> > parameters)
-    : exercise_(exercise), parameters_(std::move(parameters)), currentStep_(0), currentExercise_(0),
+    : exercise_(exercise), parameters_(std::move(parameters)),
       isExerciseTime_(exercise.isExerciseTime()), numberOfVariables_(exercise.numberOfVariables()) {
         std::vector<Time> evolutionTimes =
             exercise_->evolution().evolutionTimes();

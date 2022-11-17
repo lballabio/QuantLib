@@ -31,8 +31,7 @@ namespace QuantLib {
         std::vector<Size> newDim(layout->dim());
         newDim[direction] = 1;
         const Size hyperSize
-            = std::accumulate(newDim.begin(), newDim.end(), Size(1),
-                              std::multiplies<Size>());
+            = std::accumulate(newDim.begin(), newDim.end(), Size(1), std::multiplies<>());
         indices_.resize(hyperSize);
 
         Size i=0;

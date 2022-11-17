@@ -32,14 +32,20 @@ jobs:
             tag: focal
             cc: gcc
             cxx: g++
-          - name: "gcc 10.x"
+          - name: "gcc 10.3 (Boost 1.79)"
             shortname: gcc10
             tag: hirsute
             cc: gcc
             cxx: g++
           - name: "gcc 11.x"
             shortname: gcc11
-            tag: impish
+            tag: jammy
+            cc: gcc
+            cxx: g++
+            tests: true
+          - name: "gcc 12.x"
+            shortname: gcc12
+            tag: kinetic
             cc: gcc
             cxx: g++
             tests: true
@@ -73,12 +79,12 @@ jobs:
             tag: groovy
             cc: clang
             cxx: clang++
-          - name: "Clang 12"
+          - name: "Clang 12 (Boost 1.79)"
             shortname: clang12
             tag: hirsute
             cc: clang
             cxx: clang++
-          - name: "Clang 13"
+          - name: "Clang 13 (Boost 1.79)"
             shortname: clang13
             tag: impish
             cc: clang
@@ -86,6 +92,12 @@ jobs:
           - name: "Clang 14"
             shortname: clang14
             tag: jammy
+            cc: clang
+            cxx: clang++
+            tests: true
+          - name: "Clang 15"
+            shortname: clang15
+            tag: kinetic
             cc: clang
             cxx: clang++
             tests: true
@@ -141,13 +153,6 @@ jobs:
             cxx: g++
             configureflags: --enable-thread-safe-observer-pattern
             tests: true
-          - name: "Thread-safe singleton init enabled"
-            shortname: threadsafeinit
-            tag: rolling
-            cc: gcc
-            cxx: g++
-            configureflags: --enable-thread-safe-singleton-init
-            tests: true
           - name: "Sessions enabled"
             shortname: sessions
             tag: rolling
@@ -169,19 +174,25 @@ jobs:
             cxx: g++
             configureflags: --enable-parallel-unit-test-runner
             moreflags: -lrt
+          - name: "Null as function template"
+            shortname: nullfunctions
+            tag: rolling
+            cc: gcc
+            cxx: g++
+            configureflags: --enable-null-as-functions
+            tests: true
     container: ghcr.io/lballabio/quantlib-devenv:${{ matrix.tag }}
     steps:
     - uses: actions/checkout@v3
     - name: Cache
-      uses: actions/cache@v3
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
-        path: ~/.ccache
-        key: linux-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        key: linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
         restore-keys: |
-          linux-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-
-          linux-build-${{ matrix.shortname }}-${{ github.ref }}-
-          linux-build-${{ matrix.shortname }}-refs/heads/master-
-          linux-build-${{ matrix.shortname }}-
+          linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-
+          linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}-
+          linux-ci-build-${{ matrix.shortname }}-refs/heads/master-
+          linux-ci-build-${{ matrix.shortname }}-
     - name: Compiler version
       run: |
         ${{ matrix.cc }} --version
@@ -203,8 +214,5 @@ jobs:
       run: |
         echo "#include <ql/quantlib.hpp>" > test1.cpp && echo "int main() { return 0; }" >> test1.cpp
         echo "#include <ql/quantlib.hpp>" > test2.cpp
-        if test ${{ matrix.shortname }} = sessions ; then
-            echo "namespace QuantLib { ThreadKey sessionId() { return 0; } }" >> test2.cpp
-        fi
         make install
         ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs` ${{ matrix.moreflags }}

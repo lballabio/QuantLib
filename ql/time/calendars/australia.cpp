@@ -56,7 +56,9 @@ namespace QuantLib {
                 && m == December)
             // Boxing Day, December 26th (possibly Monday or Tuesday)
             || ((d == 26 || (d == 28 && (w == Monday || w == Tuesday)))
-                && m == December))
+                && m == December)
+            // National Day of Mourning for Her Majesty, September 22 (only 2022)
+            || (d == 22 && m == September && y == 2022))
             return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }

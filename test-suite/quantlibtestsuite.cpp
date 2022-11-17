@@ -121,7 +121,6 @@
 #include "inflationcpicapfloor.hpp"
 #include "inflationcpiswap.hpp"
 #include "inflationvolatility.hpp"
-#include "inflationzciisinterpolation.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
 #include "interestrates.hpp"
@@ -252,14 +251,6 @@ namespace {
 
 }
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
 QuantLib::Date evaluation_date(int argc, char** argv) {
     /*! Dead simple parser:
         - passing --date=YYYY-MM-DD causes the test suite to run on
@@ -359,6 +350,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(QUANTLIB_TEST_CASE(startTimer));
 
     test->add(AmericanOptionTest::suite(speed));
+    test->add(AmortizingBondTest::suite());
     test->add(AndreasenHugeVolatilityInterplTest::suite(speed));
     test->add(ArrayTest::suite());
     test->add(AsianOptionTest::suite(speed));
@@ -417,7 +409,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(InflationCapFloorTest::suite());
     test->add(InflationCapFlooredCouponTest::suite());
     test->add(InflationCPIBondTest::suite());
-    test->add(InflationZCIISInterpolationTest::suite());
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterestRateTest::suite());
@@ -482,7 +473,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ZeroCouponSwapTest::suite());
 
     // tests for experimental classes
-    test->add(AmortizingBondTest::suite());
     test->add(AsianOptionTest::experimental(speed));
     test->add(BasismodelsTest::suite());
     test->add(BasisSwapRateHelpersTest::suite());

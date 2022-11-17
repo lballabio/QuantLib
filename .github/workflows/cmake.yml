@@ -8,20 +8,21 @@ jobs:
     - name: Setup
       run: |
         sudo apt update
-        sudo apt install -y libboost-dev ninja-build ccache
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2.2
+        sudo apt install -y libboost-dev ccache ninja-build
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: cmake-linux-ubuntu-latest
-        max-size: "2000M"
+        key: cmake-linux-ci-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        restore-keys: |
+          cmake-linux-ci-build-${{ github.ref }}-${{ github.head_ref }}-
+          cmake-linux-ci-build-${{ github.ref }}-
+          cmake-linux-ci-build-refs/heads/master-
+          cmake-linux-ci-build-
     - name: Compile
       run: |
         mkdir build
         cd build
-        cmake .. -GNinja \
-          -DBOOST_ROOT=/usr \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake .. -GNinja -DBOOST_ROOT=/usr -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build .
     - name: Test
       run: |
@@ -34,12 +35,16 @@ jobs:
     - name: Setup
       run: |
         sudo apt update
-        sudo apt install -y libboost-all-dev ninja-build ccache
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2.2
+        sudo apt install -y libboost-all-dev ccache ninja-build
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: cmake-linux-nonstandard-ubuntu-latest
-        max-size: "2000M"
+        key: cmake-linux-ci-opts-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        restore-keys: |
+          cmake-linux-ci-opts-${{ github.ref }}-${{ github.head_ref }}-
+          cmake-linux-ci-opts-${{ github.ref }}-
+          cmake-linux-ci-opts-refs/heads/master-
+          cmake-linux-ci-opts-
     - name: Compile
       run: |
         cmake --preset linux-ci-build-with-nonstandard-options
@@ -100,14 +105,16 @@ jobs:
     - uses: actions/checkout@v3
     - name: Setup
       run: |
-        brew install boost
-        brew install ninja
-        brew install ccache
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2.2
+        brew install boost ccache ninja
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: cmake-macos-ubuntu-latest
-        max-size: "2000M"
+        key: cmake-macos-ci-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        restore-keys: |
+          cmake-macos-ci-${{ github.ref }}-${{ github.head_ref }}-
+          cmake-macos-ci-${{ github.ref }}-
+          cmake-macos-ci-refs/heads/master-
+          cmake-macos-ci-
     - name: Compile
       env:
         CXXFLAGS: -stdlib=libc++ -mmacosx-version-min=10.9

@@ -160,7 +160,7 @@ void SwaptionTest::testStrikeDependency() {
                 }
                 // and check that they go the right way
                 if (k == Swap::Payer) {
-                    auto it = std::adjacent_find(values.begin(), values.end(), std::less<Real>());
+                    auto it = std::adjacent_find(values.begin(), values.end(), std::less<>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
                         BOOST_ERROR("NPV of Payer swaption with delivery settlement"
@@ -172,8 +172,7 @@ void SwaptionTest::testStrikeDependency() {
                                     << "\nvalue:        " << values[n + 1]
                                     << " at strike: " << io::rate(strikes[n + 1]));
                     }
-                    auto it_cash = std::adjacent_find(values_cash.begin(), values_cash.end(),
-                                                      std::less<Real>());
+                    auto it_cash = std::adjacent_find(values_cash.begin(), values_cash.end(), std::less<>());
                     if (it_cash != values_cash.end()) {
                         Size n = it_cash - values_cash.begin();
                         BOOST_ERROR("NPV of Payer swaption with cash settlement"
@@ -187,7 +186,7 @@ void SwaptionTest::testStrikeDependency() {
                     }
                 } else {
                     auto it =
-                        std::adjacent_find(values.begin(), values.end(), std::greater<Real>());
+                        std::adjacent_find(values.begin(), values.end(), std::greater<>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
                         BOOST_ERROR("NPV of Receiver swaption with delivery settlement"
@@ -199,8 +198,7 @@ void SwaptionTest::testStrikeDependency() {
                                     << "\nvalue:        " << values[n + 1]
                                     << " at strike: " << io::rate(strikes[n + 1]));
                     }
-                    auto it_cash = std::adjacent_find(values_cash.begin(), values_cash.end(),
-                                                      std::greater<Real>());
+                    auto it_cash = std::adjacent_find(values_cash.begin(), values_cash.end(), std::greater<>());
                     if (it_cash != values_cash.end()) {
                         Size n = it_cash - values_cash.begin();
                         BOOST_ERROR("NPV of Receiver swaption with cash settlement"
@@ -258,7 +256,7 @@ void SwaptionTest::testSpreadDependency() {
                 // and check that they go the right way
                 if (k == Swap::Payer) {
                     auto it =
-                        std::adjacent_find(values.begin(), values.end(), std::greater<Real>());
+                        std::adjacent_find(values.begin(), values.end(), std::greater<>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
                         BOOST_ERROR("NPV is decreasing with the spread "
@@ -268,8 +266,7 @@ void SwaptionTest::testSpreadDependency() {
                                     << io::rate(spreads[n]) << "\nvalue:         " << values[n + 1]
                                     << " for spread: " << io::rate(spreads[n + 1]));
                     }
-                    auto it_cash = std::adjacent_find(values_cash.begin(), values_cash.end(),
-                                                      std::greater<Real>());
+                    auto it_cash = std::adjacent_find(values_cash.begin(), values_cash.end(), std::greater<>());
                     if (it_cash != values_cash.end()) {
                         Size n = it_cash - values_cash.begin();
                         BOOST_ERROR("NPV is decreasing with the spread "
@@ -280,7 +277,7 @@ void SwaptionTest::testSpreadDependency() {
                                     << " for spread: " << io::rate(spreads[n + 1]));
                     }
                 } else {
-                    auto it = std::adjacent_find(values.begin(), values.end(), std::less<Real>());
+                    auto it = std::adjacent_find(values.begin(), values.end(), std::less<>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
                         BOOST_ERROR("NPV is increasing with the spread "
@@ -291,8 +288,7 @@ void SwaptionTest::testSpreadDependency() {
                                     << "\nvalue:  " << values[n + 1]
                                     << " for spread: " << io::rate(spreads[n + 1]));
                     }
-                    auto it_cash = std::adjacent_find(values_cash.begin(), values_cash.end(),
-                                                      std::less<Real>());
+                    auto it_cash = std::adjacent_find(values_cash.begin(), values_cash.end(), std::less<>());
                     if (it_cash != values_cash.end()) {
                         Size n = it_cash - values_cash.begin();
                         BOOST_ERROR("NPV is increasing with the spread "

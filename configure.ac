@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [1.28-dev],
+AC_INIT([QuantLib], [1.29-dev],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.62)
@@ -41,16 +41,6 @@ if test [ -n "$ql_boost_include_path" ] ; then
    AC_SUBST([BOOST_INCLUDE],["-isystem ${ql_boost_include_path}"])
    AC_SUBST([CPPFLAGS],["${CPPFLAGS} -isystem ${ql_boost_include_path}"])
 fi
-AC_ARG_WITH([boost-lib],
-            AS_HELP_STRING([--with-boost-lib=LIB_PATH],
-                           [Supply the location of Boost libraries]),
-            [ql_boost_lib_path="`cd ${withval} 2>/dev/null && pwd`"],
-            [ql_boost_lib_path=""])
-if test [ -n "$ql_boost_lib_path" ] ; then
-   AC_SUBST([BOOST_LIB],["-L${ql_boost_lib_path}"])
-   AC_SUBST([LDFLAGS],["${LDFLAGS} -L${ql_boost_lib_path}"])
-fi
-
 
 # Continue setup
 
@@ -258,27 +248,11 @@ if test "$ql_use_tsop" = "yes" ; then
               thread-safe observer pattern.])
 fi
 
-AC_MSG_CHECKING([whether to enable thread-safe singleton initialization])
-AC_ARG_ENABLE([thread-safe-singleton-init],
-              AS_HELP_STRING([--enable-thread-safe-singleton-init],
-                             [If enabled, singleton initialization will
-                              be thread-safe. This requires Boost 1.58
-                              or later.  Note that --enable-sessions
-                              implies thread-safe initialization,
-                              whether this is defined or not]),
-              [ql_use_safe_singleton_init=$enableval],
-              [ql_use_safe_singleton_init=no])
-if test "$ql_use_safe_singleton_init" = "yes" ; then
-   AC_DEFINE([QL_ENABLE_SINGLETON_THREAD_SAFE_INIT],[1],
-             [Define this if you want thread-safe singleton initialization.])
-fi
-AC_MSG_RESULT([$ql_use_safe_singleton_init])
-
-if test "$ql_use_sessions" = "yes" || test "$ql_use_tsop" = "yes" || test "$ql_use_safe_singleton_init" = "yes"; then
+if test "$ql_use_sessions" = "yes" || test "$ql_use_tsop" = "yes"; then
    QL_CHECK_BOOST_VERSION_1_58_OR_HIGHER
-   QL_CHECK_BOOST_TEST_THREAD_SIGNALS2_SYSTEM
+   QL_CHECK_BOOST_SIGNALS2
 else
-   AC_SUBST([BOOST_THREAD_LIB],[""])
+   AC_SUBST([PTHREAD_LIB],[""])
 fi
 
 AC_MSG_CHECKING([whether to enable parallel unit test runner])
@@ -391,7 +365,6 @@ if test "$ql_use_std_function" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_std_function])
 
-
 AC_MSG_CHECKING([whether to enable std::tuple])
 AC_ARG_ENABLE([std-tuple],
               AS_HELP_STRING([--enable-std-tuple],
@@ -426,13 +399,28 @@ if test "$ql_use_std_classes" = "yes" ; then
 fi
 AC_MSG_RESULT([$ql_use_std_classes])
 
+AC_MSG_CHECKING([whether to enable the implementation of Null as template functions])
+AC_ARG_ENABLE([null-as-functions],
+              AS_HELP_STRING([--enable-null-as-functions],
+                             [If enabled, Null will be implemented as a set
+                              of template functions.  This allows the code
+                              to work with user-defined Real types but was
+                              reported to cause internal compiler errors
+                              with Visual C++ 2022 in some cases.
+                              If disabled (the default) Null will be
+                              implemented as a class template, as in
+                              previous releases.]),
+              [ql_use_null_functions=$enableval],
+              [ql_use_null_functions=no])
+if test "$ql_use_null_functions" = "yes" ; then
+   AC_DEFINE([QL_NULL_AS_FUNCTIONS],[1],
+             [Define this if you want to enable the implementation of Null as template functions.])
+fi
+AC_MSG_RESULT([$ql_use_null_functions])
+
 
 # manual configurations for specific hosts
 case $host in
-  powerpc-apple-darwin*)
-    AC_DEFINE([QL_PATCH_DARWIN],[1],
-              [Define if running on a Mac OS X machine.])
-    ;;
   sparc-sun-solaris*)
     AC_DEFINE([QL_PATCH_SOLARIS],[1],
               [Define if running on a Sun Solaris machine.])

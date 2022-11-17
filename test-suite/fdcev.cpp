@@ -24,10 +24,8 @@
 #include <ql/math/statistics/generalstatistics.hpp>
 #include <ql/pricingengines/vanilla/analyticcevengine.hpp>
 #include <ql/pricingengines/vanilla/fdcevvanillaengine.hpp>
-
 #include <ql/methods/finitedifferences/utilities/cevrndcalculator.hpp>
-
-#include <boost/make_shared.hpp>
+#include <ql/shared_ptr.hpp>
 
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;

@@ -53,6 +53,8 @@ namespace QuantLib {
 
         MakeCreditDefaultSwap& withPricingEngine(const ext::shared_ptr<PricingEngine>&);
 
+        MakeCreditDefaultSwap& withTradeDate(const Date& tradeDate);
+
       private:
         Protection::Side side_;
         Real nominal_;
@@ -65,6 +67,7 @@ namespace QuantLib {
         DayCounter lastPeriodDayCounter_;
         DateGeneration::Rule rule_;
         Natural cashSettlementDays_;
+        Date tradeDate_;
 
         ext::shared_ptr<PricingEngine> engine_;
     };

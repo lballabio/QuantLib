@@ -64,7 +64,7 @@ namespace QuantLib {
         std::transform(diagonal_.begin(), diagonal_.end(),
                        v.begin(),
                        result.begin(),
-                       std::multiplies<Real>());
+                       std::multiplies<>());
 
         // matricial product
         result[0] += upperDiagonal_[0]*v[1];

@@ -136,7 +136,7 @@ namespace QuantLib {
                     std::transform(sequence_.value.begin()+offset,
                                    sequence_.value.begin()+offset+n,
                                    temp.begin(),
-                                   std::negate<Real>());
+                                   std::negate<>());
                 else
                     std::copy(sequence_.value.begin()+offset,
                               sequence_.value.begin()+offset+n,

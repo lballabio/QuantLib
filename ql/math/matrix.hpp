@@ -60,6 +60,9 @@ namespace QuantLib {
 
         Matrix& operator=(const Matrix&);
         Matrix& operator=(Matrix&&) noexcept;
+
+        bool operator==(const Matrix&) const;
+        bool operator!=(const Matrix&) const;
         //@}
 
         //! \name Algebraic operators
@@ -148,6 +151,8 @@ namespace QuantLib {
 
     /*! \relates Matrix */
     Matrix operator+(const Matrix&, const Matrix&);
+    /*! \relates Matrix */
+    Matrix operator-(const Matrix&);
     /*! \relates Matrix */
     Matrix operator-(const Matrix&, const Matrix&);
     /*! \relates Matrix */
@@ -253,6 +258,15 @@ namespace QuantLib {
         return *this;
     }
 
+    inline bool Matrix::operator==(const Matrix& to) const {
+        return rows_ == to.rows_ && columns_ == to.columns_ &&
+               std::equal(begin(), end(), to.begin());
+    }
+
+    inline bool Matrix::operator!=(const Matrix& to) const { 
+        return !this->operator==(to); 
+    }
+
     inline void Matrix::swap(Matrix& from) {
         using std::swap;
         data_.swap(from.data_);
@@ -266,8 +280,7 @@ namespace QuantLib {
                    m.rows_ << "x" << m.columns_ << ", " <<
                    rows_ << "x" << columns_ << ") cannot be "
                    "added");
-        std::transform(begin(),end(),m.begin(),
-                       begin(),std::plus<Real>());
+        std::transform(begin(), end(), m.begin(), begin(), std::plus<>());
         return *this;
     }
 
@@ -277,8 +290,7 @@ namespace QuantLib {
                    m.rows_ << "x" << m.columns_ << ", " <<
                    rows_ << "x" << columns_ << ") cannot be "
                    "subtracted");
-        std::transform(begin(),end(),m.begin(),begin(),
-                       std::minus<Real>());
+        std::transform(begin(), end(), m.begin(), begin(), std::minus<>());
         return *this;
     }
 
@@ -497,8 +509,13 @@ namespace QuantLib {
                    m2.rows() << "x" << m2.columns() << ") cannot be "
                    "added");
         Matrix temp(m1.rows(),m1.columns());
-        std::transform(m1.begin(),m1.end(),m2.begin(),temp.begin(),
-                       std::plus<Real>());
+        std::transform(m1.begin(), m1.end(), m2.begin(), temp.begin(), std::plus<>());
+        return temp;
+    }
+
+    inline Matrix operator-(const Matrix& m1) {
+        Matrix temp(m1.rows(), m1.columns());
+        std::transform(m1.begin(), m1.end(), temp.begin(), std::negate<Real>());
         return temp;
     }
 
@@ -510,8 +527,7 @@ namespace QuantLib {
                    m2.rows() << "x" << m2.columns() << ") cannot be "
                    "subtracted");
         Matrix temp(m1.rows(),m1.columns());
-        std::transform(m1.begin(),m1.end(),m2.begin(),temp.begin(),
-                       std::minus<Real>());
+        std::transform(m1.begin(), m1.end(), m2.begin(), temp.begin(), std::minus<>());
         return temp;
     }
 

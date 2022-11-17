@@ -28,7 +28,7 @@ namespace QuantLib {
     BermudanSwaptionExerciseValue::BermudanSwaptionExerciseValue(
         const std::vector<Time>& rateTimes, std::vector<ext::shared_ptr<Payoff> > payoffs)
     : numberOfExercises_(rateTimes.empty() ? 0 : rateTimes.size() - 1), rateTimes_(rateTimes),
-      payoffs_(std::move(payoffs)), currentIndex_(0) {
+      payoffs_(std::move(payoffs)) {
 
         checkIncreasingTimes(rateTimes);
         QL_REQUIRE(numberOfExercises_>0,

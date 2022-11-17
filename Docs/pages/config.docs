@@ -22,6 +22,8 @@
     or undefining such macros triggers variations in some library
     functionality.
 
+    When using CMake, they can be set to `ON` or `OFF` as properties.
+
     Under a Linux/Unix system, they are (un)set by `configure`;
     run
     \code
@@ -87,14 +89,6 @@
     at least C++17.
 
     \code
-    #define QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-    \endcode
-    Define this to make `Singleton` initialization thread-safe.
-    Undefined by default.  Not compatible with `QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN`.
-    Note that defining QL_ENABLE_SESSIONS implies thread-safe initialization,
-    whether this is defined or not.
-
-    \code
     #define QL_HIGH_RESOLUTION_DATE
     \endcode
     If defined, date objects support an intraday datetime
@@ -126,6 +120,15 @@
     If defined, `std::tuple` and related classes and functions
     are used instead of `boost::tuple`. If disabled (the
     default) the Boost facilities are used.
+
+    \code
+    #define QL_NULL_AS_FUNCTIONS
+    \endcode
+    If defined, `Null` will be implemented as a set of template
+    functions.  This allows the code to work with user-defined `Real`
+    types but was reported to cause internal compiler errors with
+    Visual C++ 2022 in some cases.  If disabled (the default) `Null`
+    will be implemented as a class template, as in previous releases.
 
     \code
     #define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER

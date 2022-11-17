@@ -34,8 +34,8 @@ void SviVolatilityTest::testSviSmileSection() {
     // Test time based constructor
     Time tte = 11.0 / 365;
     Real forward = 123.45;
-    Real a = -2.21;
-    Real b = 7.61;
+    Real a = -0.0666;
+    Real b = 0.229;
     Real sigma = 0.337;
     Real rho = 0.439;
     Real m = 0.193;

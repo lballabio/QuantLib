@@ -49,7 +49,7 @@ namespace QuantLib {
             Rate switchStrikes = Null<Rate>(),
             Real accuracy = 1.0e-6,
             Natural maxIter = 100,
-            const Handle<YieldTermStructure>& discount = Handle<YieldTermStructure>(),
+            const Handle<YieldTermStructure>& discount = {},
             VolatilityType type = ShiftedLognormal,
             Real displacement = 0.0,
             bool dontThrow = false);

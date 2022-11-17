@@ -19,6 +19,8 @@
 */
 
 
+#include "inflationcpicapfloor.hpp"
+#include "utilities.hpp"
 #include <ql/types.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/termstructures/bootstraphelper.hpp>
@@ -34,16 +36,11 @@
 #include <ql/instruments/zerocouponinflationswap.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
-
-#include "utilities.hpp"
-
-#include "inflationcpicapfloor.hpp"
 #include <ql/cashflows/cpicoupon.hpp>
 #include <ql/cashflows/cpicouponpricer.hpp>
 #include <ql/instruments/cpiswap.hpp>
 #include <ql/instruments/bonds/cpibond.hpp>
 #include <ql/instruments/cpicapfloor.hpp>
-
 #include <ql/experimental/inflation/cpicapfloortermpricesurface.hpp>
 #include <ql/experimental/inflation/cpicapfloorengines.hpp>
 
@@ -86,6 +83,7 @@ namespace inflation_cpi_capfloor_test {
 
 
     struct CommonVars {
+    
         // common data
 
         Size length;
@@ -107,7 +105,6 @@ namespace inflation_cpi_capfloor_test {
         std::vector<Date> zciisD;
         std::vector<Rate> zciisR;
         ext::shared_ptr<UKRPI> ii;
-        RelinkableHandle<ZeroInflationIndex> hii;
         Size zciisDataLength;
 
         RelinkableHandle<YieldTermStructure> nominalUK;
@@ -165,9 +162,7 @@ namespace inflation_cpi_capfloor_test {
                 -999};
 
             // link from cpi index to cpi TS
-            bool interp = false;// this MUST be false because the observation lag is only 2 months
-                                // for ZCIIS; but not for contract if the contract uses a bigger lag.
-            ii = ext::make_shared<UKRPI>(interp, hcpi);
+            ii = ext::make_shared<UKRPI>(hcpi);
             for (Size i=0; i<rpiSchedule.size();i++) {
                 ii->addFixing(rpiSchedule[i], fixData[i], true);// force overwrite in case multiple use
             };
@@ -268,7 +263,6 @@ namespace inflation_cpi_capfloor_test {
                                     ii->frequency(), baseZeroRate, helpers));
             pCPIts->recalculate();
             cpiUK.linkTo(pCPIts);
-            hii.linkTo(ii);
 
             // make sure that the index has the latest zero inflation term structure
             hcpi.linkTo(pCPIts);
@@ -337,7 +331,8 @@ void InflationCPICapFloorTest::cpicapfloorpricesurface() {
                        common.calendar,
                        common.convention,
                        common.dcZCIIS,
-                       common.hii,
+                       common.ii,
+                       CPI::Flat,
                        common.nominalUK,
                        common.cStrikesUK,
                        common.fStrikesUK,
@@ -404,7 +399,8 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
                                                                common.calendar,
                                                                common.convention,
                                                                common.dcZCIIS,
-                                                               common.hii,
+                                                               common.ii,
+                                                               CPI::Flat,
                                                                common.nominalUK,
                                                                common.cStrikesUK,
                                                                common.fStrikesUK,
@@ -422,7 +418,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
     Calendar fixCalendar = UnitedKingdom(), payCalendar = UnitedKingdom();
     BusinessDayConvention fixConvention(Unadjusted), payConvention(ModifiedFollowing);
     Rate strike(0.03);
-    Real baseCPI = common.hii->fixing(fixCalendar.adjust(startDate-common.observationLag,fixConvention));
+    Real baseCPI = common.ii->fixing(fixCalendar.adjust(startDate-common.observationLag,fixConvention));
     CPI::InterpolationType observationInterpolation = CPI::AsIndex;
     CPICapFloor aCap(Option::Call,
                      nominal,
@@ -434,7 +430,7 @@ void InflationCPICapFloorTest::cpicapfloorpricer() {
                      payCalendar,
                      payConvention,
                      strike,
-                     common.hii,
+                     common.ii,
                      common.observationLag,
                      observationInterpolation);
 

@@ -1,104 +1,129 @@
-Changes for QuantLib 1.27:
+Changes for QuantLib 1.28:
 ==========================
 
-QuantLib 1.27 includes 37 pull requests from several contributors.
+QuantLib 1.28 includes 33 pull requests from several contributors.
 
 Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/23?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/24?closed=1>.
 
 Portability
 -----------
 
-- **Removed support:** as announced in the notes for the previous
-  release, support for Visual Studio 2013 was dropped.
+- **New language standard:** as announced in the notes for the
+  previous release, this release started using some C++14 syntax.
+  This should be supported by most compilers released in the past
+  several years.
 
 - **End of support:** as announced in the notes for the previous
-  release, this release will be the last to avoid C++14 syntax.
-  Allowing the newer (but still oldish) standard should still support
-  most compilers released in the past several years.
+  release, this release is the last to manage thread-local singletons
+  via a user-provided `sessionId` function.  Future releases will use
+  the built-in language support for thread-local variables.
 
-- **Future end of support:** this release and the next will be the
-  last to manage thread-local singletons via a user-provided
-  `sessionId` function.  Future releases will use the built-in
-  language support for thread-local variables.
-
-- The `Real` type is now used consistently throughout the codebase,
-  thanks to the Xcelerit dev team (@xcelerit-dev).  This, along with
-  other changes, allows its default definition to `double` to be
-  replaced with one of the available third-party AAD types.
-
-- The test suite is now built using the header-only version of
-  Boost.Test, thanks to Jonathan Sweemer (@sweemer).  This might
-  simplify Boost installation for some users, since in the default
-  configuration QuantLib now only needs the Boost headers.
-
-- Replaced some Boost facilities with the corresponding C++11
-  counterparts; thanks to Klaus Spanderen (@klausspanderen) and
-  Jonathan Sweemer (@sweemer).
+- **Future end of support:** after the next two or three releases,
+  using `std::tuple`, `std::function` and `std::bind` (instead of
+  their `boost` counterparts) will become the default.  If you're
+  using `ext::tuple` etc. in your code (which is suggested), this
+  should be a transparent change.  If not, you'll still be able to
+  choose the `boost` versions via a configure switch for a while.
 
 Date/time
 ---------
 
-- Fixed the behavior of a couple of Australian holidays; thanks to
-  Pradeep Krishnamurthy (@pradkrish) and Fredrik Gerdin Börjesson
-  (@gbfredrik).
+- Added Act/366 and Act/365.25 day counters; thanks to Ignacio Anguita
+  (@IgnacioAnguita).
+
+- Added H.M. the Queen's funeral to the UK calendars; thanks to Tomass
+  Wilson (@Wilsontomass).
 
 Instruments
 -----------
 
-- Added the Turnbull-Wakeman engine for discrete Asian options; thanks
-  to Fredrik Gerdin Börjesson (@gbfredrik) for the main engine code
-  and to Jack Gillett (@jackgillett101) for the Greeks.
+- Amortizing bonds were moved out of the experimental folder.  Also, a
+  couple of utility functions were provided to calculate amortization
+  schedules and notionals.
 
-- Added more validation to barrier options; thanks to Jonathan Sweemer
-  (@sweemer).
+Pricing engines
+---------------
 
-Models
-------
+- Fixed results from `COSHestonEngine` in the case of an option with
+  short time to expiration and deep ITM or deep OTM strike prices;
+  thanks to Ignacio Anguita (@IgnacioAnguita).
 
-- Fixed the start date of the underlying swap in swaption calibration
-  helpers; thanks to Peter Caspers (@pcaspers).
+- The ISDA engine for CDS could calculate the fair upfront with the
+  wrong sign; this is now fixed, thanks to Gualtiero Chiaia
+  (@gchiaia).
 
-- Fixed parameter checks in SVI volatility smiles; thanks to Fredrik
-  Gerdin Börjesson (@gbfredrik).
+Term structures
+---------------
 
-Patterns
---------
+- The constructor for `OISRateHelper` now allows to specify the
+  `endOfMonth` parameter; thanks to Guillaume Horel (@thrasibule).
 
-- Avoid possible iterator invalidation while notifying observers;
-  thanks to Klaus Spanderen (@klausspanderen).
+Finite differences
+------------------
+
+- Fixed computation of cds boundaries in `LocalVolRNDCalculator`;
+  thanks to @mdotlic.
+
+Experimental folder
+-------------------
+
+The `ql/experimental` folder contains code whose interface is not
+fully stable, but is released in order to get user
+feedback. Experimental classes make no guarantees of backward
+compatibility; their interfaces might change in future releases.
+
+- **Breaking change**: the constructor of the
+  `CPICapFloorTermPriceSurface` class now also takes an explicit
+  interpolation type.
+
+- **Possibly breaking**: the protected constructor for `CallableBond`
+  changes its arguments.  If you inherited from this class, you'll
+  need to update your code.  If you're using the existing derived bond
+  classes, the change will be transparent.
+
+- Pricing engines for callable bonds worked incorrectly when the face
+  amount was not 100. This is now fixed.
+
+- The `impliedVolatility` method for callable bonds was taking a
+  target NPV, not a price. This implementation is now deprecated, and
+  a new overload was added taking a price in base 100.
 
 Deprecated features
 -------------------
 
-- **Removed** the `--enable-disposable` and `--enable-std-unique-ptr`
-  configure switches.
+- **Removed** features deprecated in version 1.23:
+  - the constructors of `ZeroCouponInflationSwap` and
+    `ZeroCouponInflationSwapHelper` missing an explicit CPI
+    interpolation type;
+  - the constructors of `ActualActual` and `Thirty360` missing an
+    explicit choice of convention, and the constructor of `Thirty360`
+    passing an `isLastPeriod` boolean flag.
 
-- **Removed** features deprecated in version 1.22:
-  - the unused `AmericanCondition` and `FDAmericanCondition` classes;
-  - the old-style FD shout and dividend shout engines;
-  - the unused `OneFactorOperator` class;
-  - the `io::to_integer` function;
-  - the `ArrayProxy` and `MatrixProxy` classes.
+- Deprecated the constructors of `FixedRateBond` taking an
+  `InterestRate` instance or not taking a `Schedule` instance.
 
-- Deprecated the `QL_NOEXCEPT` and `QL_CONSTEXPR` macros.
+- Deprecated the constructor of `FloatingRateBond` not taking a
+  `Schedule` instance.
 
-- Deprecated the `QL_NULL_INTEGER` and `QL_NULL_REAL` macros.
+- Deprecated the constructors of `AmortizingFixedRateBond` taking a
+  sinking frequency or a vector of `InterestRate` instances.
 
-- Deprecated some unused parts of the old-style FD framework:
-  - the `PdeShortRate` class;
-  - the `ShoutCondition` and `FDShoutCondition` classes;
-  - the `FDDividendEngineBase`, `FDDividendEngineMerton73`,
-    `FDDividendEngineShiftScale` and `FDDividendEngine` classes;
-  - the `FDStepConditionEngine` and `FDEngineAdapter` classes.
+- Deprecated the constructor of `CPICapFloor` taking a `Handle` to an
+  inflation index, and its `inflationIndex` method returning a `Handle`.
+  New versions of both were added using `shared_ptr` instead.
 
-- Deprecated a number of function objects in the
-  `ql/math/functional.hpp` header.
+- Deprecated one of the constructors of `SabrSmileSection`; a new
+  version was added also taking an optional reference date.
 
-- Deprecated the unused `MultiCurveSensitivities` class.
-
-- Deprecated the unused `inner_product` function.
+- Deprecated the old `impliedVolatility` method for callable bonds;
+  see above.
 
 
-**Thanks go also** to Ryan Russell (@ryanrussell) for documentation fixes.
+**Thanks go also** to Konstantin Novitsky (@novitk), Peter Caspers
+(@pcaspers), Klaus Spanderen (@klausspanderen), Fredrik Gerdin
+Börjesson (@gbfredrik) and Dirk Eddelbuettel (@eddelbuettel) for a
+number of smaller fixes, and to Jonathan Sweemer (@sweemer) for
+various improvements to the automated CI builds.
+

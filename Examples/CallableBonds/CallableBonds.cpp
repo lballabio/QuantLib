@@ -40,13 +40,6 @@
 using namespace std;
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-    ThreadKey sessionId() { return {}; }
-}
-#endif
-
-
 ext::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
              const ext::shared_ptr<Quote>& forward,

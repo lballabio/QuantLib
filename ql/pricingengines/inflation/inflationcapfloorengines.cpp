@@ -59,24 +59,16 @@ namespace QuantLib {
         std::vector<Real> forwards(optionlets, 0.0);
         YoYInflationCapFloor::Type type = arguments_.type;
 
-        Handle<YoYInflationTermStructure> yoyTS
-        = index()->yoyInflationTermStructure();
+        auto yoyTS = index()->yoyInflationTermStructure();
 
-        QL_DEPRECATED_DISABLE_WARNING
-        Handle<YieldTermStructure> nominalTS =
-            !nominalTermStructure_.empty() ?
-            nominalTermStructure_ :
-            yoyTS->nominalTermStructure();
-        QL_DEPRECATED_ENABLE_WARNING
-
-        Date settlement = nominalTS->referenceDate();
+        Date settlement = nominalTermStructure_->referenceDate();
 
         for (Size i=0; i<optionlets; ++i) {
             Date paymentDate = arguments_.payDates[i];
             if (paymentDate > settlement) { // discard expired caplets
                 DiscountFactor d = arguments_.nominals[i] *
                     arguments_.gearings[i] *
-                    nominalTS->discount(paymentDate) *
+                    nominalTermStructure_->discount(paymentDate) *
                 arguments_.accrualTimes[i];
 
                 // We explicitly have the index and assume that

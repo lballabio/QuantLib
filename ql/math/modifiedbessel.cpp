@@ -101,6 +101,9 @@ namespace QuantLib {
 
     std::complex<Real> modifiedBesselFunction_i(Real nu,
                                                 const std::complex<Real> &z) {
+        if (z.imag() == 0.0 && z.real() >= 0.0)
+            return std::complex<Real>(modifiedBesselFunction_i(nu, z.real()));
+
         return modifiedBesselFunction_i_impl<
             std::complex<Real>, Unweighted>(nu, z);
     }
@@ -111,6 +114,9 @@ namespace QuantLib {
 
     std::complex<Real> modifiedBesselFunction_k(Real nu,
                                                 const std::complex<Real> &z) {
+        if (z.imag() == 0.0 && z.real() >= 0.0)
+            return std::complex<Real>(modifiedBesselFunction_k(nu, z.real()));
+
         return modifiedBesselFunction_k_impl<
             std::complex<Real>, Unweighted>(nu, z);
     }
@@ -124,6 +130,11 @@ namespace QuantLib {
 
     std::complex<Real> modifiedBesselFunction_i_exponentiallyWeighted(
         Real nu, const std::complex<Real> &z) {
+
+        if (z.imag() == 0.0 && z.real() >= 0.0)
+            return std::complex<Real>(
+                modifiedBesselFunction_i_exponentiallyWeighted(nu, z.real()));
+
         return modifiedBesselFunction_i_impl<
             std::complex<Real>, ExponentiallyWeighted>(nu, z);
     }
@@ -135,6 +146,11 @@ namespace QuantLib {
 
     std::complex<Real> modifiedBesselFunction_k_exponentiallyWeighted(
         Real nu, const std::complex<Real> &z) {
+
+        if (z.imag() == 0.0 && z.real() >= 0.0)
+            return std::complex<Real>(
+                modifiedBesselFunction_k_exponentiallyWeighted(nu, z.real()));
+
         return modifiedBesselFunction_k_impl<
             std::complex<Real>, ExponentiallyWeighted>(nu, z);
     }

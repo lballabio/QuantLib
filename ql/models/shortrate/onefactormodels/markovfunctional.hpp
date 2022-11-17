@@ -129,9 +129,7 @@ namespace QuantLib {
                 CustomSmile = 1 << 9
             };
 
-            ModelSettings()
-            : adjustments_(KahaleSmile | SmileExponentialExtrapolation),
-              smileMoneynessCheckpoints_(std::vector<Real>()) {}
+            ModelSettings() : adjustments_(KahaleSmile | SmileExponentialExtrapolation) {}
 
             ModelSettings(Size yGridPoints,
                           Real yStdDevs,
@@ -479,8 +477,6 @@ namespace QuantLib {
             bool zeroFixingDays = false,
             const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
-        class ZeroHelper;
-        friend class ZeroHelper;
         class ZeroHelper {
           public:
             ZeroHelper(const MarkovFunctional *model, const Date &expiry,

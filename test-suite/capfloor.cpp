@@ -68,8 +68,7 @@ namespace capfloor_test {
             index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             calendar = index->fixingCalendar();
             convention = ModifiedFollowing;
-            Date today = calendar.adjust(Date::todaysDate());
-            Settings::instance().evaluationDate() = today;
+            Date today = Settings::instance().evaluationDate();
             Natural settlementDays = 2;
             fixingDays = 2;
             settlement = calendar.advance(today,settlementDays,Days);
@@ -230,7 +229,7 @@ void CapFloorTest::testStrikeDependency() {
                 floor_values.push_back(floor->NPV());
             }
             // and check that they go the right way
-            auto it = std::adjacent_find(cap_values.begin(), cap_values.end(), std::less<Real>());
+            auto it = std::adjacent_find(cap_values.begin(), cap_values.end(), std::less<>());
             if (it != cap_values.end()) {
                 Size n = it - cap_values.begin();
                 BOOST_FAIL("NPV is increasing with the strike in a cap: \n"
@@ -242,8 +241,7 @@ void CapFloorTest::testStrikeDependency() {
                            << " at strike: " << io::rate(strikes[n + 1]));
             }
             // same for floors
-            it = std::adjacent_find(floor_values.begin(),floor_values.end(),
-                                    std::greater<Real>());
+            it = std::adjacent_find(floor_values.begin(), floor_values.end(), std::greater<>());
             if (it != floor_values.end()) {
                 Size n = it - floor_values.begin();
                 BOOST_FAIL("NPV is decreasing with the strike in a floor: \n"

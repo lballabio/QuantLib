@@ -107,7 +107,7 @@ namespace QuantLib {
             strikes.push_back(strikes.back() + dk_);
             break;
           case Option::Put:
-            std::sort(strikes.begin(), strikes.end(), std::greater<Real>());
+            std::sort(strikes.begin(), strikes.end(), std::greater<>());
             strikes.push_back(std::max(strikes.back() - dk_, 0.0));
             break;
           default:

@@ -44,9 +44,6 @@ set(QL_SOURCES
     event.cpp
     exchangerate.cpp
     exercise.cpp
-    experimental/amortizingbonds/amortizingcmsratebond.cpp
-    experimental/amortizingbonds/amortizingfixedratebond.cpp
-    experimental/amortizingbonds/amortizingfloatingratebond.cpp
     experimental/asian/analytic_cont_geom_av_price_heston.cpp
     experimental/asian/analytic_discr_geom_av_price_heston.cpp
     experimental/averageois/arithmeticaverageois.cpp
@@ -128,7 +125,6 @@ set(QL_SOURCES
     experimental/credit/recoveryratequote.cpp
     experimental/credit/riskyassetswap.cpp
     experimental/credit/riskyassetswapoption.cpp
-    experimental/credit/riskybond.cpp
     experimental/credit/syntheticcdo.cpp
     experimental/exoticoptions/analyticamericanmargrabeengine.cpp
     experimental/exoticoptions/analyticcomplexchooserengine.cpp
@@ -282,6 +278,9 @@ set(QL_SOURCES
     instruments/bmaswap.cpp
     instruments/bond.cpp
     instruments/bondforward.cpp
+    instruments/bonds/amortizingcmsratebond.cpp
+    instruments/bonds/amortizingfixedratebond.cpp
+    instruments/bonds/amortizingfloatingratebond.cpp
     instruments/bonds/btp.cpp
     instruments/bonds/cmsratebond.cpp
     instruments/bonds/convertiblebonds.cpp
@@ -385,6 +384,7 @@ set(QL_SOURCES
     math/integrals/integral.cpp
     math/integrals/kronrodintegral.cpp
     math/integrals/segmentintegral.cpp
+    math/interpolations/chebyshevinterpolation.cpp    
     math/matrix.cpp
     math/matrixutilities/basisincompleteordered.cpp
     math/matrixutilities/bicgstab.cpp
@@ -752,6 +752,8 @@ set(QL_SOURCES
     pricingengines/vanilla/mcamericanengine.cpp
     pricingengines/vanilla/mcdigitalengine.cpp
     pricingengines/vanilla/mchestonhullwhiteengine.cpp
+    pricingengines/vanilla/qdfpamericanengine.cpp
+    pricingengines/vanilla/qdplusamericanengine.cpp
     processes/batesprocess.cpp
     processes/blackscholesprocess.cpp
     processes/endeulerdiscretization.cpp
@@ -1307,6 +1309,9 @@ set(QL_HEADERS
     instruments/bmaswap.hpp
     instruments/bond.hpp
     instruments/bondforward.hpp
+    instruments/bonds/amortizingcmsratebond.hpp
+    instruments/bonds/amortizingfixedratebond.hpp
+    instruments/bonds/amortizingfloatingratebond.hpp
     instruments/bonds/btp.hpp
     instruments/bonds/cmsratebond.hpp
     instruments/bonds/convertiblebonds.hpp
@@ -1429,6 +1434,7 @@ set(QL_HEADERS
     math/integrals/momentbasedgaussianpolynomial.hpp
     math/integrals/segmentintegral.hpp
     math/integrals/simpsonintegral.hpp
+    math/integrals/tanhsinhintegral.hpp
     math/integrals/trapezoidintegral.hpp
     math/integrals/twodimensionalintegral.hpp
     math/interpolation.hpp
@@ -1437,6 +1443,7 @@ set(QL_HEADERS
     math/interpolations/backwardflatlinearinterpolation.hpp
     math/interpolations/bicubicsplineinterpolation.hpp
     math/interpolations/bilinearinterpolation.hpp
+    math/interpolations/chebyshevinterpolation.hpp    
     math/interpolations/convexmonotoneinterpolation.hpp
     math/interpolations/cubicinterpolation.hpp
     math/interpolations/extrapolation.hpp
@@ -1957,6 +1964,8 @@ set(QL_HEADERS
     pricingengines/vanilla/mceuropeanhestonengine.hpp
     pricingengines/vanilla/mchestonhullwhiteengine.hpp
     pricingengines/vanilla/mcvanillaengine.hpp
+    pricingengines/vanilla/qdfpamericanengine.hpp
+    pricingengines/vanilla/qdplusamericanengine.hpp
     processes/batesprocess.hpp
     processes/blackscholesprocess.hpp
     processes/endeulerdiscretization.hpp
@@ -2155,6 +2164,8 @@ set(QL_HEADERS
     time/daycounters/actual360.hpp
     time/daycounters/actual364.hpp
     time/daycounters/actual365fixed.hpp
+    time/daycounters/actual366.hpp
+    time/daycounters/actual36525.hpp
     time/daycounters/actualactual.hpp
     time/daycounters/business252.hpp
     time/daycounters/one.hpp
@@ -2332,6 +2343,10 @@ target_compile_definitions(ql_library PRIVATE
 target_compile_options(ql_library PRIVATE
     ${OpenMP_CXX_FLAGS})
 
+if(NOT "${QL_EXTRA_LINK_LIBRARIES}" STREQUAL "")
+    target_link_libraries(ql_library PUBLIC ${QL_EXTRA_LINK_LIBRARIES})
+endif()
+
 target_include_directories(ql_library PUBLIC
     $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
@@ -2340,9 +2355,6 @@ target_include_directories(ql_library PUBLIC
 target_include_directories(ql_library SYSTEM PUBLIC
     ${Boost_INCLUDE_DIRS}
     ${OpenMP_CXX_INCLUDE_DIRS})
-
-target_link_directories(ql_library PUBLIC
-    ${BOOST_LIBRARY_DIRS})
 
 target_link_libraries(ql_library PUBLIC
     ${OpenMP_CXX_LIBRARIES})

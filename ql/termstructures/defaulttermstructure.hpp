@@ -47,20 +47,20 @@ namespace QuantLib {
         //@{
         DefaultProbabilityTermStructure(
             const DayCounter& dc = DayCounter(),
-            std::vector<Handle<Quote> > jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            std::vector<Handle<Quote> > jumps = {},
+            const std::vector<Date>& jumpDates = {});
         DefaultProbabilityTermStructure(
             const Date& referenceDate,
             const Calendar& cal = Calendar(),
             const DayCounter& dc = DayCounter(),
-            std::vector<Handle<Quote> > jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            std::vector<Handle<Quote> > jumps = {},
+            const std::vector<Date>& jumpDates = {});
         DefaultProbabilityTermStructure(
             Natural settlementDays,
             const Calendar& cal,
             const DayCounter& dc = DayCounter(),
-            std::vector<Handle<Quote> > jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            std::vector<Handle<Quote> > jumps = {},
+            const std::vector<Date>& jumpDates = {});
         //@}
 
         /*! \name Survival probabilities
@@ -145,16 +145,21 @@ namespace QuantLib {
         //@}
       protected:
         /*! \name Calculations
-            These methods must be implemented in derived classes to
+            The first two methods must be implemented in derived classes to
             perform the actual calculations. When they are called,
             range check has already been performed; therefore, they
             must assume that extrapolation is required.
+            The third method has a default implementation which can be
+            overriden with a more efficient implementation in derived
+            classes.
         */
         //@{
         //! survival probability calculation
         virtual Probability survivalProbabilityImpl(Time) const = 0;
         //! default density calculation
         virtual Real defaultDensityImpl(Time) const = 0;
+        //! hazard rate calculation
+        virtual Real hazardRateImpl(Time) const;
         //@}
       private:
         // methods
@@ -211,11 +216,16 @@ namespace QuantLib {
         return hazardRate(timeFromReference(d), extrapolate);
     }
 
-    inline
-    Rate DefaultProbabilityTermStructure::hazardRate(Time t,
-                                                     bool extrapolate) const {
-        Probability S = survivalProbability(t, extrapolate);
-        return S == 0.0 ? 0.0 : Real(defaultDensity(t, extrapolate)/S);
+   inline
+    Rate DefaultProbabilityTermStructure::hazardRateImpl(Time t) const {
+        Probability S = survivalProbability(t, true);
+        return S == 0.0 ? Rate(0.0) : defaultDensity(t, true)/S;
+    }
+
+    inline Rate DefaultProbabilityTermStructure::hazardRate(Time t,
+                                                            bool extrapolate) const {
+        checkRange(t, extrapolate);
+        return hazardRateImpl(t);
     }
 
     inline

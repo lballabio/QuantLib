@@ -189,7 +189,6 @@ namespace QuantLib {
         Real a_, b_;
 
         class integrand_f;
-        friend class integrand_f;
 
         class VegaRatioHelper {
           public:

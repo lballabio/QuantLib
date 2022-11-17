@@ -33,8 +33,8 @@
 namespace QuantLib {
 
     namespace detail {
-        const Rate avgInflation = 0.02;
-        const Rate maxInflation = 0.5;
+        constexpr double avgInflation = 0.02;
+        constexpr double maxInflation = 0.5;
     }
 
     //! Bootstrap traits to use for PiecewiseZeroInflationCurve
@@ -70,7 +70,7 @@ namespace QuantLib {
 
         // constraints
         template <class C>
-        static Rate minValueAfter(Size i,
+        static Rate minValueAfter(Size,
                                   const C* c,
                                   bool validData,
                                   Size) // firstAliveHelper
@@ -82,7 +82,7 @@ namespace QuantLib {
             return -detail::maxInflation;
         }
         template <class C>
-        static Rate maxValueAfter(Size i,
+        static Rate maxValueAfter(Size,
                                   const C* c,
                                   bool validData,
                                   Size) // firstAliveHelper
@@ -146,7 +146,7 @@ namespace QuantLib {
 
         // constraints
         template <class C>
-        static Rate minValueAfter(Size i,
+        static Rate minValueAfter(Size,
                                   const C* c,
                                   bool validData,
                                   Size) // firstAliveHelper
@@ -158,7 +158,7 @@ namespace QuantLib {
             return -detail::maxInflation;
         }
         template <class C>
-        static Rate maxValueAfter(Size i,
+        static Rate maxValueAfter(Size,
                                   const C* c,
                                   bool validData,
                                   Size) // firstAliveHelper

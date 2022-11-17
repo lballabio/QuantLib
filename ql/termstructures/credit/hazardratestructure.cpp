@@ -70,6 +70,10 @@ namespace QuantLib {
                                     const std::vector<Date>& jumpDates)
     : DefaultProbabilityTermStructure(settlDays, cal, dc, jumps, jumpDates) {}
 
+    Real HazardRateStructure::hazardRateImpl(Time) const {
+        QL_FAIL("hazardRateImpl() must be implemented by a class derived from HazardRateStructure");
+    }
+
     Probability HazardRateStructure::survivalProbabilityImpl(Time t) const {
         static GaussChebyshevIntegration integral(48);
         // the Gauss-Chebyshev quadratures integrate over [-1,1],

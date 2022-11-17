@@ -94,7 +94,7 @@
         "BOOST_ROOT": "/usr",
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_CXX_COMPILER": "g++",
-        "QL_CLANG_TIDY": "clang-tidy-12",
+        "QL_CLANG_TIDY": "clang-tidy-14",
         "QL_CLANG_TIDY_OPTIONS": "-quiet;-fix",
         "QL_USE_CLANG_TIDY": "ON",
         "QL_USE_STD_CLASSES": "ON"
@@ -113,6 +113,7 @@
         "QL_ENABLE_SESSIONS": "ON",
         "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
         "QL_HIGH_RESOLUTION_DATE": "ON",
+        "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
         "QL_USE_STD_CLASSES": "ON"
       }
@@ -128,9 +129,11 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_STANDARD": "17",
+        "CMAKE_UNITY_BUILD": "ON",
         "QL_ENABLE_SESSIONS": "ON",
         "QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN": "ON",
         "QL_HIGH_RESOLUTION_DATE": "ON",
+        "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
         "QL_USE_STD_CLASSES": "ON"
       },

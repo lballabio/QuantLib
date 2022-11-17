@@ -137,7 +137,7 @@ namespace QuantLib {
     : basket_(std::move(basket)), euriborIndex_(std::move(euriborIndex)),
       discountCurve_(std::move(discountCurve)), yields_(basket_->size(), 0.05),
       durations_(basket_->size()),
-      nSwaps_(15), // TODO: generalize number of swaps and their lengths
+      // TODO: generalize number of swaps and their lengths
       swaps_(nSwaps_), swapLengths_(nSwaps_), swapBondDurations_(nSwaps_, Null<Time>()),
       swapBondYields_(nSwaps_, 0.05), swapRates_(nSwaps_, Null<Rate>()) {
         registerWith(basket_);

@@ -117,6 +117,9 @@ namespace QuantLib {
         void accept(AcyclicVisitor& v) override;
         //@}
 
+        //! this returns the expected rate before cap and floor are applied
+        Rate underlyingRate() const;
+
         bool isCapped() const { return isCapped_; }
         bool isFloored() const { return isFloored_; }
 
