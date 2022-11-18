@@ -12,11 +12,10 @@ jobs:
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: cmake-linux-ci-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        key: cmake-linux-ci-build-${{ github.ref }}
         restore-keys: |
-          cmake-linux-ci-build-${{ github.ref }}-${{ github.head_ref }}-
-          cmake-linux-ci-build-${{ github.ref }}-
-          cmake-linux-ci-build-refs/heads/master-
+          cmake-linux-ci-build-${{ github.ref }}
+          cmake-linux-ci-build-refs/heads/master
           cmake-linux-ci-build-
     - name: Compile
       run: |
@@ -39,11 +38,10 @@ jobs:
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: cmake-linux-ci-opts-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        key: cmake-linux-ci-opts-${{ github.ref }}
         restore-keys: |
-          cmake-linux-ci-opts-${{ github.ref }}-${{ github.head_ref }}-
-          cmake-linux-ci-opts-${{ github.ref }}-
-          cmake-linux-ci-opts-refs/heads/master-
+          cmake-linux-ci-opts-${{ github.ref }}
+          cmake-linux-ci-opts-refs/heads/master
           cmake-linux-ci-opts-
     - name: Compile
       run: |
@@ -60,11 +58,10 @@ jobs:
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: cmake-windows-ci-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        key: cmake-windows-ci-build-${{ github.ref }}
         restore-keys: |
-          cmake-windows-ci-build-${{ github.ref }}-${{ github.head_ref }}-
-          cmake-windows-ci-build-${{ github.ref }}-
-          cmake-windows-ci-build-refs/heads/master-
+          cmake-windows-ci-build-${{ github.ref }}
+          cmake-windows-ci-build-refs/heads/master
           cmake-windows-ci-build-
         variant: sccache
     - name: Setup
@@ -94,11 +91,10 @@ jobs:
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: cmake-windows-ci-opts-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        key: cmake-windows-ci-opts-${{ github.ref }}
         restore-keys: |
-          cmake-windows-ci-opts-${{ github.ref }}-${{ github.head_ref }}-
-          cmake-windows-ci-opts-${{ github.ref }}-
-          cmake-windows-ci-opts-refs/heads/master-
+          cmake-windows-ci-opts-${{ github.ref }}
+          cmake-windows-ci-opts-refs/heads/master
           cmake-windows-ci-opts-
         variant: sccache
     - name: Setup
@@ -129,11 +125,10 @@ jobs:
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: cmake-macos-ci-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        key: cmake-macos-ci-${{ github.ref }}
         restore-keys: |
-          cmake-macos-ci-${{ github.ref }}-${{ github.head_ref }}-
-          cmake-macos-ci-${{ github.ref }}-
-          cmake-macos-ci-refs/heads/master-
+          cmake-macos-ci-${{ github.ref }}
+          cmake-macos-ci-refs/heads/master
           cmake-macos-ci-
     - name: Compile
       env:
