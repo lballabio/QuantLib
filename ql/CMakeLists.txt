@@ -2343,6 +2343,14 @@ target_compile_definitions(ql_library PRIVATE
 target_compile_options(ql_library PRIVATE
     ${OpenMP_CXX_FLAGS})
 
+if((CMAKE_GENERATOR MATCHES "Ninja") AND MSVC)
+    # for Unity builds, we need to add /bigobj
+    get_target_property(_unity ql_library UNITY_BUILD)
+    if(_unity)
+        target_compile_options(ql_library PRIVATE "/bigobj")
+    endif()
+endif()
+
 if(NOT "${QL_EXTRA_LINK_LIBRARIES}" STREQUAL "")
     target_link_libraries(ql_library PUBLIC ${QL_EXTRA_LINK_LIBRARIES})
 endif()

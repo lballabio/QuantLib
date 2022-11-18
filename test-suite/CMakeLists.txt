@@ -385,6 +385,13 @@ if (QL_BUILD_TEST_SUITE)
         ql_library
         ql_unit_test_main
         ${QL_THREAD_LIBRARIES})
+    if((CMAKE_GENERATOR MATCHES "Ninja") AND MSVC)
+        # for Unity builds, we need to add /bigobj
+        get_target_property(_unity ql_test_suite UNITY_BUILD)
+        if(_unity)
+            target_compile_options(ql_test_suite PRIVATE "/bigobj")
+        endif()
+    endif()
     if (QL_INSTALL_TEST_SUITE)
         install(TARGETS ql_test_suite RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()
