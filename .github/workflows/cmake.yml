@@ -8,7 +8,7 @@ jobs:
     - name: Setup
       run: |
         sudo apt update
-        sudo apt install -y libboost-dev ccache
+        sudo apt install -y libboost-dev ccache ninja-build
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -19,13 +19,11 @@ jobs:
           cmake-linux-ci-build-refs/heads/master-
           cmake-linux-ci-build-
     - name: Compile
-      env:
-        CXXFLAGS: -O2
       run: |
         mkdir build
         cd build
-        cmake .. -DBOOST_ROOT=/usr -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-        cmake --build . -j2
+        cmake .. -GNinja -DBOOST_ROOT=/usr -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build .
     - name: Test
       run: |
         cd build
@@ -37,7 +35,7 @@ jobs:
     - name: Setup
       run: |
         sudo apt update
-        sudo apt install -y libboost-all-dev ccache
+        sudo apt install -y libboost-all-dev ccache ninja-build
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -48,11 +46,9 @@ jobs:
           cmake-linux-ci-opts-refs/heads/master-
           cmake-linux-ci-opts-
     - name: Compile
-      env:
-        CXXFLAGS: -O2
       run: |
         cmake --preset linux-ci-build-with-nonstandard-options
-        cmake --build --preset linux-ci-build-with-nonstandard-options -j2
+        cmake --build --preset linux-ci-build-with-nonstandard-options 
     - name: Test
       run: |
         cd build
@@ -61,49 +57,75 @@ jobs:
     runs-on: windows-2022
     steps:
     - uses: actions/checkout@v3
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: cmake-windows-ci-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        restore-keys: |
+          cmake-windows-ci-build-${{ github.ref }}-${{ github.head_ref }}-
+          cmake-windows-ci-build-${{ github.ref }}-
+          cmake-windows-ci-build-refs/heads/master-
+          cmake-windows-ci-build-
+        variant: sccache
     - name: Setup
       run: |
         $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
         Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.78.0"
+        choco install -y ninja
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost-1.78.0
+      shell: cmd
       run: |
         mkdir build
         cd build
-        cmake ..
-        cmake --build . --config Release
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
+        cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+        cmake --build .
     - name: Test
       run: |
         cd build
-        .\test-suite\Release\quantlib-test-suite --log_level=message
+        .\test-suite\quantlib-test-suite --log_level=message
   cmake-win-with-options:
     runs-on: windows-2022
     steps:
     - uses: actions/checkout@v3
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: cmake-windows-ci-opts-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        restore-keys: |
+          cmake-windows-ci-opts-${{ github.ref }}-${{ github.head_ref }}-
+          cmake-windows-ci-opts-${{ github.ref }}-
+          cmake-windows-ci-opts-refs/heads/master-
+          cmake-windows-ci-opts-
+        variant: sccache
     - name: Setup
       run: |
         $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
         Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.78.0"
+        choco install -y ninja
     - name: Compile
       env:
         BOOST_ROOT: C:\local\boost-1.78.0
+      shell: cmd
       run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
         cmake --preset windows-ci-build-with-nonstandard-options
         cmake --build --preset windows-ci-build-with-nonstandard-options
     - name: Test
       run: |
         cd build
-        .\test-suite\Release\quantlib-test-suite --log_level=message
+        .\test-suite\quantlib-test-suite --log_level=message
   cmake-macos:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
     - name: Setup
       run: |
-        brew install boost ccache
+        brew install boost ccache ninja
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -115,12 +137,12 @@ jobs:
           cmake-macos-ci-
     - name: Compile
       env:
-        CXXFLAGS: -O2 -stdlib=libc++ -mmacosx-version-min=10.9
+        CXXFLAGS: -stdlib=libc++ -mmacosx-version-min=10.9
       run: |
         mkdir build
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-        cmake --build . -j2
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -GNinja
+        cmake --build .
     - name: Test
       run: |
         cd build

@@ -385,6 +385,10 @@ if (QL_BUILD_TEST_SUITE)
         ql_library
         ql_unit_test_main
         ${QL_THREAD_LIBRARIES})
+    if(MSVC AND CMAKE_UNITY_BUILD)
+        # for Unity builds, we need to add /bigobj
+        target_compile_options(ql_test_suite PRIVATE "/bigobj")
+    endif()
     if (QL_INSTALL_TEST_SUITE)
         install(TARGETS ql_test_suite RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()
@@ -401,6 +405,10 @@ IF (QL_BUILD_BENCHMARK)
         ql_library
         ql_unit_test_main
         ${QL_THREAD_LIBRARIES})
+    if(MSVC AND CMAKE_UNITY_BUILD)
+        # for Unity builds, we need to add /bigobj
+        target_compile_options(ql_benchmark PRIVATE "/bigobj")
+    endif()
     if (QL_INSTALL_BENCHMARK)
         install(TARGETS ql_benchmark RUNTIME DESTINATION ${QL_INSTALL_BINDIR})
     endif()

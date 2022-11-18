@@ -40,8 +40,11 @@
     {
       "name": "windows-clang-x64",
       "binaryDir": "${sourceDir}/build",
-      "generator": "Visual Studio 17 2022",
-      "toolset": "ClangCL",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "clang-cl",
+        "CMAKE_C_COMPILER": "clang-cl"
+      },
       "architecture": {
         "value": "x64",
         "strategy": "external"
@@ -58,7 +61,7 @@
     {
       "name": "windows-msvc-x64",
       "binaryDir": "${sourceDir}/build",
-      "generator": "Visual Studio 17 2022",
+      "generator": "Ninja",
       "architecture": {
         "value": "x64",
         "strategy": "external"
@@ -100,7 +103,7 @@
     {
       "name": "linux-ci-build-with-nonstandard-options",
       "binaryDir": "${sourceDir}/build",
-      "generator": "Unix Makefiles",
+      "generator": "Ninja",
       "cacheVariables": {
         "BOOST_ROOT": "/usr",
         "CMAKE_BUILD_TYPE": "Release",
@@ -118,12 +121,13 @@
     {
       "name": "windows-ci-build-with-nonstandard-options",
       "binaryDir": "${sourceDir}/build",
-      "generator": "Visual Studio 17 2022",
+      "generator": "Ninja",
       "architecture": {
         "value": "x64",
         "strategy": "external"
       },
       "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_CXX_STANDARD": "17",
         "CMAKE_UNITY_BUILD": "ON",
         "QL_ENABLE_SESSIONS": "ON",
@@ -131,7 +135,8 @@
         "QL_HIGH_RESOLUTION_DATE": "ON",
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
-        "QL_USE_STD_CLASSES": "ON"
+        "QL_USE_STD_CLASSES": "ON",
+        "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
