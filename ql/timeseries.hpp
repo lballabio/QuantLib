@@ -31,7 +31,6 @@
 #include <ql/functional.hpp>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
-#include <boost/utility.hpp>
 #include <algorithm>
 #include <map>
 #include <vector>
@@ -146,12 +145,10 @@ namespace QuantLib {
 
         // The following typedef enables reverse iterators for
         // bidirectional_iterator_tag category.
-        typedef typename boost::mpl::if_ <
-            boost::mpl::or_ <
-                std::is_same<iterator_category, std::bidirectional_iterator_tag>,
-                std::is_base_of<std::bidirectional_iterator_tag, iterator_category> >,
-            std::bidirectional_iterator_tag, 
-            std::input_iterator_tag>::type enable_reverse;
+        typedef std::conditional_t<
+                std::is_same<iterator_category, std::bidirectional_iterator_tag>::value ||
+                std::is_base_of<std::bidirectional_iterator_tag, iterator_category>::value,
+            std::bidirectional_iterator_tag, std::input_iterator_tag> enable_reverse;
 
         typedef typename
         reverse<Container, enable_reverse>::const_reverse_iterator
