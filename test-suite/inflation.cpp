@@ -1074,7 +1074,7 @@ void InflationTest::testCpiFlatInterpolation() {
     testIndex1->addFixing(Date(1, February, 2021), 296.0);
     testIndex1->addFixing(Date(1, March,    2021), 296.9);
 
-    for (auto testIndex: { testIndex1, testIndex2 }) {
+    for (const auto& testIndex : {testIndex1, testIndex2}) {
 
         Real calculated = CPI::laggedFixing(testIndex, Date(10, February, 2021), 3 * Months, CPI::Flat);
         Real expected = 293.5;
@@ -1123,7 +1123,7 @@ void InflationTest::testCpiLinearInterpolation() {
     testIndex1->addFixing(Date(1, February, 2021), 296.0);
     testIndex1->addFixing(Date(1, March,    2021), 296.9);
 
-    for (auto testIndex : { testIndex1, testIndex2 }) {
+    for (const auto& testIndex : {testIndex1, testIndex2}) {
         Real calculated = CPI::laggedFixing(testIndex, Date(10, February, 2021), 3 * Months, CPI::Linear);
         Real expected = 293.5 * (19/28.0) + 295.4 * (9/28.0);
 
