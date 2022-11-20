@@ -42,8 +42,8 @@ namespace QuantLib {
         Option(ext::shared_ptr<Payoff> payoff, ext::shared_ptr<Exercise> exercise)
         : payoff_(std::move(payoff)), exercise_(std::move(exercise)) {}
         void setupArguments(PricingEngine::arguments*) const override;
-        ext::shared_ptr<Payoff> payoff() { return payoff_; }
-        ext::shared_ptr<Exercise> exercise() { return exercise_; };
+        ext::shared_ptr<Payoff> payoff() const { return payoff_; }
+        ext::shared_ptr<Exercise> exercise() const { return exercise_; };
       protected:
         // arguments
         ext::shared_ptr<Payoff> payoff_;
