@@ -23,6 +23,8 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/settings.hpp>
 #include <ql/time/calendars/brazil.hpp>
+#include <ql/time/calendars/unitedstates.hpp>
+#include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/business252.hpp>
 #include <iostream>
 
@@ -211,9 +213,70 @@ void AmortizingBondTest::testBrazilianAmortizingFixedRateBond() {
 
 }
 
+void AmortizingBondTest::testAmortizingFixedRateBondWithDrawDown() {
+    BOOST_TEST_MESSAGE("Testing amortizing fixed rate bond with draw-down...");
+
+    Date issueDate = Date(19, May, 2012);
+    Date maturityDate = Date(25, May, 2017);
+    Calendar calendar = UnitedStates(UnitedStates::GovernmentBond);
+    Natural settlementDays = 3;
+
+    Schedule schedule(issueDate, maturityDate, Period(Semiannual), calendar,
+                      Unadjusted, Unadjusted, DateGeneration::Backward, false);
+
+    std::vector<double> nominals = { 100.0, 100.0, 100.5, 100.5, 101.5, 101.5, 90.0, 80.0, 70.0, 60.0 };
+    std::vector<double> rates = { 0.042 };
+
+    Leg leg = FixedRateLeg(schedule)
+        .withNotionals(nominals)
+        .withCouponRates(rates, Actual360())
+        .withPaymentAdjustment(Unadjusted)
+        .withPaymentCalendar(calendar);
+
+    Bond bond(settlementDays, calendar, issueDate, leg);
+
+    const auto& cfs = bond.cashflows();
+
+    // first draw-down
+    Real calculated = cfs.at(2)->amount();
+    Real expected = nominals[1] - nominals[2];
+    Real error = std::fabs(calculated - expected);
+    Real tolerance = 1e-8;
+
+    if(error > tolerance) {
+        BOOST_ERROR("Failed to calculate first draw down: "
+                    << "\n    expected:   " << expected
+                    << "\n    calculated: " << calculated);
+    }
+
+    // second draw-down
+    calculated = cfs.at(5)->amount();
+    expected = nominals[3] - nominals[4];
+    error = std::fabs(calculated - expected);
+
+    if(error > tolerance) {
+        BOOST_ERROR("Failed to calculate second draw down: "
+                    << "\n    expected:   " << expected
+                    << "\n    calculated: " << calculated);
+    }
+
+    // first amortization
+    calculated = cfs.at(8)->amount();
+    expected = nominals[5] - nominals[6];
+    error = std::fabs(calculated - expected);
+
+    if(error > tolerance) {
+        BOOST_ERROR("Failed to calculate fist amortization: "
+                    << "\n    expected:   " << expected
+                    << "\n    calculated: " << calculated);
+    }
+
+}
+
 test_suite* AmortizingBondTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Amortizing Bond tests");
     suite->add(QUANTLIB_TEST_CASE(&AmortizingBondTest::testAmortizingFixedRateBond));
     suite->add(QUANTLIB_TEST_CASE(&AmortizingBondTest::testBrazilianAmortizingFixedRateBond));
+    suite->add(QUANTLIB_TEST_CASE(&AmortizingBondTest::testAmortizingFixedRateBondWithDrawDown));
     return suite;
 }
