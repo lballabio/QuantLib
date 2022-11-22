@@ -98,7 +98,8 @@ namespace QuantLib {
             .withFixedLegConvention(bdc)
             .withFixedLegTerminationDateConvention(bdc)
             .withType(underlyingType_)
-            .withNominal(nominal_);
+            .withNominal(nominal_)
+            .withIndexedCoupons(useIndexedCoupons_);
 
         ext::shared_ptr<Swaption> swaption(new Swaption(
             underlyingSwap_, exercise_, delivery_, settlementMethod_));
@@ -141,6 +142,16 @@ namespace QuantLib {
 
     MakeSwaption& MakeSwaption::withNominal(Real n) {
         nominal_ = n;
+        return *this;
+    }
+
+    MakeSwaption& MakeSwaption::withIndexedCoupons(const boost::optional<bool>& b) {
+        useIndexedCoupons_ = b;
+        return *this;
+    }
+
+    MakeSwaption& MakeSwaption::withAtParCoupons(bool b) {
+        useIndexedCoupons_ = !b;
         return *this;
     }
 
