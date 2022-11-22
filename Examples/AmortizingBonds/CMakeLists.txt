@@ -1,2 +1,0 @@
-add_executable(AmortizingBond AmortizingBond.cpp)
-target_link_libraries(AmortizingBond QuantLib)

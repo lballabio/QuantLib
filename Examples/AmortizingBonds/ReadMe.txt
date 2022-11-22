@@ -1,1 +1,0 @@
-This is an example how the amortization and draw downs of a bond work
