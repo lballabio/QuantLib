@@ -31,24 +31,22 @@ namespace QuantLib {
 
     class CallSpecifiedMultiProduct : public MarketModelMultiProduct {
      public:
-        CallSpecifiedMultiProduct(
-                             const Clone<MarketModelMultiProduct>& underlying,
-                             const Clone<ExerciseStrategy<CurveState> >&,
-                             const Clone<MarketModelMultiProduct>& rebate
-                                          = Clone<MarketModelMultiProduct>());
-        //! \name MarketModelMultiProduct interface
-        //@{
-        std::vector<Size> suggestedNumeraires() const;
-        const EvolutionDescription& evolution() const;
-        std::vector<Time> possibleCashFlowTimes() const;
-        Size numberOfProducts() const;
-        Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset();
-        bool nextTimeStep(
-                    const CurveState& currentState,
-                    std::vector<Size>& numberCashFlowsThisStep,
-                    std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
+       CallSpecifiedMultiProduct(
+           const Clone<MarketModelMultiProduct>& underlying,
+           const Clone<ExerciseStrategy<CurveState> >&,
+           Clone<MarketModelMultiProduct> rebate = Clone<MarketModelMultiProduct>());
+       //! \name MarketModelMultiProduct interface
+       //@{
+       std::vector<Size> suggestedNumeraires() const override;
+       const EvolutionDescription& evolution() const override;
+       std::vector<Time> possibleCashFlowTimes() const override;
+       Size numberOfProducts() const override;
+       Size maxNumberOfCashFlowsPerProductPerStep() const override;
+       void reset() override;
+       bool nextTimeStep(const CurveState& currentState,
+                         std::vector<Size>& numberCashFlowsThisStep,
+                         std::vector<std::vector<CashFlow> >& cashFlowsGenerated) override;
+        std::unique_ptr<MarketModelMultiProduct> clone() const override;
         //@}
         const MarketModelMultiProduct& underlying() const;
         const ExerciseStrategy<CurveState>& strategy() const;
@@ -62,12 +60,12 @@ namespace QuantLib {
         EvolutionDescription evolution_;
         std::vector<std::valarray<bool> > isPresent_;
         std::vector<Time> cashFlowTimes_;
-        Size rebateOffset_;
-        bool wasCalled_;
+        Size rebateOffset_ = 0UL;
+        bool wasCalled_ = false;
         std::vector<Size> dummyCashFlowsThisStep_;
         std::vector<std::vector<CashFlow> > dummyCashFlowsGenerated_;
-        Size currentIndex_;
-        bool callable_;
+        Size currentIndex_ = 0UL;
+        bool callable_ = true;
     };
 
 }

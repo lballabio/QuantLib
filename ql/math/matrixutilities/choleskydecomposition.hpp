@@ -29,9 +29,7 @@
 namespace QuantLib {
 
     /*! \relates Matrix */
-    const Disposable<Matrix> CholeskyDecomposition(const Matrix& m,
-                                                   bool flexible = false);
-
+    Matrix CholeskyDecomposition(const Matrix& m, bool flexible = false);
 }
 
 

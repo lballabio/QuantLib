@@ -25,8 +25,8 @@ namespace QuantLib {
     QuantoForwardVanillaOption::QuantoForwardVanillaOption(
                            Real moneyness,
                            const Date& resetDate,
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise)
+                           const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                           const ext::shared_ptr<Exercise>& exercise)
     : ForwardVanillaOption(moneyness, resetDate, payoff, exercise) {}
 
     Real QuantoForwardVanillaOption::qvega() const {
@@ -58,10 +58,8 @@ namespace QuantLib {
     void QuantoForwardVanillaOption::fetchResults(
                                       const PricingEngine::results* r) const {
         ForwardVanillaOption::fetchResults(r);
-        const QuantoForwardVanillaOption::results* quantoResults =
-            dynamic_cast<const QuantoForwardVanillaOption::results*>(r);
-        QL_ENSURE(quantoResults != 0,
-                  "no quanto results returned from pricing engine");
+        const auto* quantoResults = dynamic_cast<const QuantoForwardVanillaOption::results*>(r);
+        QL_ENSURE(quantoResults != nullptr, "no quanto results returned from pricing engine");
         qrho_    = quantoResults->qrho;
         qvega_   = quantoResults->qvega;
         qlambda_ = quantoResults->qlambda;

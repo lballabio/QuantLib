@@ -20,39 +20,36 @@
 /*! \file fdmbatessolver.cpp
 */
 
-#include <ql/processes/batesprocess.hpp>
 #include <ql/methods/finitedifferences/operators/fdmbatesop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbatessolver.hpp>
+#include <ql/processes/batesprocess.hpp>
+#include <utility>
 
 
 namespace QuantLib {
-    
-    FdmBatesSolver::FdmBatesSolver(
-            const Handle<BatesProcess>& process,
-            const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc,
-            Size integroIntegrationOrder,
-            const Handle<FdmQuantoHelper>& quantoHelper)
-    : process_(process),
-      solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc),
-      integroIntegrationOrder_(integroIntegrationOrder),
-      quantoHelper_(quantoHelper) {
+
+    FdmBatesSolver::FdmBatesSolver(Handle<BatesProcess> process,
+                                   FdmSolverDesc solverDesc,
+                                   const FdmSchemeDesc& schemeDesc,
+                                   Size integroIntegrationOrder,
+                                   Handle<FdmQuantoHelper> quantoHelper)
+    : process_(std::move(process)), solverDesc_(std::move(solverDesc)), schemeDesc_(schemeDesc),
+      integroIntegrationOrder_(integroIntegrationOrder), quantoHelper_(std::move(quantoHelper)) {
         registerWith(process_);
         registerWith(quantoHelper_);
     }
-          
+
     void FdmBatesSolver::performCalculations() const {
-        boost::shared_ptr<FdmLinearOpComposite> op(
+        ext::shared_ptr<FdmLinearOpComposite> op(
             new FdmBatesOp(solverDesc_.mesher, process_.currentLink(),
                            solverDesc_.bcSet, integroIntegrationOrder_,
                            (!quantoHelper_.empty()) 
                                    ? quantoHelper_.currentLink()
-                                   : boost::shared_ptr<FdmQuantoHelper>()));
+                                   : ext::shared_ptr<FdmQuantoHelper>()));
 
-        solver_ = boost::shared_ptr<Fdm2DimSolver>(
-                               new Fdm2DimSolver(solverDesc_, schemeDesc_, op));
+        solver_ = ext::make_shared<Fdm2DimSolver>(
+                               solverDesc_, schemeDesc_, op);
     }
 
     Real FdmBatesSolver::valueAt(Real s, Real v) const {

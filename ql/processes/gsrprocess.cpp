@@ -19,16 +19,18 @@
 
 #include <ql/processes/gsrprocess.hpp>
 #include <cmath>
+#include <utility>
 
 namespace QuantLib {
 
-    GsrProcess::GsrProcess(const Array &times, const Array &vols,
-                       const Array &reversions,
-                       const Real T, const Date &referenceDate,
-                       const DayCounter &dc)
-    : ForwardMeasureProcess1D(T),
-      core_(times,vols,reversions,T),
-      referenceDate_(referenceDate), dc_(dc) {
+    GsrProcess::GsrProcess(const Array& times,
+                           const Array& vols,
+                           const Array& reversions,
+                           const Real T,
+                           const Date& referenceDate,
+                           DayCounter dc)
+    : ForwardMeasureProcess1D(T), core_(times, vols, reversions, T), referenceDate_(referenceDate),
+      dc_(std::move(dc)) {
         flushCache();
     }
 
@@ -49,7 +51,8 @@ namespace QuantLib {
     Real GsrProcess::x0() const { return 0.0; }
 
     Real GsrProcess::drift(Time t, Real x) const {
-        return core_.y(t) - core_.G(t, x) * sigma(t) * sigma(t) -
+        return core_.y(t) -
+               core_.G(t, getForwardMeasureTime()) * sigma(t) * sigma(t) -
                reversion(t) * x;
     }
 

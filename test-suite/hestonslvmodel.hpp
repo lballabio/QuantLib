@@ -43,9 +43,11 @@ public:
     static void testBarrierPricingViaHestonLocalVol();
     static void testBarrierPricingMixedModels();
     static void testMonteCarloVsFdmPricing();
+    static void testBarrierPricingMixedModelsMonteCarloVsFdmPricing();
     static void testMonteCarloCalibration();
     static void testMoustacheGraph();
     static void testForwardSkewSLV();
+    static void testDiffusionAndDriftSlvProcess();
 
     static boost::unit_test_framework::test_suite* experimental(SpeedLevel);
 

@@ -26,7 +26,7 @@ namespace QuantLib {
       private:
         class Impl : public Constraint::Impl {
           public:
-            bool test(const Array& params) const {
+            bool test(const Array& params) const override {
                 const Real beta  = params[2];
                 const Real gamma = params[3];
 
@@ -35,12 +35,12 @@ namespace QuantLib {
         };
       public:
         VolatilityConstraint()
-        : Constraint(boost::shared_ptr<Constraint::Impl>(
+        : Constraint(ext::shared_ptr<Constraint::Impl>(
                                            new VolatilityConstraint::Impl)) {}
     };
 
     GJRGARCHModel::GJRGARCHModel(
-                           const boost::shared_ptr<GJRGARCHProcess> & process)
+                           const ext::shared_ptr<GJRGARCHProcess> & process)
     : CalibratedModel(6), process_(process) {
         arguments_[0] = ConstantParameter(process->omega(),
                                           PositiveConstraint());
@@ -54,7 +54,7 @@ namespace QuantLib {
         arguments_[5] = ConstantParameter(process->v0(),
                                           PositiveConstraint());
 
-        constraint_ = boost::shared_ptr<Constraint>(
+        constraint_ = ext::shared_ptr<Constraint>(
             new CompositeConstraint(*constraint_, VolatilityConstraint()));
 
         generateArguments();

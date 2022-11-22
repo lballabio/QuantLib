@@ -17,29 +17,29 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/math/distributions/bivariatenormaldistribution.hpp>
 #include <ql/exercise.hpp>
-#include <boost/make_shared.hpp>
+#include <ql/experimental/exoticoptions/analyticpartialtimebarrieroptionengine.hpp>
+#include <ql/math/distributions/bivariatenormaldistribution.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticPartialTimeBarrierOptionEngine::AnalyticPartialTimeBarrierOptionEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
     void AnalyticPartialTimeBarrierOptionEngine::calculate() const {
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         QL_REQUIRE(payoff->strike()>0.0,
                    "strike must be positive");
 
         Real spot = process_->x0();
-        QL_REQUIRE(spot >= 0.0, "negative or null underlying given");
+        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
 
         PartialBarrier::Type barrierType = arguments_.barrierType;
         PartialBarrier::Range barrierRange = arguments_.barrierRange;
@@ -171,23 +171,23 @@ namespace QuantLib {
     // eta = -1: Up-and-In Call
     // eta =  1: Down-and-In Call
     Real AnalyticPartialTimeBarrierOptionEngine::CIA(Integer eta) const {
-        boost::shared_ptr<EuropeanExercise> exercise =
-            boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+        ext::shared_ptr<EuropeanExercise> exercise =
+            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
 
         VanillaOption europeanOption(payoff, exercise);
 
         europeanOption.setPricingEngine(
-                        boost::make_shared<AnalyticEuropeanEngine>(process_));
+                        ext::make_shared<AnalyticEuropeanEngine>(process_));
 
         return europeanOption.NPV() - CA(eta);
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::CA(Integer eta) const {
         //Partial-Time-Start- OUT  Call Option calculation
-        Real b = riskFreeDiscount()-dividendYield();
+        Real b = riskFreeRate()-dividendYield();
         Real result;
         result = underlying()*std::exp((b-riskFreeRate())*residualTime());
         result *= (M(d1(),eta*e1(),eta*rho())-HS(underlying(),barrier(),2*(mu()+1))*M(f1(),eta*e3(),eta*rho()));
@@ -200,8 +200,8 @@ namespace QuantLib {
     }
 
     Real AnalyticPartialTimeBarrierOptionEngine::strike() const {
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }

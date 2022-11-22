@@ -76,7 +76,7 @@ namespace QuantLib {
         //! term structure that discounts the underlying's income cash flows
         Handle<YieldTermStructure> incomeDiscountCurve() const;
         //! returns whether the instrument is still tradable.
-        bool isExpired() const;
+        bool isExpired() const override;
         //@}
 
         //! returns spot value/price of an underlying financial instrument
@@ -106,20 +106,19 @@ namespace QuantLib {
                                   Real forwardValue,
                                   Date settlementDate,
                                   Compounding compoundingConvention,
-                                  DayCounter dayCounter);
+                                  const DayCounter& dayCounter);
         //@}
       protected:
-        Forward(const DayCounter& dayCounter,
-                const Calendar& calendar,
+        Forward(DayCounter dayCounter,
+                Calendar calendar,
                 BusinessDayConvention businessDayConvention,
                 Natural settlementDays,
-                const boost::shared_ptr<Payoff>& payoff,
+                ext::shared_ptr<Payoff> payoff,
                 const Date& valueDate,
                 const Date& maturityDate,
-                const Handle<YieldTermStructure>& discountCurve =
-                                                Handle<YieldTermStructure>());
+                Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
 
-        void performCalculations() const;
+        void performCalculations() const override;
         /*! derived classes must set this, typically via spotIncome() */
         mutable Real underlyingIncome_;
         /*! derived classes must set this, typically via spotValue() */
@@ -129,7 +128,7 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention businessDayConvention_;
         Natural settlementDays_;
-        boost::shared_ptr<Payoff> payoff_;
+        ext::shared_ptr<Payoff> payoff_;
         /*! valueDate = settlement date (date the fwd contract starts
             accruing)
         */
@@ -153,9 +152,9 @@ namespace QuantLib {
         Real strike() const { return strike_; };
         //! \name Payoff interface
         //@{
-        std::string name() const { return "Forward";}
-        std::string description() const;
-        Real operator()(Real price) const;
+        std::string name() const override { return "Forward"; }
+        std::string description() const override;
+        Real operator()(Real price) const override;
         //@}
       protected:
         Position::Type type_;

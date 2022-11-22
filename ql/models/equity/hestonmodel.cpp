@@ -22,7 +22,7 @@
 
 namespace QuantLib {
 
-    HestonModel::HestonModel(const boost::shared_ptr<HestonProcess> & process)
+    HestonModel::HestonModel(const ext::shared_ptr<HestonProcess> & process)
     : CalibratedModel(5), process_(process) {
         arguments_[0] = ConstantParameter(process->theta(),
                                           PositiveConstraint());
@@ -34,7 +34,7 @@ namespace QuantLib {
                                           BoundaryConstraint(-1.0, 1.0));
         arguments_[4] = ConstantParameter(process->v0(),
                                           PositiveConstraint());
-        generateArguments();
+        HestonModel::generateArguments();
 
         registerWith(process_->riskFreeRate());
         registerWith(process_->dividendYield());

@@ -41,38 +41,41 @@ namespace QuantLib {
                                      public LazyObject {
       public:
           StrippedOptionletAdapter(
-                              const boost::shared_ptr<StrippedOptionletBase>&);
+                              const ext::shared_ptr<StrippedOptionletBase>&);
 
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
-        //@}
-        //! \name VolatilityTermStructure interface
-        //@{
-        Rate minStrike() const;
-        Rate maxStrike() const;
-        //@} 
-        //! \name LazyObject interface
-        //@{
-        void update();
-        void performCalculations() const;
-        boost::shared_ptr< OptionletStripper > optionletStripper() const;
-        //@}
-        VolatilityType volatilityType() const;
-        Real displacement() const;
+          Date maxDate() const override;
+          //@}
+          //! \name VolatilityTermStructure interface
+          //@{
+          Rate minStrike() const override;
+          Rate maxStrike() const override;
+          //@}
+          //! \name LazyObject interface
+          //@{
+          void update() override;
+          void performCalculations() const override;
+          ext::shared_ptr<OptionletStripper> optionletStripper() const;
+          //@}
+          //! \name Observer interface
+          //@{
+          void deepUpdate() override;
+          //@}
 
-      protected:
-        //! \name OptionletVolatilityStructure interface
-        //@{
-        boost::shared_ptr<SmileSection> smileSectionImpl(
-                                                Time optionTime) const;
-        Volatility volatilityImpl(Time length,
-                                  Rate strike) const;
-        //@} 
-    private:
-        const boost::shared_ptr<StrippedOptionletBase> optionletStripper_;
-        Size nInterpolations_;
-        mutable std::vector<boost::shared_ptr<Interpolation> > strikeInterpolations_;
+          VolatilityType volatilityType() const override;
+          Real displacement() const override;
+
+        protected:
+          //! \name OptionletVolatilityStructure interface
+          //@{
+          ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime) const override;
+          Volatility volatilityImpl(Time length, Rate strike) const override;
+          //@}
+        private:
+          const ext::shared_ptr<StrippedOptionletBase> optionletStripper_;
+          Size nInterpolations_;
+          mutable std::vector<ext::shared_ptr<Interpolation> > strikeInterpolations_;
     };
 
     inline void StrippedOptionletAdapter::update() {
@@ -80,9 +83,14 @@ namespace QuantLib {
         LazyObject::update();
     }
 
-    inline boost::shared_ptr< OptionletStripper >
+    inline void StrippedOptionletAdapter::deepUpdate() {
+        optionletStripper_->update();
+        update();
+    }
+
+    inline ext::shared_ptr< OptionletStripper >
     StrippedOptionletAdapter::optionletStripper() const {
-        return boost::dynamic_pointer_cast< OptionletStripper >(
+        return ext::dynamic_pointer_cast< OptionletStripper >(
             optionletStripper_);
     }
 }

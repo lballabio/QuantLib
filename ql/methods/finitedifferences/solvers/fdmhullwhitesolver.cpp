@@ -20,31 +20,28 @@
 /*! \file fdmhullwhitesolver.cpp
 */
 
-#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/methods/finitedifferences/operators/fdmhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm1dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmhullwhitesolver.hpp>
-#include <ql/methods/finitedifferences/operators/fdmhullwhiteop.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
+#include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmHullWhiteSolver::FdmHullWhiteSolver(
-        const Handle<HullWhite>& model,
-        const FdmSolverDesc& solverDesc,
-        const FdmSchemeDesc& schemeDesc)
-    : model_(model),
-      solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc) {
+    FdmHullWhiteSolver::FdmHullWhiteSolver(Handle<HullWhite> model,
+                                           FdmSolverDesc solverDesc,
+                                           const FdmSchemeDesc& schemeDesc)
+    : model_(std::move(model)), solverDesc_(std::move(solverDesc)), schemeDesc_(schemeDesc) {
         registerWith(model_);
     }
 
 
     void FdmHullWhiteSolver::performCalculations() const {
-        const boost::shared_ptr<FdmHullWhiteOp> op(
-            new FdmHullWhiteOp(solverDesc_.mesher, model_.currentLink(), 0));
+        const ext::shared_ptr<FdmHullWhiteOp> op(
+			ext::make_shared<FdmHullWhiteOp>(solverDesc_.mesher, model_.currentLink(), 0));
 
-        solver_ = boost::shared_ptr<Fdm1DimSolver>(
-            new Fdm1DimSolver(solverDesc_, schemeDesc_, op));
+        solver_ = ext::make_shared<Fdm1DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmHullWhiteSolver::valueAt(Real r) const {

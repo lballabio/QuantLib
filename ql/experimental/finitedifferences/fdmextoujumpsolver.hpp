@@ -36,24 +36,23 @@ namespace QuantLib {
 
     class FdmExtOUJumpSolver : public LazyObject {
       public:
-          FdmExtOUJumpSolver(
-            const Handle<ExtOUWithJumpsProcess>& process,
-            const boost::shared_ptr<YieldTermStructure>& rTS,
-            const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+        FdmExtOUJumpSolver(Handle<ExtOUWithJumpsProcess> process,
+                           ext::shared_ptr<YieldTermStructure> rTS,
+                           FdmSolverDesc solverDesc,
+                           const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         Real valueAt(Real x, Real y) const;
         
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         const Handle<ExtOUWithJumpsProcess> process_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        mutable boost::shared_ptr<Fdm2DimSolver> solver_;
+        mutable ext::shared_ptr<Fdm2DimSolver> solver_;
     };
 }
 

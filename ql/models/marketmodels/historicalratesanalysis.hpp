@@ -38,23 +38,22 @@ namespace QuantLib {
                 const Date& startDate,
                 const Date& endDate,
                 const Period& step,
-                const std::vector<boost::shared_ptr<InterestRateIndex> >& indexes);
+                const std::vector<ext::shared_ptr<InterestRateIndex> >& indexes);
 
     //! %Historical rate analysis class
     class HistoricalRatesAnalysis {
       public:
-        HistoricalRatesAnalysis(
-                const boost::shared_ptr<SequenceStatistics>& stats,
-                const Date& startDate,
-                const Date& endDate,
-                const Period& step,
-                const std::vector<boost::shared_ptr<InterestRateIndex> >& indexes);
+        HistoricalRatesAnalysis(ext::shared_ptr<SequenceStatistics> stats,
+                                const Date& startDate,
+                                const Date& endDate,
+                                const Period& step,
+                                const std::vector<ext::shared_ptr<InterestRateIndex> >& indexes);
         const std::vector<Date>& skippedDates() const;
         const std::vector<std::string>& skippedDatesErrorMessage() const;
-        const boost::shared_ptr<SequenceStatistics>& stats() const;
+        const ext::shared_ptr<SequenceStatistics>& stats() const;
       private:
         // calculated data
-        boost::shared_ptr<SequenceStatistics> stats_;
+        ext::shared_ptr<SequenceStatistics> stats_;
         std::vector<Date> skippedDates_;
         std::vector<std::string> skippedDatesErrorMessage_;
     };
@@ -71,7 +70,7 @@ namespace QuantLib {
         return skippedDatesErrorMessage_;
     }
 
-    inline const boost::shared_ptr<SequenceStatistics>&
+    inline const ext::shared_ptr<SequenceStatistics>&
     HistoricalRatesAnalysis::stats() const {
         return stats_;
     }

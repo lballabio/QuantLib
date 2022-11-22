@@ -49,20 +49,20 @@ namespace QuantLib {
         //@{
         SurvivalProbabilityStructure(
             const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         SurvivalProbabilityStructure(
             const Date& referenceDate,
             const Calendar& cal = Calendar(),
             const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         SurvivalProbabilityStructure(
             Natural settlementDays,
             const Calendar& cal,
             const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         //@}
       protected:
         //! \name DefaultProbabilityTermStructure implementation
@@ -76,7 +76,7 @@ namespace QuantLib {
                      Derived classes should override it if a more efficient
                      implementation is available.
         */
-        Real defaultDensityImpl(Time) const;
+        Real defaultDensityImpl(Time) const override;
         //@}
     };
 

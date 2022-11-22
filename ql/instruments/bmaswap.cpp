@@ -30,11 +30,11 @@ namespace QuantLib {
                      const Schedule& liborSchedule,
                      Real liborFraction,
                      Spread liborSpread,
-                     const boost::shared_ptr<IborIndex>& liborIndex,
+                     const ext::shared_ptr<IborIndex>& liborIndex,
                      const DayCounter& liborDayCount,
                      // BMA leg
                      const Schedule& bmaSchedule,
-                     const boost::shared_ptr<BMAIndex>& bmaIndex,
+                     const ext::shared_ptr<BMAIndex>& bmaIndex,
                      const DayCounter& bmaDayCount)
     : Swap(2), type_(type), nominal_(nominal),
       liborFraction_(liborFraction), liborSpread_(liborSpread)  {
@@ -56,8 +56,8 @@ namespace QuantLib {
             .withPaymentAdjustment(bmaSchedule.businessDayConvention());
 
         for (Size j=0; j<2; ++j) {
-            for (Leg::iterator i = legs_[j].begin(); i!= legs_[j].end(); ++i)
-                registerWith(*i);
+            for (auto& i : legs_[j])
+                registerWith(i);
         }
 
         switch (type_) {
@@ -86,7 +86,7 @@ namespace QuantLib {
         return nominal_;
     }
 
-    BMASwap::Type BMASwap::type() const {
+    Swap::Type BMASwap::type() const {
         return type_;
     }
 

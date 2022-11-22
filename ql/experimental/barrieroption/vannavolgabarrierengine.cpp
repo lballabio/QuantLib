@@ -20,14 +20,13 @@
 #include <ql/experimental/barrieroption/vannavolgabarrierengine.hpp>
 #include <ql/experimental/barrieroption/vannavolgainterpolation.hpp>
 #include <ql/experimental/fx/blackdeltacalculator.hpp>
-#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
+#include <ql/math/matrix.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/math/matrix.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
-#include <boost/make_shared.hpp>
+#include <utility>
 
 using std::pow;
 using std::log;
@@ -35,41 +34,41 @@ using std::sqrt;
 
 namespace QuantLib {
 
-    VannaVolgaBarrierEngine::VannaVolgaBarrierEngine(
-            const Handle<DeltaVolQuote>& atmVol,
-            const Handle<DeltaVolQuote>& vol25Put,
-            const Handle<DeltaVolQuote>& vol25Call,
-            const Handle<Quote>& spotFX,
-            const Handle<YieldTermStructure>& domesticTS,
-            const Handle<YieldTermStructure>& foreignTS,
-            const bool adaptVanDelta,
-            const Real bsPriceWithSmile
-            )
-    : GenericEngine<DividendBarrierOption::arguments,
-                    DividendBarrierOption::results>(),
-      atmVol_(atmVol), vol25Put_(vol25Put), vol25Call_(vol25Call), T_(atmVol_->maturity()),
-      spotFX_(spotFX), domesticTS_(domesticTS), foreignTS_(foreignTS),
-      adaptVanDelta_(adaptVanDelta), bsPriceWithSmile_(bsPriceWithSmile)
-      {
-          QL_REQUIRE(vol25Put_->delta() == -0.25, "25 delta put is required by vanna volga method");
-          QL_REQUIRE(vol25Call_->delta() == 0.25, "25 delta call is required by vanna volga method");
+    VannaVolgaBarrierEngine::VannaVolgaBarrierEngine(Handle<DeltaVolQuote> atmVol,
+                                                     Handle<DeltaVolQuote> vol25Put,
+                                                     Handle<DeltaVolQuote> vol25Call,
+                                                     Handle<Quote> spotFX,
+                                                     Handle<YieldTermStructure> domesticTS,
+                                                     Handle<YieldTermStructure> foreignTS,
+                                                     const bool adaptVanDelta,
+                                                     const Real bsPriceWithSmile)
+    : atmVol_(std::move(atmVol)), vol25Put_(std::move(vol25Put)), vol25Call_(std::move(vol25Call)),
+      T_(atmVol_->maturity()), spotFX_(std::move(spotFX)), domesticTS_(std::move(domesticTS)),
+      foreignTS_(std::move(foreignTS)), adaptVanDelta_(adaptVanDelta),
+      bsPriceWithSmile_(bsPriceWithSmile) {
+        QL_REQUIRE(vol25Put_->delta() == -0.25, "25 delta put is required by vanna volga method");
+        QL_REQUIRE(vol25Call_->delta() == 0.25, "25 delta call is required by vanna volga method");
 
-          QL_REQUIRE(vol25Put_->maturity() == vol25Call_->maturity() && vol25Put_->maturity() == atmVol_->maturity(),
-              "Maturity of 3 vols are not the same");
+        QL_REQUIRE(vol25Put_->maturity() == vol25Call_->maturity() &&
+                       vol25Put_->maturity() == atmVol_->maturity(),
+                   "Maturity of 3 vols are not the same");
 
-          QL_REQUIRE(!domesticTS_.empty(), "domestic yield curve is not defined");
-          QL_REQUIRE(!foreignTS_.empty(), "foreign yield curve is not defined");
+        QL_REQUIRE(!domesticTS_.empty(), "domestic yield curve is not defined");
+        QL_REQUIRE(!foreignTS_.empty(), "foreign yield curve is not defined");
 
-          registerWith(atmVol_);
-          registerWith(vol25Put_);
-          registerWith(vol25Call_);
-          registerWith(spotFX_);
-          registerWith(domesticTS_);
-          registerWith(foreignTS_);
-
+        registerWith(atmVol_);
+        registerWith(vol25Put_);
+        registerWith(vol25Call_);
+        registerWith(spotFX_);
+        registerWith(domesticTS_);
+        registerWith(foreignTS_);
     }
 
     void VannaVolgaBarrierEngine::calculate() const {
+
+        QL_REQUIRE(arguments_.barrierType == Barrier::UpIn || arguments_.barrierType == Barrier::UpOut ||
+            arguments_.barrierType == Barrier::DownIn || arguments_.barrierType == Barrier::DownOut,
+            "Invalid barrier type");
 
         const Real sigmaShift_vega = 0.0001;
         const Real sigmaShift_volga = 0.0001;
@@ -77,23 +76,23 @@ namespace QuantLib {
         const Real sigmaShift_vanna = 0.0001;
 
         Handle<Quote> x0Quote(
-            boost::make_shared<SimpleQuote>(spotFX_->value())); //used for shift
+            ext::make_shared<SimpleQuote>(spotFX_->value())); //used for shift
         Handle<Quote> atmVolQuote(
-            boost::make_shared<SimpleQuote>(atmVol_->value())); //used for shift
+            ext::make_shared<SimpleQuote>(atmVol_->value())); //used for shift
 
-        boost::shared_ptr<BlackVolTermStructure> blackVolTS =
-            boost::make_shared<BlackConstantVol>(
+        ext::shared_ptr<BlackVolTermStructure> blackVolTS =
+            ext::make_shared<BlackConstantVol>(
                 Settings::instance().evaluationDate(),
                 NullCalendar(), atmVolQuote, Actual365Fixed());
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess =
-            boost::make_shared<BlackScholesMertonProcess>(
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+            ext::make_shared<BlackScholesMertonProcess>(
                                  x0Quote,
                                  foreignTS_,
                                  domesticTS_,
                                  Handle<BlackVolTermStructure>(blackVolTS));
 
-        boost::shared_ptr<PricingEngine> engineBS =
-            boost::make_shared<AnalyticBarrierEngine>(stochProcess);
+        ext::shared_ptr<PricingEngine> engineBS =
+            ext::make_shared<AnalyticBarrierEngine>(stochProcess);
 
         BlackDeltaCalculator blackDeltaCalculatorAtm(
                         Option::Call, atmVol_->deltaType(), x0Quote->value(),
@@ -126,11 +125,11 @@ namespace QuantLib {
         VannaVolga vannaVolga(x0Quote->value(), domesticTS_->discount(T_), foreignTS_->discount(T_), T_);
         Interpolation interpolation = vannaVolga.interpolate(strikes.begin(), strikes.end(), vols.begin());
         interpolation.enableExtrapolation();
-        const boost::shared_ptr<StrikedTypePayoff> payoff =
-                                        boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const ext::shared_ptr<StrikedTypePayoff> payoff =
+                                        ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         Real strikeVol = interpolation(payoff->strike());
 
-        //vannila option price
+        //vanilla option price
         Real vanillaOption = blackFormula(payoff->optionType(), payoff->strike(), 
                                       x0Quote->value()* foreignTS_->discount(T_)/ domesticTS_->discount(T_), 
                                       strikeVol * sqrt(T_),
@@ -169,20 +168,20 @@ namespace QuantLib {
             //set up BS barrier option pricing
             //only calculate out barrier option price
             // in barrier price = vanilla - out barrier
-            Barrier::Type barrierTyp;
+            Barrier::Type barrierType;
             if(arguments_.barrierType == Barrier::UpOut)
-                barrierTyp = arguments_.barrierType;
+                barrierType = arguments_.barrierType;
             else if(arguments_.barrierType == Barrier::UpIn)
-                barrierTyp = Barrier::UpOut;
+                barrierType = Barrier::UpOut;
             else if(arguments_.barrierType == Barrier::DownOut)
-                barrierTyp = arguments_.barrierType;
+                barrierType = arguments_.barrierType;
             else
-                barrierTyp = Barrier::DownOut;
+                barrierType = Barrier::DownOut;
 
-            BarrierOption barrierOption(barrierTyp,
+            BarrierOption barrierOption(barrierType,
                                         arguments_.barrier,
                                         arguments_.rebate,
-                                        boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff),
+                                        ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff),
                                         arguments_.exercise);
 
             barrierOption.setPricingEngine(engineBS);
@@ -241,59 +240,59 @@ namespace QuantLib {
 
 
             //BS vega
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_vega);
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_vega);
             barrierOption.recalculate();
             Real vegaBarBS = (barrierOption.NPV() - priceBS)/sigmaShift_vega;
 
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() - sigmaShift_vega);//setback
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() - sigmaShift_vega);//setback
 
             //BS volga
 
             //vegaBar2
             //base NPV
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_volga);
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_volga);
             barrierOption.recalculate();
             Real priceBS2 = barrierOption.NPV();
 
             //shifted npv
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_vega);
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_vega);
             barrierOption.recalculate();
             Real vegaBarBS2 = (barrierOption.NPV() - priceBS2)/sigmaShift_vega;
             Real volgaBarBS = (vegaBarBS2 - vegaBarBS)/sigmaShift_volga;
 
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() 
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() 
                                                                                                - sigmaShift_volga 
                                                                                                - sigmaShift_vega);//setback
 
             //BS Delta
             //base delta
-            boost::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() + spotShift_delta);//shift forth
+            ext::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() + spotShift_delta);//shift forth
             barrierOption.recalculate();
             Real priceBS_delta1 = barrierOption.NPV();
 
-            boost::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() - 2 * spotShift_delta);//shift back
+            ext::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() - 2 * spotShift_delta);//shift back
             barrierOption.recalculate();
             Real priceBS_delta2 = barrierOption.NPV();
 
-            boost::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() +  spotShift_delta);//set back
+            ext::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() +  spotShift_delta);//set back
             Real deltaBar1 = (priceBS_delta1 - priceBS_delta2)/(2.0*spotShift_delta);
 
             //shifted delta
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_vanna);//shift sigma
-            boost::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() + spotShift_delta);//shift forth
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() + sigmaShift_vanna);//shift sigma
+            ext::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() + spotShift_delta);//shift forth
             barrierOption.recalculate();
             priceBS_delta1 = barrierOption.NPV();
 
-            boost::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() - 2 * spotShift_delta);//shift back
+            ext::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() - 2 * spotShift_delta);//shift back
             barrierOption.recalculate();
             priceBS_delta2 = barrierOption.NPV();
 
-            boost::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() +  spotShift_delta);//set back
+            ext::static_pointer_cast<SimpleQuote> (x0Quote.currentLink())->setValue(x0Quote->value() +  spotShift_delta);//set back
             Real deltaBar2 = (priceBS_delta1 - priceBS_delta2)/(2.0*spotShift_delta);
 
             Real vannaBarBS = (deltaBar2 - deltaBar1)/sigmaShift_vanna;
 
-            boost::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() - sigmaShift_vanna);//set back
+            ext::static_pointer_cast<SimpleQuote> (atmVolQuote.currentLink())->setValue(atmVolQuote->value() - sigmaShift_vanna);//set back
 
             //Matrix
             Matrix A(3,3,0.0);
@@ -318,7 +317,7 @@ namespace QuantLib {
 
             //touch probability
             CumulativeNormalDistribution cnd;
-            Real mu = domesticTS_->zeroRate(T_, Continuous) - foreignTS_->zeroRate(T_, Continuous) - pow(atmVol_->value(), 2.0)/2.0;
+            Real mu = domesticTS_->zeroRate(T_, Continuous).rate() - foreignTS_->zeroRate(T_, Continuous).rate() - pow(atmVol_->value(), 2.0)/2.0;
             Real h2 = (log(arguments_.barrier/x0Quote->value()) + mu*T_)/(atmVol_->value()*sqrt(T_));
             Real h2Prime = (log(x0Quote->value()/arguments_.barrier) + mu*T_)/(atmVol_->value()*sqrt(T_));
             Real probTouch = 0.0;
@@ -336,7 +335,7 @@ namespace QuantLib {
             Real inPrice;
 
             //adapt Vanilla delta
-            if(adaptVanDelta_ == true){
+            if (adaptVanDelta_) {
                 outPrice += lambda*(bsPriceWithSmile_ - vanillaOption);
                 //capfloored by (0, vanilla)
                 outPrice = std::max(0.0, std::min(bsPriceWithSmile_, outPrice));
@@ -344,7 +343,7 @@ namespace QuantLib {
             }
             else{
                 //capfloored by (0, vanilla)
-                outPrice = std::max(0.0, std::min(vanillaOption , outPrice));
+                outPrice = std::max(0.0, std::min(vanillaOption, outPrice));
                 inPrice = vanillaOption - outPrice;
             }
 

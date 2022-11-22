@@ -36,7 +36,6 @@ namespace QuantLib {
       public:
         SampledCurve(Size gridSize = 0);
         SampledCurve(const Array &grid);
-        SampledCurve& operator=(const SampledCurve&);
 
         //! \name inspectors
         //@{
@@ -88,8 +87,8 @@ namespace QuantLib {
             setGrid(BoundedLogGrid(min, max, size()-1));
         }
         void regridLogGrid(Real min, Real max) {
-            regrid(BoundedLogGrid(min, max, size()-1),
-                   std::ptr_fun<Real,Real>(std::log));
+            regrid(BoundedLogGrid(min, max, size() - 1),
+                   [](Real x) -> Real { return std::log(x); });
         }
         void shiftGrid(Real s) {
             grid_ += s;
@@ -99,6 +98,12 @@ namespace QuantLib {
         }
 
         void regrid(const Array &new_grid);
+
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnoexcept-type"
+#endif
+
         template <class T>
         void regrid(const Array &new_grid,
                     T func) {
@@ -117,13 +122,16 @@ namespace QuantLib {
             Array newValues = new_grid;
             std::transform(newValues.begin(), newValues.end(),
                            newValues.begin(), func);
-            for (Array::iterator j = newValues.begin();
-                 j != newValues.end(); ++j) {
-                *j = priceSpline(*j, true);
+            for (Real& newValue : newValues) {
+                newValue = priceSpline(newValue, true);
             }
             values_.swap(newValues);
             grid_ = new_grid;
         }
+
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+#pragma GCC diagnostic pop
+#endif
 
         template <class T>
         inline const SampledCurve& transform(T x) {
@@ -157,12 +165,6 @@ namespace QuantLib {
 
     inline SampledCurve::SampledCurve(const Array& grid)
         : grid_(grid), values_(grid.size()) {}
-
-    inline SampledCurve& SampledCurve::operator=(const SampledCurve& from) {
-        SampledCurve temp(from);
-        swap(temp);
-        return *this;
-    }
 
     inline Array& SampledCurve::grid() {
         return grid_;

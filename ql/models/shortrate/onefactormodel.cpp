@@ -17,9 +17,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/solvers1d/brent.hpp>
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/stochasticprocess.hpp>
-#include <ql/math/solvers1d/brent.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -28,15 +29,10 @@ namespace QuantLib {
       public:
         Helper(Size i,
                Real discountBondPrice,
-               const boost::shared_ptr
-                   <TermStructureFittingParameter::NumericalImpl>& theta,
+               ext::shared_ptr<TermStructureFittingParameter::NumericalImpl> theta,
                ShortRateTree& tree)
-        : size_(tree.size(i)),
-          i_(i),
-          statePrices_(tree.statePrices(i)),
-          discountBondPrice_(discountBondPrice),
-          theta_(theta),
-          tree_(tree) {
+        : size_(tree.size(i)), i_(i), statePrices_(tree.statePrices(i)),
+          discountBondPrice_(discountBondPrice), theta_(std::move(theta)), tree_(tree) {
             theta_->set(tree.timeGrid()[i], 0.0);
         }
 
@@ -53,18 +49,17 @@ namespace QuantLib {
         Size i_;
         const Array& statePrices_;
         Real discountBondPrice_;
-        boost::shared_ptr<TermStructureFittingParameter::NumericalImpl> theta_;
+        ext::shared_ptr<TermStructureFittingParameter::NumericalImpl> theta_;
         ShortRateTree& tree_;
     };
 
     OneFactorModel::ShortRateTree::ShortRateTree(
-            const boost::shared_ptr<TrinomialTree>& tree,
-            const boost::shared_ptr<ShortRateDynamics>& dynamics,
-            const boost::shared_ptr
-                <TermStructureFittingParameter::NumericalImpl>& theta,
-            const TimeGrid& timeGrid)
-    : TreeLattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)),
-      tree_(tree), dynamics_(dynamics) {
+        const ext::shared_ptr<TrinomialTree>& tree,
+        ext::shared_ptr<ShortRateDynamics> dynamics,
+        const ext::shared_ptr<TermStructureFittingParameter::NumericalImpl>& theta,
+        const TimeGrid& timeGrid)
+    : TreeLattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)), tree_(tree),
+      dynamics_(std::move(dynamics)), spread_(0.0) {
 
         theta->reset();
         Real value = 1.0;
@@ -82,21 +77,20 @@ namespace QuantLib {
         }
     }
 
-    OneFactorModel::ShortRateTree::ShortRateTree(
-                         const boost::shared_ptr<TrinomialTree>& tree,
-                         const boost::shared_ptr<ShortRateDynamics>& dynamics,
-                         const TimeGrid& timeGrid)
-    : TreeLattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)),
-      tree_(tree), dynamics_(dynamics) {}
+    OneFactorModel::ShortRateTree::ShortRateTree(const ext::shared_ptr<TrinomialTree>& tree,
+                                                 ext::shared_ptr<ShortRateDynamics> dynamics,
+                                                 const TimeGrid& timeGrid)
+    : TreeLattice1D<OneFactorModel::ShortRateTree>(timeGrid, tree->size(1)), tree_(tree),
+      dynamics_(std::move(dynamics)), spread_(0.0) {}
 
     OneFactorModel::OneFactorModel(Size nArguments)
     : ShortRateModel(nArguments) {}
 
-    boost::shared_ptr<Lattice>
+    ext::shared_ptr<Lattice>
     OneFactorModel::tree(const TimeGrid& grid) const {
-        boost::shared_ptr<TrinomialTree> trinomial(
+        ext::shared_ptr<TrinomialTree> trinomial(
                               new TrinomialTree(dynamics()->process(), grid));
-        return boost::shared_ptr<Lattice>(
+        return ext::shared_ptr<Lattice>(
                               new ShortRateTree(trinomial, dynamics(), grid));
     }
 

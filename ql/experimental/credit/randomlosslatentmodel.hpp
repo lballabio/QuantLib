@@ -19,16 +19,15 @@
 #ifndef quantlib_randomloss_latent_model_hpp
 #define quantlib_randomloss_latent_model_hpp
 
-#include <ql/math/solvers1d/brent.hpp>
 #include <ql/experimental/credit/basket.hpp>
-#include <ql/experimental/math/latentmodel.hpp>
-#include <ql/experimental/math/gaussiancopulapolicy.hpp>
-#include <ql/experimental/math/tcopulapolicy.hpp>
-
 #include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/experimental/credit/spotlosslatentmodel.hpp> 
-
+#include <ql/experimental/math/gaussiancopulapolicy.hpp>
+#include <ql/experimental/math/latentmodel.hpp>
+#include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -39,7 +38,7 @@ namespace QuantLib {
             simEvent(unsigned int n, unsigned int d, Real r) 
             : nameIdx(n), dayFromRef(d), 
                 // truncates the value:
-                compactRR(static_cast<unsigned int>(r/rrGranular+.5)) {}
+              compactRR(std::lround(r/rrGranular)) {}
             unsigned int nameIdx : 12; // can index up to 4095 names
             unsigned int dayFromRef : 12; // can index up to 4095 days = 11 yrs
         private:
@@ -74,16 +73,16 @@ namespace QuantLib {
     private:
         typedef simEvent<RandomLossLM> defaultSimEvent;
 
-        const boost::shared_ptr<SpotRecoveryLatentModel<copulaPolicy> > copula_;
+        const ext::shared_ptr<SpotRecoveryLatentModel<copulaPolicy> > copula_;
         // for time inversion:
         Real accuracy_;
     public:
-        RandomLossLM(
-            const boost::shared_ptr<SpotRecoveryLatentModel<copulaPolicy> >& 
+        explicit RandomLossLM(
+            const ext::shared_ptr<SpotRecoveryLatentModel<copulaPolicy> >& 
                 copula,
             Size nSims = 0,
             Real accuracy = 1.e-6, 
-            BigNatural seed = 2863311530)
+            BigNatural seed = 2863311530UL)
         : RandomLM< ::QuantLib::RandomLossLM, copulaPolicy, USNG>
             (copula->numFactors(), copula->size(), copula->copula(), 
                 nSims, seed),
@@ -113,7 +112,7 @@ namespace QuantLib {
             Date today = Settings::instance().evaluationDate();
             Date maxHorizonDate = today  + Period(this->maxHorizon_, Days);
 
-            const boost::shared_ptr<Pool>& pool = this->basket_->pool();
+            const ext::shared_ptr<Pool>& pool = this->basket_->pool();
             for(Size iName=0; iName < this->basket_->size(); ++iName)//use'live'
                 horizonDefaultPs_.push_back(pool->get(pool->names()[iName]).
                     defaultProbability(this->basket_->defaultKeys()[iName])
@@ -122,7 +121,7 @@ namespace QuantLib {
        Real getEventRecovery(const defaultSimEvent& evt) const {
             return evt.recovery();
         }
-    protected:
+
         Real latentVarValue(const std::vector<Real>& factorsSample, 
             Size iVar) const {
                 return copula_->latentVarValue(factorsSample, iVar);
@@ -132,18 +131,19 @@ namespace QuantLib {
         Real conditionalRecovery(Real latentVarSample, Size iName, 
             const Date& d) const;
     private:
-        void resetModel() {
-            /* Explore: might save recalculation if the basket is the same 
-            (some situations, like BC or control variates) in that case do not 
-            update, only reset the copula's basket.
-            */
-            copula_->resetBasket(this->basket_.currentLink());
+      void resetModel() override {
+          /* Explore: might save recalculation if the basket is the same
+          (some situations, like BC or control variates) in that case do not
+          update, only reset the copula's basket.
+          */
+          copula_->resetBasket(this->basket_.currentLink());
 
-            QL_REQUIRE(2 * this->basket_->size() == copula_->size(),
-                "Incompatible basket and model sizes.");
-            // invalidate current calculations if any and notify observers
-            LazyObject::update();
-        }
+          QL_REQUIRE(2 * this->basket_->size() == copula_->size(),
+                     "Incompatible basket and model sizes.");
+          // invalidate current calculations if any and notify observers
+          // NOLINTNEXTLINE(bugprone-parent-virtual-call)
+          LazyObject::update();
+      }
         // Default probabilities for each name at the time of the maximun 
         //   horizon date. Cached for perf.
         mutable std::vector<Probability> horizonDefaultPs_;
@@ -157,7 +157,7 @@ namespace QuantLib {
     void RandomLossLM<C, URNG>::nextSample(
         const std::vector<Real>& values) const 
     {
-        const boost::shared_ptr<Pool>& pool = this->basket_->pool();
+        const ext::shared_ptr<Pool>& pool = this->basket_->pool();
         this->simsBuffer_.push_back(std::vector<defaultSimEvent> ());
 
         // half the model is defaults, the other half are RRs...

@@ -42,8 +42,8 @@ namespace QuantLib {
     class Fd2dBlackScholesVanillaEngine : public BasketOption::engine {
       public:
           Fd2dBlackScholesVanillaEngine(
-                const boost::shared_ptr<GeneralizedBlackScholesProcess>& p1,
-                const boost::shared_ptr<GeneralizedBlackScholesProcess>& p2,
+                const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
+                const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
                 Real correlation,
                 Size xGrid = 100, Size yGrid = 100, 
                 Size tGrid = 50, Size dampingSteps = 0,
@@ -51,17 +51,17 @@ namespace QuantLib {
                 bool localVol = false,
                 Real illegalLocalVolOverwrite = -Null<Real>());
 
-        void calculate() const;
+          void calculate() const override;
 
-      private:
-        const boost::shared_ptr<GeneralizedBlackScholesProcess> p1_;
-        const boost::shared_ptr<GeneralizedBlackScholesProcess> p2_;
-        const Real correlation_;
-        const Size xGrid_, yGrid_, tGrid_;
-        const Size dampingSteps_;
-        const FdmSchemeDesc schemeDesc_;
-        const bool localVol_;
-        const Real illegalLocalVolOverwrite_;
+        private:
+          const ext::shared_ptr<GeneralizedBlackScholesProcess> p1_;
+          const ext::shared_ptr<GeneralizedBlackScholesProcess> p2_;
+          const Real correlation_;
+          const Size xGrid_, yGrid_, tGrid_;
+          const Size dampingSteps_;
+          const FdmSchemeDesc schemeDesc_;
+          const bool localVol_;
+          const Real illegalLocalVolOverwrite_;
     };
 }
 

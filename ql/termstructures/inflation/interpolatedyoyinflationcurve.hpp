@@ -50,16 +50,14 @@ namespace QuantLib {
                                       const Period& lag,
                                       Frequency frequency,
                                       bool indexIsInterpolated,
-                                      const Handle<YieldTermStructure>& yTS,
-                                      const std::vector<Date>& dates,
+                                      std::vector<Date> dates,
                                       const std::vector<Rate>& rates,
-                                      const Interpolator& interpolator
-                                                            = Interpolator());
+                                      const Interpolator& interpolator = Interpolator());
 
         //! \name InflationTermStructure interface
         //@{
-        Date baseDate() const;
-        Date maxDate() const;
+        Date baseDate() const override;
+        Date maxDate() const override;
         //@}
 
         //! \name Inspectors
@@ -74,7 +72,7 @@ namespace QuantLib {
       protected:
         //! \name YoYInflationTermStructure interface
         //@{
-        Rate yoyRateImpl(Time t) const;
+        Rate yoyRateImpl(Time t) const override;
         //@}
         mutable std::vector<Date> dates_;
 
@@ -89,7 +87,6 @@ namespace QuantLib {
                                       const Period& lag,
                                       Frequency frequency,
                                       bool indexIsInterpolated,
-                                      const Handle<YieldTermStructure>& yTS,
                                       const Interpolator& interpolator
                                                             = Interpolator());
     };
@@ -101,21 +98,20 @@ namespace QuantLib {
     // template definitions
 
     template <class Interpolator>
-    InterpolatedYoYInflationCurve<Interpolator>::
-    InterpolatedYoYInflationCurve(const Date& referenceDate,
-                                  const Calendar& calendar,
-                                  const DayCounter& dayCounter,
-                                  const Period& lag,
-                                  Frequency frequency,
-                                  bool indexIsInterpolated,
-                                  const Handle<YieldTermStructure>& yTS,
-                                  const std::vector<Date>& dates,
-                                  const std::vector<Rate>& rates,
-                                  const Interpolator& interpolator)
-    : YoYInflationTermStructure(referenceDate, calendar, dayCounter, rates[0],
-                                lag, frequency, indexIsInterpolated,  yTS),
+    InterpolatedYoYInflationCurve<Interpolator>::InterpolatedYoYInflationCurve(
+        const Date& referenceDate,
+        const Calendar& calendar,
+        const DayCounter& dayCounter,
+        const Period& lag,
+        Frequency frequency,
+        bool indexIsInterpolated,
+        std::vector<Date> dates,
+        const std::vector<Rate>& rates,
+        const Interpolator& interpolator)
+    : YoYInflationTermStructure(
+          referenceDate, calendar, dayCounter, rates[0], lag, frequency, indexIsInterpolated),
       InterpolatedCurve<Interpolator>(std::vector<Time>(), rates, interpolator),
-      dates_(dates) {
+      dates_(std::move(dates)) {
 
         QL_REQUIRE(dates_.size()>1, "too few dates: " << dates_.size());
 
@@ -123,7 +119,7 @@ namespace QuantLib {
         // i.e. referenceDate - lag, at least must be in the relevant
         // period
         std::pair<Date,Date> lim =
-            inflationPeriod(yTS->referenceDate() - this->observationLag(), frequency);
+            inflationPeriod(referenceDate - this->observationLag(), frequency);
         QL_REQUIRE(lim.first <= dates_[0] && dates_[0] <= lim.second,
                    "first data date is not in base period, date: " << dates_[0]
                    << " not within [" << lim.first << "," << lim.second << "]");
@@ -167,10 +163,9 @@ namespace QuantLib {
                                   const Period& lag,
                                   Frequency frequency,
                                   bool indexIsInterpolated,
-                                  const Handle<YieldTermStructure>& yTS,
                                   const Interpolator& interpolator)
     : YoYInflationTermStructure(referenceDate, calendar, dayCounter, baseYoYRate,
-                                lag, frequency, indexIsInterpolated, yTS),
+                                lag, frequency, indexIsInterpolated),
       InterpolatedCurve<Interpolator>(interpolator) {}
 
 

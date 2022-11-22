@@ -18,21 +18,20 @@
 */
 
 #include <ql/models/marketmodels/accountingengine.hpp>
-#include <ql/models/marketmodels/discounter.hpp>
-#include <ql/models/marketmodels/evolver.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/discounter.hpp>
+#include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/evolver.hpp>
 #include <algorithm>
+#include <utility>
 
 namespace QuantLib {
 
-    AccountingEngine::AccountingEngine(
-                         const boost::shared_ptr<MarketModelEvolver>& evolver,
-                         const Clone<MarketModelMultiProduct>& product,
-                         Real initialNumeraireValue)
-    : evolver_(evolver), product_(product),
-      initialNumeraireValue_(initialNumeraireValue),
-      numberProducts_(product->numberOfProducts()),
+    AccountingEngine::AccountingEngine(ext::shared_ptr<MarketModelEvolver> evolver,
+                                       const Clone<MarketModelMultiProduct>& product,
+                                       Real initialNumeraireValue)
+    : evolver_(std::move(evolver)), product_(product),
+      initialNumeraireValue_(initialNumeraireValue), numberProducts_(product->numberOfProducts()),
       numerairesHeld_(product->numberOfProducts()),
       numberCashFlowsThisStep_(product->numberOfProducts()),
       cashFlowsGenerated_(product->numberOfProducts()) {
@@ -44,10 +43,8 @@ namespace QuantLib {
             product_->possibleCashFlowTimes();
         const std::vector<Rate>& rateTimes = product_->evolution().rateTimes();
         discounters_.reserve(cashFlowTimes.size());
-        for (Size j=0; j<cashFlowTimes.size(); ++j)
-            discounters_.push_back(MarketModelDiscounter(cashFlowTimes[j],
-                                                         rateTimes));
-
+        for (Real cashFlowTime : cashFlowTimes)
+            discounters_.emplace_back(cashFlowTime, rateTimes);
     }
 
     Real AccountingEngine::singlePathValues(std::vector<Real>& values) {

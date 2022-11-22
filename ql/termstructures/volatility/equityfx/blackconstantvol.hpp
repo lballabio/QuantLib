@@ -25,9 +25,10 @@
 #ifndef quantlib_blackconstantvol_hpp
 #define quantlib_blackconstantvol_hpp
 
-#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -44,7 +45,7 @@ namespace QuantLib {
                          const DayCounter& dayCounter);
         BlackConstantVol(const Date& referenceDate,
                          const Calendar&,
-                         const Handle<Quote>& volatility,
+                         Handle<Quote> volatility,
                          const DayCounter& dayCounter);
         BlackConstantVol(Natural settlementDays,
                          const Calendar&,
@@ -52,23 +53,24 @@ namespace QuantLib {
                          const DayCounter& dayCounter);
         BlackConstantVol(Natural settlementDays,
                          const Calendar&,
-                         const Handle<Quote>& volatility,
+                         Handle<Quote> volatility,
                          const DayCounter& dayCounter);
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
-        virtual Volatility blackVolImpl(Time t, Real) const;
+        Volatility blackVolImpl(Time t, Real) const override;
+
       private:
         Handle<Quote> volatility_;
     };
@@ -81,14 +83,14 @@ namespace QuantLib {
                                               Volatility volatility,
                                               const DayCounter& dc)
     : BlackVolatilityTermStructure(referenceDate, cal, Following, dc),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))) {}
+      volatility_(ext::shared_ptr<Quote>(new SimpleQuote(volatility))) {}
 
     inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
                                               const Calendar& cal,
-                                              const Handle<Quote>& volatility,
+                                              Handle<Quote> volatility,
                                               const DayCounter& dc)
     : BlackVolatilityTermStructure(referenceDate, cal, Following, dc),
-      volatility_(volatility) {
+      volatility_(std::move(volatility)) {
         registerWith(volatility_);
     }
 
@@ -97,14 +99,14 @@ namespace QuantLib {
                                               Volatility volatility,
                                               const DayCounter& dc)
     : BlackVolatilityTermStructure(settlementDays, cal, Following, dc),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))) {}
+      volatility_(ext::shared_ptr<Quote>(new SimpleQuote(volatility))) {}
 
     inline BlackConstantVol::BlackConstantVol(Natural settlementDays,
                                               const Calendar& cal,
-                                              const Handle<Quote>& volatility,
+                                              Handle<Quote> volatility,
                                               const DayCounter& dc)
     : BlackVolatilityTermStructure(settlementDays, cal, Following, dc),
-      volatility_(volatility) {
+      volatility_(std::move(volatility)) {
         registerWith(volatility_);
     }
 
@@ -121,9 +123,8 @@ namespace QuantLib {
     }
 
     inline void BlackConstantVol::accept(AcyclicVisitor& v) {
-        Visitor<BlackConstantVol>* v1 =
-            dynamic_cast<Visitor<BlackConstantVol>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<BlackConstantVol>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             BlackVolatilityTermStructure::accept(v);

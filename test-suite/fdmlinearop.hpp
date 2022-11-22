@@ -23,6 +23,7 @@
 #define quantlib_test_fdm_linear_op_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -41,12 +42,15 @@ public:
     static void testFdmHestonExpress();
     static void testFdmHestonHullWhiteOp();
     static void testBiCGstab();
+    static void testGMRES();
     static void testCrankNicolsonWithDamping();
     static void testSpareMatrixReference();
     static void testSparseMatrixZeroAssignment();
     static void testFdmMesherIntegral();
+    static void testHighInterestRateBlackScholesMesher();
+    static void testLowVolatilityHighDiscreteDividendBlackScholesMesher();
 
-    static boost::unit_test_framework::test_suite* suite();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 #endif

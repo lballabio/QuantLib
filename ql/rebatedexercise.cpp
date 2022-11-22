@@ -18,29 +18,28 @@
 */
 
 #include <ql/rebatedexercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    RebatedExercise::RebatedExercise(
-        const Exercise &exercise, const Real rebate,
-        const Natural rebateSettlementDays,
-        const Calendar &rebatePaymentCalendar,
-        const BusinessDayConvention rebatePaymentConvention)
-        : Exercise(exercise),
-          rebates_(std::vector<Real>(dates().size(), rebate)),
-          rebateSettlementDays_(rebateSettlementDays),
-          rebatePaymentCalendar_(rebatePaymentCalendar),
-          rebatePaymentConvention_(rebatePaymentConvention) {}
+    RebatedExercise::RebatedExercise(const Exercise& exercise,
+                                     const Real rebate,
+                                     const Natural rebateSettlementDays,
+                                     Calendar rebatePaymentCalendar,
+                                     const BusinessDayConvention rebatePaymentConvention)
+    : Exercise(exercise), rebates_(std::vector<Real>(dates().size(), rebate)),
+      rebateSettlementDays_(rebateSettlementDays),
+      rebatePaymentCalendar_(std::move(rebatePaymentCalendar)),
+      rebatePaymentConvention_(rebatePaymentConvention) {}
 
-    RebatedExercise::RebatedExercise(
-        const Exercise &exercise, const std::vector<Real> &rebates,
-        const Natural rebateSettlementDays,
-        const Calendar &rebatePaymentCalendar,
-        const BusinessDayConvention rebatePaymentConvention)
-        : Exercise(exercise), rebates_(rebates),
-          rebateSettlementDays_(rebateSettlementDays),
-          rebatePaymentCalendar_(rebatePaymentCalendar),
-          rebatePaymentConvention_(rebatePaymentConvention) {
+    RebatedExercise::RebatedExercise(const Exercise& exercise,
+                                     const std::vector<Real>& rebates,
+                                     const Natural rebateSettlementDays,
+                                     Calendar rebatePaymentCalendar,
+                                     const BusinessDayConvention rebatePaymentConvention)
+    : Exercise(exercise), rebates_(rebates), rebateSettlementDays_(rebateSettlementDays),
+      rebatePaymentCalendar_(std::move(rebatePaymentCalendar)),
+      rebatePaymentConvention_(rebatePaymentConvention) {
 
         QL_REQUIRE(
             type_ == Bermudan,
@@ -52,5 +51,4 @@ namespace QuantLib {
                        << ") must be equal to the number of exercise dates ("
                        << dates().size());
     }
-
 }

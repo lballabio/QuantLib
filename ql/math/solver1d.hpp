@@ -28,6 +28,7 @@
 #include <ql/utilities/null.hpp>
 #include <ql/patterns/curiouslyrecurring.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
 #include <iomanip>
 
 namespace QuantLib {
@@ -65,9 +66,7 @@ namespace QuantLib {
     template <class Impl>
     class Solver1D : public CuriouslyRecurringTemplate<Impl> {
       public:
-        Solver1D()
-        : maxEvaluations_(MAX_FUNCTION_EVALUATIONS),
-          lowerBoundEnforced_(false), upperBoundEnforced_(false) {}
+        Solver1D() = default;
         //! \name Modifiers
         //@{
         /*! This method returns the zero of the function \f$ f \f$,
@@ -224,12 +223,12 @@ namespace QuantLib {
         //@}
       protected:
         mutable Real root_, xMin_, xMax_, fxMin_, fxMax_;
-        Size maxEvaluations_;
+        Size maxEvaluations_ = MAX_FUNCTION_EVALUATIONS;
         mutable Size evaluationNumber_;
       private:
         Real enforceBounds_(Real x) const;
         Real lowerBound_, upperBound_;
-        bool lowerBoundEnforced_, upperBoundEnforced_;
+        bool lowerBoundEnforced_ = false, upperBoundEnforced_ = false;
     };
 
 

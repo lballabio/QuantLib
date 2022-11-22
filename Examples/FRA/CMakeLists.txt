@@ -1,2 +1,5 @@
 add_executable(FRA FRA.cpp)
-target_link_libraries(FRA QuantLib)
+target_link_libraries(FRA ql_library ${QL_THREAD_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS FRA RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

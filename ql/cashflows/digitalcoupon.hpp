@@ -45,7 +45,8 @@ namespace QuantLib {
           rate + csi * rate * Heaviside(rate-strike)
         - Coupon with asset-or-nothing Digital Put
           rate + csi * rate * Heaviside(strike-rate)
-        where csi=+1 or csi=-1.
+        where csi=+1 or csi=-1. If nakedOption is true, the rate in the
+        payoffs is set to zero.
         The evaluation of the coupon is made using the call/put spread
         replication method.
     */
@@ -80,7 +81,7 @@ namespace QuantLib {
         //! \name Constructors
         //@{
         //! general constructor
-        DigitalCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
+        DigitalCoupon(const ext::shared_ptr<FloatingRateCoupon>& underlying,
                       Rate callStrike = Null<Rate>(),
                       Position::Type callPosition = Position::Long,
                       bool isCallITMIncluded = false,
@@ -89,14 +90,15 @@ namespace QuantLib {
                       Position::Type putPosition = Position::Long,
                       bool isPutITMIncluded = false,
                       Rate putDigitalPayoff = Null<Rate>(),
-                      const boost::shared_ptr<DigitalReplication>& replication =
-                        boost::shared_ptr<DigitalReplication>() );
+                      const ext::shared_ptr<DigitalReplication>& replication =
+                        ext::shared_ptr<DigitalReplication>(),
+                      bool nakedOption = false);
 
         //@}
         //! \name Coupon interface
         //@{
-        Rate rate() const;
-        Rate convexityAdjustment() const;
+        Rate rate() const override;
+        Rate convexityAdjustment() const override;
         //@}
         //@}
         //! \name Digital inspectors
@@ -110,7 +112,7 @@ namespace QuantLib {
         bool hasCollar() const {return (hasCallStrike_ && hasPutStrike_); }
         bool isLongPut() const { return (putCsi_==1.); }
         bool isLongCall() const { return (callCsi_==1.); }
-        boost::shared_ptr<FloatingRateCoupon> underlying() const { return underlying_; }
+        ext::shared_ptr<FloatingRateCoupon> underlying() const { return underlying_; }
         /*! Returns the call option rate
            (multiplied by: nominal*accrualperiod*discount is the NPV of the option)
         */
@@ -122,18 +124,17 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
 
-        void setPricer(
-            const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
-            if (pricer_)
+        void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& pricer) override {
+            if (pricer_ != nullptr)
                 unregisterWith(pricer_);
             pricer_ = pricer;
-            if (pricer_)
+            if (pricer_ != nullptr)
                 registerWith(pricer_);
             update();
             underlying_->setPricer(pricer);
@@ -143,35 +144,37 @@ namespace QuantLib {
         //! \name Data members
         //@{
         //!
-        boost::shared_ptr<FloatingRateCoupon> underlying_;
+        ext::shared_ptr<FloatingRateCoupon> underlying_;
         //! strike rate for the the call option
         Rate callStrike_;
         //! strike rate for the the put option
         Rate putStrike_;
         //! multiplicative factor of call payoff
-        Real callCsi_;
+        Real callCsi_ = 0.;
         //! multiplicative factor of put payoff
-        Real putCsi_;
+        Real putCsi_ = 0.;
         //! inclusion flag og the call payoff if the call option ends at-the-money
         bool isCallATMIncluded_;
         //! inclusion flag og the put payoff if the put option ends at-the-money
         bool isPutATMIncluded_;
         //! digital call option type: if true, cash-or-nothing, if false asset-or-nothing
-        bool isCallCashOrNothing_;
+        bool isCallCashOrNothing_ = false;
         //! digital put option type: if true, cash-or-nothing, if false asset-or-nothing
-        bool isPutCashOrNothing_;
+        bool isPutCashOrNothing_ = false;
         //! digital call option payoff rate, if any
         Rate callDigitalPayoff_;
         //! digital put option payoff rate, if any
         Rate putDigitalPayoff_;
         //! the left and right gaps applied in payoff replication for call
         Real callLeftEps_, callRightEps_;
-        //! the left and right gaps applied in payoff replication for puf
+        //! the left and right gaps applied in payoff replication for put
         Real putLeftEps_, putRightEps_;
         //!
-        bool hasPutStrike_, hasCallStrike_;
+        bool hasPutStrike_ = false, hasCallStrike_ = false;
         //! Type of replication
         Replication::Type replicationType_;
+        //! underlying excluded from the payoff
+        bool nakedOption_;
 
         //@}
       private:

@@ -39,14 +39,12 @@ namespace QuantLib {
     */
     class BMAIndex : public InterestRateIndex {
       public:
-        explicit BMAIndex(const Handle<YieldTermStructure>& h =
-                                                Handle<YieldTermStructure>());
+        explicit BMAIndex(const Handle<YieldTermStructure>& h = {});
         //! \name Index interface
         //@{
         /*! BMA is fixed weekly on Wednesdays.
         */
-        std::string name() const { return "BMA"; }
-        bool isValidFixingDate(const Date& fixingDate) const;
+        bool isValidFixingDate(const Date& fixingDate) const override;
         //@}
         //! \name Inspectors
         //@{
@@ -54,7 +52,7 @@ namespace QuantLib {
         //@}
         //! \name Date calculations
         //@{
-        Date maturityDate(const Date& valueDate) const;
+        Date maturityDate(const Date& valueDate) const override;
         /*! This method returns a schedule of fixing dates between
             start and end.
         */
@@ -62,7 +60,7 @@ namespace QuantLib {
                                 const Date& end);
         // @}
       protected:
-        Rate forecastFixing(const Date& fixingDate) const;
+        Rate forecastFixing(const Date& fixingDate) const override;
         Handle<YieldTermStructure> termStructure_;
     };
 

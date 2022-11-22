@@ -23,9 +23,9 @@
 
 namespace QuantLib {
 
-    class CalibrationHelper::ImpliedVolatilityHelper {
+    class BlackCalibrationHelper::ImpliedVolatilityHelper {
       public:
-        ImpliedVolatilityHelper(const CalibrationHelper& helper,
+        ImpliedVolatilityHelper(const BlackCalibrationHelper& helper,
                                 Real value)
         : helper_(helper), value_(value) {}
 
@@ -33,15 +33,15 @@ namespace QuantLib {
             return value_ - helper_.blackPrice(x);
         }
       private:
-        const CalibrationHelper& helper_;
+        const BlackCalibrationHelper& helper_;
         Real value_;
     };
 
-    Volatility CalibrationHelper::impliedVolatility(Real targetValue,
-                                                    Real accuracy,
-                                                    Size maxEvaluations,
-                                                    Volatility minVol,
-                                                    Volatility maxVol) const {
+    Volatility BlackCalibrationHelper::impliedVolatility(Real targetValue,
+                                                         Real accuracy,
+                                                         Size maxEvaluations,
+                                                         Volatility minVol,
+                                                         Volatility maxVol) const {
 
         ImpliedVolatilityHelper f(*this,targetValue);
         Brent solver;
@@ -49,7 +49,7 @@ namespace QuantLib {
         return solver.solve(f,accuracy,volatility_->value(),minVol,maxVol);
     }
 
-    Real CalibrationHelper::calibrationError() {
+    Real BlackCalibrationHelper::calibrationError() {
         Real error;
         
         switch (calibrationErrorType_) {

@@ -47,9 +47,8 @@ namespace QuantLib {
 
             //! \name CostFunction interface
             //@{
-            virtual Real value(const Array& freeParameters) const;
-            virtual Disposable<Array>
-                                   values(const Array& freeParameters) const;
+            Real value(const Array& freeParameters) const override;
+            Array values(const Array& freeParameters) const override;
             //@}
 
         private:

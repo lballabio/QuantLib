@@ -27,7 +27,7 @@ namespace QuantLib {
     FedFunds::FedFunds(const Handle<YieldTermStructure>& h)
     : OvernightIndex("FedFunds", 0,
                      USDCurrency(),
-                     UnitedStates(UnitedStates::Settlement),
+                     UnitedStates(UnitedStates::FederalReserve),
                      Actual360(), h) {}
 
 }

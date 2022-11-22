@@ -18,23 +18,22 @@
 */
 
 #include <ql/experimental/exoticoptions/compoundoption.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    CompoundOption::CompoundOption(
-                   const boost::shared_ptr<StrikedTypePayoff>& motherPayoff,
-                   const boost::shared_ptr<Exercise>& motherExercise,
-                   const boost::shared_ptr<StrikedTypePayoff>& daughterPayoff,
-                   const boost::shared_ptr<Exercise>& daughterExercise)
-    : OneAssetOption(motherPayoff, motherExercise),
-      daughterPayoff_(daughterPayoff), daughterExercise_(daughterExercise) {}
+    CompoundOption::CompoundOption(const ext::shared_ptr<StrikedTypePayoff>& motherPayoff,
+                                   const ext::shared_ptr<Exercise>& motherExercise,
+                                   ext::shared_ptr<StrikedTypePayoff> daughterPayoff,
+                                   ext::shared_ptr<Exercise> daughterExercise)
+    : OneAssetOption(motherPayoff, motherExercise), daughterPayoff_(std::move(daughterPayoff)),
+      daughterExercise_(std::move(daughterExercise)) {}
 
     void CompoundOption::setupArguments(PricingEngine::arguments* args) const {
         OneAssetOption::setupArguments(args);
 
-        CompoundOption::arguments* moreArgs =
-            dynamic_cast<CompoundOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        auto* moreArgs = dynamic_cast<CompoundOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->daughterPayoff = daughterPayoff_;
         moreArgs->daughterExercise = daughterExercise_;
     }

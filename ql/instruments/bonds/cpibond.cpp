@@ -17,18 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include <ql/time/schedule.hpp>
-#include <ql/cashflows/fixedratecoupon.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/simplecashflow.hpp>
-#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/cashflows/couponpricer.hpp>
-#include <ql/indexes/inflationindex.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-
-#include <ql/instruments/bonds/cpibond.hpp>
 #include <ql/cashflows/cpicoupon.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
+#include <ql/indexes/inflationindex.hpp>
+#include <ql/instruments/bonds/cpibond.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/time/schedule.hpp>
+#include <utility>
 
 
 namespace QuantLib {
@@ -38,7 +38,7 @@ namespace QuantLib {
                      bool growthOnly,
                      Real baseCPI,
                      const Period& observationLag,
-                     const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
+                     ext::shared_ptr<ZeroInflationIndex> cpiIndex,
                      CPI::InterpolationType observationInterpolation,
                      const Schedule& schedule,
                      const std::vector<Rate>& fixedRate,
@@ -50,17 +50,12 @@ namespace QuantLib {
                      const Calendar& exCouponCalendar,
                      const BusinessDayConvention exCouponConvention,
                      bool exCouponEndOfMonth)
-    : Bond(settlementDays, 
-           paymentCalendar==Calendar() ? schedule.calendar() : paymentCalendar,
+    : Bond(settlementDays,
+           paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar,
            issueDate),
-    frequency_(schedule.tenor().frequency()),
-    dayCounter_(accrualDayCounter),
-    growthOnly_(growthOnly),
-    baseCPI_(baseCPI),
-    observationLag_(observationLag),
-    cpiIndex_(cpiIndex),
-    observationInterpolation_(observationInterpolation)
-    {
+      frequency_(schedule.tenor().frequency()), dayCounter_(accrualDayCounter),
+      growthOnly_(growthOnly), baseCPI_(baseCPI), observationLag_(observationLag),
+      cpiIndex_(std::move(cpiIndex)), observationInterpolation_(observationInterpolation) {
 
         maturityDate_ = schedule.endDate();
 
@@ -90,6 +85,5 @@ namespace QuantLib {
             registerWith(*i);
         }
     }
-
 }
 

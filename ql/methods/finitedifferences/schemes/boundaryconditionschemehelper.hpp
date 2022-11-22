@@ -25,42 +25,44 @@
 #define quantlib_boundary_condition_scheme_helper_hpp
 
 #include <ql/methods/finitedifferences/utilities/fdmboundaryconditionset.hpp>
+#include <utility>
 
 namespace QuantLib {
+
     class BoundaryConditionSchemeHelper {
       public:
         typedef OperatorTraits<FdmLinearOp>::array_type array_type;
         typedef OperatorTraits<FdmLinearOp>::operator_type operator_type;
 
-        explicit BoundaryConditionSchemeHelper(
-            const OperatorTraits<FdmLinearOp>::bc_set& bcSet)
-            : bcSet_(bcSet) {  }
+        explicit BoundaryConditionSchemeHelper(OperatorTraits<FdmLinearOp>::bc_set bcSet)
+        : bcSet_(std::move(bcSet)) {}
 
         void applyBeforeApplying(operator_type& op) const {
-            for (Size i=0; i < bcSet_.size(); ++i)
-                bcSet_[i]->applyBeforeApplying(op);
+            for (const auto& i : bcSet_)
+                i->applyBeforeApplying(op);
         }
         void applyBeforeSolving(operator_type& op, array_type& a) const {
-            for (Size i=0; i < bcSet_.size(); ++i)
-                bcSet_[i]->applyBeforeSolving(op, a);
+            for (const auto& i : bcSet_)
+                i->applyBeforeSolving(op, a);
         }
         void applyAfterApplying(array_type& a) const {
-            for (Size i=0; i < bcSet_.size(); ++i)
-                bcSet_[i]->applyAfterApplying(a);
+            for (const auto& i : bcSet_)
+                i->applyAfterApplying(a);
         }
         void applyAfterSolving(array_type& a) const {
-            for (Size i=0; i < bcSet_.size(); ++i)
-                bcSet_[i]->applyAfterSolving(a);
+            for (const auto& i : bcSet_)
+                i->applyAfterSolving(a);
         }
         void setTime(Time t) const {
-            for (Size i=0; i < bcSet_.size(); ++i)
-                bcSet_[i]->setTime(t);
+            for (const auto& i : bcSet_)
+                i->setTime(t);
         }
 
       private:
-        BoundaryConditionSchemeHelper() {}
-        const OperatorTraits<FdmLinearOp>::bc_set bcSet_;
+        BoundaryConditionSchemeHelper() = default;
+        OperatorTraits<FdmLinearOp>::bc_set bcSet_;
     };
+
 }
 
 #endif

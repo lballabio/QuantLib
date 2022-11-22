@@ -23,11 +23,8 @@
 
 namespace QuantLib {
 
-    ForwardRateStructure::ForwardRateStructure(
-                                    const DayCounter& dc,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates)
-    : YieldTermStructure(dc, jumps, jumpDates) {}
+    ForwardRateStructure::ForwardRateStructure(const DayCounter& dc)
+    : YieldTermStructure(dc) {}
 
     ForwardRateStructure::ForwardRateStructure(
                                     const Date& refDate,

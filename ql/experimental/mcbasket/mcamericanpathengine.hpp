@@ -26,8 +26,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/termstructures/yield/impliedtermstructure.hpp>
-#include <boost/function.hpp>
-#include <boost/make_shared.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -42,7 +41,7 @@ namespace QuantLib {
         : public MCLongstaffSchwartzPathEngine<
                             PathMultiAssetOption::engine,MultiVariate,RNG> {
       public:
-        MCAmericanPathEngine(const boost::shared_ptr<StochasticProcessArray>&,
+        MCAmericanPathEngine(const ext::shared_ptr<StochasticProcessArray>&,
                                Size timeSteps,
                                Size timeStepsPerYear,
                                bool brownianBridge,
@@ -54,7 +53,7 @@ namespace QuantLib {
                                BigNatural seed,
                                Size nCalibrationSamples = Null<Size>());
       protected:
-        boost::shared_ptr<LongstaffSchwartzMultiPathPricer>
+        ext::shared_ptr<LongstaffSchwartzMultiPathPricer>
                                                       lsmPathPricer() const;
     };
 
@@ -63,8 +62,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom>
     class MakeMCAmericanPathEngine {
       public:
-        MakeMCAmericanPathEngine(
-                            const boost::shared_ptr<StochasticProcessArray>&);
+        explicit MakeMCAmericanPathEngine(ext::shared_ptr<StochasticProcessArray>);
         // named parameters
         MakeMCAmericanPathEngine& withSteps(Size steps);
         MakeMCAmericanPathEngine& withStepsPerYear(Size steps);
@@ -77,9 +75,9 @@ namespace QuantLib {
         MakeMCAmericanPathEngine& withSeed(BigNatural seed);
         MakeMCAmericanPathEngine& withCalibrationSamples(Size samples);
         // conversion to pricing engine
-        operator boost::shared_ptr<PricingEngine>() const;
+        operator ext::shared_ptr<PricingEngine>() const;
       private:
-        boost::shared_ptr<StochasticProcessArray> process_;
+        ext::shared_ptr<StochasticProcessArray> process_;
         bool brownianBridge_, antithetic_, controlVariate_;
         Size steps_, stepsPerYear_, samples_, maxSamples_, calibrationSamples_;
         Real tolerance_;
@@ -89,7 +87,7 @@ namespace QuantLib {
 
     template <class RNG> inline
     MCAmericanPathEngine<RNG>::MCAmericanPathEngine(
-                   const boost::shared_ptr<StochasticProcessArray>& processes,
+                   const ext::shared_ptr<StochasticProcessArray>& processes,
                    Size timeSteps,
                    Size timeStepsPerYear,
                    bool brownianBridge,
@@ -114,16 +112,16 @@ namespace QuantLib {
                                                       nCalibrationSamples) {}
 
     template <class RNG>
-    inline boost::shared_ptr<LongstaffSchwartzMultiPathPricer>
+    inline ext::shared_ptr<LongstaffSchwartzMultiPathPricer>
     MCAmericanPathEngine<RNG>::lsmPathPricer() const {
 
-        boost::shared_ptr<StochasticProcessArray> processArray =
-            boost::dynamic_pointer_cast<StochasticProcessArray>(this->process_);
+        ext::shared_ptr<StochasticProcessArray> processArray =
+            ext::dynamic_pointer_cast<StochasticProcessArray>(this->process_);
         QL_REQUIRE(processArray && processArray->size()>0,
                    "Stochastic process array required");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                processArray->process(0));
         QL_REQUIRE(process, "generalized Black-Scholes process required");
 
@@ -146,31 +144,29 @@ namespace QuantLib {
             timePositions[i] = theTimeGrid.index(times[i]);
             discountFactors[i] = riskFreeRate->discount(times[i]);
             forwardTermStructures[i] = Handle<YieldTermStructure>(
-                boost::make_shared<ImpliedTermStructure>(riskFreeRate,
+                ext::make_shared<ImpliedTermStructure>(riskFreeRate,
                                                          fixings[i]));
         }
 
         const Size polynomialOrder = 2;
-        const LsmBasisSystem::PolynomType polynomType = LsmBasisSystem::Monomial;
+        const LsmBasisSystem::PolynomialType polynomialType = LsmBasisSystem::Monomial;
 
-        return boost::shared_ptr<LongstaffSchwartzMultiPathPricer> (
-            new LongstaffSchwartzMultiPathPricer(this->arguments_.payoff,
+        return ext::make_shared<LongstaffSchwartzMultiPathPricer> (
+                                                 this->arguments_.payoff,
                                                  timePositions,
                                                  forwardTermStructures,
                                                  discountFactors,
                                                  polynomialOrder,
-                                                 polynomType));
+                                                 polynomialType);
     }
 
 
     template <class RNG>
     inline MakeMCAmericanPathEngine<RNG>::MakeMCAmericanPathEngine(
-                     const boost::shared_ptr<StochasticProcessArray>& process)
-    : process_(process), brownianBridge_(false), antithetic_(false),
-      controlVariate_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      calibrationSamples_(Null<Size>()),
+        ext::shared_ptr<StochasticProcessArray> process)
+    : process_(std::move(process)), brownianBridge_(false), antithetic_(false),
+      controlVariate_(false), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), calibrationSamples_(Null<Size>()),
       tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG>
@@ -253,12 +249,12 @@ namespace QuantLib {
     template <class RNG>
     inline
     MakeMCAmericanPathEngine<RNG>::operator
-    boost::shared_ptr<PricingEngine>() const {
+    ext::shared_ptr<PricingEngine>() const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return boost::shared_ptr<PricingEngine>(new
+        return ext::shared_ptr<PricingEngine>(new
             MCAmericanPathEngine<RNG>(process_,
                                         steps_,
                                         stepsPerYear_,

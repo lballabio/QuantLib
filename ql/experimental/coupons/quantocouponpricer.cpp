@@ -40,16 +40,24 @@ namespace QuantLib {
 
         if (d1 > referenceDate) {
             Time t1 =
-                coupon_->index()->dayCounter().yearFraction(referenceDate, d1);
+                capletVolatility()->timeFromReference(d1);
             Volatility fxsigma =
-                fxRateBlackVolatility_->blackVol(t1, fixing, true);
+                fxRateBlackVolatility_->blackVol(d1, fixing, true);
             Volatility sigma = capletVolatility()->volatility(d1, fixing);
             Real rho = underlyingFxCorrelation_->value();
 
             // Apply Quanto Adjustment.
-            // Hull 6th Edition, page 642.
-            Real dQuantoAdj = std::exp(sigma*fxsigma*rho*t1);
-            fixing *= dQuantoAdj;
+            // Hull 6th Edition, page 642, generalised to
+            // shifted lognormal and normal volatilities
+            if(capletVolatility()->volatilityType() == ShiftedLognormal) {
+                Real dQuantoAdj = std::exp(sigma*fxsigma*rho*t1);
+                Real shift = capletVolatility()->displacement();
+                fixing = (fixing+shift)*dQuantoAdj-shift;
+            }
+            else {
+                Real dQuantoAdj = sigma*fxsigma*rho*t1;
+                fixing += dQuantoAdj;
+            }
         }
 
         return BlackIborCouponPricer::adjustedFixing(fixing);

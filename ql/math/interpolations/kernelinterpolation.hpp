@@ -23,6 +23,7 @@
 
 #include <ql/math/interpolation.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
+#include <utility>
 
 /*! \file kernelinterpolation.hpp
     \brief Kernel interpolation
@@ -36,20 +37,18 @@ namespace QuantLib {
         class KernelInterpolationImpl
             : public Interpolation::templateImpl<I1,I2> {
           public:
-            KernelInterpolationImpl(const I1& xBegin, const I1& xEnd,
+            KernelInterpolationImpl(const I1& xBegin,
+                                    const I1& xEnd,
                                     const I2& yBegin,
-                                    const Kernel& kernel,
+                                    Kernel kernel,
                                     const Real epsilon)
-            : Interpolation::templateImpl<I1,I2>(xBegin, xEnd, yBegin),
-              xSize_(Size(xEnd-xBegin)), invPrec_(epsilon),
-              M_(xSize_,xSize_), alphaVec_(xSize_), yVec_(xSize_),
-              kernel_(kernel) {}
+            : Interpolation::templateImpl<I1, I2>(xBegin, xEnd, yBegin),
+              xSize_(Size(xEnd - xBegin)), invPrec_(epsilon), M_(xSize_, xSize_), alphaVec_(xSize_),
+              yVec_(xSize_), kernel_(std::move(kernel)) {}
 
-            void update() {
-                updateAlphaVec();
-            }
+            void update() override { updateAlphaVec(); }
 
-            Real value(Real x) const {
+            Real value(Real x) const override {
 
                 Real res=0.0;
 
@@ -60,17 +59,17 @@ namespace QuantLib {
                 return res/gammaFunc(x);
             }
 
-            Real primitive(Real) const {
+            Real primitive(Real) const override {
                 QL_FAIL("Primitive calculation not implemented "
                         "for kernel interpolation");
             }
 
-            Real derivative(Real) const {
+            Real derivative(Real) const override {
                 QL_FAIL("First derivative calculation not implemented "
                         "for kernel interpolation");
             }
 
-            Real secondDerivative(Real) const {
+            Real secondDerivative(Real) const override {
                 QL_FAIL("Second derivative calculation not implemented "
                         "for kernel interpolation");
             }
@@ -117,9 +116,8 @@ namespace QuantLib {
 
                 Array diffVec=Abs(M_*alphaVec_ - yVec_);
 
-                for (Size i=0; i<diffVec.size(); ++i) {
-                    QL_REQUIRE(diffVec[i] < invPrec_,
-                               "Inversion failed in 1d kernel interpolation");
+                for (Real i : diffVec) {
+                    QL_REQUIRE(i < invPrec_, "Inversion failed in 1d kernel interpolation");
                 }
             }
 
@@ -142,6 +140,8 @@ namespace QuantLib {
         is considered in the cited text.
 
         \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
     */
     class KernelInterpolation : public Interpolation {
       public:
@@ -160,7 +160,7 @@ namespace QuantLib {
                             const I2& yBegin,
                             const Kernel& kernel,
                             const double epsilon = 1.0E-7) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::KernelInterpolationImpl<I1,I2,Kernel>(xBegin, xEnd,
                                                               yBegin, kernel,
                                                               epsilon));

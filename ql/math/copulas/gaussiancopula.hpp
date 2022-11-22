@@ -30,8 +30,12 @@
 namespace QuantLib {
 
     //! Gaussian copula
-    class GaussianCopula : public std::binary_function<Real,Real,Real> {
+    class GaussianCopula {
       public:
+        typedef Real first_argument_type;
+        typedef Real second_argument_type;
+        typedef Real result_type;
+
         GaussianCopula(Real rho);
         Real operator()(Real x, Real y) const;
       private:

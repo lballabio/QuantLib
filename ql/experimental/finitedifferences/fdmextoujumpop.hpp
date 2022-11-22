@@ -36,7 +36,7 @@ namespace QuantLib {
     class YieldTermStructure;
     class LinearInterpolation;
     class ExtOUWithJumpsProcess;
-    class FdmExtendedOrnsteinUhlenbackOp;
+    class FdmExtendedOrnsteinUhlenbeckOp;
     
     /*! References:
         Kluge, Timo L., 2008. Pricing Swing Options and other 
@@ -45,58 +45,38 @@ namespace QuantLib {
 
     class FdmExtOUJumpOp : public FdmLinearOpComposite {
       public:
-        FdmExtOUJumpOp(const boost::shared_ptr<FdmMesher>& mesher,
-                       const boost::shared_ptr<ExtOUWithJumpsProcess>& process,
-                       const boost::shared_ptr<YieldTermStructure>& rTS,
+        FdmExtOUJumpOp(const ext::shared_ptr<FdmMesher>& mesher,
+                       const ext::shared_ptr<ExtOUWithJumpsProcess>& process,
+                       const ext::shared_ptr<YieldTermStructure>& rTS,
                        const FdmBoundaryConditionSet& bcSet,
                        Size integroIntegrationOrder);
 
-        Size size() const;
-        void setTime(Time t1, Time t2);
+        Size size() const override;
+        void setTime(Time t1, Time t2) override;
 
-        Disposable<Array> apply(const Array& r) const;
-        Disposable<Array> apply_mixed(const Array& r) const;
+        Array apply(const Array& r) const override;
+        Array apply_mixed(const Array& r) const override;
 
-        Disposable<Array> apply_direction(Size direction,
-                                          const Array& r) const;
-        Disposable<Array> solve_splitting(Size direction,
-                                          const Array& r, Real s) const;
-        Disposable<Array> preconditioner(const Array& r, Real s) const;
+        Array apply_direction(Size direction, const Array& r) const override;
+        Array solve_splitting(Size direction, const Array& r, Real s) const override;
+        Array preconditioner(const Array& r, Real s) const override;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
-#endif
+        std::vector<SparseMatrix> toMatrixDecomp() const override;
       private:
-        Disposable<Array> integro(const Array& r) const;
+        Array integro(const Array& r) const;
 
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<ExtOUWithJumpsProcess> process_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<ExtOUWithJumpsProcess> process_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
         const FdmBoundaryConditionSet bcSet_;
         GaussLaguerreIntegration gaussLaguerreIntegration_;
 
         const Array x_;
-        const boost::shared_ptr<FdmExtendedOrnsteinUhlenbackOp> ouOp_;
+        const ext::shared_ptr<FdmExtendedOrnsteinUhlenbeckOp> ouOp_;
 
         const TripleBandLinearOp dyMap_;
 
-#if defined(QL_NO_UBLAS_SUPPORT)
-        class IntegroIntegrand {
-          public:
-            IntegroIntegrand(const boost::shared_ptr<LinearInterpolation>& i,
-                             const FdmBoundaryConditionSet& bcSet,
-                             Real y, Real eta);
-            Real operator()(Real u) const;
-            
-          private:
-            const Real y_, eta_;
-            const FdmBoundaryConditionSet& bcSet_;
-            const boost::shared_ptr<LinearInterpolation>& interpl_;
-        };
-            
-#else
         SparseMatrix integroPart_;
-#endif
     };
 }
 

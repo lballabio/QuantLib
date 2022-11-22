@@ -18,25 +18,23 @@
 */
 
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmbermudanstepcondition.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdmBermudanStepCondition::FdmBermudanStepCondition(
-            const std::vector<Date>& exerciseDates,
-            const Date& referenceDate,
-            const DayCounter& dayCounter,
-            const boost::shared_ptr<FdmMesher> & mesher,
-            const boost::shared_ptr<FdmInnerValueCalculator> & calculator)
-    : mesher_    (mesher),
-      calculator_(calculator) {
-    
+        const std::vector<Date>& exerciseDates,
+        const Date& referenceDate,
+        const DayCounter& dayCounter,
+        ext::shared_ptr<FdmMesher> mesher,
+        ext::shared_ptr<FdmInnerValueCalculator> calculator)
+    : mesher_(std::move(mesher)), calculator_(std::move(calculator)) {
+
         exerciseTimes_.reserve(exerciseDates.size());
-        for (std::vector<Date>::const_iterator iter = exerciseDates.begin();
-            iter != exerciseDates.end(); ++iter) {
-            exerciseTimes_.push_back(
-                             dayCounter.yearFraction(referenceDate, *iter));
+        for (auto exerciseDate : exerciseDates) {
+            exerciseTimes_.push_back(dayCounter.yearFraction(referenceDate, exerciseDate));
         }
     }
 
@@ -48,7 +46,11 @@ namespace QuantLib {
         if (std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t) 
               != exerciseTimes_.end()) {
             
-            boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+            ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+
+            QL_REQUIRE(layout->size() == a.size(),
+                       "inconsistent array dimensions");
+
             const FdmLinearOpIterator endIter = layout->end();
 
             const Size dims = layout->dim().size();

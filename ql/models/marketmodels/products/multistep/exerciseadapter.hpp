@@ -33,15 +33,15 @@ namespace QuantLib {
                         Size numberOfProducts = 1);
         //! \name MarketModelMultiProduct interface
         //@{
-        std::vector<Time> possibleCashFlowTimes() const;
-        Size numberOfProducts() const;
-        const EvolutionDescription& evolution() const;
-        Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset();
+        std::vector<Time> possibleCashFlowTimes() const override;
+        Size numberOfProducts() const override;
+        const EvolutionDescription& evolution() const override;
+        Size maxNumberOfCashFlowsPerProductPerStep() const override;
+        void reset() override;
         bool nextTimeStep(const CurveState&,
                           std::vector<Size>&,
-                          std::vector<std::vector<CashFlow> >&);
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
+                          std::vector<std::vector<CashFlow> >&) override;
+        std::unique_ptr<MarketModelMultiProduct> clone() const override;
         //@}
         //! \name inspectors
         //@{

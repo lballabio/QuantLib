@@ -42,16 +42,17 @@ namespace QuantLib {
                   model cannot provide one itself.
         */
         //@{
-        TreeVanillaSwapEngine(const boost::shared_ptr<ShortRateModel>&,
-                              Size timeSteps,
-                              const Handle<YieldTermStructure>& termStructure =
-                                                 Handle<YieldTermStructure>());
-        TreeVanillaSwapEngine(const boost::shared_ptr<ShortRateModel>&,
-                              const TimeGrid& timeGrid,
-                              const Handle<YieldTermStructure>& termStructure =
-                                                 Handle<YieldTermStructure>());
+        TreeVanillaSwapEngine(
+            const ext::shared_ptr<ShortRateModel>&,
+            Size timeSteps,
+            Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>());
+        TreeVanillaSwapEngine(
+            const ext::shared_ptr<ShortRateModel>&,
+            const TimeGrid& timeGrid,
+            Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>());
         //@}
-        void calculate() const;
+        void calculate() const override;
+
       private:
         Handle<YieldTermStructure> termStructure_;
     };

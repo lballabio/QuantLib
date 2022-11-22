@@ -29,14 +29,11 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-typedef GenericGaussianStatistics<IncrementalStatistics>
-    IncrementalGaussianStatistics;
-
 void RiskStatisticsTest::testResults() {
 
     BOOST_TEST_MESSAGE("Testing risk measures...");
 
-    IncrementalGaussianStatistics igs;
+    GenericGaussianStatistics<IncrementalStatistics> igs;
     RiskStatistics s;
 
     Real averages[] = { -100.0, -1.0, 0.0, 1.0, 100.0 };
@@ -144,7 +141,7 @@ void RiskStatisticsTest::testResults() {
 
             // mean
             expected = averages[i];
-            tolerance = (expected == 0.0 ? 1.0e-13 :
+            tolerance = (expected == 0.0 ? Real(1.0e-13) :
                                            std::fabs(expected)*1.0e-13);
             calculated = igs.mean();
             if (std::fabs(calculated-expected) > tolerance)
@@ -267,7 +264,7 @@ void RiskStatisticsTest::testResults() {
 
             // percentile
             expected = averages[i];
-            tolerance = (expected == 0.0 ? 1.0e-3 :
+            tolerance = (expected == 0.0 ? Real(1.0e-3) :
                                            std::fabs(expected*1.0e-3));
             calculated = igs.gaussianPercentile(0.5);
             if (std::fabs(calculated-expected) > tolerance)
@@ -306,7 +303,7 @@ void RiskStatisticsTest::testResults() {
             Real twoSigma = cumulative(upper_tail);
 
             expected = std::max<Real>(upper_tail,0.0);
-            tolerance = (expected == 0.0 ? 1.0e-3 :
+            tolerance = (expected == 0.0 ? Real(1.0e-3) :
                                            std::fabs(expected*1.0e-3));
             calculated = igs.gaussianPotentialUpside(twoSigma);
             if (std::fabs(calculated-expected) > tolerance)
@@ -351,7 +348,7 @@ void RiskStatisticsTest::testResults() {
 
             // value-at-risk
             expected = -std::min<Real>(lower_tail,0.0);
-            tolerance = (expected == 0.0 ? 1.0e-3 :
+            tolerance = (expected == 0.0 ? Real(1.0e-3) :
                                            std::fabs(expected*1.0e-3));
             calculated = igs.gaussianValueAtRisk(twoSigma);
             if (std::fabs(calculated-expected) > tolerance)
@@ -396,7 +393,7 @@ void RiskStatisticsTest::testResults() {
                                        - sigmas[j]*sigmas[j]
                                        * normal(lower_tail)/(1.0-twoSigma),
                                        0.0);
-            tolerance = (expected == 0.0 ? 1.0e-4
+            tolerance = (expected == 0.0 ? Real(1.0e-4)
                                          : std::fabs(expected)*1.0e-2);
             calculated = igs.gaussianExpectedShortfall(twoSigma);
             if (std::fabs(calculated-expected) > tolerance)
@@ -430,7 +427,7 @@ void RiskStatisticsTest::testResults() {
 
             // shortfall
             expected = 0.5;
-            tolerance = (expected == 0.0 ? 1.0e-3 :
+            tolerance = (expected == 0.0 ? Real(1.0e-3) :
                                            std::fabs(expected*1.0e-3));
             calculated = igs.gaussianShortfall(averages[i]);
             if (std::fabs(calculated-expected) > tolerance)
@@ -532,7 +529,7 @@ void RiskStatisticsTest::testResults() {
 
             // downsideVariance
             expected = s.downsideVariance();
-            tolerance = (expected == 0.0 ? 1.0e-3 :
+            tolerance = (expected == 0.0 ? Real(1.0e-3) :
                                            std::fabs(expected*1.0e-3));
             calculated = igs.downsideVariance();
             if (std::fabs(calculated-expected) > tolerance)
@@ -608,7 +605,7 @@ void RiskStatisticsTest::testResults() {
 
 
 test_suite* RiskStatisticsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Risk statistics tests");
+    auto* suite = BOOST_TEST_SUITE("Risk statistics tests");
     suite->add(QUANTLIB_TEST_CASE(&RiskStatisticsTest::testResults));
     return suite;
 }

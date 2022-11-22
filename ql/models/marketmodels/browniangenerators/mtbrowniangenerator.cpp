@@ -18,14 +18,13 @@
 */
 
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
-    MTBrownianGenerator::MTBrownianGenerator(Size factors,
-                                             Size steps,
-                                             unsigned long seed)
-    : factors_(factors), steps_(steps), lastStep_(0),
-      generator_(factors*steps, MersenneTwisterUniformRng(seed)) {}
+    MTBrownianGenerator::MTBrownianGenerator(Size factors, Size steps, unsigned long seed)
+    : factors_(factors), steps_(steps),
+      generator_(factors * steps, MersenneTwisterUniformRng(seed)) {}
 
     Real MTBrownianGenerator::nextStep(std::vector<Real>& output) {
         #if defined(QL_EXTRA_SAFETY_CHECKS)
@@ -60,9 +59,9 @@ namespace QuantLib {
     MTBrownianGeneratorFactory::MTBrownianGeneratorFactory(unsigned long seed)
     : seed_(seed) {}
 
-    boost::shared_ptr<BrownianGenerator>
+    ext::shared_ptr<BrownianGenerator>
     MTBrownianGeneratorFactory::create(Size factors, Size steps) const {
-        return boost::shared_ptr<BrownianGenerator>(
+        return ext::shared_ptr<BrownianGenerator>(
                               new MTBrownianGenerator(factors, steps, seed_));
     }
 

@@ -39,15 +39,15 @@ namespace QuantLib {
     class MakeVanillaSwap {
       public:
         MakeVanillaSwap(const Period& swapTenor,
-                        const boost::shared_ptr<IborIndex>& iborIndex,
+                        const ext::shared_ptr<IborIndex>& iborIndex,
                         Rate fixedRate = Null<Rate>(),
                         const Period& forwardStart = 0*Days);
 
         operator VanillaSwap() const;
-        operator boost::shared_ptr<VanillaSwap>() const;
+        operator ext::shared_ptr<VanillaSwap>() const;
 
         MakeVanillaSwap& receiveFixed(bool flag = true);
-        MakeVanillaSwap& withType(VanillaSwap::Type type);
+        MakeVanillaSwap& withType(Swap::Type type);
         MakeVanillaSwap& withNominal(Real n);
 
         MakeVanillaSwap& withSettlementDays(Natural settlementDays);
@@ -81,10 +81,12 @@ namespace QuantLib {
         MakeVanillaSwap& withDiscountingTermStructure(
                               const Handle<YieldTermStructure>& discountCurve);
         MakeVanillaSwap& withPricingEngine(
-                              const boost::shared_ptr<PricingEngine>& engine);
+                              const ext::shared_ptr<PricingEngine>& engine);
+        MakeVanillaSwap& withIndexedCoupons(const boost::optional<bool>& b = true);
+        MakeVanillaSwap& withAtParCoupons(bool b = true);
       private:
         Period swapTenor_;
-        boost::shared_ptr<IborIndex> iborIndex_;
+        ext::shared_ptr<IborIndex> iborIndex_;
         Rate fixedRate_;
         Period forwardStart_;
 
@@ -92,19 +94,22 @@ namespace QuantLib {
         Date effectiveDate_, terminationDate_;
         Calendar fixedCalendar_, floatCalendar_;
 
-        VanillaSwap::Type type_;
-        Real nominal_;
+        Swap::Type type_ = Swap::Payer;
+        Real nominal_ = 1.0;
         Period fixedTenor_, floatTenor_;
-        BusinessDayConvention fixedConvention_, fixedTerminationDateConvention_;
+        BusinessDayConvention fixedConvention_ = ModifiedFollowing,
+                              fixedTerminationDateConvention_ = ModifiedFollowing;
         BusinessDayConvention floatConvention_, floatTerminationDateConvention_;
-        DateGeneration::Rule fixedRule_, floatRule_;
-        bool fixedEndOfMonth_, floatEndOfMonth_;
+        DateGeneration::Rule fixedRule_ = DateGeneration::Backward,
+                             floatRule_ = DateGeneration::Backward;
+        bool fixedEndOfMonth_ = false, floatEndOfMonth_ = false;
         Date fixedFirstDate_, fixedNextToLastDate_;
         Date floatFirstDate_, floatNextToLastDate_;
-        Spread floatSpread_;
+        Spread floatSpread_ = 0.0;
         DayCounter fixedDayCount_, floatDayCount_;
+        boost::optional<bool> useIndexedCoupons_;
 
-        boost::shared_ptr<PricingEngine> engine_;
+        ext::shared_ptr<PricingEngine> engine_;
     };
 
 }

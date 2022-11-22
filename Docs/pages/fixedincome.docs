@@ -18,10 +18,10 @@
 
 /*! \defgroup shortrate Short-rate modelling framework
 
-    This framework (corresponding to the ql/ShortRateModels directory)
+    This framework (corresponding to the ql/models/shortrate directory)
     implements some single-factor and two-factor short rate models. The models 
-    implemented in this library are widely used by practitionners. For the 
-    moment, the ShortRateModels::Model class defines the short-rate dynamics
+    implemented in this library are widely used by practitioners. For the 
+    moment, the ShortRateModel class defines the short-rate dynamics
     with stochastic equations of the type 
     \f[ 
         dx_i = \mu(t,x_i) dt + \sigma(t,x_i) dW_t 
@@ -56,7 +56,7 @@
     \section calibration Calibration
 
     The class CalibrationHelper is a base class that facilitates the 
-    instanciation of market instruments used for calibration. It has
+    instantiation of market instruments used for calibration. It has
     a method marketValue() that gives the market price using a Black
     formula, and a modelValue() method that gives the price according to
     a model
@@ -87,32 +87,13 @@
     the Jamshidian decomposition, implemented in 
     QuantLib::JamshidianSwaption.
 
-    \par Using Finite Differences
-
-    (Doesn't work for the moment)
-    For the moment, this is only available for single-factor affine models.
-    If \f$ x = x(t, r) \f$ is the state variable and follows this stochastic 
-    process:
-    \f[
-        dx_t = \mu(t,x)dt + \sigma(t,x)dW_t
-    \f]
-    any european-style instrument will follow the following PDE:
-
-    \f[
-        \frac{\partial P}{\partial t} + \mu \frac{\partial P}{\partial x}
-        + \frac{1}{2} \sigma^2 \frac{\partial^2 P}{\partial x^2} = r(t,x)P
-    \f]
-    
-    The adequate operator to feed a Finite Difference Model instance is defined
-    in the QuantLib::OneFactorOperator class.
-
     \par Using Trees
 
     Each model derived from the single-factor model class has the ability to 
     return a trinomial tree. For yield-curve consistent models, the fitting
     parameter can be determined either analytically (when possible) or 
     numerically. When a tree is built, it is then pretty straightforward to 
-    implement a pricer for any path-independant derivative. Just implement
+    implement a pricer for any path-independent derivative. Just implement
     a class derived from NumericalDerivative (see 
     QuantLib::NumericalSwaption for example) and roll it back until 
     the present time...

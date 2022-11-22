@@ -38,12 +38,12 @@ namespace QuantLib {
       public:
         MakeCapFloor(CapFloor::Type capFloorType,
                      const Period& capFloorTenor,
-                     const boost::shared_ptr<IborIndex>& iborIndex,
+                     const ext::shared_ptr<IborIndex>& iborIndex,
                      Rate strike = Null<Rate>(),
                      const Period& forwardStart = 0*Days);
 
         operator CapFloor() const;
-        operator boost::shared_ptr<CapFloor>() const;
+        operator ext::shared_ptr<CapFloor>() const;
 
         MakeCapFloor& withNominal(Real n);
         MakeCapFloor& withEffectiveDate(const Date& effectiveDate,
@@ -62,15 +62,15 @@ namespace QuantLib {
         MakeCapFloor& asOptionlet(bool b = true);
 
         MakeCapFloor& withPricingEngine(
-                              const boost::shared_ptr<PricingEngine>& engine);
+                              const ext::shared_ptr<PricingEngine>& engine);
       private:
         CapFloor::Type capFloorType_;
         Rate strike_;
-        bool firstCapletExcluded_, asOptionlet_;
+        bool firstCapletExcluded_, asOptionlet_ = false;
 
         MakeVanillaSwap makeVanillaSwap_;
 
-        boost::shared_ptr<PricingEngine> engine_;
+        ext::shared_ptr<PricingEngine> engine_;
     };
 
 }

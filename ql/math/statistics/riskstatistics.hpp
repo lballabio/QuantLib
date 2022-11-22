@@ -24,7 +24,6 @@
 #ifndef quantlib_risk_statistics_h
 #define quantlib_risk_statistics_h
 
-#include <ql/math/functional.hpp>
 #include <ql/math/statistics/gaussianstatistics.hpp>
 
 namespace QuantLib {
@@ -152,11 +151,12 @@ namespace QuantLib {
     template <class S>
     Real GenericRiskStatistics<S>::regret(Real target) const {
         // average over the range below the target
-        std::pair<Real,Size> result =
-            this->expectationValue(compose(square<Real>(),
-                                           std::bind2nd(std::minus<Real>(),
-                                                        target)),
-                                   std::bind2nd(std::less<Real>(),  target));
+        std::pair<Real, Size> result = this->expectationValue(
+            [=](Real xi) -> Real {
+                Real d = (xi - target);
+                return d * d;
+            },
+            [=](Real xi) -> bool { return xi < target; });
         Real x = result.first;
         Size N = result.second;
         QL_REQUIRE(N > 1,
@@ -195,9 +195,8 @@ namespace QuantLib {
         QL_ENSURE(this->samples() != 0, "empty sample set");
         Real target = -valueAtRisk(centile);
         std::pair<Real,Size> result =
-            this->expectationValue(identity<Real>(),
-                             std::bind2nd(std::less<Real>(),
-                                          target));
+            this->expectationValue([ ](Real xi) { return xi; },
+                                   [=](Real xi) { return xi < target; });
         Real x = result.first;
         Size N = result.second;
         QL_ENSURE(N != 0, "no data below the target");
@@ -208,20 +207,15 @@ namespace QuantLib {
     template <class S>
     Real GenericRiskStatistics<S>::shortfall(Real target) const {
         QL_ENSURE(this->samples() != 0, "empty sample set");
-        return this->expectationValue(clip(constant<Real,Real>(1.0),
-                                           std::bind2nd(std::less<Real>(),
-                                                        target)),
-                                      everywhere()).first;
+        return this->expectationValue([=](Real x) -> Real { return x < target ? 1.0 : 0.0; }).first;
     }
 
     template <class S>
     Real GenericRiskStatistics<S>::averageShortfall(Real target)
         const {
-        std::pair<Real,Size> result =
-            this->expectationValue(std::bind1st(std::minus<Real>(),
-                                                target),
-                                   std::bind2nd(std::less<Real>(),
-                                                target));
+        std::pair<Real,Size> result = this->expectationValue(
+            [=](Real xi) -> Real { return target - xi; },
+                                   [=](Real xi) { return xi < target; });
         Real x = result.first;
         Size N = result.second;
         QL_ENSURE(N != 0, "no data below the target");

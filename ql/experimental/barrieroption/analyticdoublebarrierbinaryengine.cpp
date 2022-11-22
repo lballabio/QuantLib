@@ -17,8 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
+#include <utility>
 
 using std::fabs;
 
@@ -33,8 +34,8 @@ namespace QuantLib {
     
     public:
         AnalyticDoubleBarrierBinaryEngine_helper(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const boost::shared_ptr<CashOrNothingPayoff> &payoff,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<CashOrNothingPayoff> &payoff,
              const DoubleBarrierOption::arguments &arguments):
         process_(process),
         payoff_(payoff),
@@ -53,8 +54,8 @@ namespace QuantLib {
 
     private:
 
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process_;
-        const boost::shared_ptr<CashOrNothingPayoff> &payoff_;
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process_;
+        const ext::shared_ptr<CashOrNothingPayoff> &payoff_;
         const DoubleBarrierOption::arguments &arguments_;
     };
 
@@ -171,8 +172,8 @@ namespace QuantLib {
     }
 
     AnalyticDoubleBarrierBinaryEngine::AnalyticDoubleBarrierBinaryEngine(
-              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
@@ -180,21 +181,21 @@ namespace QuantLib {
 
         if (arguments_.barrierType == DoubleBarrier::KIKO ||
             arguments_.barrierType == DoubleBarrier::KOKI) {
-            boost::shared_ptr<AmericanExercise> ex =
-                boost::dynamic_pointer_cast<AmericanExercise>(
+            ext::shared_ptr<AmericanExercise> ex =
+                ext::dynamic_pointer_cast<AmericanExercise>(
                                                    arguments_.exercise);
             QL_REQUIRE(ex, "KIKO/KOKI options must have American exercise");
             QL_REQUIRE(ex->dates()[0] <=
                        process_->blackVolatility()->referenceDate(),
                        "American option with window exercise not handled yet");
         } else {
-            boost::shared_ptr<EuropeanExercise> ex =
-                boost::dynamic_pointer_cast<EuropeanExercise>(
+            ext::shared_ptr<EuropeanExercise> ex =
+                ext::dynamic_pointer_cast<EuropeanExercise>(
                                                    arguments_.exercise);
             QL_REQUIRE(ex, "non-European exercise given");
         }
-        boost::shared_ptr<CashOrNothingPayoff> payoff =
-            boost::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
+        ext::shared_ptr<CashOrNothingPayoff> payoff =
+            ext::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "a cash-or-nothing payoff must be given");
 
         Real spot = process_->stateVariable()->value();

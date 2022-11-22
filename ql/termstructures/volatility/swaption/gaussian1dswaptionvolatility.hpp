@@ -36,39 +36,37 @@ class Quote;
 
 class Gaussian1dSwaptionVolatility : public SwaptionVolatilityStructure {
   public:
-    Gaussian1dSwaptionVolatility(
-        const Calendar &cal, BusinessDayConvention bdc,
-        const boost::shared_ptr<SwapIndex> &indexBase,
-        const boost::shared_ptr<Gaussian1dModel> &model, const DayCounter &dc,
-        const boost::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine =
-            boost::shared_ptr<Gaussian1dSwaptionEngine>());
+    Gaussian1dSwaptionVolatility(const Calendar& cal,
+                                 BusinessDayConvention bdc,
+                                 ext::shared_ptr<SwapIndex> indexBase,
+                                 const ext::shared_ptr<Gaussian1dModel>& model,
+                                 const DayCounter& dc,
+                                 ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine =
+                                     ext::shared_ptr<Gaussian1dSwaptionEngine>());
     //@{
-    Date maxDate() const { return Date::maxDate(); }
+    Date maxDate() const override { return Date::maxDate(); }
     //@}
     //! \name VolatilityTermStructure interface
     //@{
-    Real minStrike() const { return 0.0; }
-    Real maxStrike() const { return QL_MAX_REAL; }
+    Real minStrike() const override { return 0.0; }
+    Real maxStrike() const override { return QL_MAX_REAL; }
     //@}
     //! \name SwaptionVolatilityStructure interface
     //@{
-    const Period &maxSwapTenor() const { return maxSwapTenor_; }
+    const Period& maxSwapTenor() const override { return maxSwapTenor_; }
     //@}
   protected:
-    boost::shared_ptr<SmileSection> smileSectionImpl(const Date &,
-                                                     const Period &) const;
-    boost::shared_ptr<SmileSection> smileSectionImpl(Time, Time) const;
-    Volatility volatilityImpl(const Date &, const Period &, Rate) const;
-    Volatility volatilityImpl(Time, Time, Rate) const;
+    ext::shared_ptr<SmileSection> smileSectionImpl(const Date&, const Period&) const override;
+    ext::shared_ptr<SmileSection> smileSectionImpl(Time, Time) const override;
+    Volatility volatilityImpl(const Date&, const Period&, Rate) const override;
+    Volatility volatilityImpl(Time, Time, Rate) const override;
 
   private:
-    boost::shared_ptr<SwapIndex> indexBase_;
-    boost::shared_ptr<Gaussian1dModel> model_;
-    boost::shared_ptr<Gaussian1dSwaptionEngine> engine_;
+    ext::shared_ptr<SwapIndex> indexBase_;
+    ext::shared_ptr<Gaussian1dModel> model_;
+    ext::shared_ptr<Gaussian1dSwaptionEngine> engine_;
     const Period maxSwapTenor_;
 
-    class DateHelper;
-    friend class DateHelper;
     class DateHelper {
       public:
         DateHelper(const TermStructure &ts, const Time t) : ts_(ts), t_(t) {}

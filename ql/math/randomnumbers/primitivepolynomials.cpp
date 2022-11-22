@@ -6,11 +6,11 @@
    modulo two up to degree 27. Both are slightly edited versions of
    PrimitivePolynomialsModuloTwoUpToDegree27.c
 
-   © 2002 "Monte Carlo Methods in Finance"
+   Â© 2002 "Monte Carlo Methods in Finance"
 
 
    =========================================================================
-   Copyright (C) 2002 Peter Jäckel "Monte Carlo Methods in Finance".
+   Copyright (C) 2002 Peter JÃ¤ckel "Monte Carlo Methods in Finance".
    All rights reserved.
 
    Permission to use, copy, modify, and distribute this software is freely

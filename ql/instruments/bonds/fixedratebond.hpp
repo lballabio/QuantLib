@@ -57,10 +57,14 @@ namespace QuantLib {
                       const Calendar& paymentCalendar = Calendar(),
                       const Period& exCouponPeriod = Period(),
                       const Calendar& exCouponCalendar = Calendar(),
-                      const BusinessDayConvention exCouponConvention = Unadjusted,
-                      bool exCouponEndOfMonth = false);
-        /*! simple annual compounding coupon rates
-            with internal schedule calculation */
+                      BusinessDayConvention exCouponConvention = Unadjusted,
+                      bool exCouponEndOfMonth = false,
+                      const DayCounter& firstPeriodDayCounter = DayCounter());
+
+        /*! \deprecated Use the constructor taking a schedule.
+                        Deprecated in version 1.28.
+        */
+        QL_DEPRECATED
         FixedRateBond(Natural settlementDays,
                       const Calendar& couponCalendar,
                       Real faceAmount,
@@ -79,9 +83,15 @@ namespace QuantLib {
                       const Calendar& paymentCalendar = Calendar(),
                       const Period& exCouponPeriod = Period(),
                       const Calendar& exCouponCalendar = Calendar(),
-                      const BusinessDayConvention exCouponConvention = Unadjusted,
-                      bool exCouponEndOfMonth = false);
-        //! generic compounding and frequency InterestRate coupons 
+                      BusinessDayConvention exCouponConvention = Unadjusted,
+                      bool exCouponEndOfMonth = false,
+                      const DayCounter& firstPeriodDayCounter = DayCounter());
+
+        /*! \deprecated Build a FixedRateLeg instead and use it
+                        to create an instance of the base Bond class.
+                        Deprecated in version 1.28.
+        */
+        QL_DEPRECATED
         FixedRateBond(Natural settlementDays,
                       Real faceAmount,
                       const Schedule& schedule,
@@ -92,13 +102,15 @@ namespace QuantLib {
                       const Calendar& paymentCalendar = Calendar(),
                       const Period& exCouponPeriod = Period(),
                       const Calendar& exCouponCalendar = Calendar(),
-                      const BusinessDayConvention exCouponConvention = Unadjusted,
+                      BusinessDayConvention exCouponConvention = Unadjusted,
                       bool exCouponEndOfMonth = false);
         Frequency frequency() const { return frequency_; }
-        const DayCounter& dayCounter() const { return dayCounter_; }
+        const DayCounter& dayCounter() const {return dayCounter_;}
+        const DayCounter& firstPeriodDayCounter() const {return firstPeriodDayCounter_;}
       protected:
         Frequency frequency_;
         DayCounter dayCounter_;
+        DayCounter firstPeriodDayCounter_;
     };
 
 }

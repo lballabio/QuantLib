@@ -2,6 +2,8 @@
 
 /*
  Copyright (C) 2009 Ferdinando Ametrano
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,15 +39,15 @@ namespace QuantLib {
     class MakeOIS {
       public:
         MakeOIS(const Period& swapTenor,
-                const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                const ext::shared_ptr<OvernightIndex>& overnightIndex,
                 Rate fixedRate = Null<Rate>(),
                 const Period& fwdStart = 0*Days);
 
         operator OvernightIndexedSwap() const;
-        operator boost::shared_ptr<OvernightIndexedSwap>() const ;
+        operator ext::shared_ptr<OvernightIndexedSwap>() const ;
 
         MakeOIS& receiveFixed(bool flag = true);
-        MakeOIS& withType(OvernightIndexedSwap::Type type);
+        MakeOIS& withType(Swap::Type type);
         MakeOIS& withNominal(Real n);
 
         MakeOIS& withSettlementDays(Natural settlementDays);
@@ -54,6 +56,10 @@ namespace QuantLib {
         MakeOIS& withRule(DateGeneration::Rule r);
 
         MakeOIS& withPaymentFrequency(Frequency f);
+        MakeOIS& withPaymentAdjustment(BusinessDayConvention convention);
+        MakeOIS& withPaymentLag(Natural lag);
+        MakeOIS& withPaymentCalendar(const Calendar& cal);
+
         MakeOIS& withEndOfMonth(bool flag = true);
 
         MakeOIS& withFixedLegDayCount(const DayCounter& dc);
@@ -62,29 +68,41 @@ namespace QuantLib {
 
         MakeOIS& withDiscountingTermStructure(
                   const Handle<YieldTermStructure>& discountingTermStructure);
+
+        MakeOIS &withTelescopicValueDates(bool telescopicValueDates);
+
+        MakeOIS& withAveragingMethod(RateAveraging::Type averagingMethod);
+
         MakeOIS& withPricingEngine(
-                              const boost::shared_ptr<PricingEngine>& engine);
+                              const ext::shared_ptr<PricingEngine>& engine);
       private:
         Period swapTenor_;
-        boost::shared_ptr<OvernightIndex> overnightIndex_;
+        ext::shared_ptr<OvernightIndex> overnightIndex_;
         Rate fixedRate_;
         Period forwardStart_;
 
-        Natural settlementDays_;
+        Natural settlementDays_ = 2;
         Date effectiveDate_, terminationDate_;
         Calendar calendar_;
 
-        Frequency paymentFrequency_;
-        DateGeneration::Rule rule_;
-        bool endOfMonth_, isDefaultEOM_;
+        Frequency paymentFrequency_ = Annual;
+        Calendar paymentCalendar_;
+        BusinessDayConvention paymentAdjustment_ = Following;
+        Natural paymentLag_ = 0;
 
-        OvernightIndexedSwap::Type type_;
-        Real nominal_;
+        DateGeneration::Rule rule_ = DateGeneration::Backward;
+        bool endOfMonth_ = false, isDefaultEOM_ = true;
 
-        Spread overnightSpread_;
+        Swap::Type type_ = Swap::Payer;
+        Real nominal_ = 1.0;
+
+        Spread overnightSpread_ = 0.0;
         DayCounter fixedDayCount_;
 
-        boost::shared_ptr<PricingEngine> engine_;
+        ext::shared_ptr<PricingEngine> engine_;
+
+        bool telescopicValueDates_ = false;
+        RateAveraging::Type averagingMethod_ = RateAveraging::Compound;
     };
 
 }

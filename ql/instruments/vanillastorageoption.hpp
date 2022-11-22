@@ -35,27 +35,27 @@ namespace QuantLib {
     class VanillaStorageOption : public OneAssetOption {
       public:
           class arguments;
-          VanillaStorageOption(const boost::shared_ptr<BermudanExercise>& ex,
+          VanillaStorageOption(const ext::shared_ptr<BermudanExercise>& ex,
                                Real capacity, Real load, Real changeRate)
-        : OneAssetOption(boost::shared_ptr<Payoff>(new NullPayoff), ex),
+        : OneAssetOption(ext::shared_ptr<Payoff>(new NullPayoff), ex),
           capacity_  (capacity),
           load_      (load),
           changeRate_(changeRate) {}
 
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
+          bool isExpired() const override;
+          void setupArguments(PricingEngine::arguments*) const override;
 
-      private:
-        const Real capacity_;
-        const Real load_;
-        const Real changeRate_;
+        private:
+          const Real capacity_;
+          const Real load_;
+          const Real changeRate_;
     };
 
     class VanillaStorageOption::arguments
         : public virtual PricingEngine::arguments {
       public:
-        arguments() {}
-        void validate() const {
+        arguments() = default;
+        void validate() const override {
             QL_REQUIRE(payoff, "no payoff given");
             QL_REQUIRE(exercise, "no exercise given");
 
@@ -68,20 +68,19 @@ namespace QuantLib {
         Real capacity;
         Real load;
         Real changeRate;
-        boost::shared_ptr<NullPayoff> payoff;
-        boost::shared_ptr<BermudanExercise> exercise;
+        ext::shared_ptr<NullPayoff> payoff;
+        ext::shared_ptr<BermudanExercise> exercise;
     };
 
     inline void VanillaStorageOption::setupArguments(
                                 PricingEngine::arguments* args) const {
-        VanillaStorageOption::arguments* arguments =
-            dynamic_cast<VanillaStorageOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<VanillaStorageOption::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->payoff
-            = boost::dynamic_pointer_cast<NullPayoff>(payoff_);
+            = ext::dynamic_pointer_cast<NullPayoff>(payoff_);
         arguments->exercise
-            = boost::dynamic_pointer_cast<BermudanExercise>(exercise_);
+            = ext::dynamic_pointer_cast<BermudanExercise>(exercise_);
         arguments->capacity   = capacity_;
         arguments->load       = load_;
         arguments->changeRate = changeRate_;

@@ -125,14 +125,11 @@ namespace QuantLib
                  results[2] = x*x;
 
             }
-
-
-
     }
 
-    std::auto_ptr<MarketModelBasisSystem> SwapForwardBasisSystem::clone() const {
-        return std::auto_ptr<MarketModelBasisSystem>(
-                                                  new SwapForwardBasisSystem(*this));
+    std::unique_ptr<MarketModelBasisSystem>
+    SwapForwardBasisSystem::clone() const {
+        return std::unique_ptr<MarketModelBasisSystem>(new SwapForwardBasisSystem(*this));
     }
 
 }

@@ -31,39 +31,34 @@ namespace QuantLib {
       public:
         CTSMMCapletAlphaFormCalibration(
             const EvolutionDescription& evolution,
-            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
-            const std::vector<boost::shared_ptr<
-                        PiecewiseConstantVariance> >&
-                                    displacedSwapVariances,
+            const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
+            const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
             const std::vector<Volatility>& capletVols,
-            const boost::shared_ptr<CurveState>& cs,
+            const ext::shared_ptr<CurveState>& cs,
             Spread displacement,
             const std::vector<Real>& alphaInitial,
             const std::vector<Real>& alphaMax,
             const std::vector<Real>& alphaMin,
             bool maximizeHomogeneity,
-            boost::shared_ptr<AlphaForm> parametricForm =
-                                    boost::shared_ptr<AlphaForm>());
+            ext::shared_ptr<AlphaForm> parametricForm = ext::shared_ptr<AlphaForm>());
         // inspector
         const std::vector<Real>& alpha() const;
         // actual calibration function
         static Natural capletAlphaFormCalibration(
             const EvolutionDescription& evolution,
             const PiecewiseConstantCorrelation& corr,
-            const std::vector<boost::shared_ptr<
-                PiecewiseConstantVariance> >&
-                    displacedSwapVariances,
+            const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
             const std::vector<Volatility>& capletVols,
             const CurveState& cs,
-            const Spread displacement,
+            Spread displacement,
 
             const std::vector<Real>& alphaInitial,
             const std::vector<Real>& alphaMax,
             const std::vector<Real>& alphaMin,
             bool maximizeHomogeneity,
-            boost::shared_ptr<AlphaForm> parametricForm,
+            const ext::shared_ptr<AlphaForm>& parametricForm,
 
-            const Size numberOfFactors,
+            Size numberOfFactors,
             Integer steps,
             Real toleranceForAlphaSolving,
 
@@ -72,14 +67,14 @@ namespace QuantLib {
             std::vector<Real>& b,
 
             std::vector<Matrix>& swapCovariancePseudoRoots);
+
       private:
-        Natural calibrationImpl_(Natural numberOfFactors, 
-                                 Natural maxIterations,
-                                 Real tolerance);
+        Natural
+        calibrationImpl_(Natural numberOfFactors, Natural maxIterations, Real tolerance) override;
         // input
         std::vector<Real> alphaInitial_, alphaMax_, alphaMin_;
         bool maximizeHomogeneity_;
-        boost::shared_ptr<AlphaForm> parametricForm_;
+        ext::shared_ptr<AlphaForm> parametricForm_;
         // results
         std::vector<Real> alpha_, a_, b_;
     };

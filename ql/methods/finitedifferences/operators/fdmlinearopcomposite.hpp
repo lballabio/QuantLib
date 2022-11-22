@@ -28,10 +28,7 @@
 
 #include <ql/math/matrixutilities/sparsematrix.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
-
-#if !defined(QL_NO_UBLAS_SUPPORT)
 #include <numeric>
-#endif
 
 namespace QuantLib {
 
@@ -42,27 +39,22 @@ namespace QuantLib {
         //! Time \f$t1 <= t2\f$ is required
         virtual void setTime(Time t1, Time t2) = 0;
 
-        virtual Disposable<Array> apply_mixed(const Array& r) const = 0;
+        virtual Array apply_mixed(const Array& r) const = 0;
         
-        virtual Disposable<Array> 
-            apply_direction(Size direction, const Array& r) const = 0;
-        virtual Disposable<Array> 
-            solve_splitting(Size direction, const Array& r, Real s) const = 0;
-        virtual Disposable<Array> 
-            preconditioner(const Array& r, Real s) const = 0;
+        virtual Array apply_direction(Size direction, const Array& r) const = 0;
+        virtual Array solve_splitting(Size direction, const Array& r, Real s) const = 0;
+        virtual Array preconditioner(const Array& r, Real s) const = 0;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        virtual Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const {
+        virtual std::vector<SparseMatrix> toMatrixDecomp() const {
             QL_FAIL(" ublas representation is not implemented");
         }
 
-        Disposable<SparseMatrix> toMatrix() const {
+        SparseMatrix toMatrix() const override {
             const std::vector<SparseMatrix> dcmp = toMatrixDecomp();
-            SparseMatrix retVal = std::accumulate(dcmp.begin()+1, dcmp.end(),
-                                                  SparseMatrix(dcmp.front()));
-            return retVal;
+            return std::accumulate(dcmp.begin()+1, dcmp.end(),
+                                   SparseMatrix(dcmp.front()));
         }
-#endif
+
     };
 }
 

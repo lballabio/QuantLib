@@ -28,8 +28,8 @@
 namespace QuantLib {
 
     HybridHestonHullWhiteProcess::HybridHestonHullWhiteProcess(
-        const boost::shared_ptr<HestonProcess> & hestonProcess,
-        const boost::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
+        const ext::shared_ptr<HestonProcess> & hestonProcess,
+        const ext::shared_ptr<HullWhiteForwardProcess> & hullWhiteProcess,
         Real corrEquityShortRate,
         HybridHestonHullWhiteProcess::Discretization discretization)
     : hestonProcess_(hestonProcess),
@@ -57,45 +57,37 @@ namespace QuantLib {
         return 3;
     }
 
-    Disposable<Array> HybridHestonHullWhiteProcess::initialValues() const {
-        Array retVal(3);
-        retVal[0] = hestonProcess_->s0()->value();
-        retVal[1] = hestonProcess_->v0();
-        retVal[2] = hullWhiteProcess_->x0();
-        
-        return retVal;
+    Array HybridHestonHullWhiteProcess::initialValues() const {
+        return {
+            hestonProcess_->s0()->value(),
+            hestonProcess_->v0(),
+            hullWhiteProcess_->x0()
+        };
     }
 
-    Disposable<Array> 
-    HybridHestonHullWhiteProcess::drift(Time t, const Array& x) const {
-        Array retVal(3), x0(2);
-        
-        x0[0] = x[0]; x0[1] = x[1];
+    Array HybridHestonHullWhiteProcess::drift(Time t, const Array& x) const {
+        Array x0 = { x[0], x[1] };
         Array y0 = hestonProcess_->drift(t, x0);
-        
-        retVal[0] = y0[0]; retVal[1] = y0[1];
-        retVal[2] = hullWhiteProcess_->drift(t, x[2]);
-        
-        return retVal;
+
+        return {
+            y0[0],
+            y0[1],
+            hullWhiteProcess_->drift(t, x[2])
+        };
     }
 
-    Disposable<Array> 
-    HybridHestonHullWhiteProcess::apply(const Array& x0,const Array& dx) const {
-        Array retVal(3), xt(2), dxt(2);
-        
-        xt[0]  = x0[0]; xt[1]  = x0[1];
-        dxt[0] = dx[0]; dxt[1] = dx[1];
-
+    Array HybridHestonHullWhiteProcess::apply(const Array& x0, const Array& dx) const {
+        Array xt = { x0[0], x0[1] }, dxt = { dx[0], dx[1] };
         Array yt = hestonProcess_->apply(xt, dxt);
-        
-        retVal[0] = yt[0]; retVal[1] = yt[1];
-        retVal[2] = hullWhiteProcess_->apply(x0[2], dx[2]);
-        
-        return retVal;
+
+        return {
+            yt[0],
+            yt[1],
+            hullWhiteProcess_->apply(x0[2], dx[2])
+        };
     }
     
-    Disposable<Matrix> 
-    HybridHestonHullWhiteProcess::diffusion(Time t, const Array& x) const {
+    Matrix HybridHestonHullWhiteProcess::diffusion(Time t, const Array& x) const {
         Matrix retVal(3,3);
 
         Array xt(2); xt[0] = x[0]; xt[1] = x[1];
@@ -112,16 +104,15 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<Array> 
-    HybridHestonHullWhiteProcess::evolve(Time t0, const Array& x0,
-                                         Time dt, const Array& dw) const {
+    Array HybridHestonHullWhiteProcess::evolve(Time t0, const Array& x0,
+                                               Time dt, const Array& dw) const {
 
         const Rate r         = x0[2];
         const Real a         = hullWhiteProcess_->a();
         const Real sigma     = hullWhiteProcess_->sigma();
         const Real rho       = corrEquityShortRate_;
         const Real xi        = hestonProcess_->rho();
-        const Volatility eta = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
+        const Volatility eta = (x0[1] > 0.0) ? Real(std::sqrt(x0[1])) : 0.0;
         const Time s = t0;
         const Time t = t0 + dt;
         const Time T = T_;
@@ -215,12 +206,12 @@ namespace QuantLib {
         return corrEquityShortRate_;
     }
 
-    const boost::shared_ptr<HestonProcess>& 
+    const ext::shared_ptr<HestonProcess>& 
     HybridHestonHullWhiteProcess::hestonProcess() const {
         return hestonProcess_;
     }
     
-    const boost::shared_ptr<HullWhiteForwardProcess>& 
+    const ext::shared_ptr<HullWhiteForwardProcess>& 
     HybridHestonHullWhiteProcess::hullWhiteProcess() const {
         return hullWhiteProcess_;
     }

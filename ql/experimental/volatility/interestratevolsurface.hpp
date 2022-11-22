@@ -48,17 +48,17 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        InterestRateVolSurface(const boost::shared_ptr<InterestRateIndex>&,
-                               BusinessDayConvention bdc = Following,
-                               const DayCounter& dc = DayCounter());
+        explicit InterestRateVolSurface(ext::shared_ptr<InterestRateIndex>,
+                                        BusinessDayConvention bdc = Following,
+                                        const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
-        InterestRateVolSurface(const boost::shared_ptr<InterestRateIndex>&,
+        InterestRateVolSurface(ext::shared_ptr<InterestRateIndex>,
                                const Date& referenceDate,
                                const Calendar& cal = Calendar(),
                                BusinessDayConvention bdc = Following,
                                const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
-        InterestRateVolSurface(const boost::shared_ptr<InterestRateIndex>&,
+        InterestRateVolSurface(ext::shared_ptr<InterestRateIndex>,
                                Natural settlementDays,
                                const Calendar&,
                                BusinessDayConvention bdc = Following,
@@ -69,19 +69,19 @@ namespace QuantLib {
         //! period/date conversion
         Date optionDateFromTenor(const Period&) const;
         //@}
-        const boost::shared_ptr<InterestRateIndex>& index() const;
+        const ext::shared_ptr<InterestRateIndex>& index() const;
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
-        boost::shared_ptr<InterestRateIndex> index_;
+        ext::shared_ptr<InterestRateIndex> index_;
     };
 
 
     // inline
 
-    inline const boost::shared_ptr<InterestRateIndex>&
+    inline const ext::shared_ptr<InterestRateIndex>&
     InterestRateVolSurface::index() const {
         return index_;
     }

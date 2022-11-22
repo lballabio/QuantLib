@@ -29,8 +29,8 @@ namespace QuantLib {
       sequence_(std::vector<Real> (dimensionality), 1.0),
       integerSequence_(dimensionality, 0) {
 
-      QL_REQUIRE(dimensionality>0, 
-                 "dimensionality must be greater than 0");
+        QL_REQUIRE(dimensionality>0, 
+                   "dimensionality must be greater than 0");
 
         // base is the lowest prime number >= dimensionality_
         Size i, j, k=1;

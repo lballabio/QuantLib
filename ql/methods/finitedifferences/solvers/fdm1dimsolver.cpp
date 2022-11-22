@@ -21,33 +21,29 @@
 #include <ql/methods/finitedifferences/finitedifferencemodel.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm1dimsolver.hpp>
-#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
+#include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    Fdm1DimSolver::Fdm1DimSolver(
-                             const FdmSolverDesc& solverDesc,
-                             const FdmSchemeDesc& schemeDesc,
-                             const boost::shared_ptr<FdmLinearOpComposite>& op)
-    : solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc),
-      op_(op),
-      thetaCondition_(new FdmSnapshotCondition(
-        0.99*std::min(1.0/365.0,
-           solverDesc.condition->stoppingTimes().empty()
-                    ? solverDesc.maturity
-                    : solverDesc.condition->stoppingTimes().front()))),
-      conditions_(FdmStepConditionComposite::joinConditions(thetaCondition_,
-                                                         solverDesc.condition)),
-      x_            (solverDesc.mesher->layout()->size()),
-      initialValues_(solverDesc.mesher->layout()->size()),
-      resultValues_ (solverDesc.mesher->layout()->size()) {
+    Fdm1DimSolver::Fdm1DimSolver(const FdmSolverDesc& solverDesc,
+                                 const FdmSchemeDesc& schemeDesc,
+                                 ext::shared_ptr<FdmLinearOpComposite> op)
+    : solverDesc_(solverDesc), schemeDesc_(schemeDesc), op_(std::move(op)),
+      thetaCondition_(ext::make_shared<FdmSnapshotCondition>(
+          0.99 * std::min(1.0 / 365.0,
+                          solverDesc.condition->stoppingTimes().empty() ?
+                              solverDesc.maturity :
+                              solverDesc.condition->stoppingTimes().front()))),
+      conditions_(FdmStepConditionComposite::joinConditions(thetaCondition_, solverDesc.condition)),
+      x_(solverDesc.mesher->layout()->size()), initialValues_(solverDesc.mesher->layout()->size()),
+      resultValues_(solverDesc.mesher->layout()->size()) {
 
-        const boost::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const ext::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
         const FdmLinearOpIterator endIter = layout->end();
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;
@@ -69,19 +65,18 @@ namespace QuantLib {
                       solverDesc_.timeSteps, solverDesc_.dampingSteps);
 
         std::copy(rhs.begin(), rhs.end(), resultValues_.begin());
-        interpolation_ = boost::shared_ptr<CubicInterpolation>(new
-            MonotonicCubicNaturalSpline(x_.begin(), x_.end(),
-                                        resultValues_.begin()));
+        interpolation_ = ext::make_shared<MonotonicCubicNaturalSpline>(x_.begin(), x_.end(),
+                                        resultValues_.begin());
     }
 
     Real Fdm1DimSolver::interpolateAt(Real x) const {
         calculate();
-        return interpolation_->operator()(x);
+        return (*interpolation_)(x);
     }
 
     Real Fdm1DimSolver::thetaAt(Real x) const {
-        QL_REQUIRE(conditions_->stoppingTimes().front() > 0.0,
-                   "stopping time at zero-> can't calculate theta");
+        if (conditions_->stoppingTimes().front() == 0.0)
+            return Null<Real>();
 
         calculate();
         Array thetaValues(resultValues_.size());

@@ -64,7 +64,7 @@ namespace QuantLib {
                                      BusinessDayConvention bdc,
                                      const DayCounter& dc = DayCounter());
         //@}
-        virtual ~OptionletVolatilityStructure() {}
+        ~OptionletVolatilityStructure() override = default;
         //! \name Volatility and Variance
         //@{
         //! returns the volatility for a given option tenor and strike rate
@@ -94,23 +94,23 @@ namespace QuantLib {
                            bool extrapolate = false) const;
 
         //! returns the smile for a given option tenor
-        boost::shared_ptr<SmileSection> smileSection(const Period& optionTenor,
+        ext::shared_ptr<SmileSection> smileSection(const Period& optionTenor,
                                                      bool extr = false) const;
         //! returns the smile for a given option date
-        boost::shared_ptr<SmileSection> smileSection(const Date& optionDate,
+        ext::shared_ptr<SmileSection> smileSection(const Date& optionDate,
                                                      bool extr = false) const;
         //! returns the smile for a given option time
-        boost::shared_ptr<SmileSection> smileSection(Time optionTime,
+        ext::shared_ptr<SmileSection> smileSection(Time optionTime,
                                                      bool extr = false) const;
         //@}
         virtual VolatilityType volatilityType() const;
         virtual Real displacement() const;
 
       protected:
-        virtual boost::shared_ptr<SmileSection> smileSectionImpl(
+        virtual ext::shared_ptr<SmileSection> smileSectionImpl(
                                                 const Date& optionDate) const;
         //! implements the actual smile calculation in derived classes
-        virtual boost::shared_ptr<SmileSection> smileSectionImpl(
+        virtual ext::shared_ptr<SmileSection> smileSectionImpl(
                                                     Time optionTime) const = 0;
         virtual Volatility volatilityImpl(const Date& optionDate,
                                           Rate strike) const;
@@ -139,7 +139,7 @@ namespace QuantLib {
         return blackVariance(optionDate, strike, extrapolate);
     }
 
-    inline boost::shared_ptr<SmileSection>
+    inline ext::shared_ptr<SmileSection>
     OptionletVolatilityStructure::smileSection(const Period& optionTenor,
                                                bool extrapolate) const {
         Date optionDate = optionDateFromTenor(optionTenor);
@@ -183,14 +183,14 @@ namespace QuantLib {
         return volatilityImpl(optionTime, strike);
     }
 
-    inline boost::shared_ptr<SmileSection>
+    inline ext::shared_ptr<SmileSection>
     OptionletVolatilityStructure::smileSection(const Date& optionDate,
                                                bool extrapolate) const {
         checkRange(optionDate, extrapolate);
         return smileSectionImpl(optionDate);
     }
 
-    inline boost::shared_ptr<SmileSection>
+    inline ext::shared_ptr<SmileSection>
     OptionletVolatilityStructure::smileSection(Time optionTime,
                                                bool extrapolate) const {
         checkRange(optionTime, extrapolate);
@@ -199,7 +199,7 @@ namespace QuantLib {
 
     // 4. default implementation of Date-based xxxImpl methods
     //    relying on the equivalent Time-based methods
-    inline boost::shared_ptr<SmileSection>
+    inline ext::shared_ptr<SmileSection>
     OptionletVolatilityStructure::smileSectionImpl(const Date& optionDate) const {
         return smileSectionImpl(timeFromReference(optionDate));
     }

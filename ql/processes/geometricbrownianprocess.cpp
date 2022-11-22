@@ -28,7 +28,7 @@ namespace QuantLib {
                                                           double initialValue,
                                                           double mue,
                                                           double sigma)
-    : StochasticProcess1D(boost::shared_ptr<discretization>(
+    : StochasticProcess1D(ext::shared_ptr<discretization>(
                                                     new EulerDiscretization)),
       initialValue_(initialValue), mue_(mue), sigma_(sigma) {}
 

@@ -21,37 +21,33 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/experimental/models/normalclvmodel.hpp>
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/solvers1d/brent.hpp>
-#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/solvers1d/brent.hpp>
+#include <ql/methods/finitedifferences/utilities/gbsmrndcalculator.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/experimental/models/normalclvmodel.hpp>
-#include <ql/experimental/finitedifferences/gbsmrndcalculator.hpp>
+#include <utility>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
-    NormalCLVModel::NormalCLVModel(
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
-        const boost::shared_ptr<OrnsteinUhlenbeckProcess>& ouProcess,
-        const std::vector<Date>& maturityDates,
-        Size lagrangeOrder, Real pMax, Real pMin)
-    : x_(M_SQRT2*GaussHermiteIntegration(lagrangeOrder).x()),
-      sigma_( (pMax != Null<Real>())
-              ? x_.back() / InverseCumulativeNormal()(pMax)
-              : (pMin != Null<Real>())
-                  ? x_.front() / InverseCumulativeNormal()(pMin)
-                  : 1.0),
-      bsProcess_    (bsProcess),
-      ouProcess_    (ouProcess),
-      maturityDates_(maturityDates),
-      rndCalculator_(boost::make_shared<GBSMRNDCalculator>(bsProcess)),
+    NormalCLVModel::NormalCLVModel(const ext::shared_ptr<GeneralizedBlackScholesProcess>& bsProcess,
+                                   ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess,
+                                   const std::vector<Date>& maturityDates,
+                                   Size lagrangeOrder,
+                                   Real pMax,
+                                   Real pMin)
+    : x_(M_SQRT2 * GaussHermiteIntegration(lagrangeOrder).x()),
+      sigma_((pMax != Null<Real>()) ?
+                 x_.back() / InverseCumulativeNormal()(pMax) :
+                 (pMin != Null<Real>()) ? x_.front() / InverseCumulativeNormal()(pMin) : Real(1.0)),
+      bsProcess_(bsProcess), ouProcess_(std::move(ouProcess)), maturityDates_(maturityDates),
+      rndCalculator_(ext::make_shared<GBSMRNDCalculator>(bsProcess)),
       maturityTimes_(maturityDates.size()) {
 
         registerWith(bsProcess_);
@@ -73,7 +69,7 @@ namespace QuantLib {
         return rndCalculator_->invcdf(q, bsProcess_->time(d));
     }
 
-    Disposable<Array> NormalCLVModel::collocationPointsX(const Date& d) const {
+    Array NormalCLVModel::collocationPointsX(const Date& d) const {
         const Time t = bsProcess_->time(d);
 
         const Real expectation
@@ -84,7 +80,7 @@ namespace QuantLib {
         return expectation + stdDeviation*x_;
     }
 
-    Disposable<Array> NormalCLVModel::collocationPointsY(const Date& d) const {
+    Array NormalCLVModel::collocationPointsY(const Date& d) const {
         Array s(x_.size());
 
         CumulativeNormalDistribution N;
@@ -96,7 +92,7 @@ namespace QuantLib {
     }
 
 
-    boost::function<Real(Time, Real)> NormalCLVModel::g() const {
+    ext::function<Real(Time, Real)> NormalCLVModel::g() const {
         calculate();
         return g_;
     }
@@ -106,7 +102,7 @@ namespace QuantLib {
     : y_(model.x_.size()),
       sigma_(model.sigma_),
       ouProcess_(model.ouProcess_),
-      data_(boost::make_shared<InterpolationData>(model)) {
+      data_(ext::make_shared<InterpolationData>(model)) {
 
         for (Size i=0; i < data_->s_.columns(); ++i) {
             const Array y = model.collocationPointsY(model.maturityDates_[i]);
@@ -114,9 +110,8 @@ namespace QuantLib {
         }
 
         for (Size i=0; i < data_->s_.rows(); ++i) {
-            data_->interpl_.push_back(
-                LinearInterpolation(data_->t_.begin(), data_->t_.end(),
-                                    data_->s_.row_begin(i)));
+            data_->interpl_.emplace_back(data_->t_.begin(), data_->t_.end(),
+                                         data_->s_.row_begin(i));
         }
     }
 
@@ -137,6 +132,6 @@ namespace QuantLib {
     }
 
     void NormalCLVModel::performCalculations() const {
-        g_ = boost::function<Real(Time, Real)>(MappingFunction(*this));
+        g_ = ext::function<Real(Time, Real)>(MappingFunction(*this));
     }
 }

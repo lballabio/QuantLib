@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-  </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '10.0'">v100</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '11.0'">v110</PlatformToolset>
@@ -10,13 +7,7 @@
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '13.0'">v130</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '14.0'">v140</PlatformToolset>
     <PlatformToolset Condition="'$(VisualStudioVersion)' == '15.0'">v141</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Label="UserMacros">
-    <qlCompilerTag Condition="'$(VisualStudioVersion)' == '10.0'">vc100</qlCompilerTag>
-    <qlCompilerTag Condition="'$(VisualStudioVersion)' == '11.0'">vc110</qlCompilerTag>
-    <qlCompilerTag Condition="'$(VisualStudioVersion)' == '12.0'">vc120</qlCompilerTag>
-    <qlCompilerTag Condition="'$(VisualStudioVersion)' == '13.0'">vc130</qlCompilerTag>
-    <qlCompilerTag Condition="'$(VisualStudioVersion)' == '14.0'">vc140</qlCompilerTag>
-    <qlCompilerTag Condition="'$(VisualStudioVersion)' == '15.0'">vc141</qlCompilerTag>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '16.0'">v142</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '17.0'">v143</PlatformToolset>
   </PropertyGroup>
 </Project>

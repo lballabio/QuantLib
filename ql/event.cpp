@@ -28,9 +28,9 @@ namespace QuantLib {
                             boost::optional<bool> includeRefDate) const {
         Date refDate =
             d != Date() ? d : Settings::instance().evaluationDate();
-        bool includeRefDateEvent =
-            includeRefDate ? *includeRefDate :
-                           Settings::instance().includeReferenceDateEvents();
+        bool includeRefDateEvent = includeRefDate ? // NOLINT(readability-implicit-bool-conversion)
+                                       *includeRefDate :
+                                       Settings::instance().includeReferenceDateEvents();
         if (includeRefDateEvent)
             return date() < refDate;
         else
@@ -38,8 +38,8 @@ namespace QuantLib {
     }
 
     void Event::accept(AcyclicVisitor& v) {
-        Visitor<Event>* v1 = dynamic_cast<Visitor<Event>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<Event>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             QL_FAIL("not an event visitor");

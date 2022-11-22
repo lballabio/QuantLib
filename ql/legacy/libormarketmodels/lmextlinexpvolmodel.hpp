@@ -49,13 +49,11 @@ namespace QuantLib {
         LmExtLinearExponentialVolModel(const std::vector<Time>& fixingTimes,
                                        Real a, Real b, Real c, Real d);
 
-        Disposable<Array> volatility(
-             Time t, const Array& x = Null<Array>()) const;
-        Volatility volatility(
-             Size i, Time t, const Array& x = Null<Array>()) const;
+        Array volatility(Time t, const Array& x = Null<Array>()) const override;
+        Volatility volatility(Size i, Time t, const Array& x = Null<Array>()) const override;
 
-        Real integratedVariance(Size i, Size j, Time u,
-                                const Array& x = Null<Array>()) const;
+        Real
+        integratedVariance(Size i, Size j, Time u, const Array& x = Null<Array>()) const override;
     };
 
 }

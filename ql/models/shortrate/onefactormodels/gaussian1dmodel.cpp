@@ -25,38 +25,39 @@ using std::exp;
 
 namespace QuantLib {
 
-Real Gaussian1dModel::forwardRate(const Date &fixing,
-                                  const Date &referenceDate, const Real y,
-                                  boost::shared_ptr<IborIndex> iborIdx) const {
+    Real Gaussian1dModel::forwardRate(const Date& fixing,
+                                      const Date& referenceDate,
+                                      const Real y,
+                                      const ext::shared_ptr<IborIndex>& iborIdx) const {
 
-    QL_REQUIRE(iborIdx != NULL, "no ibor index given");
+        QL_REQUIRE(iborIdx != nullptr, "no ibor index given");
 
-    calculate();
+        calculate();
 
-    if (fixing <= (evaluationDate_ + (enforcesTodaysHistoricFixings_ ? 0 : -1)))
-        return iborIdx->fixing(fixing);
+        if (fixing <= (evaluationDate_ + (enforcesTodaysHistoricFixings_ ? 0 : -1)))
+            return iborIdx->fixing(fixing);
 
-    Handle<YieldTermStructure> yts =
-        iborIdx->forwardingTermStructure(); // might be empty, then use
-                                            // model curve
+        Handle<YieldTermStructure> yts = iborIdx->forwardingTermStructure(); // might be empty, then
+                                                                             // use model curve
 
-    Date valueDate = iborIdx->valueDate(fixing);
-    Date endDate = iborIdx->fixingCalendar().advance(
-        valueDate, iborIdx->tenor(), iborIdx->businessDayConvention(),
-        iborIdx->endOfMonth());
-    // FIXME Here we should use the calculation date calendar ?
-    Real dcf = iborIdx->dayCounter().yearFraction(valueDate, endDate);
+        Date valueDate = iborIdx->valueDate(fixing);
+        Date endDate = iborIdx->fixingCalendar().advance(
+            valueDate, iborIdx->tenor(), iborIdx->businessDayConvention(), iborIdx->endOfMonth());
+        // FIXME Here we should use the calculation date calendar ?
+        Real dcf = iborIdx->dayCounter().yearFraction(valueDate, endDate);
 
-    return (zerobond(valueDate, referenceDate, y, yts) -
-            zerobond(endDate, referenceDate, y, yts)) /
-           (dcf * zerobond(endDate, referenceDate, y, yts));
+        return (zerobond(valueDate, referenceDate, y, yts) -
+                zerobond(endDate, referenceDate, y, yts)) /
+               (dcf * zerobond(endDate, referenceDate, y, yts));
 }
 
-Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
-                               const Date &referenceDate, const Real y,
-                               boost::shared_ptr<SwapIndex> swapIdx) const {
+Real Gaussian1dModel::swapRate(const Date& fixing,
+                               const Period& tenor,
+                               const Date& referenceDate,
+                               const Real y,
+                               const ext::shared_ptr<SwapIndex>& swapIdx) const {
 
-    QL_REQUIRE(swapIdx != NULL, "no swap index given");
+    QL_REQUIRE(swapIdx != nullptr, "no swap index given");
 
     calculate();
 
@@ -71,14 +72,14 @@ Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
 
     Schedule sched, floatSched;
 
-    boost::shared_ptr<VanillaSwap> underlying =
+    ext::shared_ptr<VanillaSwap> underlying =
         underlyingSwap(swapIdx, fixing, tenor);
 
     sched = underlying->fixedSchedule();
 
-    boost::shared_ptr<OvernightIndexedSwapIndex> oisIdx =
-        boost::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
-    if (oisIdx != NULL) {
+    ext::shared_ptr<OvernightIndexedSwapIndex> oisIdx =
+        ext::dynamic_pointer_cast<OvernightIndexedSwapIndex>(swapIdx);
+    if (oisIdx != nullptr) {
         floatSched = sched;
     } else {
         floatSched = underlying->floatingSchedule();
@@ -110,11 +111,13 @@ Real Gaussian1dModel::swapRate(const Date &fixing, const Period &tenor,
     return floatleg / annuity;
 }
 
-Real Gaussian1dModel::swapAnnuity(const Date &fixing, const Period &tenor,
-                                  const Date &referenceDate, const Real y,
-                                  boost::shared_ptr<SwapIndex> swapIdx) const {
+Real Gaussian1dModel::swapAnnuity(const Date& fixing,
+                                  const Period& tenor,
+                                  const Date& referenceDate,
+                                  const Real y,
+                                  const ext::shared_ptr<SwapIndex>& swapIdx) const {
 
-    QL_REQUIRE(swapIdx != NULL, "no swap index given");
+    QL_REQUIRE(swapIdx != nullptr, "no swap index given");
 
     calculate();
 
@@ -122,7 +125,7 @@ Real Gaussian1dModel::swapAnnuity(const Date &fixing, const Period &tenor,
         swapIdx->discountingTermStructure(); // might be empty, then use
                                              // model curve
 
-    boost::shared_ptr<VanillaSwap> underlying =
+    ext::shared_ptr<VanillaSwap> underlying =
         underlyingSwap(swapIdx, fixing, tenor);
 
     Schedule sched = underlying->fixedSchedule();
@@ -244,14 +247,12 @@ Real Gaussian1dModel::gaussianShiftedPolynomialIntegral(
         a * h * h * h * h - b * h * h * h + c * h * h - d * h + e, x0, x1);
 }
 
-const Disposable<Array> Gaussian1dModel::yGrid(const Real stdDevs,
-                                               const int gridPoints,
-                                               const Real T, const Real t,
-                                               const Real y) const {
+Array Gaussian1dModel::yGrid(
+    const Real stdDevs, const int gridPoints, const Real T, const Real t, const Real y) const {
 
     // we use that the standard deviation is independent of $x$ here !
 
-    QL_REQUIRE(stateProcess_ != NULL, "state process not set");
+    QL_REQUIRE(stateProcess_ != nullptr, "state process not set");
 
     Array result(2 * gridPoints + 1, 0.0);
 

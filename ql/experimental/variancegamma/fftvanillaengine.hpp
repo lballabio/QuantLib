@@ -37,14 +37,15 @@ namespace QuantLib {
     */
     class FFTVanillaEngine : public FFTEngine {
     public:
-        FFTVanillaEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>&process, Real logStrikeSpacing = 0.001);
-        virtual std::auto_ptr<FFTEngine> clone() const;
+        explicit FFTVanillaEngine(
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>&process,
+            Real logStrikeSpacing = 0.001);
+        std::unique_ptr<FFTEngine> clone() const override;
     protected:
-        virtual void precalculateExpiry(Date d);
-        virtual std::complex<Real> complexFourierTransform(std::complex<Real> u) const;
-        virtual Real discountFactor(Date d) const;
-        virtual Real dividendYield(Date d) const;
+        void precalculateExpiry(Date d) override;
+        std::complex<Real> complexFourierTransform(std::complex<Real> u) const override;
+        Real discountFactor(Date d) const override;
+        Real dividendYield(Date d) const override;
 
     private:
         DiscountFactor dividendDiscount_;

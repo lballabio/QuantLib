@@ -31,10 +31,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 namespace QuantLib
 {
 
-    SwaptionPseudoDerivative::SwaptionPseudoDerivative(boost::shared_ptr<MarketModel> inputModel,
-        Size startIndex,
-        Size endIndex)
-    {
+    SwaptionPseudoDerivative::SwaptionPseudoDerivative(
+        const ext::shared_ptr<MarketModel>& inputModel, Size startIndex, Size endIndex) {
         std::vector<Real> subRateTimes(inputModel->evolution().rateTimes().begin()+startIndex, 
             inputModel->evolution().rateTimes().begin()+endIndex+1);
 
@@ -231,11 +229,12 @@ namespace QuantLib
 
     }
 
-    CapPseudoDerivative::CapPseudoDerivative(boost::shared_ptr<MarketModel> inputModel,
-        Real strike,
-        Size startIndex,
-        Size endIndex, Real firstDF) : firstDF_(firstDF)
-    {
+    CapPseudoDerivative::CapPseudoDerivative(const ext::shared_ptr<MarketModel>& inputModel,
+                                             Real strike,
+                                             Size startIndex,
+                                             Size endIndex,
+                                             Real firstDF)
+    : firstDF_(firstDF) {
         QL_REQUIRE(startIndex < endIndex, "for a cap pseudo derivative the start of the cap must be before the end");
         QL_REQUIRE( endIndex <= inputModel->numberOfRates(), "for a cap pseudo derivative the end of the cap must before the end of the rates");
 

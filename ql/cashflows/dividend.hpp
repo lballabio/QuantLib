@@ -39,16 +39,16 @@ namespace QuantLib {
         : date_(date) {}
         //! \name Event interface
         //@{
-        Date date() const { return date_; }
+        Date date() const override { return date_; }
         //@}
         //! \name CashFlow interface
         //@{
-        virtual Real amount() const = 0;
+        Real amount() const override = 0;
         //@}
         virtual Real amount(Real underlying) const = 0;
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
         Date date_;
@@ -62,8 +62,8 @@ namespace QuantLib {
         : Dividend(date), amount_(amount) {}
         //! \name Dividend interface
         //@{
-        virtual Real amount() const { return amount_; }
-        virtual Real amount(Real) const { return amount_; }
+        Real amount() const override { return amount_; }
+        Real amount(Real) const override { return amount_; }
         //@}
       protected:
         Real amount_;
@@ -80,13 +80,11 @@ namespace QuantLib {
         : Dividend(date), rate_(rate), nominal_(nominal) {}
         //! \name Dividend interface
         //@{
-        virtual Real amount() const {
+        Real amount() const override {
             QL_REQUIRE(nominal_ != Null<Real>(), "no nominal given");
             return rate_ * nominal_;
         }
-        virtual Real amount(Real underlying) const {
-            return rate_ * underlying;
-        }
+        Real amount(Real underlying) const override { return rate_ * underlying; }
         //@}
         //! \name Inspectors
         //@{
@@ -100,7 +98,7 @@ namespace QuantLib {
 
 
     //! helper function building a sequence of fixed dividends
-    std::vector<boost::shared_ptr<Dividend> >
+    std::vector<ext::shared_ptr<Dividend> >
     DividendVector(const std::vector<Date>& dividendDates,
                    const std::vector<Real>& dividends);
 

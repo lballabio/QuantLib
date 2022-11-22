@@ -23,7 +23,7 @@ namespace QuantLib {
 
     SouthAfrica::SouthAfrica() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new SouthAfrica::Impl);
+        static ext::shared_ptr<Calendar::Impl> impl(new SouthAfrica::Impl);
         impl_ = impl;
     }
 
@@ -74,7 +74,7 @@ namespace QuantLib {
             // one-shot: Election day 2016
             || (d == 3 && m == August && y == 2016)
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

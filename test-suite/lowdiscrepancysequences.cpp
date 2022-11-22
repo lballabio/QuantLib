@@ -31,7 +31,6 @@
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
 #include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/progress.hpp>
 #include <ql/math/randomnumbers/latticerules.hpp>
 #include <ql/math/randomnumbers/latticersg.hpp>
 
@@ -217,11 +216,11 @@ void LowDiscrepancyTest::testSobol() {
             Real error = std::fabs(mean[i]-0.5);
             if (error > tolerance) {
                 BOOST_ERROR(io::ordinal(i+1) << " dimension: "
-                            << QL_FIXED
+                            << std::fixed
                             << "mean (" << mean[i]
                             << ") at the end of the " << io::ordinal(j+1)
                             << " cycle in Sobol sequence is not " << 0.5
-                            << QL_SCIENTIFIC
+                            << std::scientific
                             << " (error = " << error << ")");
             }
         }
@@ -250,12 +249,12 @@ void LowDiscrepancyTest::testSobol() {
         Real error = std::fabs(point[0]-vanderCorputSequenceModuloTwo[i]);
         if (error > tolerance) {
             BOOST_ERROR(io::ordinal(i+1) << " draw ("
-                        << QL_FIXED << point[0]
+                        << std::fixed << point[0]
                         << ") in 1-D Sobol sequence is not in the "
                         << "van der Corput sequence modulo two: "
                         << "it should have been "
                         << vanderCorputSequenceModuloTwo[i]
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << " (error = " << error << ")");
         }
     }
@@ -303,10 +302,10 @@ void LowDiscrepancyTest::testFaure() {
         Real error = std::fabs(point[0]-vanderCorputSequenceModuloTwo[i]);
         if (error > tolerance) {
             BOOST_ERROR(io::ordinal(i+1) << " draw, dimension 1 ("
-                        << QL_FIXED << point[0]
+                        << std::fixed << point[0]
                         << ") in 3-D Faure sequence should have been "
                         << vanderCorputSequenceModuloTwo[i]
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << " (error = " << error << ")");
         }
     }
@@ -336,19 +335,19 @@ void LowDiscrepancyTest::testFaure() {
         Real error = std::fabs(point[0]-vanderCorputSequenceModuloTwo[i]);
         if (error > tolerance) {
             BOOST_ERROR(io::ordinal(i+1) << " draw, dimension 1 ("
-                        << QL_FIXED << point[0]
+                        << std::fixed << point[0]
                         << ") in 3-D Faure sequence should have been "
                         << vanderCorputSequenceModuloTwo[i]
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << " (error = " << error << ")");
         }
         error = std::fabs(point[1]-FaureDimensionTwoOfTwo[i]);
         if (error > tolerance) {
             BOOST_ERROR(io::ordinal(i+1) << " draw, dimension 2 ("
-                        << QL_FIXED << point[1]
+                        << std::fixed << point[1]
                         << ") in 3-D Faure sequence should have been "
                         << FaureDimensionTwoOfTwo[i]
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << " (error = " << error << ")");
         }
     }
@@ -383,28 +382,28 @@ void LowDiscrepancyTest::testFaure() {
         Real error = std::fabs(point[0]-FaureDimensionOneOfThree[i]);
         if (error > tolerance) {
             BOOST_ERROR(io::ordinal(i+1) << " draw, dimension 1 ("
-                        << QL_FIXED << point[0]
+                        << std::fixed << point[0]
                         << ") in 3-D Faure sequence should have been "
                         << FaureDimensionOneOfThree[i]
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << " (error = " << error << ")");
         }
         error = std::fabs(point[1]-FaureDimensionTwoOfThree[i]);
         if (error > tolerance) {
             BOOST_ERROR(io::ordinal(i+1) << " draw, dimension 2 ("
-                        << QL_FIXED << point[1]
+                        << std::fixed << point[1]
                         << ") in 3-D Faure sequence should have been "
                         << FaureDimensionTwoOfThree[i]
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << " (error = " << error << ")");
         }
         error = std::fabs(point[2]-FaureDimensionThreeOfThree[i]);
         if (error > tolerance) {
             BOOST_ERROR(io::ordinal(i+1) << " draw, dimension 3 ("
-                        << QL_FIXED << point[2]
+                        << std::fixed << point[2]
                         << ") in 3-D Faure sequence should have been "
                         << FaureDimensionThreeOfThree[i]
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << " (error = " << error << ")");
         }
     }
@@ -453,12 +452,12 @@ void LowDiscrepancyTest::testHalton() {
         Real error = std::fabs(point[0]-vanderCorputSequenceModuloTwo[i]);
         if (error > tolerance) {
             BOOST_ERROR(io::ordinal(i+1) << " draw ("
-                        << QL_FIXED << point[0]
+                        << std::fixed << point[0]
                         << ") in 1-D Halton sequence is not in the "
                         << "van der Corput sequence modulo two: "
                         << "it should have been "
                         << vanderCorputSequenceModuloTwo[i]
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << " (error = " << error << ")");
         }
     }
@@ -482,23 +481,23 @@ void LowDiscrepancyTest::testHalton() {
         Real error = std::fabs(point[0]-vanderCorputSequenceModuloTwo[i]);
         if (error > tolerance) {
             BOOST_ERROR("First component of " << io::ordinal(i+1)
-                        << " draw (" << QL_FIXED << point[0]
+                        << " draw (" << std::fixed << point[0]
                         << ") in 2-D Halton sequence is not in the "
                         << "van der Corput sequence modulo two: "
                         << "it should have been "
                         << vanderCorputSequenceModuloTwo[i]
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << " (error = " << error << ")");
         }
         error = std::fabs(point[1]-vanderCorputSequenceModuloThree[i]);
         if (error > tolerance) {
             BOOST_ERROR("Second component of " << io::ordinal(i+1)
-                        << " draw (" << QL_FIXED << point[1]
+                        << " draw (" << std::fixed << point[1]
                         << ") in 2-D Halton sequence is not in the "
                         << "van der Corput sequence modulo three: "
                         << "it should have been "
                         << vanderCorputSequenceModuloThree[i]
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << " (error = " << error << ")");
         }
     }
@@ -519,10 +518,10 @@ void LowDiscrepancyTest::testHalton() {
         mean = stat.mean();
         Real error = std::fabs(mean[0] - 0.5);
         if (error > tolerance) {
-            BOOST_ERROR("First dimension mean (" << QL_FIXED << mean[0]
+            BOOST_ERROR("First dimension mean (" << std::fixed << mean[0]
                         << ") at the end of the " << io::ordinal(j+1)
                         << " cycle in Halton sequence is not " << 0.5
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << " (error = " << error << ")");
         }
     }
@@ -540,10 +539,10 @@ void LowDiscrepancyTest::testHalton() {
         mean = stat.mean();
         Real error = std::fabs(mean[1] - 0.5);
         if (error > tolerance) {
-            BOOST_ERROR("Second dimension mean (" << QL_FIXED << mean[1]
+            BOOST_ERROR("Second dimension mean (" << std::fixed << mean[1]
                         << ") at the end of the " << io::ordinal(j+1)
                         << " cycle in Halton sequence is not " << 0.5
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << " (error = " << error << ")");
         }
     }
@@ -567,9 +566,8 @@ namespace {
     const Real dim002DiscrRShiftHalton[] = {1.32e-003, 7.25e-004};
     const Real dim002DiscrRStRShHalton[] = {1.35e-003, 9.43e-004};
     const Real dim002DiscrRStartHalton[] = {1.08e-003, 6.40e-004};
-    const Real dim002Discr__Unit_Sobol[] = {
-        8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004,
-        5.69e-005, 2.14e-005 // , null
+    const Real dim002Discr_Unit_Sobol[] = {
+        8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004, 5.69e-005, 2.14e-005 // , null
     };
 
     const Real dim003Discr_Sobol[] = {
@@ -587,10 +585,8 @@ namespace {
     const Real dim003DiscrRShiftHalton[] = {1.96e-003, 1.03e-003};
     const Real dim003DiscrRStRShHalton[] = {2.17e-003, 1.54e-003};
     const Real dim003DiscrRStartHalton[] = {1.48e-003, 7.77e-004};
-    const Real dim003Discr__Unit_Sobol[] = {
-        1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
-        9.21e-005, 4.79e-005, 2.56e-005
-    };
+    const Real dim003Discr_Unit_Sobol[] = {1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
+                                           9.21e-005, 4.79e-005, 2.56e-005};
 
     const Real dim005Discr_Sobol[] = {
         1.59e-003, 9.55e-004, 5.33e-004, 3.22e-004,
@@ -607,10 +603,8 @@ namespace {
     const Real dim005DiscrRShiftHalton[] = {2.02e-003, 1.36e-003};
     const Real dim005DiscrRStRShHalton[] = {2.11e-003, 1.25e-003};
     const Real dim005DiscrRStartHalton[] = {1.74e-003, 1.08e-003};
-    const Real dim005Discr__Unit_Sobol[] = {
-        1.85e-003, 9.39e-004, 5.19e-004, 2.99e-004,
-        1.75e-004, 9.51e-005, 5.55e-005
-    };
+    const Real dim005Discr_Unit_Sobol[] = {1.85e-003, 9.39e-004, 5.19e-004, 2.99e-004,
+                                           1.75e-004, 9.51e-005, 5.55e-005};
 
     const Real dim010DiscrJackel_Sobol[] = {
         7.08e-004, 5.31e-004, 3.60e-004, 2.18e-004,
@@ -631,10 +625,8 @@ namespace {
     const Real dim010DiscrRShiftHalton[] = {9.25e-004, 6.40e-004};
     const Real dim010DiscrRStRShHalton[] = {8.41e-004, 5.42e-004};
     const Real dim010DiscrRStartHalton[] = {7.89e-004, 5.33e-004};
-    const Real dim010Discr__Unit_Sobol[] = {
-        7.67e-004, 4.92e-004, 3.47e-004, 2.34e-004,
-        1.39e-004, 9.47e-005, 5.72e-005
-    };
+    const Real dim010Discr_Unit_Sobol[] = {7.67e-004, 4.92e-004, 3.47e-004, 2.34e-004,
+                                           1.39e-004, 9.47e-005, 5.72e-005};
 
     const Real dim015DiscrJackel_Sobol[] = {
         1.59e-004, 1.23e-004, 7.73e-005, 5.51e-005,
@@ -655,10 +647,8 @@ namespace {
     const Real dim015DiscrRShiftHalton[] = {1.75e-004, 1.19e-004};
     const Real dim015DiscrRStRShHalton[] = {1.66e-004, 1.34e-004};
     const Real dim015DiscrRStartHalton[] = {2.09e-004, 1.30e-004};
-    const Real dim015Discr__Unit_Sobol[] = {
-        2.24e-004, 1.39e-004, 9.86e-005, 6.02e-005,
-        4.39e-005, 3.06e-005, 2.32e-005
-    };
+    const Real dim015Discr_Unit_Sobol[] = {2.24e-004, 1.39e-004, 9.86e-005, 6.02e-005,
+                                           4.39e-005, 3.06e-005, 2.32e-005};
 
     const Real dim030DiscrJackel_Sobol[] = {
         6.43e-007, 5.28e-007, 3.88e-007, 2.49e-007,
@@ -679,10 +669,8 @@ namespace {
     const Real dim030DiscrRShiftHalton[] = {8.11e-007, 6.05e-007};
     const Real dim030DiscrRStRShHalton[] = {1.85e-006, 1.03e-006};
     const Real dim030DiscrRStartHalton[] = {4.42e-007, 4.64e-007};
-    const Real dim030Discr__Unit_Sobol[] = {
-        4.35e-005, 2.17e-005, 1.09e-005, 5.43e-006,
-        2.73e-006, 1.37e-006, 6.90e-007
-    };
+    const Real dim030Discr_Unit_Sobol[] = {4.35e-005, 2.17e-005, 1.09e-005, 5.43e-006,
+                                           2.73e-006, 1.37e-006, 6.90e-007};
 
     const Real dim050DiscrJackel_Sobol[] = {
         2.98e-010, 2.91e-010, 2.62e-010, 1.53e-010,
@@ -707,10 +695,8 @@ namespace {
     const Real dim050DiscrRShiftHalton[] = {1.14e-010, 1.25e-010};
     const Real dim050DiscrRStRShHalton[] = {2.92e-010, 5.02e-010};
     const Real dim050DiscrRStartHalton[] = {1.93e-010, 6.82e-010};
-    const Real dim050Discr__Unit_Sobol[] = {
-        1.63e-005, 8.14e-006, 4.07e-006, 2.04e-006,
-        1.02e-006, 5.09e-007, 2.54e-007
-    };
+    const Real dim050Discr_Unit_Sobol[] = {1.63e-005, 8.14e-006, 4.07e-006, 2.04e-006,
+                                           1.02e-006, 5.09e-007, 2.54e-007};
 
     const Real dim100DiscrJackel_Sobol[] = {
         1.26e-018, 1.55e-018, 8.46e-019, 4.43e-019,
@@ -735,10 +721,8 @@ namespace {
     const Real dim100DiscrRShiftHalton[] = {3.36e-019, 2.19e-019};
     const Real dim100DiscrRStRShHalton[] = {4.44e-019, 2.24e-019};
     const Real dim100DiscrRStartHalton[] = {9.85e-020, 8.34e-019};
-    const Real dim100Discr__Unit_Sobol[] = {
-        4.97e-006, 2.48e-006, 1.24e-006, 6.20e-007,
-        3.10e-007, 1.55e-007, 7.76e-008
-    };
+    const Real dim100Discr_Unit_Sobol[] = {4.97e-006, 2.48e-006, 1.24e-006, 6.20e-007,
+                                           3.10e-007, 1.55e-007, 7.76e-008};
 
     const Size dimensionality[] = {2, 3, 5, 10, 15, 30, 50, 100 };
 
@@ -763,7 +747,7 @@ namespace {
     class SobolFactory {
       public:
         typedef SobolRsg generator_type;
-        SobolFactory(SobolRsg::DirectionIntegers unit) : unit_(unit) {}
+        explicit SobolFactory(SobolRsg::DirectionIntegers unit) : unit_(unit) {}
         SobolRsg make(Size dim,
                       BigNatural seed) const {
             return SobolRsg(dim,seed,unit_);
@@ -835,8 +819,6 @@ namespace {
                                   #endif
                                   ) {
 
-        QL_TEST_START_TIMING
-
         #ifndef PRINT_ONLY
         Real tolerance = 1.0e-2;
         #endif
@@ -879,7 +861,7 @@ namespace {
                 #ifdef PRINT_ONLY
                 if (j!=jMin)
                     outStream << ", ";
-                outStream << QL_FIXED << std::setprecision(2) << discr;
+                outStream << std::fixed << std::setprecision(2) << discr;
                 #else
                 if (std::fabs(discr-discrepancy[i][j-jMin])>tolerance*discr) {
                     BOOST_ERROR(generatorFactory.name()
@@ -1035,15 +1017,12 @@ void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
 
     BOOST_TEST_MESSAGE("Testing unit Sobol discrepancy...");
 
-    const Real * const discrepancy[8] = {
-        dim002Discr__Unit_Sobol, dim003Discr__Unit_Sobol,
-        dim005Discr__Unit_Sobol, dim010Discr__Unit_Sobol,
-        dim015Discr__Unit_Sobol, dim030Discr__Unit_Sobol,
-        dim050Discr__Unit_Sobol, dim100Discr__Unit_Sobol};
+    const Real* const discrepancy[8] = {dim002Discr_Unit_Sobol, dim003Discr_Unit_Sobol,
+                                        dim005Discr_Unit_Sobol, dim010Discr_Unit_Sobol,
+                                        dim015Discr_Unit_Sobol, dim030Discr_Unit_Sobol,
+                                        dim050Discr_Unit_Sobol, dim100Discr_Unit_Sobol};
 
-        testGeneratorDiscrepancy(SobolFactory(SobolRsg::Unit),
-                             discrepancy,
-                             "UnitSobolDiscrepancy.txt",
+    testGeneratorDiscrepancy(SobolFactory(SobolRsg::Unit), discrepancy, "UnitSobolDiscrepancy.txt",
                              "Discr__Unit_Sobol");
 }
 
@@ -1060,43 +1039,40 @@ void LowDiscrepancyTest::testSobolSkipping() {
                                                SobolRsg::SobolLevitan,
                                                SobolRsg::SobolLevitanLemieux };
 
-    for (Size i=0; i<LENGTH(integers); i++) {
-      for (Size j=0; j<LENGTH(dimensionality); j++) {
-        for (Size k=0; k<LENGTH(skip); k++) {
+    for (auto& integer : integers) {
+        for (Size& j : dimensionality) {
+            for (unsigned long& k : skip) {
 
-            // extract n samples
-            SobolRsg rsg1(dimensionality[j], seed, integers[i]);
-            for (Size l=0; l<skip[k]; l++)
-                rsg1.nextInt32Sequence();
+                // extract n samples
+                SobolRsg rsg1(j, seed, integer);
+                for (Size l = 0; l < k; l++)
+                    rsg1.nextInt32Sequence();
 
-            // skip n samples at once
-            SobolRsg rsg2(dimensionality[j], seed, integers[i]);
-            rsg2.skipTo(skip[k]);
+                // skip n samples at once
+                SobolRsg rsg2(j, seed, integer);
+                rsg2.skipTo(k);
 
-            // compare next 100 samples
-            for (Size m=0; m<100; m++) {
-                std::vector<unsigned long> s1 = rsg1.nextInt32Sequence();
-                std::vector<unsigned long> s2 = rsg2.nextInt32Sequence();
-                for (Size n=0; n<s1.size(); n++) {
-                    if (s1[n] != s2[n]) {
-                        BOOST_ERROR("Mismatch after skipping:"
-                                    << "\n  size:     " << dimensionality[j]
-                                    << "\n  integers: " << integers[i]
-                                    << "\n  skipped:  " << skip[k]
-                                    << "\n  at index: " << n
-                                    << "\n  expected: " << s1[n]
-                                    << "\n  found:    " << s2[n]);
+                // compare next 100 samples
+                for (Size m = 0; m < 100; m++) {
+                    std::vector<std::uint_least32_t> s1 = rsg1.nextInt32Sequence();
+                    std::vector<std::uint_least32_t> s2 = rsg2.nextInt32Sequence();
+                    for (Size n = 0; n < s1.size(); n++) {
+                        if (s1[n] != s2[n]) {
+                            BOOST_ERROR("Mismatch after skipping:"
+                                        << "\n  size:     " << j << "\n  integers: " << integer
+                                        << "\n  skipped:  " << k << "\n  at index: " << n
+                                        << "\n  expected: " << s1[n] << "\n  found:    " << s2[n]);
+                        }
                     }
                 }
             }
         }
-      }
     }
 }
 
 
 test_suite* LowDiscrepancyTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
+    auto* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
 
     suite->add(QUANTLIB_TEST_CASE(
            &LowDiscrepancyTest::testRandomizedLattices));

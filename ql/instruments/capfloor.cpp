@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006, 2014 Ferdinando Ametrano
- Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2006 FranÃ§ois du Vignaud
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2006, 2007 StatPro Italia srl
  Copyright (C) 2016 Paolo Mazzocchi
@@ -21,16 +21,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/capfloor.hpp>
-#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
-#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
-#include <ql/math/solvers1d/newtonsafe.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/utilities/dataformatters.hpp>
+#include <ql/instruments/capfloor.hpp>
+#include <ql/math/solvers1d/newtonsafe.hpp>
+#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
+#include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-
-using boost::shared_ptr;
+#include <ql/utilities/dataformatters.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -39,41 +38,40 @@ namespace QuantLib {
         class ImpliedCapVolHelper {
           public:
             ImpliedCapVolHelper(const CapFloor&,
-                                const Handle<YieldTermStructure>& discountCurve,
+                                Handle<YieldTermStructure> discountCurve,
                                 Real targetValue,
                                 Real displacement,
                                 VolatilityType type);
             Real operator()(Volatility x) const;
             Real derivative(Volatility x) const;
           private:
-            boost::shared_ptr<PricingEngine> engine_;
+            ext::shared_ptr<PricingEngine> engine_;
             Handle<YieldTermStructure> discountCurve_;
             Real targetValue_;
-            boost::shared_ptr<SimpleQuote> vol_;
+            ext::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
         };
 
-        ImpliedCapVolHelper::ImpliedCapVolHelper(
-                              const CapFloor& cap,
-                              const Handle<YieldTermStructure>& discountCurve,
-                              Real targetValue,
-                              Real displacement,
-                              VolatilityType type)
-        : discountCurve_(discountCurve), targetValue_(targetValue) {
+        ImpliedCapVolHelper::ImpliedCapVolHelper(const CapFloor& cap,
+                                                 Handle<YieldTermStructure> discountCurve,
+                                                 Real targetValue,
+                                                 Real displacement,
+                                                 VolatilityType type)
+        : discountCurve_(std::move(discountCurve)), targetValue_(targetValue),
+          vol_(ext::make_shared<SimpleQuote>(-1.0)) {
 
-            // set an implausible value, so that calculation is forced
+            // vol_ is set an implausible value, so that calculation is forced
             // at first ImpliedCapVolHelper::operator()(Volatility x) call
-            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1));
             Handle<Quote> h(vol_);
 
             switch (type) {
             case ShiftedLognormal:
-                engine_ = boost::shared_ptr<PricingEngine>(new
+                engine_ = ext::shared_ptr<PricingEngine>(new
                     BlackCapFloorEngine(discountCurve_, h, Actual365Fixed(),
                                                                 displacement));
                 break;
             case Normal:
-                engine_ = boost::shared_ptr<PricingEngine>(new
+                engine_ = ext::shared_ptr<PricingEngine>(new
                     BachelierCapFloorEngine(discountCurve_, h, 
                                                             Actual365Fixed()));
                 break;
@@ -101,8 +99,7 @@ namespace QuantLib {
                 vol_->setValue(x);
                 engine_->calculate();
             }
-            std::map<std::string,boost::any>::const_iterator vega_ =
-                results_->additionalResults.find("vega");
+            auto vega_ = results_->additionalResults.find("vega");
             QL_REQUIRE(vega_ != results_->additionalResults.end(),
                        "vega not provided");
             return boost::any_cast<Real>(vega_->second);
@@ -124,11 +121,11 @@ namespace QuantLib {
     }
 
     CapFloor::CapFloor(CapFloor::Type type,
-                       const Leg& floatingLeg,
-                       const std::vector<Rate>& capRates,
-                       const std::vector<Rate>& floorRates)
-    : type_(type), floatingLeg_(floatingLeg),
-      capRates_(capRates), floorRates_(floorRates) {
+                       Leg floatingLeg,
+                       std::vector<Rate> capRates,
+                       std::vector<Rate> floorRates)
+    : type_(type), floatingLeg_(std::move(floatingLeg)), capRates_(std::move(capRates)),
+      floorRates_(std::move(floorRates)) {
         if (type_ == Cap || type_ == Collar) {
             QL_REQUIRE(!capRates_.empty(), "no cap rates given");
             capRates_.reserve(floatingLeg_.size());
@@ -148,10 +145,8 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDate());
     }
 
-    CapFloor::CapFloor(CapFloor::Type type,
-                       const Leg& floatingLeg,
-                       const std::vector<Rate>& strikes)
-    : type_(type), floatingLeg_(floatingLeg) {
+    CapFloor::CapFloor(CapFloor::Type type, Leg floatingLeg, const std::vector<Rate>& strikes)
+    : type_(type), floatingLeg_(std::move(floatingLeg)) {
         QL_REQUIRE(!strikes.empty(), "no strikes given");
         if (type_ == Cap) {
             capRates_ = strikes;
@@ -188,15 +183,15 @@ namespace QuantLib {
         return CashFlows::maturityDate(floatingLeg_);
     }
 
-    shared_ptr<FloatingRateCoupon>
+    ext::shared_ptr<FloatingRateCoupon>
     CapFloor::lastFloatingRateCoupon() const {
-        shared_ptr<CashFlow> lastCF(floatingLeg_.back());
-        shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
-            boost::dynamic_pointer_cast<FloatingRateCoupon>(lastCF);
+        ext::shared_ptr<CashFlow> lastCF(floatingLeg_.back());
+        ext::shared_ptr<FloatingRateCoupon> lastFloatingCoupon =
+            ext::dynamic_pointer_cast<FloatingRateCoupon>(lastCF);
         return lastFloatingCoupon;
     }
 
-    shared_ptr<CapFloor> CapFloor::optionlet(const Size i) const {
+    ext::shared_ptr<CapFloor> CapFloor::optionlet(const Size i) const {
         QL_REQUIRE(i < floatingLeg().size(),
                    io::ordinal(i+1) << " optionlet does not exist, only " <<
                    floatingLeg().size());
@@ -208,13 +203,12 @@ namespace QuantLib {
         if (type() == Floor || type() == Collar)
             floor.push_back(floorRates()[i]);
 
-        return shared_ptr<CapFloor>(new CapFloor(type(), cf, cap, floor));
+        return ext::make_shared<CapFloor>(type(), cf, cap, floor);
     }
 
     void CapFloor::setupArguments(PricingEngine::arguments* args) const {
-        CapFloor::arguments* arguments =
-            dynamic_cast<CapFloor::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<CapFloor::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         Size n = floatingLeg_.size();
 
@@ -235,8 +229,8 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
 
         for (Size i=0; i<n; ++i) {
-            shared_ptr<FloatingRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(
+            ext::shared_ptr<FloatingRateCoupon> coupon =
+                ext::dynamic_pointer_cast<FloatingRateCoupon>(
                                                              floatingLeg_[i]);
             QL_REQUIRE(coupon, "non-FloatingRateCoupon given");
             arguments->startDates[i] = coupon->accrualStartDate();
@@ -271,6 +265,15 @@ namespace QuantLib {
 
             arguments->indexes[i] = coupon->index();
         }
+    }
+
+    void CapFloor::deepUpdate() {
+        for (auto& i : floatingLeg_) {
+            ext::shared_ptr<LazyObject> f = ext::dynamic_pointer_cast<LazyObject>(i);
+            if (f != nullptr)
+                f->update();
+        }
+        update();
     }
 
     void CapFloor::arguments::validate() const {
@@ -335,20 +338,6 @@ namespace QuantLib {
         NewtonSafe solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(f, accuracy, guess, minVol, maxVol);
-    }
-
-    Volatility CapFloor::impliedVolatility(Real targetValue,
-                                           const Handle<YieldTermStructure>& d,
-                                           Volatility guess,
-                                           Real accuracy,
-                                           Natural maxEvaluations,
-                                           Volatility minVol,
-                                           Volatility maxVol,
-                                           Real displacement,
-                                           VolatilityType type) const {
-        return impliedVolatility(targetValue, d, guess, accuracy,
-                                 maxEvaluations, minVol, maxVol,
-                                 type, displacement);
     }
 
 }

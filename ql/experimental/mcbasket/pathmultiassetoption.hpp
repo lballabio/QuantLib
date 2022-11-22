@@ -34,10 +34,9 @@ namespace QuantLib {
     //! Base class for path-dependent options on multiple assets
     class PathMultiAssetOption : public Instrument {
       public:
-        PathMultiAssetOption(const boost::shared_ptr<PricingEngine>& engine
-                                        = boost::shared_ptr<PricingEngine>());
-
-        virtual ~PathMultiAssetOption() {}
+        explicit PathMultiAssetOption(
+                        const ext::shared_ptr<PricingEngine>& engine
+                                        = ext::shared_ptr<PricingEngine>());
 
         //! \name Instrument interface
         //@{
@@ -45,35 +44,32 @@ namespace QuantLib {
         class results;
         class engine;
 
-        bool isExpired() const;
+        bool isExpired() const override;
 
-        void setupArguments(PricingEngine::arguments*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
 
-        virtual boost::shared_ptr<PathPayoff> pathPayoff()  const = 0;
+        virtual ext::shared_ptr<PathPayoff> pathPayoff()  const = 0;
         virtual std::vector<Date>             fixingDates() const = 0;
 
       protected:
-        void setupExpired() const;
-
+        void setupExpired() const override;
     };
 
     //! %Arguments for multi-asset option calculation
     class PathMultiAssetOption::arguments
         : public virtual PricingEngine::arguments {
       public:
-        arguments() {}
-        void validate() const;
+        arguments() = default;
+        void validate() const override;
 
-        boost::shared_ptr<PathPayoff>        payoff;
+        ext::shared_ptr<PathPayoff>        payoff;
         std::vector<Date>                    fixingDates;
     };
 
     //! %Results from multi-asset option calculation
     class PathMultiAssetOption::results : public Instrument::results {
       public:
-        void reset() {
-            Instrument::results::reset();
-        }
+        void reset() override { Instrument::results::reset(); }
     };
 
     class PathMultiAssetOption::engine

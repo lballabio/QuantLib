@@ -31,31 +31,30 @@ namespace QuantLib {
     //! caplet const volatility model
     class LmConstWrapperVolatilityModel : public LmVolatilityModel {
       public:
-        LmConstWrapperVolatilityModel(
-            const boost::shared_ptr<LmVolatilityModel> & volaModel)
+        explicit LmConstWrapperVolatilityModel(
+            const ext::shared_ptr<LmVolatilityModel> & volaModel)
         : LmVolatilityModel(volaModel->size(), 0),
           volaModel_(volaModel) {
         }
 
-        Disposable<Array> volatility(
-            Time t, const Array& x = Null<Array>()) const {
+        Array volatility(Time t, const Array& x = Null<Array>()) const override {
             return volaModel_->volatility(t, x);
         }
         Volatility volatility(
             Size i, Time t, const Array& x = Null<Array>()) {
             return volaModel_->volatility(i, t, x);
         }
-        Real integratedVariance(Size i, Size j, Time u,
-                                        const Array& x = Null<Array>()) const {
+        Real
+        integratedVariance(Size i, Size j, Time u, const Array& x = Null<Array>()) const override {
             return volaModel_->integratedVariance(i, j, u, x);
         }
 
       protected:
-        const boost::shared_ptr<LmVolatilityModel> volaModel_;
+        const ext::shared_ptr<LmVolatilityModel> volaModel_;
 
       private:
         using LmVolatilityModel::volatility;
-        void generateArguments() {}
+        void generateArguments() override {}
     };
 
 }

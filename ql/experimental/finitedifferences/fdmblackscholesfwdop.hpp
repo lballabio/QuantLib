@@ -36,32 +36,28 @@ namespace QuantLib {
 class FdmBlackScholesFwdOp : public FdmLinearOpComposite {
       public:
         FdmBlackScholesFwdOp(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Real strike, 
             bool localVol = false,
             Real illegalLocalVolOverwrite = -Null<Real>(),
             Size direction = 0);
 
-        Size size() const;
-        void setTime(Time t1, Time t2);
+        Size size() const override;
+        void setTime(Time t1, Time t2) override;
 
-        Disposable<Array> apply(const Array& r) const;
-        Disposable<Array> apply_mixed(const Array& r) const;
-        Disposable<Array> apply_direction(Size direction,
-                                          const Array& r) const;
-        Disposable<Array> solve_splitting(Size direction,
-                                          const Array& r, Real s) const;
-        Disposable<Array> preconditioner(const Array& r, Real s) const;
+        Array apply(const Array& r) const override;
+        Array apply_mixed(const Array& r) const override;
+        Array apply_direction(Size direction, const Array& r) const override;
+        Array solve_splitting(Size direction, const Array& r, Real s) const override;
+        Array preconditioner(const Array& r, Real s) const override;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
-#endif
+        std::vector<SparseMatrix> toMatrixDecomp() const override;
       private:
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<YieldTermStructure> rTS_, qTS_;
-        const boost::shared_ptr<BlackVolTermStructure> volTS_;
-        const boost::shared_ptr<LocalVolTermStructure> localVol_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<YieldTermStructure> rTS_, qTS_;
+        const ext::shared_ptr<BlackVolTermStructure> volTS_;
+        const ext::shared_ptr<LocalVolTermStructure> localVol_;
         const Array x_;
         const FirstDerivativeOp  dxMap_;
         const TripleBandLinearOp dxxMap_;

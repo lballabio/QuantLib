@@ -43,8 +43,8 @@ namespace QuantLib {
                                                      zData) {
                 calculate();
             }
-            void calculate() {}
-            Real value(Real x, Real y) const {
+            void calculate() override {}
+            Real value(Real x, Real y) const override {
                 Size i = this->locateX(x), j = this->locateY(y);
 
                 Real z1 = this->zData_[j][i];
@@ -65,6 +65,10 @@ namespace QuantLib {
     }
 
     //! %bilinear interpolation between discrete points
+    /*! \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
+    */
     class BilinearInterpolation : public Interpolation2D {
       public:
         /*! \pre the \f$ x \f$ and \f$ y \f$ values must be sorted. */
@@ -72,7 +76,7 @@ namespace QuantLib {
         BilinearInterpolation(const I1& xBegin, const I1& xEnd,
                               const I2& yBegin, const I2& yEnd,
                               const M& zData) {
-            impl_ = boost::shared_ptr<Interpolation2D::Impl>(
+            impl_ = ext::shared_ptr<Interpolation2D::Impl>(
                   new detail::BilinearInterpolationImpl<I1,I2,M>(xBegin, xEnd,
                                                                  yBegin, yEnd,
                                                                  zData));

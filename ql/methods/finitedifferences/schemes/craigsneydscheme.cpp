@@ -20,19 +20,15 @@
 */
 
 #include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    CraigSneydScheme::CraigSneydScheme(
-        Real theta, Real mu,
-        const boost::shared_ptr<FdmLinearOpComposite> & map,
-        const bc_set& bcSet)
-        : dt_(Null<Real>()),
-        theta_(theta),
-        mu_   (mu),
-        map_  (map),
-        bcSet_(bcSet) {
-    }
+    CraigSneydScheme::CraigSneydScheme(Real theta,
+                                       Real mu,
+                                       ext::shared_ptr<FdmLinearOpComposite> map,
+                                       const bc_set& bcSet)
+    : dt_(Null<Real>()), theta_(theta), mu_(mu), map_(std::move(map)), bcSet_(bcSet) {}
 
     void CraigSneydScheme::step(array_type& a, Time t) {
         QL_REQUIRE(t-dt_ > -1e-8, "a step towards negative time given");

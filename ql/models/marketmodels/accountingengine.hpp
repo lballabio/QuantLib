@@ -43,7 +43,7 @@ namespace QuantLib {
     //! Engine collecting cash flows along a market-model simulation
     class AccountingEngine {
       public:
-        AccountingEngine(const boost::shared_ptr<MarketModelEvolver>& evolver,
+        AccountingEngine(ext::shared_ptr<MarketModelEvolver> evolver,
                          const Clone<MarketModelMultiProduct>& product,
                          Real initialNumeraireValue);
         void multiplePathValues(SequenceStatisticsInc& stats,
@@ -51,7 +51,7 @@ namespace QuantLib {
       private:
         Real singlePathValues(std::vector<Real>& values);
 
-        boost::shared_ptr<MarketModelEvolver> evolver_;
+        ext::shared_ptr<MarketModelEvolver> evolver_;
         Clone<MarketModelMultiProduct> product_;
 
         Real initialNumeraireValue_;

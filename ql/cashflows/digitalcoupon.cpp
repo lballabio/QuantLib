@@ -25,16 +25,17 @@
 
 namespace QuantLib {
 
-    DigitalCoupon::DigitalCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
-                  Rate callStrike,
-                  Position::Type callPosition,
-                  bool isCallATMIncluded,
-                  Rate callDigitalPayoff,
-                  Rate putStrike,
-                  Position::Type putPosition,
-                  bool isPutATMIncluded,
-                  Rate putDigitalPayoff,
-                  const boost::shared_ptr<DigitalReplication>& replication)
+    DigitalCoupon::DigitalCoupon(const ext::shared_ptr<FloatingRateCoupon>& underlying,
+                                 Rate callStrike,
+                                 Position::Type callPosition,
+                                 bool isCallATMIncluded,
+                                 Rate callDigitalPayoff,
+                                 Rate putStrike,
+                                 Position::Type putPosition,
+                                 bool isPutATMIncluded,
+                                 Rate putDigitalPayoff,
+                                 const ext::shared_ptr<DigitalReplication>& replication,
+                                 const bool nakedOption)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
                          underlying->accrualStartDate(),
@@ -47,13 +48,13 @@ namespace QuantLib {
                          underlying->referencePeriodEnd(),
                          underlying->dayCounter(),
                          underlying->isInArrears()),
-      underlying_(underlying), callCsi_(0.), putCsi_(0.),
-      isCallATMIncluded_(isCallATMIncluded), isPutATMIncluded_(isPutATMIncluded),
-      isCallCashOrNothing_(false), isPutCashOrNothing_(false),
-      callLeftEps_(replication->gap()/2.), callRightEps_(replication->gap()/2.),
-      putLeftEps_(replication->gap()/2.), putRightEps_(replication->gap()/2.),
-      hasPutStrike_(false), hasCallStrike_(false),
-      replicationType_(replication->replicationType()) {
+      underlying_(underlying), isCallATMIncluded_(isCallATMIncluded),
+      isPutATMIncluded_(isPutATMIncluded),
+
+      callLeftEps_(replication->gap() / 2.), callRightEps_(replication->gap() / 2.),
+      putLeftEps_(replication->gap() / 2.), putRightEps_(replication->gap() / 2.),
+
+      replicationType_(replication->replicationType()), nakedOption_(nakedOption) {
 
         QL_REQUIRE(replication->gap()>0.0, "Non positive epsilon not allowed");
 
@@ -66,10 +67,8 @@ namespace QuantLib {
             "Call Cash rate non allowed if call strike is null");
         }
         if (callStrike != Null<Rate>()) {
-            QL_REQUIRE(callStrike >= 0., "negative call strike not allowed");
             hasCallStrike_ = true;
             callStrike_ = callStrike;
-            QL_REQUIRE(callStrike_>=replication->gap()/2., "call strike < eps/2");
             switch (callPosition) {
                 case Position::Long :
                     callCsi_ = 1.0;
@@ -86,7 +85,6 @@ namespace QuantLib {
             }
         }
         if (putStrike != Null<Rate>()){
-            QL_REQUIRE(putStrike >= 0., "negative put strike not allowed");
             hasPutStrike_ = true;
             putStrike_ = putStrike;
             switch (putPosition) {
@@ -227,7 +225,7 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
         bool enforceTodaysHistoricFixings =
             Settings::instance().enforcesTodaysHistoricFixings();
-        Rate underlyingRate = underlying_->rate();
+        Rate underlyingRate = nakedOption_ ? 0.0 : underlying_->rate();
         if (fixingDate < today ||
             ((fixingDate == today) && enforceTodaysHistoricFixings)) {
             // must have been fixed
@@ -283,9 +281,8 @@ namespace QuantLib {
 
     void DigitalCoupon::accept(AcyclicVisitor& v) {
         typedef FloatingRateCoupon super;
-        Visitor<DigitalCoupon>* v1 =
-            dynamic_cast<Visitor<DigitalCoupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<DigitalCoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             super::accept(v);

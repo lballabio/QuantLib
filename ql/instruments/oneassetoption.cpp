@@ -26,8 +26,8 @@
 namespace QuantLib {
 
     OneAssetOption::OneAssetOption(
-        const boost::shared_ptr<Payoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise)
+        const ext::shared_ptr<Payoff>& payoff,
+        const ext::shared_ptr<Exercise>& exercise)
     : Option(payoff, exercise) {}
 
     bool OneAssetOption::isExpired() const {
@@ -112,9 +112,8 @@ namespace QuantLib {
 
     void OneAssetOption::fetchResults(const PricingEngine::results* r) const {
         Option::fetchResults(r);
-        const Greeks* results = dynamic_cast<const Greeks*>(r);
-        QL_ENSURE(results != 0,
-                  "no greeks returned from pricing engine");
+        const auto* results = dynamic_cast<const Greeks*>(r);
+        QL_ENSURE(results != nullptr, "no greeks returned from pricing engine");
         /* no check on null values - just copy.
            this allows:
            a) to decide in derived options what to do when null
@@ -130,9 +129,8 @@ namespace QuantLib {
         rho_            = results->rho;
         dividendRho_    = results->dividendRho;
 
-        const MoreGreeks* moreResults = dynamic_cast<const MoreGreeks*>(r);
-        QL_ENSURE(moreResults != 0,
-                  "no more greeks returned from pricing engine");
+        const auto* moreResults = dynamic_cast<const MoreGreeks*>(r);
+        QL_ENSURE(moreResults != nullptr, "no more greeks returned from pricing engine");
         /* no check on null values - just copy.
            this allows:
            a) to decide in derived options what to do when null

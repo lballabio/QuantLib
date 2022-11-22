@@ -17,31 +17,37 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/variancegamma/analyticvariancegammaengine.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/variancegamma/analyticvariancegammaengine.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
-#include <ql/pricingengines/blackscholescalculator.hpp>
+#include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/math/integrals/kronrodintegral.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/pricingengines/blackscholescalculator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     namespace {
 
-        class Integrand : std::unary_function<Real,Real> {
+        class Integrand {
         public:
-            Integrand(const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                Real s0, Real t, Real riskFreeDiscount, Real dividendDiscount,
-                Real sigma, Real nu, Real theta)
-                : payoff_(payoff), s0_(s0), t_(t), riskFreeDiscount_(riskFreeDiscount),
-                    dividendDiscount_(dividendDiscount),
-                    sigma_(sigma), nu_(nu), theta_(theta) {
-                omega_ = std::log(1.0 - theta_ * nu_ - (sigma_ * sigma_ * nu_) / 2.0) / nu_;
-                // We can precompute the denominator of the gamma pdf (does not depend on x)
-                // shape = t_/nu_, scale = nu_
-                GammaFunction gf;
-                gammaDenom_ = std::exp(gf.logValue(t_ / nu_)) * std::pow(nu_, t_ / nu_);
-            }
+          Integrand(ext::shared_ptr<StrikedTypePayoff> payoff,
+                    Real s0,
+                    Real t,
+                    Real riskFreeDiscount,
+                    Real dividendDiscount,
+                    Real sigma,
+                    Real nu,
+                    Real theta)
+          : payoff_(std::move(payoff)), s0_(s0), t_(t), riskFreeDiscount_(riskFreeDiscount),
+            dividendDiscount_(dividendDiscount), sigma_(sigma), nu_(nu), theta_(theta) {
+              omega_ = std::log(1.0 - theta_ * nu_ - (sigma_ * sigma_ * nu_) / 2.0) / nu_;
+              // We can precompute the denominator of the gamma pdf (does not depend on x)
+              // shape = t_/nu_, scale = nu_
+              GammaFunction gf;
+              gammaDenom_ = std::exp(gf.logValue(t_ / nu_)) * std::pow(nu_, t_ / nu_);
+          }
 
             Real operator()(Real x) const {
                 // Compute adjusted black scholes price
@@ -59,7 +65,7 @@ namespace QuantLib {
             }
 
         private:
-            boost::shared_ptr<StrikedTypePayoff> payoff_;
+            ext::shared_ptr<StrikedTypePayoff> payoff_;
             Real s0_;
             Real t_;
             Real riskFreeDiscount_;
@@ -72,10 +78,12 @@ namespace QuantLib {
         };
     }
 
-    VarianceGammaEngine::VarianceGammaEngine(
-        const boost::shared_ptr<VarianceGammaProcess>& process)
-        : process_(process) {
-            registerWith(process_);
+
+    VarianceGammaEngine::VarianceGammaEngine(ext::shared_ptr<VarianceGammaProcess> process,
+                                             Real absoluteError)
+    : process_(std::move(process)), absErr_(absoluteError) {
+        QL_REQUIRE(absErr_ > 0, "absolute error must be positive");
+        registerWith(process_);
     }
 
     void VarianceGammaEngine::calculate() const {
@@ -83,8 +91,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
             "not an European Option");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         DiscountFactor dividendDiscount =
@@ -96,17 +104,26 @@ namespace QuantLib {
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
         Time t = rfdc.yearFraction(process_->riskFreeRate()->referenceDate(),
             arguments_.exercise->lastDate());
-    
+
         Integrand f(payoff,
             process_->x0(),
             t, riskFreeDiscount, dividendDiscount,
             process_->sigma(), process_->nu(), process_->theta());
 
-        SimpsonIntegral integrator(1e-4, 5000);
-
         Real infinity = 15.0 * std::sqrt(process_->nu() * t);
-        results_.value = integrator(f, 0, infinity);
+        Real target = absErr_*1e-4;
+        Real val = f(infinity);
+        while (std::abs(val)>target){
+          infinity*=1.5;
+          val = f(infinity);
+        }
+        // the integration is split due to occasional singularities at 0
+        Real split = 0.1;
+        GaussKronrodNonAdaptive integrator1(absErr_, 1000, 0);
+        Real pvA = integrator1(f, 0, split);
+        GaussLobattoIntegral integrator2(2000, absErr_);
+        Real pvB = integrator2(f, split, infinity);
+        results_.value = pvA + pvB;
     }
 
 }
-

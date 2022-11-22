@@ -31,6 +31,7 @@ class RngTraitsTest {
     static void testGaussian();
     static void testDefaultPoisson();
     static void testCustomPoisson();
+    static void testRanLux();
     static boost::unit_test_framework::test_suite* suite();
 };
 

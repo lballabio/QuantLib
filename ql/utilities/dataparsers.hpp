@@ -29,14 +29,9 @@
 
 #include <ql/time/date.hpp>
 #include <vector>
+#include <string>
 
 namespace QuantLib {
-
-    namespace io {
-
-        Integer to_integer(const std::string&);
-
-    }
 
     class PeriodParser {
       public:

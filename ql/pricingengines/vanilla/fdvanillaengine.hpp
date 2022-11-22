@@ -27,12 +27,13 @@
 #ifndef quantlib_fd_vanilla_engine_hpp
 #define quantlib_fd_vanilla_engine_hpp
 
-#include <ql/pricingengine.hpp>
-#include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
-#include <ql/methods/finitedifferences/boundarycondition.hpp>
-#include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/sampledcurve.hpp>
+#include <ql/methods/finitedifferences/boundarycondition.hpp>
+#include <ql/methods/finitedifferences/tridiagonaloperator.hpp>
 #include <ql/payoff.hpp>
+#include <ql/pricingengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 
 namespace QuantLib {
@@ -45,14 +46,13 @@ namespace QuantLib {
     */
     class FDVanillaEngine {
       public:
-        FDVanillaEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps, Size gridPoints,
-             bool timeDependent = false)
-        : process_(process), timeSteps_(timeSteps), gridPoints_(gridPoints),
-          timeDependent_(timeDependent),
-          intrinsicValues_(gridPoints), BCs_(2) {}
-        virtual ~FDVanillaEngine() {}
+        FDVanillaEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                        Size timeSteps,
+                        Size gridPoints,
+                        bool timeDependent = false)
+        : process_(std::move(process)), timeSteps_(timeSteps), gridPoints_(gridPoints),
+          timeDependent_(timeDependent), intrinsicValues_(gridPoints), BCs_(2) {}
+        virtual ~FDVanillaEngine() = default;
         // accessors
         const Array& grid() const { return intrinsicValues_.grid(); }
       protected:
@@ -65,18 +65,18 @@ namespace QuantLib {
         virtual void initializeOperator() const;
         virtual Time getResidualTime() const;
         // data
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_, gridPoints_;
         bool timeDependent_;
         mutable Date exerciseDate_;
-        mutable boost::shared_ptr<Payoff> payoff_;
+        mutable ext::shared_ptr<Payoff> payoff_;
         mutable TridiagonalOperator finiteDifferenceOperator_;
         mutable SampledCurve intrinsicValues_;
         typedef BoundaryCondition<TridiagonalOperator> bc_type;
-        mutable std::vector<boost::shared_ptr<bc_type> > BCs_;
+        mutable std::vector<ext::shared_ptr<bc_type> > BCs_;
         // temporaries
         mutable Real sMin_, center_, sMax_;
-      protected:
+
         void ensureStrikeInGrid() const;
       private:
         Size safeGridPoints(Size gridPoints,
@@ -84,11 +84,14 @@ namespace QuantLib {
         static const Real safetyZoneFactor_;
     };
 
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.27.
+    */
     template <typename base, typename engine>
-    class FDEngineAdapter : public base, public engine {
+    class QL_DEPRECATED FDEngineAdapter : public base, public engine {
       public:
         FDEngineAdapter(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps=100, Size gridPoints=100,
              bool timeDependent = false)
         : base(process, timeSteps, gridPoints,timeDependent) {
@@ -96,7 +99,7 @@ namespace QuantLib {
         }
       private:
         using base::calculate;
-        void calculate() const {
+        void calculate() const override {
             base::setupArguments(&(this->arguments_));
             base::calculate(&(this->results_));
         }

@@ -17,38 +17,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/credit/cdo.hpp>
 #include <ql/event.hpp>
+#include <ql/experimental/credit/cdo.hpp>
+#include <utility>
 
 using namespace std;
 
 namespace QuantLib {
 
-    CDO::CDO (Real attachment,
-              Real detachment,
-              const vector<Real>& nominals,
-              const vector<Handle<DefaultProbabilityTermStructure> >& basket,
-              const Handle<OneFactorCopula>& copula,
-              bool protectionSeller,
-              const Schedule& premiumSchedule,
-              Rate premiumRate,
-              const DayCounter& dayCounter,
-              Rate recoveryRate,
-              Rate upfrontPremiumRate,
-              const Handle<YieldTermStructure>& yieldTS,
-              Size nBuckets,
-              const Period& integrationStep)
-    : attachment_(attachment), detachment_(detachment),
-      nominals_(nominals), basket_(basket),
-      copula_(copula),
-      protectionSeller_(protectionSeller),
-      premiumSchedule_(premiumSchedule),
-      premiumRate_(premiumRate),
-      dayCounter_(dayCounter),
-      recoveryRate_(recoveryRate),
-      upfrontPremiumRate_(upfrontPremiumRate),
-      yieldTS_(yieldTS),
-      nBuckets_(nBuckets),
+    CDO::CDO(Real attachment,
+             Real detachment,
+             vector<Real> nominals,
+             const vector<Handle<DefaultProbabilityTermStructure> >& basket,
+             Handle<OneFactorCopula> copula,
+             bool protectionSeller,
+             Schedule premiumSchedule,
+             Rate premiumRate,
+             DayCounter dayCounter,
+             Rate recoveryRate,
+             Rate upfrontPremiumRate,
+             Handle<YieldTermStructure> yieldTS,
+             Size nBuckets,
+             const Period& integrationStep)
+    : attachment_(attachment), detachment_(detachment), nominals_(std::move(nominals)),
+      basket_(basket), copula_(std::move(copula)), protectionSeller_(protectionSeller),
+      premiumSchedule_(std::move(premiumSchedule)), premiumRate_(premiumRate),
+      dayCounter_(std::move(dayCounter)), recoveryRate_(recoveryRate),
+      upfrontPremiumRate_(upfrontPremiumRate), yieldTS_(std::move(yieldTS)), nBuckets_(nBuckets),
       integrationStep_(integrationStep) {
 
         QL_REQUIRE (!basket.empty(), "basket is empty");
@@ -58,8 +53,8 @@ namespace QuantLib {
 
         registerWith (yieldTS_);
         registerWith (copula_);
-        for (Size i = 0; i < basket_.size(); i++)
-            registerWith (basket_[i]);
+        for (auto& i : basket_)
+            registerWith(i);
 
         QL_REQUIRE (nominals_.size() <= basket_.size(),
                     "nominal vector size too large");

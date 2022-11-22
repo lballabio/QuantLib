@@ -19,37 +19,39 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/methods/finitedifferences/solvers/fdm1dimsolver.hpp>
 #include <ql/methods/finitedifferences/operators/fdmblackscholesop.hpp>
+#include <ql/methods/finitedifferences/solvers/fdm1dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmblackscholessolver.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmBlackScholesSolver::FdmBlackScholesSolver(
-        const Handle<GeneralizedBlackScholesProcess>& process,
-        Real strike,
-        const FdmSolverDesc& solverDesc,
-        const FdmSchemeDesc& schemeDesc,
-        bool localVol,
-        Real illegalLocalVolOverwrite)
-    : process_(process),
-      strike_(strike),
-      solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc),
-      localVol_(localVol),
-      illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
+    FdmBlackScholesSolver::FdmBlackScholesSolver(Handle<GeneralizedBlackScholesProcess> process,
+                                                 Real strike,
+                                                 FdmSolverDesc solverDesc,
+                                                 const FdmSchemeDesc& schemeDesc,
+                                                 bool localVol,
+                                                 Real illegalLocalVolOverwrite,
+                                                 Handle<FdmQuantoHelper> quantoHelper)
+    : process_(std::move(process)), strike_(strike), solverDesc_(std::move(solverDesc)),
+      schemeDesc_(schemeDesc), localVol_(localVol),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite), quantoHelper_(std::move(quantoHelper)) {
 
         registerWith(process_);
+        registerWith(quantoHelper_);
     }
 
     void FdmBlackScholesSolver::performCalculations() const {
-        const boost::shared_ptr<FdmBlackScholesOp> op(new FdmBlackScholesOp(
+            const ext::shared_ptr<FdmBlackScholesOp> op(
+            ext::make_shared<FdmBlackScholesOp>(
                 solverDesc_.mesher, process_.currentLink(), strike_,
-                localVol_, illegalLocalVolOverwrite_));
+                localVol_, illegalLocalVolOverwrite_, 0,
+                (quantoHelper_.empty())
+                    ? ext::shared_ptr<FdmQuantoHelper>()
+                    : quantoHelper_.currentLink()));
 
-        solver_ = boost::shared_ptr<Fdm1DimSolver>(
-            new Fdm1DimSolver(solverDesc_, schemeDesc_, op));
+        solver_ = ext::make_shared<Fdm1DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmBlackScholesSolver::valueAt(Real s) const {

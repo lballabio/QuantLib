@@ -31,7 +31,7 @@
 #include <ql/math/optimization/levenbergmarquardt.hpp>
 #include <ql/math/optimization/problem.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -41,7 +41,7 @@ namespace QuantLib {
         typedef typename Curve::traits_type Traits;
         typedef typename Traits::helper helper;
         typedef
-          typename std::vector< boost::shared_ptr<helper> >::const_iterator
+          typename std::vector< ext::shared_ptr<helper> >::const_iterator
                                                               helper_iterator;
       public:
         PenaltyFunction(Curve* curve,
@@ -49,12 +49,11 @@ namespace QuantLib {
                         helper_iterator rateHelpersStart,
                         helper_iterator rateHelpersEnd)
         : curve_(curve), initialIndex_(initialIndex),
-          rateHelpersStart_(rateHelpersStart), rateHelpersEnd_(rateHelpersEnd) {
-            localisation_ = std::distance(rateHelpersStart, rateHelpersEnd);
-        }
+          localisation_(std::distance(rateHelpersStart, rateHelpersEnd)),
+          rateHelpersStart_(rateHelpersStart), rateHelpersEnd_(rateHelpersEnd) {}
 
-        Real value(const Array& x) const;
-        Disposable<Array> values(const Array& x) const;
+        Real value(const Array& x) const override;
+        Array values(const Array& x) const override;
 
       private:
         Curve* curve_;
@@ -88,15 +87,17 @@ namespace QuantLib {
         typedef typename Curve::interpolator_type Interpolator;
       public:
         LocalBootstrap(Size localisation = 2,
-                       bool forcePositive = true);
+                       bool forcePositive = true,
+                       Real accuracy = Null<Real>());
         void setup(Curve* ts);
         void calculate() const;
 
       private:
-        mutable bool validCurve_;
+        mutable bool validCurve_ = false;
         Curve* ts_;
         Size localisation_;
         bool forcePositive_;
+        Real accuracy_;
     };
 
 
@@ -104,11 +105,9 @@ namespace QuantLib {
     // template definitions
 
     template <class Curve>
-    LocalBootstrap<Curve>::LocalBootstrap(Size localisation,
-                                          bool forcePositive)
-    : validCurve_(false), ts_(0), localisation_(localisation),
-      forcePositive_(forcePositive)
-    {}
+    LocalBootstrap<Curve>::LocalBootstrap(Size localisation, bool forcePositive, Real accuracy)
+    : ts_(nullptr), localisation_(localisation), forcePositive_(forcePositive),
+      accuracy_(accuracy) {}
 
     template <class Curve>
     void LocalBootstrap<Curve>::setup(Curve* ts) {
@@ -184,10 +183,12 @@ namespace QuantLib {
                 ts_->data_[i+1] = ts_->data_[i];
         }
 
-        LevenbergMarquardt solver(ts_->accuracy_,
-                                  ts_->accuracy_,
-                                  ts_->accuracy_);
-        EndCriteria endCriteria(100, 10, 0.00, ts_->accuracy_, 0.00);
+        Real accuracy = accuracy_ != Null<Real>() ? accuracy_ : ts_->accuracy_;
+
+        LevenbergMarquardt solver(accuracy,
+                                  accuracy,
+                                  accuracy);
+        EndCriteria endCriteria(100, 10, 0.00, accuracy, 0.00);
         PositiveConstraint posConstraint;
         NoConstraint noConstraint;
         Constraint& solverConstraint = forcePositive_ ?
@@ -271,7 +272,7 @@ namespace QuantLib {
     }
 
     template <class Curve>
-    Disposable<Array> PenaltyFunction<Curve>::values(const Array& x) const {
+    Array PenaltyFunction<Curve>::values(const Array& x) const {
         Array::const_iterator guessIt = x.begin();
         Size i = initialIndex_;
         while (guessIt != x.end()) {

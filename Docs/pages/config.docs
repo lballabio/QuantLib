@@ -22,7 +22,9 @@
     or undefining such macros triggers variations in some library
     functionality.
 
-    Under a Linux/Unix system, they are (un)set by <tt>configure</tt>;
+    When using CMake, they can be set to `ON` or `OFF` as properties.
+
+    Under a Linux/Unix system, they are (un)set by `configure`;
     run
     \code
     ./configure --help
@@ -30,7 +32,7 @@
     for a list of corresponding command-line options.
 
     Under a Windows system, they must be (un)defined by editing the
-    file <ql/userconfig.hpp> and commenting or uncommenting the
+    file `<ql/userconfig.hpp>` and commenting or uncommenting the
     relevant lines.
 
     Such macros include:
@@ -38,7 +40,6 @@
     \code
     #define QL_ERROR_FUNCTIONS
     \endcode
-
     If defined, function information is added to the error messages
     thrown by the library. Undefined by default.
 
@@ -51,16 +52,9 @@
     \code
     #define QL_ENABLE_TRACING
     \endcode
-
     If enabled, tracing messages might be emitted by the library
     depending on run-time settings. Enabling this option can degrade
     performance. Undefined by default.
-
-    \code
-    #define QL_NEGATIVE_RATES
-    \endcode
-    If defined (the default), negative yield rates are allowed in a
-    few places where they used to be forbidden.
 
     \code
     #define QL_EXTRA_SAFETY_CHECKS
@@ -80,40 +74,66 @@
     \endcode
     If defined, singletons will return different instances for
     different sessions. You will have to provide and link with the
-    library a sessionId() function in namespace QuantLib, returning a
-    different session id for each session. Undefined by default.
+    library a `sessionId()` function in namespace QuantLib, returning a
+    different session id for each session. This also implies thread-safe
+    Singleton initialization.  Undefined by default.
 
     \code
     #define QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
     \endcode
     If defined, a thread-safe (but less performant) version of the
-    observer pattern will be used. You should define it if you want to
-    use QuantLib via the SWIG layer within the JVM or .NET eco system
+    observer pattern is used. You should define it if you want to
+    use %QuantLib via the SWIG layer within the JVM or .NET eco system
     or any environment with an async garbage collector.  Undefined by
-    default.
-
-    \code
-    #define QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-    \endcode
-    Define this to make Singleton initialization thread-safe.
-    Undefined by default.  Not compatible with multiple sessions.
+    default.  If defined together with `QL_USE_STD_SHARED_PTR`, it requires
+    at least C++17.
 
     \code
     #define QL_HIGH_RESOLUTION_DATE
     \endcode
-    If defined, date objects will support an intraday datetime
-    resolution down to microseconds.  Strickly monotone daycounters
-    (Actual360, Actual365Fixed and ActualActual) will take the
+    If defined, date objects support an intraday datetime
+    resolution down to microseconds.  Strictly monotone daycounters
+    (`Actual360`, `Actual365Fixed` and `ActualActual`) will take the
     additional information into account and allow for accurate
     intraday pricing.  If disabled (the default) the smallest
-    resolution of date objects will be a single day.  Intraday
+    resolution of date objects is a single day.  Intraday
     datetime resolution is experimental.
+
+    \code
+    #define QL_USE_STD_SHARED_PTR
+    \endcode
+    If defined, `std::shared_ptr` and related classes and functions are
+    used instead of `boost::shared_ptr`. If disabled (the
+    default) the Boost facilities are used. Note that `std::shared_ptr`
+    does not check access and can cause segmentation faults.
+
+    \code
+    #define QL_USE_STD_FUNCTION
+    \endcode
+    If defined, `std::function`, `std::bind` and related classes and functions
+    are used instead of `boost::function` and `boost::bind`. If disabled (the
+    default) the Boost facilities are used.
+
+    \code
+    #define QL_USE_STD_TUPLE
+    \endcode
+    If defined, `std::tuple` and related classes and functions
+    are used instead of `boost::tuple`. If disabled (the
+    default) the Boost facilities are used.
+
+    \code
+    #define QL_NULL_AS_FUNCTIONS
+    \endcode
+    If defined, `Null` will be implemented as a set of template
+    functions.  This allows the code to work with user-defined `Real`
+    types but was reported to cause internal compiler errors with
+    Visual C++ 2022 in some cases.  If disabled (the default) `Null`
+    will be implemented as a class template, as in previous releases.
 
     \code
     #define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
     \endcode
     Define this to enable the parallel unit test runner. Undefined by
     default.
-
 */
 

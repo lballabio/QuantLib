@@ -40,7 +40,7 @@ namespace QuantLib {
         };
         //! \name Constructors
         //@{
-        UnitOfMeasureConversion();
+        UnitOfMeasureConversion() = default;
         /*! the conversionFactor \f$ r \f$ is given with the
             convention that a unit of the source is worth \f$ r \f$
             units of the target.
@@ -80,7 +80,7 @@ namespace QuantLib {
                                 const UnitOfMeasureConversion& r2);
 
         struct Data;
-        boost::shared_ptr<Data> data_;
+        ext::shared_ptr<Data> data_;
 
         struct Data {
             CommodityType commodityType;
@@ -88,8 +88,8 @@ namespace QuantLib {
             Real conversionFactor;
             Type type;
             std::string code;
-            std::pair<boost::shared_ptr<UnitOfMeasureConversion>,
-                      boost::shared_ptr<UnitOfMeasureConversion> >
+            std::pair<ext::shared_ptr<UnitOfMeasureConversion>,
+                      ext::shared_ptr<UnitOfMeasureConversion> >
             conversionFactorChain;
 
             Data(const CommodityType& commodityType,
@@ -104,8 +104,6 @@ namespace QuantLib {
     };
 
     // inline definitions
-
-    inline UnitOfMeasureConversion::UnitOfMeasureConversion() {}
 
     inline const CommodityType& UnitOfMeasureConversion::commodityType() const {
         return data_->commodityType;

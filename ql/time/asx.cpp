@@ -24,14 +24,8 @@
 #include <ql/time/asx.hpp>
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
 #include <boost/algorithm/string/case_conv.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <string>
 
 using boost::algorithm::to_upper_copy;
 using std::string;
@@ -71,10 +65,7 @@ namespace QuantLib {
         if (mainCycle) str1 = "hmzuHMZU";
         else           str1 = "fghjkmnquvxzFGHJKMNQUVXZ";
         loc = str1.find(in.substr(0,1), 0);
-        if (loc == string::npos)
-            return false;
-
-        return true;
+        return loc != string::npos;
     }
 
     std::string ASX::code(const Date& date) {
@@ -158,9 +149,7 @@ namespace QuantLib {
         else if (ms=="Z") m = December;
         else QL_FAIL("invalid ASX month letter");
 
-//        Year y = boost::lexical_cast<Year>(); // lexical_cast causes compilation errors with x64
-
-        Year y= io::to_integer(code.substr(1,1));
+        Year y = std::stoi(code.substr(1,1));
         /* year<1900 are not valid QuantLib years: to avoid a run-time
            exception few lines below we need to add 10 years right away */
         if (y==0 && referenceDate.year()<=1909) y+=10;

@@ -67,11 +67,11 @@ namespace QuantLib {
 
         //! \name Lattice interface
         //@{
-        void initialize(DiscretizedAsset&, Time t) const;
-        void rollback(DiscretizedAsset&, Time to) const;
-        void partialRollback(DiscretizedAsset&, Time to) const;
+        void initialize(DiscretizedAsset&, Time t) const override;
+        void rollback(DiscretizedAsset&, Time to) const override;
+        void partialRollback(DiscretizedAsset&, Time to) const override;
         //! Computes the present value of an asset using Arrow-Debrew prices
-        Real presentValue(DiscretizedAsset&) const;
+        Real presentValue(DiscretizedAsset&) const override;
         //@}
 
         const Array& statePrices(Size i) const;
@@ -149,8 +149,8 @@ namespace QuantLib {
                    "cannot roll the asset back to" << to
                    << " (it is already at t = " << from << ")");
 
-        Integer iFrom = Integer(t_.index(from));
-        Integer iTo = Integer(t_.index(to));
+        auto iFrom = Integer(t_.index(from));
+        auto iTo = Integer(t_.index(to));
 
         for (Integer i=iFrom-1; i>=iTo; --i) {
             Array newValues(this->impl().size(i));
@@ -167,7 +167,7 @@ namespace QuantLib {
     void TreeLattice<Impl>::stepback(Size i, const Array& values,
                                      Array& newValues) const {
         #pragma omp parallel for
-        for (Size j=0; j<this->impl().size(i); j++) {
+        for (long j=0; j<(long)this->impl().size(i); j++) {
             Real value = 0.0;
             for (Size l=0; l<n_; l++) {
                 value += this->impl().probability(i,j,l) *

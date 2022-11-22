@@ -23,7 +23,9 @@
 
 #include "shortratemodels.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/iborcoupon.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/models/shortrate/onefactormodels/extendedcoxingersollross.hpp>
 #include <ql/models/shortrate/calibrationhelpers/swaptionhelper.hpp>
 #include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
 #include <ql/pricingengines/swap/treeswapengine.hpp>
@@ -42,7 +44,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace short_rate_models_test {
 
     struct CalibrationData {
         Integer start;
@@ -56,6 +58,10 @@ namespace {
 void ShortRateModelTest::testCachedHullWhite() {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached values using swaptions with start delay...");
 
+    using namespace short_rate_models_test;
+
+    bool usingAtParCoupons  = IborCoupon::Settings::instance().usingAtParCoupons();
+
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
@@ -64,27 +70,23 @@ void ShortRateModelTest::testCachedHullWhite() {
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
                                                       Actual365Fixed()));
-    boost::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
     CalibrationData data[] = {{ 1, 5, 0.1148 },
                               { 2, 4, 0.1108 },
                               { 3, 3, 0.1070 },
                               { 4, 2, 0.1021 },
                               { 5, 1, 0.1000 }};
-    boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
                                          new JamshidianSwaptionEngine(model));
 
-    std::vector<boost::shared_ptr<CalibrationHelper> > swaptions;
-    for (Size i=0; i<LENGTH(data); i++) {
-        boost::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
-        boost::shared_ptr<CalibrationHelper> helper(
-                             new SwaptionHelper(Period(data[i].start, Years),
-                                                Period(data[i].length, Years),
-                                                Handle<Quote>(vol),
-                                                index,
-                                                Period(1, Years), Thirty360(),
-                                                Actual360(), termStructure));
+    std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
+    for (auto& i : data) {
+        ext::shared_ptr<Quote> vol(new SimpleQuote(i.volatility));
+        ext::shared_ptr<BlackCalibrationHelper> helper(
+            new SwaptionHelper(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
+                               index, Period(1, Years), Thirty360(Thirty360::BondBasis), Actual360(), termStructure));
         helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
@@ -100,11 +102,13 @@ void ShortRateModelTest::testCachedHullWhite() {
     EndCriteria::Type ecType = model->endCriteria();
 
     // Check and print out results
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedA = 0.0463679, cachedSigma = 0.00579831;
-    #else
-    Real cachedA = 0.0464041, cachedSigma = 0.00579912;
-    #endif
+    Real cachedA, cachedSigma;
+    if (!usingAtParCoupons) {
+        cachedA = 0.0463679, cachedSigma = 0.00579831;
+    } else {
+        cachedA = 0.0464041, cachedSigma = 0.00579912;
+    }
+
     Real tolerance = 1.0e-5;
     Array xMinCalculated = model->params();
     Real yMinCalculated = model->value(xMinCalculated, swaptions);
@@ -131,6 +135,10 @@ void ShortRateModelTest::testCachedHullWhite() {
 void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration with fixed reversion against cached values...");
 
+    using namespace short_rate_models_test;
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
@@ -139,27 +147,24 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
                                                       Actual365Fixed()));
-    boost::shared_ptr<HullWhite> model(new HullWhite(termStructure,0.05,0.01));
+    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure,0.05,0.01));
     CalibrationData data[] = {{ 1, 5, 0.1148 },
                               { 2, 4, 0.1108 },
                               { 3, 3, 0.1070 },
                               { 4, 2, 0.1021 },
                               { 5, 1, 0.1000 }};
-    boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
                                          new JamshidianSwaptionEngine(model));
 
-    std::vector<boost::shared_ptr<CalibrationHelper> > swaptions;
-    for (Size i=0; i<LENGTH(data); i++) {
-        boost::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
-        boost::shared_ptr<CalibrationHelper> helper(
-                             new SwaptionHelper(Period(data[i].start, Years),
-                                                Period(data[i].length, Years),
-                                                Handle<Quote>(vol),
-                                                index,
-                                                Period(1, Years), Thirty360(),
-                                                Actual360(), termStructure));
+    std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
+    for (auto& i : data) {
+        ext::shared_ptr<Quote> vol(new SimpleQuote(i.volatility));
+        ext::shared_ptr<BlackCalibrationHelper> helper(
+            new SwaptionHelper(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
+                               index, Period(1, Years), Thirty360(Thirty360::BondBasis),
+                               Actual360(), termStructure));
         helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
@@ -176,11 +181,13 @@ void ShortRateModelTest::testCachedHullWhiteFixedReversion() {
     EndCriteria::Type ecType = model->endCriteria();
 
     // Check and print out results
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedA = 0.05, cachedSigma = 0.00585835;
-    #else
-    Real cachedA = 0.05, cachedSigma = 0.00585858;
-    #endif
+    Real cachedA, cachedSigma;
+    if (!usingAtParCoupons) {
+        cachedA = 0.05, cachedSigma = 0.00585835;
+    } else {
+        cachedA = 0.05, cachedSigma = 0.00585858;
+    }
+
     Real tolerance = 1.0e-5;
     Array xMinCalculated = model->params();
     Real yMinCalculated = model->value(xMinCalculated, swaptions);
@@ -209,6 +216,10 @@ void ShortRateModelTest::testCachedHullWhite2() {
     BOOST_TEST_MESSAGE("Testing Hull-White calibration against cached "
                        "values using swaptions without start delay...");
 
+    using namespace short_rate_models_test;
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
@@ -217,30 +228,27 @@ void ShortRateModelTest::testCachedHullWhite2() {
     Settings::instance().evaluationDate() = today;
     Handle<YieldTermStructure> termStructure(flatRate(settlement,0.04875825,
                                                       Actual365Fixed()));
-    boost::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
     CalibrationData data[] = {{ 1, 5, 0.1148 },
                               { 2, 4, 0.1108 },
                               { 3, 3, 0.1070 },
                               { 4, 2, 0.1021 },
                               { 5, 1, 0.1000 }};
-    boost::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
-    boost::shared_ptr<IborIndex> index0(new IborIndex(
+    ext::shared_ptr<IborIndex> index(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> index0(new IborIndex(
         index->familyName(),index->tenor(),0,index->currency(),index->fixingCalendar(),
         index->businessDayConvention(),index->endOfMonth(),index->dayCounter(),termStructure)); // Euribor 6m with zero fixing days
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
                                          new JamshidianSwaptionEngine(model));
 
-    std::vector<boost::shared_ptr<CalibrationHelper> > swaptions;
-    for (Size i=0; i<LENGTH(data); i++) {
-        boost::shared_ptr<Quote> vol(new SimpleQuote(data[i].volatility));
-        boost::shared_ptr<CalibrationHelper> helper(
-                             new SwaptionHelper(Period(data[i].start, Years),
-                                                Period(data[i].length, Years),
-                                                Handle<Quote>(vol),
-                                                index0,
-                                                Period(1, Years), Thirty360(),
-                                                Actual360(), termStructure));
+    std::vector<ext::shared_ptr<CalibrationHelper> > swaptions;
+    for (auto& i : data) {
+        ext::shared_ptr<Quote> vol(new SimpleQuote(i.volatility));
+        ext::shared_ptr<BlackCalibrationHelper> helper(
+            new SwaptionHelper(Period(i.start, Years), Period(i.length, Years), Handle<Quote>(vol),
+                               index0, Period(1, Years), Thirty360(Thirty360::BondBasis),
+                               Actual360(), termStructure));
         helper->setPricingEngine(engine);
         swaptions.push_back(helper);
     }
@@ -259,11 +267,12 @@ void ShortRateModelTest::testCachedHullWhite2() {
     // The cached values were produced with an older version of the
     // JamshidianEngine not accounting for the delay between option
     // expiry and underlying start
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real cachedA = 0.0481608, cachedSigma = 0.00582493;
-    #else
-    Real cachedA = 0.0482063, cachedSigma = 0.00582687;
-    #endif
+    Real cachedA, cachedSigma;
+    if (!usingAtParCoupons)
+        cachedA = 0.0481608, cachedSigma = 0.00582493;
+    else
+        cachedA = 0.0482063, cachedSigma = 0.00582687;
+
     Real tolerance = 5.0e-6; 
     Array xMinCalculated = model->params();
     Real yMinCalculated = model->value(xMinCalculated, swaptions);
@@ -290,6 +299,8 @@ void ShortRateModelTest::testCachedHullWhite2() {
 void ShortRateModelTest::testSwaps() {
     BOOST_TEST_MESSAGE("Testing Hull-White swap pricing against known values...");
 
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+
     SavedSettings backup;
     IndexHistoryCleaner cleaner;
 
@@ -300,7 +311,7 @@ void ShortRateModelTest::testSwaps() {
 
     Date settlement = calendar.advance(today,2,Days);
 
-    Date dates[] = {
+    std::vector<Date> dates = {
         settlement,
         calendar.advance(settlement,1,Weeks),
         calendar.advance(settlement,1,Months),
@@ -314,7 +325,7 @@ void ShortRateModelTest::testSwaps() {
         calendar.advance(settlement,10,Years),
         calendar.advance(settlement,15,Years)
     };
-    DiscountFactor discounts[] = {
+    std::vector<DiscountFactor> discounts = {
         1.0,
         0.999258,
         0.996704,
@@ -330,28 +341,20 @@ void ShortRateModelTest::testSwaps() {
     };
 
     Handle<YieldTermStructure> termStructure(
-       boost::shared_ptr<YieldTermStructure>(
-           new DiscountCurve(
-               std::vector<Date>(dates,dates+LENGTH(dates)),
-               std::vector<DiscountFactor>(discounts,
-                                           discounts+LENGTH(discounts)),
-               Actual365Fixed())));
+       ext::shared_ptr<YieldTermStructure>(
+           new DiscountCurve(dates, discounts, Actual365Fixed())));
 
-    boost::shared_ptr<HullWhite> model(new HullWhite(termStructure));
+    ext::shared_ptr<HullWhite> model(new HullWhite(termStructure));
 
     Integer start[] = { -3, 0, 3 };
     Integer length[] = { 2, 5, 10 };
     Rate rates[] = { 0.02, 0.04, 0.06 };
-    boost::shared_ptr<IborIndex> euribor(new Euribor6M(termStructure));
+    ext::shared_ptr<IborIndex> euribor(new Euribor6M(termStructure));
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
                                         new TreeVanillaSwapEngine(model,120));
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance = 4.0e-3;
-    #else
-    Real tolerance = 1.0e-8;
-    #endif
+    Real tolerance = usingAtParCoupons ? 1.0e-8 : 4.0e-3;
 
     for (Size i=0; i<LENGTH(start); i++) {
 
@@ -373,12 +376,12 @@ void ShortRateModelTest::testSwaps() {
             Schedule floatSchedule(startDate, maturity, Period(Semiannual),
                                    calendar, Following, Following,
                                    DateGeneration::Forward, false);
-            for (Size k=0; k<LENGTH(rates); k++) {
+            for (Real rate : rates) {
 
-                VanillaSwap swap(VanillaSwap::Payer, 1000000.0,
-                                 fixedSchedule, rates[k], Thirty360(),
+                VanillaSwap swap(Swap::Payer, 1000000.0, fixedSchedule, rate,
+                                 Thirty360(Thirty360::BondBasis),
                                  floatSchedule, euribor, 0.0, Actual360());
-                swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+                swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
                                    new DiscountingSwapEngine(termStructure)));
                 Real expected = swap.NPV();
                 swap.setPricingEngine(engine);
@@ -387,10 +390,10 @@ void ShortRateModelTest::testSwaps() {
                 Real error = std::fabs((expected-calculated)/expected);
                 if (error > tolerance) {
                     BOOST_ERROR("Failed to reproduce swap NPV:"
-                                << QL_FIXED << std::setprecision(9)
+                                << std::fixed << std::setprecision(9)
                                 << "\n    calculated: " << calculated
                                 << "\n    expected:   " << expected
-                                << QL_SCIENTIFIC
+                                << std::scientific
                                 << "\n    rel. error: " << error);
                 }
             }
@@ -421,19 +424,52 @@ void ShortRateModelTest::testFuturesConvexityBias() {
         BOOST_ERROR("Failed to reproduce convexity bias:"
                     << "\ncalculated: " << calculatedForward
                     << "\n  expected: " << expectedForward
-                    << QL_SCIENTIFIC
+                    << std::scientific
                     << "\n     error: " << error
                     << "\n tolerance: " << tolerance);
     }
 }
 
+void ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor() {
+    BOOST_TEST_MESSAGE("Testing zero-bond pricing for extended CIR model...");
+
+    SavedSettings backup;
+    const Date today = Settings::instance().evaluationDate();
+
+    const Rate rate = 0.1;
+    const Handle<YieldTermStructure> rTS(
+        flatRate(today, rate, Actual365Fixed()));
+
+    const Time now = 1.5;
+    const Time maturity = 2.5;
+
+    const ExtendedCoxIngersollRoss cirModel(rTS, rate, 1.0, 1e-4, rate);
+
+    const Real expected = rTS->discount(maturity)/rTS->discount(now);
+    const Real calculated = cirModel.discountBond(now, maturity, rate);
+
+    const Real tol = 1e-6;
+    const Real diff = std::fabs(expected-calculated);
+
+    if (diff > tol) {
+        BOOST_ERROR("Failed to reproduce zero bound price:"
+                    << "\n  calculated: " << calculated
+                    << "\n  expected  : " << expected
+                    << std::scientific
+                    << "\n  difference: " << diff
+                    << "\n  tolerance : " << tol);
+    }
+}
+
 test_suite* ShortRateModelTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Short-rate model tests");
+    auto* suite = BOOST_TEST_SUITE("Short-rate model tests");
 
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhiteFixedReversion));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testCachedHullWhite2));
     suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testFuturesConvexityBias));
+    suite->add(QUANTLIB_TEST_CASE(
+        &ShortRateModelTest::testExtendedCoxIngersollRossDiscountFactor));
 
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&ShortRateModelTest::testSwaps));

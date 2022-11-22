@@ -61,6 +61,9 @@ class CalendarTest {
     static void testEndOfMonth();
     static void testBusinessDaysBetween();
 
+    static void testIntradayAddHolidays();
+    static void testDayLists();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 

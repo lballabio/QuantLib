@@ -36,34 +36,30 @@ namespace QuantLib {
     class YieldTermStructure;
     class ExtendedOrnsteinUhlenbeckProcess;
 
-    class FdmExtendedOrnsteinUhlenbackOp : public FdmLinearOpComposite {
+    class FdmExtendedOrnsteinUhlenbeckOp : public FdmLinearOpComposite {
       public:
-        FdmExtendedOrnsteinUhlenbackOp(
-               const boost::shared_ptr<FdmMesher>& mesher,
-               const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& p,
-               const boost::shared_ptr<YieldTermStructure>& rTS,
-               const FdmBoundaryConditionSet& bcSet,
-               Size direction = 0);
+        FdmExtendedOrnsteinUhlenbeckOp(const ext::shared_ptr<FdmMesher>& mesher,
+                                       ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> p,
+                                       ext::shared_ptr<YieldTermStructure> rTS,
+                                       FdmBoundaryConditionSet bcSet,
+                                       Size direction = 0);
 
-        Size size() const;
-        void setTime(Time t1, Time t2);
+        Size size() const override;
+        void setTime(Time t1, Time t2) override;
 
-        Disposable<Array> apply(const Array& r) const;
-        Disposable<Array> apply_mixed(const Array& r) const;
+        Array apply(const Array& r) const override;
+        Array apply_mixed(const Array& r) const override;
 
-        Disposable<Array> apply_direction(Size direction,
-                                          const Array& r) const;
-        Disposable<Array> solve_splitting(Size direction,
-                                          const Array& r, Real s) const;
-        Disposable<Array> preconditioner(const Array& r, Real s) const;
+        Array apply_direction(Size direction, const Array& r) const override;
+        Array solve_splitting(Size direction, const Array& r, Real s) const override;
+        Array preconditioner(const Array& r, Real s) const override;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
-#endif
+        std::vector<SparseMatrix> toMatrixDecomp() const override;
+
       private:
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
         const FdmBoundaryConditionSet bcSet_;
         const Size direction_;
 
@@ -73,5 +69,6 @@ namespace QuantLib {
         TripleBandLinearOp mapX_;
 
     };
+
 }
 #endif

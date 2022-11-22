@@ -31,13 +31,13 @@ namespace QuantLib {
 
     class FdmArithmeticAverageCondition : public StepCondition<Array> {
       public:
-        FdmArithmeticAverageCondition(
-                                const std::vector<Time> & averageTimes,
-                                Real, Size pastFixings,
-                                const boost::shared_ptr<FdmMesher> & mesher,
-                                Size equityDirection);
+        FdmArithmeticAverageCondition(std::vector<Time> averageTimes,
+                                      Real,
+                                      Size pastFixings,
+                                      const ext::shared_ptr<FdmMesher>& mesher,
+                                      Size equityDirection);
 
-        void applyTo(Array& a, Time t) const;
+        void applyTo(Array& a, Time t) const override;
 
       private:
         Array x_; // grid-equity values in physical units
@@ -45,7 +45,7 @@ namespace QuantLib {
 
         const std::vector<Time> averageTimes_;
         const Size pastFixings_;
-        const boost::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<FdmMesher> mesher_;
         const Size equityDirection_;
     };
 }

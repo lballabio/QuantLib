@@ -29,9 +29,9 @@ namespace QuantLib {
 
     SouthKorea::SouthKorea(Market market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> settlementImpl(
+        static ext::shared_ptr<Calendar::Impl> settlementImpl(
                                               new SouthKorea::SettlementImpl);
-        static boost::shared_ptr<Calendar::Impl> krxImpl(
+        static ext::shared_ptr<Calendar::Impl> krxImpl(
                                                      new SouthKorea::KrxImpl);
         switch (market) {
           case Settlement:
@@ -66,6 +66,8 @@ namespace QuantLib {
             || (d == 1 && m == May)
             // Children's Day
             || (d == 5 && m == May)
+            || (d == 7 && m == May && y == 2018)
+            || (d == 6 && m == May && y == 2019)
             // Memorial Day
             || (d == 6 && m == June)
             // Constitution Day
@@ -91,10 +93,10 @@ namespace QuantLib {
             || ((d == 30 || d == 31)            && m == January  && y == 2014)
             || ((d == 18 || d == 19 || d == 20) && m == February && y == 2015)
             || ((d >=  7 && d <= 10)            && m == February && y == 2016)
-            || ((d == 27 || d == 28 || d == 29) && m == January  && y == 2017)
+            || ((d >= 27 && d <= 30)            && m == January  && y == 2017)
             || ((d == 15 || d == 16 || d == 17) && m == February && y == 2018)
             || ((d ==  4 || d ==  5 || d ==  6) && m == February && y == 2019)
-            || ((d == 24 || d == 25 || d == 26) && m == January  && y == 2020)
+            || ((d >= 24 && d <= 27)            && m == January  && y == 2020)
             || ((d == 11 || d == 12 || d == 13) && m == February && y == 2021)
             || (((d == 31 && m == January) || ((d == 1 || d == 2)
                                               && m == February)) && y == 2022)
@@ -119,6 +121,9 @@ namespace QuantLib {
             || (d == 19 && m == December && y == 2012) // Presidency
             || (d ==  4 && m == June     && y == 2014) // Local election
             || (d == 13 && m == April    && y == 2016) // National Assembly
+            || (d ==  9 && m == May      && y == 2017) // Presidency
+            || (d == 13 && m == June     && y == 2018) // Local election
+            || (d == 15 && m == April    && y == 2020) // National Assembly
             // Buddha's birthday
             || (d == 26 && m == May   && y == 2004)
             || (d == 15 && m == May   && y == 2005)
@@ -152,6 +157,8 @@ namespace QuantLib {
 
             // Special holiday: 70 years from Independence Day
             || (d == 14 && m == August && y == 2015)
+            // Special temporary holiday
+            || (d == 17 && m == August && y == 2020)
 
             // Harvest Moon Day
             || ((d == 27 || d == 28 || d == 29) && m == September && y == 2004)
@@ -167,8 +174,8 @@ namespace QuantLib {
             || ((d ==  8 || d ==  9 || d == 10) && m == September && y == 2014)
             || ((d == 28 || d == 29)            && m == September && y == 2015)
             || ((d == 14 || d == 15 || d == 16) && m == September && y == 2016)
-            || ((d ==  3 || d ==  4 || d ==  5) && m == October   && y == 2017)
-            || ((d == 23 || d == 24 || d == 25) && m == September && y == 2018)
+            || ((d >=  3 && d <=  6)            && m == October   && y == 2017)
+            || ((d >= 23 && d <= 26)            && m == September && y == 2018)
             || ((d == 12 || d == 13 || d == 14) && m == September && y == 2019)
             || (((d == 30 && m == September) || ((d == 1 || d == 2) 
                                                 && m == October)) && y == 2020)
@@ -188,7 +195,7 @@ namespace QuantLib {
             // Hangul Proclamation of Korea
             || (d == 9 && m == October && y >= 2013)
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
 
         return true;
     }
@@ -208,8 +215,9 @@ namespace QuantLib {
              && m == December)
             )
             return false;
-        if (// occasional closing days
-            (d == 6 && m == May && y >= 2016)
+        if (// occasional closing days (KRX day)
+            (d ==  6 && m == May     && y == 2016) ||
+            (d ==  2 && m == October && y == 2017)
             )
             return false;
 

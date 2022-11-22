@@ -31,8 +31,12 @@ public:
     static void testZeroIndex();
     static void testZeroTermStructure();
     static void testZeroIndexFutureFixing();
+    static void testInterpolatedZeroTermStructure();
     static void testYYIndex();
     static void testYYTermStructure();
+    static void testCpiFlatInterpolation();
+    static void testCpiLinearInterpolation();
+    static void testCpiAsIndexInterpolation();
     static boost::unit_test_framework::test_suite* suite();
 };
 

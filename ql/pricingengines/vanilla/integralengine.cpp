@@ -18,21 +18,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/vanilla/integralengine.hpp>
-#include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/exercise.hpp>
+#include <ql/math/integrals/segmentintegral.hpp>
+#include <ql/pricingengines/vanilla/integralengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     namespace {
 
-        class Integrand : std::unary_function<Real,Real> {
+        class Integrand {
           public:
-            Integrand(const boost::shared_ptr<Payoff>& payoff,
-                      Real s0,
-                      Rate drift,
-                      Real variance)
-           : payoff_(payoff), s0_(s0), drift_(drift), variance_(variance) {}
+            Integrand(ext::shared_ptr<Payoff> payoff, Real s0, Rate drift, Real variance)
+            : payoff_(std::move(payoff)), s0_(s0), drift_(drift), variance_(variance) {}
             Real operator()(Real x) const {
                 Real temp = s0_ * std::exp(x);
                 Real result = (*payoff_)(temp);
@@ -40,16 +38,15 @@ namespace QuantLib {
                     std::exp(-(x - drift_)*(x -drift_)/(2.0*variance_)) ;
             }
           private:
-            boost::shared_ptr<Payoff> payoff_;
+            ext::shared_ptr<Payoff> payoff_;
             Real s0_;
             Rate drift_;
             Real variance_;
         };
     }
 
-    IntegralEngine::IntegralEngine(
-              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+    IntegralEngine::IntegralEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
@@ -58,8 +55,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real variance =

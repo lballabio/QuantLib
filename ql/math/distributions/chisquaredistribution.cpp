@@ -26,11 +26,11 @@
 
 namespace QuantLib {
 
-    Real ChiSquareDistribution::operator()(Real x) const {
-        return GammaDistribution(0.5*df_)(0.5*x);
+    Real CumulativeChiSquareDistribution::operator()(Real x) const {
+        return CumulativeGammaDistribution(0.5*df_)(0.5*x);
     }
 
-    Real NonCentralChiSquareDistribution::operator()(Real x) const {
+    Real NonCentralCumulativeChiSquareDistribution::operator()(Real x) const {
         if (x <= 0.0)
             return 0.0;
 
@@ -90,8 +90,20 @@ namespace QuantLib {
 
     }
 
-    InverseNonCentralChiSquareDistribution::
-      InverseNonCentralChiSquareDistribution(Real df, Real ncp, 
+    Real NonCentralCumulativeChiSquareSankaranApprox::operator()(Real x) const {
+
+        const Real h = 1-2*(df_+ncp_)*(df_+3*ncp_)/(3*squared(df_+2*ncp_));
+        const Real p = (df_+2*ncp_)/squared(df_+ncp_);
+        const Real m = (h-1)*(1-3*h);
+
+        const Real u= (std::pow(x/(df_+ncp_), h) - (1 + h*p*(h-1-0.5*(2-h)*m*p)))/
+            (h*std::sqrt(2*p)*(1+0.5*m*p));
+
+        return CumulativeNormalDistribution()(u);
+    }
+
+    InverseNonCentralCumulativeChiSquareDistribution::
+      InverseNonCentralCumulativeChiSquareDistribution(Real df, Real ncp, 
                                              Size maxEvaluations, 
                                              Real accuracy)
     : nonCentralDist_(df, ncp),
@@ -100,7 +112,7 @@ namespace QuantLib {
       accuracy_(accuracy) {
     }
 
-    Real InverseNonCentralChiSquareDistribution::operator()(Real x) const {
+    Real InverseNonCentralCumulativeChiSquareDistribution::operator()(Real x) const {
 
         // first find the right side of the interval
         Real upper = guess_;
@@ -113,10 +125,9 @@ namespace QuantLib {
         // use a Brent solver for the rest
         Brent solver;
         solver.setMaxEvaluations(evaluations);
-        return solver.solve(compose(std::bind2nd(std::minus<Real>(),x), 
-                                    nonCentralDist_),
+        return solver.solve([&](Real y) { return nonCentralDist_(y) - x; },
                             accuracy_, 0.75*upper, 
-                            (evaluations == maxEvaluations_)? 0.0: 0.5*upper,
+                            (evaluations == maxEvaluations_)? 0.0: Real(0.5*upper),
                             upper);
     }
 }

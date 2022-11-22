@@ -30,8 +30,12 @@
 namespace QuantLib {
 
     //! min copula
-    class MinCopula : public std::binary_function<Real,Real,Real> {
+    class MinCopula {
       public:
+        typedef Real first_argument_type;
+        typedef Real second_argument_type;
+        typedef Real result_type;
+
         Real operator()(Real x, Real y) const;
     };
     

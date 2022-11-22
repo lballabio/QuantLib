@@ -24,13 +24,14 @@
 #ifndef quantlib_binomial_barrier_engine_hpp
 #define quantlib_binomial_barrier_engine_hpp
 
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/lattices/binomialtree.hpp>
 #include <ql/methods/lattices/bsmlattice.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/barrier/discretizedbarrieroption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -56,11 +57,10 @@ namespace QuantLib {
             CoxRossRubinstein Boyle-Lau is disabled and maxTimeSteps
             ignored.
         */
-        BinomialBarrierEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps,
-             Size maxTimeSteps=0)
-        : process_(process), timeSteps_(timeSteps), maxTimeSteps_(maxTimeSteps) {
+        BinomialBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                              Size timeSteps,
+                              Size maxTimeSteps = 0)
+        : process_(std::move(process)), timeSteps_(timeSteps), maxTimeSteps_(maxTimeSteps) {
             QL_REQUIRE(timeSteps>0,
                        "timeSteps must be positive, " << timeSteps <<
                        " not allowed");
@@ -72,9 +72,10 @@ namespace QuantLib {
                maxTimeSteps_ = std::max( (Size)1000, timeSteps_*5);
             registerWith(process_);
         }
-        void calculate() const;
+        void calculate() const override;
+
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_;
         Size maxTimeSteps_;
     };
@@ -85,13 +86,20 @@ namespace QuantLib {
     template <class T, class D>
     void BinomialBarrierEngine<T,D>::calculate() const {
 
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff, "non-striked payoff given");
+        QL_REQUIRE(payoff->strike() > 0.0, "strike must be positive");
+
+        Real s0 = process_->stateVariable()->value();
+        QL_REQUIRE(s0 > 0.0, "negative or null underlying given");
+        QL_REQUIRE(!triggered(s0), "barrier touched");
+
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
         DayCounter divdc = process_->dividendYield()->dayCounter();
         DayCounter voldc = process_->blackVolatility()->dayCounter();
         Calendar volcal = process_->blackVolatility()->calendar();
 
-        Real s0 = process_->stateVariable()->value();
-        QL_REQUIRE(s0 > 0.0, "negative or null underlying given");
         Volatility v = process_->blackVolatility()->blackVol(
             arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
@@ -103,22 +111,18 @@ namespace QuantLib {
 
         // binomial trees with constant coefficient
         Handle<YieldTermStructure> flatRiskFree(
-            boost::shared_ptr<YieldTermStructure>(
+            ext::shared_ptr<YieldTermStructure>(
                 new FlatForward(referenceDate, r, rfdc)));
         Handle<YieldTermStructure> flatDividends(
-            boost::shared_ptr<YieldTermStructure>(
+            ext::shared_ptr<YieldTermStructure>(
                 new FlatForward(referenceDate, q, divdc)));
         Handle<BlackVolTermStructure> flatVol(
-            boost::shared_ptr<BlackVolTermStructure>(
+            ext::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(referenceDate, volcal, v, voldc)));
-
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff, "non-striked payoff given");
 
         Time maturity = rfdc.yearFraction(referenceDate, maturityDate);
 
-        boost::shared_ptr<StochasticProcess1D> bs(
+        ext::shared_ptr<StochasticProcess1D> bs(
                          new GeneralizedBlackScholesProcess(
                                       process_->stateVariable(),
                                       flatDividends, flatRiskFree, flatVol));
@@ -152,10 +156,10 @@ namespace QuantLib {
 
         TimeGrid grid(maturity, optimum_steps);
 
-        boost::shared_ptr<T> tree(new T(bs, maturity, optimum_steps,
+        ext::shared_ptr<T> tree(new T(bs, maturity, optimum_steps,
                                         payoff->strike()));
 
-        boost::shared_ptr<BlackScholesLattice<T> > lattice(
+        ext::shared_ptr<BlackScholesLattice<T> > lattice(
             new BlackScholesLattice<T>(tree, r, maturity, optimum_steps));
 
         D option(arguments_, *process_, grid);

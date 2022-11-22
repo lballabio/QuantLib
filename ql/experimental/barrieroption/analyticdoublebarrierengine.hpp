@@ -48,12 +48,12 @@ namespace QuantLib {
     */
     class AnalyticDoubleBarrierEngine : public DoubleBarrierOption::engine {
       public:
-        AnalyticDoubleBarrierEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process, 
-            int series = 5);
-        void calculate() const;
+        explicit AnalyticDoubleBarrierEngine(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process, int series = 5);
+        void calculate() const override;
+
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         CumulativeNormalDistribution f_;
         int series_;
         // helper methods
@@ -64,7 +64,6 @@ namespace QuantLib {
         Real volatilitySquared() const;
         Real barrierLo() const;
         Real barrierHi() const;
-        Real rebate() const;
         Real stdDeviation() const;
         Rate riskFreeRate() const;
         DiscountFactor riskFreeDiscount() const;

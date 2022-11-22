@@ -22,15 +22,6 @@
 
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
 #include <map>
 #include <algorithm>
 
@@ -55,37 +46,36 @@ namespace QuantLib {
     template<class copulaPolicy> 
     class RecursiveLossModel : public DefaultLossModel {
     public:
-        RecursiveLossModel(
-            const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& m,
-// nope! use max common divisor. See O'Kane. Or give both options at least.
-            Size nbuckets  = 1)
-        : copula_(m), nBuckets_(nbuckets), wk_() { }
-      private:
-          /*!
-          @param pDefDate Vector of unconditional default probabilities for each
-          live name (at the current evaluation date). This is passed instead of 
-          the date for performance reasons (if in the future other magnitudes 
-          -e.g. lgd- are contingent on the date they shouldd be passed too).
-          */
-        Disposable<std::map<Real, Probability> > conditionalLossDistrib(
-            const std::vector<Probability>& pDefDate, 
-            const std::vector<Real>& mktFactor) const;
-        Real expectedConditionalLoss(const std::vector<Probability>& pDefDate, //<< never used!!
-            const std::vector<Real>& mktFactor) const;
-        Disposable<std::vector<Real> > conditionalLossProb(
-            const std::vector<Probability>& pDefDate, 
-            //const Date& date,
-            const std::vector<Real>& mktFactor) const;
-        //versions using the P-inverse, deprecate the former
-        Disposable<std::map<Real, Probability> > conditionalLossDistribInvP(
-            const std::vector<Real>& pDefDate, 
-            //const Date& date,
-            const std::vector<Real>& mktFactor) const;
-        Real expectedConditionalLossInvP(const std::vector<Real>& pDefDate, 
-            //const Date& date,
-            const std::vector<Real>& mktFactor) const;
+      explicit RecursiveLossModel(
+          const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& m,
+          // nope! use max common divisor. See O'Kane. Or give both options at least.
+          Size nbuckets = 1)
+      : copula_(m), nBuckets_(nbuckets) {}
+
+    private:
+      /*!
+      @param pDefDate Vector of unconditional default probabilities for each
+      live name (at the current evaluation date). This is passed instead of
+      the date for performance reasons (if in the future other magnitudes
+      -e.g. lgd- are contingent on the date they shouldd be passed too).
+      */
+      std::map<Real, Probability> conditionalLossDistrib(const std::vector<Probability>& pDefDate,
+                                                         const std::vector<Real>& mktFactor) const;
+      Real expectedConditionalLoss(const std::vector<Probability>& pDefDate, //<< never used!!
+                                   const std::vector<Real>& mktFactor) const;
+      std::vector<Real> conditionalLossProb(const std::vector<Probability>& pDefDate,
+                                            // const Date& date,
+                                            const std::vector<Real>& mktFactor) const;
+      // versions using the P-inverse, deprecate the former
+      std::map<Real, Probability> conditionalLossDistribInvP(const std::vector<Real>& pDefDate,
+                                                             // const Date& date,
+                                                             const std::vector<Real>& mktFactor) const;
+      Real expectedConditionalLossInvP(const std::vector<Real>& pDefDate,
+                                       // const Date& date,
+                                       const std::vector<Real>& mktFactor) const;
     protected:
-        void resetModel();
+      void resetModel() override;
+
     public:
         /*  Expected tranche Loss calculation.
             This is computed from the first equation on page 70 (not numbered)
@@ -102,18 +92,18 @@ namespace QuantLib {
             and this is the way it is integrated here. The recursion formula 
             makes it easier this way.
         */
-       Real expectedTrancheLoss(const Date& date) const;
-       Disposable<std::vector<Real> > lossProbability(const Date& date) const;
-       // REMEBER THIS HAS TO BE MOVED TO A DISTRIBUTION OBJECT.............
-       Disposable<std::map<Real, Probability> > lossDistribution(
-           const Date& d) const;
-       // INTEGRATE THEN SEARCH RATHER THAN SEARCH AND THEN INTEGRATE:
-       // Here I am not using a search because the point might not be attainable
-       //  (loss distrib is not continuous) 
-       Real percentile(const Date& d, Real percentile) const;
-       Real expectedShortfall(const Date& d, Real perctl) const;
+      Real expectedTrancheLoss(const Date& date) const override;
+      std::vector<Real> lossProbability(const Date& date) const;
+      // REMEBER THIS HAS TO BE MOVED TO A DISTRIBUTION OBJECT.............
+      std::map<Real, Probability> lossDistribution(const Date& d) const override;
+      // INTEGRATE THEN SEARCH RATHER THAN SEARCH AND THEN INTEGRATE:
+      // Here I am not using a search because the point might not be attainable
+      //  (loss distrib is not continuous)
+      Real percentile(const Date& d, Real percentile) const override;
+      Real expectedShortfall(const Date& d, Real perctl) const override;
+
     protected:
-        const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> > copula_;
+        const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> > copula_;
     private:
         // loss model descriptor members
         const Size nBuckets_;
@@ -167,16 +157,11 @@ namespace QuantLib {
             basket_->remainingProbabilities(date);
 
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
-                    &RecursiveLossModel::expectedConditionalLoss,
-                    this,
-                    boost::cref(uncDefProb),
-                    _1)
-                )
-            );
+            [&](const std::vector<Real>& v1) {
+                return expectedConditionalLoss(uncDefProb, v1);
+            });
             */
-/**/
+
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
         std::vector<Real> invProb;
@@ -184,32 +169,20 @@ namespace QuantLib {
            invProb.push_back(copula_->inverseCumulativeY(uncDefProb[i], i));
            ///  invProb.push_back(CP::inverseCumulativeY(uncDefProb[i], i));//<-static call
         return copula_->integratedExpectedValue(
-            boost::function<Real (const std::vector<Real>& v1)>(
-                boost::bind(
-                    &RecursiveLossModel::expectedConditionalLossInvP,
-                    this,
-                    boost::cref(invProb),
-                    _1)
-                )
-            );
-            
+            [&](const std::vector<Real>& v1) {
+                return expectedConditionalLossInvP(invProb, v1);
+            });
     }
 
     template<class CP>
-    inline Disposable<std::vector<Real> > 
-        RecursiveLossModel<CP>::lossProbability(const Date& date) const {
+    inline std::vector<Real> RecursiveLossModel<CP>::lossProbability(const Date& date) const {
 
         std::vector<Probability> uncDefProb = 
             basket_->remainingProbabilities(date);
-        return copula_->integratedExpectedValue(
-            boost::function<Disposable<std::vector<Real> > (const std::vector<Real>& v1)>(
-                boost::bind(
-                    &RecursiveLossModel::conditionalLossProb,
-                    this,
-                    boost::cref(uncDefProb),
-                    _1)
-                )
-            );
+        return copula_->integratedExpectedValueV(
+            [&](const std::vector<Real>& v1) {
+                return conditionalLossProb(uncDefProb, v1);
+            });
     }
 
     // -------------------------------------------------------------------
@@ -240,8 +213,7 @@ namespace QuantLib {
 
     // make it return a distribution object?
     template<class CP>
-    Disposable<std::map<Real, Probability> > 
-        RecursiveLossModel<CP>::lossDistribution(const Date& d) const 
+    std::map<Real, Probability> RecursiveLossModel<CP>::lossDistribution(const Date& d) const 
     {
         std::map<Real, Probability> distrib;
         std::vector<Real> values  = lossProbability(d);
@@ -327,8 +299,7 @@ namespace QuantLib {
     }
 
     template<class CP>
-    Disposable<std::map<Real, Probability> >
-        RecursiveLossModel<CP>::conditionalLossDistrib(
+    std::map<Real, Probability> RecursiveLossModel<CP>::conditionalLossDistrib(
             const std::vector<Probability>& pDefDate, 
             //const Date& date,
             const std::vector<Real>& mktFactor) const 
@@ -346,14 +317,12 @@ namespace QuantLib {
                                                 mktFactor);
             ////// iterate on all possible losses in the distribution:
             std::map<Real, Probability> pDistTemp;
-            std::map<Real, Probability>::iterator distIt =
-                pIndepDistrib.begin();
+            auto distIt = pIndepDistrib.begin();
             while(distIt != pIndepDistrib.end()) {
               ///   update prob if this name does not default
-                std::map<Real, Probability>::iterator matchIt
-                    = pDistTemp.find(distIt->first);
-                if(matchIt != pDistTemp.end()) {
-                    matchIt->second += distIt->second * (1.-pDef);
+              auto matchIt = pDistTemp.find(distIt->first);
+              if (matchIt != pDistTemp.end()) {
+                  matchIt->second += distIt->second * (1. - pDef);
                 }else{
                     pDistTemp.insert(std::make_pair(distIt->first,
                         distIt->second * (1.-pDef)));
@@ -376,10 +345,9 @@ namespace QuantLib {
         return pIndepDistrib;
     }
 
+    // twice?! rewrite one in terms of the other, this is a duplicate!
     template<class CP>
-    Disposable<std::map<Real, Probability> >
-        // twice?! rewrite one in terms of the other, this is a duplicate!
-        RecursiveLossModel<CP>::conditionalLossDistribInvP(
+    std::map<Real, Probability> RecursiveLossModel<CP>::conditionalLossDistribInvP(
             const std::vector<Real>& invpDefDate, 
             //const Date& date,
             const std::vector<Real>& mktFactor) const 
@@ -397,12 +365,10 @@ namespace QuantLib {
 
             // iterate on all possible losses in the distribution:
             std::map<Real, Probability> pDistTemp;
-            std::map<Real, Probability>::iterator distIt =
-                pIndepDistrib.begin();
+            auto distIt = pIndepDistrib.begin();
             while(distIt != pIndepDistrib.end()) {
                 // update prob if this name does not default
-                std::map<Real, Probability>::iterator matchIt
-                    = pDistTemp.find(distIt->first);
+                auto matchIt = pDistTemp.find(distIt->first);
                 if(matchIt != pDistTemp.end()) {
                     matchIt->second += distIt->second * (1.-pDef);
                 }else{
@@ -453,8 +419,7 @@ namespace QuantLib {
              unroll below to take profit of the fact that once we go over
              the tranche top the loss amount is fixed:
         */
-        std::map<Real, Probability>::iterator distIt =
-            pIndepDistrib.begin();
+        auto distIt = pIndepDistrib.begin();
 
         while(distIt != pIndepDistrib.end()) {
             Real loss = distIt->first * lossUnit_;
@@ -486,8 +451,7 @@ namespace QuantLib {
              unroll below to take profit of the fact that once we go over
              the tranche top the loss amount is fixed:
         */
-        std::map<Real, Probability>::iterator distIt =
-            pIndepDistrib.begin();
+        auto distIt = pIndepDistrib.begin();
 
         while(distIt != pIndepDistrib.end()) {
             Real loss = distIt->first * lossUnit_;
@@ -502,7 +466,7 @@ namespace QuantLib {
     }
 
     template<class CP>
-    Disposable<std::vector<Real> > RecursiveLossModel<CP>::conditionalLossProb(
+    std::vector<Real> RecursiveLossModel<CP>::conditionalLossProb(
         const std::vector<Probability>& pDefDate, 
         //const Date& date,
         const std::vector<Real>& mktFactor) const 
@@ -511,7 +475,7 @@ namespace QuantLib {
             conditionalLossDistrib(pDefDate, mktFactor);
 
         std::vector<Real> results;
-        std::map<Real, Probability>::iterator distIt = pIndepDistrib.begin();
+        auto distIt = pIndepDistrib.begin();
         while(distIt != pIndepDistrib.end()) {
             //Real loss = distIt->first * loss_unit_
             //                    ;

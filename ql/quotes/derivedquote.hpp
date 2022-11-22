@@ -26,8 +26,9 @@
 #ifndef quantlib_derived_quote_hpp
 #define quantlib_derived_quote_hpp
 
-#include <ql/quote.hpp>
 #include <ql/handle.hpp>
+#include <ql/quote.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,28 +39,32 @@ namespace QuantLib {
     template <class UnaryFunction>
     class DerivedQuote : public Quote, public Observer {
       public:
-        DerivedQuote(const Handle<Quote>& element,
-                     const UnaryFunction& f);
+        DerivedQuote(Handle<Quote> element, const UnaryFunction& f);
         //! \name Quote interface
         //@{
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       private:
         Handle<Quote> element_;
         UnaryFunction f_;
     };
 
+    //! creator method
+    template <class UnaryFunction>
+    DerivedQuote<UnaryFunction> makeDerivedQuote(const Handle<Quote>& element,
+                                                 const UnaryFunction& f) {
+        return DerivedQuote<UnaryFunction>(element, f);
+    }
+
     // inline definitions
     template <class UnaryFunction>
-    inline DerivedQuote<UnaryFunction>::DerivedQuote(
-                                                 const Handle<Quote>& element,
-                                                 const UnaryFunction& f)
-    : element_(element), f_(f) {
+    inline DerivedQuote<UnaryFunction>::DerivedQuote(Handle<Quote> element, const UnaryFunction& f)
+    : element_(std::move(element)), f_(f) {
         registerWith(element_);
     }
 

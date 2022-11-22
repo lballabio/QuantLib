@@ -24,8 +24,8 @@
 #ifndef quantlib_index_manager_hpp
 #define quantlib_index_manager_hpp
 
-#include <ql/timeseries.hpp>
 #include <ql/patterns/singleton.hpp>
+#include <ql/timeseries.hpp>
 #include <ql/utilities/observablevalue.hpp>
 
 
@@ -35,8 +35,10 @@ namespace QuantLib {
     /*! \note index names are case insensitive */
     class IndexManager : public Singleton<IndexManager> {
         friend class Singleton<IndexManager>;
+
       private:
-        IndexManager() {}
+        IndexManager() = default;
+
       public:
         //! returns whether historical fixings were stored for the index
         bool hasHistory(const std::string& name) const;
@@ -45,16 +47,18 @@ namespace QuantLib {
         //! stores the historical fixings of the index
         void setHistory(const std::string& name, const TimeSeries<Real>&);
         //! observer notifying of changes in the index fixings
-        boost::shared_ptr<Observable> notifier(const std::string& name) const;
+        ext::shared_ptr<Observable> notifier(const std::string& name) const;
         //! returns all names of the indexes for which fixings were stored
         std::vector<std::string> histories() const;
         //! clears the historical fixings of the index
         void clearHistory(const std::string& name);
         //! clears all stored fixings
         void clearHistories();
+        //! returns whether a specific historical fixing was stored for the index and date
+        bool hasHistoricalFixing(const std::string& name, const Date& fixingDate) const;
+
       private:
-        typedef std::map<std::string, ObservableValue<TimeSeries<Real> > >
-                                                                  history_map;
+        typedef std::map<std::string, ObservableValue<TimeSeries<Real> > > history_map;
         mutable history_map data_;
     };
 

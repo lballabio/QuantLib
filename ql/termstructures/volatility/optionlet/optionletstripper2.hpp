@@ -43,7 +43,7 @@ namespace QuantLib {
       public:
         // Handle or just shared_ptr ??
         OptionletStripper2(
-            const boost::shared_ptr<OptionletStripper1>& optionletStripper1,
+            const ext::shared_ptr<OptionletStripper1>& optionletStripper1,
             const Handle<CapFloorTermVolCurve>& atmCapFloorTermVolCurve);
 
         std::vector<Rate> atmCapFloorStrikes() const;
@@ -53,33 +53,33 @@ namespace QuantLib {
 
         //! \name LazyObject interface
         //@{
-        void performCalculations() const;
+        void performCalculations() const override;
         //@}
       private:
         std::vector<Volatility> spreadsVolImplied() const;
 
         class ObjectiveFunction {
           public:
-            ObjectiveFunction(const boost::shared_ptr<OptionletStripper1>&,
-                              const boost::shared_ptr<CapFloor>&,
+            ObjectiveFunction(const ext::shared_ptr<OptionletStripper1>&,
+                              ext::shared_ptr<CapFloor>,
                               Real targetValue);
             Real operator()(Volatility spreadVol) const;
           private:
-            boost::shared_ptr<SimpleQuote> spreadQuote_;
-            boost::shared_ptr<CapFloor> cap_;
+            ext::shared_ptr<SimpleQuote> spreadQuote_;
+            ext::shared_ptr<CapFloor> cap_;
             Real targetValue_;
         };
 
-        const boost::shared_ptr<OptionletStripper1> stripper1_;
+        const ext::shared_ptr<OptionletStripper1> stripper1_;
         const Handle<CapFloorTermVolCurve> atmCapFloorTermVolCurve_;
         DayCounter dc_;
         Size nOptionExpiries_;
         mutable std::vector<Rate> atmCapFloorStrikes_;
         mutable std::vector<Real> atmCapFloorPrices_;
         mutable std::vector<Volatility> spreadsVolImplied_;
-        mutable std::vector<boost::shared_ptr<CapFloor> > caps_;
-        Size maxEvaluations_;
-        Real accuracy_;
+        mutable std::vector<ext::shared_ptr<CapFloor> > caps_;
+        Size maxEvaluations_ = 10000;
+        Real accuracy_ = 1.e-6;
     };
 
 }

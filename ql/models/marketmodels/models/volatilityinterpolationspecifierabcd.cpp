@@ -28,7 +28,7 @@ here we work with abcd curves and interpolate the a, b, c and d
 #include <ql/models/marketmodels/models/volatilityinterpolationspecifierabcd.hpp>
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib
@@ -64,14 +64,10 @@ namespace QuantLib
 
         // change type of array to PiecewiseConstantVariance for client, from PiecewiseConstantAbcdVariance
         for (Size i=0; i < noBigRates_; ++i)
-            originalVariances_[i] = boost::shared_ptr<PiecewiseConstantVariance>(new PiecewiseConstantAbcdVariance(originalVariances[i]));
+            originalVariances_[i] = ext::shared_ptr<PiecewiseConstantVariance>(new PiecewiseConstantAbcdVariance(originalVariances[i]));
 
         recompute();
 
-    }
-
-    VolatilityInterpolationSpecifierabcd::~VolatilityInterpolationSpecifierabcd()
-    {
     }
 
     void VolatilityInterpolationSpecifierabcd::setScalingFactors(const std::vector<Real>& scales)
@@ -88,12 +84,12 @@ namespace QuantLib
     }
 
 
-    const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& VolatilityInterpolationSpecifierabcd::interpolatedVariances() const
+    const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& VolatilityInterpolationSpecifierabcd::interpolatedVariances() const
     {
         return interpolatedVariances_;
     }
 
-    const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& VolatilityInterpolationSpecifierabcd::originalVariances() const
+    const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& VolatilityInterpolationSpecifierabcd::originalVariances() const
     {
         return originalVariances_;
     }
@@ -150,7 +146,7 @@ namespace QuantLib
             originalABCDVariancesScaled_[0].getABCD(a,b,c,d);
 
             for (Size i=0; i < offset_; ++i)
-                interpolatedVariances_[i] = boost::shared_ptr<PiecewiseConstantVariance>(
+                interpolatedVariances_[i] = ext::shared_ptr<PiecewiseConstantVariance>(
                 new PiecewiseConstantAbcdVariance(a,b,c,d,i,timesForSmallRates_));
         }
 
@@ -170,7 +166,7 @@ namespace QuantLib
             d= 0.5*(d0+d1);
 
             for (Size i=0; i < period_; ++i)
-                interpolatedVariances_[i+j*period_+offset_] =  boost::shared_ptr<PiecewiseConstantVariance>(
+                interpolatedVariances_[i+j*period_+offset_] =  ext::shared_ptr<PiecewiseConstantVariance>(
                 new PiecewiseConstantAbcdVariance(a,b,c,d,i+j*period_,timesForSmallRates_));
 
         }
@@ -181,7 +177,7 @@ namespace QuantLib
             originalABCDVariancesScaled_[noBigRates_-1].getABCD(a,b,c,d);
 
             for (Size i=offset_+(noBigRates_-1)*period_; i < noSmallRates_; ++i)
-                interpolatedVariances_[i] = boost::shared_ptr<PiecewiseConstantVariance>(
+                interpolatedVariances_[i] = ext::shared_ptr<PiecewiseConstantVariance>(
                                                                          new PiecewiseConstantAbcdVariance(a,b,c,d,i,timesForSmallRates_));
 
             // very last rate is special as we must match the caplet vol
@@ -191,7 +187,7 @@ namespace QuantLib
              a*=scale;
              b*=scale;
              d*=scale;
-             interpolatedVariances_[noSmallRates_-1] = boost::shared_ptr<PiecewiseConstantVariance>(
+             interpolatedVariances_[noSmallRates_-1] = ext::shared_ptr<PiecewiseConstantVariance>(
                                                                          new PiecewiseConstantAbcdVariance(a,b,c,d,noSmallRates_-1,timesForSmallRates_));
 
        }

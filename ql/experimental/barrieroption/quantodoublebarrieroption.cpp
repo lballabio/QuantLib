@@ -26,8 +26,8 @@ namespace QuantLib {
                         Real barrier_lo,
                         Real barrier_hi,
                         Real rebate,
-                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                        const boost::shared_ptr<Exercise>& exercise)
+                        const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                        const ext::shared_ptr<Exercise>& exercise)
     : DoubleBarrierOption(barrierType, barrier_lo, barrier_hi, rebate, payoff, exercise) {}
 
     Real QuantoDoubleBarrierOption::qvega() const {
@@ -59,10 +59,8 @@ namespace QuantLib {
     void QuantoDoubleBarrierOption::fetchResults(
                                       const PricingEngine::results* r) const {
         DoubleBarrierOption::fetchResults(r);
-        const QuantoDoubleBarrierOption::results* quantoResults =
-            dynamic_cast<const QuantoDoubleBarrierOption::results*>(r);
-        QL_ENSURE(quantoResults != 0,
-                  "no quanto results returned from pricing engine");
+        const auto* quantoResults = dynamic_cast<const QuantoDoubleBarrierOption::results*>(r);
+        QL_ENSURE(quantoResults != nullptr, "no quanto results returned from pricing engine");
         qrho_    = quantoResults->qrho;
         qvega_   = quantoResults->qvega;
         qlambda_ = quantoResults->qlambda;

@@ -42,7 +42,7 @@ class MarketModelTest {
     static void testCallableSwapNaif();
     static void testCallableSwapLS();
     static void testCallableSwapAnderson(
-        MarketModelType marketModel, unsigned testedFactor);
+        MarketModelType marketModel, std::size_t testedFactor);
     static void testGreeks();
     static void testPathwiseGreeks();
     static void testPathwiseVegas();

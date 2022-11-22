@@ -50,15 +50,15 @@ namespace QuantLib {
                const Date& exCouponDate = Date());
         //! \name Event interface
         //@{
-        Date date() const { return paymentDate_; }
+        Date date() const override { return paymentDate_; }
         //@}
         //! \name CashFlow interface
         //@{
-        Date exCouponDate() const { return exCouponDate_; }
+        Date exCouponDate() const override { return exCouponDate_; }
         //@}
         //! \name Inspectors
         //@{
-        Real nominal() const;
+        virtual Real nominal() const;
         //! start of the accrual period
         const Date& accrualStartDate() const;
         //! end of the accrual period
@@ -84,7 +84,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
         Date paymentDate_;

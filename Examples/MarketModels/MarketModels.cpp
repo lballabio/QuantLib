@@ -18,10 +18,36 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 #include <ql/qldefines.hpp>
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
 #endif
-#include <ql/models/marketmodels/all.hpp>
+#include <ql/models/marketmodels/marketmodel.hpp>
+#include <ql/models/marketmodels/accountingengine.hpp>
+#include <ql/models/marketmodels/pathwiseaccountingengine.hpp>
+#include <ql/models/marketmodels/products/multiproductcomposite.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepswap.hpp>
+#include <ql/models/marketmodels/products/multistep/callspecifiedmultiproduct.hpp>
+#include <ql/models/marketmodels/products/multistep/exerciseadapter.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepnothing.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepinversefloater.hpp>
+#include <ql/models/marketmodels/products/pathwise/pathwiseproductswap.hpp>
+#include <ql/models/marketmodels/products/pathwise/pathwiseproductinversefloater.hpp>
+#include <ql/models/marketmodels/products/pathwise/pathwiseproductcallspecified.hpp>
+#include <ql/models/marketmodels/models/flatvol.hpp>
+#include <ql/models/marketmodels/callability/swapratetrigger.hpp>
+#include <ql/models/marketmodels/callability/swapbasissystem.hpp>
+#include <ql/models/marketmodels/callability/swapforwardbasissystem.hpp>
+#include <ql/models/marketmodels/callability/nothingexercisevalue.hpp>
+#include <ql/models/marketmodels/callability/collectnodedata.hpp>
+#include <ql/models/marketmodels/callability/lsstrategy.hpp>
+#include <ql/models/marketmodels/callability/upperboundengine.hpp>
+#include <ql/models/marketmodels/correlations/expcorrelations.hpp>
+#include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
+#include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdratepc.hpp>
+#include <ql/models/marketmodels/evolvers/lognormalfwdrateeuler.hpp>
+#include <ql/models/marketmodels/pathwisegreeks/bumpinstrumentjacobian.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
 #include <ql/methods/montecarlo/genericlsregression.hpp>
 #include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
@@ -35,7 +61,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/statistics/convergencestatistics.hpp>
 #include <ql/termstructures/volatility/abcd.hpp>
 #include <ql/termstructures/volatility/abcdcalibration.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <sstream>
@@ -44,19 +69,8 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    Integer sessionId() { return 0; }
-
-}
-#endif
-
-
-std::vector<std::vector<Matrix> > theVegaBumps(bool factorwiseBumping,
-                                               boost::shared_ptr<MarketModel> marketModel,
-                                               bool doCaps)
-{
+std::vector<std::vector<Matrix> >
+theVegaBumps(bool factorwiseBumping, const ext::shared_ptr<MarketModel>& marketModel, bool doCaps) {
     Real multiplierCutOff = 50.0;
     Real projectionTolerance = 1E-4;
     Size numberRates= marketModel->numberOfRates();
@@ -170,7 +184,7 @@ int Bermudan()
         CallSpecifiedMultiProduct(receiverSwap, naifStrategy,
         ExerciseAdapter(nullRebate));
 
-    EvolutionDescription evolution = dummyProduct.evolution();
+    const EvolutionDescription& evolution = dummyProduct.evolution();
 
 
     // parameters for models
@@ -220,13 +234,13 @@ int Bermudan()
 
     FlatVol  calibration(
         volatilities,
-        boost::shared_ptr<PiecewiseConstantCorrelation>(new  ExponentialForwardCorrelation(correlations)),
+        ext::shared_ptr<PiecewiseConstantCorrelation>(new  ExponentialForwardCorrelation(correlations)),
         evolution,
         numberOfFactors,
         initialRates,
         displacements);
 
-    boost::shared_ptr<MarketModel> marketModel(new FlatVol(calibration));
+    ext::shared_ptr<MarketModel> marketModel(new FlatVol(calibration));
 
     // we use a factory since there is data that will only be known later
     SobolBrownianGeneratorFactory generatorFactory(
@@ -240,7 +254,7 @@ int Bermudan()
         numeraires   // numeraires for each step
         );
 
-    boost::shared_ptr<MarketModelEvolver> evolverPtr(new LogNormalFwdRatePc(evolver));
+    ext::shared_ptr<MarketModelEvolver> evolverPtr(new LogNormalFwdRatePc(evolver));
 
     int t1= clock();
 
@@ -299,8 +313,8 @@ int Bermudan()
 
     std::vector<Real> means(stats.mean());
 
-    for (Size i=0; i < means.size(); ++i)
-        std::cout << means[i] << "\n";
+    for (Real mean : means)
+        std::cout << mean << "\n";
 
     std::cout << " time to build strategy, " << (t2-t1)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";
     std::cout << " time to price, " << (t3-t2)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";
@@ -344,7 +358,7 @@ int Bermudan()
             doCaps));
 
         PathwiseVegasOuterAccountingEngine
-            accountingEngineVegas(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolverEuler)),
+            accountingEngineVegas(ext::make_shared<LogNormalFwdRateEuler>(evolverEuler),
             callableProductPathwisePtr,
             marketModel,
             theBumps,
@@ -379,66 +393,58 @@ int Bermudan()
         std::cout << " total Vega, " << totalVega << "\n";
     }
 
-    bool doUpperBound = true;
+    // upper bound
 
-    if (doUpperBound)
-    {
+    MTBrownianGeneratorFactory uFactory(seed+142);
 
-        // upper bound
-
-        MTBrownianGeneratorFactory uFactory(seed+142);
-
-
-        boost::shared_ptr<MarketModelEvolver> upperEvolver(new LogNormalFwdRatePc( boost::shared_ptr<MarketModel>(new FlatVol(calibration)),
+    ext::shared_ptr<MarketModelEvolver> upperEvolver(new LogNormalFwdRatePc( ext::shared_ptr<MarketModel>(new FlatVol(calibration)),
             uFactory,
             numeraires   // numeraires for each step
             ));
 
-        std::vector<boost::shared_ptr<MarketModelEvolver> > innerEvolvers;
+    std::vector<ext::shared_ptr<MarketModelEvolver> > innerEvolvers;
 
-        std::valarray<bool> isExerciseTime =   isInSubset(evolution.evolutionTimes(),    exerciseStrategy.exerciseTimes());
+    std::valarray<bool> isExerciseTime =   isInSubset(evolution.evolutionTimes(),    exerciseStrategy.exerciseTimes());
 
-        for (Size s=0; s < isExerciseTime.size(); ++s)
+    for (Size s=0; s < isExerciseTime.size(); ++s)
+    {
+        if (isExerciseTime[s])
         {
-            if (isExerciseTime[s])
-            {
-                MTBrownianGeneratorFactory iFactory(seed+s);
-                boost::shared_ptr<MarketModelEvolver> e =boost::shared_ptr<MarketModelEvolver> (static_cast<MarketModelEvolver*>(new   LogNormalFwdRatePc(boost::shared_ptr<MarketModel>(new FlatVol(calibration)),
+            MTBrownianGeneratorFactory iFactory(seed+s);
+            ext::shared_ptr<MarketModelEvolver> e =ext::shared_ptr<MarketModelEvolver> (static_cast<MarketModelEvolver*>(new   LogNormalFwdRatePc(ext::shared_ptr<MarketModel>(new FlatVol(calibration)),
                     uFactory,
                     numeraires ,  // numeraires for each step
                     s)));
 
-                innerEvolvers.push_back(e);
-            }
+            innerEvolvers.push_back(e);
         }
-
-
-
-        UpperBoundEngine uEngine(upperEvolver,  // does outer paths
-            innerEvolvers, // for sub-simulations that do continuation values
-            receiverSwap,
-            nullRebate,
-            receiverSwap,
-            nullRebate,
-            exerciseStrategy,
-            initialNumeraireValue);
-
-        Statistics uStats;
-        Size innerPaths = 255;
-        Size outerPaths =256;
-
-        int t4 = clock();
-
-        uEngine.multiplePathValues(uStats,outerPaths,innerPaths);
-        Real upperBound = uStats.mean();
-        Real upperSE = uStats.errorEstimate();
-
-        int t5=clock();
-
-        std::cout << " Upper - lower is, " << upperBound << ", with standard error " << upperSE << "\n";
-        std::cout << " time to compute upper bound is,  " << (t5-t4)/static_cast<Real>(CLOCKS_PER_SEC) << ", seconds.\n";
-
     }
+
+
+
+    UpperBoundEngine uEngine(upperEvolver,  // does outer paths
+                             innerEvolvers, // for sub-simulations that do continuation values
+                             receiverSwap,
+                             nullRebate,
+                             receiverSwap,
+                             nullRebate,
+                             exerciseStrategy,
+                             initialNumeraireValue);
+
+    Statistics uStats;
+    Size innerPaths = 255;
+    Size outerPaths =256;
+
+    int t4 = clock();
+
+    uEngine.multiplePathValues(uStats,outerPaths,innerPaths);
+    Real upperBound = uStats.mean();
+    Real upperSE = uStats.errorEstimate();
+
+    int t5=clock();
+
+    std::cout << " Upper - lower is, " << upperBound << ", with standard error " << upperSE << "\n";
+    std::cout << " time to compute upper bound is,  " << (t5-t4)/static_cast<Real>(CLOCKS_PER_SEC) << ", seconds.\n";
 
     return 0;
 }
@@ -511,7 +517,7 @@ int InverseFloater(Real rateLevel)
         CallSpecifiedMultiProduct(inverseFloater, naifStrategy,
         ExerciseAdapter(nullRebate));
 
-    EvolutionDescription evolution = dummyProduct.evolution();
+    const EvolutionDescription& evolution = dummyProduct.evolution();
 
 
     // parameters for models
@@ -568,13 +574,13 @@ int InverseFloater(Real rateLevel)
 
     FlatVol  calibration(
         volatilities,
-        boost::shared_ptr<PiecewiseConstantCorrelation>(new  ExponentialForwardCorrelation(correlations)),
+        ext::shared_ptr<PiecewiseConstantCorrelation>(new  ExponentialForwardCorrelation(correlations)),
         evolution,
         numberOfFactors,
         initialRates,
         displacements);
 
-    boost::shared_ptr<MarketModel> marketModel(new FlatVol(calibration));
+    ext::shared_ptr<MarketModel> marketModel(new FlatVol(calibration));
 
     // we use a factory since there is data that will only be known later
     SobolBrownianGeneratorFactory generatorFactory(
@@ -588,7 +594,7 @@ int InverseFloater(Real rateLevel)
         numeraires   // numeraires for each step
         );
 
-    boost::shared_ptr<MarketModelEvolver> evolverPtr(new LogNormalFwdRatePc(evolver));
+    ext::shared_ptr<MarketModelEvolver> evolverPtr(new LogNormalFwdRatePc(evolver));
 
     int t1= clock();
 
@@ -640,8 +646,8 @@ int InverseFloater(Real rateLevel)
 
     std::vector<Real> means(stats.mean());
 
-    for (Size i=0; i < means.size(); ++i)
-        std::cout << means[i] << "\n";
+    for (Real mean : means)
+        std::cout << mean << "\n";
 
     std::cout << " time to build strategy, " << (t2-t1)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";
     std::cout << " time to price, " << (t3-t2)/static_cast<Real>(CLOCKS_PER_SEC)<< ", seconds.\n";
@@ -688,7 +694,7 @@ int InverseFloater(Real rateLevel)
             doCaps));
 
         PathwiseVegasOuterAccountingEngine
-            accountingEngineVegas(boost::shared_ptr<LogNormalFwdRateEuler>(new LogNormalFwdRateEuler(evolverEuler)),
+            accountingEngineVegas(ext::make_shared<LogNormalFwdRateEuler>(evolverEuler),
    //         pathwiseInverseFloaterPtr,
             callableProductPathwisePtr,
             marketModel,
@@ -724,67 +730,59 @@ int InverseFloater(Real rateLevel)
         std::cout << " total Vega, " << totalVega << "\n";
     }
 
-    bool doUpperBound = true;
+    // upper bound
 
-    if (doUpperBound)
-    {
-
-        // upper bound
-
-        MTBrownianGeneratorFactory uFactory(seed+142);
+    MTBrownianGeneratorFactory uFactory(seed+142);
 
 
-        boost::shared_ptr<MarketModelEvolver> upperEvolver(new LogNormalFwdRatePc( boost::shared_ptr<MarketModel>(new FlatVol(calibration)),
+    ext::shared_ptr<MarketModelEvolver> upperEvolver(new LogNormalFwdRatePc( ext::shared_ptr<MarketModel>(new FlatVol(calibration)),
             uFactory,
             numeraires   // numeraires for each step
             ));
 
-        std::vector<boost::shared_ptr<MarketModelEvolver> > innerEvolvers;
+    std::vector<ext::shared_ptr<MarketModelEvolver> > innerEvolvers;
 
-        std::valarray<bool> isExerciseTime =   isInSubset(evolution.evolutionTimes(),    exerciseStrategy.exerciseTimes());
+    std::valarray<bool> isExerciseTime =   isInSubset(evolution.evolutionTimes(),    exerciseStrategy.exerciseTimes());
 
-        for (Size s=0; s < isExerciseTime.size(); ++s)
+    for (Size s=0; s < isExerciseTime.size(); ++s)
+    {
+        if (isExerciseTime[s])
         {
-            if (isExerciseTime[s])
-            {
-                MTBrownianGeneratorFactory iFactory(seed+s);
-                boost::shared_ptr<MarketModelEvolver> e =boost::shared_ptr<MarketModelEvolver> (static_cast<MarketModelEvolver*>(new   LogNormalFwdRatePc(boost::shared_ptr<MarketModel>(new FlatVol(calibration)),
+            MTBrownianGeneratorFactory iFactory(seed+s);
+            ext::shared_ptr<MarketModelEvolver> e =ext::shared_ptr<MarketModelEvolver> (static_cast<MarketModelEvolver*>(new   LogNormalFwdRatePc(ext::shared_ptr<MarketModel>(new FlatVol(calibration)),
                     uFactory,
                     numeraires ,  // numeraires for each step
                     s)));
 
-                innerEvolvers.push_back(e);
-            }
+            innerEvolvers.push_back(e);
         }
-
-
-
-        UpperBoundEngine uEngine(upperEvolver,  // does outer paths
-            innerEvolvers, // for sub-simulations that do continuation values
-            inverseFloater,
-            nullRebate,
-            inverseFloater,
-            nullRebate,
-            exerciseStrategy,
-            initialNumeraireValue);
-
-        Statistics uStats;
-        Size innerPaths = 255;
-        Size outerPaths =256;
-
-        int t4 = clock();
-
-        uEngine.multiplePathValues(uStats,outerPaths,innerPaths);
-        Real upperBound = uStats.mean();
-        Real upperSE = uStats.errorEstimate();
-
-        int t5=clock();
-
-        std::cout << " Upper - lower is, " << upperBound << ", with standard error " << upperSE << "\n";
-        std::cout << " time to compute upper bound is,  " << (t5-t4)/static_cast<Real>(CLOCKS_PER_SEC) << ", seconds.\n";
-
     }
 
+
+
+    UpperBoundEngine uEngine(upperEvolver,  // does outer paths
+                             innerEvolvers, // for sub-simulations that do continuation values
+                             inverseFloater,
+                             nullRebate,
+                             inverseFloater,
+                             nullRebate,
+                             exerciseStrategy,
+                             initialNumeraireValue);
+
+    Statistics uStats;
+    Size innerPaths = 255;
+    Size outerPaths =256;
+
+    int t4 = clock();
+
+    uEngine.multiplePathValues(uStats,outerPaths,innerPaths);
+    Real upperBound = uStats.mean();
+    Real upperSE = uStats.errorEstimate();
+
+    int t5=clock();
+
+    std::cout << " Upper - lower is, " << upperBound << ", with standard error " << upperSE << "\n";
+    std::cout << " time to compute upper bound is,  " << (t5-t4)/static_cast<Real>(CLOCKS_PER_SEC) << ", seconds.\n";
 
 
     return 0;

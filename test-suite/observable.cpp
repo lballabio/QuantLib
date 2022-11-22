@@ -19,30 +19,47 @@
 
 #include "observable.hpp"
 #include "utilities.hpp"
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/capfloor/capfloortermvolsurface.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionlet.hpp>
+#include <ql/termstructures/volatility/optionlet/strippedoptionletadapter.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <chrono>
+#include <thread>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 namespace {
+
     class UpdateCounter : public Observer {
       public:
-        UpdateCounter() : counter_(0) {}
-        void update() {
-            ++counter_;
-        }
-        Size counter() { return counter_; }
+        UpdateCounter() = default;
+        void update() override { ++counter_; }
+        Size counter() const { return counter_; }
+
       private:
-        Size counter_;
+        Size counter_ = 0;
     };
+
+    class RestoreUpdates {
+      public:
+        ~RestoreUpdates() {
+            ObservableSettings::instance().enableUpdates();
+        }
+    };
+
 }
 
 void ObservableTest::testObservableSettings() {
 
     BOOST_TEST_MESSAGE("Testing observable settings...");
 
-    const boost::shared_ptr<SimpleQuote> quote(new SimpleQuote(100.0));
+    const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(100.0));
     UpdateCounter updateCounter;
 
     updateCounter.registerWith(quote);
@@ -93,10 +110,9 @@ void ObservableTest::testObservableSettings() {
 
 #ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
 
-#include <boost/atomic.hpp>
-#include <boost/thread/locks.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/thread.hpp>
+#include <atomic>
+#include <mutex>
+#include <thread>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 
 #include <list>
@@ -118,18 +134,18 @@ namespace {
         static int instanceCounter() { return instanceCounter_; }
 
       private:
-        boost::atomic<int> counter_;
-        static boost::atomic<int> instanceCounter_;
+        std::atomic<int> counter_;
+        static std::atomic<int> instanceCounter_;
     };
 
-    boost::atomic<int> MTUpdateCounter::instanceCounter_(0);
+    std::atomic<int> MTUpdateCounter::instanceCounter_(0);
 
     class GarbageCollector {
       public:
         GarbageCollector() : terminate_(false) { }
 
-        void addObj(const boost::shared_ptr<MTUpdateCounter>& updateCounter) {
-            boost::lock_guard<boost::mutex> lock(mutex_);
+        void addObj(const ext::shared_ptr<MTUpdateCounter>& updateCounter) {
+            std::lock_guard<std::mutex> lock(mutex_);
             objList.push_back(updateCounter);
         }
 
@@ -137,20 +153,20 @@ namespace {
             while(!terminate_) {
                 Size objListSize;
                 {
-                    boost::lock_guard<boost::mutex> lock(mutex_);
+                    std::lock_guard<std::mutex> lock(mutex_);
                     objListSize = objList.size();
                 }
 
                 if (objListSize > 20) {
                     // trigger gc
                     while (objListSize > 0) {
-                        boost::lock_guard<boost::mutex> lock(mutex_);
+                        std::lock_guard<std::mutex> lock(mutex_);
                         objList.pop_front();
                         objListSize = objList.size();
                     }
                 }
 
-                boost::this_thread::sleep(boost::posix_time::milliseconds(2));
+                std::this_thread::sleep_for(std::chrono::milliseconds(2));
             }
             objList.clear();
         }
@@ -159,10 +175,10 @@ namespace {
             terminate_ = true;
         }
       private:
-        boost::mutex mutex_;
-        boost::atomic<bool> terminate_;
+        std::mutex mutex_;
+        std::atomic<bool> terminate_;
 
-        std::list<boost::shared_ptr<MTUpdateCounter> > objList;
+        std::list<ext::shared_ptr<MTUpdateCounter> > objList;
     };
 }
 
@@ -175,13 +191,13 @@ void ObservableTest::testAsyncGarbagCollector() {
     // of the observer pattern (comparable situation
     // in JVM or .NET eco systems).
 
-    const boost::shared_ptr<SimpleQuote> quote(new SimpleQuote(-1.0));
+    const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(-1.0));
 
     GarbageCollector gc;
-    boost::thread workerThread(&GarbageCollector::run, &gc);
+    std::thread workerThread(&GarbageCollector::run, &gc);
 
     for (Size i=0; i < 10000; ++i) {
-        const boost::shared_ptr<MTUpdateCounter> observer(new MTUpdateCounter);
+        const ext::shared_ptr<MTUpdateCounter> observer(new MTUpdateCounter);
         observer->registerWith(quote);
         gc.addObj(observer);
 
@@ -202,18 +218,18 @@ void ObservableTest::testMultiThreadingGlobalSettings() {
 	BOOST_TEST_MESSAGE("Testing observer global settings in a "
 		               "multithreading environment...");
 	
-	const boost::shared_ptr<SimpleQuote> quote(new SimpleQuote(-1.0));
+	const ext::shared_ptr<SimpleQuote> quote(new SimpleQuote(-1.0));
 
     ObservableSettings::instance().disableUpdates(true);
 
     GarbageCollector gc;
-    boost::thread workerThread(&GarbageCollector::run, &gc);
+    std::thread workerThread(&GarbageCollector::run, &gc);
 
-    typedef std::list<boost::shared_ptr<MTUpdateCounter> > local_list_type;
+    typedef std::list<ext::shared_ptr<MTUpdateCounter> > local_list_type;
     local_list_type localList;
 
     for (Size i=0; i < 4000; ++i) {
-        const boost::shared_ptr<MTUpdateCounter> observer(new MTUpdateCounter);
+        const ext::shared_ptr<MTUpdateCounter> observer(new MTUpdateCounter);
         observer->registerWith(quote);
 
         if ((i%4) == 0) {
@@ -227,7 +243,7 @@ void ObservableTest::testMultiThreadingGlobalSettings() {
     gc.terminate();
     workerThread.join();
 
-    if (localList.size() != MTUpdateCounter::instanceCounter()) {
+    if (localList.size() != Size(MTUpdateCounter::instanceCounter())) {
         BOOST_FAIL("garbage collection does not work.");
     }
 
@@ -249,10 +265,141 @@ void ObservableTest::testMultiThreadingGlobalSettings() {
 }
 #endif
 
+void ObservableTest::testDeepUpdate() {
+
+    SavedSettings backup;
+    RestoreUpdates guard;
+
+    Date refDate = Settings::instance().evaluationDate();
+
+    ObservableSettings::instance().disableUpdates(true);
+
+    Handle<YieldTermStructure> yts(
+        ext::make_shared<FlatForward>(0, NullCalendar(), 0.02, Actual365Fixed()));
+    ext::shared_ptr<IborIndex> ibor = ext::make_shared<Euribor>(3 * Months, yts);
+    ext::shared_ptr<SimpleQuote> q = ext::make_shared<SimpleQuote>(0.20);
+    std::vector<Real> strikes = {0.01, 0.02};
+    std::vector<Date> dates = {refDate + 90, refDate + 180};
+    std::vector<std::vector<Handle<Quote> > > quotes = {
+        {Handle<Quote>(q), Handle<Quote>(q)},
+        {Handle<Quote>(q), Handle<Quote>(q)}
+    };
+
+    ext::shared_ptr<StrippedOptionletAdapter> vol =
+        ext::make_shared<StrippedOptionletAdapter>(ext::make_shared<StrippedOptionlet>(
+            0, NullCalendar(), Unadjusted, ibor, dates, strikes, quotes, Actual365Fixed()));
+
+    Real v1 = vol->volatility(refDate + 100, 0.01);
+    q->setValue(0.21);
+    Real v2 = vol->volatility(refDate + 100, 0.01);
+    vol->update();
+    Real v3 = vol->volatility(refDate + 100, 0.01);
+    vol->deepUpdate();
+    Real v4 = vol->volatility(refDate + 100, 0.01);
+
+    QL_CHECK_CLOSE(v1, 0.2, 1E-10);
+    QL_CHECK_CLOSE(v2, 0.2, 1E-10);
+    QL_CHECK_CLOSE(v3, 0.2, 1E-10);
+    QL_CHECK_CLOSE(v4, 0.21, 1E-10);
+}
+
+namespace {
+	class DummyObserver : public Observer {
+	  public:
+            DummyObserver() = default;
+            void update() override {}
+        };
+}
+
+void ObservableTest::testEmptyObserverList() {
+	BOOST_TEST_MESSAGE("Testing unregisterWith call on empty observer...");
+
+    SavedSettings backup;
+
+    const ext::shared_ptr<DummyObserver> dummyObserver=ext::make_shared<DummyObserver>();
+    dummyObserver->unregisterWith(ext::make_shared<SimpleQuote>(10.0));
+}
+
+void ObservableTest::testAddAndDeleteObserverDuringNotifyObservers() {
+    BOOST_TEST_MESSAGE("Testing addition and deletion of observers during notifyObserver...");
+
+    const ext::shared_ptr<MersenneTwisterUniformRng> rng
+        = ext::make_shared<MersenneTwisterUniformRng>();
+
+    const Size nrInitialObserver = 20;
+    const Size nrDeleteDuringUpdate = 5;
+    const Size nrAdditionalObserver = 100;
+    const Size testRuns = 100;
+
+    class TestSetup {
+      public:
+        explicit TestSetup(ext::shared_ptr<MersenneTwisterUniformRng> m)
+        : rng(std::move(m)), observable(ext::make_shared<Observable>()) {}
+
+        ext::shared_ptr<MersenneTwisterUniformRng> rng;
+        ext::shared_ptr<Observable> observable;
+        std::vector<ext::shared_ptr<Observer> > expected;
+        std::vector<ext::shared_ptr<Observer> > additinalObservers;
+    };
+
+    class TestObserver: public Observer {
+      public:
+        explicit TestObserver(TestSetup* setup = nullptr) : setup_(setup) {}
+
+        void update() override {
+            ++updates_;
+
+            if (setup_ != nullptr) {
+                for (Size i=0; i < nrAdditionalObserver; ++i) {
+                    const ext::shared_ptr<Observer> obs
+                        = ext::make_shared<TestObserver>();
+
+                    obs->registerWith(setup_->observable);
+                    setup_->additinalObservers.push_back(obs);
+                }
+
+                for (Size i=0; i < nrDeleteDuringUpdate; ++i) {
+                    const unsigned int j
+                        = setup_->rng->nextInt32() % setup_->expected.size();
+
+                    if (setup_->expected[j].get() != this)
+                        setup_->expected.erase(setup_->expected.begin()+j);
+                }
+            }
+        }
+
+        Size getUpdates() const { return updates_; }
+
+      private:
+        TestSetup* const setup_;
+        Size updates_ = 0;
+    };
+
+    for (Size t=0; t < testRuns; ++t) {
+        const ext::shared_ptr<TestSetup> setup = ext::make_shared<TestSetup>(rng);
+
+        for (Size i=0; i < nrInitialObserver; ++i) {
+            const ext::shared_ptr<Observer> obs = 
+                (i == nrInitialObserver/3 || i == nrInitialObserver/2)
+                ? ext::make_shared<TestObserver>(setup.get())
+                : ext::make_shared<TestObserver>();
+
+            obs->registerWith(setup->observable);
+            setup->expected.push_back(obs);
+        }
+
+        setup->observable->notifyObservers();
+
+        for (const auto& obs : setup->expected)
+            if (ext::dynamic_pointer_cast<TestObserver>(obs)->getUpdates() == 0) {
+                BOOST_FAIL("missed observer update detected");
+            }
+    }
+}
 
 
 test_suite* ObservableTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Observer tests");
+    auto* suite = BOOST_TEST_SUITE("Observer tests");
 
     suite->add(QUANTLIB_TEST_CASE(&ObservableTest::testObservableSettings));
 
@@ -262,6 +409,10 @@ test_suite* ObservableTest::suite() {
         &ObservableTest::testMultiThreadingGlobalSettings));
 #endif
 
+    suite->add(QUANTLIB_TEST_CASE(&ObservableTest::testDeepUpdate));
+    suite->add(QUANTLIB_TEST_CASE(&ObservableTest::testEmptyObserverList));
+    suite->add(QUANTLIB_TEST_CASE(
+        &ObservableTest::testAddAndDeleteObserverDuringNotifyObservers));
     return suite;
 }
 

@@ -19,16 +19,16 @@
 */
 
 #include <ql/pricingengines/capfloor/mchullwhiteengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     namespace detail {
 
-        HullWhiteCapFloorPricer::HullWhiteCapFloorPricer(
-                                    const CapFloor::arguments& args,
-                                    const boost::shared_ptr<HullWhite>& model,
-                                    Time forwardMeasureTime)
-        : args_(args), model_(model), forwardMeasureTime_(forwardMeasureTime) {
+        HullWhiteCapFloorPricer::HullWhiteCapFloorPricer(const CapFloor::arguments& args,
+                                                         ext::shared_ptr<HullWhite> model,
+                                                         Time forwardMeasureTime)
+        : args_(args), model_(std::move(model)), forwardMeasureTime_(forwardMeasureTime) {
             endDiscount_ =
                 model_->termStructure()->discount(forwardMeasureTime_);
 

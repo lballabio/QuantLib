@@ -54,20 +54,20 @@ namespace QuantLib {
         class results;
 
         AssetSwap(bool payBondCoupon,
-                  const boost::shared_ptr<Bond>& bond,
+                  ext::shared_ptr<Bond> bond,
                   Real bondCleanPrice,
-                  const boost::shared_ptr<IborIndex>& iborIndex,
+                  const ext::shared_ptr<IborIndex>& iborIndex,
                   Spread spread,
                   const Schedule& floatSchedule = Schedule(),
                   const DayCounter& floatingDayCount = DayCounter(),
                   bool parAssetSwap = true);
 
         AssetSwap(bool parAssetSwap,
-                  const boost::shared_ptr<Bond>& bond,
+                  ext::shared_ptr<Bond> bond,
                   Real bondCleanPrice,
                   Real nonParRepayment,
                   Real gearing,
-                  const boost::shared_ptr<IborIndex>& iborIndex,
+                  const ext::shared_ptr<IborIndex>& iborIndex,
                   Spread spread = 0.0,
                   const DayCounter& floatingDayCount = DayCounter(),
                   Date dealMaturity = Date(),
@@ -83,16 +83,17 @@ namespace QuantLib {
         Spread spread() const { return spread_; }
         Real cleanPrice() const { return bondCleanPrice_; }
         Real nonParRepayment() const { return nonParRepayment_; }
-        const boost::shared_ptr<Bond>& bond() const { return bond_; }
+        const ext::shared_ptr<Bond>& bond() const { return bond_; }
         bool payBondCoupon() const { return (payer_[0] == -1.0); }
         const Leg& bondLeg() const { return legs_[0]; }
         const Leg& floatingLeg() const { return legs_[1]; }
         // other
-        void setupArguments(PricingEngine::arguments* args) const;
-        void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments* args) const override;
+        void fetchResults(const PricingEngine::results*) const override;
+
       private:
-        void setupExpired() const;
-        boost::shared_ptr<Bond> bond_;
+        void setupExpired() const override;
+        ext::shared_ptr<Bond> bond_;
         Real bondCleanPrice_, nonParRepayment_;
         Spread spread_;
         bool parSwap_;
@@ -106,7 +107,7 @@ namespace QuantLib {
     //! %Arguments for asset swap calculation
     class AssetSwap::arguments : public Swap::arguments {
       public:
-        arguments() {}
+        arguments() = default;
         std::vector<Date> fixedResetDates;
         std::vector<Date> fixedPayDates;
         std::vector<Real> fixedCoupons;
@@ -115,7 +116,7 @@ namespace QuantLib {
         std::vector<Date> floatingFixingDates;
         std::vector<Date> floatingPayDates;
         std::vector<Spread> floatingSpreads;
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Results from simple swap calculation
@@ -123,7 +124,7 @@ namespace QuantLib {
       public:
         Spread fairSpread;
         Real fairCleanPrice, fairNonParRepayment;
-        void reset();
+        void reset() override;
     };
 
 }

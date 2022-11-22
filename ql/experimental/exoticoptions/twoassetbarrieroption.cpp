@@ -26,16 +26,15 @@ namespace QuantLib {
     TwoAssetBarrierOption::TwoAssetBarrierOption(
                            Barrier::Type barrierType,
                            Real barrier,
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise)
+                           const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                           const ext::shared_ptr<Exercise>& exercise)
     : Option(payoff, exercise), barrierType_(barrierType), barrier_(barrier) {}
 
     void TwoAssetBarrierOption::setupArguments(
                                        PricingEngine::arguments* args) const {
         Option::setupArguments(args);
-        TwoAssetBarrierOption::arguments* moreArgs =
-            dynamic_cast<TwoAssetBarrierOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        auto* moreArgs = dynamic_cast<TwoAssetBarrierOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->barrierType = barrierType_;
         moreArgs->barrier = barrier_;
     }

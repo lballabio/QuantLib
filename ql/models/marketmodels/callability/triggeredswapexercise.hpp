@@ -29,32 +29,30 @@ namespace QuantLib {
       public:
         TriggeredSwapExercise(const std::vector<Time>& rateTimes,
                               const std::vector<Time>& exerciseTimes,
-                              const std::vector<Rate>& strikes);
+                              std::vector<Rate> strikes);
 
         // NodeDataProvider interface
-        Size numberOfExercises() const;
-        const EvolutionDescription& evolution() const;
-        void nextStep(const CurveState&);
-        void reset();
-        std::valarray<bool> isExerciseTime() const;
-        void values(const CurveState&,
-                    std::vector<Real>& results) const;
+        Size numberOfExercises() const override;
+        const EvolutionDescription& evolution() const override;
+        void nextStep(const CurveState&) override;
+        void reset() override;
+        std::valarray<bool> isExerciseTime() const override;
+        void values(const CurveState&, std::vector<Real>& results) const override;
 
         // ParametricExercise interface
-        std::vector<Size> numberOfVariables() const;
-        std::vector<Size> numberOfParameters() const;
+        std::vector<Size> numberOfVariables() const override;
+        std::vector<Size> numberOfParameters() const override;
         bool exercise(Size exerciseNumber,
                       const std::vector<Real>& parameters,
-                      const std::vector<Real>& variables) const;
-        void guess(Size exerciseNumber,
-                   std::vector<Real>& parameters) const;
+                      const std::vector<Real>& variables) const override;
+        void guess(Size exerciseNumber, std::vector<Real>& parameters) const override;
 
-        std::auto_ptr<MarketModelParametricExercise> clone() const;
+        std::unique_ptr<MarketModelParametricExercise> clone() const override;
 
       private:
         std::vector<Time> rateTimes_, exerciseTimes_;
         std::vector<Rate> strikes_;
-        Size currentStep_;
+        Size currentStep_ = 0;
         std::vector<Size> rateIndex_;
         EvolutionDescription evolution_;
     };

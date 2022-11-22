@@ -17,32 +17,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/analytictwoassetbarrierengine.hpp>
 #include <ql/exercise.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/experimental/exoticoptions/analytictwoassetbarrierengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticTwoAssetBarrierEngine::AnalyticTwoAssetBarrierEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process1,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process2,
-            const Handle<Quote>& rho)
-    : process1_(process1), process2_(process2), rho_(rho) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+        Handle<Quote> rho)
+    : process1_(std::move(process1)), process2_(std::move(process2)), rho_(std::move(rho)) {
         registerWith(process1_);
         registerWith(process2_);
         registerWith(rho_);
     }
 
     void AnalyticTwoAssetBarrierEngine::calculate() const {
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         QL_REQUIRE(payoff->strike()>0.0,"strike must be positive");
 
         Real spot2 = process2_->x0();
         // option is triggered by S2
-        QL_REQUIRE(spot2 >= 0.0, "negative or null underlying given");
+        QL_REQUIRE(spot2 > 0.0, "negative or null underlying given");
         QL_REQUIRE(!triggered(spot2), "barrier touched");
 
         Barrier::Type barrierType = arguments_.barrierType;
@@ -94,8 +95,8 @@ namespace QuantLib {
     }
 
     Real AnalyticTwoAssetBarrierEngine::strike() const {
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }

@@ -49,9 +49,9 @@ namespace QuantLib {
         return done || currentIndex_ == isExerciseTime_.size();
     }
 
-    std::auto_ptr<MarketModelMultiProduct> ExerciseAdapter::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
-                                                  new ExerciseAdapter(*this));
+    std::unique_ptr<MarketModelMultiProduct>
+    ExerciseAdapter::clone() const {
+        return std::unique_ptr<MarketModelMultiProduct>(new ExerciseAdapter(*this));
     }
 
 }

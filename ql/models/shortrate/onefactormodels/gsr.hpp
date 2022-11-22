@@ -35,28 +35,32 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
 
   public:
     // constant mean reversion
-    Gsr(const Handle<YieldTermStructure> &termStructure,
-        const std::vector<Date> &volstepdates,
-        const std::vector<Real> &volatilities, const Real reversion,
-        const Real T = 60.0);
+    Gsr(const Handle<YieldTermStructure>& termStructure,
+        std::vector<Date> volstepdates,
+        const std::vector<Real>& volatilities,
+        Real reversion,
+        Real T = 60.0);
     // piecewise mean reversion (with same step dates as volatilities)
-    Gsr(const Handle<YieldTermStructure> &termStructure,
-        const std::vector<Date> &volstepdates,
-        const std::vector<Real> &volatilities,
-        const std::vector<Real> &reversions, const Real T = 60.0);
+    Gsr(const Handle<YieldTermStructure>& termStructure,
+        std::vector<Date> volstepdates,
+        const std::vector<Real>& volatilities,
+        const std::vector<Real>& reversions,
+        Real T = 60.0);
     // constant mean reversion with floating model data
-    Gsr(const Handle<YieldTermStructure> &termStructure,
-        const std::vector<Date> &volstepdates,
-        const std::vector<Handle<Quote> > &volatilities,
-        const Handle<Quote> reversion, const Real T = 60.0);
+    Gsr(const Handle<YieldTermStructure>& termStructure,
+        std::vector<Date> volstepdates,
+        std::vector<Handle<Quote> > volatilities,
+        const Handle<Quote>& reversion,
+        Real T = 60.0);
     // piecewise mean reversion with floating model data
-    Gsr(const Handle<YieldTermStructure> &termStructure,
-        const std::vector<Date> &volstepdates,
-        const std::vector<Handle<Quote> > &volatilities,
-        const std::vector<Handle<Quote> > &reversions, const Real T = 60.0);
+    Gsr(const Handle<YieldTermStructure>& termStructure,
+        std::vector<Date> volstepdates,
+        std::vector<Handle<Quote> > volatilities,
+        std::vector<Handle<Quote> > reversions,
+        Real T = 60.0);
 
     Real numeraireTime() const;
-    void numeraireTime(const Real T);
+    void numeraireTime(Real T);
 
     const Array &reversion() const { return reversion_.params(); }
     const Array &volatility() const { return sigma_.params(); }
@@ -64,7 +68,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     // calibration constraints
 
     // fixed reversions, only volatilities are free
-    Disposable<std::vector<bool> > FixedReversions() {
+    std::vector<bool> FixedReversions() {
         std::vector<bool> res(reversions_.size(), true);
         std::vector<bool> vol(volatilities_.size(), false);
         res.insert(res.end(), vol.begin(), vol.end());
@@ -72,14 +76,14 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     }
 
     // fixed volatilities, only reversions are free
-    Disposable<std::vector<bool> > FixedVolatilities() {
+    std::vector<bool> FixedVolatilities() {
         std::vector<bool> res(reversions_.size(), false);
         std::vector<bool> vol(volatilities_.size(), true);
         res.insert(res.end(), vol.begin(), vol.end());
         return res;
     }
 
-    Disposable<std::vector<bool> > MoveVolatility(Size i) {
+    std::vector<bool> MoveVolatility(Size i) {
         QL_REQUIRE(i < volatilities_.size(),
                    "volatility with index " << i << " does not exist (0..."
                                             << volatilities_.size() - 1 << ")");
@@ -88,7 +92,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         return res;
     }
 
-    Disposable<std::vector<bool> > MoveReversion(Size i) {
+    std::vector<bool> MoveReversion(Size i) {
         QL_REQUIRE(i < reversions_.size(),
                    "reversion with index " << i << " does not exist (0..."
                                            << reversions_.size() - 1 << ")");
@@ -104,13 +108,13 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     // we do not need a step). Also note that the endcritera reflect
     // only the status of the last calibration when using this method.
     void calibrateVolatilitiesIterative(
-        const std::vector<boost::shared_ptr<CalibrationHelper> > &helpers,
+        const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &helpers,
         OptimizationMethod &method, const EndCriteria &endCriteria,
         const Constraint &constraint = Constraint(),
         const std::vector<Real> &weights = std::vector<Real>()) {
 
         for (Size i = 0; i < helpers.size(); i++) {
-            std::vector<boost::shared_ptr<CalibrationHelper> > h(1, helpers[i]);
+            std::vector<ext::shared_ptr<CalibrationHelper> > h(1, helpers[i]);
             calibrate(h, method, endCriteria, constraint, weights,
                       MoveVolatility(i));
         }
@@ -120,33 +124,31 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     // to the given helpers. In this case the step dates must be chosen
     // according to the maturities of the calibration instruments.
     void calibrateReversionsIterative(
-        const std::vector<boost::shared_ptr<CalibrationHelper> > &helpers,
+        const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &helpers,
         OptimizationMethod &method, const EndCriteria &endCriteria,
         const Constraint &constraint = Constraint(),
         const std::vector<Real> &weights = std::vector<Real>()) {
 
         for (Size i = 0; i < helpers.size(); i++) {
-            std::vector<boost::shared_ptr<CalibrationHelper> > h(1, helpers[i]);
+            std::vector<ext::shared_ptr<CalibrationHelper> > h(1, helpers[i]);
             calibrate(h, method, endCriteria, constraint, weights,
                       MoveReversion(i));
         }
     }
 
   protected:
-    Real numeraireImpl(const Time t, const Real y,
-                       const Handle<YieldTermStructure> &yts) const;
+    Real numeraireImpl(Time t, Real y, const Handle<YieldTermStructure>& yts) const override;
 
-    Real zerobondImpl(const Time T, const Time t, const Real y,
-                      const Handle<YieldTermStructure> &yts) const;
+    Real zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const override;
 
-    void generateArguments() {
-        boost::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
+    void generateArguments() override {
+        ext::static_pointer_cast<GsrProcess>(stateProcess_)->flushCache();
         notifyObservers();
     }
 
-    void update();
+    void update() override;
 
-    void performCalculations() const {
+    void performCalculations() const override {
         Gaussian1dModel::performCalculations();
         updateTimes();
     }
@@ -171,26 +173,26 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
 
     struct VolatilityObserver : public Observer {
         explicit VolatilityObserver(Gsr *p) : p_(p) {}
-        void update() { p_->updateVolatility(); }
+        void update() override { p_->updateVolatility(); }
         Gsr *p_;
     };
     struct ReversionObserver : public Observer {
         explicit ReversionObserver(Gsr *p) : p_(p) {}
-        void update() { p_->updateReversion(); }
+        void update() override { p_->updateReversion(); }
         Gsr *p_;
     };
 
-    boost::shared_ptr<VolatilityObserver> volatilityObserver_;
-    boost::shared_ptr<ReversionObserver> reversionObserver_;
+    ext::shared_ptr<VolatilityObserver> volatilityObserver_;
+    ext::shared_ptr<ReversionObserver> reversionObserver_;
 };
 
 inline Real Gsr::numeraireTime() const {
-    return boost::dynamic_pointer_cast<GsrProcess>(stateProcess_)
+    return ext::dynamic_pointer_cast<GsrProcess>(stateProcess_)
         ->getForwardMeasureTime();
 }
 
 inline void Gsr::numeraireTime(const Real T) {
-    boost::dynamic_pointer_cast<GsrProcess>(stateProcess_)
+    ext::dynamic_pointer_cast<GsrProcess>(stateProcess_)
         ->setForwardMeasureTime(T);
 }
 }

@@ -41,13 +41,11 @@ namespace QuantLib {
 
         //! \name constructors
         //@{
-        Histogram()
-        : bins_(0), algorithm_(Algorithm(-1)) {}
+        Histogram() : algorithm_(Algorithm(-1)) {}
 
         template <class T>
         Histogram(T data_begin, T data_end, Size breaks)
-        : data_(data_begin,data_end), bins_(breaks+1),
-          algorithm_(None) {
+        : data_(data_begin, data_end), bins_(breaks + 1) {
             calculate();
         }
 
@@ -59,10 +57,8 @@ namespace QuantLib {
         }
 
         template <class T, class U>
-        Histogram(T data_begin, T data_end,
-                  U breaks_begin, U breaks_end)
-        : data_(data_begin,data_end), bins_(Null<Size>()),
-          algorithm_(None), breaks_(breaks_begin,breaks_end) {
+        Histogram(T data_begin, T data_end, U breaks_begin, U breaks_end)
+        : data_(data_begin, data_end), bins_(Null<Size>()), breaks_(breaks_begin, breaks_end) {
             bins_ = breaks_.size()+1;
             calculate();
         }
@@ -83,8 +79,8 @@ namespace QuantLib {
         //@}
       private:
         std::vector<Real> data_;
-        Size bins_;
-        Algorithm algorithm_;
+        Size bins_ = 0;
+        Algorithm algorithm_ = None;
         std::vector<Real> breaks_;
         std::vector<Size> counts_;
         std::vector<Real> frequency_;

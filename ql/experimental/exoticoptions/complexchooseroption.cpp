@@ -20,7 +20,6 @@
 #include <ql/experimental/exoticoptions/complexchooseroption.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -28,9 +27,9 @@ namespace QuantLib {
         Date choosingDate,
         Real strikeCall,
         Real strikePut,
-        const boost::shared_ptr<Exercise>& exerciseCall,
-        const boost::shared_ptr<Exercise>& exercisePut)
-    : OneAssetOption(boost::make_shared<PlainVanillaPayoff>(Option::Call,
+        const ext::shared_ptr<Exercise>& exerciseCall,
+        const ext::shared_ptr<Exercise>& exercisePut)
+    : OneAssetOption(ext::make_shared<PlainVanillaPayoff>(Option::Call,
                                                             strikeCall),
                      exerciseCall),
       choosingDate_(choosingDate),
@@ -42,9 +41,8 @@ namespace QuantLib {
     void ComplexChooserOption::setupArguments(
                                        PricingEngine::arguments* args) const {
         OneAssetOption::setupArguments(args);
-        ComplexChooserOption::arguments* moreArgs =
-            dynamic_cast<ComplexChooserOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        auto* moreArgs = dynamic_cast<ComplexChooserOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
         moreArgs->choosingDate=choosingDate_;
         moreArgs->strikeCall=strikeCall_;
         moreArgs->strikePut=strikePut_;

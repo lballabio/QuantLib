@@ -21,11 +21,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/swaptions/irregularswaption.hpp>
-#include <ql/pricingengines/swaption/blackswaptionengine.hpp>
-#include <ql/math/solvers1d/newtonsafe.hpp>
-#include <ql/quotes/simplequote.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/swaptions/irregularswaption.hpp>
+#include <ql/math/solvers1d/newtonsafe.hpp>
+#include <ql/pricingengines/swaption/blackswaptionengine.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -34,27 +35,27 @@ namespace QuantLib {
         class IrregularImpliedVolHelper {
           public:
             IrregularImpliedVolHelper(const IrregularSwaption&,
-                                      const Handle<YieldTermStructure>& discountCurve,
+                                      Handle<YieldTermStructure> discountCurve,
                                       Real targetValue);
             Real operator()(Volatility x) const;
             Real derivative(Volatility x) const;
           private:
-            boost::shared_ptr<PricingEngine> engine_;
+            ext::shared_ptr<PricingEngine> engine_;
             Handle<YieldTermStructure> discountCurve_;
             Real targetValue_;
-            boost::shared_ptr<SimpleQuote> vol_;
+            ext::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
         };
 
         IrregularImpliedVolHelper::IrregularImpliedVolHelper(
-                                                              const IrregularSwaption& swaption,
-                                                              const Handle<YieldTermStructure>& discountCurve,
-                                                              Real targetValue)
-        : discountCurve_(discountCurve), targetValue_(targetValue) {
+            const IrregularSwaption& swaption,
+            Handle<YieldTermStructure> discountCurve,
+            Real targetValue)
+        : discountCurve_(std::move(discountCurve)), targetValue_(targetValue),
+          vol_(ext::make_shared<SimpleQuote>(-1.0)) {
 
-            vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(-1.0));
             Handle<Quote> h(vol_);
-            engine_ = boost::shared_ptr<PricingEngine>(new
+            engine_ = ext::shared_ptr<PricingEngine>(new
                                     BlackSwaptionEngine(discountCurve_, h));
             swaption.setupArguments(engine_->getArguments());
 
@@ -75,8 +76,7 @@ namespace QuantLib {
                 vol_->setValue(x);
                 engine_->calculate();
             }
-            std::map<std::string,boost::any>::const_iterator vega_ =
-                results_->additionalResults.find("vega");
+            auto vega_ = results_->additionalResults.find("vega");
             QL_REQUIRE(vega_ != results_->additionalResults.end(),
                        "vega not provided");
             return boost::any_cast<Real>(vega_->second);
@@ -95,10 +95,10 @@ namespace QuantLib {
         }
     }
 
-    IrregularSwaption::IrregularSwaption(const boost::shared_ptr<IrregularSwap>& swap,
-                                         const boost::shared_ptr<Exercise>& exercise,
+    IrregularSwaption::IrregularSwaption(ext::shared_ptr<IrregularSwap> swap,
+                                         const ext::shared_ptr<Exercise>& exercise,
                                          IrregularSettlement::Type delivery)
-    : Option(boost::shared_ptr<Payoff>(), exercise), swap_(swap),
+    : Option(ext::shared_ptr<Payoff>(), exercise), swap_(std::move(swap)),
       settlementType_(delivery) {
         registerWith(swap_);
     }
@@ -111,10 +111,9 @@ namespace QuantLib {
 
         swap_->setupArguments(args);
 
-        IrregularSwaption::arguments* arguments =
-            dynamic_cast<IrregularSwaption::arguments*>(args);
+        auto* arguments = dynamic_cast<IrregularSwaption::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->swap = swap_;
         arguments->settlementType = settlementType_;

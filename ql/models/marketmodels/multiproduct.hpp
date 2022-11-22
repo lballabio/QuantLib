@@ -53,7 +53,7 @@ namespace QuantLib {
             Size timeIndex;
             Real amount;
         };
-        virtual ~MarketModelMultiProduct() {}
+        virtual ~MarketModelMultiProduct() = default;
 
         virtual std::vector<Size> suggestedNumeraires() const = 0;
         virtual const EvolutionDescription& evolution() const = 0;
@@ -68,7 +68,7 @@ namespace QuantLib {
             std::vector<Size>& numberCashFlowsThisStep,
             std::vector<std::vector<CashFlow> >& cashFlowsGenerated) = 0;
         //! returns a newly-allocated copy of itself
-        virtual std::auto_ptr<MarketModelMultiProduct> clone() const = 0;
+        virtual std::unique_ptr<MarketModelMultiProduct> clone() const = 0;
     };
 
 }

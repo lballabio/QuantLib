@@ -46,24 +46,25 @@ namespace QuantLib {
           typedef FdmExtOUJumpModelInnerValue::Shape PowerShape;
 
           FdKlugeExtOUSpreadEngine(
-              const boost::shared_ptr<KlugeExtOUProcess>& klugeOUProcess,
-              const boost::shared_ptr<YieldTermStructure>& rTS,
-              Size tGrid = 25, Size xGrid = 50, Size yGrid = 10, Size uGrid=25,
-              const boost::shared_ptr<GasShape>& gasShape
-                  = boost::shared_ptr<GasShape>(),
-              const boost::shared_ptr<PowerShape>& powerShape
-                  = boost::shared_ptr<PowerShape>(),
-              const FdmSchemeDesc& schemeDesc=FdmSchemeDesc::Hundsdorfer());
+              ext::shared_ptr<KlugeExtOUProcess> klugeOUProcess,
+              ext::shared_ptr<YieldTermStructure> rTS,
+              Size tGrid = 25,
+              Size xGrid = 50,
+              Size yGrid = 10,
+              Size uGrid = 25,
+              ext::shared_ptr<GasShape> gasShape = ext::shared_ptr<GasShape>(),
+              ext::shared_ptr<PowerShape> powerShape = ext::shared_ptr<PowerShape>(),
+              const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
-        void calculate() const;
+          void calculate() const override;
 
-      private:
-        const boost::shared_ptr<KlugeExtOUProcess> klugeOUProcess_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
-        const Size tGrid_, xGrid_, yGrid_, uGrid_;
-        const boost::shared_ptr<GasShape> gasShape_;
-        const boost::shared_ptr<PowerShape> powerShape_;
-        const FdmSchemeDesc schemeDesc_;
+        private:
+          const ext::shared_ptr<KlugeExtOUProcess> klugeOUProcess_;
+          const ext::shared_ptr<YieldTermStructure> rTS_;
+          const Size tGrid_, xGrid_, yGrid_, uGrid_;
+          const ext::shared_ptr<GasShape> gasShape_;
+          const ext::shared_ptr<PowerShape> powerShape_;
+          const FdmSchemeDesc schemeDesc_;
     };
 }
 

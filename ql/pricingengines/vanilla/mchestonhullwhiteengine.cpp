@@ -22,17 +22,15 @@
 */
 
 #include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     HestonHullWhitePathPricer::HestonHullWhitePathPricer(
-              Time exerciseTime,
-              const boost::shared_ptr<Payoff> & payoff,
-              const boost::shared_ptr<HybridHestonHullWhiteProcess> & process)
-    : exerciseTime_(exerciseTime),
-      payoff_(payoff),
-      process_(process) {
-    }
+        Time exerciseTime,
+        ext::shared_ptr<Payoff> payoff,
+        ext::shared_ptr<HybridHestonHullWhiteProcess> process)
+    : exerciseTime_(exerciseTime), payoff_(std::move(payoff)), process_(std::move(process)) {}
 
     Real HestonHullWhitePathPricer::operator()(const MultiPath& path) const {
         QL_REQUIRE(path.pathSize() > 0, "the path cannot be empty");

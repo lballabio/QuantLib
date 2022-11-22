@@ -25,8 +25,9 @@
 #ifndef quantlib_forward_spreaded_term_structure_hpp
 #define quantlib_forward_spreaded_term_structure_hpp
 
-#include <ql/termstructures/yield/forwardstructure.hpp>
 #include <ql/quote.hpp>
+#include <ql/termstructures/yield/forwardstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -45,37 +46,35 @@ namespace QuantLib {
     */
     class ForwardSpreadedTermStructure : public ForwardRateStructure {
       public:
-        ForwardSpreadedTermStructure(const Handle<YieldTermStructure>&,
-                                     const Handle<Quote>& spread);
+        ForwardSpreadedTermStructure(Handle<YieldTermStructure>, Handle<Quote> spread);
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Date maxDate() const;
-        Time maxTime() const;
-        const Date& referenceDate() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
+        DayCounter dayCounter() const override;
+        Date maxDate() const override;
+        Time maxTime() const override;
+        const Date& referenceDate() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       protected:
         //! \name ForwardRateStructure implementation
         //@{
-        Rate forwardImpl(Time t) const;
+        Rate forwardImpl(Time t) const override;
         /* This method must disappear should the spread become a curve */
-        Rate zeroYieldImpl(Time t) const;
+        Rate zeroYieldImpl(Time t) const override;
         //@}
       private:
         Handle<YieldTermStructure> originalCurve_;
         Handle<Quote> spread_;
     };
 
-    inline ForwardSpreadedTermStructure::ForwardSpreadedTermStructure(
-                                          const Handle<YieldTermStructure>& h,
-                                          const Handle<Quote>& spread)
-    : originalCurve_(h), spread_(spread) {
+    inline ForwardSpreadedTermStructure::ForwardSpreadedTermStructure(Handle<YieldTermStructure> h,
+                                                                      Handle<Quote> spread)
+    : originalCurve_(std::move(h)), spread_(std::move(spread)) {
         registerWith(originalCurve_);
         registerWith(spread_);
     }
@@ -112,6 +111,7 @@ namespace QuantLib {
                asks for our reference date, which we don't have since
                the original curve is still not set. Therefore, we skip
                over that and just call the base-class behavior. */
+            // NOLINTNEXTLINE(bugprone-parent-virtual-call)
             TermStructure::update();
         }
     }

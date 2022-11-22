@@ -1,2 +1,5 @@
 add_executable(MultidimIntegral MultidimIntegral.cpp)
-target_link_libraries(MultidimIntegral QuantLib)
+target_link_libraries(MultidimIntegral ql_library ${QL_THREAD_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS MultidimIntegral RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

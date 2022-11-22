@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2008 Allen Kuo
+ Copyright (C) 2021, 2022 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,43 +25,77 @@ namespace QuantLib {
     namespace {
 
         bool withinNextWeek(Time t1, Time t2) {
-            static const Time dt = 1.0/52;
-            return t1 <= t2 && t2 <= t1+dt;
+            static const Time dt = 1.0 / 52;
+            return t1 <= t2 && t2 <= t1 + dt;
         }
 
     }
 
 
     DiscretizedCallableFixedRateBond::DiscretizedCallableFixedRateBond(
-                                          const CallableBond::arguments& args,
-                                          const Date& referenceDate,
-                                          const DayCounter& dayCounter)
-    : arguments_(args) {
+        const CallableBond::arguments& args, const Handle<YieldTermStructure>& termStructure)
+    : arguments_(args), adjustedCallabilityPrices_(args.callabilityPrices) {
 
-        redemptionTime_ = dayCounter.yearFraction(referenceDate,
-                                                  args.redemptionDate);
+        auto dayCounter = termStructure->dayCounter();
+        auto referenceDate = termStructure->referenceDate();
+
+        redemptionTime_ = dayCounter.yearFraction(referenceDate, args.redemptionDate);
+
+        /* By default the coupon adjustment should take place in
+         * DiscretizedCallableFixedRateBond::postAdjustValuesImpl(). */
+        couponAdjustments_ =
+            std::vector<CouponAdjustment>(args.couponDates.size(), CouponAdjustment::post);
 
         couponTimes_.resize(args.couponDates.size());
-        for (Size i=0; i<couponTimes_.size(); ++i)
-            couponTimes_[i] =
-                dayCounter.yearFraction(referenceDate,
-                                        args.couponDates[i]);
+        for (Size i = 0; i < couponTimes_.size(); ++i) {
+            couponTimes_[i] = dayCounter.yearFraction(referenceDate, args.couponDates[i]);
+        }
 
         callabilityTimes_.resize(args.callabilityDates.size());
-        for (Size i=0; i<callabilityTimes_.size(); ++i)
-            callabilityTimes_[i] =
-                dayCounter.yearFraction(referenceDate,
-                                        args.callabilityDates[i]);
+        for (Size i = 0; i < callabilityTimes_.size(); ++i) {
+            const Date callabilityDate = args.callabilityDates[i];
+            Time callabilityTime = dayCounter.yearFraction(referenceDate, args.callabilityDates[i]);
 
-        // similar to the tree swaption engine, we collapse similar coupon
-        // and exercise dates to avoid mispricing. Delete if unnecessary.
+            // To avoid mispricing, we snap exercise dates to the closest coupon date.
+            for (Size j = 0; j < couponTimes_.size(); j++) {
+                const Time couponTime = couponTimes_[j];
+                const Date couponDate = args.couponDates[j];
 
-        for (Size i=0; i<callabilityTimes_.size(); i++) {
-            Time exerciseTime = callabilityTimes_[i];
-            for (Size j=0; j<couponTimes_.size(); j++) {
-                if (withinNextWeek(exerciseTime, couponTimes_[j]))
-                    couponTimes_[j] = exerciseTime;
+                if (withinNextWeek(callabilityTime, couponTime) && callabilityDate < couponDate) {
+                    // Snap the exercise date.
+                    callabilityTime = couponTime;
+
+                    /* The order of events must be changed here. In
+                     * DiscretizedCallableFixedRateBond::postAdjustValuesImpl() the callability is
+                     * done before adding of the coupon. However from the
+                     * DiscretizedAsset::rollback(Time to) perspective the coupon must be added
+                     * before the callability as it is later in time. */
+                    couponAdjustments_[j] = CouponAdjustment::pre;
+
+                    /* We snapped the callabilityTime so we need to take into account the missing
+                     * discount factor including any possible spread e.g. set in the OAS
+                     * calculation. */
+                    auto spread  = arguments_.spread;
+                    auto calcDiscountFactorInclSpread = [&termStructure, spread](Date date) {
+                        auto time = termStructure->timeFromReference(date);
+                        auto zeroRateInclSpread =
+                            termStructure->zeroRate(date, termStructure->dayCounter(), Continuous,
+                                                    NoFrequency) +
+                            spread;
+                        auto df = std::exp(-zeroRateInclSpread * time);
+                        return df;
+                    };
+
+                    auto dfTillCallDate = calcDiscountFactorInclSpread(callabilityDate);
+                    auto dfTillCouponDate = calcDiscountFactorInclSpread(couponDate);
+                    adjustedCallabilityPrices_[i] *= dfTillCallDate / dfTillCouponDate;
+
+                    break;
+                }
             }
+
+            adjustedCallabilityPrices_[i] *= arguments_.faceAmount / 100.0;
+            callabilityTimes_[i] = callabilityTime;
         }
     }
 
@@ -81,14 +116,14 @@ namespace QuantLib {
             times.push_back(t);
         }
 
-        for (i=0; i<couponTimes_.size(); i++) {
+        for (i = 0; i < couponTimes_.size(); i++) {
             t = couponTimes_[i];
             if (t >= 0.0) {
                 times.push_back(t);
             }
         }
 
-        for (i=0; i<callabilityTimes_.size(); i++) {
+        for (i = 0; i < callabilityTimes_.size(); i++) {
             t = callabilityTimes_[i];
             if (t >= 0.0) {
                 times.push_back(t);
@@ -99,20 +134,32 @@ namespace QuantLib {
     }
 
 
-    void DiscretizedCallableFixedRateBond::preAdjustValuesImpl() { }
+    void DiscretizedCallableFixedRateBond::preAdjustValuesImpl() {
+        for (Size i = 0; i < couponTimes_.size(); i++) {
+            if (couponAdjustments_[i] == CouponAdjustment::pre) {
+                Time t = couponTimes_[i];
+                if (t >= 0.0 && isOnTime(t)) {
+                    addCoupon(i);
+                }
+            }
+        }
+    }
 
 
     void DiscretizedCallableFixedRateBond::postAdjustValuesImpl() {
-        for (Size i=0; i<callabilityTimes_.size(); i++) {
+        for (Size i = 0; i < callabilityTimes_.size(); i++) {
             Time t = callabilityTimes_[i];
             if (t >= 0.0 && isOnTime(t)) {
                 applyCallability(i);
             }
         }
-        for (Size i=0; i<couponTimes_.size(); i++) {
-            Time t = couponTimes_[i];
-            if (t >= 0.0 && isOnTime(t)) {
-                addCoupon(i);
+        for (Size i = 0; i < couponTimes_.size(); i++) {
+            if (couponAdjustments_[i] == CouponAdjustment::post) {
+                Time t = couponTimes_[i];
+                if (t >= 0.0 && isOnTime(t)) {
+                    /* Exercise and coupon date matches. */
+                    addCoupon(i);
+                }
             }
         }
     }
@@ -120,22 +167,19 @@ namespace QuantLib {
 
     void DiscretizedCallableFixedRateBond::applyCallability(Size i) {
         Size j;
-        switch (arguments_.putCallSchedule[i]->type() ) {
-          case Callability::Call:
-            for (j=0; j<values_.size(); j++) {
-                values_[j] =
-                    std::min(arguments_.callabilityPrices[i],
-                             values_[j]);
-            }
-            break;
-          case Callability::Put:
-            for (j=0; j<values_.size(); j++) {
-                values_[j] = std::max(values_[j],
-                                      arguments_.callabilityPrices[i]);
-            }
-            break;
-          default:
-            QL_FAIL("unknown callability type");
+        switch (arguments_.putCallSchedule[i]->type()) {
+            case Callability::Call:
+                for (j = 0; j < values_.size(); j++) {
+                    values_[j] = std::min(adjustedCallabilityPrices_[i], values_[j]);
+                }
+                break;
+            case Callability::Put:
+                for (j = 0; j < values_.size(); j++) {
+                    values_[j] = std::max(values_[j], adjustedCallabilityPrices_[i]);
+                }
+                break;
+            default:
+                QL_FAIL("unknown callability type");
         }
     }
 

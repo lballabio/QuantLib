@@ -37,9 +37,12 @@ namespace QuantLib {
         \ingroup mcarlo
     */
     template<class PathType, class ValueType=Real>
-    class PathPricer : public std::unary_function<PathType, ValueType> {
+    class PathPricer {
       public:
-        virtual ~PathPricer() {}
+        typedef PathType argument_type;
+        typedef ValueType result_type;
+
+        virtual ~PathPricer() = default;
         virtual ValueType operator()(const PathType& path) const=0;
     };
 

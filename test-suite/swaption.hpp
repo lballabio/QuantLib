@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2020 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,6 +22,7 @@
 #define quantlib_test_swaption_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -34,7 +36,10 @@ class SwaptionTest {
     static void testCashSettledSwaptions();
     static void testImpliedVolatility();
     static void testVega();
-    static boost::unit_test_framework::test_suite* suite();
+    static void testSwaptionDeltaInBlackModel();
+    static void testSwaptionDeltaInBachelierModel();
+
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 

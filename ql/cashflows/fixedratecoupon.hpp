@@ -5,6 +5,8 @@
  Copyright (C) 2003, 2004, 2007 StatPro Italia srl
  Copyright (C) 2007 Piter Dias
  Copyright (C) 2010 Ferdinando Ametrano
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -51,7 +53,7 @@ namespace QuantLib {
                         const Date& exCouponDate = Date());
         FixedRateCoupon(const Date& paymentDate,
                         Real nominal,
-                        const InterestRate& interestRate,
+                        InterestRate interestRate,
                         const Date& accrualStartDate,
                         const Date& accrualEndDate,
                         const Date& refPeriodStart = Date(),
@@ -60,18 +62,18 @@ namespace QuantLib {
         //@}
         //! \name CashFlow interface
         //@{
-        Real amount() const;
+        Real amount() const override;
         //@}
         //! \name Coupon interface
         //@{
-        Rate rate() const { return rate_; }
+        Rate rate() const override { return rate_; }
         InterestRate interestRate() const { return rate_; }
-        DayCounter dayCounter() const { return rate_.dayCounter(); }
-        Real accruedAmount(const Date&) const;
+        DayCounter dayCounter() const override { return rate_.dayCounter(); }
+        Real accruedAmount(const Date&) const override;
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
         InterestRate rate_;
@@ -97,7 +99,9 @@ namespace QuantLib {
         FixedRateLeg& withCouponRates(const std::vector<InterestRate>&);
         FixedRateLeg& withPaymentAdjustment(BusinessDayConvention);
         FixedRateLeg& withFirstPeriodDayCounter(const DayCounter&);
+        FixedRateLeg& withLastPeriodDayCounter(const DayCounter&);
         FixedRateLeg& withPaymentCalendar(const Calendar&);
+        FixedRateLeg& withPaymentLag(Natural lag);
         FixedRateLeg& withExCouponPeriod(const Period&,
                                          const Calendar&,
                                          BusinessDayConvention,
@@ -105,21 +109,21 @@ namespace QuantLib {
         operator Leg() const;
       private:
         Schedule schedule_;
-        Calendar calendar_;
         std::vector<Real> notionals_;
         std::vector<InterestRate> couponRates_;
-        DayCounter firstPeriodDC_;
-        BusinessDayConvention paymentAdjustment_;
+        DayCounter firstPeriodDC_ , lastPeriodDC_;
+        Calendar paymentCalendar_;
+        BusinessDayConvention paymentAdjustment_ = Following;
+        Natural paymentLag_ = 0;
         Period exCouponPeriod_;
         Calendar exCouponCalendar_;
-        BusinessDayConvention exCouponAdjustment_;
-        bool exCouponEndOfMonth_;
+        BusinessDayConvention exCouponAdjustment_ = Following;
+        bool exCouponEndOfMonth_ = false;
     };
 
     inline void FixedRateCoupon::accept(AcyclicVisitor& v) {
-        Visitor<FixedRateCoupon>* v1 =
-            dynamic_cast<Visitor<FixedRateCoupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<FixedRateCoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             Coupon::accept(v);

@@ -37,7 +37,7 @@ namespace QuantLib {
                                       Real sig2, Real a, Real b,
                                       Real theta1, Real theta2, Real theta3,
                                       Real psi)
-    : StochasticProcess1D(boost::shared_ptr<discretization>(
+    : StochasticProcess1D(ext::shared_ptr<discretization>(
                                                     new EulerDiscretization)),
       x0_(x0),
       alpha_(alpha), beta_(beta),
@@ -63,11 +63,11 @@ namespace QuantLib {
     }
     
     Real GemanRoncoroniProcess::diffusion(Time t, Real /*x*/) const {
-        return std::sqrt(sig2_ + a_*square<Real>()(std::cos(M_PI*t+b_)));
+        return std::sqrt(sig2_ + a_*squared(std::cos(M_PI*t+b_)));
     }
 
     Real GemanRoncoroniProcess::stdDeviation(Time t0, Real /*x0*/, Time dt) const {
-        const Volatility sig2t = sig2_+a_*square<Real>()(std::cos(M_PI*t0+b_));
+        const Volatility sig2t = sig2_+a_*squared(std::cos(M_PI*t0+b_));
         
         return std::sqrt(sig2t/(2*theta1_)*(1.0-std::exp(-2*theta1_*dt)));
     }
@@ -77,8 +77,7 @@ namespace QuantLib {
         // random number generator for the jump part 
         if (!urng_) {
             typedef PseudoRandom::urng_type urng_type;
-            urng_ = boost::shared_ptr<urng_type>(
-                     new urng_type((unsigned long)(1234ul*dw+56789ul)));
+            urng_ = ext::make_shared<urng_type>((unsigned long)(1234UL * dw + 56789UL));
         }
         Array du(3); 
         du[0] = urng_->next().value; 

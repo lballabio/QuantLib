@@ -43,17 +43,9 @@
 #include <boost/math/bindings/rr.hpp>
 #endif
 
-#if defined(__GNUC__) &&                                                       \
-    (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
 #include <boost/math/special_functions/erf.hpp>
-#include <boost/unordered_map.hpp>
-#if defined(__GNUC__) &&                                                       \
-    (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+
+#include <unordered_map>
 
 namespace QuantLib {
 
@@ -75,68 +67,73 @@ namespace QuantLib {
 
 class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
   public:
-    const boost::shared_ptr<StochasticProcess1D> stateProcess() const;
+    ext::shared_ptr<StochasticProcess1D> stateProcess() const;
 
-    Real numeraire(const Time t, const Real y = 0.0,
-                   const Handle<YieldTermStructure> &yts =
-                             Handle<YieldTermStructure>()) const;
+    Real numeraire(Time t,
+                   Real y = 0.0,
+                   const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
 
-    Real zerobond(
-        const Time T, const Time t = 0.0, const Real y = 0.0,
-        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>()) const;
+    Real zerobond(Time T,
+                  Time t = 0.0,
+                  Real y = 0.0,
+                  const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
 
-    Real numeraire(const Date &referenceDate, const Real y = 0.0,
-                   const Handle<YieldTermStructure> &yts =
-                             Handle<YieldTermStructure>()) const;
+    Real numeraire(const Date& referenceDate,
+                   Real y = 0.0,
+                   const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
 
-    Real zerobond(
-        const Date &maturity, const Date &referenceDate = Null<Date>(),
-        const Real y = 0.0,
-        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>()) const;
+    Real zerobond(const Date& maturity,
+                  const Date& referenceDate = Null<Date>(),
+                  Real y = 0.0,
+                  const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
 
-    Real zerobondOption(
-        const Option::Type &type, const Date &expiry, const Date &valueDate,
-        const Date &maturity, const Rate strike,
-        const Date &referenceDate = Null<Date>(), const Real y = 0.0,
-        const Handle<YieldTermStructure> &yts = Handle<YieldTermStructure>(),
-        const Real yStdDevs = 7.0, const Size yGridPoints = 64,
-        const bool extrapolatePayoff = true,
-        const bool flatPayoffExtrapolation = false) const;
+    Real zerobondOption(const Option::Type& type,
+                        const Date& expiry,
+                        const Date& valueDate,
+                        const Date& maturity,
+                        Rate strike,
+                        const Date& referenceDate = Null<Date>(),
+                        Real y = 0.0,
+                        const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>(),
+                        Real yStdDevs = 7.0,
+                        Size yGridPoints = 64,
+                        bool extrapolatePayoff = true,
+                        bool flatPayoffExtrapolation = false) const;
 
-    Real forwardRate(
-        const Date &fixing, const Date &referenceDate = Null<Date>(),
-        const Real y = 0.0,
-        boost::shared_ptr<IborIndex> iborIdx = boost::shared_ptr<IborIndex>()) const;
+    Real
+    forwardRate(const Date& fixing,
+                const Date& referenceDate = Null<Date>(),
+                Real y = 0.0,
+                const ext::shared_ptr<IborIndex>& iborIdx = ext::shared_ptr<IborIndex>()) const;
 
-    Real swapRate(
-        const Date &fixing, const Period &tenor,
-        const Date &referenceDate = Null<Date>(), const Real y = 0.0,
-        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>()) const;
+    Real swapRate(const Date& fixing,
+                  const Period& tenor,
+                  const Date& referenceDate = Null<Date>(),
+                  Real y = 0.0,
+                  const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
-    Real swapAnnuity(
-        const Date &fixing, const Period &tenor,
-        const Date &referenceDate = Null<Date>(), const Real y = 0.0,
-        boost::shared_ptr<SwapIndex> swapIdx = boost::shared_ptr<SwapIndex>()) const;
+    Real
+    swapAnnuity(const Date& fixing,
+                const Period& tenor,
+                const Date& referenceDate = Null<Date>(),
+                Real y = 0.0,
+                const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
 
     /*! Computes the integral
     \f[ {2\pi}^{-0.5} \int_{a}^{b} p(x) \exp{-0.5*x*x} \mathrm{d}x \f]
     with
     \f[ p(x) = ax^4+bx^3+cx^2+dx+e \f].
     */
-    static Real gaussianPolynomialIntegral(const Real a, const Real b,
-                                           const Real c, const Real d,
-                                           const Real e, const Real x0,
-                                           const Real x1);
+    static Real
+    gaussianPolynomialIntegral(Real a, Real b, Real c, Real d, Real e, Real x0, Real x1);
 
     /*! Computes the integral
     \f[ {2\pi}^{-0.5} \int_{a}^{b} p(x) \exp{-0.5*x*x} \mathrm{d}x \f]
     with
     \f[ p(x) = a(x-h)^4+b(x-h)^3+c(x-h)^2+d(x-h)+e \f].
     */
-    static Real
-    gaussianShiftedPolynomialIntegral(const Real a, const Real b, const Real c,
-                                      const Real d, const Real e, const Real h,
-                                      const Real x0, const Real x1);
+    static Real gaussianShiftedPolynomialIntegral(
+        Real a, Real b, Real c, Real d, Real e, Real h, Real x0, Real x1);
 
     /*! Generates a grid of values for the standardized state variable $y$
        at time $T$
@@ -144,9 +141,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
        consisting of
         2*gridPoints+1 points */
 
-    const Disposable<Array> yGrid(const Real yStdDevs, const int gridPoints,
-                                  const Real T = 1.0, const Real t = 0,
-                                  const Real y = 0) const;
+    Array yGrid(Real yStdDevs, int gridPoints, Real T = 1.0, Real t = 0, Real y = 0) const;
 
   private:
     // It is of great importance for performance reasons to cache underlying
@@ -155,7 +150,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     // one later on.
 
     struct CachedSwapKey {
-        const boost::shared_ptr<SwapIndex> index;
+        const ext::shared_ptr<SwapIndex> index;
         const Date fixing;
         const Period tenor;
         bool operator==(const CachedSwapKey &o) const {
@@ -164,8 +159,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         }
     };
 
-    struct CachedSwapKeyHasher
-        : std::unary_function<CachedSwapKey, std::size_t> {
+    struct CachedSwapKeyHasher {
         std::size_t operator()(CachedSwapKey const &x) const {
             std::size_t seed = 0;
             boost::hash_combine(seed, x.index->name());
@@ -176,10 +170,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         }
     };
 
-    typedef boost::unordered_map<CachedSwapKey, boost::shared_ptr<VanillaSwap>,
-                                 CachedSwapKeyHasher> CacheType;
-
-    mutable CacheType swapCache_;
+    mutable std::unordered_map<CachedSwapKey, ext::shared_ptr<VanillaSwap>, CachedSwapKeyHasher> swapCache_;
 
   protected:
     // we let derived classes register with the termstructure
@@ -188,16 +179,12 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         registerWith(Settings::instance().evaluationDate());
     }
 
-    virtual ~Gaussian1dModel() {}
+    virtual Real numeraireImpl(Time t, Real y, const Handle<YieldTermStructure>& yts) const = 0;
 
     virtual Real
-    numeraireImpl(const Time t, const Real y,
-                  const Handle<YieldTermStructure> &yts) const = 0;
+    zerobondImpl(Time T, Time t, Real y, const Handle<YieldTermStructure>& yts) const = 0;
 
-    virtual Real zerobondImpl(const Time T, const Time t, const Real y,
-                              const Handle<YieldTermStructure> &yts) const = 0;
-
-    void performCalculations() const {
+    void performCalculations() const override {
         evaluationDate_ = Settings::instance().evaluationDate();
         enforcesTodaysHistoricFixings_ =
             Settings::instance().enforcesTodaysHistoricFixings();
@@ -210,14 +197,14 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
 
     // retrieve underlying swap from cache if possible, otherwise
     // create it and store it in the cache
-    boost::shared_ptr<VanillaSwap>
-    underlyingSwap(const boost::shared_ptr<SwapIndex> &index,
+    ext::shared_ptr<VanillaSwap>
+    underlyingSwap(const ext::shared_ptr<SwapIndex> &index,
                    const Date &expiry, const Period &tenor) const {
 
         CachedSwapKey k = {index, expiry, tenor};
-        CacheType::iterator i = swapCache_.find(k);
+        auto i = swapCache_.find(k);
         if (i == swapCache_.end()) {
-            boost::shared_ptr<VanillaSwap> underlying =
+            ext::shared_ptr<VanillaSwap> underlying =
                 index->clone(tenor)->underlyingSwap(expiry);
             swapCache_.insert(std::make_pair(k, underlying));
             return underlying;
@@ -225,15 +212,14 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
         return i->second;
     }
 
-    boost::shared_ptr<StochasticProcess1D> stateProcess_;
+    ext::shared_ptr<StochasticProcess1D> stateProcess_;
     mutable Date evaluationDate_;
     mutable bool enforcesTodaysHistoricFixings_;
 };
 
-inline const boost::shared_ptr<StochasticProcess1D>
-Gaussian1dModel::stateProcess() const {
+inline ext::shared_ptr<StochasticProcess1D> Gaussian1dModel::stateProcess() const {
 
-    QL_REQUIRE(stateProcess_ != NULL, "state process not set");
+    QL_REQUIRE(stateProcess_ != nullptr, "state process not set");
     return stateProcess_;
 }
 

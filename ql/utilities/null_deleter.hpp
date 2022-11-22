@@ -30,7 +30,7 @@
 
 #include <boost/core/null_deleter.hpp>
 namespace QuantLib {
-using boost::null_deleter;
+using boost::null_deleter;   // NOLINT(misc-unused-using-decls)
 }
 
 #else

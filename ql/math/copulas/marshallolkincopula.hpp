@@ -30,8 +30,12 @@
 namespace QuantLib {
 
     //! Marshall-Olkin copula
-    class MarshallOlkinCopula : public std::binary_function<Real,Real,Real> {
+    class MarshallOlkinCopula {
       public:
+        typedef Real first_argument_type;
+        typedef Real second_argument_type;
+        typedef Real result_type;
+
         MarshallOlkinCopula(Real a1, Real a2);
         Real operator()(Real x, Real y) const;
       private:

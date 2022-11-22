@@ -20,13 +20,13 @@
 */
 
 #include <ql/pricingengines/basket/mceuropeanbasketengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    EuropeanMultiPathPricer::EuropeanMultiPathPricer(
-                                const boost::shared_ptr<BasketPayoff>& payoff,
-                                DiscountFactor discount)
-    :  payoff_(payoff), discount_(discount) {}
+    EuropeanMultiPathPricer::EuropeanMultiPathPricer(ext::shared_ptr<BasketPayoff> payoff,
+                                                     DiscountFactor discount)
+    : payoff_(std::move(payoff)), discount_(discount) {}
 
     Real EuropeanMultiPathPricer::operator()(const MultiPath& multiPath)
                                                                       const {

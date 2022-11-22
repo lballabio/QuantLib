@@ -19,12 +19,12 @@
 
 #include <ql/experimental/commodities/commodity.hpp>
 #include <iomanip>
+#include <utility>
 
 namespace QuantLib {
 
-    Commodity::Commodity(
-                      const boost::shared_ptr<SecondaryCosts>& secondaryCosts)
-    : secondaryCosts_(secondaryCosts) {}
+    Commodity::Commodity(ext::shared_ptr<SecondaryCosts> secondaryCosts)
+    : secondaryCosts_(std::move(secondaryCosts)) {}
 
     const SecondaryCostAmounts& Commodity::secondaryCostAmounts() const {
         return secondaryCostAmounts_;
@@ -47,15 +47,13 @@ namespace QuantLib {
         Real totalAmount = 0;
 
         out << "secondary costs" << std::endl;
-        for (SecondaryCostAmounts::const_iterator i = secondaryCostAmounts.begin();
-             i != secondaryCostAmounts.end(); ++i) {
-            Real amount = i->second.value();
-            if (currencyCode == "")
-                currencyCode = i->second.currency().code();
+        for (const auto& secondaryCostAmount : secondaryCostAmounts) {
+            Real amount = secondaryCostAmount.second.value();
+            if (currencyCode.empty())
+                currencyCode = secondaryCostAmount.second.currency().code();
             totalAmount += amount;
-            out << std::setw(28) << std::left << i->first
-                << std::setw(12) << std::right << std::fixed
-                << std::setprecision(2) << amount << " " << currencyCode
+            out << std::setw(28) << std::left << secondaryCostAmount.first << std::setw(12)
+                << std::right << std::fixed << std::setprecision(2) << amount << " " << currencyCode
                 << std::endl;
         }
         out << std::setw(28) << std::left << "total"
@@ -82,17 +80,16 @@ namespace QuantLib {
             break;
         }
         out << error.error;
-        if (error.detail != "")
+        if (!error.detail.empty())
             out << ": " << error.detail;
         return out;
     }
 
     std::ostream& operator<<(std::ostream& out, const PricingErrors& errors) {
-        if (errors.size() > 0) {
+        if (!errors.empty()) {
             out << "*** pricing errors" << std::endl;
-            for (PricingErrors::const_iterator i = errors.begin();
-                 i != errors.end(); ++i)
-                out << *i << std::endl;
+            for (const auto& error : errors)
+                out << error << std::endl;
         }
         return out;
     }

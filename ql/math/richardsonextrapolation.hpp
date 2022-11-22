@@ -25,7 +25,7 @@
 
 #include <ql/types.hpp>
 #include <ql/utilities/null.hpp>
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
@@ -47,7 +47,7 @@ namespace QuantLib {
            \param delta_h step size
            \param n if known, n is the order of convergence
          */
-        RichardsonExtrapolation(const boost::function<Real (Real)>& f,
+        RichardsonExtrapolation(const ext::function<Real (Real)>& f,
                                 Real delta_h, Real n = Null<Real>());
 
 
@@ -66,7 +66,7 @@ namespace QuantLib {
         const Real delta_h_;
         const Real fdelta_h_;
         const Real n_;
-        const boost::function<Real (Real)> f_;
+        const ext::function<Real (Real)> f_;
     };
 }
 

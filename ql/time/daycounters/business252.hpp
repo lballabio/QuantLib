@@ -25,9 +25,10 @@
 #ifndef quantlib_business252_day_counter_hpp
 #define quantlib_business252_day_counter_hpp
 
-#include <ql/time/daycounter.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/calendars/brazil.hpp>
+#include <ql/time/daycounter.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -39,19 +40,15 @@ namespace QuantLib {
           private:
             Calendar calendar_;
           public:
-            std::string name() const;
-            Date::serial_type dayCount(const Date& d1,
-                                       const Date& d2) const;
-            Time yearFraction(const Date& d1,
-                              const Date& d2,
-                              const Date&,
-                              const Date&) const;
-            Impl(Calendar c) { calendar_ = c; }
+            std::string name() const override;
+            Date::serial_type dayCount(const Date& d1, const Date& d2) const override;
+            Time
+            yearFraction(const Date& d1, const Date& d2, const Date&, const Date&) const override;
+            explicit Impl(Calendar c) : calendar_(std::move(c)) {}
         };
       public:
-        Business252(Calendar c = Brazil())
-        : DayCounter(boost::shared_ptr<DayCounter::Impl>(
-                                                 new Business252::Impl(c))) {}
+        Business252(const Calendar& c = Brazil())
+        : DayCounter(ext::shared_ptr<DayCounter::Impl>(new Business252::Impl(c))) {}
     };
 
 }

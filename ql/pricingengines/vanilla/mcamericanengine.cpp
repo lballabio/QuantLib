@@ -21,40 +21,33 @@
     \brief Monte Carlo engine for vanilla american options
 */
 
-#include <ql/pricingengines/vanilla/mcamericanengine.hpp>
 #include <ql/errors.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
-#include <boost/bind.hpp>
-
-using boost::bind;
+#include <ql/pricingengines/vanilla/mcamericanengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    AmericanPathPricer::AmericanPathPricer(
-        const boost::shared_ptr<Payoff>& payoff,
-        Size polynomOrder,
-        LsmBasisSystem::PolynomType polynomType)
-    : scalingValue_(1.0),
-      payoff_      (payoff),
-      v_           (LsmBasisSystem::pathBasisSystem(polynomOrder,
-                                                    polynomType)) {
+    AmericanPathPricer::AmericanPathPricer(ext::shared_ptr<Payoff> payoff,
+                                           Size polynomialOrder,
+                                           LsmBasisSystem::PolynomialType polynomialType)
+    : payoff_(std::move(payoff)),
+      v_(LsmBasisSystem::pathBasisSystem(polynomialOrder, polynomialType)) {
 
-        QL_REQUIRE(   polynomType == LsmBasisSystem::Monomial
-                   || polynomType == LsmBasisSystem::Laguerre
-                   || polynomType == LsmBasisSystem::Hermite
-                   || polynomType == LsmBasisSystem::Hyperbolic
-                   || polynomType == LsmBasisSystem::Chebyshev2nd,
-                   "insufficient polynom type");
+        QL_REQUIRE(   polynomialType == LsmBasisSystem::Monomial
+                   || polynomialType == LsmBasisSystem::Laguerre
+                   || polynomialType == LsmBasisSystem::Hermite
+                   || polynomialType == LsmBasisSystem::Hyperbolic
+                   || polynomialType == LsmBasisSystem::Chebyshev2nd,
+                   "insufficient polynomial type");
 
         // the payoff gives an additional value
-        v_.push_back(boost::bind(&AmericanPathPricer::payoff, this, _1));
+        v_.emplace_back([&](Real state){ return this->payoff(state); });
 
-        const boost::shared_ptr<StrikedTypePayoff> strikePayoff
-            = boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+        const ext::shared_ptr<StrikedTypePayoff> strikePayoff
+            = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
 
-        if (strikePayoff) {
-            // FLOATING_POINT_EXCEPTION
+        if (strikePayoff != nullptr) {
             scalingValue_/=strikePayoff->strike();
         }
     }
@@ -73,7 +66,7 @@ namespace QuantLib {
         return path[t]*scalingValue_;
     }
 
-    std::vector<boost::function1<Real, Real> >
+    std::vector<ext::function<Real(Real)> >
     AmericanPathPricer::basisSystem() const {
         return v_;
     }

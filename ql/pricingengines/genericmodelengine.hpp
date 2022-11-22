@@ -25,8 +25,9 @@
 #ifndef quantlib_generic_model_engine_hpp
 #define quantlib_generic_model_engine_hpp
 
-#include <ql/pricingengine.hpp>
 #include <ql/handle.hpp>
+#include <ql/pricingengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,11 +39,11 @@ namespace QuantLib {
     class GenericModelEngine
         : public GenericEngine<ArgumentsType, ResultsType> {
       public:
-        GenericModelEngine(const Handle<ModelType>& model = Handle<ModelType>())
-        : model_(model) {
+        explicit GenericModelEngine(Handle<ModelType> model = Handle<ModelType>())
+        : model_(std::move(model)) {
             this->registerWith(model_);
         }
-        GenericModelEngine(const boost::shared_ptr<ModelType>& model)
+        explicit GenericModelEngine(const ext::shared_ptr<ModelType>& model)
         : model_(model) {
             this->registerWith(model_);
         }

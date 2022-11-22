@@ -30,8 +30,8 @@
 namespace QuantLib {
 
     FdmHullWhiteOp::FdmHullWhiteOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<HullWhite>& model,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<HullWhite>& model,
         Size direction)
     : direction_(direction),
       x_(mesher->locations(direction)),
@@ -43,13 +43,11 @@ namespace QuantLib {
       model_(model) {
     }
 
-    Size FdmHullWhiteOp::size() const {
-        return 1u;
-    }
+    Size FdmHullWhiteOp::size() const { return 1U; }
 
     void FdmHullWhiteOp::setTime(Time t1, Time t2) {
 
-        const boost::shared_ptr<OneFactorModel::ShortRateDynamics> dynamics =
+        const ext::shared_ptr<OneFactorModel::ShortRateDynamics> dynamics =
             model_->dynamics();
 
         const Real phi = 0.5*(  dynamics->shortRate(t1, 0.0)
@@ -58,48 +56,38 @@ namespace QuantLib {
         mapT_.axpyb(Array(), dzMap_, dzMap_, -(x_+phi));
     }
 
-    Disposable<Array> FdmHullWhiteOp::apply(const Array& r) const {
+    Array FdmHullWhiteOp::apply(const Array& r) const {
         return mapT_.apply(r);
     }
 
-    Disposable<Array> FdmHullWhiteOp::apply_mixed(const Array& r) const {
-        Array retVal(r.size(), 0.0);
-        return retVal;
+    Array FdmHullWhiteOp::apply_mixed(const Array& r) const {
+        return Array(r.size(), 0.0);
     }
 
-    Disposable<Array>
-    FdmHullWhiteOp::apply_direction(Size direction, const Array& r) const {
+    Array FdmHullWhiteOp::apply_direction(Size direction, const Array& r) const {
         if (direction == direction_)
             return mapT_.apply(r);
         else {
-            Array retVal(r.size(), 0.0);
-            return retVal;
+            return Array(r.size(), 0.0);
         }
     }
 
-    Disposable<Array> FdmHullWhiteOp::solve_splitting(
-        Size direction, const Array& r, Real a) const {
-
+    Array FdmHullWhiteOp::solve_splitting(Size direction, const Array& r, Real a) const {
         if (direction == direction_) {
             return mapT_.solve_splitting(r, a, 1.0);
         }
         else {
-            Array retVal(r.size(), 0.0);
-            return retVal;
+            return Array(r.size(), 0.0);
         }
     }
 
-    Disposable<Array>
-    FdmHullWhiteOp::preconditioner(const Array& r, Real dt) const {
+    Array FdmHullWhiteOp::preconditioner(const Array& r, Real dt) const {
         return solve_splitting(direction_, r, dt);
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-    Disposable<std::vector<SparseMatrix> >
-    FdmHullWhiteOp::toMatrixDecomp() const {
-        std::vector<SparseMatrix> retVal(1, mapT_.toMatrix());
-        return retVal;
+    std::vector<SparseMatrix> FdmHullWhiteOp::toMatrixDecomp() const {
+        return std::vector<SparseMatrix>(1, mapT_.toMatrix());
     }
-#endif
+
 }
 

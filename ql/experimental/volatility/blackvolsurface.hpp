@@ -67,26 +67,26 @@ namespace QuantLib {
         //! \name Black spot volatility
         //@{
         //! returns the smile for a given option tenor
-        boost::shared_ptr<SmileSection> smileSection(const Period&,
+        ext::shared_ptr<SmileSection> smileSection(const Period&,
                                                      bool extrapolate) const;
         //! returns the smile for a given option date
-        boost::shared_ptr<SmileSection> smileSection(const Date&,
+        ext::shared_ptr<SmileSection> smileSection(const Date&,
                                                      bool extrapolate) const;
         //! returns the smile for a given option time
-        boost::shared_ptr<SmileSection> smileSection(Time,
+        ext::shared_ptr<SmileSection> smileSection(Time,
                                                      bool extrapolate) const;
         //@}
         //! \name Visitability
         //@{
-        void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       protected:
         //! \name BlackAtmVolCurve interface
         //@{
         //! spot at-the-money variance calculation
-        Real atmVarianceImpl(Time t) const;
+        Real atmVarianceImpl(Time t) const override;
         //! spot at-the-money volatility calculation
-        Volatility atmVolImpl(Time t) const;
+        Volatility atmVolImpl(Time t) const override;
         //@}
         /*! \name Calculations
 
@@ -96,25 +96,25 @@ namespace QuantLib {
             assume that time-extrapolation is allowed.
         */
         //@{
-        virtual boost::shared_ptr<SmileSection> smileSectionImpl(Time) const=0;
+        virtual ext::shared_ptr<SmileSection> smileSectionImpl(Time) const=0;
         //@}
     };
 
     // inline definitions
 
-    inline boost::shared_ptr<SmileSection>
+    inline ext::shared_ptr<SmileSection>
     BlackVolSurface::smileSection(const Period& p,
                                   bool extrapolate) const {
         return smileSection(optionDateFromTenor(p), extrapolate);
     }
 
-    inline boost::shared_ptr<SmileSection>
+    inline ext::shared_ptr<SmileSection>
     BlackVolSurface::smileSection(const Date& d,
                                   bool extrapolate) const {
         return smileSection(timeFromReference(d), extrapolate);
     }
 
-    inline boost::shared_ptr<SmileSection>
+    inline ext::shared_ptr<SmileSection>
     BlackVolSurface::smileSection(Time t,
                                   bool extrapolate) const {
         checkRange(t, extrapolate);

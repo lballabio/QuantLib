@@ -35,7 +35,7 @@ namespace QuantLib {
     template <class T>
     class BlackScholesLattice : public TreeLattice1D<BlackScholesLattice<T> > {
       public:
-        BlackScholesLattice(const boost::shared_ptr<T>& tree,
+        BlackScholesLattice(const ext::shared_ptr<T>& tree,
                             Rate riskFreeRate,
                             Time end,
                             Size steps);
@@ -58,7 +58,7 @@ namespace QuantLib {
             return tree_->probability(i, index, branch);
         }
       protected:
-        boost::shared_ptr<T> tree_;
+        ext::shared_ptr<T> tree_;
         Rate riskFreeRate_;
         Time dt_;
         DiscountFactor discount_;
@@ -70,16 +70,14 @@ namespace QuantLib {
 
     template <class T>
     BlackScholesLattice<T>::BlackScholesLattice(
-                                            const boost::shared_ptr<T>& tree,
+                                            const ext::shared_ptr<T>& tree,
                                             Rate riskFreeRate,
                                             Time end,
                                             Size steps)
     : TreeLattice1D<BlackScholesLattice<T> >(TimeGrid(end, steps), 2),
       tree_(tree), riskFreeRate_(riskFreeRate), dt_(end/steps),
-      discount_(std::exp(-riskFreeRate*(dt_))) {
-        pd_ = tree->probability(0, 0, 0);
-        pu_ = tree->probability(0, 0, 1);
-    }
+      discount_(std::exp(-riskFreeRate*(dt_))),
+      pd_(tree->probability(0, 0, 0)), pu_(tree->probability(0, 0, 1)) {}
 
     template <class T>
     void BlackScholesLattice<T>::stepback(Size i, const Array& values,

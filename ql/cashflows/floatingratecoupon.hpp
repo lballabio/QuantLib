@@ -49,31 +49,32 @@ namespace QuantLib {
                            const Date& startDate,
                            const Date& endDate,
                            Natural fixingDays,
-                           const boost::shared_ptr<InterestRateIndex>& index,
+                           const ext::shared_ptr<InterestRateIndex>& index,
                            Real gearing = 1.0,
                            Spread spread = 0.0,
                            const Date& refPeriodStart = Date(),
                            const Date& refPeriodEnd = Date(),
-                           const DayCounter& dayCounter = DayCounter(),
-                           bool isInArrears = false);
+                           DayCounter dayCounter = DayCounter(),
+                           bool isInArrears = false,
+                           const Date& exCouponDate = Date());
 
         //! \name CashFlow interface
         //@{
-        Real amount() const { return rate() * accrualPeriod() * nominal(); }
+        Real amount() const override { return rate() * accrualPeriod() * nominal(); }
         //@}
 
         //! \name Coupon interface
         //@{
-        Rate rate() const;
+        Rate rate() const override;
         Real price(const Handle<YieldTermStructure>& discountingCurve) const;
-        DayCounter dayCounter() const { return dayCounter_; }
-        Real accruedAmount(const Date&) const;
+        DayCounter dayCounter() const override { return dayCounter_; }
+        Real accruedAmount(const Date&) const override;
         //@}
 
         //! \name Inspectors
         //@{
         //! floating index
-        const boost::shared_ptr<InterestRateIndex>& index() const;
+        const ext::shared_ptr<InterestRateIndex>& index() const;
         //! fixing days
         Natural fixingDays() const { return fixingDays_; }
         //! fixing date
@@ -94,31 +95,31 @@ namespace QuantLib {
 
         //! \name Observer interface
         //@{
-        void update() { notifyObservers(); }
+        void update() override { notifyObservers(); }
         //@}
 
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
 
-        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>&);
-        boost::shared_ptr<FloatingRateCouponPricer> pricer() const;
+        virtual void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>&);
+        ext::shared_ptr<FloatingRateCouponPricer> pricer() const;
       protected:
         //! convexity adjustment for the given index fixing
         Rate convexityAdjustmentImpl(Rate fixing) const;
-        boost::shared_ptr<InterestRateIndex> index_;
+        ext::shared_ptr<InterestRateIndex> index_;
         DayCounter dayCounter_;
         Natural fixingDays_;
         Real gearing_;
         Spread spread_;
         bool isInArrears_;
-        boost::shared_ptr<FloatingRateCouponPricer> pricer_;
+        ext::shared_ptr<FloatingRateCouponPricer> pricer_;
     };
 
     // inline definitions
 
-    inline const boost::shared_ptr<InterestRateIndex>&
+    inline const ext::shared_ptr<InterestRateIndex>&
     FloatingRateCoupon::index() const {
         return index_;
     }
@@ -131,20 +132,19 @@ namespace QuantLib {
         return (rate()-spread())/gearing();
     }
 
-    inline boost::shared_ptr<FloatingRateCouponPricer>
+    inline ext::shared_ptr<FloatingRateCouponPricer>
     FloatingRateCoupon::pricer() const {
         return pricer_;
     }
 
     inline Rate
     FloatingRateCoupon::convexityAdjustmentImpl(Rate fixing) const {
-        return (gearing() == 0.0 ? 0.0 : adjustedFixing()-fixing);
+        return (gearing() == 0.0 ? Rate(0.0) : Rate(adjustedFixing()-fixing));
     }
 
     inline void FloatingRateCoupon::accept(AcyclicVisitor& v) {
-        Visitor<FloatingRateCoupon>* v1 =
-            dynamic_cast<Visitor<FloatingRateCoupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<FloatingRateCoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             Coupon::accept(v);

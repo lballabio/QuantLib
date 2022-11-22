@@ -102,11 +102,10 @@ const Real density_threshold = 1E-100;
 class NoArbSabrModel {
 
   public:
-    NoArbSabrModel(const Real expiryTime, const Real forward, const Real alpha,
-              const Real beta, const Real nu, const Real rho);
+    NoArbSabrModel(Real expiryTime, Real forward, Real alpha, Real beta, Real nu, Real rho);
 
-    Real optionPrice(const Real strike) const;
-    Real digitalOptionPrice(const Real strike) const;
+    Real optionPrice(Real strike) const;
+    Real digitalOptionPrice(Real strike) const;
     Real density(const Real strike) const {
         return p(strike) * (1 - absProb_) / numericalIntegralOverP_;
     }
@@ -121,20 +120,17 @@ class NoArbSabrModel {
 
     Real absorptionProbability() const { return absProb_; }
 
-    QL_DEPRECATED
-    static void checkAbsorptionMatrix();
-
     private:
-    Real p(const Real f) const;
-    Real forwardError(const Real forward) const;
-    const Real expiryTime_, externalForward_;
-    const Real alpha_, beta_, nu_, rho_;
-    Real absProb_, fmin_, fmax_;
-    mutable Real forward_, numericalIntegralOverP_;
-    mutable Real numericalForward_;
-    boost::shared_ptr<GaussLobattoIntegral> integrator_;
-    class integrand;
-    friend class integrand;
+      Real p(Real f) const;
+      Real forwardError(Real forward) const;
+      const Real expiryTime_, externalForward_;
+      const Real alpha_, beta_, nu_, rho_;
+      Real absProb_, fmin_, fmax_;
+      mutable Real forward_, numericalIntegralOverP_;
+      mutable Real numericalForward_;
+      ext::shared_ptr<GaussLobattoIntegral> integrator_;
+      class integrand;
+      class p_integrand;
 };
 
 namespace detail {
@@ -143,13 +139,12 @@ extern "C" const unsigned long sabrabsprob[1209600];
 
 class D0Interpolator {
   public:
-    D0Interpolator(const Real forward, const Real expiryTime, const Real alpha,
-                   const Real beta, const Real nu, const Real rho);
+    D0Interpolator(Real forward, Real expiryTime, Real alpha, Real beta, Real nu, Real rho);
     Real operator()() const;
 
   private:
-    Real phi(const Real d0) const;
-    Real d0(const Real phi) const;
+    Real phi(Real d0) const;
+    Real d0(Real phi) const;
     const Real forward_, expiryTime_, alpha_, beta_, nu_, rho_, gamma_;
     Real sigmaI_;
     std::vector<Real> tauG_, sigmaIG_, rhoG_, nuG_, betaG_;

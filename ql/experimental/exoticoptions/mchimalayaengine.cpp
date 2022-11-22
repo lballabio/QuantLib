@@ -19,13 +19,13 @@
 
 #include <ql/experimental/exoticoptions/mchimalayaengine.hpp>
 #include <ql/payoff.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    HimalayaMultiPathPricer::HimalayaMultiPathPricer(
-                                      const boost::shared_ptr<Payoff>& payoff,
-                                      DiscountFactor discount)
-    : payoff_(payoff), discount_(discount) {}
+    HimalayaMultiPathPricer::HimalayaMultiPathPricer(ext::shared_ptr<Payoff> payoff,
+                                                     DiscountFactor discount)
+    : payoff_(std::move(payoff)), discount_(discount) {}
 
     Real HimalayaMultiPathPricer::operator()(const MultiPath& multiPath)
                                                                       const {
@@ -47,6 +47,7 @@ namespace QuantLib {
                     Real yield = price/multiPath[j].front();
                     if (yield >= bestYield) {
                         bestPrice = price;
+                        bestYield = yield;
                         removeAsset = j;
                     }
                 }

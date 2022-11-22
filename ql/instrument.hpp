@@ -70,7 +70,7 @@ namespace QuantLib {
                      case the <b>performCalculation</b> method
                      was overridden in a derived class.
         */
-        void setPricingEngine(const boost::shared_ptr<PricingEngine>&);
+        void setPricingEngine(const ext::shared_ptr<PricingEngine>&);
         //@}
         /*! When a derived argument structure is defined for an
             instrument, this method should be overridden to fill
@@ -85,7 +85,7 @@ namespace QuantLib {
       protected:
         //! \name Calculations
         //@{
-        void calculate() const;
+        void calculate() const override;
         /*! This method must leave the instrument in a consistent
             state when the expiration condition is met.
         */
@@ -96,7 +96,7 @@ namespace QuantLib {
             a pricing engine is used, the default implementation
             can be used.
         */
-        virtual void performCalculations() const;
+        void performCalculations() const override;
         //@}
         /*! \name Results
             The value of this attribute and any other that derived
@@ -107,12 +107,12 @@ namespace QuantLib {
         mutable Date valuationDate_;
         mutable std::map<std::string,boost::any> additionalResults_;
         //@}
-        boost::shared_ptr<PricingEngine> engine_;
+        ext::shared_ptr<PricingEngine> engine_;
     };
 
     class Instrument::results : public virtual PricingEngine::results {
       public:
-        void reset() {
+        void reset() override {
             value = errorEstimate = Null<Real>();
             valuationDate = Date();
             additionalResults.clear();
@@ -126,16 +126,14 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Instrument::Instrument()
-    : NPV_(Null<Real>()), errorEstimate_(Null<Real>()),
-      valuationDate_(Date()) {}
+    inline Instrument::Instrument() : NPV_(Null<Real>()), errorEstimate_(Null<Real>()) {}
 
     inline void Instrument::setPricingEngine(
-                                  const boost::shared_ptr<PricingEngine>& e) {
-        if (engine_)
+                                  const ext::shared_ptr<PricingEngine>& e) {
+        if (engine_ != nullptr)
             unregisterWith(engine_);
         engine_ = e;
-        if (engine_)
+        if (engine_ != nullptr)
             registerWith(engine_);
         // trigger (lazy) recalculation and notify observers
         update();
@@ -146,11 +144,13 @@ namespace QuantLib {
     }
 
     inline void Instrument::calculate() const {
-        if (isExpired()) {
-            setupExpired();
-            calculated_ = true;
-        } else {
-            LazyObject::calculate();
+        if (!calculated_) {
+            if (isExpired()) {
+                setupExpired();
+                calculated_ = true;
+            } else {
+                LazyObject::calculate();
+            }
         }
     }
 
@@ -171,10 +171,8 @@ namespace QuantLib {
 
     inline void Instrument::fetchResults(
                                       const PricingEngine::results* r) const {
-        const Instrument::results* results =
-            dynamic_cast<const Instrument::results*>(r);
-        QL_ENSURE(results != 0,
-                  "no results returned from pricing engine");
+        const auto* results = dynamic_cast<const Instrument::results*>(r);
+        QL_ENSURE(results != nullptr, "no results returned from pricing engine");
 
         NPV_ = results->value;
         errorEstimate_ = results->errorEstimate;
@@ -215,6 +213,7 @@ namespace QuantLib {
 
     inline const std::map<std::string,boost::any>&
     Instrument::additionalResults() const {
+        calculate();
         return additionalResults_;
     }
 

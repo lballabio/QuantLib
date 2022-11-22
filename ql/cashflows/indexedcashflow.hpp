@@ -45,40 +45,35 @@ namespace QuantLib {
                             public Observer {
       public:
         IndexedCashFlow(Real notional,
-                        const boost::shared_ptr<Index> &index,
+                        ext::shared_ptr<Index> index,
                         const Date& baseDate,
                         const Date& fixingDate,
                         const Date& paymentDate,
-                        bool growthOnly = false)
-        : notional_(notional), index_(index),
-          baseDate_(baseDate), fixingDate_(fixingDate),
-          paymentDate_(paymentDate), growthOnly_(growthOnly) {
-            registerWith(index);
-        }
+                        bool growthOnly = false);
         //! \name Event interface
         //@{
-        Date date() const { return paymentDate_; }
+        Date date() const override { return paymentDate_; }
         //@}
         virtual Real notional() const { return notional_; }
         virtual Date baseDate() const { return baseDate_; }
         virtual Date fixingDate() const { return fixingDate_; }
-        virtual boost::shared_ptr<Index> index() const { return index_; }
+        virtual ext::shared_ptr<Index> index() const { return index_; }
         virtual bool growthOnly() const { return growthOnly_; }
         //! \name CashFlow interface
         //@{
-        Real amount() const;    // already virtual
+        Real amount() const override; // already virtual
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
         //! \name Observer interface
         //@{
-        void update() { notifyObservers(); }
+        void update() override { notifyObservers(); }
         //@}
       private:
         Real notional_;
-        boost::shared_ptr<Index> index_;
+        ext::shared_ptr<Index> index_;
         Date baseDate_, fixingDate_, paymentDate_;
         bool growthOnly_;
     };
@@ -87,9 +82,8 @@ namespace QuantLib {
     // inline definitions
 
     inline void IndexedCashFlow::accept(AcyclicVisitor& v) {
-        Visitor<IndexedCashFlow>* v1 =
-        dynamic_cast<Visitor<IndexedCashFlow>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<IndexedCashFlow>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             CashFlow::accept(v);

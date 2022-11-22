@@ -20,8 +20,9 @@
 #ifndef quantlib_mc_longstaff_schwartz_path_engine_hpp
 #define quantlib_mc_longstaff_schwartz_path_engine_hpp
 
-#include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/experimental/mcbasket/longstaffschwartzmultipathpricer.hpp>
+#include <ql/pricingengines/mcsimulation.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -48,30 +49,29 @@ namespace QuantLib {
         typedef typename McSimulation<MC,RNG,S>::path_generator_type
             path_generator_type;
 
-        MCLongstaffSchwartzPathEngine(
-            const boost::shared_ptr<StochasticProcess>& process,
-            Size timeSteps,
-            Size timeStepsPerYear,
-            bool brownianBridge,
-            bool antitheticVariate,
-            bool controlVariate,
-            Size requiredSamples,
-            Real requiredTolerance,
-            Size maxSamples,
-            BigNatural seed,
-            Size nCalibrationSamples = Null<Size>());
+        MCLongstaffSchwartzPathEngine(ext::shared_ptr<StochasticProcess> process,
+                                      Size timeSteps,
+                                      Size timeStepsPerYear,
+                                      bool brownianBridge,
+                                      bool antitheticVariate,
+                                      bool controlVariate,
+                                      Size requiredSamples,
+                                      Real requiredTolerance,
+                                      Size maxSamples,
+                                      BigNatural seed,
+                                      Size nCalibrationSamples = Null<Size>());
 
         void calculate() const;
 
       protected:
-        virtual boost::shared_ptr<LongstaffSchwartzMultiPathPricer> 
+        virtual ext::shared_ptr<LongstaffSchwartzMultiPathPricer> 
                                                     lsmPathPricer() const = 0;
 
         TimeGrid timeGrid() const;
-        boost::shared_ptr<path_pricer_type> pathPricer() const;
-        boost::shared_ptr<path_generator_type> pathGenerator() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_generator_type> pathGenerator() const;
 
-        boost::shared_ptr<StochasticProcess> process_;
+        ext::shared_ptr<StochasticProcess> process_;
         const Size timeSteps_;
         const Size timeStepsPerYear_;
         const bool brownianBridge_;
@@ -81,35 +81,27 @@ namespace QuantLib {
         const Size seed_;
         const Size nCalibrationSamples_;
 
-        mutable boost::shared_ptr<LongstaffSchwartzMultiPathPricer> pathPricer_;
+        mutable ext::shared_ptr<LongstaffSchwartzMultiPathPricer> pathPricer_;
     };
 
-    template <class GenericEngine, template <class> class MC,
-              class RNG, class S>
-    inline MCLongstaffSchwartzPathEngine<GenericEngine,MC,RNG,S>::
-    MCLongstaffSchwartzPathEngine(
-            const boost::shared_ptr<StochasticProcess>& process,
-            Size timeSteps,
-            Size timeStepsPerYear,
-            bool brownianBridge,
-            bool antitheticVariate,
-            bool controlVariate,
-            Size requiredSamples,
-            Real requiredTolerance,
-            Size maxSamples,
-            BigNatural seed,
-            Size nCalibrationSamples)
-    : McSimulation<MC,RNG,S> (antitheticVariate, controlVariate),
-      process_            (process),
-      timeSteps_          (timeSteps),
-      timeStepsPerYear_   (timeStepsPerYear),
-      brownianBridge_     (brownianBridge),
-      requiredSamples_    (requiredSamples),
-      requiredTolerance_  (requiredTolerance),
-      maxSamples_         (maxSamples),
-      seed_               (seed),
-      nCalibrationSamples_( (nCalibrationSamples == Null<Size>())
-                            ? 2048 : nCalibrationSamples) {
+    template <class GenericEngine, template <class> class MC, class RNG, class S>
+    inline MCLongstaffSchwartzPathEngine<GenericEngine, MC, RNG, S>::MCLongstaffSchwartzPathEngine(
+        ext::shared_ptr<StochasticProcess> process,
+        Size timeSteps,
+        Size timeStepsPerYear,
+        bool brownianBridge,
+        bool antitheticVariate,
+        bool controlVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        BigNatural seed,
+        Size nCalibrationSamples)
+    : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate), process_(std::move(process)),
+      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), brownianBridge_(brownianBridge),
+      requiredSamples_(requiredSamples), requiredTolerance_(requiredTolerance),
+      maxSamples_(maxSamples), seed_(seed),
+      nCalibrationSamples_((nCalibrationSamples == Null<Size>()) ? 2048 : nCalibrationSamples) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
                    timeStepsPerYear != Null<Size>(),
                    "no time steps provided");
@@ -128,7 +120,7 @@ namespace QuantLib {
     template <class GenericEngine, template <class> class MC,
               class RNG, class S>
     inline
-    boost::shared_ptr<typename
+    ext::shared_ptr<typename
         MCLongstaffSchwartzPathEngine<GenericEngine,MC,RNG,S>::path_pricer_type>
         MCLongstaffSchwartzPathEngine<GenericEngine,MC,RNG,S>::pathPricer() 
         const {
@@ -143,7 +135,7 @@ namespace QuantLib {
     void MCLongstaffSchwartzPathEngine<GenericEngine,MC,RNG,S>::calculate() 
     const {
         pathPricer_ = this->lsmPathPricer();
-        this->mcModel_ = boost::shared_ptr<MonteCarloModel<MC,RNG,S> >(
+        this->mcModel_ = ext::shared_ptr<MonteCarloModel<MC,RNG,S> >(
                           new MonteCarloModel<MC,RNG,S>
                               (pathGenerator(), pathPricer_,
                                stats_type(), this->antitheticVariate_));
@@ -175,7 +167,7 @@ namespace QuantLib {
                 this->process_->time(fixings[i]);
         }
 
-        const Size numberOfTimeSteps = timeSteps_ != Null<Size>() ? timeSteps_ : timeStepsPerYear_ * fixingTimes.back();
+        const Size numberOfTimeSteps = timeSteps_ != Null<Size>() ? timeSteps_ : static_cast<Size>(timeStepsPerYear_ * fixingTimes.back());
 
         return TimeGrid(fixingTimes.begin(), fixingTimes.end(), numberOfTimeSteps);
      }
@@ -183,7 +175,7 @@ namespace QuantLib {
     template <class GenericEngine, template <class> class MC,
               class RNG, class S>
     inline
-    boost::shared_ptr<typename
+    ext::shared_ptr<typename
     MCLongstaffSchwartzPathEngine<GenericEngine,MC,RNG,S>::path_generator_type>
     MCLongstaffSchwartzPathEngine<GenericEngine,MC,RNG,S>::pathGenerator() 
     const {
@@ -192,7 +184,7 @@ namespace QuantLib {
         TimeGrid grid = this->timeGrid();
         typename RNG::rsg_type generator =
             RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
-        return boost::shared_ptr<path_generator_type>(
+        return ext::shared_ptr<path_generator_type>(
                    new path_generator_type(process_,
                                            grid, generator, brownianBridge_));
     }

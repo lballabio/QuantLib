@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2007, 2008 Ferdinando Ametrano
- Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 FranÃ§ois du Vignaud
  Copyright (C) 2007 Katiuscia Manzoni
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2015 Michael von den Driesch
@@ -32,18 +32,20 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/utilities/dataformatters.hpp>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
-OptionletStripper1::OptionletStripper1(
-    const shared_ptr< CapFloorTermVolSurface > &termVolSurface,
-    const shared_ptr< IborIndex > &index, Rate switchStrike, Real accuracy,
-    Natural maxIter, const Handle< YieldTermStructure > &discount,
-    const VolatilityType type, const Real displacement, bool dontThrow)
+    OptionletStripper1::OptionletStripper1(
+        const ext::shared_ptr<CapFloorTermVolSurface>& termVolSurface,
+        const ext::shared_ptr<IborIndex>& index,
+        Rate switchStrike,
+        Real accuracy,
+        Natural maxIter,
+        const Handle<YieldTermStructure>& discount,
+        const VolatilityType type,
+        const Real displacement,
+        bool dontThrow)
     : OptionletStripper(termVolSurface, index, discount, type, displacement),
-      floatingSwitchStrike_(switchStrike == Null< Rate >() ? true : false),
-      switchStrike_(switchStrike),
+      floatingSwitchStrike_(switchStrike == Null<Rate>()), switchStrike_(switchStrike),
       accuracy_(accuracy), maxIter_(maxIter), dontThrow_(dontThrow) {
 
         capFloorPrices_ = Matrix(nOptionletTenors_, nStrikes_);
@@ -60,7 +62,7 @@ OptionletStripper1::OptionletStripper1(
         // update dates
         const Date& referenceDate = termVolSurface_->referenceDate();
         const DayCounter& dc = termVolSurface_->dayCounter();
-        shared_ptr<BlackCapFloorEngine> dummy(new
+        ext::shared_ptr<BlackCapFloorEngine> dummy(new
                     BlackCapFloorEngine(// discounting does not matter here
                                         iborIndex_->forwardingTermStructure(),
                                         0.20, dc));
@@ -71,7 +73,7 @@ OptionletStripper1::OptionletStripper1(
                                          0.04, // dummy strike
                                          0*Days)
                 .withPricingEngine(dummy);
-            shared_ptr<FloatingRateCoupon> lFRC =
+            ext::shared_ptr<FloatingRateCoupon> lFRC =
                                                 temp.lastFloatingRateCoupon();
             optionletDates_[i] = lFRC->fixingDate();
             optionletPaymentDates_[i] = lFRC->date();
@@ -96,19 +98,19 @@ OptionletStripper1::OptionletStripper1(
 
         const std::vector<Rate>& strikes = termVolSurface_->strikes();
 
-        boost::shared_ptr<PricingEngine> capFloorEngine;
-        boost::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
+        ext::shared_ptr<PricingEngine> capFloorEngine;
+        ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
 
         if (volatilityType_ == ShiftedLognormal) {
-            capFloorEngine = boost::shared_ptr<BlackCapFloorEngine>(
-                        new BlackCapFloorEngine(
+            capFloorEngine = ext::make_shared<BlackCapFloorEngine>(
+                        
                             discountCurve, Handle<Quote>(volQuote),
-                            dc, displacement_));
+                            dc, displacement_);
         } else if (volatilityType_ == Normal) {
-            capFloorEngine = boost::shared_ptr<BachelierCapFloorEngine>(
-                        new BachelierCapFloorEngine(
+            capFloorEngine = ext::make_shared<BachelierCapFloorEngine>(
+                        
                             discountCurve, Handle<Quote>(volQuote),
-                            dc));
+                            dc);
         } else {
             QL_FAIL("unknown volatility type: " << volatilityType_);
         }
@@ -126,7 +128,7 @@ OptionletStripper1::OptionletStripper1(
                 capFloorVols_[i][j] = termVolSurface_->volatility(
                     capFloorLengths_[i], strikes[j], true);
                 volQuote->setValue(capFloorVols_[i][j]);
-                boost::shared_ptr<CapFloor> capFloor =
+                ext::shared_ptr<CapFloor> capFloor =
                     MakeCapFloor(capFloorType, capFloorLengths_[i],
                                  iborIndex_, strikes[j], -0 * Days)
                         .withPricingEngine(capFloorEngine);

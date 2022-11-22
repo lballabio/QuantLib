@@ -16,28 +16,21 @@
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
- */
+*/
 
-/*!
- \file cpicapfloorengines.cpp
- \brief Engines for CPI options
- \ingroup PricingEngines
- */
-
-
-#include <ql/time/daycounters/actualactual.hpp>
 
 #include <ql/experimental/inflation/cpicapfloorengines.hpp>
 #include <ql/experimental/inflation/cpicapfloortermpricesurface.hpp>
+#include <ql/time/daycounters/actualactual.hpp>
+#include <utility>
 
 
 namespace QuantLib {
 
 
-    InterpolatingCPICapFloorEngine::InterpolatingCPICapFloorEngine
-    (const Handle<CPICapFloorTermPriceSurface> &priceSurf)
-    : priceSurf_(priceSurf)
-    {
+    InterpolatingCPICapFloorEngine::InterpolatingCPICapFloorEngine(
+        Handle<CPICapFloorTermPriceSurface> priceSurf)
+    : priceSurf_(std::move(priceSurf)) {
         registerWith(priceSurf_);
     }
 
@@ -72,7 +65,7 @@ namespace QuantLib {
 
 
         } else {
-            std::pair<Date,Date> dd = inflationPeriod(effectiveMaturity, arguments_.infIndex->frequency());
+            std::pair<Date,Date> dd = inflationPeriod(effectiveMaturity, arguments_.index->frequency());
             Real priceStart = 0.0;
 
             if (arguments_.type == Option::Call) {
@@ -103,8 +96,4 @@ namespace QuantLib {
         results_.value = npv;
     }
 
-
-
-
-
-} // namespace QuantLib
+}

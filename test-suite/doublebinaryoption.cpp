@@ -31,6 +31,7 @@ Copyright (C) 2015 Thema Consulting SA
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, barrierType, barrier_lo, \
                         barrier_hi, s, q, r, today, v, expected, calculated, \
                         error, tolerance) \
@@ -174,83 +175,75 @@ void DoubleBinaryOptionTest::testHaugValues() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
-    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    for (Size i=0; i<LENGTH(values); i++) {
+    for (auto& value : values) {
 
-        boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
-            Option::Call, 0, values[i].cash));
+        ext::shared_ptr<StrikedTypePayoff> payoff(
+            new CashOrNothingPayoff(Option::Call, 0, value.cash));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
-        boost::shared_ptr<Exercise> exercise;
-        if (values[i].barrierType == DoubleBarrier::KIKO ||
-            values[i].barrierType == DoubleBarrier::KOKI)
+        Date exDate = today + timeToDays(value.t);
+        ext::shared_ptr<Exercise> exercise;
+        if (value.barrierType == DoubleBarrier::KIKO || value.barrierType == DoubleBarrier::KOKI)
             exercise.reset(new AmericanExercise(today, exDate));
         else
             exercise.reset(new EuropeanExercise(exDate));
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
             BlackScholesMertonProcess(Handle<Quote>(spot),
                                       Handle<YieldTermStructure>(qTS),
                                       Handle<YieldTermStructure>(rTS),
                                       Handle<BlackVolTermStructure>(volTS)));
 
         // checking with analytic engine
-        boost::shared_ptr<PricingEngine> engine(
+        ext::shared_ptr<PricingEngine> engine(
                              new AnalyticDoubleBarrierBinaryEngine(stochProcess));
-        DoubleBarrierOption opt(values[i].barrierType, 
-                          values[i].barrier_lo, 
-                          values[i].barrier_hi, 
-                          0,
-                          payoff,
-                          exercise);
+        DoubleBarrierOption opt(value.barrierType, value.barrier_lo, value.barrier_hi, 0, payoff,
+                                exercise);
         opt.setPricingEngine(engine);
 
         Real calculated = opt.NPV();
-        Real expected = values[i].result;
+        Real expected = value.result;
         Real error = std::fabs(calculated-expected);
-        if (error > values[i].tol) {
-            REPORT_FAILURE("value", payoff, exercise, values[i].barrierType, 
-                           values[i].barrier_lo, values[i].barrier_hi, values[i].s,
-                           values[i].q, values[i].r, today, values[i].v,
-                           values[i].result, calculated, error, values[i].tol);
+        if (error > value.tol) {
+            REPORT_FAILURE("value", payoff, exercise, value.barrierType, value.barrier_lo,
+                           value.barrier_hi, value.s, value.q, value.r, today, value.v,
+                           value.result, calculated, error, value.tol);
         }
 
         Size steps = 500;
         // checking with binomial engine
-        engine = boost::shared_ptr<PricingEngine>(
+        engine = ext::shared_ptr<PricingEngine>(
               new BinomialDoubleBarrierEngine<CoxRossRubinstein,
                               DiscretizedDoubleBarrierOption>(stochProcess, 
                                                                  steps));
         opt.setPricingEngine(engine);
         calculated = opt.NPV();
-        expected = values[i].result;
+        expected = value.result;
         error = std::fabs(calculated-expected);
         double tol = 0.22;
         if (error>tol) {
-            REPORT_FAILURE("Binomial value", payoff, exercise, values[i].barrierType, 
-                           values[i].barrier_lo, values[i].barrier_hi, values[i].s,
-                           values[i].q, values[i].r, today, values[i].v,
-                           values[i].result, calculated, error, tol);
+            REPORT_FAILURE("Binomial value", payoff, exercise, value.barrierType, value.barrier_lo,
+                           value.barrier_hi, value.s, value.q, value.r, today, value.v,
+                           value.result, calculated, error, tol);
         }
-
     }
 } 
 
 
 test_suite* DoubleBinaryOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("DoubleBinary");
+    auto* suite = BOOST_TEST_SUITE("DoubleBinary");
     suite->add(QUANTLIB_TEST_CASE(&DoubleBinaryOptionTest::testHaugValues));
     return suite;
 }

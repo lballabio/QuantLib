@@ -18,11 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/volatility/garch.hpp>
+#include <ql/math/autocovariance.hpp>
 #include <ql/math/optimization/leastsquare.hpp>
 #include <ql/math/optimization/simplex.hpp>
-#include <ql/math/autocovariance.hpp>
-#include <boost/foreach.hpp>
+#include <ql/models/volatility/garch.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -37,7 +37,7 @@ namespace QuantLib {
               public:
                 Impl (Real gammaLower, Real gammaUpper)
                 : gammaLower_(gammaLower), gammaUpper_(gammaUpper) {}
-                bool test(const Array &x) const {
+                bool test(const Array& x) const override {
                     QL_REQUIRE(x.size() >= 3, "size of parameters vector < 3");
                     return x[0] > 0 && x[1] >= 0 && x[2] >= 0
                         && x[1] + x[2] < gammaUpper_
@@ -46,18 +46,19 @@ namespace QuantLib {
             };
           public:
             Garch11Constraint(Real gammaLower, Real gammaUpper)
-            : Constraint(boost::shared_ptr<Constraint::Impl>(
+            : Constraint(ext::shared_ptr<Constraint::Impl>(
                       new Garch11Constraint::Impl(gammaLower, gammaUpper))) {}
         };
 
 
         class Garch11CostFunction : public CostFunction {
           public:
-            Garch11CostFunction (const std::vector<Volatility> &);
-            virtual Real value(const Array& x) const;
-            virtual Disposable<Array> values(const Array& x) const;
-            virtual void gradient(Array& grad, const Array& x) const;
-            virtual Real valueAndGradient(Array& grad, const Array& x) const;
+            explicit Garch11CostFunction (const std::vector<Volatility> &);
+            Real value(const Array& x) const override;
+            Array values(const Array& x) const override;
+            void gradient(Array& grad, const Array& x) const override;
+            Real valueAndGradient(Array& grad, const Array& x) const override;
+
           private:
             const std::vector<Volatility> &r2_;
         };
@@ -70,7 +71,7 @@ namespace QuantLib {
             Real retval(0.0);
             Real sigma2 = 0;
             Real u2 = 0;
-            BOOST_FOREACH (Volatility r2, r2_) {
+            for (const auto r2 : r2_) {
                 sigma2 = x[0] + x[1] * u2 + x[2] * sigma2;
                 u2 = r2;
                 retval += std::log(sigma2) + u2 / sigma2;
@@ -78,12 +79,12 @@ namespace QuantLib {
             return retval / (2.0*r2_.size());
         }
 
-        Disposable<Array> Garch11CostFunction::values(const Array& x) const {
+        Array Garch11CostFunction::values(const Array& x) const {
             Array retval (r2_.size());
             Real sigma2 = 0;
             Real u2 = 0;
             Size i = 0;
-            BOOST_FOREACH (Volatility r2, r2_) {
+            for (const auto r2 : r2_) {
                 sigma2 = x[0] + x[1] * u2 + x[2] * sigma2;
                 u2 = r2;
                 retval[i++] = (std::log(sigma2) + u2 / sigma2)/(2.0*r2_.size());
@@ -98,7 +99,7 @@ namespace QuantLib {
             Real sigma2prev = sigma2;
             Real u2prev = u2;
             Real norm = 2.0 * r2_.size();
-            BOOST_FOREACH (Volatility r2, r2_) {
+            for (const auto r2 : r2_) {
                 sigma2 = x[0] + x[1] * u2 + x[2] * sigma2;
                 u2 = r2;
                 Real w = (sigma2 - u2) / (sigma2*sigma2);
@@ -109,7 +110,7 @@ namespace QuantLib {
                 sigma2prev = sigma2;
             }
             std::transform(grad.begin(), grad.end(), grad.begin(),
-                           std::bind2nd(std::divides<Real>(), norm));
+                           [=](Real x) -> Real { return x / norm; });
         }
 
         Real Garch11CostFunction::valueAndGradient(Array& grad,
@@ -121,7 +122,7 @@ namespace QuantLib {
             Real sigma2prev = sigma2;
             Real u2prev = u2;
             Real norm = 2.0 * r2_.size();
-            BOOST_FOREACH (Volatility r2, r2_) {
+            for (const auto r2 : r2_) {
                 sigma2 = x[0] + x[1] * u2 + x[2] * sigma2;
                 u2 = r2;
                 retval += std::log(sigma2) + u2 / sigma2;
@@ -133,30 +134,29 @@ namespace QuantLib {
                 sigma2prev = sigma2;
             }
             std::transform(grad.begin(), grad.end(), grad.begin(),
-                           std::bind2nd(std::divides<Real>(), norm));
+                           [=](Real x) -> Real { return x / norm; });
             return retval / norm;
         }
 
 
         class FitAcfProblem : public LeastSquareProblem {
           public:
-            FitAcfProblem(Real A2, const Array &acf,
-                          const std::vector<std::size_t> &idx);
-            virtual Size size();
-            virtual void targetAndValue(const Array& x, Array& target,
-                                        Array& fct2fit);
-            virtual void targetValueAndGradient(const Array& x,
-                                                Matrix& grad_fct2fit,
-                                                Array& target, Array& fct2fit);
+            FitAcfProblem(Real A2, Array acf, std::vector<std::size_t> idx);
+            Size size() override;
+            void targetAndValue(const Array& x, Array& target, Array& fct2fit) override;
+            void targetValueAndGradient(const Array& x,
+                                        Matrix& grad_fct2fit,
+                                        Array& target,
+                                        Array& fct2fit) override;
+
           private:
             Real A2_;
             Array acf_;
             std::vector<std::size_t> idx_;
         };
 
-        FitAcfProblem::FitAcfProblem(Real A2, const Array &acf,
-                                     const std::vector<std::size_t> &idx)
-        : A2_(A2), acf_(acf), idx_(idx) {}
+        FitAcfProblem::FitAcfProblem(Real A2, Array acf, std::vector<std::size_t> idx)
+        : A2_(A2), acf_(std::move(acf)), idx_(std::move(idx)) {}
 
         Size FitAcfProblem::size() { return idx_.size(); }
 
@@ -211,7 +211,7 @@ namespace QuantLib {
               public:
                 Impl(Real gammaLower, Real gammaUpper)
                 : gammaLower_(gammaLower), gammaUpper_(gammaUpper) {}
-                bool test(const Array &x) const {
+                bool test(const Array& x) const override {
                     QL_REQUIRE(x.size() >= 2, "size of parameters vector < 2");
                     return x[0] >= gammaLower_ && x[0] < gammaUpper_
                         && x[1] >= 0 && x[1] <= x[0];
@@ -219,7 +219,7 @@ namespace QuantLib {
             };
           public:
             FitAcfConstraint(Real gammaLower, Real gammaUpper)
-            : Constraint(boost::shared_ptr<Constraint::Impl>(
+            : Constraint(ext::shared_ptr<Constraint::Impl>(
                        new FitAcfConstraint::Impl(gammaLower, gammaUpper))) {}
         };
 
@@ -235,7 +235,7 @@ namespace QuantLib {
             Real A = mean_r2*mean_r2/A4; // 1/sigma^2
             Real B = A21 / A4; // rho(1)
 
-            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : tol_level;
+            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : Real(tol_level);
             Garch11Constraint constraints(gammaLower, 1.0 - tol_level);
 
             Real gamma = gammaLower + (1 - gammaLower) * 0.5;
@@ -282,7 +282,7 @@ namespace QuantLib {
             std::vector<std::size_t> idx;
             std::size_t nCov = acf.size() - 1;
             for (std::size_t i = 0; i <= nCov; ++i) {
-                if (i < 2 || (i > 1 && acf[i] > 0 && acf[i-1] > 0 && acf[i-1] > acf[i])) {
+                if (i < 2 || (acf[i] > 0 && acf[i-1] > 0 && acf[i-1] > acf[i])) {
                     idx.push_back(i);
                 }
             }
@@ -321,7 +321,7 @@ namespace QuantLib {
             Real A4 = acf[0] + mean_r2*mean_r2;
             Real A = mean_r2*mean_r2/A4; // 1/sigma^2
             Real B = A21 / A4; // rho(1)
-            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : tol_level;
+            Real gammaLower = A <= 1./3. - tol_level ? std::sqrt((1 - 3*A)/(3 - 3*A)) + tol_level : Real(tol_level);
             Garch11Constraint constraints(gammaLower, 1.0 - tol_level);
 
             // ACF
@@ -374,7 +374,7 @@ namespace QuantLib {
     Garch11::calculate(const time_series& quoteSeries,
                        Real alpha, Real beta, Real omega) {
         time_series retval;
-        const_iterator cur = quoteSeries.cbegin();
+        auto cur = quoteSeries.cbegin();
         Real u = cur->second;
         Real sigma2 = u*u;
         while (++cur != quoteSeries.end()) {
@@ -384,13 +384,13 @@ namespace QuantLib {
         }
         sigma2 = omega + alpha * u * u + beta * sigma2;
         --cur;
-        const_iterator prev = cur;
+        auto prev = cur;
         retval[cur->first + (cur->first - (--prev)->first) ] = std::sqrt(sigma2);
         return retval;
     }
 
 
-    boost::shared_ptr<Problem> Garch11::calibrate_r2(
+    ext::shared_ptr<Problem> Garch11::calibrate_r2(
                    Mode mode, const std::vector<Volatility> &r2, Real mean_r2,
                    Real &alpha, Real &beta, Real &omega) {
         EndCriteria endCriteria(10000, 500, tol_level, tol_level, tol_level);
@@ -399,7 +399,7 @@ namespace QuantLib {
                             alpha, beta, omega);
     }
 
-    boost::shared_ptr<Problem> Garch11::calibrate_r2(
+    ext::shared_ptr<Problem> Garch11::calibrate_r2(
                    Mode mode, const std::vector<Volatility> &r2, Real mean_r2,
                    OptimizationMethod &method, const EndCriteria &endCriteria,
                    Real &alpha, Real &beta, Real &omega) {
@@ -417,7 +417,7 @@ namespace QuantLib {
         Array acf(maxLag+1);
         std::vector<Volatility> tmp(r2.size());
         std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        std::bind2nd(std::minus<Real>(), mean_r2));
+                       [=](Real x) -> Real { return x - mean_r2; });
         autocovariances (tmp.begin(), tmp.end(), acf.begin(), maxLag);
         QL_REQUIRE (acf[0] > 0, "Data series is constant");
 
@@ -441,7 +441,7 @@ namespace QuantLib {
 
         Garch11Constraint constraints(gammaLower, 1.0 - tol_level);
 
-        boost::shared_ptr<Problem> ret;
+        ext::shared_ptr<Problem> ret;
         if (mode != DoubleOptimization) {
             try {
                 ret = calibrate_r2(r2, method, constraints, endCriteria,
@@ -459,7 +459,7 @@ namespace QuantLib {
                 }
             }
         } else {
-            boost::shared_ptr<Problem> ret1, ret2;
+            ext::shared_ptr<Problem> ret1, ret2;
             try {
                 ret1 = calibrate_r2(r2, method, constraints, endCriteria,
                                     opt1, alpha, beta, omega);
@@ -499,7 +499,7 @@ namespace QuantLib {
         return ret;
     }
 
-    boost::shared_ptr<Problem> Garch11::calibrate_r2(
+    ext::shared_ptr<Problem> Garch11::calibrate_r2(
                const std::vector<Volatility> &r2,
                OptimizationMethod &method,
                const EndCriteria &endCriteria,
@@ -509,27 +509,27 @@ namespace QuantLib {
                             initGuess, alpha, beta, omega);
     }
 
-    boost::shared_ptr<Problem> Garch11::calibrate_r2(
+    ext::shared_ptr<Problem> Garch11::calibrate_r2(
                const std::vector<Volatility> &r2,
                Real mean_r2,
                OptimizationMethod &method,
                const EndCriteria &endCriteria,
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         std::vector<Volatility> tmp(r2.size());
-        std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        std::bind2nd(std::minus<Real>(), mean_r2));
+        std::transform(r2.begin(), r2.end(), tmp.begin(),
+                       [=](Real x) -> Real { return x - mean_r2; });
         return calibrate_r2(tmp, method, endCriteria, initGuess,
                             alpha, beta, omega);
     }
 
-    boost::shared_ptr<Problem> Garch11::calibrate_r2(
+    ext::shared_ptr<Problem> Garch11::calibrate_r2(
                const std::vector<Volatility> &r2,
                OptimizationMethod &method,
                Constraint &constraints,
                const EndCriteria &endCriteria,
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         Garch11CostFunction cost(r2);
-        boost::shared_ptr<Problem> problem(
+        ext::shared_ptr<Problem> problem(
                                new Problem(cost, constraints, initGuess));
         // TODO: check return value from minimize()
         /* EndCriteria::Type ret = */
@@ -541,7 +541,7 @@ namespace QuantLib {
         return problem;
     }
 
-    boost::shared_ptr<Problem> Garch11::calibrate_r2(
+    ext::shared_ptr<Problem> Garch11::calibrate_r2(
                const std::vector<Volatility> &r2,
                Real mean_r2,
                OptimizationMethod &method,
@@ -549,8 +549,8 @@ namespace QuantLib {
                const EndCriteria &endCriteria,
                const Array &initGuess, Real &alpha, Real &beta, Real &omega) {
         std::vector<Volatility> tmp(r2.size());
-        std::transform (r2.begin(), r2.end(), tmp.begin(),
-                        std::bind2nd(std::minus<Real>(), mean_r2));
+        std::transform(r2.begin(), r2.end(), tmp.begin(),
+                       [=](Real x) -> Real { return x - mean_r2; });
         return calibrate_r2(tmp, method, constraints, endCriteria,
                             initGuess, alpha, beta, omega);
     }

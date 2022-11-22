@@ -59,8 +59,8 @@ namespace QuantLib {
                      "dimensionality must be greater than 0");
         }
 
-        RandomSequenceGenerator(Size dimensionality,
-                                BigNatural seed = 0)
+        explicit RandomSequenceGenerator(Size dimensionality,
+                                         BigNatural seed = 0)
         : dimensionality_(dimensionality), rng_(seed),
           sequence_(std::vector<Real> (dimensionality), 1.0),
           int32Sequence_(dimensionality) {}

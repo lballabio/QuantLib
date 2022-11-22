@@ -25,8 +25,8 @@
 #include <ql/userconfig.hpp>
 
 // first things first
-#if (_MSC_VER < 1500)
-#  error "versions of Visual C++ prior to VC++9 (2008) are not supported"
+#if (_MSC_VER < 1900)
+#  error "versions of Visual C++ prior to VC++ 2015 are no longer supported"
 #endif
 
 /*******************************************
@@ -45,36 +45,8 @@
 #  undef max
 #endif
 
-// leave outside here common configs
-
+// conditionally work around compiler glitches
 #define QL_PATCH_MSVC
-// more granularity for when we need to work around a given version:
-#if (_MSC_VER == 1500)
-#  define QL_PATCH_MSVC90
-#elif (_MSC_VER >= 1600)
-#  define QL_PATCH_MSVC100
-#endif
-
-// prevent auto-link of Boost libs such as serialization
-#define BOOST_ALL_NO_LIB
-
-// This holds for all supported versions
-#define QL_WORKING_BOOST_STREAMS
-
-#if (_MSC_VER == 1500)
-// warning management for VC++ 9
-#  ifndef _SCL_SECURE_NO_DEPRECATE
-#    define _SCL_SECURE_NO_DEPRECATE
-#  endif
-#  ifndef _CRT_SECURE_NO_DEPRECATE
-#    define _CRT_SECURE_NO_DEPRECATE
-#  endif
-// Sending a size_t to an output stream causes a warning.
-// We disable it and rely on other compilers to catch genuine problems.
-#  pragma warning(disable: 4267)
-// same for Boost.Function using a supposedly non-standard extension.
-#  pragma warning(disable: 4224)
-#endif
 
 // Compilation on the x64 platform throws a lot of warnings assigning
 // QuantLib::Size == size_t (64 bit) to QuantLib::Integer == int (32
@@ -83,6 +55,12 @@
 #ifdef _M_X64
 #pragma warning(disable : 4267)
 #endif
+
+
+/* suppress C++ code analysis warning C26812 in VS 2019:
+ * Prefer 'enum class' over 'enum' (Enum.3). */
+#pragma warning(disable : 26812)
+
 
 #ifndef _CPPRTTI
 #   error Enable Run-Time Type Info (Property Pages | C/C++ | Language)

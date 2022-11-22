@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     StrippedOptionletAdapter::StrippedOptionletAdapter(
-                const boost::shared_ptr<StrippedOptionletBase>& s)
+                const ext::shared_ptr<StrippedOptionletBase>& s)
     : OptionletVolatilityStructure(s->settlementDays(),
                                    s->calendar(),
                                    s->businessDayConvention(),
@@ -41,15 +41,15 @@ namespace QuantLib {
         registerWith(optionletStripper_);
     }
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     StrippedOptionletAdapter::smileSectionImpl(Time t) const {
         std::vector< Rate > optionletStrikes =
             optionletStripper_->optionletStrikes(
                 0); // strikes are the same for all times ?!
         std::vector< Real > stddevs;
-        for (Size i = 0; i < optionletStrikes.size(); i++) {
-            stddevs.push_back(volatilityImpl(t, optionletStrikes[i]) *
-                              std::sqrt(t));
+        stddevs.reserve(optionletStrikes.size());
+        for (Real optionletStrike : optionletStrikes) {
+            stddevs.push_back(volatilityImpl(t, optionletStrike) * std::sqrt(t));
         }
         // Extrapolation may be a problem with splines, but since minStrike()
         // and maxStrike() are set, we assume that no one will use stddevs for
@@ -57,7 +57,7 @@ namespace QuantLib {
         CubicInterpolation::BoundaryCondition bc =
             optionletStrikes.size() >= 4 ? CubicInterpolation::Lagrange
                                          : CubicInterpolation::SecondDerivative;
-        return boost::make_shared< InterpolatedSmileSection< Cubic > >(
+        return ext::make_shared< InterpolatedSmileSection< Cubic > >(
             t, optionletStrikes, stddevs, Null< Real >(),
             Cubic(CubicInterpolation::Spline, false, bc, 0.0, bc, 0.0),
             Actual365Fixed(), volatilityType(), displacement());
@@ -69,14 +69,14 @@ namespace QuantLib {
 
         std::vector<Volatility> vol(nInterpolations_);
         for (Size i=0; i<nInterpolations_; ++i)
-            vol[i] = strikeInterpolations_[i]->operator()(strike, true);
+            vol[i] = (*strikeInterpolations_[i])(strike, true);
 
         const std::vector<Time>& optionletTimes =
                                     optionletStripper_->optionletFixingTimes();
-        boost::shared_ptr<LinearInterpolation> timeInterpolator(new
+        ext::shared_ptr<LinearInterpolation> timeInterpolator(new
             LinearInterpolation(optionletTimes.begin(), optionletTimes.end(),
                                 vol.begin()));
-        return timeInterpolator->operator()(length, true);
+        return (*timeInterpolator)(length, true);
     }
 
     void StrippedOptionletAdapter::performCalculations() const {
@@ -89,7 +89,7 @@ namespace QuantLib {
                 optionletStripper_->optionletStrikes(i);
             const std::vector<Volatility>& optionletVolatilities =
                 optionletStripper_->optionletVolatilities(i);
-            //strikeInterpolations_[i] = boost::shared_ptr<SABRInterpolation>(new
+            //strikeInterpolations_[i] = ext::shared_ptr<SABRInterpolation>(new
             //            SABRInterpolation(optionletStrikes.begin(), optionletStrikes.end(),
             //                              optionletVolatilities.begin(),
             //                              optionletTimes[i], atmForward[i],
@@ -106,10 +106,9 @@ namespace QuantLib {
             //                              //endCriteria_,
             //                              //optMethod_
             //                              ));
-            strikeInterpolations_[i] = boost::shared_ptr<LinearInterpolation>(new
-                LinearInterpolation(optionletStrikes.begin(),
+            strikeInterpolations_[i] = ext::make_shared<LinearInterpolation>(optionletStrikes.begin(),
                                     optionletStrikes.end(),
-                                    optionletVolatilities.begin()));
+                                    optionletVolatilities.begin());
 
             //QL_ENSURE(strikeInterpolations_[i]->endCriteria()!=EndCriteria::MaxIterations,
             //          "section calibration failed: "

@@ -21,26 +21,13 @@
     \brief analytic Heston expansion engine
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-
 #include <ql/instruments/payoffs.hpp>
 #include <ql/pricingengines/vanilla/hestonexpansionengine.hpp>
 
 #if defined(QL_PATCH_MSVC)
 #pragma warning(disable: 4180)
 #endif
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/lambda/if.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
-#include <boost/lambda/bind.hpp>
-#include <boost/lambda/lambda.hpp>
 
 using std::exp;
 using std::pow;
@@ -50,16 +37,12 @@ using std::sqrt;
 namespace QuantLib {
 
     HestonExpansionEngine::HestonExpansionEngine(
-                              const boost::shared_ptr<HestonModel>& model,
+                              const ext::shared_ptr<HestonModel>& model,
                               HestonExpansionFormula formula)
     : GenericModelEngine<HestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
                          formula_(formula) {
-    }
-
-    Size HestonExpansionEngine::numberOfEvaluations() const {
-        return evaluations_;
     }
 
     void HestonExpansionEngine::calculate() const
@@ -69,11 +52,11 @@ namespace QuantLib {
                    "not an European option");
 
         // plain vanilla
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non plain vanilla payoff given");
 
-        const boost::shared_ptr<HestonProcess>& process = model_->process();
+        const ext::shared_ptr<HestonProcess>& process = model_->process();
 
         const Real riskFreeDiscount = process->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate());

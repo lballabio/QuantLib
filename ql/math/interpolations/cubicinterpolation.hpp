@@ -40,10 +40,10 @@ namespace QuantLib {
 
         class CoefficientHolder {
           public:
-            CoefficientHolder(Size n)
+            explicit CoefficientHolder(Size n)
             : n_(n), primitiveConst_(n-1), a_(n-1), b_(n-1), c_(n-1),
               monotonicityAdjustments_(n) {}
-            virtual ~CoefficientHolder() {}
+            virtual ~CoefficientHolder() = default;
             Size n_;
             // P[i](x) = y[i] +
             //           a[i]*(x-x[i]) +
@@ -99,6 +99,8 @@ namespace QuantLib {
         \test to be adapted from old ones.
 
         \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
     */
     class CubicInterpolation : public Interpolation {
       public:
@@ -162,7 +164,7 @@ namespace QuantLib {
                            Real leftConditionValue,
                            CubicInterpolation::BoundaryCondition rightCond,
                            Real rightConditionValue) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::CubicInterpolationImpl<I1,I2>(xBegin, xEnd, yBegin,
                                                       da,
                                                       monotonic,
@@ -171,20 +173,20 @@ namespace QuantLib {
                                                       rightCond,
                                                       rightConditionValue));
             impl_->update();
-            coeffs_ =
-                boost::dynamic_pointer_cast<detail::CoefficientHolder>(impl_);
         }
         const std::vector<Real>& primitiveConstants() const {
-            return coeffs_->primitiveConst_;
+            return coeffs().primitiveConst_;
         }
-        const std::vector<Real>& aCoefficients() const { return coeffs_->a_; }
-        const std::vector<Real>& bCoefficients() const { return coeffs_->b_; }
-        const std::vector<Real>& cCoefficients() const { return coeffs_->c_; }
+        const std::vector<Real>& aCoefficients() const { return coeffs().a_; }
+        const std::vector<Real>& bCoefficients() const { return coeffs().b_; }
+        const std::vector<Real>& cCoefficients() const { return coeffs().c_; }
         const std::vector<bool>& monotonicityAdjustments() const {
-            return coeffs_->monotonicityAdjustments_;
+            return coeffs().monotonicityAdjustments_;
         }
       private:
-        boost::shared_ptr<detail::CoefficientHolder> coeffs_;
+        const detail::CoefficientHolder& coeffs() const {
+            return *dynamic_cast<detail::CoefficientHolder*>(impl_.get());
+        }
     };
 
 
@@ -289,7 +291,7 @@ namespace QuantLib {
                             const I1& xEnd,
                             const I2& yBegin)
         : CubicInterpolation(xBegin, xEnd, yBegin,
-                             FritschButland, false,
+                             FritschButland, true,
                              SecondDerivative, 0.0,
                              SecondDerivative, 0.0) {}
     };
@@ -387,7 +389,7 @@ namespace QuantLib {
                 }
             }
 
-            void update() {
+            void update() override {
 
                 for (Size i=0; i<n_-1; ++i) {
                     dx_[i] = this->xBegin_[i+1] - this->xBegin_[i];
@@ -575,7 +577,16 @@ namespace QuantLib {
                                 for (Size i=1; i<n_-1; ++i) {
                                     Real Smin = std::min(S_[i-1], S_[i]);
                                     Real Smax = std::max(S_[i-1], S_[i]);
-                                    tmp_[i] = 3.0*Smin*Smax/(Smax+2.0*Smin);
+                                    if(Smax+2.0*Smin == 0){
+                                        if (Smin*Smax < 0)
+                                            tmp_[i] = QL_MIN_REAL;
+                                        else if (Smin*Smax == 0)
+                                            tmp_[i] = 0;
+                                        else
+                                            tmp_[i] = QL_MAX_REAL;
+                                    }
+                                    else
+                                        tmp_[i] = 3.0*Smin*Smax/(Smax+2.0*Smin);
                                 }
                                 // end points
                                 tmp_[0]    = ((2.0*dx_[   0]+dx_[   1])*S_[   0] - dx_[   0]*S_[   1]) / (dx_[   0]+dx_[   1]);
@@ -744,28 +755,29 @@ namespace QuantLib {
                           (b_[i-1]/3.0 + dx_[i-1] * c_[i-1]/4.0)));
                 }
             }
-            Real value(Real x) const {
+            Real value(Real x) const override {
                 Size j = this->locate(x);
                 Real dx_ = x-this->xBegin_[j];
                 return this->yBegin_[j] + dx_*(a_[j] + dx_*(b_[j] + dx_*c_[j]));
             }
-            Real primitive(Real x) const {
+            Real primitive(Real x) const override {
                 Size j = this->locate(x);
                 Real dx_ = x-this->xBegin_[j];
                 return primitiveConst_[j]
                     + dx_*(this->yBegin_[j] + dx_*(a_[j]/2.0
                     + dx_*(b_[j]/3.0 + dx_*c_[j]/4.0)));
             }
-            Real derivative(Real x) const {
+            Real derivative(Real x) const override {
                 Size j = this->locate(x);
                 Real dx_ = x-this->xBegin_[j];
                 return a_[j] + (2.0*b_[j] + 3.0*c_[j]*dx_)*dx_;
             }
-            Real secondDerivative(Real x) const {
+            Real secondDerivative(Real x) const override {
                 Size j = this->locate(x);
                 Real dx_ = x-this->xBegin_[j];
                 return 2.0*b_[j] + 6.0*c_[j]*dx_;
             }
+
           private:
             CubicInterpolation::DerivativeApprox da_;
             bool monotonic_;

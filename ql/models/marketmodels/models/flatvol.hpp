@@ -40,20 +40,20 @@ namespace QuantLib {
       public:
         FlatVol(
             const std::vector<Volatility>& volatilities,
-            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
+            const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
             const EvolutionDescription& evolution,
             Size numberOfFactors,
             const std::vector<Rate>& initialRates,
             const std::vector<Spread>& displacements);
         //! \name MarketModel interface
         //@{
-        const std::vector<Rate>& initialRates() const;
-        const std::vector<Spread>& displacements() const;
-        const EvolutionDescription& evolution() const;
-        Size numberOfRates() const;
-        Size numberOfFactors() const;
-        Size numberOfSteps() const;
-        const Matrix& pseudoRoot(Size i) const;
+        const std::vector<Rate>& initialRates() const override;
+        const std::vector<Spread>& displacements() const override;
+        const EvolutionDescription& evolution() const override;
+        Size numberOfRates() const override;
+        Size numberOfFactors() const override;
+        Size numberOfSteps() const override;
+        const Matrix& pseudoRoot(Size i) const override;
         //@}
       private:
         Size numberOfFactors_, numberOfRates_, numberOfSteps_;
@@ -67,20 +67,21 @@ namespace QuantLib {
                                   public Observer {
       public:
         FlatVolFactory(Real longTermCorrelation,
-                              Real beta,
-                              // this is just to make it work---it
-                              // should be replaced with something
-                              // else (such as some kind of volatility
-                              // structure)
-                              const std::vector<Time>& times,
-                              const std::vector<Volatility>& vols,
-                              // this is OK
-                              const Handle<YieldTermStructure>& yieldCurve,
-                              // this might have a structure
-                              Spread displacement);
-        boost::shared_ptr<MarketModel> create(const EvolutionDescription&,
-                                              Size numberOfFactors) const;
-        void update();
+                       Real beta,
+                       // this is just to make it work---it
+                       // should be replaced with something
+                       // else (such as some kind of volatility
+                       // structure)
+                       std::vector<Time> times,
+                       std::vector<Volatility> vols,
+                       // this is OK
+                       Handle<YieldTermStructure> yieldCurve,
+                       // this might have a structure
+                       Spread displacement);
+        ext::shared_ptr<MarketModel> create(const EvolutionDescription&,
+                                            Size numberOfFactors) const override;
+        void update() override;
+
       private:
         Real longTermCorrelation_, beta_;
         // <to be changed>

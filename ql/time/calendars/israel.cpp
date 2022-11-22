@@ -25,9 +25,9 @@ namespace QuantLib {
 
     Israel::Israel(Israel::Market market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> SettlementImpl(
+        static ext::shared_ptr<Calendar::Impl> SettlementImpl(
                                         new Israel::TelAvivImpl);
-        static boost::shared_ptr<Calendar::Impl> TelAvivImpl(
+        static ext::shared_ptr<Calendar::Impl> TelAvivImpl(
                                         new Israel::TelAvivImpl);
         switch (market) {
         case Settlement:
@@ -349,7 +349,7 @@ namespace QuantLib {
             || ((d == 5  || d == 6 ) && m == October   && y == 2042)
             || ((d == 25 || d == 26) && m == October   && y == 2043)
             || ((d == 12 || d == 13) && m == October   && y == 2044))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
 
         return true;
     }

@@ -19,28 +19,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/models/fwdperiodadapter.hpp>
+#include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
 #include <ql/models/marketmodels/forwardforwardmappings.hpp>
-#include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
+#include <ql/models/marketmodels/models/fwdperiodadapter.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <set>
+#include <utility>
 
 namespace QuantLib {
 
-    FwdPeriodAdapter::FwdPeriodAdapter(
-                               const boost::shared_ptr<MarketModel>& largeModel,
-                               Size period,
-                               Size offset,
-                               const std::vector<Spread>& newDisplacements)
-    :
-      numberOfFactors_(largeModel->numberOfFactors()),
-          numberOfRates_((largeModel->numberOfRates()-offset) / (period > 0 ? period : 1) ),
+    FwdPeriodAdapter::FwdPeriodAdapter(const ext::shared_ptr<MarketModel>& largeModel,
+                                       Size period,
+                                       Size offset,
+                                       std::vector<Spread> newDisplacements)
+    : numberOfFactors_(largeModel->numberOfFactors()),
+      numberOfRates_((largeModel->numberOfRates() - offset) / (period > 0 ? period : 1)),
       numberOfSteps_(largeModel->numberOfSteps()),
-      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_,
-                                          numberOfFactors_)),
-                                          displacements_(newDisplacements)
-    {
+      pseudoRoots_(numberOfSteps_, Matrix(numberOfRates_, numberOfFactors_)),
+      displacements_(std::move(newDisplacements)) {
         QL_REQUIRE( period >0, "period must  be greater than zero in fwdperiodadapter");
         QL_REQUIRE(period > offset, "period must be greater than offset in fwdperiodadapter");
 
@@ -54,7 +51,7 @@ namespace QuantLib {
             std::fill(displacements_.begin(), displacements_.end(), dis);
         }
 
-        if (displacements_.size() ==0) // if not specified use average across rate
+        if (displacements_.empty()) // if not specified use average across rate
         {
             displacements_.reserve(numberOfRates_);
             Size m=0;
@@ -123,9 +120,6 @@ namespace QuantLib {
                           0.0);
         }
     }
-
-
-
 }
 
 

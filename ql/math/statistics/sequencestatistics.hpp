@@ -61,9 +61,9 @@ namespace QuantLib {
         //! \name covariance and correlation
         //@{
         //! returns the covariance Matrix
-        Disposable<Matrix> covariance() const;
+        Matrix covariance() const;
         //! returns the correlation Matrix
-        Disposable<Matrix> correlation() const;
+        Matrix correlation() const;
         //@}
         //! \name 1-D inspectors lifted from underlying statistics class
         //@{
@@ -141,7 +141,7 @@ namespace QuantLib {
         }
         //@}
       protected:
-        Size dimension_;
+        Size dimension_ = 0;
         std::vector<statistics_type> stats_;
         mutable std::vector<Real> results_;
         Matrix quadraticSum_;
@@ -157,19 +157,18 @@ namespace QuantLib {
     // inline definitions
 
     template <class Stat>
-    inline GenericSequenceStatistics<Stat>::GenericSequenceStatistics(Size dimension)
-    : dimension_(0) {
+    inline GenericSequenceStatistics<Stat>::GenericSequenceStatistics(Size dimension) {
         reset(dimension);
     }
 
     template <class Stat>
     inline Size GenericSequenceStatistics<Stat>::samples() const {
-        return (stats_.size() == 0) ? 0 : stats_[0].samples();
+        return (stats_.empty()) ? 0 : stats_[0].samples();
     }
 
     template <class Stat>
     inline Real GenericSequenceStatistics<Stat>::weightSum() const {
-        return (stats_.size() == 0) ? 0.0 : stats_[0].weightSum();
+        return (stats_.empty()) ? 0.0 : stats_[0].weightSum();
     }
 
 
@@ -245,7 +244,7 @@ namespace QuantLib {
     }
 
     template <class Stat>
-    Disposable<Matrix> GenericSequenceStatistics<Stat>::covariance() const {
+    Matrix GenericSequenceStatistics<Stat>::covariance() const {
         Real sampleWeight = weightSum();
         QL_REQUIRE(sampleWeight > 0.0,
                    "sampleWeight=0, unsufficient");
@@ -267,7 +266,7 @@ namespace QuantLib {
 
 
     template <class Stat>
-    Disposable<Matrix> GenericSequenceStatistics<Stat>::correlation() const {
+    Matrix GenericSequenceStatistics<Stat>::correlation() const {
         Matrix correlation = covariance();
         Array variances = correlation.diagonal();
         for (Size i=0; i<dimension_; i++){

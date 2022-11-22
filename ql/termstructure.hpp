@@ -25,7 +25,7 @@
 #define quantlib_term_structure_hpp
 
 #include <ql/time/calendar.hpp>
-#include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounter.hpp>
 #include <ql/settings.hpp>
 #include <ql/handle.hpp>
 #include <ql/math/interpolations/extrapolation.hpp>
@@ -64,17 +64,15 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        TermStructure(const DayCounter& dc = DayCounter());
+        explicit TermStructure(DayCounter dc = DayCounter());
         //! initialize with a fixed reference date
-        TermStructure(const Date& referenceDate,
-                      const Calendar& calendar = Calendar(),
-                      const DayCounter& dc = DayCounter());
+        explicit TermStructure(const Date& referenceDate,
+                               Calendar calendar = Calendar(),
+                               DayCounter dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
-        TermStructure(Natural settlementDays,
-                      const Calendar&,
-                      const DayCounter& dc = DayCounter());
+        TermStructure(Natural settlementDays, Calendar, DayCounter dc = DayCounter());
         //@}
-        virtual ~TermStructure() {}
+        ~TermStructure() override = default;
         //! \name Dates and Time
         //@{
         //! the day counter used for date/time conversion
@@ -94,7 +92,7 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       protected:
         //! date-range check
@@ -103,8 +101,8 @@ namespace QuantLib {
         //! time-range check
         void checkRange(Time t,
                         bool extrapolate) const;
-        bool moving_;
-        mutable bool updated_;
+        bool moving_ = false;
+        mutable bool updated_ = true;
         Calendar calendar_;
       private:
         mutable Date referenceDate_;

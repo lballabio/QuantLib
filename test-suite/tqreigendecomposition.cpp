@@ -24,13 +24,6 @@
 using namespace QuantLib;
 using boost::unit_test_framework::test_suite;
 
-namespace {
-
-    Real tolerance = 1.0e-10;
-
-}
-
-
 void TqrEigenDecompositionTest::testEigenValueDecomposition() {
     BOOST_TEST_MESSAGE("Testing TQR eigenvalue decomposition...");
 
@@ -48,6 +41,7 @@ void TqrEigenDecompositionTest::testEigenValueDecomposition() {
     for (Size i=0; i < diag.size(); ++i) {
         const Real expected(ev[i]);
         const Real calculated(tqre.eigenvalues()[i]);
+        Real tolerance = 1.0e-10;
         if (std::fabs(expected-calculated) > tolerance) {
             BOOST_FAIL(std::string("wrong eigenvalue \n")
                        << "calculated: "
@@ -74,6 +68,7 @@ void TqrEigenDecompositionTest::testZeroOffDiagEigenValues() {
     for (Size i=0; i < diag.size(); ++i) {
         const Real expected(tqre2.eigenvalues()[i]);
         const Real calculated(tqre1.eigenvalues()[i]);
+        Real tolerance = 1.0e-10;
         if (std::fabs(expected-calculated) > tolerance) {
             BOOST_FAIL(std::string("wrong eigenvalue \n")
                        << "calculated: "
@@ -91,6 +86,7 @@ void TqrEigenDecompositionTest::testEigenVectorDecomposition() {
     Array sub(1,1);
 
     TqrEigenDecomposition tqre(diag, sub);
+    Real tolerance = 1.0e-10;
 
     if (std::fabs(0.25 + tqre.eigenvectors()[0][0]
                        * tqre.eigenvectors()[0][1]
@@ -101,7 +97,7 @@ void TqrEigenDecompositionTest::testEigenVectorDecomposition() {
 }
 
 test_suite* TqrEigenDecompositionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("TQR eigendecomposition tests");
+    auto* suite = BOOST_TEST_SUITE("TQR eigendecomposition tests");
     suite->add(QUANTLIB_TEST_CASE(
                    &TqrEigenDecompositionTest::testEigenValueDecomposition));
     suite->add(QUANTLIB_TEST_CASE(

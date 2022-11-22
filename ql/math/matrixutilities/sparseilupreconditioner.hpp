@@ -24,10 +24,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #ifndef quantlib_sparse_ilu_preconditioner_hpp
 #define quantlib_sparse_ilu_preconditioner_hpp
 
-#include <ql/qldefines.hpp>
-
-#if !defined(QL_NO_UBLAS_SUPPORT)
-
 #include <ql/math/array.hpp>
 #include <ql/math/matrixutilities/sparsematrix.hpp>
 
@@ -39,22 +35,21 @@ namespace QuantLib {
     */
     class SparseILUPreconditioner  {
       public:
-        SparseILUPreconditioner(const SparseMatrix& A, Integer lfil = 1);
+        explicit SparseILUPreconditioner(const SparseMatrix& A, Integer lfil = 1);
 
         const SparseMatrix& L() const;
         const SparseMatrix& U() const;
 
-        Disposable<Array> apply(const Array& b) const;
+        Array apply(const Array& b) const;
 
       private:
         SparseMatrix L_, U_;
         std::vector<Size> lBands_, uBands_;
 
-        Disposable<Array> forwardSolve(const Array& b) const;
-        Disposable<Array> backwardSolve(const Array& y) const;
+        Array forwardSolve(const Array& b) const;
+        Array backwardSolve(const Array& y) const;
     };
 
 }
 
-#endif
 #endif

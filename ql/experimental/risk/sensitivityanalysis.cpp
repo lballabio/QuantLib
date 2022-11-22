@@ -23,7 +23,6 @@
 
 using std::vector;
 using std::pair;
-using boost::shared_ptr;
 
 namespace QuantLib {
 
@@ -39,7 +38,7 @@ namespace QuantLib {
         }
     }
 
-    Real aggregateNPV(const vector<shared_ptr<Instrument> >& instruments,
+    Real aggregateNPV(const vector<ext::shared_ptr<Instrument> >& instruments,
                       const vector<Real>& quant) {
         Size n = instruments.size();
         Real npv = 0.0;
@@ -58,7 +57,7 @@ namespace QuantLib {
 
     pair<Real, Real>
     parallelAnalysis(const vector<Handle<SimpleQuote> >& quotes,
-                     const vector<shared_ptr<Instrument> >& instruments,
+                     const vector<ext::shared_ptr<Instrument> >& instruments,
                      const vector<Real>& quantities,
                      Real shift,
                      SensitivityAnalysis type,
@@ -116,14 +115,12 @@ namespace QuantLib {
         return result;
     }
 
-    pair<Real, Real>
-    bucketAnalysis(Handle<SimpleQuote> quote,
-                   const vector<shared_ptr<Instrument> >& instruments,
-                   const vector<Real>& quantities,
-                   Real shift,
-                   SensitivityAnalysis type,
-                   Real referenceNpv)
-    {
+    pair<Real, Real> bucketAnalysis(const Handle<SimpleQuote>& quote,
+                                    const vector<ext::shared_ptr<Instrument> >& instruments,
+                                    const vector<Real>& quantities,
+                                    Real shift,
+                                    SensitivityAnalysis type,
+                                    Real referenceNpv) {
         QL_REQUIRE(shift!=0.0, "zero shift not allowed");
 
         pair<Real, Real> result(0.0, 0.0);
@@ -165,15 +162,13 @@ namespace QuantLib {
     }
 
 
-    void
-    bucketAnalysis(vector<Real>& deltaVector, // delta result
-                   vector<Real>& gammaVector, // gamma result
-                   vector<Real>& refVals,
-                   Handle<SimpleQuote> quote,
-                   const vector<Handle<Quote> >& params,
-                   Real shift,
-                   SensitivityAnalysis type)
-    {
+    void bucketAnalysis(vector<Real>& deltaVector, // delta result
+                        vector<Real>& gammaVector, // gamma result
+                        vector<Real>& refVals,
+                        const Handle<SimpleQuote>& quote,
+                        const vector<Handle<Quote> >& params,
+                        Real shift,
+                        SensitivityAnalysis type) {
         QL_REQUIRE(shift!=0.0, "zero shift not allowed");
 
         QL_REQUIRE(!params.empty(), "empty parameters vector");
@@ -261,7 +256,7 @@ namespace QuantLib {
 
     pair<vector<Real>, vector<Real> >
     bucketAnalysis(const vector<Handle<SimpleQuote> >& quotes,
-                   const vector<shared_ptr<Instrument> >& instr,
+                   const vector<ext::shared_ptr<Instrument> >& instr,
                    const vector<Real>& quant,
                    Real shift,
                    SensitivityAnalysis type)
@@ -311,13 +306,11 @@ namespace QuantLib {
             bucketAnalysis(deltaMatrix[i], gammaMatrix[i], referenceValues,
                            quotes[i], parameters, shift, type);
         }
-
-        return;
     }
 
     pair<vector<vector<Real> >, vector<vector<Real> > >
     bucketAnalysis(const vector<vector<Handle<SimpleQuote> > >& quotes,
-                   const vector<shared_ptr<Instrument> >& instr,
+                   const vector<ext::shared_ptr<Instrument> >& instr,
                    const vector<Real>& quant,
                    Real shift,
                    SensitivityAnalysis type)

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
  Copyright (C) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -32,33 +32,33 @@ namespace QuantLib {
 
     class HestonSLVProcess : public StochasticProcess {
       public:
-        HestonSLVProcess(
-            const boost::shared_ptr<HestonProcess>& hestonProcess,
-            const boost::shared_ptr<LocalVolTermStructure>& leverageFct);
+        HestonSLVProcess(const ext::shared_ptr<HestonProcess>& hestonProcess,
+                         ext::shared_ptr<LocalVolTermStructure> leverageFct,
+                         Real mixingFactor = 1.0);
 
-        Size size()    const { return Size(2); }
-        Size factors() const { return Size(2); }
+        Size size() const override { return Size(2); }
+        Size factors() const override { return Size(2); }
 
-        void update();
+        void update() override;
 
-        Disposable<Array> initialValues() const {
+        Array initialValues() const override {
             return hestonProcess_->initialValues();
         }
-        Disposable<Array> apply(const Array& x0, const Array& dx) const {
+        Array apply(const Array& x0, const Array& dx) const override {
             return hestonProcess_->apply(x0, dx);
         }
 
-        Disposable<Array> drift(Time t, const Array& x) const;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const;
-        Disposable<Array> evolve(Time t0, const Array& x0,
-                                 Time dt, const Array& dw) const;
+        Array drift(Time t, const Array& x) const override;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
         Real v0()    const { return v0_; }
         Real rho()   const { return rho_; }
         Real kappa() const { return kappa_; }
         Real theta() const { return theta_; }
         Real sigma() const { return sigma_; }
-        boost::shared_ptr<LocalVolTermStructure> leverageFct() const {
+        Real mixingFactor() const { return mixingFactor_; }
+        ext::shared_ptr<LocalVolTermStructure> leverageFct() const {
             return leverageFct_;
         }
 
@@ -70,13 +70,13 @@ namespace QuantLib {
             return hestonProcess_->riskFreeRate();
         }
 
-        Time time(const Date& d) const { return hestonProcess_->time(d); }
+        Time time(const Date& d) const override { return hestonProcess_->time(d); }
 
       private:
-        Real kappa_, theta_, sigma_, rho_, v0_;
+        Real kappa_, theta_, sigma_, rho_, v0_, mixingFactor_, mixedSigma_;
 
-        const boost::shared_ptr<HestonProcess> hestonProcess_;
-        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const ext::shared_ptr<HestonProcess> hestonProcess_;
+        const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
     };
 }
 #endif

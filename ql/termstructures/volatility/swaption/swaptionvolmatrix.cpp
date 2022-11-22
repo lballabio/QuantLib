@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006, 2008 Ferdinando Ametrano
- Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2006 FranÃ§ois du Vignaud
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2015 Peter Caspers
@@ -29,7 +29,6 @@
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/interpolations/flatextrapolation2d.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -48,16 +47,16 @@ namespace QuantLib {
       volHandles_(vols), shiftValues_(shifts),
       volatilities_(vols.size(), vols.front().size()),
       shifts_(vols.size(), vols.front().size(), 0.0), volatilityType_(type) {
-        checkInputs(volatilities_.rows(), volatilities_.columns(),
-                    shifts.size(), shifts.size() == 0 ? 0 : shifts.front().size());
+        checkInputs(volatilities_.rows(), volatilities_.columns(), shifts.size(),
+                    shifts.empty() ? 0 : shifts.front().size());
         registerWithMarketData();
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -86,16 +85,16 @@ namespace QuantLib {
       volHandles_(vols), shiftValues_(shifts),
       volatilities_(vols.size(), vols.front().size()),
       shifts_(vols.size(), vols.front().size(), 0.0), volatilityType_(type) {
-        checkInputs(volatilities_.rows(), volatilities_.columns(),
-                    shifts.size(), shifts.size() == 0 ? 0 : shifts.front().size());
+        checkInputs(volatilities_.rows(), volatilities_.columns(), shifts.size(),
+                    shifts.empty() ? 0 : shifts.front().size());
         registerWithMarketData();
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -132,18 +131,18 @@ namespace QuantLib {
             volHandles_[i].resize(vols.columns());
             shiftValues_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); ++j) {
-                volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
+                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
                     SimpleQuote(vols[i][j])));
                 shiftValues_[i][j] = shifts.rows() > 0 ? shifts[i][j] : 0.0;
             }
         }
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -181,18 +180,18 @@ namespace QuantLib {
             volHandles_[i].resize(vols.columns());
             shiftValues_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); ++j) {
-                volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
+                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
                     SimpleQuote(vols[i][j])));
                 shiftValues_[i][j] = shifts.rows() > 0 ? shifts[i][j] : 0.0;
             }
         }
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -208,6 +207,8 @@ namespace QuantLib {
     // fixed reference date and fixed market data, option dates
     SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                     const Date& today,
+                    const Calendar& calendar,
+                    BusinessDayConvention bdc,
                     const std::vector<Date>& optionDates,
                     const std::vector<Period>& swapT,
                     const Matrix& vols,
@@ -215,7 +216,7 @@ namespace QuantLib {
                     const bool flatExtrapolation,
                     const VolatilityType type,
                     const Matrix& shifts)
-    : SwaptionVolatilityDiscrete(optionDates, swapT, today, Calendar(), Following, dc),
+    : SwaptionVolatilityDiscrete(optionDates, swapT, today, calendar, bdc, dc),
       volHandles_(vols.rows()), shiftValues_(vols.rows()),
       volatilities_(vols.rows(), vols.columns()),
       shifts_(shifts.rows(),shifts.columns(),0.0), volatilityType_(type) {
@@ -228,18 +229,18 @@ namespace QuantLib {
             volHandles_[i].resize(vols.columns());
             shiftValues_[i].resize(vols.columns());
             for (Size j=0; j<vols.columns(); ++j) {
-                volHandles_[i][j] = Handle<Quote>(boost::shared_ptr<Quote>(new
+                volHandles_[i][j] = Handle<Quote>(ext::shared_ptr<Quote>(new
                     SimpleQuote(vols[i][j])));
                 shiftValues_[i][j] = shifts.rows() > 0 ? shifts[i][j] : 0.0;
             }
         }
         if (flatExtrapolation) {
             interpolation_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), volatilities_));
             interpolationShifts_ =
-                FlatExtrapolator2D(boost::make_shared<BilinearInterpolation>(
+                FlatExtrapolator2D(ext::make_shared<BilinearInterpolation>(
                     swapLengths_.begin(), swapLengths_.end(),
                     optionTimes_.begin(), optionTimes_.end(), shifts_));
         } else {
@@ -298,32 +299,31 @@ namespace QuantLib {
         for (Size i=0; i<volatilities_.rows(); ++i) {
             for (Size j=0; j<volatilities_.columns(); ++j) {
                 volatilities_[i][j] = volHandles_[i][j]->value();
-                if(shiftValues_.size() > 0)
+                if (!shiftValues_.empty())
                     shifts_[i][j] = shiftValues_[i][j];
             }
         }
     }
 
-    //boost::shared_ptr<SmileSection>
+    //ext::shared_ptr<SmileSection>
     //SwaptionVolatilityMatrix::smileSectionImpl(const Date& d,
     //                                           const Period& swapTenor) const {
     //    Time optionTime = timeFromReference(d);
     //    Time swapLength = convertSwapTenor(swapTenor);
     //    // dummy strike
     //    Volatility atmVol = volatilityImpl(optionTime, swapLength, 0.05);
-    //    return boost::shared_ptr<SmileSection>(new
+    //    return ext::shared_ptr<SmileSection>(new
     //        FlatSmileSection(d, atmVol, dayCounter(), referenceDate()));
     //}
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     SwaptionVolatilityMatrix::smileSectionImpl(Time optionTime,
                                                Time swapLength) const {
         // dummy strike
         Volatility atmVol = volatilityImpl(optionTime, swapLength, 0.05);
-        Real shift = interpolationShifts_(optionTime, swapLength,true);
-        return boost::shared_ptr<SmileSection>(
-            new FlatSmileSection(optionTime, atmVol, dayCounter(), Null<Real>(),
-                                 volatilityType(), shift));
+        return ext::shared_ptr<SmileSection>(new FlatSmileSection(
+            optionTime, atmVol, dayCounter(), Null<Real>(), volatilityType(),
+            shift(optionTime, swapLength, true)));
     }
 
 }

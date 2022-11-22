@@ -39,7 +39,7 @@ namespace QuantLib {
         QL_REQUIRE( !(intervals_ & 1), "number of intervals must be even");
     }
 
-    Real FilonIntegral::integrate(const boost::function<Real (Real)>& f,
+    Real FilonIntegral::integrate(const ext::function<Real (Real)>& f,
                                   Real a, Real b) const {
         const Real h = (b-a)/(2*n_);
         Array x(2*n_+1, a, h);
@@ -49,23 +49,23 @@ namespace QuantLib {
         const Real theta3 = theta2*theta;
 
         const Real alpha = 1/theta + std::sin(2*theta)/(2*theta2)
-            - 2*square<Real>()(std::sin(theta))/theta3;
-        const Real beta = 2*( (1+square<Real>()(std::cos(theta)))/theta2
+            - 2*squared(std::sin(theta))/theta3;
+        const Real beta = 2*( (1+squared(std::cos(theta)))/theta2
             - std::sin(2*theta)/theta3);
         const Real gamma = 4*(std::sin(theta)/theta3 - std::cos(theta)/theta2);
 
         Array v(x.size());
         std::transform(x.begin(), x.end(), v.begin(), f);
 
-        boost::function<Real(Real)> f1, f2;
+        ext::function<Real(Real)> f1, f2;
         switch(type_) {
           case Cosine:
-            f1 = std::ptr_fun<Real,Real>(std::sin);
-            f2 = std::ptr_fun<Real,Real>(std::cos);
+            f1 = [](Real x) -> Real { return std::sin(x); };
+            f2 = [](Real x) -> Real { return std::cos(x); };
             break;
           case Sine:
-            f1 = std::ptr_fun<Real,Real>(std::cos);
-            f2 = std::ptr_fun<Real,Real>(std::sin);
+            f1 = [](Real x) -> Real { return std::cos(x); };
+            f2 = [](Real x) -> Real { return std::sin(x); };
             break;
           default:
             QL_FAIL("unknown integration type");

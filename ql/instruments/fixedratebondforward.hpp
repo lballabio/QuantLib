@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Allen Kuo
+ Copyright (C) 2022 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,108 +25,39 @@
 #ifndef quantlib_fixed_rate_bond_forward_hpp
 #define quantlib_fixed_rate_bond_forward_hpp
 
-#include <ql/instruments/forward.hpp>
+#include <ql/instruments/bondforward.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
 
 namespace QuantLib {
 
     //! %Forward contract on a fixed-rate bond
-    /*! 1. valueDate refers to the settlement date of the bond forward
-           contract.  maturityDate is the delivery (or repurchase)
-           date for the underlying bond (not the bond's maturity
-           date).
-
-        2. Relevant formulas used in the calculations (\f$P\f$ refers
-           to a price):
-
-           a. \f$ P_{CleanFwd}(t) = P_{DirtyFwd}(t) -
-              AI(t=deliveryDate) \f$ where \f$ AI \f$ refers to the
-              accrued interest on the underlying bond.
-
-           b. \f$ P_{DirtyFwd}(t) = \frac{P_{DirtySpot}(t) -
-              SpotIncome(t)} {discountCurve->discount(t=deliveryDate)} \f$
-
-           c. \f$ SpotIncome(t) = \sum_i \left( CF_i \times
-              incomeDiscountCurve->discount(t_i) \right) \f$ where \f$
-              CF_i \f$ represents the ith bond cash flow (coupon
-              payment) associated with the underlying bond falling
-              between the settlementDate and the deliveryDate. (Note
-              the two different discount curves used in b. and c.)
-
-        <b>Example: </b>
-        \link Repo.cpp
-        valuation of a repo on a fixed-rate bond
-        \endlink
-
-        \todo Add preconditions and tests
-
-        \todo Create switch- if coupon goes to seller is toggled on,
-              don't consider income in the \f$ P_{DirtyFwd}(t) \f$
-              calculation.
-
-        \todo Verify this works when the underlying is paper (in which
-              case ignore all AI.)
-
-        \warning This class still needs to be rigorously tested
-
-        \ingroup instruments
-    */
-    class FixedRateBondForward : public Forward {
+    /*! \deprecated Use BondForward instead. */
+    class QL_DEPRECATED FixedRateBondForward : public BondForward {
       public:
-        //! \name Constructors
-        /*! If strike is given in the constructor, can calculate the
-            NPV of the contract via NPV().
-
-            If strike/forward price is desired, it can be obtained via
-            forwardPrice(). In this case, the strike variable in the
-            constructor is irrelevant and will be ignored.
-        */
-        //@{
         FixedRateBondForward(
-                    const Date& valueDate,
-                    const Date& maturityDate,
-                    Position::Type type,
-                    Real strike,
-                    Natural settlementDays,
-                    const DayCounter& dayCounter,
-                    const Calendar& calendar,
-                    BusinessDayConvention businessDayConvention,
-                    const boost::shared_ptr<FixedRateBond>& fixedCouponBond,
-                    const Handle<YieldTermStructure>& discountCurve =
-                                                Handle<YieldTermStructure>(),
-                    const Handle<YieldTermStructure>& incomeDiscountCurve =
-                                                Handle<YieldTermStructure>());
-        //@}
-
-        //! \name Calculations
-        //@{
-
-        //! (dirty) forward bond price
-        Real forwardPrice() const;
-
-        //! (dirty) forward bond price minus accrued on bond at delivery
-        Real cleanForwardPrice() const;
-
-        //!  NPV of bond coupons discounted using incomeDiscountCurve
-        /*! Here only coupons between max(evaluation date,settlement
-            date) and maturity date of bond forward contract are
-            considered income.
-        */
-        Real spotIncome(const Handle<YieldTermStructure>& incomeDiscountCurve)
-            const;
-
-        //!  NPV of underlying bond
-        Real spotValue() const;
-
-        //@}
-
-      protected:
-        boost::shared_ptr<FixedRateBond> fixedCouponBond_;
-        void performCalculations() const;
+            const Date& valueDate,
+            const Date& maturityDate,
+            Position::Type type,
+            Real strike,
+            Natural settlementDays,
+            const DayCounter& dayCounter,
+            const Calendar& calendar,
+            BusinessDayConvention businessDayConvention,
+            const ext::shared_ptr<FixedRateBond>& fixedRateBond,
+            const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>(),
+            const Handle<YieldTermStructure>& incomeDiscountCurve = Handle<YieldTermStructure>())
+        : BondForward(valueDate,
+                      maturityDate,
+                      type,
+                      strike,
+                      settlementDays,
+                      dayCounter,
+                      calendar,
+                      businessDayConvention,
+                      fixedRateBond,
+                      discountCurve,
+                      incomeDiscountCurve) {}
     };
-
 }
 
-
 #endif
-

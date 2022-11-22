@@ -21,10 +21,10 @@
 
 namespace QuantLib {
 
-    AtmAdjustedSmileSection::AtmAdjustedSmileSection(
-        const boost::shared_ptr<SmileSection> source, const Real atm,
-        const bool recenterSmile)
-        : SmileSection(*source), source_(source) {
+    AtmAdjustedSmileSection::AtmAdjustedSmileSection(const ext::shared_ptr<SmileSection>& source,
+                                                     const Real atm,
+                                                     const bool recenterSmile)
+    : SmileSection(*source), source_(source) {
 
         f_ = atm;
         if (f_ == Null<Real>())

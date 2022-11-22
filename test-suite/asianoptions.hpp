@@ -2,8 +2,9 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2008 StatPro Italia srl
+ Copyright (C) 2008, 2017 StatPro Italia srl
  Copyright (C) 2009 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+ Copyright (C) 2021 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,6 +24,7 @@
 #define quantlib_test_asian_options_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -31,17 +33,25 @@ class AsianOptionTest {
   public:
     static void testAnalyticContinuousGeometricAveragePrice();
     static void testAnalyticContinuousGeometricAveragePriceGreeks();
+    static void testAnalyticContinuousGeometricAveragePriceHeston();
     static void testAnalyticDiscreteGeometricAveragePrice();
+    static void testAnalyticDiscreteGeometricAveragePriceHeston();
     static void testAnalyticDiscreteGeometricAverageStrike();
+    static void testDiscreteGeometricAveragePriceHestonPastFixings();
     static void testMCDiscreteGeometricAveragePrice();
+    static void testMCDiscreteGeometricAveragePriceHeston();
     static void testMCDiscreteArithmeticAveragePrice();
+    static void testMCDiscreteArithmeticAveragePriceHeston();
     static void testMCDiscreteArithmeticAverageStrike();
     static void testAnalyticDiscreteGeometricAveragePriceGreeks();
     static void testPastFixings();
+    static void testPastFixingsModelDependency();
+    static void testAllFixingsInThePast();
     static void testLevyEngine();
     static void testVecerEngine();
-    static boost::unit_test_framework::test_suite* suite();
-    static boost::unit_test_framework::test_suite* experimental();
+    static void testTurnbullWakemanAsianEngine();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
+    static boost::unit_test_framework::test_suite* experimental(SpeedLevel);
 };
 
 

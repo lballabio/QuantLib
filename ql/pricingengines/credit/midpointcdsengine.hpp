@@ -32,12 +32,12 @@ namespace QuantLib {
 
     class MidPointCdsEngine : public CreditDefaultSwap::engine {
       public:
-        MidPointCdsEngine(
-              const Handle<DefaultProbabilityTermStructure>&,
-              Real recoveryRate,
-              const Handle<YieldTermStructure>& discountCurve,
-              boost::optional<bool> includeSettlementDateFlows = boost::none);
-        void calculate() const;
+        MidPointCdsEngine(Handle<DefaultProbabilityTermStructure>,
+                          Real recoveryRate,
+                          Handle<YieldTermStructure> discountCurve,
+                          const boost::optional<bool>& includeSettlementDateFlows = boost::none);
+        void calculate() const override;
+
       private:
         Handle<DefaultProbabilityTermStructure> probability_;
         Real recoveryRate_;

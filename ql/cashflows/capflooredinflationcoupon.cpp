@@ -55,7 +55,7 @@ namespace QuantLib {
 
 
     CappedFlooredYoYInflationCoupon::CappedFlooredYoYInflationCoupon(
-                const boost::shared_ptr<YoYInflationCoupon>& underlying,
+                const ext::shared_ptr<YoYInflationCoupon>& underlying,
                         Rate cap, Rate floor)
     : YoYInflationCoupon(underlying->date(),
                          underlying->nominal(),
@@ -77,40 +77,29 @@ namespace QuantLib {
 
 
     void CappedFlooredYoYInflationCoupon::setPricer(
-            const boost::shared_ptr<YoYInflationCouponPricer>& pricer) {
+            const ext::shared_ptr<YoYInflationCouponPricer>& pricer) {
 
         YoYInflationCoupon::setPricer(pricer);
-        if (underlying_) underlying_->setPricer(pricer);
+        if (underlying_ != nullptr)
+            underlying_->setPricer(pricer);
     }
 
 
+    Rate CappedFlooredYoYInflationCoupon::underlyingRate() const {
+        return underlying_ != nullptr ? underlying_->rate() : YoYInflationCoupon::rate();
+    }
+
     Rate CappedFlooredYoYInflationCoupon::rate() const {
-        Rate swapletRate = underlying_ ? underlying_->rate() : YoYInflationCoupon::rate();
+        Rate swapletRate = underlyingRate();
 
-        if(isFloored_ || isCapped_) {
-            if (underlying_) {
-                QL_REQUIRE(underlying_->pricer(), "pricer not set");
-            } else {
-                QL_REQUIRE(pricer_, "pricer not set");
-            }
+        auto couponPricer = underlying_ != nullptr ? underlying_->pricer() : pricer();
+
+        if (isFloored_ || isCapped_) {
+            QL_REQUIRE(couponPricer, "pricer not set");
         }
 
-        Rate floorletRate = 0.;
-        if(isFloored_) {
-            floorletRate =
-            underlying_ ?
-            underlying_->pricer()->floorletRate(effectiveFloor()) :
-            pricer()->floorletRate(effectiveFloor())
-            ;
-        }
-        Rate capletRate = 0.;
-        if(isCapped_) {
-            capletRate =
-            underlying_ ?
-            underlying_->pricer()->capletRate(effectiveCap()) :
-            pricer()->capletRate(effectiveCap())
-            ;
-        }
+        Rate floorletRate = isFloored_ ? couponPricer->floorletRate(effectiveFloor()) : 0.0;
+        Rate capletRate = isCapped_? couponPricer->capletRate(effectiveCap()) : 0.0;
 
         return swapletRate + floorletRate - capletRate;
     }
@@ -151,10 +140,9 @@ namespace QuantLib {
 
     void CappedFlooredYoYInflationCoupon::accept(AcyclicVisitor& v) {
         typedef YoYInflationCoupon super;
-        Visitor<CappedFlooredYoYInflationCoupon>* v1 =
-            dynamic_cast<Visitor<CappedFlooredYoYInflationCoupon>*>(&v);
+        auto* v1 = dynamic_cast<Visitor<CappedFlooredYoYInflationCoupon>*>(&v);
 
-        if (v1 != 0)
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             super::accept(v);

@@ -18,17 +18,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
 #include <ql/pricingengines/asian/analytic_cont_geom_av_price.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticContinuousGeometricAveragePriceAsianEngine::
-    AnalyticContinuousGeometricAveragePriceAsianEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        AnalyticContinuousGeometricAveragePriceAsianEngine(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
@@ -41,8 +42,8 @@ namespace QuantLib {
 
         Date exercise = arguments_.exercise->lastDate();
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         Volatility volatility =
@@ -59,9 +60,9 @@ namespace QuantLib {
 
         Spread dividendYield = 0.5 * (
             process_->riskFreeRate()->zeroRate(exercise, rfdc,
-                                               Continuous, NoFrequency) +
+                                               Continuous, NoFrequency).rate() +
             process_->dividendYield()->zeroRate(exercise, divdc,
-                                                Continuous, NoFrequency) +
+                                                Continuous, NoFrequency).rate() +
             volatility*volatility/6.0);
 
         Time t_q = divdc.yearFraction(

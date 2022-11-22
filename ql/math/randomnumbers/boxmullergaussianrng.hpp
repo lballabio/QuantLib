@@ -50,17 +50,15 @@ namespace QuantLib {
         sample_type next() const;
       private:
         RNG uniformGenerator_;
-        mutable bool returnFirst_;
+        mutable bool returnFirst_ = true;
         mutable Real firstValue_,secondValue_;
         mutable Real firstWeight_,secondWeight_;
-        mutable Real weight_;
+        mutable Real weight_ = 0.0;
     };
 
     template <class RNG>
-    BoxMullerGaussianRng<RNG>::BoxMullerGaussianRng(
-                                                const RNG& uniformGenerator)
-    : uniformGenerator_(uniformGenerator), returnFirst_(true),
-      weight_(0.0) {}
+    BoxMullerGaussianRng<RNG>::BoxMullerGaussianRng(const RNG& uniformGenerator)
+    : uniformGenerator_(uniformGenerator) {}
 
     template <class RNG>
     inline typename BoxMullerGaussianRng<RNG>::sample_type
@@ -83,10 +81,10 @@ namespace QuantLib {
             weight_ = firstWeight_*secondWeight_;
 
             returnFirst_ = false;
-            return sample_type(firstValue_,weight_);
+            return {firstValue_, weight_};
         } else {
             returnFirst_ = true;
-            return sample_type(secondValue_,weight_);
+            return {secondValue_, weight_};
         }
     }
 

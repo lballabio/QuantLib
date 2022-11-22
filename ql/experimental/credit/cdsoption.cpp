@@ -39,11 +39,10 @@ namespace QuantLib {
                    Real recoveryRate,
                    const Handle<YieldTermStructure>& termStructure,
                    Real targetValue)
-            : targetValue_(targetValue) {
+            : targetValue_(targetValue), vol_(ext::make_shared<SimpleQuote>(0.0)) {
 
-                vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
                 Handle<Quote> h(vol_);
-                engine_ = boost::shared_ptr<PricingEngine>(
+                engine_ = ext::shared_ptr<PricingEngine>(
                            new BlackCdsOptionEngine(probability, recoveryRate,
                                                     termStructure, h));
                 cdsoption.setupArguments(engine_->getArguments());
@@ -58,19 +57,19 @@ namespace QuantLib {
                 return results_->value-targetValue_;
             }
           private:
-            boost::shared_ptr<PricingEngine> engine_;
+            ext::shared_ptr<PricingEngine> engine_;
             Real targetValue_;
-            boost::shared_ptr<SimpleQuote> vol_;
+            ext::shared_ptr<SimpleQuote> vol_;
             const Instrument::results* results_;
         };
 
     }
 
 
-    CdsOption::CdsOption(const boost::shared_ptr<CreditDefaultSwap>& swap,
-                         const boost::shared_ptr<Exercise>& exercise,
+    CdsOption::CdsOption(const ext::shared_ptr<CreditDefaultSwap>& swap,
+                         const ext::shared_ptr<Exercise>& exercise,
                          bool knocksOut)
-    : Option(boost::shared_ptr<Payoff>(new NullPayoff), exercise),
+    : Option(ext::shared_ptr<Payoff>(new NullPayoff), exercise),
       swap_(swap), knocksOut_(knocksOut) {
         QL_REQUIRE(swap->side() == Protection::Buyer || knocksOut_,
                    "receiver CDS options must knock out");
@@ -91,10 +90,9 @@ namespace QuantLib {
         swap_->setupArguments(args);
         Option::setupArguments(args);
 
-        CdsOption::arguments* arguments =
-            dynamic_cast<CdsOption::arguments*>(args);
+        auto* arguments = dynamic_cast<CdsOption::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->swap      = swap_;
         arguments->knocksOut = knocksOut_;
@@ -102,9 +100,8 @@ namespace QuantLib {
 
     void CdsOption::fetchResults(const PricingEngine::results* r) const {
         Option::fetchResults(r);
-        const CdsOption::results* results =
-            dynamic_cast<const CdsOption::results*>(r);
-        QL_ENSURE(results != 0, "wrong results type");
+        const auto* results = dynamic_cast<const CdsOption::results*>(r);
+        QL_ENSURE(results != nullptr, "wrong results type");
         riskyAnnuity_ = results->riskyAnnuity;
     }
 

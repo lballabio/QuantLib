@@ -55,23 +55,14 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/math/integrals/segmentintegral.hpp>
 #include <ql/math/statistics/convergencestatistics.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
 #include <sstream>
 
-#if defined(BOOST_MSVC)
-#include <float.h>
-//namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
-#endif
-
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-#define BEGIN(x) (x+0)
-#define END(x) (x+LENGTH(x))
-
-namespace {
+namespace market_model_smm_caplet_alpha_calibration_test {
 
     Date todaysDate_, startDate_, endDate_;
     std::vector<Time> rateTimes_;
@@ -226,6 +217,8 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     BOOST_TEST_MESSAGE("Testing alpha caplet calibration "
                        "in a lognormal coterminal swap market model...");
 
+    using namespace market_model_smm_caplet_alpha_calibration_test;
+
     setup();
 
     Size numberOfRates = todaysForwards_.size();
@@ -233,21 +226,21 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     EvolutionDescription evolution(rateTimes_);
     // Size numberOfSteps = evolution.numberOfSteps();
 
-    boost::shared_ptr<PiecewiseConstantCorrelation> fwdCorr(new
+    ext::shared_ptr<PiecewiseConstantCorrelation> fwdCorr(new
         ExponentialForwardCorrelation(rateTimes_,
                                       longTermCorrelation_,
                                       beta_));
 
-    boost::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
+    ext::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
     cs->setOnForwardRates(todaysForwards_);
 
-    boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
+    ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
         CotSwapFromFwdCorrelation(fwdCorr, *cs, displacement_));
 
-    std::vector<boost::shared_ptr<PiecewiseConstantVariance> >
+    std::vector<ext::shared_ptr<PiecewiseConstantVariance> >
                                     swapVariances(numberOfRates);
     for (Size i=0; i<numberOfRates; ++i) {
-        swapVariances[i] = boost::shared_ptr<PiecewiseConstantVariance>(new
+        swapVariances[i] = ext::shared_ptr<PiecewiseConstantVariance>(new
             PiecewiseConstantAbcdVariance(a_, b_, c_, d_,
                                           i, rateTimes_));
     }
@@ -258,7 +251,7 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
     std::vector<Real> alphaMin(numberOfRates, -1.0);
     bool maximizeHomogeneity = false; //?
     if (printReport_) {
-        BOOST_TEST_MESSAGE("caplet market vols: " << QL_FIXED <<
+        BOOST_TEST_MESSAGE("caplet market vols: " << std::fixed <<
                            std::setprecision(4) << io::sequence(capletVols_));
         BOOST_TEST_MESSAGE("alphaMin:           " << alphaMin_);
         BOOST_TEST_MESSAGE("alphaInitial:       " << alpha_);
@@ -298,7 +291,7 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
         BOOST_ERROR("calibration failed");
 
     const std::vector<Matrix>& swapPseudoRoots = calibrator.swapPseudoRoots();
-    boost::shared_ptr<MarketModel> smm(new
+    ext::shared_ptr<MarketModel> smm(new
         PseudoRootFacade(swapPseudoRoots,
                          rateTimes_,
                          cs->coterminalSwapRates(),
@@ -311,7 +304,7 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
         capletVols[i] = std::sqrt(capletTotCovariance[i][i]/rateTimes_[i]);
     }
     if (printReport_) {
-        BOOST_TEST_MESSAGE("caplet smm implied vols: " << QL_FIXED <<
+        BOOST_TEST_MESSAGE("caplet smm implied vols: " << std::fixed <<
                            std::setprecision(4) << io::sequence(capletVols));
         BOOST_TEST_MESSAGE("failures: " << calibrator.failures());
         BOOST_TEST_MESSAGE("deformationSize: " << calibrator.deformationSize());
@@ -353,10 +346,9 @@ void MarketModelSmmCapletAlphaCalibrationTest::testFunction() {
 
 // --- Call the desired tests
 test_suite* MarketModelSmmCapletAlphaCalibrationTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("SMM Caplet alpha calibration test");
-    #if !defined(QL_NO_UBLAS_SUPPORT)
-    suite->add(QUANTLIB_TEST_CASE(
-                    &MarketModelSmmCapletAlphaCalibrationTest::testFunction));
-    #endif
+    auto* suite = BOOST_TEST_SUITE("SMM Caplet alpha calibration test");
+
+    suite->add(QUANTLIB_TEST_CASE(&MarketModelSmmCapletAlphaCalibrationTest::testFunction));
+
     return suite;
 }

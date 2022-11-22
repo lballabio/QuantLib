@@ -29,7 +29,7 @@ namespace QuantLib {
 
 
     NthToDefault::NthToDefault(
-        const boost::shared_ptr<Basket>& basket,
+        const ext::shared_ptr<Basket>& basket,
         Size n,
         Protection::Side side,
         const Schedule& premiumSchedule,
@@ -111,9 +111,8 @@ namespace QuantLib {
     }
 
     void NthToDefault::setupArguments(PricingEngine::arguments* args) const {
-        NthToDefault::arguments* arguments
-            = dynamic_cast<NthToDefault::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<NthToDefault::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
         arguments->basket = basket_;
         arguments->side = side_;
         arguments->premiumLeg = premiumLeg_;
@@ -127,9 +126,8 @@ namespace QuantLib {
     void NthToDefault::fetchResults(const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
 
-        const NthToDefault::results* results
-            = dynamic_cast<const NthToDefault::results*>(r);
-        QL_REQUIRE(results != 0, "wrong result type");
+        const auto* results = dynamic_cast<const NthToDefault::results*>(r);
+        QL_REQUIRE(results != nullptr, "wrong result type");
 
         premiumValue_ = results->premiumValue;
         protectionValue_ = results->protectionValue;

@@ -33,38 +33,37 @@ namespace QuantLib {
     //! Vanilla energy swap
     class EnergyVanillaSwap : public EnergySwap {
       public:
-        EnergyVanillaSwap(
-                    bool payer,
-                    const Calendar& calendar,
-                    const Money& fixedPrice,
-                    const UnitOfMeasure& fixedPriceUnitOfMeasure,
-                    const boost::shared_ptr<CommodityIndex>& index,
-                    const Currency& payCurrency,
-                    const Currency& receiveCurrency,
-                    const PricingPeriods& pricingPeriods,
-                    const CommodityType& commodityType,
-                    const boost::shared_ptr<SecondaryCosts>& secondaryCosts,
-                    const Handle<YieldTermStructure>& payLegTermStructure,
-                    const Handle<YieldTermStructure>& receiveLegTermStructure,
-                    const Handle<YieldTermStructure>& discountTermStructure);
+        EnergyVanillaSwap(bool payer,
+                          const Calendar& calendar,
+                          Money fixedPrice,
+                          UnitOfMeasure fixedPriceUnitOfMeasure,
+                          ext::shared_ptr<CommodityIndex> index,
+                          const Currency& payCurrency,
+                          const Currency& receiveCurrency,
+                          const PricingPeriods& pricingPeriods,
+                          const CommodityType& commodityType,
+                          const ext::shared_ptr<SecondaryCosts>& secondaryCosts,
+                          Handle<YieldTermStructure> payLegTermStructure,
+                          Handle<YieldTermStructure> receiveLegTermStructure,
+                          Handle<YieldTermStructure> discountTermStructure);
 
-        bool isExpired() const;
+        bool isExpired() const override;
         Integer payReceive() const { return payReceive_; }
         const Money& fixedPrice() const { return fixedPrice_; }
         const UnitOfMeasure& fixedPriceUnitOfMeasure() const {
             return fixedPriceUnitOfMeasure_;
         }
-        const boost::shared_ptr<CommodityIndex>& index() const {
+        const ext::shared_ptr<CommodityIndex>& index() const {
             return index_;
         }
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
         Integer payReceive_;
         Money fixedPrice_;
         UnitOfMeasure fixedPriceUnitOfMeasure_;
-        boost::shared_ptr<CommodityIndex> index_;
+        ext::shared_ptr<CommodityIndex> index_;
         Handle<YieldTermStructure> payLegTermStructure_;
         Handle<YieldTermStructure> receiveLegTermStructure_;
         Handle<YieldTermStructure> discountTermStructure_;

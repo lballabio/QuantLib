@@ -42,13 +42,13 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace bates_model_test {
 
     Real getCalibrationError(
-               std::vector<boost::shared_ptr<CalibrationHelper> > & options) {
+               std::vector<ext::shared_ptr<BlackCalibrationHelper> > & options) {
         Real sse = 0;
-        for (Size i = 0; i < options.size(); ++i) {
-            const Real diff = options[i]->calibrationError()*100.0;
+        for (auto& option : options) {
+            const Real diff = option->calibrationError() * 100.0;
             sse += diff*diff;
         }
         return sse;
@@ -66,16 +66,16 @@ void BatesModelTest::testAnalyticVsBlack() {
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
 
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
     Date exerciseDate = settlementDate + 6*Months;
 
-    boost::shared_ptr<StrikedTypePayoff> payoff(
+    ext::shared_ptr<StrikedTypePayoff> payoff(
                                      new PlainVanillaPayoff(Option::Put, 30));
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     Handle<YieldTermStructure> riskFreeTS(flatRate(0.1, dayCounter));
     Handle<YieldTermStructure> dividendTS(flatRate(0.04, dayCounter));
-    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(32.0)));
+    Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(32.0)));
 
     Real yearFraction = dayCounter.yearFraction(settlementDate, exerciseDate);
     Real forwardPrice = s0->value()*std::exp((0.1-0.04)*yearFraction);
@@ -93,12 +93,12 @@ void BatesModelTest::testAnalyticVsBlack() {
 
     VanillaOption option(payoff, exercise);
 
-    boost::shared_ptr<BatesProcess> process(
+    ext::shared_ptr<BatesProcess> process(
         new BatesProcess(riskFreeTS, dividendTS, s0, v0, 
                          kappa, theta, sigma, rho, lambda, nu, delta));
 
-    boost::shared_ptr<PricingEngine> engine(new BatesEngine(
-        boost::shared_ptr<BatesModel>(new BatesModel(process)), 64));
+    ext::shared_ptr<PricingEngine> engine(new BatesEngine(
+        ext::make_shared<BatesModel>(process), 64));
 
     option.setPricingEngine(engine);
     Real calculated = option.NPV();
@@ -107,16 +107,16 @@ void BatesModelTest::testAnalyticVsBlack() {
     Real error = std::fabs(calculated - expected);
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce Black price with BatesEngine"
-                    << QL_FIXED
+                    << std::fixed
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
-                    << QL_SCIENTIFIC
+                    << std::scientific
                     << "\n    error:      " << error);
     }
 
-    engine = boost::shared_ptr<PricingEngine>(new BatesDetJumpEngine(
-        boost::shared_ptr<BatesDetJumpModel>(
-            new BatesDetJumpModel( process, 1.0, 0.0001)), 64));
+    engine = ext::shared_ptr<PricingEngine>(new BatesDetJumpEngine(
+        ext::make_shared<BatesDetJumpModel>(
+            process, 1.0, 0.0001), 64));
 
     option.setPricingEngine(engine);
     calculated = option.NPV();
@@ -125,16 +125,16 @@ void BatesModelTest::testAnalyticVsBlack() {
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce Black price with " \
                     "BatesDetJumpEngine"
-                    << QL_FIXED
+                    << std::fixed
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
-                    << QL_SCIENTIFIC
+                    << std::scientific
                     << "\n    error:      " << error);
     }
 
-    engine = boost::shared_ptr<PricingEngine>(new BatesDoubleExpEngine(
-        boost::shared_ptr<BatesDoubleExpModel>(
-            new BatesDoubleExpModel(process, 0.0001, 0.0001, 0.0001)), 64));
+    engine = ext::shared_ptr<PricingEngine>(new BatesDoubleExpEngine(
+        ext::make_shared<BatesDoubleExpModel>(
+            process, 0.0001, 0.0001, 0.0001), 64));
 
     option.setPricingEngine(engine);
     calculated = option.NPV();
@@ -142,17 +142,17 @@ void BatesModelTest::testAnalyticVsBlack() {
     error = std::fabs(calculated - expected);
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce Black price with BatesDoubleExpEngine"
-                    << QL_FIXED
+                    << std::fixed
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
-                    << QL_SCIENTIFIC
+                    << std::scientific
                     << "\n    error:      " << error);
     }
 
-    engine = boost::shared_ptr<PricingEngine>(new BatesDoubleExpDetJumpEngine(
-        boost::shared_ptr<BatesDoubleExpDetJumpModel>(
-            new BatesDoubleExpDetJumpModel(
-                process, 0.0001, 0.0001, 0.0001, 0.5, 1.0, 0.0001)), 64));
+    engine = ext::shared_ptr<PricingEngine>(new BatesDoubleExpDetJumpEngine(
+        ext::make_shared<BatesDoubleExpDetJumpModel>(
+            
+                process, 0.0001, 0.0001, 0.0001, 0.5, 1.0, 0.0001), 64));
 
     option.setPricingEngine(engine);
     calculated = option.NPV();
@@ -161,10 +161,10 @@ void BatesModelTest::testAnalyticVsBlack() {
     if (error > tolerance) {
         BOOST_ERROR("failed to reproduce Black price with " \
                     "BatesDoubleExpDetJumpEngine"
-                    << QL_FIXED
+                    << std::fixed
                     << "\n    calculated: " << calculated
                     << "\n    expected:   " << expected
-                    << QL_SCIENTIFIC
+                    << std::scientific
                     << "\n    error:      " << error);
     }
 }
@@ -179,19 +179,19 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
     Date settlementDate = Date::todaysDate();
     Settings::instance().evaluationDate() = settlementDate;
 
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
 
-    boost::shared_ptr<StrikedTypePayoff> payoff(
+    ext::shared_ptr<StrikedTypePayoff> payoff(
                                      new PlainVanillaPayoff(Option::Put, 95));
 
     Handle<YieldTermStructure> riskFreeTS(flatRate(0.1, dayCounter));
     Handle<YieldTermStructure> dividendTS(flatRate(0.04, dayCounter));
-    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
+    Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100)));
 
     Real v0 = 0.0433;
     // FLOATING_POINT_EXCEPTION
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(std::sqrt(v0)));
-    boost::shared_ptr<BlackVolTermStructure> volTS =
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(std::sqrt(v0)));
+    ext::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(settlementDate, vol, dayCounter);
 
     const Real kappa = 0.5;
@@ -199,38 +199,38 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
     const Real sigma = 1.0e-4;
     const Real rho = 0.0;
 
-    boost::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(2));
-    boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(-0.2));
-    boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.2));
+    ext::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(2));
+    ext::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(-0.2));
+    ext::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.2));
 
-    boost::shared_ptr<BatesProcess> batesProcess(new BatesProcess(
+    ext::shared_ptr<BatesProcess> batesProcess(new BatesProcess(
         riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho,
         jumpIntensity->value(), meanLogJump->value(), jumpVol->value()));
 
-    boost::shared_ptr<Merton76Process> mertonProcess(
+    ext::shared_ptr<Merton76Process> mertonProcess(
         new Merton76Process(s0, dividendTS, riskFreeTS,
                             Handle<BlackVolTermStructure>(volTS),
                             Handle<Quote>(jumpIntensity),
                             Handle<Quote>(meanLogJump),
                             Handle<Quote>(jumpVol)));
 
-    boost::shared_ptr<PricingEngine> batesEngine(new BatesEngine(
-        boost::shared_ptr<BatesModel>(new BatesModel(batesProcess)), 160));
+    ext::shared_ptr<PricingEngine> batesEngine(new BatesEngine(
+        ext::make_shared<BatesModel>(batesProcess), 160));
 
     const Real mcTol = 0.1;
-    boost::shared_ptr<PricingEngine> mcBatesEngine =
+    ext::shared_ptr<PricingEngine> mcBatesEngine =
         MakeMCEuropeanHestonEngine<PseudoRandom>(batesProcess)
             .withStepsPerYear(2)
             .withAntitheticVariate()
             .withAbsoluteTolerance(mcTol)
             .withSeed(1234);
 
-    boost::shared_ptr<PricingEngine> mertonEngine(
+    ext::shared_ptr<PricingEngine> mertonEngine(
         new JumpDiffusionEngine(mertonProcess, 1e-10, 1000));
 
     for (Integer i=1; i<=5; i+=2) {
         Date exerciseDate = settlementDate + i*Years;
-        boost::shared_ptr<Exercise> exercise(
+        ext::shared_ptr<Exercise> exercise(
             new EuropeanExercise(exerciseDate));
 
         VanillaOption batesOption(payoff, exercise);
@@ -250,7 +250,7 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
         if (relError > tolerance) {
             BOOST_FAIL("failed to reproduce Merton76 price with semi "
                        "analytic BatesEngine"
-                       << QL_FIXED << std::setprecision(8)
+                       << std::fixed << std::setprecision(8)
                        << "\n    calculated: " << calculated
                        << "\n    expected:   " << expected
                        << "\n    rel. error: " << relError
@@ -261,7 +261,7 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
         if (mcError > 3*mcTol) {
             BOOST_FAIL("failed to reproduce Merton76 price with Monte-Carlo "
                        "BatesEngine"
-                       << QL_FIXED << std::setprecision(8)
+                       << std::fixed << std::setprecision(8)
                        << "\n    calculated: " << mcCalculated
                        << "\n    expected:   " << expected
                        << "\n    error: "      << mcError
@@ -270,7 +270,7 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
     }
 }
 
-namespace {
+namespace bates_model_test {
     struct HestonModelData {
         const char* const name;
         Real v0;
@@ -301,48 +301,44 @@ void BatesModelTest::testAnalyticVsMCPricing() {
     BOOST_TEST_MESSAGE("Testing analytic Bates engine against Monte-Carlo "
                        "engine...");
 
+    using namespace bates_model_test;
+
     SavedSettings backup;
 
     Date settlementDate(30, March, 2007);
     Settings::instance().evaluationDate() = settlementDate;
 
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
     Date exerciseDate(30, March, 2012);
 
-    boost::shared_ptr<StrikedTypePayoff> payoff(
+    ext::shared_ptr<StrikedTypePayoff> payoff(
                                    new PlainVanillaPayoff(Option::Put, 100));
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
-    
-    for (Size i=0; i < LENGTH(hestonModels); ++i) { 
-        Handle<YieldTermStructure> riskFreeTS(flatRate(hestonModels[i].r, 
-                                                       dayCounter));
-        Handle<YieldTermStructure> dividendTS(flatRate(hestonModels[i].q, 
-                                                       dayCounter));
-        Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(100)));
 
-        boost::shared_ptr<BatesProcess> batesProcess(new BatesProcess(
-                       riskFreeTS, dividendTS, s0,
-                       hestonModels[i].v0, 
-                       hestonModels[i].kappa, 
-                       hestonModels[i].theta, 
-                       hestonModels[i].sigma, 
-                       hestonModels[i].rho, 2.0, -0.2, 0.1));
-    
+    for (auto& hestonModel : hestonModels) {
+        Handle<YieldTermStructure> riskFreeTS(flatRate(hestonModel.r, dayCounter));
+        Handle<YieldTermStructure> dividendTS(flatRate(hestonModel.q, dayCounter));
+        Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100)));
+
+        ext::shared_ptr<BatesProcess> batesProcess(new BatesProcess(
+            riskFreeTS, dividendTS, s0, hestonModel.v0, hestonModel.kappa, hestonModel.theta,
+            hestonModel.sigma, hestonModel.rho, 2.0, -0.2, 0.1));
+
         const Real mcTolerance = 0.5;
-        boost::shared_ptr<PricingEngine> mcEngine =
+        ext::shared_ptr<PricingEngine> mcEngine =
                 MakeMCEuropeanHestonEngine<PseudoRandom>(batesProcess)
                 .withStepsPerYear(20)
                 .withAntitheticVariate()
                 .withAbsoluteTolerance(mcTolerance)
                 .withSeed(1234);
     
-        boost::shared_ptr<BatesModel> batesModel(new BatesModel(batesProcess));    
+        ext::shared_ptr<BatesModel> batesModel(new BatesModel(batesProcess));    
         
-        boost::shared_ptr<PricingEngine> fdEngine(
+        ext::shared_ptr<PricingEngine> fdEngine(
                             new FdBatesVanillaEngine(batesModel, 50, 100, 30));
     
-        boost::shared_ptr<PricingEngine> analyticEngine(
+        ext::shared_ptr<PricingEngine> analyticEngine(
                                              new BatesEngine(batesModel, 160));
     
         VanillaOption option(payoff, exercise);
@@ -359,22 +355,18 @@ void BatesModelTest::testAnalyticVsMCPricing() {
         const Real mcError = std::fabs(calculated - expected);
         if (mcError > 3*mcTolerance) {
             BOOST_FAIL("failed to reproduce Monte-Carlo price for BatesEngine"
-                       << "\n    parameter:  " << hestonModels[i].name
-                       << QL_FIXED << std::setprecision(8)
-                       << "\n    calculated: " << calculated
-                       << "\n    expected:   " << expected
-                       << "\n    error: "      << mcError
+                       << "\n    parameter:  " << hestonModel.name << std::fixed
+                       << std::setprecision(8) << "\n    calculated: " << calculated
+                       << "\n    expected:   " << expected << "\n    error: " << mcError
                        << "\n    tolerance:  " << mcTolerance);
         }
         const Real fdTolerance = 0.2;
         const Real fdError = std::fabs(fdCalculated - expected);
         if (fdError > fdTolerance) {
             BOOST_FAIL("failed to reproduce PIDE price for BatesEngine"
-                       << "\n    parameter:  " << hestonModels[i].name
-                       << QL_FIXED << std::setprecision(8)
-                       << "\n    calculated: " << fdCalculated
-                       << "\n    expected:   " << expected
-                       << "\n    error: "      << fdError
+                       << "\n    parameter:  " << hestonModel.name << std::fixed
+                       << std::setprecision(8) << "\n    calculated: " << fdCalculated
+                       << "\n    expected:   " << expected << "\n    error: " << fdError
                        << "\n    tolerance:  " << fdTolerance);
         }
     }
@@ -389,6 +381,8 @@ void BatesModelTest::testDAXCalibration() {
 
     BOOST_TEST_MESSAGE(
              "Testing Bates model calibration using DAX volatility data...");
+
+    using namespace bates_model_test;
 
     SavedSettings backup;
 
@@ -411,7 +405,7 @@ void BatesModelTest::testDAXCalibration() {
     }
      // FLOATING_POINT_EXCEPTION
     Handle<YieldTermStructure> riskFreeTS(
-                       boost::shared_ptr<YieldTermStructure>(
+                       ext::shared_ptr<YieldTermStructure>(
                                     new ZeroCurve(dates, rates, dayCounter)));
 
     Handle<YieldTermStructure> dividendTS(
@@ -432,15 +426,13 @@ void BatesModelTest::testDAXCalibration() {
         0.3857,0.2860,0.2578,0.2399,0.2357,0.2327,0.2312,0.2351,
         0.3976,0.2860,0.2607,0.2356,0.2297,0.2268,0.2241,0.2320 };
 
-    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(4468.17)));
+    Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(4468.17)));
     Real strike[] = { 3400,3600,3800,4000,4200,4400,
                       4500,4600,4800,5000,5200,5400,5600 };
 
 
     Real v0 = 0.0433;
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(std::sqrt(v0)));
-    boost::shared_ptr<BlackVolTermStructure> volTS =
-        flatVol(settlementDate, vol, dayCounter);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(std::sqrt(v0)));
 
     const Real kappa = 1.0;
     const Real theta = v0;
@@ -450,39 +442,38 @@ void BatesModelTest::testDAXCalibration() {
     const Real nu = -0.1285;
     const Real delta = 0.1702;
 
-    boost::shared_ptr<BatesProcess> process(
+    ext::shared_ptr<BatesProcess> process(
         new BatesProcess(riskFreeTS, dividendTS, s0, v0, 
                          kappa, theta, sigma, rho, lambda, nu, delta));
 
-    boost::shared_ptr<BatesModel> batesModel(new BatesModel(process));
+    ext::shared_ptr<BatesModel> batesModel(new BatesModel(process));
 
-    boost::shared_ptr<PricingEngine> batesEngine(
+    ext::shared_ptr<PricingEngine> batesEngine(
                                             new BatesEngine(batesModel, 64));
 
-    std::vector<boost::shared_ptr<CalibrationHelper> > options;
+    std::vector<ext::shared_ptr<BlackCalibrationHelper> > options;
 
     for (Size s = 0; s < 13; ++s) {
         for (Size m = 0; m < 8; ++m) {
-            Handle<Quote> vol(boost::shared_ptr<Quote>(
+            Handle<Quote> vol(ext::shared_ptr<Quote>(
                                                   new SimpleQuote(v[s*8+m])));
 
             Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
 
             // this is the calibration helper for the bates models
-            // FLOATING_POINT_EXCEPTION
-            options.push_back(boost::shared_ptr<CalibrationHelper>(
+            options.push_back(ext::shared_ptr<BlackCalibrationHelper>(
                     new HestonModelHelper(maturity, calendar,
                                           s0->value(), strike[s], vol,
                                           riskFreeTS, dividendTS, 
-                                          CalibrationHelper::ImpliedVolError)));
+                                          BlackCalibrationHelper::ImpliedVolError)));
             options.back()->setPricingEngine(batesEngine);
         }
     }
 
     // check calibration engine
     LevenbergMarquardt om;
-    batesModel->calibrate(options, om,
-                          EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
+    batesModel->calibrate(std::vector<ext::shared_ptr<CalibrationHelper> >(options.begin(), options.end()),
+                          om, EndCriteria(400, 40, 1.0e-8, 1.0e-8, 1.0e-8));
 
     Real expected = 36.6;
     Real calculated = getCalibrationError(options);
@@ -493,29 +484,29 @@ void BatesModelTest::testDAXCalibration() {
                     << "\n    expected:   " << expected);
 
     //check pricing of derived engines
-    std::vector<boost::shared_ptr<PricingEngine> > pricingEngines;
+    std::vector<ext::shared_ptr<PricingEngine> > pricingEngines;
     
-    process = boost::shared_ptr<BatesProcess>(
+    process = ext::shared_ptr<BatesProcess>(
         new BatesProcess(riskFreeTS, dividendTS, s0, v0, 
                          kappa, theta, sigma, rho, 1.0, -0.1, 0.1));
 
-    pricingEngines.push_back(boost::shared_ptr<PricingEngine>(
+    pricingEngines.push_back(ext::shared_ptr<PricingEngine>(
         new BatesDetJumpEngine(
-            boost::shared_ptr<BatesDetJumpModel>(
-                             new BatesDetJumpModel(process)), 64)) );
+            ext::make_shared<BatesDetJumpModel>(
+                             process), 64)) );
 
-    boost::shared_ptr<HestonProcess> hestonProcess(new HestonProcess(
+    ext::shared_ptr<HestonProcess> hestonProcess(new HestonProcess(
                     riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
 
-    pricingEngines.push_back(boost::shared_ptr<PricingEngine>(
+    pricingEngines.push_back(ext::shared_ptr<PricingEngine>(
         new BatesDoubleExpEngine(
-            boost::shared_ptr<BatesDoubleExpModel>(
-                         new BatesDoubleExpModel(hestonProcess, 1.0)), 64)) );
+            ext::make_shared<BatesDoubleExpModel>(
+                         hestonProcess, 1.0), 64)) );
 
-    pricingEngines.push_back(boost::shared_ptr<PricingEngine>(
+    pricingEngines.push_back(ext::shared_ptr<PricingEngine>(
         new BatesDoubleExpDetJumpEngine(
-            boost::shared_ptr<BatesDoubleExpDetJumpModel>(
-                    new BatesDoubleExpDetJumpModel(hestonProcess, 1.0)), 64)) );
+            ext::make_shared<BatesDoubleExpDetJumpModel>(
+                    hestonProcess, 1.0), 64)) );
 
     Real expectedValues[] = { 5896.37,
                               5499.29,
@@ -523,8 +514,8 @@ void BatesModelTest::testDAXCalibration() {
 
     Real tolerance=0.1;
     for (Size i = 0; i < pricingEngines.size(); ++i) {
-        for (Size j = 0; j < options.size(); ++j) {
-            options[j]->setPricingEngine(pricingEngines[i]);
+        for (auto& option : options) {
+            option->setPricingEngine(pricingEngines[i]);
         }
 
         Real calculated = std::fabs(getCalibrationError(options));
@@ -536,7 +527,7 @@ void BatesModelTest::testDAXCalibration() {
 }
 
 test_suite* BatesModelTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Bates model tests");
+    auto* suite = BOOST_TEST_SUITE("Bates model tests");
     suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testAnalyticVsBlack));
     suite->add(QUANTLIB_TEST_CASE(
                         &BatesModelTest::testAnalyticAndMcVsJumpDiffusion));

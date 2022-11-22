@@ -28,6 +28,7 @@
 #include <ql/utilities/null.hpp>
 #include <ql/errors.hpp>
 #include <vector>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -131,6 +132,15 @@ namespace QuantLib {
                 return std::make_pair(num/den,N);
         }
 
+        /*! Expectation value of a function \f$ f \f$ over the whole
+            set of samples; equivalent to passing the other overload
+            a range function always returning <tt>true</tt>.
+        */
+        template <class Func>
+        std::pair<Real,Size> expectationValue(const Func& f) const {
+            return expectationValue(f, [](Real x) { return true; });
+        }
+        
         /*! \f$ y \f$-th percentile, defined as the value \f$ \bar{x} \f$
             such that
             \f[ y = \frac{\sum_{x_i < \bar{x}} w_i}{
@@ -221,7 +231,7 @@ namespace QuantLib {
     /*! \pre weights must be positive or null */
     inline void GeneralStatistics::add(Real value, Real weight) {
         QL_REQUIRE(weight>=0.0, "negative weight not allowed");
-        samples_.push_back(std::make_pair(value,weight));
+        samples_.emplace_back(value, weight);
         sorted_ = false;
     }
 

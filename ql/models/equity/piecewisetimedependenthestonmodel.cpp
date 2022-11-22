@@ -17,8 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quotes/simplequote.hpp>
 #include <ql/models/equity/piecewisetimedependenthestonmodel.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -31,13 +32,10 @@ namespace QuantLib {
         const Parameter& kappa,
         const Parameter& sigma,
         const Parameter& rho,
-        const TimeGrid& timeGrid)
-    : CalibratedModel(5), 
-      s0_           (s0),
-      riskFreeRate_ (riskFreeRate),
-      dividendYield_(dividendYield),
-      timeGrid_     (timeGrid) {
-            
+        TimeGrid timeGrid)
+    : CalibratedModel(5), s0_(s0), riskFreeRate_(riskFreeRate), dividendYield_(dividendYield),
+      timeGrid_(std::move(timeGrid)) {
+
         arguments_[0] = theta;
         arguments_[1] = kappa;
         arguments_[2] = sigma;

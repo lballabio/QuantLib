@@ -51,32 +51,35 @@ namespace QuantLib {
     class LiborForwardModel : public CalibratedModel, public AffineModel {
       public:
         LiborForwardModel(
-            const boost::shared_ptr<LiborForwardModelProcess> & process,
-            const boost::shared_ptr<LmVolatilityModel>  & volaModel,
-            const boost::shared_ptr<LmCorrelationModel> & corrModel);
+            const ext::shared_ptr<LiborForwardModelProcess> & process,
+            const ext::shared_ptr<LmVolatilityModel>  & volaModel,
+            const ext::shared_ptr<LmCorrelationModel> & corrModel);
 
         Rate S_0(Size alpha, Size beta) const;
         // approx. swaption matrix using Rebonato's approx.
         // fix and floating leg have the same frequency
-        virtual boost::shared_ptr<SwaptionVolatilityMatrix>
+        virtual ext::shared_ptr<SwaptionVolatilityMatrix>
             getSwaptionVolatilityMatrix() const;
 
-        DiscountFactor discount(Time t) const;
-        Real discountBond(Time now, Time maturity, Array factors) const;
-        Real discountBondOption(Option::Type type, Real strike,
-                                Time maturity, Time bondMaturity) const;
+        DiscountFactor discount(Time t) const override;
+        Real discountBond(Time now, Time maturity, Array factors) const override;
+        Real discountBondOption(Option::Type type,
+                                Real strike,
+                                Time maturity,
+                                Time bondMaturity) const override;
 
-        void setParams(const Array& params);
+        void setParams(const Array& params) override;
+
       protected:
-        Disposable<Array> w_0(Size alpha, Size beta) const;
+        Array w_0(Size alpha, Size beta) const;
 
         std::vector<Real> f_;
         std::vector<Time> accrualPeriod_;
 
-        const boost::shared_ptr<LfmCovarianceProxy> covarProxy_;
-        const boost::shared_ptr<LiborForwardModelProcess> process_;
+        const ext::shared_ptr<LfmCovarianceProxy> covarProxy_;
+        const ext::shared_ptr<LiborForwardModelProcess> process_;
 
-        mutable boost::shared_ptr<SwaptionVolatilityMatrix> swaptionVola;
+        mutable ext::shared_ptr<SwaptionVolatilityMatrix> swaptionVola;
     };
 
 }

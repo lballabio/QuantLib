@@ -25,11 +25,12 @@
 #ifndef quantlib_mc_european_basket_engine_hpp
 #define quantlib_mc_european_basket_engine_hpp
 
+#include <ql/exercise.hpp>
 #include <ql/instruments/basketoption.hpp>
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/stochasticprocessarray.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -50,7 +51,7 @@ namespace QuantLib {
         typedef typename McSimulation<MultiVariate,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCEuropeanBasketEngine(const boost::shared_ptr<StochasticProcessArray>&,
+        MCEuropeanBasketEngine(ext::shared_ptr<StochasticProcessArray>,
                                Size timeSteps,
                                Size timeStepsPerYear,
                                bool brownianBridge,
@@ -59,7 +60,7 @@ namespace QuantLib {
                                Real requiredTolerance,
                                Size maxSamples,
                                BigNatural seed);
-        void calculate() const {
+        void calculate() const override {
             McSimulation<MultiVariate,RNG,S>::calculate(requiredTolerance_,
                                                         requiredSamples_,
                                                         maxSamples_);
@@ -68,13 +69,14 @@ namespace QuantLib {
             results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
         }
+
       protected:
         // McSimulation implementation
-        TimeGrid timeGrid() const;
-        boost::shared_ptr<path_generator_type> pathGenerator() const {
+        TimeGrid timeGrid() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
 
-            boost::shared_ptr<BasketPayoff> payoff =
-                boost::dynamic_pointer_cast<BasketPayoff>(
+            ext::shared_ptr<BasketPayoff> payoff =
+                ext::dynamic_pointer_cast<BasketPayoff>(
                                                           arguments_.payoff);
             QL_REQUIRE(payoff, "non-basket payoff given");
 
@@ -84,13 +86,13 @@ namespace QuantLib {
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
-            return boost::shared_ptr<path_generator_type>(
+            return ext::shared_ptr<path_generator_type>(
                          new path_generator_type(processes_,
                                                  grid, gen, brownianBridge_));
         }
-        boost::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
-        boost::shared_ptr<StochasticProcessArray> processes_;
+        ext::shared_ptr<StochasticProcessArray> processes_;
         Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_;
         Size maxSamples_;
@@ -104,8 +106,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCEuropeanBasketEngine {
       public:
-        MakeMCEuropeanBasketEngine(
-                            const boost::shared_ptr<StochasticProcessArray>&);
+        MakeMCEuropeanBasketEngine(ext::shared_ptr<StochasticProcessArray>);
         // named parameters
         MakeMCEuropeanBasketEngine& withSteps(Size steps);
         MakeMCEuropeanBasketEngine& withStepsPerYear(Size steps);
@@ -116,46 +117,44 @@ namespace QuantLib {
         MakeMCEuropeanBasketEngine& withMaxSamples(Size samples);
         MakeMCEuropeanBasketEngine& withSeed(BigNatural seed);
         // conversion to pricing engine
-        operator boost::shared_ptr<PricingEngine>() const;
+        operator ext::shared_ptr<PricingEngine>() const;
       private:
-        boost::shared_ptr<StochasticProcessArray> process_;
-        bool brownianBridge_, antithetic_;
+        ext::shared_ptr<StochasticProcessArray> process_;
+        bool brownianBridge_ = false, antithetic_ = false;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
-        BigNatural seed_;
+        BigNatural seed_ = 0;
     };
 
 
     class EuropeanMultiPathPricer : public PathPricer<MultiPath> {
       public:
-        EuropeanMultiPathPricer(const boost::shared_ptr<BasketPayoff>& payoff,
-                                DiscountFactor discount);
-        Real operator()(const MultiPath& multiPath) const;
+        EuropeanMultiPathPricer(ext::shared_ptr<BasketPayoff> payoff, DiscountFactor discount);
+        Real operator()(const MultiPath& multiPath) const override;
+
       private:
-        boost::shared_ptr<BasketPayoff> payoff_;
+        ext::shared_ptr<BasketPayoff> payoff_;
         DiscountFactor discount_;
     };
 
 
     // template definitions
 
-    template<class RNG, class S>
-    inline MCEuropeanBasketEngine<RNG,S>::MCEuropeanBasketEngine(
-                   const boost::shared_ptr<StochasticProcessArray>& processes,
-                   Size timeSteps,
-                   Size timeStepsPerYear,
-                   bool brownianBridge,
-                   bool antitheticVariate,
-                   Size requiredSamples,
-                   Real requiredTolerance,
-                   Size maxSamples,
-                   BigNatural seed)
-    : McSimulation<MultiVariate,RNG,S>(antitheticVariate, false),
-      processes_(processes), timeSteps_(timeSteps),
-      timeStepsPerYear_(timeStepsPerYear),
+    template <class RNG, class S>
+    inline MCEuropeanBasketEngine<RNG, S>::MCEuropeanBasketEngine(
+        ext::shared_ptr<StochasticProcessArray> processes,
+        Size timeSteps,
+        Size timeStepsPerYear,
+        bool brownianBridge,
+        bool antitheticVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        BigNatural seed)
+    : McSimulation<MultiVariate, RNG, S>(antitheticVariate, false),
+      processes_(std::move(processes)), timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
-      requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge), seed_(seed) {
+      requiredTolerance_(requiredTolerance), brownianBridge_(brownianBridge), seed_(seed) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
                    timeStepsPerYear != Null<Size>(),
                    "no time steps provided");
@@ -188,19 +187,19 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    boost::shared_ptr<typename MCEuropeanBasketEngine<RNG,S>::path_pricer_type>
+    ext::shared_ptr<typename MCEuropeanBasketEngine<RNG,S>::path_pricer_type>
     MCEuropeanBasketEngine<RNG,S>::pathPricer() const {
 
-        boost::shared_ptr<BasketPayoff> payoff =
-            boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
+        ext::shared_ptr<BasketPayoff> payoff =
+            ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-basket payoff given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                       processes_->process(0));
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        return boost::shared_ptr<
+        return ext::shared_ptr<
                     typename MCEuropeanBasketEngine<RNG,S>::path_pricer_type>(
             new EuropeanMultiPathPricer(payoff,
                                         process->riskFreeRate()->discount(
@@ -209,12 +208,10 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline MakeMCEuropeanBasketEngine<RNG,S>::MakeMCEuropeanBasketEngine(
-                     const boost::shared_ptr<StochasticProcessArray>& process)
-    : process_(process), brownianBridge_(false), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+    inline MakeMCEuropeanBasketEngine<RNG, S>::MakeMCEuropeanBasketEngine(
+        ext::shared_ptr<StochasticProcessArray> process)
+    : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()) {}
 
     template <class RNG, class S>
     inline MakeMCEuropeanBasketEngine<RNG,S>&
@@ -282,12 +279,12 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     MakeMCEuropeanBasketEngine<RNG,S>::operator
-    boost::shared_ptr<PricingEngine>() const {
+    ext::shared_ptr<PricingEngine>() const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return boost::shared_ptr<PricingEngine>(new
+        return ext::shared_ptr<PricingEngine>(new
             MCEuropeanBasketEngine<RNG,S>(process_,
                                           steps_,
                                           stepsPerYear_,

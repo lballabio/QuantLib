@@ -32,10 +32,6 @@ namespace QuantLib {
 
 
     //Multiplicative Seasonality on price = on CPI/RPI/HICP/etc
-    //
-    MultiplicativePriceSeasonality::MultiplicativePriceSeasonality() {
-    }
-
 
     void MultiplicativePriceSeasonality::validate() const
     {
@@ -124,9 +120,13 @@ namespace QuantLib {
     Rate MultiplicativePriceSeasonality::correctZeroRate(const Date &d,
                                                          const Rate r,
                                                          const InflationTermStructure& iTS) const {
-        std::pair<Date,Date> lim = inflationPeriod(iTS.baseDate(), iTS.frequency());
-        Date curveBaseDate = lim.second;
-        return seasonalityCorrection(r, d, iTS.dayCounter(), curveBaseDate, true);
+        // Mimic the logic in ZeroInflationIndex::forecastFixing for choosing the
+        // curveBaseDate and effective fixing date. This means that we should retrieve
+        // the input seasonality adjustments when we look at I_{SA}(t) / I_{NSA}(t).
+        Date curveBaseDate = iTS.baseDate();
+        Date effectiveFixingDate = inflationPeriod(d, iTS.frequency()).first;
+        
+        return seasonalityCorrection(r, effectiveFixingDate, iTS.dayCounter(), curveBaseDate, true);
     }
 
 
@@ -201,7 +201,8 @@ namespace QuantLib {
         if (isZeroRate) {
             Rate factorBase = this->seasonalityFactor(curveBaseDate);
             Real seasonalityAt = factorAt / factorBase;
-            Time timeFromCurveBase = dc.yearFraction(curveBaseDate, atDate);
+            std::pair<Date,Date> p = inflationPeriod(atDate,frequency());
+            Time timeFromCurveBase = dc.yearFraction(curveBaseDate, p.first);
             f = std::pow(seasonalityAt, 1/timeFromCurveBase);
         }
         else {
@@ -242,7 +243,7 @@ namespace QuantLib {
 
         }
 
-        if (!dir) // invers Factor required
+        if (dir == 0) // invers Factor required
         {
             seasonalCorrection = 1/seasonalCorrection;
         }

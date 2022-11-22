@@ -85,10 +85,10 @@ namespace QuantLib
         return (currentIndex_ == strikes_.size());
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseSwap::clone() const 
+    std::unique_ptr<MarketModelPathwiseMultiProduct>
+    MarketModelPathwiseSwap::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
-                                                new MarketModelPathwiseSwap(*this));
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(new MarketModelPathwiseSwap(*this));
     }
 
     std::vector<Size> MarketModelPathwiseSwap::suggestedNumeraires() const

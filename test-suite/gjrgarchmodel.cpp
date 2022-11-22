@@ -45,7 +45,7 @@ void GJRGARCHModelTest::testEngines() {
        "Testing Monte Carlo GJR-GARCH engine against "
        "analytic GJR-GARCH engine...");
 
-    DayCounter dayCounter = ActualActual();
+    DayCounter dayCounter = ActualActual(ActualActual::ISDA);
 
     const Date today = Date::todaysDate();
     Handle<YieldTermStructure> riskFreeTS(flatRate(today, 0.05, dayCounter));
@@ -141,26 +141,26 @@ void GJRGARCHModelTest::testEngines() {
             *(1.0+lambda*lambda)+gamma*lambda*std::exp(-lambda*lambda/2.0)
             /std::sqrt(2.0*M_PI);
         Real v0 = omega/(1.0-m1);
-        Handle<Quote> q(boost::shared_ptr<Quote>(new SimpleQuote(s0)));
-        boost::shared_ptr<GJRGARCHProcess> process(new GJRGARCHProcess(
+        Handle<Quote> q(ext::shared_ptr<Quote>(new SimpleQuote(s0)));
+        ext::shared_ptr<GJRGARCHProcess> process(new GJRGARCHProcess(
             riskFreeTS, dividendTS, q, v0, omega, alpha, beta, gamma, lambda, daysPerYear));
-        boost::shared_ptr<PricingEngine> engine1 =
+        ext::shared_ptr<PricingEngine> engine1 =
             MakeMCEuropeanGJRGARCHEngine<PseudoRandom>(process)
             .withStepsPerYear(20)
             .withAbsoluteTolerance(0.02)
             .withSeed(1234);
 
-        boost::shared_ptr<PricingEngine> engine2(
-            new AnalyticGJRGARCHEngine(boost::shared_ptr<GJRGARCHModel>(
-                                               new GJRGARCHModel(process))));
+        ext::shared_ptr<PricingEngine> engine2(
+            new AnalyticGJRGARCHEngine(ext::make_shared<GJRGARCHModel>(
+                                               process)));
         for (Size i = 0; i < 2; ++i) {
             for (Size j = 0; j < 6; ++j) {
                 Real x = strike[j];
 
-                boost::shared_ptr<StrikedTypePayoff> payoff(
+                ext::shared_ptr<StrikedTypePayoff> payoff(
                                      new PlainVanillaPayoff(Option::Call, x));
                 Date exDate = today + maturity[i];
-                boost::shared_ptr<Exercise> exercise(
+                ext::shared_ptr<Exercise> exercise(
                                                 new EuropeanExercise(exDate));
 
                 VanillaOption option(payoff, exercise);
@@ -224,7 +224,7 @@ void GJRGARCHModelTest::testDAXCalibration() {
         rates.push_back(r[i]);
     }
     Handle<YieldTermStructure> riskFreeTS(
-                       boost::shared_ptr<YieldTermStructure>(
+                       ext::shared_ptr<YieldTermStructure>(
                                     new ZeroCurve(dates, rates, dayCounter)));
 
     Handle<YieldTermStructure> dividendTS(
@@ -245,25 +245,11 @@ void GJRGARCHModelTest::testDAXCalibration() {
         0.3857,0.2860,0.2578,0.2399,0.2357,0.2327,0.2312,0.2351,
         0.3976,0.2860,0.2607,0.2356,0.2297,0.2268,0.2241,0.2320 };
 
-    Handle<Quote> s0(boost::shared_ptr<Quote>(new SimpleQuote(4468.17)));
+    Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(4468.17)));
     Real strike[] = { 3400,3600,3800,4000,4200,4400,
                       4500,4600,4800,5000,5200,5400,5600 };
 
-    std::vector<boost::shared_ptr<CalibrationHelper> > options;
-
-    for (Size s = 3; s < 10; ++s) {
-        for (Size m = 0; m < 3; ++m) {
-            Handle<Quote> vol(boost::shared_ptr<Quote>(
-                                                  new SimpleQuote(v[s*8+m])));
-
-            Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
-            options.push_back(boost::shared_ptr<CalibrationHelper>(
-                    new HestonModelHelper(maturity, calendar,
-                                          s0->value(), strike[s], vol,
-                                          riskFreeTS, dividendTS, 
-                                          CalibrationHelper::ImpliedVolError)));
-        }
-    }
+    std::vector<ext::shared_ptr<CalibrationHelper> > options;
 
     const Real omega = 2.0e-6;
     const Real alpha = 0.024;
@@ -276,16 +262,29 @@ void GJRGARCHModelTest::testDAXCalibration() {
             /std::sqrt(2.0*M_PI);
     const Real v0 = omega/(1.0-m1);
 
-    boost::shared_ptr<GJRGARCHProcess> process(new GJRGARCHProcess(
+    ext::shared_ptr<GJRGARCHProcess> process(new GJRGARCHProcess(
                              riskFreeTS, dividendTS, s0, v0,
                              omega, alpha, beta, gamma, lambda, daysPerYear));
-    boost::shared_ptr<GJRGARCHModel> model(new GJRGARCHModel(process));
+    ext::shared_ptr<GJRGARCHModel> model(new GJRGARCHModel(process));
 
-    boost::shared_ptr<PricingEngine> engine(
-        new AnalyticGJRGARCHEngine(boost::shared_ptr<GJRGARCHModel>(model)));
+    ext::shared_ptr<PricingEngine> engine(
+        new AnalyticGJRGARCHEngine(ext::shared_ptr<GJRGARCHModel>(model)));
 
-    for (i = 0; i < options.size(); ++i)
-        options[i]->setPricingEngine(engine);
+    for (Size s = 3; s < 10; ++s) {
+        for (Size m = 0; m < 3; ++m) {
+            Handle<Quote> vol(ext::shared_ptr<Quote>(
+                                                  new SimpleQuote(v[s*8+m])));
+
+            Period maturity((int)((t[m]+3)/7.), Weeks); // round to weeks
+            ext::shared_ptr<BlackCalibrationHelper> option(
+                    new HestonModelHelper(maturity, calendar,
+                                          s0->value(), strike[s], vol,
+                                          riskFreeTS, dividendTS,
+                                          BlackCalibrationHelper::ImpliedVolError));
+            option->setPricingEngine(engine);
+            options.push_back(option);
+        }
+    }
 
     Simplex om(0.05);
     model->calibrate(options, om,
@@ -305,7 +304,7 @@ void GJRGARCHModelTest::testDAXCalibration() {
 }
 
 test_suite* GJRGARCHModelTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("GJR-GARCH model tests");
+    auto* suite = BOOST_TEST_SUITE("GJR-GARCH model tests");
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&GJRGARCHModelTest::testDAXCalibration));
@@ -317,4 +316,3 @@ test_suite* GJRGARCHModelTest::suite(SpeedLevel speed) {
 
     return suite;
 }
-

@@ -20,22 +20,20 @@
 /*! \file fdmaffinemodeltermstructure.cpp
 */
 
-#include <ql/models/model.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmaffinemodeltermstructure.hpp>
+#include <ql/models/model.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmAffineModelTermStructure::FdmAffineModelTermStructure(
-        const Array& r,
-        const Calendar& cal,
-        const DayCounter& dayCounter,
-        const Date& referenceDate,
-        const Date& modelReferenceDate,
-        const boost::shared_ptr<AffineModel>& model)
-    : YieldTermStructure(referenceDate, cal, dayCounter),
-      r_(r),
-      t_(dayCounter.yearFraction(modelReferenceDate, referenceDate)),
-      model_(model) {
+    FdmAffineModelTermStructure::FdmAffineModelTermStructure(Array r,
+                                                             const Calendar& cal,
+                                                             const DayCounter& dayCounter,
+                                                             const Date& referenceDate,
+                                                             const Date& modelReferenceDate,
+                                                             ext::shared_ptr<AffineModel> model)
+    : YieldTermStructure(referenceDate, cal, dayCounter), r_(std::move(r)),
+      t_(dayCounter.yearFraction(modelReferenceDate, referenceDate)), model_(std::move(model)) {
         registerWith(model_);
     }
 

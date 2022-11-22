@@ -33,9 +33,12 @@ namespace QuantLib {
     /*! formula here ...
         Used to calculate the cumulative normal distribution function
     */
-    class ErrorFunction : public std::unary_function<Real,Real> {
+    class ErrorFunction {
       public:
-        ErrorFunction() {}
+        typedef Real argument_type;
+        typedef Real result_type;
+
+        ErrorFunction() = default;
         // function
         Real operator()(Real x) const;
       private:

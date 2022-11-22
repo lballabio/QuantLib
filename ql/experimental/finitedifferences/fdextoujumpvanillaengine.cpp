@@ -23,60 +23,59 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
-#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/experimental/finitedifferences/fdextoujumpvanillaengine.hpp>
 #include <ql/experimental/finitedifferences/fdmextoujumpmodelinnervalue.hpp>
+#include <ql/experimental/finitedifferences/fdmextoujumpsolver.hpp>
+#include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
+#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
+#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmbermudanstepcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-#include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdmextoujumpsolver.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
-#include <ql/experimental/finitedifferences/fdextoujumpvanillaengine.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdExtOUJumpVanillaEngine::FdExtOUJumpVanillaEngine(
-                      const boost::shared_ptr<ExtOUWithJumpsProcess>& process,
-                      const boost::shared_ptr<YieldTermStructure>& rTS,
-                      Size tGrid, Size xGrid, Size yGrid,
-                      const FdmSchemeDesc& schemeDesc)
-    : process_(process),
-      rTS_(rTS),
-      tGrid_(tGrid),
-      xGrid_(xGrid),
-      yGrid_(yGrid),
-      schemeDesc_(schemeDesc) {
-    }
-                      
+        ext::shared_ptr<ExtOUWithJumpsProcess> process,
+        ext::shared_ptr<YieldTermStructure> rTS,
+        Size tGrid,
+        Size xGrid,
+        Size yGrid,
+        ext::shared_ptr<Shape> shape,
+        const FdmSchemeDesc& schemeDesc)
+    : process_(std::move(process)), rTS_(std::move(rTS)), shape_(std::move(shape)), tGrid_(tGrid),
+      xGrid_(xGrid), yGrid_(yGrid), schemeDesc_(schemeDesc) {}
+
     void FdExtOUJumpVanillaEngine::calculate() const {
         // 1. Mesher
         const Time maturity 
             = rTS_->dayCounter().yearFraction(rTS_->referenceDate(),
                                               arguments_.exercise->lastDate());
-        const boost::shared_ptr<StochasticProcess1D> ouProcess(
-                              process_->getExtendedOrnsteinUhlenbeckProcess());
-        const boost::shared_ptr<Fdm1dMesher> xMesher(
-                     new FdmSimpleProcess1dMesher(xGrid_, ouProcess,maturity));
+        const ext::shared_ptr<StochasticProcess1D> ouProcess(
+            process_->getExtendedOrnsteinUhlenbeckProcess());
+        const ext::shared_ptr<Fdm1dMesher> xMesher(
+            new FdmSimpleProcess1dMesher(xGrid_, ouProcess,maturity));
 
-        const boost::shared_ptr<Fdm1dMesher> yMesher(
+        const ext::shared_ptr<Fdm1dMesher> yMesher(
             new ExponentialJump1dMesher(yGrid_, 
                                         process_->beta(), 
                                         process_->jumpIntensity(),
                                         process_->eta()));
 
-        const boost::shared_ptr<FdmMesher> mesher(
+        const ext::shared_ptr<FdmMesher> mesher(
             new FdmMesherComposite(xMesher, yMesher));
 
         // 2. Calculator
-        const boost::shared_ptr<FdmInnerValueCalculator> calculator(
-                    new FdmExtOUJumpModelInnerValue(arguments_.payoff, mesher));
+        const ext::shared_ptr<FdmInnerValueCalculator> calculator(
+            new FdmExtOUJumpModelInnerValue(arguments_.payoff, mesher, shape_));
 
         // 3. Step conditions
-        const boost::shared_ptr<FdmStepConditionComposite> conditions =
+        const ext::shared_ptr<FdmStepConditionComposite> conditions =
             FdmStepConditionComposite::vanillaComposite(
                                 DividendSchedule(), arguments_.exercise, 
                                 mesher, calculator, 
@@ -89,7 +88,7 @@ namespace QuantLib {
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                     calculator, maturity, tGrid_, 0 };
 
-        const boost::shared_ptr<FdmExtOUJumpSolver> solver(
+        const ext::shared_ptr<FdmExtOUJumpSolver> solver(
             new FdmExtOUJumpSolver(Handle<ExtOUWithJumpsProcess>(process_), 
                                    rTS_, solverDesc, schemeDesc_));
       

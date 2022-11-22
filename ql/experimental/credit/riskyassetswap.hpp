@@ -37,28 +37,28 @@ namespace QuantLib {
       public:
         RiskyAssetSwap(bool fixedPayer,
                        Real nominal,
-                       const Schedule& fixedSchedule,
-                       const Schedule& floatSchedule,
-                       const DayCounter& fixedDayCounter,
-                       const DayCounter& floatDayCounter,
+                       Schedule fixedSchedule,
+                       Schedule floatSchedule,
+                       DayCounter fixedDayCounter,
+                       DayCounter floatDayCounter,
                        Rate spread,
                        Rate recoveryRate_,
-                       const Handle<YieldTermStructure>& yieldTS,
-                       const Handle<DefaultProbabilityTermStructure>& defaultTS,
+                       Handle<YieldTermStructure> yieldTS,
+                       Handle<DefaultProbabilityTermStructure> defaultTS,
                        Rate coupon = Null<Rate>());
 
         Real fairSpread ();
 
         Real floatAnnuity() const;
 
-        Real nominal() { return nominal_; }
-        Rate spread() { return spread_; }
-        bool fixedPayer() { return fixedPayer_; }
+        Real nominal() const { return nominal_; }
+        Rate spread() const { return spread_; }
+        bool fixedPayer() const { return fixedPayer_; }
 
       private:
-        void setupExpired() const;
-        bool isExpired() const;
-        void performCalculations() const;
+        void setupExpired() const override;
+        bool isExpired() const override;
+        void performCalculations() const override;
 
         Real fixedAnnuity() const;
         Real parCoupon() const;
@@ -91,21 +91,21 @@ namespace QuantLib {
         AssetSwapHelper(const Handle<Quote>& spread,
                         const Period& tenor,
                         Natural settlementDays,
-                        const Calendar& calendar,
+                        Calendar calendar,
                         const Period& fixedPeriod,
                         BusinessDayConvention fixedConvention,
-                        const DayCounter& fixedDayCount,
+                        DayCounter fixedDayCount,
                         const Period& floatPeriod,
                         BusinessDayConvention floatConvention,
-                        const DayCounter& floatDayCount,
+                        DayCounter floatDayCount,
                         Real recoveryRate,
                         const RelinkableHandle<YieldTermStructure>& yieldTS,
                         const Period& integrationStepSize = Period());
-        Real impliedQuote() const;
-        void setTermStructure(DefaultProbabilityTermStructure*);
+        Real impliedQuote() const override;
+        void setTermStructure(DefaultProbabilityTermStructure*) override;
 
       private:
-        void update();
+        void update() override;
         void initializeDates();
 
         Period tenor_;
@@ -122,7 +122,7 @@ namespace QuantLib {
         Period integrationStepSize_;
 
         Date evaluationDate_;
-        boost::shared_ptr<RiskyAssetSwap> asw_;
+        ext::shared_ptr<RiskyAssetSwap> asw_;
         RelinkableHandle<DefaultProbabilityTermStructure> probability_;
     };
 

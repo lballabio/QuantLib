@@ -27,7 +27,7 @@ namespace QuantLib {
     class MultiStepRatchet : public MultiProductMultiStep {
       public:
         MultiStepRatchet(const std::vector<Time>& rateTimes,
-                         const std::vector<Real>& accruals,
+                         std::vector<Real> accruals,
                          const std::vector<Time>& paymentTimes,
                          Real gearingOfFloor,
                          Real gearingOfFixing,
@@ -37,22 +37,20 @@ namespace QuantLib {
                          bool payer = true);
         //! \name MarketModelMultiProduct interface
         //@{
-        std::vector<Time> possibleCashFlowTimes() const;
-        Size numberOfProducts() const;
-        Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset();
-        bool nextTimeStep(
-                     const CurveState& currentState,
-                     std::vector<Size>& numberCashFlowsThisStep,
-                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
+        std::vector<Time> possibleCashFlowTimes() const override;
+        Size numberOfProducts() const override;
+        Size maxNumberOfCashFlowsPerProductPerStep() const override;
+        void reset() override;
+        bool nextTimeStep(const CurveState& currentState,
+                          std::vector<Size>& numberCashFlowsThisStep,
+                          std::vector<std::vector<CashFlow> >& cashFlowsGenerated) override;
+        std::unique_ptr<MarketModelMultiProduct> clone() const override;
         //@}
       private:
         std::vector<Real> accruals_;
         std::vector<Time> paymentTimes_;
         Real gearingOfFloor_, gearingOfFixing_;
         Rate spreadOfFloor_, spreadOfFixing_;
-        bool payer_;
         Real multiplier_;
         Size lastIndex_;
         Real initialFloor_;

@@ -54,8 +54,8 @@ namespace QuantLib {
       private:
         class IcexImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Iceland stock exchange"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Iceland stock exchange"; }
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         enum Market { ICEX    //!< Iceland stock exchange

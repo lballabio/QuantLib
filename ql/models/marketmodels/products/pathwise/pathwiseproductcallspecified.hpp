@@ -21,16 +21,15 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #ifndef quantlib_market_model_pathwise_call_specified_hpp
 #define quantlib_market_model_pathwise_call_specified_hpp
 
-#include <ql/types.hpp>
-#include <ql/models/marketmodels/pathwisemultiproduct.hpp>
-#include <ql/models/marketmodels/evolutiondescription.hpp>
-#include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/methods/montecarlo/exercisestrategy.hpp>
+#include <ql/models/marketmodels/curvestates/lmmcurvestate.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
+#include <ql/models/marketmodels/pathwisemultiproduct.hpp>
+#include <ql/types.hpp>
 #include <ql/utilities/clone.hpp>
+#include <memory>
 #include <valarray>
 #include <vector>
-#include <memory>
 
 namespace QuantLib
 {
@@ -40,27 +39,26 @@ namespace QuantLib
     class CallSpecifiedPathwiseMultiProduct : public MarketModelPathwiseMultiProduct
     {
     public:
-        CallSpecifiedPathwiseMultiProduct(
-            const Clone<MarketModelPathwiseMultiProduct>& underlying,
-            const Clone<ExerciseStrategy<CurveState> >&,
-            const Clone<MarketModelPathwiseMultiProduct>& rebate
-            = Clone<MarketModelPathwiseMultiProduct>());
-        //! \name MarketModelPathwiseMultiProduct interface
-        //@{
-        virtual std::vector<Size> suggestedNumeraires() const;
-        virtual const EvolutionDescription& evolution() const;
-        virtual std::vector<Time> possibleCashFlowTimes() const;
-        virtual Size numberOfProducts() const;
-        virtual Size maxNumberOfCashFlowsPerProductPerStep() const;
-        virtual void reset();
-        virtual bool nextTimeStep(
-            const CurveState& currentState,
-            std::vector<Size>& numberCashFlowsThisStep,
-            std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >& cashFlowsGenerated) ;
+      CallSpecifiedPathwiseMultiProduct(
+          const Clone<MarketModelPathwiseMultiProduct>& underlying,
+          const Clone<ExerciseStrategy<CurveState> >&,
+          Clone<MarketModelPathwiseMultiProduct> rebate = Clone<MarketModelPathwiseMultiProduct>());
+      //! \name MarketModelPathwiseMultiProduct interface
+      //@{
+      std::vector<Size> suggestedNumeraires() const override;
+      const EvolutionDescription& evolution() const override;
+      std::vector<Time> possibleCashFlowTimes() const override;
+      Size numberOfProducts() const override;
+      Size maxNumberOfCashFlowsPerProductPerStep() const override;
+      void reset() override;
+      bool nextTimeStep(const CurveState& currentState,
+                        std::vector<Size>& numberCashFlowsThisStep,
+                        std::vector<std::vector<MarketModelPathwiseMultiProduct::CashFlow> >&
+                            cashFlowsGenerated) override;
 
-        virtual std::auto_ptr<MarketModelPathwiseMultiProduct> clone() const;
-          
-        virtual bool alreadyDeflated() const;
+        std::unique_ptr<MarketModelPathwiseMultiProduct> clone() const override;
+
+        bool alreadyDeflated() const override;
         //@}
         const MarketModelPathwiseMultiProduct& underlying() const;
         const ExerciseStrategy<CurveState>& strategy() const;
@@ -76,12 +74,12 @@ namespace QuantLib
         EvolutionDescription evolution_;
         std::vector<std::valarray<bool> > isPresent_;
         std::vector<Time> cashFlowTimes_;
-        Size rebateOffset_;
-        bool wasCalled_;
+        Size rebateOffset_ = 0UL;
+        bool wasCalled_ = false;
         std::vector<Size> dummyCashFlowsThisStep_;
         std::vector<std::vector<CashFlow> > dummyCashFlowsGenerated_;
-        Size currentIndex_;
-        bool callable_;
+        Size currentIndex_ = 0UL;
+        bool callable_ = true;
     };
 
 }

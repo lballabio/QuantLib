@@ -55,22 +55,24 @@ namespace QuantLib {
                               BroadieKayaExactSchemeLaguerre,
                               BroadieKayaExactSchemeTrapezoidal };
 
-        HestonProcess(const Handle<YieldTermStructure>& riskFreeRate,
-                      const Handle<YieldTermStructure>& dividendYield,
-                      const Handle<Quote>& s0,
-                      Real v0, Real kappa,
-                      Real theta, Real sigma, Real rho,
+        HestonProcess(Handle<YieldTermStructure> riskFreeRate,
+                      Handle<YieldTermStructure> dividendYield,
+                      Handle<Quote> s0,
+                      Real v0,
+                      Real kappa,
+                      Real theta,
+                      Real sigma,
+                      Real rho,
                       Discretization d = QuadraticExponentialMartingale);
 
-        Size size() const;
-        Size factors() const;
+        Size size() const override;
+        Size factors() const override;
 
-        Disposable<Array> initialValues() const;
-        Disposable<Array> drift(Time t, const Array& x) const;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const;
-        Disposable<Array> apply(const Array& x0, const Array& dx) const;
-        Disposable<Array> evolve(Time t0, const Array& x0,
-                                 Time dt, const Array& dw) const;
+        Array initialValues() const override;
+        Array drift(Time t, const Array& x) const override;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Array apply(const Array& x0, const Array& dx) const override;
+        Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
         Real v0()    const { return v0_; }
         Real rho()   const { return rho_; }
@@ -82,7 +84,7 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& dividendYield() const;
         const Handle<YieldTermStructure>& riskFreeRate() const;
 
-        Time time(const Date&) const;
+        Time time(const Date&) const override;
 
         // probability densitiy function,
         // semi-analytical solution of the Fokker-Planck equation in x=ln(s)

@@ -1,6 +1,6 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /*
-  Copyright (C) 2014, 2015 Peter Caspers
+  Copyright (C) 2014, 2015, 2018 Peter Caspers
 
   This file is part of QuantLib, a free-software/open-source library
   for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,40 +20,51 @@
 /*! \file lognormalcmsspreadpricer.cpp
 */
 
-#include <ql/experimental/coupons/lognormalcmsspreadpricer.hpp>
 #include <ql/experimental/coupons/cmsspreadcoupon.hpp>
+#include <ql/experimental/coupons/lognormalcmsspreadpricer.hpp>
 #include <ql/math/integrals/kronrodintegral.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
-#include <boost/make_shared.hpp>
+#include <utility>
+
 
 using std::sqrt;
 
 namespace QuantLib {
 
+    class LognormalCmsSpreadPricer::integrand_f {
+        const LognormalCmsSpreadPricer* pricer;
+      public:
+        explicit integrand_f(const LognormalCmsSpreadPricer* pricer)
+        : pricer(pricer) {}
+        Real operator()(Real x) const {
+            return pricer->integrand(x);
+        }
+    };
+
     LognormalCmsSpreadPricer::LognormalCmsSpreadPricer(
-        const boost::shared_ptr<CmsCouponPricer> cmsPricer,
-        const Handle<Quote> &correlation,
-        const Handle<YieldTermStructure> &couponDiscountCurve,
+        const ext::shared_ptr<CmsCouponPricer>& cmsPricer,
+        const Handle<Quote>& correlation,
+        Handle<YieldTermStructure> couponDiscountCurve,
         const Size integrationPoints,
-        const boost::optional<VolatilityType> volatilityType,
-        const Real shift1, const Real shift2)
-        : CmsSpreadCouponPricer(correlation), cmsPricer_(cmsPricer),
-          couponDiscountCurve_(couponDiscountCurve) {
+        const boost::optional<VolatilityType>& volatilityType,
+        const Real shift1,
+        const Real shift2)
+    : CmsSpreadCouponPricer(correlation), cmsPricer_(cmsPricer),
+      couponDiscountCurve_(std::move(couponDiscountCurve)) {
 
         registerWith(correlation);
         if (!couponDiscountCurve_.empty())
             registerWith(couponDiscountCurve_);
+        registerWith(cmsPricer_);
 
         QL_REQUIRE(integrationPoints >= 4,
                    "at least 4 integration points should be used ("
                        << integrationPoints << ")");
         integrator_ =
-            boost::make_shared<GaussHermiteIntegration>(integrationPoints);
+            ext::make_shared<GaussHermiteIntegration>(integrationPoints);
 
-        cnd_ = boost::make_shared<CumulativeNormalDistribution>(0.0, 1.0);
-
-        privateObserver_ = boost::make_shared<PrivateObserver>(this);
-        privateObserver_->registerWith(cmsPricer_);
+        cnd_ = ext::make_shared<CumulativeNormalDistribution>(0.0, 1.0);
 
         if(volatilityType == boost::none) {
             QL_REQUIRE(shift1 == Null<Real>() && shift2 == Null<Real>(),
@@ -78,16 +89,16 @@ namespace QuantLib {
             k_ - b_ * s2_ * std::exp((m2_ - 0.5 * v2_ * v2_) * fixingTime_ +
                                      v2_ * std::sqrt(fixingTime_) * v);
         Real phi1, phi2;
-        phi1 = cnd_->operator()(
+        phi1 = (*cnd_)(
             phi_ * (std::log(a_ * s1_ / h) +
                     (m1_ + (0.5 - rho_ * rho_) * v1_ * v1_) * fixingTime_ +
                     rho_ * v1_ * std::sqrt(fixingTime_) * v) /
             (v1_ * std::sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
-        phi2 =
-            cnd_->operator()(phi_ * (std::log(a_ * s1_ / h) +
-                                     (m1_ - 0.5 * v1_ * v1_) * fixingTime_ +
-                                     rho_ * v1_ * std::sqrt(fixingTime_) * v) /
-                             (v1_ * std::sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
+        phi2 = (*cnd_)(
+            phi_ * (std::log(a_ * s1_ / h) +
+                    (m1_ - 0.5 * v1_ * v1_) * fixingTime_ +
+                    rho_ * v1_ * std::sqrt(fixingTime_) * v) /
+            (v1_ * std::sqrt(fixingTime_ * (1.0 - rho_ * rho_))));
         Real f = a_ * phi_ * s1_ *
                      std::exp(m1_ * fixingTime_ -
                               0.5 * rho_ * rho_ * v1_ * v1_ * fixingTime_ +
@@ -110,14 +121,12 @@ namespace QuantLib {
                  (rho_ * gearing1_ * vol1_ + gearing2_ * vol2_) * s);
         Real f =
             close_enough(alpha_, 0.0)
-                ? std::max(beta, 0.0)
+                ? Real(std::max(beta, 0.0))
                 : psi_ * alpha_ / (M_SQRTPI * M_SQRT2) *
                           std::exp(-beta * beta / (2.0 * alpha_ * alpha_)) +
-                      beta * (1.0 - cnd_->operator()(-psi_ * beta / alpha_));
+                      beta * (1.0 - (*cnd_)(-psi_ * beta / alpha_));
         return std::exp(-x * x) * f;
     }
-
-    void LognormalCmsSpreadPricer::flushCache() { cache_.clear(); }
 
     void
     LognormalCmsSpreadPricer::initialize(const FloatingRateCoupon &coupon) {
@@ -148,8 +157,11 @@ namespace QuantLib {
                     ? index_->swapIndex1()->discountingTermStructure()
                     : index_->swapIndex1()->forwardingTermStructure();
 
-        spreadLegValue_ = spread_ * coupon_->accrualPeriod() *
-                          couponDiscountCurve_->discount(paymentDate_);
+        discount_ = paymentDate_ > couponDiscountCurve_->referenceDate()
+                        ? couponDiscountCurve_->discount(paymentDate_)
+                        : 1.0;
+
+        spreadLegValue_ = spread_ * coupon_->accrualPeriod() * discount_;
 
         gearing1_ = index_->gearing1();
         gearing2_ = index_->gearing2();
@@ -159,14 +171,14 @@ namespace QuantLib {
                                 << ") should be positive while gearing2 ("
                                 << gearing2_ << ") should be negative");
 
-        c1_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
+        c1_ = ext::shared_ptr<CmsCoupon>(new CmsCoupon(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
             coupon_->accrualEndDate(), coupon_->fixingDays(),
             index_->swapIndex1(), 1.0, 0.0, coupon_->referencePeriodStart(),
             coupon_->referencePeriodEnd(), coupon_->dayCounter(),
             coupon_->isInArrears()));
 
-        c2_ = boost::shared_ptr<CmsCoupon>(new CmsCoupon(
+        c2_ = ext::shared_ptr<CmsCoupon>(new CmsCoupon(
             coupon_->date(), coupon_->nominal(), coupon_->accrualStartDate(),
             coupon_->accrualEndDate(), coupon_->fixingDays(),
             index_->swapIndex2(), 1.0, 0.0, coupon_->referencePeriodStart(),
@@ -184,33 +196,22 @@ namespace QuantLib {
             swapRate1_ = c1_->indexFixing();
             swapRate2_ = c2_->indexFixing();
 
-            // costly part, look up in cache first
-            std::pair<std::string, Date> key =
-                std::make_pair(index_->name(), fixingDate_);
-            CacheType::const_iterator k = cache_.find(key);
-            if (k != cache_.end()) {
-                adjustedRate1_ = k->second.first;
-                adjustedRate2_ = k->second.second;
-            } else {
-                adjustedRate1_ = c1_->adjustedFixing();
-                adjustedRate2_ = c2_->adjustedFixing();
-                cache_.insert(std::make_pair(
-                    key, std::make_pair(adjustedRate1_, adjustedRate2_)));
-            }
+            adjustedRate1_ = c1_->adjustedFixing();
+            adjustedRate2_ = c2_->adjustedFixing();
 
-            boost::shared_ptr<SwaptionVolatilityStructure> swvol =
+            ext::shared_ptr<SwaptionVolatilityStructure> swvol =
                 *cmsPricer_->swaptionVolatility();
-            boost::shared_ptr<SwaptionVolatilityCube> swcub =
-                boost::dynamic_pointer_cast<SwaptionVolatilityCube>(swvol);
+            ext::shared_ptr<SwaptionVolatilityCube> swcub =
+                ext::dynamic_pointer_cast<SwaptionVolatilityCube>(swvol);
 
             if(inheritedVolatilityType_ && volType_ == ShiftedLognormal) {
                 shift1_ =
                     swvol->shift(fixingDate_, index_->swapIndex1()->tenor());
                 shift2_ =
-                    swvol->shift(fixingDate_, index_->swapIndex1()->tenor());
+                    swvol->shift(fixingDate_, index_->swapIndex2()->tenor());
             }
 
-            if (swcub == NULL) {
+            if (swcub == nullptr) {
                 // not a cube, just an atm surface given, so we can
                 // not easily convert volatilities and just forbid it
                 QL_REQUIRE(inheritedVolatilityType_,
@@ -219,7 +220,7 @@ namespace QuantLib {
                 vol1_ = swvol->volatility(
                     fixingDate_, index_->swapIndex1()->tenor(), swapRate1_);
                 vol2_ = swvol->volatility(
-                    fixingDate_, index_->swapIndex1()->tenor(), swapRate2_);
+                    fixingDate_, index_->swapIndex2()->tenor(), swapRate2_);
             } else {
                 vol1_ = swcub->smileSection(fixingDate_,
                                             index_->swapIndex1()->tenor())
@@ -240,15 +241,21 @@ namespace QuantLib {
 
             rho_ = std::max(std::min(correlation()->value(), 0.9999),
                             -0.9999); // avoid division by zero in integrand
+        } else {
+            // fixing is in the past or today
+            adjustedRate1_ = c1_->indexFixing();
+            adjustedRate2_ = c2_->indexFixing();
         }
     }
 
     Real LognormalCmsSpreadPricer::optionletPrice(Option::Type optionType,
                                                   Real strike) const {
-
+        // this method is only called for future fixings
+        optionType_ = optionType;
         phi_ = optionType == Option::Call ? 1.0 : -1.0;
         Real res = 0.0;
         if (volType_ == ShiftedLognormal) {
+            // (shifted) lognormal volatility
             if (strike >= 0.0) {
                 a_ = gearing1_;
                 b_ = gearing2_;
@@ -273,28 +280,24 @@ namespace QuantLib {
                                gearing2_ * adjustedRate2_ - strike);
             }
             res +=
-                1.0 / M_SQRTPI *
-                integrator_->operator()(std::bind1st(
-                    std::mem_fun(&LognormalCmsSpreadPricer::integrand), this));
+                1.0 / M_SQRTPI * (*integrator_)(integrand_f(this));
         } else {
             // normal volatility
-            k_ = strike;
-            alpha_ = phi_ * gearing1_ * vol1_ *
-                     std::sqrt(fixingTime_ * (1.0 - rho_ * rho_));
-            psi_ = alpha_ >= 0.0 ? 1.0 : -1.0;
-            res +=
-                1.0 / M_SQRTPI *
-                integrator_->operator()(std::bind1st(
-                    std::mem_fun(&LognormalCmsSpreadPricer::integrand_normal),
-                    this));
+            Real forward = gearing1_ * adjustedRate1_ +
+                gearing2_ * adjustedRate2_;
+            Real stddev =
+                std::sqrt(fixingTime_ *
+                          (gearing1_ * gearing1_ * vol1_ * vol1_ +
+                           gearing2_ * gearing2_ * vol2_ * vol2_ +
+                           2.0 * gearing1_ * gearing2_ * rho_ * vol1_ * vol2_));
+            res =
+                bachelierBlackFormula(optionType_, strike, forward, stddev, 1.0);
         }
-        return res * couponDiscountCurve_->discount(paymentDate_) *
-               coupon_->accrualPeriod();
+        return res * discount_ * coupon_->accrualPeriod();
     }
 
     Rate LognormalCmsSpreadPricer::swapletRate() const {
-        return swapletPrice() / (coupon_->accrualPeriod() *
-                                 couponDiscountCurve_->discount(paymentDate_));
+        return swapletPrice() / (coupon_->accrualPeriod() * discount_);
     }
 
     Real LognormalCmsSpreadPricer::capletPrice(Rate effectiveCap) const {
@@ -303,9 +306,7 @@ namespace QuantLib {
             // the fixing is determined
             const Rate Rs = std::max(
                 coupon_->index()->fixing(fixingDate_) - effectiveCap, 0.);
-            Rate price = (gearing_ * Rs) *
-                         (coupon_->accrualPeriod() *
-                          couponDiscountCurve_->discount(paymentDate_));
+            Rate price = gearing_ * Rs * coupon_->accrualPeriod() * discount_;
             return price;
         } else {
             Real capletPrice = optionletPrice(Option::Call, effectiveCap);
@@ -315,8 +316,7 @@ namespace QuantLib {
 
     Rate LognormalCmsSpreadPricer::capletRate(Rate effectiveCap) const {
         return capletPrice(effectiveCap) /
-               (coupon_->accrualPeriod() *
-                couponDiscountCurve_->discount(paymentDate_));
+               (coupon_->accrualPeriod() * discount_);
     }
 
     Real LognormalCmsSpreadPricer::floorletPrice(Rate effectiveFloor) const {
@@ -325,9 +325,7 @@ namespace QuantLib {
             // the fixing is determined
             const Rate Rs = std::max(
                 effectiveFloor - coupon_->index()->fixing(fixingDate_), 0.);
-            Rate price = (gearing_ * Rs) *
-                         (coupon_->accrualPeriod() *
-                          couponDiscountCurve_->discount(paymentDate_));
+            Rate price = gearing_ * Rs * coupon_->accrualPeriod() * discount_;
             return price;
         } else {
             Real floorletPrice = optionletPrice(Option::Put, effectiveFloor);
@@ -337,13 +335,11 @@ namespace QuantLib {
 
     Rate LognormalCmsSpreadPricer::floorletRate(Rate effectiveFloor) const {
         return floorletPrice(effectiveFloor) /
-               (coupon_->accrualPeriod() *
-                couponDiscountCurve_->discount(paymentDate_));
+               (coupon_->accrualPeriod() * discount_);
     }
 
     Real LognormalCmsSpreadPricer::swapletPrice() const {
-        return gearing_ * coupon_->accrualPeriod() *
-                   couponDiscountCurve_->discount(paymentDate_) *
+        return gearing_ * coupon_->accrualPeriod() * discount_ *
                    (gearing1_ * adjustedRate1_ + gearing2_ * adjustedRate2_) +
                spreadLegValue_;
     }

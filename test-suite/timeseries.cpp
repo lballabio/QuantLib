@@ -23,17 +23,7 @@
 #include <ql/timeseries.hpp>
 #include <ql/prices.hpp>
 #include <ql/time/calendars/unitedstates.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-
 #include <boost/unordered_map.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -47,7 +37,7 @@ void TimeSeriesTest::testConstruction() {
     ts[Date(29, March, 2005)] = 2.3;
     ts[Date(15, March, 2005)] = 0.3;
 
-    TimeSeries<Real>::const_iterator cur = ts.begin();
+    auto cur = ts.begin();
     if (cur->first != Date(15, March, 2005)) {
         BOOST_ERROR("date does not match");
     }
@@ -71,22 +61,12 @@ void TimeSeriesTest::testConstruction() {
 void TimeSeriesTest::testIntervalPrice() {
     BOOST_TEST_MESSAGE("Testing time series interval price...");
 
-    std::vector<Date> date;
-    std::vector<Real> open, close, high, low;
-    date.push_back(Date(25, March, 2005));
-    date.push_back(Date(29, March, 2005));
+    std::vector<Date> date = {Date(25, March, 2005), Date(29, March, 2005)};
 
-    open.push_back(1.3);
-    open.push_back(2.3);
-
-    close.push_back(2.3);
-    close.push_back(3.4);
-
-    high.push_back(3.4);
-    high.push_back(3.5);
-
-    low.push_back(3.4);
-    low.push_back(3.2);
+    std::vector<Real> open = {1.3, 2.3},
+                      close = {2.3, 3.4},
+                      high = {3.4, 3.5},
+                      low = {3.4, 3.2};
 
     TimeSeries<IntervalPrice> tsiq = IntervalPrice::makeSeries(date,
                                                                open,
@@ -95,29 +75,14 @@ void TimeSeriesTest::testIntervalPrice() {
                                                                low);
 }
 
-namespace boost {
-
-    template<>
-    struct hash<Date> : std::unary_function<Date, std::size_t> {
-        size_t operator()(const Date& _Keyval) const {
-            return boost::hash<Date::serial_type>()(_Keyval.serialNumber());
-        }
-    };
-
-}
-
 void TimeSeriesTest::testIterators() {
     BOOST_TEST_MESSAGE("Testing time series iterators...");
-    std::vector<Date> dates;
-    std::vector<Real> prices;
 
-    dates.push_back(Date(25, March, 2005));
-    dates.push_back(Date(29, March, 2005));
-    dates.push_back(Date(15, March, 2005));
+    std::vector<Date> dates = {Date(25, March, 2005),
+                               Date(29, March, 2005),
+                               Date(15, March, 2005)};
 
-    prices.push_back(25);
-    prices.push_back(23);
-    prices.push_back(20);
+    std::vector<Real> prices = {25, 23, 20};
 
     TimeSeries<Real> ts(dates.begin(), dates.end(), prices.begin());
 
@@ -194,7 +159,7 @@ void TimeSeriesTest::testIterators() {
 }
 
 test_suite* TimeSeriesTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("time series tests");
+    auto* suite = BOOST_TEST_SUITE("time series tests");
     suite->add(QUANTLIB_TEST_CASE(&TimeSeriesTest::testConstruction));
     suite->add(QUANTLIB_TEST_CASE(&TimeSeriesTest::testIntervalPrice));
     suite->add(QUANTLIB_TEST_CASE(&TimeSeriesTest::testIterators));

@@ -40,9 +40,9 @@ namespace QuantLib {
                           Seniority seniority = NoSeniority);
         //! \name Quote interface
         //@{
-        Real value() const;
+        Real value() const override;
         Seniority seniority() const;
-        bool isValid() const;
+        bool isValid() const override;
         //@}
         //! \name Modifiers
         //@{
@@ -55,10 +55,10 @@ namespace QuantLib {
             (intended to be used in an event construction)
         */
         // member? move to friend?
-        template<Size N>
-        static const std::map<Seniority, Real>
-            makeIsdaMap(const Real (&(arrayIsdaRR))[N]) ;
-    private:
+        template <Size N>
+        static std::map<Seniority, Real> makeIsdaMap(const Real (&(arrayIsdaRR))[N]);
+
+      private:
         // Conventional recoveries for ISDA seniorities
         static const Real IsdaConvRecoveries[];
         // The seniority this recovery is quoted for.
@@ -90,19 +90,17 @@ namespace QuantLib {
     // template definitions
 
     // helpers allow further automatic inclusion of seniorities
-    template<Size N>
-    const std::map<Seniority, Real>
-        RecoveryRateQuote::makeIsdaMap (const Real (&(arrayIsdaRR))[N]) {
+    template <Size N>
+    std::map<Seniority, Real> RecoveryRateQuote::makeIsdaMap(const Real (&(arrayIsdaRR))[N]) {
         // TO DO: include check on sizes... not to go beyond enum sizes.
         // TO DO: check Reals are valid, i.e. non Null and within [0-1] range
         std::map<Seniority, Real> isdaMap;
         for(Size i=0; i<N; i++) {
-            Seniority isdaType = Seniority(i);//compiler dependent?
+            auto isdaType = Seniority(i); // compiler dependent?
             isdaMap[isdaType] = arrayIsdaRR[i];
         }
         return isdaMap;
     }
-
 }
 
 #endif

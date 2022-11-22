@@ -24,7 +24,7 @@ namespace QuantLib {
 
     Taiwan::Taiwan(Market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Taiwan::TsecImpl);
+        static ext::shared_ptr<Calendar::Impl> impl(new Taiwan::TsecImpl);
         impl_ = impl;
     }
 
@@ -229,12 +229,115 @@ namespace QuantLib {
                 || (d == 4 && m == April)
                 // Tomb Sweeping Day
                 || (d == 5 && m == April)
-                // Labour Day
-                || (d == 1 && m == May)
                 // Dragon Boat Festival
                 || (d == 2 && m == June)
                 // Mid-Autumn Festival
                 || (d == 8 && m == September)
+                )
+                return false;
+        }
+
+        if (y == 2015) {
+            if (// adjusted holidays
+                (d == 2 && m == January)
+                // Lunar New Year
+                || (d >= 18 && d <= 23 && m == February)
+                // adjusted holidays
+                || (d == 27 && m == February)
+                // adjusted holidays
+                || (d == 3 && m == April)
+                // adjusted holidays
+                || (d == 6 && m == April)
+                // adjusted holidays
+                || (d == 19 && m == June)
+                // adjusted holidays
+                || (d == 28 && m == September)
+                // adjusted holidays
+                || (d == 9 && m == October)
+                )
+                return false;
+        }
+        
+        if (y == 2016) {
+            if (// Lunar New Year
+                (d >= 8 && d <= 12 && m == February)
+                // adjusted holidays
+                || (d == 29 && m == February)
+                // Children's Day
+                || (d == 4 && m == April)
+                // adjusted holidays
+                || (d == 5 && m == April)
+                // adjusted holidays
+                || (d == 2 && m == May)
+                // Dragon Boat Festival
+                || (d == 9 && m == June)
+                // adjusted holidays
+                || (d == 10 && m == June)
+                // Mid-Autumn Festival
+                || (d == 15 && m == September)
+                // adjusted holidays
+                || (d == 16 && m == September)
+                )
+                return false;
+        }
+
+        if (y == 2017) {
+            if (// adjusted holidays
+                (d == 2 && m == January)
+                // Lunar New Year
+                || ((d >= 27 && m == January) || (d == 1 && m == February))
+                // adjusted holidays
+                || (d == 27 && m == February)
+                // adjusted holidays
+                || (d == 3 && m == April)
+                // Children's Day
+                || (d == 4 && m == April)
+                // adjusted holidays
+                || (d == 29 && m == May)
+                // Dragon Boat Festival
+                || (d == 30 && m == May)
+                // Mid-Autumn Festival
+                || (d == 4 && m == October)
+                // adjusted holidays
+                || (d == 9 && m == October)
+                )
+                return false;
+        }
+    
+        if (y == 2018) {
+            if (// Lunar New Year
+                (d >= 15 && d <= 20 && m == February)
+                // Children's Day
+                || (d == 4 && m == April)
+                // Tomb Sweeping Day
+                || (d == 5 && m == April)
+                // adjusted holidays
+                || (d == 6 && m == April)
+                // Dragon Boat Festival
+                || (d == 18 && m == June)
+                // Mid-Autumn Festival
+                || (d == 24 && m == September)
+                // adjusted holidays
+                || (d == 31 && m == December)
+                )
+                return false;
+        }
+
+        if (y == 2019) {
+            if (// Lunar New Year
+                (d >= 4 && d <= 8 && m == February)
+                // adjusted holidays
+                || (d == 1 && m == March)
+                // Children's Day
+                || (d == 4 && m == April)
+                // Tomb Sweeping Day
+                || (d == 5 && m == April)
+                // Dragon Boat Festival
+                || (d == 7 && m == June)
+                // Mid-Autumn Festival
+                || (d == 13 && m == September)
+                // adjusted holidays
+                || (d == 11 && m == October)
                 )
                 return false;
         }

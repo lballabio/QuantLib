@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013 Peter Caspers
+ Copyright (C) 2013, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,29 +25,30 @@
 #define quantlib_smile_section_utils_hpp
 
 #include <ql/termstructures/volatility/smilesection.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <vector>
 
 namespace QuantLib {
 
-    //! smile-section utilities
+    /*! smile-section utilities, the moneyness is expressed in
+        - absolute terms for normal
+        - relative terms for shifted lognormal
+        volatility smile sections */
     class SmileSectionUtils {
       public:
-        SmileSectionUtils(const SmileSection &section,
-                          const std::vector<Real> &moneynessGrid =
-                              std::vector<Real>(),
-                          const Real atm = Null<Real>(),
-                          const bool deleteArbitragePoints = false);
+        SmileSectionUtils(const SmileSection& section,
+                          const std::vector<Real>& moneynessGrid = std::vector<Real>(),
+                          Real atm = Null<Real>(),
+                          bool deleteArbitragePoints = false);
 
-        const std::pair<Real, Real> arbitragefreeRegion() const;
-        const std::pair<Size, Size> arbitragefreeIndices() const;
+        std::pair<Real, Real> arbitragefreeRegion() const;
+        std::pair<Size, Size> arbitragefreeIndices() const;
         const std::vector<Real> &moneyGrid() const { return m_; }
         const std::vector<Real> &strikeGrid() const { return k_; }
         const std::vector<Real> &callPrices() const { return c_; }
         Real atmLevel() const { return f_; }
 
       private:
-        bool af(const Size i0, const Size i, const Size i1) const;
+        bool af(Size i0, Size i, Size i1) const;
         std::vector<Real> m_, c_, k_;
         Size leftIndex_, rightIndex_;
         Real f_;

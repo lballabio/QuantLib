@@ -26,8 +26,9 @@
 #define quantlib_region_hpp
 
 #include <ql/qldefines.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <string>
+#include <utility>
 
 namespace QuantLib {
 
@@ -40,16 +41,15 @@ namespace QuantLib {
         const std::string& code() const;
         //@}
       protected:
-        Region() {}
+        Region() = default;
         struct Data;
-        boost::shared_ptr<Data> data_;
+        ext::shared_ptr<Data> data_;
     };
 
     struct Region::Data {
         std::string name;
         std::string code;
-        Data(const std::string& name, const std::string& code)
-        : name(name), code(code) {}
+        Data(std::string name, std::string code) : name(std::move(name)), code(std::move(code)) {}
     };
 
     //! \relates Region

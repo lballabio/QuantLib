@@ -36,14 +36,14 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace digital_coupon_test {
 
     struct CommonVars {
         // global data
         Date today, settlement;
         Real nominal;
         Calendar calendar;
-        boost::shared_ptr<IborIndex> index;
+        ext::shared_ptr<IborIndex> index;
         Natural fixingDays;
         RelinkableHandle<YieldTermStructure> termStructure;
         Real optionTolerance;
@@ -56,7 +56,7 @@ namespace {
         CommonVars() {
             fixingDays = 2;
             nominal = 1000000.0;
-            index = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             calendar = index->fixingCalendar();
             today = calendar.adjust(Settings::instance().evaluationDate());
             Settings::instance().evaluationDate() = today;
@@ -73,6 +73,8 @@ namespace {
 void DigitalCouponTest::testAssetOrNothing() {
 
     BOOST_TEST_MESSAGE("Testing European asset-or-nothing digital coupon...");
+
+    using namespace digital_coupon_test;
 
     /*  Call Payoff = (aL+b)Heaviside(aL+b-X) =  a Max[L-X'] + (b+aX')Heaviside(L-X')
         Value Call = aF N(d1') + bN(d2')
@@ -91,18 +93,14 @@ void DigitalCouponTest::testAssetOrNothing() {
 
     Real gap = 1e-7; /* low, in order to compare digital option value
                         with black formula result */
-    boost::shared_ptr<DigitalReplication>
+    ext::shared_ptr<DigitalReplication>
         replication(new DigitalReplication(Replication::Central, gap));
-    for (Size i = 0; i< LENGTH(vols); i++) {
-            Volatility capletVol = vols[i];
-            RelinkableHandle<OptionletVolatilityStructure> vol;
-            vol.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
-                ConstantOptionletVolatility(vars.today,
-                                            vars.calendar, Following,
-                                            capletVol, Actual360())));
-        for (Size j=0; j<LENGTH(strikes); j++) {
-            Rate strike = strikes[j];
-            for (Size k=9; k<10; k++) {
+    for (Real capletVol : vols) {
+        RelinkableHandle<OptionletVolatilityStructure> vol;
+        vol.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new ConstantOptionletVolatility(
+            vars.today, vars.calendar, Following, capletVol, Actual360())));
+        for (Real strike : strikes) {
+            for (Size k = 9; k < 10; k++) {
                 Date startDate = vars.calendar.advance(vars.settlement,(k+1)*Years);
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
@@ -112,7 +110,7 @@ void DigitalCouponTest::testAssetOrNothing() {
                     Real gearing = gearings[h];
                     Rate spread = spreads[h];
 
-                    boost::shared_ptr<FloatingRateCoupon> underlying(new
+                    ext::shared_ptr<FloatingRateCoupon> underlying(new
                         IborCoupon(paymentDate, vars.nominal,
                                    startDate, endDate,
                                    vars.fixingDays, vars.index,
@@ -122,7 +120,7 @@ void DigitalCouponTest::testAssetOrNothing() {
                                         strike, Position::Short, false, nullstrike,
                                         nullstrike, Position::Short, false, nullstrike,
                                         replication);
-                    boost::shared_ptr<IborCouponPricer> pricer(new
+                    ext::shared_ptr<IborCouponPricer> pricer(new
                                                             BlackIborCouponPricer(vol));
                     digitalCappedCoupon.setPricer(pricer);
 
@@ -155,25 +153,25 @@ void DigitalCouponTest::testAssetOrNothing() {
 
                     // Check digital option price vs N(d1) price using Vanilla Option class
                     if (spread==0.0) {
-                        boost::shared_ptr<Exercise>
+                        ext::shared_ptr<Exercise>
                             exercise(new EuropeanExercise(exerciseDate));
                         Real discountAtFixing = vars.termStructure->discount(exerciseDate);
-                        boost::shared_ptr<SimpleQuote>
+                        ext::shared_ptr<SimpleQuote>
                             fwd(new SimpleQuote(effFwd*discountAtFixing));
-                        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-                        boost::shared_ptr<YieldTermStructure>
+                        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+                        ext::shared_ptr<YieldTermStructure>
                             qTS = flatRate(vars.today, qRate, Actual360());
-                        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-                        boost::shared_ptr<BlackVolTermStructure>
+                        ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+                        ext::shared_ptr<BlackVolTermStructure>
                             volTS = flatVol(vars.today, capletVol, Actual360());
-                        boost::shared_ptr<StrikedTypePayoff>
+                        ext::shared_ptr<StrikedTypePayoff>
                             callPayoff(new AssetOrNothingPayoff(Option::Call,effStrike));
-                        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+                        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
                             BlackScholesMertonProcess(Handle<Quote>(fwd),
                                               Handle<YieldTermStructure>(qTS),
                                               Handle<YieldTermStructure>(vars.termStructure),
                                               Handle<BlackVolTermStructure>(volTS)));
-                        boost::shared_ptr<PricingEngine>
+                        ext::shared_ptr<PricingEngine>
                             engine(new AnalyticEuropeanEngine(stochProcess));
                         VanillaOption callOpt(callPayoff, exercise);
                         callOpt.setPricingEngine(engine);
@@ -218,25 +216,25 @@ void DigitalCouponTest::testAssetOrNothing() {
 
                     // Check digital option price vs N(d1) price using Vanilla Option class
                     if (spread==0.0) {
-                        boost::shared_ptr<Exercise>
+                        ext::shared_ptr<Exercise>
                             exercise(new EuropeanExercise(exerciseDate));
                         Real discountAtFixing = vars.termStructure->discount(exerciseDate);
-                        boost::shared_ptr<SimpleQuote>
+                        ext::shared_ptr<SimpleQuote>
                             fwd(new SimpleQuote(effFwd*discountAtFixing));
-                        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-                        boost::shared_ptr<YieldTermStructure>
+                        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+                        ext::shared_ptr<YieldTermStructure>
                             qTS = flatRate(vars.today, qRate, Actual360());
-                        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-                        boost::shared_ptr<BlackVolTermStructure>
+                        ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+                        ext::shared_ptr<BlackVolTermStructure>
                             volTS = flatVol(vars.today, capletVol, Actual360());
-                        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+                        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
                             BlackScholesMertonProcess(Handle<Quote>(fwd),
                                               Handle<YieldTermStructure>(qTS),
                                               Handle<YieldTermStructure>(vars.termStructure),
                                               Handle<BlackVolTermStructure>(volTS)));
-                        boost::shared_ptr<StrikedTypePayoff>
+                        ext::shared_ptr<StrikedTypePayoff>
                             putPayoff(new AssetOrNothingPayoff(Option::Put, effStrike));
-                        boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine(stochProcess));
+                        ext::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine(stochProcess));
                         VanillaOption putOpt(putPayoff, exercise);
                         putOpt.setPricingEngine(engine);
                         Real putVO  = vars.nominal * gearing
@@ -264,6 +262,8 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
     BOOST_TEST_MESSAGE("Testing European deep in-the-money asset-or-nothing "
                        "digital coupon...");
 
+    using namespace digital_coupon_test;
+
     CommonVars vars;
 
     Real gearing = 1.0;
@@ -271,11 +271,11 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
 
     Volatility capletVolatility = 0.0001;
     RelinkableHandle<OptionletVolatilityStructure> volatility;
-    volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
+    volatility.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new
         ConstantOptionletVolatility(vars.today, vars.calendar, Following,
                                     capletVolatility, Actual360())));
     Real gap = 1e-4;
-    boost::shared_ptr<DigitalReplication> replication(new
+    ext::shared_ptr<DigitalReplication> replication(new
         DigitalReplication(Replication::Central, gap));
 
     for (Size k = 0; k<10; k++) {   // Loop on start and end dates
@@ -284,7 +284,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
         Rate nullstrike = Null<Rate>();
         Date paymentDate = endDate;
 
-        boost::shared_ptr<FloatingRateCoupon> underlying(new
+        ext::shared_ptr<FloatingRateCoupon> underlying(new
             IborCoupon(paymentDate, vars.nominal,
                        startDate, endDate,
                        vars.fixingDays, vars.index,
@@ -296,7 +296,7 @@ void DigitalCouponTest::testAssetOrNothingDeepInTheMoney() {
                                           strike, Position::Short, false, nullstrike,
                                           nullstrike, Position::Short, false, nullstrike,
                                           replication);
-        boost::shared_ptr<IborCouponPricer> pricer(new
+        ext::shared_ptr<IborCouponPricer> pricer(new
             BlackIborCouponPricer(volatility));
         digitalCappedCoupon.setPricer(pricer);
 
@@ -376,6 +376,8 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
     BOOST_TEST_MESSAGE("Testing European deep out-the-money asset-or-nothing "
                        "digital coupon...");
 
+    using namespace digital_coupon_test;
+
     CommonVars vars;
 
     Real gearing = 1.0;
@@ -383,11 +385,11 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
 
     Volatility capletVolatility = 0.0001;
     RelinkableHandle<OptionletVolatilityStructure> volatility;
-    volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
+    volatility.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new
         ConstantOptionletVolatility(vars.today, vars.calendar, Following,
                                     capletVolatility, Actual360())));
     Real gap = 1e-4;
-    boost::shared_ptr<DigitalReplication>
+    ext::shared_ptr<DigitalReplication>
         replication(new DigitalReplication(Replication::Central, gap));
 
     for (Size k = 0; k<10; k++) { // loop on start and end dates
@@ -396,7 +398,7 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
         Rate nullstrike = Null<Rate>();
         Date paymentDate = endDate;
 
-        boost::shared_ptr<FloatingRateCoupon> underlying(new
+        ext::shared_ptr<FloatingRateCoupon> underlying(new
             IborCoupon(paymentDate, vars.nominal,
                        startDate, endDate,
                        vars.fixingDays, vars.index,
@@ -408,7 +410,7 @@ void DigitalCouponTest::testAssetOrNothingDeepOutTheMoney() {
                                           strike, Position::Short, false, nullstrike,
                                           nullstrike, Position::Long, false, nullstrike,
                                           replication/*Replication::Central, gap*/);
-        boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(volatility));
+        ext::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(volatility));
         digitalCappedCoupon.setPricer(pricer);
 
         // Check price vs its target
@@ -493,6 +495,8 @@ void DigitalCouponTest::testCashOrNothing() {
         d2' = ln(F/X')/stdDev - 0.5*stdDev;
     */
 
+    using namespace digital_coupon_test;
+
     CommonVars vars;
 
     Volatility vols[] = { 0.05, 0.15, 0.30 };
@@ -503,26 +507,22 @@ void DigitalCouponTest::testCashOrNothing() {
 
     Real gap = 1e-08; /* very low, in order to compare digital option value
                                      with black formula result */
-    boost::shared_ptr<DigitalReplication> replication(new
+    ext::shared_ptr<DigitalReplication> replication(new
         DigitalReplication(Replication::Central, gap));
 
-    for (Size i = 0; i< LENGTH(vols); i++) {
-            Volatility capletVol = vols[i];
-            RelinkableHandle<OptionletVolatilityStructure> vol;
-            vol.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
-                ConstantOptionletVolatility(vars.today,
-                                            vars.calendar, Following,
-                                            capletVol, Actual360())));
-        for (Size j = 0; j< LENGTH(strikes); j++) {
-            Rate strike = strikes[j];
-            for (Size k = 0; k<10; k++) {
+    for (Real capletVol : vols) {
+        RelinkableHandle<OptionletVolatilityStructure> vol;
+        vol.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new ConstantOptionletVolatility(
+            vars.today, vars.calendar, Following, capletVol, Actual360())));
+        for (Real strike : strikes) {
+            for (Size k = 0; k < 10; k++) {
                 Date startDate = vars.calendar.advance(vars.settlement,(k+1)*Years);
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
                 Rate cashRate = 0.01;
 
                 Date paymentDate = endDate;
-                boost::shared_ptr<FloatingRateCoupon> underlying(new
+                ext::shared_ptr<FloatingRateCoupon> underlying(new
                     IborCoupon(paymentDate, vars.nominal,
                                startDate, endDate,
                                vars.fixingDays, vars.index,
@@ -532,7 +532,7 @@ void DigitalCouponTest::testCashOrNothing() {
                                           strike, Position::Short, false, cashRate,
                                           nullstrike, Position::Short, false, nullstrike,
                                           replication);
-                boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));
+                ext::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(vol));
                 digitalCappedCoupon.setPricer(pricer);
 
                 // Check digital option price vs N(d2) price
@@ -559,22 +559,22 @@ void DigitalCouponTest::testCashOrNothing() {
                                 "\nError = " << error );
 
                 // Check digital option price vs N(d2) price using Vanilla Option class
-                boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
                 Real discountAtFixing = vars.termStructure->discount(exerciseDate);
-                boost::shared_ptr<SimpleQuote> fwd(new SimpleQuote(effFwd*discountAtFixing));
-                boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-                boost::shared_ptr<YieldTermStructure> qTS = flatRate(vars.today, qRate, Actual360());
-                boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-                boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(vars.today, capletVol,
+                ext::shared_ptr<SimpleQuote> fwd(new SimpleQuote(effFwd*discountAtFixing));
+                ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+                ext::shared_ptr<YieldTermStructure> qTS = flatRate(vars.today, qRate, Actual360());
+                ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+                ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(vars.today, capletVol,
                                                                          Actual360());
-                boost::shared_ptr<StrikedTypePayoff> callPayoff(new CashOrNothingPayoff(
+                ext::shared_ptr<StrikedTypePayoff> callPayoff(new CashOrNothingPayoff(
                                                         Option::Call, effStrike, cashRate));
-                boost::shared_ptr<BlackScholesMertonProcess> stochProcess(new
+                ext::shared_ptr<BlackScholesMertonProcess> stochProcess(new
                 BlackScholesMertonProcess(Handle<Quote>(fwd),
                                           Handle<YieldTermStructure>(qTS),
                                           Handle<YieldTermStructure>(vars.termStructure),
                                           Handle<BlackVolTermStructure>(volTS)));
-                boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine(stochProcess));
+                ext::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine(stochProcess));
                 VanillaOption callOpt(callPayoff, exercise);
                 callOpt.setPricingEngine(engine);
                 Real callVO = vars.nominal * accrualPeriod * callOpt.NPV()
@@ -616,7 +616,7 @@ void DigitalCouponTest::testCashOrNothing() {
                                 "\nError = " << error );
 
                 // Check digital option price vs N(d2) price using Vanilla Option class
-                boost::shared_ptr<StrikedTypePayoff> putPayoff(new
+                ext::shared_ptr<StrikedTypePayoff> putPayoff(new
                     CashOrNothingPayoff(Option::Put, effStrike, cashRate));
                 VanillaOption putOpt(putPayoff, exercise);
                 putOpt.setPricingEngine(engine);
@@ -641,6 +641,8 @@ void DigitalCouponTest::testCashOrNothingDeepInTheMoney() {
     BOOST_TEST_MESSAGE("Testing European deep in-the-money cash-or-nothing "
                        "digital coupon...");
 
+    using namespace digital_coupon_test;
+
     CommonVars vars;
 
     Real gearing = 1.0;
@@ -648,7 +650,7 @@ void DigitalCouponTest::testCashOrNothingDeepInTheMoney() {
 
     Volatility capletVolatility = 0.0001;
     RelinkableHandle<OptionletVolatilityStructure> volatility;
-    volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
+    volatility.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new
         ConstantOptionletVolatility(vars.today, vars.calendar, Following,
                                     capletVolatility, Actual360())));
 
@@ -658,11 +660,11 @@ void DigitalCouponTest::testCashOrNothingDeepInTheMoney() {
         Rate nullstrike = Null<Rate>();
         Rate cashRate = 0.01;
         Real gap = 1e-4;
-        boost::shared_ptr<DigitalReplication> replication(new
+        ext::shared_ptr<DigitalReplication> replication(new
             DigitalReplication(Replication::Central, gap));
         Date paymentDate = endDate;
 
-        boost::shared_ptr<FloatingRateCoupon> underlying(new
+        ext::shared_ptr<FloatingRateCoupon> underlying(new
             IborCoupon(paymentDate, vars.nominal,
                        startDate, endDate,
                        vars.fixingDays, vars.index,
@@ -673,7 +675,7 @@ void DigitalCouponTest::testCashOrNothingDeepInTheMoney() {
                                           strike, Position::Short, false, cashRate,
                                           nullstrike, Position::Short, false, nullstrike,
                                           replication);
-        boost::shared_ptr<IborCouponPricer> pricer(new
+        ext::shared_ptr<IborCouponPricer> pricer(new
             BlackIborCouponPricer(volatility));
         digitalCappedCoupon.setPricer(pricer);
 
@@ -751,6 +753,8 @@ void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
     BOOST_TEST_MESSAGE("Testing European deep out-the-money cash-or-nothing "
                        "digital coupon...");
 
+    using namespace digital_coupon_test;
+
     CommonVars vars;
 
     Real gearing = 1.0;
@@ -758,7 +762,7 @@ void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
 
     Volatility capletVolatility = 0.0001;
     RelinkableHandle<OptionletVolatilityStructure> volatility;
-    volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
+    volatility.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new
         ConstantOptionletVolatility(vars.today, vars.calendar, Following,
                                     capletVolatility, Actual360())));
 
@@ -768,11 +772,11 @@ void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
         Rate nullstrike = Null<Rate>();
         Rate cashRate = 0.01;
         Real gap = 1e-4;
-        boost::shared_ptr<DigitalReplication> replication(new
+        ext::shared_ptr<DigitalReplication> replication(new
             DigitalReplication(Replication::Central, gap));
         Date paymentDate = endDate;
 
-        boost::shared_ptr<FloatingRateCoupon> underlying(new
+        ext::shared_ptr<FloatingRateCoupon> underlying(new
             IborCoupon(paymentDate, vars.nominal,
                        startDate, endDate,
                        vars.fixingDays, vars.index,
@@ -784,7 +788,7 @@ void DigitalCouponTest::testCashOrNothingDeepOutTheMoney() {
                                           nullstrike, Position::Short, false, nullstrike,
                                           replication);
 
-        boost::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(volatility));
+        ext::shared_ptr<IborCouponPricer> pricer(new BlackIborCouponPricer(volatility));
         digitalCappedCoupon.setPricer(pricer);
 
         // Check price vs its target
@@ -862,6 +866,8 @@ void DigitalCouponTest::testCallPutParity() {
 
     BOOST_TEST_MESSAGE("Testing call/put parity for European digital coupon...");
 
+    using namespace digital_coupon_test;
+
     CommonVars vars;
 
     Volatility vols[] = { 0.05, 0.15, 0.30 };
@@ -871,25 +877,23 @@ void DigitalCouponTest::testCallPutParity() {
     Real spread = 0.0;
 
     Real gap = 1e-04;
-    boost::shared_ptr<DigitalReplication> replication(new
+    ext::shared_ptr<DigitalReplication> replication(new
         DigitalReplication(Replication::Central, gap));
 
-    for (Size i = 0; i< LENGTH(vols); i++) {
-            Volatility capletVolatility = vols[i];
-            RelinkableHandle<OptionletVolatilityStructure> volatility;
-            volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
-                ConstantOptionletVolatility(vars.today, vars.calendar, Following,
-                                            capletVolatility, Actual360())));
-        for (Size j = 0; j< LENGTH(strikes); j++) {
-            Rate strike = strikes[j];
-            for (Size k = 0; k<10; k++) {
+    for (Real capletVolatility : vols) {
+        RelinkableHandle<OptionletVolatilityStructure> volatility;
+        volatility.linkTo(
+            ext::shared_ptr<OptionletVolatilityStructure>(new ConstantOptionletVolatility(
+                vars.today, vars.calendar, Following, capletVolatility, Actual360())));
+        for (Real strike : strikes) {
+            for (Size k = 0; k < 10; k++) {
                 Date startDate = vars.calendar.advance(vars.settlement,(k+1)*Years);
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
 
                 Date paymentDate = endDate;
 
-                boost::shared_ptr<FloatingRateCoupon> underlying(new
+                ext::shared_ptr<FloatingRateCoupon> underlying(new
                     IborCoupon(paymentDate, vars.nominal,
                                startDate, endDate,
                                vars.fixingDays, vars.index,
@@ -901,7 +905,7 @@ void DigitalCouponTest::testCallPutParity() {
                                           strike, Position::Long, false, cashRate,
                                           nullstrike, Position::Long, false, nullstrike,
                                           replication);
-                boost::shared_ptr<IborCouponPricer> pricer(new
+                ext::shared_ptr<IborCouponPricer> pricer(new
                     BlackIborCouponPricer(volatility));
                 cash_digitalCallCoupon.setPricer(pricer);
                 // Floating Rate Coupon - Put Digital option
@@ -965,6 +969,8 @@ void DigitalCouponTest::testReplicationType() {
 
     BOOST_TEST_MESSAGE("Testing replication type for European digital coupon...");
 
+    using namespace digital_coupon_test;
+
     CommonVars vars;
 
     Volatility vols[] = { 0.05, 0.15, 0.30 };
@@ -974,29 +980,27 @@ void DigitalCouponTest::testReplicationType() {
     Real spread = 0.0;
 
     Real gap = 1e-04;
-    boost::shared_ptr<DigitalReplication> subReplication(new
+    ext::shared_ptr<DigitalReplication> subReplication(new
         DigitalReplication(Replication::Sub, gap));
-    boost::shared_ptr<DigitalReplication> centralReplication(new
+    ext::shared_ptr<DigitalReplication> centralReplication(new
         DigitalReplication(Replication::Central, gap));
-    boost::shared_ptr<DigitalReplication> superReplication(new
+    ext::shared_ptr<DigitalReplication> superReplication(new
         DigitalReplication(Replication::Super, gap));
 
-    for (Size i = 0; i< LENGTH(vols); i++) {
-        Volatility capletVolatility = vols[i];
+    for (Real capletVolatility : vols) {
         RelinkableHandle<OptionletVolatilityStructure> volatility;
-        volatility.linkTo(boost::shared_ptr<OptionletVolatilityStructure>(new
+        volatility.linkTo(ext::shared_ptr<OptionletVolatilityStructure>(new
         ConstantOptionletVolatility(vars.today, vars.calendar, Following,
                                     capletVolatility, Actual360())));
-        for (Size j = 0; j< LENGTH(strikes); j++) {
-            Rate strike = strikes[j];
-            for (Size k = 0; k<10; k++) {
+        for (Real strike : strikes) {
+            for (Size k = 0; k < 10; k++) {
                 Date startDate = vars.calendar.advance(vars.settlement,(k+1)*Years);
                 Date endDate = vars.calendar.advance(vars.settlement,(k+2)*Years);
                 Rate nullstrike = Null<Rate>();
 
                 Date paymentDate = endDate;
 
-                boost::shared_ptr<FloatingRateCoupon> underlying(new
+                ext::shared_ptr<FloatingRateCoupon> underlying(new
                     IborCoupon(paymentDate, vars.nominal,
                                startDate, endDate,
                                vars.fixingDays, vars.index,
@@ -1016,7 +1020,7 @@ void DigitalCouponTest::testReplicationType() {
                                           strike, Position::Long, false, cashRate,
                                           nullstrike, Position::Long, false, nullstrike,
                                           superReplication);
-                boost::shared_ptr<IborCouponPricer> pricer(new
+                ext::shared_ptr<IborCouponPricer> pricer(new
                     BlackIborCouponPricer(volatility));
                 sub_cash_longDigitalCallCoupon.setPricer(pricer);
                 central_cash_longDigitalCallCoupon.setPricer(pricer);
@@ -1140,7 +1144,7 @@ void DigitalCouponTest::testReplicationType() {
 
 
 test_suite* DigitalCouponTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Digital coupon tests");
+    auto* suite = BOOST_TEST_SUITE("Digital coupon tests");
     suite->add(QUANTLIB_TEST_CASE(&DigitalCouponTest::testAssetOrNothing));
     suite->add(QUANTLIB_TEST_CASE(
                        &DigitalCouponTest::testAssetOrNothingDeepInTheMoney));

@@ -34,20 +34,17 @@ namespace QuantLib {
     //! %CDOR rate
     /*! Canadian Dollar Offered Rate fixed by IDA.
 
+        Conventions are taken from a number of sources including
+        OpenGamma "Interest Rate Instruments and Market Conventions
+        Guide", BBG, IKON.
+
         \warning This is the rate fixed in Canada by IDA. Use CADLibor
                  if you're interested in the London fixing by BBA.
-
-        \todo check settlement days, end-of-month adjustment,
-              and day-count convention.
-        \warning Actual360 changed to Actual365Fixed()
-        \warning settlement days changed from 2 to 0
-        \warning source: OpenGamma "Interest Rate Instruments and Market Conventions Guide", BBG, IKON
     */
     class Cdor : public IborIndex {
       public:
         Cdor(const Period& tenor,
-             const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>())
+             const Handle<YieldTermStructure>& h = {})
         : IborIndex("CDOR", tenor, 0, CADCurrency(),
                     Canada(), ModifiedFollowing, false,
                     Actual365Fixed(), h) {}

@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-    BatesModel::BatesModel(const boost::shared_ptr<BatesProcess> & process)
+    BatesModel::BatesModel(const ext::shared_ptr<BatesProcess> & process)
     : HestonModel(process) {
         arguments_.resize(8);
 
@@ -32,7 +32,7 @@ namespace QuantLib {
         arguments_[7] 
                 = ConstantParameter(process->lambda(), PositiveConstraint());
         
-        generateArguments();
+        BatesModel::generateArguments();
     }
 
     void BatesModel::generateArguments() {
@@ -44,7 +44,7 @@ namespace QuantLib {
     }
 
     BatesDetJumpModel::BatesDetJumpModel(
-            const boost::shared_ptr<BatesProcess> & process,
+            const ext::shared_ptr<BatesProcess> & process,
             Real kappaLambda, Real thetaLambda)
     : BatesModel(process) {
         arguments_.resize(10);
@@ -57,7 +57,7 @@ namespace QuantLib {
 
 
     BatesDoubleExpModel::BatesDoubleExpModel(
-        const boost::shared_ptr<HestonProcess> & process,
+        const ext::shared_ptr<HestonProcess> & process,
         Real lambda, Real nuUp, Real nuDown, Real p)
     : HestonModel(process) {
         arguments_.resize(9);
@@ -71,7 +71,7 @@ namespace QuantLib {
 
 
     BatesDoubleExpDetJumpModel::BatesDoubleExpDetJumpModel(
-        const boost::shared_ptr<HestonProcess> & process,
+        const ext::shared_ptr<HestonProcess> & process,
         Real lambda, Real nuUp, Real nuDown,
         Real p, Real kappaLambda, Real thetaLambda)
     : BatesDoubleExpModel(process, lambda, nuUp, nuDown, p) {

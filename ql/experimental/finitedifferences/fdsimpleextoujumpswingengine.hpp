@@ -43,18 +43,20 @@ namespace QuantLib {
         typedef FdmExtOUJumpModelInnerValue::Shape Shape;
 
         FdSimpleExtOUJumpSwingEngine(
-            const boost::shared_ptr<ExtOUWithJumpsProcess>& p,
-            const boost::shared_ptr<YieldTermStructure>& rTS,
-            Size tGrid = 50, Size xGrid = 200, Size yGrid=50,
-            const boost::shared_ptr<Shape>& shape = boost::shared_ptr<Shape>(),
+            ext::shared_ptr<ExtOUWithJumpsProcess> p,
+            ext::shared_ptr<YieldTermStructure> rTS,
+            Size tGrid = 50,
+            Size xGrid = 200,
+            Size yGrid = 50,
+            ext::shared_ptr<Shape> shape = ext::shared_ptr<Shape>(),
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
-        const boost::shared_ptr<ExtOUWithJumpsProcess> process_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
-        const boost::shared_ptr<Shape> shape_;
+        const ext::shared_ptr<ExtOUWithJumpsProcess> process_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<Shape> shape_;
         const Size tGrid_, xGrid_, yGrid_;
         const FdmSchemeDesc schemeDesc_;
     };

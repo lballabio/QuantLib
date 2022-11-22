@@ -34,9 +34,9 @@ void VarianceOptionTest::testIntegralHeston() {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    Handle<Quote> s0(boost::shared_ptr<SimpleQuote>(new SimpleQuote(1.0)));
+    Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.0));
     Handle<YieldTermStructure> qTS;
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
 
     Real v0 = 2.0;
@@ -45,10 +45,10 @@ void VarianceOptionTest::testIntegralHeston() {
     Real sigma = 0.1;
     Real rho = -0.5;
 
-    boost::shared_ptr<HestonProcess> process(new HestonProcess(rTS, qTS, s0,
+    ext::shared_ptr<HestonProcess> process(new HestonProcess(rTS, qTS, s0,
                                                                v0, kappa, theta,
                                                                sigma, rho));
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
                                new IntegralHestonVarianceOptionEngine(process));
 
     Real strike = 0.05;
@@ -56,7 +56,7 @@ void VarianceOptionTest::testIntegralHeston() {
     Time T = 1.5;
     Date exDate = today + int(360*T);
 
-    boost::shared_ptr<Payoff> payoff(new PlainVanillaPayoff(Option::Call,
+    ext::shared_ptr<Payoff> payoff(new PlainVanillaPayoff(Option::Call,
                                                             strike));
 
     VarianceOption varianceOption1(payoff, nominal, today, exDate);
@@ -80,9 +80,9 @@ void VarianceOptionTest::testIntegralHeston() {
     sigma = 0.1;
     rho = -0.5;
 
-    process = boost::shared_ptr<HestonProcess>(
-               new HestonProcess(rTS, qTS, s0, v0, kappa, theta, sigma, rho));
-    engine = boost::shared_ptr<PricingEngine>(
+    process = ext::make_shared<HestonProcess>(
+               rTS, qTS, s0, v0, kappa, theta, sigma, rho);
+    engine = ext::shared_ptr<PricingEngine>(
                                new IntegralHestonVarianceOptionEngine(process));
 
     strike = 0.7;
@@ -90,7 +90,7 @@ void VarianceOptionTest::testIntegralHeston() {
     T = 1.0;
     exDate = today + int(360*T);
 
-    payoff = boost::shared_ptr<Payoff>(new PlainVanillaPayoff(Option::Put,
+    payoff = ext::shared_ptr<Payoff>(new PlainVanillaPayoff(Option::Put,
                                                               strike));
 
     VarianceOption varianceOption2(payoff, nominal, today, exDate);
@@ -110,7 +110,7 @@ void VarianceOptionTest::testIntegralHeston() {
 }
 
 test_suite* VarianceOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Variance option tests");
+    auto* suite = BOOST_TEST_SUITE("Variance option tests");
 
     suite->add(QUANTLIB_TEST_CASE(&VarianceOptionTest::testIntegralHeston));
     return suite;

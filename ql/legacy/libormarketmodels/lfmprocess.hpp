@@ -57,30 +57,27 @@ namespace QuantLib {
     */
     class LiborForwardModelProcess : public StochasticProcess {
       public:
+        LiborForwardModelProcess(Size size, ext::shared_ptr<IborIndex> index);
 
-        LiborForwardModelProcess(Size size,
-                                 const boost::shared_ptr<IborIndex>& index);
-
-        Disposable<Array>  initialValues() const;
-        Disposable<Array>  drift(Time t, const Array& x) const;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const;
-        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const;
-        Disposable<Array>  apply(const Array& x0, const Array& dx) const;
+        Array initialValues() const override;
+        Array drift(Time t, const Array& x) const override;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Matrix covariance(Time t0, const Array& x0, Time dt) const override;
+        Array apply(const Array& x0, const Array& dx) const override;
 
         // implements the predictor-corrector schema
-        Disposable<Array>  evolve(Time t0, const Array& x0,
-                                  Time dt, const Array& dw) const;
+        Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
-        Size size() const;
-        Size factors() const;
+        Size size() const override;
+        Size factors() const override;
 
-        boost::shared_ptr<IborIndex> index() const;
+        ext::shared_ptr<IborIndex> index() const;
         Leg cashFlows(
                                                      Real amount = 1.0) const;
 
         void setCovarParam(
-               const boost::shared_ptr<LfmCovarianceParameterization>& param);
-        boost::shared_ptr<LfmCovarianceParameterization> covarParam() const;
+               const ext::shared_ptr<LfmCovarianceParameterization>& param);
+        ext::shared_ptr<LfmCovarianceParameterization> covarParam() const;
 
         // convenience support methods
         Size nextIndexReset(Time t) const;
@@ -95,8 +92,8 @@ namespace QuantLib {
       private:
         Size size_;
 
-        const boost::shared_ptr<IborIndex> index_;
-        boost::shared_ptr<LfmCovarianceParameterization> lfmParam_;
+        const ext::shared_ptr<IborIndex> index_;
+        ext::shared_ptr<LfmCovarianceParameterization> lfmParam_;
 
         Array initialValues_;
 

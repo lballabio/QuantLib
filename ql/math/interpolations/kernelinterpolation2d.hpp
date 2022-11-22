@@ -26,6 +26,7 @@
 
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/math/matrixutilities/qrdecomposition.hpp>
+#include <utility>
 
 /*
   Grid Explanation:
@@ -56,17 +57,15 @@ namespace QuantLib {
             : public Interpolation2D::templateImpl<I1,I2,M> {
 
           public:
-            KernelInterpolation2DImpl(const I1& xBegin, const I1& xEnd,
-                                      const I2& yBegin, const I2& yEnd,
+            KernelInterpolation2DImpl(const I1& xBegin,
+                                      const I1& xEnd,
+                                      const I2& yBegin,
+                                      const I2& yEnd,
                                       const M& zData,
-                                      const Kernel& kernel)
-            : Interpolation2D::templateImpl<I1,I2,M>(xBegin, xEnd,
-                                                     yBegin, yEnd, zData),
-              xSize_(Size(xEnd-xBegin)), ySize_(Size(yEnd-yBegin)),
-              xySize_(xSize_*ySize_), invPrec_(1.0e-10),
-              alphaVec_(xySize_), yVec_(xySize_),
-              M_(xySize_,xySize_),
-              kernel_(kernel) {
+                                      Kernel kernel)
+            : Interpolation2D::templateImpl<I1, I2, M>(xBegin, xEnd, yBegin, yEnd, zData),
+              xSize_(Size(xEnd - xBegin)), ySize_(Size(yEnd - yBegin)), xySize_(xSize_ * ySize_),
+              alphaVec_(xySize_), yVec_(xySize_), M_(xySize_, xySize_), kernel_(std::move(kernel)) {
 
                 QL_REQUIRE(zData.rows()==xSize_,
                            "Z value matrix has wrong number of rows");
@@ -74,11 +73,9 @@ namespace QuantLib {
                            "Z value matrix has wrong number of columns");
             }
 
-            void calculate() {
-                updateAlphaVec();
-            }
+            void calculate() override { updateAlphaVec(); }
 
-            Real value(Real x1, Real x2) const {
+            Real value(Real x1, Real x2) const override {
 
                 Real res=0.0;
 
@@ -110,11 +107,7 @@ namespace QuantLib {
 
             // returns K(||X-Y||) where X,Y are vectors
             Real kernelAbs(const Array& X, const Array& Y)const{
-                return kernel_(vecNorm(X-Y));
-            }
-
-            Real vecNorm(const Array& X)const{
-                return std::sqrt(DotProduct(X,X));
+                return kernel_(Norm2(X-Y));
             }
 
             Real gammaFunc(const Array& X)const{
@@ -172,16 +165,14 @@ namespace QuantLib {
                 // I've chosen not to check determinant(M_)!=0 before solving
 
                 Array diffVec=Abs(M_*alphaVec_ - yVec_);
-                for (Size i=0; i<diffVec.size(); ++i) {
-                    QL_REQUIRE(diffVec[i]<invPrec_,
-                               "inversion failed in 2d kernel interpolation");
+                for (Real i : diffVec) {
+                    QL_REQUIRE(i < invPrec_, "inversion failed in 2d kernel interpolation");
                 }
             }
 
-          private:
 
             Size xSize_,ySize_,xySize_;
-            Real invPrec_;
+            Real invPrec_ = 1.0e-10;
             Array alphaVec_, yVec_;
             Matrix M_;
             Kernel kernel_;
@@ -196,6 +187,10 @@ namespace QuantLib {
 
         The kernel in the implementation is kept general, although a
         Gaussian is considered in the cited text.
+
+        \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
     */
     class KernelInterpolation2D : public Interpolation2D{
       public:
@@ -208,7 +203,7 @@ namespace QuantLib {
                             const M& zData,
                             const Kernel& kernel) {
 
-            impl_ = boost::shared_ptr<Interpolation2D::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation2D::Impl>(new
                 detail::KernelInterpolation2DImpl<I1,I2,M,Kernel>(xBegin, xEnd,
                                                                   yBegin, yEnd,
                                                                   zData, kernel));

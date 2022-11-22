@@ -25,35 +25,33 @@
 #ifndef quantlib_drift_term_structure_hpp
 #define quantlib_drift_term_structure_hpp
 
-#include <ql/termstructures/yield/zeroyieldstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <ql/termstructures/yield/zeroyieldstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    //! Drift term structure
-    /*! Drift term structure for modelling the common drift term:
-        riskFreeRate - dividendYield - 0.5*vol*vol
-
-        \note This term structure will remain linked to the original
-              structures, i.e., any changes in the latters will be
-              reflected in this structure as well.
+    /*! \deprecated To be removed as unused.
+                    Copy it in your codebase if you need it.
+                    Deprecated in version 1.26.
     */
-    class DriftTermStructure : public ZeroYieldStructure {
+    class QL_DEPRECATED DriftTermStructure : public ZeroYieldStructure {
       public:
         DriftTermStructure(const Handle<YieldTermStructure>& riskFreeTS,
-                           const Handle<YieldTermStructure>& dividendTS,
-                           const Handle<BlackVolTermStructure>& blackVolTS);
+                           Handle<YieldTermStructure> dividendTS,
+                           Handle<BlackVolTermStructure> blackVolTS);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
-        const Date& referenceDate() const;
-        Date maxDate() const;
+        DayCounter dayCounter() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
+        const Date& referenceDate() const override;
+        Date maxDate() const override;
         //@}
       protected:
         //! returns the discount factor as seen from the evaluation date
-        Rate zeroYieldImpl(Time) const;
+        Rate zeroYieldImpl(Time) const override;
+
       private:
         Handle<YieldTermStructure> riskFreeTS_, dividendTS_;
         Handle<BlackVolTermStructure> blackVolTS_;
@@ -63,14 +61,11 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline DriftTermStructure::DriftTermStructure(
-                              const Handle<YieldTermStructure>& riskFreeTS,
-                              const Handle<YieldTermStructure>& dividendTS,
-                              const Handle<BlackVolTermStructure>& blackVolTS)
-    : ZeroYieldStructure(riskFreeTS->dayCounter()),
-      riskFreeTS_(riskFreeTS),
-      dividendTS_(dividendTS),
-      blackVolTS_(blackVolTS) {
+    inline DriftTermStructure::DriftTermStructure(const Handle<YieldTermStructure>& riskFreeTS,
+                                                  Handle<YieldTermStructure> dividendTS,
+                                                  Handle<BlackVolTermStructure> blackVolTS)
+    : ZeroYieldStructure(riskFreeTS->dayCounter()), riskFreeTS_(riskFreeTS),
+      dividendTS_(std::move(dividendTS)), blackVolTS_(std::move(blackVolTS)) {
         registerWith(riskFreeTS_);
         registerWith(dividendTS_);
         registerWith(blackVolTS_);
@@ -105,8 +100,8 @@ namespace QuantLib {
         //          a) all TS have the same daycount.
         //          b) all TS have the same referenceDate
         //          It should be QL_REQUIREd
-        return riskFreeTS_->zeroRate(t, Continuous, NoFrequency, true)
-             - dividendTS_->zeroRate(t, Continuous, NoFrequency, true)
+        return riskFreeTS_->zeroRate(t, Continuous, NoFrequency, true).rate()
+             - dividendTS_->zeroRate(t, Continuous, NoFrequency, true).rate()
              - 0.5 * blackVolTS_->blackVol(t, underlyingLevel_, true)
                    * blackVolTS_->blackVol(t, underlyingLevel_, true);
     }

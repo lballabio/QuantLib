@@ -40,61 +40,57 @@ namespace QuantLib {
         ConstantSwaptionVolatility(Natural settlementDays,
                                    const Calendar& cal,
                                    BusinessDayConvention bdc,
-                                   const Handle<Quote>& volatility,
+                                   Handle<Quote> volatility,
                                    const DayCounter& dc,
-                                   const VolatilityType type = ShiftedLognormal,
-                                   const Real shift = 0.0);
+                                   VolatilityType type = ShiftedLognormal,
+                                   Real shift = 0.0);
         //! fixed reference date, floating market data
         ConstantSwaptionVolatility(const Date& referenceDate,
                                    const Calendar& cal,
                                    BusinessDayConvention bdc,
-                                   const Handle<Quote>& volatility,
+                                   Handle<Quote> volatility,
                                    const DayCounter& dc,
-                                   const VolatilityType type = ShiftedLognormal,
-                                   const Real shift = 0.0);
+                                   VolatilityType type = ShiftedLognormal,
+                                   Real shift = 0.0);
         //! floating reference date, fixed market data
         ConstantSwaptionVolatility(Natural settlementDays,
                                    const Calendar& cal,
                                    BusinessDayConvention bdc,
                                    Volatility volatility,
                                    const DayCounter& dc,
-                                   const VolatilityType type = ShiftedLognormal,
-                                   const Real shift = 0.0);
+                                   VolatilityType type = ShiftedLognormal,
+                                   Real shift = 0.0);
         //! fixed reference date, fixed market data
         ConstantSwaptionVolatility(const Date& referenceDate,
                                    const Calendar& cal,
                                    BusinessDayConvention bdc,
                                    Volatility volatility,
                                    const DayCounter& dc,
-                                   const VolatilityType type = ShiftedLognormal,
-                                   const Real shift = 0.0);
+                                   VolatilityType type = ShiftedLognormal,
+                                   Real shift = 0.0);
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
-        const Period& maxSwapTenor() const;
+        const Period& maxSwapTenor() const override;
         //@}
         //! volatility type
-        VolatilityType volatilityType() const;
+        VolatilityType volatilityType() const override;
+
       protected:
-        boost::shared_ptr<SmileSection> smileSectionImpl(const Date&,
-                                                         const Period&) const;
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time,
-                                                         Time) const;
-        Volatility volatilityImpl(const Date&,
-                                  const Period&,
-                                  Rate) const;
-        Volatility volatilityImpl(Time,
-                                  Time,
-                                  Rate) const;
-        Real shiftImpl(Time optionTime, Time swapLength) const;
+        ext::shared_ptr<SmileSection> smileSectionImpl(const Date&, const Period&) const override;
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time, Time) const override;
+        Volatility volatilityImpl(const Date&, const Period&, Rate) const override;
+        Volatility volatilityImpl(Time, Time, Rate) const override;
+        Real shiftImpl(Time optionTime, Time swapLength) const override;
+
       private:
         Handle<Quote> volatility_;
         Period maxSwapTenor_;

@@ -29,37 +29,35 @@ namespace QuantLib {
       public:
         CTSMMCapletMaxHomogeneityCalibration(
             const EvolutionDescription& evolution,
-            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
-            const std::vector<boost::shared_ptr<
+            const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
+            const std::vector<ext::shared_ptr<
                         PiecewiseConstantVariance> >&
                                     displacedSwapVariances,
             const std::vector<Volatility>& capletVols,
-            const boost::shared_ptr<CurveState>& cs,
+            const ext::shared_ptr<CurveState>& cs,
             Spread displacement,
             Real caplet0Swaption1Priority = 1.0);
 
         // actual calibration function
         static Natural capletMaxHomogeneityCalibration(
-                    const EvolutionDescription& evolution,
-                    const PiecewiseConstantCorrelation& corr,
-                    const std::vector<boost::shared_ptr<
-                        PiecewiseConstantVariance> >&
-                            displacedSwapVariances,
-                    const std::vector<Volatility>& capletVols,
-                    const CurveState& cs,
-                    const Spread displacement,
-                    Real caplet0Swaption1Priority, 
-                    Size numberOfFactors,
-                    Size maxIterations,
-                    Real tolerance,
-                    Real& deformationSize,
-                    Real& totalSwaptionError, // ?
-                    std::vector<Matrix>& swapCovariancePseudoRoots); // the thing we really want the pseudo root for each time step
+            const EvolutionDescription& evolution,
+            const PiecewiseConstantCorrelation& corr,
+            const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
+            const std::vector<Volatility>& capletVols,
+            const CurveState& cs,
+            Spread displacement,
+            Real caplet0Swaption1Priority,
+            Size numberOfFactors,
+            Size maxIterations,
+            Real tolerance,
+            Real& deformationSize,
+            Real& totalSwaptionError,                        // ?
+            std::vector<Matrix>& swapCovariancePseudoRoots); // the thing we really want the pseudo
+                                                             // root for each time step
 
       private:
-        Natural calibrationImpl_(Natural numberOfFactors, 
-                                 Natural maxIterations,
-                                 Real tolerance);
+        Natural
+        calibrationImpl_(Natural numberOfFactors, Natural maxIterations, Real tolerance) override;
         // input
         Real caplet0Swaption1Priority_;
         // results

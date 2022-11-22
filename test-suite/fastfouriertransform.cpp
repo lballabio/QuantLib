@@ -46,7 +46,7 @@ void FastFourierTransformTest::testSimple() {
         if ((std::fabs(b[i].real() - expected[i].real()) > 1.0e-2) ||
             (std::fabs(b[i].imag() - expected[i].imag()) > 1.0e-2))
             BOOST_ERROR("Convolution(" << i << ")\n"
-                        << std::setprecision(4) << QL_SCIENTIFIC
+                        << std::setprecision(4) << std::scientific
                         << "    calculated: " << b[i] << "\n"
                         << "    expected:   " << expected[i]);
     }
@@ -68,7 +68,7 @@ void FastFourierTransformTest::testInverse() {
 
     fft.inverse_transform(x.begin(), x.end(), ft.begin());
     for (Size i=0; i<nFrq; ++i) {
-        tmp[i] = std::norm<Real>(ft[i]);
+        tmp[i] = std::norm(ft[i]);
         ft[i] = z;
     }
     fft.inverse_transform(tmp.begin(), tmp.end(), ft.begin());
@@ -78,7 +78,7 @@ void FastFourierTransformTest::testInverse() {
     Real expected = x[0]*x[0] + x[1]*x[1] + x[2]*x[2];
     if (fabs (calculated - expected) > 1.0e-10)
         BOOST_ERROR("Convolution(0)\n"
-                    << std::setprecision(16) << QL_SCIENTIFIC
+                    << std::setprecision(16) << std::scientific
                     << "    calculated: " << calculated << "\n"
                     << "    expected:   " << expected);
 
@@ -87,7 +87,7 @@ void FastFourierTransformTest::testInverse() {
     expected = x[0]*x[1] + x[1]*x[2];
     if (fabs (calculated - expected) > 1.0e-10)
         BOOST_ERROR("Convolution(1)\n"
-                    << std::setprecision(16) << QL_SCIENTIFIC
+                    << std::setprecision(16) << std::scientific
                     << "    calculated: " << calculated << "\n"
                     << "    expected:   " << expected);
 
@@ -96,7 +96,7 @@ void FastFourierTransformTest::testInverse() {
     expected = x[0]*x[2];
     if (fabs (calculated - expected) > 1.0e-10)
         BOOST_ERROR("Convolution(1)\n"
-                    << std::setprecision(16) << QL_SCIENTIFIC
+                    << std::setprecision(16) << std::scientific
                     << "    calculated: " << calculated << "\n"
                     << "    expected:   " << expected);
 
@@ -105,7 +105,7 @@ void FastFourierTransformTest::testInverse() {
 
 
 test_suite* FastFourierTransformTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("fast fourier transform tests");
+    auto* suite = BOOST_TEST_SUITE("fast fourier transform tests");
     suite->add(QUANTLIB_TEST_CASE(&FastFourierTransformTest::testSimple));
     suite->add(QUANTLIB_TEST_CASE(&FastFourierTransformTest::testInverse));
     return suite;

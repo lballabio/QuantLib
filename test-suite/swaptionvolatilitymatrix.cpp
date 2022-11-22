@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006, 2008 Ferdinando Ametrano
- Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2006 FranÃ§ois du Vignaud
  Copyright (C) 2007 Cristina Duminuco
 
  This file is part of QuantLib, a free-software/open-source library
@@ -33,7 +33,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace swaption_volatility_matrix_test {
 
     struct CommonVars {
         // global data
@@ -54,7 +54,7 @@ namespace {
             Settings::instance().evaluationDate() =
                 conventions.calendar.adjust(Date::todaysDate());
             atmVolMatrix = RelinkableHandle<SwaptionVolatilityStructure>(
-                boost::shared_ptr<SwaptionVolatilityStructure>(new
+                ext::shared_ptr<SwaptionVolatilityStructure>(new
                     SwaptionVolatilityMatrix(conventions.calendar,
                                              conventions.optionBdc,
                                              atm.tenors.options,
@@ -62,7 +62,7 @@ namespace {
                                              atm.volsHandle,
                                              conventions.dayCounter)));
             termStructure.linkTo(
-                boost::shared_ptr<YieldTermStructure>(new
+                ext::shared_ptr<YieldTermStructure>(new
                     FlatForward(0, conventions.calendar,
                                 0.05, Actual365Fixed())));
         }
@@ -70,7 +70,7 @@ namespace {
         // utilities
         void makeObservabilityTest(
                 const std::string& description,
-                const boost::shared_ptr<SwaptionVolatilityStructure>& vol,
+                const ext::shared_ptr<SwaptionVolatilityStructure>& vol,
                 bool mktDataFloating,
                 bool referenceDateFloating) {
             Rate dummyStrike = .02;
@@ -95,12 +95,12 @@ namespace {
             // test market data change...
             if (mktDataFloating){
                 Volatility initialVolatility = atm.volsHandle[0][0]->value();
-                boost::dynamic_pointer_cast<SimpleQuote>(
+                ext::dynamic_pointer_cast<SimpleQuote>(
                               atm.volsHandle[0][0].currentLink())->setValue(10);
                 newVol = vol->volatility(
                     referenceDate + atm.tenors.options[0],
                     atm.tenors.swaps[0], dummyStrike, false);
-                boost::dynamic_pointer_cast<SimpleQuote>(
+                ext::dynamic_pointer_cast<SimpleQuote>(
                     atm.volsHandle[0][0].currentLink())
                     ->setValue(initialVolatility);
                 if (initialVol == newVol)
@@ -111,7 +111,7 @@ namespace {
 
         void makeCoherenceTest(
                 const std::string& description,
-                const boost::shared_ptr<SwaptionVolatilityDiscrete>& vol) {
+                const ext::shared_ptr<SwaptionVolatilityDiscrete>& vol) {
 
             for (Size i=0; i<atm.tenors.options.size(); ++i) {
                 Date optionDate =
@@ -134,7 +134,7 @@ namespace {
                          "\n  exp. option time : " << vol->optionTimes()[i]);
             }
 
-            boost::shared_ptr<BlackSwaptionEngine> engine(new
+            ext::shared_ptr<BlackSwaptionEngine> engine(new
                 BlackSwaptionEngine(termStructure,
                                     Handle<SwaptionVolatilityStructure>(vol)));
 
@@ -147,7 +147,7 @@ namespace {
                                "\n actual swap length: " << swapLength <<
                                "\n   exp. swap length: " << years(atm.tenors.swaps[j]));
 
-                boost::shared_ptr<SwapIndex> swapIndex(new
+                ext::shared_ptr<SwapIndex> swapIndex(new
                     EuriborSwapIsdaFixA(atm.tenors.swaps[j], termStructure));
 
                 for (Size i=0; i<atm.tenors.options.size(); ++i) {
@@ -262,55 +262,53 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixObservability() {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility matrix observability...");
 
+    using namespace swaption_volatility_matrix_test;
+
     CommonVars vars;
 
-    boost::shared_ptr<SwaptionVolatilityMatrix> vol;
+    ext::shared_ptr<SwaptionVolatilityMatrix> vol;
     std::string description;
 
     //floating reference date, floating market data
     description = "floating reference date, floating market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(vars.conventions.calendar,
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeObservabilityTest(description, vol, true, true);
 
     //fixed reference date, floating market data
     description = "fixed reference date, floating market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(Settings::instance().evaluationDate(),
                                  vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeObservabilityTest(description, vol, true, false);
 
     // floating reference date, fixed market data
     description = "floating reference date, fixed market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(vars.conventions.calendar,
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeObservabilityTest(description, vol, false, true);
 
     // fixed reference date, fixed market data
     description = "fixed reference date, fixed market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(Settings::instance().evaluationDate(),
                                  vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeObservabilityTest(description, vol, false, false);
 
    // fixed reference date and fixed market data, option dates
@@ -326,60 +324,58 @@ void SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence() {
 
     BOOST_TEST_MESSAGE("Testing swaption volatility matrix...");
 
+    using namespace swaption_volatility_matrix_test;
+
     CommonVars vars;
 
-    boost::shared_ptr<SwaptionVolatilityMatrix> vol;
+    ext::shared_ptr<SwaptionVolatilityMatrix> vol;
     std::string description;
 
     //floating reference date, floating market data
     description = "floating reference date, floating market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(vars.conventions.calendar,
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeCoherenceTest(description, vol);
 
     //fixed reference date, floating market data
     description = "fixed reference date, floating market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(Settings::instance().evaluationDate(),
                                  vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeCoherenceTest(description, vol);
 
     // floating reference date, fixed market data
     description = "floating reference date, fixed market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(vars.conventions.calendar,
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeCoherenceTest(description, vol);
 
     // fixed reference date, fixed market data
     description = "fixed reference date, fixed market data";
-    vol = boost::shared_ptr<SwaptionVolatilityMatrix>(new
-        SwaptionVolatilityMatrix(Settings::instance().evaluationDate(),
+    vol = ext::make_shared<SwaptionVolatilityMatrix>(Settings::instance().evaluationDate(),
                                  vars.conventions.calendar,
                                  vars.conventions.optionBdc,
                                  vars.atm.tenors.options,
                                  vars.atm.tenors.swaps,
                                  vars.atm.volsHandle,
-                                 vars.conventions.dayCounter));
+                                 vars.conventions.dayCounter);
     vars.makeCoherenceTest(description, vol);
 }
 
 test_suite* SwaptionVolatilityMatrixTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Swaption Volatility Matrix tests");
+    auto* suite = BOOST_TEST_SUITE("Swaption Volatility Matrix tests");
 
     suite->add(QUANTLIB_TEST_CASE(
               &SwaptionVolatilityMatrixTest::testSwaptionVolMatrixCoherence));

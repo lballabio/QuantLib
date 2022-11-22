@@ -20,19 +20,29 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/barrieroption/perturbativebarrieroptionengine.hpp>
-#include <ql/exercise.hpp>
 #include <ql/errors.hpp>
+#include <ql/exercise.hpp>
+#include <ql/experimental/barrieroption/perturbativebarrieroptionengine.hpp>
+#include <ql/functional.hpp>
 #include <ql/types.hpp>
-#include <boost/function.hpp>
-#include <cmath>
 #include <algorithm>
+#include <cmath>
+#include <utility>
 
 using namespace std;
 
-#define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
-#define ABS(x) (((x) < 0) ? -(x) : (x))
-#define POW(x,y) pow( (Real) (x), (Real) (y))
+namespace {
+
+    inline QuantLib::Real SIGN(const QuantLib::Real& a, const QuantLib::Real& b) 
+    {
+        if (b > 0.0) 
+            return std::fabs(a);
+        else
+            return -std::fabs(a);
+    }
+
+}
+
 #define PI 3.14159265358979324
 
 namespace QuantLib {
@@ -64,16 +74,20 @@ namespace QuantLib {
                 Real c, Real gm);
     Real dvv(Real s,Real p,Real tt,Real a,Real b,Real gm);
     Real dff(Real s, Real p,Real tt,Real a,Real b,Real gm);
-    Real tvtl(int jj,Real limit[4],Real sigmarho[4],Real epsi);
+    Real tvtl(int jj, const Real limit[4], const Real sigmarho[4], Real epsi);
 
-    Real BarrierUPD(Real kprice, Real stock, Real hbarr,
-                      Real taumin, Real taumax, int iord, int igm,
-                      boost::function<Real(Real, Real)> integr,
-                      boost::function<Real(Real, Real)> integalpha,
-                      boost::function<Real(Real, Real)> integs,
-                      boost::function<Real(Real)> alpha,
-                      boost::function<Real(Real)> sigmaq)
-    {
+    Real BarrierUPD(Real kprice,
+                    Real stock,
+                    Real hbarr,
+                    Real taumin,
+                    Real taumax,
+                    int iord,
+                    int igm,
+                    const ext::function<Real(Real, Real)>& integr,
+                    const ext::function<Real(Real, Real)>& integalpha,
+                    const ext::function<Real(Real, Real)>& integs,
+                    const ext::function<Real(Real)>& alpha,
+                    const ext::function<Real(Real)>& sigmaq) {
         Real v0=0.0, v1=0.0, v1p=0.0, v2p=0.0, v2pp=0.0, gm=0.0;
         int i=0,j=0;
         Real tmp=0.0, e1=0.0, e2=0.0, e3=0.0, e4=0.0;
@@ -133,8 +147,8 @@ namespace QuantLib {
         e3=PHID(d3);
         e4=PHID(d4);
 
-        v0=kprice*e1-kprice*POW(s0,(1.0-gm))*e2;
-        v0=v0+exp(gm*0.5*sigmat)*(-hbarr*s0*e3+hbarr*POW(s0,-gm)*e4);
+        v0=kprice*e1-kprice*std::pow(s0,(1.0-gm))*e2;
+        v0=v0+exp(gm*0.5*sigmat)*(-hbarr*s0*e3+hbarr*std::pow(s0,-gm)*e4);
         v0=v0*exp(disc);
 
         if(iord==0) return v0;
@@ -157,7 +171,7 @@ namespace QuantLib {
         x=log(s0);
         et=exp(0.5*(1.0-gm)*x);
 
-        dsqpi=POW(pi,0.5);
+        dsqpi=std::pow(pi,0.5);
 
         v1=0.0;
         for( i=1;i<=npoint;i++) {
@@ -374,9 +388,9 @@ namespace QuantLib {
         Real aa, caux;
         Real ppi= 3.14159265358979324;
 
-        aa=-(b*p-b*tt+a)/POW(2.0*(tt-p),0.5);
+        aa=-(b*p-b*tt+a)/std::pow(2.0*(tt-p),0.5);
 
-        caux=2.0*POW(ppi,0.5)*PHID(aa);
+        caux=2.0*std::pow(ppi,0.5)*PHID(aa);
         aa=b*b-(1.0-gm)*(1.0-gm);
         aa=aa/4.0;
         phid=exp(-0.5*a*b)*exp(aa*(tt-p))*caux;
@@ -394,10 +408,10 @@ namespace QuantLib {
         Real result;
         Real aa,caux;
 
-        aa=-(p*(a-b)+b*tt)/POW(2.0*p*tt*(tt-p),0.5);
+        aa=-(p*(a-b)+b*tt)/std::pow(2.0*p*tt*(tt-p),0.5);
         caux=PHID(aa);
 
-        aa=exp(POW((a-b),2)/(4.0*tt))*exp(POW((1.0-gm),2)*tt/4.0)*POW(tt,0.5);
+        aa=exp(std::pow((a-b),2)/(4.0*tt))*exp(std::pow((1.0-gm),2)*tt/4.0)*std::pow(tt,0.5);
         result=caux/aa;
 
         return(result);
@@ -414,14 +428,14 @@ namespace QuantLib {
         Real ppi= 3.14159265358979324;
         Real aa;
 
-        xx=(-a+b*(tt-p))/POW(2.0*(tt-p),0.5);
-        yy=(-a+b*tt+c)/POW(2.0*tt,0.5);
-        rho=POW((tt-p)/tt,0.5);
+        xx=(-a+b*(tt-p))/std::pow(2.0*(tt-p),0.5);
+        yy=(-a+b*tt+c)/std::pow(2.0*tt,0.5);
+        rho=std::pow((tt-p)/tt,0.5);
         aa=b*b-(1.0-gm)*(1.0-gm);
         aa=aa/4.0;
         caux=ND2(-xx,-yy,rho);
 
-        bvnd=2.0*POW(ppi,0.5)*exp(-a*b*0.5)*exp(aa*(tt-p))*caux;
+        bvnd=2.0*std::pow(ppi,0.5)*exp(-a*b*0.5)*exp(aa*(tt-p))*caux;
         return(bvnd);
     }
 
@@ -445,27 +459,27 @@ namespace QuantLib {
         Real aa,caux,caux1,caux2;
         Real xx,yy,rho;
 
-        aa=(a*p+b*(tt-p))/POW(2.0*p*tt*(tt-p),0.5);
+        aa=(a*p+b*(tt-p))/std::pow(2.0*p*tt*(tt-p),0.5);
         caux=PHID(aa);
 
-        aa=exp((a-b)*(a-b)/(4.0*tt))*exp(POW((1.0-gm),2)*tt/4.0)*POW(tt,0.5);
+        aa=exp((a-b)*(a-b)/(4.0*tt))*exp(std::pow((1.0-gm),2)*tt/4.0)*std::pow(tt,0.5);
         caux=-caux/aa;
 
-        xx=(a*p+b*(tt-p))/POW(2.0*tt*p*(tt-p),0.5);
-        yy=(a*s+b*(tt-s))/POW(2.0*tt*s*(tt-s),0.5);
-        rho=POW((s*(tt-p))/(p*(tt-s)),0.5);
+        xx=(a*p+b*(tt-p))/std::pow(2.0*tt*p*(tt-p),0.5);
+        yy=(a*s+b*(tt-s))/std::pow(2.0*tt*s*(tt-s),0.5);
+        rho=std::pow((s*(tt-p))/(p*(tt-s)),0.5);
         caux1=ND2(-xx,-yy,rho);
         caux1=caux1/aa;
 
 
-        aa=exp((a+b)*(a+b)/(4.0*tt))*exp(POW((1.0-gm),2)*tt/4.0)*POW(tt,0.5);
+        aa=exp((a+b)*(a+b)/(4.0*tt))*exp(std::pow((1.0-gm),2)*tt/4.0)*std::pow(tt,0.5);
 
-        xx=(a*p-b*(tt-p))/POW(2.0*tt*p*(tt-p),0.5);
-        yy=(a*s-b*(tt-s))/POW(2.0*tt*s*(tt-s),0.5);
-        rho=POW((s*(tt-p))/(p*(tt-s)),0.5);
+        xx=(a*p-b*(tt-p))/std::pow(2.0*tt*p*(tt-p),0.5);
+        yy=(a*s-b*(tt-s))/std::pow(2.0*tt*s*(tt-s),0.5);
+        rho=std::pow((s*(tt-p))/(p*(tt-s)),0.5);
         caux2=ND2(-xx,-yy,rho);
         caux2=caux2/aa;
-        result=(caux+caux1+caux2)/(2.0*POW(ppi,0.5));
+        result=(caux+caux1+caux2)/(2.0*std::pow(ppi,0.5));
         return(result);
     }
 
@@ -480,18 +494,18 @@ namespace QuantLib {
         Real aa,caux,caux1,caux2;
         Real xx,yy,rho;
 
-        xx=(a-b*(tt-p))/POW(2.0*(tt-p),0.5);
+        xx=(a-b*(tt-p))/std::pow(2.0*(tt-p),0.5);
         caux=-PHID(xx)*exp(-0.5*a*b);
 
-        xx=(a+b*(tt-p))/POW(2.0*(tt-p),0.5);
-        yy=(a+b*(tt-s))/POW(2.0*(tt-s),0.5);
-        rho=POW((tt-p)/(tt-s),0.5);
+        xx=(a+b*(tt-p))/std::pow(2.0*(tt-p),0.5);
+        yy=(a+b*(tt-s))/std::pow(2.0*(tt-s),0.5);
+        rho=std::pow((tt-p)/(tt-s),0.5);
         caux1=ND2(-xx,-yy,rho);
         caux1=exp(0.5*a*b)*caux1;
 
-        xx=(a-b*(tt-p))/POW(2.0*(tt-p),0.5);
-        yy=(a-b*(tt-s))/POW(2.0*(tt-s),0.5);
-        rho=POW((tt-p)/(tt-s),0.5);
+        xx=(a-b*(tt-p))/std::pow(2.0*(tt-p),0.5);
+        yy=(a-b*(tt-s))/std::pow(2.0*(tt-s),0.5);
+        rho=std::pow((tt-p)/(tt-s),0.5);
         caux2=ND2(-xx,-yy,rho);
         caux2=exp(-0.5*a*b)*caux2;
 
@@ -514,21 +528,21 @@ namespace QuantLib {
         Real sigmarho[4],limit[4],epsi;
 
         epsi=1.e-12;
-        limit[1]=(a+b*(tt-p))/POW(2.0*(tt-p),0.5);
-        limit[2]=(a+b*(tt-s))/POW(2.0*(tt-s),0.5);
-        limit[3]=(a+b*tt+c)/POW(2.0*tt,0.5);
-        sigmarho[1]=POW((tt-p)/(tt-s),0.5);
-        sigmarho[2]=POW((tt-p)/tt,0.5);
-        sigmarho[3]=POW((tt-s)/tt,0.5);
+        limit[1]=(a+b*(tt-p))/std::pow(2.0*(tt-p),0.5);
+        limit[2]=(a+b*(tt-s))/std::pow(2.0*(tt-s),0.5);
+        limit[3]=(a+b*tt+c)/std::pow(2.0*tt,0.5);
+        sigmarho[1]=std::pow((tt-p)/(tt-s),0.5);
+        sigmarho[2]=std::pow((tt-p)/tt,0.5);
+        sigmarho[3]=std::pow((tt-s)/tt,0.5);
 
         caux=exp(0.5*a*b)*tvtl(0,limit,sigmarho,epsi);
 
-        limit[1]=(a-b*(tt-p))/POW(2.0*(tt-p),0.5);
-        limit[2]=(-a+b*(tt-s))/POW(2.0*(tt-s),0.5);
-        limit[3]=(-a+b*tt+c)/POW(2.0*tt,0.5);
-        sigmarho[1]=-POW((tt-p)/(tt-s),0.5);
-        sigmarho[2]=-POW((tt-p)/tt,0.5);
-        sigmarho[3]=POW((tt-s)/tt,0.5);
+        limit[1]=(a-b*(tt-p))/std::pow(2.0*(tt-p),0.5);
+        limit[2]=(-a+b*(tt-s))/std::pow(2.0*(tt-s),0.5);
+        limit[3]=(-a+b*tt+c)/std::pow(2.0*tt,0.5);
+        sigmarho[1]=-std::pow((tt-p)/(tt-s),0.5);
+        sigmarho[2]=-std::pow((tt-p)/tt,0.5);
+        sigmarho[3]=std::pow((tt-s)/tt,0.5);
 
         caux1=-exp(-0.5*a*b)*tvtl(0,limit,sigmarho,epsi);
 
@@ -552,40 +566,40 @@ namespace QuantLib {
         Real result;
         double ppi= 3.14159265358979324;
 
-        xx=(a-b*(tt-p))/POW(2.0*(tt-p),0.5);
+        xx=(a-b*(tt-p))/std::pow(2.0*(tt-p),0.5);
         caux=PHID(xx)*exp(-0.5*a*b);
 
-        xx=(a+b*(tt-p))/POW(2.0*(tt-p),0.5);
-        yy=(a+b*(tt-s))/POW(2.0*(tt-s),0.5);
-        rho=POW((tt-p)/(tt-s),0.5);
+        xx=(a+b*(tt-p))/std::pow(2.0*(tt-p),0.5);
+        yy=(a+b*(tt-s))/std::pow(2.0*(tt-s),0.5);
+        rho=std::pow((tt-p)/(tt-s),0.5);
         caux1=ND2(-xx,-yy,rho);
         caux1=exp(0.5*a*b)*caux1;
 
-        xx=(a-b*(tt-p))/POW(2.0*(tt-p),0.5);
-        yy=(a-b*(tt-s))/POW(2.0*(tt-s),0.5);
-        rho=POW((tt-p)/(tt-s),0.5);
+        xx=(a-b*(tt-p))/std::pow(2.0*(tt-p),0.5);
+        yy=(a-b*(tt-s))/std::pow(2.0*(tt-s),0.5);
+        rho=std::pow((tt-p)/(tt-s),0.5);
         caux2=ND2(-xx,-yy,rho);
         caux2=-exp(-0.5*a*b)*caux2;
 
         caux=0.5*b*(caux+caux1+caux2);
 
-        xx=(a+b*(tt-p))/POW(2.0*(tt-p),0.5);
-        yy=b*POW((p-s),0.5)/POW(2.0,0.5);
-        caux1=exp(-0.5*xx*xx)*exp(0.5*a*b)*PHID(yy)/(2.0*POW(ppi*(tt-p),0.5));
+        xx=(a+b*(tt-p))/std::pow(2.0*(tt-p),0.5);
+        yy=b*std::pow((p-s),0.5)/std::pow(2.0,0.5);
+        caux1=exp(-0.5*xx*xx)*exp(0.5*a*b)*PHID(yy)/(2.0*std::pow(ppi*(tt-p),0.5));
 
 
-        xx=(a+b*(tt-s))/POW(2.0*(tt-s),0.5);
-        yy=a*POW((p-s),0.5)/POW(2.0*(tt-p)*(tt-s),0.5);
-        caux2=exp(-0.5*xx*xx)*exp(0.5*a*b)*PHID(yy)/(2.0*POW(ppi*(tt-s),0.5));
+        xx=(a+b*(tt-s))/std::pow(2.0*(tt-s),0.5);
+        yy=a*std::pow((p-s),0.5)/std::pow(2.0*(tt-p)*(tt-s),0.5);
+        caux2=exp(-0.5*xx*xx)*exp(0.5*a*b)*PHID(yy)/(2.0*std::pow(ppi*(tt-s),0.5));
 
-        xx=(a-b*(tt-p))/POW(2.0*(tt-p),0.5);
-        yy=b*POW((p-s),0.5)/POW(2.0,0.5);
-        caux3=-exp(-0.5*xx*xx)*exp(-0.5*a*b)*PHID(yy)/(2.0*POW(ppi*(tt-p),0.5));
+        xx=(a-b*(tt-p))/std::pow(2.0*(tt-p),0.5);
+        yy=b*std::pow((p-s),0.5)/std::pow(2.0,0.5);
+        caux3=-exp(-0.5*xx*xx)*exp(-0.5*a*b)*PHID(yy)/(2.0*std::pow(ppi*(tt-p),0.5));
 
 
-        xx=(a-b*(tt-s))/POW(2.0*(tt-s),0.5);
-        yy=a*POW((p-s),0.5)/POW(2.0*(tt-p)*(tt-s),0.5);
-        caux4=exp(-0.5*xx*xx)*exp(-0.5*a*b)*PHID(yy)/(2.0*POW(ppi*(tt-s),0.5));
+        xx=(a-b*(tt-s))/std::pow(2.0*(tt-s),0.5);
+        yy=a*std::pow((p-s),0.5)/std::pow(2.0*(tt-p)*(tt-s),0.5);
+        caux4=exp(-0.5*xx*xx)*exp(-0.5*a*b)*PHID(yy)/(2.0*std::pow(ppi*(tt-s),0.5));
 
 
 
@@ -610,45 +624,45 @@ namespace QuantLib {
         Real epsi;
 
         epsi=1.e-12;
-        limit[1]=(ax+bx*(tt-p))/POW(2.0*(tt-p),0.5);
-        limit[2]=(ax+bx*(tt-s))/POW(2.0*(tt-s),0.5);
-        limit[3]=(ax+bx*tt+c)/POW(2.0*tt,0.5);
-        sigmarho[1]=POW((tt-p)/(tt-s),0.5);
-        sigmarho[2]=POW((tt-p)/tt,0.5);
-        sigmarho[3]=POW((tt-s)/tt,0.5);
+        limit[1]=(ax+bx*(tt-p))/std::pow(2.0*(tt-p),0.5);
+        limit[2]=(ax+bx*(tt-s))/std::pow(2.0*(tt-s),0.5);
+        limit[3]=(ax+bx*tt+c)/std::pow(2.0*tt,0.5);
+        sigmarho[1]=std::pow((tt-p)/(tt-s),0.5);
+        sigmarho[2]=std::pow((tt-p)/tt,0.5);
+        sigmarho[3]=std::pow((tt-s)/tt,0.5);
 
         caux=0.5*bx*tvtl(0,limit,sigmarho,epsi);
 
 
         idx=1;
-        caux=caux+derivn3(limit,sigmarho,idx)/POW(2.0*(tt-p),0.5);
+        caux=caux+derivn3(limit,sigmarho,idx)/std::pow(2.0*(tt-p),0.5);
 
         idx=2;
-        caux=caux+derivn3(limit,sigmarho,idx)/POW(2.0*(tt-s),0.5);
+        caux=caux+derivn3(limit,sigmarho,idx)/std::pow(2.0*(tt-s),0.5);
 
         idx=3;
-        caux=caux+derivn3(limit,sigmarho,idx)/POW(2.0*tt,0.5);
+        caux=caux+derivn3(limit,sigmarho,idx)/std::pow(2.0*tt,0.5);
 
         caux=exp(0.5*ax*bx)*caux;
 
-        limit[1]=(ax-bx*(tt-p))/POW(2.0*(tt-p),0.5);
-        limit[2]=(-ax+bx*(tt-s))/POW(2.0*(tt-s),0.5);
-        limit[3]=(-ax+bx*tt+c)/POW(2.0*tt,0.5);
-        sigmarho[1]=-POW((tt-p)/(tt-s),0.5);
-        sigmarho[2]=-POW((tt-p)/tt,0.5);
-        sigmarho[3]=POW((tt-s)/tt,0.5);
+        limit[1]=(ax-bx*(tt-p))/std::pow(2.0*(tt-p),0.5);
+        limit[2]=(-ax+bx*(tt-s))/std::pow(2.0*(tt-s),0.5);
+        limit[3]=(-ax+bx*tt+c)/std::pow(2.0*tt,0.5);
+        sigmarho[1]=-std::pow((tt-p)/(tt-s),0.5);
+        sigmarho[2]=-std::pow((tt-p)/tt,0.5);
+        sigmarho[3]=std::pow((tt-s)/tt,0.5);
 
         caux1=0.5*bx*tvtl(0,limit,sigmarho,epsi);
 
         idx=1;
-        caux1=caux1-derivn3(limit,sigmarho,idx)/POW(2.0*(tt-p),0.5);
+        caux1=caux1-derivn3(limit,sigmarho,idx)/std::pow(2.0*(tt-p),0.5);
 
         idx=2;
-        caux1=caux1+derivn3(limit,sigmarho,idx)/POW(2.0*(tt-s),0.5);
+        caux1=caux1+derivn3(limit,sigmarho,idx)/std::pow(2.0*(tt-s),0.5);
 
 
         idx=3;
-        caux1=caux1+derivn3(limit,sigmarho,idx)/POW(2.0*tt,0.5);
+        caux1=caux1+derivn3(limit,sigmarho,idx)/std::pow(2.0*tt,0.5);
 
         caux1=exp(-0.5*ax*bx)*caux1;
 
@@ -672,54 +686,54 @@ namespace QuantLib {
         static Real xx,yy,rho;
         static double ppi= 3.14159265358979324;
 
-        aa=(a*p+b*(tt-p))/POW(2.0*p*tt*(tt-p),0.5);
+        aa=(a*p+b*(tt-p))/std::pow(2.0*p*tt*(tt-p),0.5);
         caux=PHID(aa);
 
         aa=exp(-(a-b)*(a-b)/(4.0*tt))/tt;
 
         caux=0.5*aa*caux*(a-b);
 
-        xx=(a*p+b*(tt-p))/POW(2.0*tt*p*(tt-p),0.5);
-        yy=(a*s+b*(tt-s))/POW(2.0*tt*s*(tt-s),0.5);
-        rho=POW((s*(tt-p))/(p*(tt-s)),0.5);
+        xx=(a*p+b*(tt-p))/std::pow(2.0*tt*p*(tt-p),0.5);
+        yy=(a*s+b*(tt-s))/std::pow(2.0*tt*s*(tt-s),0.5);
+        rho=std::pow((s*(tt-p))/(p*(tt-s)),0.5);
         caux1=ND2(-xx,-yy,rho);
         caux1=-0.5*aa*caux1*(a-b);
 
 
         aa=exp(-(a+b)*(a+b)/(4.0*tt))/tt;
 
-        xx=(a*p-b*(tt-p))/POW(2.0*tt*p*(tt-p),0.5);
-        yy=(a*s-b*(tt-s))/POW(2.0*tt*s*(tt-s),0.5);
-        rho=POW((s*(tt-p))/(p*(tt-s)),0.5);
+        xx=(a*p-b*(tt-p))/std::pow(2.0*tt*p*(tt-p),0.5);
+        yy=(a*s-b*(tt-s))/std::pow(2.0*tt*s*(tt-s),0.5);
+        rho=std::pow((s*(tt-p))/(p*(tt-s)),0.5);
         caux2=ND2(-xx,-yy,rho);
         caux2=-0.5*aa*caux2*(a+b);
 
-        aa=-b*POW((p-s)/POW(2.0*p*s,0.5),0.5);
-        aux=POW(p/(ppi*tt*(tt-p)),0.5)*PHID(aa);
+        aa=-b*std::pow((p-s)/std::pow(2.0*p*s,0.5),0.5);
+        aux=std::pow(p/(ppi*tt*(tt-p)),0.5)*PHID(aa);
 
         xx=(a+b)*(a+b)/(4.0*tt);
-        yy=POW((a*p-b*(tt-p)),2)/(4.0*p*tt*(tt-p));
+        yy=std::pow((a*p-b*(tt-p)),2)/(4.0*p*tt*(tt-p));
         caux3=aux*exp(-xx)*exp(-yy)/2.0;
 
 
         xx=(a-b)*(a-b)/(4.0*tt);
-        yy=POW((a*p+b*(tt-p)),2)/(4.0*p*tt*(tt-p));
+        yy=std::pow((a*p+b*(tt-p)),2)/(4.0*p*tt*(tt-p));
         caux4=aux*exp(-xx)*exp(-yy)/2.0;
 
-        aa=a*POW((p-s)/POW(2.0*(tt-p)*(tt-s),0.5),0.5);
-        aux=POW(s/(ppi*tt*(tt-s)),0.5)*PHID(aa);
+        aa=a*std::pow((p-s)/std::pow(2.0*(tt-p)*(tt-s),0.5),0.5);
+        aux=std::pow(s/(ppi*tt*(tt-s)),0.5)*PHID(aa);
 
         xx=(a+b)*(a+b)/(4.0*tt);
-        yy=POW((a*s-b*(tt-s)),2)/(4.0*s*tt*(tt-s));
+        yy=std::pow((a*s-b*(tt-s)),2)/(4.0*s*tt*(tt-s));
         caux5=aux*exp(-xx)*exp(-yy)/2.0;
 
         xx=(a-b)*(a-b)/(4.0*tt);
-        yy=POW((a*s+b*(tt-s)),2)/(4.0*s*tt*(tt-s));
+        yy=std::pow((a*s+b*(tt-s)),2)/(4.0*s*tt*(tt-s));
         caux6=aux*exp(-xx)*exp(-yy)/2.0;
 
-        aux=exp((1.0-gm)*(1.0-gm)*tt/4.0)*POW(tt,0.5);
+        aux=exp((1.0-gm)*(1.0-gm)*tt/4.0)*std::pow(tt,0.5);
 
-        result=(caux+caux1+caux2+caux3+caux4+caux5+caux6)/(aux*2.0*POW(ppi,0.5));
+        result=(caux+caux1+caux2+caux3+caux4+caux5+caux6)/(aux*2.0*std::pow(ppi,0.5));
         return(result);
     }
 
@@ -735,14 +749,14 @@ namespace QuantLib {
         static Real xx,yy,rho,sc;
         static double  ppi= 3.14159265358979324;
         static Real deriv;
-        sc=POW(2.0*ppi,0.5);
+        sc=std::pow(2.0*ppi,0.5);
 
         if(idx==1)
             {
-                aa=exp(-0.5*POW(limit[1],2));
-                xx=(limit[3]-sigmarho[2]*limit[1])/POW((1.0-POW(sigmarho[2],2)),0.5);
-                yy=(limit[2]-sigmarho[1]*limit[1])/POW((1.0-POW(sigmarho[1],2)),0.5);
-                rho=(sigmarho[3]-sigmarho[1]*sigmarho[2])/POW((1.0-sigmarho[1]*sigmarho[1])*(1.0-sigmarho[2]*sigmarho[2]),0.5);
+                aa=exp(-0.5*std::pow(limit[1],2));
+                xx=(limit[3]-sigmarho[2]*limit[1])/std::pow((1.0-std::pow(sigmarho[2],2)),0.5);
+                yy=(limit[2]-sigmarho[1]*limit[1])/std::pow((1.0-std::pow(sigmarho[1],2)),0.5);
+                rho=(sigmarho[3]-sigmarho[1]*sigmarho[2])/std::pow((1.0-sigmarho[1]*sigmarho[1])*(1.0-sigmarho[2]*sigmarho[2]),0.5);
                 deriv=aa*ND2(-xx,-yy,rho)/sc;
             }
         else
@@ -750,10 +764,10 @@ namespace QuantLib {
                 if(idx==2)
                     {
                         aa=exp(-0.5*limit[2]*limit[2]);
-                        xx=(limit[1]-sigmarho[1]*limit[2])/POW((1.0-POW(sigmarho[1],2)),0.5);
-                        yy=(limit[3]-sigmarho[3]*limit[2])/POW((1.0-POW(sigmarho[3],2)),0.5);
+                        xx=(limit[1]-sigmarho[1]*limit[2])/std::pow((1.0-std::pow(sigmarho[1],2)),0.5);
+                        yy=(limit[3]-sigmarho[3]*limit[2])/std::pow((1.0-std::pow(sigmarho[3],2)),0.5);
                         rho=(sigmarho[2]-sigmarho[1]*sigmarho[3])/ \
-                            POW((1.0-sigmarho[1]*sigmarho[1])*(1.0-sigmarho[3]*sigmarho[3]),0.5);
+                            std::pow((1.0-sigmarho[1]*sigmarho[1])*(1.0-sigmarho[3]*sigmarho[3]),0.5);
                         deriv=aa*ND2(-xx,-yy,rho)/sc;
                     }
                 else
@@ -761,10 +775,10 @@ namespace QuantLib {
                         //!!! idx=3
                         aa=exp(-0.5*limit[3]*limit[3]);
 
-                        xx=(limit[1]-sigmarho[2]*limit[3])/POW((1.0-POW(sigmarho[2],2)),0.5);
-                        yy=(limit[2]-sigmarho[3]*limit[3])/POW((1.0-POW(sigmarho[3],2)),0.5);
+                        xx=(limit[1]-sigmarho[2]*limit[3])/std::pow((1.0-std::pow(sigmarho[2],2)),0.5);
+                        yy=(limit[2]-sigmarho[3]*limit[3])/std::pow((1.0-std::pow(sigmarho[3],2)),0.5);
                         rho=(sigmarho[1]-sigmarho[2]*sigmarho[3])/ \
-                            POW((1.0-sigmarho[2]*sigmarho[2])*(1.0-sigmarho[3]*sigmarho[3]),0.5);
+                            std::pow((1.0-sigmarho[2]*sigmarho[2])*(1.0-sigmarho[3]*sigmarho[3]),0.5);
                         deriv=aa*ND2(-xx,-yy,rho)/sc;
                     }
 
@@ -783,8 +797,7 @@ namespace QuantLib {
                                   Real RUB, Real AR, Real RUC,
                                   int NUC));
 
-    Real tvtl(int NU, Real limit[], Real sigmarho[],Real epsi)
-    {
+    Real tvtl(int NU, const Real limit[4], const Real sigmarho[4], Real epsi) {
         /*
           A function for computing trivariate normal and t-probabilities.
 
@@ -886,7 +899,7 @@ namespace QuantLib {
                 RUB = asin( R13 );
                 AR = asin( R23);
                 RUC = SIGN( PT, AR ) - AR;
-                TVT = TVT + ADONET(  ZRO, ONE, EPS, *TVTMFN)/( 4.0*PT );
+                TVT = TVT + ADONET(ZRO, ONE, EPS, TVTMFN) / (4.0 * PT);
             }
         result = max( ZRO, min( TVT, ONE ) );
 
@@ -929,7 +942,7 @@ namespace QuantLib {
         */
         static Real PT, EE;
         PT = 1.57079632679489661923132169163975;
-        EE = POW(( PT - fabs(X) ),2);
+        EE = std::pow(( PT - fabs(X) ),2);
 
         if ( EE < 5e-5 )
             {
@@ -941,7 +954,6 @@ namespace QuantLib {
                 SX = sin(X);
                 CS = 1 - SX*SX;
             }
-        return;
     }
     //
 
@@ -981,7 +993,7 @@ namespace QuantLib {
                         FIN = FIN + FI[I];
                         ERR = ERR + EI[I]*EI[I];
                     }
-                ERR = POW( ERR,0.5 );
+                ERR = std::pow( ERR,0.5 );
             }
         result=FIN;
         //   ADONET = FIN
@@ -1087,7 +1099,7 @@ namespace QuantLib {
 
         if ( NU < 1 ) result= PHID( T );
         else if ( NU == 1 ) result = ( 1 + 2.0*atan(T)/PI )/2.0;
-        else if ( NU == 2 ) result = ( 1 + T/POW(( 2.0 + T*T),0.5))/2.0;
+        else if ( NU == 2 ) result = ( 1 + T/std::pow(( 2.0 + T*T),0.5))/2.0;
         else
             {
                 TT = T*T;
@@ -1100,12 +1112,12 @@ namespace QuantLib {
                 if ((NU-2*int(NU/2) ) == 1 )
                     {
                         RN = NU;
-                        TS = T/POW(RN,0.5);
+                        TS = T/std::pow(RN,0.5);
                         result = ( 1.0 + 2.0*( atan(TS) + TS*CSSTHE*POLYN )/PI )/2.0;
                     }
                 else
                     {
-                        SNTHE = T/POW(( NU + TT ),0.5);
+                        SNTHE = T/std::pow(( NU + TT ),0.5);
                         result = ( 1 + SNTHE*POLYN )/2.0;
                     }
                 result = max( ZRO, min( result, ONE ) );
@@ -1164,7 +1176,7 @@ namespace QuantLib {
             {
                 TPI = 2.0*PI;
                 SNU = (double)NU;
-                SNU = POW(SNU,0.5);
+                SNU = std::pow(SNU,0.5);
                 ORS = 1.0 - R*R;
                 HRK = DH - R*DK;
                 KRH = DK - R*DH;
@@ -1183,13 +1195,13 @@ namespace QuantLib {
                 KS =(int)SIGN( ONE, DK - R*DH );
                 if((NU-2*(int)(NU/2))==0 )
                     {
-                        BVT = atan2( POW(ORS,0.5), -R )/TPI;
-                        GMPH = DH/POW( 16*( NU + DH*DH ),0.5 );
-                        GMPK = DK/POW( 16*( NU + DK*DK),0.5);
-                        BTNCKH = 2*atan2( POW( XNKH,0.5 ), POW(( 1-XNKH),0.5) )/PI;
-                        BTPDKH = 2*POW( XNKH*( 1 - XNKH ),0.5 )/PI;
-                        BTNCHK = 2*atan2( POW( XNHK,0.5 ), POW((1 - XNHK),0.5) )/PI;
-                        BTPDHK = 2*POW( XNHK*( 1 - XNHK ),0.5 )/PI;
+                        BVT = atan2( std::pow(ORS,0.5), -R )/TPI;
+                        GMPH = DH/std::pow( 16*( NU + DH*DH ),0.5 );
+                        GMPK = DK/std::pow( 16*( NU + DK*DK),0.5);
+                        BTNCKH = 2*atan2( std::pow( XNKH,0.5 ), std::pow(( 1-XNKH),0.5) )/PI;
+                        BTPDKH = 2*std::pow( XNKH*( 1 - XNKH ),0.5 )/PI;
+                        BTNCHK = 2*atan2( std::pow( XNHK,0.5 ), std::pow((1 - XNHK),0.5) )/PI;
+                        BTPDHK = 2*std::pow( XNHK*( 1 - XNHK ),0.5 )/PI;
                         for( J = 1; J<= NU/2;J++)
                             {
                                 BVT = BVT + GMPH*( 1 + KS*BTNCKH );
@@ -1204,7 +1216,7 @@ namespace QuantLib {
                     }
                 else
                     {
-                        QHRK = POW((DH*DH + DK*DK - 2*R*DH*DK + NU*ORS),0.5 ) ;
+                        QHRK = std::pow((DH*DH + DK*DK - 2*R*DH*DK + NU*ORS),0.5 ) ;
                         HKRN = DH*DK + R*NU ;
                         HKN = DH*DK - NU;
                         HPK = DH + DK;
@@ -1212,9 +1224,9 @@ namespace QuantLib {
                         if ( BVT < -EPS ) BVT = BVT + 1;
                         GMPH = DH/( TPI*SNU*( 1 + DH*DH/NU ) );
                         GMPK = DK/( TPI*SNU*( 1 + DK*DK/NU ) );
-                        BTNCKH = POW( XNKH,0.5 );
+                        BTNCKH = std::pow( XNKH,0.5 );
                         BTPDKH = BTNCKH;
-                        BTNCHK = POW( XNHK,0.5 );
+                        BTNCHK = std::pow( XNHK,0.5 );
                         BTPDHK = BTNCHK;
                         for( J = 1;J<= ( NU - 1 )/2; J++)
                             {
@@ -1245,17 +1257,17 @@ namespace QuantLib {
           static Real DT, FT, BT,result;
 
           result = 0.0;
-          DT = RR*( RR - POW(( RA - RB ),2) - 2*RA*RB*( 1 - R ) );
+          DT = RR*( RR - std::pow(( RA - RB ),2) - 2*RA*RB*( 1 - R ) );
           if( DT > 0 ) {
-              BT = ( BC*RR + BA*( R*RB - RA ) + BB*( R*RA -RB ) )/POW(DT,0.5);
-              FT = POW(( BA - R*BB ),0.5)/RR + BB*BB;
+              BT = ( BC*RR + BA*( R*RB - RA ) + BB*( R*RA -RB ) )/std::pow(DT,0.5);
+              FT = std::pow(( BA - R*BB ),0.5)/RR + BB*BB;
               if( NUC<1 ) {
                   if ( (BT > -10) && (FT <100) ) {
                       result = exp( -FT/2 );
                       if ( BT <10 ) result= result*PHID(BT);
                   } else {
-                      FT = POW((1 + FT/NUC),0.5);
-                      result = STUDNT( NUC, BT/FT )/POW(FT,NUC);
+                      FT = std::pow((1 + FT/NUC),0.5);
+                      result = STUDNT( NUC, BT/FT )/std::pow(FT,NUC);
                   }
               }
           }
@@ -1392,22 +1404,22 @@ namespace QuantLib {
 
                 if( fabs(R) <1 ) {
                     AS = ( 1 - R )*( 1 + R );
-                    AA = POW(AS,0.5);
+                    AA = std::pow(AS,0.5);
 
-                    BS = POW(( H - K ),2);
+                    BS = std::pow(( H - K ),2);
                     C = ( 4 - HK )/8 ;
                     D = ( 12 - HK )/16;
                     ASR = -( BS/AS + HK )/2;
                     if( ASR > -100 ) BVN = AA*exp(ASR)*( 1 - C*( BS - AS )*( 1 - D*BS/5 )/3 + C*D*AS*AS/5 );
                     if( -HK<100 ){
-                        BB = POW(BS,0.5);
-                        BVN = BVN - exp( -HK/2 )*POW(TWOPI,0.5)*PHID(-BB/AA)*BB*( 1 - C*BS*( 1 - D*BS/5 )/3 );
+                        BB = std::pow(BS,0.5);
+                        BVN = BVN - exp( -HK/2 )*std::pow(TWOPI,0.5)*PHID(-BB/AA)*BB*( 1 - C*BS*( 1 - D*BS/5 )/3 );
                     }
                     AA = AA/2   ;
                     for (I = 1; I<= LG;I++){
                         for( IS = -1; IS<=1; IS=IS+2){
-                            XS =POW( ( AA*(  IS*XL[I][NG] + 1 ) ),2)  ;
-                            RS = POW( (1 - XS),2 );
+                            XS =std::pow( ( AA*(  IS*XL[I][NG] + 1 ) ),2)  ;
+                            RS = std::pow( (1 - XS),2 );
                             ASR = -( BS/XS + HK )/2;
                             if ( ASR > -100 ) {
 
@@ -1439,9 +1451,8 @@ namespace QuantLib {
     }
 
         struct integr_adapter {
-            boost::shared_ptr<YieldTermStructure> r;
-            integr_adapter(
-                    boost::shared_ptr<GeneralizedBlackScholesProcess> process)
+            ext::shared_ptr<YieldTermStructure> r;
+            explicit integr_adapter(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
             : r(*(process->riskFreeRate())) {}
             Real operator()(Real t1,Real t2) const {
                 return r->forwardRate(t1,t2,Continuous) * (t2-t1);
@@ -1449,39 +1460,34 @@ namespace QuantLib {
         };
 
         struct integalpha_adapter {
-            boost::shared_ptr<YieldTermStructure> r;
-            boost::shared_ptr<YieldTermStructure> q;
-            integalpha_adapter(
-                    boost::shared_ptr<GeneralizedBlackScholesProcess> process)
-            : r(*(process->riskFreeRate())),
-              q(*(process->dividendYield())) {}
+            ext::shared_ptr<YieldTermStructure> r;
+            ext::shared_ptr<YieldTermStructure> q;
+            explicit integalpha_adapter(
+                const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
+            : r(*(process->riskFreeRate())), q(*(process->dividendYield())) {}
             Real operator()(Real t1,Real t2) const {
-                Real alpha = r->forwardRate(t1,t2,Continuous)
-                           - q->forwardRate(t1,t2,Continuous);
+                Real alpha = r->forwardRate(t1,t2,Continuous).rate()
+                           - q->forwardRate(t1,t2,Continuous).rate();
                 return alpha * (t2-t1);
             }
         };
 
         struct alpha_adapter {
-            boost::shared_ptr<YieldTermStructure> r;
-            boost::shared_ptr<YieldTermStructure> q;
-            alpha_adapter(
-                    boost::shared_ptr<GeneralizedBlackScholesProcess> process)
-            : r(*(process->riskFreeRate())),
-              q(*(process->dividendYield())) {}
+            ext::shared_ptr<YieldTermStructure> r;
+            ext::shared_ptr<YieldTermStructure> q;
+            explicit alpha_adapter(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
+            : r(*(process->riskFreeRate())), q(*(process->dividendYield())) {}
             Real operator()(Real t) const {
-                return r->forwardRate(t,t,Continuous)
-                     - q->forwardRate(t,t,Continuous);
+                return r->forwardRate(t,t,Continuous).rate()
+                     - q->forwardRate(t,t,Continuous).rate();
             }
         };
 
         struct sigmaq_adapter {
-            boost::shared_ptr<BlackVolTermStructure> v;
+            ext::shared_ptr<BlackVolTermStructure> v;
             Real s;
-            sigmaq_adapter(
-                    boost::shared_ptr<GeneralizedBlackScholesProcess> process)
-            : v(*(process->blackVolatility())),
-              s(process->x0()) {}
+            explicit sigmaq_adapter(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
+            : v(*(process->blackVolatility())), s(process->x0()) {}
             Real operator()(Real t) const {
                 Real sigma = v->blackForwardVol(t,t,s,true);
                 return sigma*sigma;
@@ -1489,12 +1495,10 @@ namespace QuantLib {
         };
 
         struct integs_adapter {
-            boost::shared_ptr<BlackVolTermStructure> v;
+            ext::shared_ptr<BlackVolTermStructure> v;
             Real s;
-            integs_adapter(
-                    boost::shared_ptr<GeneralizedBlackScholesProcess> process)
-            : v(*(process->blackVolatility())),
-              s(process->x0()) {}
+            explicit integs_adapter(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process)
+            : v(*(process->blackVolatility())), s(process->x0()) {}
             Real operator()(Real t1,Real t2) const {
                 return v->blackForwardVariance(t1,t2,s,true);
             }
@@ -1504,10 +1508,8 @@ namespace QuantLib {
 
 
     PerturbativeBarrierOptionEngine::PerturbativeBarrierOptionEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Natural order,
-             bool zeroGamma)
-    : process_(process), order_(order), zeroGamma_(zeroGamma) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process, Natural order, bool zeroGamma)
+    : process_(std::move(process)), order_(order), zeroGamma_(zeroGamma) {
         registerWith(process_);
     }
 
@@ -1519,8 +1521,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.rebate == 0.0,
                    "this engine does not manage non-null rebates");
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff && payoff->optionType() == Option::Put,
                    "this engine only manages put options");
 

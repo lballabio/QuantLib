@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
  Copyright (C) 2004, 2007 StatPro Italia srl
+ Copyright (C) 2021, 2022 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,8 +26,8 @@
 #ifndef quantlib_discretized_swaption_hpp
 #define quantlib_discretized_swaption_hpp
 
-#include <ql/instruments/swaption.hpp>
 #include <ql/discretizedasset.hpp>
+#include <ql/instruments/swaption.hpp>
 
 namespace QuantLib {
 
@@ -35,14 +36,22 @@ namespace QuantLib {
         DiscretizedSwaption(const Swaption::arguments&,
                             const Date& referenceDate,
                             const DayCounter& dayCounter);
-        void reset(Size size);
+        void reset(Size size) override;
+
       private:
         Swaption::arguments arguments_;
         Time lastPayment_;
+
+        static void prepareSwaptionWithSnappedDates(
+            const Swaption::arguments& args,
+            const Date& referenceDate,
+            const DayCounter& dayCounter,
+            PricingEngine::arguments& snappedArgs,
+            std::vector<CouponAdjustment>& fixedCouponAdjustments,
+            std::vector<CouponAdjustment>& floatingCouponAdjustments);
     };
 
 }
 
 
 #endif
-

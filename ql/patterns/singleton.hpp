@@ -24,73 +24,14 @@
 #ifndef quantlib_singleton_hpp
 #define quantlib_singleton_hpp
 
-#include <ql/qldefines.hpp>
-
-#ifdef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-    #if defined(QL_ENABLE_SESSIONS)
-        #ifdef BOOST_MSVC
-            #pragma message(\
-                "Thread-safe singleton initialization not supported "  \
-                "when sessions are enabled.")
-        #else
-            #warning \
-                Thread-safe singleton initialization not supported \
-                when sessions are enabled.
-        #endif
-    #else
-        #include <boost/atomic.hpp>
-        #include <boost/thread/mutex.hpp>
-        #if !defined(BOOST_ATOMIC_ADDRESS_LOCK_FREE)
-            #ifdef BOOST_MSVC
-                #pragma message(\
-                    "Thread-safe singleton initialization "  \
-                    "may degrade performances.")
-            #else
-                #warning \
-                    Thread-safe singleton initialization \
-                    may degrade performances.
-            #endif
-        #endif
-        #define QL_SINGLETON_THREAD_SAFE_INIT
-    #endif
-#endif
-
 #include <ql/types.hpp>
-#include <boost/shared_ptr.hpp>
-#if defined(QL_PATCH_MSVC)
-    #pragma managed(push, off)
-#endif
-#include <boost/noncopyable.hpp>
-#if defined(QL_PATCH_MSVC)
-    #pragma managed(pop)
-#endif
-#include <map>
-
-
-#if (_MANAGED == 1) || (_M_CEE == 1)
-// One of the Visual C++ /clr modes. In this case, the global instance
-// map must be declared as a static data member of the class.
-#define QL_MANAGED 1
-#else
-// Every other configuration. The map can be declared as a static
-// variable inside the creation method.
-#define QL_MANAGED 0
-#endif
+#include <type_traits>
 
 namespace QuantLib {
 
-    #if defined(QL_ENABLE_SESSIONS)
-    // definition must be provided by the user
-    Integer sessionId();
-    #endif
-
-    // this is required on VC++ when CLR support is enabled
-    #if defined(QL_PATCH_MSVC)
-        #pragma managed(push, off)
-    #endif
-
     //! Basic support for the singleton pattern.
     /*! The typical use of this class is:
+
         \code
         class Foo : public Singleton<Foo> {
             friend class Singleton<Foo>;
@@ -100,92 +41,88 @@ namespace QuantLib {
             ...
         };
         \endcode
-        which, albeit sub-optimal, frees one from the concerns of
-        creating and managing the unique instance and can serve later
-        as a single implemementation point should synchronization
-        features be added.
+
+        which, albeit sub-optimal, frees one from the concerns of creating and managing the unique instance
+        and can serve later as a single implemementation point should synchronization features be added.
+
+        Global can be used to distinguish Singletons that are local to a session (Global = false) or that are global
+        across all sessions (B = true).  This is only relevant if QL_ENABLE_SESSIONS is enabled.
+
+        Notice that the creation and retrieval of (local or global) singleton instances through instance() is thread
+        safe, but obviously subsequent operations on the singleton have to be synchronized within the singleton
+        implementation itself.
 
         \ingroup patterns
     */
-    template <class T>
-    class Singleton : private boost::noncopyable {
-    #if (QL_MANAGED == 1) && !defined(QL_SINGLETON_THREAD_SAFE_INIT)
-      private:
-        static std::map<Integer, boost::shared_ptr<T> > instances_;
-    #endif
-
-    #if defined(QL_SINGLETON_THREAD_SAFE_INIT)
-      private:
-        static boost::atomic<T*> instance_;
-        static boost::mutex mutex_;
-    #endif
-
+    template <class T, class Global = std::integral_constant<bool, false> >
+    class Singleton {
       public:
+        // disable copy/move
+        Singleton(const Singleton&) = delete;
+        Singleton(Singleton&&) = delete;
+        Singleton& operator=(const Singleton&) = delete;
+        Singleton& operator=(Singleton&&) = delete;
+
         //! access to the unique instance
         static T& instance();
+
       protected:
-        Singleton() {}
+        Singleton() = default;
     };
 
-    // static member definitions
-    
-    #if (QL_MANAGED == 1) && !defined(QL_SINGLETON_THREAD_SAFE_INIT)
-      template <class T>
-      std::map<Integer, boost::shared_ptr<T> > Singleton<T>::instances_;
-    #endif
-
-    #if defined(QL_SINGLETON_THREAD_SAFE_INIT) 
-    template <class T>  boost::atomic<T*> Singleton<T>::instance_;
-    template <class T> boost::mutex Singleton<T>::mutex_;
-    #endif
-    
     // template definitions
 
-    template <class T>
-    T& Singleton<T>::instance() {
+#ifdef QL_ENABLE_SESSIONS
 
-        #if (QL_MANAGED == 0) && !defined(QL_SINGLETON_THREAD_SAFE_INIT)
-        static std::map<Integer, boost::shared_ptr<T> > instances_;
-        #endif
+#if (defined(__GNUC__) && !defined(__clang__)) && (((__GNUC__ == 8) && (__GNUC_MINOR__ < 4)) || (__GNUC__ < 8))
+#pragma message("Singleton::instance() is always compiled with `-O0` for versions of GCC below 8.4 when sessions are enabled.")
+#pragma message("This is to work around the following compiler bug: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91757")
+#pragma message("If possible, please update your compiler to a more recent version.")
+#pragma GCC push_options
+#pragma GCC optimize("-O0")
+#endif
 
-        // thread safe double checked locking pattern with atomic memory calls
-        #if defined(QL_SINGLETON_THREAD_SAFE_INIT) 
-
-        T* instance =  instance_.load(boost::memory_order_consume);
-        
-        if (!instance) {
-            boost::mutex::scoped_lock guard(mutex_);
-            instance = instance_.load(boost::memory_order_consume);
-            if (!instance) {
-                instance = new T();
-                instance_.store(instance, boost::memory_order_release);
-            }
+    template <class T, class Global>
+    T& Singleton<T, Global>::instance() {
+        if(Global()) {
+            static T global_instance;
+            return global_instance;
+        } else {
+            thread_local static T local_instance;
+            return local_instance;
         }
-
-        #else //this is not thread safe
-
-        #if defined(QL_ENABLE_SESSIONS)
-        Integer id = sessionId();
-        #else
-        Integer id = 0;
-        #endif
-
-        boost::shared_ptr<T>& instance = instances_[id];
-        if (!instance)
-            instance = boost::shared_ptr<T>(new T);
-
-        #endif
-
-        return *instance;
     }
 
-    // reverts the change above
-    #if defined(QL_PATCH_MSVC)
-        #pragma managed(pop)
-    #endif
+#if (defined(__GNUC__) && !defined(__clang__)) && (((__GNUC__ == 8) && (__GNUC_MINOR__ < 4)) || (__GNUC__ < 8))
+#pragma GCC pop_options
+#endif
+
+#else
+
+    template <class T, class Global>
+    T& Singleton<T, Global>::instance() {
+        static T instance;
+        return instance;
+    }
+
+#endif
+
+    // backwards compatibility
+
+#if defined(QL_THREAD_KEY)
+    /*! \deprecated This typedef is obsolete. Do not use it.
+                    Deprecated in version 1.29.
+    */
+    QL_DEPRECATED
+    typedef QL_THREAD_KEY ThreadKey;
+#else
+    /*! \deprecated This typedef is obsolete. Do not use it.
+                    Deprecated in version 1.29.
+    */
+    QL_DEPRECATED
+    typedef Integer ThreadKey;
+#endif
 
 }
-
-#undef QL_MANAGED
 
 #endif

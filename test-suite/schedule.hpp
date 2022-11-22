@@ -35,8 +35,20 @@ class ScheduleTest {
     static void testBackwardDatesWithEomAdjustment();
     static void testDoubleFirstDateWithEomAdjustment();
     static void testCDS2015Convention();
+    static void testCDS2015ConventionGrid();
+    static void testCDSConventionGrid();
+    static void testOldCDSConventionGrid();
+    static void testCDS2015ConventionSampleDates();
+    static void testCDSConventionSampleDates();
+    static void testOldCDSConventionSampleDates();
+    static void testCDS2015ZeroMonthsMatured();
     static void testDateConstructor();
     static void testFourWeeksTenor();
+    static void testScheduleAlwaysHasAStartDate();
+    static void testShortEomSchedule();
+    static void testFirstDateOnMaturity();
+    static void testNextToLastDateOnStart();
+    static void testTruncation();
     static boost::unit_test_framework::test_suite* suite();
 };
 

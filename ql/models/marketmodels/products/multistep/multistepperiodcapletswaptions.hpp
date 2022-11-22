@@ -22,7 +22,7 @@
 #define quantlib_multistep_period_caplets_swaptions_hpp
 
 #include <ql/models/marketmodels/products/multiproductmultistep.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 namespace QuantLib {
 
@@ -31,33 +31,32 @@ namespace QuantLib {
     class MultiStepPeriodCapletSwaptions : public MultiProductMultiStep 
     {
       public:
-    
-          MultiStepPeriodCapletSwaptions(const std::vector<Time>& rateTimes,
-                                     const std::vector<Time>& forwardOptionPaymentTimes,
-                                     const std::vector<Time>& swaptionPaymentTimes,
-                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >& forwardPayOffs,
-                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >& swapPayOffs,
-                                     Size period,
-                                     Size offset);
+        MultiStepPeriodCapletSwaptions(
+            const std::vector<Time>& rateTimes,
+            const std::vector<Time>& forwardOptionPaymentTimes,
+            const std::vector<Time>& swaptionPaymentTimes,
+            std::vector<ext::shared_ptr<StrikedTypePayoff> > forwardPayOffs,
+            std::vector<ext::shared_ptr<StrikedTypePayoff> > swapPayOffs,
+            Size period,
+            Size offset);
         //! \name MarketModelMultiProduct interface
         //@{
-        std::vector<Time> possibleCashFlowTimes() const;
-        Size numberOfProducts() const;
-        Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset();
-        bool nextTimeStep(
-                     const CurveState& currentState,
-                     std::vector<Size>& numberCashFlowsThisStep,
-                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
+          std::vector<Time> possibleCashFlowTimes() const override;
+          Size numberOfProducts() const override;
+          Size maxNumberOfCashFlowsPerProductPerStep() const override;
+          void reset() override;
+          bool nextTimeStep(const CurveState& currentState,
+                            std::vector<Size>& numberCashFlowsThisStep,
+                            std::vector<std::vector<CashFlow> >& cashFlowsGenerated) override;
+          std::unique_ptr<MarketModelMultiProduct> clone() const override;
          //@}
 
       private:
         std::vector<Time> paymentTimes_;
         std::vector<Time> forwardOptionPaymentTimes_;
         std::vector<Time> swaptionPaymentTimes_;
-        std::vector<boost::shared_ptr<StrikedTypePayoff> > forwardPayOffs_;
-        std::vector<boost::shared_ptr<StrikedTypePayoff> > swapPayOffs_;
+        std::vector<ext::shared_ptr<StrikedTypePayoff> > forwardPayOffs_;
+        std::vector<ext::shared_ptr<StrikedTypePayoff> > swapPayOffs_;
         Size lastIndex_;
         Size period_;
         Size offset_;

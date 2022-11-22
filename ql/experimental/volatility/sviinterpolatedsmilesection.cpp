@@ -18,61 +18,84 @@
 */
 
 #include <ql/experimental/volatility/sviinterpolatedsmilesection.hpp>
-#include <ql/settings.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/settings.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-SviInterpolatedSmileSection::SviInterpolatedSmileSection(
-    const Date &optionDate, const Handle<Quote> &forward,
-    const std::vector<Rate> &strikes, bool hasFloatingStrikes,
-    const Handle<Quote> &atmVolatility,
-    const std::vector<Handle<Quote> > &volHandles, Real a, Real b, Real sigma,
-    Real rho, Real m, bool isAFixed, bool isBFixed, bool isSigmaFixed,
-    bool isRhoFixed, bool isMFixed, bool vegaWeighted,
-    const boost::shared_ptr<EndCriteria> &endCriteria,
-    const boost::shared_ptr<OptimizationMethod> &method, const DayCounter &dc)
-    : SmileSection(optionDate, dc), forward_(forward),
-      atmVolatility_(atmVolatility), volHandles_(volHandles), strikes_(strikes),
-      actualStrikes_(strikes), hasFloatingStrikes_(hasFloatingStrikes),
-      vols_(volHandles.size()), a_(a), b_(b), sigma_(sigma), rho_(rho), m_(m),
-      isAFixed_(isAFixed), isBFixed_(isBFixed), isSigmaFixed_(isSigmaFixed),
-      isRhoFixed_(isRhoFixed), isMFixed_(isMFixed), vegaWeighted_(vegaWeighted),
-      endCriteria_(endCriteria), method_(method) {
+    SviInterpolatedSmileSection::SviInterpolatedSmileSection(
+        const Date& optionDate,
+        Handle<Quote> forward,
+        const std::vector<Rate>& strikes,
+        bool hasFloatingStrikes,
+        Handle<Quote> atmVolatility,
+        const std::vector<Handle<Quote> >& volHandles,
+        Real a,
+        Real b,
+        Real sigma,
+        Real rho,
+        Real m,
+        bool isAFixed,
+        bool isBFixed,
+        bool isSigmaFixed,
+        bool isRhoFixed,
+        bool isMFixed,
+        bool vegaWeighted,
+        ext::shared_ptr<EndCriteria> endCriteria,
+        ext::shared_ptr<OptimizationMethod> method,
+        const DayCounter& dc)
+    : SmileSection(optionDate, dc), forward_(std::move(forward)),
+      atmVolatility_(std::move(atmVolatility)), volHandles_(volHandles), strikes_(strikes),
+      actualStrikes_(strikes), hasFloatingStrikes_(hasFloatingStrikes), vols_(volHandles.size()),
+      a_(a), b_(b), sigma_(sigma), rho_(rho), m_(m), isAFixed_(isAFixed), isBFixed_(isBFixed),
+      isSigmaFixed_(isSigmaFixed), isRhoFixed_(isRhoFixed), isMFixed_(isMFixed),
+      vegaWeighted_(vegaWeighted), endCriteria_(std::move(endCriteria)),
+      method_(std::move(method)) {
 
-    LazyObject::registerWith(forward_);
-    LazyObject::registerWith(atmVolatility_);
-    for (Size i = 0; i < volHandles_.size(); ++i)
-        LazyObject::registerWith(volHandles_[i]);
-}
+        LazyObject::registerWith(forward_);
+        LazyObject::registerWith(atmVolatility_);
+        for (auto& volHandle : volHandles_)
+            LazyObject::registerWith(volHandle);
+    }
 
-SviInterpolatedSmileSection::SviInterpolatedSmileSection(
-    const Date &optionDate, const Rate &forward,
-    const std::vector<Rate> &strikes, bool hasFloatingStrikes,
-    const Volatility &atmVolatility, const std::vector<Volatility> &volHandles,
-    Real a, Real b, Real sigma, Real rho, Real m, bool isAFixed, bool isBFixed,
-    bool isSigmaFixed, bool isRhoFixed, bool isMFixed, bool vegaWeighted,
-    const boost::shared_ptr<EndCriteria> &endCriteria,
-    const boost::shared_ptr<OptimizationMethod> &method, const DayCounter &dc)
+    SviInterpolatedSmileSection::SviInterpolatedSmileSection(
+        const Date& optionDate,
+        const Rate& forward,
+        const std::vector<Rate>& strikes,
+        bool hasFloatingStrikes,
+        const Volatility& atmVolatility,
+        const std::vector<Volatility>& volHandles,
+        Real a,
+        Real b,
+        Real sigma,
+        Real rho,
+        Real m,
+        bool isAFixed,
+        bool isBFixed,
+        bool isSigmaFixed,
+        bool isRhoFixed,
+        bool isMFixed,
+        bool vegaWeighted,
+        ext::shared_ptr<EndCriteria> endCriteria,
+        ext::shared_ptr<OptimizationMethod> method,
+        const DayCounter& dc)
     : SmileSection(optionDate, dc),
-      forward_(
-          Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(forward)))),
-      atmVolatility_(Handle<Quote>(
-          boost::shared_ptr<Quote>(new SimpleQuote(atmVolatility)))),
-      volHandles_(volHandles.size()), strikes_(strikes),
-      actualStrikes_(strikes), hasFloatingStrikes_(hasFloatingStrikes),
-      vols_(volHandles.size()), a_(a), b_(b), sigma_(sigma), rho_(rho), m_(m),
-      isAFixed_(isAFixed), isBFixed_(isBFixed), isSigmaFixed_(isSigmaFixed),
-      isRhoFixed_(isRhoFixed), isMFixed_(isMFixed), vegaWeighted_(vegaWeighted),
-      endCriteria_(endCriteria), method_(method) {
+      forward_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(forward)))),
+      atmVolatility_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(atmVolatility)))),
+      volHandles_(volHandles.size()), strikes_(strikes), actualStrikes_(strikes),
+      hasFloatingStrikes_(hasFloatingStrikes), vols_(volHandles.size()), a_(a), b_(b),
+      sigma_(sigma), rho_(rho), m_(m), isAFixed_(isAFixed), isBFixed_(isBFixed),
+      isSigmaFixed_(isSigmaFixed), isRhoFixed_(isRhoFixed), isMFixed_(isMFixed),
+      vegaWeighted_(vegaWeighted), endCriteria_(std::move(endCriteria)),
+      method_(std::move(method)) {
 
-    for (Size i = 0; i < volHandles_.size(); ++i)
-        volHandles_[i] = Handle<Quote>(
-            boost::shared_ptr<Quote>(new SimpleQuote(volHandles[i])));
-}
+        for (Size i = 0; i < volHandles_.size(); ++i)
+            volHandles_[i] = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(volHandles[i])));
+    }
 
 void SviInterpolatedSmileSection::createInterpolation() const {
-    boost::shared_ptr<SviInterpolation> tmp(new SviInterpolation(
+    ext::shared_ptr<SviInterpolation> tmp(new SviInterpolation(
         actualStrikes_.begin(), actualStrikes_.end(), vols_.begin(),
         exerciseTime(), forwardValue_, a_, b_, sigma_, rho_, m_, isAFixed_,
         isBFixed_, isSigmaFixed_, isRhoFixed_, isMFixed_, vegaWeighted_,

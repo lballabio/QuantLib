@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 FranÃ§ois du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,9 +22,9 @@
 
 namespace QuantLib {
 
-    Disposable<Matrix> triangularAnglesParametrization(const Array& angles,
-                                                       Size matrixSize,
-                                                       Size rank) {
+    Matrix triangularAnglesParametrization(const Array& angles,
+                                           Size matrixSize,
+                                           Size rank) {
 
         // what if rank == 1?
         QL_REQUIRE((rank-1) * (2*matrixSize - rank) == 2*angles.size(),
@@ -54,9 +54,9 @@ namespace QuantLib {
         return m;
     }
 
-    Disposable<Matrix> lmmTriangularAnglesParametrization(const Array& angles,
-                                                          Size matrixSize,
-                                                          Size) {
+    Matrix lmmTriangularAnglesParametrization(const Array& angles,
+                                              Size matrixSize,
+                                              Size) {
         Matrix m(matrixSize, matrixSize);
         for (Size i=0; i<m.rows(); ++i) {
             Real cosPhi, sinPhi;
@@ -79,10 +79,9 @@ namespace QuantLib {
         return m;
     }
 
-    Disposable<Matrix> triangularAnglesParametrizationUnconstrained(
-                                                            const Array& x,
-                                                            Size matrixSize,
-                                                            Size rank) {
+    Matrix triangularAnglesParametrizationUnconstrained(const Array& x,
+                                                        Size matrixSize,
+                                                        Size rank) {
         Array angles(x.size());
         //we convert the unconstrained parameters in angles
         for (Size i = 0; i < x.size(); ++i)
@@ -90,10 +89,9 @@ namespace QuantLib {
         return triangularAnglesParametrization(angles, matrixSize, rank);
     }
 
-    Disposable<Matrix> lmmTriangularAnglesParametrizationUnconstrained(
-                                                            const Array& x,
-                                                            Size matrixSize,
-                                                            Size rank) {
+    Matrix lmmTriangularAnglesParametrizationUnconstrained(const Array& x,
+                                                           Size matrixSize,
+                                                           Size rank) {
         Array angles(x.size());
         //we convert the unconstrained parameters in angles
         for (Size i = 0; i < x.size(); ++i)
@@ -101,9 +99,8 @@ namespace QuantLib {
         return lmmTriangularAnglesParametrization(angles, matrixSize, rank);
     }
 
-    Disposable<Matrix> triangularAnglesParametrizationRankThree(
-                                            Real alpha, Real t0,
-                                            Real epsilon, Size matrixSize) {
+    Matrix triangularAnglesParametrizationRankThree(Real alpha, Real t0,
+                                                    Real epsilon, Size matrixSize) {
         Matrix m(matrixSize, 3);
         for (Size i=0; i<m.rows(); ++i) {
             Real t = t0 * (1 - std::exp(epsilon*Real(i)));
@@ -115,9 +112,8 @@ namespace QuantLib {
         return m;
     }
 
-    Disposable<Matrix> triangularAnglesParametrizationRankThreeVectorial(
-                                                    const Array& parameters,
-                                                    Size nbRows) {
+    Matrix triangularAnglesParametrizationRankThreeVectorial(const Array& parameters,
+                                                             Size nbRows) {
         QL_REQUIRE(parameters.size() == 3,
                    "the parameter array must contain exactly 3 values" );
         return triangularAnglesParametrizationRankThree(parameters[0],
@@ -132,7 +128,7 @@ namespace QuantLib {
         return DotProduct(temp, temp);
     }
 
-    Disposable<Array> FrobeniusCostFunction::values(const Array& x) const {
+    Array FrobeniusCostFunction::values(const Array& x) const {
         Array result((target_.rows()*(target_.columns()-1))/2);
         Matrix pseudoRoot = f_(x, matrixSize_, rank_);
         Matrix differences = pseudoRoot * transpose(pseudoRoot) - target_;

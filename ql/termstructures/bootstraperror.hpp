@@ -26,8 +26,9 @@
 #ifndef quantlib_bootstrap_error_hpp
 #define quantlib_bootstrap_error_hpp
 
+#include <ql/shared_ptr.hpp>
 #include <ql/types.hpp>
-#include <boost/shared_ptr.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -36,17 +37,16 @@ namespace QuantLib {
     class BootstrapError {
         typedef typename Curve::traits_type Traits;
       public:
-        BootstrapError(
-                 const Curve* curve,
-                 const boost::shared_ptr<typename Traits::helper>& instrument,
-                 Size segment);
+        BootstrapError(const Curve* curve,
+                       ext::shared_ptr<typename Traits::helper> instrument,
+                       Size segment);
         Real operator()(Rate guess) const;
-        const boost::shared_ptr<typename Traits::helper>& helper() {
+        const ext::shared_ptr<typename Traits::helper>& helper() {
             return helper_;
         }
       private:
         const Curve* curve_;
-        const boost::shared_ptr<typename Traits::helper> helper_;
+        const ext::shared_ptr<typename Traits::helper> helper_;
         const Size segment_;
     };
 
@@ -54,13 +54,12 @@ namespace QuantLib {
     // template definitions
 
     template <class Curve>
-    BootstrapError<Curve>::BootstrapError(
-                     const Curve* curve,
-                     const boost::shared_ptr<typename Traits::helper>& helper,
-                     Size segment)
-    : curve_(curve), helper_(helper), segment_(segment) {}
+    BootstrapError<Curve>::BootstrapError(const Curve* curve,
+                                          ext::shared_ptr<typename Traits::helper> helper,
+                                          Size segment)
+    : curve_(curve), helper_(std::move(helper)), segment_(segment) {}
 
-    #ifndef __DOXYGEN__
+#ifndef __DOXYGEN__
     template <class Curve>
     Real BootstrapError<Curve>::operator()(Real guess) const {
         Traits::updateGuess(curve_->data_, guess, segment_);

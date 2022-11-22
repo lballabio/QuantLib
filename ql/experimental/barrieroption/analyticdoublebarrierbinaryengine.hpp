@@ -50,11 +50,11 @@ namespace QuantLib {
     */
     class AnalyticDoubleBarrierBinaryEngine : public DoubleBarrierOption::engine {
       public:
-        AnalyticDoubleBarrierBinaryEngine(
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
-        void calculate() const;
+        explicit AnalyticDoubleBarrierBinaryEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
+        void calculate() const override;
+
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

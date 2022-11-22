@@ -43,24 +43,40 @@ namespace QuantLib {
               reproducing results available in web/literature
               and comparison with Black pricing.
     */
+    class FdmQuantoHelper;
+
     class FdHestonVanillaEngine
         : public GenericModelEngine<HestonModel,
                                     DividendVanillaOption::arguments,
                                     DividendVanillaOption::results> {
       public:
         // Constructor
-        FdHestonVanillaEngine(
-            const boost::shared_ptr<HestonModel>& model,
-            Size tGrid = 100, Size xGrid = 100, 
-            Size vGrid = 50, Size dampingSteps = 0,
+        explicit FdHestonVanillaEngine(
+            const ext::shared_ptr<HestonModel>& model,
+            Size tGrid = 100,
+            Size xGrid = 100,
+            Size vGrid = 50,
+            Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>());
+            ext::shared_ptr<LocalVolTermStructure> leverageFct =
+                ext::shared_ptr<LocalVolTermStructure>(),
+            Real mixingFactor = 1.0);
 
-        void calculate() const;
-        
+        FdHestonVanillaEngine(const ext::shared_ptr<HestonModel>& model,
+                              ext::shared_ptr<FdmQuantoHelper> quantoHelper,
+                              Size tGrid = 100,
+                              Size xGrid = 100,
+                              Size vGrid = 50,
+                              Size dampingSteps = 0,
+                              const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                              ext::shared_ptr<LocalVolTermStructure> leverageFct =
+                                  ext::shared_ptr<LocalVolTermStructure>(),
+                              Real mixingFactor = 1.0);
+
+        void calculate() const override;
+
         // multiple strikes caching engine
-        void update();
+        void update() override;
         void enableMultipleStrikesCaching(const std::vector<Real>& strikes);
         
         // helper method for Heston like engines
@@ -69,14 +85,44 @@ namespace QuantLib {
       private:
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
-        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
-        
+        const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
+        const Real mixingFactor_;
+
         std::vector<Real> strikes_;
         mutable std::vector<std::pair<DividendVanillaOption::arguments,
                                       DividendVanillaOption::results> >
                                                             cachedArgs2results_;
     };
 
+    class MakeFdHestonVanillaEngine {
+      public:
+        explicit MakeFdHestonVanillaEngine(ext::shared_ptr<HestonModel> hestonModel);
+
+        MakeFdHestonVanillaEngine& withQuantoHelper(
+            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper);
+
+        MakeFdHestonVanillaEngine& withTGrid(Size tGrid);
+        MakeFdHestonVanillaEngine& withXGrid(Size xGrid);
+        MakeFdHestonVanillaEngine& withVGrid(Size vGrid);
+        MakeFdHestonVanillaEngine& withDampingSteps(
+            Size dampingSteps);
+
+        MakeFdHestonVanillaEngine& withFdmSchemeDesc(
+            const FdmSchemeDesc& schemeDesc);
+
+        MakeFdHestonVanillaEngine& withLeverageFunction(
+            ext::shared_ptr<LocalVolTermStructure>& leverageFct);
+
+        operator ext::shared_ptr<PricingEngine>() const;
+
+      private:
+        ext::shared_ptr<HestonModel> hestonModel_;
+        Size tGrid_ = 100, xGrid_ = 100, vGrid_ = 50, dampingSteps_ = 0;
+        ext::shared_ptr<FdmSchemeDesc> schemeDesc_;
+        ext::shared_ptr<LocalVolTermStructure> leverageFct_;
+        ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
+    };
 }
 
 #endif

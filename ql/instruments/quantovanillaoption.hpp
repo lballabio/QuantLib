@@ -35,7 +35,7 @@ namespace QuantLib {
     class QuantoOptionResults : public ResultsType {
       public:
         QuantoOptionResults() { reset() ;}
-        void reset() {
+        void reset() override {
             ResultsType::reset();
             qvega = qrho = qlambda = Null<Real>();
         }
@@ -51,17 +51,18 @@ namespace QuantLib {
         typedef OneAssetOption::arguments arguments;
         typedef QuantoOptionResults<OneAssetOption::results> results;
         typedef GenericEngine<arguments, results> engine;
-        QuantoVanillaOption(const boost::shared_ptr<StrikedTypePayoff>&,
-                            const boost::shared_ptr<Exercise>&);
+        QuantoVanillaOption(const ext::shared_ptr<StrikedTypePayoff>&,
+                            const ext::shared_ptr<Exercise>&);
         //! \name greeks
         //@{
         Real qvega() const;
         Real qrho() const;
         Real qlambda() const;
         //@}
-        void fetchResults(const PricingEngine::results*) const;
+        void fetchResults(const PricingEngine::results*) const override;
+
       private:
-        void setupExpired() const;
+        void setupExpired() const override;
         // results
         mutable Real qvega_, qrho_, qlambda_;
     };

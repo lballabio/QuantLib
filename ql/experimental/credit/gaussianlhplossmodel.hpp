@@ -31,8 +31,7 @@
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/math/latentmodel.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 #include <numeric>
 
 /* Intended to replace GaussianLHPCDOEngine in 
@@ -76,7 +75,7 @@ namespace QuantLib {
             const Handle<Quote>& correlQuote,
             const std::vector<Real>& recoveries);
 
-        void update() {
+        void update() override {
             sqrt1minuscorrel_ = std::sqrt(1.-correl_->value());
             beta_ = std::sqrt(correl_->value());
             biphi_ = BivariateCumulativeNormalDistribution(
@@ -84,73 +83,72 @@ namespace QuantLib {
             // tell basket to notify instruments, etc, we are invalid
             if(!basket_.empty()) basket_->notifyObservers();
         }
+
     private:
-        void resetModel() { }
-        /*! @param attachLimit as a fraction of the underlying live portfolio 
-        notional 
-        */
-        Real expectedTrancheLossImpl(
-            Real remainingNot, // << at the given date 'd'
-            Real prob, // << at the given date 'd'
-            Real averageRR, // << at the given date 'd'
-            Real attachLimit, Real detachLimit) const;
+      void resetModel() override {}
+      /*! @param attachLimit as a fraction of the underlying live portfolio
+      notional
+      */
+      Real expectedTrancheLossImpl(Real remainingNot, // << at the given date 'd'
+                                   Real prob,         // << at the given date 'd'
+                                   Real averageRR,    // << at the given date 'd'
+                                   Real attachLimit,
+                                   Real detachLimit) const;
     public:
-        Real expectedTrancheLoss(const Date& d) const {
-            //can calls to Basket::remainingNotional(d) be cached?<<<<<<<<<<<<<
-            const Real remainingfullNot = basket_->remainingNotional(d);
-            Real averageRR = averageRecovery(d);
-            Probability prob = averageProb(d);
-            Real remainingAttachAmount = basket_->remainingAttachmentAmount();
-            Real remainingDetachAmount = basket_->remainingDetachmentAmount();
+      Real expectedTrancheLoss(const Date& d) const override {
+          // can calls to Basket::remainingNotional(d) be cached?<<<<<<<<<<<<<
+          const Real remainingfullNot = basket_->remainingNotional(d);
+          Real averageRR = averageRecovery(d);
+          Probability prob = averageProb(d);
+          Real remainingAttachAmount = basket_->remainingAttachmentAmount();
+          Real remainingDetachAmount = basket_->remainingDetachmentAmount();
 
 
-            //const Real attach = std::min(remainingAttachAmount 
-            //    / remainingfullNot, 1.);
-            //const Real detach = std::min(remainingDetachAmount 
-            //    / remainingfullNot, 1.);
-            const Real attach = remainingAttachAmount / remainingfullNot;
-            const Real detach = remainingDetachAmount / remainingfullNot;
+          // const Real attach = std::min(remainingAttachAmount
+          //    / remainingfullNot, 1.);
+          // const Real detach = std::min(remainingDetachAmount
+          //    / remainingfullNot, 1.);
+          const Real attach = remainingAttachAmount / remainingfullNot;
+          const Real detach = remainingDetachAmount / remainingfullNot;
 
-            return expectedTrancheLossImpl(remainingfullNot, prob, averageRR, 
-                attach, detach);
-        }
+          return expectedTrancheLossImpl(remainingfullNot, prob, averageRR, attach, detach);
+      }
 
         /*! The passed remainingLossFraction is in live tranche units,
             not portfolio as a fraction of the remaining(live) tranche
             (i.e. a_remaining=0% and det_remaining=100%)
         */
-        Real probOverLoss(const Date& d, Real remainingLossFraction) const;
+      Real probOverLoss(const Date& d, Real remainingLossFraction) const override;
 
-        //! Returns the ESF as an absolute amount (rather than a fraction)
-        /* The way it is implemented here is a transformation from ETL to ESF
-        is a generic algorithm, not specific to this model so it should be moved
-        to the Basket/DefaultLossModel class. 
-        TO DO: Implement the inverse transformation
-        */
-        Real expectedShortfall(const Date& d, Probability perctl) const;
+      //! Returns the ESF as an absolute amount (rather than a fraction)
+      /* The way it is implemented here is a transformation from ETL to ESF
+      is a generic algorithm, not specific to this model so it should be moved
+      to the Basket/DefaultLossModel class.
+      TO DO: Implement the inverse transformation
+      */
+      Real expectedShortfall(const Date& d, Probability perctl) const override;
+
     protected:
         // This is wrong, it is not accounting for the current defaults ....
         // returns the loss value in actual loss units, returns the loss value 
         // for the underlying portfolio, untranched
         Real percentilePortfolioLossFraction(const Date& d, Real perctl) const;
-        Real expectedRecovery(const Date& d, Size iName, 
-            const DefaultProbKey& ik) const { 
-                return rrQuotes_[iName].currentLink()->value();
+        Real expectedRecovery(const Date& d, Size iName, const DefaultProbKey& ik) const override {
+            return rrQuotes_[iName].currentLink()->value();
         }
+
     public:
         // same as percentilePortfolio but tranched
-        Real percentile(const Date& d, Real perctl) const {
-            const Real remainingNot = basket_->remainingNotional(d);
-            Real remainingAttachAmount = basket_->remainingAttachmentAmount();
-            Real remainingDetachAmount = basket_->remainingDetachmentAmount();
-            const Real attach = 
-                std::min(remainingAttachAmount / remainingNot, 1.);
-            const Real detach = 
-                std::min(remainingDetachAmount / remainingNot, 1.);
-            return remainingNot * 
-                std::min(std::max(percentilePortfolioLossFraction(d, perctl) 
-                    - attach, 0.), detach - attach);
-        }
+      Real percentile(const Date& d, Real perctl) const override {
+          const Real remainingNot = basket_->remainingNotional(d);
+          Real remainingAttachAmount = basket_->remainingAttachmentAmount();
+          Real remainingDetachAmount = basket_->remainingDetachmentAmount();
+          const Real attach = std::min(remainingAttachAmount / remainingNot, 1.);
+          const Real detach = std::min(remainingDetachAmount / remainingNot, 1.);
+          return remainingNot *
+                 std::min(std::max(percentilePortfolioLossFraction(d, perctl) - attach, 0.),
+                          detach - attach);
+      }
 
         Probability averageProb(const Date& d) const {// not an overload of Deflossmodel ???<<<<<???
             // weighted average by programmed exposure.
@@ -159,7 +157,7 @@ namespace QuantLib {
             const std::vector<Real> remainingNots = 
                 basket_->remainingNotionals(d);
             return std::inner_product(probs.begin(), probs.end(), 
-                remainingNots.begin(), 0.) / basket_->remainingNotional(d);
+                remainingNots.begin(), Real(0.)) / basket_->remainingNotional(d);
         }
 
         /* One could define the average recovery without the probability
@@ -180,14 +178,14 @@ namespace QuantLib {
                 recoveries.push_back(rrQuotes_[i]->value());
             std::vector<Real> notionals = basket_->remainingNotionals(d);
             Real denominator = std::inner_product(notionals.begin(), 
-                notionals.end(), probs.begin(), 0.);
+                notionals.end(), probs.begin(), Real(0.));
             if(denominator == 0.) return 0.;
 
             std::transform(notionals.begin(), notionals.end(), probs.begin(),
-                notionals.begin(), std::multiplies<Real>());
+                notionals.begin(), std::multiplies<>());
 
             return std::inner_product(recoveries.begin(), recoveries.end(), 
-                notionals.begin(), 0.) / denominator;
+                notionals.begin(), Real(0.)) / denominator;
         }
 
     private:

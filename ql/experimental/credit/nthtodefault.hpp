@@ -75,7 +75,7 @@ namespace QuantLib {
 
         //! This product is 'digital'; the basket might be tranched but this is 
         //  not relevant to it.
-        NthToDefault(const boost::shared_ptr<Basket>& basket,
+        NthToDefault(const ext::shared_ptr<Basket>& basket,
                 Size n,
                 Protection::Side side,
                 const Schedule& premiumSchedule,
@@ -85,7 +85,7 @@ namespace QuantLib {
                 Real nominal,
                 bool settlePremiumAccrual);
 
-        bool isExpired() const;
+        bool isExpired() const override;
 
         // inspectors
         Rate premium() const { return premiumRate_; }
@@ -97,7 +97,7 @@ namespace QuantLib {
 
         const Date& maturity() const {return premiumSchedule_.endDate();}//???
 
-        const boost::shared_ptr<Basket>& basket() const {return basket_;}
+        const ext::shared_ptr<Basket>& basket() const {return basket_;}
 
         // results
         Rate fairPremium() const;
@@ -105,13 +105,13 @@ namespace QuantLib {
         Real protectionLegNPV() const;
         Real errorEstimate() const;
 
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results*) const override;
+
       private:
+        void setupExpired() const override;
 
-        void setupExpired() const;
-
-        boost::shared_ptr<Basket> basket_;
+        ext::shared_ptr<Basket> basket_;
         Size n_;
         Protection::Side side_;
         Real nominal_;
@@ -138,9 +138,9 @@ namespace QuantLib {
         arguments() : side(Protection::Side(-1)),
                       premiumRate(Null<Real>()),
                       upfrontRate(Null<Real>()) {}
-        void validate() const;
+        void validate() const override;
 
-        boost::shared_ptr<Basket> basket;
+        ext::shared_ptr<Basket> basket;
         Protection::Side side;
         Leg premiumLeg;
 
@@ -153,12 +153,12 @@ namespace QuantLib {
 
     class NthToDefault::results : public Instrument::results {
     public:
-        void reset();
-        Real premiumValue;
-        Real protectionValue;
-        Real upfrontPremiumValue;
-        Real fairPremium;
-        Real errorEstimate;
+      void reset() override;
+      Real premiumValue;
+      Real protectionValue;
+      Real upfrontPremiumValue;
+      Real fairPremium;
+      Real errorEstimate;
     };
 
     //! NTD base engine

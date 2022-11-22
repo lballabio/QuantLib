@@ -24,22 +24,22 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 namespace QuantLib {
 
     FFTVarianceGammaEngine::FFTVarianceGammaEngine(
-        const boost::shared_ptr<VarianceGammaProcess>& process, Real logStrikeSpacing)
+        const ext::shared_ptr<VarianceGammaProcess>& process, Real logStrikeSpacing)
         : FFTEngine(process, logStrikeSpacing)
     {
     }
 
-    std::auto_ptr<FFTEngine> FFTVarianceGammaEngine::clone() const
+    std::unique_ptr<FFTEngine> FFTVarianceGammaEngine::clone() const
     {
-        boost::shared_ptr<VarianceGammaProcess> process =
-            boost::dynamic_pointer_cast<VarianceGammaProcess>(process_);
-        return std::auto_ptr<FFTEngine>(new FFTVarianceGammaEngine(process, lambda_));
+        ext::shared_ptr<VarianceGammaProcess> process =
+            ext::dynamic_pointer_cast<VarianceGammaProcess>(process_);
+        return std::unique_ptr<FFTEngine>(new FFTVarianceGammaEngine(process, lambda_));
     }
 
     void FFTVarianceGammaEngine::precalculateExpiry(Date d)
     {
-        boost::shared_ptr<VarianceGammaProcess> process =
-            boost::dynamic_pointer_cast<VarianceGammaProcess>(process_);
+        ext::shared_ptr<VarianceGammaProcess> process =
+            ext::dynamic_pointer_cast<VarianceGammaProcess>(process_);
 
         dividendDiscount_ =
             process->dividendYield()->discount(d);
@@ -70,15 +70,15 @@ namespace QuantLib {
 
     Real FFTVarianceGammaEngine::discountFactor(Date d) const
     {
-        boost::shared_ptr<VarianceGammaProcess> process =
-            boost::dynamic_pointer_cast<VarianceGammaProcess>(process_);
+        ext::shared_ptr<VarianceGammaProcess> process =
+            ext::dynamic_pointer_cast<VarianceGammaProcess>(process_);
         return process->riskFreeRate()->discount(d);
     }
 
     Real FFTVarianceGammaEngine::dividendYield(Date d) const
     {
-        boost::shared_ptr<VarianceGammaProcess> process =
-            boost::dynamic_pointer_cast<VarianceGammaProcess>(process_);
+        ext::shared_ptr<VarianceGammaProcess> process =
+            ext::dynamic_pointer_cast<VarianceGammaProcess>(process_);
         return process->dividendYield()->discount(d);
     }
 

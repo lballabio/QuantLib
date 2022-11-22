@@ -25,8 +25,9 @@
 #ifndef quantlib_lattice_hpp
 #define quantlib_lattice_hpp
 
-#include <ql/timegrid.hpp>
 #include <ql/math/array.hpp>
+#include <ql/timegrid.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -35,8 +36,8 @@ namespace QuantLib {
     //! %Lattice (tree, finite-differences) base class
     class Lattice {
       public:
-        Lattice(const TimeGrid& timeGrid) : t_(timeGrid) {}
-        virtual ~Lattice() {}
+        explicit Lattice(TimeGrid timeGrid) : t_(std::move(timeGrid)) {}
+        virtual ~Lattice() = default;
 
         //!\name Inspectors
         //{
@@ -89,7 +90,7 @@ namespace QuantLib {
         //@}
 
         // this is a smell, but we need it. We'll rethink it later.
-        virtual Disposable<Array> grid(Time) const = 0;
+        virtual Array grid(Time) const = 0;
       protected:
         TimeGrid t_;
     };

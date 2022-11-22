@@ -17,40 +17,35 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quotes/futuresconvadjustmentquote.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
+#include <ql/quotes/futuresconvadjustmentquote.hpp>
 #include <ql/time/imm.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(
-                               const boost::shared_ptr<IborIndex>& index,
-                               const Date& futuresDate,
-                               const Handle<Quote>& futuresQuote,
-                               const Handle<Quote>& volatility,
-                               const Handle<Quote>& meanReversion)
-    : dc_(index->dayCounter()),
-      futuresDate_(futuresDate),
-      indexMaturityDate_(index->maturityDate(futuresDate_)),
-      futuresQuote_(futuresQuote),
-      volatility_(volatility), meanReversion_(meanReversion) {
+    FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(const ext::shared_ptr<IborIndex>& index,
+                                                           const Date& futuresDate,
+                                                           Handle<Quote> futuresQuote,
+                                                           Handle<Quote> volatility,
+                                                           Handle<Quote> meanReversion)
+    : dc_(index->dayCounter()), futuresDate_(futuresDate),
+      indexMaturityDate_(index->maturityDate(futuresDate_)), futuresQuote_(std::move(futuresQuote)),
+      volatility_(std::move(volatility)), meanReversion_(std::move(meanReversion)) {
 
         registerWith(futuresQuote_);
         registerWith(volatility_);
         registerWith(meanReversion_);
     }
 
-    FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(
-                               const boost::shared_ptr<IborIndex>& index,
-                               const std::string& immCode,
-                               const Handle<Quote>& futuresQuote,
-                               const Handle<Quote>& volatility,
-                               const Handle<Quote>& meanReversion)
-    : dc_(index->dayCounter()),
-      futuresDate_(IMM::date(immCode)),
-      indexMaturityDate_(index->maturityDate(futuresDate_)),
-      futuresQuote_(futuresQuote),
-      volatility_(volatility), meanReversion_(meanReversion) {
+    FuturesConvAdjustmentQuote::FuturesConvAdjustmentQuote(const ext::shared_ptr<IborIndex>& index,
+                                                           const std::string& immCode,
+                                                           Handle<Quote> futuresQuote,
+                                                           Handle<Quote> volatility,
+                                                           Handle<Quote> meanReversion)
+    : dc_(index->dayCounter()), futuresDate_(IMM::date(immCode)),
+      indexMaturityDate_(index->maturityDate(futuresDate_)), futuresQuote_(std::move(futuresQuote)),
+      volatility_(std::move(volatility)), meanReversion_(std::move(meanReversion)) {
 
         registerWith(futuresQuote_);
         registerWith(volatility_);

@@ -25,7 +25,6 @@
 #define quantlib_clone_hpp
 
 #include <ql/errors.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <algorithm>
 #include <memory>
 
@@ -33,24 +32,27 @@ namespace QuantLib {
 
     //! cloning proxy to an underlying object
     /*! When copied, this class will make a clone of its underlying
-        object (which must provide a <tt>clone()</tt> method returning
-        a std::auto_ptr to a newly-allocated instance.)
+        object, which must provide a <tt>clone()</tt> method returning
+        a std::auto_ptr (or a std::unique_ptr, depending on your
+        configuration) to a newly-allocated instance.
     */
     template <class T>
     class Clone {
       public:
-        Clone();
-        Clone(std::auto_ptr<T>);
+        Clone() = default;
+        Clone(std::unique_ptr<T>&&);
         Clone(const T&);
         Clone(const Clone<T>&);
+        Clone(Clone<T>&&) noexcept;
         Clone<T>& operator=(const T&);
         Clone<T>& operator=(const Clone<T>&);
+        Clone<T>& operator=(Clone<T>&&) noexcept;
         T& operator*() const;
         T* operator->() const;
         bool empty() const;
         void swap(Clone<T>& t);
       private:
-        boost::scoped_ptr<T> ptr_;
+        std::unique_ptr<T> ptr_;
     };
 
     /*! \relates Clone */
@@ -61,11 +63,8 @@ namespace QuantLib {
     // inline definitions
 
     template <class T>
-    inline Clone<T>::Clone() {}
-
-    template <class T>
-    inline Clone<T>::Clone(std::auto_ptr<T> p)
-    : ptr_(p) {}
+    inline Clone<T>::Clone(std::unique_ptr<T>&& p)
+    : ptr_(std::move(p)) {}
 
     template <class T>
     inline Clone<T>::Clone(const T& t)
@@ -73,17 +72,28 @@ namespace QuantLib {
 
     template <class T>
     inline Clone<T>::Clone(const Clone<T>& t)
-    : ptr_(t.empty() ? (T*)(0) : t->clone().release()) {}
+    : ptr_(t.empty() ? (T*)nullptr : t->clone().release()) {}
+
+    template <class T>
+    inline Clone<T>::Clone(Clone<T>&& t) noexcept {
+        swap(t);
+    }
 
     template <class T>
     inline Clone<T>& Clone<T>::operator=(const T& t) {
-        ptr_.reset(t.clone().release());
+        ptr_ = t.clone();
         return *this;
     }
 
     template <class T>
     inline Clone<T>& Clone<T>::operator=(const Clone<T>& t) {
-        ptr_.reset(t.empty() ? (T*)(0) : t->clone().release());
+        ptr_.reset(t.empty() ? (T*)nullptr : t->clone().release());
+        return *this;
+    }
+
+    template <class T>
+    inline Clone<T>& Clone<T>::operator=(Clone<T>&& t) noexcept {
+        swap(t);
         return *this;
     }
 

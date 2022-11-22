@@ -17,20 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/products/multistep/multistepforwards.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepforwards.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     MultiStepForwards::MultiStepForwards(const std::vector<Time>& rateTimes,
-                        const std::vector<Real>& accruals,
-                        const std::vector<Time>& paymentTimes,
-                        const std::vector<Rate>& strikes)
-    : MultiProductMultiStep(rateTimes), accruals_(accruals),
-      paymentTimes_(paymentTimes), strikes_(strikes) {
+                                         std::vector<Real> accruals,
+                                         const std::vector<Time>& paymentTimes,
+                                         std::vector<Rate> strikes)
+    : MultiProductMultiStep(rateTimes), accruals_(std::move(accruals)), paymentTimes_(paymentTimes),
+      strikes_(std::move(strikes)) {
         checkIncreasingTimes(paymentTimes);
-
     }
 
     bool MultiStepForwards::nextTimeStep(
@@ -49,9 +49,9 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    std::auto_ptr<MarketModelMultiProduct> MultiStepForwards::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
-                                                new MultiStepForwards(*this));
+    std::unique_ptr<MarketModelMultiProduct>
+    MultiStepForwards::clone() const {
+        return std::unique_ptr<MarketModelMultiProduct>(new MultiStepForwards(*this));
     }
 
 }

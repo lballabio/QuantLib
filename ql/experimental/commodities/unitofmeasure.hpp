@@ -26,7 +26,7 @@
 
 #include <ql/types.hpp>
 #include <ql/math/rounding.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <string>
 #include <map>
 #include <iosfwd>
@@ -43,7 +43,7 @@ namespace QuantLib {
             and must be reassigned to a valid currency before being
             used.
         */
-        UnitOfMeasure();
+        UnitOfMeasure() = default;
         UnitOfMeasure(const std::string& name,
                       const std::string& code,
                       Type unitType);
@@ -67,9 +67,9 @@ namespace QuantLib {
         //@}
       protected:
         struct Data;
-        boost::shared_ptr<Data> data_;
+        ext::shared_ptr<Data> data_;
       private:
-        static std::map<std::string, boost::shared_ptr<UnitOfMeasure::Data> >
+        static std::map<std::string, ext::shared_ptr<UnitOfMeasure::Data> >
         unitsOfMeasure_;
     };
 
@@ -79,10 +79,10 @@ namespace QuantLib {
         UnitOfMeasure triangulationUnitOfMeasure;
         Rounding rounding;
 
-        Data(const std::string& name,
-             const std::string& code,
+        Data(std::string name,
+             std::string code,
              UnitOfMeasure::Type unitType,
-             const UnitOfMeasure& triangulationUnitOfMeasure = UnitOfMeasure(),
+             UnitOfMeasure triangulationUnitOfMeasure = UnitOfMeasure(),
              const Rounding& rounding = Rounding(0));
     };
 
@@ -101,8 +101,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline UnitOfMeasure::UnitOfMeasure() {}
 
     inline const std::string& UnitOfMeasure::name() const {
         return data_->name;
@@ -140,7 +138,7 @@ namespace QuantLib {
     class LotUnitOfMeasure : public UnitOfMeasure {
       public:
         LotUnitOfMeasure() {
-            static boost::shared_ptr<Data> data(
+            static ext::shared_ptr<Data> data(
                 new Data("Lot", "Lot", UnitOfMeasure::Quantity));
             data_ = data;
         }

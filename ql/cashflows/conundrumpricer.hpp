@@ -34,7 +34,7 @@ namespace QuantLib {
 
     class VanillaOptionPricer {
       public:
-        virtual ~VanillaOptionPricer() {}
+        virtual ~VanillaOptionPricer() = default;
         virtual Real operator()(Real strike,
                                 Option::Type optionType,
                                 Real deflator) const = 0;
@@ -46,23 +46,22 @@ namespace QuantLib {
                 Rate forwardValue,
                 Date expiryDate,
                 const Period& swapTenor,
-                const boost::shared_ptr<SwaptionVolatilityStructure>&
+                const ext::shared_ptr<SwaptionVolatilityStructure>&
                                                          volatilityStructure);
 
-        Real operator()(Real strike,
-                        Option::Type optionType,
-                        Real deflator) const;
+        Real operator()(Real strike, Option::Type optionType, Real deflator) const override;
+
       private:
         Rate forwardValue_;
         Date expiryDate_;
         Period swapTenor_;
-        boost::shared_ptr<SwaptionVolatilityStructure> volatilityStructure_;
-        boost::shared_ptr<SmileSection> smile_;
+        ext::shared_ptr<SwaptionVolatilityStructure> volatilityStructure_;
+        ext::shared_ptr<SmileSection> smile_;
     };
 
     class GFunction {
       public:
-        virtual ~GFunction() {}
+        virtual ~GFunction() = default;
         virtual Real operator()(Real x) = 0;
         virtual Real firstDerivative(Real x) = 0;
         virtual Real secondDerivative(Real x) = 0;
@@ -75,27 +74,29 @@ namespace QuantLib {
                                ParallelShifts,
                                NonParallelShifts
         };
-        static boost::shared_ptr<GFunction>
+
+        GFunctionFactory() = delete;
+
+        static ext::shared_ptr<GFunction>
         newGFunctionStandard(Size q,
                              Real delta,
                              Size swapLength);
-        static boost::shared_ptr<GFunction>
+        static ext::shared_ptr<GFunction>
         newGFunctionExactYield(const CmsCoupon& coupon);
-        static boost::shared_ptr<GFunction>
+        static ext::shared_ptr<GFunction>
         newGFunctionWithShifts(const CmsCoupon& coupon,
                                const Handle<Quote>& meanReversion);
       private:
-        GFunctionFactory();
-
         class GFunctionStandard : public GFunction {
           public:
             GFunctionStandard(Size q,
                               Real delta,
                               Size swapLength)
             : q_(q), delta_(delta), swapLength_(swapLength) {}
-            Real operator()(Real x);
-            Real firstDerivative(Real x);
-            Real secondDerivative(Real x);
+            Real operator()(Real x) override;
+            Real firstDerivative(Real x) override;
+            Real secondDerivative(Real x) override;
+
           protected:
             /* number of period per year */
             const int q_;
@@ -109,9 +110,10 @@ namespace QuantLib {
         class GFunctionExactYield : public GFunction {
           public:
             GFunctionExactYield(const CmsCoupon& coupon);
-            Real operator()(Real x) ;
-            Real firstDerivative(Real x);
-            Real secondDerivative(Real x);
+            Real operator()(Real x) override;
+            Real firstDerivative(Real x) override;
+            Real secondDerivative(Real x) override;
+
           protected:
             /* fraction of a period between the swap start date and
                the pay date  */
@@ -134,8 +136,8 @@ namespace QuantLib {
             Real swapRateValue_;
             Handle<Quote> meanReversion_;
 
-            Real calibratedShift_, tmpRs_;
-            const Real accuracy_;
+            Real calibratedShift_ = 0.03, tmpRs_ = 10000000.0;
+            const Real accuracy_ = 1.0e-14;
 
             //* function describing the non-parallel shape of the curve shift*/
             Real shapeOfShift(Real s) const;
@@ -147,31 +149,25 @@ namespace QuantLib {
             Real der2Rs_derX2(Real x);
             Real der2Z_derX2(Real x);
 
-            class ObjectiveFunction;
-            friend class ObjectiveFunction;
-            class ObjectiveFunction : public std::unary_function<Real, Real> {
+            class ObjectiveFunction {
                 const GFunctionWithShifts& o_;
                 Real Rs_;
                 mutable Real derivative_;
                 public:
-              virtual ~ObjectiveFunction() {}
-                ObjectiveFunction(const GFunctionWithShifts& o,
-                                  const Real Rs)
-                : o_(o), Rs_(Rs) {}
-                virtual Real operator()(const Real& x) const;
-                Real derivative (const Real& x) const;
-                void setSwapRateValue(Real x);
-                const GFunctionWithShifts& gFunctionWithShifts() const {
-                    return o_; }
+                  virtual ~ObjectiveFunction() = default;
+                  ObjectiveFunction(const GFunctionWithShifts& o, const Real Rs) : o_(o), Rs_(Rs) {}
+                  virtual Real operator()(const Real& x) const;
+                  Real derivative(const Real& x) const;
+                  void setSwapRateValue(Real x);
+                  const GFunctionWithShifts& gFunctionWithShifts() const { return o_; }
             };
 
-            boost::shared_ptr<ObjectiveFunction> objectiveFunction_;
+            ext::shared_ptr<ObjectiveFunction> objectiveFunction_;
           public:
-            GFunctionWithShifts(const CmsCoupon& coupon,
-                                const Handle<Quote>& meanReversion);
-            Real operator()(Real x) ;
-            Real firstDerivative(Real x);
-            Real secondDerivative(Real x);
+            GFunctionWithShifts(const CmsCoupon& coupon, Handle<Quote> meanReversion);
+            Real operator()(Real x) override;
+            Real firstDerivative(Real x) override;
+            Real secondDerivative(Real x) override;
         };
 
     };
@@ -199,33 +195,33 @@ namespace QuantLib {
     class HaganPricer: public CmsCouponPricer, public MeanRevertingPricer {
       public:
         /* */
-        virtual Real swapletPrice() const = 0;
-        virtual Rate swapletRate() const;
-        virtual Real capletPrice(Rate effectiveCap) const;
-        virtual Rate capletRate(Rate effectiveCap) const;
-        virtual Real floorletPrice(Rate effectiveFloor) const;
-        virtual Rate floorletRate(Rate effectiveFloor) const;
+        Real swapletPrice() const override = 0;
+        Rate swapletRate() const override;
+        Real capletPrice(Rate effectiveCap) const override;
+        Rate capletRate(Rate effectiveCap) const override;
+        Real floorletPrice(Rate effectiveFloor) const override;
+        Rate floorletRate(Rate effectiveFloor) const override;
         /* */
-        Real meanReversion() const;
-        void setMeanReversion(const Handle<Quote>& meanReversion) {
+        Real meanReversion() const override;
+        void setMeanReversion(const Handle<Quote>& meanReversion) override {
             unregisterWith(meanReversion_);
             meanReversion_ = meanReversion;
             registerWith(meanReversion_);
             update();
         };
+
       protected:
-        HaganPricer(
-                const Handle<SwaptionVolatilityStructure>& swaptionVol,
-                GFunctionFactory::YieldCurveModel modelOfYieldCurve,
-                const Handle<Quote>& meanReversion);
-        void initialize(const FloatingRateCoupon& coupon);
+        HaganPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol,
+                    GFunctionFactory::YieldCurveModel modelOfYieldCurve,
+                    Handle<Quote> meanReversion);
+        void initialize(const FloatingRateCoupon& coupon) override;
 
         virtual Real optionletPrice(Option::Type optionType,
                                     Real strike) const = 0;
 
-        boost::shared_ptr<YieldTermStructure> rateCurve_;
+        ext::shared_ptr<YieldTermStructure> rateCurve_;
         GFunctionFactory::YieldCurveModel modelOfYieldCurve_;
-        boost::shared_ptr<GFunction> gFunction_;
+        ext::shared_ptr<GFunction> gFunction_;
         const CmsCoupon* coupon_;
         Date paymentDate_, fixingDate_;
         Rate swapRateValue_;
@@ -234,10 +230,10 @@ namespace QuantLib {
         Real gearing_;
         Spread spread_;
         Real spreadLegValue_;
-        Rate cutoffForCaplet_, cutoffForFloorlet_;
+        Rate cutoffForCaplet_ = 2, cutoffForFloorlet_ = 0;
         Handle<Quote> meanReversion_;
         Period swapTenor_;
-        boost::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
+        ext::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
     };
 
 
@@ -257,59 +253,61 @@ namespace QuantLib {
             Real precision = 1.0e-6,
             Real hardUpperLimit = QL_MAX_REAL);
 
-       Real upperLimit() { return upperLimit_; }
-       Real stdDeviations() { return stdDeviationsForUpperLimit_; }
+        Real upperLimit() const { return upperLimit_; }
+        Real stdDeviations() const { return stdDeviationsForUpperLimit_; }
 
-      //private:
-        class Function : public std::unary_function<Real, Real> {
+        // private:
+        class Function {
           public:
-            virtual ~Function() {}
+            typedef Real argument_type;
+            typedef Real result_type;
+            virtual ~Function() = default;
             virtual Real operator()(Real x) const = 0;
         };
 
         class ConundrumIntegrand : public Function {
             friend class NumericHaganPricer;
           public:
-            ConundrumIntegrand(
-                       const boost::shared_ptr<VanillaOptionPricer>& o,
-                       const boost::shared_ptr<YieldTermStructure>& rateCurve,
-                       const boost::shared_ptr<GFunction>& gFunction,
-                       Date fixingDate,
-                       Date paymentDate,
-                       Real annuity,
-                       Real forwardValue,
-                       Real strike,
-                       Option::Type optionType);
-            Real operator()(Real x) const;
+            ConundrumIntegrand(ext::shared_ptr<VanillaOptionPricer> o,
+                               const ext::shared_ptr<YieldTermStructure>& rateCurve,
+                               ext::shared_ptr<GFunction> gFunction,
+                               Date fixingDate,
+                               Date paymentDate,
+                               Real annuity,
+                               Real forwardValue,
+                               Real strike,
+                               Option::Type optionType);
+            Real operator()(Real x) const override;
+
           protected:
-            Real functionF(const Real x) const;
-            Real firstDerivativeOfF(const Real x) const;
-            Real secondDerivativeOfF(const Real x) const;
+            Real functionF(Real x) const;
+            Real firstDerivativeOfF(Real x) const;
+            Real secondDerivativeOfF(Real x) const;
 
             Real strike() const;
             Real annuity() const;
             Date fixingDate() const;
             void setStrike(Real strike);
 
-            const boost::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
+            const ext::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
             const Real forwardValue_, annuity_;
             const Date fixingDate_, paymentDate_;
             Real strike_;
             const Option::Type optionType_;
-            boost::shared_ptr<GFunction> gFunction_;
+            ext::shared_ptr<GFunction> gFunction_;
         };
 
         Real integrate(Real a,
                        Real b,
                        const ConundrumIntegrand& Integrand) const;
-        virtual Real optionletPrice(Option::Type optionType,
-                                    Rate strike) const;
-        virtual Real swapletPrice() const;
+        Real optionletPrice(Option::Type optionType, Rate strike) const override;
+        Real swapletPrice() const override;
         Real resetUpperLimit(Real stdDeviationsForUpperLimit) const;
         Real refineIntegration(Real integralValue, const ConundrumIntegrand& integrand) const;
 
         mutable Real upperLimit_, stdDeviationsForUpperLimit_;
-        const Real lowerLimit_, requiredStdDeviations_, precision_, refiningIntegrationTolerance_;
+        const Real lowerLimit_, requiredStdDeviations_ = 8, precision_,
+                                refiningIntegrationTolerance_ = .0001;
         const Real hardUpperLimit_;
     };
 
@@ -321,9 +319,8 @@ namespace QuantLib {
             GFunctionFactory::YieldCurveModel modelOfYieldCurve,
             const Handle<Quote>& meanReversion);
       protected:
-        Real optionletPrice(Option::Type optionType,
-                            Real strike) const;
-        Real swapletPrice() const;
+        Real optionletPrice(Option::Type optionType, Real strike) const override;
+        Real swapletPrice() const override;
     };
 
 }

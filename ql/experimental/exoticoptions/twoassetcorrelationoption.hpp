@@ -36,8 +36,9 @@ namespace QuantLib {
         TwoAssetCorrelationOption(Option::Type type,
                                   Real strike1,
                                   Real strike2,
-                                  const boost::shared_ptr<Exercise>&);
-        void setupArguments(PricingEngine::arguments*) const;
+                                  const ext::shared_ptr<Exercise>&);
+        void setupArguments(PricingEngine::arguments*) const override;
+
       protected:
         Real X2_;
     };
@@ -46,7 +47,7 @@ namespace QuantLib {
         : public MultiAssetOption::arguments {
       public:
         arguments() : X2(Null<Real>()) {}
-        void validate() const {
+        void validate() const override {
             MultiAssetOption::arguments::validate();
             QL_REQUIRE(X2 != Null<Real>(), "no X2 given");
         }

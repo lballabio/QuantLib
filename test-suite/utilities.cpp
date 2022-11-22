@@ -25,14 +25,14 @@
 #include <ql/time/calendars/nullcalendar.hpp>
 
 #define CHECK_DOWNCAST(Derived,Description) { \
-    boost::shared_ptr<Derived> hd = boost::dynamic_pointer_cast<Derived>(h); \
+    ext::shared_ptr<Derived> hd = ext::dynamic_pointer_cast<Derived>(h); \
     if (hd) \
         return Description; \
 }
 
 namespace QuantLib {
 
-    std::string payoffTypeToString(const boost::shared_ptr<Payoff>& h) {
+    std::string payoffTypeToString(const ext::shared_ptr<Payoff>& h) {
 
         CHECK_DOWNCAST(PlainVanillaPayoff, "plain-vanilla");
         CHECK_DOWNCAST(CashOrNothingPayoff, "cash-or-nothing");
@@ -47,7 +47,7 @@ namespace QuantLib {
     }
 
 
-    std::string exerciseTypeToString(const boost::shared_ptr<Exercise>& h) {
+    std::string exerciseTypeToString(const ext::shared_ptr<Exercise>& h) {
 
         CHECK_DOWNCAST(EuropeanExercise, "European");
         CHECK_DOWNCAST(AmericanExercise, "American");
@@ -57,61 +57,61 @@ namespace QuantLib {
     }
 
 
-    boost::shared_ptr<YieldTermStructure>
+    ext::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
-             const boost::shared_ptr<Quote>& forward,
+             const ext::shared_ptr<Quote>& forward,
              const DayCounter& dc) {
-        return boost::shared_ptr<YieldTermStructure>(
+        return ext::shared_ptr<YieldTermStructure>(
                           new FlatForward(today, Handle<Quote>(forward), dc));
     }
 
-    boost::shared_ptr<YieldTermStructure>
+    ext::shared_ptr<YieldTermStructure>
     flatRate(const Date& today, Rate forward, const DayCounter& dc) {
         return flatRate(
-               today, boost::shared_ptr<Quote>(new SimpleQuote(forward)), dc);
+               today, ext::shared_ptr<Quote>(new SimpleQuote(forward)), dc);
     }
 
-    boost::shared_ptr<YieldTermStructure>
-    flatRate(const boost::shared_ptr<Quote>& forward,
+    ext::shared_ptr<YieldTermStructure>
+    flatRate(const ext::shared_ptr<Quote>& forward,
              const DayCounter& dc) {
-        return boost::shared_ptr<YieldTermStructure>(
+        return ext::shared_ptr<YieldTermStructure>(
               new FlatForward(0, NullCalendar(), Handle<Quote>(forward), dc));
     }
 
-    boost::shared_ptr<YieldTermStructure>
+    ext::shared_ptr<YieldTermStructure>
     flatRate(Rate forward, const DayCounter& dc) {
-        return flatRate(boost::shared_ptr<Quote>(new SimpleQuote(forward)),
+        return flatRate(ext::shared_ptr<Quote>(new SimpleQuote(forward)),
                         dc);
     }
 
 
-    boost::shared_ptr<BlackVolTermStructure>
+    ext::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
-            const boost::shared_ptr<Quote>& vol,
+            const ext::shared_ptr<Quote>& vol,
             const DayCounter& dc) {
-        return boost::shared_ptr<BlackVolTermStructure>(new
+        return ext::shared_ptr<BlackVolTermStructure>(new
             BlackConstantVol(today, NullCalendar(), Handle<Quote>(vol), dc));
     }
 
-    boost::shared_ptr<BlackVolTermStructure>
+    ext::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today, Volatility vol,
             const DayCounter& dc) {
         return flatVol(today,
-                       boost::shared_ptr<Quote>(new SimpleQuote(vol)),
+                       ext::shared_ptr<Quote>(new SimpleQuote(vol)),
                        dc);
     }
 
-    boost::shared_ptr<BlackVolTermStructure>
-    flatVol(const boost::shared_ptr<Quote>& vol,
+    ext::shared_ptr<BlackVolTermStructure>
+    flatVol(const ext::shared_ptr<Quote>& vol,
             const DayCounter& dc) {
-        return boost::shared_ptr<BlackVolTermStructure>(new
+        return ext::shared_ptr<BlackVolTermStructure>(new
             BlackConstantVol(0, NullCalendar(), Handle<Quote>(vol), dc));
     }
 
-    boost::shared_ptr<BlackVolTermStructure>
+    ext::shared_ptr<BlackVolTermStructure>
     flatVol(Volatility vol,
             const DayCounter& dc) {
-        return flatVol(boost::shared_ptr<Quote>(new SimpleQuote(vol)), dc);
+        return flatVol(ext::shared_ptr<Quote>(new SimpleQuote(vol)), dc);
     }
 
 
@@ -123,8 +123,6 @@ namespace QuantLib {
             return std::fabs(x1-x2);
     }
 
-
-    IndexHistoryCleaner::IndexHistoryCleaner() {}
 
     IndexHistoryCleaner::~IndexHistoryCleaner() {
         IndexManager::instance().clearHistories();

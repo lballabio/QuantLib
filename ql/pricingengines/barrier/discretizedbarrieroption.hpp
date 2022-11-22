@@ -37,7 +37,7 @@ namespace QuantLib {
                                  const StochasticProcess& process,
                                  const TimeGrid& grid = TimeGrid());
 
-        void reset(Size size);
+        void reset(Size size) override;
 
         const Array& vanilla() const { 
             return vanilla_.values(); 
@@ -47,13 +47,12 @@ namespace QuantLib {
            return arguments_;
         }
 
-        std::vector<Time> mandatoryTimes() const {
-            return stoppingTimes_;
-        }
+        std::vector<Time> mandatoryTimes() const override { return stoppingTimes_; }
 
         void checkBarrier(Array &optvalues, const Array &grid) const;
       protected:
-        void postAdjustValuesImpl();
+        void postAdjustValuesImpl() override;
+
       private:
         BarrierOption::arguments arguments_;
         std::vector<Time> stoppingTimes_;
@@ -66,13 +65,13 @@ namespace QuantLib {
                                  const StochasticProcess& process,
                                  const TimeGrid& grid = TimeGrid());
 
-        void reset(Size size);
+        void reset(Size size) override;
 
-        std::vector<Time> mandatoryTimes() const {
-            return unenhanced_.mandatoryTimes();
-        }
+        std::vector<Time> mandatoryTimes() const override { return unenhanced_.mandatoryTimes(); }
+
       protected:
-        void postAdjustValuesImpl();
+        void postAdjustValuesImpl() override;
+
       private:
         void adjustBarrier(Array &optvalues, const Array &grid);
         DiscretizedBarrierOption unenhanced_;

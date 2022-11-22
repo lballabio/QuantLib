@@ -36,14 +36,13 @@ namespace QuantLib {
     */
     class YoYOptionletStripper {
       public:
-        virtual ~YoYOptionletStripper() {}
+        virtual ~YoYOptionletStripper() = default;
 
         //! YoYOptionletStripper interface
         //@{
-        virtual void initialize(
-                       const boost::shared_ptr<YoYCapFloorTermPriceSurface> &,
-                       const boost::shared_ptr<YoYInflationCapFloorEngine> &,
-                       const Real slope) const = 0;
+        virtual void initialize(const ext::shared_ptr<YoYCapFloorTermPriceSurface>&,
+                                const ext::shared_ptr<YoYInflationCapFloorEngine>&,
+                                Real slope) const = 0;
         virtual Rate minStrike() const = 0;
         virtual Rate maxStrike() const = 0;
         virtual std::vector<Rate> strikes() const = 0;
@@ -52,9 +51,9 @@ namespace QuantLib {
         //@}
 
       protected:
-        mutable boost::shared_ptr<YoYCapFloorTermPriceSurface>
+        mutable ext::shared_ptr<YoYCapFloorTermPriceSurface>
                                                  YoYCapFloorTermPriceSurface_;
-        mutable boost::shared_ptr<YoYInflationCapFloorEngine> p_;
+        mutable ext::shared_ptr<YoYInflationCapFloorEngine> p_;
         mutable Period lag_;
         mutable Frequency frequency_;
         mutable bool indexIsInterpolated_;

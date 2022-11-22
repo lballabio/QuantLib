@@ -18,45 +18,41 @@
 */
 
 #include <ql/experimental/callablebonds/callablebondconstantvol.hpp>
-#include <ql/termstructures/volatility/flatsmilesection.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/flatsmilesection.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    CallableBondConstantVolatility::CallableBondConstantVolatility(
-                                                 const Date& referenceDate,
-                                                 Volatility volatility,
-                                                 const DayCounter& dayCounter)
+    CallableBondConstantVolatility::CallableBondConstantVolatility(const Date& referenceDate,
+                                                                   Volatility volatility,
+                                                                   DayCounter dayCounter)
     : CallableBondVolatilityStructure(referenceDate),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
-      dayCounter_(dayCounter), maxBondTenor_(100*Years) {}
+      volatility_(ext::shared_ptr<Quote>(new SimpleQuote(volatility))),
+      dayCounter_(std::move(dayCounter)), maxBondTenor_(100 * Years) {}
 
-    CallableBondConstantVolatility::CallableBondConstantVolatility(
-                                              const Date& referenceDate,
-                                              const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : CallableBondVolatilityStructure(referenceDate), volatility_(volatility),
-      dayCounter_(dayCounter), maxBondTenor_(100*Years) {
+    CallableBondConstantVolatility::CallableBondConstantVolatility(const Date& referenceDate,
+                                                                   Handle<Quote> volatility,
+                                                                   DayCounter dayCounter)
+    : CallableBondVolatilityStructure(referenceDate), volatility_(std::move(volatility)),
+      dayCounter_(std::move(dayCounter)), maxBondTenor_(100 * Years) {
         registerWith(volatility_);
     }
 
-    CallableBondConstantVolatility::CallableBondConstantVolatility(
-                                                 Natural settlementDays,
-                                                 const Calendar& calendar,
-                                                 Volatility volatility,
-                                                 const DayCounter& dayCounter)
+    CallableBondConstantVolatility::CallableBondConstantVolatility(Natural settlementDays,
+                                                                   const Calendar& calendar,
+                                                                   Volatility volatility,
+                                                                   DayCounter dayCounter)
     : CallableBondVolatilityStructure(settlementDays, calendar),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
-      dayCounter_(dayCounter), maxBondTenor_(100*Years) {}
+      volatility_(ext::shared_ptr<Quote>(new SimpleQuote(volatility))),
+      dayCounter_(std::move(dayCounter)), maxBondTenor_(100 * Years) {}
 
-    CallableBondConstantVolatility::CallableBondConstantVolatility(
-                                              Natural settlementDays,
-                                              const Calendar& calendar,
-                                              const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : CallableBondVolatilityStructure(settlementDays, calendar),
-      volatility_(volatility), dayCounter_(dayCounter),
-      maxBondTenor_(100*Years) {
+    CallableBondConstantVolatility::CallableBondConstantVolatility(Natural settlementDays,
+                                                                   const Calendar& calendar,
+                                                                   Handle<Quote> volatility,
+                                                                   DayCounter dayCounter)
+    : CallableBondVolatilityStructure(settlementDays, calendar), volatility_(std::move(volatility)),
+      dayCounter_(std::move(dayCounter)), maxBondTenor_(100 * Years) {
         registerWith(volatility_);
     }
 
@@ -72,11 +68,11 @@ namespace QuantLib {
     }
 
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     CallableBondConstantVolatility::smileSectionImpl(Time optionTime,
                                                      Time) const {
         Volatility atmVol = volatility_->value();
-        return boost::shared_ptr<SmileSection>(
+        return ext::shared_ptr<SmileSection>(
                                     new FlatSmileSection(optionTime,
                                                          atmVol,
                                                          dayCounter_));

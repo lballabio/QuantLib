@@ -17,26 +17,30 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/distributions/chisquaredistribution.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/processes/gjrgarchprocess.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
+#include <ql/processes/gjrgarchprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    GJRGARCHProcess::GJRGARCHProcess(
-                              const Handle<YieldTermStructure>& riskFreeRate,
-                              const Handle<YieldTermStructure>& dividendYield,
-                              const Handle<Quote>& s0, Real v0, 
-                              Real omega, Real alpha, Real beta, 
-                              Real gamma, Real lambda, Real daysPerYear, Discretization d)
-    : StochasticProcess(boost::shared_ptr<discretization>(
-                                                    new EulerDiscretization)),
-      riskFreeRate_(riskFreeRate), dividendYield_(dividendYield), s0_(s0),
-      v0_(v0), omega_(omega), alpha_(alpha), 
-      beta_(beta), gamma_(gamma), lambda_(lambda), daysPerYear_(daysPerYear),
-      discretization_(d) {
+    GJRGARCHProcess::GJRGARCHProcess(Handle<YieldTermStructure> riskFreeRate,
+                                     Handle<YieldTermStructure> dividendYield,
+                                     Handle<Quote> s0,
+                                     Real v0,
+                                     Real omega,
+                                     Real alpha,
+                                     Real beta,
+                                     Real gamma,
+                                     Real lambda,
+                                     Real daysPerYear,
+                                     Discretization d)
+    : StochasticProcess(ext::shared_ptr<discretization>(new EulerDiscretization)),
+      riskFreeRate_(std::move(riskFreeRate)), dividendYield_(std::move(dividendYield)),
+      s0_(std::move(s0)), v0_(v0), omega_(omega), alpha_(alpha), beta_(beta), gamma_(gamma),
+      lambda_(lambda), daysPerYear_(daysPerYear), discretization_(d) {
         registerWith(riskFreeRate_);
         registerWith(dividendYield_);
         registerWith(s0_);
@@ -46,34 +50,30 @@ namespace QuantLib {
         return 2;
     }
 
-    Disposable<Array> GJRGARCHProcess::initialValues() const {
-        Array tmp(2);
-        tmp[0] = s0_->value();
-        tmp[1] = daysPerYear_*v0_;
-        return tmp;
+    Array GJRGARCHProcess::initialValues() const {
+        return { s0_->value(), daysPerYear_*v0_ };
     }
 
-    Disposable<Array> GJRGARCHProcess::drift(Time t, const Array& x) const {
-        Array tmp(2);
+    Array GJRGARCHProcess::drift(Time t, const Array& x) const {
         const Real N = CumulativeNormalDistribution()(lambda_);
         const Real n = std::exp(-lambda_*lambda_/2.0)/std::sqrt(2*M_PI);
         const Real q2 = 1.0 + lambda_*lambda_;
         const Real q3 = lambda_*n + N + lambda_*lambda_*N;
         const Real vol = (x[1] > 0.0) ? std::sqrt(x[1])
-                         : (discretization_ == Reflection) ? - std::sqrt(-x[1])
+                         : (discretization_ == Reflection) ? Real(-std::sqrt(-x[1]))
                          : 0.0;
 
-        tmp[0] = riskFreeRate_->forwardRate(t, t, Continuous)
-               - dividendYield_->forwardRate(t, t, Continuous)
-               - 0.5 * vol * vol;
-
-        tmp[1] = daysPerYear_*daysPerYear_*omega_ + daysPerYear_*(beta_ 
+        return {
+            riskFreeRate_->forwardRate(t, t, Continuous).rate()
+               - dividendYield_->forwardRate(t, t, Continuous).rate()
+               - 0.5 * vol * vol,
+            daysPerYear_*daysPerYear_*omega_ + daysPerYear_*(beta_ 
                                              + alpha_*q2 + gamma_*q3 - 1.0) *
-           ((discretization_==PartialTruncation) ? x[1] : vol*vol);
-        return tmp;
+               ((discretization_==PartialTruncation) ? x[1] : vol*vol)
+        };
     }
 
-    Disposable<Matrix> GJRGARCHProcess::diffusion(Time, const Array& x) const {
+    Matrix GJRGARCHProcess::diffusion(Time, const Array& x) const {
         /* the correlation matrix is
            |  1   rho |
            | rho   1  |
@@ -94,7 +94,7 @@ namespace QuantLib {
         const Real sigma13 = -2.0*n - 2*lambda_*N;
         const Real sigma23 = 2.0*N + sigma12*sigma13;
         const Real vol = (x[1] > 0.0) ? std::sqrt(x[1])
-                         : (discretization_ == Reflection) ? - std::sqrt(-x[1])
+                         : (discretization_ == Reflection) ? Real(- std::sqrt(-x[1]))
                          : 1e-8; // set vol to (almost) zero but still
                                  // expose some correlation information
         const Real rho1 = std::sqrt(daysPerYear_)*(alpha_*sigma12 
@@ -111,16 +111,13 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Array> GJRGARCHProcess::apply(const Array& x0,
-                                           const Array& dx) const {
-        Array tmp(2);
-        tmp[0] = x0[0] * std::exp(dx[0]);
-        tmp[1] = x0[1] + dx[1];
-        return tmp;
+    Array GJRGARCHProcess::apply(const Array& x0,
+                                 const Array& dx) const {
+        return { x0[0] * std::exp(dx[0]), x0[1] + dx[1] };
     }
 
-    Disposable<Array> GJRGARCHProcess::evolve(Time t0, const Array& x0,
-                                            Time dt, const Array& dw) const {
+    Array GJRGARCHProcess::evolve(Time t0, const Array& x0,
+                                  Time dt, const Array& dw) const {
         Array retVal(2);
         Real vol, mu, nu;
 
@@ -150,9 +147,9 @@ namespace QuantLib {
           //  stochastic volatility models",
           // Working Paper, Tinbergen Institute
           case PartialTruncation:
-            vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
+            vol = (x0[1] > 0.0) ? Real(std::sqrt(x0[1])) : 0.0;
+            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
                     - 0.5 * vol * vol;
             nu = daysPerYear_*daysPerYear_*omega_ 
                 + daysPerYear_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * x0[1];
@@ -161,9 +158,9 @@ namespace QuantLib {
             retVal[1] = x0[1] + nu*dt + sdt*vol*vol*(rho1*dw[0] + rho2*dw[1]);
             break;
           case FullTruncation:
-            vol = (x0[1] > 0.0) ? std::sqrt(x0[1]) : 0.0;
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
+            vol = (x0[1] > 0.0) ? Real(std::sqrt(x0[1])) : 0.0;
+            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
                     - 0.5 * vol * vol;
             nu = daysPerYear_*daysPerYear_*omega_ 
                 + daysPerYear_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * vol *vol;
@@ -173,8 +170,8 @@ namespace QuantLib {
             break;
           case Reflection:
             vol = std::sqrt(std::fabs(x0[1]));
-            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous)
-                  - dividendYield_->forwardRate(t0, t0+dt, Continuous)
+            mu =    riskFreeRate_->forwardRate(t0, t0+dt, Continuous).rate()
+                  - dividendYield_->forwardRate(t0, t0+dt, Continuous).rate()
                     - 0.5 * vol*vol;
             nu = daysPerYear_*daysPerYear_*omega_ 
                 + daysPerYear_*(beta_ + alpha_*q2 + gamma_*q3 - 1.0) * vol * vol;

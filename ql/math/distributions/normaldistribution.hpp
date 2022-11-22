@@ -41,8 +41,11 @@ namespace QuantLib {
               CumulativeNormalDistribution and InverseCumulativeNormal
               classes.
     */
-    class NormalDistribution : public std::unary_function<Real,Real> {
+    class NormalDistribution {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         NormalDistribution(Real average = 0.0,
                            Real sigma = 1.0);
         // function
@@ -65,9 +68,11 @@ namespace QuantLib {
         Handbook of Mathematical Functions,
         Dover Publications, New York (1972)
     */
-    class CumulativeNormalDistribution
-    : public std::unary_function<Real,Real> {
+    class CumulativeNormalDistribution {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         CumulativeNormalDistribution(Real average = 0.0,
                                      Real sigma   = 1.0);
         // function
@@ -98,9 +103,11 @@ namespace QuantLib {
       variants would not preserve the sequence's low-discrepancy.
 
     */
-    class InverseCumulativeNormal
-        : public std::unary_function<Real,Real> {
+    class InverseCumulativeNormal {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         InverseCumulativeNormal(Real average = 0.0,
                                 Real sigma   = 1.0);
         // function
@@ -197,9 +204,11 @@ namespace QuantLib {
         Peter J. Acklam's approximation is better and is available
         as QuantLib::InverseCumulativeNormal
     */
-    class MoroInverseCumulativeNormal
-    : public std::unary_function<Real,Real> {
+    class MoroInverseCumulativeNormal {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         MoroInverseCumulativeNormal(Real average = 0.0,
                                     Real sigma   = 1.0);
         // function
@@ -238,9 +247,11 @@ namespace QuantLib {
          insufficient accuracy compared to the epsilon for type double,
          do we clean up the result using Halley iteration.
     */
-    class MaddockInverseCumulativeNormal
-    : public std::unary_function<Real,Real> {
+    class MaddockInverseCumulativeNormal {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         MaddockInverseCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
@@ -250,8 +261,11 @@ namespace QuantLib {
     };
 
     //! Maddock's cumulative normal distribution class
-    class MaddockCumulativeNormal : public std::unary_function<Real,Real> {
+    class MaddockCumulativeNormal {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         MaddockCumulativeNormal(Real average = 0.0,
                                        Real sigma   = 1.0);
         Real operator()(Real x) const;
@@ -281,7 +295,7 @@ namespace QuantLib {
         Real exponent = -(deltax*deltax)/denominator_;
         // debian alpha had some strange problem in the very-low range
         return exponent <= -690.0 ? 0.0 :  // exp(x) < 1.0e-300 anyway
-            normalizationFactor_*std::exp(exponent);
+            Real(normalizationFactor_*std::exp(exponent));
     }
 
     inline Real NormalDistribution::derivative(Real x) const {

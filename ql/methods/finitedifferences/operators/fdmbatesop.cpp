@@ -21,55 +21,47 @@
     \brief Bates linear operator
 */
 
-#include <ql/methods/finitedifferences/operators/fdmbatesop.hpp>
-
-#include <ql/processes/batesprocess.hpp>
-#include <ql/quotes/simplequote.hpp>
-#include <ql/math/matrix.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/matrix.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
-#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
+#include <ql/methods/finitedifferences/operators/fdmbatesop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
-
-using boost::shared_ptr;
+#include <ql/processes/batesprocess.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmBatesOp::FdmBatesOp(const shared_ptr<FdmMesher>& mesher,
-                           const shared_ptr<BatesProcess>& batesProcess,
-                           const FdmBoundaryConditionSet& bcSet,
-                           const Size integroIntegrationOrder, 
-                           const shared_ptr<FdmQuantoHelper>& quantoHelper)
-    : lambda_(batesProcess->lambda()), 
-      delta_ (batesProcess->delta()), 
-      nu_    (batesProcess->nu()),
-      m_(std::exp(nu_+0.5*delta_*delta_)-1.0),
-      gaussHermiteIntegration_(integroIntegrationOrder),
-      mesher_(mesher),
-      bcSet_(bcSet),
+    FdmBatesOp::FdmBatesOp(const ext::shared_ptr<FdmMesher>& mesher,
+                           const ext::shared_ptr<BatesProcess>& batesProcess,
+                           FdmBoundaryConditionSet bcSet,
+                           const Size integroIntegrationOrder,
+                           const ext::shared_ptr<FdmQuantoHelper>& quantoHelper)
+    : lambda_(batesProcess->lambda()), delta_(batesProcess->delta()), nu_(batesProcess->nu()),
+      m_(std::exp(nu_ + 0.5 * delta_ * delta_) - 1.0),
+      gaussHermiteIntegration_(integroIntegrationOrder), mesher_(mesher), bcSet_(std::move(bcSet)),
       hestonOp_(new FdmHestonOp(
-        mesher,
-        shared_ptr<HestonProcess>(new HestonProcess(
-          batesProcess->riskFreeRate(),
-          Handle<YieldTermStructure>(
-            shared_ptr<ZeroSpreadedTermStructure>(new
-              ZeroSpreadedTermStructure(
-                batesProcess->dividendYield(),
-                Handle<Quote>(shared_ptr<Quote>(new SimpleQuote(lambda_*m_))),
-                Continuous,
-                NoFrequency,
-                batesProcess->dividendYield()->dayCounter()))),
-          batesProcess->s0(),
-          batesProcess->v0(),
-          batesProcess->kappa(),
-          batesProcess->theta(),
-          batesProcess->sigma(),
-          batesProcess->rho())),
-        quantoHelper)) {}
+          mesher,
+          ext::make_shared<HestonProcess>(
+              batesProcess->riskFreeRate(),
+              Handle<YieldTermStructure>(ext::make_shared<ZeroSpreadedTermStructure>(
+                  batesProcess->dividendYield(),
+                  Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(lambda_ * m_))),
+                  Continuous,
+                  NoFrequency,
+                  batesProcess->dividendYield()->dayCounter())),
+              batesProcess->s0(),
+              batesProcess->v0(),
+              batesProcess->kappa(),
+              batesProcess->theta(),
+              batesProcess->sigma(),
+              batesProcess->rho()),
+          quantoHelper)) {}
 
     FdmBatesOp::IntegroIntegrand::IntegroIntegrand(
-                    const shared_ptr<LinearInterpolation>& interpl,
+                    const ext::shared_ptr<LinearInterpolation>& interpl,
                     const FdmBoundaryConditionSet& bcSet,
                     Real x, Real delta, Real nu)
     : x_(x), delta_(delta), nu_(nu), 
@@ -77,26 +69,25 @@ namespace QuantLib {
                     
     Real FdmBatesOp::IntegroIntegrand::operator()(Real y) const {
         const Real x = x_ + M_SQRT2*delta_*y + nu_;
-        Real valueOfDerivative = interpl_->operator()(x, true);
-        
-        for (FdmBoundaryConditionSet::const_iterator iter=bcSet_.begin();
-            iter < bcSet_.end(); ++iter) {
+        Real valueOfDerivative = (*interpl_)(x, true);
 
-            const boost::shared_ptr<FdmDirichletBoundary> dirichlet
-                = boost::dynamic_pointer_cast<FdmDirichletBoundary>(*iter);
+        for (auto iter = bcSet_.begin(); iter < bcSet_.end(); ++iter) {
+
+            const ext::shared_ptr<FdmDirichletBoundary> dirichlet
+                = ext::dynamic_pointer_cast<FdmDirichletBoundary>(*iter);
 
             QL_REQUIRE(dirichlet, "FdmBatesOp can only deal with Dirichlet "
-                                  "boundary conditions.")
+                                  "boundary conditions.");
 
             valueOfDerivative
                 = dirichlet->applyAfterApplying(x, valueOfDerivative);
         }
-        
+
         return std::exp(-y*y)*valueOfDerivative;
     }
     
-    Disposable<Array> FdmBatesOp::integro(const Array& r) const {
-        const shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+    Array FdmBatesOp::integro(const Array& r) const {
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
         
         QL_REQUIRE(layout->dim().size() == 2, "invalid layout dimension");
 
@@ -113,10 +104,10 @@ namespace QuantLib {
             f[j][i] = r[iter.index()];
             
         }
-        std::vector<shared_ptr<LinearInterpolation> > interpl(f.rows());
+        std::vector<ext::shared_ptr<LinearInterpolation> > interpl(f.rows());
         for (Size i=0; i < f.rows(); ++i) {
-            interpl[i] = shared_ptr<LinearInterpolation>(
-                new LinearInterpolation(x.begin(), x.end(), f.row_begin(i)));
+            interpl[i] = ext::make_shared<LinearInterpolation>(
+                x.begin(), x.end(), f.row_begin(i));
         }
         
         Array integral(r.size());
@@ -132,10 +123,8 @@ namespace QuantLib {
         return lambda_*(integral-r);
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-    Disposable<std::vector<SparseMatrix> > FdmBatesOp::toMatrixDecomp() const {
+    std::vector<SparseMatrix> FdmBatesOp::toMatrixDecomp() const {
         QL_FAIL("not implemented");
     }
-#endif
 
 }

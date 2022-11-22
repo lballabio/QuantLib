@@ -30,7 +30,7 @@
 #include <ql/cashflows/duration.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/interestrate.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -40,14 +40,11 @@ namespace QuantLib {
     /*! \todo add tests */
     class CashFlows {
       private:
-        CashFlows();
-        CashFlows(const CashFlows&);
-
-        class IrrFinder : public std::unary_function<Rate, Real> {
+        class IrrFinder {
           public:
             IrrFinder(const Leg& leg,
                       Real npv,
-                      const DayCounter& dayCounter,
+                      DayCounter dayCounter,
                       Compounding comp,
                       Frequency freq,
                       bool includeSettlementDateFlows,
@@ -68,6 +65,9 @@ namespace QuantLib {
             Date settlementDate_, npvDate_;
         };
       public:
+        CashFlows() = delete;
+        CashFlows(const CashFlows&) = delete;
+
         //! \name Date functions
         //@{
         static Date startDate(const Leg& leg);
@@ -257,7 +257,7 @@ namespace QuantLib {
                         Date npvDate = Date());
         //! Implied internal rate of return.
         /*! The function verifies
-            the theoretical existance of an IRR and numerically
+            the theoretical existence of an IRR and numerically
             establishes the IRR to the desired precision.
         */
         static Rate yield(const Leg& leg,
@@ -273,7 +273,7 @@ namespace QuantLib {
                           Rate guess = 0.05);
 
         template <typename Solver>
-        static Rate yield(Solver solver,
+        static Rate yield(const Solver& solver,
                           const Leg& leg,
                           Real npv,
                           const DayCounter& dayCounter,
@@ -403,7 +403,7 @@ namespace QuantLib {
             and the relative frequency and day counter.
         */
         static Real npv(const Leg& leg,
-                        const boost::shared_ptr<YieldTermStructure>& discount,
+                        const ext::shared_ptr<YieldTermStructure>& discount,
                         Spread zSpread,
                         const DayCounter& dayCounter,
                         Compounding compounding,
@@ -414,7 +414,7 @@ namespace QuantLib {
         //! implied Z-spread.
         static Spread zSpread(const Leg& leg,
                               Real npv,
-                              const boost::shared_ptr<YieldTermStructure>&,
+                              const ext::shared_ptr<YieldTermStructure>&,
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
@@ -426,7 +426,7 @@ namespace QuantLib {
                               Rate guess = 0.0);
         //! deprecated implied Z-spread.
         static Spread zSpread(const Leg& leg,
-                              const boost::shared_ptr<YieldTermStructure>& d,
+                              const ext::shared_ptr<YieldTermStructure>& d,
                               Real npv,
                               const DayCounter& dayCounter,
                               Compounding compounding,

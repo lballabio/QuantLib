@@ -25,27 +25,27 @@
 #define quantlib_data_formatters_hpp
 
 #include <ql/utilities/null.hpp>
-#include <iosfwd>
+#include <ostream>
 
 namespace QuantLib {
 
     namespace detail {
 
         template <typename T> struct null_checker {
-            null_checker(T value) : value(value) {}
+            explicit null_checker(T value) : value(value) {}
             T value;
         };
         template <typename T>
         std::ostream& operator<<(std::ostream&, const null_checker<T>&);
 
         struct ordinal_holder {
-            ordinal_holder(Size n) : n(n) {}
+            explicit ordinal_holder(Size n) : n(n) {}
             Size n;
         };
         std::ostream& operator<<(std::ostream&, const ordinal_holder&);
 
         template <typename T> struct power_of_two_holder {
-            power_of_two_holder(T n) : n(n) {}
+            explicit power_of_two_holder(T n) : n(n) {}
             T n;
         };
         template <typename T>
@@ -53,7 +53,7 @@ namespace QuantLib {
                                  const power_of_two_holder<T>&);
 
         struct percent_holder {
-            percent_holder(Real value) : value(value) {}
+            explicit percent_holder(Real value) : value(value) {}
             Real value;
         };
         std::ostream& operator<<(std::ostream&, const percent_holder&);

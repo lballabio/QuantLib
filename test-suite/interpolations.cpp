@@ -6,6 +6,7 @@
  Copyright (C) 2007 Giorgio Facchinetti
  Copyright (C) 2009 Dimitri Reiswich
  Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2018 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,34 +24,33 @@
 
 #include "interpolations.hpp"
 #include "utilities.hpp"
-#include <ql/utilities/dataformatters.hpp>
-#include <ql/utilities/null.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
+#include <ql/math/bspline.hpp>
+#include <ql/math/functional.hpp>
+#include <ql/math/integrals/simpsonintegral.hpp>
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
-#include <ql/math/interpolations/forwardflatinterpolation.hpp>
+#include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
+#include <ql/math/interpolations/chebyshevinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
-#include <ql/math/interpolations/multicubicspline.hpp>
-#include <ql/math/interpolations/sabrinterpolation.hpp>
+#include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation.hpp>
 #include <ql/math/interpolations/kernelinterpolation2d.hpp>
 #include <ql/math/interpolations/lagrangeinterpolation.hpp>
-#include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/math/interpolations/multicubicspline.hpp>
+#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/kernelfunctions.hpp>
-#include <ql/math/functional.hpp>
-#include <ql/math/richardsonextrapolation.hpp>
-#include <ql/math/randomnumbers/sobolrsg.hpp>
 #include <ql/math/optimization/levenbergmarquardt.hpp>
-#include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
-#include <boost/foreach.hpp>
-#include <boost/assign/std/vector.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <ql/math/randomnumbers/sobolrsg.hpp>
+#include <ql/math/richardsonextrapolation.hpp>
+#include <ql/tuple.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <ql/utilities/null.hpp>
+#include <cmath>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-
-#define BEGIN(x) (x+0)
-#define END(x) (x+LENGTH(x))
 
 namespace {
 
@@ -86,7 +86,7 @@ namespace {
             Real interpolated = cubic(*xBegin);
             if (std::fabs(interpolated-*yBegin) > tolerance) {
                 BOOST_ERROR(type << " interpolation failed at x = " << *xBegin
-                            << QL_SCIENTIFIC
+                            << std::scientific
                             << "\n    interpolated value: " << interpolated
                             << "\n    expected value:     " << *yBegin
                             << "\n    error:              "
@@ -108,7 +108,7 @@ namespace {
                         << "at x = " << x
                         << "\n    interpolated value: " << interpolated
                         << "\n    expected value:     " << value
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << "\n    error:              " << error);
         }
     }
@@ -125,7 +125,7 @@ namespace {
                         << "at x = " << x
                         << "\n    interpolated value: " << interpolated
                         << "\n    expected value:     " << value
-                        << QL_SCIENTIFIC
+                        << std::scientific
                         << "\n    error:              " << error);
         }
     }
@@ -168,9 +168,9 @@ namespace {
     }
 
     template <class F>
-    class errorFunction : public std::unary_function<Real,Real> {
+    class errorFunction {
       public:
-        errorFunction(const F& f) : f_(f) {}
+        errorFunction(F f) : f_(std::move(f)) {}
         Real operator()(Real x) const {
             Real temp = f_(x)-std::exp(-x*x);
             return temp*temp;
@@ -357,18 +357,18 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
     // Natural spline
     CubicInterpolation f = CubicInterpolation(
-                                    BEGIN(RPN15A_x), END(RPN15A_x),
-                                    BEGIN(RPN15A_y),
+                                    std::begin(RPN15A_x), std::end(RPN15A_x),
+                                    std::begin(RPN15A_y),
                                     CubicInterpolation::Spline, false,
                                     CubicInterpolation::SecondDerivative, 0.0,
                                     CubicInterpolation::SecondDerivative, 0.0);
     f.update();
     checkValues("Natural spline", f,
-                BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
+                std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y));
     check2ndDerivativeValue("Natural spline", f,
-                            *BEGIN(RPN15A_x), 0.0);
+                            *std::begin(RPN15A_x), 0.0);
     check2ndDerivativeValue("Natural spline", f,
-                            *(END(RPN15A_x)-1), 0.0);
+                            *(std::end(RPN15A_x)-1), 0.0);
     // poor performance
     Real x_bad = 11.0;
     interpolated = f(x_bad);
@@ -382,17 +382,17 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // Clamped spline
-    f = CubicInterpolation(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
+    f = CubicInterpolation(std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y),
                            CubicInterpolation::Spline, false,
                            CubicInterpolation::FirstDerivative, 0.0,
                            CubicInterpolation::FirstDerivative, 0.0);
     f.update();
     checkValues("Clamped spline", f,
-                BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
+                std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y));
     check1stDerivativeValue("Clamped spline", f,
-                            *BEGIN(RPN15A_x), 0.0);
+                            *std::begin(RPN15A_x), 0.0);
     check1stDerivativeValue("Clamped spline", f,
-                            *(END(RPN15A_x)-1), 0.0);
+                            *(std::end(RPN15A_x)-1), 0.0);
     // poor performance
     interpolated = f(x_bad);
     if (interpolated<1.0) {
@@ -405,13 +405,13 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // Not-a-knot spline
-    f = CubicInterpolation(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
+    f = CubicInterpolation(std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y),
                            CubicInterpolation::Spline, false,
                            CubicInterpolation::NotAKnot, Null<Real>(),
                            CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
     checkValues("Not-a-knot spline", f,
-                BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
+                std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y));
     checkNotAKnotCondition("Not-a-knot spline", f);
     // poor performance
     interpolated = f(x_bad);
@@ -425,14 +425,14 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // MC natural spline values
-    f = CubicInterpolation(BEGIN(RPN15A_x), END(RPN15A_x),
-                           BEGIN(RPN15A_y),
+    f = CubicInterpolation(std::begin(RPN15A_x), std::end(RPN15A_x),
+                           std::begin(RPN15A_y),
                            CubicInterpolation::Spline, true,
                            CubicInterpolation::SecondDerivative, 0.0,
                            CubicInterpolation::SecondDerivative, 0.0);
     f.update();
     checkValues("MC natural spline", f,
-                BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
+                std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y));
     // good performance
     interpolated = f(x_bad);
     if (interpolated>1.0) {
@@ -445,17 +445,17 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // MC clamped spline values
-    f = CubicInterpolation(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
+    f = CubicInterpolation(std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y),
                            CubicInterpolation::Spline, true,
                            CubicInterpolation::FirstDerivative, 0.0,
                            CubicInterpolation::FirstDerivative, 0.0);
     f.update();
     checkValues("MC clamped spline", f,
-                BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
+                std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y));
     check1stDerivativeValue("MC clamped spline", f,
-                            *BEGIN(RPN15A_x), 0.0);
+                            *std::begin(RPN15A_x), 0.0);
     check1stDerivativeValue("MC clamped spline", f,
-                            *(END(RPN15A_x)-1), 0.0);
+                            *(std::end(RPN15A_x)-1), 0.0);
     // good performance
     interpolated = f(x_bad);
     if (interpolated>1.0) {
@@ -468,13 +468,13 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // MC not-a-knot spline values
-    f = CubicInterpolation(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
+    f = CubicInterpolation(std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y),
                            CubicInterpolation::Spline, true,
                            CubicInterpolation::NotAKnot, Null<Real>(),
                            CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
     checkValues("MC not-a-knot spline", f,
-                BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
+                std::begin(RPN15A_x), std::end(RPN15A_x), std::begin(RPN15A_y));
     // good performance
     interpolated = f(x_bad);
     if (interpolated>1.0) {
@@ -503,8 +503,8 @@ void InterpolationTest::testSplineOnGenericValues() {
     std::vector<Real> x35(3);
 
     // Natural spline
-    CubicInterpolation f(BEGIN(generic_x), END(generic_x),
-                         BEGIN(generic_y),
+    CubicInterpolation f(std::begin(generic_x), std::end(generic_x),
+                         std::begin(generic_y),
                          CubicInterpolation::Spline, false,
                          CubicInterpolation::SecondDerivative,
                          generic_natural_y2[0],
@@ -512,7 +512,7 @@ void InterpolationTest::testSplineOnGenericValues() {
                          generic_natural_y2[n-1]);
     f.update();
     checkValues("Natural spline", f,
-                BEGIN(generic_x), END(generic_x), BEGIN(generic_y));
+                std::begin(generic_x), std::end(generic_x), std::begin(generic_y));
     // cached second derivative
     for (i=0; i<n; i++) {
         interpolated = f.secondDerivative(generic_x[i]);
@@ -530,28 +530,28 @@ void InterpolationTest::testSplineOnGenericValues() {
 
     // Clamped spline
     Real y1a = 0.0, y1b = 0.0;
-    f = CubicInterpolation(BEGIN(generic_x), END(generic_x), BEGIN(generic_y),
+    f = CubicInterpolation(std::begin(generic_x), std::end(generic_x), std::begin(generic_y),
                     CubicInterpolation::Spline, false,
                     CubicInterpolation::FirstDerivative, y1a,
                     CubicInterpolation::FirstDerivative, y1b);
     f.update();
     checkValues("Clamped spline", f,
-                BEGIN(generic_x), END(generic_x), BEGIN(generic_y));
+                std::begin(generic_x), std::end(generic_x), std::begin(generic_y));
     check1stDerivativeValue("Clamped spline", f,
-                            *BEGIN(generic_x), 0.0);
+                            *std::begin(generic_x), 0.0);
     check1stDerivativeValue("Clamped spline", f,
-                            *(END(generic_x)-1), 0.0);
+                            *(std::end(generic_x)-1), 0.0);
     x35[0] = f(3.5);
 
 
     // Not-a-knot spline
-    f = CubicInterpolation(BEGIN(generic_x), END(generic_x), BEGIN(generic_y),
+    f = CubicInterpolation(std::begin(generic_x), std::end(generic_x), std::begin(generic_y),
                            CubicInterpolation::Spline, false,
                            CubicInterpolation::NotAKnot, Null<Real>(),
                            CubicInterpolation::NotAKnot, Null<Real>());
     f.update();
     checkValues("Not-a-knot spline", f,
-                BEGIN(generic_x), END(generic_x), BEGIN(generic_y));
+                std::begin(generic_x), std::end(generic_x), std::begin(generic_y));
     checkNotAKnotCondition("Not-a-knot spline", f);
 
     x35[2] = f(3.5);
@@ -903,7 +903,7 @@ void InterpolationTest::testAsFunctor() {
     const Real x[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
     const Real y[] = { 5.0, 4.0, 3.0, 2.0, 1.0 };
 
-   Interpolation f = LinearInterpolation(BEGIN(x), END(x), BEGIN(y));
+   Interpolation f = LinearInterpolation(std::begin(x), std::end(x), std::begin(y));
     f.update();
 
     const Real x2[] = { -2.0, -1.0, 0.0, 1.0, 3.0, 4.0, 5.0, 6.0, 7.0 };
@@ -913,7 +913,7 @@ void InterpolationTest::testAsFunctor() {
 
     // case 1: extrapolation not allowed
     try {
-        std::transform(BEGIN(x2), END(x2), y2.begin(), f);
+        std::transform(std::begin(x2), std::end(x2), y2.begin(), f);
         throw NotThrown();
     }
     catch (Error&) {
@@ -926,17 +926,63 @@ void InterpolationTest::testAsFunctor() {
     // case 2: enable extrapolation
     f.enableExtrapolation();
     y2 = std::vector<Real>(N);
-    std::transform(BEGIN(x2), END(x2), y2.begin(), f);
+    std::transform(std::begin(x2), std::end(x2), y2.begin(), f);
     for (Size i=0; i<N; i++) {
         Real expected = 5.0-x2[i];
         if (std::fabs(y2[i]-expected) > tolerance)
             BOOST_ERROR(
                 "failed to reproduce " << io::ordinal(i+1) << " expected datum"
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << y2[i]
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(y2[i]-expected));
+    }
+}
+
+
+namespace {
+
+    Integer sign(Real y1, Real y2) {
+        return y1 == y2 ? 0 :
+               y1 < y2 ?  1 :
+                         -1 ;
+    }
+
+}
+
+void InterpolationTest::testFritschButland() {
+
+    BOOST_TEST_MESSAGE("Testing Fritsch-Butland interpolation...");
+
+    const Real x[5] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+    const Real y[][5] = {{ 1.0, 2.0, 1.0, 1.0, 2.0 },
+                         { 1.0, 2.0, 1.0, 1.0, 1.0 },
+                         { 2.0, 1.0, 0.0, 2.0, 3.0 }};
+
+    for (Size i=0; i<3; ++i) {
+
+        Interpolation f = FritschButlandCubic(std::begin(x), std::end(x), std::begin(y[i]));
+        f.update();
+
+        for (Size j=0; j<4; ++j) {
+            Real left_knot = x[j];
+            Integer expected_sign = sign(y[i][j], y[i][j+1]);
+            for (Size k=0; k<10; ++k) {
+                Real x1 = left_knot + k*0.1, x2 = left_knot + (k+1)*0.1;
+                Real y1 = f(x1), y2 = f(x2);
+                if (std::isnan(y1))
+                    BOOST_ERROR("NaN detected in case " << i << ":"
+                                << std::fixed
+                                << "\n    f(" << x1 << ") = " << y1);
+                else if (sign(y1, y2) != expected_sign)
+                    BOOST_ERROR("interpolation is not monotonic "
+                                "in case " << i << ":"
+                                << std::fixed
+                                << "\n    f(" << x1 << ") = " << y1
+                                << "\n    f(" << x2 << ") = " << y2);
+            }
+        }
     }
 }
 
@@ -948,7 +994,7 @@ void InterpolationTest::testBackwardFlat() {
     const Real x[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
     const Real y[] = { 5.0, 4.0, 3.0, 2.0, 1.0 };
 
-    Interpolation f = BackwardFlatInterpolation(BEGIN(x), END(x), BEGIN(y));
+    Interpolation f = BackwardFlatInterpolation(std::begin(x), std::end(x), std::begin(y));
     f.update();
 
     Size N = LENGTH(x);
@@ -963,10 +1009,10 @@ void InterpolationTest::testBackwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to reproduce " << io::ordinal(i+1) << " datum"
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -978,10 +1024,10 @@ void InterpolationTest::testBackwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to interpolate correctly at " << p
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -994,10 +1040,10 @@ void InterpolationTest::testBackwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to extrapolate correctly at " << p
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     p = x[N-1] + 0.5;
@@ -1006,10 +1052,10 @@ void InterpolationTest::testBackwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to extrapolate correctly at " << p
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     // primitive at original points
@@ -1018,10 +1064,10 @@ void InterpolationTest::testBackwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to calculate primitive at " << x[0]
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     Real sum = 0.0;
@@ -1032,10 +1078,10 @@ void InterpolationTest::testBackwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to calculate primitive at " << x[i]
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1050,10 +1096,10 @@ void InterpolationTest::testBackwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to calculate primitive at " << x[i]
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1066,7 +1112,7 @@ void InterpolationTest::testForwardFlat() {
     const Real x[] = { 0.0, 1.0, 2.0, 3.0, 4.0 };
     const Real y[] = { 5.0, 4.0, 3.0, 2.0, 1.0 };
 
-    Interpolation f = ForwardFlatInterpolation(BEGIN(x), END(x), BEGIN(y));
+    Interpolation f = ForwardFlatInterpolation(std::begin(x), std::end(x), std::begin(y));
     f.update();
 
     Size N = LENGTH(x);
@@ -1081,10 +1127,10 @@ void InterpolationTest::testForwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to reproduce " << io::ordinal(i+1) << " datum"
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1096,10 +1142,10 @@ void InterpolationTest::testForwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to interpolate correctly at " << p
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1112,10 +1158,10 @@ void InterpolationTest::testForwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to extrapolate correctly at " << p
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     p = x[N-1] + 0.5;
@@ -1124,10 +1170,10 @@ void InterpolationTest::testForwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to extrapolate correctly at " << p
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     // primitive at original points
@@ -1136,10 +1182,10 @@ void InterpolationTest::testForwardFlat() {
     if (std::fabs(expected-calculated) > tolerance)
         BOOST_ERROR(
             "failed to calculate primitive at " << x[0]
-            << QL_FIXED
+            << std::fixed
             << "\n    expected:   " << expected
             << "\n    calculated: " << calculated
-            << QL_SCIENTIFIC
+            << std::scientific
             << "\n    error:      " << std::fabs(calculated-expected));
 
     Real sum = 0.0;
@@ -1150,10 +1196,10 @@ void InterpolationTest::testForwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to calculate primitive at " << x[i]
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 
@@ -1168,10 +1214,10 @@ void InterpolationTest::testForwardFlat() {
         if (std::fabs(expected-calculated) > tolerance)
             BOOST_ERROR(
                 "failed to calculate primitive at " << p
-                << QL_FIXED
+                << std::fixed
                 << "\n    expected:   " << expected
                 << "\n    calculated: " << calculated
-                << QL_SCIENTIFIC
+                << std::scientific
                 << "\n    error:      " << std::fabs(calculated-expected));
     }
 }
@@ -1247,94 +1293,92 @@ void InterpolationTest::testSabrInterpolation(){
 
     Real calibrationTolerance = 5.0e-8;
     // initialize optimization methods
-    std::vector<boost::shared_ptr<OptimizationMethod> > methods_;
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
+    std::vector<ext::shared_ptr<OptimizationMethod>> methods_ = {
+        ext::shared_ptr<OptimizationMethod>(new Simplex(0.01)),
+        ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8))
+    };
     // Initialize end criteria
-    boost::shared_ptr<EndCriteria> endCriteria(new
+    ext::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
     // Test looping over all possibilities
-    for (Size j=0; j<methods_.size(); ++j) {
-      for (Size i=0; i<LENGTH(vegaWeighted); ++i) {
-        for (Size k_a=0; k_a<LENGTH(isAlphaFixed); ++k_a) {
-          for (Size k_b=0; k_b<LENGTH(isBetaFixed); ++k_b) {
-            for (Size k_n=0; k_n<LENGTH(isNuFixed); ++k_n) {
-              for (Size k_r=0; k_r<LENGTH(isRhoFixed); ++k_r) {
-                  // to meet the tough calibration tolerance we need to lower the default
-                  // error threshold for accepting a calibration (to be more specific, some
-                  // of the new test cases arising from fixing a subset of the model's
-                  // parameters do not calibrate with the desired error using the initial
-                  // guess (i.e. optimization runs into a local minimum) - then a series of
-                  // random start values for optimization is chosen until our tight custom
-                  // error threshold is satisfied.
-                  SABRInterpolation sabrInterpolation(
-                      strikes.begin(), strikes.end(), volatilities.begin(),
-                      expiry, forward, isAlphaFixed[k_a] ? initialAlpha : alphaGuess,
-                      isBetaFixed[k_b] ? initialBeta : betaGuess,
-                      isNuFixed[k_n] ? initialNu : nuGuess,
-                      isRhoFixed[k_r] ? initialRho : rhoGuess, isAlphaFixed[k_a],
-                      isBetaFixed[k_b], isNuFixed[k_n], isRhoFixed[k_r],
-                      vegaWeighted[i], endCriteria, methods_[j], 1E-10);
-                  sabrInterpolation.update();
+    for (auto& method : methods_) {
+        for (bool i : vegaWeighted) {
+            for (bool k_a : isAlphaFixed) {
+                for (bool k_b : isBetaFixed) {
+                    for (bool k_n : isNuFixed) {
+                        for (bool k_r : isRhoFixed) {
+                            // to meet the tough calibration tolerance we need to lower the default
+                            // error threshold for accepting a calibration (to be more specific,
+                            // some of the new test cases arising from fixing a subset of the
+                            // model's parameters do not calibrate with the desired error using the
+                            // initial guess (i.e. optimization runs into a local minimum) - then a
+                            // series of random start values for optimization is chosen until our
+                            // tight custom error threshold is satisfied.
+                            SABRInterpolation sabrInterpolation(
+                                strikes.begin(), strikes.end(), volatilities.begin(), expiry,
+                                forward, k_a ? initialAlpha : alphaGuess,
+                                k_b ? initialBeta : betaGuess, k_n ? initialNu : nuGuess,
+                                k_r ? initialRho : rhoGuess, k_a, k_b, k_n, k_r, i, endCriteria,
+                                method, 1E-10);
+                            sabrInterpolation.update();
 
-                // Recover SABR calibration parameters
-                bool failed = false;
-                Real calibratedAlpha = sabrInterpolation.alpha();
-                Real calibratedBeta = sabrInterpolation.beta();
-                Real calibratedNu = sabrInterpolation.nu();
-                Real calibratedRho = sabrInterpolation.rho();
-                Real error;
+                            // Recover SABR calibration parameters
+                            bool failed = false;
+                            Real calibratedAlpha = sabrInterpolation.alpha();
+                            Real calibratedBeta = sabrInterpolation.beta();
+                            Real calibratedNu = sabrInterpolation.nu();
+                            Real calibratedRho = sabrInterpolation.rho();
+                            Real error;
 
-                // compare results: alpha
-                error = std::fabs(initialAlpha-calibratedAlpha);
-                if (error > calibrationTolerance) {
-                    BOOST_ERROR("\nfailed to calibrate alpha Sabr parameter:" <<
-                                "\n    expected:        " << initialAlpha <<
-                                "\n    calibrated:      " << calibratedAlpha <<
-                                "\n    error:           " << error);
-                    failed = true;
-                }
-                // Beta
-                error = std::fabs(initialBeta-calibratedBeta);
-                if (error > calibrationTolerance) {
-                    BOOST_ERROR("\nfailed to calibrate beta Sabr parameter:" <<
-                                "\n    expected:        " << initialBeta <<
-                                "\n    calibrated:      " << calibratedBeta <<
-                                "\n    error:           " << error);
-                    failed = true;
-                }
-                // Nu
-                error = std::fabs(initialNu-calibratedNu);
-                if (error > calibrationTolerance) {
-                    BOOST_ERROR("\nfailed to calibrate nu Sabr parameter:" <<
-                                "\n    expected:        " << initialNu <<
-                                "\n    calibrated:      " << calibratedNu <<
-                                "\n    error:           " << error);
-                    failed = true;
-                }
-                // Rho
-                error = std::fabs(initialRho-calibratedRho);
-                if (error > calibrationTolerance) {
-                    BOOST_ERROR("\nfailed to calibrate rho Sabr parameter:" <<
-                                "\n    expected:        " << initialRho <<
-                                "\n    calibrated:      " << calibratedRho <<
-                                "\n    error:           " << error);
-                    failed = true;
-                }
+                            // compare results: alpha
+                            error = std::fabs(initialAlpha - calibratedAlpha);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate alpha Sabr parameter:"
+                                            << "\n    expected:        " << initialAlpha
+                                            << "\n    calibrated:      " << calibratedAlpha
+                                            << "\n    error:           " << error);
+                                failed = true;
+                            }
+                            // Beta
+                            error = std::fabs(initialBeta - calibratedBeta);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate beta Sabr parameter:"
+                                            << "\n    expected:        " << initialBeta
+                                            << "\n    calibrated:      " << calibratedBeta
+                                            << "\n    error:           " << error);
+                                failed = true;
+                            }
+                            // Nu
+                            error = std::fabs(initialNu - calibratedNu);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate nu Sabr parameter:"
+                                            << "\n    expected:        " << initialNu
+                                            << "\n    calibrated:      " << calibratedNu
+                                            << "\n    error:           " << error);
+                                failed = true;
+                            }
+                            // Rho
+                            error = std::fabs(initialRho - calibratedRho);
+                            if (error > calibrationTolerance) {
+                                BOOST_ERROR("\nfailed to calibrate rho Sabr parameter:"
+                                            << "\n    expected:        " << initialRho
+                                            << "\n    calibrated:      " << calibratedRho
+                                            << "\n    error:           " << error);
+                                failed = true;
+                            }
 
-                if (failed)
-                    BOOST_FAIL("\nSabr calibration failure:" <<
-                               "\n    isAlphaFixed:    " << isAlphaFixed[k_a] <<
-                               "\n    isBetaFixed:     " << isBetaFixed[k_b] <<
-                               "\n    isNuFixed:       " << isNuFixed[k_n] <<
-                               "\n    isRhoFixed:      " << isRhoFixed[k_r] <<
-                               "\n    vegaWeighted[i]: " << vegaWeighted[i]);
-
-              }
+                            if (failed)
+                                BOOST_FAIL("\nSabr calibration failure:"
+                                           << "\n    isAlphaFixed:    " << k_a
+                                           << "\n    isBetaFixed:     " << k_b
+                                           << "\n    isNuFixed:       " << k_n
+                                           << "\n    isRhoFixed:      " << k_r
+                                           << "\n    vegaWeighted[i]: " << i);
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
 }
 
@@ -1343,30 +1387,18 @@ void InterpolationTest::testKernelInterpolation() {
 
     BOOST_TEST_MESSAGE("Testing kernel 1D interpolation...");
 
-    std::vector<Real> deltaGrid(5); // x-values, here delta in FX
-    deltaGrid[0]=0.10; deltaGrid[1]=0.25; deltaGrid[2]=0.50;
-    deltaGrid[3]=0.75; deltaGrid[4]=0.90;
-
-    std::vector<Real> yd1(deltaGrid.size()); // test y-values 1
-    yd1[0]=11.275; yd1[1]=11.125; yd1[2]=11.250;
-    yd1[3]=11.825; yd1[4]=12.625;
+    std::vector<Real> deltaGrid = {0.10, 0.25, 0.50, 0.75, 0.90};
 
     std::vector<Real> yd2(deltaGrid.size()); // test y-values 2
-    yd2[0]=16.025; yd2[1]=13.450; yd2[2]=11.350;
-    yd2[3]=10.150; yd2[4]=10.075;
 
     std::vector<Real> yd3(deltaGrid.size()); // test y-values 3
-    yd3[0]=10.3000; yd3[1]=9.6375; yd3[2]=9.2000;
-    yd3[3]=9.1125; yd3[4]=9.4000;
 
-    std::vector<std::vector<Real> > yd;
-    yd.push_back(yd1);
-    yd.push_back(yd2);
-    yd.push_back(yd3);
-
-    std::vector<Real> lambdaVec(5);
-    lambdaVec[0]=0.05; lambdaVec[1]=0.50; lambdaVec[2]=0.75;
-    lambdaVec[3]=1.65; lambdaVec[4]=2.55;
+    std::vector<std::vector<Real>> yd = {
+        {11.275, 11.125, 11.250, 11.825, 12.625},
+        {16.025, 13.450, 11.350, 10.150, 10.075},
+        {10.300, 9.6375, 9.2000, 9.1125, 9.4000}
+    };
+    std::vector<Real> lambdaVec = {0.05, 0.50, 0.75, 1.65, 2.55};
 
     Real tolerance = 2.0e-5;
 
@@ -1375,14 +1407,17 @@ void InterpolationTest::testKernelInterpolation() {
 
     // Check that y-values at knots are exactly the feeded y-values,
     // irrespective of kernel parameters
-    for (Size i=0; i<lambdaVec.size(); ++i) {
-        GaussianKernel myKernel(0,lambdaVec[i]);
+    for (Real i : lambdaVec) {
+        GaussianKernel myKernel(0, i);
 
-        for (Size j=0; j<yd.size(); ++j) {
+        for (auto currY : yd) {
 
-            std::vector<Real> currY = yd[j];
-            KernelInterpolation f(deltaGrid.begin(), deltaGrid.end(),
-                                  currY.begin(), myKernel);
+            KernelInterpolation f(deltaGrid.begin(), deltaGrid.end(), currY.begin(), myKernel
+#ifdef __FAST_MATH__
+                                  ,
+                                  1e-6
+#endif
+            );
             f.update();
 
             for (Size dIt=0; dIt< deltaGrid.size(); ++dIt) {
@@ -1393,7 +1428,7 @@ void InterpolationTest::testKernelInterpolation() {
 
                     BOOST_ERROR("Kernel interpolation failed at x = "
                                 << deltaGrid[dIt]
-                                << QL_SCIENTIFIC
+                                << std::scientific
                                 << "\n    interpolated value: " << calcVal
                                 << "\n    expected value:     " << expectedVal
                                 << "\n    error:              "
@@ -1403,30 +1438,17 @@ void InterpolationTest::testKernelInterpolation() {
         }
     }
 
-    std::vector<Real> testDeltaGrid(deltaGrid.size());
-    testDeltaGrid[0]=0.121; testDeltaGrid[1]=0.279; testDeltaGrid[2]=0.678;
-    testDeltaGrid[3]=0.790; testDeltaGrid[4]=0.980;
+    std::vector<Real> testDeltaGrid = {0.121, 0.279, 0.678, 0.790, 0.980};
 
     // Gaussian Kernel values for testDeltaGrid with a standard
     // deviation of 2.05 (the value is arbitrary.)  Source: parrallel
     // implementation in R, no literature sources found
 
-    std::vector<Real> ytd1(testDeltaGrid.size());
-    ytd1[0]=11.23847; ytd1[1]=11.12003; ytd1[2]=11.58932;
-    ytd1[3]=11.99168; ytd1[4]=13.29650;
-
-    std::vector<Real> ytd2(testDeltaGrid.size());
-    ytd2[0]=15.55922; ytd2[1]=13.11088; ytd2[2]=10.41615;
-    ytd2[3]=10.05153; ytd2[4]=10.50741;
-
-    std::vector<Real> ytd3(testDeltaGrid.size());
-    ytd3[0]= 10.17473; ytd3[1]= 9.557842; ytd3[2]= 9.09339;
-    ytd3[3]= 9.149687; ytd3[4]= 9.779971;
-
-    std::vector<std::vector<Real> > ytd;
-    ytd.push_back(ytd1);
-    ytd.push_back(ytd2);
-    ytd.push_back(ytd3);
+    std::vector<std::vector<Real>> ytd = {
+        {11.23847, 11.12003, 11.58932, 11.99168, 13.29650},
+        {15.55922, 13.11088, 10.41615, 10.05153, 10.50741},
+        {10.17473, 9.557842, 9.09339,  9.149687, 9.779971}
+    };
 
     GaussianKernel myKernel(0,2.05);
 
@@ -1450,7 +1472,7 @@ void InterpolationTest::testKernelInterpolation() {
 
                 BOOST_ERROR("Kernel interpolation failed at x = "
                             << deltaGrid[dIt]
-                            << QL_SCIENTIFIC
+                            << std::scientific
                             << "\n    interpolated value: " << calcVal
                             << "\n    expected value:     " << expectedVal
                             << "\n    error:              "
@@ -1656,6 +1678,73 @@ void InterpolationTest::testBicubicUpdate() {
     }
 }
 
+
+namespace {
+    class GF {
+      public:
+        GF(Real exponent, Real factor)
+        : exponent_(exponent), factor_(factor) {}
+
+        Real operator()(Real h) const {
+            return M_PI + factor_*std::pow(h, exponent_)
+                + std::pow(factor_*h, exponent_ + 1);
+        }
+      private:
+        const Real exponent_, factor_;
+    };
+
+    Real limCos(Real h) {
+        return -std::cos(h);
+    }
+}
+
+void InterpolationTest::testUnknownRichardsonExtrapolation() {
+    BOOST_TEST_MESSAGE("Testing Richardson extrapolation with "
+            "unknown order of convergence...");
+
+    const Real stepSize = 0.01;
+
+    const std::pair<Real, Real> testCases[] = {
+            std::make_pair(1.0, 1.0), std::make_pair(1.0, -1.0),
+            std::make_pair(2.0, 0.25), std::make_pair(2.0, -1.0),
+            std::make_pair(3.0, 2.0), std::make_pair(3.0, -0.5),
+            std::make_pair(4.0, 1.0), std::make_pair(4.0, 0.5)
+    };
+
+    for (auto testCase : testCases) {
+        const RichardsonExtrapolation extrap(GF(testCase.first, testCase.second), stepSize);
+
+        const Real calculated = extrap(4.0, 2.0);
+        const Real diff = std::fabs(M_PI - calculated);
+
+        const Real tol = std::pow(stepSize, testCase.first+1);
+
+        if (diff > tol) {
+            BOOST_ERROR("failed to reproduce Richardson extrapolation "
+                    " with unknown order of convergence");
+        }
+    }
+
+    const Real highOrder = RichardsonExtrapolation(GF(14.0, 1.0), 0.5)(4.0,2.0);
+    if (std::fabs(highOrder - M_PI) > 1e-12) {
+        BOOST_ERROR("failed to reproduce Richardson extrapolation "
+                " with unknown order of convergence");
+    }
+
+    try {
+        RichardsonExtrapolation(GF(16.0, 1.0), 0.5)(4.0,2.0);
+        BOOST_ERROR("Richardson extrapolation with order of"
+            " convergence above 15 should throw exception");
+    }
+    catch (...) {}
+
+    const Real limCosValue = RichardsonExtrapolation(limCos, 0.01)(4.0,2.0);
+    if (std::fabs(limCosValue + 1.0) > 1e-6)
+        BOOST_ERROR("failed to reproduce Richardson extrapolation "
+                " with unknown order of convergence");
+}
+
+
 namespace {
     Real f(Real h) {
         return std::pow( 1.0 + h, 1/h);
@@ -1705,7 +1794,11 @@ void InterpolationTest::testNoArbSabrInterpolation(){
     BOOST_TEST_MESSAGE("Testing no-arbitrage Sabr interpolation...");
 
     // Test SABR function against input volatilities
+#ifndef __FAST_MATH__
     Real tolerance = 1.0e-12;
+#else
+    Real tolerance = 1.0e-8;
+#endif
     std::vector<Real> strikes(31);
     std::vector<Real> volatilities(31), volatilities2(31);
     // input strikes
@@ -1763,8 +1856,7 @@ void InterpolationTest::testNoArbSabrInterpolation(){
     Real initialRho = 0.01;
     // calculate SABR vols and compare with input vols
     NoArbSabrSmileSection noarbSabr(expiry, forward,
-                                    boost::assign::list_of(initialAlpha)(
-                                        initialBeta)(initialNu)(initialRho));
+                                    {initialAlpha, initialBeta, initialNu, initialRho});
     for (Size i = 0; i < strikes.size(); i++) {
         Real calculatedVol = noarbSabr.volatility(strikes[i]);
         if (std::fabs(volatilities[i]-calculatedVol) > tolerance)
@@ -1789,32 +1881,26 @@ void InterpolationTest::testNoArbSabrInterpolation(){
 
     Real calibrationTolerance = 5.0e-6;
     // initialize optimization methods
-    std::vector<boost::shared_ptr<OptimizationMethod> > methods_;
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new Simplex(0.01)));
-    methods_.push_back( boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8)));
+    std::vector<ext::shared_ptr<OptimizationMethod>> methods_ = {
+        ext::shared_ptr<OptimizationMethod>(new Simplex(0.01)),
+        ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt(1e-8, 1e-8, 1e-8))
+    };
     // Initialize end criteria
-    boost::shared_ptr<EndCriteria> endCriteria(new
+    ext::shared_ptr<EndCriteria> endCriteria(new
                   EndCriteria(100000, 100, 1e-8, 1e-8, 1e-8));
     // Test looping over all possibilities
     for (Size j=1; j<methods_.size(); ++j) { // skip simplex (gets caught in some cases)
-        for (Size i=0; i<LENGTH(vegaWeighted); ++i) {
-            for (Size k_a=0; k_a<LENGTH(isAlphaFixed); ++k_a) {
+        for (bool i : vegaWeighted) {
+            for (bool k_a : isAlphaFixed) {
                 for (Size k_b=0; k_b<1/*LENGTH(isBetaFixed)*/; ++k_b) { // keep beta fixed (all 4 params free is a problem for this kind of test)
-                    for (Size k_n=0; k_n<LENGTH(isNuFixed); ++k_n) {
-                        for (Size k_r=0; k_r<LENGTH(isRhoFixed); ++k_r) {
+                    for (bool k_n : isNuFixed) {
+                        for (bool k_r : isRhoFixed) {
                             NoArbSabrInterpolation noarbSabrInterpolation(
-                                                                          strikes.begin(), strikes.end(),
-                                                                          volatilities.begin(), expiry, forward,
-                                                                          isAlphaFixed[k_a] ? initialAlpha
-                                                                          : alphaGuess,
-                                                                          isBetaFixed[k_b] ? initialBeta
-                                                                          : betaGuess,
-                                                                          isNuFixed[k_n] ? initialNu : nuGuess,
-                                                                          isRhoFixed[k_r] ? initialRho : rhoGuess,
-                                                                          isAlphaFixed[k_a], isBetaFixed[k_b],
-                                                                          isNuFixed[k_n], isRhoFixed[k_r],
-                                                                          vegaWeighted[i], endCriteria,
-                                                                          methods_[j], 1E-10);
+                                strikes.begin(), strikes.end(), volatilities.begin(), expiry,
+                                forward, k_a ? initialAlpha : alphaGuess,
+                                isBetaFixed[k_b] ? initialBeta : betaGuess,
+                                k_n ? initialNu : nuGuess, k_r ? initialRho : rhoGuess, k_a,
+                                isBetaFixed[k_b], k_n, k_r, i, endCriteria, methods_[j], 1E-10);
                             noarbSabrInterpolation.update();
 
                             // Recover SABR calibration parameters
@@ -1863,12 +1949,12 @@ void InterpolationTest::testNoArbSabrInterpolation(){
                             }
 
                             if (failed)
-                                BOOST_TEST_MESSAGE("\nnoarb-Sabr calibration failure:" <<
-                                           "\n    isAlphaFixed:    " << isAlphaFixed[k_a] <<
-                                           "\n    isBetaFixed:     " << isBetaFixed[k_b] <<
-                                           "\n    isNuFixed:       " << isNuFixed[k_n] <<
-                                           "\n    isRhoFixed:      " << isRhoFixed[k_r] <<
-                                           "\n    vegaWeighted[i]: " << vegaWeighted[i]);
+                                BOOST_TEST_MESSAGE("\nnoarb-Sabr calibration failure:"
+                                                   << "\n    isAlphaFixed:    " << k_a
+                                                   << "\n    isBetaFixed:     " << isBetaFixed[k_b]
+                                                   << "\n    isNuFixed:       " << k_n
+                                                   << "\n    isRhoFixed:      " << k_r
+                                                   << "\n    vegaWeighted[i]: " << i);
                         }
                     }
                 }
@@ -1886,10 +1972,8 @@ void InterpolationTest::testSabrSingleCases() {
     // case #1
     // this fails with an exception thrown in 1.4, fixed in 1.5
 
-    using namespace boost::assign;
-    std::vector<Real> strikes, vols;
-    strikes += 0.01, 0.01125, 0.0125, 0.01375, 0.0150;
-    vols += 0.1667, 0.2020, 0.2785, 0.3279, 0.3727;
+    std::vector<Real> strikes = { 0.01, 0.01125, 0.0125, 0.01375, 0.0150 };
+    std::vector<Real> vols = { 0.1667, 0.2020, 0.2785, 0.3279, 0.3727 };
 
     Real tte = 0.3833;
     Real forward = 0.011025;
@@ -1930,10 +2014,10 @@ void InterpolationTest::testTransformations() {
             x[j] = 2.0 * size * s[j] - size;
 
         // sabr
-        y = detail::SABRSpecs().direct(x, fixed, params, forward);
+        y = QuantLib::detail::SABRSpecs().direct(x, fixed, params, forward);
         validateSabrParameters(y[0], y[1], y[2], y[3]);
-        z = detail::SABRSpecs().inverse(y, fixed, params, forward);
-        z = detail::SABRSpecs().direct(z, fixed, params, forward);
+        z = QuantLib::detail::SABRSpecs().inverse(y, fixed, params, forward);
+        z = QuantLib::detail::SABRSpecs().direct(z, fixed, params, forward);
         if (!close(z[0], y[0], N) || !close(z[1], y[1], N) || !close(z[2], y[2], N) ||
             !close(z[3], y[3], N))
             BOOST_ERROR("SabrInterpolation: direct(inverse("
@@ -1944,7 +2028,7 @@ void InterpolationTest::testTransformations() {
                         << z[3] - y[3] << ")");
 
         // noarb sabr
-        y = detail::NoArbSabrSpecs().direct(x, fixed, params, forward);
+        y = QuantLib::detail::NoArbSabrSpecs().direct(x, fixed, params, forward);
 
         // we can not invoke the constructor, this would be too slow, so
         // we copy the parameter check here ...
@@ -1952,24 +2036,24 @@ void InterpolationTest::testTransformations() {
         Real beta = y[1];
         Real nu = y[2];
         Real rho = y[3];
-        QL_REQUIRE(beta >= detail::NoArbSabrModel::beta_min &&
-                       beta <= detail::NoArbSabrModel::beta_max,
+        QL_REQUIRE(beta >= QuantLib::detail::NoArbSabrModel::beta_min &&
+                       beta <= QuantLib::detail::NoArbSabrModel::beta_max,
                    "beta (" << beta << ") out of bounds");
         Real sigmaI = alpha * std::pow(forward, beta - 1.0);
-        QL_REQUIRE(sigmaI >= detail::NoArbSabrModel::sigmaI_min &&
-                       sigmaI <= detail::NoArbSabrModel::sigmaI_max,
+        QL_REQUIRE(sigmaI >= QuantLib::detail::NoArbSabrModel::sigmaI_min &&
+                       sigmaI <= QuantLib::detail::NoArbSabrModel::sigmaI_max,
                    "sigmaI = alpha*forward^(beta-1.0) ("
                        << sigmaI << ") out of bounds, alpha=" << alpha
                        << " beta=" << beta << " forward=" << forward);
-        QL_REQUIRE(nu >= detail::NoArbSabrModel::nu_min &&
-                       nu <= detail::NoArbSabrModel::nu_max,
+        QL_REQUIRE(nu >= QuantLib::detail::NoArbSabrModel::nu_min &&
+                       nu <= QuantLib::detail::NoArbSabrModel::nu_max,
                    "nu (" << nu << ") out of bounds");
-        QL_REQUIRE(rho >= detail::NoArbSabrModel::rho_min &&
-                       rho <= detail::NoArbSabrModel::rho_max,
+        QL_REQUIRE(rho >= QuantLib::detail::NoArbSabrModel::rho_min &&
+                       rho <= QuantLib::detail::NoArbSabrModel::rho_max,
                    "rho (" << rho << ") out of bounds");
 
-        z = detail::NoArbSabrSpecs().inverse(y, fixed, params, forward);
-        z = detail::NoArbSabrSpecs().direct(z, fixed, params, forward);
+        z = QuantLib::detail::NoArbSabrSpecs().inverse(y, fixed, params, forward);
+        z = QuantLib::detail::NoArbSabrSpecs().direct(z, fixed, params, forward);
         if (!close(z[0], y[0], N) || !close(z[1], y[1], N) || !close(z[2], y[2], N) ||
             !close(z[3], y[3], N))
             BOOST_ERROR("NoArbSabrInterpolation: direct(inverse("
@@ -1979,7 +2063,86 @@ void InterpolationTest::testTransformations() {
                         << z[1] - y[1] << "," << z[2] - y[2] << ","
                         << z[3] - y[3] << ")");
     }
+}
 
+void InterpolationTest::testFlochKennedySabrIsSmoothAroundATM() {
+    BOOST_TEST_MESSAGE("Testing that Andersen SABR formula is smooth "
+                       "close to the ATM level...");
+
+    const Real f0    = 1.1;
+    const Real alpha = 0.35;
+    const Real nu    = 1.1;
+    const Real rho   = 0.25;
+    const Real beta  = 0.3;
+    const Real strike= f0;
+    const Time t = 2.1;
+
+    const Real vol = sabrFlochKennedyVolatility(strike, f0, t, alpha, beta, nu, rho);
+
+    const Real expected = 0.3963883944;
+    const Real tol = 1e-8;
+    const Real diff = std::fabs(expected - vol);
+    if (diff > tol) {
+        BOOST_ERROR("\nfailed to get ATM value :" <<
+                    "\n    expected:   " << expected <<
+                    "\n    calculated: " << vol <<
+                    "\n    diff:      " << diff);
+    }
+
+    Real k = 0.996*strike;
+    Real v = sabrFlochKennedyVolatility(k, f0, t, alpha, beta, nu, rho);
+
+    for (; k < 1.004*strike; k += 0.0001*strike) {
+        const Real vt = sabrFlochKennedyVolatility(k, f0, t, alpha, beta, nu, rho);
+
+        const Real diff = std::fabs(v - vt);
+
+        if (diff > 1e-5) {
+            BOOST_ERROR("\nSabr vol spike around ATM :" <<
+                        "\n    volatility at " << k-0.0001*strike <<
+                        " is " << v <<
+                        "\n    volatility at " << k << " is " << vt <<
+                        "\n    difference: " << diff <<
+                        "\n    tolerance : " << 1e-5);
+        }
+        v = vt;
+    }
+}
+
+void InterpolationTest::testLeFlochKennedySabrExample() {
+    BOOST_TEST_MESSAGE("Testing Le Floc'h Kennedy SABR Example...");
+
+    /*
+    Example is taken from F. Le Floc'h, G. Kennedy:
+     Explicit SABR Calibration through Simple Expansions.
+     https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2467231
+    */
+
+    const Real f0    = 1.0;
+    const Real alpha = 0.35;
+    const Real nu    = 1.0;
+    const Real rho   = 0.25;
+    const Real beta  = 0.25;
+    const Real strikes[]= {1.0, 1.5, 0.5};
+    const Time t = 2.0;
+
+    const Real expected[] = {0.408702473958, 0.428489933046, 0.585701651161};
+
+    for (Size i=0; i < LENGTH(strikes); ++i) {
+        const Real strike = strikes[i];
+        const Real vol =
+            sabrFlochKennedyVolatility(strike, f0, t, alpha, beta, nu, rho);
+
+        const Real tol = 1e-8;
+        const Real diff = std::fabs(expected[i] - vol);
+
+        if (diff > tol) {
+            BOOST_ERROR("\nfailed to reproduce reference examples :" <<
+                        "\n    expected:   " << expected[i] <<
+                        "\n    calculated: " << vol <<
+                        "\n    diff:       " << diff);
+        }
+    }
 }
 
 namespace {
@@ -1992,11 +2155,11 @@ void InterpolationTest::testLagrangeInterpolation() {
 
     BOOST_TEST_MESSAGE("Testing Lagrange interpolation...");
 
-    const Real x[] = {-1.0 , -0.5, -0.25, 0.1, 0.4, 0.75, 0.96};
-    Array y(LENGTH(x));
-    std::transform(x, x+LENGTH(x), y.begin(), &lagrangeTestFct);
+    const std::vector<Real> x = {-1.0 , -0.5, -0.25, 0.1, 0.4, 0.75, 0.96};
+    Array y(x.size());
+    std::transform(x.begin(), x.end(), y.begin(), &lagrangeTestFct);
 
-    LagrangeInterpolation interpl(&x[0], x+LENGTH(x), y.begin());
+    LagrangeInterpolation interpl(x.begin(), x.end(), y.begin());
 
     // reference results are taken from R package pracma
     const Real references[] = {
@@ -2029,11 +2192,11 @@ void InterpolationTest::testLagrangeInterpolation() {
         0.5130076920869246
     };
 
-    const Real tol = 50*QL_EPSILON;
+    constexpr double tol = 50*QL_EPSILON;
     for (Size i=0; i < 79; ++i) {
         const Real xx = -1.0 + i*0.025;
         const Real calculated = interpl(xx);
-        if (   boost::math::isnan(calculated)
+        if (   std::isnan(calculated)
             || std::fabs(references[i] - calculated) > tol) {
             BOOST_FAIL("failed to reproduce the Lagrange interpolation"
                     << "\n    x         : " << xx
@@ -2063,7 +2226,7 @@ void InterpolationTest::testLagrangeInterpolationAtSupportPoint() {
             const Real expected = 1.0/(1.0 - x[i]);
             const Real calculated = interpl(z);
 
-            if (   boost::math::isnan(calculated)
+            if (   std::isnan(calculated)
                 || std::fabs(expected - calculated) > relTol) {
                 BOOST_FAIL("failed to reproduce the Lagrange interplation"
                         << "\n    x         : " << z
@@ -2093,7 +2256,7 @@ void InterpolationTest::testLagrangeInterpolationDerivative() {
         const Real expected = (interpl(x+eps, true)
             - interpl(x-eps, true))/(2*eps);
 
-        if (   boost::math::isnan(calculated)
+        if (   std::isnan(calculated)
             || std::fabs(expected - calculated) > 25*eps) {
             BOOST_FAIL("failed to reproduce the Lagrange"
                     " interplation derivative"
@@ -2106,7 +2269,7 @@ void InterpolationTest::testLagrangeInterpolationDerivative() {
 
 void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     BOOST_TEST_MESSAGE(
-        "Testing Lagrange interpolation on Chebyshev points...");
+        "Testing Lagrange interpolation on Chebyshev nodes...");
 
     // Test example taken from
     // J.P. Berrut, L.N. Trefethen, Barycentric Lagrange Interpolation
@@ -2115,7 +2278,7 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     const Size n=50;
     Array x(n+1), y(n+1);
     for (Size i=0; i <= n; ++i) {
-        // Chebyshev points
+        // Chebyshev nodes
         x[i] = std::cos( (2*i+1)*M_PI/(2*n+2) );
         y[i] = std::exp(x[i])/std::cos(x[i]);
     }
@@ -2123,77 +2286,279 @@ void InterpolationTest::testLagrangeInterpolationOnChebyshevPoints() {
     LagrangeInterpolation interpl(x.begin(), x.end(), y.begin());
 
     const Real tol = 1e-13;
+    const Real tolDeriv = 1e-11;
 
-    for (Real x=-1.0; x <= 1.0; x+=0.01) {
+    for (Real x=-1.0; x <= 1.0; x+=0.03) {
         const Real calculated = interpl(x, true);
         const Real expected = std::exp(x)/std::cos(x);
 
-        if (   boost::math::isnan(calculated)
-            || std::fabs(expected - calculated) > tol) {
+        const Real diff = std::fabs(expected - calculated);
+        if (std::isnan(calculated) || diff > tol) {
             BOOST_FAIL("failed to reproduce the Lagrange"
-                    " interplation on Chebyshev points"
+                    " interpolation on Chebyshev nodes"
                     << "\n    x         : " << x
                     << "\n    calculated: " << calculated
-                    << "\n    expected  : " << expected);
+                    << "\n    expected  : " << expected
+                    << std::scientific
+                    << "\n    difference: " << diff);
         }
 
         const Real calculatedDeriv = interpl.derivative(x, true);
-        const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x))
-                / square<Real>()(std::cos(x));
+        const Real expectedDeriv = std::exp(x)*(std::cos(x) + std::sin(x)) / squared(std::cos(x));
 
-        if (   boost::math::isnan(calculated)
-            || std::fabs(expected - calculated) > tol) {
+        const Real diffDeriv = std::fabs(expectedDeriv - calculatedDeriv);
+        if (std::isnan(calculated) || diffDeriv > tolDeriv) {
             BOOST_FAIL("failed to reproduce the Lagrange"
-                    " interplation derivative on Chebyshev points"
+                    " interpolation derivative on Chebyshev nodes"
                     << "\n    x         : " << x
                     << "\n    calculated: " << calculatedDeriv
-                    << "\n    expected  : " << expectedDeriv);
+                    << "\n    expected  : " << expectedDeriv
+                    << std::scientific
+                    << "\n    difference: " << diffDeriv);
+        }
+    }
+}
+
+void InterpolationTest::testBSplines() {
+    BOOST_TEST_MESSAGE("Testing B-Splines...");
+
+    // reference values have been generate with the R package splines2
+    // https://cran.r-project.org/web/packages/splines2/splines2.pdf
+
+    std::vector<Real> knots = { -1.0, 0.5, 0.75, 1.2, 3.0, 4.0, 5.0 };
+
+    const Natural p = 2;
+    const BSpline bspline(p, knots.size()-p-2, knots);
+
+    std::vector<ext::tuple<Natural, Real, Real>> referenceValues = {
+        {0, -0.95, 9.5238095238e-04},
+        {0, -0.01, 0.37337142857},
+        {0, 0.49, 0.84575238095},
+        {0, 1.21, 0.0},
+        {1, 1.49, 0.562987654321},
+        {1, 1.59, 0.490888888889},
+        {2, 1.99, 0.62429409171},
+        {3, 1.19, 0.0},
+        {3, 1.99, 0.12382936508},
+        {3, 3.59, 0.765914285714}
+    };
+
+    const Real tol = 1e-10;
+    for (auto& referenceValue : referenceValues) {
+        const Natural idx = ext::get<0>(referenceValue);
+        const Real x = ext::get<1>(referenceValue);
+        const Real expected = ext::get<2>(referenceValue);
+
+        const Real calculated = bspline(idx, x);
+
+        if (   std::isnan(calculated)
+            || std::fabs(calculated - expected) > tol) {
+            BOOST_FAIL("failed to reproduce the B-Spline value"
+                    << "\n    i         : " << idx
+                    << "\n    x         : " << x
+                    << "\n    calculated: " << calculated
+                    << "\n    expected  : " << expected
+                    << "\n    difference: " << std::fabs(calculated-expected)
+                    << "\n    tolerance : " << tol);
+        }
+    }
+}
+
+void InterpolationTest::testBackwardFlatOnSinglePoint() {
+    BOOST_TEST_MESSAGE("Testing piecewise constant interpolation on a "
+                       "single point...");
+    const std::vector<Real> knots(1, 1.0), values(1, 2.5);
+
+    const Interpolation impl(BackwardFlat().interpolate(
+        knots.begin(), knots.end(), values.begin()));
+
+    const Real x[] = { -1.0, 1.0, 2.0, 3.0 };
+
+    for (Real i : x) {
+        const Real calculated = impl(i, true);
+        const Real expected = values[0];
+
+        if (!close_enough(calculated, expected)) {
+            BOOST_FAIL("failed to reproduce a piecewise constant "
+                       "interpolation on a single point "
+                       << "\n   x         : " << i << "\n   expected  : " << expected
+                       << "\n   calculated: " << calculated);
+        }
+
+        const Real expectedPrimitive = values[0] * (i - knots[0]);
+        const Real calculatedPrimitive = impl.primitive(i, true);
+
+        if (!close_enough(calculatedPrimitive, expectedPrimitive)) {
+            BOOST_FAIL("failed to reproduce primitive on a piecewise constant "
+                       "interpolation for a single point "
+                       << "\n   x         : " << i << "\n   expected  : " << expectedPrimitive
+                       << "\n   calculated: " << calculatedPrimitive);
+        }
+    }
+}
+
+void InterpolationTest::testChebyshevInterpolation() {
+    BOOST_TEST_MESSAGE("Testing Chebyshev interpolation...");
+
+    const auto fcts =
+        std::vector<std::pair<std::function<Real(Real)>, std::string> >{
+        {[](Real x) { return std::sin(x); }, "sin"},
+        {[](Real x) { return std::cos(x); }, "cos"},
+        {[](Real x) { return std::exp(-x*x); }, "e^(-x*x)"}
+    };
+
+    const auto tests = std::vector<std::pair<Size, Real> >{
+        {11, 1e-5},
+        {20, 1e-11}
+    };
+
+    for (const auto& t: tests) {
+        for (const auto& fct: fcts) {
+            ChebyshevInterpolation interp(t.first, fct.first);
+
+            for (Real x=-0.99; x < 1.0; x+=0.01) {
+                const Real expected = fct.first(x);
+                const Real calculated = interp(x);
+                const Real diff = std::fabs(expected-calculated);
+                const Real tol = t.second;
+
+                if (   std::isnan(calculated)
+                    || std::fabs(calculated - expected) > tol) {
+                    BOOST_FAIL("failed to reproduce the Chebyshev interpolation values"
+                            << "\n    x         : " << x
+                            << "\n    fct       : " << fct.second
+                            << "\n    calculated: " << calculated
+                            << "\n    expected  : " << expected
+                            << "\n    difference: " << diff
+                            << "\n    tolerance : " << tol);
+                }
+            }
+        }
+    }
+}
+
+void InterpolationTest::testChebyshevInterpolationOnNodes() {
+    BOOST_TEST_MESSAGE("Testing Chebyshev interpolation on and around nodes...");
+
+    const Real tol = 10*QL_EPSILON;
+    const auto testFct = [](Real x) { return std::sin(x);};
+
+    const Size nrNodes = 7;
+    Array y(nrNodes);
+
+    for (auto pointType: {ChebyshevInterpolation::FirstKind,
+                          ChebyshevInterpolation::SecondKind}) {
+
+        const Array nodes = ChebyshevInterpolation::nodes(nrNodes, pointType);
+        std::transform(std::begin(nodes), std::end(nodes), std::begin(y), testFct);
+
+        const ChebyshevInterpolation interp(y, pointType);
+        for (auto node: nodes) {
+            // test on Chebyshev node
+            const Real expected = testFct(node);
+            const Real calculated = interp(node);
+            const Real diff = std::abs(expected - calculated);
+
+            if (diff > tol) {
+                BOOST_ERROR("failed to reproduce the node values"
+                        << std::setprecision(16)
+                        << "\n    node      : " << node
+                        << "\n    calculated: " << calculated
+                        << "\n    expected  : " << expected
+                        << "\n    difference: " << diff
+                        << "\n    tolerance : " << tol);
+            }
+
+
+            // check around Chebyshev node
+            for (Integer i=-50; i < 50; ++i) {
+                const Real x = node + i*QL_EPSILON;
+                const Real expected = testFct(x);
+                const Real calculated = interp(x, true);
+                const Real diff = std::abs(expected - calculated);
+
+                if (diff > tol) {
+                    BOOST_ERROR("failed to reproduce values around nodes"
+                            << std::setprecision(16)
+                            << "\n    node      : " << node
+                            << "\n    epsilon   : " << x - node
+                            << "\n    calculated: " << calculated
+                            << "\n    expected  : " << expected
+                            << "\n    difference: " << diff
+                            << "\n    tolerance : " << tol);
+                }
+            }
+        }
+    }
+}
+
+void InterpolationTest::testChebyshevInterpolationUpdateY() {
+    BOOST_TEST_MESSAGE("Testing Y update for Chebyshev interpolation...");
+
+    Array y({1, 4, 7, 4});
+    ChebyshevInterpolation interp(y);
+
+    Array yd({6, 4, 5, 6});
+    interp.updateY(yd);
+
+    const Real tol = 10*QL_EPSILON;
+
+    for (Size i=0; i < y.size(); ++i) {
+        const Real expected = yd[i];
+        const Real calculated = interp(interp.nodes()[i], true);
+        const Real diff = std::abs(calculated - expected);
+
+        if (diff > tol) {
+            BOOST_ERROR("failed to reproduce updated node values"
+                    << std::setprecision(16)
+                    << "\n    node      : " << i
+                    << "\n    expected  : " << expected
+                    << "\n    calculated: " << calculated
+                    << "\n    difference: " << diff
+                    << "\n    tolerance : " << tol);
         }
     }
 }
 
 
-test_suite* InterpolationTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
+test_suite* InterpolationTest::suite(SpeedLevel speed) {
+    auto* suite = BOOST_TEST_SUITE("Interpolation tests");
 
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testSplineOnGenericValues));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testSimmetricEndConditions));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testDerivativeEndConditions));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testNonRestrictiveHymanFilter));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testSplineOnRPN15AValues));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testSplineOnGaussianValues));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &InterpolationTest::testSplineErrorOnGaussianValues));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSplineOnGenericValues));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSimmetricEndConditions));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testDerivativeEndConditions));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNonRestrictiveHymanFilter));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSplineOnRPN15AValues));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSplineOnGaussianValues));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSplineErrorOnGaussianValues));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testMultiSpline));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testAsFunctor));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testFritschButland));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testForwardFlat));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testFlochKennedySabrIsSmoothAroundATM));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLeFlochKennedySabrExample));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testKernelInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-                              &InterpolationTest::testKernelInterpolation2D));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testKernelInterpolation2D));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicDerivatives));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBicubicUpdate));
-    suite->add(QUANTLIB_TEST_CASE(
-                            &InterpolationTest::testRichardsonExtrapolation));
-    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testUnknownRichardsonExtrapolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testRichardsonExtrapolation));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testSabrSingleCases));
     suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testTransformations));
-    suite->add(QUANTLIB_TEST_CASE(
-        &InterpolationTest::testLagrangeInterpolation));
-    suite->add(QUANTLIB_TEST_CASE(
-        &InterpolationTest::testLagrangeInterpolationAtSupportPoint));
-    suite->add(QUANTLIB_TEST_CASE(
-        &InterpolationTest::testLagrangeInterpolationDerivative));
-
-    suite->add(QUANTLIB_TEST_CASE(
-        &InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolationAtSupportPoint));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolationDerivative));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testLagrangeInterpolationOnChebyshevPoints));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBSplines));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testBackwardFlatOnSinglePoint));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolation));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolationOnNodes));
+    suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testChebyshevInterpolationUpdateY));
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&InterpolationTest::testNoArbSabrInterpolation));
+    }
 
     return suite;
 }

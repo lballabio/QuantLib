@@ -50,7 +50,7 @@ namespace QuantLib {
             stats_type;
         typedef typename MonteCarloModel<MC,RNG,S>::result_type result_type;
 
-        virtual ~McSimulation() {}
+        virtual ~McSimulation() = default;
         //! add samples until the required absolute tolerance is reached
         result_type value(Real tolerance,
                           Size maxSamples = QL_MAX_INTEGER,
@@ -60,7 +60,7 @@ namespace QuantLib {
         //! error estimated using the samples simulated so far
         result_type errorEstimate() const;
         //! access to the sample accumulator for richer statistics
-        const stats_type& sampleAccumulator(void) const;
+        const stats_type& sampleAccumulator() const;
         //! basic calculate method provided to inherited pricing engines
         void calculate(Real requiredTolerance,
                        Size requiredSamples,
@@ -70,19 +70,19 @@ namespace QuantLib {
                      bool controlVariate)
         : antitheticVariate_(antitheticVariate),
           controlVariate_(controlVariate) {}
-        virtual boost::shared_ptr<path_pricer_type> pathPricer() const = 0;
-        virtual boost::shared_ptr<path_generator_type> pathGenerator()
+        virtual ext::shared_ptr<path_pricer_type> pathPricer() const = 0;
+        virtual ext::shared_ptr<path_generator_type> pathGenerator()
                                                                    const = 0;
         virtual TimeGrid timeGrid() const = 0;
-        virtual boost::shared_ptr<path_pricer_type> controlPathPricer() const {
-            return boost::shared_ptr<path_pricer_type>();
+        virtual ext::shared_ptr<path_pricer_type> controlPathPricer() const {
+            return ext::shared_ptr<path_pricer_type>();
         }
-        virtual boost::shared_ptr<path_generator_type> 
+        virtual ext::shared_ptr<path_generator_type> 
         controlPathGenerator() const {
-            return boost::shared_ptr<path_generator_type>();
+            return ext::shared_ptr<path_generator_type>();
         }
-        virtual boost::shared_ptr<PricingEngine> controlPricingEngine() const {
-            return boost::shared_ptr<PricingEngine>();
+        virtual ext::shared_ptr<PricingEngine> controlPricingEngine() const {
+            return ext::shared_ptr<PricingEngine>();
         }
         virtual result_type controlVariateValue() const {
             return Null<result_type>();
@@ -95,7 +95,7 @@ namespace QuantLib {
             return error;
         }
         
-        mutable boost::shared_ptr<MonteCarloModel<MC,RNG,S> > mcModel_;
+        mutable ext::shared_ptr<MonteCarloModel<MC,RNG,S> > mcModel_;
         bool antitheticVariate_, controlVariate_;
     };
 
@@ -123,7 +123,7 @@ namespace QuantLib {
                        << ") is still above tolerance (" << tolerance << ")");
 
             // conservative estimate of how many samples are needed
-            order = maxError(error*error)/tolerance/tolerance;
+            order = maxError(Real(error*error))/tolerance/tolerance;
             nextBatch =
                 Size(std::max<Real>(static_cast<Real>(sampleNumber)*order*0.8 - static_cast<Real>(sampleNumber),
                                     static_cast<Real>(minSamples)));
@@ -172,24 +172,24 @@ namespace QuantLib {
                        "engine does not provide "
                        "control-variation price");
 
-            boost::shared_ptr<path_pricer_type> controlPP =
+            ext::shared_ptr<path_pricer_type> controlPP =
                 this->controlPathPricer();
             QL_REQUIRE(controlPP,
                        "engine does not provide "
                        "control-variation path pricer");
 
-            boost::shared_ptr<path_generator_type> controlPG = 
+            ext::shared_ptr<path_generator_type> controlPG = 
                 this->controlPathGenerator();
 
             this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<MC,RNG,S> >(
+                ext::shared_ptr<MonteCarloModel<MC,RNG,S> >(
                     new MonteCarloModel<MC,RNG,S>(
                            pathGenerator(), this->pathPricer(), stats_type(),
                            this->antitheticVariate_, controlPP,
                            controlVariateValue, controlPG));
         } else {
             this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<MC,RNG,S> >(
+                ext::shared_ptr<MonteCarloModel<MC,RNG,S> >(
                     new MonteCarloModel<MC,RNG,S>(
                            pathGenerator(), this->pathPricer(), S(),
                            this->antitheticVariate_));

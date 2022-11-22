@@ -34,21 +34,19 @@ namespace QuantLib {
       private:
         class Impl : public DayCounter::Impl {
           public:
-            std::string name() const { return std::string("1/1"); }
-            Date::serial_type dayCount(const Date& d1, const Date& d2) const {
+            std::string name() const override { return std::string("1/1"); }
+            Date::serial_type dayCount(const Date& d1, const Date& d2) const override {
                 // the sign is all we need
                 return (d2 >= d1 ? 1 : -1);
             };
-            Time yearFraction(const Date& d1,
-                              const Date& d2,
-                              const Date&,
-                              const Date&) const {
+            Time
+            yearFraction(const Date& d1, const Date& d2, const Date&, const Date&) const override {
                 return Time(dayCount(d1, d2));
             }
         };
       public:
         OneDayCounter()
-        : DayCounter(boost::shared_ptr<DayCounter::Impl>(
+        : DayCounter(ext::shared_ptr<DayCounter::Impl>(
                                         new OneDayCounter::Impl)) {}
     };
 

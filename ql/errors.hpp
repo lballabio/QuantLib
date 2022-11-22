@@ -26,9 +26,9 @@
 #define quantlib_errors_hpp
 
 #include <ql/qldefines.hpp>
+#include <ql/shared_ptr.hpp>
 #include <boost/assert.hpp>
 #include <boost/current_function.hpp>
-#include <boost/shared_ptr.hpp>
 #include <exception>
 #include <sstream>
 #include <string>
@@ -45,32 +45,44 @@ namespace QuantLib {
               long line,
               const std::string& functionName,
               const std::string& message = "");
-        /*! the automatically generated destructor would
-            not have the throw specifier.
-        */
-        ~Error() throw() {}
         //! returns the error message.
-        const char* what() const throw ();
+        const char* what() const noexcept override;
+
       private:
-        boost::shared_ptr<std::string> message_;
+        ext::shared_ptr<std::string> message_;
     };
 
 }
 
-/* Fix C4127: conditional expression is constant when wrapping macros
-   with do { ... } while(false); on MSVC
-*/
-#define MULTILINE_MACRO_BEGIN do {
+#define QL_MULTILINE_FAILURE_BEGIN do {
 
-#if defined(BOOST_MSVC) && BOOST_MSVC >= 1500
-    /* __pragma is available from VC++9 */
-    #define MULTILINE_MACRO_END \
+/* Disable warning C4127 (conditional expression is constant) when
+   wrapping macros with the do { ... } while(false) construct on MSVC
+*/
+#if defined(BOOST_MSVC)
+    #define QL_MULTILINE_FAILURE_END \
         __pragma(warning(push)) \
         __pragma(warning(disable:4127)) \
         } while(false) \
         __pragma(warning(pop))
 #else
-    #define MULTILINE_MACRO_END } while(false)
+    #define QL_MULTILINE_FAILURE_END } while(false)
+#endif
+
+
+#define QL_MULTILINE_ASSERTION_BEGIN do {
+
+/* Disable warning C4127 (conditional expression is constant) when
+   wrapping macros with the do { ... } while(false) construct on MSVC
+*/
+#if defined(BOOST_MSVC)
+    #define QL_MULTILINE_ASSERTION_END \
+        __pragma(warning(push)) \
+        __pragma(warning(disable:4127)) \
+        } while(false) \
+        __pragma(warning(pop))
+#else
+    #define QL_MULTILINE_ASSERTION_END } while(false)
 #endif
 
 
@@ -78,48 +90,52 @@ namespace QuantLib {
     \brief throw an error (possibly with file and line information)
 */
 #define QL_FAIL(message) \
-MULTILINE_MACRO_BEGIN \
+QL_MULTILINE_FAILURE_BEGIN \
     std::ostringstream _ql_msg_stream; \
     _ql_msg_stream << message; \
     throw QuantLib::Error(__FILE__,__LINE__, \
                           BOOST_CURRENT_FUNCTION,_ql_msg_stream.str()); \
-MULTILINE_MACRO_END
+QL_MULTILINE_FAILURE_END
 
 
 /*! \def QL_ASSERT
     \brief throw an error if the given condition is not verified
 */
 #define QL_ASSERT(condition,message) \
+QL_MULTILINE_ASSERTION_BEGIN \
 if (!(condition)) { \
     std::ostringstream _ql_msg_stream; \
     _ql_msg_stream << message; \
     throw QuantLib::Error(__FILE__,__LINE__, \
                           BOOST_CURRENT_FUNCTION,_ql_msg_stream.str()); \
- } else 
-
+} \
+QL_MULTILINE_ASSERTION_END
 
 /*! \def QL_REQUIRE
     \brief throw an error if the given pre-condition is not verified
 */
 #define QL_REQUIRE(condition,message) \
+QL_MULTILINE_ASSERTION_BEGIN \
 if (!(condition)) { \
     std::ostringstream _ql_msg_stream; \
     _ql_msg_stream << message; \
     throw QuantLib::Error(__FILE__,__LINE__, \
                           BOOST_CURRENT_FUNCTION,_ql_msg_stream.str()); \
- } else 
-
+} \
+QL_MULTILINE_ASSERTION_END
 
 /*! \def QL_ENSURE
     \brief throw an error if the given post-condition is not verified
 */
 #define QL_ENSURE(condition,message) \
+QL_MULTILINE_ASSERTION_BEGIN \
 if (!(condition)) { \
     std::ostringstream _ql_msg_stream; \
     _ql_msg_stream << message; \
     throw QuantLib::Error(__FILE__,__LINE__, \
                           BOOST_CURRENT_FUNCTION,_ql_msg_stream.str()); \
- } else 
+} \
+QL_MULTILINE_ASSERTION_END
 
 
 #endif

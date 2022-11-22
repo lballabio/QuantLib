@@ -31,35 +31,28 @@ namespace QuantLib {
     class LmConstWrapperCorrelationModel : public LmCorrelationModel {
       public:
         LmConstWrapperCorrelationModel(
-            const boost::shared_ptr<LmCorrelationModel> & corrModel)
+            const ext::shared_ptr<LmCorrelationModel> & corrModel)
         : LmCorrelationModel(corrModel->size(), 0),
           corrModel_(corrModel) {
         }
 
-        Size factors() const {
-            return corrModel_->factors();
-        }
+        Size factors() const override { return corrModel_->factors(); }
 
-        Disposable<Matrix> correlation(
-            Time t, const Array& x = Null<Array>()) const {
+        Matrix correlation(Time t, const Array& x = Null<Array>()) const override {
             return corrModel_->correlation(t, x);
         }
-        Disposable<Matrix> pseudoSqrt(
-            Time t, const Array& x = Null<Array>()) const {
+        Matrix pseudoSqrt(Time t, const Array& x = Null<Array>()) const override {
             return corrModel_->pseudoSqrt(t, x);
         }
-        Real correlation(
-            Size i, Size j, Time t, const Array& x = Null<Array>()) const {
+        Real correlation(Size i, Size j, Time t, const Array& x = Null<Array>()) const override {
             return corrModel_->correlation(i, j, t, x);
         }
-        bool isTimeIndependent() const{
-            return corrModel_->isTimeIndependent();
-        }
+        bool isTimeIndependent() const override { return corrModel_->isTimeIndependent(); }
 
-    protected:
-        void generateArguments() {}
+      protected:
+        void generateArguments() override {}
 
-        const boost::shared_ptr<LmCorrelationModel> corrModel_;
+        const ext::shared_ptr<LmCorrelationModel> corrModel_;
     };
 
 }

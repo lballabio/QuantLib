@@ -25,18 +25,12 @@
 #include <ql/experimental/math/multidimintegrator.hpp>
 #include <ql/math/integrals/trapezoidintegral.hpp>
 #include <ql/math/randomnumbers/randomsequencegenerator.hpp>
-// for template spezs
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
 #include <ql/experimental/math/polarstudenttrng.hpp>
 #include <ql/handle.hpp>
 #include <ql/quote.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/construct.hpp>
-#include <boost/make_shared.hpp>
 #include <vector>
 
 /*! \file latentmodel.hpp
@@ -48,12 +42,11 @@ namespace QuantLib {
     namespace detail {
         // havent figured out how to do this in-place
         struct multiplyV {
-            typedef Disposable<std::vector<Real> > result_type;
-            Disposable<std::vector<Real> > 
-                operator()(Real d,  Disposable<std::vector<Real> > v) 
+            typedef std::vector<Real> result_type;
+            std::vector<Real> operator()(Real d, std::vector<Real> v) 
             {
                 std::transform(v.begin(), v.end(), v.begin(), 
-                    boost::lambda::_1 * d);
+                               [=](Real x) -> Real { return x * d; });
                 return v;
             }
         };
@@ -73,23 +66,23 @@ namespace QuantLib {
     public:
         // Interface with actual integrators:
         // integral of a scalar function
-        virtual Real integrate(const boost::function<Real (
+        virtual Real integrate(const ext::function<Real (
             const std::vector<Real>& arg)>& f) const = 0;
         // integral of a vector function
         /* I had to use a different name, since the compiler does not
         recognise the overload; MSVC sees the argument as 
-        boost::function<Signature> in both cases....   
+        ext::function<Signature> in both cases....   
         I could do the as with the quadratures and have this as a template 
         function and spez for the vector case but I prefer to understand
         why the overload fails....
                     FIX ME
         */
-        virtual Disposable<std::vector<Real> > integrateV(
-            const boost::function<Disposable<std::vector<Real> >  (
+        virtual std::vector<Real> integrateV(
+            const ext::function<std::vector<Real>  (
             const std::vector<Real>& arg)>& f) const {
             QL_FAIL("No vector integration provided");
         }
-        virtual ~LMIntegration() {}
+        virtual ~LMIntegration() = default;
     };
 
     //CRTP-ish for joining the integrations, class above to have the factory
@@ -98,8 +91,7 @@ namespace QuantLib {
         public I_T, public LMIntegration {// diamond on 'integrate'
      // this class template always to be fully specialized:
      private:
-         IntegrationBase() {}
-     virtual ~IntegrationBase() {} 
+       IntegrationBase() = default;
     };
     //@}
     
@@ -125,17 +117,15 @@ namespace QuantLib {
     public:
         IntegrationBase(Size dimension, Size order) 
         : GaussianQuadMultidimIntegrator(dimension, order) {}
-        Real integrate(const boost::function<Real (
-            const std::vector<Real>& arg)>& f) const {
-                return GaussianQuadMultidimIntegrator::integrate<Real>(f);
+        Real integrate(const ext::function<Real(const std::vector<Real>& arg)>& f) const override {
+            return GaussianQuadMultidimIntegrator::integrate<Real>(f);
         }
-        Disposable<std::vector<Real> > integrateV(
-            const boost::function<Disposable<std::vector<Real> >  (
-                const std::vector<Real>& arg)>& f) const {
-                return GaussianQuadMultidimIntegrator::
-                    integrate<Disposable<std::vector<Real> > >(f);
+        std::vector<Real> integrateV(
+            const ext::function<std::vector<Real>(const std::vector<Real>& arg)>& f)
+            const override {
+            return GaussianQuadMultidimIntegrator::integrate<std::vector<Real>>(f);
         }
-        virtual ~IntegrationBase() {}
+        ~IntegrationBase() override = default;
     };
 
     #endif
@@ -144,16 +134,15 @@ namespace QuantLib {
         public MultidimIntegral, public LMIntegration {
     public:
         IntegrationBase(
-            const std::vector<boost::shared_ptr<Integrator> >& integrators, 
+            const std::vector<ext::shared_ptr<Integrator> >& integrators, 
             Real a, Real b) 
         : MultidimIntegral(integrators), 
           a_(integrators.size(),a), b_(integrators.size(),b) {}
-        Real integrate(const boost::function<Real (
-            const std::vector<Real>& arg)>& f) const {
-                return MultidimIntegral::operator ()(f, a_, b_);
+        Real integrate(const ext::function<Real(const std::vector<Real>& arg)>& f) const override {
+            return MultidimIntegral::operator()(f, a_, b_);
         }
-        // disposable vector version here....
-        virtual ~IntegrationBase() {}
+        // vector version here....
+        ~IntegrationBase() override = default;
         const std::vector<Real> a_, b_;
     };
 
@@ -291,15 +280,15 @@ namespace QuantLib {
         : public virtual Observer , public virtual Observable 
     {//observer if factors as quotes
     public:
-        void update();
-        //! \name Copula interface.
-        //@{
-        typedef copulaPolicyImpl copulaType;
-        /*! Cumulative probability of the \f$ Y_i \f$ modelled latent random 
-            variable to take a given value.
-        */
-        Probability cumulativeY(Real val, Size iVariable) const {
-            return copula_.cumulativeY(val, iVariable);
+      void update() override;
+      //! \name Copula interface.
+      //@{
+      typedef copulaPolicyImpl copulaType;
+      /*! Cumulative probability of the \f$ Y_i \f$ modelled latent random
+          variable to take a given value.
+      */
+      Probability cumulativeY(Real val, Size iVariable) const {
+          return copula_.cumulativeY(val, iVariable);
         }
         //! Cumulative distribution of Z, the idiosyncratic/error factors.
         Probability cumulativeZ(Real z) const {
@@ -332,8 +321,7 @@ namespace QuantLib {
             model. These are all the systemic factors plus all the idiosyncratic
             ones, so the size of the inversion is the number of systemic factors
             plus the number of latent modelled variables*/
-        Disposable<std::vector<Real> > 
-            allFactorCumulInverter(const std::vector<Real>& probs) const {
+        std::vector<Real> allFactorCumulInverter(const std::vector<Real>& probs) const {
             return copula_.allFactorCumulInverter(probs);
         }
         //@}
@@ -354,7 +342,7 @@ namespace QuantLib {
                 // systemic term:
                 factorWeights_[iVar].end(), allFactors.begin(),
                 // idiosyncratic term:
-                allFactors[numFactors()+iVar] * idiosyncFctrs_[iVar]);
+                Real(allFactors[numFactors()+iVar] * idiosyncFctrs_[iVar]));
         }
         // \to do write variants of the above, although is the most common case
 
@@ -362,7 +350,7 @@ namespace QuantLib {
             return copula_;
         }
 
-    public:
+
     //  protected:
         //! \name Latent model random factor number generator facility.
         //@{
@@ -438,8 +426,6 @@ namespace QuantLib {
             const sample_type& nextSequence() const {
                 typename USNG::sample_type sample =
                     sequenceGen_.nextSequence();
-                //Not possible to overload operator member access in Disposable
-                //return copula_.allFactorCumulInverter(sample.value).value;
                 x_.value = copula_.allFactorCumulInverter(sample.value);
                 return x_;
             }
@@ -460,7 +446,7 @@ namespace QuantLib {
         */
         class IntegrationFactory {
         public:
-            static boost::shared_ptr<LMIntegration> createLMIntegration(
+            static ext::shared_ptr<LMIntegration> createLMIntegration(
                 Size dimension, 
                 LatentModelIntegrationType::LatentModelIntegrationType type = 
                     #ifndef QL_PATCH_SOLARIS
@@ -473,16 +459,16 @@ namespace QuantLib {
                     #ifndef QL_PATCH_SOLARIS
                     case LatentModelIntegrationType::GaussianQuadrature:
                         return 
-                            boost::make_shared<
+                            ext::make_shared<
                             IntegrationBase<GaussianQuadMultidimIntegrator> >(
                                 dimension, 25);
                     #endif
                     case LatentModelIntegrationType::Trapezoid:
                         {
-                        std::vector<boost::shared_ptr<Integrator> > integrals;
+                        std::vector<ext::shared_ptr<Integrator> > integrals;
                         for(Size i=0; i<dimension; i++)
                             integrals.push_back(
-                            boost::make_shared<TrapezoidIntegral<Default> >(
+                            ext::make_shared<TrapezoidIntegral<Default> >(
                                 1.e-4, 20));
                         /* This integration domain is tailored for the T 
                         distribution; it is too wide for normals or Ts of high
@@ -495,7 +481,7 @@ namespace QuantLib {
                         here in some cases.
                         */
                         return 
-                          boost::make_shared<IntegrationBase<MultidimIntegral> >
+                          ext::make_shared<IntegrationBase<MultidimIntegral> >
                                (integrals, -35., 35.);
                         }
                     default:
@@ -503,7 +489,7 @@ namespace QuantLib {
                 }
             }
         private:
-            IntegrationFactory() {}
+          IntegrationFactory() = default;
         };
         //@}
 
@@ -551,9 +537,9 @@ namespace QuantLib {
             possibly drop the static policy and create a policy member
             in LatentModel)
         */
-        explicit LatentModel(const Real correlSqr, Size nVariables,
-            const typename copulaType::initTraits& ini = 
-                copulaType::initTraits());
+        explicit LatentModel(Real correlSqr,
+                             Size nVariables,
+                             const typename copulaType::initTraits& ini = copulaType::initTraits());
         /*! Constructs a LM with an arbitrary number of latent variables 
           depending only on one random factor with the same weight for all
           latent variables. The weight is observed and this constructor is
@@ -582,7 +568,7 @@ namespace QuantLib {
         Real latentVariableCorrel(Size iVar1, Size iVar2) const {
             // true for any normalized combination
             Real init = (iVar1 == iVar2 ? 
-                idiosyncFctrs_[iVar1] * idiosyncFctrs_[iVar1] : 0.);
+                idiosyncFctrs_[iVar1] * idiosyncFctrs_[iVar1] : Real(0.));
             return std::inner_product(factorWeights_[iVar1].begin(), 
                 factorWeights_[iVar1].end(), factorWeights_[iVar2].begin(), 
                     init);
@@ -593,38 +579,32 @@ namespace QuantLib {
          computes its expected value).
         */
         Real integratedExpectedValue(
-            const boost::function<Real(const std::vector<Real>& v1)>& f) const {
+            const ext::function<Real(const std::vector<Real>& v1)>& f) const {
             // function composition: composes the integrand with the density 
             //   through a product.
-            return 
-                integration()->integrate(
-                    boost::bind(std::multiplies<Real>(), 
-                    boost::bind(&copulaPolicyImpl::density, copula_, _1),
-                    boost::bind(boost::cref(f), _1)));   
+            return integration()->integrate(
+                [&](const std::vector<Real>& x){ return copula_.density(x) * f(x); });
         }
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).
         */
-        Disposable<std::vector<Real> > integratedExpectedValue(
-           // const boost::function<std::vector<Real>(
-            const boost::function<Disposable<std::vector<Real> >(
+        std::vector<Real> integratedExpectedValueV(
+            // const ext::function<std::vector<Real>(
+            const ext::function<std::vector<Real>(
                 const std::vector<Real>& v1)>& f ) const {
-            return 
-                integration()->integrateV(//see note in LMIntegrators base class
-                    boost::bind<Disposable<std::vector<Real> > >(
-                        detail::multiplyV(),
-                        boost::bind(&copulaPolicyImpl::density, copula_, _1),
-                        boost::bind(boost::cref(f), _1)));
+            detail::multiplyV M;
+            return integration()->integrateV(//see note in LMIntegrators base class
+                [&](const std::vector<Real>& x){ return M(copula_.density(x), f(x)); });
         }
     protected:
         // Integrable models must provide their integrator.
         // Arguable, not having the integration in the LM class saves that 
         //   memory but have an entry in the VT... 
-        virtual const boost::shared_ptr<LMIntegration>& integration() const {
+        virtual const ext::shared_ptr<LMIntegration>& integration() const {
             QL_FAIL("Integration non implemented in Latent model.");
         }
         //@}
-    protected:
+
         // Ordering is: factorWeights_[iVariable][iFactor]
         mutable std::vector<std::vector<Real> > factorWeights_;
         /* This is a duplicated value from the data above chosen for memory 
@@ -673,7 +653,7 @@ namespace QuantLib {
             idiosyncFctrs_.push_back(std::sqrt(1.-
                     std::inner_product(factorWeights[i].begin(), 
                 factorWeights[i].end(), 
-                factorWeights[i].begin(), 0.)));
+                factorWeights[i].begin(), Real(0.))));
             // while at it, check sizes are coherent:
             QL_REQUIRE(factorWeights[i].size() == nFactors_, 
                 "Name " << i << " provides a different number of factors");
@@ -687,12 +667,10 @@ namespace QuantLib {
     : nFactors_(1),
       nVariables_(factorWeights.size())
     {
-        for(Size iName=0; iName < factorWeights.size(); iName++)
-            factorWeights_.push_back(std::vector<Real>(1, 
-                factorWeights[iName]));
-        for(Size iName=0; iName < factorWeights.size(); iName++)
-            idiosyncFctrs_.push_back(std::sqrt(1. - 
-                factorWeights[iName]*factorWeights[iName]));
+        for (Real factorWeight : factorWeights)
+            factorWeights_.emplace_back(1, factorWeight);
+        for (Real factorWeight : factorWeights)
+            idiosyncFctrs_.push_back(std::sqrt(1. - factorWeight * factorWeight));
         //convert row to column vector....
         copula_ = copulaType(factorWeights_, ini);
     }
@@ -765,18 +743,19 @@ namespace QuantLib {
     class LatentModel<TC>
         ::FactorSampler <RandomSequenceGenerator<BoxMullerGaussianRng<URNG> > ,
             dummy> {
+        typedef URNG urng_type;
     public:
         //Size below must be == to the numb of factors idiosy + systemi
         typedef Sample<std::vector<Real> > sample_type;
         explicit FactorSampler(const GaussianCopulaPolicy& copula,
                                BigNatural seed = 0) 
         : boxMullRng_(copula.numFactors(), 
-            BoxMullerGaussianRng<URNG>(URNG(seed))){ }
+            BoxMullerGaussianRng<urng_type>(urng_type(seed))){ }
         const sample_type& nextSequence() const {
                 return boxMullRng_.nextSequence();
         }
     private:
-        RandomSequenceGenerator<BoxMullerGaussianRng<URNG> > boxMullRng_;
+        RandomSequenceGenerator<BoxMullerGaussianRng<urng_type> > boxMullRng_;
     };
 
     /*! \brief Specialization for direct T samples generation.\par
@@ -790,6 +769,7 @@ namespace QuantLib {
     class LatentModel<TC>
         ::FactorSampler<RandomSequenceGenerator<PolarStudentTRng<URNG> > , 
             dummy> {
+        typedef URNG urng_type;
     public:
         typedef Sample<std::vector<Real> > sample_type;
         explicit FactorSampler(const TCopulaPolicy& copula, BigNatural seed = 0)
@@ -797,9 +777,8 @@ namespace QuantLib {
           urng_(seed) {
             // 1 == urng.dimension() is enforced by the sample type
             const std::vector<Real>& varF = copula.varianceFactors();
-            for(Size i=0; i<varF.size(); i++)// ...use back inserter lambda
-                trng_.push_back(
-                    PolarStudentTRng<URNG>(2./(1.-varF[i]*varF[i]), urng_));
+            for (Real i : varF) // ...use back inserter lambda
+                trng_.push_back(PolarStudentTRng<urng_type>(2. / (1. - i * i), urng_));
         }
         const sample_type& nextSequence() const {
             Size i=0;
@@ -811,8 +790,8 @@ namespace QuantLib {
         }
     private:
         mutable sample_type sequence_;
-        URNG urng_;
-        mutable std::vector<PolarStudentTRng<URNG> > trng_;
+        urng_type urng_;
+        mutable std::vector<PolarStudentTRng<urng_type> > trng_;
     };
 
 #endif

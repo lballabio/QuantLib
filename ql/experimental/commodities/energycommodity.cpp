@@ -17,17 +17,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/commodities/energycommodity.hpp>
-#include <ql/experimental/commodities/commoditysettings.hpp>
-#include <ql/experimental/commodities/unitofmeasureconversionmanager.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
+#include <ql/experimental/commodities/commoditysettings.hpp>
+#include <ql/experimental/commodities/energycommodity.hpp>
+#include <ql/experimental/commodities/unitofmeasureconversionmanager.hpp>
 #include <iomanip>
+#include <utility>
 
 namespace QuantLib {
-
-
-    EnergyDailyPosition::EnergyDailyPosition()
-    : payLegPrice(0), receiveLegPrice(0), unrealized(false) {}
 
     EnergyDailyPosition::EnergyDailyPosition(const Date& date,
                                              Real payLegPrice,
@@ -45,22 +42,16 @@ namespace QuantLib {
             << std::setw(14) << std::right << "delta"
             << std::setw(10) << std::right << "open" << std::endl;
 
-        for (EnergyDailyPositions::const_iterator i = dailyPositions.begin();
-             i != dailyPositions.end(); ++i) {
-            const EnergyDailyPosition& dailyPosition = i->second;
-            out << std::setw(4) << io::iso_date(i->first) << "  "
-                << std::setw(12) << std::right << std::fixed
-                << std::setprecision(6) << dailyPosition.payLegPrice
-                << std::setw(12) << std::right << std::fixed
-                << std::setprecision(6) << dailyPosition.receiveLegPrice
-                << std::setw(10) << std::right << std::fixed
-                << std::setprecision(2) << dailyPosition.quantityAmount
-                << std::setw(14) << std::right << std::fixed
-                << std::setprecision(2) << dailyPosition.riskDelta
-                << std::setw(10) << std::right << std::fixed
-                << std::setprecision(2)
-                << (dailyPosition.unrealized ? dailyPosition.quantityAmount : 0)
-                << std::endl;
+        for (const auto& i : dailyPositions) {
+            const EnergyDailyPosition& dailyPosition = i.second;
+            out << std::setw(4) << io::iso_date(i.first) << "  " << std::setw(12) << std::right
+                << std::fixed << std::setprecision(6) << dailyPosition.payLegPrice << std::setw(12)
+                << std::right << std::fixed << std::setprecision(6) << dailyPosition.receiveLegPrice
+                << std::setw(10) << std::right << std::fixed << std::setprecision(2)
+                << dailyPosition.quantityAmount << std::setw(14) << std::right << std::fixed
+                << std::setprecision(2) << dailyPosition.riskDelta << std::setw(10) << std::right
+                << std::fixed << std::setprecision(2)
+                << (dailyPosition.unrealized ? dailyPosition.quantityAmount : 0) << std::endl;
         }
 
         return out;
@@ -71,24 +62,21 @@ namespace QuantLib {
 
 
     void EnergyCommodity::setupArguments(PricingEngine::arguments* args) const {
-        EnergyCommodity::arguments* arguments =
-            dynamic_cast<EnergyCommodity::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<EnergyCommodity::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
         //arguments->legs = legs_;
         //arguments->payer = payer_;
     }
 
     void EnergyCommodity::fetchResults(const PricingEngine::results* r) const {
         Instrument::fetchResults(r);
-        const EnergyCommodity::results* results =
-            dynamic_cast<const EnergyCommodity::results*>(r);
-        QL_REQUIRE(results != 0, "wrong result type");
+        const auto* results = dynamic_cast<const EnergyCommodity::results*>(r);
+        QL_REQUIRE(results != nullptr, "wrong result type");
     }
 
-    EnergyCommodity::EnergyCommodity(
-                      const CommodityType& commodityType,
-                      const boost::shared_ptr<SecondaryCosts>& secondaryCosts)
-    : Commodity(secondaryCosts), commodityType_(commodityType) {}
+    EnergyCommodity::EnergyCommodity(CommodityType commodityType,
+                                     const ext::shared_ptr<SecondaryCosts>& secondaryCosts)
+    : Commodity(secondaryCosts), commodityType_(std::move(commodityType)) {}
 
     const CommodityType& EnergyCommodity::commodityType() const {
         return commodityType_;
@@ -150,13 +138,13 @@ namespace QuantLib {
                                            Real totalQuantityValue,
                                            const Date& evaluationDate) const {
         secondaryCostAmounts_.clear();
-        if (secondaryCosts_ != 0) {
+        if (secondaryCosts_ != nullptr) {
             const Currency& baseCurrency =
                 CommoditySettings::instance().currency();
             try {
                 for (SecondaryCosts::const_iterator i = secondaryCosts_->begin();
                      i != secondaryCosts_->end(); ++i) {
-                    if (boost::any_cast<CommodityUnitCost>(&i->second)) {
+                    if (boost::any_cast<CommodityUnitCost>(&i->second) != nullptr) {
                         Real value =
                             calculateUnitCost(
                                 commodityType,
@@ -164,7 +152,7 @@ namespace QuantLib {
                                 evaluationDate) * totalQuantityValue;
                         secondaryCostAmounts_[i->first] =
                             Money(baseCurrency, value);
-                    } else if (boost::any_cast<Money>(&i->second)) {
+                    } else if (boost::any_cast<Money>(&i->second) != nullptr) {
                         const Money& amount = boost::any_cast<Money>(i->second);
                         Real fxConversionFactor =
                             calculateFxConversionFactor(amount.currency(),

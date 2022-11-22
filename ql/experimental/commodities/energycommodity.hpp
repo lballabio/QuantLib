@@ -37,12 +37,12 @@ namespace QuantLib {
     struct EnergyDailyPosition {
         Date date;
         Real quantityAmount;
-        Real payLegPrice;
-        Real receiveLegPrice;
+        Real payLegPrice = 0;
+        Real receiveLegPrice = 0;
         Real riskDelta;
-        bool unrealized;
+        bool unrealized = false;
 
-        EnergyDailyPosition();
+        EnergyDailyPosition() = default;
         EnergyDailyPosition(const Date& date,
                             Real payLegPrice,
                             Real receiveLegPrice,
@@ -86,15 +86,14 @@ namespace QuantLib {
                                QuarterlySettlement,
                                YearlySettlement };
 
-        EnergyCommodity(
-                    const CommodityType& commodityType,
-                    const boost::shared_ptr<SecondaryCosts>& secondaryCosts);
+        EnergyCommodity(CommodityType commodityType,
+                        const ext::shared_ptr<SecondaryCosts>& secondaryCosts);
 
         virtual Quantity quantity() const = 0;
         const CommodityType& commodityType() const;
 
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results*) const override;
 
       protected:
         static Real calculateFxConversionFactor(const Currency& fromCurrency,
@@ -119,7 +118,7 @@ namespace QuantLib {
       public:
         Currency currency;
         UnitOfMeasure unitOfMeasure;
-        void validate() const {}
+        void validate() const override {}
     };
 
     class EnergyCommodity::results : public Instrument::results {
@@ -127,9 +126,7 @@ namespace QuantLib {
         Real NPV;
         Currency currency;
         UnitOfMeasure unitOfMeasure;
-        void reset() {
-            Instrument::results::reset();
-        }
+        void reset() override { Instrument::results::reset(); }
     };
 
     class EnergyCommodity::engine

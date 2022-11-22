@@ -25,9 +25,10 @@
 #ifndef quantlib_two_factor_models_g2_h
 #define quantlib_two_factor_models_g2_h
 
+#include <ql/instruments/swaption.hpp>
 #include <ql/models/shortrate/twofactormodel.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
-#include <ql/instruments/swaption.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -61,11 +62,9 @@ namespace QuantLib {
            Real eta = 0.01,
            Real rho = -0.75);
 
-        boost::shared_ptr<ShortRateDynamics> dynamics() const;
+        ext::shared_ptr<ShortRateDynamics> dynamics() const override;
 
-        virtual Real discountBond(Time now,
-                                  Time maturity,
-                                  Array factors) const {
+        Real discountBond(Time now, Time maturity, Array factors) const override {
             QL_REQUIRE(factors.size()>1,
                        "g2 model needs two factors to compute discount bond");
             return discountBond(now, maturity, factors[0], factors[1]);
@@ -76,16 +75,14 @@ namespace QuantLib {
         Real discountBondOption(Option::Type type,
                                 Real strike,
                                 Time maturity,
-                                Time bondMaturity) const;
+                                Time bondMaturity) const override;
 
         Real swaption(const Swaption::arguments& arguments,
                       Rate fixedRate,
                       Real range,
                       Size intervals) const;
 
-        DiscountFactor discount(Time t) const {
-            return termStructure()->discount(t);
-        }
+        DiscountFactor discount(Time t) const override { return termStructure()->discount(t); }
 
         Real a() const { return a_(0.0); }
         Real sigma() const { return sigma_(0.0); }
@@ -94,7 +91,7 @@ namespace QuantLib {
         Real rho() const { return rho_(0.0); }
 
       protected:
-        void generateArguments();
+        void generateArguments() override;
 
         Real A(Time t, Time T) const;
         Real B(Real x, Time t) const;
@@ -116,28 +113,18 @@ namespace QuantLib {
         Real V(Time t) const;
 
         class SwaptionPricingFunction;
-        friend class SwaptionPricingFunction;
     };
 
     class G2::Dynamics : public TwoFactorModel::ShortRateDynamics {
       public:
-        Dynamics(const Parameter& fitting,
-                 Real a,
-                 Real sigma,
-                 Real b,
-                 Real eta,
-                 Real rho)
-        : ShortRateDynamics(boost::shared_ptr<StochasticProcess1D>(
-                                      new OrnsteinUhlenbeckProcess(a, sigma)),
-                            boost::shared_ptr<StochasticProcess1D>(
-                                      new OrnsteinUhlenbeckProcess(b, eta)),
-                            rho),
-          fitting_(fitting) {}
-        virtual Rate shortRate(Time t,
-                               Real x,
-                               Real y) const {
-            return fitting_(t) + x + y;
-        }
+        Dynamics(Parameter fitting, Real a, Real sigma, Real b, Real eta, Real rho)
+        : ShortRateDynamics(
+              ext::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(a, sigma)),
+              ext::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(b, eta)),
+              rho),
+          fitting_(std::move(fitting)) {}
+        Rate shortRate(Time t, Real x, Real y) const override { return fitting_(t) + x + y; }
+
       private:
         Parameter fitting_;
     };
@@ -156,16 +143,16 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Impl(const Handle<YieldTermStructure>& termStructure,
+            Impl(Handle<YieldTermStructure> termStructure,
                  Real a,
                  Real sigma,
                  Real b,
                  Real eta,
                  Real rho)
-            : termStructure_(termStructure),
-              a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho) {}
+            : termStructure_(std::move(termStructure)), a_(a), sigma_(sigma), b_(b), eta_(eta),
+              rho_(rho) {}
 
-            Real value(const Array&, Time t) const {
+            Real value(const Array&, Time t) const override {
                 Rate forward = termStructure_->forwardRate(t, t,
                                                            Continuous,
                                                            NoFrequency);
@@ -187,7 +174,7 @@ namespace QuantLib {
                          Real b,
                          Real eta,
                          Real rho)
-        : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
+        : TermStructureFittingParameter(ext::shared_ptr<Parameter::Impl>(
                           new FittingParameter::Impl(termStructure, a, sigma,
                                                      b, eta, rho))) {}
     };

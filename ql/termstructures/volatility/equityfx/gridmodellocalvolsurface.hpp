@@ -38,31 +38,31 @@ namespace QuantLib {
         GridModelLocalVolSurface(
             const Date& referenceDate,
             const std::vector<Date>& dates,
-            const std::vector<boost::shared_ptr<std::vector<Real> > >& strikes,
+            const std::vector<ext::shared_ptr<std::vector<Real> > >& strikes,
             const DayCounter& dayCounter,
             Extrapolation lowerExtrapolation
                 = FixedLocalVolSurface::ConstantExtrapolation,
             Extrapolation upperExtrapolation
                 = FixedLocalVolSurface::ConstantExtrapolation);
 
-        void update();
+        void update() override;
 
-        Date maxDate() const;
-        Time maxTime() const;
-        Real minStrike() const;
-        Real maxStrike() const;
+        Date maxDate() const override;
+        Time maxTime() const override;
+        Real minStrike() const override;
+        Real maxStrike() const override;
 
       protected:
-        void generateArguments();
-        Volatility localVolImpl(Time t, Real strike) const;
+        void generateArguments() override;
+        Volatility localVolImpl(Time t, Real strike) const override;
 
         const Date referenceDate_;
         std::vector<Time> times_;
-        const std::vector<boost::shared_ptr<std::vector<Real> > > strikes_;
+        const std::vector<ext::shared_ptr<std::vector<Real> > > strikes_;
         const DayCounter dayCounter_;
         Extrapolation lowerExtrapolation_, upperExtrapolation_;
 
-        boost::shared_ptr<LocalVolTermStructure> localVol_;
+        ext::shared_ptr<LocalVolTermStructure> localVol_;
     };
 }
 

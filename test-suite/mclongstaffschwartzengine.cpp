@@ -22,14 +22,15 @@
 #include "mclongstaffschwartzengine.hpp"
 #include "utilities.hpp"
 #include <ql/instruments/vanillaoption.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <ql/processes/stochasticprocessarray.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
 #include <ql/pricingengines/mclongstaffschwartzengine.hpp>
-#include <ql/pricingengines/vanilla/fdamericanengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/mcamericanengine.hpp>
+#include <ql/processes/stochasticprocessarray.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
+#include <utility>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -38,11 +39,10 @@ namespace {
 
     class AmericanMaxPathPricer : public EarlyExercisePathPricer<MultiPath>  {
       public:
-        explicit AmericanMaxPathPricer(const boost::shared_ptr<Payoff>& payoff)
-        : payoff_(payoff) {
-        }
+        explicit AmericanMaxPathPricer(ext::shared_ptr<Payoff> payoff)
+        : payoff_(std::move(payoff)) {}
 
-        StateType state(const MultiPath& path, Size t) const {
+        StateType state(const MultiPath& path, Size t) const override {
             Array tmp(path.assetNumber());
             for (Size i=0; i<path.assetNumber(); ++i) {
                 tmp[i]=path[i][t];
@@ -51,18 +51,18 @@ namespace {
             return tmp;
         }
 
-        Real operator()(const MultiPath& path, Size t) const {
+        Real operator()(const MultiPath& path, Size t) const override {
             const Array tmp = state(path, t);
             return (*payoff_)(*std::max_element(tmp.begin(), tmp.end()));
         }
 
-        std::vector<boost::function1<Real, StateType> > basisSystem() const {
+        std::vector<ext::function<Real(StateType)> > basisSystem() const override {
             return LsmBasisSystem::multiPathBasisSystem(2, 2,
                                                         LsmBasisSystem::Monomial);
         }
 
       protected:
-        const boost::shared_ptr<Payoff> payoff_;
+        const ext::shared_ptr<Payoff> payoff_;
     };
 
     template <class RNG>
@@ -71,7 +71,7 @@ namespace {
                                            MultiVariate,RNG>{
       public:
         MCAmericanMaxEngine(
-                            const boost::shared_ptr<StochasticProcessArray>& processes,
+                            const ext::shared_ptr<StochasticProcessArray>& processes,
                             Size timeSteps,
                             Size timeStepsPerYear,
                             bool brownianbridge,
@@ -96,26 +96,25 @@ namespace {
         { }
 
       protected:
-        boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> >
-        lsmPathPricer() const {
-            boost::shared_ptr<StochasticProcessArray> processArray =
-            boost::dynamic_pointer_cast<StochasticProcessArray>(this->process_);
+        ext::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > lsmPathPricer() const override {
+            ext::shared_ptr<StochasticProcessArray> processArray =
+            ext::dynamic_pointer_cast<StochasticProcessArray>(this->process_);
             QL_REQUIRE(processArray && processArray->size() > 0,
                        "Stochastic process array required");
 
-            boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-                boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+                ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                     processArray->process(0));
             QL_REQUIRE(process, "generalized Black-Scholes proces required");
 
-            boost::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer(
+            ext::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer(
                           new AmericanMaxPathPricer(this->arguments_.payoff));
 
-            return boost::shared_ptr<LongstaffSchwartzPathPricer<MultiPath> > (
-                new LongstaffSchwartzPathPricer<MultiPath>(
+            return ext::make_shared<LongstaffSchwartzPathPricer<MultiPath> > (
+                
                     this->timeGrid(),
                     earlyExercisePathPricer,
-                    process->riskFreeRate().currentLink()));
+                    process->riskFreeRate().currentLink());
         }
     };
 
@@ -141,15 +140,15 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
     const Date maturity(17, May, 1999);
     const DayCounter dayCounter = Actual365Fixed();
 
-    boost::shared_ptr<Exercise> americanExercise(
+    ext::shared_ptr<Exercise> americanExercise(
         new AmericanExercise(settlementDate, maturity));
 
     // bootstrap the yield/dividend/vol curves
     Handle<YieldTermStructure> flatTermStructure(
-            boost::shared_ptr<YieldTermStructure>(
+            ext::shared_ptr<YieldTermStructure>(
                 new FlatForward(settlementDate, riskFreeRate, dayCounter)));
     Handle<YieldTermStructure> flatDividendTS(
-            boost::shared_ptr<YieldTermStructure>(
+            ext::shared_ptr<YieldTermStructure>(
                 new FlatForward(settlementDate, dividendYield, dayCounter)));
 
     // expected results for exercise probability, evaluated with third-party
@@ -162,7 +161,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
     expectedExProb[1][1] = 0.67569; // (price: 5.764)
     expectedExProb[1][2] = 0.65562; // (price: 7.138)
 
-    LsmBasisSystem::PolynomType polynomTypes[]
+    LsmBasisSystem::PolynomialType polynomialTypes[]
         = { LsmBasisSystem::Monomial, LsmBasisSystem::Laguerre,
             LsmBasisSystem::Hermite, LsmBasisSystem::Hyperbolic,
             LsmBasisSystem::Chebyshev2nd };
@@ -170,43 +169,40 @@ void MCLongstaffSchwartzEngineTest::testAmericanOption() {
     for (Integer i=0; i<2; ++i) {
         for (Integer j=0; j<3; ++j) {
             Handle<BlackVolTermStructure> flatVolTS(
-                boost::shared_ptr<BlackVolTermStructure>(
+                ext::shared_ptr<BlackVolTermStructure>(
                     new BlackConstantVol(settlementDate, NullCalendar(),
                                          volatility+0.1*j, dayCounter)));
 
-            boost::shared_ptr<StrikedTypePayoff> payoff(
+            ext::shared_ptr<StrikedTypePayoff> payoff(
                 new PlainVanillaPayoff(type, underlying+4*i));
 
             Handle<Quote> underlyingH(
-                boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
+                ext::shared_ptr<Quote>(new SimpleQuote(underlying)));
 
-            boost::shared_ptr<GeneralizedBlackScholesProcess>
+            ext::shared_ptr<GeneralizedBlackScholesProcess>
                 stochasticProcess(new GeneralizedBlackScholesProcess(
                                       underlyingH, flatDividendTS,
                                       flatTermStructure, flatVolTS));
 
             VanillaOption americanOption(payoff, americanExercise);
 
-            boost::shared_ptr<PricingEngine> mcengine =
+            ext::shared_ptr<PricingEngine> mcengine =
                 MakeMCAmericanEngine<PseudoRandom>(stochasticProcess)
                   .withSteps(75)
                   .withAntitheticVariate()
                   .withAbsoluteTolerance(0.02)
                   .withSeed(42)
-                  .withPolynomOrder(3)
-                  .withBasisSystem(
-                       polynomTypes[0*(i*3+j)%LENGTH(polynomTypes)]);
+                  .withPolynomialOrder(3)
+                  .withBasisSystem(polynomialTypes[0*(i*3+j)%LENGTH(polynomialTypes)]);
 
             americanOption.setPricingEngine(mcengine);
-            // FLOATING_POINT_EXCEPTION
             const Real calculated = americanOption.NPV();
             const Real errorEstimate = americanOption.errorEstimate();
             const Real exerciseProbability =
                 americanOption.result<QuantLib::Real>("exerciseProbability");
 
-            americanOption.setPricingEngine(boost::shared_ptr<PricingEngine>(
-                        new FDAmericanEngine<CrankNicolson>(stochasticProcess,
-                                                            401, 200)));
+            americanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
+                        new FdBlackScholesVanillaEngine(stochasticProcess, 401, 200)));
             const Real expected = americanOption.NPV();
 
             // Check price
@@ -252,45 +248,45 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     const Date maturity(16, May, 2001);
     const DayCounter dayCounter = Actual365Fixed();
 
-    boost::shared_ptr<Exercise> americanExercise(
+    ext::shared_ptr<Exercise> americanExercise(
         new AmericanExercise(settlementDate, maturity));
 
     // bootstrap the yield/dividend/vol curves
     Handle<YieldTermStructure> flatTermStructure(
-        boost::shared_ptr<YieldTermStructure>(
+        ext::shared_ptr<YieldTermStructure>(
             new FlatForward(settlementDate, riskFreeRate, dayCounter)));
     Handle<YieldTermStructure> flatDividendTS(
-        boost::shared_ptr<YieldTermStructure>(
+        ext::shared_ptr<YieldTermStructure>(
             new FlatForward(settlementDate, dividendYield, dayCounter)));
 
     Handle<BlackVolTermStructure> flatVolTS(
-        boost::shared_ptr<BlackVolTermStructure>(new
+        ext::shared_ptr<BlackVolTermStructure>(new
             BlackConstantVol(settlementDate, NullCalendar(),
                              volatility, dayCounter)));
 
-    boost::shared_ptr<StrikedTypePayoff> payoff(
+    ext::shared_ptr<StrikedTypePayoff> payoff(
         new PlainVanillaPayoff(type, strike));
 
     RelinkableHandle<Quote> underlyingH;
 
-    boost::shared_ptr<GeneralizedBlackScholesProcess> stochasticProcess(new
+    ext::shared_ptr<GeneralizedBlackScholesProcess> stochasticProcess(new
         GeneralizedBlackScholesProcess(
             underlyingH, flatDividendTS, flatTermStructure, flatVolTS));
 
     const Size numberAssets = 2;
     Matrix corr(numberAssets, numberAssets, 0.0);
-    std::vector<boost::shared_ptr<StochasticProcess1D> > v;
+    std::vector<ext::shared_ptr<StochasticProcess1D> > v;
 
     for (Size i=0; i<numberAssets; ++i) {
         v.push_back(stochasticProcess);
         corr[i][i] = 1.0;
     }
 
-    boost::shared_ptr<StochasticProcessArray> process(
+    ext::shared_ptr<StochasticProcessArray> process(
         new StochasticProcessArray(v, corr));
     VanillaOption americanMaxOption(payoff, americanExercise);
 
-    boost::shared_ptr<PricingEngine> mcengine(
+    ext::shared_ptr<PricingEngine> mcengine(
         new MCAmericanMaxEngine<PseudoRandom>(process, 25, Null<Size>(), false,
                                               true, false, 4096,
                                               Null<Real>(), Null<Size>(),
@@ -302,7 +298,7 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
 
         const Real underlying = 90.0 + i*10.0;
         underlyingH.linkTo(
-            boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
+            ext::shared_ptr<Quote>(new SimpleQuote(underlying)));
 
         const Real calculated  = americanMaxOption.NPV();
         const Real errorEstimate = americanMaxOption.errorEstimate();
@@ -315,13 +311,15 @@ void MCLongstaffSchwartzEngineTest::testAmericanMaxOption() {
     }
 }
 
-test_suite* MCLongstaffSchwartzEngineTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Longstaff Schwartz MC engine tests");
-    // FLOATING_POINT_EXCEPTION
-    suite->add(QUANTLIB_TEST_CASE(
-         &MCLongstaffSchwartzEngineTest::testAmericanOption));
-    suite->add(QUANTLIB_TEST_CASE(
-         &MCLongstaffSchwartzEngineTest::testAmericanMaxOption));
+test_suite* MCLongstaffSchwartzEngineTest::suite(SpeedLevel speed) {
+    auto* suite = BOOST_TEST_SUITE("Longstaff Schwartz MC engine tests");
+
+    suite->add(QUANTLIB_TEST_CASE(&MCLongstaffSchwartzEngineTest::testAmericanMaxOption));
+
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&MCLongstaffSchwartzEngineTest::testAmericanOption));
+    }
+
     return suite;
 }
 

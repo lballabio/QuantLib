@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 FranÃ§ois du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -87,12 +87,12 @@ namespace QuantLib {
 
     std::vector<Matrix> coterminalSwapPseudoRoots(
         const PiecewiseConstantCorrelation& piecewiseConstantCorrelation,
-        const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >&
+        const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >&
                                                  piecewiseConstantVariances) {
             QL_ENSURE(piecewiseConstantCorrelation.times()
                 == piecewiseConstantVariances.front()->rateTimes(),
                 "correlations and volatilities intertave");
-            std::vector<Matrix> peudoRoots;
+            std::vector<Matrix> pseudoRoots;
             const std::vector<Time>& rateTimes
                 = piecewiseConstantVariances.front()->rateTimes();
             for (Size i=1; i<rateTimes.size(); ++i) {
@@ -106,12 +106,11 @@ namespace QuantLib {
                     std::transform(correlations.row_begin(j),
                                    correlations.row_end(j),
                                    pseudoRoot.row_begin(j),
-                                   std::bind2nd(std::multiplies<Real>(),
-                                                            volatility));
+                                   [=](Real x) -> Real { return x * volatility; });
                 }
-                peudoRoots.push_back(pseudoRoot);
+                pseudoRoots.push_back(pseudoRoot);
             }
-            return peudoRoots;
+            return pseudoRoots;
     }
 
 }

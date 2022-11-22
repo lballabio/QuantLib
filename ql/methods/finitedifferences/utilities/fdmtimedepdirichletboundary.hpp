@@ -27,8 +27,7 @@
 
 #include <ql/methods/finitedifferences/boundarycondition.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
-
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
@@ -42,26 +41,26 @@ namespace QuantLib {
         typedef FdmLinearOp::array_type array_type;
         typedef BoundaryCondition<FdmLinearOp>::Side Side;
 
-        FdmTimeDepDirichletBoundary(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::function<Real (Real)>& valueOnBoundary,
-            Size direction, Side side);
+        FdmTimeDepDirichletBoundary(const ext::shared_ptr<FdmMesher>& mesher,
+                                    ext::function<Real(Real)> valueOnBoundary,
+                                    Size direction,
+                                    Side side);
 
-        FdmTimeDepDirichletBoundary(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::function<Disposable<Array> (Real)>& valueOnBoundary,
-            Size direction, Side side);
+        FdmTimeDepDirichletBoundary(const ext::shared_ptr<FdmMesher>& mesher,
+                                    ext::function<Array(Real)> valueOnBoundary,
+                                    Size direction,
+                                    Side side);
 
-        void setTime(Time);
-        void applyBeforeApplying(operator_type&) const {}
-        void applyBeforeSolving(operator_type&, array_type&) const {}
-        void applyAfterApplying(array_type&) const;
-        void applyAfterSolving(array_type&) const;
+        void setTime(Time) override;
+        void applyBeforeApplying(operator_type&) const override {}
+        void applyBeforeSolving(operator_type&, array_type&) const override {}
+        void applyAfterApplying(array_type&) const override;
+        void applyAfterSolving(array_type&) const override;
 
       private:
         const std::vector<Size> indices_;
-        const boost::function<Real (Real)> valueOnBoundary_;
-        const boost::function<Disposable<Array>(Real)> valuesOnBoundary_;
+        const ext::function<Real (Real)> valueOnBoundary_;
+        const ext::function<Array(Real)> valuesOnBoundary_;
 
         Array values_;
     };

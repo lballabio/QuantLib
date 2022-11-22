@@ -23,7 +23,7 @@ namespace QuantLib {
 
     India::India(Market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new India::NseImpl);
+        static ext::shared_ptr<Calendar::Impl> impl(new India::NseImpl);
         impl_ = impl;
     }
 
@@ -284,6 +284,68 @@ namespace QuantLib {
                 )
                 return false;
         }
+
+      if (y == 2019) {
+          if (// Chatrapati Shivaji Jayanti
+              (d == 19 && m == February)
+              // Mahashivratri
+              || (d == 4 && m == March)
+              // Holi
+              || (d == 21 && m == March)
+              // Annual Bank Closing
+              || (d == 1 && m == April)
+              // Mahavir Jayanti
+              || (d == 17 && m == April)
+              // Parliamentary Elections
+              || (d == 29 && m == April)
+              // Ramzan Id
+              || (d == 05 && m == June)
+              // Bakri Id
+              || (d == 12 && m == August)
+              // Ganesh Chaturthi
+              || (d == 2 && m == September)
+              // Moharram
+              || (d == 10 && m == September)
+              // Dasera
+              || (d == 8 && m == October)
+              // General Assembly Elections in Maharashtra
+              || (d == 21 && m == October)
+              // Diwali - Balipratipada
+              || (d == 28 && m == October)
+              // Gurunank Jayanti
+              || (d == 12 && m == November)
+              )
+              return false;
+      }
+
+      if (y == 2020) {
+          if (// Chatrapati Shivaji Jayanti
+              (d == 19 && m == February)
+              // Mahashivratri
+              || (d == 21 && m == February)
+              // Holi
+              || (d == 10 && m == March)
+              // Gudi Padwa
+              || (d == 25 && m == March)
+              // Annual Bank Closing
+              || (d == 1 && m == April)
+              // Ram Navami
+              || (d == 2 && m == April)
+              // Mahavir Jayanti
+              || (d == 6 && m == April)
+              // Buddha Pournima
+              || (d == 7 && m == May)
+              // Ramzan Id
+              || (d == 25 && m == May)
+              // Id-E-Milad
+              || (d == 30 && m == October)
+              // Diwali - Balipratipada
+              || (d == 16 && m == November)
+              // Gurunank Jayanti
+              || (d == 30 && m == November)
+              )
+              return false;
+      }
 
         return true;
     }

@@ -29,6 +29,7 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
 
 namespace QuantLib {
 
@@ -38,13 +39,13 @@ namespace QuantLib {
 
     class FdmBlackScholesSolver : public LazyObject {
       public:
-        FdmBlackScholesSolver(
-            const Handle<GeneralizedBlackScholesProcess>& process,
-            Real strike,
-            const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
-            bool localVol = false,
-            Real illegalLocalVolOverwrite = -Null<Real>());
+        FdmBlackScholesSolver(Handle<GeneralizedBlackScholesProcess> process,
+                              Real strike,
+                              FdmSolverDesc solverDesc,
+                              const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+                              bool localVol = false,
+                              Real illegalLocalVolOverwrite = -Null<Real>(),
+                              Handle<FdmQuantoHelper> quantoHelper = Handle<FdmQuantoHelper>());
 
         Real valueAt(Real s) const;
         Real deltaAt(Real s) const;
@@ -52,7 +53,7 @@ namespace QuantLib {
         Real thetaAt(Real s) const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         Handle<GeneralizedBlackScholesProcess> process_;
@@ -61,8 +62,9 @@ namespace QuantLib {
         const FdmSchemeDesc schemeDesc_;
         const bool localVol_;
         const Real illegalLocalVolOverwrite_;
+        const Handle<FdmQuantoHelper> quantoHelper_;
 
-        mutable boost::shared_ptr<Fdm1DimSolver> solver_;
+        mutable ext::shared_ptr<Fdm1DimSolver> solver_;
     };
 }
 

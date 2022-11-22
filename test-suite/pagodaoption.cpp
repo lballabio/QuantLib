@@ -46,28 +46,28 @@ void PagodaOptionTest::testCached() {
 
     Handle<YieldTermStructure> riskFreeRate(flatRate(today, 0.05, dc));
 
-    std::vector<boost::shared_ptr<StochasticProcess1D> > processes(4);
-    processes[0] = boost::shared_ptr<StochasticProcess1D>(
+    std::vector<ext::shared_ptr<StochasticProcess1D> > processes(4);
+    processes[0] = ext::shared_ptr<StochasticProcess1D>(
         new BlackScholesMertonProcess(
-              Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.15))),
+              Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.15))),
               Handle<YieldTermStructure>(flatRate(today, 0.01, dc)),
               riskFreeRate,
               Handle<BlackVolTermStructure>(flatVol(today, 0.30, dc))));
-    processes[1] = boost::shared_ptr<StochasticProcess1D>(
+    processes[1] = ext::shared_ptr<StochasticProcess1D>(
         new BlackScholesMertonProcess(
-              Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.20))),
+              Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.20))),
               Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
               riskFreeRate,
               Handle<BlackVolTermStructure>(flatVol(today, 0.35, dc))));
-    processes[2] = boost::shared_ptr<StochasticProcess1D>(
+    processes[2] = ext::shared_ptr<StochasticProcess1D>(
         new BlackScholesMertonProcess(
-              Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.35))),
+              Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.35))),
               Handle<YieldTermStructure>(flatRate(today, 0.04, dc)),
               riskFreeRate,
               Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc))));
-    processes[3] = boost::shared_ptr<StochasticProcess1D>(
+    processes[3] = ext::shared_ptr<StochasticProcess1D>(
         new BlackScholesMertonProcess(
-              Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(0.30))),
+              Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(0.30))),
               Handle<YieldTermStructure>(flatRate(today, 0.03, dc)),
               riskFreeRate,
               Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc))));
@@ -93,7 +93,7 @@ void PagodaOptionTest::testCached() {
     BigNatural seed = 86421;
     Size fixedSamples = 1023;
 
-    boost::shared_ptr<StochasticProcessArray> process(
+    ext::shared_ptr<StochasticProcessArray> process(
                           new StochasticProcessArray(processes, correlation));
 
     option.setPricingEngine(MakeMCPagodaEngine<PseudoRandom>(process)
@@ -127,7 +127,7 @@ void PagodaOptionTest::testCached() {
 
 
 test_suite* PagodaOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Pagoda-option tests");
+    auto* suite = BOOST_TEST_SUITE("Pagoda-option tests");
     suite->add(QUANTLIB_TEST_CASE(&PagodaOptionTest::testCached));
     return suite;
 }

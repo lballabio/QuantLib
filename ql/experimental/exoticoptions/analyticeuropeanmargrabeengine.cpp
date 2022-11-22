@@ -17,18 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/analyticeuropeanmargrabeengine.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/exoticoptions/analyticeuropeanmargrabeengine.hpp>
+#include <ql/instruments/payoffs.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticEuropeanMargrabeEngine::AnalyticEuropeanMargrabeEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process1,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process2,
-            Real correlation)
-    : process1_(process1), process2_(process2), rho_(correlation) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+        Real correlation)
+    : process1_(std::move(process1)), process2_(std::move(process2)), rho_(correlation) {
         registerWith(process1_);
         registerWith(process2_);
     }
@@ -38,12 +39,12 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        boost::shared_ptr<EuropeanExercise> exercise =
-            boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+        ext::shared_ptr<EuropeanExercise> exercise =
+            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an European Option");
 
-        boost::shared_ptr<NullPayoff> payoff =
-            boost::dynamic_pointer_cast<NullPayoff>(arguments_.payoff);
+        ext::shared_ptr<NullPayoff> payoff =
+            ext::dynamic_pointer_cast<NullPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non a Null Payoff type");
 
         Integer quantity1 = arguments_.Q1;

@@ -253,111 +253,114 @@ return( k % m );
 //  QuantLib::LevenbergMarquardt::fcn(m, n, x, fvec, iflag);
 //}
 
-void
-fdjac2(int m,int n,Real* x,Real* fvec,Real* fjac,int,
-       int* iflag,Real epsfcn,Real* wa,
-       const QuantLib::MINPACK::LmdifCostFunction& fcn)
-{
-/*
-*     **********
-*
-*     subroutine fdjac2
-*
-*     this subroutine computes a forward-difference approximation
-*     to the m by n jacobian matrix associated with a specified
-*     problem of m functions in n variables.
-*
-*     the subroutine statement is
-*
-*   subroutine fdjac2(fcn,m,n,x,fvec,fjac,ldfjac,iflag,epsfcn,wa)
-*
-*     where
-*
-*   fcn is the name of the user-supplied subroutine which
-*     calculates the functions. fcn must be declared
-*     in an external statement in the user calling
-*     program, and should be written as follows.
-*
-*     subroutine fcn(m,n,x,fvec,iflag)
-*     integer m,n,iflag
-*     double precision x(n),fvec(m)
-*     ----------
-*     calculate the functions at x and
-*     return this vector in fvec.
-*     ----------
-*     return
-*     end
-*
-*     the value of iflag should not be changed by fcn unless
-*     the user wants to terminate execution of fdjac2.
-*     in this case set iflag to a negative integer.
-*
-*   m is a positive integer input variable set to the number
-*     of functions.
-*
-*   n is a positive integer input variable set to the number
-*     of variables. n must not exceed m.
-*
-*   x is an input array of length n.
-*
-*   fvec is an input array of length m which must contain the
-*     functions evaluated at x.
-*
-*   fjac is an output m by n array which contains the
-*     approximation to the jacobian matrix evaluated at x.
-*
-*   ldfjac is a positive integer input variable not less than m
-*     which specifies the leading dimension of the array fjac.
-*
-*   iflag is an integer variable which can be used to terminate
-*     the execution of fdjac2. see description of fcn.
-*
-*   epsfcn is an input variable used in determining a suitable
-*     step length for the forward-difference approximation. this
-*     approximation assumes that the relative errors in the
-*     functions are of the order of epsfcn. if epsfcn is less
-*     than the machine precision, it is assumed that the relative
-*     errors in the functions are of the order of the machine
-*     precision.
-*
-*   wa is a work array of length m.
-*
-*     subprograms called
-*
-*   user-supplied ...... fcn
-*
-*   minpack-supplied ... dpmpar
-*
-*   fortran-supplied ... dabs,dmax1,dsqrt
-*
-*     argonne national laboratory. minpack project. march 1980.
-*     burton s. garbow, kenneth e. hillstrom, jorge j. more
-*
-      **********
-*/
-int i,j,ij;
-Real eps,h,temp;
-static double zero = 0.0;
+void fdjac2(int m,
+            int n,
+            Real* x,
+            const Real* fvec,
+            Real* fjac,
+            int,
+            int* iflag,
+            Real epsfcn,
+            Real* wa,
+            const QuantLib::MINPACK::LmdifCostFunction& fcn) {
+    /*
+     *     **********
+     *
+     *     subroutine fdjac2
+     *
+     *     this subroutine computes a forward-difference approximation
+     *     to the m by n jacobian matrix associated with a specified
+     *     problem of m functions in n variables.
+     *
+     *     the subroutine statement is
+     *
+     *   subroutine fdjac2(fcn,m,n,x,fvec,fjac,ldfjac,iflag,epsfcn,wa)
+     *
+     *     where
+     *
+     *   fcn is the name of the user-supplied subroutine which
+     *     calculates the functions. fcn must be declared
+     *     in an external statement in the user calling
+     *     program, and should be written as follows.
+     *
+     *     subroutine fcn(m,n,x,fvec,iflag)
+     *     integer m,n,iflag
+     *     double precision x(n),fvec(m)
+     *     ----------
+     *     calculate the functions at x and
+     *     return this vector in fvec.
+     *     ----------
+     *     return
+     *     end
+     *
+     *     the value of iflag should not be changed by fcn unless
+     *     the user wants to terminate execution of fdjac2.
+     *     in this case set iflag to a negative integer.
+     *
+     *   m is a positive integer input variable set to the number
+     *     of functions.
+     *
+     *   n is a positive integer input variable set to the number
+     *     of variables. n must not exceed m.
+     *
+     *   x is an input array of length n.
+     *
+     *   fvec is an input array of length m which must contain the
+     *     functions evaluated at x.
+     *
+     *   fjac is an output m by n array which contains the
+     *     approximation to the jacobian matrix evaluated at x.
+     *
+     *   ldfjac is a positive integer input variable not less than m
+     *     which specifies the leading dimension of the array fjac.
+     *
+     *   iflag is an integer variable which can be used to terminate
+     *     the execution of fdjac2. see description of fcn.
+     *
+     *   epsfcn is an input variable used in determining a suitable
+     *     step length for the forward-difference approximation. this
+     *     approximation assumes that the relative errors in the
+     *     functions are of the order of epsfcn. if epsfcn is less
+     *     than the machine precision, it is assumed that the relative
+     *     errors in the functions are of the order of the machine
+     *     precision.
+     *
+     *   wa is a work array of length m.
+     *
+     *     subprograms called
+     *
+     *   user-supplied ...... fcn
+     *
+     *   minpack-supplied ... dpmpar
+     *
+     *   fortran-supplied ... dabs,dmax1,dsqrt
+     *
+     *     argonne national laboratory. minpack project. march 1980.
+     *     burton s. garbow, kenneth e. hillstrom, jorge j. more
+     *
+     **********
+     */
+    int i, j, ij;
+    Real eps, h, temp;
+    static double zero = 0.0;
 
 
-temp = dmax1(epsfcn,MACHEP);
-eps = std::sqrt(temp);
-ij = 0;
-for( j=0; j<n; j++ )
-    {
-    temp = x[j];
-    h = eps * std::fabs(temp);
-    if(h == zero)
-        h = eps;
-    x[j] = temp + h;
-    fcn(m,n,x,wa,iflag);
-    if( *iflag < 0)
-        return;
-    x[j] = temp;
-    for( i=0; i<m; i++ )
-        {
-        fjac[ij] = (wa[i] - fvec[i])/h;
-        ij += 1;    /* fjac[i+m*j] */
+    temp = dmax1(epsfcn, MACHEP);
+    eps = std::sqrt(temp);
+    ij = 0;
+    for (j = 0; j < n; j++) {
+        temp = x[j];
+        h = eps * std::fabs(temp);
+        if (h == zero)
+            h = eps;
+        x[j] = temp + h;
+        fcn(m, n, x, wa, iflag);
+        if (*iflag < 0)
+            return;
+        x[j] = temp;
+        for (i = 0; i < m; i++) {
+            fjac[ij] = (wa[i] - fvec[i]) / h;
+            ij += 1; /* fjac[i+m*j] */
         }
     }
 /*
@@ -574,109 +577,112 @@ L100:
 /************************qrsolv.c*************************/
 
 
-void
-qrsolv(int n,Real* r,int ldr,int* ipvt,Real* diag,Real* qtb,
-       Real* x,Real* sdiag,Real* wa)
-{
-/*
-*     **********
-*
-*     subroutine qrsolv
-*
-*     given an m by n matrix a, an n by n diagonal matrix d,
-*     and an m-vector b, the problem is to determine an x which
-*     solves the system
-*
-*       a*x = b ,     d*x = 0 ,
-*
-*     in the least squares sense.
-*
-*     this subroutine completes the solution of the problem
-*     if it is provided with the necessary information from the
-*     qr factorization, with column pivoting, of a. that is, if
-*     a*p = q*r, where p is a permutation matrix, q has orthogonal
-*     columns, and r is an upper triangular matrix with diagonal
-*     elements of nonincreasing magnitude, then qrsolv expects
-*     the full upper triangle of r, the permutation matrix p,
-*     and the first n components of (q transpose)*b. the system
-*     a*x = b, d*x = 0, is then equivalent to
-*
-*          t       t
-*       r*z = q *b ,  p *d*p*z = 0 ,
-*
-*     where x = p*z. if this system does not have full rank,
-*     then a least squares solution is obtained. on output qrsolv
-*     also provides an upper triangular matrix s such that
-*
-*        t   t       t
-*       p *(a *a + d*d)*p = s *s .
-*
-*     s is computed within qrsolv and may be of separate interest.
-*
-*     the subroutine statement is
-*
-*   subroutine qrsolv(n,r,ldr,ipvt,diag,qtb,x,sdiag,wa)
-*
-*     where
-*
-*   n is a positive integer input variable set to the order of r.
-*
-*   r is an n by n array. on input the full upper triangle
-*     must contain the full upper triangle of the matrix r.
-*     on output the full upper triangle is unaltered, and the
-*     strict lower triangle contains the strict upper triangle
-*     (transposed) of the upper triangular matrix s.
-*
-*   ldr is a positive integer input variable not less than n
-*     which specifies the leading dimension of the array r.
-*
-*   ipvt is an integer input array of length n which defines the
-*     permutation matrix p such that a*p = q*r. column j of p
-*     is column ipvt(j) of the identity matrix.
-*
-*   diag is an input array of length n which must contain the
-*     diagonal elements of the matrix d.
-*
-*   qtb is an input array of length n which must contain the first
-*     n elements of the vector (q transpose)*b.
-*
-*   x is an output array of length n which contains the least
-*     squares solution of the system a*x = b, d*x = 0.
-*
-*   sdiag is an output array of length n which contains the
-*     diagonal elements of the upper triangular matrix s.
-*
-*   wa is a work array of length n.
-*
-*     subprograms called
-*
-*   fortran-supplied ... dabs,dsqrt
-*
-*     argonne national laboratory. minpack project. march 1980.
-*     burton s. garbow, kenneth e. hillstrom, jorge j. more
-*
-*     **********
-*/
-int i,ij,ik,kk,j,jp1,k,kp1,l,nsing;
-Real cos,cotan,qtbpj,sin,sum,tan,temp;
-static double zero = 0.0;
-static double p25 = 0.25;
-static double p5 = 0.5;
+void qrsolv(int n,
+            Real* r,
+            int ldr,
+            const int* ipvt,
+            const Real* diag,
+            const Real* qtb,
+            Real* x,
+            Real* sdiag,
+            Real* wa) {
+    /*
+     *     **********
+     *
+     *     subroutine qrsolv
+     *
+     *     given an m by n matrix a, an n by n diagonal matrix d,
+     *     and an m-vector b, the problem is to determine an x which
+     *     solves the system
+     *
+     *       a*x = b ,     d*x = 0 ,
+     *
+     *     in the least squares sense.
+     *
+     *     this subroutine completes the solution of the problem
+     *     if it is provided with the necessary information from the
+     *     qr factorization, with column pivoting, of a. that is, if
+     *     a*p = q*r, where p is a permutation matrix, q has orthogonal
+     *     columns, and r is an upper triangular matrix with diagonal
+     *     elements of nonincreasing magnitude, then qrsolv expects
+     *     the full upper triangle of r, the permutation matrix p,
+     *     and the first n components of (q transpose)*b. the system
+     *     a*x = b, d*x = 0, is then equivalent to
+     *
+     *          t       t
+     *       r*z = q *b ,  p *d*p*z = 0 ,
+     *
+     *     where x = p*z. if this system does not have full rank,
+     *     then a least squares solution is obtained. on output qrsolv
+     *     also provides an upper triangular matrix s such that
+     *
+     *        t   t       t
+     *       p *(a *a + d*d)*p = s *s .
+     *
+     *     s is computed within qrsolv and may be of separate interest.
+     *
+     *     the subroutine statement is
+     *
+     *   subroutine qrsolv(n,r,ldr,ipvt,diag,qtb,x,sdiag,wa)
+     *
+     *     where
+     *
+     *   n is a positive integer input variable set to the order of r.
+     *
+     *   r is an n by n array. on input the full upper triangle
+     *     must contain the full upper triangle of the matrix r.
+     *     on output the full upper triangle is unaltered, and the
+     *     strict lower triangle contains the strict upper triangle
+     *     (transposed) of the upper triangular matrix s.
+     *
+     *   ldr is a positive integer input variable not less than n
+     *     which specifies the leading dimension of the array r.
+     *
+     *   ipvt is an integer input array of length n which defines the
+     *     permutation matrix p such that a*p = q*r. column j of p
+     *     is column ipvt(j) of the identity matrix.
+     *
+     *   diag is an input array of length n which must contain the
+     *     diagonal elements of the matrix d.
+     *
+     *   qtb is an input array of length n which must contain the first
+     *     n elements of the vector (q transpose)*b.
+     *
+     *   x is an output array of length n which contains the least
+     *     squares solution of the system a*x = b, d*x = 0.
+     *
+     *   sdiag is an output array of length n which contains the
+     *     diagonal elements of the upper triangular matrix s.
+     *
+     *   wa is a work array of length n.
+     *
+     *     subprograms called
+     *
+     *   fortran-supplied ... dabs,dsqrt
+     *
+     *     argonne national laboratory. minpack project. march 1980.
+     *     burton s. garbow, kenneth e. hillstrom, jorge j. more
+     *
+     *     **********
+     */
+    int i, ij, ik, kk, j, jp1, k, kp1, l, nsing;
+    Real cos, cotan, qtbpj, sin, sum, tan, temp;
+    static double zero = 0.0;
+    static double p25 = 0.25;
+    static double p5 = 0.5;
 
-/*
-*     copy r and (q transpose)*b to preserve input and initialize s.
-*     in particular, save the diagonal elements of r in x.
-*/
-kk = 0;
-for( j=0; j<n; j++ )
-    {
-    ij = kk;
-    ik = kk;
-    for( i=j; i<n; i++ )
-        {
-        r[ij] = r[ik];
-        ij += 1;   /* [i+ldr*j] */
-        ik += ldr; /* [j+ldr*i] */
+    /*
+     *     copy r and (q transpose)*b to preserve input and initialize s.
+     *     in particular, save the diagonal elements of r in x.
+     */
+    kk = 0;
+    for (j = 0; j < n; j++) {
+        ij = kk;
+        ik = kk;
+        for (i = j; i < n; i++) {
+            r[ij] = r[ik];
+            ij += 1;   /* [i+ldr*j] */
+            ik += ldr; /* [j+ldr*i] */
         }
     x[j] = r[kk];
     wa[j] = qtb[j];
@@ -805,129 +811,134 @@ for( j=0; j<n; j++ )
 /************************lmpar.c*************************/
 
 
-void
-lmpar(int n,Real* r,int ldr,int* ipvt,Real* diag,
-      Real* qtb,Real delta,Real* par,Real* x,Real* sdiag,
-      Real* wa1,Real* wa2)
-{
-/*     **********
-*
-*     subroutine lmpar
-*
-*     given an m by n matrix a, an n by n nonsingular diagonal
-*     matrix d, an m-vector b, and a positive number delta,
-*     the problem is to determine a value for the parameter
-*     par such that if x solves the system
-*
-*       a*x = b ,     sqrt(par)*d*x = 0 ,
-*
-*     in the least squares sense, and dxnorm is the euclidean
-*     norm of d*x, then either par is zero and
-*
-*       (dxnorm-delta) .le. 0.1*delta ,
-*
-*     or par is positive and
-*
-*       abs(dxnorm-delta) .le. 0.1*delta .
-*
-*     this subroutine completes the solution of the problem
-*     if it is provided with the necessary information from the
-*     qr factorization, with column pivoting, of a. that is, if
-*     a*p = q*r, where p is a permutation matrix, q has orthogonal
-*     columns, and r is an upper triangular matrix with diagonal
-*     elements of nonincreasing magnitude, then lmpar expects
-*     the full upper triangle of r, the permutation matrix p,
-*     and the first n components of (q transpose)*b. on output
-*     lmpar also provides an upper triangular matrix s such that
-*
-*        t   t           t
-*       p *(a *a + par*d*d)*p = s *s .
-*
-*     s is employed within lmpar and may be of separate interest.
-*
-*     only a few iterations are generally needed for convergence
-*     of the algorithm. if, however, the limit of 10 iterations
-*     is reached, then the output par will contain the best
-*     value obtained so far.
-*
-*     the subroutine statement is
-*
-*   subroutine lmpar(n,r,ldr,ipvt,diag,qtb,delta,par,x,sdiag,
-*            wa1,wa2)
-*
-*     where
-*
-*   n is a positive integer input variable set to the order of r.
-*
-*   r is an n by n array. on input the full upper triangle
-*     must contain the full upper triangle of the matrix r.
-*     on output the full upper triangle is unaltered, and the
-*     strict lower triangle contains the strict upper triangle
-*     (transposed) of the upper triangular matrix s.
-*
-*   ldr is a positive integer input variable not less than n
-*     which specifies the leading dimension of the array r.
-*
-*   ipvt is an integer input array of length n which defines the
-*     permutation matrix p such that a*p = q*r. column j of p
-*     is column ipvt(j) of the identity matrix.
-*
-*   diag is an input array of length n which must contain the
-*     diagonal elements of the matrix d.
-*
-*   qtb is an input array of length n which must contain the first
-*     n elements of the vector (q transpose)*b.
-*
-*   delta is a positive input variable which specifies an upper
-*     bound on the euclidean norm of d*x.
-*
-*   par is a nonnegative variable. on input par contains an
-*     initial estimate of the levenberg-marquardt parameter.
-*     on output par contains the final estimate.
-*
-*   x is an output array of length n which contains the least
-*     squares solution of the system a*x = b, sqrt(par)*d*x = 0,
-*     for the output par.
-*
-*   sdiag is an output array of length n which contains the
-*     diagonal elements of the upper triangular matrix s.
-*
-*   wa1 and wa2 are work arrays of length n.
-*
-*     subprograms called
-*
-*   minpack-supplied ... dpmpar,enorm,qrsolv
-*
-*   fortran-supplied ... dabs,dmax1,dmin1,dsqrt
-*
-*     argonne national laboratory. minpack project. march 1980.
-*     burton s. garbow, kenneth e. hillstrom, jorge j. more
-*
-*     **********
-*/
-int i,iter,ij,jj,j,jm1,jp1,k,l,nsing;
-Real dxnorm,fp,gnorm,parc,parl,paru;
-Real sum,temp;
-static double zero = 0.0;
-static double p1 = 0.1;
-static double p001 = 0.001;
+void lmpar(int n,
+           Real* r,
+           int ldr,
+           int* ipvt,
+           const Real* diag,
+           Real* qtb,
+           Real delta,
+           Real* par,
+           Real* x,
+           Real* sdiag,
+           Real* wa1,
+           Real* wa2) {
+    /*     **********
+     *
+     *     subroutine lmpar
+     *
+     *     given an m by n matrix a, an n by n nonsingular diagonal
+     *     matrix d, an m-vector b, and a positive number delta,
+     *     the problem is to determine a value for the parameter
+     *     par such that if x solves the system
+     *
+     *       a*x = b ,     sqrt(par)*d*x = 0 ,
+     *
+     *     in the least squares sense, and dxnorm is the euclidean
+     *     norm of d*x, then either par is zero and
+     *
+     *       (dxnorm-delta) .le. 0.1*delta ,
+     *
+     *     or par is positive and
+     *
+     *       abs(dxnorm-delta) .le. 0.1*delta .
+     *
+     *     this subroutine completes the solution of the problem
+     *     if it is provided with the necessary information from the
+     *     qr factorization, with column pivoting, of a. that is, if
+     *     a*p = q*r, where p is a permutation matrix, q has orthogonal
+     *     columns, and r is an upper triangular matrix with diagonal
+     *     elements of nonincreasing magnitude, then lmpar expects
+     *     the full upper triangle of r, the permutation matrix p,
+     *     and the first n components of (q transpose)*b. on output
+     *     lmpar also provides an upper triangular matrix s such that
+     *
+     *        t   t           t
+     *       p *(a *a + par*d*d)*p = s *s .
+     *
+     *     s is employed within lmpar and may be of separate interest.
+     *
+     *     only a few iterations are generally needed for convergence
+     *     of the algorithm. if, however, the limit of 10 iterations
+     *     is reached, then the output par will contain the best
+     *     value obtained so far.
+     *
+     *     the subroutine statement is
+     *
+     *   subroutine lmpar(n,r,ldr,ipvt,diag,qtb,delta,par,x,sdiag,
+     *            wa1,wa2)
+     *
+     *     where
+     *
+     *   n is a positive integer input variable set to the order of r.
+     *
+     *   r is an n by n array. on input the full upper triangle
+     *     must contain the full upper triangle of the matrix r.
+     *     on output the full upper triangle is unaltered, and the
+     *     strict lower triangle contains the strict upper triangle
+     *     (transposed) of the upper triangular matrix s.
+     *
+     *   ldr is a positive integer input variable not less than n
+     *     which specifies the leading dimension of the array r.
+     *
+     *   ipvt is an integer input array of length n which defines the
+     *     permutation matrix p such that a*p = q*r. column j of p
+     *     is column ipvt(j) of the identity matrix.
+     *
+     *   diag is an input array of length n which must contain the
+     *     diagonal elements of the matrix d.
+     *
+     *   qtb is an input array of length n which must contain the first
+     *     n elements of the vector (q transpose)*b.
+     *
+     *   delta is a positive input variable which specifies an upper
+     *     bound on the euclidean norm of d*x.
+     *
+     *   par is a nonnegative variable. on input par contains an
+     *     initial estimate of the levenberg-marquardt parameter.
+     *     on output par contains the final estimate.
+     *
+     *   x is an output array of length n which contains the least
+     *     squares solution of the system a*x = b, sqrt(par)*d*x = 0,
+     *     for the output par.
+     *
+     *   sdiag is an output array of length n which contains the
+     *     diagonal elements of the upper triangular matrix s.
+     *
+     *   wa1 and wa2 are work arrays of length n.
+     *
+     *     subprograms called
+     *
+     *   minpack-supplied ... dpmpar,enorm,qrsolv
+     *
+     *   fortran-supplied ... dabs,dmax1,dmin1,dsqrt
+     *
+     *     argonne national laboratory. minpack project. march 1980.
+     *     burton s. garbow, kenneth e. hillstrom, jorge j. more
+     *
+     *     **********
+     */
+    int i, iter, ij, jj, j, jm1, jp1, k, l, nsing;
+    Real dxnorm, fp, gnorm, parc, parl, paru;
+    Real sum, temp;
+    static double zero = 0.0;
+    static double p1 = 0.1;
+    static double p001 = 0.001;
 
-extern double DWARF;
 
-/*
-*     compute and store in x the gauss-newton direction. if the
-*     jacobian is rank-deficient, obtain a least squares solution.
-*/
-nsing = n;
-jj = 0;
-for( j=0; j<n; j++ )
-    {
-    wa1[j] = qtb[j];
-    if( (r[jj] == zero) && (nsing == n) )
-        nsing = j;
-    if(nsing < n)
-        wa1[j] = zero;
-    jj += ldr+1; /* [j+ldr*j] */
+    /*
+     *     compute and store in x the gauss-newton direction. if the
+     *     jacobian is rank-deficient, obtain a least squares solution.
+     */
+    nsing = n;
+    jj = 0;
+    for (j = 0; j < n; j++) {
+        wa1[j] = qtb[j];
+        if ((r[jj] == zero) && (nsing == n))
+            nsing = j;
+        if (nsing < n)
+            wa1[j] = zero;
+        jj += ldr + 1; /* [j+ldr*j] */
     }
 if(nsing >= 1)
     {
@@ -1364,10 +1375,10 @@ L30:
 *    calculate the jacobian matrix.
 */
 iflag = 2;
-if(jacFcn != 0) // use user supplied jacobian calculation
-    jacFcn(m,n,x,fjac,&iflag);
-else
+if (jacFcn == QL_NULL_FUNCTION) // use user supplied jacobian calculation
     fdjac2(m,n,x,fvec,fjac,ldfjac,&iflag,epsfcn,wa4, fcn);
+else
+    jacFcn(m,n,x,fjac,&iflag);
 *nfev += n;
 if(iflag < 0)
     goto L300;

@@ -36,31 +36,29 @@ namespace QuantLib {
       public:
 
         FdmHullWhiteOp(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<HullWhite>& model,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<HullWhite>& model,
             Size direction);
 
-        Size size() const;
+        Size size() const override;
 
         //! Time \f$t1 <= t2\f$ is required
-        void setTime(Time t1, Time t2);
+        void setTime(Time t1, Time t2) override;
 
-        Disposable<Array> apply(const Array& r) const;
-        Disposable<Array> apply_mixed(const Array& r) const;
-        Disposable<Array> apply_direction(Size direction, const Array& r) const;
-        Disposable<Array>
-            solve_splitting(Size direction, const Array& r, Real s) const;
-        Disposable<Array> preconditioner(const Array& r, Real s) const;
+        Array apply(const Array& r) const override;
+        Array apply_mixed(const Array& r) const override;
+        Array apply_direction(Size direction, const Array& r) const override;
+        Array solve_splitting(Size direction, const Array& r, Real s) const override;
+        Array preconditioner(const Array& r, Real s) const override;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
-#endif
+        std::vector<SparseMatrix> toMatrixDecomp() const override;
+
       private:
         const Size direction_;
         const Array x_;
         const TripleBandLinearOp dzMap_;
         TripleBandLinearOp mapT_;
-        const boost::shared_ptr<HullWhite> model_;
+        const ext::shared_ptr<HullWhite> model_;
     };
 }
 

@@ -32,15 +32,16 @@ namespace QuantLib {
     /*! \ingroup credit */
     class RiskyAssetSwapOption : public Instrument {
       public:
-        RiskyAssetSwapOption(const boost::shared_ptr<RiskyAssetSwap>& asw,
+        RiskyAssetSwapOption(ext::shared_ptr<RiskyAssetSwap> asw,
                              const Date& expiry,
                              Rate marketSpread,
                              Volatility spreadVolatility);
-      private:
-        bool isExpired() const;
-        void performCalculations() const;
 
-        boost::shared_ptr<RiskyAssetSwap> asw_;
+      private:
+        bool isExpired() const override;
+        void performCalculations() const override;
+
+        ext::shared_ptr<RiskyAssetSwap> asw_;
         Date expiry_;
         Rate marketSpread_;
         Volatility spreadVolatility_;

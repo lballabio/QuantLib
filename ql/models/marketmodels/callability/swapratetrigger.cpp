@@ -19,15 +19,15 @@
 
 #include <ql/models/marketmodels/callability/swapratetrigger.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-
     SwapRateTrigger::SwapRateTrigger(const std::vector<Time>& rateTimes,
-                                     const std::vector<Rate>& swapTriggers,
+                                     std::vector<Rate> swapTriggers,
                                      const std::vector<Time>& exerciseTimes)
-    : rateTimes_(rateTimes), swapTriggers_(swapTriggers),
-      exerciseTimes_(exerciseTimes), rateIndex_(exerciseTimes.size()) {
+    : rateTimes_(rateTimes), swapTriggers_(std::move(swapTriggers)), exerciseTimes_(exerciseTimes),
+      rateIndex_(exerciseTimes.size()) {
 
         checkIncreasingTimes(rateTimes);
         QL_REQUIRE(rateTimes.size()>1,
@@ -68,10 +68,9 @@ namespace QuantLib {
         ++currentIndex_;
     }
 
-    std::auto_ptr<ExerciseStrategy<CurveState> >
+    std::unique_ptr<ExerciseStrategy<CurveState>>
     SwapRateTrigger::clone() const {
-        return std::auto_ptr<ExerciseStrategy<CurveState> >(
-                                                  new SwapRateTrigger(*this));
+        return std::unique_ptr<ExerciseStrategy<CurveState>>(new SwapRateTrigger(*this));
     }
 
 }

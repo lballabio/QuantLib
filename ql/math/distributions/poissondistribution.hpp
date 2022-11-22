@@ -37,8 +37,11 @@ namespace QuantLib {
         \test the correctness of the returned value is tested by
               checking it against known good results.
     */
-    class PoissonDistribution : public std::unary_function<Real,Real> {
+    class PoissonDistribution {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         PoissonDistribution(Real mu);
         // function
         Real operator()(BigNatural k) const;
@@ -58,9 +61,11 @@ namespace QuantLib {
         \test the correctness of the returned value is tested by
               checking it against known good results.
     */
-    class CumulativePoissonDistribution
-        : public std::unary_function<Real,Real> {
+    class CumulativePoissonDistribution {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         CumulativePoissonDistribution(Real mu) : mu_(mu) {}
         Real operator()(BigNatural k) const {
             return 1.0 - incompleteGammaFunction(k+1, mu_);
@@ -74,8 +79,11 @@ namespace QuantLib {
     /*! \test the correctness of the returned value is tested by
               checking it against known good results.
     */
-    class InverseCumulativePoisson : public std::unary_function<Real,Real> {
+    class InverseCumulativePoisson {
       public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
         InverseCumulativePoisson(Real lambda = 1.0);
         Real operator()(Real x) const;
       private:

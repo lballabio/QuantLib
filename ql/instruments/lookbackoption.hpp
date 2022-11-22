@@ -40,9 +40,10 @@ namespace QuantLib {
         class engine;
         ContinuousFloatingLookbackOption(
                           Real currentMinmax,
-                          const boost::shared_ptr<TypePayoff>& payoff,
-                          const boost::shared_ptr<Exercise>& exercise);
-        void setupArguments(PricingEngine::arguments*) const;
+                          const ext::shared_ptr<TypePayoff>& payoff,
+                          const ext::shared_ptr<Exercise>& exercise);
+        void setupArguments(PricingEngine::arguments*) const override;
+
       protected:
         // arguments
         Real minmax_;
@@ -56,9 +57,10 @@ namespace QuantLib {
         class engine;
         ContinuousFixedLookbackOption(
                           Real currentMinmax,
-                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                          const boost::shared_ptr<Exercise>& exercise);
-        void setupArguments(PricingEngine::arguments*) const;
+                          const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                          const ext::shared_ptr<Exercise>& exercise);
+        void setupArguments(PricingEngine::arguments*) const override;
+
       protected:
         // arguments
         Real minmax_;
@@ -87,9 +89,10 @@ namespace QuantLib {
                           Real currentMinmax,
                           Real lambda,
                           Date lookbackPeriodEnd,
-                          const boost::shared_ptr<TypePayoff>& payoff,
-                          const boost::shared_ptr<Exercise>& exercise);
-        void setupArguments(PricingEngine::arguments*) const;
+                          const ext::shared_ptr<TypePayoff>& payoff,
+                          const ext::shared_ptr<Exercise>& exercise);
+        void setupArguments(PricingEngine::arguments*) const override;
+
       protected:
         // arguments
         Real lambda_;
@@ -122,9 +125,10 @@ namespace QuantLib {
         class engine;
         ContinuousPartialFixedLookbackOption(
                           Date lookbackPeriodStart,
-                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                          const boost::shared_ptr<Exercise>& exercise);
-        void setupArguments(PricingEngine::arguments*) const;
+                          const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                          const ext::shared_ptr<Exercise>& exercise);
+        void setupArguments(PricingEngine::arguments*) const override;
+
       protected:
         // arguments
         Date lookbackPeriodStart_;
@@ -135,7 +139,7 @@ namespace QuantLib {
         : public OneAssetOption::arguments {
       public:
         Real minmax;
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Arguments for continuous fixed lookback option calculation
@@ -143,7 +147,7 @@ namespace QuantLib {
         : public OneAssetOption::arguments {
       public:
         Real minmax;
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Arguments for continuous partial floating lookback option calculation
@@ -152,7 +156,7 @@ namespace QuantLib {
       public:
         Real lambda;
         Date lookbackPeriodEnd;
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Arguments for continuous partial fixed lookback option calculation
@@ -160,7 +164,7 @@ namespace QuantLib {
         : public ContinuousFixedLookbackOption::arguments {
       public:
         Date lookbackPeriodStart;
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Continuous floating lookback %engine base class

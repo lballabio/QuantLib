@@ -26,26 +26,24 @@
 
 #include <ql/methods/finitedifferences/pde.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     class PdeBSM : public PdeSecondOrderParabolic {
       public:
-        typedef boost::shared_ptr<GeneralizedBlackScholesProcess>
+        typedef ext::shared_ptr<GeneralizedBlackScholesProcess>
                                                                 argument_type;
         typedef LogGrid grid_type;
-        PdeBSM(const argument_type & process) : process_(process) {};
-        virtual Real diffusion(Time t, Real x) const {
-            return process_->diffusion(t, x);
-        }
-        virtual Real drift(Time t, Real x) const {
-            return process_->drift(t, x);
-        }
-        virtual Real discount(Time t, Real) const {
+        PdeBSM(argument_type process) : process_(std::move(process)){};
+        Real diffusion(Time t, Real x) const override { return process_->diffusion(t, x); }
+        Real drift(Time t, Real x) const override { return process_->drift(t, x); }
+        Real discount(Time t, Real) const override {
             if (std::fabs(t) < 1e-8) t = 0;
             return process_->riskFreeRate()->
                 forwardRate(t,t,Continuous,NoFrequency,true);
         }
+
     private:
         const argument_type process_;
     };

@@ -77,10 +77,10 @@ namespace QuantLib {
 
         //! \name VolatilityCompositor interface
         //@{
-        time_series calculate(const time_series& quoteSeries) {
+        time_series calculate(const time_series& quoteSeries) override {
             return calculate(quoteSeries, alpha(), beta(), omega());
         }
-        void calibrate(const time_series& quoteSeries) {
+        void calibrate(const time_series& quoteSeries) override {
             calibrate(quoteSeries.cbegin_values(), quoteSeries.cend_values());
         }
         //@}
@@ -109,7 +109,7 @@ namespace QuantLib {
         void calibrate(ForwardIterator begin, ForwardIterator end) {
             std::vector<Volatility> r2;
             Real mean_r2 = to_r2(begin, end, r2);
-            boost::shared_ptr<Problem> p =
+            ext::shared_ptr<Problem> p =
                 calibrate_r2(mode_, r2, mean_r2, alpha_, beta_, vl_);
             gamma_ = 1 - alpha_ - beta_;
             vl_ /= gamma_;
@@ -123,7 +123,7 @@ namespace QuantLib {
                        EndCriteria endCriteria) {
             std::vector<Volatility> r2;
             Real mean_r2 = to_r2(begin, end, r2);
-            boost::shared_ptr<Problem> p =
+            ext::shared_ptr<Problem> p =
                 calibrate_r2(mode_, r2, mean_r2, method,
                              endCriteria, alpha_, beta_, vl_);
             gamma_ = 1 - alpha_ - beta_;
@@ -139,7 +139,7 @@ namespace QuantLib {
                        const Array& initialGuess) {
             std::vector<Volatility> r2;
             to_r2(begin, end, r2);
-            boost::shared_ptr<Problem> p =
+            ext::shared_ptr<Problem> p =
                 calibrate_r2(r2, method, endCriteria, initialGuess,
                              alpha_, beta_, vl_);
             gamma_ = 1 - alpha_ - beta_;
@@ -167,7 +167,7 @@ namespace QuantLib {
         }
 
         /*! calibrates GARCH for r^2 */
-        static boost::shared_ptr<Problem> calibrate_r2(
+        static ext::shared_ptr<Problem> calibrate_r2(
                                         Mode mode,
                                         const std::vector<Volatility>& r2,
                                         Real mean_r2,
@@ -177,7 +177,7 @@ namespace QuantLib {
 
         /*! calibrates GARCH for r^2 with user-defined optimization
             method and end criteria */
-        static boost::shared_ptr<Problem> calibrate_r2(
+        static ext::shared_ptr<Problem> calibrate_r2(
                                         Mode mode,
                                         const std::vector<Volatility>& r2,
                                         Real mean_r2,
@@ -189,7 +189,7 @@ namespace QuantLib {
 
         /*! calibrates GARCH for r^2 with user-defined optimization
             method, end criteria and initial guess */
-        static boost::shared_ptr<Problem> calibrate_r2(
+        static ext::shared_ptr<Problem> calibrate_r2(
                                         const std::vector<Volatility>& r2,
                                         Real mean_r2,
                                         OptimizationMethod& method,
@@ -201,7 +201,7 @@ namespace QuantLib {
 
         /*! calibrates GARCH for r^2 with user-defined optimization
             method, end criteria and initial guess */
-        static boost::shared_ptr<Problem> calibrate_r2(
+        static ext::shared_ptr<Problem> calibrate_r2(
                                         const std::vector<Volatility> &r2,
                                         OptimizationMethod& method,
                                         const EndCriteria& endCriteria,
@@ -212,7 +212,7 @@ namespace QuantLib {
 
         /*! calibrates GARCH for r^2 with user-defined optimization
             method, end criteria, constraints and initial guess */
-        static boost::shared_ptr<Problem> calibrate_r2(
+        static ext::shared_ptr<Problem> calibrate_r2(
                                         const std::vector<Volatility>& r2,
                                         Real mean_r2,
                                         OptimizationMethod& method,
@@ -223,7 +223,7 @@ namespace QuantLib {
                                         Real& beta,
                                         Real& omega);
 
-        static boost::shared_ptr<Problem> calibrate_r2(
+        static ext::shared_ptr<Problem> calibrate_r2(
                                         const std::vector<Volatility> &r2,
                                         OptimizationMethod& method,
                                         Constraint& constraints,
@@ -244,7 +244,7 @@ namespace QuantLib {
                 u2 = *begin; u2 *= u2;
                 retval += std::log(sigma2) + u2 / sigma2;
             }
-            return N > 0 ? retval / (2*N) : 0.0;
+            return N > 0 ? Real(retval / (2*N)) : 0.0;
         }
         //@}
       private:

@@ -24,23 +24,6 @@
 #include <ql/version.hpp>
 #include <boost/config.hpp>
 
-// select toolset:
-#if (_MSC_VER >= 1910)
-#  define QL_LIB_TOOLSET "vc141"
-#elif (_MSC_VER >= 1900)
-#  define QL_LIB_TOOLSET "vc140"
-#elif (_MSC_VER >= 1800)
-#  define QL_LIB_TOOLSET "vc120"
-#elif (_MSC_VER >= 1700)
-#  define QL_LIB_TOOLSET "vc110"
-#elif (_MSC_VER >= 1600)
-#  define QL_LIB_TOOLSET "vc100"
-#elif (_MSC_VER >= 1500)
-#  define QL_LIB_TOOLSET "vc90"
-#else
-#  error "unsupported Microsoft compiler"
-#endif
-
 #ifdef _M_X64
 #  define QL_LIB_PLATFORM "-x64"
 #else
@@ -71,22 +54,11 @@
 #  endif
 #endif
 
-#define QL_LIB_NAME "QuantLib-" QL_LIB_TOOLSET QL_LIB_PLATFORM QL_LIB_THREAD_OPT QL_LIB_RT_OPT ".lib"
+#define QL_LIB_NAME "QuantLib" QL_LIB_PLATFORM QL_LIB_THREAD_OPT QL_LIB_RT_OPT ".lib"
 
 #pragma comment(lib, QL_LIB_NAME)
 #ifdef BOOST_LIB_DIAGNOSTIC
 #  pragma message("Will (need to) link to lib file: " QL_LIB_NAME)
 #endif
-
-/* Also, these Boost libraries might be needed */
-#if defined(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN) || defined(QL_ENABLE_SINGLETON_THREAD_SAFE_INIT)
-#  define BOOST_LIB_NAME boost_system
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#  define BOOST_LIB_NAME boost_thread
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-#endif
-
 
 #endif

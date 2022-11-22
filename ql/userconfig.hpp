@@ -47,11 +47,6 @@
 //#   define QL_ENABLE_TRACING
 #endif
 
-/* Define this if negative rates should be allowed. */
-#ifndef QL_NEGATIVE_RATES
-#   define QL_NEGATIVE_RATES
-#endif
-
 /* Define this if extra safety checks should be performed. This can degrade
    performance. */
 #ifndef QL_EXTRA_SAFETY_CHECKS
@@ -59,7 +54,7 @@
 #endif
 
 /* Define this to use indexed coupons instead of par coupons in floating
-   legs. */
+   legs as the default in 'bool IborCoupon::Settings::usingAtParCoupons();'. */
 #ifndef QL_USE_INDEXED_COUPON
 //#   define QL_USE_INDEXED_COUPON
 #endif
@@ -67,7 +62,9 @@
 /* Define this to have singletons return different instances for
    different sessions. You will have to provide and link with the
    library a sessionId() function in namespace QuantLib, returning a
-   different session id for each session.*/
+   different session id for each session.
+   This also implies thread-safe Singleton initialization.
+*/
 #ifndef QL_ENABLE_SESSIONS
 //#   define QL_ENABLE_SESSIONS
 #endif
@@ -86,16 +83,32 @@
 //#    define QL_HIGH_RESOLUTION_DATE
 #endif
 
+/* Define this to use standard smart pointers instead of Boost ones.
+   Note that std::shared_ptr does not check access and can
+   cause segmentation faults. */
+#ifndef QL_USE_STD_SHARED_PTR
+//#    define QL_USE_STD_SHARED_PTR
+#endif
+
+/* Define this to use std::function and std::bind instead of
+   boost::function and boost::bind. */
+#ifndef QL_USE_STD_FUNCTION
+//#    define QL_USE_STD_FUNCTION
+#endif
+
+/* Define this to use std::tuple instead of boost::tuple. */
+#ifndef QL_USE_STD_TUPLE
+//#    define QL_USE_STD_TUPLE
+#endif
+
+/* Define this to enable the implementation of Null as template functions. */
+#ifndef QL_NULL_AS_FUNCTIONS
+//#    define QL_NULL_AS_FUNCTIONS
+#endif
+
 /* Define this to enable the parallel unit test runner */
 #ifndef QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
 //#    define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER
-#endif
-
-/* Define this to make Singleton initialization thread-safe.
-   Note: There is no support for thread safety and multiple sessions.
-*/
-#ifndef QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-//#   define QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
 #endif
 
 #endif

@@ -51,7 +51,10 @@ namespace QuantLib {
     };
 
     //! mixed linear/cubic interpolation between discrete points
-    /*! \ingroup interpolations */
+    /*! \ingroup interpolations
+        \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
+    */
     class MixedLinearCubicInterpolation : public Interpolation {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
@@ -65,32 +68,9 @@ namespace QuantLib {
                                       Real leftConditionValue,
                                       CubicInterpolation::BoundaryCondition rightC,
                                       Real rightConditionValue) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
+            impl_ = ext::shared_ptr<Interpolation::Impl>(new
                 detail::MixedInterpolationImpl<I1, I2, Linear, Cubic>(
                     xBegin, xEnd, yBegin, n, behavior,
-                    Linear(),
-                    Cubic(da, monotonic,
-                          leftC, leftConditionValue,
-                          rightC, rightConditionValue)));
-            impl_->update();
-        }
-        /*! \pre the \f$ x \f$ values must be sorted.
-            \deprecated Use the other constructor
-        */
-        template <class I1, class I2>
-        QL_DEPRECATED
-        MixedLinearCubicInterpolation(const I1& xBegin, const I1& xEnd,
-                                      const I2& yBegin, Size n,
-                                      CubicInterpolation::DerivativeApprox da,
-                                      bool monotonic,
-                                      CubicInterpolation::BoundaryCondition leftC,
-                                      Real leftConditionValue,
-                                      CubicInterpolation::BoundaryCondition rightC,
-                                      Real rightConditionValue) {
-            impl_ = boost::shared_ptr<Interpolation::Impl>(new
-                detail::MixedInterpolationImpl<I1, I2, Linear, Cubic>(
-                    xBegin, xEnd, yBegin, n,
-                    MixedInterpolation::ShareRanges,
                     Linear(),
                     Cubic(da, monotonic,
                           leftC, leftConditionValue,
@@ -114,21 +94,6 @@ namespace QuantLib {
                              = CubicInterpolation::SecondDerivative,
                          Real rightConditionValue = 0.0)
         : n_(n), behavior_(behavior), da_(da), monotonic_(monotonic),
-          leftType_(leftCondition), rightType_(rightCondition),
-          leftValue_(leftConditionValue), rightValue_(rightConditionValue) {}
-        /*! \deprecated Use the other constructor */
-        QL_DEPRECATED
-        MixedLinearCubic(Size n,
-                         CubicInterpolation::DerivativeApprox da,
-                         bool monotonic,
-                         CubicInterpolation::BoundaryCondition leftCondition
-                             = CubicInterpolation::SecondDerivative,
-                         Real leftConditionValue = 0.0,
-                         CubicInterpolation::BoundaryCondition rightCondition
-                             = CubicInterpolation::SecondDerivative,
-                         Real rightConditionValue = 0.0)
-        : n_(n), behavior_(MixedInterpolation::ShareRanges),
-          da_(da), monotonic_(monotonic),
           leftType_(leftCondition), rightType_(rightCondition),
           leftValue_(leftConditionValue), rightValue_(rightConditionValue) {}
         template <class I1, class I2>
@@ -252,8 +217,8 @@ namespace QuantLib {
                                    const Interpolator2& factory2 = Interpolator2())
             : Interpolation::templateImpl<I1,I2>(
                                xBegin, xEnd, yBegin,
-                               std::max<Size>(Interpolator1::requiredPoints,
-                                              Interpolator2::requiredPoints)),
+                               std::max(Size(Interpolator1::requiredPoints),
+                                        Size(Interpolator2::requiredPoints))),
               n_(n) {
 
                 xBegin2_ = this->xBegin_ + n_;
@@ -285,31 +250,6 @@ namespace QuantLib {
                 }
             }
 
-            QL_DEPRECATED
-            MixedInterpolationImpl(const I1& xBegin, const I1& xEnd,
-                                   const I2& yBegin, Size n,
-                                   const Interpolator1& factory1,
-                                   const Interpolator2& factory2 = Interpolator2())
-            : Interpolation::templateImpl<I1,I2>(
-                               xBegin, xEnd, yBegin,
-                               std::max<Size>(Interpolator1::requiredPoints,
-                                              Interpolator2::requiredPoints)),
-              n_(n) {
-
-                xBegin2_ = this->xBegin_ + n_;
-                yBegin2_ = this->yBegin_ + n_;
-
-                QL_REQUIRE(xBegin2_<this->xEnd_,
-                           "too large n (" << n << ") for " <<
-                           this->xEnd_-this->xBegin_ << "-element x sequence");
-
-                interpolation1_ = factory1.interpolate(this->xBegin_,
-                                                       this->xEnd_,
-                                                       this->yBegin_);
-                interpolation2_ = factory2.interpolate(this->xBegin_,
-                                                       this->xEnd_,
-                                                       this->yBegin_);
-            }
             void update() {
                 interpolation1_.update();
                 interpolation2_.update();

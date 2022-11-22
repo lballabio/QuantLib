@@ -25,9 +25,9 @@ namespace QuantLib {
     Italy::Italy(Italy::Market market) {
         // all calendar instances on the same market share the same
         // implementation instance
-        static boost::shared_ptr<Calendar::Impl> settlementImpl(
+        static ext::shared_ptr<Calendar::Impl> settlementImpl(
                                                    new Italy::SettlementImpl);
-        static boost::shared_ptr<Calendar::Impl> exchangeImpl(
+        static ext::shared_ptr<Calendar::Impl> exchangeImpl(
                                                    new Italy::ExchangeImpl);
         switch (market) {
           case Settlement:
@@ -73,7 +73,7 @@ namespace QuantLib {
             || (d == 26 && m == December)
             // December 31st, 1999 only
             || (d == 31 && m == December && y == 1999))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 
@@ -103,7 +103,7 @@ namespace QuantLib {
             || (d == 26 && m == December)
             // New Year's Eve
             || (d == 31 && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

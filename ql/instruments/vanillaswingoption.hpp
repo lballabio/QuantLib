@@ -36,8 +36,8 @@ namespace QuantLib {
     */
     class SwingExercise : public BermudanExercise {
       public:
-        SwingExercise(const std::vector<Date>& dates,
-                      const std::vector<Size>& seconds = std::vector<Size>());
+        explicit SwingExercise(const std::vector<Date>& dates,
+                               const std::vector<Size>& seconds = std::vector<Size>());
         SwingExercise(const Date& from, const Date& to, Size stepSizeSecs);
 
         const std::vector<Size>& seconds() const;
@@ -49,34 +49,43 @@ namespace QuantLib {
         const std::vector<Size> seconds_;
     };
 
+    class VanillaForwardPayoff : public StrikedTypePayoff {
+      public:
+        VanillaForwardPayoff(Option::Type type, Real strike)
+          : StrikedTypePayoff(type, strike) {}
+
+        std::string name() const override { return "ForwardTypePayoff"; }
+        Real operator()(Real price) const override;
+        void accept(AcyclicVisitor&) override;
+    };
 
     //! base option class
     class VanillaSwingOption : public OneAssetOption {
       public:
           class arguments;
-          VanillaSwingOption(const boost::shared_ptr<Payoff>& payoff,
-                             const boost::shared_ptr<SwingExercise>& ex,
+          VanillaSwingOption(const ext::shared_ptr<Payoff>& payoff,
+                             const ext::shared_ptr<SwingExercise>& ex,
                              Size minExerciseRights, Size maxExerciseRights)
         : OneAssetOption(payoff, ex),
           minExerciseRights_(minExerciseRights),
           maxExerciseRights_(maxExerciseRights) {}
 
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
-        
-      private:
-        const Size minExerciseRights_, maxExerciseRights_;
+          bool isExpired() const override;
+          void setupArguments(PricingEngine::arguments*) const override;
+
+        private:
+          const Size minExerciseRights_, maxExerciseRights_;
     };
 
     class VanillaSwingOption::arguments 
         : public virtual PricingEngine::arguments {
       public:
-        arguments() {}
-        void validate() const;
+        arguments() = default;
+        void validate() const override;
 
         Size minExerciseRights, maxExerciseRights;
-        boost::shared_ptr<StrikedTypePayoff> payoff;
-        boost::shared_ptr<SwingExercise> exercise;
+        ext::shared_ptr<StrikedTypePayoff> payoff;
+        ext::shared_ptr<SwingExercise> exercise;
     };
 }
 

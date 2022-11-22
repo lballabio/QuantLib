@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
  Copyright (C) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -22,18 +22,18 @@
     \brief Heston stochastic local volatility process
 */
 
-#include <ql/math/functional.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/experimental/processes/hestonslvprocess.hpp>
-#include <ql/experimental/finitedifferences/squarerootprocessrndcalculator.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    HestonSLVProcess::HestonSLVProcess(
-        const boost::shared_ptr<HestonProcess>& hestonProcess,
-        const boost::shared_ptr<LocalVolTermStructure>& leverageFct)
-    : hestonProcess_(hestonProcess),
-      leverageFct_(leverageFct) {
+    HestonSLVProcess::HestonSLVProcess(const ext::shared_ptr<HestonProcess>& hestonProcess,
+                                       ext::shared_ptr<LocalVolTermStructure> leverageFct,
+                                       const Real mixingFactor)
+    : mixingFactor_(mixingFactor), hestonProcess_(hestonProcess),
+      leverageFct_(std::move(leverageFct)) {
         registerWith(hestonProcess);
         update();
     };
@@ -44,17 +44,17 @@ namespace QuantLib {
         theta_ = hestonProcess_->theta();
         sigma_ = hestonProcess_->sigma();
         rho_   = hestonProcess_->rho();
+        mixedSigma_ = mixingFactor_ * sigma_;
     }
 
-    Disposable<Array> HestonSLVProcess::drift(Time t, const Array& x) const {
+    Array HestonSLVProcess::drift(Time t, const Array& x) const {
         Array tmp(2);
 
-        const Real s = std::exp(x[0]);
-        const Volatility vol
-            = std::sqrt(x[1])*leverageFct_->localVol(t, s, true);
+        const Volatility vol =
+           std::max(1e-8, std::sqrt(x[1])*leverageFct_->localVol(t, x[0], true));
 
-        tmp[0] = riskFreeRate()->forwardRate(t, t, Continuous)
-               - dividendYield()->forwardRate(t, t, Continuous)
+        tmp[0] = riskFreeRate()->forwardRate(t, t, Continuous).rate()
+               - dividendYield()->forwardRate(t, t, Continuous).rate()
                - 0.5*vol*vol;
 
         tmp[1] = kappa_*(theta_ - x[1]);
@@ -62,14 +62,12 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Matrix> HestonSLVProcess::diffusion(Time t, const Array& x)
-    const {
+    Matrix HestonSLVProcess::diffusion(Time t, const Array& x) const {
 
-        const Real s = std::exp(x[0]);
         const Real vol =
-            std::min(1e-8, std::sqrt(x[1]*leverageFct_->localVol(t, s, true)));
+            std::max(1e-8, std::sqrt(x[1])*leverageFct_->localVol(t, x[0], true));
 
-        const Real sigma2 = sigma_ * vol;
+        const Real sigma2 = mixedSigma_ * std::sqrt(x[1]);
         const Real sqrhov = std::sqrt(1.0 - rho_*rho_);
 
         Matrix tmp(2,2);
@@ -79,15 +77,15 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Array> HestonSLVProcess::evolve(
+    Array HestonSLVProcess::evolve(
         Time t0, const Array& x0, Time dt, const Array& dw) const {
         Array retVal(2);
 
         const Real ex = std::exp(-kappa_*dt);
 
         const Real m  =  theta_+(x0[1]-theta_)*ex;
-        const Real s2 =  x0[1]*sigma_*sigma_*ex/kappa_*(1-ex)
-                       + theta_*sigma_*sigma_/(2*kappa_)*(1-ex)*(1-ex);
+        const Real s2 =  x0[1]*mixedSigma_*mixedSigma_*ex/kappa_*(1-ex)
+                       + theta_*mixedSigma_*mixedSigma_/(2*kappa_)*(1-ex)*(1-ex);
         const Real psi = s2/(m*m);
 
         if (psi < 1.5) {
@@ -102,11 +100,11 @@ namespace QuantLib {
             const Real beta = (1-p)/m;
             const Real u = CumulativeNormalDistribution()(dw[1]);
 
-            retVal[1] = ((u <= p) ? 0.0 : std::log((1-p)/(1-u))/beta);
+            retVal[1] = ((u <= p) ? Real(0.0) : std::log((1-p)/(1-u))/beta);
         }
 
-        const Real mu = riskFreeRate()->forwardRate(t0, t0+dt, Continuous)
-             - dividendYield()->forwardRate(t0, t0+dt, Continuous);
+        const Real mu = riskFreeRate()->forwardRate(t0, t0+dt, Continuous).rate()
+             - dividendYield()->forwardRate(t0, t0+dt, Continuous).rate();
 
         const Real rho1 = std::sqrt(1-rho_*rho_);
 
@@ -114,7 +112,7 @@ namespace QuantLib {
         const Real v_0 = 0.5*(x0[1]+retVal[1])*l_0*l_0;
 
         retVal[0] = x0[0]*std::exp(mu*dt - 0.5*v_0*dt
-            + rho_/sigma_*l_0 * (
+            + rho_/mixedSigma_*l_0 * (
                   retVal[1] - kappa_*theta_*dt
                   + 0.5*(x0[1]+retVal[1])*kappa_*dt - x0[1])
             + rho1*std::sqrt(v_0*dt)*dw[0]);

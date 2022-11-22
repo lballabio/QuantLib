@@ -18,10 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/exercise.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -76,10 +77,9 @@ namespace QuantLib {
         }
     }
 
-    BjerksundStenslandApproximationEngine::
-    BjerksundStenslandApproximationEngine(
-              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+    BjerksundStenslandApproximationEngine::BjerksundStenslandApproximationEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
@@ -88,14 +88,14 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American Option");
 
-        boost::shared_ptr<AmericanExercise> ex =
-            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        ext::shared_ptr<AmericanExercise> ex =
+            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(!ex->payoffAtExpiry(),
                    "payoff at expiry not handled");
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         Real variance =
@@ -113,8 +113,8 @@ namespace QuantLib {
             // use put-call simmetry
             std::swap(spot, strike);
             std::swap(riskFreeDiscount, dividendDiscount);
-            payoff = boost::shared_ptr<PlainVanillaPayoff>(
-                                new PlainVanillaPayoff(Option::Call, strike));
+            payoff = ext::make_shared<PlainVanillaPayoff>(
+                                Option::Call, strike);
         }
 
         if (dividendDiscount>=1.0) {

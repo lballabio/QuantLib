@@ -30,38 +30,58 @@
 
 namespace QuantLib {
 
-    class ChiSquareDistribution : public std::unary_function<Real,Real> {
+    class CumulativeChiSquareDistribution {
       public:
-        ChiSquareDistribution(Real df) : df_(df) {}
+        typedef Real argument_type;
+        typedef Real result_type;
+
+        explicit CumulativeChiSquareDistribution(Real df) : df_(df) {}
         Real operator()(Real x) const;
       private:
         Real df_;
     };
 
-    class NonCentralChiSquareDistribution
-    : public std::unary_function<Real,Real> {
+    class NonCentralCumulativeChiSquareDistribution {
       public:
-        NonCentralChiSquareDistribution(Real df, Real ncp)
+        typedef Real argument_type;
+        typedef Real result_type;
+
+        NonCentralCumulativeChiSquareDistribution(Real df, Real ncp)
         : df_(df), ncp_(ncp) {}
         Real operator()(Real x) const;
       private:
         Real df_, ncp_;
     };
 
-    class InverseNonCentralChiSquareDistribution
-        : public std::unary_function<Real,Real> {
+    class NonCentralCumulativeChiSquareSankaranApprox {
       public:
-        InverseNonCentralChiSquareDistribution(Real df, Real ncp,
+        typedef Real argument_type;
+        typedef Real result_type;
+
+        NonCentralCumulativeChiSquareSankaranApprox(Real df, Real ncp)
+        : df_(df), ncp_(ncp) {}
+        Real operator()(Real x) const;
+      private:
+        Real df_, ncp_;
+    };
+
+    class InverseNonCentralCumulativeChiSquareDistribution {
+      public:
+        typedef Real argument_type;
+        typedef Real result_type;
+
+        InverseNonCentralCumulativeChiSquareDistribution(Real df, Real ncp,
                                                Size maxEvaluations=10,
                                                Real accuracy = 1e-8);
         Real operator()(Real x) const;
 
     private:
-        NonCentralChiSquareDistribution nonCentralDist_;
+        NonCentralCumulativeChiSquareDistribution nonCentralDist_;
         const Real guess_;
         const Size maxEvaluations_;
         const Real accuracy_;
     };
+
 }
 
 

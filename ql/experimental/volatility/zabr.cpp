@@ -34,8 +34,6 @@
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/experimental/finitedifferences/fdmdupire1dop.hpp>
 #include <ql/experimental/finitedifferences/fdmzabrop.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
 
 using std::pow;
 
@@ -68,13 +66,11 @@ Real ZabrModel::lognormalVolatility(const Real strike) const {
     return lognormalVolatility(std::vector<Real>(1, strike))[0];
 }
 
-Disposable<std::vector<Real> >
-ZabrModel::lognormalVolatility(const std::vector<Real> &strikes) const {
+std::vector<Real> ZabrModel::lognormalVolatility(const std::vector<Real> &strikes) const {
     std::vector<Real> x_ = x(strikes);
     std::vector<Real> result(strikes.size());
     std::transform(strikes.begin(), strikes.end(), x_.begin(), result.begin(),
-                   boost::bind(&ZabrModel::lognormalVolatilityHelper,
-                               this, _1, _2));
+                   [&](Real _k, Real _x) { return lognormalVolatilityHelper(_k, _x); });
     return result;
 }
 
@@ -89,13 +85,11 @@ Real ZabrModel::normalVolatility(const Real strike) const {
     return normalVolatility(std::vector<Real>(1, strike))[0];
 }
 
-Disposable<std::vector<Real> >
-ZabrModel::normalVolatility(const std::vector<Real> &strikes) const {
+std::vector<Real> ZabrModel::normalVolatility(const std::vector<Real> &strikes) const {
     std::vector<Real> x_ = x(strikes);
     std::vector<Real> result(strikes.size());
     std::transform(strikes.begin(), strikes.end(), x_.begin(), result.begin(),
-                   boost::bind(&ZabrModel::normalVolatilityHelper, this,
-                               _1, _2));
+                   [&](Real _k, Real _x) { return normalVolatilityHelper(_k, _x); });
     return result;
 }
 
@@ -110,13 +104,11 @@ Real ZabrModel::localVolatility(const Real f) const {
     return localVolatility(std::vector<Real>(1, f))[0];
 }
 
-Disposable<std::vector<Real> >
-ZabrModel::localVolatility(const std::vector<Real> &f) const {
+std::vector<Real> ZabrModel::localVolatility(const std::vector<Real> &f) const {
     std::vector<Real> x_ = x(f);
     std::vector<Real> result(f.size());
     std::transform(f.begin(), f.end(), x_.begin(), result.begin(),
-                   boost::bind(&ZabrModel::localVolatilityHelper, this,
-                               _1, _2));
+                   [&](Real _f, Real _x) { return localVolatilityHelper(_f, _x); });
     return result;
 }
 
@@ -124,8 +116,7 @@ Real ZabrModel::fdPrice(const Real strike) const {
     return fdPrice(std::vector<Real>(1, strike))[0];
 }
 
-Disposable<std::vector<Real> >
-ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
+std::vector<Real> ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
 
     // TODO check strikes to be increasing
     // TODO put these parameters somewhere
@@ -141,21 +132,21 @@ ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
 
     // Layout
     std::vector<Size> dim(1, size);
-    const boost::shared_ptr<FdmLinearOpLayout> layout(
+    const ext::shared_ptr<FdmLinearOpLayout> layout(
         new FdmLinearOpLayout(dim));
 
     // Mesher
-    const boost::shared_ptr<Fdm1dMesher> m1(new Concentrating1dMesher(
+    const ext::shared_ptr<Fdm1dMesher> m1(new Concentrating1dMesher(
         start, end, size, std::pair<Real, Real>(forward_, density), true));
-    // const boost::shared_ptr<Fdm1dMesher> m1(new
+    // const ext::shared_ptr<Fdm1dMesher> m1(new
     // Uniform1dMesher(start,end,size));
-    // const boost::shared_ptr<Fdm1dMesher> m1a(new
+    // const ext::shared_ptr<Fdm1dMesher> m1a(new
     // Uniform1dMesher(start,0.03,101));
-    // const boost::shared_ptr<Fdm1dMesher> m1b(new
+    // const ext::shared_ptr<Fdm1dMesher> m1b(new
     // Uniform1dMesher(0.03,end,100));
-    // const boost::shared_ptr<Fdm1dMesher> m1(new Glued1dMesher(*m1a,*m1b));
-    const std::vector<boost::shared_ptr<Fdm1dMesher> > meshers(1, m1);
-    const boost::shared_ptr<FdmMesher> mesher(
+    // const ext::shared_ptr<Fdm1dMesher> m1(new Glued1dMesher(*m1a,*m1b));
+    const std::vector<ext::shared_ptr<Fdm1dMesher> > meshers(1, m1);
+    const ext::shared_ptr<FdmMesher> mesher(
         new FdmMesherComposite(layout, meshers));
 
     // Boundary conditions
@@ -178,18 +169,18 @@ ZabrModel::fdPrice(const std::vector<Real> &strikes) const {
     std::copy(locVolv.begin(), locVolv.end(), locVol.begin());
 
     // solver
-    boost::shared_ptr<FdmDupire1dOp> map(new FdmDupire1dOp(mesher, locVol));
+    ext::shared_ptr<FdmDupire1dOp> map(new FdmDupire1dOp(mesher, locVol));
     FdmBackwardSolver solver(map, boundaries,
-                             boost::shared_ptr<FdmStepConditionComposite>(),
+                             ext::shared_ptr<FdmStepConditionComposite>(),
                              FdmSchemeDesc::Douglas());
     solver.rollback(rhs, expiryTime_, 0.0, steps, dampingSteps);
 
     // interpolate solution
-    boost::shared_ptr<Interpolation> solution(new CubicInterpolation(
+    ext::shared_ptr<Interpolation> solution(new CubicInterpolation(
         k.begin(), k.end(), rhs.begin(), CubicInterpolation::Spline, true,
         CubicInterpolation::SecondDerivative, 0.0,
         CubicInterpolation::SecondDerivative, 0.0));
-    // boost::shared_ptr<Interpolation> solution(new
+    // ext::shared_ptr<Interpolation> solution(new
     // LinearInterpolation(k.begin(),k.end(),rhs.begin()));
     solution->disableExtrapolation();
     std::vector<Real> result(strikes.size());
@@ -232,7 +223,7 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
     std::vector<Size> dim;
     dim.push_back(sizef);
     dim.push_back(sizev);
-    const boost::shared_ptr<FdmLinearOpLayout> layout(
+    const ext::shared_ptr<FdmLinearOpLayout> layout(
         new FdmLinearOpLayout(dim));
 
     // Mesher
@@ -243,32 +234,32 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
         4, (Size)std::ceil(((x0 + x1) / 2.0 - f0) / (f1 - f0) * (Real)sizef));
     const Size sizefb = sizef - sizefa + 1; // common point, so we can spend
     // one more here
-    const boost::shared_ptr<Fdm1dMesher> mfa(
+    const ext::shared_ptr<Fdm1dMesher> mfa(
         new Concentrating1dMesher(f0, (x0 + x1) / 2.0, sizefa,
                                   std::pair<Real, Real>(x0, densityf), true));
-    const boost::shared_ptr<Fdm1dMesher> mfb(
+    const ext::shared_ptr<Fdm1dMesher> mfb(
         new Concentrating1dMesher((x0 + x1) / 2.0, f1, sizefb,
                                   std::pair<Real, Real>(x1, densityf), true));
-    const boost::shared_ptr<Fdm1dMesher> mf(new Glued1dMesher(*mfa, *mfb));
+    const ext::shared_ptr<Fdm1dMesher> mf(new Glued1dMesher(*mfa, *mfb));
 
     // concentraing mesher around f to get the forward mesher
-    // const boost::shared_ptr<Fdm1dMesher> mf(new Concentrating1dMesher(
+    // const ext::shared_ptr<Fdm1dMesher> mf(new Concentrating1dMesher(
     //     f0, f1, sizef, std::pair<Real, Real>(forward_, densityf), true));
 
     // Volatility mesher
-    const boost::shared_ptr<Fdm1dMesher> mv(new Concentrating1dMesher(
+    const ext::shared_ptr<Fdm1dMesher> mv(new Concentrating1dMesher(
         v0, v1, sizev, std::pair<Real, Real>(alpha_, densityv), true));
 
     // uniform meshers
-    // const boost::shared_ptr<Fdm1dMesher> mf(new
+    // const ext::shared_ptr<Fdm1dMesher> mf(new
     // Uniform1dMesher(f0,f1,sizef));
-    // const boost::shared_ptr<Fdm1dMesher> mv(new
+    // const ext::shared_ptr<Fdm1dMesher> mv(new
     // Uniform1dMesher(v0,v1,sizev));
 
-    std::vector<boost::shared_ptr<Fdm1dMesher> > meshers;
+    std::vector<ext::shared_ptr<Fdm1dMesher> > meshers;
     meshers.push_back(mf);
     meshers.push_back(mv);
-    const boost::shared_ptr<FdmMesher> mesher(
+    const ext::shared_ptr<FdmMesher> mesher(
         new FdmMesherComposite(layout, meshers));
 
     // initial values
@@ -280,19 +271,19 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
         Real f = mesher->location(iter, 0);
         // Real v = mesher->location(iter, 0);
         rhs[iter.index()] = std::max(f - strike, 0.0);
-        if (!iter.coordinates()[1])
+        if (iter.coordinates()[1] == 0U)
             f_.push_back(mesher->location(iter, 0));
-        if (!iter.coordinates()[0])
+        if (iter.coordinates()[0] == 0U)
             v_.push_back(mesher->location(iter, 1));
     }
 
     // Boundary conditions
     FdmBoundaryConditionSet boundaries;
 
-    boost::shared_ptr<FdmZabrOp> map(
+    ext::shared_ptr<FdmZabrOp> map(
         new FdmZabrOp(mesher, beta_, nu_, rho_, gamma_));
     FdmBackwardSolver solver(map, boundaries,
-                             boost::shared_ptr<FdmStepConditionComposite>(),
+                             ext::shared_ptr<FdmStepConditionComposite>(),
                              FdmSchemeDesc::/*CraigSneyd()*/ Hundsdorfer());
 
     solver.rollback(rhs, expiryTime_, 0.0, steps, dampingSteps);
@@ -303,9 +294,9 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
     for (Size j = 0; j < v_.size(); ++j)
         std::copy(rhs.begin() + j * f_.size(),
                   rhs.begin() + (j + 1) * f_.size(), result.row_begin(j));
-    boost::shared_ptr<BicubicSpline> interpolation =
-        boost::shared_ptr<BicubicSpline>(new BicubicSpline(
-            f_.begin(), f_.end(), v_.begin(), v_.end(), result));
+    ext::shared_ptr<BicubicSpline> interpolation =
+        ext::make_shared<BicubicSpline>(
+            f_.begin(), f_.end(), v_.begin(), v_.end(), result);
     interpolation->disableExtrapolation();
     return (*interpolation)(forward_, alpha_);
 }
@@ -314,13 +305,11 @@ Real ZabrModel::x(const Real strike) const {
     return x(std::vector<Real>(1, strike))[0];
 }
 
-Disposable<std::vector<Real> >
-ZabrModel::x(const std::vector<Real> &strikes) const {
+std::vector<Real> ZabrModel::x(const std::vector<Real> &strikes) const {
 
     QL_REQUIRE(strikes[0] > 0.0 || beta_ < 1.0,
                "strikes must be positive (" << strikes[0] << ") if beta = 1");
-    for (std::vector<Real>::const_iterator i = strikes.begin() + 1;
-         i != strikes.end(); ++i)
+    for (auto i = strikes.begin() + 1; i != strikes.end(); ++i)
         QL_REQUIRE(*i > *(i - 1), "strikes must be strictly ascending ("
                                       << *(i - 1) << "," << *i << ")");
 
@@ -330,7 +319,7 @@ ZabrModel::x(const std::vector<Real> &strikes) const {
                                       // the constructor
     std::vector<Real> y(strikes.size()), result(strikes.size());
     std::transform(strikes.rbegin(), strikes.rend(), y.begin(),
-                   boost::bind(&ZabrModel::y, this, _1));
+                   [&](Real _k) { return this->y(_k); });
 
     if (close(gamma_, 1.0)) {
         for (Size m = 0; m < y.size(); m++) {
@@ -351,7 +340,7 @@ ZabrModel::x(const std::vector<Real> &strikes) const {
             Real y0 = 0.0, u0 = 0.0;
             for (int m = ynz + (dir == -1 ? -1 : 0);
                  dir == -1 ? m >= 0 : m < (int)y.size(); m += dir) {
-                Real u = rk(boost::bind(&ZabrModel::F, this, _1, _2),
+                Real u = rk([&](Real _y, Real _u){ return F(_y, _u); },
                             u0, y0, y[m]);
                 result[y.size() - 1 - m] = u * pow(alpha_, 1.0 - gamma_);
                 u0 = u;
@@ -369,10 +358,10 @@ Real ZabrModel::y(const Real strike) const {
         return std::log(forward_ / strike) * std::pow(alpha_, gamma_ - 2.0);
     } else {
         return (strike < 0.0
-                    ? std::pow(forward_, 1.0 - beta_) +
-                          std::pow(-strike, 1.0 - beta_)
-                    : std::pow(forward_, 1.0 - beta_) -
-                          std::pow(strike, 1.0 - beta_)) *
+                    ? Real(std::pow(forward_, 1.0 - beta_) +
+                          std::pow(-strike, 1.0 - beta_))
+                    : Real(std::pow(forward_, 1.0 - beta_) -
+                          std::pow(strike, 1.0 - beta_))) *
                std::pow(alpha_, gamma_ - 2.0) / (1.0 - beta_);
     }
 }

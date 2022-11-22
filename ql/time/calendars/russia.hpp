@@ -33,7 +33,9 @@ namespace QuantLib {
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
-        <li>New Year holidays and Christmas, January 1st to 8th</li>
+        <li>New Year holidays, January 1st to 5th (only 1st and 2nd
+            until 2005)</li>
+        <li>Christmas, January 7th (possibly moved to Monday)</li>
         <li>Defender of the Fatherland Day, February 23rd (possibly
             moved to Monday)</li>
         <li>International Women's Day, March 8th (possibly moved to
@@ -57,13 +59,13 @@ namespace QuantLib {
       private:
         class SettlementImpl : public Calendar::OrthodoxImpl {
           public:
-            std::string name() const { return "Russian settlement"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Russian settlement"; }
+            bool isBusinessDay(const Date&) const override;
         };
         class ExchangeImpl : public Calendar::OrthodoxImpl {
           public:
-            std::string name() const { return "Moscow exchange"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Moscow exchange"; }
+            bool isBusinessDay(const Date&) const override;
         };
       public:
         //! Russian calendars

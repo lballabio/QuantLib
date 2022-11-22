@@ -17,19 +17,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
-#include <ql/models/marketmodels/curvestate.hpp>
-#include <ql/models/marketmodels/utilities.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/products/multistep/multistepcoterminalswaptions.hpp>
+#include <ql/models/marketmodels/utilities.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     MultiStepCoterminalSwaptions::MultiStepCoterminalSwaptions(
-                    const std::vector<Time>& rateTimes,
-                    const std::vector<Time>& paymentTimes,
-                    const std::vector<boost::shared_ptr<StrikedTypePayoff> >& payoffs)
-    : MultiProductMultiStep(rateTimes),
-      paymentTimes_(paymentTimes), payoffs_(payoffs) {
+        const std::vector<Time>& rateTimes,
+        const std::vector<Time>& paymentTimes,
+        std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs)
+    : MultiProductMultiStep(rateTimes), paymentTimes_(paymentTimes), payoffs_(std::move(payoffs)) {
         checkIncreasingTimes(paymentTimes);
 
         lastIndex_ = rateTimes.size()-1;
@@ -54,10 +54,9 @@ namespace QuantLib {
         return (currentIndex_ == lastIndex_);
     }
 
-    std::auto_ptr<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     MultiStepCoterminalSwaptions::clone() const {
-        return std::auto_ptr<MarketModelMultiProduct>(
-                                         new MultiStepCoterminalSwaptions(*this));
+        return std::unique_ptr<MarketModelMultiProduct>(new MultiStepCoterminalSwaptions(*this));
     }
 
 }

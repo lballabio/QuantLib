@@ -39,7 +39,7 @@ namespace QuantLib {
                         const Date& startDate,
                         const Date& endDate,
                         Natural fixingDays,
-                        const boost::shared_ptr<YoYInflationIndex>& index,
+                        const ext::shared_ptr<YoYInflationIndex>& index,
                         const Period& observationLag,
                         const DayCounter& dayCounter,
                         Real gearing = 1.0,
@@ -57,24 +57,24 @@ namespace QuantLib {
 
         Rate adjustedFixing() const;
 
-        const boost::shared_ptr<YoYInflationIndex>& yoyIndex() const;
+        const ext::shared_ptr<YoYInflationIndex>& yoyIndex() const;
 
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
 
     private:
-        boost::shared_ptr<YoYInflationIndex> yoyIndex_;
+        ext::shared_ptr<YoYInflationIndex> yoyIndex_;
     protected:
 
         Real gearing_;
         Spread spread_;
-        bool checkPricerImpl(const boost::shared_ptr<InflationCouponPricer>&) const;
+        bool checkPricerImpl(const ext::shared_ptr<InflationCouponPricer>&) const override;
     };
 
-    inline const boost::shared_ptr<YoYInflationIndex>&
+    inline const ext::shared_ptr<YoYInflationIndex>&
     YoYInflationCoupon::yoyIndex() const {
         return yoyIndex_;
     }
@@ -90,31 +90,32 @@ namespace QuantLib {
     //! payoff is: spread + gearing x index
     class yoyInflationLeg {
     public:
-        yoyInflationLeg(const Schedule& schedule, const Calendar& cal,
-                        const boost::shared_ptr<YoYInflationIndex>& index,
-                        const Period& observationLag);
-        yoyInflationLeg& withNotionals(Real notional);
-        yoyInflationLeg& withNotionals(const std::vector<Real>& notionals);
-        yoyInflationLeg& withPaymentDayCounter(const DayCounter&);
-        yoyInflationLeg& withPaymentAdjustment(BusinessDayConvention);
-        yoyInflationLeg& withFixingDays(Natural fixingDays);
-        yoyInflationLeg& withFixingDays(const std::vector<Natural>& fixingDays);
-        yoyInflationLeg& withGearings(Real gearing);
-        yoyInflationLeg& withGearings(const std::vector<Real>& gearings);
-        yoyInflationLeg& withSpreads(Spread spread);
-        yoyInflationLeg& withSpreads(const std::vector<Spread>& spreads);
-        yoyInflationLeg& withCaps(Rate cap);
-        yoyInflationLeg& withCaps(const std::vector<Rate>& caps);
-        yoyInflationLeg& withFloors(Rate floor);
-        yoyInflationLeg& withFloors(const std::vector<Rate>& floors);
-        operator Leg() const;
+      yoyInflationLeg(Schedule schedule,
+                      Calendar cal,
+                      ext::shared_ptr<YoYInflationIndex> index,
+                      const Period& observationLag);
+      yoyInflationLeg& withNotionals(Real notional);
+      yoyInflationLeg& withNotionals(const std::vector<Real>& notionals);
+      yoyInflationLeg& withPaymentDayCounter(const DayCounter&);
+      yoyInflationLeg& withPaymentAdjustment(BusinessDayConvention);
+      yoyInflationLeg& withFixingDays(Natural fixingDays);
+      yoyInflationLeg& withFixingDays(const std::vector<Natural>& fixingDays);
+      yoyInflationLeg& withGearings(Real gearing);
+      yoyInflationLeg& withGearings(const std::vector<Real>& gearings);
+      yoyInflationLeg& withSpreads(Spread spread);
+      yoyInflationLeg& withSpreads(const std::vector<Spread>& spreads);
+      yoyInflationLeg& withCaps(Rate cap);
+      yoyInflationLeg& withCaps(const std::vector<Rate>& caps);
+      yoyInflationLeg& withFloors(Rate floor);
+      yoyInflationLeg& withFloors(const std::vector<Rate>& floors);
+      operator Leg() const;
     private:
         Schedule schedule_;
-        boost::shared_ptr<YoYInflationIndex> index_;
+        ext::shared_ptr<YoYInflationIndex> index_;
         Period observationLag_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
-        BusinessDayConvention paymentAdjustment_;
+        BusinessDayConvention paymentAdjustment_ = ModifiedFollowing;
         Calendar paymentCalendar_;
         std::vector<Natural> fixingDays_;
         std::vector<Real> gearings_;

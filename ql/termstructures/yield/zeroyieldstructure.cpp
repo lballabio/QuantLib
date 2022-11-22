@@ -23,11 +23,8 @@
 
 namespace QuantLib {
 
-    ZeroYieldStructure::ZeroYieldStructure(
-                                    const DayCounter& dc,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates)
-    : YieldTermStructure(dc, jumps, jumpDates) {}
+    ZeroYieldStructure::ZeroYieldStructure(const DayCounter& dc)
+    : YieldTermStructure(dc) {}
 
     ZeroYieldStructure::ZeroYieldStructure(
                                     const Date& refDate,

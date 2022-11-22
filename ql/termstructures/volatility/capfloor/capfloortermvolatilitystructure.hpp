@@ -57,7 +57,7 @@ namespace QuantLib {
                                         BusinessDayConvention bdc,
                                         const DayCounter& dc = DayCounter());
         //@}
-        virtual ~CapFloorTermVolatilityStructure() {}
+        ~CapFloorTermVolatilityStructure() override = default;
         //! \name Volatility
         //@{
         //! returns the volatility for a given cap/floor length and strike rate

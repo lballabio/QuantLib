@@ -33,9 +33,11 @@ namespace QuantLib {
     class FdmStepConditionComposite;
 
     struct FdmSchemeDesc {
-        enum FdmSchemeType { HundsdorferType, DouglasType, 
+        enum FdmSchemeType { HundsdorferType, DouglasType,
                              CraigSneydType, ModifiedCraigSneydType, 
-                             ImplicitEulerType, ExplicitEulerType };
+                             ImplicitEulerType, ExplicitEulerType,
+                             MethodOfLinesType, TrBDF2Type,
+                             CrankNicolsonType };
 
         FdmSchemeDesc(FdmSchemeType type, Real theta, Real mu);
 
@@ -43,33 +45,36 @@ namespace QuantLib {
         const Real theta, mu;
 
         // some default scheme descriptions
-        static FdmSchemeDesc Douglas();
+        static FdmSchemeDesc Douglas(); //same as Crank-Nicolson in 1 dimension
+        static FdmSchemeDesc CrankNicolson();
         static FdmSchemeDesc ImplicitEuler();
         static FdmSchemeDesc ExplicitEuler();
         static FdmSchemeDesc CraigSneyd();
         static FdmSchemeDesc ModifiedCraigSneyd(); 
         static FdmSchemeDesc Hundsdorfer();
         static FdmSchemeDesc ModifiedHundsdorfer();
+        static FdmSchemeDesc MethodOfLines(
+            Real eps=0.001, Real relInitStepSize=0.01);
+        static FdmSchemeDesc TrBDF2();
     };
         
     class FdmBackwardSolver {
       public:
         typedef FdmLinearOp::array_type array_type;
-        
-        FdmBackwardSolver(
-          const boost::shared_ptr<FdmLinearOpComposite>& map,
-          const FdmBoundaryConditionSet& bcSet,
-          const boost::shared_ptr<FdmStepConditionComposite> condition,
-          const FdmSchemeDesc& schemeDesc);
+
+        FdmBackwardSolver(ext::shared_ptr<FdmLinearOpComposite> map,
+                          FdmBoundaryConditionSet bcSet,
+                          const ext::shared_ptr<FdmStepConditionComposite>& condition,
+                          const FdmSchemeDesc& schemeDesc);
 
         void rollback(array_type& a, 
                       Time from, Time to,
                       Size steps, Size dampingSteps);
 
       protected:
-        const boost::shared_ptr<FdmLinearOpComposite> map_;
+        const ext::shared_ptr<FdmLinearOpComposite> map_;
         const FdmBoundaryConditionSet bcSet_;
-        const boost::shared_ptr<FdmStepConditionComposite> condition_;
+        const ext::shared_ptr<FdmStepConditionComposite> condition_;
         const FdmSchemeDesc schemeDesc_;
     };
 }

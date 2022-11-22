@@ -32,7 +32,7 @@ namespace QuantLib {
     class BlackScholesCalculator : public BlackCalculator {
       public:
         BlackScholesCalculator(
-                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                        const ext::shared_ptr<StrikedTypePayoff>& payoff,
                         Real spot,
                         DiscountFactor growth,
                         Real stdDev,
@@ -43,7 +43,7 @@ namespace QuantLib {
                                DiscountFactor growth,
                                Real stdDev,
                                DiscountFactor discount);
-        virtual ~BlackScholesCalculator() {}
+        ~BlackScholesCalculator() override = default;
         /*! Sensitivity to change in the underlying spot price. */
         Real delta() const;
         /*! Sensitivity in percent to a percent change in the

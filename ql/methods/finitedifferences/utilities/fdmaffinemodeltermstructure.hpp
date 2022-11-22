@@ -32,24 +32,23 @@ namespace QuantLib {
 
     class FdmAffineModelTermStructure : public YieldTermStructure {
       public:
-        FdmAffineModelTermStructure(
-            const Array& r,
-            const Calendar& cal,
-            const DayCounter& dayCounter,
-            const Date& referenceDate,
-            const Date& modelReferenceDate,
-            const boost::shared_ptr<AffineModel>& model);
+        FdmAffineModelTermStructure(Array r,
+                                    const Calendar& cal,
+                                    const DayCounter& dayCounter,
+                                    const Date& referenceDate,
+                                    const Date& modelReferenceDate,
+                                    ext::shared_ptr<AffineModel> model);
 
-        Date maxDate() const;
+        Date maxDate() const override;
         void setVariable(const Array& r);
 
       protected:
-        DiscountFactor discountImpl(Time) const;
+        DiscountFactor discountImpl(Time) const override;
 
       private:
         Array r_;
         const Time t_;
-        const boost::shared_ptr<AffineModel> model_;
+        const ext::shared_ptr<AffineModel> model_;
     };
 }
 #endif

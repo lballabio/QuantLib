@@ -18,27 +18,23 @@
 */
 
 #include <ql/experimental/volatility/sabrvolsurface.hpp>
-#include <ql/termstructures/volatility/smilesection.hpp>
-#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/utilities/dataformatters.hpp>
+#include <ql/math/interpolations/sabrinterpolation.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    SabrVolSurface::SabrVolSurface(
-        const boost::shared_ptr<InterestRateIndex>& index,
-        const Handle<BlackAtmVolCurve>& atmCurve,
-        const std::vector<Period>& optionTenors,
-        const std::vector<Spread>& atmRateSpreads,
-        const std::vector<std::vector<Handle<Quote> > >& volSpreads)
-    : InterestRateVolSurface(index),
-      atmCurve_(atmCurve),
-      optionTenors_(optionTenors),
-      optionTimes_(optionTenors.size()),
-      optionDates_(optionTenors.size()),
-      atmRateSpreads_(atmRateSpreads),
-      volSpreads_(volSpreads) {
+    SabrVolSurface::SabrVolSurface(const ext::shared_ptr<InterestRateIndex>& index,
+                                   Handle<BlackAtmVolCurve> atmCurve,
+                                   const std::vector<Period>& optionTenors,
+                                   std::vector<Spread> atmRateSpreads,
+                                   std::vector<std::vector<Handle<Quote> > > volSpreads)
+    : InterestRateVolSurface(index), atmCurve_(std::move(atmCurve)), optionTenors_(optionTenors),
+      optionTimes_(optionTenors.size()), optionDates_(optionTenors.size()),
+      atmRateSpreads_(std::move(atmRateSpreads)), volSpreads_(std::move(volSpreads)) {
 
         checkInputs();
 
@@ -67,7 +63,7 @@ namespace QuantLib {
         registerWithMarketData();
     }
 
-    boost::array<Real, 4> SabrVolSurface::sabrGuesses(const Date& d) const {
+    std::array<Real, 4> SabrVolSurface::sabrGuesses(const Date& d) const {
 
         // the guesses for sabr parameters are assumed to be piecewise constant
         if (d<=optionDates_[0]) return sabrGuesses_[0];
@@ -77,7 +73,7 @@ namespace QuantLib {
         return sabrGuesses_[i];
     }
 
-    void SabrVolSurface::updateSabrGuesses(const Date& d, boost::array<Real, 4> newGuesses) const {
+    void SabrVolSurface::updateSabrGuesses(const Date& d, std::array<Real, 4> newGuesses) const {
 
         Size i=0;
         while (i<optionDates_.size() && d<=optionDates_[i])
@@ -118,18 +114,18 @@ namespace QuantLib {
 
     }
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     SabrVolSurface::smileSectionImpl(Time t) const {
 
-        BigInteger n = BigInteger(t*365.0);
+        auto n = BigInteger(t * 365.0);
         Date d = referenceDate()+n*Days;
         // interpolating on ref smile sections
         std::vector<Volatility> volSpreads = volatilitySpreads(d);
 
         // calculate sabr fit
-        boost::array<Real, 4> sabrParameters1 = sabrGuesses(d);
+        std::array<Real, 4> sabrParameters1 = sabrGuesses(d);
 
-        boost::shared_ptr<SabrInterpolatedSmileSection> tmp(new
+        ext::shared_ptr<SabrInterpolatedSmileSection> tmp(new
             SabrInterpolatedSmileSection(d,
                                          index_->fixing(d,true), atmRateSpreads_, true,
                                             atmCurve_->atmVol(d), volSpreads,
@@ -138,8 +134,8 @@ namespace QuantLib {
                                             isAlphaFixed_, isBetaFixed_,
                                             isNuFixed_, isRhoFixed_,
                                             vegaWeighted_/*,
-                                            const boost::shared_ptr<EndCriteria>& endCriteria,
-                                            const boost::shared_ptr<OptimizationMethod>& method,
+                                            const ext::shared_ptr<EndCriteria>& endCriteria,
+                                            const ext::shared_ptr<OptimizationMethod>& method,
                                             const DayCounter& dc*/));
 
         // update guess
@@ -174,9 +170,8 @@ namespace QuantLib {
     }
 
     void SabrVolSurface::accept(AcyclicVisitor& v) {
-        Visitor<SabrVolSurface>* v1 =
-            dynamic_cast<Visitor<SabrVolSurface>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<SabrVolSurface>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             InterestRateVolSurface::accept(v);

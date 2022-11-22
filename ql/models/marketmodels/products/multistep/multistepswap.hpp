@@ -29,28 +29,26 @@ namespace QuantLib {
     class MultiStepSwap : public MultiProductMultiStep {
       public:
         MultiStepSwap(const std::vector<Time>& rateTimes,
-                      const std::vector<Real>& fixedAccruals,
-                      const std::vector<Real>& floatingAccruals,
+                      std::vector<Real> fixedAccruals,
+                      std::vector<Real> floatingAccruals,
                       const std::vector<Time>& paymentTimes,
                       Rate fixedRate,
                       bool payer = true);
         //! \name MarketModelMultiProduct interface
         //@{
-        std::vector<Time> possibleCashFlowTimes() const;
-        Size numberOfProducts() const;
-        Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset();
-        bool nextTimeStep(
-                     const CurveState& currentState,
-                     std::vector<Size>& numberCashFlowsThisStep,
-                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
+        std::vector<Time> possibleCashFlowTimes() const override;
+        Size numberOfProducts() const override;
+        Size maxNumberOfCashFlowsPerProductPerStep() const override;
+        void reset() override;
+        bool nextTimeStep(const CurveState& currentState,
+                          std::vector<Size>& numberCashFlowsThisStep,
+                          std::vector<std::vector<CashFlow> >& cashFlowsGenerated) override;
+        std::unique_ptr<MarketModelMultiProduct> clone() const override;
         //@}
       private:
         std::vector<Real> fixedAccruals_, floatingAccruals_;
         std::vector<Time> paymentTimes_;
         Rate fixedRate_;
-        bool payer_;
         Real multiplier_;
         Size lastIndex_;
         // things that vary in a path

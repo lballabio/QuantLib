@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2010 Klaus Spanderen
+ Copyright (C) 2010, 2017 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,27 +54,47 @@ namespace QuantLib {
                                     VanillaOption::arguments,
                                     VanillaOption::results> {
       public:
+        enum ComplexLogFormula { Gatheral, AndersenPiterbarg };
+        typedef AnalyticHestonEngine::Integration Integration;
+
         // Simple to use constructor: Using adaptive
         // Gauss-Lobatto integration and Gatheral's version of complex log.
         // Be aware: using a too large number for maxEvaluations might result
         // in a stack overflow as the Lobatto integration is a recursive
         // algorithm.
         AnalyticPTDHestonEngine(
-            const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+            const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Real relTolerance, Size maxEvaluations);
 
         // Constructor using Laguerre integration
         // and Gatheral's version of complex log.
-        AnalyticPTDHestonEngine(
-            const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        explicit AnalyticPTDHestonEngine(
+            const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Size integrationOrder = 144);
 
-        void calculate() const;
+        // Constructor giving full control over Fourier integration algorithm
+        AnalyticPTDHestonEngine(
+            const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+            ComplexLogFormula cpxLog,
+            const Integration& itg,
+            Real andersenPiterbargEpsilon = 1e-8);
+
+
+        void calculate() const override;
+        Size numberOfEvaluations() const;
+
+        // normalized characteristic function
+        std::complex<Real> chF(const std::complex<Real>& z, Time t) const;
+        std::complex<Real> lnChF(const std::complex<Real>& z, Time t) const;
 
       private:
         class Fj_Helper;
+        class AP_Helper;
         
-        const boost::shared_ptr<AnalyticHestonEngine::Integration> integration_;
+        mutable Size evaluations_;
+        const ComplexLogFormula cpxLog_;
+        const ext::shared_ptr<Integration> integration_;
+        const Real andersenPiterbargEpsilon_;
     };
 }
 

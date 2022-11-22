@@ -35,23 +35,22 @@ namespace QuantLib {
     class CommodityIndex : public Observable,
                            public Observer {
       public:
-        CommodityIndex(
-                const std::string& name,
-                const CommodityType& commodityType,
-                const Currency& currency,
-                const UnitOfMeasure& unitOfMeasure,
-                const Calendar& calendar,
-                Real lotQuantity,
-                const boost::shared_ptr<CommodityCurve>& forwardCurve,
-                const boost::shared_ptr<ExchangeContracts>& exchangeContracts,
-                int nearbyOffset);
+        CommodityIndex(const std::string& name,
+                       CommodityType commodityType,
+                       Currency currency,
+                       UnitOfMeasure unitOfMeasure,
+                       Calendar calendar,
+                       Real lotQuantity,
+                       ext::shared_ptr<CommodityCurve> forwardCurve,
+                       ext::shared_ptr<ExchangeContracts> exchangeContracts,
+                       int nearbyOffset);
         //! \name Index interface
         //@{
         std::string name() const;
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
         //! \name Inspectors
         //@{
@@ -59,7 +58,7 @@ namespace QuantLib {
         const Currency& currency() const;
         const UnitOfMeasure& unitOfMeasure() const;
         const Calendar& calendar() const;
-        const boost::shared_ptr<CommodityCurve>& forwardCurve() const;
+        const ext::shared_ptr<CommodityCurve>& forwardCurve() const;
         Real lotQuantity() const;
 
         Real price(const Date& date);
@@ -71,14 +70,13 @@ namespace QuantLib {
         void addQuotes(const std::map<Date, Real>& quotes) {
             std::string tag = name();
             quotes_ = IndexManager::instance().getHistory(tag);
-            for (std::map<Date, Real>::const_iterator ii = quotes.begin();
-                 ii != quotes.end (); ++ii) {
-                quotes_[ii->first] = ii->second;
+            for (auto quote : quotes) {
+                quotes_[quote.first] = quote.second;
             }
             IndexManager::instance().setHistory(tag, quotes_);
         }
 
-        void clearQuotes();
+        void clearQuotes() const;
         //! returns TRUE if the quote date is valid
         bool isValidQuoteDate(const Date& quoteDate) const;
         bool empty() const;
@@ -94,9 +92,9 @@ namespace QuantLib {
         Calendar calendar_;
         Real lotQuantity_;
         TimeSeries<Real> quotes_;
-        boost::shared_ptr<CommodityCurve> forwardCurve_;
-        Real forwardCurveUomConversionFactor_;
-        boost::shared_ptr<ExchangeContracts> exchangeContracts_;
+        ext::shared_ptr<CommodityCurve> forwardCurve_;
+        Real forwardCurveUomConversionFactor_ = 1;
+        ext::shared_ptr<ExchangeContracts> exchangeContracts_;
         Integer nearbyOffset_;
     };
 
@@ -135,7 +133,7 @@ namespace QuantLib {
         return lotQuantity_;
     }
 
-    inline const boost::shared_ptr<CommodityCurve>&
+    inline const ext::shared_ptr<CommodityCurve>&
     CommodityIndex::forwardCurve() const {
         return forwardCurve_;
     }
@@ -145,7 +143,7 @@ namespace QuantLib {
     }
 
     inline Real CommodityIndex::price(const Date& date) {
-        std::map<Date, Real>::const_iterator hq = quotes_.find(date);
+        auto hq = quotes_.find(date);
         if (hq->second == Null<Real>()) {
             ++hq;
             if (hq == quotes_.end())
@@ -177,7 +175,7 @@ namespace QuantLib {
     }
 
     inline bool CommodityIndex::forwardCurveEmpty() const {
-        if (forwardCurve_ != 0)
+        if (forwardCurve_ != nullptr)
             return forwardCurve_->empty();
         return false;
     }
@@ -192,7 +190,7 @@ namespace QuantLib {
         IndexManager::instance().setHistory(tag, quotes_);
     }
 
-    inline void CommodityIndex::clearQuotes() {
+    inline void CommodityIndex::clearQuotes() const {
         IndexManager::instance().clearHistory(name());
     }
 

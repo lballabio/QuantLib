@@ -39,9 +39,7 @@ namespace QuantLib {
                         Size maxIterations)
         : TrapezoidIntegral<Default>(accuracy, maxIterations) {}
       protected:
-        Real integrate(const boost::function<Real (Real)>& f,
-                       Real a, 
-                       Real b) const {
+        Real integrate(const ext::function<Real(Real)>& f, Real a, Real b) const override {
 
             // start from the coarsest trapezoid...
             Size N = 1;

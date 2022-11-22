@@ -19,21 +19,21 @@
 
 #include <ql/experimental/volatility/extendedblackvariancesurface.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     ExtendedBlackVarianceSurface::ExtendedBlackVarianceSurface(
-                          const Date& referenceDate,
-                          const Calendar& calendar,
-                          const std::vector<Date>& dates,
-                          const std::vector<Real>& strikes,
-                          const std::vector<Handle<Quote> >& volatilities,
-                          const DayCounter& dayCounter,
-                          ExtendedBlackVarianceSurface::Extrapolation lowerEx,
-                          ExtendedBlackVarianceSurface::Extrapolation upperEx)
-    : BlackVarianceTermStructure(referenceDate, calendar),
-      dayCounter_(dayCounter), maxDate_(dates.back()),
-      volatilities_(volatilities), strikes_(strikes),
+        const Date& referenceDate,
+        const Calendar& calendar,
+        const std::vector<Date>& dates,
+        std::vector<Real> strikes,
+        const std::vector<Handle<Quote> >& volatilities,
+        DayCounter dayCounter,
+        ExtendedBlackVarianceSurface::Extrapolation lowerEx,
+        ExtendedBlackVarianceSurface::Extrapolation upperEx)
+    : BlackVarianceTermStructure(referenceDate, calendar), dayCounter_(std::move(dayCounter)),
+      maxDate_(dates.back()), volatilities_(volatilities), strikes_(std::move(strikes)),
       lowerExtrapolation_(lowerEx), upperExtrapolation_(upperEx) {
 
         QL_REQUIRE(dates.size()*strikes_.size()==volatilities_.size(),
@@ -58,9 +58,8 @@ namespace QuantLib {
 
         setInterpolation<Bilinear>();
 
-        for (Size j = 0; j < volatilities_.size(); j++)
-            registerWith(volatilities_[j]);
-
+        for (const auto& volatilitie : volatilities_)
+            registerWith(volatilitie);
     }
 
     void ExtendedBlackVarianceSurface::setVariances() {

@@ -42,34 +42,34 @@ namespace QuantLib {
 
         CmsMarketCalibration(
             Handle<SwaptionVolatilityStructure>& volCube,
-            boost::shared_ptr<CmsMarket>& cmsMarket,
+            ext::shared_ptr<CmsMarket>& cmsMarket,
             const Matrix& weights,
             CalibrationType calibrationType);
 
         Handle<SwaptionVolatilityStructure> volCube_;
-        boost::shared_ptr<CmsMarket> cmsMarket_;
+        ext::shared_ptr<CmsMarket> cmsMarket_;
         Matrix weights_;
         CalibrationType calibrationType_;
         Matrix sparseSabrParameters_, denseSabrParameters_, browseCmsMarket_;
 
-        Array compute(const boost::shared_ptr<EndCriteria>& endCriteria,
-                      const boost::shared_ptr<OptimizationMethod>& method,
+        Array compute(const ext::shared_ptr<EndCriteria>& endCriteria,
+                      const ext::shared_ptr<OptimizationMethod>& method,
                       const Array& guess,
                       bool isMeanReversionFixed);
 
-        Matrix compute(const boost::shared_ptr<EndCriteria>& endCriteria,
-                      const boost::shared_ptr<OptimizationMethod>& method,
-                      const Matrix& guess,
-                      bool isMeanReversionFixed,
-                      const Real meanReversionGuess = Null<Real>());
+        Matrix compute(const ext::shared_ptr<EndCriteria>& endCriteria,
+                       const ext::shared_ptr<OptimizationMethod>& method,
+                       const Matrix& guess,
+                       bool isMeanReversionFixed,
+                       Real meanReversionGuess = Null<Real>());
 
-        Matrix
-        computeParametric(const boost::shared_ptr<EndCriteria> &endCriteria,
-                          const boost::shared_ptr<OptimizationMethod> &method,
-                          const Matrix &guess, bool isMeanReversionFixed,
-                          const Real meanReversionGuess = Null<Real>());
+        Matrix computeParametric(const ext::shared_ptr<EndCriteria>& endCriteria,
+                                 const ext::shared_ptr<OptimizationMethod>& method,
+                                 const Matrix& guess,
+                                 bool isMeanReversionFixed,
+                                 Real meanReversionGuess = Null<Real>());
 
-        Real error() { return error_; }
+        Real error() const { return error_; }
         EndCriteria::Type endCriteria() { return endCriteria_; };
 
         static Real betaTransformInverse(Real beta) {
@@ -77,7 +77,7 @@ namespace QuantLib {
         }
         static Real betaTransformDirect(Real y) {
             return std::max(
-                std::min(std::fabs(y) < 10.0 ? std::exp(-(y * y)) : 0.0,
+                std::min(std::fabs(y) < 10.0 ? Real(std::exp(-(y * y))) : 0.0,
                          0.999999),
                 0.000001);
         }

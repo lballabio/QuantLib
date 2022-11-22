@@ -28,13 +28,22 @@
 class DayCounterTest {
    public:
     static void testActualActual();
+    static void testActualActualIsma();
     static void testActualActualWithSchedule();
+    static void testActualActualWithAnnualSchedule();
+    static void testActualActualWithSemiannualSchedule();
     static void testSimple();
     static void testOne();
     static void testBusiness252();
+    static void testThirty365();
     static void testThirty360_BondBasis();
     static void testThirty360_EurobondBasis();
+    static void testThirty360_ISDA();
+    static void testActual365_Canadian();
     static void testIntraday();
+    static void testActualActualOutOfScheduleRange();
+    static void testAct366();
+    static void testAct36525();
     static boost::unit_test_framework::test_suite* suite();
 };
 

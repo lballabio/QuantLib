@@ -43,9 +43,9 @@ namespace QuantLib {
       public:
         FdmNdimSolver(const FdmSolverDesc& solverDesc,
                       const FdmSchemeDesc& schemeDesc,
-                      const boost::shared_ptr<FdmLinearOpComposite>& op);
+                      ext::shared_ptr<FdmLinearOpComposite> op);
 
-        void performCalculations() const;
+        void performCalculations() const override;
 
         Real interpolateAt(const std::vector<Real>& x) const;
         Real thetaAt(const std::vector<Real>& x) const;
@@ -58,41 +58,37 @@ namespace QuantLib {
       private:
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
-        const boost::shared_ptr<FdmLinearOpComposite> op_;
+        const ext::shared_ptr<FdmLinearOpComposite> op_;
 
-        const boost::shared_ptr<FdmSnapshotCondition> thetaCondition_;
-        const boost::shared_ptr<FdmStepConditionComposite> conditions_;
+        const ext::shared_ptr<FdmSnapshotCondition> thetaCondition_;
+        const ext::shared_ptr<FdmStepConditionComposite> conditions_;
 
         std::vector<std::vector<Real> > x_;
         std::vector<Real> initialValues_;
         const std::vector<bool> extrapolation_;
 
-        mutable boost::shared_ptr<data_table> f_;
-        mutable boost::shared_ptr<MultiCubicSpline<N> > interp_;
+        mutable ext::shared_ptr<data_table> f_;
+        mutable ext::shared_ptr<MultiCubicSpline<N> > interp_;
     };
 
 
-    template <Size N> inline
-    FdmNdimSolver<N>::FdmNdimSolver(
-                        const FdmSolverDesc& solverDesc,
-                        const FdmSchemeDesc& schemeDesc,
-                        const boost::shared_ptr<FdmLinearOpComposite>& op)
-    : solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc),
-      op_(op),
+    template <Size N>
+    inline FdmNdimSolver<N>::FdmNdimSolver(const FdmSolverDesc& solverDesc,
+                                           const FdmSchemeDesc& schemeDesc,
+                                           ext::shared_ptr<FdmLinearOpComposite> op)
+    : solverDesc_(solverDesc), schemeDesc_(schemeDesc), op_(std::move(op)),
       thetaCondition_(new FdmSnapshotCondition(
-        0.99*std::min(1.0/365.0,
-                solverDesc.condition->stoppingTimes().empty()
-                ? solverDesc.maturity :
-                  solverDesc.condition->stoppingTimes().front()))),
-      conditions_(FdmStepConditionComposite::joinConditions(thetaCondition_,
-                                                        solverDesc.condition)),
-      x_            (solverDesc.mesher->layout()->dim().size()),
+          0.99 * std::min(1.0 / 365.0,
+                          solverDesc.condition->stoppingTimes().empty() ?
+                              solverDesc.maturity :
+                              solverDesc.condition->stoppingTimes().front()))),
+      conditions_(FdmStepConditionComposite::joinConditions(thetaCondition_, solverDesc.condition)),
+      x_(solverDesc.mesher->layout()->dim().size()),
       initialValues_(solverDesc.mesher->layout()->size()),
       extrapolation_(std::vector<bool>(N, false)) {
 
-        const boost::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const ext::shared_ptr<FdmMesher> mesher = solverDesc.mesher;
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
 
         QL_REQUIRE(layout->dim().size() == N, "solver dim " << N
                     << "does not fit to layout dim " << layout->size());
@@ -110,13 +106,13 @@ namespace QuantLib {
 
             const std::vector<Size>& c = iter.coordinates();
             for (Size i=0; i < N; ++i) {
-                if (!(std::accumulate(c.begin(), c.end(), 0)-c[i])) {
+                if ((std::accumulate(c.begin(), c.end(), 0UL) - c[i]) == 0U) {
                     x_[i].push_back(mesher->location(iter, i));
                 }
             }
         }
 
-        f_ = boost::shared_ptr<data_table>(new data_table(x_));
+        f_ = ext::shared_ptr<data_table>(new data_table(x_));
     }
 
 
@@ -129,7 +125,7 @@ namespace QuantLib {
                  .rollback(rhs, solverDesc_.maturity, 0.0,
                            solverDesc_.timeSteps, solverDesc_.dampingSteps);
 
-        const boost::shared_ptr<FdmLinearOpLayout> layout
+        const ext::shared_ptr<FdmLinearOpLayout> layout
                                                = solverDesc_.mesher->layout();
 
         const FdmLinearOpIterator endIter = layout->end();
@@ -138,18 +134,19 @@ namespace QuantLib {
             setValue(*f_, iter.coordinates(), rhs[iter.index()]);
         }
 
-        interp_ = boost::shared_ptr<MultiCubicSpline<N> >(
+        interp_ = ext::shared_ptr<MultiCubicSpline<N> >(
             new MultiCubicSpline<N>(x_, *f_, extrapolation_));
     }
 
 
     template <Size N> inline
     Real FdmNdimSolver<N>::thetaAt(const std::vector<Real>& x) const {
-        QL_REQUIRE(conditions_->stoppingTimes().front() > 0.0,
-                   "stopping time at zero-> can't calculate theta");
+        if (conditions_->stoppingTimes().front() == 0.0)
+            return Null<Real>();
+
         calculate();
         const Array& rhs = thetaCondition_->getValues();
-        const boost::shared_ptr<FdmLinearOpLayout> layout
+        const ext::shared_ptr<FdmLinearOpLayout> layout
                                             = solverDesc_.mesher->layout();
 
         data_table f(x_);

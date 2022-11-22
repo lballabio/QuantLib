@@ -19,60 +19,24 @@
 */
 
 #include <ql/experimental/shortrate/generalizedhullwhite.hpp>
-#include <ql/termstructures/interpolatedcurve.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
-#include <ql/methods/lattices/trinomialtree.hpp>
+#include <ql/math/integrals/simpsonintegral.hpp>
+#include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/methods/lattices/trinomialtree.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     namespace {
 
-        class PiecewiseLinearCurve : public InterpolatedCurve<Linear> {
-          public:
-            PiecewiseLinearCurve(const std::vector<Time>& times,
-                                 const std::vector<Real>& data)
-            : InterpolatedCurve<Linear>(times, data) {
-                setupInterpolation();
-            }
-
-            Real operator()(Time t) {
-                return interpolation_(t,true);
-            }
-        };
-
-        class PiecewiseConstantParameter2 : public Parameter {
-          private:
-            class Impl : public Parameter::Impl {
-              public:
-                Impl(const std::vector<Time>& times)
-                : times_(times) {}
-
-                Real value(const Array& params, Time t) const {
-                    Size size = times_.size();
-                    for (Size i=0; i<size; i++) {
-                        if (t<times_[i])
-                            return params[i];
-                    }
-                    return params[size-1];
-                }
-              private:
-                std::vector<Time> times_;
-            };
-          public:
-            PiecewiseConstantParameter2(const std::vector<Time>& times,
-                                        const Constraint& constraint =
-                                                             NoConstraint())
-            : Parameter(times.size(),
-                        boost::shared_ptr<Parameter::Impl>(
-                                new PiecewiseConstantParameter2::Impl(times)),
-                        constraint)
-            {}
-        };
-
-        Real identity(Real x) {
-            return x;
+        // integral of mean reversion
+        Real integrateMeanReversion(const Interpolation &a,Real t,Real T) {
+            if ((T-t) < QL_EPSILON)
+                return 0.0;
+            SimpsonIntegral integrator(1e-5, 1000);
+            Real mr = integrator(a,t,T);
+            return mr;
         }
 
     }
@@ -85,15 +49,15 @@ namespace QuantLib {
     */
     class GeneralizedHullWhite::Helper {
       public:
-        Helper(const Size i, const Real xMin, const Real dx,
+        Helper(const Size i,
+               const Real xMin,
+               const Real dx,
                const Real discountBondPrice,
-               const boost::shared_ptr<ShortRateTree>& tree,
-               const boost::function<Real(Real)>& fInv)
-        : size_(tree->size(i)),
-          dt_(tree->timeGrid().dt(i)),
-          xMin_(xMin), dx_(dx),
-          statePrices_(tree->statePrices(i)),
-          discountBondPrice_(discountBondPrice), fInverse_(fInv) {}
+               const ext::shared_ptr<ShortRateTree>& tree,
+               ext::function<Real(Real)> fInv)
+        : size_(tree->size(i)), dt_(tree->timeGrid().dt(i)), xMin_(xMin), dx_(dx),
+          statePrices_(tree->statePrices(i)), discountBondPrice_(discountBondPrice),
+          fInverse_(std::move(fInv)) {}
 
         Real operator()(const Real theta) const {
             Real value = discountBondPrice_;
@@ -103,7 +67,6 @@ namespace QuantLib {
                 value -= statePrices_[j]*discount;
                 x += dx_;
             }
-
             return value;
         };
 
@@ -113,55 +76,8 @@ namespace QuantLib {
         Real xMin_, dx_;
         const Array& statePrices_;
         Real discountBondPrice_;
-        boost::function<Real(Real)> fInverse_;
+        ext::function<Real(Real)> fInverse_;
     };
-
-
-    GeneralizedHullWhite::GeneralizedHullWhite(
-        const Handle<YieldTermStructure>& yieldtermStructure,
-        const std::vector<Date>& speedstructure,
-        const std::vector<Date>& volstructure,
-        const boost::function<Real(Real)>& f,
-        const boost::function<Real(Real)>& fInverse)
-    : OneFactorAffineModel(2), TermStructureConsistentModel(yieldtermStructure),
-      speedstructure_(speedstructure), volstructure_(volstructure),
-      a_(arguments_[0]), sigma_(arguments_[1]),
-      f_(f), fInverse_(fInverse) {
-
-        if (f_.empty())
-            f_ = identity;
-        if (fInverse_.empty())
-            fInverse_ = identity;
-
-        DayCounter dc = yieldtermStructure->dayCounter();
-
-        speedperiods_.push_back(0.0);
-        for (Size i=0;i<speedstructure.size()-1;i++)
-            speedperiods_.push_back(dc.yearFraction(speedstructure[0],
-                                                    speedstructure[i+1]));
-
-        a_ = PiecewiseConstantParameter2(speedperiods_, PositiveConstraint());
-
-        volperiods_.push_back(0.0);
-        for (Size i=0;i<volstructure.size()-1;i++)
-            volperiods_.push_back(dc.yearFraction(volstructure[0],
-                                                  volstructure[i+1]));
-
-        sigma_ = PiecewiseConstantParameter2(volperiods_, PositiveConstraint());
-
-        a_.setParam(0,0.001);
-        sigma_.setParam(0,0.001);
-
-        for (Size i=1; i< a_.size();i++){
-            a_.setParam(i,0.01*i+0.07);
-        }
-
-        for (Size i=1; i< sigma_.size();i++){
-            sigma_.setParam(i,0.01*i+0.01);
-        }
-
-        registerWith(yieldtermStructure);
-    }
 
     GeneralizedHullWhite::GeneralizedHullWhite(
         const Handle<YieldTermStructure>& yieldtermStructure,
@@ -169,42 +85,17 @@ namespace QuantLib {
         const std::vector<Date>& volstructure,
         const std::vector<Real>& speed,
         const std::vector<Real>& vol,
-        const boost::function<Real(Real)>& f,
-        const boost::function<Real(Real)>& fInverse)
+        const ext::function<Real(Real)>& f,
+        const ext::function<Real(Real)>& fInverse)
     : OneFactorAffineModel(2), TermStructureConsistentModel(yieldtermStructure),
       speedstructure_(speedstructure),
       volstructure_(volstructure),
       a_(arguments_[0]), sigma_(arguments_[1]),
       f_(f), fInverse_(fInverse) {
 
-        if (f_.empty())
-            f_ = identity;
-        if (fInverse_.empty())
-            fInverse_ = identity;
-
-        DayCounter dc = yieldtermStructure->dayCounter();
-        Date ref = yieldtermStructure->referenceDate();
-
-        for (Size i=0;i<speedstructure.size();i++)
-            speedperiods_.push_back(dc.yearFraction(ref,
-                                                    speedstructure[i]));
-
-        a_ = PiecewiseConstantParameter2(speedperiods_, PositiveConstraint());
-
-        for (Size i=0;i<volstructure.size();i++)
-            volperiods_.push_back(dc.yearFraction(ref,
-                                                  volstructure[i]));
-
-        sigma_ = PiecewiseConstantParameter2(volperiods_, PositiveConstraint());
-
-        for (Size i=0; i< sigma_.size();i++) {
-            sigma_.setParam(i,vol[i]);
-        }
-        for (Size i=0; i< a_.size();i++) {
-            a_.setParam(i,speed[i]);
-        }
-
-        registerWith(yieldtermStructure);
+        LinearFlat traits;
+        initialize(yieldtermStructure,speedstructure,volstructure,
+          speed, vol, traits, traits, f, fInverse);
     }
 
     //classical HW
@@ -214,82 +105,122 @@ namespace QuantLib {
     : OneFactorAffineModel(2),
       TermStructureConsistentModel(yieldtermStructure),
       a_(arguments_[0]),
-      sigma_(arguments_[1]) {
-
-        a_ = ConstantParameter(a, PositiveConstraint());
-        sigma_ = ConstantParameter(sigma, PositiveConstraint());
-        a_.setParam(0,a);
-        sigma_.setParam(0,sigma);
-
-        f_ = identity;
-        fInverse_ = identity;
-
+      sigma_(arguments_[1])
+    {
         Date ref = yieldtermStructure->referenceDate();
-
-        speedperiods_.push_back(0.0);
-        volperiods_.push_back(0.0);
-        speedstructure_.push_back(ref);
-        volstructure_.push_back(ref);
-
-        generateArguments();
-
-        registerWith(yieldtermStructure);
-    }
-
-    Real GeneralizedHullWhite::B(Time t, Time T) const {
-        Real _a = a();
-        if (_a < std::sqrt(QL_EPSILON))
-            return (T - t);
-        else
-            return (1.0 - std::exp(-_a*(T - t)))/_a;
+        std::vector<Date> speedstructure,volstructure;
+        std::vector<Real> _a, _sigma;
+        _a.push_back(a);
+        _sigma.push_back(sigma);
+        speedstructure.push_back(ref);
+        volstructure.push_back(ref);
+        BackwardFlat traits;
+        initialize(yieldtermStructure,speedstructure,volstructure,
+            _a, _sigma, traits, traits, identity, identity);
     }
 
     void GeneralizedHullWhite::generateArguments() {
+        speed_.update();
+        vol_.update();
         phi_ = FittingParameter(termStructure(), a(), sigma());
+    }
+
+    Real GeneralizedHullWhite::B(Time t, Time T) const {
+        // Gurrieri et al, equations (30) and (31)
+        Real lnEt = integrateMeanReversion(speed_,0,t);
+        Real Et = exp(lnEt);
+        Real B = 0;
+        Size N = std::min<Size>(Size((T-t)*365), 2000);
+        if (N==0) N=1;
+        Real dt = 0.5*(T-t)/N;
+        Real a,b,c,_t,total=0;
+        _t = t;
+        c = speed_(_t);
+        _t += dt;
+        for (Size i=0; i<N; i++) {
+            a = c;
+            b = speed_(_t);
+            c = speed_(_t+dt);
+            total += (dt*(2.0/6.0))*(a+4*b+c);
+            B += (2*dt) / exp(lnEt+total);
+            _t += 2*dt;
+        }
+        B *= Et;
+        return B;
+    }
+
+    Real GeneralizedHullWhite::V(Time t, Time T) const {
+        // Gurrieri et al, equation (37)
+        Real lnEt = integrateMeanReversion(speed_,0,t);
+        Real V = 0,Eu;
+        Size N = std::min<Size>(Size((T-t)*365), 2000);
+        if (N==0) N=1;
+        Real dt = 0.5*(T-t)/N;
+        Real a,b,c,_t,lnE=lnEt;
+        _t = t;
+        Real vol = vol_(_t);
+        Eu = exp(lnE);
+        c = Eu*Eu*vol*vol;
+        _t += dt;
+        for (Size i=0; i<N; i++) {
+            a = c;
+            vol = vol_(_t);
+            lnE += speed_(_t)*dt;
+            Eu = exp(lnE);
+            b = Eu*Eu*vol*vol;
+            vol = vol_(_t+dt);
+            lnE += speed_(_t+dt)*dt;
+            Eu = exp(lnE);
+            c = Eu*Eu*vol*vol;
+            V += (dt*(2.0/6.0))*(a+4*b+c);
+            _t += 2*dt;
+        }
+        return V / (Eu*Eu);
     }
 
     Real GeneralizedHullWhite::discountBondOption(Option::Type type, Real strike,
                                                   Time maturity,
-                                                  Time bondMaturity) const {
-
-        Real _a = a();
-        Real v;
-        if (_a < std::sqrt(QL_EPSILON)) {
-            v = sigma()*B(maturity, bondMaturity)* std::sqrt(maturity);
-        } else {
-            v = sigma()*B(maturity, bondMaturity)*
-                std::sqrt(0.5*(1.0 - std::exp(-2.0*_a*maturity))/_a);
-        }
+                                                  Time bondMaturity) const
+    {
+        /*
+        Hull-White bond option pricing with time varying sigma and mean reversion.
+        Based on Gurrieri, Nakabayashi & Wong (2009) "Calibration Methods of
+        Hull-White Model", https://ssrn.com/abstract=1514192
+        */
+        Real BtT = B(maturity,bondMaturity);
+        Real Vr = V(0,maturity);
+        Real Vp = Vr*BtT*BtT;
+        Real vol = sqrt(Vp);
         Real f = termStructure()->discount(bondMaturity);
         Real k = termStructure()->discount(maturity)*strike;
-
-        return blackFormula(type, k, f, v);
+        return blackFormula(type, k, f, vol);
     }
 
     Real GeneralizedHullWhite::A(Time t, Time T) const {
+        // Gurrieri et al, equation (43)
         DiscountFactor discount1 = termStructure()->discount(t);
         DiscountFactor discount2 = termStructure()->discount(T);
-        Rate forward = termStructure()->forwardRate(t, t,
-                                                    Continuous, NoFrequency);
-        Real temp = sigma()*B(t,T);
-        Real value = B(t,T)*forward - 0.25*temp*temp*B(0.0,2.0*t);
-        return std::exp(value)*discount2/discount1;
+        Rate forward = termStructure()->forwardRate(t, t, Continuous, NoFrequency);
+        Real BtT = B(t,T);
+        Real Vr = V(0,t);
+        Real AtT = log(discount2/discount1) + BtT*forward - 0.5*BtT*BtT*Vr;
+        return exp(AtT);
     }
 
 
-    boost::shared_ptr<Lattice> GeneralizedHullWhite::tree(
+    ext::shared_ptr<Lattice> GeneralizedHullWhite::tree(
                                                   const TimeGrid& grid) const{
 
         TermStructureFittingParameter phi(termStructure());
-        boost::shared_ptr<ShortRateDynamics> numericDynamics(
+        ext::shared_ptr<ShortRateDynamics> numericDynamics(
             new Dynamics(phi, speed(), vol(), f_, fInverse_));
-        boost::shared_ptr<TrinomialTree> trinomial(
+        ext::shared_ptr<TrinomialTree> trinomial(
             new TrinomialTree(numericDynamics->process(), grid));
-        boost::shared_ptr<ShortRateTree> numericTree(
+        ext::shared_ptr<ShortRateTree> numericTree(
             new ShortRateTree(trinomial, numericDynamics, grid));
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        boost::shared_ptr<NumericalImpl> impl =
-            boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+        ext::shared_ptr<NumericalImpl> impl =
+            ext::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
 
         impl->reset();
         Real value = 1.0;
@@ -310,50 +241,21 @@ namespace QuantLib {
         return numericTree;
     }
 
-    boost::function<Real (Time)> GeneralizedHullWhite::speed() const {
-
-        std::vector<Real> speedvals;
-        speedvals.push_back(a_(0.001));
-
-        if (a_.size()==1) {
-            std::vector<Time> speedper;
-            speedper.push_back(0.0);
-            speedper.push_back(200); // 200 years to match the
-                                     // constant a and sigma case
-            speedvals.push_back(a_(0.001));
-            return PiecewiseLinearCurve(speedper, speedvals);
-        }
-
-        for (Size i=0;i<a_.size()-1;i++)
-            speedvals.push_back(
-            a_(
-            (speedstructure_[i+1]- Settings::instance().evaluationDate() )/365.0
-            - 0.001));
-
-        return PiecewiseLinearCurve(speedperiods_, speedvals);
+    ext::function<Real (Time)> GeneralizedHullWhite::speed() const {
+        return speed_;
     }
 
-    boost::function<Real (Time)> GeneralizedHullWhite::vol() const {
+    ext::function<Real (Time)> GeneralizedHullWhite::vol() const {
+        return vol_;
+    }
 
-        std::vector<Real> volvals;
-        volvals.push_back(sigma_(0.001));
-
-        if (sigma_.size()==1) {
-            std::vector<Time> volper;
-            volper.push_back(0.0);
-            volper.push_back(200); //200 years to approximate the
-                                   //constant coefficient model
-            volvals.push_back(sigma_(0.001));
-            return PiecewiseLinearCurve(volper, volvals);
-        }
-
-        for (Size i=0;i<sigma_.size()-1;i++)
-            volvals.push_back(
-            sigma_(
-            (speedstructure_[i+1]-Settings::instance().evaluationDate() )/365.0
-            - 0.001));
-
-        return PiecewiseLinearCurve(volperiods_, volvals);
+    //! vector to pass to 'calibrate' to fit only volatility
+    std::vector<bool> GeneralizedHullWhite::fixedReversion() const {
+        Size na = a_.params().size();
+        Size nsigma = sigma_.params().size();
+        std::vector<bool> fixr(na+nsigma,false);
+        std::fill(fixr.begin(),fixr.begin()+na,true);
+        return fixr;
     }
 
 }

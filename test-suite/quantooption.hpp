@@ -36,6 +36,10 @@ class QuantoOptionTest {
     static void testForwardPerformanceValues();
     static void testBarrierValues();
     static void testDoubleBarrierValues();
+    static void testFDMQuantoHelper();
+    static void testPDEOptionValues();
+    static void testAmericanQuantoOption();
+
     static boost::unit_test_framework::test_suite* suite();
     static boost::unit_test_framework::test_suite* experimental();
 };

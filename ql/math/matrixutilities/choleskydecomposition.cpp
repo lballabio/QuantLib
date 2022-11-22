@@ -23,8 +23,7 @@
 
 namespace QuantLib {
 
-    const Disposable<Matrix> CholeskyDecomposition(const Matrix &S,
-                                                   bool flexible) {
+    Matrix CholeskyDecomposition(const Matrix& S, bool flexible) {
         Size i, j, size = S.rows();
 
         QL_REQUIRE(size == S.columns(),
@@ -56,11 +55,10 @@ namespace QuantLib {
                     // In this case sum happens to be zero as well
                     result[j][i] = close_enough(result[i][i], 0.0)
                                        ? 0.0
-                                       : sum / result[i][i];
+                                       : Real(sum / result[i][i]);
                 }
             }
         }
         return result;
     }
-
 }

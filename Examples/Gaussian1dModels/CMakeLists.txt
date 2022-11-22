@@ -1,2 +1,5 @@
 add_executable(Gaussian1dModels Gaussian1dModels.cpp)
-target_link_libraries(Gaussian1dModels QuantLib)
+target_link_libraries(Gaussian1dModels ql_library ${QL_THREAD_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS Gaussian1dModels RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

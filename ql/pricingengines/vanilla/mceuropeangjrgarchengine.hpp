@@ -26,6 +26,7 @@
 
 #include <ql/pricingengines/vanilla/mcvanillaengine.hpp>
 #include <ql/processes/gjrgarchprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -41,7 +42,7 @@ namespace QuantLib {
       public:
         typedef typename MCVanillaEngine<MultiVariate,RNG,S>::path_pricer_type
             path_pricer_type;
-        MCEuropeanGJRGARCHEngine(const boost::shared_ptr<GJRGARCHProcess>&,
+        MCEuropeanGJRGARCHEngine(const ext::shared_ptr<GJRGARCHProcess>&,
                                Size timeSteps,
                                Size timeStepsPerYear,
                                bool antitheticVariate,
@@ -50,14 +51,14 @@ namespace QuantLib {
                                Size maxSamples,
                                BigNatural seed);
       protected:
-        boost::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
     };
 
     //! Monte Carlo GJR-GARCH European engine factory
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCEuropeanGJRGARCHEngine {
       public:
-        MakeMCEuropeanGJRGARCHEngine(const boost::shared_ptr<GJRGARCHProcess>&);
+        MakeMCEuropeanGJRGARCHEngine(ext::shared_ptr<GJRGARCHProcess>);
         // named parameters
         MakeMCEuropeanGJRGARCHEngine& withSteps(Size steps);
         MakeMCEuropeanGJRGARCHEngine& withStepsPerYear(Size steps);
@@ -67,13 +68,13 @@ namespace QuantLib {
         MakeMCEuropeanGJRGARCHEngine& withSeed(BigNatural seed);
         MakeMCEuropeanGJRGARCHEngine& withAntitheticVariate(bool b = true);
         // conversion to pricing engine
-        operator boost::shared_ptr<PricingEngine>() const;
+        operator ext::shared_ptr<PricingEngine>() const;
       private:
-        boost::shared_ptr<GJRGARCHProcess> process_;
-        bool antithetic_;
+        ext::shared_ptr<GJRGARCHProcess> process_;
+        bool antithetic_ = false;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
-        BigNatural seed_;
+        BigNatural seed_ = 0;
     };
 
 
@@ -82,7 +83,8 @@ namespace QuantLib {
         EuropeanGJRGARCHPathPricer(Option::Type type,
                                  Real strike,
                                  DiscountFactor discount);
-        Real operator()(const MultiPath& Multipath) const;
+        Real operator()(const MultiPath& Multipath) const override;
+
       private:
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
@@ -93,7 +95,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     MCEuropeanGJRGARCHEngine<RNG, S>::MCEuropeanGJRGARCHEngine(
-                const boost::shared_ptr<GJRGARCHProcess>& process,
+                const ext::shared_ptr<GJRGARCHProcess>& process,
                 Size timeSteps, Size timeStepsPerYear, bool antitheticVariate,
                 Size requiredSamples, Real requiredTolerance,
                 Size maxSamples, BigNatural seed)
@@ -104,20 +106,20 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    boost::shared_ptr<
+    ext::shared_ptr<
         typename MCEuropeanGJRGARCHEngine<RNG,S>::path_pricer_type>
     MCEuropeanGJRGARCHEngine<RNG,S>::pathPricer() const {
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff(
-                  boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+        ext::shared_ptr<PlainVanillaPayoff> payoff(
+                  ext::dynamic_pointer_cast<PlainVanillaPayoff>(
                                                     this->arguments_.payoff));
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        boost::shared_ptr<GJRGARCHProcess> process =
-            boost::dynamic_pointer_cast<GJRGARCHProcess>(this->process_);
+        ext::shared_ptr<GJRGARCHProcess> process =
+            ext::dynamic_pointer_cast<GJRGARCHProcess>(this->process_);
         QL_REQUIRE(process, "GJRGARCH process required");
 
-        return boost::shared_ptr<
+        return ext::shared_ptr<
             typename MCEuropeanGJRGARCHEngine<RNG,S>::path_pricer_type>(
                    new EuropeanGJRGARCHPathPricer(
                                         payoff->optionType(),
@@ -127,14 +129,11 @@ namespace QuantLib {
     }
 
 
-
     template <class RNG, class S>
-    inline MakeMCEuropeanGJRGARCHEngine<RNG,S>::MakeMCEuropeanGJRGARCHEngine(
-                              const boost::shared_ptr<GJRGARCHProcess>& process)
-    : process_(process), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+    inline MakeMCEuropeanGJRGARCHEngine<RNG, S>::MakeMCEuropeanGJRGARCHEngine(
+        ext::shared_ptr<GJRGARCHProcess> process)
+    : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()) {}
 
     template <class RNG, class S>
     inline MakeMCEuropeanGJRGARCHEngine<RNG,S>&
@@ -199,10 +198,10 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     MakeMCEuropeanGJRGARCHEngine<RNG,S>::
-    operator boost::shared_ptr<PricingEngine>() const {
+    operator ext::shared_ptr<PricingEngine>() const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
-        return boost::shared_ptr<PricingEngine>(
+        return ext::shared_ptr<PricingEngine>(
                  new MCEuropeanGJRGARCHEngine<RNG,S>(process_,
                                                    steps_,
                                                    stepsPerYear_,

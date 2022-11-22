@@ -17,17 +17,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/catbonds/montecarlocatbondengine.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/experimental/catbonds/montecarlocatbondengine.hpp>
 #include <algorithm>
+#include <utility>
 
 namespace QuantLib {
 
     MonteCarloCatBondEngine::MonteCarloCatBondEngine(
-                             const boost::shared_ptr<CatRisk> catRisk,
-                             const Handle<YieldTermStructure>& discountCurve,
-                             boost::optional<bool> includeSettlementDateFlows)
-    : catRisk_(catRisk), discountCurve_(discountCurve),
+        ext::shared_ptr<CatRisk> catRisk,
+        Handle<YieldTermStructure> discountCurve,
+        const boost::optional<bool>& includeSettlementDateFlows)
+    : catRisk_(std::move(catRisk)), discountCurve_(std::move(discountCurve)),
       includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(discountCurve_);
     }
@@ -38,10 +39,9 @@ namespace QuantLib {
 
         results_.valuationDate = (*discountCurve_)->referenceDate();
 
-        bool includeRefDateFlows =
-            includeSettlementDateFlows_ ?
-            *includeSettlementDateFlows_ :
-            Settings::instance().includeReferenceDateEvents();
+        bool includeRefDateFlows = includeSettlementDateFlows_ ? // NOLINT(readability-implicit-bool-conversion)
+                                       *includeSettlementDateFlows_ :
+                                       Settings::instance().includeReferenceDateEvents();
 
         Real lossProbability;
         Real exhaustionProbability;
@@ -89,7 +89,7 @@ namespace QuantLib {
         Real totalNPV = 0.0;
         Date effectiveDate = std::max(arguments_.startDate, settlementDate);
         Date maturityDate = (*arguments_.cashflows.rbegin())->date();
-        boost::shared_ptr<CatSimulation> catSimulation = catRisk_->newSimulation(effectiveDate, maturityDate);
+        ext::shared_ptr<CatSimulation> catSimulation = catRisk_->newSimulation(effectiveDate, maturityDate);
         std::vector<std::pair<Date, Real> > eventsPath;
         NotionalPath notionalPath;
         Real riskFreeNPV = pathNpv(includeSettlementDateFlows, settlementDate, notionalPath);
@@ -118,17 +118,16 @@ namespace QuantLib {
                                           Date settlementDate, 
                                           const NotionalPath& notionalPath) const {
         Real totalNPV = 0.0;
-        for (Size i=0; i<arguments_.cashflows.size(); ++i) {
-            if (!arguments_.cashflows[i]->hasOccurred(settlementDate, 
-                                        includeSettlementDateFlows)) {
-                Real amount = cashFlowRiskyValue(arguments_.cashflows[i], notionalPath);
-                totalNPV += amount * discountCurve_->discount(arguments_.cashflows[i]->date());
+        for (auto& cashflow : arguments_.cashflows) {
+            if (!cashflow->hasOccurred(settlementDate, includeSettlementDateFlows)) {
+                Real amount = cashFlowRiskyValue(cashflow, notionalPath);
+                totalNPV += amount * discountCurve_->discount(cashflow->date());
             }
         }
         return totalNPV;
     }
 
-    Real MonteCarloCatBondEngine::cashFlowRiskyValue(const boost::shared_ptr<CashFlow> cf, 
+    Real MonteCarloCatBondEngine::cashFlowRiskyValue(const ext::shared_ptr<CashFlow>& cf,
                                                      const NotionalPath& notionalPath) const {
         return cf->amount()*notionalPath.notionalRate(cf->date()); //TODO: fix for more complicated cashflows
     }

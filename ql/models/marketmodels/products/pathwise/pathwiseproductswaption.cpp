@@ -18,9 +18,6 @@
 */
 
 #include <ql/models/marketmodels/products/pathwise/pathwiseproductswaption.hpp>
-
-
-// #include <ql/models/marketmodels/products/multistep/multistepforwards.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 
@@ -89,10 +86,10 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseCoterminalSwaptionsDeflated::clone() const 
+    std::unique_ptr<MarketModelPathwiseMultiProduct>
+    MarketModelPathwiseCoterminalSwaptionsDeflated::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
-                                                new MarketModelPathwiseCoterminalSwaptionsDeflated(*this));
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(new MarketModelPathwiseCoterminalSwaptionsDeflated(*this));
     }
 
     std::vector<Size> MarketModelPathwiseCoterminalSwaptionsDeflated::suggestedNumeraires() const
@@ -210,10 +207,11 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseCoterminalSwaptionsNumericalDeflated::clone() const 
+    std::unique_ptr<MarketModelPathwiseMultiProduct>
+    MarketModelPathwiseCoterminalSwaptionsNumericalDeflated::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
-                                                new MarketModelPathwiseCoterminalSwaptionsNumericalDeflated(*this));
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(
+          new MarketModelPathwiseCoterminalSwaptionsNumericalDeflated(*this));
     }
 
     std::vector<Size> MarketModelPathwiseCoterminalSwaptionsNumericalDeflated::suggestedNumeraires() const

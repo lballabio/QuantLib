@@ -195,4 +195,8 @@ namespace QuantLib {
         return cmSwapRates_;
     }
 
+    std::unique_ptr<CurveState> LMMCurveState::clone() const {
+        return std::unique_ptr<CurveState>(new LMMCurveState(*this));
+    }
+
 }

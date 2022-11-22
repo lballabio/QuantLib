@@ -27,7 +27,7 @@
 #include <ql/math/array.hpp>
 #include <ql/methods/montecarlo/path.hpp>
 #include <ql/methods/montecarlo/multipath.hpp>
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
@@ -65,13 +65,13 @@ namespace QuantLib {
       public:
         typedef typename EarlyExerciseTraits<PathType>::StateType StateType;
 
-        virtual ~EarlyExercisePathPricer() {}
+        virtual ~EarlyExercisePathPricer() = default;
         virtual ValueType operator()(const PathType& path,
                                      TimeType t) const = 0;
 
         virtual StateType
             state(const PathType& path, TimeType t) const = 0;
-        virtual std::vector<boost::function1<ValueType, StateType> >
+        virtual std::vector<ext::function<ValueType(StateType)> >
             basisSystem() const = 0;
     };
 }

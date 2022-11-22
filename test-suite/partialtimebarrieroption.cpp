@@ -25,12 +25,11 @@
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace partial_time_barrier_option_test {
 
     struct TestCase {
         Real underlying;
@@ -45,33 +44,35 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
     BOOST_TEST_MESSAGE(
         "Testing analytic engine for partial-time barrier option...");
 
+    using namespace partial_time_barrier_option_test;
+
     Date today = Settings::instance().evaluationDate();
 
     Option::Type type = Option::Call;
     DayCounter dc = Actual360();
     Date maturity = today + 360;
-    boost::shared_ptr<Exercise> exercise =
-        boost::make_shared<EuropeanExercise>(maturity);
+    ext::shared_ptr<Exercise> exercise =
+        ext::make_shared<EuropeanExercise>(maturity);
     Real barrier = 100.0;
     Real rebate = 0.0;
 
-    boost::shared_ptr<SimpleQuote> spot = boost::make_shared<SimpleQuote>();
-    boost::shared_ptr<SimpleQuote> qRate = boost::make_shared<SimpleQuote>(0.0);
-    boost::shared_ptr<SimpleQuote> rRate = boost::make_shared<SimpleQuote>(0.1);
-    boost::shared_ptr<SimpleQuote> vol = boost::make_shared<SimpleQuote>(0.25);
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>();
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.1);
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
 
     Handle<Quote> underlying(spot);
     Handle<YieldTermStructure> dividendTS(flatRate(today, qRate, dc));
     Handle<YieldTermStructure> riskFreeTS(flatRate(today, rRate, dc));
     Handle<BlackVolTermStructure> blackVolTS(flatVol(today, vol, dc));
 
-    const boost::shared_ptr<BlackScholesMertonProcess> process =
-        boost::make_shared<BlackScholesMertonProcess>(underlying,
+    const ext::shared_ptr<BlackScholesMertonProcess> process =
+        ext::make_shared<BlackScholesMertonProcess>(underlying,
                                                       dividendTS,
                                                       riskFreeTS,
                                                       blackVolTS);
-    boost::shared_ptr<PricingEngine> engine =
-        boost::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
+    ext::shared_ptr<PricingEngine> engine =
+        ext::make_shared<AnalyticPartialTimeBarrierOptionEngine>(process);
 
     TestCase cases[] = {
         {  95.0,  90.0,   1,  0.0393 },
@@ -100,10 +101,10 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
         { 105.0, 110.0, 359, 13.1376 }
     };
 
-    for (Size i=0; i<LENGTH(cases); ++i) {
-        Date coverEventDate = today + cases[i].days;
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::make_shared<PlainVanillaPayoff>(type, cases[i].strike);
+    for (auto& i : cases) {
+        Date coverEventDate = today + i.days;
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::make_shared<PlainVanillaPayoff>(type, i.strike);
         PartialTimeBarrierOption option(PartialBarrier::DownOut,
                                         PartialBarrier::EndB1,
                                         barrier, rebate,
@@ -111,9 +112,9 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
                                         payoff, exercise);
         option.setPricingEngine(engine);
 
-        spot->setValue(cases[i].underlying);
+        spot->setValue(i.underlying);
         Real calculated = option.NPV();
-        Real expected = cases[i].result;
+        Real expected = i.result;
         Real error = std::fabs(calculated-expected);
         Real tolerance = 1e-4;
         if (error > tolerance)
@@ -126,7 +127,7 @@ void PartialTimeBarrierOptionTest::testAnalyticEngine() {
 
 
 test_suite* PartialTimeBarrierOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Partial-time barrier option tests");
+    auto* suite = BOOST_TEST_SUITE("Partial-time barrier option tests");
 
     suite->add(QUANTLIB_TEST_CASE(
                           &PartialTimeBarrierOptionTest::testAnalyticEngine));

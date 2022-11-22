@@ -23,7 +23,7 @@ namespace QuantLib {
 
     Australia::Australia() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Australia::Impl);
+        static ext::shared_ptr<Calendar::Impl> impl(new Australia::Impl);
         impl_ = impl;
     }
 
@@ -35,7 +35,7 @@ namespace QuantLib {
         Day em = easterMonday(y);
         if (isWeekend(w)
             // New Year's Day (possibly moved to Monday)
-            || (d == 1  && m == January)
+            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == January)
             // Australia Day, January 26th (possibly moved to Monday)
             || ((d == 26 || ((d == 27 || d == 28) && w == Monday)) &&
                 m == January)
@@ -43,8 +43,8 @@ namespace QuantLib {
             || (dd == em-3)
             // Easter Monday
             || (dd == em)
-            // ANZAC Day, April 25th (possibly moved to Monday)
-            || ((d == 25 || (d == 26 && w == Monday)) && m == April)
+            // ANZAC Day, April 25th
+            || (d == 25 && m == April)
             // Queen's Birthday, second Monday in June
             || ((d > 7 && d <= 14) && w == Monday && m == June)
             // Bank Holiday, first Monday in August
@@ -56,8 +56,10 @@ namespace QuantLib {
                 && m == December)
             // Boxing Day, December 26th (possibly Monday or Tuesday)
             || ((d == 26 || (d == 28 && (w == Monday || w == Tuesday)))
-                && m == December))
-            return false;
+                && m == December)
+            // National Day of Mourning for Her Majesty, September 22 (only 2022)
+            || (d == 22 && m == September && y == 2022))
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

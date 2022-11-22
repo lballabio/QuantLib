@@ -26,8 +26,6 @@
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
     Date BondFunctions::startDate(const Bond& bond) {
@@ -228,9 +226,8 @@ namespace QuantLib {
         if (settlement == Date())
             settlement = bond.settlementDate();
 
-        QL_REQUIRE(BondFunctions::isTradable(bond, settlement),
-                   "non tradable at " << settlement <<
-                   " (maturity being " << bond.maturityDate() << ")");
+        if (!BondFunctions::isTradable(bond, settlement))
+            return 0.0;
 
         return CashFlows::accruedAmount(bond.cashflows(),
                                         false, settlement) *
@@ -361,19 +358,20 @@ namespace QuantLib {
     }
 
     Rate BondFunctions::yield(const Bond& bond,
-                              Real cleanPrice,
+                              Real price,
                               const DayCounter& dayCounter,
                               Compounding compounding,
                               Frequency frequency,
                               Date settlement,
                               Real accuracy,
                               Size maxIterations,
-                              Rate guess) {
+                              Rate guess,
+                              Bond::Price::Type priceType) {
         NewtonSafe solver;
         solver.setMaxEvaluations(maxIterations);
-        return yield<NewtonSafe>(solver, bond, cleanPrice, dayCounter,
+        return yield<NewtonSafe>(solver, bond, price, dayCounter,
                                  compounding, frequency, settlement,
-                                 accuracy, guess);
+                                 accuracy, guess, priceType);
     }
 
     Time BondFunctions::duration(const Bond& bond,
@@ -478,7 +476,7 @@ namespace QuantLib {
     }
 
     Real BondFunctions::cleanPrice(const Bond& bond,
-                                   const shared_ptr<YieldTermStructure>& d,
+                                   const ext::shared_ptr<YieldTermStructure>& d,
                                    Spread zSpread,
                                    const DayCounter& dc,
                                    Compounding comp,
@@ -500,7 +498,7 @@ namespace QuantLib {
 
     Spread BondFunctions::zSpread(const Bond& bond,
                                   Real cleanPrice,
-                                  const shared_ptr<YieldTermStructure>& d,
+                                  const ext::shared_ptr<YieldTermStructure>& d,
                                   const DayCounter& dayCounter,
                                   Compounding compounding,
                                   Frequency frequency,

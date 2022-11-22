@@ -29,7 +29,7 @@
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -41,6 +41,7 @@ namespace QuantLib {
         \ingroup optimizers
     */
 
+    //! Simulated Annealing
     template <class RNG = MersenneTwisterUniformRng>
     class SimulatedAnnealing : public OptimizationMethod {
 
@@ -69,7 +70,7 @@ namespace QuantLib {
             : scheme_(ConstantBudget), lambda_(lambda), T0_(T0), epsilon_(0.0),
               alpha_(alpha), K_(K), rng_(rng) {}
 
-        EndCriteria::Type minimize(Problem &P, const EndCriteria &ec);
+        EndCriteria::Type minimize(Problem& P, const EndCriteria& ec) override;
 
       private:
 
@@ -95,13 +96,13 @@ namespace QuantLib {
     Real SimulatedAnnealing<RNG>::simplexSize() { // this is taken from
                                                   // simplex.cpp
         Array center(vertices_.front().size(), 0);
-        for (Size i = 0; i < vertices_.size(); ++i)
-            center += vertices_[i];
+        for (auto& vertice : vertices_)
+            center += vertice;
         center *= 1 / Real(vertices_.size());
         Real result = 0;
-        for (Size i = 0; i < vertices_.size(); ++i) {
-            Array temp = vertices_[i] - center;
-            result += std::sqrt(DotProduct(temp, temp));
+        for (auto& vertice : vertices_) {
+            Array temp = vertice - center;
+            result += Norm2(temp);
         }
         return result / Real(vertices_.size());
     }
@@ -117,7 +118,7 @@ namespace QuantLib {
             ytry_ = QL_MAX_REAL;
         else
             ytry_ = P.value(ptry_);
-        if (boost::math::isnan(ytry_)) {
+        if (std::isnan(ytry_)) {
             ytry_ = QL_MAX_REAL;
         }
         if (ytry_ <= yb_) {
@@ -134,7 +135,6 @@ namespace QuantLib {
             }
         }
         ytry_ = yflu_;
-        return;
     }
 
     template <class RNG>
@@ -163,7 +163,7 @@ namespace QuantLib {
                 values_[i_] = QL_MAX_REAL;
             else
                 values_[i_] = P.value(vertices_[i_]);
-            if (boost::math::isnan(ytry_)) { // handle NAN
+            if (std::isnan(ytry_)) { // handle NAN
                 values_[i_] = QL_MAX_REAL;
             }
         }

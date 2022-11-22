@@ -23,8 +23,6 @@
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/currencies/asia.hpp>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
     JpyLiborSwapIsdaFixAm::JpyLiborSwapIsdaFixAm(
@@ -38,7 +36,7 @@ namespace QuantLib {
                 6*Months, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 ActualActual(ActualActual::ISDA), // fixedLegDaycounter
-                boost::shared_ptr<IborIndex>(new JPYLibor(6*Months, h))) {}
+                ext::shared_ptr<IborIndex>(new JPYLibor(6*Months, h))) {}
 
     JpyLiborSwapIsdaFixAm::JpyLiborSwapIsdaFixAm(
                                 const Period& tenor,
@@ -52,7 +50,7 @@ namespace QuantLib {
                 6*Months, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 ActualActual(ActualActual::ISDA), // fixedLegDaycounter
-                shared_ptr<IborIndex>(new JPYLibor(6*Months, forwarding)),
+                ext::shared_ptr<IborIndex>(new JPYLibor(6*Months, forwarding)),
                 discounting) {}
 
     JpyLiborSwapIsdaFixPm::JpyLiborSwapIsdaFixPm(
@@ -66,7 +64,7 @@ namespace QuantLib {
                 6*Months, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 ActualActual(ActualActual::ISDA), // fixedLegDaycounter
-                boost::shared_ptr<IborIndex>(new JPYLibor(6*Months, h))) {}
+                ext::shared_ptr<IborIndex>(new JPYLibor(6*Months, h))) {}
 
     JpyLiborSwapIsdaFixPm::JpyLiborSwapIsdaFixPm(
                                 const Period& tenor,
@@ -80,7 +78,7 @@ namespace QuantLib {
                 6*Months, // fixedLegTenor
                 ModifiedFollowing, // fixedLegConvention
                 ActualActual(ActualActual::ISDA), // fixedLegDaycounter
-                shared_ptr<IborIndex>(new JPYLibor(6*Months, forwarding)),
+                ext::shared_ptr<IborIndex>(new JPYLibor(6*Months, forwarding)),
                 discounting) {}
 
 }

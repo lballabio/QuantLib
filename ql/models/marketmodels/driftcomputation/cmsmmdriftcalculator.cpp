@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2007 Ferdinando Ametrano
- Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 FranÃ§ois du Vignaud
  Copyright (C) 2007 Mark Joshi
 
 This file is part of QuantLib, a free-software/open-source library
@@ -61,7 +61,7 @@ namespace QuantLib {
             oneOverTaus_[i] = 1.0/taus[i];
 
         // Compute covariance matrix from pseudoroot
-        const Disposable<Matrix> pT = transpose(pseudo_);
+        Matrix pT = transpose(pseudo_);
         C_ = pseudo_*pT;
 
         // Compute lower and upper extrema for (non reduced) drift calculation

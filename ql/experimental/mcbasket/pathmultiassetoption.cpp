@@ -26,8 +26,8 @@
 namespace QuantLib {
 
     PathMultiAssetOption::PathMultiAssetOption(
-                            const boost::shared_ptr<PricingEngine>& engine) {
-        if (engine)
+                            const ext::shared_ptr<PricingEngine>& engine) {
+        if (engine != nullptr)
             setPricingEngine(engine);
     }
 
@@ -41,10 +41,9 @@ namespace QuantLib {
 
     void PathMultiAssetOption::setupArguments(PricingEngine::arguments* args)
                                                                        const {
-        PathMultiAssetOption::arguments* arguments =
-            dynamic_cast<PathMultiAssetOption::arguments*>(args);
+        auto* arguments = dynamic_cast<PathMultiAssetOption::arguments*>(args);
 
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->payoff            = pathPayoff();
         arguments->fixingDates       = fixingDates();
@@ -52,7 +51,7 @@ namespace QuantLib {
 
     void PathMultiAssetOption::arguments::validate() const {
         QL_REQUIRE(payoff,                 "no payoff given");
-        QL_REQUIRE(fixingDates.size() > 0, "no dates given");
+        QL_REQUIRE(!fixingDates.empty(), "no dates given");
     }
 }
 

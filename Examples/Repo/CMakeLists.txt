@@ -1,2 +1,5 @@
 add_executable(Repo Repo.cpp)
-target_link_libraries(Repo QuantLib)
+target_link_libraries(Repo ql_library ${QL_THREAD_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS Repo RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

@@ -17,10 +17,6 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/qldefines.hpp>
-
-#if !defined(QL_NO_UBLAS_SUPPORT)
-
 #include <ql/math/matrixutilities/sparseilupreconditioner.hpp>
 #include <ql/math/matrix.hpp>
 
@@ -61,7 +57,7 @@ namespace QuantLib {
             Integer jj = -1;
             while (jj < ii) {
                 for (Integer k=jj+1; k<n; ++k) {
-                    if(levii[k]) {
+                    if (levii[k] != 0) {
                         jj = k;
                         break;
                     }
@@ -80,8 +76,8 @@ namespace QuantLib {
                         nonZeros.push_back(jj);
                         nonZeroEntries.push_back(entry);
                     }
-                    std::set<Integer>::const_iterator iter=uBandSet.begin();
-                    std::set<Integer>::const_iterator end =uBandSet.end();
+                    auto iter = uBandSet.begin();
+                    auto end = uBandSet.end();
                     for (; iter != end; ++iter) {
                         const Real entry = U_(jj,jj+*iter);
                         if(entry > QL_EPSILON || entry < -1.0*QL_EPSILON) {
@@ -123,9 +119,8 @@ namespace QuantLib {
             }
             std::vector<Integer> leviiNonZeroEntries;
             leviiNonZeroEntries.reserve(levii.size());
-            for (Size i=0; i<levii.size(); ++i) {
-                const Integer entry = levii[i];
-                if(entry > QL_EPSILON || entry < -1.0*QL_EPSILON) {
+            for (int entry : levii) {
+                if (entry > QL_EPSILON || entry < -1.0 * QL_EPSILON) {
                     leviiNonZeroEntries.push_back(entry);
                 }
             }
@@ -158,12 +153,11 @@ namespace QuantLib {
         return U_;
     }
 
-    Disposable<Array> SparseILUPreconditioner::apply(const Array& b) const {
+    Array SparseILUPreconditioner::apply(const Array& b) const {
         return backwardSolve(forwardSolve(b));
     }
 
-    Disposable<Array> SparseILUPreconditioner::forwardSolve(
-                                                       const Array& b) const {
+    Array SparseILUPreconditioner::forwardSolve(const Array& b) const {
         Integer n = b.size();
         Array y(n, 0.0);
         y[0]=b[0]/L_(0,0);
@@ -179,8 +173,7 @@ namespace QuantLib {
         return y;
     }
 
-    Disposable<Array> SparseILUPreconditioner::backwardSolve(
-                                                       const Array& y) const {
+    Array SparseILUPreconditioner::backwardSolve(const Array& y) const {
         Size n = y.size();
         Array x(n, 0.0);
         x[n-1] = y[n-1]/U_(n-1,n-1);
@@ -195,4 +188,3 @@ namespace QuantLib {
 
 }
 
-#endif

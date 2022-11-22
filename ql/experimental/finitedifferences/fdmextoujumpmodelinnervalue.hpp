@@ -25,10 +25,11 @@
 #ifndef quantlib_fdm_ext_ou_jump_model_inner_value_hpp
 #define quantlib_fdm_ext_ou_jump_model_inner_value_hpp
 
-#include <ql/payoff.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopiterator.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/payoff.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -36,33 +37,30 @@ namespace QuantLib {
       public:
         typedef std::vector<std::pair<Time, Real> > Shape;
 
-        FdmExtOUJumpModelInnerValue(const boost::shared_ptr<Payoff>& payoff,
-                                    const boost::shared_ptr<FdmMesher>& mesher,
-                                    const boost::shared_ptr<Shape>& shape =
-                                                    boost::shared_ptr<Shape>())
-        : payoff_(payoff),
-          mesher_(mesher),
-          shape_ (shape) { }
+        FdmExtOUJumpModelInnerValue(ext::shared_ptr<Payoff> payoff,
+                                    ext::shared_ptr<FdmMesher> mesher,
+                                    ext::shared_ptr<Shape> shape = ext::shared_ptr<Shape>())
+        : payoff_(std::move(payoff)), mesher_(std::move(mesher)), shape_(std::move(shape)) {}
 
-        Real innerValue(const FdmLinearOpIterator& iter, Time t) {
+        Real innerValue(const FdmLinearOpIterator& iter, Time t) override {
             const Real x = mesher_->location(iter, 0);
             const Real y = mesher_->location(iter, 1);
 
             Real f = 0;
-            if (shape_) {
+            if (shape_ != nullptr) {
                 f = std::lower_bound(shape_->begin(), shape_->end(),
                    std::pair<Time, Real>(t-std::sqrt(QL_EPSILON), 0.0))->second;
             }
-            return payoff_->operator()(std::exp(f + x + y));
+            return (*payoff_)(std::exp(f + x + y));
         }
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
             return innerValue(iter, t);
         }
 
       private:
-        const boost::shared_ptr<Payoff> payoff_;
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<Shape> shape_;
+        const ext::shared_ptr<Payoff> payoff_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<Shape> shape_;
     };
 }
 

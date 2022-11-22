@@ -21,11 +21,11 @@
 #ifndef quantlib_tap_correlations_hpp
 #define quantlib_tap_correlations_hpp
 
-#include <ql/types.hpp>
-#include <ql/utilities/disposable.hpp>
+#include <ql/functional.hpp>
 #include <ql/math/matrix.hpp>
 #include <ql/math/optimization/costfunction.hpp>
-#include <boost/function.hpp>
+#include <ql/types.hpp>
+#include <utility>
 #include <vector>
 
 namespace QuantLib {
@@ -42,32 +42,28 @@ namespace QuantLib {
         - the correctness of the results is tested by checking
           returned values against numerical calculations.
     */
-    Disposable<Matrix>
-    triangularAnglesParametrization(const Array& angles,
-                                    Size matrixSize,
-                                    Size rank);
+    Matrix triangularAnglesParametrization(const Array& angles,
+                                           Size matrixSize,
+                                           Size rank);
 
-    Disposable<Matrix>
-    lmmTriangularAnglesParametrization(const Array& angles,
-                                       Size matrixSize,
-                                       Size rank);
+    Matrix lmmTriangularAnglesParametrization(const Array& angles,
+                                              Size matrixSize,
+                                              Size rank);
 
     // the same function using the angles parameterized by the following
     // transformation \f[ \teta_i = \frac{\Pi}{2} - arctan(x_i)\f]
-    Disposable<Matrix>
-    triangularAnglesParametrizationUnconstrained(const Array& x,
-                                                 Size matrixSize,
-                                                 Size rank);
+    Matrix triangularAnglesParametrizationUnconstrained(const Array& x,
+                                                        Size matrixSize,
+                                                        Size rank);
 
-    Disposable<Matrix>
-    lmmTriangularAnglesParametrizationUnconstrained(const Array& x,
-                                                    Size matrixSize,
-                                                    Size rank);
+    Matrix lmmTriangularAnglesParametrizationUnconstrained(const Array& x,
+                                                           Size matrixSize,
+                                                           Size rank);
 
 
     //! Returns the rank reduced Triangular Angles Parametrized correlation matrix
     /*! The matrix \f$ m \f$ is filled with values corresponding to angles
-        corresponding  to the 3D spherical spiral paramterized by
+        corresponding  to the 3D spherical spiral parameterized by
         \f$ alpha \f$, \f$ t0 \f$, \f$ epsilon \f$ values. See equation (32) in
         "Parameterizing correlations: a geometric interpretation"
         by Francesco Rapisarda, Damiano Brigo, Fabio Mercurio
@@ -78,34 +74,30 @@ namespace QuantLib {
         - the correctness of the results is tested by checking
           returned values against numerical calculations.
     */
-    Disposable<Matrix>
-    triangularAnglesParametrizationRankThree(Real alpha,
-                                             Real t0,
-                                             Real epsilon,
-                                             Size nbRows);
+    Matrix triangularAnglesParametrizationRankThree(Real alpha,
+                                                    Real t0,
+                                                    Real epsilon,
+                                                    Size nbRows);
 
     // the same function with parameters packed in an Array
-    Disposable<Matrix>
-    triangularAnglesParametrizationRankThreeVectorial(const Array& paramters,
-                                                      Size nbRows);
+    Matrix triangularAnglesParametrizationRankThreeVectorial(const Array& parameters,
+                                                             Size nbRows);
 
     // Cost function associated with Frobenius norm.
     // <http://en.wikipedia.org/wiki/Matrix_norm>
     class FrobeniusCostFunction : public CostFunction{
       public:
-        FrobeniusCostFunction(
-            const Matrix& target,
-            const boost::function<Disposable<Matrix>(const Array&,
-                                                     Size,
-                                                     Size)>& f,
-                                                     Size matrixSize,
-                                                     Size rank)
-        : target_(target), f_(f), matrixSize_(matrixSize), rank_(rank) {}
-        Real value (const Array &x) const;
-        Disposable<Array> values (const Array &x) const;
+        FrobeniusCostFunction(Matrix target,
+                              ext::function<Matrix(const Array&, Size, Size)> f,
+                              Size matrixSize,
+                              Size rank)
+        : target_(std::move(target)), f_(std::move(f)), matrixSize_(matrixSize), rank_(rank) {}
+        Real value(const Array& x) const override;
+        Array values(const Array& x) const override;
+
       private:
         Matrix target_;
-        boost::function<Disposable<Matrix>(const Array&, Size, Size)> f_;
+        ext::function<Matrix(const Array&, Size, Size)> f_;
         Size matrixSize_;
         Size rank_;
     };

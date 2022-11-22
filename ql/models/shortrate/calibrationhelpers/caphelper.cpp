@@ -18,32 +18,34 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/cashflowvectors.hpp>
 #include <ql/models/shortrate/calibrationhelpers/caphelper.hpp>
+#include <ql/pricingengines/capfloor/bacheliercapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/blackcapfloorengine.hpp>
 #include <ql/pricingengines/capfloor/discretizedcapfloor.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/time/schedule.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/time/schedule.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     CapHelper::CapHelper(const Period& length,
                          const Handle<Quote>& volatility,
-                         const boost::shared_ptr<IborIndex>& index,
+                         ext::shared_ptr<IborIndex> index,
                          Frequency fixedLegFrequency,
-                         const DayCounter& fixedLegDayCounter,
+                         DayCounter fixedLegDayCounter,
                          bool includeFirstSwaplet,
-                         const Handle<YieldTermStructure>& termStructure,
-                         CalibrationHelper::CalibrationErrorType errorType)
-        : CalibrationHelper(volatility,termStructure,errorType),
-        length_(length), index_(index), fixedLegFrequency_(fixedLegFrequency),
-        fixedLegDayCounter_(fixedLegDayCounter),
-        includeFirstSwaplet_(includeFirstSwaplet)
-    {
-
+                         Handle<YieldTermStructure> termStructure,
+                         BlackCalibrationHelper::CalibrationErrorType errorType,
+                         const VolatilityType type,
+                         const Real shift)
+    : BlackCalibrationHelper(volatility, errorType, type, shift), length_(length),
+      index_(std::move(index)), termStructure_(std::move(termStructure)),
+      fixedLegFrequency_(fixedLegFrequency), fixedLegDayCounter_(std::move(fixedLegDayCounter)),
+      includeFirstSwaplet_(includeFirstSwaplet) {
         registerWith(index_);
-
+        registerWith(termStructure_);
     }
 
     void CapHelper::addTimesTo(std::list<Time>& times) const {
@@ -66,11 +68,21 @@ namespace QuantLib {
 
     Real CapHelper::blackPrice(Volatility sigma) const {
         calculate();
-        boost::shared_ptr<Quote> vol(new SimpleQuote(sigma));
-        boost::shared_ptr<PricingEngine> black(
-                                 new BlackCapFloorEngine(termStructure_,
-                                                         Handle<Quote>(vol)));
-        cap_->setPricingEngine(black);
+        Handle<Quote> vol(ext::shared_ptr<Quote>(new SimpleQuote(sigma)));
+        ext::shared_ptr<PricingEngine> engine;
+        switch(volatilityType_) {
+          case ShiftedLognormal:
+            engine = ext::make_shared<BlackCapFloorEngine>(
+                termStructure_, vol, Actual365Fixed(), shift_);
+            break;
+          case Normal:
+            engine = ext::make_shared<BachelierCapFloorEngine>(
+                termStructure_, vol, Actual365Fixed());
+            break;
+          default:
+            QL_FAIL("unknown volatility type: " << volatilityType_);
+        }
+        cap_->setPricingEngine(engine);
         Real value = cap_->NPV();
         cap_->setPricingEngine(engine_);
         return value;
@@ -88,7 +100,7 @@ namespace QuantLib {
             startDate = termStructure_->referenceDate() + indexTenor;
             maturity = termStructure_->referenceDate() + length_;
         }
-        boost::shared_ptr<IborIndex> dummyIndex(new
+        ext::shared_ptr<IborIndex> dummyIndex(new
             IborIndex("dummy",
                       indexTenor,
                       index_->fixingDays(),
@@ -121,13 +133,13 @@ namespace QuantLib {
             .withPaymentAdjustment(index_->businessDayConvention());
 
         Swap swap(floatingLeg, fixedLeg);
-        swap.setPricingEngine(boost::shared_ptr<PricingEngine>(
+        swap.setPricingEngine(ext::shared_ptr<PricingEngine>(
                             new DiscountingSwapEngine(termStructure_, false)));
         Rate fairRate = fixedRate - swap.NPV()/(swap.legBPS(1)/1.0e-4);
-        cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg,
-                                              std::vector<Rate>(1, fairRate)));
+        cap_ = ext::make_shared<Cap>(floatingLeg,
+                                              std::vector<Rate>(1, fairRate));
 
-        CalibrationHelper::performCalculations();
+        BlackCalibrationHelper::performCalculations();
 
     }
 

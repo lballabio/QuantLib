@@ -26,13 +26,14 @@
 #ifndef quantlib_bootstrap_helper_hpp
 #define quantlib_bootstrap_helper_hpp
 
-#include <ql/quote.hpp>
-#include <ql/time/date.hpp>
 #include <ql/handle.hpp>
 #include <ql/patterns/observable.hpp>
 #include <ql/patterns/visitor.hpp>
+#include <ql/quote.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/settings.hpp>
+#include <ql/time/date.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -61,9 +62,9 @@ namespace QuantLib {
     template <class TS>
     class BootstrapHelper : public Observer, public Observable {
       public:
-        BootstrapHelper(const Handle<Quote>& quote);
-        BootstrapHelper(Real quote);
-        virtual ~BootstrapHelper() {}
+        explicit BootstrapHelper(Handle<Quote> quote);
+        explicit BootstrapHelper(Real quote);
+        ~BootstrapHelper() override = default;
         //! \name BootstrapHelper interface
         //@{
         const Handle<Quote>& quote() const { return quote_; }
@@ -107,7 +108,7 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        virtual void update();
+        void update() override;
         //@}
         //! \name Visitability
         //@{
@@ -127,11 +128,11 @@ namespace QuantLib {
     template <class TS>
     class RelativeDateBootstrapHelper : public BootstrapHelper<TS> {
       public:
-        RelativeDateBootstrapHelper(const Handle<Quote>& quote);
-        RelativeDateBootstrapHelper(Real quote);
+        explicit RelativeDateBootstrapHelper(const Handle<Quote>& quote);
+        explicit RelativeDateBootstrapHelper(Real quote);
         //! \name Observer interface
         //@{
-        void update() {
+        void update() override {
             if (evaluationDate_ != Settings::instance().evaluationDate()) {
                 evaluationDate_ = Settings::instance().evaluationDate();
                 initializeDates();
@@ -147,19 +148,19 @@ namespace QuantLib {
     // template definitions
 
     template <class TS>
-    BootstrapHelper<TS>::BootstrapHelper(const Handle<Quote>& quote)
-    : quote_(quote), termStructure_(0) {
+    BootstrapHelper<TS>::BootstrapHelper(Handle<Quote> quote)
+    : quote_(std::move(quote)), termStructure_(nullptr) {
         registerWith(quote_);
     }
 
     template <class TS>
     BootstrapHelper<TS>::BootstrapHelper(Real quote)
-    : quote_(Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(quote)))),
-      termStructure_(0) {}
+    : quote_(Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(quote)))),
+      termStructure_(nullptr) {}
 
     template <class TS>
     void BootstrapHelper<TS>::setTermStructure(TS* t) {
-        QL_REQUIRE(t != 0, "null term structure given");
+        QL_REQUIRE(t != nullptr, "null term structure given");
         termStructure_ = t;
     }
 
@@ -203,9 +204,8 @@ namespace QuantLib {
 
     template <class TS>
     void BootstrapHelper<TS>::accept(AcyclicVisitor& v) {
-        Visitor<BootstrapHelper<TS> >* v1 =
-            dynamic_cast<Visitor<BootstrapHelper<TS> >*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<BootstrapHelper<TS> >*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             QL_FAIL("not a bootstrap-helper visitor");
@@ -246,8 +246,8 @@ namespace QuantLib {
           public:
             template <class Helper>
             bool operator()(
-                    const boost::shared_ptr<Helper>& h1,
-                    const boost::shared_ptr<Helper>& h2) const {
+                    const ext::shared_ptr<Helper>& h1,
+                    const ext::shared_ptr<Helper>& h2) const {
                 return (h1->pillarDate() < h2->pillarDate());
             }
         };

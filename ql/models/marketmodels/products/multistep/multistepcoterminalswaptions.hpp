@@ -22,7 +22,7 @@
 #define quantlib_multistep_coterminal_swaptions_hpp
 
 #include <ql/models/marketmodels/products/multiproductmultistep.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -32,23 +32,22 @@ namespace QuantLib {
       public:
         MultiStepCoterminalSwaptions(const std::vector<Time>& rateTimes,
                                      const std::vector<Time>& paymentTimes,
-                                     const std::vector<boost::shared_ptr<StrikedTypePayoff> >&);
+                                     std::vector<ext::shared_ptr<StrikedTypePayoff> >);
         //! \name MarketModelMultiProduct interface
         //@{
-        std::vector<Time> possibleCashFlowTimes() const;
-        Size numberOfProducts() const;
-        Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset();
-        bool nextTimeStep(
-                     const CurveState& currentState,
-                     std::vector<Size>& numberCashFlowsThisStep,
-                     std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
+        std::vector<Time> possibleCashFlowTimes() const override;
+        Size numberOfProducts() const override;
+        Size maxNumberOfCashFlowsPerProductPerStep() const override;
+        void reset() override;
+        bool nextTimeStep(const CurveState& currentState,
+                          std::vector<Size>& numberCashFlowsThisStep,
+                          std::vector<std::vector<CashFlow> >& cashFlowsGenerated) override;
+        std::unique_ptr<MarketModelMultiProduct> clone() const override;
          //@}
 
       private:
         std::vector<Time> paymentTimes_;
-        std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs_;
+        std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs_;
         Size lastIndex_;
         // things that vary in a path
         Size currentIndex_;

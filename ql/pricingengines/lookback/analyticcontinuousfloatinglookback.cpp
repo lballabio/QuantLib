@@ -18,22 +18,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
 #include <ql/exercise.hpp>
+#include <ql/pricingengines/lookback/analyticcontinuousfloatinglookback.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    AnalyticContinuousFloatingLookbackEngine::
-    AnalyticContinuousFloatingLookbackEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+    AnalyticContinuousFloatingLookbackEngine::AnalyticContinuousFloatingLookbackEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
     void AnalyticContinuousFloatingLookbackEngine::calculate() const {
 
-        boost::shared_ptr<FloatingTypePayoff> payoff =
-            boost::dynamic_pointer_cast<FloatingTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<FloatingTypePayoff> payoff =
+            ext::dynamic_pointer_cast<FloatingTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "Non-floating payoff given");
 
         QL_REQUIRE(process_->x0() > 0.0, "negative or null underlying");

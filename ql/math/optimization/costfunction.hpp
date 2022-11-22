@@ -33,11 +33,16 @@ namespace QuantLib {
     //!  Cost function abstract class for optimization problem
     class CostFunction {
       public:
-        virtual ~CostFunction() {}
+        virtual ~CostFunction() = default;
         //! method to overload to compute the cost function value in x
-        virtual Real value(const Array& x) const = 0;
+        virtual Real value(const Array& x) const {
+            Array v = values(x);
+            std::transform(v.begin(), v.end(), v.begin(), [](Real x) -> Real { return x*x; });
+            return std::sqrt(std::accumulate(v.begin(), v.end(), Real(0.0)) /
+                             static_cast<Real>(v.size()));
+        }
         //! method to overload to compute the cost function values in x
-        virtual Disposable<Array> values(const Array& x) const =0;
+        virtual Array values(const Array& x) const =0;
 
         //! method to overload to compute grad_f, the first derivative of
         //  the cost function with respect to x
@@ -81,8 +86,8 @@ namespace QuantLib {
 
         //! method to overload to compute J_f, the jacobian of
         // the cost function with respect to x and also the cost function
-        virtual Disposable<Array> valuesAndJacobian(Matrix &jac,
-                                                    const Array &x) const {
+        virtual Array valuesAndJacobian(Matrix &jac,
+                                        const Array &x) const {
             jacobian(jac,x);
             return values(x);
         }
@@ -93,7 +98,7 @@ namespace QuantLib {
 
     class ParametersTransformation {
       public:
-        virtual ~ParametersTransformation() {}
+        virtual ~ParametersTransformation() = default;
         virtual Array direct(const Array& x) const = 0;
         virtual Array inverse(const Array& x) const = 0;
     };

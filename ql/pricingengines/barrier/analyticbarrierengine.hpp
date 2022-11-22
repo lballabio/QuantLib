@@ -45,16 +45,15 @@ namespace QuantLib {
     */
     class AnalyticBarrierEngine : public BarrierOption::engine {
       public:
-        AnalyticBarrierEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
-        void calculate() const;
+        AnalyticBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        void calculate() const override;
+
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         CumulativeNormalDistribution f_;
         // helper methods
         Real underlying() const;
         Real strike() const;
-        Time residualTime() const;
         Volatility volatility() const;
         Real barrier() const;
         Real rebate() const;

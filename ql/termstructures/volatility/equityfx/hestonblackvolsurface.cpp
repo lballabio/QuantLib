@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
  Copyright (C) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -24,14 +24,11 @@
 
 #include <ql/math/functional.hpp>
 #include <ql/math/solvers1d/brent.hpp>
-#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
-
-#include <boost/bind.hpp>
-#include <boost/make_shared.hpp>
-
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <limits>
+#include <utility>
 
 namespace QuantLib {
 
@@ -47,14 +44,15 @@ namespace QuantLib {
     }
 
     HestonBlackVolSurface::HestonBlackVolSurface(
-        const Handle<HestonModel>& hestonModel)
-    : BlackVolTermStructure(
-          hestonModel->process()->riskFreeRate()->referenceDate(),
-          NullCalendar(),
-          Following,
-          hestonModel->process()->riskFreeRate()->dayCounter()),
-      hestonModel_(hestonModel),
-      integration_(AnalyticHestonEngine::Integration::gaussLaguerre(164)) {
+        const Handle<HestonModel>& hestonModel,
+        const AnalyticHestonEngine::ComplexLogFormula cpxLogFormula,
+        AnalyticHestonEngine::Integration integration)
+    : BlackVolTermStructure(hestonModel->process()->riskFreeRate()->referenceDate(),
+                            NullCalendar(),
+                            Following,
+                            hestonModel->process()->riskFreeRate()->dayCounter()),
+      hestonModel_(hestonModel), cpxLogFormula_(cpxLogFormula),
+      integration_(std::move(integration)) {
         registerWith(hestonModel_);
     }
 
@@ -72,11 +70,11 @@ namespace QuantLib {
     }
 
     Real HestonBlackVolSurface::blackVarianceImpl(Time t, Real strike) const {
-        return square<Real>()(blackVolImpl(t, strike))*t;
+        return squared(blackVolImpl(t, strike))*t;
     }
 
     Volatility HestonBlackVolSurface::blackVolImpl(Time t, Real strike) const {
-        const boost::shared_ptr<HestonProcess> process = hestonModel_->process();
+        const ext::shared_ptr<HestonProcess> process = hestonModel_->process();
 
         const DiscountFactor df = process->riskFreeRate()->discount(t, true);
         const DiscountFactor div = process->dividendYield()->discount(t, true);
@@ -96,10 +94,8 @@ namespace QuantLib {
         const Real sigma = hestonModel_->sigma();
         const Real v0    = hestonModel_->v0();
 
-        const AnalyticHestonEngine::ComplexLogFormula cpxLogFormula
-            = AnalyticHestonEngine::Gatheral;
-
-        const AnalyticHestonEngine* const hestonEnginePtr = 0;
+        AnalyticHestonEngine hestonEngine(
+            hestonModel_.currentLink(), cpxLogFormula_, integration_);
 
         Real npv;
         Size evaluations;
@@ -107,19 +103,18 @@ namespace QuantLib {
         AnalyticHestonEngine::doCalculation(
             df, div, spotPrice, strike, t,
             kappa, theta, sigma, v0, rho,
-            payoff, integration_, cpxLogFormula,
-            hestonEnginePtr, npv, evaluations);
+            payoff, integration_, cpxLogFormula_,
+            &hestonEngine, npv, evaluations);
 
         if (npv <= 0.0) return std::sqrt(theta);
 
         Brent solver;
         solver.setMaxEvaluations(10000);
         const Volatility guess = std::sqrt(theta);
-        const Real accuracy = std::numeric_limits<Real>::epsilon();
+        constexpr double accuracy = std::numeric_limits<double>::epsilon();
 
-        const boost::function<Real(Real)> f = boost::bind(
-            &blackValue, payoff.optionType(), strike, fwd, t, _1, df, npv);
-
-        return solver.solve(f, accuracy, guess, 0.01);
+        return solver.solve([&](Volatility _v) { return blackValue(payoff.optionType(), strike, fwd,
+                                                                   t, _v, df, npv); },
+                            accuracy, guess, 0.01);
     }
 }

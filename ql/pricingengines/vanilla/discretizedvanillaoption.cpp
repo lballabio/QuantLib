@@ -58,10 +58,10 @@ namespace QuantLib {
                 applySpecificCondition();
             break;
           case Exercise::Bermudan:
-            for (Size i=0; i<stoppingTimes_.size(); i++) {
-                if (isOnTime(stoppingTimes_[i]))
-                    applySpecificCondition();
-            }
+              for (Real stoppingTime : stoppingTimes_) {
+                  if (isOnTime(stoppingTime))
+                      applySpecificCondition();
+              }
             break;
           default:
             QL_FAIL("invalid option type");

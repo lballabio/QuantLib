@@ -26,11 +26,13 @@
 
 #include <ql/instruments/dividendschedule.hpp>
 #include <ql/methods/finitedifferences/meshers/fdm1dmesher.hpp>
+
 #include <ql/handle.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {
 
+    class FdmQuantoHelper;
     class YieldTermStructure;
     class GeneralizedBlackScholesProcess;
 
@@ -38,16 +40,20 @@ namespace QuantLib {
       public:
         FdmBlackScholesMesher(
             Size size,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Time maturity, Real strike,
             Real xMinConstraint = Null<Real>(),
             Real xMaxConstraint = Null<Real>(),
             Real eps = 0.0001,
             Real scaleFactor = 1.5,
             const std::pair<Real, Real>& cPoint
-                        = (std::pair<Real, Real>(Null<Real>(), Null<Real>())));
+                = (std::pair<Real, Real>(Null<Real>(), Null<Real>())),
+            const DividendSchedule& dividendSchedule = DividendSchedule(),
+            const ext::shared_ptr<FdmQuantoHelper>& fdmQuantoHelper
+                = ext::shared_ptr<FdmQuantoHelper>(),
+            Real spotAdjustment = 0.0);
 
-        static boost::shared_ptr<GeneralizedBlackScholesProcess> processHelper(
+        static ext::shared_ptr<GeneralizedBlackScholesProcess> processHelper(
              const Handle<Quote>& s0,
              const Handle<YieldTermStructure>& rTS,
              const Handle<YieldTermStructure>& qTS,

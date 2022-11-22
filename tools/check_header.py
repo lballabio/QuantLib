@@ -1,27 +1,18 @@
-#!/usr/bin/python
+#!/usr/bin/python -u
 
-import os, sys, tempfile
+import os
+import sys
 
-if len(sys.argv) != 2:
-    print 'Usage: %s <header file>' % sys.argv[0]
-    sys.exit()
+errors = 0
 
-header = sys.argv[1]
+for line in sys.stdin.readlines():
+    header = line.strip()
 
-main = r"""
-#include <%s>
-int main() {
-    return 0;
-}
-""" % header
+    print("Checking %s" % header)
+    command = "g++ -c -Wno-unknown-pragmas -Wall -Werror -I. %s -o /dev/null" % header
+    code = os.system(command)
+    if code != 0:
+        print("Errors while checking %s" % header)
+        errors += 1
 
-fd,fname = tempfile.mkstemp(suffix = '.cpp', dir = '.', text = True)
-os.write(fd,main)
-os.close(fd)
-
-print 'Checking %s' % header
-command = 'g++ -c -I. %s -o /dev/null' % fname
-os.system(command)
-
-os.unlink(fname)
-
+sys.exit(errors)

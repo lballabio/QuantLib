@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     LogNormalFwdRateiBalland::LogNormalFwdRateiBalland(
-                           const boost::shared_ptr<MarketModel>& marketModel,
+                           const ext::shared_ptr<MarketModel>& marketModel,
                            const BrownianGeneratorFactory& factory,
                            const std::vector<Size>& numeraires,
                            Size initialStep)
@@ -58,11 +58,8 @@ namespace QuantLib {
         fixedDrifts_.reserve(steps);
         for (Size j=0; j<steps; ++j) {
             const Matrix& A = marketModel->pseudoRoot(j);
-            calculators_.push_back(LMMDriftCalculator(A,
-                                                   displacements_,
-                                                   marketModel->evolution().rateTaus(),
-                                                   numeraires[j],
-                                                   alive_[j]));
+            calculators_.emplace_back(A, displacements_, marketModel->evolution().rateTaus(),
+                                      numeraires[j], alive_[j]);
             const Matrix& C = marketModel->covariance(j);
             std::vector<Real> fixed(numberOfRates_);
             for (Size k=0; k<numberOfRates_; ++k) {
@@ -117,7 +114,7 @@ namespace QuantLib {
         {
             logForwards_[i] += fixedDrift[i];
             logForwards_[i] += std::inner_product( A.row_begin(i), A.row_end(i),
-                                                   brownians_.begin(), 0.0 );
+                                                   brownians_.begin(), Real(0.0) );
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
             blFwd = std::sqrt( marketModel_->initialRates()[i]*forwards_[i] );
             g_[i] = rateTaus_[i]*( blFwd+displacements_[i] )/
@@ -132,7 +129,7 @@ namespace QuantLib {
                 drifts2 -= g_[j]*C[i][j];
             logForwards_[i] += drifts2 + fixedDrift[i];
             logForwards_[i] += std::inner_product( A.row_begin(i), A.row_end(i),
-                                                   brownians_.begin(), 0.0);
+                                                   brownians_.begin(), Real(0.0));
             forwards_[i] = std::exp(logForwards_[i]) - displacements_[i];
 
             blFwd = std::sqrt( marketModel_->initialRates()[i]*forwards_[i] );

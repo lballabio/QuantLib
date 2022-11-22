@@ -26,34 +26,32 @@
 
 #include <ql/instruments/basketoption.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     class FdmSpreadPayoffInnerValue : public FdmInnerValueCalculator {
       public:
-        FdmSpreadPayoffInnerValue(
-                const boost::shared_ptr<BasketPayoff>& payoff,
-                const boost::shared_ptr<FdmInnerValueCalculator>& calc1,
-                const boost::shared_ptr<FdmInnerValueCalculator>& calc2)
-        : payoff_(payoff),
-          calc1_(calc1),
-          calc2_(calc2) { }
+        FdmSpreadPayoffInnerValue(ext::shared_ptr<BasketPayoff> payoff,
+                                  ext::shared_ptr<FdmInnerValueCalculator> calc1,
+                                  ext::shared_ptr<FdmInnerValueCalculator> calc2)
+        : payoff_(std::move(payoff)), calc1_(std::move(calc1)), calc2_(std::move(calc2)) {}
 
-        Real innerValue(const FdmLinearOpIterator& iter, Time t) {
+        Real innerValue(const FdmLinearOpIterator& iter, Time t) override {
             Array a(2);
             a[0] = calc1_->innerValue(iter, t);
             a[1] = calc2_->innerValue(iter, t);
 
-            return payoff_->operator()(a);
+            return (*payoff_)(a);
         }
-        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
+        Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override {
             return innerValue(iter, t);
         }
 
       private:
-        const boost::shared_ptr<BasketPayoff> payoff_;
-        const boost::shared_ptr<FdmInnerValueCalculator> calc1_;
-        const boost::shared_ptr<FdmInnerValueCalculator> calc2_;
+        const ext::shared_ptr<BasketPayoff> payoff_;
+        const ext::shared_ptr<FdmInnerValueCalculator> calc1_;
+        const ext::shared_ptr<FdmInnerValueCalculator> calc2_;
     };
 }
 

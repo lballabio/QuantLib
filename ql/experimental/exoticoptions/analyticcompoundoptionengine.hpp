@@ -41,14 +41,14 @@ namespace QuantLib {
     */
     class AnalyticCompoundOptionEngine : public CompoundOption::engine {
       public:
-        AnalyticCompoundOptionEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
-        void calculate() const;
+        explicit AnalyticCompoundOptionEngine(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        void calculate() const override;
 
       private:
         CumulativeNormalDistribution N_;
         NormalDistribution n_;
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
 
         // helper methods
         Time residualTimeMother() const;
@@ -92,8 +92,8 @@ namespace QuantLib {
         DiscountFactor dividendDiscountMother() const;
         DiscountFactor dividendDiscountMotherDaughter() const;
 
-        boost::shared_ptr<PlainVanillaPayoff> payoffMother() const;
-        boost::shared_ptr<PlainVanillaPayoff> payoffDaughter() const;
+        ext::shared_ptr<PlainVanillaPayoff> payoffMother() const;
+        ext::shared_ptr<PlainVanillaPayoff> payoffDaughter() const;
     };
 
 }

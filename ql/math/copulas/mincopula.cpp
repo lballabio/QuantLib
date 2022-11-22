@@ -19,6 +19,7 @@
 
 #include <ql/math/copulas/mincopula.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 

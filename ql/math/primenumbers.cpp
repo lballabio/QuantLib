@@ -20,7 +20,7 @@
 // ===========================================================================
 // NOTE: The following copyright notice applies to the original code,
 //
-// Copyright (C) 2002 Peter Jäckel "Monte Carlo Methods in Finance".
+// Copyright (C) 2002 Peter JÃ¤ckel "Monte Carlo Methods in Finance".
 // All rights reserved.
 //
 // Permission to use, copy, modify, and distribute this software is freely
@@ -66,7 +66,7 @@ namespace QuantLib {
             do {
                 p = primeNumbers_[i];
                 ++i;
-            } while ( m%p && p<=n );
+            } while (((m % p) != 0U) && p <= n);
         } while ( p<=n );
         primeNumbers_.push_back(m);
         return m;

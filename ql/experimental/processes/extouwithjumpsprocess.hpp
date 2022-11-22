@@ -58,21 +58,21 @@ namespace QuantLib {
 
     class ExtOUWithJumpsProcess : public StochasticProcess {
       public:
-        ExtOUWithJumpsProcess(
-            const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
-            Real Y0, Real beta, Real jumpIntensity, Real eta);
-        
-        Size size() const;
-        Size factors() const;
+        ExtOUWithJumpsProcess(ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> process,
+                              Real Y0,
+                              Real beta,
+                              Real jumpIntensity,
+                              Real eta);
 
-        Disposable<Array> initialValues() const;
-        Disposable<Array> drift(Time t, const Array& x) const;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const;
-        Disposable<Array> evolve(Time t0, const Array& x0,
-                                 Time dt, const Array& dw) const;
+        Size size() const override;
+        Size factors() const override;
 
-        boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
-                                 getExtendedOrnsteinUhlenbeckProcess() const;
+        Array initialValues() const override;
+        Array drift(Time t, const Array& x) const override;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
+
+        ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> getExtendedOrnsteinUhlenbeckProcess() const;
 
         Real beta()          const;
         Real eta()           const;
@@ -80,7 +80,7 @@ namespace QuantLib {
 
       private:
         const Real Y0_, beta_, jumpIntensity_, eta_;
-        const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess_;
+        const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess_;
         
         const CumulativeNormalDistribution cumNormalDist_;
     };

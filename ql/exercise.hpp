@@ -39,14 +39,14 @@ namespace QuantLib {
         };
         // constructor
         explicit Exercise(Type type) : type_(type) {}
-        virtual ~Exercise() {}
+        virtual ~Exercise() = default;
         // inspectors
         Type type() const { return type_; }
         Date date(Size index) const { return dates_[index]; }
         Date dateAt(Size index) const { return dates_.at(index); }
         //! Returns all exercise dates
         const std::vector<Date>& dates() const { return dates_; }
-        Date lastDate() const { return dates_.back(); }
+        Date lastDate() const;
       protected:
         std::vector<Date> dates_;
         Type type_;

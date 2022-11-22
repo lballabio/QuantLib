@@ -29,6 +29,7 @@
 #include <ql/math/interpolations/interpolation2d.hpp>
 #include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -75,17 +76,17 @@ namespace QuantLib {
                                const DayCounter& dc = Actual365Fixed());
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
         //! \name LazyObject interface
         //@{
-        void update();
-        void performCalculations() const;
+        void update() override;
+        void performCalculations() const override;
         //@}
         //! \name some inspectors
         //@{
@@ -95,8 +96,8 @@ namespace QuantLib {
         const std::vector<Rate>& strikes() const;
         //@}
       protected:
-        Volatility volatilityImpl(Time t,
-                                  Rate strike) const;
+        Volatility volatilityImpl(Time t, Rate strike) const override;
+
       private:
         void checkInputs() const;
         void initializeOptionDatesAndTimes() const;

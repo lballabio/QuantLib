@@ -26,9 +26,9 @@ namespace QuantLib {
     Brazil::Brazil(Brazil::Market market) {
         // all calendar instances on the same market share the same
         // implementation instance
-        static boost::shared_ptr<Calendar::Impl> settlementImpl(
+        static ext::shared_ptr<Calendar::Impl> settlementImpl(
                                                   new Brazil::SettlementImpl);
-        static boost::shared_ptr<Calendar::Impl> exchangeImpl(
+        static ext::shared_ptr<Calendar::Impl> exchangeImpl(
                                                     new Brazil::ExchangeImpl);
         switch (market) {
           case Settlement:
@@ -74,7 +74,7 @@ namespace QuantLib {
             // Corpus Christi
             || (dd == em+59)
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 
@@ -120,7 +120,7 @@ namespace QuantLib {
             // last business day of the year
             || (m == December && (d == 31 || (d >= 29 && w == Friday)))
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

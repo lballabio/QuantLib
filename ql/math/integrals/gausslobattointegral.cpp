@@ -23,6 +23,7 @@
 */
 
 #include <ql/math/integrals/gausslobattointegral.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -42,7 +43,7 @@ namespace QuantLib {
     }
 
     Real GaussLobattoIntegral::integrate(
-                                     const boost::function<Real (Real)>& f, 
+                                     const ext::function<Real (Real)>& f, 
                                      Real a, Real b) const {
 
         setNumberOfEvaluations(0);
@@ -53,7 +54,7 @@ namespace QuantLib {
     }
 
     Real GaussLobattoIntegral::calculateAbsTolerance(
-                                     const boost::function<Real (Real)>& f, 
+                                     const ext::function<Real (Real)>& f, 
                                      Real a, Real b) const {
         
 
@@ -111,7 +112,7 @@ namespace QuantLib {
     }
     
     Real GaussLobattoIntegral::adaptivGaussLobattoStep(
-                                     const boost::function<Real (Real)>& f,
+                                     const ext::function<Real (Real)>& f,
                                      Real a, Real b, Real fa, Real fb,
                                      Real acc) const {
         QL_REQUIRE(numberOfEvaluations() < maxEvaluations(),
@@ -138,7 +139,7 @@ namespace QuantLib {
         
         // avoid 80 bit logic on x86 cpu
         volatile Real dist = acc + (integral1-integral2);
-        if(Real(dist)==acc || mll<=a || b<=mrr) {
+        if(const_cast<Real&>(dist)==acc || mll<=a || b<=mrr) {
             QL_REQUIRE(m>a && b>m,"Interval contains no more machine number");
             return integral1;
         }

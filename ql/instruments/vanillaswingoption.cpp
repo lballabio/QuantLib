@@ -28,7 +28,7 @@
 namespace QuantLib {
 
     namespace {
-        const Size secPerDay = 24u*3600u;
+        const Size secPerDay = 24U * 3600U;
 
         std::pair<std::vector<Date>, std::vector<Size> >
             createDateTimes(const Date& from, const Date& to, Size stepSize) {
@@ -37,7 +37,7 @@ namespace QuantLib {
             std::vector<Date> dates;
 
             Date iterDate = from;
-            Size iterStepSize = 0u;
+            Size iterStepSize = 0U;
 
             while (iterDate <= to) {
                 dates.push_back(iterDate);
@@ -54,11 +54,9 @@ namespace QuantLib {
         }
     }
 
-    SwingExercise::SwingExercise(const std::vector<Date>& dates,
-                                 const std::vector<Size>& seconds)
+    SwingExercise::SwingExercise(const std::vector<Date>& dates, const std::vector<Size>& seconds)
     : BermudanExercise(dates),
-      seconds_(seconds.empty() ? std::vector<Size>(dates.size(), 0u)
-                               : seconds) {
+      seconds_(seconds.empty() ? std::vector<Size>(dates.size(), 0U) : seconds) {
         QL_REQUIRE(dates_.size() == seconds_.size(),
                    "dates and seconds must have the same size");
         for (Size i=0; i < dates_.size(); ++i) {
@@ -89,8 +87,7 @@ namespace QuantLib {
         for (Size i=0; i<dates().size(); ++i) {
             Time t = dc.yearFraction(refDate, dates()[i]);
 
-            const Time dt
-                = dc.yearFraction(refDate, dates()[i]+Period(1u, Days)) - t;
+            const Time dt = dc.yearFraction(refDate, dates()[i] + Period(1U, Days)) - t;
 
             t += dt*seconds()[i]/(24*3600.);
 
@@ -101,12 +98,32 @@ namespace QuantLib {
         return exerciseTimes;
     }
 
+    Real VanillaForwardPayoff::operator()(Real price) const {
+        switch (type_) {
+          case Option::Call:
+            return price-strike_;
+          case Option::Put:
+            return strike_-price;
+          default:
+            QL_FAIL("unknown/illegal option type");
+        }
+    }
+
+    void VanillaForwardPayoff::accept(AcyclicVisitor& v) {
+        auto* v1 = dynamic_cast<Visitor<VanillaForwardPayoff>*>(&v);
+        if (v1 != nullptr)
+            v1->visit(*this);
+        else
+            StrikedTypePayoff::accept(v);
+    }
+
+
     void VanillaSwingOption::arguments::validate() const {
         QL_REQUIRE(payoff, "no payoff given");
         QL_REQUIRE(exercise, "no exercise given");
 
         QL_REQUIRE(minExerciseRights <= maxExerciseRights,
-                   "minExerciseRights <= maxExerciseRights")
+                   "minExerciseRights <= maxExerciseRights");
         QL_REQUIRE(exercise->dates().size() >= maxExerciseRights,
                    "number of exercise rights exceeds "
                    "number of exercise dates");
@@ -114,14 +131,13 @@ namespace QuantLib {
 
     void VanillaSwingOption::setupArguments(
                             PricingEngine::arguments* args) const {
-        VanillaSwingOption::arguments* arguments =
-            dynamic_cast<VanillaSwingOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<VanillaSwingOption::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->payoff
-            = boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+            = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
         arguments->exercise
-            = boost::dynamic_pointer_cast<SwingExercise>(exercise_);
+            = ext::dynamic_pointer_cast<SwingExercise>(exercise_);
         arguments->minExerciseRights = minExerciseRights_;
         arguments->maxExerciseRights = maxExerciseRights_;
     }

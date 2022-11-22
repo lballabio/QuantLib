@@ -42,20 +42,20 @@ namespace QuantLib {
     class CreditRiskPlus {
 
       public:
-
-        CreditRiskPlus(const std::vector<Real> &exposure,
-                       const std::vector<Real> &defaultProbability,
-                       const std::vector<Size> &sector,
-                       const std::vector<Real> &relativeDefaultVariance,
-                       const Matrix &correlation, const Real unit);
+        CreditRiskPlus(std::vector<Real> exposure,
+                       std::vector<Real> defaultProbability,
+                       std::vector<Size> sector,
+                       std::vector<Real> relativeDefaultVariance,
+                       Matrix correlation,
+                       Real unit);
 
         const std::vector<Real> &loss() { return loss_; }
         const std::vector<Real> &marginalLoss() { return marginalLoss_; }
 
-        Real exposure() { return exposureSum_; }
+        Real exposure() const { return exposureSum_; }
         Real expectedLoss() const { return el_; }
-        Real unexpectedLoss() { return ul_; }
-        Real relativeDefaultVariance() {
+        Real unexpectedLoss() const { return ul_; }
+        Real relativeDefaultVariance() const {
             return (unexpectedLoss() * unexpectedLoss() - el2_) /
                    (expectedLoss() * expectedLoss());
         }
@@ -70,7 +70,7 @@ namespace QuantLib {
             return sectorUl_;
         }
 
-        Real lossQuantile(const Real p);
+        Real lossQuantile(Real p);
 
       private:
 

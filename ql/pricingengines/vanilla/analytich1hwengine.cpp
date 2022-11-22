@@ -26,12 +26,11 @@
 
 namespace QuantLib {
     // integration helper class
-    class AnalyticH1HWEngine::Fj_Helper
-        : public std::unary_function<std::complex<Real>, Real> {
+    class AnalyticH1HWEngine::Fj_Helper {
 
       public:
         Fj_Helper(const Handle<HestonModel>& hestonModel,
-                  const boost::shared_ptr<HullWhite>& hullWhiteModel,
+                  const ext::shared_ptr<HullWhite>& hullWhiteModel,
                   Real rho_xr, Time term, Real strike, Size j);
 
         std::complex<Real> operator()(Real u) const;
@@ -52,7 +51,7 @@ namespace QuantLib {
 
     AnalyticH1HWEngine::Fj_Helper::Fj_Helper(
         const Handle<HestonModel>& hestonModel,
-        const boost::shared_ptr<HullWhite>& hullWhiteModel,
+        const ext::shared_ptr<HullWhite>& hullWhiteModel,
         Real rhoSr, Time term, Real, Size j)
     : j_     (j),
       lambda_(hullWhiteModel->a()),
@@ -127,20 +126,18 @@ namespace QuantLib {
         }
 
         const std::complex<Real> I4 =
-            -1.0/lambda_* std::complex<Real>(u*u, ((j_ == 1u)? -u : u))
-              *(  b/c*(1.0 - std::exp(-c*term_))
-                + a*term_
-                + a/lambda_*(std::exp(-lambda_*term_) - 1.0)
-                + b/(c-lambda_)*std::exp(-c*term_)
-                    *(1.0 - std::exp(-term_*(lambda_-c))) );
+            -1.0 / lambda_ * std::complex<Real>(u * u, ((j_ == 1U) ? -u : u)) *
+            (b / c * (1.0 - std::exp(-c * term_)) + a * term_ +
+             a / lambda_ * (std::exp(-lambda_ * term_) - 1.0) +
+             b / (c - lambda_) * std::exp(-c * term_) * (1.0 - std::exp(-term_ * (lambda_ - c))));
 
         return eta_*rhoSr_*I4;
     }
 
 
     AnalyticH1HWEngine::AnalyticH1HWEngine(
-        const boost::shared_ptr<HestonModel>& model,
-        const boost::shared_ptr<HullWhite>& hullWhiteModel,
+        const ext::shared_ptr<HestonModel>& model,
+        const ext::shared_ptr<HullWhite>& hullWhiteModel,
         Real rhoSr, Size integrationOrder)
     : AnalyticHestonHullWhiteEngine(model, hullWhiteModel, integrationOrder),
       rhoSr_(rhoSr) {
@@ -149,8 +146,8 @@ namespace QuantLib {
     }
 
     AnalyticH1HWEngine::AnalyticH1HWEngine(
-        const boost::shared_ptr<HestonModel>& model,
-        const boost::shared_ptr<HullWhite>& hullWhiteModel,
+        const ext::shared_ptr<HestonModel>& model,
+        const ext::shared_ptr<HullWhite>& hullWhiteModel,
         Real rhoSr, Real relTolerance, Size maxEvaluations)
     : AnalyticHestonHullWhiteEngine(model, hullWhiteModel,
                                     relTolerance, maxEvaluations),

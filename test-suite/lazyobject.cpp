@@ -24,15 +24,15 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using boost::shared_ptr;
+using ext::shared_ptr;
 
 void LazyObjectTest::testDiscardingNotifications() {
 
     BOOST_TEST_MESSAGE(
         "Testing that lazy objects discard notifications after the first...");
 
-    boost::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
-    boost::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
+    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
+    ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
 
     Flag f;
     f.registerWith(s);
@@ -60,8 +60,8 @@ void LazyObjectTest::testForwardingNotifications() {
     BOOST_TEST_MESSAGE(
         "Testing that lazy objects forward all notifications when told...");
 
-    boost::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
-    boost::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
+    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
+    ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
 
     s->alwaysForwardNotifications();
 
@@ -81,7 +81,7 @@ void LazyObjectTest::testForwardingNotifications() {
 
 
 test_suite* LazyObjectTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("LazyObject tests");
+    auto* suite = BOOST_TEST_SUITE("LazyObject tests");
     suite->add(
         QUANTLIB_TEST_CASE(&LazyObjectTest::testDiscardingNotifications));
     suite->add(

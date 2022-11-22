@@ -37,17 +37,16 @@ namespace QuantLib {
     */
     class ExtendedBlackVarianceCurve : public BlackVarianceTermStructure {
       public:
-        ExtendedBlackVarianceCurve(
-                              const Date& referenceDate,
-                              const std::vector<Date>& dates,
-                              const std::vector<Handle<Quote> >& volatilities,
-                              const DayCounter& dayCounter,
-                              bool forceMonotoneVariance = true);
+        ExtendedBlackVarianceCurve(const Date& referenceDate,
+                                   const std::vector<Date>& dates,
+                                   std::vector<Handle<Quote> > volatilities,
+                                   DayCounter dayCounter,
+                                   bool forceMonotoneVariance = true);
 
-        DayCounter dayCounter() const { return dayCounter_; }
-        Date maxDate() const;
-        Real minStrike() const;
-        Real maxStrike() const;
+        DayCounter dayCounter() const override { return dayCounter_; }
+        Date maxDate() const override;
+        Real minStrike() const override;
+        Real maxStrike() const override;
 
         template <class Interpolator>
         void setInterpolation(const Interpolator& i = Interpolator()) {
@@ -57,10 +56,11 @@ namespace QuantLib {
             notifyObservers();
         }
 
-        void accept(AcyclicVisitor&);
-        void update();
+        void accept(AcyclicVisitor&) override;
+        void update() override;
+
       private:
-        Real blackVarianceImpl(Time t, Real) const;
+        Real blackVarianceImpl(Time t, Real) const override;
         void setVariances();
         DayCounter dayCounter_;
         Date maxDate_;
@@ -84,9 +84,8 @@ namespace QuantLib {
     }
 
     inline void ExtendedBlackVarianceCurve::accept(AcyclicVisitor& v) {
-        Visitor<ExtendedBlackVarianceCurve>* v1 =
-            dynamic_cast<Visitor<ExtendedBlackVarianceCurve>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<ExtendedBlackVarianceCurve>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             BlackVarianceTermStructure::accept(v);

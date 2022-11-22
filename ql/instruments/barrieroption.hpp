@@ -46,15 +46,15 @@ namespace QuantLib {
         BarrierOption(Barrier::Type barrierType,
                       Real barrier,
                       Real rebate,
-                      const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                      const boost::shared_ptr<Exercise>& exercise);
-        void setupArguments(PricingEngine::arguments*) const;
+                      const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                      const ext::shared_ptr<Exercise>& exercise);
+        void setupArguments(PricingEngine::arguments*) const override;
         /*! \warning see VanillaOption for notes on implied-volatility
                      calculation.
         */
         Volatility impliedVolatility(
              Real price,
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Real accuracy = 1.0e-4,
              Size maxEvaluations = 100,
              Volatility minVol = 1.0e-7,
@@ -73,7 +73,7 @@ namespace QuantLib {
         Barrier::Type barrierType;
         Real barrier;
         Real rebate;
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Barrier-option %engine base class

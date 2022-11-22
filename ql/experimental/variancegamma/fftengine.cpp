@@ -17,18 +17,18 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/variancegamma/fftengine.hpp>
 #include <ql/exercise.hpp>
-#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/experimental/variancegamma/fftengine.hpp>
 #include <ql/math/fastfouriertransform.hpp>
+#include <ql/math/interpolations/linearinterpolation.hpp>
 #include <complex>
+#include <utility>
 
 namespace QuantLib {
 
-    FFTEngine::FFTEngine(
-        const boost::shared_ptr<StochasticProcess1D>& process, Real logStrikeSpacing)
-        : process_(process), lambda_(logStrikeSpacing) {
-            registerWith(process_);
+    FFTEngine::FFTEngine(ext::shared_ptr<StochasticProcess1D> process, Real logStrikeSpacing)
+    : process_(std::move(process)), lambda_(logStrikeSpacing) {
+        registerWith(process_);
     }
 
     void FFTEngine::calculate() const
@@ -36,14 +36,14 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
             "not an European Option");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        ResultMap::const_iterator r1 = resultMap_.find(arguments_.exercise->lastDate());
+        auto r1 = resultMap_.find(arguments_.exercise->lastDate());
         if (r1 != resultMap_.end())
         {
-            PayoffResultMap::const_iterator r2 = r1->second.find(payoff);
+            auto r2 = r1->second.find(payoff);
             if (r2 != r1->second.end())
             {
                 results_.value = r2->second;
@@ -64,38 +64,35 @@ namespace QuantLib {
         VanillaOption::engine::update();
     }
 
-    void FFTEngine::calculateUncached(boost::shared_ptr<StrikedTypePayoff> payoff,
-        boost::shared_ptr<Exercise> exercise) const
-    {
-        boost::shared_ptr<VanillaOption> option(new VanillaOption(payoff, exercise));
-        std::vector<boost::shared_ptr<Instrument> > optionList;
+    void FFTEngine::calculateUncached(const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                                      const ext::shared_ptr<Exercise>& exercise) const {
+        ext::shared_ptr<VanillaOption> option(new VanillaOption(payoff, exercise));
+        std::vector<ext::shared_ptr<Instrument> > optionList;
         optionList.push_back(option);
 
-        boost::shared_ptr<FFTEngine> tempEngine(clone().release());
+        ext::shared_ptr<FFTEngine> tempEngine(clone().release());
         tempEngine->precalculate(optionList);
         option->setPricingEngine(tempEngine);
         results_.value = option->NPV();
     }
 
-    void FFTEngine::precalculate(const std::vector<boost::shared_ptr<Instrument> >& optionList) {
+    void FFTEngine::precalculate(const std::vector<ext::shared_ptr<Instrument> >& optionList) {
         // Group payoffs by expiry date
         // as with FFT we can compute a bunch of these at once
         resultMap_.clear();
 
-        typedef std::vector<boost::shared_ptr<StrikedTypePayoff> > PayoffList;
+        typedef std::vector<ext::shared_ptr<StrikedTypePayoff> > PayoffList;
         typedef std::map<Date, PayoffList> PayoffMap;
         PayoffMap payoffMap;
-        
-        for (std::vector<boost::shared_ptr<Instrument> >::const_iterator optIt = optionList.begin();
-            optIt != optionList.end(); ++optIt)
-        {
-            boost::shared_ptr<VanillaOption> option = boost::dynamic_pointer_cast<VanillaOption>(*optIt);
+
+        for (const auto& optIt : optionList) {
+            ext::shared_ptr<VanillaOption> option = ext::dynamic_pointer_cast<VanillaOption>(optIt);
             QL_REQUIRE(option, "instrument must be option");
             QL_REQUIRE(option->exercise()->type() == Exercise::European,
                 "not an European Option");
 
-            boost::shared_ptr<StrikedTypePayoff> payoff =
-                boost::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
+            ext::shared_ptr<StrikedTypePayoff> payoff =
+                ext::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
             QL_REQUIRE(payoff, "non-striked payoff given");
 
             payoffMap[option->exercise()->lastDate()].push_back(payoff);
@@ -110,11 +107,7 @@ namespace QuantLib {
 
             // Calculate n large enough for maximum strike, and round up to a power of 2
             Real maxStrike = 0.0;
-            for (PayoffList::const_iterator it = payIt->second.begin();
-                it != payIt->second.end(); ++it)
-            {
-                boost::shared_ptr<StrikedTypePayoff> payoff = *it;
-
+            for (const auto& payoff : payIt->second) {
                 if (payoff->strike() > maxStrike)
                     maxStrike = payoff->strike();
             }
@@ -166,12 +159,9 @@ namespace QuantLib {
                 strikes[i] = std::exp(k_u);
             }
 
-            for (PayoffList::const_iterator it = payIt->second.begin();
-                it != payIt->second.end(); ++it)
-            {
-                boost::shared_ptr<StrikedTypePayoff> payoff = *it;
-
-                Real callPrice = LinearInterpolation(strikes.begin(), strikes.end(), prices.begin())(payoff->strike());
+            for (const auto& payoff : payIt->second) {
+                Real callPrice = LinearInterpolation(strikes.begin(), strikes.end(),
+                                                     prices.begin())(payoff->strike());
                 switch (payoff->optionType())
                 {
                 case Option::Call:

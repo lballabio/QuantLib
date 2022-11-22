@@ -38,15 +38,15 @@ namespace QuantLib {
         : public GenericEngine<VanillaSwingOption::arguments,
                                VanillaSwingOption::results> {
       public:
-          FdSimpleBSSwingEngine(
-                  const boost::shared_ptr<GeneralizedBlackScholesProcess>& p,
-                  Size tGrid = 50, Size xGrid = 100,
-                  const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
-    
-        void calculate() const;
-    
+        explicit FdSimpleBSSwingEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> p,
+                                       Size tGrid = 50,
+                                       Size xGrid = 100,
+                                       const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
+
+        void calculate() const override;
+
       private:
-        const boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        const ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         const Size tGrid_, xGrid_;
         const FdmSchemeDesc schemeDesc_;
     };

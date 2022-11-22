@@ -34,11 +34,9 @@ namespace QuantLib {
     /*! \ingroup findiff */
     class BSMOperator : public TridiagonalOperator {
       public:
-        BSMOperator();
+        BSMOperator() = default;
         BSMOperator(Size size, Real dx, Rate r, Rate q, Volatility sigma);
-        BSMOperator(const Array& grid,
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
-                    Time residualTime);
+        BSMOperator(const Array& grid, Rate r, Rate q, Volatility sigma);
     };
 
 }

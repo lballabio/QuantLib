@@ -5,6 +5,8 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2014 Paolo Mazzocchi
+ Copyright (C) 2020 Leonardo Arcari
+ Copyright (C) 2020 Kline s.r.l.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,23 +28,42 @@
 namespace QuantLib {
 
     void Calendar::addHoliday(const Date& d) {
-        QL_REQUIRE(impl_, "no implementation provided");
+        QL_REQUIRE(impl_, "no calendar implementation provided");
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+        const Date _d(d.dayOfMonth(), d.month(), d.year());
+#else
+        const Date& _d = d;
+#endif
+
         // if d was a genuine holiday previously removed, revert the change
-        impl_->removedHolidays.erase(d);
+        impl_->removedHolidays.erase(_d);
         // if it's already a holiday, leave the calendar alone.
         // Otherwise, add it.
-        if (impl_->isBusinessDay(d))
-            impl_->addedHolidays.insert(d);
+        if (impl_->isBusinessDay(_d))
+            impl_->addedHolidays.insert(_d);
     }
 
     void Calendar::removeHoliday(const Date& d) {
-        QL_REQUIRE(impl_, "no implementation provided");
+        QL_REQUIRE(impl_, "no calendar implementation provided");
+
+#ifdef QL_HIGH_RESOLUTION_DATE
+        const Date _d(d.dayOfMonth(), d.month(), d.year());
+#else
+        const Date& _d = d;
+#endif
+
         // if d was an artificially-added holiday, revert the change
-        impl_->addedHolidays.erase(d);
+        impl_->addedHolidays.erase(_d);
         // if it's already a business day, leave the calendar alone.
         // Otherwise, add it.
-        if (!impl_->isBusinessDay(d))
-            impl_->removedHolidays.insert(d);
+        if (!impl_->isBusinessDay(_d))
+            impl_->removedHolidays.insert(_d);
+    }
+
+    void Calendar::resetAddedAndRemovedHolidays() {
+        impl_->addedHolidays.clear();
+        impl_->removedHolidays.clear();
     }
 
     Date Calendar::adjust(const Date& d,
@@ -56,7 +77,7 @@ namespace QuantLib {
         if (c == Following || c == ModifiedFollowing 
             || c == HalfMonthModifiedFollowing) {
             while (isHoliday(d1))
-                d1++;
+                ++d1;
             if (c == ModifiedFollowing 
                 || c == HalfMonthModifiedFollowing) {
                 if (d1.month() != d.month()) {
@@ -70,7 +91,7 @@ namespace QuantLib {
             }
         } else if (c == Preceding || c == ModifiedPreceding) {
             while (isHoliday(d1))
-                d1--;
+                --d1;
             if (c == ModifiedPreceding && d1.month() != d.month()) {
                 return adjust(d,Following);
             }
@@ -78,8 +99,8 @@ namespace QuantLib {
             Date d2 = d;
             while (isHoliday(d1) && isHoliday(d2))
             {
-                d1++;
-                d2--;
+                ++d1;
+                --d2;
             }
             if (isHoliday(d1))
                 return d2;
@@ -102,17 +123,17 @@ namespace QuantLib {
             Date d1 = d;
             if (n > 0) {
                 while (n > 0) {
-                    d1++;
+                    ++d1;
                     while (isHoliday(d1))
-                        d1++;
-                    n--;
+                        ++d1;
+                    --n;
                 }
             } else {
                 while (n < 0) {
-                    d1--;
+                    --d1;
                     while(isHoliday(d1))
-                        d1--;
-                    n++;
+                        --d1;
+                    ++n;
                 }
             }
             return d1;
@@ -162,12 +183,14 @@ namespace QuantLib {
             }
 
             if (isBusinessDay(from) && !includeFirst)
-                wd--;
+                --wd;
             if (isBusinessDay(to) && !includeLast)
-                wd--;
+                --wd;
 
             if (from > to)
                 wd = -wd;
+        } else if (includeFirst && includeLast && isBusinessDay(from)) {
+            wd = 1;
         }
 
         return wd;
@@ -259,20 +282,31 @@ namespace QuantLib {
         return EasterMonday[y-1901];
     }
 
+    std::vector<Date> Calendar::holidayList(
+        const Date& from, const Date& to, bool includeWeekEnds) const {
 
-    std::vector<Date> Calendar::holidayList(const Calendar& calendar,
-        const Date& from, const Date& to, bool includeWeekEnds) {
-
-        QL_REQUIRE(to>from, "'from' date ("
-            << from << ") must be earlier than 'to' date ("
+        QL_REQUIRE(to>=from, "'from' date ("
+            << from << ") must be equal to or earlier than 'to' date ("
             << to << ")");
         std::vector<Date> result;
         for (Date d = from; d <= to; ++d) {
-            if (calendar.isHoliday(d)
-                && (includeWeekEnds || !calendar.isWeekend(d.weekday())))
+            if (isHoliday(d) && (includeWeekEnds || !isWeekend(d.weekday())))
                 result.push_back(d);
        }
        return result;
     }
 
+    std::vector<Date> Calendar::businessDayList(
+        const Date& from, const Date& to) const {
+
+        QL_REQUIRE(to>=from, "'from' date ("
+            << from << ") must be equal to or earlier than 'to' date ("
+            << to << ")");
+        std::vector<Date> result;
+        for (Date d = from; d <= to; ++d) {
+            if (isBusinessDay(d))
+                result.push_back(d);
+       }
+       return result;
+    }
 }

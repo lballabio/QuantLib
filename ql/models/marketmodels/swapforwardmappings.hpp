@@ -49,39 +49,29 @@ namespace QuantLib {
 
         /*! Returns the dsr[i]/df[j] jacobian between
             coterminal swap rates and forward rates */
-        static Disposable<Matrix>
-        coterminalSwapForwardJacobian(const CurveState& cs);
+        static Matrix coterminalSwapForwardJacobian(const CurveState& cs);
 
         /*! Returns the Z matrix to switch base from forward to
             coterminal swap rates */
-        static Disposable<Matrix>
-        coterminalSwapZedMatrix(const CurveState& cs,
-                                const Spread displacement);
+        static Matrix coterminalSwapZedMatrix(const CurveState& cs, Spread displacement);
 
         /*! Returns the dsr[i]/df[j] jacobian between
             coinitial swap rates and forward rates */
-        static Disposable<Matrix>
-        coinitialSwapForwardJacobian(const CurveState& cs);
+        static Matrix coinitialSwapForwardJacobian(const CurveState& cs);
 
         /*! Returns the Z matrix to switch base from forward to
             coinitial swap rates */
-        static Disposable<Matrix>
-        coinitialSwapZedMatrix(const CurveState& cs,
-                               const Spread displacement);
+        static Matrix coinitialSwapZedMatrix(const CurveState& cs, Spread displacement);
 
 
         /*! Returns the dsr[i]/df[j] jacobian between
             constant maturity swap rates and forward rates */
-        static Disposable<Matrix>
-        cmSwapForwardJacobian(const CurveState& cs,
-                              const Size spanningForwards);
+        static Matrix cmSwapForwardJacobian(const CurveState& cs,
+                                            Size spanningForwards);
 
         /*! Returns the Z matrix to switch base from forward to
             constant maturity swap rates */
-        static Disposable<Matrix>
-        cmSwapZedMatrix(const CurveState& cs,
-                        const Size spanningForwards,
-                        const Spread displacement);
+        static Matrix cmSwapZedMatrix(const CurveState& cs, Size spanningForwards, Spread displacement);
 
         /*! computes the implied vol of a swaption specified by two indices
         using the freezing coefficients methdodology. This routine is easy to use but not very efficient

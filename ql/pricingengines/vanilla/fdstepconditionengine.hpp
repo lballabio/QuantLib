@@ -33,22 +33,23 @@
 
 namespace QuantLib {
 
-    //! Finite-differences pricing engine for American-style vanilla options
-    /*! \ingroup vanillaengines */
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.27.
+    */
     template <template <class> class Scheme = CrankNicolson>
-    class FDStepConditionEngine :  public FDVanillaEngine {
+    class QL_DEPRECATED FDStepConditionEngine :  public FDVanillaEngine {
       public:
         FDStepConditionEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps, Size gridPoints,
              bool timeDependent = false)
         : FDVanillaEngine(process, timeSteps, gridPoints, timeDependent),
           controlBCs_(2), controlPrices_(gridPoints) {}
       protected:
-        mutable boost::shared_ptr<StandardStepCondition> stepCondition_;
+        mutable ext::shared_ptr<StandardStepCondition> stepCondition_;
         mutable SampledCurve prices_;
         mutable TridiagonalOperator controlOperator_;
-        mutable std::vector<boost::shared_ptr<bc_type> > controlBCs_;
+        mutable std::vector<ext::shared_ptr<bc_type> > controlBCs_;
         mutable SampledCurve controlPrices_;
         virtual void initializeStepCondition() const = 0;
         virtual void calculate(PricingEngine::results*) const;
@@ -57,11 +58,12 @@ namespace QuantLib {
 
     // template definitions
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     template <template <class> class Scheme>
     void FDStepConditionEngine<Scheme>::calculate(
                                             PricingEngine::results* r) const {
-        OneAssetOption::results * results =
-            dynamic_cast<OneAssetOption::results *>(r);
+        auto* results = dynamic_cast<OneAssetOption::results*>(r);
         setGridLimits();
         initializeInitialCondition();
         initializeOperator();
@@ -93,7 +95,7 @@ namespace QuantLib {
         bcSet.push_back(controlBCs_);
 
         conditionSet.push_back(stepCondition_);
-        conditionSet.push_back(boost::shared_ptr<StandardStepCondition>(
+        conditionSet.push_back(ext::shared_ptr<StandardStepCondition>(
                                                    new NullCondition<Array>));
 
         model_type model(operatorSet, bcSet);
@@ -104,8 +106,8 @@ namespace QuantLib {
         prices_.values() = arraySet[0];
         controlPrices_.values() = arraySet[1];
 
-        boost::shared_ptr<StrikedTypePayoff> striked_payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+        ext::shared_ptr<StrikedTypePayoff> striked_payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
         QL_REQUIRE(striked_payoff, "non-striked payoff given");
 
         Real variance =
@@ -132,6 +134,8 @@ namespace QuantLib {
             + black.gamma(spot);
         results->additionalResults["priceCurve"] = prices_;
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

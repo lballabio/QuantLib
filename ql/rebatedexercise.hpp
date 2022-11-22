@@ -40,17 +40,16 @@ namespace QuantLib {
         // in case of exercise the holder receives the rebate
         // (if positive) or pays it (if negative) on the rebate
         // settlement date
-        RebatedExercise(const Exercise &exercise, const Real rebate = 0.0,
-                        const Natural rebateSettlementDays = 0,
-                        const Calendar &rebatePaymentCalendar = NullCalendar(),
-                        const BusinessDayConvention rebatePaymentConvention =
-                            Following);
-        RebatedExercise(const Exercise &exercise,
-                        const std::vector<Real> &rebates,
-                        const Natural rebateSettlementDays = 0,
-                        const Calendar &rebatePaymentCalendar = NullCalendar(),
-                        const BusinessDayConvention rebatePaymentConvention =
-                            Following);
+        RebatedExercise(const Exercise& exercise,
+                        Real rebate = 0.0,
+                        Natural rebateSettlementDays = 0,
+                        Calendar rebatePaymentCalendar = NullCalendar(),
+                        BusinessDayConvention rebatePaymentConvention = Following);
+        RebatedExercise(const Exercise& exercise,
+                        const std::vector<Real>& rebates,
+                        Natural rebateSettlementDays = 0,
+                        Calendar rebatePaymentCalendar = NullCalendar(),
+                        BusinessDayConvention rebatePaymentConvention = Following);
         Real rebate(Size index) const;
         Date rebatePaymentDate(Size index) const;
         const std::vector<Real> &rebates() const { return rebates_; }

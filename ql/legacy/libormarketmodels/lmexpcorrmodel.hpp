@@ -46,15 +46,13 @@ namespace QuantLib {
       public:
         LmExponentialCorrelationModel(Size size, Real rho);
 
-        Disposable<Matrix> correlation(
-            Time t, const Array& x = Null<Array>()) const;
-        Disposable<Matrix> pseudoSqrt(
-            Time t, const Array& x = Null<Array>()) const;
-        Real correlation(Size i, Size j, Time t, const Array& x) const;
-        bool isTimeIndependent() const;
+        Matrix correlation(Time t, const Array& x = Null<Array>()) const override;
+        Matrix pseudoSqrt(Time t, const Array& x = Null<Array>()) const override;
+        Real correlation(Size i, Size j, Time t, const Array& x) const override;
+        bool isTimeIndependent() const override;
 
       protected:
-        void generateArguments();
+        void generateArguments() override;
 
       private:
         Matrix corrMatrix_, pseudoSqrt_;

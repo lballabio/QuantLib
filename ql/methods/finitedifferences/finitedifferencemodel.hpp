@@ -24,9 +24,10 @@
 #ifndef quantlib_finite_difference_model_hpp
 #define quantlib_finite_difference_model_hpp
 
-#include <ql/methods/finitedifferences/stepcondition.hpp>
 #include <ql/methods/finitedifferences/boundarycondition.hpp>
 #include <ql/methods/finitedifferences/operatortraits.hpp>
+#include <ql/methods/finitedifferences/stepcondition.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -43,21 +44,17 @@ namespace QuantLib {
         // constructors
         FiniteDifferenceModel(const operator_type& L,
                               const bc_set& bcs,
-                              const std::vector<Time>& stoppingTimes =
-                                                          std::vector<Time>())
-        : evolver_(L,bcs), stoppingTimes_(stoppingTimes) {
+                              std::vector<Time> stoppingTimes = std::vector<Time>())
+        : evolver_(L, bcs), stoppingTimes_(std::move(stoppingTimes)) {
             std::sort(stoppingTimes_.begin(), stoppingTimes_.end());
-            std::vector<Time>::iterator last =
-                std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
+            auto last = std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
             stoppingTimes_.erase(last, stoppingTimes_.end());
         }
-        FiniteDifferenceModel(const Evolver& evolver,
-                              const std::vector<Time>& stoppingTimes =
-                                                          std::vector<Time>())
-        : evolver_(evolver), stoppingTimes_(stoppingTimes) {
+        FiniteDifferenceModel(Evolver evolver,
+                              std::vector<Time> stoppingTimes = std::vector<Time>())
+        : evolver_(std::move(evolver)), stoppingTimes_(std::move(stoppingTimes)) {
             std::sort(stoppingTimes_.begin(), stoppingTimes_.end());
-            std::vector<Time>::iterator last =
-                std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
+            auto last = std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
             stoppingTimes_.erase(last, stoppingTimes_.end());
         }
         // methods
@@ -71,7 +68,7 @@ namespace QuantLib {
                       Time from,
                       Time to,
                       Size steps) {
-            rollbackImpl(a,from,to,steps,(const condition_type*) 0);
+            rollbackImpl(a, from, to, steps, (const condition_type*)nullptr);
         }
         /*! solves the problem between the given times,
             applying a condition at every step.
@@ -103,7 +100,11 @@ namespace QuantLib {
                     condition->applyTo(a,from);
             }
             for (Size i=0; i<steps; ++i, t -= dt) {
-                Time now = t, next = t-dt;
+                Time now = t;
+                // make sure last step ends exactly on "to" in order to not
+                // miss a stopping time at "to" due to numerical issues
+                Time next = (i < steps -1)? t-dt : to;
+
                 if (std::fabs(to-next) < std::sqrt(QL_EPSILON)) next = to;
                 bool hit = false;
                 for (Integer j = static_cast<Integer>(stoppingTimes_.size())-1; j >= 0 ; --j) {

@@ -48,22 +48,20 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        ForwardRateStructure(
-            const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
-        ForwardRateStructure(
+        explicit ForwardRateStructure(
+            const DayCounter& dayCounter = DayCounter());
+        explicit ForwardRateStructure(
             const Date& referenceDate,
             const Calendar& cal = Calendar(),
             const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         ForwardRateStructure(
             Natural settlementDays,
             const Calendar& cal,
             const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         //@}
       protected:
         /*! \name Calculations
@@ -95,7 +93,7 @@ namespace QuantLib {
         /*! Returns the discount factor for the given date calculating it
             from the zero rate as \f$ d(t) = \exp \left( -z(t) t \right) \f$
         */
-        DiscountFactor discountImpl(Time) const;
+        DiscountFactor discountImpl(Time) const override;
         //@}
     };
 

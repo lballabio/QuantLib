@@ -2,7 +2,7 @@
 
 /*
 Copyright (C) 2006, 2007 Ferdinando Ametrano
-Copyright (C) 2007 François du Vignaud
+Copyright (C) 2007 FranÃ§ois du Vignaud
 Copyright (C) 2006, 2007 Mark Joshi
 
 This file is part of QuantLib, a free-software/open-source library
@@ -176,6 +176,10 @@ namespace QuantLib {
                                                irrCMSwapRates_, irrCMSwapAnnuities_);
             return irrCMSwapRates_;
         }
+    }
+
+    std::unique_ptr<CurveState> CMSwapCurveState::clone() const {
+        return std::unique_ptr<CurveState>(new CMSwapCurveState(*this));
     }
 
 }

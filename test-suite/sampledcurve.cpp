@@ -26,14 +26,18 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-class FSquared : std::unary_function<Real,Real> {
-public:
-    Real operator()(Real x) const { return x*x;};
-};
+namespace sampled_curve_test {
+    class FSquared {
+      public:
+        Real operator()(Real x) const { return x*x;};
+    };
+}
 
 void SampledCurveTest::testConstruction() {
 
     BOOST_TEST_MESSAGE("Testing sampled curve construction...");
+
+    using namespace sampled_curve_test;
 
     SampledCurve curve(BoundedGrid(-10.0,10.0,100));
     FSquared f2;
@@ -79,7 +83,7 @@ void SampledCurveTest::testConstruction() {
 }
 
 test_suite* SampledCurveTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("sampled curve tests");
+    auto* suite = BOOST_TEST_SUITE("sampled curve tests");
     suite->add(QUANTLIB_TEST_CASE(&SampledCurveTest::testConstruction));
     return suite;
 }

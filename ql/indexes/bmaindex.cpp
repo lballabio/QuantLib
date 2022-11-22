@@ -45,7 +45,7 @@ namespace QuantLib {
                         1 * Weeks,
                         1,
                         USDCurrency(),
-                        UnitedStates(UnitedStates::NYSE),
+                        UnitedStates(UnitedStates::GovernmentBond),
                         ActualActual(ActualActual::ISDA)),
       termStructure_(h) {
         registerWith (h);

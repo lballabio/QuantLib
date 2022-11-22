@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-    Real GammaDistribution::operator()(Real x) const {
+    Real CumulativeGammaDistribution::operator()(Real x) const {
         if (x <= 0.0) return 0.0;
 
         Real gln = GammaFunction().logValue(a_);

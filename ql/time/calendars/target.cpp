@@ -23,7 +23,7 @@ namespace QuantLib {
 
     TARGET::TARGET() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new TARGET::Impl);
+        static ext::shared_ptr<Calendar::Impl> impl(new TARGET::Impl);
         impl_ = impl;
     }
 
@@ -49,7 +49,7 @@ namespace QuantLib {
             // December 31st, 1998, 1999, and 2001 only
             || (d == 31 && m == December &&
                 (y == 1998 || y == 1999 || y == 2001)))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

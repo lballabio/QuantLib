@@ -42,24 +42,25 @@ namespace QuantLib {
       public:
         typedef FdmExtOUJumpModelInnerValue::Shape Shape;
 
-        FdSimpleKlugeExtOUVPPEngine(
-            const boost::shared_ptr<KlugeExtOUProcess>& process,
-            const boost::shared_ptr<YieldTermStructure>& rTS,
-            const boost::shared_ptr<Shape>& fuelShape,
-            const boost::shared_ptr<Shape>& powerShape,
-            Real fuelCostAddon,
-            Size tGrid = 1 , Size xGrid = 50,
-            Size yGrid = 10, Size gGrid = 20,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+        FdSimpleKlugeExtOUVPPEngine(ext::shared_ptr<KlugeExtOUProcess> process,
+                                    ext::shared_ptr<YieldTermStructure> rTS,
+                                    ext::shared_ptr<Shape> fuelShape,
+                                    ext::shared_ptr<Shape> powerShape,
+                                    Real fuelCostAddon,
+                                    Size tGrid = 1,
+                                    Size xGrid = 50,
+                                    Size yGrid = 10,
+                                    Size gGrid = 20,
+                                    const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
-        const boost::shared_ptr<KlugeExtOUProcess> process_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<KlugeExtOUProcess> process_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
         const Real fuelCostAddon_;
-        const boost::shared_ptr<Shape> fuelShape_;
-        const boost::shared_ptr<Shape> powerShape_;
+        const ext::shared_ptr<Shape> fuelShape_;
+        const ext::shared_ptr<Shape> powerShape_;
         const Size tGrid_, xGrid_, yGrid_, gGrid_;
         const FdmSchemeDesc schemeDesc_;
     };

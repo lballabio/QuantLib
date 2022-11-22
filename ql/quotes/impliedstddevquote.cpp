@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006, 2007, 2008 Ferdinando Ametrano
- Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2006 FranÃ§ois du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,21 +18,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quotes/impliedstddevquote.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <ql/quotes/impliedstddevquote.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     ImpliedStdDevQuote::ImpliedStdDevQuote(Option::Type optionType,
-                                           const Handle<Quote>& forward,
-                                           const Handle<Quote>& price,
+                                           Handle<Quote> forward,
+                                           Handle<Quote> price,
                                            Real strike,
                                            Real guess,
                                            Real accuracy,
                                            Natural maxIter)
-    : impliedStdev_(guess), optionType_(optionType), strike_(strike),
-      accuracy_(accuracy), maxIter_(maxIter),
-      forward_(forward), price_(price) {
+    : impliedStdev_(guess), optionType_(optionType), strike_(strike), accuracy_(accuracy),
+      maxIter_(maxIter), forward_(std::move(forward)), price_(std::move(price)) {
         registerWith(forward_);
         registerWith(price_);
     }

@@ -18,21 +18,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/math/distributions/poissondistribution.hpp>
-#include <ql/termstructures/yield/flatforward.hpp>
-#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
-#include <ql/utilities/dataformatters.hpp>
 #include <ql/exercise.hpp>
+#include <ql/math/distributions/poissondistribution.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/jumpdiffusionengine.hpp>
+#include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/utilities/dataformatters.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    JumpDiffusionEngine::JumpDiffusionEngine(
-        const boost::shared_ptr<Merton76Process>& process,
-        Real relativeAccuracy,
-        Size maxIterations)
-    : process_(process), relativeAccuracy_(relativeAccuracy),
+    JumpDiffusionEngine::JumpDiffusionEngine(ext::shared_ptr<Merton76Process> process,
+                                             Real relativeAccuracy,
+                                             Size maxIterations)
+    : process_(std::move(process)), relativeAccuracy_(relativeAccuracy),
       maxIterations_(maxIterations) {
         registerWith(process_);
     }
@@ -48,8 +48,8 @@ namespace QuantLib {
         Real k = std::exp(muPlusHalfSquareVol) - 1.0;
         Real lambda = (k+1.0) * process_->jumpIntensity()->value();
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real variance =
@@ -75,23 +75,21 @@ namespace QuantLib {
         RelinkableHandle<BlackVolTermStructure> volTS(
                                                 *process_->blackVolatility());
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
                  new GeneralizedBlackScholesProcess(stateVariable, dividendTS,
                                                     riskFreeTS, volTS));
 
         AnalyticEuropeanEngine baseEngine(bsProcess);
 
-        VanillaOption::arguments* baseArguments =
-            dynamic_cast<VanillaOption::arguments*>(baseEngine.getArguments());
+        auto* baseArguments = dynamic_cast<VanillaOption::arguments*>(baseEngine.getArguments());
 
         baseArguments->payoff   = arguments_.payoff;
         baseArguments->exercise = arguments_.exercise;
 
         baseArguments->validate();
 
-        const VanillaOption::results* baseResults =
-            dynamic_cast<const VanillaOption::results*>(
-                                                     baseEngine.getResults());
+        const auto* baseResults =
+            dynamic_cast<const VanillaOption::results*>(baseEngine.getResults());
 
         results_.value       = 0.0;
         results_.delta       = 0.0;
@@ -113,9 +111,9 @@ namespace QuantLib {
             v = std::sqrt((variance + i*jumpSquareVol)/t);
             r = riskFreeRate - process_->jumpIntensity()->value()*k
                 + i*muPlusHalfSquareVol/t;
-            riskFreeTS.linkTo(boost::shared_ptr<YieldTermStructure>(new
+            riskFreeTS.linkTo(ext::shared_ptr<YieldTermStructure>(new
                 FlatForward(rateRefDate, r, voldc)));
-            volTS.linkTo(boost::shared_ptr<BlackVolTermStructure>(new
+            volTS.linkTo(ext::shared_ptr<BlackVolTermStructure>(new
                 BlackConstantVol(rateRefDate, volcal, v, voldc)));
 
             baseArguments->validate();

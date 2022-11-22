@@ -17,39 +17,34 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/operators/fdm2dblackscholesop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dblackscholessolver.hpp>
-
+#include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    Fdm2dBlackScholesSolver::Fdm2dBlackScholesSolver(
-        const Handle<GeneralizedBlackScholesProcess>& p1,
-        const Handle<GeneralizedBlackScholesProcess>& p2,
-        const Real correlation,
-        const FdmSolverDesc& solverDesc,
-        const FdmSchemeDesc& schemeDesc,
-        bool localVol,
-        Real illegalLocalVolOverwrite)
-    : p1_(p1),
-      p2_(p2),
-      correlation_(correlation),
-      solverDesc_(solverDesc),
-      schemeDesc_(schemeDesc),
-      localVol_(localVol),
+    Fdm2dBlackScholesSolver::Fdm2dBlackScholesSolver(Handle<GeneralizedBlackScholesProcess> p1,
+                                                     Handle<GeneralizedBlackScholesProcess> p2,
+                                                     const Real correlation,
+                                                     FdmSolverDesc solverDesc,
+                                                     const FdmSchemeDesc& schemeDesc,
+                                                     bool localVol,
+                                                     Real illegalLocalVolOverwrite)
+    : p1_(std::move(p1)), p2_(std::move(p2)), correlation_(correlation),
+      solverDesc_(std::move(solverDesc)), schemeDesc_(schemeDesc), localVol_(localVol),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite) {
 
         registerWith(p1_);
         registerWith(p2_);
     }
 
-        
+
     void Fdm2dBlackScholesSolver::performCalculations() const {
         
-        boost::shared_ptr<Fdm2dBlackScholesOp> op(
-                new Fdm2dBlackScholesOp(solverDesc_.mesher,
+        ext::shared_ptr<Fdm2dBlackScholesOp> op(
+			ext::make_shared<Fdm2dBlackScholesOp>(solverDesc_.mesher,
                                         p1_.currentLink(), 
                                         p2_.currentLink(), 
                                         correlation_,
@@ -57,8 +52,7 @@ namespace QuantLib {
                                         localVol_,
                                         illegalLocalVolOverwrite_));
 
-        solver_ = boost::shared_ptr<Fdm2DimSolver>(
-                            new Fdm2DimSolver(solverDesc_, schemeDesc_, op));
+        solver_ = ext::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real Fdm2dBlackScholesSolver::valueAt(Real u, Real v) const {

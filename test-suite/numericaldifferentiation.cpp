@@ -22,31 +22,21 @@
 
 #include <ql/math/matrix.hpp>
 #include <ql/math/factorial.hpp>
-#include <ql/experimental/math/numericaldifferentiation.hpp>
-
-#include <boost/assign/list_of.hpp>
-
+#include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
 #include <cmath>
 #include <algorithm>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using boost::assign::list_of;
 
 namespace {
     bool isTheSame(Real a, Real b) {
-        const Real eps = 500*QL_EPSILON;
+        constexpr double eps = 500 * QL_EPSILON;
 
         if (std::fabs(b) < QL_EPSILON)
             return std::fabs(a) < eps;
         else
             return std::fabs((a - b)/b) < eps;
-    }
-
-
-    Disposable<Array> listToArray(const std::list<Real>& in) {
-        Array retVal(in.begin(), in.end());
-        return retVal;
     }
 
     void checkTwoArraysAreTheSame(const Array& calculated,
@@ -79,7 +69,7 @@ namespace {
 void NumericalDifferentiationTest::testTabulatedCentralScheme() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "using the central scheme...");
-    const boost::function<Real(Real)> f;
+    const ext::function<Real(Real)> f;
 
     const NumericalDifferentiation::Scheme central
         = NumericalDifferentiation::Central;
@@ -87,31 +77,29 @@ void NumericalDifferentiationTest::testTabulatedCentralScheme() {
     // see http://en.wikipedia.org/wiki/Finite_difference_coefficient
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 1, 1.0, 3, central).weights(),
-        listToArray(list_of(-0.5)(0.0)(0.5)));
+        {-0.5, 0.0, 0.5});
 
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 1, 0.5, 3, central).weights(),
-        listToArray(list_of(-1.0)(0.0)(1.0)));
+        {-1.0, 0.0, 1.0});
 
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 1, 0.25, 7, central).weights(),
-        listToArray(list_of(-4/60.0)(12/20.0)(-12/4.0)
-                            (0.0)(12/4.0)(-12/20.0)(4/60.0)));
+        {-4/60.0, 12/20.0, -12/4.0, 0.0, 12/4.0, -12/20.0, 4/60.0});
 
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 4, std::pow(0.5, 0.25), 9, central).weights(),
-        listToArray(list_of(14/240.0)(-4/5.0)(338/60.0)(-244/15.0)(182/8.0)
-                           (-244/15.0)(338/60.0)(-4/5.0)(14/240.0)));
+        {14/240.0, -4/5.0, 338/60.0, -244/15.0, 182/8.0, -244/15.0, 338/60.0, -4/5.0, 14/240.0});
 
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 1, 0.5, 7, central).offsets(),
-        listToArray(list_of(-1.5)(-1.0)(-0.5)(0.0)(0.5)(1.0)(1.5)));
+        {-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5});
 }
 
 void NumericalDifferentiationTest::testTabulatedBackwardScheme() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "using the backward scheme...");
-    const boost::function<Real(Real)> f;
+    const ext::function<Real(Real)> f;
 
     const NumericalDifferentiation::Scheme backward
         = NumericalDifferentiation::Backward;
@@ -119,26 +107,26 @@ void NumericalDifferentiationTest::testTabulatedBackwardScheme() {
     // see http://en.wikipedia.org/wiki/Finite_difference_coefficient
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 1, 1.0, 2, backward).weights(),
-        listToArray(list_of(1.0)(-1.0)));
+        {1.0, -1.0});
 
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 2, 2.0, 4, backward).weights(),
-        listToArray(list_of(2/4.0)(-5/4.0)(4/4.0)(-1.0/4.0)));
+        {2/4.0, -5/4.0, 4/4.0, -1.0/4.0});
 
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 4, 1.0, 6, backward).weights(),
-        listToArray(list_of(3)(-14)(26)(-24)(11)(-2)));
+        {3.0, -14.0, 26.0, -24.0, 11.0, -2.0});
 
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 2, 0.5, 4, backward).offsets(),
-        listToArray(list_of(0.0)(-0.5)(-1.0)(-1.5)));
+        {0.0, -0.5, -1.0, -1.5});
 }
 
 
 void NumericalDifferentiationTest::testTabulatedForwardScheme() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "using the Forward scheme...");
-    const boost::function<Real(Real)> f;
+    const ext::function<Real(Real)> f;
 
     const NumericalDifferentiation::Scheme forward
         = NumericalDifferentiation::Forward;
@@ -146,27 +134,26 @@ void NumericalDifferentiationTest::testTabulatedForwardScheme() {
     // see http://en.wikipedia.org/wiki/Finite_difference_coefficient
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 1, 1.0, 2, forward).weights(),
-        listToArray(list_of(-1.0)(1.0)));
+        {-1.0, 1.0});
 
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 1, 0.5, 3, forward).weights(),
-        listToArray(list_of(-6/2.0)(4.0)(-2/2.0)));
+        {-6/2.0, 4.0, -2/2.0});
 
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 1, 0.5, 7, forward).weights(),
-        listToArray(list_of(-98/20.0)(12.0)(-30/2.0)(40/3.0)
-                           (-30/4.0)(12/5.0)(-2/6.0)));
+        {-98/20.0, 12.0, -30/2.0, 40/3.0, -30/4.0, 12/5.0, -2/6.0});
 
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 2, 0.5, 4, forward).offsets(),
-        listToArray(list_of(0.0)(0.5)(1.0)(1.5)));
+        {0.0, 0.5, 1.0, 1.5});
 }
 
 
 void NumericalDifferentiationTest::testIrregularSchemeFirstOrder() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "of first order using an irregular scheme...");
-    const boost::function<Real(Real)> f;
+    const ext::function<Real(Real)> f;
 
     const Real h1 = 5e-7;
     const Real h2 = 3e-6;
@@ -175,18 +162,17 @@ void NumericalDifferentiationTest::testIrregularSchemeFirstOrder() {
     const Real gamma =  h1/(h2*(h1+h2));
     const Real beta = -alpha - gamma;
 
-    const Real tmp[] = { -h1, 0.0, h2};
-    Array offsets(tmp, tmp + LENGTH(tmp));
+    Array offsets = { -h1, 0.0, h2 };
 
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 1, offsets).weights(),
-        list_of(alpha)(beta)(gamma));
+        { alpha, beta, gamma });
 }
 
 void NumericalDifferentiationTest::testIrregularSchemeSecondOrder() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation "
                        "of second order using an irregular scheme...");
-    const boost::function<Real(Real)> f;
+    const ext::function<Real(Real)> f;
 
     const Real h1 = 2e-7;
     const Real h2 = 8e-8;
@@ -195,12 +181,11 @@ void NumericalDifferentiationTest::testIrregularSchemeSecondOrder() {
     const Real gamma = 2/(h2*(h1+h2));
     const Real beta = -alpha - gamma;
 
-    const Real tmp[] = { -h1, 0.0, h2};
-    Array offsets(tmp, tmp + LENGTH(tmp));
+    Array offsets = { -h1, 0.0, h2 };
 
     checkTwoArraysAreTheSame(
         NumericalDifferentiation(f, 2, offsets).weights(),
-        listToArray(list_of(alpha)(beta)(gamma)));
+        {alpha, beta, gamma});
 }
 
 
@@ -208,17 +193,17 @@ void NumericalDifferentiationTest::testDerivativesOfSineFunction() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation"
                        " of sin function...");
 
-    const boost::function<Real(Real)> f=std::ptr_fun<Real,Real>(std::sin);
+    const ext::function<Real(Real)> f = [](Real x) -> Real { return std::sin(x); };
 
-    const boost::function<Real(Real)> df_central
+    const ext::function<Real(Real)> df_central
         = NumericalDifferentiation(f, 1, std::sqrt(QL_EPSILON), 3,
                                    NumericalDifferentiation::Central);
 
-    const boost::function<Real(Real)> df_backward
+    const ext::function<Real(Real)> df_backward
         = NumericalDifferentiation(f, 1, std::sqrt(QL_EPSILON), 3,
                                    NumericalDifferentiation::Backward);
 
-    const boost::function<Real(Real)> df_forward
+    const ext::function<Real(Real)> df_forward
         = NumericalDifferentiation(f, 1, std::sqrt(QL_EPSILON), 3,
                                    NumericalDifferentiation::Forward);
 
@@ -233,13 +218,13 @@ void NumericalDifferentiationTest::testDerivativesOfSineFunction() {
         singleValueTest("forward first", calculatedForward, expected, 1e-6);
     }
 
-    const boost::function<Real(Real)> df4_central
+    const ext::function<Real(Real)> df4_central
         = NumericalDifferentiation(f, 4, 1e-2, 7,
                                    NumericalDifferentiation::Central);
-    const boost::function<Real(Real)> df4_backward
+    const ext::function<Real(Real)> df4_backward
         = NumericalDifferentiation(f, 4, 1e-2, 7,
                                    NumericalDifferentiation::Backward);
-    const boost::function<Real(Real)> df4_forward
+    const ext::function<Real(Real)> df4_forward
         = NumericalDifferentiation(f, 4, 1e-2, 7,
                                    NumericalDifferentiation::Forward);
 
@@ -254,8 +239,7 @@ void NumericalDifferentiationTest::testDerivativesOfSineFunction() {
         singleValueTest("forward 4th", calculatedForward, expected, 1e-4);
     }
 
-    const Real tmp[] = {-0.01, -0.02, 0.03, 0.014, 0.041};
-    const Array offsets(tmp, tmp + LENGTH(tmp));
+    const Array offsets = {-0.01, -0.02, 0.03, 0.014, 0.041};
     NumericalDifferentiation df3_irregular(f, 3, offsets);
 
     checkTwoArraysAreTheSame(df3_irregular.offsets(), offsets);
@@ -269,7 +253,7 @@ void NumericalDifferentiationTest::testDerivativesOfSineFunction() {
 }
 
 namespace {
-    Disposable<Array> vandermondeCoefficients(
+    Array vandermondeCoefficients(
         Size order, Real x, const Array& gridPoints) {
 
         const Array q = gridPoints - x;
@@ -292,7 +276,7 @@ void NumericalDifferentiationTest::testCoefficientBasedOnVandermonde() {
     BOOST_TEST_MESSAGE("Testing coefficients from numerical differentiation"
                        " by comparison with results from"
                        " Vandermonde matrix inversion...");
-    const boost::function<Real(Real)> f;
+    const ext::function<Real(Real)> f;
 
     for (Natural order=0; order < 5; ++order) {
         for (Natural nGridPoints = order + 1;
@@ -318,7 +302,7 @@ void NumericalDifferentiationTest::testCoefficientBasedOnVandermonde() {
 
 
 test_suite* NumericalDifferentiationTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("NumericalDifferentiation tests");
+    auto* suite = BOOST_TEST_SUITE("NumericalDifferentiation tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &NumericalDifferentiationTest::testTabulatedCentralScheme));

@@ -33,11 +33,12 @@ namespace QuantLib {
     class AnalyticWriterExtensibleOptionEngine
         : public WriterExtensibleOption::engine {
       public:
-        AnalyticWriterExtensibleOptionEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
-        void calculate() const;
+        explicit AnalyticWriterExtensibleOptionEngine(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        void calculate() const override;
+
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 
 }

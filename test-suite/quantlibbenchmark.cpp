@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2006, 2008, 2010 Klaus Spanderen
+ Copyright (C) 2006, 2008, 2010, 2018 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,49 +29,63 @@
  using the perfex library, http://user.it.uu.se/~mikpe/linux/perfctr
  and PAPI, http://icl.cs.utk.edu/papi
 
- Example results: 1. i7 4702HQ@2.2GHz       :6524.9 mflops
- 	 	 	 	  2. i7 870@2.93GHz         :4759.2 mflops
-                  3. Core2 Q9300@2.5Ghz     :2272.6 mflops
-                  4. Core2 Q6600@2.4Ghz     :1984.0 mflops
-                  5. i3 540@3.1Ghz          :1755.3 mflops
-                  6. Core2 Dual@2.0Ghz      : 835.9 mflops
-                  7. Athlon 64 X2 4400+     : 824.2 mflops
-                  8. Core2 Dual@2.0Ghz      : 754.1 mflops
-                  9. Pentium4 Dual@2.8Ghz   : 423.8 mflops
-                 10. Raspberry Pi3@1.2GHz   : 309.2 mflops
-                 11. Pentium4@3.0Ghz        : 266.3 mflops
-                 12. PentiumIII@1.1Ghz      : 146.2 mflops
-                 13. Alpha 2xEV68@833Mhz    : 184.6 mflops
-                 14. Raspberry Pi ARM@700Mhz:  28.3 mflops
-                 15. Strong ARM@206Mhz      :   1.4 mflops
+ Example results: 1. i7 7820X@3.6GHz        :24192.2 mflops
+                  2. i7 4702HQ@2.2GHz       : 6524.9 mflops
+                  3. i7 870@2.93GHz         : 4759.2 mflops
+                  4. Core2 Q9300@2.5Ghz     : 2272.6 mflops
+                  5. Core2 Q6600@2.4Ghz     : 1984.0 mflops
+                  6. i3 540@3.1Ghz          : 1755.3 mflops
+                  7. Raspberry Pi4@1.5GHz   : 1704.2 mflops
+                  8. Core2 Dual@2.0Ghz      :  835.9 mflops
+                  9. Athlon 64 X2 4400+     :  824.2 mflops
+                 10. Cortex-A57@2.0GHz      :  821.7 mflops
+                 11. Core2 Dual@2.0Ghz      :  754.1 mflops
+                 12. Pentium4 Dual@2.8Ghz   :  423.8 mflops
+                 13. Raspberry Pi3@1.2GHz   :  309.2 mflops
+                 14. Pentium4@3.0Ghz        :  266.3 mflops
+                 15. PentiumIII@1.1Ghz      :  146.2 mflops
+                 16. Alpha 2xEV68@833Mhz    :  184.6 mflops
+                 17. Wii PowerPC 750@729MHz :   46.1 mflops
+                 18. Raspberry Pi ARM@700Mhz:   28.3 mflops
+                 19. MIPS R5000@150MHz      :   12.6 mflops
+                 20. RISC-V on FPGA@25Mhz   :    2.4 mflops
+                 21. Strong ARM@206Mhz      :    1.4 mflops
 
  Remarks: OS: Linux, static libs
-  1. g++-4.8.1 -O3 -ffast-math -march=core-avx2
+  1. g++-6.3.0 -O3 -ffast-math -march=core-avx2
+      Remark: 16 processes
+  2. g++-4.8.1 -O3 -ffast-math -march=core-avx2
       Remark: eight processes
-  2. gcc-4.6.3, -O3 -ffast-math -mfpmath=sse,387 -march=corei7
+  3. gcc-4.6.3, -O3 -ffast-math -mfpmath=sse,387 -march=corei7
       Remark: eight processes
-  3. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
-      Remark: four processes
   4. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
       Remark: four processes
-  5. gcc-4.4.5, -O3 -ffast-math -mfpmath=sse,387 -msse4.2 -march=core2
+  5. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
       Remark: four processes
-  6. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
+  6. gcc-4.4.5, -O3 -ffast-math -mfpmath=sse,387 -msse4.2 -march=core2
+      Remark: four processes
+  7. gcc-8.3.0, -O3 -ffast-math -mcpu=cortx-a8 -mfpu=neon-fp-armv8
+      Remark: four processes
+  8. icc-11.0,  -gcc-version=420 -fast -fp-model fast=2 -ipo-jobs2
       Remark: two processes
-  7. icc-11.0,  -gcc-version=420 -xSSSE3 -O3 -ipo -no-prec-div -static
+  9. icc-11.0,  -gcc-version=420 -xSSSE3 -O3 -ipo -no-prec-div -static
                 -fp-model fast=2 -ipo-jobs2, Remark: two processes
-  8. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse3 -funroll-all-loops
+ 10. clang++-6.0.1 -O2, Remark: four processes
+ 11. gcc-4.2.1, -O3 -ffast-math -mfpmath=sse,387 -msse3 -funroll-all-loops
       Remark: two processes
-  9. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
+ 12. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
       -mfpmath=sse,387 -msse2 -funroll-all-loops, Remark: two processes
- 10. gcc-4.9.2  -O2, Remark: four processes
- 11. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
+ 13. gcc-4.9.2  -O2, Remark: four processes
+ 14. gcc-4.0.1, -O3 -march=pentium4 -ffast-math
                 -mfpmath=sse,387 -msse2 -funroll-all-loops
- 12. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
+ 15. gcc-4.1.1, -O3 -march=pentium3 -ffast-math
                 -mfpmath=sse,387 -msse -funroll-all-loops
- 13. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
- 14. gcc-4.6.3, -O3
- 15. gcc-3.4.3, -O2 -g on a Zaurus PDA
+ 16. gcc-3.3.5, -O3 -mcpu=e67 -funroll-all-loops, Remark: two processes
+ 17. gcc-4.9.2, -O2 -g on a Nintendo Wii
+ 18. gcc-4.6.3, -O3
+ 19. gcc-4-7-4, -O2 on a SGI Indy
+ 20. gcc-9.2,   -O2 on RISC-V softcore on an Artix7 100T FPGA
+ 21. gcc-3.4.3, -O2 -g on a Zaurus PDA
 
   This benchmark is derived from quantlibtestsuite.cpp. Please see the
   copyrights therein.
@@ -79,12 +93,13 @@
 
 #include <ql/types.hpp>
 #include <ql/version.hpp>
-#include <boost/test/unit_test.hpp>
-#include <boost/timer.hpp>
-#include <iostream>
+#include <boost/test/included/unit_test.hpp>
 #include <iomanip>
+#include <iostream>
 #include <list>
 #include <string>
+#include <utility>
+#include <chrono>
 
 /* PAPI code
 #include <stdio.h
@@ -94,19 +109,10 @@
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
 */
-#ifdef BOOST_MSVC
+#if !defined(BOOST_ALL_NO_LIB) && defined(BOOST_MSVC)
 #  include <ql/auto_link.hpp>
-#  define BOOST_LIB_NAME boost_unit_test_framework
-#  include <boost/config/auto_link.hpp>
-#  undef BOOST_LIB_NAME
-
-/* uncomment the following lines to unmask floating-point exceptions.
-   See http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
-*/
-//#  include <float.h>
-//   namespace { unsigned int u = _controlfp(_EM_INEXACT, _MCW_EM); }
-
 #endif
+
 #include "utilities.hpp"
 
 #include "americanoption.hpp"
@@ -134,15 +140,60 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
+    std::list<double> runTimes;
+
+    /* PAPI code
+    float real_time, proc_time, mflops;
+    long_long lflop, flop=0;
+    */
+
+    class TimedCase {
+      public:
+        typedef void (*fct_ptr)();
+        explicit TimedCase(fct_ptr f) : f_(f) {}
+
+        void startMeasurement() const {
+            /* PAPI code
+               lflop = flop;
+               PAPI_flops(&real_time, &proc_time, &flop, &mflops);
+            */
+        }
+
+        void stopMeasurement() const {
+            /* PAPI code
+               PAPI_flops(&real_time, &proc_time, &flop, &mflops);
+               printf("Real_time: %f Proc_time: %f Total mflop: %f\n",
+               real_time, proc_time, (flop-lflop)/1e6);
+            */
+        }
+
+        void operator()() const {
+            startMeasurement();
+            auto startTime = std::chrono::steady_clock::now();
+            BOOST_CHECK(true); // to prevent no-assertion warning
+            f_();
+            auto stopTime = std::chrono::steady_clock::now();
+            stopMeasurement();
+            runTimes.push_back(std::chrono::duration_cast<std::chrono::microseconds>(stopTime - startTime).count() * 1e-6);
+        }
+      private:
+        fct_ptr f_;
+    };
+
     class Benchmark {
       public:
         typedef void (*fct_ptr)();
-        Benchmark(const std::string& name, fct_ptr f, double mflop)
-        : f_(f), name_(name), mflop_(mflop) {
-        }
+        Benchmark(std::string name, fct_ptr f, double mflop)
+        : f_(f), name_(std::move(name)), mflop_(mflop) {}
 
         test_case* getTestCase() const {
-            return QUANTLIB_TEST_CASE(f_);
+            #if BOOST_VERSION >= 105900
+            return boost::unit_test::make_test_case(f_, name_,
+                                                    __FILE__, __LINE__);
+            #else
+            return boost::unit_test::make_test_case(
+                       boost::unit_test::callback0<>(f_), name_);
+            #endif
         }
         double getMflop() const {
             return mflop_;
@@ -151,47 +202,17 @@ namespace {
             return name_;
         }
       private:
-        fct_ptr f_;
+        TimedCase f_;
         const std::string name_;
         const double mflop_; // total number of mega floating
                              // point operations (not per sec!)
     };
 
-    boost::timer t;
-    std::list<double> runTimes;
     std::list<Benchmark> bm;
-
-    /* PAPI code
-    float real_time, proc_time, mflops;
-    long_long lflop, flop=0;
-    */
-
-    void startTimer() {
-        t.restart();
-
-        /* PAPI code
-        lflop = flop;
-        PAPI_flops(&real_time, &proc_time, &flop, &mflops);
-        */
-    }
-
-    void stopTimer() {
-        runTimes.push_back(t.elapsed());
-
-        /* PAPI code
-        PAPI_flops(&real_time, &proc_time, &flop, &mflops);
-        printf("Real_time: %f Proc_time: %f Total mflop: %f\n",
-               real_time, proc_time, (flop-lflop)/1e6);
-        */
-    }
 
     void printResults() {
         std::string header = "Benchmark Suite "
-        #ifdef BOOST_MSVC
-        QL_LIB_NAME;
-        #else
         "QuantLib " QL_VERSION;
-        #endif
 
         std::cout << std::endl
                   << std::string(56,'-') << std::endl;
@@ -223,76 +244,46 @@ namespace {
     }
 }
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-    Integer sessionId() { return 0; }
-}
-#endif
-
 test_suite* init_unit_test_suite(int, char*[]) {
+    bm.emplace_back("AmericanOption::FdAmericanGreeks", &AmericanOptionTest::testFdAmericanGreeks,
+                    518.31);
+    bm.emplace_back("AsianOption::MCArithmeticAveragePrice",
+                    &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 5186.13);
+    bm.emplace_back("BarrierOption::BabsiriValues", &BarrierOptionTest::testBabsiriValues, 880.8);
+    bm.emplace_back("BasketOption::EuroTwoValues", &BasketOptionTest::testEuroTwoValues, 340.04);
+    bm.emplace_back("BasketOption::TavellaValues", &BasketOptionTest::testTavellaValues, 933.80);
+    bm.emplace_back("BasketOption::OddSamples", &BasketOptionTest::testOddSamples, 642.46);
+    bm.emplace_back("BatesModel::DAXCalibration", &BatesModelTest::testDAXCalibration, 1993.35);
+    bm.emplace_back("ConvertibleBondTest::testBond", &ConvertibleBondTest::testBond, 159.85);
+    bm.emplace_back("DigitalOption::MCCashAtHit", &DigitalOptionTest::testMCCashAtHit, 995.87);
+    bm.emplace_back("DividendOption::FdEuropeanGreeks", &DividendOptionTest::testFdEuropeanGreeks,
+                    949.52);
+    bm.emplace_back("DividendOption::FdAmericanGreeks", &DividendOptionTest::testFdAmericanGreeks,
+                    1113.74);
+    bm.emplace_back("EuropeanOption::FdMcEngines", &EuropeanOptionTest::testMcEngines, 1988.63);
+    bm.emplace_back("EuropeanOption::ImpliedVol", &EuropeanOptionTest::testImpliedVol, 131.51);
+    bm.emplace_back("EuropeanOption::FdEngines", &EuropeanOptionTest::testFdEngines, 148.43);
+    bm.emplace_back("FdHestonTest::testFdmHestonAmerican", &FdHestonTest::testFdmHestonAmerican,
+                    234.21);
+    bm.emplace_back("HestonModel::DAXCalibration", &HestonModelTest::testDAXCalibration, 555.19);
+    bm.emplace_back("InterpolationTest::testSabrInterpolation",
+                    &InterpolationTest::testSabrInterpolation, 2266.06);
+    bm.emplace_back("JumpDiffusion::Greeks", &JumpDiffusionTest::testGreeks, 433.77);
+    bm.emplace_back("MarketModelCmsTest::testCmSwapsSwaptions",
+                    &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions, 11497.73);
+    bm.emplace_back("MarketModelSmmTest::testMultiSmmSwaptions",
+                    &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions, 11244.95);
+    bm.emplace_back("QuantoOption::ForwardGreeks", &QuantoOptionTest::testForwardGreeks, 90.98);
+    bm.emplace_back("RandomNumber::MersenneTwisterDescrepancy",
+                    &LowDiscrepancyTest::testMersenneTwisterDiscrepancy, 951.98);
+    bm.emplace_back("RiskStatistics::Results", &RiskStatisticsTest::testResults, 300.28);
+    bm.emplace_back("ShortRateModel::Swaps", &ShortRateModelTest::testSwaps, 454.73);
 
-    bm.push_back(Benchmark("AmericanOption::FdAmericanGreeks",
-        &AmericanOptionTest::testFdAmericanGreeks, 518.31));
-    bm.push_back(Benchmark("AmericanOption::FdShoutGreeks",
-        &AmericanOptionTest::testFdShoutGreeks, 546.58));
-    bm.push_back(Benchmark("AsianOption::MCArithmeticAveragePrice",
-        &AsianOptionTest::testMCDiscreteArithmeticAveragePrice, 5186.13));
-    bm.push_back(Benchmark("BarrierOption::BabsiriValues",
-        &BarrierOptionTest::testBabsiriValues, 880.8));
-    bm.push_back(Benchmark("BasketOption::EuroTwoValues",
-        &BasketOptionTest::testEuroTwoValues, 340.04));
-    bm.push_back(Benchmark("BasketOption::TavellaValues",
-        &BasketOptionTest::testTavellaValues, 933.80));
-    bm.push_back(Benchmark("BasketOption::OddSamples",
-        &BasketOptionTest::testOddSamples, 642.46));
-    bm.push_back(Benchmark("BatesModel::DAXCalibration",
-        &BatesModelTest::testDAXCalibration, 1993.35));
-    bm.push_back(Benchmark("ConvertibleBondTest::testBond",
-        &ConvertibleBondTest::testBond, 159.85));
-    bm.push_back(Benchmark("DigitalOption::MCCashAtHit",
-        &DigitalOptionTest::testMCCashAtHit,995.87));
-    bm.push_back(Benchmark("DividendOption::FdEuropeanGreeks",
-        &DividendOptionTest::testFdEuropeanGreeks, 949.52));
-    bm.push_back(Benchmark("DividendOption::FdAmericanGreeks",
-        &DividendOptionTest::testFdAmericanGreeks, 1113.74));
-    bm.push_back(Benchmark("EuropeanOption::FdMcEngines",
-        &EuropeanOptionTest::testMcEngines, 1988.63));
-    bm.push_back(Benchmark("EuropeanOption::ImpliedVol",
-        &EuropeanOptionTest::testImpliedVol, 131.51));
-    bm.push_back(Benchmark("EuropeanOption::FdEngines",
-        &EuropeanOptionTest::testFdEngines, 148.43));
-    bm.push_back(Benchmark("EuropeanOption::PriceCurve",
-        &EuropeanOptionTest::testPriceCurve, 414.76));
-    bm.push_back(Benchmark("FdHestonTest::testFdmHestonAmerican",
-        &FdHestonTest::testFdmHestonAmerican, 234.21));
-    bm.push_back(Benchmark("HestonModel::DAXCalibration",
-        &HestonModelTest::testDAXCalibration, 555.19));
-    bm.push_back(Benchmark("InterpolationTest::testSabrInterpolation",
-        &InterpolationTest::testSabrInterpolation, 2266.06));
-    bm.push_back(Benchmark("JumpDiffusion::Greeks",
-        &JumpDiffusionTest::testGreeks, 433.77));
-    bm.push_back(Benchmark("MarketModelCmsTest::testCmSwapsSwaptions",
-        &MarketModelCmsTest::testMultiStepCmSwapsAndSwaptions,
-        11497.73));
-    bm.push_back(Benchmark("MarketModelSmmTest::testMultiSmmSwaptions",
-        &MarketModelSmmTest::testMultiStepCoterminalSwapsAndSwaptions,
-        11244.95));
-    bm.push_back(Benchmark("QuantoOption::ForwardGreeks",
-        &QuantoOptionTest::testForwardGreeks, 90.98));
-    bm.push_back(Benchmark("RandomNumber::MersenneTwisterDescrepancy",
-        &LowDiscrepancyTest::testMersenneTwisterDiscrepancy, 951.98));
-    bm.push_back(Benchmark("RiskStatistics::Results",
-        &RiskStatisticsTest::testResults, 300.28));
-    bm.push_back(Benchmark("ShortRateModel::Swaps",
-        &ShortRateModelTest::testSwaps, 454.73));
-
-    test_suite* test = BOOST_TEST_SUITE("QuantLib benchmark suite");
+    auto* test = BOOST_TEST_SUITE("QuantLib benchmark suite");
 
     for (std::list<Benchmark>::const_iterator iter = bm.begin();
          iter != bm.end(); ++iter) {
-        test->add(QUANTLIB_TEST_CASE(startTimer));
         test->add(iter->getTestCase());
-        test->add(QUANTLIB_TEST_CASE(stopTimer));
     }
 
     test->add(QUANTLIB_TEST_CASE(printResults));

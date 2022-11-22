@@ -40,19 +40,19 @@ namespace QuantLib {
         registerWith(termStructure);
     }
 
-    boost::shared_ptr<Lattice> HullWhite::tree(const TimeGrid& grid) const {
+    ext::shared_ptr<Lattice> HullWhite::tree(const TimeGrid& grid) const {
 
         TermStructureFittingParameter phi(termStructure());
-        boost::shared_ptr<ShortRateDynamics> numericDynamics(
+        ext::shared_ptr<ShortRateDynamics> numericDynamics(
                                              new Dynamics(phi, a(), sigma()));
-        boost::shared_ptr<TrinomialTree> trinomial(
+        ext::shared_ptr<TrinomialTree> trinomial(
                          new TrinomialTree(numericDynamics->process(), grid));
-        boost::shared_ptr<ShortRateTree> numericTree(
+        ext::shared_ptr<ShortRateTree> numericTree(
                          new ShortRateTree(trinomial, numericDynamics, grid));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        boost::shared_ptr<NumericalImpl> impl =
-            boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
+        ext::shared_ptr<NumericalImpl> impl =
+            ext::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
         impl->reset();
         for (Size i=0; i<(grid.size() - 1); i++) {
             Real discountBond = termStructure()->discount(grid[i+1]);
@@ -113,10 +113,16 @@ namespace QuantLib {
         if (_a < std::sqrt(QL_EPSILON)) {
             v = sigma()*B(bondStart, bondMaturity)* std::sqrt(maturity);
         } else {
-            v = sigma()/(_a*sqrt(2.0*_a)) * sqrt ( 
-                   exp(-2.0*_a*(bondStart-maturity))-exp(-2.0*_a*bondStart)
-                   -2.0*(exp(-_a*(bondStart+bondMaturity-2.0*maturity))-exp(-_a*(bondStart+bondMaturity)))
-                   +exp(-2.0*_a*(bondMaturity-maturity))-exp(-2.0*_a*bondMaturity));
+            Real c = exp(-2.0*_a*(bondStart-maturity))
+                - exp(-2.0*_a*bondStart)
+                -2.0*(exp(-_a*(bondStart+bondMaturity-2.0*maturity))
+                      - exp(-_a*(bondStart+bondMaturity)))
+                + exp(-2.0*_a*(bondMaturity-maturity))
+                - exp(-2.0*_a*bondMaturity);
+            // The above should always be positive, but due to
+            // numerical errors it can be a very small negative number.
+            // We floor it at 0 to avoid NaNs.
+            v = sigma()/(_a*sqrt(2.0*_a)) * sqrt(std::max(c, 0.0));
         }
         Real f = termStructure()->discount(bondMaturity);
         Real k = termStructure()->discount(bondStart)*strike;

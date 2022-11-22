@@ -37,12 +37,12 @@ namespace QuantLib {
                          Real pMin, Real pMax,
                          Size tMinUp, Size tMinDown,
                          Real startUpFuel, Real startUpFixCost,
-                         const boost::shared_ptr<SwingExercise>& exercise,
+                         const ext::shared_ptr<SwingExercise>& exercise,
                          Size nStarts = Null<Size>(),
                          Size nRunningHours = Null<Size>());
 
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
 
       private:
         const Real heatRate_;
@@ -55,8 +55,8 @@ namespace QuantLib {
     class VanillaVPPOption::arguments
         : public virtual MultiAssetOption::arguments {
       public:
-        arguments() {}
-        void validate() const;
+        arguments() = default;
+        void validate() const override;
 
         Real heatRate;
         Real pMin, pMax;

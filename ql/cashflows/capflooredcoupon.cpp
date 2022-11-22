@@ -24,9 +24,9 @@
 
 namespace QuantLib {
 
-    CappedFlooredCoupon::CappedFlooredCoupon(
-                  const boost::shared_ptr<FloatingRateCoupon>& underlying,
-                  Rate cap, Rate floor)
+    CappedFlooredCoupon::CappedFlooredCoupon(const ext::shared_ptr<FloatingRateCoupon>& underlying,
+                                             Rate cap,
+                                             Rate floor)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
                          underlying->accrualStartDate(),
@@ -38,9 +38,9 @@ namespace QuantLib {
                          underlying->referencePeriodStart(),
                          underlying->referencePeriodEnd(),
                          underlying->dayCounter(),
-                         underlying->isInArrears()),
-      underlying_(underlying),
-      isCapped_(false), isFloored_(false) {
+                         underlying->isInArrears(),
+                         underlying->exCouponDate()),
+      underlying_(underlying) {
 
         if (gearing_ > 0) {
             if (cap != Null<Rate>()) {
@@ -72,7 +72,7 @@ namespace QuantLib {
     }
 
     void CappedFlooredCoupon::setPricer(
-                 const boost::shared_ptr<FloatingRateCouponPricer>& pricer) {
+                 const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
         FloatingRateCoupon::setPricer(pricer);
         underlying_->setPricer(pricer);
     }
@@ -129,9 +129,8 @@ namespace QuantLib {
 
     void CappedFlooredCoupon::accept(AcyclicVisitor& v) {
         typedef FloatingRateCoupon super;
-        Visitor<CappedFlooredCoupon>* v1 =
-            dynamic_cast<Visitor<CappedFlooredCoupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<CappedFlooredCoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             super::accept(v);

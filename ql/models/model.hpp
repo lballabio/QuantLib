@@ -26,11 +26,12 @@
 #ifndef quantlib_interest_rate_model_hpp
 #define quantlib_interest_rate_model_hpp
 
-#include <ql/option.hpp>
-#include <ql/methods/lattices/lattice.hpp>
-#include <ql/models/parameter.hpp>
-#include <ql/models/calibrationhelper.hpp>
 #include <ql/math/optimization/endcriteria.hpp>
+#include <ql/methods/lattices/lattice.hpp>
+#include <ql/models/calibrationhelper.hpp>
+#include <ql/models/parameter.hpp>
+#include <ql/option.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -71,9 +72,8 @@ namespace QuantLib {
     */
     class TermStructureConsistentModel : public virtual Observable {
       public:
-        TermStructureConsistentModel(
-                              const Handle<YieldTermStructure>& termStructure)
-        : termStructure_(termStructure) {}
+        TermStructureConsistentModel(Handle<YieldTermStructure> termStructure)
+        : termStructure_(std::move(termStructure)) {}
         const Handle<YieldTermStructure>& termStructure() const {
             return termStructure_;
         }
@@ -87,7 +87,7 @@ namespace QuantLib {
       public:
         CalibratedModel(Size nArguments);
 
-        void update() {
+        void update() override {
             generateArguments();
             notifyObservers();
         }
@@ -97,7 +97,7 @@ namespace QuantLib {
             satisfied in addition to the constraints of the model.
         */
         virtual void calibrate(
-                const std::vector<boost::shared_ptr<CalibrationHelper> >&,
+                const std::vector<ext::shared_ptr<CalibrationHelper> >&,
                 OptimizationMethod& method,
                 const EndCriteria& endCriteria,
                 const Constraint& constraint = Constraint(),
@@ -105,9 +105,9 @@ namespace QuantLib {
                 const std::vector<bool>& fixParameters = std::vector<bool>());
 
         Real value(const Array& params,
-                   const std::vector<boost::shared_ptr<CalibrationHelper> >&);
+                   const std::vector<ext::shared_ptr<CalibrationHelper> >&);
 
-        const boost::shared_ptr<Constraint>& constraint() const;
+        const ext::shared_ptr<Constraint>& constraint() const;
 
         //! Returns end criteria result
         EndCriteria::Type endCriteria() const { return shortRateEndCriteria_; }
@@ -116,7 +116,7 @@ namespace QuantLib {
         const Array& problemValues() const { return problemValues_; }
 
         //! Returns array of arguments on which calibration is done
-        Disposable<Array> params() const;
+        Array params() const;
 
         virtual void setParams(const Array& params);
         Integer functionEvaluation() const { return functionEvaluation_; }
@@ -124,8 +124,8 @@ namespace QuantLib {
       protected:
         virtual void generateArguments() {}
         std::vector<Parameter> arguments_;
-        boost::shared_ptr<Constraint> constraint_;
-        EndCriteria::Type shortRateEndCriteria_;
+        ext::shared_ptr<Constraint> constraint_;
+        EndCriteria::Type shortRateEndCriteria_ = EndCriteria::None;
         Array problemValues_;
         Integer functionEvaluation_;
 
@@ -134,15 +134,14 @@ namespace QuantLib {
         class PrivateConstraint;
         //! Calibration cost function class
         class CalibrationFunction;
-        friend class CalibrationFunction;
     };
 
     //! Abstract short-rate model class
     /*! \ingroup shortrate */
     class ShortRateModel : public CalibratedModel {
       public:
-        ShortRateModel(Size nArguments);
-        virtual boost::shared_ptr<Lattice> tree(const TimeGrid&) const = 0;
+        explicit ShortRateModel(Size nArguments);
+        virtual ext::shared_ptr<Lattice> tree(const TimeGrid&) const = 0;
     };
 
 
@@ -157,7 +156,7 @@ namespace QuantLib {
         return discountBondOption(type, strike, maturity, bondMaturity);
     }
 
-    inline const boost::shared_ptr<Constraint>&
+    inline const ext::shared_ptr<Constraint>&
     CalibratedModel::constraint() const {
         return constraint_;
     }
@@ -166,56 +165,54 @@ namespace QuantLib {
       private:
         class Impl :  public Constraint::Impl {
           public:
-            Impl(const std::vector<Parameter>& arguments)
+            explicit Impl(const std::vector<Parameter>& arguments)
             : arguments_(arguments) {}
 
-            bool test(const Array& params) const {
+            bool test(const Array& params) const override {
                 Size k=0;
-                for (Size i=0; i<arguments_.size(); i++) {
-                    Size size = arguments_[i].size();
+                for (const auto& argument : arguments_) {
+                    Size size = argument.size();
                     Array testParams(size);
                     for (Size j=0; j<size; j++, k++)
                         testParams[j] = params[k];
-                    if (!arguments_[i].testParams(testParams))
+                    if (!argument.testParams(testParams))
                         return false;
                 }
                 return true;
             }
 
-            Array upperBound(const Array &params) const {
+            Array upperBound(const Array& params) const override {
                 Size k = 0, k2 = 0;
                 Size totalSize = 0;
-                for (Size i = 0; i < arguments_.size(); i++) {
-                    totalSize += arguments_[i].size();
+                for (const auto& argument : arguments_) {
+                    totalSize += argument.size();
                 }
                 Array result(totalSize);
-                for (Size i = 0; i < arguments_.size(); i++) {
-                    Size size = arguments_[i].size();
+                for (const auto& argument : arguments_) {
+                    Size size = argument.size();
                     Array partialParams(size);
                     for (Size j = 0; j < size; j++, k++)
                         partialParams[j] = params[k];
-                    Array tmpBound =
-                        arguments_[i].constraint().upperBound(partialParams);
+                    Array tmpBound = argument.constraint().upperBound(partialParams);
                     for (Size j = 0; j < size; j++, k2++)
                         result[k2] = tmpBound[j];
                 }
                 return result;
             }
 
-            Array lowerBound(const Array &params) const {
+            Array lowerBound(const Array& params) const override {
                 Size k = 0, k2 = 0;
                 Size totalSize = 0;
-                for (Size i = 0; i < arguments_.size(); i++) {
-                    totalSize += arguments_[i].size();
+                for (const auto& argument : arguments_) {
+                    totalSize += argument.size();
                 }
                 Array result(totalSize);
-                for (Size i = 0; i < arguments_.size(); i++) {
-                    Size size = arguments_[i].size();
+                for (const auto& argument : arguments_) {
+                    Size size = argument.size();
                     Array partialParams(size);
                     for (Size j = 0; j < size; j++, k++)
                         partialParams[j] = params[k];
-                    Array tmpBound =
-                        arguments_[i].constraint().lowerBound(partialParams);
+                    Array tmpBound = argument.constraint().lowerBound(partialParams);
                     for (Size j = 0; j < size; j++, k2++)
                         result[k2] = tmpBound[j];
                 }
@@ -226,8 +223,8 @@ namespace QuantLib {
             const std::vector<Parameter>& arguments_;
         };
       public:
-        PrivateConstraint(const std::vector<Parameter>& arguments)
-        : Constraint(boost::shared_ptr<Constraint::Impl>(
+        explicit PrivateConstraint(const std::vector<Parameter>& arguments)
+        : Constraint(ext::shared_ptr<Constraint::Impl>(
                                    new PrivateConstraint::Impl(arguments))) {}
     };
 

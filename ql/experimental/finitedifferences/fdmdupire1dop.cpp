@@ -19,14 +19,11 @@
 
 #include <ql/experimental/finitedifferences/fdmdupire1dop.hpp>
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
-
-#if !defined(QL_NO_UBLAS_SUPPORT)
 #include <boost/numeric/ublas/matrix.hpp>
-#endif
 
 namespace QuantLib {
 
-FdmDupire1dOp::FdmDupire1dOp(const boost::shared_ptr<FdmMesher> &mesher,
+FdmDupire1dOp::FdmDupire1dOp(const ext::shared_ptr<FdmMesher> &mesher,
                              const Array &localVolatility)
     : mesher_(mesher), localVolatility_(localVolatility),
       mapT_(SecondDerivativeOp(0, mesher)
@@ -36,41 +33,34 @@ void FdmDupire1dOp::setTime(Time t1, Time t2) {}
 
 Size FdmDupire1dOp::size() const { return 1; }
 
-Disposable<Array> FdmDupire1dOp::apply(const Array &u) const {
+Array FdmDupire1dOp::apply(const Array &u) const {
     return mapT_.apply(u);
 }
 
-Disposable<Array> FdmDupire1dOp::apply_direction(Size direction,
-                                                 const Array &r) const {
+Array FdmDupire1dOp::apply_direction(Size direction, const Array &r) const {
     if (direction == 0)
         return mapT_.apply(r);
     QL_FAIL("direction too large");
 }
 
-Disposable<Array> FdmDupire1dOp::apply_mixed(const Array &r) const {
-    Array s(r);
-    return s;
+Array FdmDupire1dOp::apply_mixed(const Array &r) const {
+    return r;
 }
 
-Disposable<Array> FdmDupire1dOp::solve_splitting(Size direction, const Array &r,
-                                                 Real a) const {
-
+Array FdmDupire1dOp::solve_splitting(Size direction, const Array &r, Real a) const {
     if (direction == 0) {
         return mapT_.solve_splitting(r, a, 1.0);
     }
     QL_FAIL("direction too large");
 }
 
-Disposable<Array> FdmDupire1dOp::preconditioner(const Array &r, Real dt) const {
+Array FdmDupire1dOp::preconditioner(const Array &r, Real dt) const {
 
     return solve_splitting(0, r, dt);
 }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-Disposable<std::vector<SparseMatrix> > FdmDupire1dOp::toMatrixDecomp() const {
-    std::vector<SparseMatrix> retVal(1);
-    retVal[0] = mapT_.toMatrix();
-    return retVal;
+std::vector<SparseMatrix> FdmDupire1dOp::toMatrixDecomp() const {
+    return std::vector<SparseMatrix>(1, mapT_.toMatrix());
 }
-#endif
+
 }

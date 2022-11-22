@@ -23,7 +23,7 @@ namespace QuantLib {
 
     Slovakia::Slovakia(Market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Slovakia::BsseImpl);
+        static ext::shared_ptr<Calendar::Impl> impl(new Slovakia::BsseImpl);
         impl_ = impl;
     }
 
@@ -67,7 +67,7 @@ namespace QuantLib {
             // unidentified closing days for stock exchange
             || (d >= 24 && d <= 31 && m == December && y == 2004)
             || (d >= 24 && d <= 31 && m == December && y == 2005))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

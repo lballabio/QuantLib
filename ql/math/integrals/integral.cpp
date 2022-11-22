@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2007 François du Vignaud
+ Copyright (C) 2007 FranÃ§ois du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -73,7 +73,7 @@ namespace QuantLib {
             && absoluteError_ <= absoluteAccuracy_;
     }
 
-    Real Integrator::operator()(const boost::function<Real (Real)>& f,
+    Real Integrator::operator()(const ext::function<Real (Real)>& f,
                                 Real a,
                                 Real b) const {
         evaluations_ = 0;

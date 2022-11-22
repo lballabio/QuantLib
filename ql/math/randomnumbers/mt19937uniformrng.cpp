@@ -103,7 +103,7 @@ namespace QuantLib {
                                       const std::vector<unsigned long>& seeds) {
         seedInitialization(19650218UL);
         Size i=1, j=0, k = (N>seeds.size() ? N : seeds.size());
-        for (; k; k--) {
+        for (; k != 0U; k--) {
             mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))
                 + seeds[j] + j; /* non linear */
             mt[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */
@@ -111,7 +111,7 @@ namespace QuantLib {
             if (i>=N) { mt[0] = mt[N-1]; i=1; }
             if (j>=seeds.size()) j=0;
         }
-        for (k=N-1; k; k--) {
+        for (k = N - 1; k != 0U; k--) {
             mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL))
                 - i; /* non linear */
             mt[i] &= 0xffffffffUL; /* for WORDSIZE > 32 machines */

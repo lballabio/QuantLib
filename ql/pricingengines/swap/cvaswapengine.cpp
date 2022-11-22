@@ -26,7 +26,7 @@
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/pricingengines/swaption/blackswaptionengine.hpp>
-#include <boost/make_shared.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 
 namespace QuantLib {
   
@@ -38,13 +38,13 @@ namespace QuantLib {
       const Handle<DefaultProbabilityTermStructure>& invstDTS,
       Real invstRecoveryRate)
   : baseSwapEngine_(Handle<PricingEngine>(
-      boost::make_shared<DiscountingSwapEngine>(discountCurve))),
+      ext::make_shared<DiscountingSwapEngine>(discountCurve))),
     swaptionletEngine_(swaptionEngine),
     discountCurve_(discountCurve),
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
-        boost::make_shared<FlatHazardRate>(0, ctptyDTS->calendar(), 1.e-12, 
+        ext::make_shared<FlatHazardRate>(0, NullCalendar(), 1.e-12, 
         ctptyDTS->dayCounter()) ) : invstDTS ),
     invstRecoveryRate_(invstRecoveryRate)
   {
@@ -62,15 +62,15 @@ namespace QuantLib {
         const Handle<DefaultProbabilityTermStructure>& invstDTS,
         Real invstRecoveryRate)
   : baseSwapEngine_(Handle<PricingEngine>(
-      boost::make_shared<DiscountingSwapEngine>(discountCurve))),
+      ext::make_shared<DiscountingSwapEngine>(discountCurve))),
     swaptionletEngine_(Handle<PricingEngine>(
-      boost::make_shared<BlackSwaptionEngine>(discountCurve,
+      ext::make_shared<BlackSwaptionEngine>(discountCurve,
         blackVol))),
     discountCurve_(discountCurve),
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
-        boost::make_shared<FlatHazardRate>(0, ctptyDTS->calendar(), 1.e-12, 
+        ext::make_shared<FlatHazardRate>(0, NullCalendar(), 1.e-12, 
         ctptyDTS->dayCounter()) ) : invstDTS ),
     invstRecoveryRate_(invstRecoveryRate)
   {
@@ -87,15 +87,15 @@ namespace QuantLib {
         const Handle<DefaultProbabilityTermStructure>& invstDTS,
         Real invstRecoveryRate)
   : baseSwapEngine_(Handle<PricingEngine>(
-      boost::make_shared<DiscountingSwapEngine>(discountCurve))),
+      ext::make_shared<DiscountingSwapEngine>(discountCurve))),
     swaptionletEngine_(Handle<PricingEngine>(
-      boost::make_shared<BlackSwaptionEngine>(discountCurve,
+      ext::make_shared<BlackSwaptionEngine>(discountCurve,
         blackVol))),
     discountCurve_(discountCurve),
     defaultTS_(ctptyDTS), 
     ctptyRecoveryRate_(ctptyRecoveryRate),
     invstDTS_(invstDTS.empty() ? Handle<DefaultProbabilityTermStructure>(
-        boost::make_shared<FlatHazardRate>(0, ctptyDTS->calendar(), 1.e-12, 
+        ext::make_shared<FlatHazardRate>(0, NullCalendar(), 1.e-12, 
         ctptyDTS->dayCounter()) ) : invstDTS ),
     invstRecoveryRate_(invstRecoveryRate)
   {
@@ -128,45 +128,42 @@ namespace QuantLib {
 
     // Compute fair spread for strike value:
     // copy args into the non risky engine
-    Swap::arguments * noCVAArgs = dynamic_cast<Swap::arguments*>(
-      baseSwapEngine_->getArguments());
-    QL_REQUIRE(noCVAArgs != 0, "wrong argument type");
+    auto* noCVAArgs = dynamic_cast<Swap::arguments*>(baseSwapEngine_->getArguments());
+    QL_REQUIRE(noCVAArgs != nullptr, "wrong argument type");
 
     noCVAArgs->legs = this->arguments_.legs;
     noCVAArgs->payer = this->arguments_.payer;
 
     baseSwapEngine_->calculate();
 
-    boost::shared_ptr<FixedRateCoupon> coupon = boost::dynamic_pointer_cast<FixedRateCoupon>(arguments_.legs[0][0]);
+    ext::shared_ptr<FixedRateCoupon> coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(arguments_.legs[0][0]);
     QL_REQUIRE(coupon,"dynamic cast of fixed leg coupon failed.");
     Rate baseSwapRate = coupon->rate();
 
-    const Swap::results * vSResults =  
-        dynamic_cast<const Swap::results *>(baseSwapEngine_->getResults());
-    QL_REQUIRE(vSResults != 0, "wrong result type");
+    const auto* vSResults = dynamic_cast<const Swap::results*>(baseSwapEngine_->getResults());
+    QL_REQUIRE(vSResults != nullptr, "wrong result type");
 
     Rate baseSwapFairRate = -baseSwapRate * vSResults->legNPV[1] / 
         vSResults->legNPV[0];
     Real baseSwapNPV = vSResults->value;
 
-    VanillaSwap::Type reversedType = arguments_.type == VanillaSwap::Payer ? 
-        VanillaSwap::Receiver : VanillaSwap::Payer;
+    Swap::Type reversedType = arguments_.type == Swap::Payer ? Swap::Receiver : Swap::Payer;
 
     // Swaplet options summatory:
     while(nextFD != arguments_.fixedPayDates.end()) {
       // iFD coupon not fixed, create swaptionlet:
-      boost::shared_ptr<FloatingRateCoupon> floatCoupon = boost::dynamic_pointer_cast<FloatingRateCoupon>(arguments_.legs[1][0]);
+      ext::shared_ptr<FloatingRateCoupon> floatCoupon = ext::dynamic_pointer_cast<FloatingRateCoupon>(arguments_.legs[1][0]);
       QL_REQUIRE(floatCoupon,"dynamic cast of floating leg coupon failed.");
-      boost::shared_ptr<IborIndex> swapIndex = boost::dynamic_pointer_cast<IborIndex>(floatCoupon->index());
+      ext::shared_ptr<IborIndex> swapIndex = ext::dynamic_pointer_cast<IborIndex>(floatCoupon->index());
       QL_REQUIRE(swapIndex,"dynamic cast of floating leg index failed.");
 
       // Alternatively one could cap this period to, say, 1M 
-      // Period swapPeriod = boost::dynamic_pointer_cast<FloatingRateCoupon>(
+      // Period swapPeriod = ext::dynamic_pointer_cast<FloatingRateCoupon>(
       //   arguments_.legs[1][0])->index()->tenor();
 
       Period baseSwapsTenor(arguments_.fixedPayDates.back().serialNumber() 
 	    - swapletStart.serialNumber(), Days);
-      boost::shared_ptr<VanillaSwap> swaplet = MakeVanillaSwap(
+      ext::shared_ptr<VanillaSwap> swaplet = MakeVanillaSwap(
         baseSwapsTenor,
         swapIndex, 
         baseSwapFairRate // strike
@@ -176,7 +173,7 @@ namespace QuantLib {
           ////////	    .withSettlementDays(2)
         .withEffectiveDate(swapletStart)
         .withTerminationDate(arguments_.fixedPayDates.back());
-      boost::shared_ptr<VanillaSwap> revSwaplet = MakeVanillaSwap(
+      ext::shared_ptr<VanillaSwap> revSwaplet = MakeVanillaSwap(
         baseSwapsTenor,
         swapIndex, 
         baseSwapFairRate // strike
@@ -188,9 +185,9 @@ namespace QuantLib {
         .withTerminationDate(arguments_.fixedPayDates.back());
 
       Swaption swaptionlet(swaplet, 
-        boost::make_shared<EuropeanExercise>(swapletStart));
+        ext::make_shared<EuropeanExercise>(swapletStart));
       Swaption putSwaplet(revSwaplet, 
-        boost::make_shared<EuropeanExercise>(swapletStart));
+        ext::make_shared<EuropeanExercise>(swapletStart));
       swaptionlet.setPricingEngine(swaptionletEngine_.currentLink());
       putSwaplet.setPricingEngine(swaptionletEngine_.currentLink());
 

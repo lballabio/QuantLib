@@ -17,21 +17,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/experimental/processes/klugeextouprocess.hpp>
-#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
+#include <ql/experimental/processes/extouwithjumpsprocess.hpp>
+#include <ql/experimental/processes/klugeextouprocess.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     KlugeExtOUProcess::KlugeExtOUProcess(
         Real rho,
-        const boost::shared_ptr<ExtOUWithJumpsProcess>& klugeProcess,
-        const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& ouProcess)
-    : rho_         (rho),
-      sqrtMRho_    (std::sqrt(1-rho*rho)),
-      klugeProcess_(klugeProcess),
-      ouProcess_   (ouProcess) {
+        ext::shared_ptr<ExtOUWithJumpsProcess> klugeProcess,
+        ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess)
+    : rho_(rho), sqrtMRho_(std::sqrt(1 - rho * rho)), klugeProcess_(std::move(klugeProcess)),
+      ouProcess_(std::move(ouProcess)) {
+        QL_REQUIRE(klugeProcess_, "null Kluge process");
+        QL_REQUIRE(ouProcess_, "null Ornstein-Uhlenbeck process");
     }
 
     Size KlugeExtOUProcess::size() const {
@@ -42,7 +43,7 @@ namespace QuantLib {
         return klugeProcess_->factors() + 1;
     }
 
-    Disposable<Array> KlugeExtOUProcess::initialValues() const {
+    Array KlugeExtOUProcess::initialValues() const {
         Array retVal(size());
         const Array x0 = klugeProcess_->initialValues();
         std::copy(x0.begin(), x0.end(), retVal.begin());
@@ -51,7 +52,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<Array> KlugeExtOUProcess::drift(Time t, const Array& x) const {
+    Array KlugeExtOUProcess::drift(Time t, const Array& x) const {
         Array retVal(size());
         Array mu = klugeProcess_->drift(t, x);
         std::copy(mu.begin(), mu.end(), retVal.begin());
@@ -60,8 +61,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<Matrix> KlugeExtOUProcess::diffusion(Time t, const Array& x)
-        const{
+    Matrix KlugeExtOUProcess::diffusion(Time t, const Array& x) const{
         Matrix retVal(size(), factors(), 0.0);
 
         Volatility vol = ouProcess_->diffusion(t, x.back());
@@ -73,7 +73,7 @@ namespace QuantLib {
         return retVal;
     }
 
-    Disposable<Array> KlugeExtOUProcess::evolve(Time t0, const Array& x0,
+    Array KlugeExtOUProcess::evolve(Time t0, const Array& x0,
                                                 Time dt, const Array& dw) const{
         Array retVal(size());
 
@@ -86,11 +86,11 @@ namespace QuantLib {
         return retVal;
     }
 
-    boost::shared_ptr<ExtOUWithJumpsProcess>
+    ext::shared_ptr<ExtOUWithJumpsProcess>
         KlugeExtOUProcess::getKlugeProcess() const {
         return klugeProcess_;
     }
-    boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
+    ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
         KlugeExtOUProcess::getExtOUProcess() const {
         return ouProcess_;
     }

@@ -24,9 +24,8 @@
 namespace QuantLib {
 
     void CommodityCashFlow::accept(AcyclicVisitor& v) {
-        Visitor<CommodityCashFlow>* v1 =
-            dynamic_cast<Visitor<CommodityCashFlow>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<CommodityCashFlow>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             CashFlow::accept(v);
@@ -34,27 +33,22 @@ namespace QuantLib {
 
     std::ostream& operator<<(std::ostream& out,
                              const CommodityCashFlows& cashFlows) {
-        if (cashFlows.size() == 0)
+        if (cashFlows.empty())
             return out << "no cashflows" << std::endl;
         out << "cashflows" << std::endl;
         std::string currencyCode; //= cashFlows[0]->discountedAmount().currency().code();
         Real totalDiscounted = 0;
         Real totalUndiscounted = 0;
-        for (CommodityCashFlows::const_iterator i = cashFlows.begin();
-             i != cashFlows.end(); ++i) {
-            //const boost::shared_ptr<CommodityCashFlow> cashFlow = *i;
-            const boost::shared_ptr<CommodityCashFlow> cashFlow = i->second;
+        for (const auto& i : cashFlows) {
+            //const ext::shared_ptr<CommodityCashFlow> cashFlow = *i;
+            const ext::shared_ptr<CommodityCashFlow> cashFlow = i.second;
             totalDiscounted += cashFlow->discountedAmount().value();
             totalUndiscounted += cashFlow->undiscountedAmount().value();
             //out << io::iso_date(cashFlow->date()) << " " <<
-            out << io::iso_date(i->first) << " "
-                << std::setw(16) << std::right << std::fixed
-                << std::setprecision(2) << cashFlow->discountedAmount().value()
-                << " " << currencyCode <<
-                std::setw(16) << std::right << std::fixed
-                << std::setprecision(2)
-                << cashFlow->undiscountedAmount().value() << " " <<
-                currencyCode << std::endl;
+            out << io::iso_date(i.first) << " " << std::setw(16) << std::right << std::fixed
+                << std::setprecision(2) << cashFlow->discountedAmount().value() << " "
+                << currencyCode << std::setw(16) << std::right << std::fixed << std::setprecision(2)
+                << cashFlow->undiscountedAmount().value() << " " << currencyCode << std::endl;
         }
         out << "total      "
             << std::setw(16) << std::right << std::fixed

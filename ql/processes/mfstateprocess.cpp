@@ -21,10 +21,8 @@
 
 namespace QuantLib {
 
-    MfStateProcess::MfStateProcess(Real reversion, const Array &times,
-                                   const Array &vols)
-        : reversion_(reversion), reversionZero_(false), times_(times),
-          vols_(vols) {
+    MfStateProcess::MfStateProcess(Real reversion, const Array& times, const Array& vols)
+    : reversion_(reversion), times_(times), vols_(vols) {
         if (reversion_ < QL_EPSILON && -reversion_ < QL_EPSILON)
             reversionZero_ = true;
         QL_REQUIRE(times.size() == vols.size() - 1,
@@ -63,7 +61,7 @@ namespace QuantLib {
 
         if (dt < QL_EPSILON)
             return 0.0;
-        if (times_.size() == 0)
+        if (times_.empty())
             return reversionZero_ ? dt
                                   : 1.0 / (2.0 * reversion_) *
                                         (std::exp(2.0 * reversion_ * (t + dt)) -

@@ -25,7 +25,6 @@
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/simplecashflow.hpp>
-#include <ql/time/daycounters/actualactual.hpp>
 
 using namespace std;
 
@@ -38,9 +37,8 @@ namespace QuantLib {
 
     void CatBond::setupArguments(PricingEngine::arguments* args) const {
 
-        CatBond::arguments* arguments =
-            dynamic_cast<CatBond::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong arguments type");
+        auto* arguments = dynamic_cast<CatBond::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong arguments type");
 
         Bond::setupArguments(args);
 
@@ -51,32 +49,30 @@ namespace QuantLib {
     void CatBond::fetchResults(const PricingEngine::results* r) const {
         Bond::fetchResults(r);
 
-        const CatBond::results* results =
-            dynamic_cast<const CatBond::results*>(r);
-        QL_ENSURE(results != 0, "wrong result type");
+        const auto* results = dynamic_cast<const CatBond::results*>(r);
+        QL_ENSURE(results != nullptr, "wrong result type");
 
         lossProbability_ = results->lossProbability;
         expectedLoss_ = results->expectedLoss;
         exhaustionProbability_ = results->exhaustionProbability;
     }
 
-    FloatingCatBond::FloatingCatBond(
-                           Natural settlementDays,
-                           Real faceAmount,
-                           const Schedule& schedule,
-                           const boost::shared_ptr<IborIndex>& iborIndex,
-                           const DayCounter& paymentDayCounter,
-                           boost::shared_ptr<NotionalRisk> notionalRisk,
-                           BusinessDayConvention paymentConvention,
-                           Natural fixingDays,
-                           const std::vector<Real>& gearings,
-                           const std::vector<Spread>& spreads,
-                           const std::vector<Rate>& caps,
-                           const std::vector<Rate>& floors,
-                           bool inArrears,
-                           Real redemption,
-                           const Date& issueDate)
-        : CatBond(settlementDays, schedule.calendar(), issueDate, notionalRisk) {
+    FloatingCatBond::FloatingCatBond(Natural settlementDays,
+                                     Real faceAmount,
+                                     const Schedule& schedule,
+                                     const ext::shared_ptr<IborIndex>& iborIndex,
+                                     const DayCounter& paymentDayCounter,
+                                     const ext::shared_ptr<NotionalRisk>& notionalRisk,
+                                     BusinessDayConvention paymentConvention,
+                                     Natural fixingDays,
+                                     const std::vector<Real>& gearings,
+                                     const std::vector<Spread>& spreads,
+                                     const std::vector<Rate>& caps,
+                                     const std::vector<Rate>& floors,
+                                     bool inArrears,
+                                     Real redemption,
+                                     const Date& issueDate)
+    : CatBond(settlementDays, schedule.calendar(), issueDate, notionalRisk) {
 
         maturityDate_ = schedule.endDate();
 
@@ -99,29 +95,28 @@ namespace QuantLib {
         registerWith(iborIndex);
     }
 
-    FloatingCatBond::FloatingCatBond(
-                           Natural settlementDays,
-                           Real faceAmount,
-                           const Date& startDate,
-                           const Date& maturityDate,
-                           Frequency couponFrequency,
-                           const Calendar& calendar,
-                           const boost::shared_ptr<IborIndex>& iborIndex,
-                           const DayCounter& accrualDayCounter,
-                           boost::shared_ptr<NotionalRisk> notionalRisk,
-                           BusinessDayConvention accrualConvention,
-                           BusinessDayConvention paymentConvention,
-                           Natural fixingDays,
-                           const std::vector<Real>& gearings,
-                           const std::vector<Spread>& spreads,
-                           const std::vector<Rate>& caps,
-                           const std::vector<Rate>& floors,
-                           bool inArrears,
-                           Real redemption,
-                           const Date& issueDate,
-                           const Date& stubDate,
-                           DateGeneration::Rule rule,
-                           bool endOfMonth)
+    FloatingCatBond::FloatingCatBond(Natural settlementDays,
+                                     Real faceAmount,
+                                     const Date& startDate,
+                                     const Date& maturityDate,
+                                     Frequency couponFrequency,
+                                     const Calendar& calendar,
+                                     const ext::shared_ptr<IborIndex>& iborIndex,
+                                     const DayCounter& accrualDayCounter,
+                                     const ext::shared_ptr<NotionalRisk>& notionalRisk,
+                                     BusinessDayConvention accrualConvention,
+                                     BusinessDayConvention paymentConvention,
+                                     Natural fixingDays,
+                                     const std::vector<Real>& gearings,
+                                     const std::vector<Spread>& spreads,
+                                     const std::vector<Rate>& caps,
+                                     const std::vector<Rate>& floors,
+                                     bool inArrears,
+                                     Real redemption,
+                                     const Date& issueDate,
+                                     const Date& stubDate,
+                                     DateGeneration::Rule rule,
+                                     bool endOfMonth)
     : CatBond(settlementDays, calendar, issueDate, notionalRisk) {
 
         maturityDate_ = maturityDate;

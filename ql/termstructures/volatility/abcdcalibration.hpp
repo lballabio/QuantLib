@@ -28,7 +28,7 @@
 #include <ql/math/optimization/projectedcostfunction.hpp>
 #include <ql/math/array.hpp>
 
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 
 #include <vector>
 
@@ -45,7 +45,7 @@ namespace QuantLib {
           public:
             AbcdError(AbcdCalibration* abcd) : abcd_(abcd) {}
 
-            Real value(const Array& x) const {
+            Real value(const Array& x) const override {
                 const Array y = abcd_->transformation_->direct(x);
                 abcd_->a_ = y[0];
                 abcd_->b_ = y[1];
@@ -53,7 +53,7 @@ namespace QuantLib {
                 abcd_->d_ = y[3];
                 return abcd_->error();
             }
-            Disposable<Array> values(const Array& x) const {
+            Array values(const Array& x) const override {
                 const Array y = abcd_->transformation_->direct(x);
                 abcd_->a_ = y[0];
                 abcd_->b_ = y[1];
@@ -61,6 +61,7 @@ namespace QuantLib {
                 abcd_->d_ = y[3];
                 return abcd_->errors();
             }
+
           private:
             AbcdCalibration* abcd_;
         };
@@ -69,31 +70,31 @@ namespace QuantLib {
           public:
             AbcdParametersTransformation() : y_(Array(4)) {}
             // to constrained <- from unconstrained
-            Array direct(const Array& x) const;
+            Array direct(const Array& x) const override;
             // to unconstrained <- from constrained
-            Array inverse(const Array& x) const;
+            Array inverse(const Array& x) const override;
+
           private:
             mutable Array y_;
         };
 
       public:
-        AbcdCalibration() {};
+        AbcdCalibration() = default;
+        ;
         AbcdCalibration(
-             const std::vector<Real>& t,
-             const std::vector<Real>& blackVols,
-             Real aGuess = -0.06,
-             Real bGuess =  0.17,
-             Real cGuess =  0.54,
-             Real dGuess =  0.17,
-             bool aIsFixed = false,
-             bool bIsFixed = false,
-             bool cIsFixed = false,
-             bool dIsFixed = false,
-             bool vegaWeighted = false,
-             const boost::shared_ptr<EndCriteria>& endCriteria
-                      = boost::shared_ptr<EndCriteria>(),
-             const boost::shared_ptr<OptimizationMethod>& method
-                      = boost::shared_ptr<OptimizationMethod>());
+            const std::vector<Real>& t,
+            const std::vector<Real>& blackVols,
+            Real aGuess = -0.06,
+            Real bGuess = 0.17,
+            Real cGuess = 0.54,
+            Real dGuess = 0.17,
+            bool aIsFixed = false,
+            bool bIsFixed = false,
+            bool cIsFixed = false,
+            bool dIsFixed = false,
+            bool vegaWeighted = false,
+            ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+            ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>());
         //! adjustment factors needed to match Black vols
         std::vector<Real> k(const std::vector<Real>& t,
                             const std::vector<Real>& blackVols) const;
@@ -102,7 +103,7 @@ namespace QuantLib {
         Real value(Real x) const;
         Real error() const;
         Real maxError() const;
-        Disposable<Array> errors() const;
+        Array errors() const;
         EndCriteria::Type endCriteria() const;
         Real a() const { return a_; }
         Real b() const { return b_; }
@@ -110,12 +111,12 @@ namespace QuantLib {
         Real d() const { return d_; }
         bool aIsFixed_, bIsFixed_, cIsFixed_, dIsFixed_;
         Real a_, b_, c_, d_;
-        boost::shared_ptr<ParametersTransformation> transformation_;
+        ext::shared_ptr<ParametersTransformation> transformation_;
       private:
         // optimization method used for fitting
         mutable EndCriteria::Type abcdEndCriteria_;
-        boost::shared_ptr<EndCriteria> endCriteria_;
-        boost::shared_ptr<OptimizationMethod> optMethod_;
+        ext::shared_ptr<EndCriteria> endCriteria_;
+        ext::shared_ptr<OptimizationMethod> optMethod_;
         mutable std::vector<Real> weights_;
         bool vegaWeighted_;
         //! Parameters

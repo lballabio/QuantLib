@@ -30,10 +30,8 @@ namespace QuantLib {
       public:
         // possibly different for each exercise
         virtual std::vector<Size> numberOfFunctions() const = 0;
-        std::vector<Size> numberOfData() const {
-            return numberOfFunctions();
-        }
-        virtual std::auto_ptr<MarketModelBasisSystem> clone() const = 0;
+        std::vector<Size> numberOfData() const override { return numberOfFunctions(); }
+        virtual std::unique_ptr<MarketModelBasisSystem> clone() const = 0;
     };
 
 }

@@ -59,14 +59,14 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace asset_swap_test {
 
     struct CommonVars {
         // common data
-        boost::shared_ptr<IborIndex> iborIndex;
-        boost::shared_ptr<SwapIndex> swapIndex;
-        boost::shared_ptr<IborCouponPricer> pricer;
-        boost::shared_ptr<CmsCouponPricer> cmspricer;
+        ext::shared_ptr<IborIndex> iborIndex;
+        ext::shared_ptr<SwapIndex> swapIndex;
+        ext::shared_ptr<IborCouponPricer> pricer;
+        ext::shared_ptr<CmsCouponPricer> cmspricer;
         Spread spread;
         Spread nonnullspread;
         Real faceAmount;
@@ -85,14 +85,14 @@ namespace {
             compounding = Continuous;
             Frequency fixedFrequency = Annual;
             Frequency floatingFrequency = Semiannual;
-            iborIndex = boost::shared_ptr<IborIndex>(
+            iborIndex = ext::shared_ptr<IborIndex>(
                      new Euribor(Period(floatingFrequency), termStructure));
             Calendar calendar = iborIndex->fixingCalendar();
-            swapIndex= boost::shared_ptr<SwapIndex>(
-                new SwapIndex("EuriborSwapIsdaFixA", 10*Years, swapSettlementDays,
+            swapIndex= ext::make_shared<SwapIndex>(
+                "EuriborSwapIsdaFixA", 10*Years, swapSettlementDays,
                               iborIndex->currency(), calendar,
                               Period(fixedFrequency), fixedConvention,
-                              iborIndex->dayCounter(), iborIndex));
+                              iborIndex->dayCounter(), iborIndex);
             spread = 0.0;
             nonnullspread = 0.003;
             Date today(24,April,2007);
@@ -101,15 +101,15 @@ namespace {
             //Date today = Settings::instance().evaluationDate();
 
             termStructure.linkTo(flatRate(today, 0.05, Actual365Fixed()));
-            pricer = boost::shared_ptr<IborCouponPricer>(new
+            pricer = ext::shared_ptr<IborCouponPricer>(new
                                                         BlackIborCouponPricer);
             Handle<SwaptionVolatilityStructure> swaptionVolatilityStructure(
-                boost::shared_ptr<SwaptionVolatilityStructure>(new
+                ext::shared_ptr<SwaptionVolatilityStructure>(new
                     ConstantSwaptionVolatility(today, NullCalendar(),Following,
                                                0.2, Actual365Fixed())));
-            Handle<Quote> meanReversionQuote(boost::shared_ptr<Quote>(new
+            Handle<Quote> meanReversionQuote(ext::shared_ptr<Quote>(new
                 SimpleQuote(0.01)));
-            cmspricer = boost::shared_ptr<CmsCouponPricer>(new
+            cmspricer = ext::shared_ptr<CmsCouponPricer>(new
                 AnalyticHaganPricer(swaptionVolatilityStructure,
                                     GFunctionFactory::Standard,
                                     meanReversionQuote));
@@ -121,6 +121,8 @@ namespace {
 void AssetSwapTest::testConsistency() {
     BOOST_TEST_MESSAGE(
                  "Testing consistency between fair price and fair spread...");
+
+    using namespace asset_swap_test;
 
     CommonVars vars;
 
@@ -135,7 +137,7 @@ void AssetSwapTest::testConsistency() {
                           Period(Annual), bondCalendar,
                           Unadjusted, Unadjusted,
                           DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> bond(new
+    ext::shared_ptr<Bond> bond(new
         FixedRateBond(settlementDays, vars.faceAmount,
                       bondSchedule,
                       std::vector<Rate>(1, 0.04),
@@ -154,7 +156,7 @@ void AssetSwapTest::testConsistency() {
                          vars.iborIndex->dayCounter(),
                          isPar);
 
-    boost::shared_ptr<PricingEngine> swapEngine(new
+    ext::shared_ptr<PricingEngine> swapEngine(new
         DiscountingSwapEngine(vars.termStructure,
                               true,
                               bond->settlementDate(),
@@ -175,7 +177,7 @@ void AssetSwapTest::testConsistency() {
     assetSwap2.setPricingEngine(swapEngine);
     if (std::fabs(assetSwap2.NPV())>tolerance) {
         BOOST_FAIL("\npar asset swap fair clean price doesn't zero the NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  clean price:      " << bondPrice <<
                    "\n  fair clean price: " << fairCleanPrice <<
                    "\n  NPV:              " << assetSwap2.NPV() <<
@@ -184,7 +186,7 @@ void AssetSwapTest::testConsistency() {
     if (std::fabs(assetSwap2.fairCleanPrice() - fairCleanPrice)>tolerance) {
         BOOST_FAIL("\npar asset swap fair clean price doesn't equal input "
                    "clean price at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input clean price: " << fairCleanPrice <<
                    "\n  fair clean price:  " << assetSwap2.fairCleanPrice() <<
                    "\n  NPV:               " << assetSwap2.NPV() <<
@@ -192,7 +194,7 @@ void AssetSwapTest::testConsistency() {
     }
     if (std::fabs(assetSwap2.fairSpread() - vars.spread)>tolerance) {
         BOOST_FAIL("\npar asset swap fair spread doesn't equal input spread "
-                   "at zero NPV: " << QL_FIXED << std::setprecision(4) <<
+                   "at zero NPV: " << std::fixed << std::setprecision(4) <<
                    "\n  input spread: " << vars.spread <<
                    "\n  fair spread:  " << assetSwap2.fairSpread() <<
                    "\n  NPV:          " << assetSwap2.NPV() <<
@@ -208,7 +210,7 @@ void AssetSwapTest::testConsistency() {
     assetSwap3.setPricingEngine(swapEngine);
     if (std::fabs(assetSwap3.NPV())>tolerance) {
         BOOST_FAIL("\npar asset swap fair spread doesn't zero the NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  spread:      " << vars.spread <<
                    "\n  fair spread: " << fairSpread <<
                    "\n  NPV:         " << assetSwap3.NPV() <<
@@ -217,7 +219,7 @@ void AssetSwapTest::testConsistency() {
     if (std::fabs(assetSwap3.fairCleanPrice() - bondPrice)>tolerance) {
         BOOST_FAIL("\npar asset swap fair clean price doesn't equal input "
                    "clean price at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input clean price: " << bondPrice <<
                    "\n  fair clean price:  " << assetSwap3.fairCleanPrice() <<
                    "\n  NPV:               " << assetSwap3.NPV() <<
@@ -225,7 +227,7 @@ void AssetSwapTest::testConsistency() {
     }
     if (std::fabs(assetSwap3.fairSpread() - fairSpread)>tolerance) {
         BOOST_FAIL("\npar asset swap fair spread doesn't equal input spread at"
-                   " zero NPV: " << QL_FIXED << std::setprecision(4) <<
+                   " zero NPV: " << std::fixed << std::setprecision(4) <<
                    "\n  input spread: " << fairSpread <<
                    "\n  fair spread:  " << assetSwap3.fairSpread() <<
                    "\n  NPV:          " << assetSwap3.NPV() <<
@@ -233,7 +235,7 @@ void AssetSwapTest::testConsistency() {
     }
 
     // let's change the npv date
-    swapEngine = boost::shared_ptr<PricingEngine>(new
+    swapEngine = ext::shared_ptr<PricingEngine>(new
         DiscountingSwapEngine(vars.termStructure,
                               true,
                               bond->settlementDate(),
@@ -243,14 +245,14 @@ void AssetSwapTest::testConsistency() {
     // fair clean price and fair spread should not change
     if (std::fabs(parAssetSwap.fairCleanPrice() - fairCleanPrice)>tolerance) {
         BOOST_FAIL("\npar asset swap fair clean price changed with NpvDate:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n expected clean price: " << fairCleanPrice <<
                    "\n fair clean price:     "<<parAssetSwap.fairCleanPrice()<<
                    "\n tolerance:            " << tolerance);
     }
     if (std::fabs(parAssetSwap.fairSpread() - fairSpread)>tolerance) {
         BOOST_FAIL("\npar asset swap fair spread changed with NpvDate:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  expected spread: " << fairSpread <<
                    "\n  fair spread:     " << parAssetSwap.fairSpread() <<
                    "\n  tolerance:       " << tolerance);
@@ -265,7 +267,7 @@ void AssetSwapTest::testConsistency() {
     assetSwap2.setPricingEngine(swapEngine);
     if (std::fabs(assetSwap2.NPV())>tolerance) {
         BOOST_FAIL("\npar asset swap fair clean price doesn't zero the NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  clean price:      " << bondPrice <<
                    "\n  fair clean price: " << fairCleanPrice <<
                    "\n  NPV:              " << assetSwap2.NPV() <<
@@ -274,7 +276,7 @@ void AssetSwapTest::testConsistency() {
     if (std::fabs(assetSwap2.fairCleanPrice() - fairCleanPrice)>tolerance) {
         BOOST_FAIL("\npar asset swap fair clean price doesn't equal input "
                    "clean price at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input clean price: " << fairCleanPrice <<
                    "\n  fair clean price:  " << assetSwap2.fairCleanPrice() <<
                    "\n  NPV:               " << assetSwap2.NPV() <<
@@ -282,7 +284,7 @@ void AssetSwapTest::testConsistency() {
     }
     if (std::fabs(assetSwap2.fairSpread() - vars.spread)>tolerance) {
         BOOST_FAIL("\npar asset swap fair spread doesn't equal input spread at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input spread: " << vars.spread <<
                    "\n  fair spread:  " << assetSwap2.fairSpread() <<
                    "\n  NPV:          " << assetSwap2.NPV() <<
@@ -298,7 +300,7 @@ void AssetSwapTest::testConsistency() {
     assetSwap3.setPricingEngine(swapEngine);
     if (std::fabs(assetSwap3.NPV())>tolerance) {
         BOOST_FAIL("\npar asset swap fair spread doesn't zero the NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  spread:      " << vars.spread <<
                    "\n  fair spread: " << fairSpread <<
                    "\n  NPV:         " << assetSwap3.NPV() <<
@@ -307,7 +309,7 @@ void AssetSwapTest::testConsistency() {
     if (std::fabs(assetSwap3.fairCleanPrice() - bondPrice)>tolerance) {
         BOOST_FAIL("\npar asset swap fair clean price doesn't equal input "
                    "clean price at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input clean price: " << bondPrice <<
                    "\n  fair clean price:  " << assetSwap3.fairCleanPrice() <<
                    "\n  NPV:               " << assetSwap3.NPV() <<
@@ -315,7 +317,7 @@ void AssetSwapTest::testConsistency() {
     }
     if (std::fabs(assetSwap3.fairSpread() - fairSpread)>tolerance) {
         BOOST_FAIL("\npar asset swap fair spread doesn't equal input spread at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input spread: " << fairSpread <<
                    "\n  fair spread:  " << assetSwap3.fairSpread() <<
                    "\n  NPV:          " << assetSwap3.NPV() <<
@@ -335,7 +337,7 @@ void AssetSwapTest::testConsistency() {
                            vars.iborIndex->dayCounter(),
                            isPar);
 
-    swapEngine = boost::shared_ptr<PricingEngine>(new
+    swapEngine = ext::shared_ptr<PricingEngine>(new
         DiscountingSwapEngine(vars.termStructure,
                               true,
                               bond->settlementDate(),
@@ -354,7 +356,7 @@ void AssetSwapTest::testConsistency() {
     assetSwap4.setPricingEngine(swapEngine);
     if (std::fabs(assetSwap4.NPV())>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair clean price doesn't zero the NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  clean price:      " << bondPrice <<
                    "\n  fair clean price: " << fairCleanPrice <<
                    "\n  NPV:              " << assetSwap4.NPV() <<
@@ -363,7 +365,7 @@ void AssetSwapTest::testConsistency() {
     if (std::fabs(assetSwap4.fairCleanPrice() - fairCleanPrice)>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair clean price doesn't equal input "
                    "clean price at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input clean price: " << fairCleanPrice <<
                    "\n  fair clean price:  " << assetSwap4.fairCleanPrice() <<
                    "\n  NPV:               " << assetSwap4.NPV() <<
@@ -371,7 +373,7 @@ void AssetSwapTest::testConsistency() {
     }
     if (std::fabs(assetSwap4.fairSpread() - vars.spread)>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair spread doesn't equal input spread"
-                   " at zero NPV: " << QL_FIXED << std::setprecision(4) <<
+                   " at zero NPV: " << std::fixed << std::setprecision(4) <<
                    "\n  input spread: " << vars.spread <<
                    "\n  fair spread:  " << assetSwap4.fairSpread() <<
                    "\n  NPV:          " << assetSwap4.NPV() <<
@@ -387,7 +389,7 @@ void AssetSwapTest::testConsistency() {
     assetSwap5.setPricingEngine(swapEngine);
     if (std::fabs(assetSwap5.NPV())>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair spread doesn't zero the NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  spread:      " << vars.spread <<
                    "\n  fair spread: " << fairSpread <<
                    "\n  NPV:         " << assetSwap5.NPV() <<
@@ -396,7 +398,7 @@ void AssetSwapTest::testConsistency() {
     if (std::fabs(assetSwap5.fairCleanPrice() - bondPrice)>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair clean price doesn't equal input "
                    "clean price at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input clean price: " << bondPrice <<
                    "\n  fair clean price:  " << assetSwap5.fairCleanPrice() <<
                    "\n  NPV:               " << assetSwap5.NPV() <<
@@ -404,7 +406,7 @@ void AssetSwapTest::testConsistency() {
     }
     if (std::fabs(assetSwap5.fairSpread() - fairSpread)>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair spread doesn't equal input spread at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input spread: " << fairSpread <<
                    "\n  fair spread:  " << assetSwap5.fairSpread() <<
                    "\n  NPV:          " << assetSwap5.NPV() <<
@@ -412,7 +414,7 @@ void AssetSwapTest::testConsistency() {
     }
 
     // let's change the npv date
-    swapEngine = boost::shared_ptr<PricingEngine>(new
+    swapEngine = ext::shared_ptr<PricingEngine>(new
         DiscountingSwapEngine(vars.termStructure,
                               true,
                               bond->settlementDate(),
@@ -422,14 +424,14 @@ void AssetSwapTest::testConsistency() {
     // fair clean price and fair spread should not change
     if (std::fabs(mktAssetSwap.fairCleanPrice() - fairCleanPrice)>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair clean price changed with NpvDate:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  expected clean price: " << fairCleanPrice <<
                    "\n  fair clean price:  " << mktAssetSwap.fairCleanPrice() <<
                    "\n  tolerance:         " << tolerance);
     }
     if (std::fabs(mktAssetSwap.fairSpread() - fairSpread)>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair spread changed with NpvDate:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  expected spread: " << fairSpread <<
                    "\n  fair spread:  " << mktAssetSwap.fairSpread() <<
                    "\n  tolerance:    " << tolerance);
@@ -444,7 +446,7 @@ void AssetSwapTest::testConsistency() {
     assetSwap4.setPricingEngine(swapEngine);
     if (std::fabs(assetSwap4.NPV())>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair clean price doesn't zero the NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  clean price:      " << bondPrice <<
                    "\n  fair clean price: " << fairCleanPrice <<
                    "\n  NPV:              " << assetSwap4.NPV() <<
@@ -453,7 +455,7 @@ void AssetSwapTest::testConsistency() {
     if (std::fabs(assetSwap4.fairCleanPrice() - fairCleanPrice)>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair clean price doesn't equal input "
                    "clean price at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input clean price: " << fairCleanPrice <<
                    "\n  fair clean price:  " << assetSwap4.fairCleanPrice() <<
                    "\n  NPV:               " << assetSwap4.NPV() <<
@@ -461,7 +463,7 @@ void AssetSwapTest::testConsistency() {
     }
     if (std::fabs(assetSwap4.fairSpread() - vars.spread)>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair spread doesn't equal input spread at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input spread: " << vars.spread <<
                    "\n  fair spread:  " << assetSwap4.fairSpread() <<
                    "\n  NPV:          " << assetSwap4.NPV() <<
@@ -477,7 +479,7 @@ void AssetSwapTest::testConsistency() {
     assetSwap5.setPricingEngine(swapEngine);
     if (std::fabs(assetSwap5.NPV())>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair spread doesn't zero the NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  spread:      " << vars.spread <<
                    "\n  fair spread: " << fairSpread <<
                    "\n  NPV:         " << assetSwap5.NPV() <<
@@ -486,7 +488,7 @@ void AssetSwapTest::testConsistency() {
     if (std::fabs(assetSwap5.fairCleanPrice() - bondPrice)>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair clean price doesn't equal input "
                    "clean price at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input clean price: " << bondPrice <<
                    "\n  fair clean price:  " << assetSwap5.fairCleanPrice() <<
                    "\n  NPV:               " << assetSwap5.NPV() <<
@@ -494,7 +496,7 @@ void AssetSwapTest::testConsistency() {
     }
     if (std::fabs(assetSwap5.fairSpread() - fairSpread)>tolerance) {
         BOOST_FAIL("\nmarket asset swap fair spread doesn't equal input spread at zero NPV: " <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  input spread: " << fairSpread <<
                    "\n  fair spread:  " << assetSwap5.fairSpread() <<
                    "\n  NPV:          " << assetSwap5.NPV() <<
@@ -507,6 +509,10 @@ void AssetSwapTest::testImpliedValue() {
 
     BOOST_TEST_MESSAGE("Testing implied bond value against asset-swap fair"
                        " price with null spread...");
+
+    using namespace asset_swap_test;
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
 
@@ -525,7 +531,7 @@ void AssetSwapTest::testImpliedValue() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> fixedBond1(
+    ext::shared_ptr<Bond> fixedBond1(
                          new FixedRateBond(settlementDays, vars.faceAmount,
                                            fixedBondSchedule1,
                                            std::vector<Rate>(1, 0.04),
@@ -533,9 +539,9 @@ void AssetSwapTest::testImpliedValue() {
                                            Following,
                                            100.0, Date(4,January,2005)));
 
-    boost::shared_ptr<PricingEngine> bondEngine(
+    ext::shared_ptr<PricingEngine> bondEngine(
                             new DiscountingBondEngine(vars.termStructure));
-    boost::shared_ptr<PricingEngine> swapEngine(
+    ext::shared_ptr<PricingEngine> swapEngine(
                             new DiscountingSwapEngine(vars.termStructure));
     fixedBond1->setPricingEngine(bondEngine);
 
@@ -555,20 +561,16 @@ void AssetSwapTest::testImpliedValue() {
     // correct though, only we can not compare it to the bond price
     // directly. The same kind of discrepancy will occur for a multi
     // curve set up, which we do not test here.
-#if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance2 = 1.0e-2;
-#else
-    Real tolerance2 = 1.0e-13;
-#endif
+    Real tolerance2 = usingAtParCoupons ? 1.0e-13 : 1.0e-2;
 
     Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
 
     if (error1>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for fixed bond:" <<
-                    QL_FIXED << std::setprecision(4) <<
+                    std::fixed << std::setprecision(4) <<
                     "\n  bond's clean price:    " << fixedBondPrice1 <<
                     "\n  asset swap fair price: " << fixedBondAssetSwapPrice1 <<
-                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    std::scientific << std::setprecision(2) <<
                     "\n  error:                 " << error1 <<
                     "\n  tolerance:             " << tolerance2);
     }
@@ -581,7 +583,7 @@ void AssetSwapTest::testImpliedValue() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> fixedBond2(
+    ext::shared_ptr<Bond> fixedBond2(
                          new FixedRateBond(settlementDays, vars.faceAmount,
                                            fixedBondSchedule2,
                                            std::vector<Rate>(1, 0.05),
@@ -604,10 +606,10 @@ void AssetSwapTest::testImpliedValue() {
 
     if (error2>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for fixed bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  bond's clean price:    " << fixedBondPrice2 <<
                    "\n  asset swap fair price: " << fixedBondAssetSwapPrice2 <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:                 " << error2 <<
                    "\n  tolerance:             " << tolerance2);
     }
@@ -621,7 +623,7 @@ void AssetSwapTest::testImpliedValue() {
                                    Unadjusted, Unadjusted,
                                    DateGeneration::Backward, false);
 
-    boost::shared_ptr<Bond> floatingBond1(
+    ext::shared_ptr<Bond> floatingBond1(
                       new FloatingRateBond(settlementDays, vars.faceAmount,
                                            floatingBondSchedule1,
                                            vars.iborIndex, Actual360(),
@@ -650,10 +652,10 @@ void AssetSwapTest::testImpliedValue() {
 
     if (error3>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for floater:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  bond's clean price:    " << floatingBondPrice1 <<
                    "\n  asset swap fair price: " << floatingBondAssetSwapPrice1 <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:                 " << error3 <<
                    "\n  tolerance:             " << tolerance2);
     }
@@ -666,7 +668,7 @@ void AssetSwapTest::testImpliedValue() {
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> floatingBond2(
+    ext::shared_ptr<Bond> floatingBond2(
                       new FloatingRateBond(settlementDays, vars.faceAmount,
                                            floatingBondSchedule2,
                                            vars.iborIndex, Actual360(),
@@ -687,12 +689,12 @@ void AssetSwapTest::testImpliedValue() {
     Real error4= std::fabs(floatingCurrentCoupon-currentCoupon);
     if (error4>tolerance) {
         BOOST_FAIL("wrong current coupon is returned for floater bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  bond's calculated current coupon:      " <<
                    currentCoupon <<
                    "\n  current coupon asked to the bond: " <<
                    floatingCurrentCoupon <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:                 " << error4 <<
                    "\n  tolerance:             " << tolerance);
     }
@@ -710,10 +712,10 @@ void AssetSwapTest::testImpliedValue() {
 
     if (error5>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for floater:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  bond's clean price:    " << floatingBondPrice2 <<
                    "\n  asset swap fair price: " << floatingBondAssetSwapPrice2 <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:                 " << error5 <<
                    "\n  tolerance:             " << tolerance2);
     }
@@ -726,10 +728,10 @@ void AssetSwapTest::testImpliedValue() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> cmsBond1(
+    ext::shared_ptr<Bond> cmsBond1(
                           new CmsRateBond(settlementDays, vars.faceAmount,
                                           cmsBondSchedule1,
-                                          vars.swapIndex, Thirty360(),
+                                          vars.swapIndex, Thirty360(Thirty360::BondBasis),
                                           Following, fixingDays,
                                           std::vector<Real>(1,1.0),
                                           std::vector<Spread>(1,0.0),
@@ -755,10 +757,10 @@ void AssetSwapTest::testImpliedValue() {
 
     if (error6>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for cms bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  bond's clean price:    " << cmsBondPrice1 <<
                    "\n  asset swap fair price: " << cmsBondAssetSwapPrice1 <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:                 " << error6 <<
                    "\n  tolerance:             " << tolerance2);
     }
@@ -771,9 +773,9 @@ void AssetSwapTest::testImpliedValue() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> cmsBond2(new
+    ext::shared_ptr<Bond> cmsBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
-                    vars.swapIndex, Thirty360(),
+                    vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(), std::vector<Rate>(),
@@ -797,10 +799,10 @@ void AssetSwapTest::testImpliedValue() {
 
     if (error7>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for cms bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  bond's clean price:    " << cmsBondPrice2 <<
                    "\n  asset swap fair price: " << cmsBondAssetSwapPrice2 <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:                 " << error7 <<
                    "\n  tolerance:             " << tolerance2);
     }
@@ -808,7 +810,7 @@ void AssetSwapTest::testImpliedValue() {
     // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
 
-    boost::shared_ptr<Bond> zeroCpnBond1(new
+    ext::shared_ptr<Bond> zeroCpnBond1(new
         ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
                        Date(20,December,2015),
                        Following,
@@ -829,10 +831,10 @@ void AssetSwapTest::testImpliedValue() {
 
     if (error8>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for zero cpn bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  bond's clean price:    " << zeroCpnBondPrice1 <<
                    "\n  asset swap fair price: " << zeroCpnBondAssetSwapPrice1 <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:                 " << error8 <<
                    "\n  tolerance:             " << tolerance2);
     }
@@ -840,7 +842,7 @@ void AssetSwapTest::testImpliedValue() {
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity occurs on a business day
 
-    boost::shared_ptr<Bond> zeroCpnBond2(new
+    ext::shared_ptr<Bond> zeroCpnBond2(new
         ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
                        Date(17,February,2028),
                        Following,
@@ -861,10 +863,10 @@ void AssetSwapTest::testImpliedValue() {
 
     if (error9>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for zero cpn bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  bond's clean price:      " << zeroCpnBondPrice2 <<
                    "\n  asset swap fair price:   " << zeroCpnBondAssetSwapPrice2 <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:                   " << error9 <<
                    "\n  tolerance:               " << tolerance2);
     }
@@ -875,6 +877,10 @@ void AssetSwapTest::testMarketASWSpread() {
 
     BOOST_TEST_MESSAGE("Testing relationship between market asset swap"
                        " and par asset swap...");
+
+    using namespace asset_swap_test;
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
 
@@ -894,15 +900,15 @@ void AssetSwapTest::testMarketASWSpread() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> fixedBond1(new
+    ext::shared_ptr<Bond> fixedBond1(new
         FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
                       ActualActual(ActualActual::ISDA), Following,
                       100.0, Date(4,January,2005)));
 
-    boost::shared_ptr<PricingEngine> bondEngine(
+    ext::shared_ptr<PricingEngine> bondEngine(
                             new DiscountingBondEngine(vars.termStructure));
-    boost::shared_ptr<PricingEngine> swapEngine(
+    ext::shared_ptr<PricingEngine> swapEngine(
                             new DiscountingSwapEngine(vars.termStructure));
     fixedBond1->setPricingEngine(bondEngine);
 
@@ -926,11 +932,7 @@ void AssetSwapTest::testMarketASWSpread() {
     Real fixedBondMktAssetSwapSpread1 = fixedBondMktAssetSwap1.fairSpread();
 
     // see comment above
-#if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance2 = 1.0e-4;
-#else
-    Real tolerance2 = 1.0e-13;
-#endif
+    Real tolerance2 = usingAtParCoupons ? 1.0e-13 : 1.0e-4;
 
     Real error1 =
         std::fabs(fixedBondMktAssetSwapSpread1-
@@ -938,10 +940,10 @@ void AssetSwapTest::testMarketASWSpread() {
 
     if (error1>tolerance2) {
         BOOST_FAIL("wrong asset swap spreads for fixed bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  market ASW spread: " << io::rate(fixedBondMktAssetSwapSpread1) <<
                    "\n  par ASW spread:    " << io::rate(fixedBondParAssetSwapSpread1) <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:             " << error1 <<
                    "\n  tolerance:         " << tolerance2);
     }
@@ -954,7 +956,7 @@ void AssetSwapTest::testMarketASWSpread() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> fixedBond2(new
+    ext::shared_ptr<Bond> fixedBond2(new
         FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
                       Thirty360(Thirty360::BondBasis), Following,
@@ -986,10 +988,10 @@ void AssetSwapTest::testMarketASWSpread() {
 
     if (error2>tolerance2) {
         BOOST_FAIL("wrong asset swap spreads for fixed bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  market ASW spread: " << io::rate(fixedBondMktAssetSwapSpread2) <<
                    "\n  par ASW spread:    " << io::rate(fixedBondParAssetSwapSpread2) <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:             " << error2 <<
                    "\n  tolerance:         " << tolerance2);
     }
@@ -1003,7 +1005,7 @@ void AssetSwapTest::testMarketASWSpread() {
                                    Unadjusted, Unadjusted,
                                    DateGeneration::Backward, false);
 
-    boost::shared_ptr<Bond> floatingBond1(new
+    ext::shared_ptr<Bond> floatingBond1(new
         FloatingRateBond(settlementDays, vars.faceAmount,
                          floatingBondSchedule1,
                          vars.iborIndex, Actual360(),
@@ -1045,10 +1047,10 @@ void AssetSwapTest::testMarketASWSpread() {
 
     if (error3>tolerance2) {
         BOOST_FAIL("wrong asset swap spreads for floating bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  market ASW spread: " << io::rate(floatingBondMktAssetSwapSpread1) <<
                    "\n  par ASW spread:    " << io::rate(floatingBondParAssetSwapSpread1) <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:             " << error3 <<
                    "\n  tolerance:         " << tolerance2);
     }
@@ -1061,7 +1063,7 @@ void AssetSwapTest::testMarketASWSpread() {
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> floatingBond2(new
+    ext::shared_ptr<Bond> floatingBond2(new
         FloatingRateBond(settlementDays, vars.faceAmount,
                          floatingBondSchedule2,
                          vars.iborIndex, Actual360(),
@@ -1103,10 +1105,10 @@ void AssetSwapTest::testMarketASWSpread() {
 
     if (error4>tolerance2) {
         BOOST_FAIL("wrong asset swap spreads for floating bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  market ASW spread: " << io::rate(floatingBondMktAssetSwapSpread2) <<
                    "\n  par ASW spread:    " << io::rate(floatingBondParAssetSwapSpread2) <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:             " << error4 <<
                    "\n  tolerance:         " << tolerance2);
     }
@@ -1119,9 +1121,9 @@ void AssetSwapTest::testMarketASWSpread() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> cmsBond1(new
+    ext::shared_ptr<Bond> cmsBond1(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
-                    vars.swapIndex, Thirty360(),
+                    vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
@@ -1156,10 +1158,10 @@ void AssetSwapTest::testMarketASWSpread() {
 
     if (error5>tolerance2) {
         BOOST_FAIL("wrong asset swap spreads for cms bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  market ASW spread: " << io::rate(cmsBondMktAssetSwapSpread1) <<
                    "\n  par ASW spread:    " << io::rate(cmsBondParAssetSwapSpread1) <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:             " << error5 <<
                    "\n  tolerance:         " << tolerance2);
     }
@@ -1172,9 +1174,9 @@ void AssetSwapTest::testMarketASWSpread() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> cmsBond2(new
+    ext::shared_ptr<Bond> cmsBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
-                    vars.swapIndex, Thirty360(),
+                    vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(), std::vector<Rate>(),
@@ -1209,10 +1211,10 @@ void AssetSwapTest::testMarketASWSpread() {
 
     if (error6>tolerance2) {
         BOOST_FAIL("wrong asset swap spreads for cms bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  market ASW spread: " << io::rate(cmsBondMktAssetSwapSpread2) <<
                    "\n  par ASW spread:    " << io::rate(cmsBondParAssetSwapSpread2) <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:             " << error6 <<
                    "\n  tolerance:         " << tolerance2);
     }
@@ -1220,7 +1222,7 @@ void AssetSwapTest::testMarketASWSpread() {
     // Zero Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
 
-    boost::shared_ptr<Bond> zeroCpnBond1(new
+    ext::shared_ptr<Bond> zeroCpnBond1(new
         ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
                        Date(20,December,2015),
                        Following,
@@ -1254,10 +1256,10 @@ void AssetSwapTest::testMarketASWSpread() {
 
     if (error7>tolerance2) {
         BOOST_FAIL("wrong asset swap spreads for zero cpn bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  market ASW spread: " << io::rate(zeroCpnBondMktAssetSwapSpread1) <<
                    "\n  par ASW spread:    " << io::rate(zeroCpnBondParAssetSwapSpread1) <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:             " << error7 <<
                    "\n  tolerance:         " << tolerance2);
     }
@@ -1265,7 +1267,7 @@ void AssetSwapTest::testMarketASWSpread() {
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity occurs on a business day
 
-    boost::shared_ptr<Bond> zeroCpnBond2(new
+    ext::shared_ptr<Bond> zeroCpnBond2(new
         ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
                        Date(17,February,2028),
                        Following,
@@ -1301,10 +1303,10 @@ void AssetSwapTest::testMarketASWSpread() {
 
     if (error8>tolerance2) {
         BOOST_FAIL("wrong asset swap spreads for zero cpn bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  market ASW spread: " << io::rate(zeroCpnBondMktAssetSwapSpread2) <<
                    "\n  par ASW spread:    " << io::rate(zeroCpnBondParAssetSwapSpread2) <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:             " << error8 <<
                    "\n  tolerance:         " << tolerance2);
     }
@@ -1315,6 +1317,8 @@ void AssetSwapTest::testZSpread() {
 
     BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
                        "against theoretical prices...");
+
+    using namespace asset_swap_test;
 
     CommonVars vars;
 
@@ -1331,13 +1335,13 @@ void AssetSwapTest::testZSpread() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> fixedBond1(new
+    ext::shared_ptr<Bond> fixedBond1(new
         FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
                       ActualActual(ActualActual::ISDA), Following,
                       100.0, Date(4,January,2005)));
 
-    boost::shared_ptr<PricingEngine> bondEngine(
+    ext::shared_ptr<PricingEngine> bondEngine(
                             new DiscountingBondEngine(vars.termStructure));
     fixedBond1->setPricingEngine(bondEngine);
 
@@ -1353,11 +1357,11 @@ void AssetSwapTest::testZSpread() {
     Real error1 = std::fabs(fixedBondImpliedValue1-fixedBondCleanPrice1);
     if (error1>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  market asset swap spread: " <<
                    fixedBondImpliedValue1 <<
                    "\n  par asset swap spread: " << fixedBondCleanPrice1 <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:                 " << error1 <<
                    "\n  tolerance:             " << tolerance);
     }
@@ -1370,7 +1374,7 @@ void AssetSwapTest::testZSpread() {
                                 Period(Annual), bondCalendar,
                                 Unadjusted, Unadjusted,
                                 DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> fixedBond2(new
+    ext::shared_ptr<Bond> fixedBond2(new
         FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
                       Thirty360(Thirty360::BondBasis), Following,
@@ -1389,11 +1393,11 @@ void AssetSwapTest::testZSpread() {
     Real error3 = std::fabs(fixedBondImpliedValue2-fixedBondCleanPrice2);
     if (error3>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  market asset swap spread: " <<
                    fixedBondImpliedValue2 <<
                    "\n  par asset swap spread: " << fixedBondCleanPrice2 <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:                 " << error3 <<
                    "\n  tolerance:             " << tolerance);
     }
@@ -1407,7 +1411,7 @@ void AssetSwapTest::testZSpread() {
                                    Unadjusted, Unadjusted,
                                    DateGeneration::Backward, false);
 
-    boost::shared_ptr<Bond> floatingBond1(new
+    ext::shared_ptr<Bond> floatingBond1(new
         FloatingRateBond(settlementDays, vars.faceAmount,
                          floatingBondSchedule1,
                          vars.iborIndex, Actual360(),
@@ -1431,11 +1435,11 @@ void AssetSwapTest::testZSpread() {
     Real error5 = std::fabs(floatingBondImpliedValue1-floatingBondCleanPrice1);
     if (error5>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:" <<
-                   QL_FIXED << std::setprecision(4) <<
+                   std::fixed << std::setprecision(4) <<
                    "\n  market asset swap spread: " <<
                    floatingBondImpliedValue1 <<
                    "\n  par asset swap spread: " << floatingBondCleanPrice1 <<
-                   QL_SCIENTIFIC << std::setprecision(2) <<
+                   std::scientific << std::setprecision(2) <<
                    "\n  error:                 " << error5 <<
                    "\n  tolerance:             " << tolerance);
     }
@@ -1448,7 +1452,7 @@ void AssetSwapTest::testZSpread() {
                                    Period(Semiannual), bondCalendar,
                                    ModifiedFollowing, ModifiedFollowing,
                                    DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> floatingBond2(new
+    ext::shared_ptr<Bond> floatingBond2(new
         FloatingRateBond(settlementDays, vars.faceAmount,
                          floatingBondSchedule2,
                          vars.iborIndex, Actual360(),
@@ -1472,11 +1476,11 @@ void AssetSwapTest::testZSpread() {
     Real error7 = std::fabs(floatingBondImpliedValue2-floatingBondCleanPrice2);
     if (error7>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  market asset swap spread: " <<
                     floatingBondImpliedValue2
                     << "\n  par asset swap spread: " << floatingBondCleanPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error7
                     << "\n  tolerance:             " << tolerance);
     }
@@ -1489,9 +1493,9 @@ void AssetSwapTest::testZSpread() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> cmsBond1(new
+    ext::shared_ptr<Bond> cmsBond1(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
-                    vars.swapIndex, Thirty360(),
+                    vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
@@ -1513,10 +1517,10 @@ void AssetSwapTest::testZSpread() {
     Real error9 = std::fabs(cmsBondImpliedValue1-cmsBondCleanPrice1);
     if (error9>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  market asset swap spread: " << cmsBondImpliedValue1
                     << "\n  par asset swap spread: " << cmsBondCleanPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error9
                     << "\n  tolerance:             " << tolerance);
     }
@@ -1529,9 +1533,9 @@ void AssetSwapTest::testZSpread() {
                               Period(Annual), bondCalendar,
                               Unadjusted, Unadjusted,
                               DateGeneration::Backward, false);
-    boost::shared_ptr<Bond> cmsBond2(new
+    ext::shared_ptr<Bond> cmsBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
-                    vars.swapIndex, Thirty360(),
+                    vars.swapIndex, Thirty360(Thirty360::BondBasis),
                     Following, fixingDays,
                     std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                     std::vector<Rate>(), std::vector<Rate>(),
@@ -1553,10 +1557,10 @@ void AssetSwapTest::testZSpread() {
     Real error11 = std::fabs(cmsBondImpliedValue2-cmsBondCleanPrice2);
     if (error11>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  market asset swap spread: " << cmsBondImpliedValue2
                     << "\n  par asset swap spread: " << cmsBondCleanPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error11
                     << "\n  tolerance:             " << tolerance);
     }
@@ -1564,7 +1568,7 @@ void AssetSwapTest::testZSpread() {
     // Zero-Coupon bond (Isin: DE0004771662 IBRD 0 12/20/15)
     // maturity doesn't occur on a business day
 
-    boost::shared_ptr<Bond> zeroCpnBond1(new
+    ext::shared_ptr<Bond> zeroCpnBond1(new
         ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
                        Date(20,December,2015),
                        Following,
@@ -1586,11 +1590,11 @@ void AssetSwapTest::testZSpread() {
     Real error13 = std::fabs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
     if (error13>tolerance) {
         BOOST_FAIL("wrong clean price for zero coupon bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  zero cpn implied value: " <<
                     zeroCpnBondImpliedValue1
                     << "\n  zero cpn price: " << zeroCpnBondCleanPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error13
                     << "\n  tolerance:             " << tolerance);
     }
@@ -1598,7 +1602,7 @@ void AssetSwapTest::testZSpread() {
     // Zero Coupon bond (Isin: IT0001200390 ISPIM 0 02/17/28)
     // maturity doesn't occur on a business day
 
-    boost::shared_ptr<Bond> zeroCpnBond2(new
+    ext::shared_ptr<Bond> zeroCpnBond2(new
         ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
                        Date(17,February,2028),
                        Following,
@@ -1620,11 +1624,11 @@ void AssetSwapTest::testZSpread() {
     Real error15 = std::fabs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);
     if (error15>tolerance) {
         BOOST_FAIL("wrong clean price for zero coupon bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  zero cpn implied value: " <<
                     zeroCpnBondImpliedValue2
                     << "\n  zero cpn price: " << zeroCpnBondCleanPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error15
                     << "\n  tolerance:             " << tolerance);
     }
@@ -1635,6 +1639,10 @@ void AssetSwapTest::testGenericBondImplied() {
 
     BOOST_TEST_MESSAGE("Testing implied generic-bond value against"
                        " asset-swap fair price with null spread...");
+
+    using namespace asset_swap_test;
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
 
@@ -1659,15 +1667,15 @@ void AssetSwapTest::testGenericBondImplied() {
         .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
-    fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    fixedBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, fixedbondRedemption1)));
-    boost::shared_ptr<Bond> fixedBond1(new
+    ext::shared_ptr<Bond> fixedBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate1, fixedBondStartDate1,
              fixedBondLeg1));
-    boost::shared_ptr<PricingEngine> bondEngine(
+    ext::shared_ptr<PricingEngine> bondEngine(
                                new DiscountingBondEngine(vars.termStructure));
-    boost::shared_ptr<PricingEngine> swapEngine(
+    ext::shared_ptr<PricingEngine> swapEngine(
                                new DiscountingSwapEngine(vars.termStructure));
     fixedBond1->setPricingEngine(bondEngine);
 
@@ -1683,20 +1691,16 @@ void AssetSwapTest::testGenericBondImplied() {
     Real tolerance = 1.0e-13;
 
     // see comment above
-#if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance2 = 1.0e-2;
-#else
-    Real tolerance2 = 1.0e-13;
-#endif
+    Real tolerance2 = usingAtParCoupons? 1.0e-13 : 1.0e-2;
 
     Real error1 = std::fabs(fixedBondAssetSwapPrice1-fixedBondPrice1);
 
     if (error1>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  bond's clean price:    " << fixedBondPrice1
                     << "\n  asset swap fair price: " << fixedBondAssetSwapPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error1
                     << "\n  tolerance:             " << tolerance2);
     }
@@ -1715,9 +1719,9 @@ void AssetSwapTest::testGenericBondImplied() {
         .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
-    fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    fixedBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, fixedbondRedemption2)));
-    boost::shared_ptr<Bond> fixedBond2(new
+    ext::shared_ptr<Bond> fixedBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
     fixedBond2->setPricingEngine(bondEngine);
@@ -1735,10 +1739,10 @@ void AssetSwapTest::testGenericBondImplied() {
 
     if (error2>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  bond's clean price:    " << fixedBondPrice2
                     << "\n  asset swap fair price: " << fixedBondAssetSwapPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error2
                     << "\n  tolerance:             " << tolerance2);
     }
@@ -1760,9 +1764,9 @@ void AssetSwapTest::testGenericBondImplied() {
         .inArrears(inArrears);
     Date floatingbondRedemption1 =
         bondCalendar.adjust(floatingBondMaturityDate1, Following);
-    floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    floatingBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, floatingbondRedemption1)));
-    boost::shared_ptr<Bond> floatingBond1(new
+    ext::shared_ptr<Bond> floatingBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate1, floatingBondStartDate1,
              floatingBondLeg1));
@@ -1783,11 +1787,11 @@ void AssetSwapTest::testGenericBondImplied() {
 
     if (error3>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for floater:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  bond's clean price:    " << floatingBondPrice1
                     << "\n  asset swap fair price: " <<
                     floatingBondAssetSwapPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error3
                     << "\n  tolerance:             " << tolerance2);
     }
@@ -1810,9 +1814,9 @@ void AssetSwapTest::testGenericBondImplied() {
         .inArrears(inArrears);
     Date floatingbondRedemption2 =
         bondCalendar.adjust(floatingBondMaturityDate2, ModifiedFollowing);
-    floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    floatingBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, floatingbondRedemption2)));
-    boost::shared_ptr<Bond> floatingBond2(new
+    ext::shared_ptr<Bond> floatingBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate2, floatingBondStartDate2,
              floatingBondLeg2));
@@ -1825,12 +1829,12 @@ void AssetSwapTest::testGenericBondImplied() {
     Real error4= std::fabs(floatingCurrentCoupon-currentCoupon);
     if (error4>tolerance) {
         BOOST_FAIL("wrong current coupon is returned for floater bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  bond's calculated current coupon:      " <<
                     currentCoupon
                     << "\n  current coupon asked to the bond: " <<
                     floatingCurrentCoupon
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error4
                     << "\n  tolerance:             " << tolerance);
     }
@@ -1848,11 +1852,11 @@ void AssetSwapTest::testGenericBondImplied() {
 
     if (error5>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for floater:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  bond's clean price:    " << floatingBondPrice2
                     << "\n  asset swap fair price: " <<
                     floatingBondAssetSwapPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error5
                     << "\n  tolerance:             " << tolerance2);
     }
@@ -1868,16 +1872,16 @@ void AssetSwapTest::testGenericBondImplied() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withCaps(0.055)
         .withFloors(0.025)
         .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
-    cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    cmsBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, cmsbondRedemption1)));
-    boost::shared_ptr<Bond> cmsBond1(new
+    ext::shared_ptr<Bond> cmsBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
     cmsBond1->setPricingEngine(bondEngine);
@@ -1897,10 +1901,10 @@ void AssetSwapTest::testGenericBondImplied() {
 
     if (error6>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for cms bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  bond's clean price:    " << cmsBondPrice1
                     << "\n  asset swap fair price: " << cmsBondAssetSwapPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error6
                     << "\n  tolerance:             " << tolerance2);
     }
@@ -1916,15 +1920,15 @@ void AssetSwapTest::testGenericBondImplied() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withGearings(0.84)
         .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
-    cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    cmsBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, cmsbondRedemption2)));
-    boost::shared_ptr<Bond> cmsBond2(new
+    ext::shared_ptr<Bond> cmsBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
     cmsBond2->setPricingEngine(bondEngine);
@@ -1944,10 +1948,10 @@ void AssetSwapTest::testGenericBondImplied() {
 
     if (error7>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for cms bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  bond's clean price:    " << cmsBondPrice2
                     << "\n  asset swap fair price: " << cmsBondAssetSwapPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error7
                     << "\n  tolerance:             " << tolerance2);
     }
@@ -1958,9 +1962,9 @@ void AssetSwapTest::testGenericBondImplied() {
     Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
     Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
-    Leg zeroCpnBondLeg1 = Leg(1, boost::shared_ptr<CashFlow>(new
+    Leg zeroCpnBondLeg1 = Leg(1, ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
-    boost::shared_ptr<Bond> zeroCpnBond1(new
+    ext::shared_ptr<Bond> zeroCpnBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
     zeroCpnBond1->setPricingEngine(bondEngine);
@@ -1978,10 +1982,10 @@ void AssetSwapTest::testGenericBondImplied() {
 
     if (error8>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for zero cpn bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  bond's clean price:    " << zeroCpnBondPrice1
                     << "\n  asset swap fair price: " << zeroCpnBondAssetSwapPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error8
                     << "\n  tolerance:             " << tolerance2);
     }
@@ -1992,9 +1996,9 @@ void AssetSwapTest::testGenericBondImplied() {
     Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
     Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
-    Leg zeroCpnBondLeg2 = Leg(1, boost::shared_ptr<CashFlow>(new
+    Leg zeroCpnBondLeg2 = Leg(1, ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, zerocpbondRedemption2)));
-    boost::shared_ptr<Bond> zeroCpnBond2(new
+    ext::shared_ptr<Bond> zeroCpnBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
     zeroCpnBond2->setPricingEngine(bondEngine);
@@ -2008,14 +2012,14 @@ void AssetSwapTest::testGenericBondImplied() {
                                 parAssetSwap);
     zeroCpnAssetSwap2.setPricingEngine(swapEngine);
     Real zeroCpnBondAssetSwapPrice2 = zeroCpnAssetSwap2.fairCleanPrice();
-    Real error9 = std::fabs(cmsBondAssetSwapPrice2-cmsBondPrice2);
+    Real error9 = std::fabs(zeroCpnBondAssetSwapPrice2-zeroCpnBondPrice2);
 
     if (error9>tolerance2) {
         BOOST_FAIL("wrong zero spread asset swap price for zero cpn bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  bond's clean price:    " << zeroCpnBondPrice2
                     << "\n  asset swap fair price: " << zeroCpnBondAssetSwapPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error9
                     << "\n  tolerance:             " << tolerance2);
     }
@@ -2026,6 +2030,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     BOOST_TEST_MESSAGE("Testing market asset swap against par asset swap "
                        "with generic bond...");
+
+    using namespace asset_swap_test;
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
 
@@ -2052,15 +2060,15 @@ void AssetSwapTest::testMASWWithGenericBond() {
         .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
-    fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    fixedBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, fixedbondRedemption1)));
-    boost::shared_ptr<Bond> fixedBond1(new
+    ext::shared_ptr<Bond> fixedBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate1, fixedBondStartDate1,
              fixedBondLeg1));
-    boost::shared_ptr<PricingEngine> bondEngine(
+    ext::shared_ptr<PricingEngine> bondEngine(
                                new DiscountingBondEngine(vars.termStructure));
-    boost::shared_ptr<PricingEngine> swapEngine(
+    ext::shared_ptr<PricingEngine> swapEngine(
                                new DiscountingSwapEngine(vars.termStructure));
     fixedBond1->setPricingEngine(bondEngine);
 
@@ -2084,11 +2092,7 @@ void AssetSwapTest::testMASWWithGenericBond() {
     Real fixedBondMktAssetSwapSpread1 = fixedBondMktAssetSwap1.fairSpread();
 
     // see comment above
-#if defined(QL_USE_INDEXED_COUPON)
-    Real tolerance2 = 1.0e-4;
-#else
-    Real tolerance2 = 1.0e-13;
-#endif
+    Real tolerance2 = usingAtParCoupons ? 1.0e-13 : 1.0e-4;
 
     Real error1 =
         std::fabs(fixedBondMktAssetSwapSpread1-
@@ -2096,10 +2100,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     if (error1>tolerance2)
         BOOST_FAIL("wrong asset swap spreads for fixed bond:" <<
-                    QL_FIXED << std::setprecision(4) <<
+                    std::fixed << std::setprecision(4) <<
                     "\n  market asset swap spread: " << io::rate(fixedBondMktAssetSwapSpread1) <<
                     "\n  par asset swap spread:    " << io::rate(fixedBondParAssetSwapSpread1) <<
-                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    std::scientific << std::setprecision(2) <<
                     "\n  error:                    " << error1 <<
                     "\n  tolerance:                " << tolerance2);
 
@@ -2118,9 +2122,9 @@ void AssetSwapTest::testMASWWithGenericBond() {
         .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
-    fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    fixedBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, fixedbondRedemption2)));
-    boost::shared_ptr<Bond> fixedBond2(new
+    ext::shared_ptr<Bond> fixedBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
     fixedBond2->setPricingEngine(bondEngine);
@@ -2149,10 +2153,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     if (error2>tolerance2)
         BOOST_FAIL("wrong asset swap spreads for fixed bond:" <<
-                    QL_FIXED << std::setprecision(4) <<
+                    std::fixed << std::setprecision(4) <<
                     "\n  market asset swap spread: " << io::rate(fixedBondMktAssetSwapSpread2) <<
                     "\n  par asset swap spread:    " << io::rate(fixedBondParAssetSwapSpread2) <<
-                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    std::scientific << std::setprecision(2) <<
                     "\n  error:                    " << error2 <<
                     "\n  tolerance:                " << tolerance2);
 
@@ -2174,9 +2178,9 @@ void AssetSwapTest::testMASWWithGenericBond() {
         .inArrears(inArrears);
     Date floatingbondRedemption1 =
         bondCalendar.adjust(floatingBondMaturityDate1, Following);
-    floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    floatingBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, floatingbondRedemption1)));
-    boost::shared_ptr<Bond> floatingBond1(new
+    ext::shared_ptr<Bond> floatingBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate1, floatingBondStartDate1,
              floatingBondLeg1));
@@ -2212,10 +2216,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     if (error3>tolerance2)
         BOOST_FAIL("wrong asset swap spreads for floating bond:" <<
-                    QL_FIXED << std::setprecision(4) <<
+                    std::fixed << std::setprecision(4) <<
                     "\n  market asset swap spread: " << io::rate(floatingBondMktAssetSwapSpread1) <<
                     "\n  par asset swap spread:    " << io::rate(floatingBondParAssetSwapSpread1) <<
-                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    std::scientific << std::setprecision(2) <<
                     "\n  error:                    " << error3 <<
                     "\n  tolerance:                " << tolerance2);
 
@@ -2238,9 +2242,9 @@ void AssetSwapTest::testMASWWithGenericBond() {
         .inArrears(inArrears);
     Date floatingbondRedemption2 =
         bondCalendar.adjust(floatingBondMaturityDate2, ModifiedFollowing);
-    floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    floatingBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, floatingbondRedemption2)));
-    boost::shared_ptr<Bond> floatingBond2(new
+    ext::shared_ptr<Bond> floatingBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate2, floatingBondStartDate2,
              floatingBondLeg2));
@@ -2276,10 +2280,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     if (error4>tolerance2)
         BOOST_FAIL("wrong asset swap spreads for floating bond:" <<
-                    QL_FIXED << std::setprecision(4) <<
+                    std::fixed << std::setprecision(4) <<
                     "\n  market asset swap spread: " << io::rate(floatingBondMktAssetSwapSpread2) <<
                     "\n  par asset swap spread:    " << io::rate(floatingBondParAssetSwapSpread2) <<
-                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    std::scientific << std::setprecision(2) <<
                     "\n  error:                    " << error4 <<
                     "\n  tolerance:                " << tolerance2);
 
@@ -2295,16 +2299,16 @@ void AssetSwapTest::testMASWWithGenericBond() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withCaps(0.055)
         .withFloors(0.025)
         .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
-    cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    cmsBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, cmsbondRedemption1)));
-    boost::shared_ptr<Bond> cmsBond1(new
+    ext::shared_ptr<Bond> cmsBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
     cmsBond1->setPricingEngine(bondEngine);
@@ -2335,10 +2339,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     if (error5>tolerance2)
         BOOST_FAIL("wrong asset swap spreads for cms bond:" <<
-                    QL_FIXED << std::setprecision(4) <<
+                    std::fixed << std::setprecision(4) <<
                     "\n  market asset swap spread: " << io::rate(cmsBondMktAssetSwapSpread1) <<
                     "\n  par asset swap spread:    " << io::rate(cmsBondParAssetSwapSpread1) <<
-                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    std::scientific << std::setprecision(2) <<
                     "\n  error:                    " << error5 <<
                     "\n  tolerance:                " << tolerance2);
 
@@ -2354,15 +2358,15 @@ void AssetSwapTest::testMASWWithGenericBond() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withGearings(0.84)
         .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
-    cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    cmsBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, cmsbondRedemption2)));
-    boost::shared_ptr<Bond> cmsBond2(new
+    ext::shared_ptr<Bond> cmsBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
     cmsBond2->setPricingEngine(bondEngine);
@@ -2393,10 +2397,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     if (error6>tolerance2)
         BOOST_FAIL("wrong asset swap spreads for cms bond:" <<
-                    QL_FIXED << std::setprecision(4) <<
+                    std::fixed << std::setprecision(4) <<
                     "\n  market asset swap spread: " << io::rate(cmsBondMktAssetSwapSpread2) <<
                     "\n  par asset swap spread:    " << io::rate(cmsBondParAssetSwapSpread2) <<
-                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    std::scientific << std::setprecision(2) <<
                     "\n  error:                    " << error6 <<
                     "\n  tolerance:                " << tolerance2);
 
@@ -2407,9 +2411,9 @@ void AssetSwapTest::testMASWWithGenericBond() {
     Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
     Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
-    Leg zeroCpnBondLeg1 = Leg(1, boost::shared_ptr<CashFlow>(new
+    Leg zeroCpnBondLeg1 = Leg(1, ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
-    boost::shared_ptr<Bond> zeroCpnBond1(new
+    ext::shared_ptr<Bond> zeroCpnBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
     zeroCpnBond1->setPricingEngine(bondEngine);
@@ -2440,10 +2444,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     if (error7>tolerance2)
         BOOST_FAIL("wrong asset swap spreads for zero cpn bond:" <<
-                    QL_FIXED << std::setprecision(4) <<
+                    std::fixed << std::setprecision(4) <<
                     "\n  market asset swap spread: " << io::rate(zeroCpnBondMktAssetSwapSpread1) <<
                     "\n  par asset swap spread:    " << io::rate(zeroCpnBondParAssetSwapSpread1) <<
-                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    std::scientific << std::setprecision(2) <<
                     "\n  error:                    " << error7 <<
                     "\n  tolerance:                " << tolerance2);
 
@@ -2454,9 +2458,9 @@ void AssetSwapTest::testMASWWithGenericBond() {
     Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
     Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
-    Leg zeroCpnBondLeg2 = Leg(1, boost::shared_ptr<CashFlow>(new
+    Leg zeroCpnBondLeg2 = Leg(1, ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, zerocpbondRedemption2)));
-    boost::shared_ptr<Bond> zeroCpnBond2(new
+    ext::shared_ptr<Bond> zeroCpnBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
     zeroCpnBond2->setPricingEngine(bondEngine);
@@ -2488,10 +2492,10 @@ void AssetSwapTest::testMASWWithGenericBond() {
 
     if (error8>tolerance2)
         BOOST_FAIL("wrong asset swap spreads for zero cpn bond:" <<
-                    QL_FIXED << std::setprecision(4) <<
+                    std::fixed << std::setprecision(4) <<
                     "\n  market asset swap spread: " << io::rate(zeroCpnBondMktAssetSwapSpread2) <<
                     "\n  par asset swap spread:    " << io::rate(zeroCpnBondParAssetSwapSpread2) <<
-                    QL_SCIENTIFIC << std::setprecision(2) <<
+                    std::scientific << std::setprecision(2) <<
                     "\n  error:                    " << error8 <<
                     "\n  tolerance:                " << tolerance2);
 }
@@ -2501,6 +2505,8 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
 
     BOOST_TEST_MESSAGE("Testing clean and dirty price with null Z-spread "
                        "against theoretical prices...");
+
+    using namespace asset_swap_test;
 
     CommonVars vars;
 
@@ -2524,13 +2530,13 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
         .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
-    fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    fixedBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, fixedbondRedemption1)));
-    boost::shared_ptr<Bond> fixedBond1(new
+    ext::shared_ptr<Bond> fixedBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate1, fixedBondStartDate1,
              fixedBondLeg1));
-    boost::shared_ptr<PricingEngine> bondEngine(new
+    ext::shared_ptr<PricingEngine> bondEngine(new
         DiscountingBondEngine(vars.termStructure));
     fixedBond1->setPricingEngine(bondEngine);
 
@@ -2546,11 +2552,11 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Real error1 = std::fabs(fixedBondImpliedValue1-fixedBondCleanPrice1);
     if (error1>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  market asset swap spread: "
                     << fixedBondImpliedValue1
                     << "\n  par asset swap spread: " << fixedBondCleanPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error1
                     << "\n  tolerance:             " << tolerance);
     }
@@ -2570,9 +2576,9 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
         .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
-    fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    fixedBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, fixedbondRedemption2)));
-    boost::shared_ptr<Bond> fixedBond2(new
+    ext::shared_ptr<Bond> fixedBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
     fixedBond2->setPricingEngine(bondEngine);
@@ -2589,11 +2595,11 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Real error3 = std::fabs(fixedBondImpliedValue2-fixedBondCleanPrice2);
     if (error3>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  market asset swap spread: "
                     << fixedBondImpliedValue2
                     << "\n  par asset swap spread: " << fixedBondCleanPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error3
                     << "\n  tolerance:             " << tolerance);
     }
@@ -2616,9 +2622,9 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
         .inArrears(inArrears);
     Date floatingbondRedemption1 =
         bondCalendar.adjust(floatingBondMaturityDate1, Following);
-    floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    floatingBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, floatingbondRedemption1)));
-    boost::shared_ptr<Bond> floatingBond1(new
+    ext::shared_ptr<Bond> floatingBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate1, floatingBondStartDate1,
              floatingBondLeg1));
@@ -2636,11 +2642,11 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Real error5 = std::fabs(floatingBondImpliedValue1-floatingBondCleanPrice1);
     if (error5>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  market asset swap spread: " <<
                     floatingBondImpliedValue1
                     << "\n  par asset swap spread: " << floatingBondCleanPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error5
                     << "\n  tolerance:             " << tolerance);
     }
@@ -2664,9 +2670,9 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
         .inArrears(inArrears);
     Date floatingbondRedemption2 =
         bondCalendar.adjust(floatingBondMaturityDate2, ModifiedFollowing);
-    floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    floatingBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, floatingbondRedemption2)));
-    boost::shared_ptr<Bond> floatingBond2(new
+    ext::shared_ptr<Bond> floatingBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate2, floatingBondStartDate2,
              floatingBondLeg2));
@@ -2684,11 +2690,11 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Real error7 = std::fabs(floatingBondImpliedValue2-floatingBondCleanPrice2);
     if (error7>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  market asset swap spread: " <<
                     floatingBondImpliedValue2
                     << "\n  par asset swap spread: " << floatingBondCleanPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error7
                     << "\n  tolerance:             " << tolerance);
     }
@@ -2705,16 +2711,16 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withCaps(0.055)
         .withFloors(0.025)
         .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
-    cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    cmsBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, cmsbondRedemption1)));
-    boost::shared_ptr<Bond> cmsBond1(new
+    ext::shared_ptr<Bond> cmsBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
     cmsBond1->setPricingEngine(bondEngine);
@@ -2732,10 +2738,10 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Real error9 = std::fabs(cmsBondImpliedValue1-cmsBondCleanPrice1);
     if (error9>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  market asset swap spread: " << cmsBondImpliedValue1
                     << "\n  par asset swap spread: " << cmsBondCleanPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error9
                     << "\n  tolerance:             " << tolerance);
     }
@@ -2752,15 +2758,15 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withGearings(0.84)
         .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
-    cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    cmsBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, cmsbondRedemption2)));
-    boost::shared_ptr<Bond> cmsBond2(new
+    ext::shared_ptr<Bond> cmsBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
     cmsBond2->setPricingEngine(bondEngine);
@@ -2778,10 +2784,10 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Real error11 = std::fabs(cmsBondImpliedValue2-cmsBondCleanPrice2);
     if (error11>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  market asset swap spread: " << cmsBondImpliedValue2
                     << "\n  par asset swap spread: " << cmsBondCleanPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error11
                     << "\n  tolerance:             " << tolerance);
     }
@@ -2793,9 +2799,9 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
     Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
-    Leg zeroCpnBondLeg1 = Leg(1, boost::shared_ptr<CashFlow>(new
+    Leg zeroCpnBondLeg1 = Leg(1, ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
-    boost::shared_ptr<Bond> zeroCpnBond1(new
+    ext::shared_ptr<Bond> zeroCpnBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
     zeroCpnBond1->setPricingEngine(bondEngine);
@@ -2814,11 +2820,11 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Real error13 = std::fabs(zeroCpnBondImpliedValue1-zeroCpnBondCleanPrice1);
     if (error13>tolerance) {
         BOOST_FAIL("wrong clean price for zero coupon bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  zero cpn implied value: " <<
                     zeroCpnBondImpliedValue1
                     << "\n  zero cpn price: " << zeroCpnBondCleanPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error13
                     << "\n  tolerance:             " << tolerance);
     }
@@ -2830,9 +2836,9 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
     Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
-    Leg zeroCpnBondLeg2 = Leg(1, boost::shared_ptr<CashFlow>(new
+    Leg zeroCpnBondLeg2 = Leg(1, ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, zerocpbondRedemption2)));
-    boost::shared_ptr<Bond> zeroCpnBond2(new
+    ext::shared_ptr<Bond> zeroCpnBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
     zeroCpnBond2->setPricingEngine(bondEngine);
@@ -2851,11 +2857,11 @@ void AssetSwapTest::testZSpreadWithGenericBond() {
     Real error15 = std::fabs(zeroCpnBondImpliedValue2-zeroCpnBondCleanPrice2);
     if (error15>tolerance) {
         BOOST_FAIL("wrong clean price for zero coupon bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  zero cpn implied value: " <<
                     zeroCpnBondImpliedValue2
                     << "\n  zero cpn price: " << zeroCpnBondCleanPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error15
                     << "\n  tolerance:             " << tolerance);
     }
@@ -2866,6 +2872,8 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
 
     BOOST_TEST_MESSAGE("Testing clean and dirty prices for specialized bond"
                        " against equivalent generic bond...");
+
+    using namespace asset_swap_test;
 
     CommonVars vars;
 
@@ -2888,19 +2896,19 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
         .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
-    fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    fixedBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, fixedbondRedemption1)));
     // generic bond
-    boost::shared_ptr<Bond> fixedBond1(new
+    ext::shared_ptr<Bond> fixedBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate1, fixedBondStartDate1,
              fixedBondLeg1));
-    boost::shared_ptr<PricingEngine> bondEngine(new
+    ext::shared_ptr<PricingEngine> bondEngine(new
         DiscountingBondEngine(vars.termStructure));
     fixedBond1->setPricingEngine(bondEngine);
 
     // equivalent specialized fixed rate bond
-    boost::shared_ptr<Bond> fixedSpecializedBond1(new
+    ext::shared_ptr<Bond> fixedSpecializedBond1(new
         FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
                       ActualActual(ActualActual::ISDA), Following,
@@ -2913,12 +2921,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Real error1 = std::fabs(fixedBondTheoValue1-fixedSpecializedBondTheoValue1);
     if (error1>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  specialized fixed rate bond's theo clean price: "
                     << fixedBondTheoValue1
                     << "\n  generic equivalent bond's theo clean price: "
                     << fixedSpecializedBondTheoValue1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error1
                     << "\n  tolerance:             " << tolerance);
     }
@@ -2928,12 +2936,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Real error2 = std::fabs(fixedBondTheoDirty1-fixedSpecializedTheoDirty1);
     if (error2>tolerance) {
         BOOST_FAIL("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  specialized fixed rate bond's theo dirty price: "
                     << fixedBondTheoDirty1
                     << "\n  generic equivalent bond's theo dirty price: "
                     << fixedSpecializedTheoDirty1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error2
                     << "\n  tolerance:             " << tolerance);
     }
@@ -2952,17 +2960,17 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
         .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
-    fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    fixedBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, fixedbondRedemption2)));
 
     // generic bond
-    boost::shared_ptr<Bond> fixedBond2(new
+    ext::shared_ptr<Bond> fixedBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
     fixedBond2->setPricingEngine(bondEngine);
 
     // equivalent specialized fixed rate bond
-    boost::shared_ptr<Bond> fixedSpecializedBond2(new
+    ext::shared_ptr<Bond> fixedSpecializedBond2(new
          FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
                       Thirty360(Thirty360::BondBasis), Following,
@@ -2975,7 +2983,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Real error3 = std::fabs(fixedBondTheoValue2-fixedSpecializedBondTheoValue2);
     if (error3>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  specialized fixed rate bond's theo clean price: "
                     << fixedBondTheoValue2
                     << "\n  generic equivalent bond's theo clean price: "
@@ -2991,12 +2999,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Real error4 = std::fabs(fixedBondTheoDirty2-fixedSpecializedBondTheoDirty2);
     if (error4>tolerance) {
         BOOST_FAIL("wrong dirty price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  specialized fixed rate bond's dirty clean price: "
                     << fixedBondTheoDirty2
                     << "\n  generic equivalent bond's theo dirty price: "
                     << fixedSpecializedBondTheoDirty2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error4
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3018,17 +3026,17 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
         .inArrears(inArrears);
     Date floatingbondRedemption1 =
         bondCalendar.adjust(floatingBondMaturityDate1, Following);
-    floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    floatingBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, floatingbondRedemption1)));
     // generic bond
-    boost::shared_ptr<Bond> floatingBond1(new
+    ext::shared_ptr<Bond> floatingBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate1, floatingBondStartDate1,
              floatingBondLeg1));
     floatingBond1->setPricingEngine(bondEngine);
 
     // equivalent specialized floater
-    boost::shared_ptr<Bond> floatingSpecializedBond1(new
+    ext::shared_ptr<Bond> floatingSpecializedBond1(new
            FloatingRateBond(settlementDays, vars.faceAmount,
                             floatingBondSchedule1,
                             vars.iborIndex, Actual360(),
@@ -3051,12 +3059,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                             floatingSpecializedBondTheoValue1);
     if (error5>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic fixed rate bond's theo clean price: "
                     << floatingBondTheoValue1
                     << "\n  equivalent specialized bond's theo clean price: "
                     << floatingSpecializedBondTheoValue1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error5
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3069,12 +3077,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                             floatingSpecializedBondTheoDirty1);
     if (error6>tolerance) {
         BOOST_FAIL("wrong dirty price for frn bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic frn bond's dirty clean price: "
                     << floatingBondTheoDirty1
                     << "\n  equivalent specialized bond's theo dirty price: "
                     << floatingSpecializedBondTheoDirty1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error6
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3097,17 +3105,17 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
         .inArrears(inArrears);
     Date floatingbondRedemption2 =
         bondCalendar.adjust(floatingBondMaturityDate2, ModifiedFollowing);
-    floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    floatingBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, floatingbondRedemption2)));
     // generic bond
-    boost::shared_ptr<Bond> floatingBond2(new
+    ext::shared_ptr<Bond> floatingBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate2, floatingBondStartDate2,
              floatingBondLeg2));
     floatingBond2->setPricingEngine(bondEngine);
 
     // equivalent specialized floater
-    boost::shared_ptr<Bond> floatingSpecializedBond2(new
+    ext::shared_ptr<Bond> floatingSpecializedBond2(new
         FloatingRateBond(settlementDays, vars.faceAmount,
                          floatingBondSchedule2,
                          vars.iborIndex, Actual360(),
@@ -3132,12 +3140,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
         std::fabs(floatingBondTheoValue2-floatingSpecializedBondTheoValue2);
     if (error7>tolerance) {
         BOOST_FAIL("wrong clean price for floater bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic floater bond's theo clean price: "
                     << floatingBondTheoValue2
                     << "\n  equivalent specialized bond's theo clean price: "
                     << floatingSpecializedBondTheoValue2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error7
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3150,12 +3158,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
         std::fabs(floatingBondTheoDirty2-floatingSpecializedTheoDirty2);
     if (error8>tolerance) {
         BOOST_FAIL("wrong dirty price for floater bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic floater bond's theo dirty price: "
                     << floatingBondTheoDirty2
                     << "\n  equivalent specialized  bond's theo dirty price: "
                     << floatingSpecializedTheoDirty2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error8
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3172,25 +3180,25 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withCaps(0.055)
         .withFloors(0.025)
         .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
-    cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    cmsBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, cmsbondRedemption1)));
     // generic cms bond
-    boost::shared_ptr<Bond> cmsBond1(new
+    ext::shared_ptr<Bond> cmsBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
     cmsBond1->setPricingEngine(bondEngine);
 
     // equivalent specialized cms bond
-    boost::shared_ptr<Bond> cmsSpecializedBond1(new
+    ext::shared_ptr<Bond> cmsSpecializedBond1(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
-                vars.swapIndex, Thirty360(),
+                vars.swapIndex, Thirty360(Thirty360::BondBasis),
                 Following, fixingDays,
                 std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
@@ -3206,12 +3214,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Real error9 = std::fabs(cmsBondTheoValue1-cmsSpecializedBondTheoValue1);
     if (error9>tolerance) {
         BOOST_FAIL("wrong clean price for cms bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic cms bond's theo clean price: "
                     << cmsBondTheoValue1
                     <<  "\n  equivalent specialized bond's theo clean price: "
                     << cmsSpecializedBondTheoValue1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error9
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3221,12 +3229,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Real error10 = std::fabs(cmsBondTheoDirty1-cmsSpecializedBondTheoDirty1);
     if (error10>tolerance) {
         BOOST_FAIL("wrong dirty price for cms bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n generic cms bond's theo dirty price: "
                     << cmsBondTheoDirty1
                     << "\n  specialized cms bond's theo dirty price: "
                     << cmsSpecializedBondTheoDirty1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error10
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3242,24 +3250,24 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withGearings(0.84)
         .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
-    cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    cmsBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, cmsbondRedemption2)));
     // generic bond
-    boost::shared_ptr<Bond> cmsBond2(new
+    ext::shared_ptr<Bond> cmsBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
     cmsBond2->setPricingEngine(bondEngine);
 
     // equivalent specialized cms bond
-    boost::shared_ptr<Bond> cmsSpecializedBond2(new
+    ext::shared_ptr<Bond> cmsSpecializedBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
-                vars.swapIndex, Thirty360(),
+                vars.swapIndex, Thirty360(Thirty360::BondBasis),
                 Following, fixingDays,
                 std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(), std::vector<Rate>(),
@@ -3276,12 +3284,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Real error11 = std::fabs(cmsBondTheoValue2-cmsSpecializedBondTheoValue2);
     if (error11>tolerance) {
         BOOST_FAIL("wrong clean price for cms bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic cms bond's theo clean price: "
                     << cmsBondTheoValue2
                     << "\n  cms bond's theo clean price: "
                     << cmsSpecializedBondTheoValue2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error11
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3291,12 +3299,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Real error12 = std::fabs(cmsBondTheoDirty2-cmsSpecializedBondTheoDirty2);
     if (error12>tolerance) {
         BOOST_FAIL("wrong dirty price for cms bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic cms bond's dirty price: "
                     << cmsBondTheoDirty2
                     << "\n  specialized cms bond's theo dirty price: "
                     << cmsSpecializedBondTheoDirty2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error12
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3307,16 +3315,16 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
     Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
-    Leg zeroCpnBondLeg1 = Leg(1, boost::shared_ptr<CashFlow>(new
+    Leg zeroCpnBondLeg1 = Leg(1, ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
     // generic bond
-    boost::shared_ptr<Bond> zeroCpnBond1(new
+    ext::shared_ptr<Bond> zeroCpnBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
     zeroCpnBond1->setPricingEngine(bondEngine);
 
     // specialized zerocpn bond
-    boost::shared_ptr<Bond> zeroCpnSpecializedBond1(new
+    ext::shared_ptr<Bond> zeroCpnSpecializedBond1(new
         ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
                   Date(20,December,2015),
                   Following,
@@ -3331,12 +3339,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
         std::fabs(zeroCpnBondTheoValue1-zeroCpnSpecializedBondTheoValue1);
     if (error13>tolerance) {
         BOOST_FAIL("wrong clean price for zero coupon bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic zero bond's clean price: "
                     << zeroCpnBondTheoValue1
                     << "\n  specialized zero bond's clean price: "
                     << zeroCpnSpecializedBondTheoValue1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error13
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3349,12 +3357,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
         std::fabs(zeroCpnBondTheoDirty1-zeroCpnSpecializedBondTheoDirty1);
     if (error14>tolerance) {
         BOOST_FAIL("wrong dirty price for zero bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic zerocpn bond's dirty price: "
                     << zeroCpnBondTheoDirty1
                     << "\n  specialized zerocpn bond's clean price: "
                     << zeroCpnSpecializedBondTheoDirty1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error14
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3365,16 +3373,16 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
     Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
     Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
-    Leg zeroCpnBondLeg2 = Leg(1, boost::shared_ptr<CashFlow>(new
+    Leg zeroCpnBondLeg2 = Leg(1, ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, zerocpbondRedemption2)));
     // generic bond
-    boost::shared_ptr<Bond> zeroCpnBond2(new
+    ext::shared_ptr<Bond> zeroCpnBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
     zeroCpnBond2->setPricingEngine(bondEngine);
 
     // specialized zerocpn bond
-    boost::shared_ptr<Bond> zeroCpnSpecializedBond2(new
+    ext::shared_ptr<Bond> zeroCpnSpecializedBond2(new
         ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
                    Date(17,February,2028),
                    Following,
@@ -3389,12 +3397,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
         std::fabs(zeroCpnBondTheoValue2 -zeroCpnSpecializedBondTheoValue2);
     if (error15>tolerance) {
         BOOST_FAIL("wrong clean price for zero coupon bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic zerocpn bond's clean price: "
                     << zeroCpnBondTheoValue2
                     << "\n  specialized zerocpn bond's clean price: "
                     << zeroCpnSpecializedBondTheoValue2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error15
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3409,12 +3417,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBond() {
         std::fabs(zeroCpnBondTheoDirty2-zeroCpnSpecializedBondTheoDirty2);
     if (error16>tolerance) {
         BOOST_FAIL("wrong dirty price for zero coupon bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic zerocpn bond's dirty price: "
                     << zeroCpnBondTheoDirty2
                     << "\n  specialized zerocpn bond's dirty price: "
                     << zeroCpnSpecializedBondTheoDirty2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error16
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3425,6 +3433,8 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
 
     BOOST_TEST_MESSAGE("Testing asset-swap prices and spreads for specialized"
                        " bond against equivalent generic bond...");
+
+    using namespace asset_swap_test;
 
     CommonVars vars;
 
@@ -3449,21 +3459,21 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         .withCouponRates(0.04, ActualActual(ActualActual::ISDA));
     Date fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1,
                                                     Following);
-    fixedBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    fixedBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, fixedbondRedemption1)));
     // generic bond
-    boost::shared_ptr<Bond> fixedBond1(new
+    ext::shared_ptr<Bond> fixedBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate1, fixedBondStartDate1,
              fixedBondLeg1));
-    boost::shared_ptr<PricingEngine> bondEngine(
+    ext::shared_ptr<PricingEngine> bondEngine(
                                new DiscountingBondEngine(vars.termStructure));
-    boost::shared_ptr<PricingEngine> swapEngine(
+    ext::shared_ptr<PricingEngine> swapEngine(
                                new DiscountingSwapEngine(vars.termStructure));
     fixedBond1->setPricingEngine(bondEngine);
 
     // equivalent specialized fixed rate bond
-    boost::shared_ptr<Bond> fixedSpecializedBond1(new
+    ext::shared_ptr<Bond> fixedSpecializedBond1(new
         FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule1,
                       std::vector<Rate>(1, 0.04),
                       ActualActual(ActualActual::ISDA), Following,
@@ -3496,12 +3506,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         std::fabs(fixedBondAssetSwapPrice1-fixedSpecializedBondAssetSwapPrice1);
     if (error1>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic  fixed rate bond's  clean price: "
                     << fixedBondAssetSwapPrice1
                     << "\n  equivalent specialized bond's clean price: "
                     << fixedSpecializedBondAssetSwapPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error1
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3527,12 +3537,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     Real error2 = std::fabs(fixedBondASWSpread1-fixedSpecializedBondASWSpread1);
     if (error2>tolerance) {
         BOOST_FAIL("wrong asw spread  for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic  fixed rate bond's  asw spread: "
                     << fixedBondASWSpread1
                     << "\n  equivalent specialized bond's asw spread: "
                     << fixedSpecializedBondASWSpread1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error2
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3552,17 +3562,17 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         .withCouponRates(0.05, Thirty360(Thirty360::BondBasis));
     Date fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2,
                                                     Following);
-    fixedBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    fixedBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, fixedbondRedemption2)));
 
     // generic bond
-    boost::shared_ptr<Bond> fixedBond2(new
+    ext::shared_ptr<Bond> fixedBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              fixedBondMaturityDate2, fixedBondStartDate2, fixedBondLeg2));
     fixedBond2->setPricingEngine(bondEngine);
 
     // equivalent specialized fixed rate bond
-    boost::shared_ptr<Bond> fixedSpecializedBond2(new
+    ext::shared_ptr<Bond> fixedSpecializedBond2(new
          FixedRateBond(settlementDays, vars.faceAmount, fixedBondSchedule2,
                       std::vector<Rate>(1, 0.05),
                       Thirty360(Thirty360::BondBasis), Following,
@@ -3595,12 +3605,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         std::fabs(fixedBondAssetSwapPrice2-fixedSpecializedBondAssetSwapPrice2);
     if (error3>tolerance) {
         BOOST_FAIL("wrong clean price for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic  fixed rate bond's clean price: "
                     << fixedBondAssetSwapPrice2
                     << "\n  equivalent specialized  bond's clean price: "
                     << fixedSpecializedBondAssetSwapPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error3
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3626,12 +3636,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     Real error4 = std::fabs(fixedBondASWSpread2-fixedSpecializedBondASWSpread2);
     if (error4>tolerance) {
         BOOST_FAIL("wrong asw spread for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic  fixed rate bond's  asw spread: "
                     << fixedBondASWSpread2
                     << "\n  equivalent specialized bond's asw spread: "
                     << fixedSpecializedBondASWSpread2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error4
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3654,17 +3664,17 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         .inArrears(inArrears);
     Date floatingbondRedemption1 =
         bondCalendar.adjust(floatingBondMaturityDate1, Following);
-    floatingBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    floatingBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, floatingbondRedemption1)));
     // generic bond
-    boost::shared_ptr<Bond> floatingBond1(new
+    ext::shared_ptr<Bond> floatingBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate1, floatingBondStartDate1,
              floatingBondLeg1));
     floatingBond1->setPricingEngine(bondEngine);
 
     // equivalent specialized floater
-    boost::shared_ptr<Bond> floatingSpecializedBond1(new
+    ext::shared_ptr<Bond> floatingSpecializedBond1(new
            FloatingRateBond(settlementDays, vars.faceAmount,
                             floatingBondSchedule1,
                             vars.iborIndex, Actual360(),
@@ -3705,12 +3715,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         std::fabs(floatingBondAssetSwapPrice1-floatingSpecializedBondAssetSwapPrice1);
     if (error5>tolerance) {
         BOOST_FAIL("wrong clean price for frnbond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic frn rate bond's clean price: "
                     << floatingBondAssetSwapPrice1
                     << "\n  equivalent specialized  bond's price: "
                     << floatingSpecializedBondAssetSwapPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error5
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3738,12 +3748,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         std::fabs(floatingBondASWSpread1-floatingSpecializedBondASWSpread1);
     if (error6>tolerance) {
         BOOST_FAIL("wrong asw spread for fixed bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic  frn rate bond's  asw spread: "
                     << floatingBondASWSpread1
                     << "\n  equivalent specialized bond's asw spread: "
                     << floatingSpecializedBondASWSpread1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error6
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3766,17 +3776,17 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     Date floatingbondRedemption2 =
         bondCalendar.adjust(floatingBondMaturityDate2,
                             ModifiedFollowing);
-    floatingBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    floatingBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, floatingbondRedemption2)));
     // generic bond
-    boost::shared_ptr<Bond> floatingBond2(new
+    ext::shared_ptr<Bond> floatingBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              floatingBondMaturityDate2, floatingBondStartDate2,
              floatingBondLeg2));
     floatingBond2->setPricingEngine(bondEngine);
 
     // equivalent specialized floater
-    boost::shared_ptr<Bond> floatingSpecializedBond2(new
+    ext::shared_ptr<Bond> floatingSpecializedBond2(new
         FloatingRateBond(settlementDays, vars.faceAmount,
                          floatingBondSchedule2,
                          vars.iborIndex, Actual360(),
@@ -3818,12 +3828,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         std::fabs(floatingBondAssetSwapPrice2-floatingSpecializedBondAssetSwapPrice2);
     if (error7>tolerance) {
         BOOST_FAIL("wrong clean price for frnbond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic frn rate bond's clean price: "
                     << floatingBondAssetSwapPrice2
                     << "\n  equivalent specialized frn  bond's price: "
                     << floatingSpecializedBondAssetSwapPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error7
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3851,12 +3861,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         std::fabs(floatingBondASWSpread2-floatingSpecializedBondASWSpread2);
     if (error8>tolerance) {
         BOOST_FAIL("wrong asw spread for frn bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic  frn rate bond's  asw spread: "
                     << floatingBondASWSpread2
                     << "\n  equivalent specialized bond's asw spread: "
                     << floatingSpecializedBondASWSpread2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error8
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3872,25 +3882,25 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg1 = CmsLeg(cmsBondSchedule1, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withCaps(0.055)
         .withFloors(0.025)
         .inArrears(inArrears);
     Date cmsbondRedemption1 = bondCalendar.adjust(cmsBondMaturityDate1,
                                                   Following);
-    cmsBondLeg1.push_back(boost::shared_ptr<CashFlow>(new
+    cmsBondLeg1.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, cmsbondRedemption1)));
     // generic cms bond
-    boost::shared_ptr<Bond> cmsBond1(new
+    ext::shared_ptr<Bond> cmsBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              cmsBondMaturityDate1, cmsBondStartDate1, cmsBondLeg1));
     cmsBond1->setPricingEngine(bondEngine);
 
     // equivalent specialized cms bond
-    boost::shared_ptr<Bond> cmsSpecializedBond1(new
+    ext::shared_ptr<Bond> cmsSpecializedBond1(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule1,
-                vars.swapIndex, Thirty360(),
+                vars.swapIndex, Thirty360(Thirty360::BondBasis),
                 Following, fixingDays,
                 std::vector<Real>(1,1.0), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(1,0.055), std::vector<Rate>(1,0.025),
@@ -3924,12 +3934,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         std::fabs(cmsBondAssetSwapPrice1-cmsSpecializedBondAssetSwapPrice1);
     if (error9>tolerance) {
         BOOST_FAIL("wrong clean price for cmsbond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic bond's clean price: "
                     << cmsBondAssetSwapPrice1
                     << "\n  equivalent specialized cms rate bond's price: "
                     << cmsSpecializedBondAssetSwapPrice1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error9
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3954,12 +3964,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     Real error10 = std::fabs(cmsBondASWSpread1-cmsSpecializedBondASWSpread1);
     if (error10>tolerance) {
         BOOST_FAIL("wrong asw spread for cm bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic cms rate bond's  asw spread: "
                     << cmsBondASWSpread1
                     << "\n  equivalent specialized bond's asw spread: "
                     << cmsSpecializedBondASWSpread1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error10
                     << "\n  tolerance:             " << tolerance);
     }
@@ -3975,24 +3985,24 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                               DateGeneration::Backward, false);
     Leg cmsBondLeg2 = CmsLeg(cmsBondSchedule2, vars.swapIndex)
         .withNotionals(vars.faceAmount)
-        .withPaymentDayCounter(Thirty360())
+        .withPaymentDayCounter(Thirty360(Thirty360::BondBasis))
         .withFixingDays(fixingDays)
         .withGearings(0.84)
         .inArrears(inArrears);
     Date cmsbondRedemption2 = bondCalendar.adjust(cmsBondMaturityDate2,
                                                   Following);
-    cmsBondLeg2.push_back(boost::shared_ptr<CashFlow>(new
+    cmsBondLeg2.push_back(ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, cmsbondRedemption2)));
     // generic bond
-    boost::shared_ptr<Bond> cmsBond2(new
+    ext::shared_ptr<Bond> cmsBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              cmsBondMaturityDate2, cmsBondStartDate2, cmsBondLeg2));
     cmsBond2->setPricingEngine(bondEngine);
 
     // equivalent specialized cms bond
-    boost::shared_ptr<Bond> cmsSpecializedBond2(new
+    ext::shared_ptr<Bond> cmsSpecializedBond2(new
         CmsRateBond(settlementDays, vars.faceAmount, cmsBondSchedule2,
-                vars.swapIndex, Thirty360(),
+                vars.swapIndex, Thirty360(Thirty360::BondBasis),
                 Following, fixingDays,
                 std::vector<Real>(1,0.84), std::vector<Spread>(1,0.0),
                 std::vector<Rate>(), std::vector<Rate>(),
@@ -4026,12 +4036,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         std::fabs(cmsBondAssetSwapPrice2-cmsSpecializedBondAssetSwapPrice2);
     if (error11>tolerance) {
         BOOST_FAIL("wrong clean price for cmsbond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic  bond's clean price: "
                     << cmsBondAssetSwapPrice2
                     << "\n  equivalent specialized cms rate bond's price: "
                     << cmsSpecializedBondAssetSwapPrice2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error11
                     << "\n  tolerance:             " << tolerance);
     }
@@ -4056,12 +4066,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     Real error12 = std::fabs(cmsBondASWSpread2-cmsSpecializedBondASWSpread2);
     if (error12>tolerance) {
         BOOST_FAIL("wrong asw spread for cm bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic cms rate bond's  asw spread: "
                     << cmsBondASWSpread2
                     << "\n  equivalent specialized bond's asw spread: "
                     << cmsSpecializedBondASWSpread2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error12
                     << "\n  tolerance:             " << tolerance);
     }
@@ -4073,16 +4083,16 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     Date zeroCpnBondMaturityDate1 = Date(20,December,2015);
     Date zeroCpnBondRedemption1 = bondCalendar.adjust(zeroCpnBondMaturityDate1,
                                                       Following);
-    Leg zeroCpnBondLeg1 = Leg(1, boost::shared_ptr<CashFlow>(new
+    Leg zeroCpnBondLeg1 = Leg(1, ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, zeroCpnBondRedemption1)));
     // generic bond
-    boost::shared_ptr<Bond> zeroCpnBond1(new
+    ext::shared_ptr<Bond> zeroCpnBond1(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              zeroCpnBondMaturityDate1, zeroCpnBondStartDate1, zeroCpnBondLeg1));
     zeroCpnBond1->setPricingEngine(bondEngine);
 
     // specialized zerocpn bond
-    boost::shared_ptr<Bond> zeroCpnSpecializedBond1(new
+    ext::shared_ptr<Bond> zeroCpnSpecializedBond1(new
         ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
                   Date(20,December,2015),
                   Following,
@@ -4114,7 +4124,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         std::fabs(zeroCpnBondAssetSwapPrice1-zeroCpnSpecializedBondAssetSwapPrice1);
     if (error13>tolerance) {
         BOOST_FAIL("wrong clean price for zerocpn bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic zero cpn bond's clean price: "
                     << zeroCpnBondAssetSwapPrice1
                     << "\n  specialized equivalent bond's price: "
@@ -4146,12 +4156,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         std::fabs(zeroCpnBondASWSpread1-zeroCpnSpecializedBondASWSpread1);
     if (error14>tolerance) {
         BOOST_FAIL("wrong asw spread for zeroCpn bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic zeroCpn bond's  asw spread: "
                     << zeroCpnBondASWSpread1
                     << "\n  equivalent specialized bond's asw spread: "
                     << zeroCpnSpecializedBondASWSpread1
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error14
                     << "\n  tolerance:             " << tolerance);
     }
@@ -4163,16 +4173,16 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
     Date zeroCpnBondMaturityDate2 = Date(17,February,2028);
     Date zerocpbondRedemption2 = bondCalendar.adjust(zeroCpnBondMaturityDate2,
                                                       Following);
-    Leg zeroCpnBondLeg2 = Leg(1, boost::shared_ptr<CashFlow>(new
+    Leg zeroCpnBondLeg2 = Leg(1, ext::shared_ptr<CashFlow>(new
         SimpleCashFlow(100.0, zerocpbondRedemption2)));
     // generic bond
-    boost::shared_ptr<Bond> zeroCpnBond2(new
+    ext::shared_ptr<Bond> zeroCpnBond2(new
         Bond(settlementDays, bondCalendar, vars.faceAmount,
              zeroCpnBondMaturityDate2, zeroCpnBondStartDate2, zeroCpnBondLeg2));
     zeroCpnBond2->setPricingEngine(bondEngine);
 
     // specialized zerocpn bond
-    boost::shared_ptr<Bond> zeroCpnSpecializedBond2(new
+    ext::shared_ptr<Bond> zeroCpnSpecializedBond2(new
         ZeroCouponBond(settlementDays, bondCalendar, vars.faceAmount,
                    Date(17,February,2028),
                    Following,
@@ -4203,9 +4213,9 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
                                zeroCpnSpecializedBondAssetSwap2.fairCleanPrice();
     Real error15 = std::fabs(zeroCpnBondAssetSwapPrice2
                              -zeroCpnSpecializedBondAssetSwapPrice2);
-    if (error8>tolerance) {
+    if (error15>tolerance) {
         BOOST_FAIL("wrong clean price for zerocpn bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic zero cpn bond's clean price: "
                     << zeroCpnBondAssetSwapPrice2
                     << "\n  equivalent specialized bond's price: "
@@ -4237,12 +4247,12 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
         std::fabs(zeroCpnBondASWSpread2-zeroCpnSpecializedBondASWSpread2);
     if (error16>tolerance) {
         BOOST_FAIL("wrong asw spread for zeroCpn bond:"
-                    << QL_FIXED << std::setprecision(4)
+                    << std::fixed << std::setprecision(4)
                     << "\n  generic zeroCpn bond's  asw spread: "
                     << zeroCpnBondASWSpread2
                     << "\n  equivalent specialized bond's asw spread: "
                     << zeroCpnSpecializedBondASWSpread2
-                    << QL_SCIENTIFIC << std::setprecision(2)
+                    << std::scientific << std::setprecision(2)
                     << "\n  error:                 " << error16
                     << "\n  tolerance:             " << tolerance);
     }
@@ -4250,7 +4260,7 @@ void AssetSwapTest::testSpecializedBondVsGenericBondUsingAsw() {
 
 
 test_suite* AssetSwapTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("AssetSwap tests");
+    auto* suite = BOOST_TEST_SUITE("AssetSwap tests");
     suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testConsistency));
     suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testImpliedValue));
     suite->add(QUANTLIB_TEST_CASE(&AssetSwapTest::testMarketASWSpread));

@@ -19,22 +19,20 @@
 
 #include <ql/experimental/catbonds/catrisk.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <boost/make_shared.hpp>
+#include <random>
+#include <utility>
 
 namespace QuantLib {
 
-    namespace {
-        Integer round(Real r) {
-            return (r > 0.0) ? Integer(std::floor(r + 0.5)) : Integer(std::ceil(r - 0.5));
-        }
-    }
 
-    EventSetSimulation::EventSetSimulation(boost::shared_ptr<std::vector<std::pair<Date, Real> > > events, 
-                                           Date eventsStart, 
-                                           Date eventsEnd, 
-                                           Date start, 
-                                           Date end) 
-    : CatSimulation(start, end), events_(events), eventsStart_(eventsStart), eventsEnd_(eventsEnd), i_(0) {
+    EventSetSimulation::EventSetSimulation(
+        ext::shared_ptr<std::vector<std::pair<Date, Real> > > events,
+        Date eventsStart,
+        Date eventsEnd,
+        Date start,
+        Date end)
+    : CatSimulation(start, end), events_(std::move(events)), eventsStart_(eventsStart),
+      eventsEnd_(eventsEnd) {
         years_ = end_.year()-start_.year();
         if(eventsStart_.month()<start_.month() 
                             || (eventsStart_.month()==start_.month() 
@@ -70,48 +68,49 @@ namespace QuantLib {
         return true;
     }
 
-    EventSet::EventSet(boost::shared_ptr<std::vector<std::pair<Date, Real> > > events, 
-                       Date eventsStart, 
-                       Date eventsEnd) 
-    : events_(events), eventsStart_(eventsStart), eventsEnd_(eventsEnd) {}
+    EventSet::EventSet(ext::shared_ptr<std::vector<std::pair<Date, Real> > > events,
+                       Date eventsStart,
+                       Date eventsEnd)
+    : events_(std::move(events)), eventsStart_(eventsStart), eventsEnd_(eventsEnd) {}
 
-    boost::shared_ptr<CatSimulation> EventSet::newSimulation(const Date& start, const Date& end) const{
-        return boost::make_shared<EventSetSimulation>(events_, eventsStart_, eventsEnd_, start, end);
+    ext::shared_ptr<CatSimulation> EventSet::newSimulation(const Date& start, const Date& end) const{
+        return ext::make_shared<EventSetSimulation>(events_, eventsStart_, eventsEnd_, start, end);
     }
 
     BetaRiskSimulation::BetaRiskSimulation(Date start, Date end, Real maxLoss, Real lambda, Real alpha, Real beta) 
               : CatSimulation(start, end), 
                 maxLoss_(maxLoss), 
-                exponential_(rng_, boost::exponential_distribution<>(lambda)),
-                gammaAlpha_(rng_, boost::gamma_distribution<>(alpha)),
-                gammaBeta_(rng_, boost::gamma_distribution<>(beta))
+                exponential_(lambda),
+                gammaAlpha_(alpha),
+                gammaBeta_(beta)
     {
-        ActualActual dayCounter;
+        DayCounter dayCounter = ActualActual(ActualActual::ISDA);
         dayCount_ = dayCounter.dayCount(start, end);
         yearFraction_ = dayCounter.yearFraction(start, end);
     }
 
     Real BetaRiskSimulation::generateBeta()
     {
-        Real X = gammaAlpha_();
-        Real Y = gammaBeta_();
+        Real X = gammaAlpha_(rng_);
+        Real Y = gammaBeta_(rng_);
         return X*maxLoss_/(X+Y);
     }
 
     bool BetaRiskSimulation::nextPath(std::vector<std::pair<Date, Real> > &path)
     {        
         path.resize(0);
-        Real eventFraction = exponential_();       
+        Real eventFraction = exponential_(rng_);
         while(eventFraction<=yearFraction_)
         {
-            Integer days = round(eventFraction*dayCount_/yearFraction_);
+            auto days =
+                static_cast<Integer>(std::lround(eventFraction * dayCount_ / yearFraction_));
             Date eventDate = start_ + days*Days;
             if(eventDate<=end_)
             {
-                path.push_back(std::pair<Date, Real> (eventDate, generateBeta()));
+                path.emplace_back(eventDate, generateBeta());
             }
             else break;
-            eventFraction = exponential_();
+            eventFraction = exponential_(rng_);
         }
         return true;
     }
@@ -130,7 +129,7 @@ namespace QuantLib {
         beta_=(1.0-normalizedMean)*nu;
     }
 
-    boost::shared_ptr<CatSimulation> BetaRisk::newSimulation(const Date& start, const Date& end) const {
-        return boost::make_shared<BetaRiskSimulation>(start, end, maxLoss_, lambda_, alpha_, beta_);
+    ext::shared_ptr<CatSimulation> BetaRisk::newSimulation(const Date& start, const Date& end) const {
+        return ext::make_shared<BetaRiskSimulation>(start, end, maxLoss_, lambda_, alpha_, beta_);
     }
 }

@@ -25,26 +25,26 @@
 #ifndef quantlib_fdm_2d_ext_ou_solver_hpp
 #define quantlib_fdm_2d_ext_ou_solver_hpp
 
-#include <ql/handle.hpp>
-#include <ql/patterns/lazyobject.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
 #include <ql/experimental/processes/extendedornsteinuhlenbeckprocess.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
+#include <ql/handle.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
-#include <ql/experimental/finitedifferences/fdmextendedornsteinuhlenbeckop.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
+#include <ql/patterns/lazyobject.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     class FdmSimple2dExtOUSolver : public LazyObject {
       public:
-        FdmSimple2dExtOUSolver(
-            const Handle<ExtendedOrnsteinUhlenbeckProcess>& process,
-            const boost::shared_ptr<YieldTermStructure>& rTS,
-            const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc  = FdmSchemeDesc::Hundsdorfer())
-        : process_(process), rTS_(rTS),
-          solverDesc_(solverDesc), schemeDesc_(schemeDesc) {
+        FdmSimple2dExtOUSolver(const Handle<ExtendedOrnsteinUhlenbeckProcess>& process,
+                               ext::shared_ptr<YieldTermStructure> rTS,
+                               FdmSolverDesc solverDesc,
+                               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer())
+        : process_(process), rTS_(std::move(rTS)), solverDesc_(std::move(solverDesc)),
+          schemeDesc_(schemeDesc) {
             registerWith(process);
         }
 
@@ -54,23 +54,23 @@ namespace QuantLib {
         }
 
       protected:
-        void performCalculations() const {
-            boost::shared_ptr<FdmLinearOpComposite>op(
-                new FdmExtendedOrnsteinUhlenbackOp(
+        void performCalculations() const override {
+            ext::shared_ptr<FdmLinearOpComposite>op(
+                new FdmExtendedOrnsteinUhlenbeckOp(
                                 solverDesc_.mesher, process_.currentLink(),
                                 rTS_, solverDesc_.bcSet));
 
-            solver_ = boost::shared_ptr<Fdm2DimSolver>(
-                          new Fdm2DimSolver(solverDesc_, schemeDesc_, op));
+            solver_ = ext::make_shared<Fdm2DimSolver>(
+                          solverDesc_, schemeDesc_, op);
         }
 
       private:
         const Handle<ExtendedOrnsteinUhlenbeckProcess> process_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        mutable boost::shared_ptr<Fdm2DimSolver> solver_;
+        mutable ext::shared_ptr<Fdm2DimSolver> solver_;
     };
 }
 

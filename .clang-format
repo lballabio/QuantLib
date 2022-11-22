@@ -1,0 +1,55 @@
+---
+Language:        Cpp
+Standard:        c++14
+
+
+# The following is close to the style we've been using all these years
+# without formalizing it.  Formatting won't be enforced, but this file
+# can help if you want to use the general feel of the library.
+
+
+# General appearance:
+
+BasedOnStyle: LLVM
+
+IndentWidth: 4
+ColumnLimit: 100
+NamespaceIndentation: All
+MaxEmptyLinesToKeep: 2
+FixNamespaceComments: false
+
+# Function declarations:
+
+BinPackParameters: false
+AllowShortFunctionsOnASingleLine: Inline
+AlwaysBreakTemplateDeclarations: true
+
+# T& x, not T &x:
+
+DerivePointerAlignment: false
+PointerAlignment: Left
+
+# QuantLib headers first, then Boost, then std
+
+SortIncludes: true
+IncludeBlocks: Merge
+IncludeCategories: 
+  - Regex:           '^"'
+    Priority:        1
+  - Regex:           '^<ql/'
+    Priority:        2
+  - Regex:           '^<boost/'
+    Priority:        3
+  - Regex:           '^<'
+    Priority:        4
+
+# Other:
+
+AlignEscapedNewlines: Left
+BreakBeforeTernaryOperators: false
+ConstructorInitializerIndentWidth: 0
+SortUsingDeclarations: false
+IndentCaseLabels: true
+IndentPPDirectives: AfterHash
+
+...

@@ -34,13 +34,13 @@ namespace QuantLib {
     class FdG2SwaptionEngine
         : public GenericModelEngine<G2,Swaption::arguments,Swaption::results> {
       public:
-        FdG2SwaptionEngine(
-            const boost::shared_ptr<G2>& model,
+        explicit FdG2SwaptionEngine(
+            const ext::shared_ptr<G2>& model,
             Size tGrid = 100, Size xGrid = 50, Size yGrid = 50,
             Size dampingSteps = 0, Real invEps = 1e-5,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const Size tGrid_, xGrid_, yGrid_, dampingSteps_;

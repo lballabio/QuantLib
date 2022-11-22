@@ -27,24 +27,25 @@
 #include <ql/methods/finitedifferences/pde.hpp>
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/stochasticprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    class PdeShortRate : public PdeSecondOrderParabolic {
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.27.
+    */
+    class QL_DEPRECATED PdeShortRate : public PdeSecondOrderParabolic {
       public:
-        typedef boost::shared_ptr<OneFactorModel::ShortRateDynamics>
+        typedef ext::shared_ptr<OneFactorModel::ShortRateDynamics>
                                                                 argument_type;
         typedef TransformedGrid grid_type;
-        PdeShortRate(const argument_type& d) : dynamics_(d) {}
-        virtual Real diffusion(Time t, Real x) const {
+        PdeShortRate(argument_type d) : dynamics_(std::move(d)) {}
+        Real diffusion(Time t, Real x) const override {
             return dynamics_->process()->diffusion(t, x);
         }
-        virtual Real drift(Time t, Real x) const {
-            return dynamics_->process()->drift(t, x);
-        }
-        virtual Real discount(Time t, Real x) const {
-            return dynamics_->shortRate(t,x);
-        }
+        Real drift(Time t, Real x) const override { return dynamics_->process()->drift(t, x); }
+        Real discount(Time t, Real x) const override { return dynamics_->shortRate(t, x); }
+
       private:
         const argument_type dynamics_;
     };

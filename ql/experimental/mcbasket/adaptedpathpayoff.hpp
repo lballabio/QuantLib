@@ -63,16 +63,16 @@ namespace QuantLib {
             Array & exercises_;
             std::vector<Array> & states_;
 
-            Size maximumTimeRead_;
+            Size maximumTimeRead_ = 0;
         };
 
-        virtual void value(const Matrix       & path, 
-                           const std::vector<Handle<YieldTermStructure> > & forwardTermStructures,
-                           Array              & payments, 
-                           Array              & exercises, 
-                           std::vector<Array> & states) const;
+        void value(const Matrix& path,
+                   const std::vector<Handle<YieldTermStructure> >& forwardTermStructures,
+                   Array& payments,
+                   Array& exercises,
+                   std::vector<Array>& states) const override;
 
-    protected:
+      protected:
 
         /*
           Key method of this class.

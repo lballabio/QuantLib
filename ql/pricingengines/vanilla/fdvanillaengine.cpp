@@ -22,9 +22,11 @@
 
 #include <ql/pricingengines/vanilla/fdvanillaengine.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/exercise.hpp>
 #include <ql/grid.hpp>
-#include <ql/methods/finitedifferences/operatorfactory.hpp>
 #include <ql/instruments/oneassetoption.hpp>
+#include <ql/methods/finitedifferences/bsmoperator.hpp>
+#include <ql/methods/finitedifferences/bsmtermoperator.hpp>
 
 namespace QuantLib {
 
@@ -38,8 +40,7 @@ namespace QuantLib {
 
     void FDVanillaEngine::setupArguments(
                                     const PricingEngine::arguments* a) const {
-        const OneAssetOption::arguments * args =
-            dynamic_cast<const OneAssetOption::arguments *>(a);
+        const auto* args = dynamic_cast<const OneAssetOption::arguments*>(a);
         QL_REQUIRE(args, "incorrect argument type");
         exerciseDate_ = args->exercise->lastDate();
         payoff_ = args->payoff;
@@ -66,8 +67,8 @@ namespace QuantLib {
 
     void FDVanillaEngine::ensureStrikeInGrid() const {
         // ensure strike is included in the grid
-        boost::shared_ptr<StrikedTypePayoff> striked_payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+        ext::shared_ptr<StrikedTypePayoff> striked_payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
         if (!striked_payoff)
             return;
         Real requiredGridValue = striked_payoff->strike();
@@ -90,19 +91,32 @@ namespace QuantLib {
     }
 
     void FDVanillaEngine::initializeOperator() const {
-        finiteDifferenceOperator_ =
-            OperatorFactory::getOperator(process_,
-                                         intrinsicValues_.grid(),
-                                         getResidualTime(),
-                                         timeDependent_);
+        if (timeDependent_) {
+            finiteDifferenceOperator_ = BSMTermOperator(intrinsicValues_.grid(),
+                                                        process_, getResidualTime());
+        } else {
+            const YieldTermStructure& R = **(process_->riskFreeRate());
+            Rate r = R.zeroRate(exerciseDate_, R.dayCounter(), Continuous);
+            const YieldTermStructure& Q = **(process_->dividendYield());
+            Rate q = Q.zeroRate(exerciseDate_, Q.dayCounter(), Continuous);
+
+            ext::shared_ptr<StrikedTypePayoff> striked_payoff =
+                ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);
+            Real K = striked_payoff != nullptr ? striked_payoff->strike() : process_->x0();
+            Volatility sigma =
+                process_->blackVolatility()->blackVol(exerciseDate_, K);
+
+            finiteDifferenceOperator_ = BSMOperator(intrinsicValues_.grid(),
+                                                    r, q, sigma);
+        }
     }
 
     void FDVanillaEngine::initializeBoundaryConditions() const {
-        BCs_[0] = boost::shared_ptr<bc_type>(new NeumannBC(
+        BCs_[0] = ext::shared_ptr<bc_type>(new NeumannBC(
                                       intrinsicValues_.value(1)-
                                       intrinsicValues_.value(0),
                                       NeumannBC::Lower));
-        BCs_[1] = boost::shared_ptr<bc_type>(new NeumannBC(
+        BCs_[1] = ext::shared_ptr<bc_type>(new NeumannBC(
                        intrinsicValues_.value(intrinsicValues_.size()-1) -
                        intrinsicValues_.value(intrinsicValues_.size()-2),
                        NeumannBC::Upper));

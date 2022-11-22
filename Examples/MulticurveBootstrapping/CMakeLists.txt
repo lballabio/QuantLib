@@ -1,0 +1,5 @@
+add_executable(MulticurveBootstrapping MulticurveBootstrapping.cpp)
+target_link_libraries(MulticurveBootstrapping ql_library ${QL_THREAD_LIBRARIES})
+if (QL_INSTALL_EXAMPLES)
+    install(TARGETS MulticurveBootstrapping RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()

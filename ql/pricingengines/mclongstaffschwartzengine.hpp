@@ -31,7 +31,6 @@
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/methods/montecarlo/longstaffschwartzpathpricer.hpp>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -70,33 +69,32 @@ namespace QuantLib {
           for low discrepancy RNGs usually, it is therefore recommended
           to use pseudo random generators for the calibration phase always
           (and possibly quasi monte carlo in the subsequent pricing). */
-        MCLongstaffSchwartzEngine(
-            const boost::shared_ptr<StochasticProcess>& process,
-            Size timeSteps,
-            Size timeStepsPerYear,
-            bool brownianBridge,
-            bool antitheticVariate,
-            bool controlVariate,
-            Size requiredSamples,
-            Real requiredTolerance,
-            Size maxSamples,
-            BigNatural seed,
-            Size nCalibrationSamples = Null<Size>(),
-            boost::optional<bool> brownianBridgeCalibration = boost::none,
-            boost::optional<bool> antitheticVariateCalibration = boost::none,
-            BigNatural seedCalibration = Null<Size>());
+        MCLongstaffSchwartzEngine(ext::shared_ptr<StochasticProcess> process,
+                                  Size timeSteps,
+                                  Size timeStepsPerYear,
+                                  bool brownianBridge,
+                                  bool antitheticVariate,
+                                  bool controlVariate,
+                                  Size requiredSamples,
+                                  Real requiredTolerance,
+                                  Size maxSamples,
+                                  BigNatural seed,
+                                  Size nCalibrationSamples = Null<Size>(),
+                                  boost::optional<bool> brownianBridgeCalibration = boost::none,
+                                  boost::optional<bool> antitheticVariateCalibration = boost::none,
+                                  BigNatural seedCalibration = Null<Size>());
 
-        void calculate() const;
+        void calculate() const override;
 
       protected:
-        virtual boost::shared_ptr<LongstaffSchwartzPathPricer<path_type> >
+        virtual ext::shared_ptr<LongstaffSchwartzPathPricer<path_type> >
                                                    lsmPathPricer() const = 0;
 
-        TimeGrid timeGrid() const;
-        boost::shared_ptr<path_pricer_type> pathPricer() const;
-        boost::shared_ptr<path_generator_type> pathGenerator() const;
+        TimeGrid timeGrid() const override;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override;
 
-        boost::shared_ptr<StochasticProcess> process_;
+        ext::shared_ptr<StochasticProcess> process_;
         const Size timeSteps_;
         const Size timeStepsPerYear_;
         const bool brownianBridge_;
@@ -109,48 +107,46 @@ namespace QuantLib {
         const bool antitheticVariateCalibration_;
         const BigNatural seedCalibration_;
 
-        mutable boost::shared_ptr<LongstaffSchwartzPathPricer<path_type> >
+        mutable ext::shared_ptr<LongstaffSchwartzPathPricer<path_type> >
             pathPricer_;
-        mutable boost::shared_ptr<MonteCarloModel<MC, RNG_Calibration, S> >
+        mutable ext::shared_ptr<MonteCarloModel<MC, RNG_Calibration, S> >
             mcModelCalibration_;
     };
 
-    template <class GenericEngine, template <class> class MC,
-              class RNG, class S, class RNG_Calibration>
-    inline MCLongstaffSchwartzEngine<GenericEngine,MC,RNG,S,RNG_Calibration>::
-    MCLongstaffSchwartzEngine(
-            const boost::shared_ptr<StochasticProcess>& process,
-            Size timeSteps,
-            Size timeStepsPerYear,
-            bool brownianBridge,
-            bool antitheticVariate,
-            bool controlVariate,
-            Size requiredSamples,
-            Real requiredTolerance,
-            Size maxSamples,
-            BigNatural seed,
-            Size nCalibrationSamples,
-            boost::optional<bool> brownianBridgeCalibration,
-            boost::optional<bool> antitheticVariateCalibration,
-            BigNatural seedCalibration)
-    : McSimulation<MC,RNG,S> (antitheticVariate, controlVariate),
-      process_            (process),
-      timeSteps_          (timeSteps),
-      timeStepsPerYear_   (timeStepsPerYear),
-      brownianBridge_     (brownianBridge),
-      requiredSamples_    (requiredSamples),
-      requiredTolerance_  (requiredTolerance),
-      maxSamples_         (maxSamples),
-      seed_               (seed),
-      nCalibrationSamples_( (nCalibrationSamples == Null<Size>())
-                            ? 2048 : nCalibrationSamples),
-      brownianBridgeCalibration_ (brownianBridgeCalibration ?
-                                  *brownianBridgeCalibration : brownianBridge),
-      antitheticVariateCalibration_(antitheticVariateCalibration ?
-                                    *antitheticVariateCalibration : antitheticVariate),
-      seedCalibration_(seedCalibration != Null<Real>() ?
-                         seedCalibration : (seed == 0 ? 0 : seed+1768237423L))
-    {
+    template <class GenericEngine,
+              template <class>
+              class MC,
+              class RNG,
+              class S,
+              class RNG_Calibration>
+    inline MCLongstaffSchwartzEngine<GenericEngine, MC, RNG, S, RNG_Calibration>::
+        MCLongstaffSchwartzEngine(ext::shared_ptr<StochasticProcess> process,
+                                  Size timeSteps,
+                                  Size timeStepsPerYear,
+                                  bool brownianBridge,
+                                  bool antitheticVariate,
+                                  bool controlVariate,
+                                  Size requiredSamples,
+                                  Real requiredTolerance,
+                                  Size maxSamples,
+                                  BigNatural seed,
+                                  Size nCalibrationSamples,
+                                  boost::optional<bool> brownianBridgeCalibration,
+                                  boost::optional<bool> antitheticVariateCalibration,
+                                  BigNatural seedCalibration)
+    : McSimulation<MC, RNG, S>(antitheticVariate, controlVariate), process_(std::move(process)),
+      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), brownianBridge_(brownianBridge),
+      requiredSamples_(requiredSamples), requiredTolerance_(requiredTolerance),
+      maxSamples_(maxSamples), seed_(seed),
+      nCalibrationSamples_((nCalibrationSamples == Null<Size>()) ? 2048 : nCalibrationSamples),
+      // NOLINTNEXTLINE(readability-implicit-bool-conversion)
+      brownianBridgeCalibration_(brownianBridgeCalibration ? *brownianBridgeCalibration :
+                                                             brownianBridge),
+      antitheticVariateCalibration_(
+          // NOLINTNEXTLINE(readability-implicit-bool-conversion)
+          antitheticVariateCalibration ? *antitheticVariateCalibration : antitheticVariate),
+      seedCalibration_(seedCalibration != Null<Real>() ? seedCalibration :
+                                                         (seed == 0 ? 0 : seed + 1768237423L)) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
                    timeStepsPerYear != Null<Size>(),
                    "no time steps provided");
@@ -168,7 +164,7 @@ namespace QuantLib {
 
     template <class GenericEngine, template <class> class MC, class RNG,
               class S, class RNG_Calibration>
-    inline boost::shared_ptr<typename MCLongstaffSchwartzEngine<
+    inline ext::shared_ptr<typename MCLongstaffSchwartzEngine<
         GenericEngine, MC, RNG, S, RNG_Calibration>::path_pricer_type>
     MCLongstaffSchwartzEngine<GenericEngine, MC, RNG, S,
                               RNG_Calibration>::pathPricer() const {
@@ -188,12 +184,12 @@ namespace QuantLib {
         typename RNG_Calibration::rsg_type generator =
             RNG_Calibration::make_sequence_generator(
                 dimensions * (grid.size() - 1), seedCalibration_);
-        boost::shared_ptr<path_generator_type_calibration>
+        ext::shared_ptr<path_generator_type_calibration>
             pathGeneratorCalibration =
-                boost::make_shared<path_generator_type_calibration>(
+                ext::make_shared<path_generator_type_calibration>(
                     process_, grid, generator, brownianBridgeCalibration_);
         mcModelCalibration_ =
-            boost::shared_ptr<MonteCarloModel<MC, RNG_Calibration, S> >(
+            ext::shared_ptr<MonteCarloModel<MC, RNG_Calibration, S> >(
                 new MonteCarloModel<MC, RNG_Calibration, S>(
                     pathGeneratorCalibration, pathPricer_, stats_type(),
                     this->antitheticVariateCalibration_));
@@ -245,7 +241,7 @@ namespace QuantLib {
 
     template <class GenericEngine, template <class> class MC, class RNG,
               class S, class RNG_Calibration>
-    inline boost::shared_ptr<typename MCLongstaffSchwartzEngine<
+    inline ext::shared_ptr<typename MCLongstaffSchwartzEngine<
         GenericEngine, MC, RNG, S, RNG_Calibration>::path_generator_type>
     MCLongstaffSchwartzEngine<GenericEngine, MC, RNG, S,
                               RNG_Calibration>::pathGenerator() const {
@@ -254,7 +250,7 @@ namespace QuantLib {
         TimeGrid grid = this->timeGrid();
         typename RNG::rsg_type generator =
             RNG::make_sequence_generator(dimensions*(grid.size()-1),seed_);
-        return boost::shared_ptr<path_generator_type>(
+        return ext::shared_ptr<path_generator_type>(
                    new path_generator_type(process_,
                                            grid, generator, brownianBridge_));
     }

@@ -41,25 +41,26 @@ namespace QuantLib {
         class arguments;
         class results;
         class engine;
-        VarianceOption(const boost::shared_ptr<Payoff>& payoff,
+        VarianceOption(ext::shared_ptr<Payoff> payoff,
                        Real notional,
                        const Date& startDate,
                        const Date& maturityDate);
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
+        bool isExpired() const override;
         //@}
         //! \name Inspectors
         //@{
         Date startDate() const;
         Date maturityDate() const;
         Real notional() const;
-        boost::shared_ptr<Payoff> payoff() const;
+        ext::shared_ptr<Payoff> payoff() const;
         //@}
-        void setupArguments(PricingEngine::arguments* args) const;
+        void setupArguments(PricingEngine::arguments* args) const override;
+
       protected:
         // data members
-        boost::shared_ptr<Payoff> payoff_;
+        ext::shared_ptr<Payoff> payoff_;
         Real notional_;
         Date startDate_, maturityDate_;
     };
@@ -69,8 +70,8 @@ namespace QuantLib {
     class VarianceOption::arguments : public virtual PricingEngine::arguments {
       public:
         arguments() : notional(Null<Real>()) {}
-        void validate() const;
-        boost::shared_ptr<Payoff> payoff;
+        void validate() const override;
+        ext::shared_ptr<Payoff> payoff;
         Real notional;
         Date startDate;
         Date maturityDate;
@@ -100,7 +101,7 @@ namespace QuantLib {
         return notional_;
     }
 
-    inline boost::shared_ptr<Payoff> VarianceOption::payoff() const {
+    inline ext::shared_ptr<Payoff> VarianceOption::payoff() const {
         return payoff_;
     }
 

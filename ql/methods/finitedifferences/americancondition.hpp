@@ -18,35 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file americancondition.hpp
-    \brief american option exercise condition
-*/
-
 #ifndef quantlib_fd_american_condition_h
 #define quantlib_fd_american_condition_h
 
-#include <ql/methods/finitedifferences/fdtypedefs.hpp>
-#include <ql/discretizedasset.hpp>
-#include <ql/instruments/payoffs.hpp>
-
-namespace QuantLib {
-
-    //! American exercise condition.
-    /*! \todo unify the intrinsicValues/Payoff thing */
-    class AmericanCondition :
-        public StandardCurveDependentStepCondition {
-    public:
-        AmericanCondition(Option::Type type,
-                          Real strike)
-            : StandardCurveDependentStepCondition(type, strike) {};
-        AmericanCondition(const Array& intrinsicValues)
-            : StandardCurveDependentStepCondition(intrinsicValues) {};
-    private:
-        Real applyToValue(Real current, Real intrinsic) const {
-            return std::max(current, intrinsic);
-        }
-    };
-}
+// Deprecated in version 1.27
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 
 #endif

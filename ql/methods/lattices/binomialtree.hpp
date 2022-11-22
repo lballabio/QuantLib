@@ -39,12 +39,10 @@ namespace QuantLib {
     class BinomialTree : public Tree<T> {
       public:
         enum Branches { branches = 2 };
-        BinomialTree(const boost::shared_ptr<StochasticProcess1D>& process,
+        BinomialTree(const ext::shared_ptr<StochasticProcess1D>& process,
                      Time end,
                      Size steps)
-        : Tree<T>(steps+1) {
-            x0_ = process->x0();
-            dt_ = end/steps;
+        : Tree<T>(steps+1), x0_(process->x0()), dt_(end/steps) {
             driftPerStep_ = process->drift(0.0, x0_) * dt_;
         }
         Size size(Size i) const {
@@ -65,7 +63,7 @@ namespace QuantLib {
     class EqualProbabilitiesBinomialTree : public BinomialTree<T> {
       public:
         EqualProbabilitiesBinomialTree(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end,
                         Size steps)
         : BinomialTree<T>(process, end, steps) {}
@@ -86,7 +84,7 @@ namespace QuantLib {
     class EqualJumpsBinomialTree : public BinomialTree<T> {
       public:
         EqualJumpsBinomialTree(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end,
                         Size steps)
         : BinomialTree<T>(process, end, steps) {}
@@ -107,7 +105,7 @@ namespace QuantLib {
     /*! \ingroup lattices */
     class JarrowRudd : public EqualProbabilitiesBinomialTree<JarrowRudd> {
       public:
-        JarrowRudd(const boost::shared_ptr<StochasticProcess1D>&,
+        JarrowRudd(const ext::shared_ptr<StochasticProcess1D>&,
                    Time end,
                    Size steps,
                    Real strike);
@@ -119,7 +117,7 @@ namespace QuantLib {
     class CoxRossRubinstein
         : public EqualJumpsBinomialTree<CoxRossRubinstein> {
       public:
-        CoxRossRubinstein(const boost::shared_ptr<StochasticProcess1D>&,
+        CoxRossRubinstein(const ext::shared_ptr<StochasticProcess1D>&,
                           Time end,
                           Size steps,
                           Real strike);
@@ -132,7 +130,7 @@ namespace QuantLib {
         : public EqualProbabilitiesBinomialTree<AdditiveEQPBinomialTree> {
       public:
         AdditiveEQPBinomialTree(
-                        const boost::shared_ptr<StochasticProcess1D>&,
+                        const ext::shared_ptr<StochasticProcess1D>&,
                         Time end,
                         Size steps,
                         Real strike);
@@ -143,7 +141,7 @@ namespace QuantLib {
     /*! \ingroup lattices */
     class Trigeorgis : public EqualJumpsBinomialTree<Trigeorgis> {
       public:
-        Trigeorgis(const boost::shared_ptr<StochasticProcess1D>&,
+        Trigeorgis(const ext::shared_ptr<StochasticProcess1D>&,
                    Time end,
                    Size steps,
                    Real strike);
@@ -154,7 +152,7 @@ namespace QuantLib {
     /*! \ingroup lattices */
     class Tian : public BinomialTree<Tian> {
       public:
-        Tian(const boost::shared_ptr<StochasticProcess1D>&,
+        Tian(const ext::shared_ptr<StochasticProcess1D>&,
              Time end,
              Size steps,
              Real strike);
@@ -173,7 +171,7 @@ namespace QuantLib {
     /*! \ingroup lattices */
     class LeisenReimer : public BinomialTree<LeisenReimer> {
       public:
-        LeisenReimer(const boost::shared_ptr<StochasticProcess1D>&,
+        LeisenReimer(const ext::shared_ptr<StochasticProcess1D>&,
                      Time end,
                      Size steps,
                      Real strike);
@@ -191,7 +189,7 @@ namespace QuantLib {
 
      class Joshi4 : public BinomialTree<Joshi4> {
       public:
-        Joshi4(const boost::shared_ptr<StochasticProcess1D>&,
+        Joshi4(const ext::shared_ptr<StochasticProcess1D>&,
                Time end,
                Size steps,
                Real strike);

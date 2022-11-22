@@ -25,8 +25,9 @@
 #ifndef quantlib_day_counter_hpp
 #define quantlib_day_counter_hpp
 
-#include <ql/time/date.hpp>
 #include <ql/errors.hpp>
+#include <ql/time/date.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -45,7 +46,7 @@ namespace QuantLib {
         //! abstract base class for day counter implementations
         class Impl {
           public:
-            virtual ~Impl() {}
+            virtual ~Impl() = default;
             virtual std::string name() const = 0;
             //! to be overloaded by more complex day counters
             virtual Date::serial_type dayCount(const Date& d1,
@@ -57,17 +58,18 @@ namespace QuantLib {
                                       const Date& refPeriodStart,
                                       const Date& refPeriodEnd) const = 0;
         };
-        boost::shared_ptr<Impl> impl_;
+        ext::shared_ptr<Impl> impl_;
         /*! This constructor can be invoked by derived classes which
             define a given implementation.
         */
-        DayCounter(const boost::shared_ptr<Impl>& impl) : impl_(impl) {}
+        explicit DayCounter(ext::shared_ptr<Impl> impl) : impl_(std::move(impl)) {}
+
       public:
         /*! The default constructor returns a day counter with a null
             implementation, which is therefore unusable except as a
             placeholder.
         */
-        DayCounter() {}
+        DayCounter() = default;
         //! \name DayCounter interface
         //@{
         //!  Returns whether or not the day counter is initialized
@@ -113,19 +115,19 @@ namespace QuantLib {
     }
 
     inline std::string DayCounter::name() const {
-        QL_REQUIRE(impl_, "no implementation provided");
+        QL_REQUIRE(impl_, "no day counter implementation provided");
         return impl_->name();
     }
 
     inline Date::serial_type DayCounter::dayCount(const Date& d1,
                                                   const Date& d2) const {
-        QL_REQUIRE(impl_, "no implementation provided");
+        QL_REQUIRE(impl_, "no day counter implementation provided");
         return impl_->dayCount(d1,d2);
     }
 
     inline Time DayCounter::yearFraction(const Date& d1, const Date& d2,
         const Date& refPeriodStart, const Date& refPeriodEnd) const {
-            QL_REQUIRE(impl_, "no implementation provided");
+            QL_REQUIRE(impl_, "no day counter implementation provided");
             return impl_->yearFraction(d1,d2,refPeriodStart,refPeriodEnd);
     }
 

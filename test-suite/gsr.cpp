@@ -64,7 +64,7 @@ void GsrTest::testGsrProcess() {
     Real reversion = 0.01;
     Real modelvol = 0.01;
 
-    Handle<YieldTermStructure> yts0(boost::shared_ptr<YieldTermStructure>(
+    Handle<YieldTermStructure> yts0(ext::shared_ptr<YieldTermStructure>(
         new FlatForward(0, TARGET(), 0.00, Actual365Fixed())));
 
     std::vector<Date> stepDates0;
@@ -80,16 +80,16 @@ void GsrTest::testGsrProcess() {
     Real T = 10.0;
     do {
 
-        boost::shared_ptr<Gsr> model(
+        ext::shared_ptr<Gsr> model(
             new Gsr(yts0, stepDates0, vols0, reversions0, T));
-        boost::shared_ptr<StochasticProcess1D> gsrProcess =
+        ext::shared_ptr<StochasticProcess1D> gsrProcess =
             model->stateProcess();
-        boost::shared_ptr<Gsr> model2(
+        ext::shared_ptr<Gsr> model2(
             new Gsr(yts0, stepDates1, vols1, reversions1, T));
-        boost::shared_ptr<StochasticProcess1D> gsrProcess2 =
+        ext::shared_ptr<StochasticProcess1D> gsrProcess2 =
             model2->stateProcess();
 
-        boost::shared_ptr<HullWhiteForwardProcess> hwProcess(
+        ext::shared_ptr<HullWhiteForwardProcess> hwProcess(
             new HullWhiteForwardProcess(yts0, reversion, modelvol));
         hwProcess->setForwardMeasureTime(T);
 
@@ -182,13 +182,13 @@ void GsrTest::testGsrModel() {
     std::vector<Real> vols1(stepDates1.size() + 1, modelvol);
     std::vector<Real> reversions1(stepDates1.size() + 1, reversion);
 
-    Handle<YieldTermStructure> yts(boost::shared_ptr<YieldTermStructure>(
+    Handle<YieldTermStructure> yts(ext::shared_ptr<YieldTermStructure>(
         new FlatForward(0, TARGET(), 0.03, Actual365Fixed())));
-    boost::shared_ptr<Gsr> model(
+    ext::shared_ptr<Gsr> model(
         new Gsr(yts, stepDates, vols, reversions, 50.0));
-    boost::shared_ptr<Gsr> model2(
+    ext::shared_ptr<Gsr> model2(
         new Gsr(yts, stepDates1, vols1, reversions1, 50.0));
-    boost::shared_ptr<HullWhite> hw(new HullWhite(yts, reversion, modelvol));
+    ext::shared_ptr<HullWhite> hw(new HullWhite(yts, reversion, modelvol));
 
     // test zerobond prices against existing HullWhite model
     // technically we test two representations of the same constant reversion
@@ -234,11 +234,11 @@ void GsrTest::testGsrModel() {
 
     Date expiry = TARGET().advance(refDate, 5 * Years);
     Period tenor = 10 * Years;
-    boost::shared_ptr<SwapIndex> swpIdx(new EuriborSwapIsdaFixA(tenor, yts));
+    ext::shared_ptr<SwapIndex> swpIdx(new EuriborSwapIsdaFixA(tenor, yts));
     Real forward = swpIdx->fixing(expiry);
 
-    boost::shared_ptr<VanillaSwap> underlying = swpIdx->underlyingSwap(expiry);
-    boost::shared_ptr<VanillaSwap> underlyingFixed =
+    ext::shared_ptr<VanillaSwap> underlying = swpIdx->underlyingSwap(expiry);
+    ext::shared_ptr<VanillaSwap> underlyingFixed =
         MakeVanillaSwap(10 * Years, swpIdx->iborIndex(), forward)
             .withEffectiveDate(swpIdx->valueDate(expiry))
             .withFixedLegCalendar(swpIdx->fixingCalendar())
@@ -247,23 +247,23 @@ void GsrTest::testGsrModel() {
             .withFixedLegConvention(swpIdx->fixedLegConvention())
             .withFixedLegTerminationDateConvention(
                  swpIdx->fixedLegConvention());
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(expiry));
-    boost::shared_ptr<Swaption> stdswaption(
+    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(expiry));
+    ext::shared_ptr<Swaption> stdswaption(
         new Swaption(underlyingFixed, exercise));
-    boost::shared_ptr<NonstandardSwaption> nonstdswaption(
+    ext::shared_ptr<NonstandardSwaption> nonstdswaption(
         new NonstandardSwaption(*stdswaption));
 
-    stdswaption->setPricingEngine(boost::shared_ptr<PricingEngine>(
+    stdswaption->setPricingEngine(ext::shared_ptr<PricingEngine>(
         new JamshidianSwaptionEngine(hw, yts)));
     Real HwJamNpv = stdswaption->NPV();
 
-    nonstdswaption->setPricingEngine(boost::shared_ptr<PricingEngine>(
+    nonstdswaption->setPricingEngine(ext::shared_ptr<PricingEngine>(
         new Gaussian1dNonstandardSwaptionEngine(model, 64, 7.0, true, false)));
-    stdswaption->setPricingEngine(boost::shared_ptr<PricingEngine>(
+    stdswaption->setPricingEngine(ext::shared_ptr<PricingEngine>(
         new Gaussian1dSwaptionEngine(model, 64, 7.0, true, false)));
     Real GsrNonStdNpv = nonstdswaption->NPV();
     Real GsrStdNpv = stdswaption->NPV();
-    stdswaption->setPricingEngine(boost::shared_ptr<PricingEngine>(
+    stdswaption->setPricingEngine(ext::shared_ptr<PricingEngine>(
         new Gaussian1dJamshidianSwaptionEngine(model)));
     Real GsrJamNpv = stdswaption->NPV();
 
@@ -286,7 +286,7 @@ void GsrTest::testGsrModel() {
 }
 
 test_suite *GsrTest::suite() {
-    test_suite *suite = BOOST_TEST_SUITE("GSR model tests");
+    auto* suite = BOOST_TEST_SUITE("GSR model tests");
     suite->add(QUANTLIB_TEST_CASE(&GsrTest::testGsrProcess));
     suite->add(QUANTLIB_TEST_CASE(&GsrTest::testGsrModel));
     return suite;

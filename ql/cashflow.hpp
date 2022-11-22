@@ -37,18 +37,17 @@ namespace QuantLib {
     */
     class CashFlow : public Event {
       public:
-        virtual ~CashFlow() {}
+        ~CashFlow() override = default;
         //! \name Event interface
         //@{
         //! \note This is inherited from the event class
-        virtual Date date() const = 0;
+        Date date() const override = 0;
         //! returns true if an event has already occurred before a date
         /*! overloads Event::hasOccurred in order to take
             Settings::includeTodaysCashflows in account
         */
-        bool hasOccurred(
-                    const Date& refDate = Date(),
-                    boost::optional<bool> includeRefDate = boost::none) const;
+        bool hasOccurred(const Date& refDate = Date(),
+                         boost::optional<bool> includeRefDate = boost::none) const override;
         //@}
         //! \name CashFlow interface
         //@{
@@ -58,25 +57,28 @@ namespace QuantLib {
         */
         virtual Real amount() const = 0;
         //! returns the date that the cash flow trades exCoupon
-        virtual Date exCouponDate() const {return Date();};
+        virtual Date exCouponDate() const { return {}; };
         //! returns true if the cashflow is trading ex-coupon on the refDate
         bool tradingExCoupon(const Date& refDate = Date()) const;
 
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 
     //! Sequence of cash-flows
-    typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
+    typedef std::vector<ext::shared_ptr<CashFlow> > Leg;
 
     template <>
-    struct earlier_than<CashFlow>
-            : public std::binary_function<CashFlow,CashFlow,bool> {
+    struct earlier_than<CashFlow> {
+        typedef CashFlow first_argument_type;
+        typedef CashFlow second_argument_type;
+        typedef bool result_type;
+
         bool operator()(const CashFlow& c1,
-                        const CashFlow& c2) {
+                        const CashFlow& c2) const {
             return c1.date() < c2.date();
         }
     };

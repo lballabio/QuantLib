@@ -34,7 +34,7 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    void testSingle(const boost::shared_ptr<StochasticProcess1D>& process,
+    void testSingle(const ext::shared_ptr<StochasticProcess1D>& process,
                     const std::string& tag, bool brownianBridge,
                     Real expected, Real antithetic) {
         typedef PseudoRandom::rsg_type rsg_type;
@@ -83,7 +83,7 @@ namespace {
 
     }
 
-    void testMultiple(const boost::shared_ptr<StochasticProcess>& process,
+    void testMultiple(const ext::shared_ptr<StochasticProcess>& process,
                       const std::string& tag,
                       Real expected[], Real antithetic[]) {
         typedef PseudoRandom::rsg_type rsg_type;
@@ -149,30 +149,30 @@ void PathGeneratorTest::testPathGenerator() {
 
     Settings::instance().evaluationDate() = Date(26,April,2005);
 
-    Handle<Quote> x0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<Quote> x0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
     Handle<YieldTermStructure> r(flatRate(0.05, Actual360()));
     Handle<YieldTermStructure> q(flatRate(0.02, Actual360()));
     Handle<BlackVolTermStructure> sigma(flatVol(0.20, Actual360()));
     // commented values must be used when Halley's correction is enabled
-    testSingle(boost::shared_ptr<StochasticProcess1D>(
+    testSingle(ext::shared_ptr<StochasticProcess1D>(
                                  new BlackScholesMertonProcess(x0,q,r,sigma)),
                "Black-Scholes", false, 26.13784357783, 467.2928561411);
                                     // 26.13784357783, 467.2928562519);
-    testSingle(boost::shared_ptr<StochasticProcess1D>(
+    testSingle(ext::shared_ptr<StochasticProcess1D>(
                                  new BlackScholesMertonProcess(x0,q,r,sigma)),
                "Black-Scholes", true, 60.28215549393, 202.6143139999);
                                    // 60.28215551021, 202.6143139437);
 
-    testSingle(boost::shared_ptr<StochasticProcess1D>(
+    testSingle(ext::shared_ptr<StochasticProcess1D>(
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20)),
                "geometric Brownian", false, 27.62223714065, 483.6026514084);
                                          // 27.62223714065, 483.602651493);
 
-    testSingle(boost::shared_ptr<StochasticProcess1D>(
+    testSingle(ext::shared_ptr<StochasticProcess1D>(
                                      new OrnsteinUhlenbeckProcess(0.1, 0.20)),
                "Ornstein-Uhlenbeck", false, -0.8372003433557, 0.8372003433557);
 
-    testSingle(boost::shared_ptr<StochasticProcess1D>(
+    testSingle(ext::shared_ptr<StochasticProcess1D>(
                                  new SquareRootProcess(0.1, 0.1, 0.20, 10.0)),
                "square-root", false, 1.70608664108, 6.024200546031);
 }
@@ -186,7 +186,7 @@ void PathGeneratorTest::testMultiPathGenerator() {
 
     Settings::instance().evaluationDate() = Date(26,April,2005);
 
-    Handle<Quote> x0(boost::shared_ptr<Quote>(new SimpleQuote(100.0)));
+    Handle<Quote> x0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
     Handle<YieldTermStructure> r(flatRate(0.05, Actual360()));
     Handle<YieldTermStructure> q(flatRate(0.02, Actual360()));
     Handle<BlackVolTermStructure> sigma(flatVol(0.20, Actual360()));
@@ -196,16 +196,16 @@ void PathGeneratorTest::testMultiPathGenerator() {
     correlation[1][0] = 0.9; correlation[1][1] = 1.0; correlation[1][2] = 0.4;
     correlation[2][0] = 0.7; correlation[2][1] = 0.4; correlation[2][2] = 1.0;
 
-    std::vector<boost::shared_ptr<StochasticProcess1D> > processes(3);
-    boost::shared_ptr<StochasticProcess> process;
+    std::vector<ext::shared_ptr<StochasticProcess1D> > processes(3);
+    ext::shared_ptr<StochasticProcess> process;
 
-    processes[0] = boost::shared_ptr<StochasticProcess1D>(
+    processes[0] = ext::shared_ptr<StochasticProcess1D>(
                                  new BlackScholesMertonProcess(x0,q,r,sigma));
-    processes[1] = boost::shared_ptr<StochasticProcess1D>(
+    processes[1] = ext::shared_ptr<StochasticProcess1D>(
                                  new BlackScholesMertonProcess(x0,q,r,sigma));
-    processes[2] = boost::shared_ptr<StochasticProcess1D>(
+    processes[2] = ext::shared_ptr<StochasticProcess1D>(
                                  new BlackScholesMertonProcess(x0,q,r,sigma));
-    process = boost::shared_ptr<StochasticProcess>(
+    process = ext::shared_ptr<StochasticProcess>(
                            new StochasticProcessArray(processes,correlation));
     // commented values must be used when Halley's correction is enabled
     Real result1[] = {
@@ -226,13 +226,13 @@ void PathGeneratorTest::testMultiPathGenerator() {
     //     108.0475146914 };
     testMultiple(process, "Black-Scholes", result1, result1a);
 
-    processes[0] = boost::shared_ptr<StochasticProcess1D>(
+    processes[0] = ext::shared_ptr<StochasticProcess1D>(
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20));
-    processes[1] = boost::shared_ptr<StochasticProcess1D>(
+    processes[1] = ext::shared_ptr<StochasticProcess1D>(
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20));
-    processes[2] = boost::shared_ptr<StochasticProcess1D>(
+    processes[2] = ext::shared_ptr<StochasticProcess1D>(
                        new GeometricBrownianMotionProcess(100.0, 0.03, 0.20));
-    process = boost::shared_ptr<StochasticProcess>(
+    process = ext::shared_ptr<StochasticProcess>(
                            new StochasticProcessArray(processes,correlation));
     Real result2[] = {
         174.8266131680,
@@ -252,13 +252,13 @@ void PathGeneratorTest::testMultiPathGenerator() {
     //     116.4056510107 };
     testMultiple(process, "geometric Brownian", result2, result2a);
 
-    processes[0] = boost::shared_ptr<StochasticProcess1D>(
+    processes[0] = ext::shared_ptr<StochasticProcess1D>(
                                      new OrnsteinUhlenbeckProcess(0.1, 0.20));
-    processes[1] = boost::shared_ptr<StochasticProcess1D>(
+    processes[1] = ext::shared_ptr<StochasticProcess1D>(
                                      new OrnsteinUhlenbeckProcess(0.1, 0.20));
-    processes[2] = boost::shared_ptr<StochasticProcess1D>(
+    processes[2] = ext::shared_ptr<StochasticProcess1D>(
                                      new OrnsteinUhlenbeckProcess(0.1, 0.20));
-    process = boost::shared_ptr<StochasticProcess>(
+    process = ext::shared_ptr<StochasticProcess>(
                            new StochasticProcessArray(processes,correlation));
     Real result3[] = {
         0.2942058437284,
@@ -270,13 +270,13 @@ void PathGeneratorTest::testMultiPathGenerator() {
         -0.02650931054575 };
     testMultiple(process, "Ornstein-Uhlenbeck", result3, result3a);
 
-    processes[0] = boost::shared_ptr<StochasticProcess1D>(
+    processes[0] = ext::shared_ptr<StochasticProcess1D>(
                                  new SquareRootProcess(0.1, 0.1, 0.20, 10.0));
-    processes[1] = boost::shared_ptr<StochasticProcess1D>(
+    processes[1] = ext::shared_ptr<StochasticProcess1D>(
                                  new SquareRootProcess(0.1, 0.1, 0.20, 10.0));
-    processes[2] = boost::shared_ptr<StochasticProcess1D>(
+    processes[2] = ext::shared_ptr<StochasticProcess1D>(
                                  new SquareRootProcess(0.1, 0.1, 0.20, 10.0));
-    process = boost::shared_ptr<StochasticProcess>(
+    process = ext::shared_ptr<StochasticProcess>(
                            new StochasticProcessArray(processes,correlation));
     Real result4[] = {
         4.279510844897,
@@ -291,7 +291,7 @@ void PathGeneratorTest::testMultiPathGenerator() {
 
 
 test_suite* PathGeneratorTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Path generation tests");
+    auto* suite = BOOST_TEST_SUITE("Path generation tests");
     suite->add(QUANTLIB_TEST_CASE(&PathGeneratorTest::testPathGenerator));
     // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&PathGeneratorTest::testMultiPathGenerator));

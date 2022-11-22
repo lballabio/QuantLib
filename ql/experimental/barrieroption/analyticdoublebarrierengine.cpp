@@ -17,16 +17,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
 #include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticDoubleBarrierEngine::AnalyticDoubleBarrierEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            int series)
-    : process_(process), series_(series) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process, int series)
+    : process_(std::move(process)), series_(series) {
         registerWith(process_);
     }
 
@@ -35,8 +35,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "this engine handles only european options");
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         Real strike = payoff->strike();
@@ -44,7 +44,7 @@ namespace QuantLib {
                    "strike must be positive");
 
         Real spot = underlying();
-        QL_REQUIRE(spot >= 0.0, "negative or null underlying given");
+        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
         QL_REQUIRE(!triggered(spot), "barrier(s) already touched");
 
         DoubleBarrier::Type barrierType = arguments_.barrierType;
@@ -102,8 +102,8 @@ namespace QuantLib {
     }
 
     Real AnalyticDoubleBarrierEngine::strike() const {
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }
@@ -156,8 +156,8 @@ namespace QuantLib {
 
     Real AnalyticDoubleBarrierEngine::vanillaEquivalent() const {
         // Call KI equates to vanilla - callKO
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         Real forwardPrice = underlying() * dividendDiscount() / riskFreeDiscount();
         BlackCalculator black(payoff, forwardPrice, stdDeviation(), riskFreeDiscount());
         Real vanilla = black.value();

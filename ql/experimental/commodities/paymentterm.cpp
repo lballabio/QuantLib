@@ -21,20 +21,20 @@
 
 namespace QuantLib {
 
-    std::map<std::string, boost::shared_ptr<PaymentTerm::Data> >
+    std::map<std::string, ext::shared_ptr<PaymentTerm::Data> >
     PaymentTerm::paymentTerms_;
 
     PaymentTerm::PaymentTerm(const std::string& name,
                              PaymentTerm::EventType eventType,
                              Integer offsetDays,
                              const Calendar& calendar) {
-        std::map<std::string, boost::shared_ptr<PaymentTerm::Data> >::const_iterator i = paymentTerms_.find(name);
+        std::map<std::string, ext::shared_ptr<PaymentTerm::Data> >::const_iterator i = paymentTerms_.find(name);
         if (i != paymentTerms_.end())
             data_ = i->second;
         else {
-            data_ = boost::shared_ptr<PaymentTerm::Data>(
-                                 new PaymentTerm::Data(name, eventType,
-                                                       offsetDays, calendar));
+            data_ = ext::make_shared<PaymentTerm::Data>(
+                                 name, eventType,
+                                                       offsetDays, calendar);
             paymentTerms_[name] = data_;
         }
     }

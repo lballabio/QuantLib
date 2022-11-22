@@ -37,24 +37,22 @@ namespace QuantLib {
     class CapFloor;
     class PricingEngine;
 
-    QL_DEPRECATED
-    typedef std::vector<std::vector<boost::shared_ptr<CapFloor> > > CapFloorMatrix;
-
     /*! Helper class to strip optionlet (i.e. caplet/floorlet) volatilities
         (a.k.a. forward-forward volatilities) from the (cap/floor) term
         volatilities of a CapFloorTermVolSurface.
     */
     class OptionletStripper1 : public OptionletStripper {
       public:
-        OptionletStripper1(const boost::shared_ptr< CapFloorTermVolSurface > &,
-                           const boost::shared_ptr< IborIndex > &index,
-                           Rate switchStrikes = Null< Rate >(),
-                           Real accuracy = 1.0e-6, Natural maxIter = 100,
-                           const Handle< YieldTermStructure > &discount =
-                               Handle< YieldTermStructure >(),
-                           const VolatilityType type = ShiftedLognormal,
-                           const Real displacement = 0.0,
-                           bool dontThrow = false);
+        OptionletStripper1(
+            const ext::shared_ptr<CapFloorTermVolSurface>&,
+            const ext::shared_ptr<IborIndex>& index,
+            Rate switchStrikes = Null<Rate>(),
+            Real accuracy = 1.0e-6,
+            Natural maxIter = 100,
+            const Handle<YieldTermStructure>& discount = {},
+            VolatilityType type = ShiftedLognormal,
+            Real displacement = 0.0,
+            bool dontThrow = false);
 
         const Matrix& capFloorPrices() const;
         const Matrix &capletVols() const;
@@ -64,7 +62,7 @@ namespace QuantLib {
 
         //! \name LazyObject interface
         //@{
-        void performCalculations() const;
+        void performCalculations() const override;
         //@}
       private:
         mutable Matrix capFloorPrices_, optionletPrices_;

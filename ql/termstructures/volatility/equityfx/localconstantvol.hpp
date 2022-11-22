@@ -26,6 +26,7 @@
 
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -38,36 +39,34 @@ namespace QuantLib {
     */
     class LocalConstantVol : public LocalVolTermStructure {
       public:
+        LocalConstantVol(const Date& referenceDate, Volatility volatility, DayCounter dayCounter);
         LocalConstantVol(const Date& referenceDate,
-                         Volatility volatility,
-                         const DayCounter& dayCounter);
-        LocalConstantVol(const Date& referenceDate,
-                         const Handle<Quote>& volatility,
-                         const DayCounter& dayCounter);
+                         Handle<Quote> volatility,
+                         DayCounter dayCounter);
         LocalConstantVol(Natural settlementDays,
                          const Calendar&,
                          Volatility volatility,
-                         const DayCounter& dayCounter);
+                         DayCounter dayCounter);
         LocalConstantVol(Natural settlementDays,
                          const Calendar&,
-                         const Handle<Quote>& volatility,
-                         const DayCounter& dayCounter);
+                         Handle<Quote> volatility,
+                         DayCounter dayCounter);
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const { return dayCounter_; }
-        Date maxDate() const { return Date::maxDate(); }
+        DayCounter dayCounter() const override { return dayCounter_; }
+        Date maxDate() const override { return Date::maxDate(); }
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const { return QL_MIN_REAL; }
-        Real maxStrike() const { return QL_MAX_REAL; }
+        Real minStrike() const override { return QL_MIN_REAL; }
+        Real maxStrike() const override { return QL_MAX_REAL; }
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
-        Volatility localVolImpl(Time, Real) const;
+        Volatility localVolImpl(Time, Real) const override;
         Handle<Quote> volatility_;
         DayCounter dayCounter_;
     };
@@ -76,40 +75,39 @@ namespace QuantLib {
 
     inline LocalConstantVol::LocalConstantVol(const Date& referenceDate,
                                               Volatility volatility,
-                                              const DayCounter& dayCounter)
+                                              DayCounter dayCounter)
     : LocalVolTermStructure(referenceDate),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
-      dayCounter_(dayCounter) {}
+      volatility_(ext::shared_ptr<Quote>(new SimpleQuote(volatility))),
+      dayCounter_(std::move(dayCounter)) {}
 
     inline LocalConstantVol::LocalConstantVol(const Date& referenceDate,
-                                              const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : LocalVolTermStructure(referenceDate), volatility_(volatility),
-      dayCounter_(dayCounter) {
+                                              Handle<Quote> volatility,
+                                              DayCounter dayCounter)
+    : LocalVolTermStructure(referenceDate), volatility_(std::move(volatility)),
+      dayCounter_(std::move(dayCounter)) {
         registerWith(volatility_);
     }
 
     inline LocalConstantVol::LocalConstantVol(Natural settlementDays,
                                               const Calendar& calendar,
                                               Volatility volatility,
-                                              const DayCounter& dayCounter)
-    : LocalVolTermStructure(settlementDays,calendar),
-      volatility_(boost::shared_ptr<Quote>(new SimpleQuote(volatility))),
-      dayCounter_(dayCounter) {}
+                                              DayCounter dayCounter)
+    : LocalVolTermStructure(settlementDays, calendar),
+      volatility_(ext::shared_ptr<Quote>(new SimpleQuote(volatility))),
+      dayCounter_(std::move(dayCounter)) {}
 
     inline LocalConstantVol::LocalConstantVol(Natural settlementDays,
                                               const Calendar& calendar,
-                                              const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : LocalVolTermStructure(settlementDays,calendar), volatility_(volatility),
-      dayCounter_(dayCounter) {
+                                              Handle<Quote> volatility,
+                                              DayCounter dayCounter)
+    : LocalVolTermStructure(settlementDays, calendar), volatility_(std::move(volatility)),
+      dayCounter_(std::move(dayCounter)) {
         registerWith(volatility_);
     }
 
     inline void LocalConstantVol::accept(AcyclicVisitor& v) {
-        Visitor<LocalConstantVol>* v1 =
-            dynamic_cast<Visitor<LocalConstantVol>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<LocalConstantVol>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             LocalVolTermStructure::accept(v);

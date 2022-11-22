@@ -24,8 +24,6 @@
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/currencies/europe.hpp>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
     ChfLiborSwapIsdaFix::ChfLiborSwapIsdaFix(
@@ -40,8 +38,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    shared_ptr<IborIndex>(new CHFLibor(6*Months, h)) :
-                    shared_ptr<IborIndex>(new CHFLibor(3*Months, h))) {}
+                    ext::shared_ptr<IborIndex>(new CHFLibor(6*Months, h)) :
+                    ext::shared_ptr<IborIndex>(new CHFLibor(3*Months, h))) {}
 
     ChfLiborSwapIsdaFix::ChfLiborSwapIsdaFix(
                                 const Period& tenor,
@@ -56,8 +54,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Thirty360(Thirty360::BondBasis), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    shared_ptr<IborIndex>(new CHFLibor(6*Months, forwarding)) :
-                    shared_ptr<IborIndex>(new CHFLibor(3*Months, forwarding)),
+                    ext::shared_ptr<IborIndex>(new CHFLibor(6*Months, forwarding)) :
+                    ext::shared_ptr<IborIndex>(new CHFLibor(3*Months, forwarding)),
                 discounting) {}
 
 }

@@ -21,6 +21,7 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/distributions/poissondistribution.hpp>
 
+
 namespace QuantLib {
     BatesProcess::BatesProcess(
                               const Handle<YieldTermStructure>& riskFreeRate,
@@ -36,16 +37,18 @@ namespace QuantLib {
       m_(std::exp(nu+0.5*delta*delta)-1) {
     }
 
-    Disposable<Array> BatesProcess::drift(Time t, const Array& x) const {
+    Array BatesProcess::drift(Time t, const Array& x) const {
         Array retVal = HestonProcess::drift(t, x);
         retVal[0] -= lambda_*m_;
         return retVal;
     }
 
-    Disposable<Array> BatesProcess::evolve(Time t0, const Array& x0,
-                                           Time dt, const Array& dw) const {
+    Array BatesProcess::evolve(Time t0, const Array& x0,
+                               Time dt, const Array& dw) const {
 
-        Real p = cumNormalDist_(dw[2]);
+        const Size hestonFactors = HestonProcess::factors();
+
+        Real p = cumNormalDist_(dw[hestonFactors]);
         if (p<0.0)
             p = 0.0;
         else if (p >= 1.0)
@@ -54,13 +57,13 @@ namespace QuantLib {
         const Real n = InverseCumulativePoisson(lambda_*dt)(p);        
         Array retVal = HestonProcess::evolve(t0, x0, dt, dw);
         retVal[0] *= 
-            std::exp(-lambda_*m_*dt + nu_*n+delta_*std::sqrt(n)*dw[3]);
+            std::exp(-lambda_*m_*dt + nu_*n+delta_*std::sqrt(n)*dw[hestonFactors+1]);
 
         return retVal;
     }
 
     Size BatesProcess::factors() const {
-        return 4;
+        return HestonProcess::factors() + 2;
     }
 
     Real BatesProcess::lambda() const {

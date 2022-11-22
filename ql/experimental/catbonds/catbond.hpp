@@ -24,12 +24,13 @@
 #ifndef quantlib_catbond_hpp
 #define quantlib_catbond_hpp
 
+#include <ql/experimental/catbonds/catrisk.hpp>
+#include <ql/experimental/catbonds/riskynotional.hpp>
+#include <ql/indexes/iborindex.hpp>
 #include <ql/instruments/bond.hpp>
 #include <ql/time/dategenerationrule.hpp>
 #include <ql/time/schedule.hpp>
-#include <ql/indexes/iborindex.hpp>
-#include <ql/experimental/catbonds/catrisk.hpp>
-#include <ql/experimental/catbonds/riskynotional.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -40,23 +41,22 @@ namespace QuantLib {
         class results;
         class engine;
 
-        CatBond(Natural settlementDays, 
+        CatBond(Natural settlementDays,
                 const Calendar& calendar,
                 const Date& issueDate,
-                boost::shared_ptr<NotionalRisk> notionalRisk)       
-                : Bond(settlementDays, calendar, issueDate), 
-                  notionalRisk_(notionalRisk)
-        {}
-        virtual ~CatBond(void) {}
+                ext::shared_ptr<NotionalRisk> notionalRisk)
+        : Bond(settlementDays, calendar, issueDate), notionalRisk_(std::move(notionalRisk)) {}
+        ~CatBond() override = default;
 
-        virtual void setupArguments(PricingEngine::arguments*) const;
-        virtual void fetchResults(const PricingEngine::results*) const;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results*) const override;
 
-        Real lossProbability() { return lossProbability_; }
-        Real expectedLoss() { return expectedLoss_; }
-        Real exhaustionProbability() { return exhaustionProbability_; }
-    protected:
-        boost::shared_ptr<NotionalRisk> notionalRisk_;
+        Real lossProbability() const { return lossProbability_; }
+        Real expectedLoss() const { return expectedLoss_; }
+        Real exhaustionProbability() const { return exhaustionProbability_; }
+
+      protected:
+        ext::shared_ptr<NotionalRisk> notionalRisk_;
 
         mutable Real lossProbability_;
         mutable Real exhaustionProbability_;
@@ -66,8 +66,8 @@ namespace QuantLib {
     class CatBond::arguments : public Bond::arguments {
       public:
         Date startDate;
-        boost::shared_ptr<NotionalRisk> notionalRisk;
-        void validate() const;
+        ext::shared_ptr<NotionalRisk> notionalRisk;
+        void validate() const override;
     };
 
     //! results for a cat bond calculation
@@ -93,50 +93,43 @@ namespace QuantLib {
     class FloatingCatBond : public CatBond {
       public:
         FloatingCatBond(Natural settlementDays,
-                         Real faceAmount,
-                         const Schedule& schedule,
-                         const boost::shared_ptr<IborIndex>& iborIndex,
-                         const DayCounter& accrualDayCounter,
-                         boost::shared_ptr<NotionalRisk> notionalRisk,
-                         BusinessDayConvention paymentConvention
-                                             = Following,
-                         Natural fixingDays = Null<Natural>(),
-                         const std::vector<Real>& gearings
-                                             = std::vector<Real>(1, 1.0),
-                         const std::vector<Spread>& spreads
-                                             = std::vector<Spread>(1, 0.0),
-                         const std::vector<Rate>& caps
-                                             = std::vector<Rate>(),
-                         const std::vector<Rate>& floors
-                                            = std::vector<Rate>(),
-                         bool inArrears = false,
-                         Real redemption = 100.0,
-                         const Date& issueDate = Date());
+                        Real faceAmount,
+                        const Schedule& schedule,
+                        const ext::shared_ptr<IborIndex>& iborIndex,
+                        const DayCounter& accrualDayCounter,
+                        const ext::shared_ptr<NotionalRisk>& notionalRisk,
+                        BusinessDayConvention paymentConvention = Following,
+                        Natural fixingDays = Null<Natural>(),
+                        const std::vector<Real>& gearings = std::vector<Real>(1, 1.0),
+                        const std::vector<Spread>& spreads = std::vector<Spread>(1, 0.0),
+                        const std::vector<Rate>& caps = std::vector<Rate>(),
+                        const std::vector<Rate>& floors = std::vector<Rate>(),
+                        bool inArrears = false,
+                        Real redemption = 100.0,
+                        const Date& issueDate = Date());
 
         FloatingCatBond(Natural settlementDays,
-                         Real faceAmount,
-                         const Date& startDate,
-                         const Date& maturityDate,
-                         Frequency couponFrequency,
-                         const Calendar& calendar,
-                         const boost::shared_ptr<IborIndex>& iborIndex,
-                         const DayCounter& accrualDayCounter,
-                         boost::shared_ptr<NotionalRisk> notionalRisk,
-                         BusinessDayConvention accrualConvention = Following,
-                         BusinessDayConvention paymentConvention = Following,
-                         Natural fixingDays = Null<Natural>(),
-                         const std::vector<Real>& gearings
-                                             = std::vector<Real>(1, 1.0),
-                         const std::vector<Spread>& spreads
-                                             = std::vector<Spread>(1, 0.0),
-                         const std::vector<Rate>& caps = std::vector<Rate>(),
-                         const std::vector<Rate>& floors = std::vector<Rate>(),
-                         bool inArrears = false,
-                         Real redemption = 100.0,
-                         const Date& issueDate = Date(),
-                         const Date& stubDate = Date(),
-                         DateGeneration::Rule rule = DateGeneration::Backward,
-                         bool endOfMonth = false);
+                        Real faceAmount,
+                        const Date& startDate,
+                        const Date& maturityDate,
+                        Frequency couponFrequency,
+                        const Calendar& calendar,
+                        const ext::shared_ptr<IborIndex>& iborIndex,
+                        const DayCounter& accrualDayCounter,
+                        const ext::shared_ptr<NotionalRisk>& notionalRisk,
+                        BusinessDayConvention accrualConvention = Following,
+                        BusinessDayConvention paymentConvention = Following,
+                        Natural fixingDays = Null<Natural>(),
+                        const std::vector<Real>& gearings = std::vector<Real>(1, 1.0),
+                        const std::vector<Spread>& spreads = std::vector<Spread>(1, 0.0),
+                        const std::vector<Rate>& caps = std::vector<Rate>(),
+                        const std::vector<Rate>& floors = std::vector<Rate>(),
+                        bool inArrears = false,
+                        Real redemption = 100.0,
+                        const Date& issueDate = Date(),
+                        const Date& stubDate = Date(),
+                        DateGeneration::Rule rule = DateGeneration::Backward,
+                        bool endOfMonth = false);
     };
 
 }

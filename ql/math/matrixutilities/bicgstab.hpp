@@ -19,14 +19,14 @@
 */
 
 /*! \file bicgstab.hpp
-    \brief bi-conjugated gradient stableized algorithm
+    \brief Biconjugate gradient stabilized method
 */
 
 #ifndef quantlib_bicgstab_hpp
 #define quantlib_bicgstab_hpp
 
 #include <ql/math/array.hpp>
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 
 namespace QuantLib {
 
@@ -38,16 +38,13 @@ namespace QuantLib {
 
     class BiCGstab  {
       public:
-        typedef boost::function1<Disposable<Array> , const Array& > MatrixMult;
-        
-        BiCGstab(const MatrixMult& A, Size maxIter, Real relTol,
-                 const MatrixMult& preConditioner = MatrixMult());
-        
+        typedef ext::function<Array(const Array&)> MatrixMult;
+
+        BiCGstab(MatrixMult A, Size maxIter, Real relTol, MatrixMult preConditioner = MatrixMult());
+
         BiCGStabResult solve(const Array& b, const Array& x0 = Array()) const;
         
       protected:
-        Real norm2(const Array& a) const;
-        
         const MatrixMult A_, M_;
         const Size maxIter_;
         const Real relTol_;  

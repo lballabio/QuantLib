@@ -34,23 +34,23 @@ namespace QuantLib {
     class LastFixingQuote : public Quote,
                             public Observer {
       public:
-        LastFixingQuote(const boost::shared_ptr<Index>& index);
+        LastFixingQuote(ext::shared_ptr<Index> index);
         //! \name Quote interface
         //@{
-        Real value() const;
-        bool isValid() const;
+        Real value() const override;
+        bool isValid() const override;
         //@}
         //! \name Observer interface
         //@{
-        void update() { notifyObservers(); }
+        void update() override { notifyObservers(); }
         //@}
         //! \name LastFixingQuote interface
         //@{
-        const boost::shared_ptr<Index>& index() const { return index_; }
+        const ext::shared_ptr<Index>& index() const { return index_; }
         Date referenceDate() const; 
         //@}
       protected:
-        boost::shared_ptr<Index> index_;
+        ext::shared_ptr<Index> index_;
     };
 
 }

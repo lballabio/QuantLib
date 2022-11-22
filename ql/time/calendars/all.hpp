@@ -3,13 +3,17 @@
 
 #include <ql/time/calendars/argentina.hpp>
 #include <ql/time/calendars/australia.hpp>
+#include <ql/time/calendars/austria.hpp>
 #include <ql/time/calendars/bespokecalendar.hpp>
+#include <ql/time/calendars/botswana.hpp>
 #include <ql/time/calendars/brazil.hpp>
 #include <ql/time/calendars/canada.hpp>
+#include <ql/time/calendars/chile.hpp>
 #include <ql/time/calendars/china.hpp>
 #include <ql/time/calendars/czechrepublic.hpp>
 #include <ql/time/calendars/denmark.hpp>
 #include <ql/time/calendars/finland.hpp>
+#include <ql/time/calendars/france.hpp>
 #include <ql/time/calendars/germany.hpp>
 #include <ql/time/calendars/hongkong.hpp>
 #include <ql/time/calendars/hungary.hpp>
@@ -36,6 +40,7 @@
 #include <ql/time/calendars/switzerland.hpp>
 #include <ql/time/calendars/taiwan.hpp>
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/thailand.hpp>
 #include <ql/time/calendars/turkey.hpp>
 #include <ql/time/calendars/ukraine.hpp>
 #include <ql/time/calendars/unitedkingdom.hpp>

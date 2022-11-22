@@ -25,9 +25,10 @@
 #ifndef quantlib_montecarlo_model_hpp
 #define quantlib_montecarlo_model_hpp
 
-#include <ql/methods/montecarlo/mctraits.hpp>
 #include <ql/math/statistics/statistics.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/methods/montecarlo/mctraits.hpp>
+#include <ql/shared_ptr.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -59,36 +60,31 @@ namespace QuantLib {
         typedef S stats_type;
         // constructor
         MonteCarloModel(
-                  const boost::shared_ptr<path_generator_type>& pathGenerator,
-                  const boost::shared_ptr<path_pricer_type>& pathPricer,
-                  const stats_type& sampleAccumulator,
-                  bool antitheticVariate,
-                  const boost::shared_ptr<path_pricer_type>& cvPathPricer
-                        = boost::shared_ptr<path_pricer_type>(),
-                  result_type cvOptionValue = result_type(),
-                  const boost::shared_ptr<path_generator_type>& cvPathGenerator
-                        = boost::shared_ptr<path_generator_type>())
-        : pathGenerator_(pathGenerator), pathPricer_(pathPricer),
-          sampleAccumulator_(sampleAccumulator),
-          isAntitheticVariate_(antitheticVariate),
-          cvPathPricer_(cvPathPricer), cvOptionValue_(cvOptionValue),
-          cvPathGenerator_(cvPathGenerator) {
-            if (!cvPathPricer_)
-                isControlVariate_ = false;
-            else
-                isControlVariate_ = true;
+            ext::shared_ptr<path_generator_type> pathGenerator,
+            ext::shared_ptr<path_pricer_type> pathPricer,
+            stats_type sampleAccumulator,
+            bool antitheticVariate,
+            ext::shared_ptr<path_pricer_type> cvPathPricer = ext::shared_ptr<path_pricer_type>(),
+            result_type cvOptionValue = result_type(),
+            ext::shared_ptr<path_generator_type> cvPathGenerator =
+                ext::shared_ptr<path_generator_type>())
+        : pathGenerator_(std::move(pathGenerator)), pathPricer_(std::move(pathPricer)),
+          sampleAccumulator_(std::move(sampleAccumulator)), isAntitheticVariate_(antitheticVariate),
+          cvPathPricer_(std::move(cvPathPricer)), cvOptionValue_(cvOptionValue),
+          cvPathGenerator_(std::move(cvPathGenerator)) {
+            isControlVariate_ = static_cast<bool>(cvPathPricer_);
         }
         void addSamples(Size samples);
-        const stats_type& sampleAccumulator(void) const;
+        const stats_type& sampleAccumulator() const;
       private:
-        boost::shared_ptr<path_generator_type> pathGenerator_;
-        boost::shared_ptr<path_pricer_type> pathPricer_;
+        ext::shared_ptr<path_generator_type> pathGenerator_;
+        ext::shared_ptr<path_pricer_type> pathPricer_;
         stats_type sampleAccumulator_;
         bool isAntitheticVariate_;
-        boost::shared_ptr<path_pricer_type> cvPathPricer_;
+        ext::shared_ptr<path_pricer_type> cvPathPricer_;
         result_type cvOptionValue_;
         bool isControlVariate_;
-        boost::shared_ptr<path_generator_type> cvPathGenerator_;
+        ext::shared_ptr<path_generator_type> cvPathGenerator_;
     };
 
     // inline definitions

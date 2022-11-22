@@ -24,15 +24,14 @@
 namespace QuantLib {
 
     void Dividend::accept(AcyclicVisitor& v) {
-        Visitor<Dividend>* v1 =
-            dynamic_cast<Visitor<Dividend>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<Dividend>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             CashFlow::accept(v);
     }
 
-    std::vector<boost::shared_ptr<Dividend> >
+    std::vector<ext::shared_ptr<Dividend> >
     DividendVector(const std::vector<Date>& dividendDates,
                    const std::vector<Real>& dividends) {
 
@@ -41,11 +40,11 @@ namespace QuantLib {
 
         std::vector<Date>::const_iterator dd;
         std::vector<Real>::const_iterator d;
-        std::vector<boost::shared_ptr<Dividend> > items;
+        std::vector<ext::shared_ptr<Dividend> > items;
         items.reserve(dividendDates.size());
         for (dd = dividendDates.begin(), d = dividends.begin();
              dd != dividendDates.end(); ++dd, ++d) {
-            items.push_back(boost::shared_ptr<Dividend>(new
+            items.push_back(ext::shared_ptr<Dividend>(new
                 FixedDividend(*d, *dd)));
         }
         return items;

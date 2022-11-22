@@ -2,6 +2,7 @@
 
 /*
 Copyright (C) 2010 Adrian O' Neill
+Copyright (C) 2018 Roy Zywina
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,6 +21,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include "variancegamma.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/experimental/variancegamma/analyticvariancegammaengine.hpp>
 #include <ql/experimental/variancegamma/fftvariancegammaengine.hpp>
@@ -31,6 +33,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef REPORT_FAILURE
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, sigma, \
     nu, theta, expected, calculated, \
     error, tolerance) \
@@ -128,13 +131,13 @@ void VarianceGammaTest::testVarianceGamma() {
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(processes); i++) {
-        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(processes[i].s));
-        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(processes[i].q));
-        boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(processes[i].r));
-        boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+        ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(processes[i].s));
+        ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(processes[i].q));
+        ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+        ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(processes[i].r));
+        ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
-        boost::shared_ptr<VarianceGammaProcess> stochProcess(
+        ext::shared_ptr<VarianceGammaProcess> stochProcess(
             new VarianceGammaProcess(Handle<Quote>(spot),
             Handle<YieldTermStructure>(qTS),
             Handle<YieldTermStructure>(rTS),
@@ -143,28 +146,28 @@ void VarianceGammaTest::testVarianceGamma() {
             processes[i].theta));
 
         // Analytic engine
-        boost::shared_ptr<PricingEngine> analyticEngine(
+        ext::shared_ptr<PricingEngine> analyticEngine(
             new VarianceGammaEngine(stochProcess));
 
         // FFT engine
-        boost::shared_ptr<FFTVarianceGammaEngine> fftEngine(
+        ext::shared_ptr<FFTVarianceGammaEngine> fftEngine(
             new FFTVarianceGammaEngine(stochProcess));
 
         // which requires a list of options
-        std::vector<boost::shared_ptr<Instrument> > optionList;
+        std::vector<ext::shared_ptr<Instrument> > optionList;
 
-        std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs;
+        std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs;
         for (Size j=0; j<LENGTH(options); j++)
         {
-            Date exDate = today + Integer(options[j].t*360+0.5);
-            boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+            Date exDate = today + timeToDays(options[j].t);
+            ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-            boost::shared_ptr<StrikedTypePayoff> payoff(new
+            ext::shared_ptr<StrikedTypePayoff> payoff(new
                 PlainVanillaPayoff(options[j].type, options[j].strike));
             payoffs.push_back(payoff);
 
             // Test analytic engine
-            boost::shared_ptr<EuropeanOption> option(new EuropeanOption(payoff, exercise));
+            ext::shared_ptr<EuropeanOption> option(new EuropeanOption(payoff, exercise));
             option->setPricingEngine(analyticEngine);
 
             Real calculated = option->NPV();
@@ -186,15 +189,15 @@ void VarianceGammaTest::testVarianceGamma() {
         fftEngine->precalculate(optionList);
         for (Size j=0; j<LENGTH(options); j++)
         {
-            boost::shared_ptr<VanillaOption> option = boost::static_pointer_cast<VanillaOption>(optionList[j]);
+            ext::shared_ptr<VanillaOption> option = ext::static_pointer_cast<VanillaOption>(optionList[j]);
             option->setPricingEngine(fftEngine);
 
             Real calculated = option->NPV();
             Real expected = results[i][j];
             Real error = std::fabs(calculated-expected);
             if (error>tol) {
-                boost::shared_ptr<StrikedTypePayoff> payoff = 
-                    boost::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
+                ext::shared_ptr<StrikedTypePayoff> payoff = 
+                    ext::dynamic_pointer_cast<StrikedTypePayoff>(option->payoff());
                 REPORT_FAILURE("fft value", payoff, option->exercise(),
                     processes[i].s, processes[i].q, processes[i].r,
                     today, processes[i].sigma, processes[i].nu,
@@ -205,9 +208,52 @@ void VarianceGammaTest::testVarianceGamma() {
     }
 }
 
+void VarianceGammaTest::testSingularityAtZero() {
+
+    BOOST_TEST_MESSAGE(
+        "Testing variance-gamma model integration around zero...");
+
+    SavedSettings backup;
+
+    Real stock = 100;
+    Real strike = 98;
+    Volatility sigma = 0.12;
+    Real mu = -0.14;
+    Real kappa = 0.2;
+
+    Date valuation(1,Jan,2017);
+    Date maturity(10,Jan,2017);
+    DayCounter discountCounter = Thirty360(Thirty360::BondBasis);
+
+    Settings::instance().evaluationDate() = valuation;
+
+    ext::shared_ptr<Exercise> exercise =
+        ext::make_shared<EuropeanExercise>(maturity);
+    ext::shared_ptr<StrikedTypePayoff> payoff =
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike);
+    VanillaOption option(payoff, exercise);
+
+    Handle<YieldTermStructure> dividend(
+             ext::make_shared<FlatForward>(valuation,0.0,discountCounter));
+    Handle<YieldTermStructure> disc(
+             ext::make_shared<FlatForward>(valuation,0.05,discountCounter));
+    Handle<Quote> S0(ext::make_shared<SimpleQuote>(stock));
+    ext::shared_ptr<QuantLib::VarianceGammaProcess> process =
+        ext::make_shared<VarianceGammaProcess>(S0, dividend, disc,
+                                                 sigma, kappa, mu);
+
+    option.setPricingEngine(ext::make_shared<VarianceGammaEngine>(process));
+    // without the fix, the call below goes into an infinite loop,
+    // which is hard to test for.  We're just happy to see the test
+    // case finish, hence the lack of an assertion.
+    option.NPV();
+}
+
+
 test_suite* VarianceGammaTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Variance Gamma tests");
+    auto* suite = BOOST_TEST_SUITE("Variance Gamma tests");
 
     suite->add(QUANTLIB_TEST_CASE(&VarianceGammaTest::testVarianceGamma));
+    suite->add(QUANTLIB_TEST_CASE(&VarianceGammaTest::testSingularityAtZero));
     return suite;
 }

@@ -30,18 +30,18 @@ namespace QuantLib {
                                                  const Array& sub,
                                                  EigenVectorCalculation calc,
                                                  ShiftStrategy strategy)
-    : iter_(0), d_(diag),
-      ev_((calc == WithEigenVector)? d_.size() :
-          (calc == WithoutEigenVector)? 0 : 1, d_.size(), 0)
-    {
+    : d_(diag), ev_((calc == WithEigenVector)    ? d_.size() :
+                    (calc == WithoutEigenVector) ? 0 :
+                                                   1,
+                    d_.size(),
+                    0) {
         Size n = diag.size();
 
         QL_REQUIRE(n == sub.size()+1, "Wrong dimensions");
 
         Array e(n, 0.0);
         std::copy(sub.begin(),sub.end(),e.begin()+1);
-        Size i;
-        for (i=0; i < ev_.rows(); ++i) {
+        for (Size i=0; i < ev_.rows(); ++i) {
             ev_[i][i] = 1.0;
         }
 
@@ -65,7 +65,7 @@ namespace QuantLib {
 
                     const Real lambda =
                         (std::fabs(t2+t1 - d_[k]) < std::fabs(t2-t1 - d_[k]))?
-                        t2+t1 : t2-t1;
+                        Real(t2+t1) : Real(t2-t1);
 
                     if (strategy == CloseEigenValue) {
                         q-=lambda;
@@ -121,16 +121,15 @@ namespace QuantLib {
         // code taken from symmetricSchureDecomposition.cpp
         std::vector<std::pair<Real, std::vector<Real> > > temp(n);
         std::vector<Real> eigenVector(ev_.rows());
-        for (i=0; i<n; i++) {
+        for (Size i=0; i<n; i++) {
             if (ev_.rows() > 0)
                 std::copy(ev_.column_begin(i),
                           ev_.column_end(i), eigenVector.begin());
             temp[i] = std::make_pair(d_[i], eigenVector);
         }
-        std::sort(temp.begin(), temp.end(),
-                  std::greater<std::pair<Real, std::vector<Real> > >());
+        std::sort(temp.begin(), temp.end(), std::greater<>());
         // first element is positive
-        for (i=0; i<n; i++) {
+        for (Size i=0; i<n; i++) {
             d_[i] = temp[i].first;
             Real sign = 1.0;
             if (ev_.rows() > 0 && temp[i].second[0]<0.0)

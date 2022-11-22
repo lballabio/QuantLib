@@ -21,6 +21,7 @@
 #define quantlib_integral_ntd_engine_hpp
 
 #include <ql/experimental/credit/nthtodefault.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -29,14 +30,13 @@ namespace QuantLib {
     // Varying recoveries allowed, allow now for heterogeneous notionals
     class IntegralNtdEngine : public NthToDefault::engine {
     public:
-        IntegralNtdEngine(const Period& integrationStep,
-            const Handle<YieldTermStructure>& discountCurve)
-        : discountCurve_(discountCurve), 
-          integrationStepSize_(integrationStep)  {}
-        void calculate() const;
+      IntegralNtdEngine(const Period& integrationStep, Handle<YieldTermStructure> discountCurve)
+      : discountCurve_(std::move(discountCurve)), integrationStepSize_(integrationStep) {}
+      void calculate() const override;
+
     protected:
-        Handle<YieldTermStructure> discountCurve_;
-        Period integrationStepSize_;
+      Handle<YieldTermStructure> discountCurve_;
+      Period integrationStepSize_;
     };
 
 }

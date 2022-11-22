@@ -162,7 +162,7 @@ namespace QuantLib {
             Real S2 = capletVariance/theta - constQuadraticTerm;
 
             // if S2 < 0, there are no solutions so we take the best we can. 
-            Real S = S2 > 0 ? std::sqrt(S2) : 0;
+            Real S = S2 > 0 ? Real(std::sqrt(S2)) : 0;
 
             Real R = std::sqrt(thisSwapVariance);
 
@@ -245,12 +245,12 @@ namespace QuantLib {
 
     CTSMMCapletMaxHomogeneityCalibration::CTSMMCapletMaxHomogeneityCalibration(
         const EvolutionDescription& evolution,
-        const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
-        const std::vector<boost::shared_ptr<
+        const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
+        const std::vector<ext::shared_ptr<
         PiecewiseConstantVariance> >&
         displacedSwapVariances,
         const std::vector<Volatility>& mktCapletVols,
-        const boost::shared_ptr<CurveState>& cs,
+        const ext::shared_ptr<CurveState>& cs,
         Spread displacement,
         Real caplet0Swaption1Priority)
         : CTSMMCapletCalibration(evolution, corr, displacedSwapVariances,
@@ -267,7 +267,7 @@ namespace QuantLib {
     Natural CTSMMCapletMaxHomogeneityCalibration::capletMaxHomogeneityCalibration(
         const EvolutionDescription& evolution,
         const PiecewiseConstantCorrelation& corr,
-        const std::vector<boost::shared_ptr<
+        const std::vector<ext::shared_ptr<
         PiecewiseConstantVariance> >& displacedSwapVariances,
         const std::vector<Volatility>& capletVols,
         const CurveState& cs,

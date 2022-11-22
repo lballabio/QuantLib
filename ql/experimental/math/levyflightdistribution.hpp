@@ -18,50 +18,40 @@
 */
 
 /*! \file levyflightdistribution.hpp
-    \brief Levy Flight, aka Pareto Type I, distribution as needed by Boost Random
+    \brief Levy Flight, aka Pareto Type I, distribution
 */
 
 #ifndef quantlib_levy_flight_distribution_hpp
 #define quantlib_levy_flight_distribution_hpp
 
-#include <ql/qldefines.hpp>
-
-// The included Boost.Random headers were added in Boost 1.47
-#if BOOST_VERSION >= 104700
-
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
-#include <boost/config/no_tr1/cmath.hpp>
-#include <boost/random/detail/config.hpp>
-#include <boost/random/detail/operators.hpp>
-#include <boost/random/uniform_01.hpp>
-#include <iosfwd>
+#include <random>
 
 namespace QuantLib {
 
-    //! Levy Flight distribution as needed by Boost Random
+    //! Levy Flight distribution
     /*! The levy flight distribution is a random distribution with 
         the following form:
+        \f[
         p(x) = \frac{\alpha x_m^{\alpha}}{x^{\alpha+1}}
-        with support over x \elem [x_m, \infty)
-        and the parameter \alpha > 0
-        Levy Flight is normally defined as x_m = 1 and 0 < \alpha < 2, which is 
-        where p(x) has an infinite variance. However, the more general version, 
-        known as Pareto Type I, is well defined for \alpha > 2, so the current
-        implementation does not restrict \alpha to be smaller than 2
+        \f]
+        with support over \f$ x \in [x_m, \infty) \f$
+        and the parameter \f$ \alpha > 0 \f$.
+
+        Levy Flight is normally defined as \f$ x_m = 1 \f$ and \f$ 0 <
+        \alpha < 2 \f$, which is where \f$ p(x) \f$ has an infinite
+        variance. However, the more general version, known as Pareto
+        Type I, is well defined for \f$ \alpha > 2 \f$, so the current
+        implementation does not restrict \f$ \alpha \f$ to be smaller
+        than 2.
     */
     class LevyFlightDistribution
     {
       public:
-        typedef Real input_type;
-        typedef Real result_type;
-
         class param_type
         {
           public:
-
-            typedef LevyFlightDistribution distribution_type;
-
             /*!    Constructs parameters with a given xm and alpha
                 Requires: alpha > 0
             */
@@ -73,27 +63,6 @@ namespace QuantLib {
             
             //! Returns the alpha parameter of the distribution
             Real alpha() const { return alpha_; }
-
-            //! Writes the parameters to a @c std::ostream
-            BOOST_RANDOM_DETAIL_OSTREAM_OPERATOR(os, param_type, parm)
-            {
-                os << parm.xm_ << " " << parm.alpha_;
-                return os;
-            }
-            
-            //! Reads the parameters from a @c std::istream
-            BOOST_RANDOM_DETAIL_ISTREAM_OPERATOR(is, param_type, parm)
-            {
-                is >> parm.xm_ >> std::ws >> parm.alpha_;
-                return is;
-            }
-
-            //! Returns true if the two sets of parameters are equal
-            BOOST_RANDOM_DETAIL_EQUALITY_OPERATOR(param_type, lhs, rhs)
-            { return lhs.xm_ == rhs.xm_ && lhs.alpha_ == rhs.alpha_; }
-
-            //! Returns true if the two sets of parameters are different
-            BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(param_type)
 
         private:
             Real xm_;
@@ -131,7 +100,7 @@ namespace QuantLib {
         { return QL_MAX_REAL; }
 
         //! Returns the parameters of the distribution
-        param_type param() const { return param_type(xm_, alpha_); }
+        param_type param() const { return {xm_, alpha_}; }
         //@}
         
         //! Sets the parameters of the distribution
@@ -156,51 +125,24 @@ namespace QuantLib {
             levy flight distribution.
         */
         template<class Engine>
-        result_type operator()(Engine& eng) const{
+        Real operator()(Engine& eng) const {
             using std::pow;
-            return xm_*pow(boost::random::uniform_01<Real>()(eng), -1.0/alpha_);
+            return xm_*pow(std::uniform_real_distribution<Real>(0.0, 1.0)(eng), -1.0/alpha_);
         }
 
         /*!    Returns a random variate distributed according to the
             levy flight with parameters specified by parm
         */
         template<class Engine>
-        result_type operator()(Engine& eng, const param_type& parm) const{
+        Real operator()(Engine& eng, const param_type& parm) const {
             return LevyFlightDistribution (parm)(eng);
         }
 
-        //! Writes the distribution to a std::ostream
-        BOOST_RANDOM_DETAIL_OSTREAM_OPERATOR(os, LevyFlightDistribution, ed)
-        {
-            os << ed.xm_ << " " << ed.alpha_;
-            return os;
-        }
-
-        //! Reads the distribution from a std::istream
-        BOOST_RANDOM_DETAIL_ISTREAM_OPERATOR(is, LevyFlightDistribution, ed)
-        {
-            is >> ed.xm_ >> std::ws >> ed.alpha_;
-            return is;
-        }
-
-        /*! Returns true iff the two distributions will produce identical
-            sequences of values given equal generators.
-        */
-        BOOST_RANDOM_DETAIL_EQUALITY_OPERATOR(LevyFlightDistribution, lhs, rhs)
-        { return lhs.xm_ == rhs.xm_ && lhs.alpha_ == rhs.alpha_; }
-        
-        /*!    Returns true iff the two distributions will produce different
-            sequences of values given equal generators.
-        */
-        BOOST_RANDOM_DETAIL_INEQUALITY_OPERATOR(LevyFlightDistribution)
-
     private:
-        result_type xm_;
-        result_type alpha_;
+        Real xm_;
+        Real alpha_;
     };
 
 }
-
-#endif
 
 #endif

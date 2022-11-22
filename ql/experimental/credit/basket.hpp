@@ -33,7 +33,6 @@
 #include <ql/experimental/credit/recoveryratemodel.hpp>
 #include <ql/experimental/credit/pool.hpp>
 #include <ql/experimental/credit/loss.hpp>
-#include <ql/utilities/disposable.hpp>
 
 namespace QuantLib {
 
@@ -52,7 +51,7 @@ namespace QuantLib {
      */
     class Basket : public LazyObject {
       public:
-        Basket() {}
+        Basket() = default;
         /*! Constructs a basket of simple collection of constant notional 
           positions subject to default risk only.
           
@@ -61,16 +60,14 @@ namespace QuantLib {
           are no constraints on forward baskets but models assigned
           should be consistent.)
         */
-        Basket(
-            const Date& refDate,
-            const std::vector<std::string>& names,
-            const std::vector<Real>& notionals,
-            const boost::shared_ptr<Pool> pool,
-            Real attachmentRatio = 0.0,
-            Real detachmentRatio = 1.0,
-            const boost::shared_ptr<Claim>& claim =
-                boost::shared_ptr<Claim>(new FaceValueClaim()));
-        void update() {
+        Basket(const Date& refDate,
+               const std::vector<std::string>& names,
+               std::vector<Real> notionals,
+               ext::shared_ptr<Pool> pool,
+               Real attachmentRatio = 0.0,
+               Real detachmentRatio = 1.0,
+               ext::shared_ptr<Claim> claim = ext::shared_ptr<Claim>(new FaceValueClaim()));
+        void update() override {
             computeBasket();
             LazyObject::update();
         }
@@ -99,13 +96,13 @@ namespace QuantLib {
         //! Basket counterparties notionals at inception.
         const std::vector<Real>& notionals() const;
         //! Basket total notional at inception.
-        Real notional();
+        Real notional() const;
         //! Returns the total expected exposures for that name.
         Real exposure(const std::string& name, const Date& = Date()) const;
         //! Underlying pool
-        const boost::shared_ptr<Pool>& pool() const;
+        const ext::shared_ptr<Pool>& pool() const;
         //! The keys each counterparty enters the basket with (sensitive to)
-        Disposable<std::vector<DefaultProbKey> > defaultKeys() const;
+        std::vector<DefaultProbKey> defaultKeys() const;
         /*! Loss Given Default for all issuers/notionals based on
             expected recovery rates for the respective issuers.
         */
@@ -126,12 +123,11 @@ namespace QuantLib {
         //! Detachment amount = detachmentRatio() * basketNotional()
         Real detachmentAmount() const {return detachmentAmount_;}
         //! default claim, same for all positions and counterparties
-        boost::shared_ptr<Claim> claim() const {return claim_;}
+        ext::shared_ptr<Claim> claim() const {return claim_;}
         /*! Vector of cumulative default probability to date d for all
             issuers in the basket.
         */
-        Disposable<std::vector<Probability> > 
-            probabilities(const Date& d) const;
+        std::vector<Probability> probabilities(const Date& d) const;
         /*! Realized basket losses between the reference date and the 
             calculation date, taking the actual recovery rates of loss events 
             into account. 
@@ -167,26 +163,23 @@ namespace QuantLib {
           reference date and the given date, recovery ignored.
         */
         const std::vector<Real>& remainingNotionals() const;
-        Disposable<std::vector<Real> > remainingNotionals(const Date&) const;
+        std::vector<Real> remainingNotionals(const Date&) const;
         /*! Vector of surviving issuers after defaults between the reference 
           basket date and the given (or evaluation) date.
         */
         const std::vector<std::string>& remainingNames() const;
-        Disposable<std::vector<std::string> > 
-            remainingNames(const Date&) const;
+        std::vector<std::string> remainingNames(const Date&) const;
         /*! Default keys of non defaulted counterparties
         */
         const std::vector<DefaultProbKey>& remainingDefaultKeys() const;
-        Disposable<std::vector<DefaultProbKey> > remainingDefaultKeys(
-            const Date&) const;
+        std::vector<DefaultProbKey> remainingDefaultKeys(const Date&) const;
         //! Number of counterparties alive on the requested date.
         Size remainingSize() const;
         Size remainingSize(const Date&) const;
         /*! Vector of cumulative default probability to date d for all
             issuers still (at the evaluation date) alive in the basket.
         */
-        Disposable<std::vector<Probability> > 
-            remainingProbabilities(const Date& d) const;
+        std::vector<Probability> remainingProbabilities(const Date& d) const;
         /*!
           Attachment amount of the equivalent (after defaults) remaining basket
           The remaining attachment amount is
@@ -224,10 +217,10 @@ namespace QuantLib {
         }
         //!Indexes of remaining names. Notice these are names and not positions.
         const std::vector<Size>& liveList() const;
-        Disposable<std::vector<Size> > liveList(const Date&) const;//?? keep?
+        std::vector<Size> liveList(const Date&) const;//?? keep?
         //! Assigns the default loss model to this basket. Resets calculations.
         void setLossModel(
-            const boost::shared_ptr<DefaultLossModel>& lossModel);
+            const ext::shared_ptr<DefaultLossModel>& lossModel);
         /*! \name Basket Loss Statistics
             Methods providing statistical metrics on the loss or value 
             distribution of the basket. Most calculations rely on the pressence
@@ -248,12 +241,10 @@ namespace QuantLib {
         Real expectedShortfall(const Date& d, Probability prob) const;
         /* Split a portfolio loss along counterparties. Typically loss 
         corresponds to some percentile.*/
-        Disposable<std::vector<Real> > 
-            splitVaRLevel(const Date& date, Real loss) const;
+        std::vector<Real> splitVaRLevel(const Date& date, Real loss) const;
         /*! Full loss distribution
         */
-        Disposable<std::map<Real, Probability> > lossDistribution(
-            const Date&) const;
+        std::map<Real, Probability> lossDistribution(const Date&) const;
         Real densityTrancheLoss(const Date& d, Real lossFraction) const;
         Real defaultCorrelation(const Date& d, Size iName, Size jName) const;
         /*! Probability vector that each of the remaining live names (at eval
@@ -279,12 +270,12 @@ namespace QuantLib {
         //@}
       private:
         // LazyObject interface
-         void performCalculations() const;
+        void performCalculations() const override;
 
         std::vector<Real> notionals_;
-        boost::shared_ptr<Pool> pool_;
+        ext::shared_ptr<Pool> pool_;
         //! The claim is the same for all names
-        const boost::shared_ptr<Claim> claim_;
+        const ext::shared_ptr<Claim> claim_;
 
         Real attachmentRatio_;
         Real detachmentRatio_;
@@ -318,7 +309,7 @@ namespace QuantLib {
           this last reason we can never be sure between calls that this is the 
           case (and that is true in a single thread environment only).
         */
-        boost::shared_ptr<DefaultLossModel> lossModel_;
+        ext::shared_ptr<DefaultLossModel> lossModel_;
     };
 
     // ------------ Inlines -------------------------------------------------
@@ -331,12 +322,11 @@ namespace QuantLib {
         return notionals_;
     }
 
-    inline Disposable<std::vector<DefaultProbKey> > 
-        Basket::defaultKeys() const {
+    inline std::vector<DefaultProbKey> Basket::defaultKeys() const {
         return pool_->defaultKeys();
     }
 
-    inline const boost::shared_ptr<Pool>& Basket::pool() const {
+    inline const ext::shared_ptr<Pool>& Basket::pool() const {
         return pool_;
     }
 

@@ -44,8 +44,7 @@ namespace QuantLib {
         : engine_(engine), vol_(vol), targetValue_(targetValue) {
             results_ =
                 dynamic_cast<const Instrument::results*>(engine_.getResults());
-            QL_REQUIRE(results_ != 0,
-                       "pricing engine does not supply needed results");
+            QL_REQUIRE(results_ != nullptr, "pricing engine does not supply needed results");
         }
 
         Real PriceError::operator()(Volatility x) const {
@@ -81,10 +80,10 @@ namespace QuantLib {
             return result;
         }
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess>
+        ext::shared_ptr<GeneralizedBlackScholesProcess>
         ImpliedVolatilityHelper::clone(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const boost::shared_ptr<SimpleQuote>& volQuote) {
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<SimpleQuote>& volQuote) {
 
             Handle<Quote> stateVariable = process->stateVariable();
             Handle<YieldTermStructure> dividendYield = process->dividendYield();
@@ -92,15 +91,15 @@ namespace QuantLib {
 
             Handle<BlackVolTermStructure> blackVol = process->blackVolatility();
             Handle<BlackVolTermStructure> volatility(
-                boost::shared_ptr<BlackVolTermStructure>(
+                ext::shared_ptr<BlackVolTermStructure>(
                                new BlackConstantVol(blackVol->referenceDate(),
                                                     blackVol->calendar(),
                                                     Handle<Quote>(volQuote),
                                                     blackVol->dayCounter())));
 
-            return boost::shared_ptr<GeneralizedBlackScholesProcess>(
-                new GeneralizedBlackScholesProcess(stateVariable, dividendYield,
-                                                   riskFreeRate, volatility));
+            return ext::make_shared<GeneralizedBlackScholesProcess>(
+                stateVariable, dividendYield,
+                                                   riskFreeRate, volatility);
         }
 
     }

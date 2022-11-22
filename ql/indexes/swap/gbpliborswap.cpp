@@ -24,8 +24,6 @@
 #include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/currencies/europe.hpp>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
     GbpLiborSwapIsdaFix::GbpLiborSwapIsdaFix(
@@ -41,8 +39,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Actual365Fixed(), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    shared_ptr<IborIndex>(new GBPLibor(6*Months, h)) :
-                    shared_ptr<IborIndex>(new GBPLibor(3*Months, h))) {}
+                    ext::shared_ptr<IborIndex>(new GBPLibor(6*Months, h)) :
+                    ext::shared_ptr<IborIndex>(new GBPLibor(3*Months, h))) {}
 
     GbpLiborSwapIsdaFix::GbpLiborSwapIsdaFix(
                             const Period& tenor,
@@ -58,8 +56,8 @@ namespace QuantLib {
                 ModifiedFollowing, // fixedLegConvention
                 Actual365Fixed(), // fixedLegDaycounter
                 tenor > 1*Years ?
-                    shared_ptr<IborIndex>(new GBPLibor(6*Months, forwarding)) :
-                    shared_ptr<IborIndex>(new GBPLibor(3*Months, forwarding)),
+                    ext::shared_ptr<IborIndex>(new GBPLibor(6*Months, forwarding)) :
+                    ext::shared_ptr<IborIndex>(new GBPLibor(3*Months, forwarding)),
                 discounting) {}
 
 }

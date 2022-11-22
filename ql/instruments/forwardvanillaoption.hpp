@@ -38,7 +38,7 @@ namespace QuantLib {
       public:
         ForwardOptionArguments() : moneyness(Null<Real>()),
                                    resetDate(Null<Date>()) {}
-        void validate() const;
+        void validate() const override;
         Real moneyness;
         Date resetDate;
     };
@@ -51,10 +51,11 @@ namespace QuantLib {
         typedef OneAssetOption::results results;
         ForwardVanillaOption(Real moneyness,
                              const Date& resetDate,
-                             const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                             const boost::shared_ptr<Exercise>& exercise);
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results*) const;
+                             const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                             const ext::shared_ptr<Exercise>& exercise);
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results*) const override;
+
       private:
         // arguments
         Real moneyness_;

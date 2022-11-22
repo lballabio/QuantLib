@@ -18,34 +18,34 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/quote.hpp>
 #include <ql/termstructures/volatility/optionlet/spreadedoptionletvol.hpp>
 #include <ql/termstructures/volatility/spreadedsmilesection.hpp>
-#include <ql/quote.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     SpreadedOptionletVolatility::SpreadedOptionletVolatility(
-                        const Handle<OptionletVolatilityStructure>& baseVol,
-                        const Handle<Quote>& spread)
-    : baseVol_(baseVol), spread_(spread) {
+        const Handle<OptionletVolatilityStructure>& baseVol, Handle<Quote> spread)
+    : baseVol_(baseVol), spread_(std::move(spread)) {
         enableExtrapolation(baseVol->allowsExtrapolation());
         registerWith(baseVol_);
         registerWith(spread_);
     }
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     SpreadedOptionletVolatility::smileSectionImpl(const Date& d) const {
-        boost::shared_ptr<SmileSection> baseSmile =
+        ext::shared_ptr<SmileSection> baseSmile =
             baseVol_->smileSection(d, true);
-        return boost::shared_ptr<SmileSection>(new
+        return ext::shared_ptr<SmileSection>(new
             SpreadedSmileSection(baseSmile, spread_));
     }
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     SpreadedOptionletVolatility::smileSectionImpl(Time optionTime) const {
-        boost::shared_ptr<SmileSection> baseSmile =
+        ext::shared_ptr<SmileSection> baseSmile =
             baseVol_->smileSection(optionTime, true);
-        return boost::shared_ptr<SmileSection>(new
+        return ext::shared_ptr<SmileSection>(new
             SpreadedSmileSection(baseSmile, spread_));
     }
 

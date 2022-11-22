@@ -19,35 +19,35 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/vanillaswap.hpp>
+#include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/couponpricer.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    VanillaSwap::VanillaSwap(
-                     Type type,
-                     Real nominal,
-                     const Schedule& fixedSchedule,
-                     Rate fixedRate,
-                     const DayCounter& fixedDayCount,
-                     const Schedule& floatSchedule,
-                     const boost::shared_ptr<IborIndex>& iborIndex,
-                     Spread spread,
-                     const DayCounter& floatingDayCount,
-                     boost::optional<BusinessDayConvention> paymentConvention)
-    : Swap(2), type_(type), nominal_(nominal),
-      fixedSchedule_(fixedSchedule), fixedRate_(fixedRate),
-      fixedDayCount_(fixedDayCount),
-      floatingSchedule_(floatSchedule), iborIndex_(iborIndex), spread_(spread),
-      floatingDayCount_(floatingDayCount) {
+    VanillaSwap::VanillaSwap(Type type,
+                             Real nominal,
+                             Schedule fixedSchedule,
+                             Rate fixedRate,
+                             DayCounter fixedDayCount,
+                             Schedule floatSchedule,
+                             ext::shared_ptr<IborIndex> iborIndex,
+                             Spread spread,
+                             DayCounter floatingDayCount,
+                             boost::optional<BusinessDayConvention> paymentConvention,
+                             boost::optional<bool> useIndexedCoupons)
+    : Swap(2), type_(type), nominal_(nominal), fixedSchedule_(std::move(fixedSchedule)),
+      fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
+      floatingSchedule_(std::move(floatSchedule)), iborIndex_(std::move(iborIndex)),
+      spread_(spread), floatingDayCount_(std::move(floatingDayCount)) {
 
-        if (paymentConvention)
+        if (paymentConvention) // NOLINT(readability-implicit-bool-conversion)
             paymentConvention_ = *paymentConvention;
         else
             paymentConvention_ = floatingSchedule_.businessDayConvention();
@@ -61,7 +61,8 @@ namespace QuantLib {
             .withNotionals(nominal_)
             .withPaymentDayCounter(floatingDayCount_)
             .withPaymentAdjustment(paymentConvention_)
-            .withSpreads(spread_);
+            .withSpreads(spread_)
+            .withIndexedCoupons(useIndexedCoupons);
         for (Leg::const_iterator i = legs_[1].begin(); i < legs_[1].end(); ++i)
             registerWith(*i);
 
@@ -83,10 +84,9 @@ namespace QuantLib {
 
         Swap::setupArguments(args);
 
-        VanillaSwap::arguments* arguments =
-            dynamic_cast<VanillaSwap::arguments*>(args);
+        auto* arguments = dynamic_cast<VanillaSwap::arguments*>(args);
 
-        if (!arguments)  // it's a swap engine...
+        if (arguments == nullptr) // it's a swap engine...
             return;
 
         arguments->type = type_;
@@ -99,8 +99,8 @@ namespace QuantLib {
         arguments->fixedCoupons = std::vector<Real>(fixedCoupons.size());
 
         for (Size i=0; i<fixedCoupons.size(); ++i) {
-            boost::shared_ptr<FixedRateCoupon> coupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
+            ext::shared_ptr<FixedRateCoupon> coupon =
+                ext::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
 
             arguments->fixedPayDates[i] = coupon->date();
             arguments->fixedResetDates[i] = coupon->accrualStartDate();
@@ -118,8 +118,8 @@ namespace QuantLib {
             std::vector<Spread>(floatingCoupons.size());
         arguments->floatingCoupons = std::vector<Real>(floatingCoupons.size());
         for (Size i=0; i<floatingCoupons.size(); ++i) {
-            boost::shared_ptr<IborCoupon> coupon =
-                boost::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
+            ext::shared_ptr<IborCoupon> coupon =
+                ext::dynamic_pointer_cast<IborCoupon>(floatingCoupons[i]);
 
             arguments->floatingResetDates[i] = coupon->accrualStartDate();
             arguments->floatingPayDates[i] = coupon->date();
@@ -183,9 +183,8 @@ namespace QuantLib {
 
         Swap::fetchResults(r);
 
-        const VanillaSwap::results* results =
-            dynamic_cast<const VanillaSwap::results*>(r);
-        if (results) { // might be a swap engine, so no error is thrown
+        const auto* results = dynamic_cast<const VanillaSwap::results*>(r);
+        if (results != nullptr) { // might be a swap engine, so no error is thrown
             fairRate_ = results->fairRate;
             fairSpread_ = results->fairSpread;
         } else {
@@ -235,18 +234,6 @@ namespace QuantLib {
         Swap::results::reset();
         fairRate = Null<Rate>();
         fairSpread = Null<Spread>();
-    }
-
-    std::ostream& operator<<(std::ostream& out,
-                             VanillaSwap::Type t) {
-        switch (t) {
-          case VanillaSwap::Payer:
-            return out << "Payer";
-          case VanillaSwap::Receiver:
-            return out << "Receiver";
-          default:
-            QL_FAIL("unknown VanillaSwap::Type(" << Integer(t) << ")");
-        }
     }
 
 }

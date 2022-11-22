@@ -35,7 +35,7 @@ namespace QuantLib {
     class LmCorrelationModel {
       public:
         LmCorrelationModel(Size size, Size nArguments);
-        virtual ~LmCorrelationModel() {}
+        virtual ~LmCorrelationModel() = default;
 
         virtual Size size() const;
         virtual Size factors() const;
@@ -43,14 +43,10 @@ namespace QuantLib {
         std::vector<Parameter>& params();
         void setParams(const std::vector<Parameter> & arguments);
 
-        virtual Disposable<Matrix> correlation(
-            Time t, const Array& x = Null<Array>()) const = 0;
-        virtual Disposable<Matrix> pseudoSqrt(
-            Time t, const Array& x = Null<Array>()) const;
-        virtual Real correlation(
-            Size i, Size j, Time t, const Array& x = Null<Array>()) const;
+        virtual Matrix correlation(Time t, const Array& x = Null<Array>()) const = 0;
+        virtual Matrix pseudoSqrt(Time t, const Array& x = Null<Array>()) const;
+        virtual Real correlation(Size i, Size j, Time t, const Array& x = Null<Array>()) const;
         virtual bool isTimeIndependent() const;
-
 
     protected:
         virtual void generateArguments() = 0;

@@ -55,12 +55,12 @@ namespace QuantLib {
             return (icInstance ? rsg_type(g, *icInstance) : rsg_type(g));
         }
         // data
-        static boost::shared_ptr<IC> icInstance;
+        static ext::shared_ptr<IC> icInstance;
     };
 
     // static member initialization
     template<class URNG, class IC>
-    boost::shared_ptr<IC> GenericPseudoRandom<URNG, IC>::icInstance;
+    ext::shared_ptr<IC> GenericPseudoRandom<URNG, IC>::icInstance;
 
 
     //! default traits for pseudo-random number generation
@@ -92,12 +92,12 @@ namespace QuantLib {
             return (icInstance ? rsg_type(g, *icInstance) : rsg_type(g));
         }
         // data
-        static boost::shared_ptr<IC> icInstance;
+        static ext::shared_ptr<IC> icInstance;
     };
 
     // static member initialization
     template<class URSG, class IC>
-    boost::shared_ptr<IC> GenericLowDiscrepancy<URSG, IC>::icInstance;
+    ext::shared_ptr<IC> GenericLowDiscrepancy<URSG, IC>::icInstance;
 
 
     //! default traits for low-discrepancy sequence generation

@@ -34,12 +34,10 @@ namespace QuantLib {
     class FdmLinearOp {
       public:
         typedef Array array_type;
-        virtual ~FdmLinearOp() { }
-        virtual Disposable<array_type> apply(const array_type& r) const = 0;
+        virtual ~FdmLinearOp() = default;
+        virtual array_type apply(const array_type& r) const = 0;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        virtual Disposable<SparseMatrix> toMatrix() const = 0;
-#endif
+        virtual SparseMatrix toMatrix() const = 0;
     };
 }
 

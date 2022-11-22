@@ -43,8 +43,8 @@ namespace QuantLib {
 
         // constructors
         DouglasScheme(Real theta,
-            const boost::shared_ptr<FdmLinearOpComposite> & map,
-            const bc_set& bcSet = bc_set());
+                      ext::shared_ptr<FdmLinearOpComposite> map,
+                      const bc_set& bcSet = bc_set());
 
         void step(array_type& a, Time t);
         void setStep(Time dt);
@@ -52,7 +52,7 @@ namespace QuantLib {
       protected:
         Time dt_;
         const Real theta_;
-        const boost::shared_ptr<FdmLinearOpComposite> map_;
+        const ext::shared_ptr<FdmLinearOpComposite> map_;
         const BoundaryConditionSchemeHelper bcSet_;
     };
 }

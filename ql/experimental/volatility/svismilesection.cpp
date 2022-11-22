@@ -17,35 +17,35 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/volatility/svismilesection.hpp>
 #include <ql/experimental/volatility/sviinterpolation.hpp>
+#include <ql/experimental/volatility/svismilesection.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-SviSmileSection::SviSmileSection(
-    Time timeToExpiry, Rate forward, const std::vector<Real> &sviParams)
-    : SmileSection(timeToExpiry, DayCounter()), forward_(forward),
-      params_(sviParams) {
-    init();
-}
+    SviSmileSection::SviSmileSection(Time timeToExpiry, Rate forward, std::vector<Real> sviParams)
+    : SmileSection(timeToExpiry, DayCounter()), forward_(forward), params_(std::move(sviParams)) {
+        init();
+    }
 
-SviSmileSection::SviSmileSection(
-    const Date &d, Rate forward, const std::vector<Real> &sviParams,
-    const DayCounter &dc)
-    : SmileSection(d, dc, Date()), forward_(forward), params_(sviParams) {
-    init();
-}
+    SviSmileSection::SviSmileSection(const Date& d,
+                                     Rate forward,
+                                     std::vector<Real> sviParams,
+                                     const DayCounter& dc)
+    : SmileSection(d, dc, Date()), forward_(forward), params_(std::move(sviParams)) {
+        init();
+    }
 
 void SviSmileSection::init() {
+    QL_REQUIRE(exerciseTime() > 0.0, "svi expects a strictly positive expiry time");
     QL_REQUIRE(params_.size() == 5,
-               "svi expects 5 parameters (a,b,sigma,rho,s,m) but ("
+               "svi expects 5 parameters (a,b,sigma,rho,m) but ("
                    << params_.size() << ") given");
-    detail::checkSviParameters(params_[0], params_[1], params_[2], params_[3],
-                               params_[4]);
-    return;
+    detail::checkSviParameters(params_[0], params_[1], params_[2], params_[3], params_[4],
+                               exerciseTime());
 }
 
-Real SviSmileSection::volatilityImpl(Rate strike) const {
+Volatility SviSmileSection::volatilityImpl(Rate strike) const {
 
     Real k = std::log(std::max(strike, 1E-6) / forward_);
     Real totalVariance = detail::sviTotalVariance(params_[0], params_[1], params_[2],

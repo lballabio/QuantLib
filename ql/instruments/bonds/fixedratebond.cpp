@@ -40,18 +40,21 @@ namespace QuantLib {
                                  const Period& exCouponPeriod,
                                  const Calendar& exCouponCalendar,
                                  const BusinessDayConvention exCouponConvention,
-                                 bool exCouponEndOfMonth)
+                                 bool exCouponEndOfMonth,
+                                 const DayCounter& firstPeriodDayCounter)
      : Bond(settlementDays,
             paymentCalendar==Calendar() ? schedule.calendar() : paymentCalendar,
             issueDate),
-      frequency_(schedule.tenor().frequency()),
-      dayCounter_(accrualDayCounter) {
+       frequency_(schedule.hasTenor() ? schedule.tenor().frequency() : NoFrequency),
+       dayCounter_(accrualDayCounter),
+       firstPeriodDayCounter_(firstPeriodDayCounter) {
 
         maturityDate_ = schedule.endDate();
 
         cashflows_ = FixedRateLeg(schedule)
             .withNotionals(faceAmount)
             .withCouponRates(coupons, accrualDayCounter)
+            .withFirstPeriodDayCounter(firstPeriodDayCounter)
             .withPaymentCalendar(calendar_)
             .withPaymentAdjustment(paymentConvention)
             .withExCouponPeriod(exCouponPeriod,
@@ -84,11 +87,13 @@ namespace QuantLib {
                                  const Period& exCouponPeriod,
                                  const Calendar& exCouponCalendar,
                                  const BusinessDayConvention exCouponConvention,
-                                 bool exCouponEndOfMonth)
+                                 bool exCouponEndOfMonth,
+                                 const DayCounter& firstPeriodDayCounter)
      : Bond(settlementDays,
             paymentCalendar==Calendar() ? calendar : paymentCalendar,
             issueDate),
-      frequency_(tenor.frequency()), dayCounter_(accrualDayCounter) {
+      frequency_(tenor.frequency()), dayCounter_(accrualDayCounter),
+      firstPeriodDayCounter_(firstPeriodDayCounter) {
 
         maturityDate_ = maturityDate;
 
@@ -120,6 +125,7 @@ namespace QuantLib {
         cashflows_ = FixedRateLeg(schedule)
             .withNotionals(faceAmount)
             .withCouponRates(coupons, accrualDayCounter)
+            .withFirstPeriodDayCounter(firstPeriodDayCounter)
             .withPaymentCalendar(calendar_)
             .withPaymentAdjustment(paymentConvention)
             .withExCouponPeriod(exCouponPeriod,

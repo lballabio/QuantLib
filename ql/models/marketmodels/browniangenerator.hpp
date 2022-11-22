@@ -22,15 +22,14 @@
 #define quantlib_brownian_generator_hpp
 
 #include <ql/types.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {
 
     class BrownianGenerator {
       public:
-
-        virtual ~BrownianGenerator() {}
+        virtual ~BrownianGenerator() = default;
 
         virtual Real nextStep(std::vector<Real>&) = 0;
         virtual Real nextPath() = 0;
@@ -41,9 +40,9 @@ namespace QuantLib {
 
     class BrownianGeneratorFactory {
       public:
-        virtual ~BrownianGeneratorFactory() {}
+        virtual ~BrownianGeneratorFactory() = default;
 
-        virtual boost::shared_ptr<BrownianGenerator> create(Size factors,
+        virtual ext::shared_ptr<BrownianGenerator> create(Size factors,
                                                             Size steps) const = 0;
     };
 

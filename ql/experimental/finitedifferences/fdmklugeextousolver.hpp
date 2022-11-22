@@ -24,13 +24,14 @@
 #ifndef quantlib_fdm_kluge_ou_solver_hpp
 #define quantlib_fdm_kluge_ou_solver_hpp
 
-#include <ql/handle.hpp>
-#include <ql/patterns/lazyobject.hpp>
-#include <ql/experimental/processes/klugeextouprocess.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
 #include <ql/experimental/finitedifferences/fdmklugeextouop.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmndimsolver.hpp>
+#include <ql/experimental/processes/klugeextouprocess.hpp>
+#include <ql/handle.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmndimsolver.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmsolverdesc.hpp>
+#include <ql/patterns/lazyobject.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -40,15 +41,12 @@ namespace QuantLib {
     template <Size N=3>
     class FdmKlugeExtOUSolver : public LazyObject {
       public:
-        FdmKlugeExtOUSolver(
-          const Handle<KlugeExtOUProcess>& klugeOUProcess,
-          const boost::shared_ptr<YieldTermStructure>& rTS,
-          const FdmSolverDesc& solverDesc,
-          const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer())
-        : klugeOUProcess_(klugeOUProcess),
-          rTS_           (rTS),
-          solverDesc_    (solverDesc),
-          schemeDesc_    (schemeDesc) {
+        FdmKlugeExtOUSolver(Handle<KlugeExtOUProcess> klugeOUProcess,
+                            ext::shared_ptr<YieldTermStructure> rTS,
+                            FdmSolverDesc solverDesc,
+                            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer())
+        : klugeOUProcess_(std::move(klugeOUProcess)), rTS_(std::move(rTS)),
+          solverDesc_(std::move(solverDesc)), schemeDesc_(schemeDesc) {
             registerWith(klugeOUProcess_);
         }
 
@@ -58,25 +56,26 @@ namespace QuantLib {
         }
 
       protected:
-        void performCalculations() const {
-            boost::shared_ptr<FdmLinearOpComposite>op(
+        void performCalculations() const override {
+            ext::shared_ptr<FdmLinearOpComposite>op(
                 new FdmKlugeExtOUOp(solverDesc_.mesher,
                                     klugeOUProcess_.currentLink(),
                                     rTS_, solverDesc_.bcSet, 16));
 
-            solver_ = boost::shared_ptr<FdmNdimSolver<N> >(
+            solver_ = ext::shared_ptr<FdmNdimSolver<N> >(
                           new FdmNdimSolver<N>(solverDesc_, schemeDesc_, op));
         }
 
       private:
         const Handle<KlugeExtOUProcess> klugeOUProcess_;
-        const boost::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
 
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        mutable boost::shared_ptr<FdmNdimSolver<N> > solver_;
-        BOOST_STATIC_ASSERT(N >= 3); // KlugeExtOU solver can't be applied on meshes
+        mutable ext::shared_ptr<FdmNdimSolver<N> > solver_;
+        BOOST_STATIC_ASSERT(N >= 3); // NOLINT(readability-simplify-boolean-expr)
+                                     // KlugeExtOU solver can't be applied on meshes
                                      // with less than three dimensions
     };
 }

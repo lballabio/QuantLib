@@ -28,7 +28,7 @@
 #include <ql/experimental/volatility/blackatmvolcurve.hpp>
 #include <ql/quote.hpp>
 #include <ql/termstructures/volatility/sabrinterpolatedsmilesection.hpp>
-#include <boost/array.hpp>
+#include <array>
 
 namespace QuantLib {
 
@@ -38,54 +38,53 @@ namespace QuantLib {
     */
     class SabrVolSurface : public InterestRateVolSurface {
       public:
-        SabrVolSurface(
-                const boost::shared_ptr<InterestRateIndex>&,
-                const Handle<BlackAtmVolCurve>&,
-                const std::vector<Period>& optionTenors,
-                const std::vector<Spread>& atmRateSpreads,
-                const std::vector<std::vector<Handle<Quote> > >& volSpreads);
+        SabrVolSurface(const ext::shared_ptr<InterestRateIndex>&,
+                       Handle<BlackAtmVolCurve>,
+                       const std::vector<Period>& optionTenors,
+                       std::vector<Spread> atmRateSpreads,
+                       std::vector<std::vector<Handle<Quote> > > volSpreads);
         //@}
         // All virtual methods of base classes must be forwarded
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Date maxDate() const;
-        Time maxTime() const;
-        const Date& referenceDate() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
+        DayCounter dayCounter() const override;
+        Date maxDate() const override;
+        Time maxTime() const override;
+        const Date& referenceDate() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
         const Handle<BlackAtmVolCurve>& atmCurve() const;
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
         std::vector<Volatility> volatilitySpreads(const Period&) const;
         std::vector<Volatility> volatilitySpreads(const Date&) const;
       protected:
-        boost::array<Real, 4> sabrGuesses(const Date&) const;
+        std::array<Real, 4> sabrGuesses(const Date&) const;
       public:
         //@}
         //! \name BlackVolSurface interface
         //@{
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time) const;
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time) const override;
         //@}
       protected:
         //@}
         //! \name LazyObject interface
         //@{
         void performCalculations () const;
-        virtual void update();
+        void update() override;
         //@}
       private:
         void registerWithMarketData();
         void checkInputs() const;
-        void updateSabrGuesses(const Date& d, boost::array<Real, 4> newGuesses) const;
+        void updateSabrGuesses(const Date& d, std::array<Real, 4> newGuesses) const;
         Handle<BlackAtmVolCurve> atmCurve_;
         std::vector<Period> optionTenors_;
         std::vector<Time> optionTimes_;
@@ -99,7 +98,7 @@ namespace QuantLib {
         bool isRhoFixed_;
         bool vegaWeighted_;
         //
-        mutable std::vector<boost::array<Real,4> > sabrGuesses_;
+        mutable std::vector<std::array<Real,4>> sabrGuesses_;
     };
 
     // inline

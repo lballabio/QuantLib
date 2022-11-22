@@ -19,19 +19,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/asian/analytic_discr_geom_av_price.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/greeks.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/exercise.hpp>
 #include <numeric>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticDiscreteGeometricAveragePriceAsianEngine::
-    AnalyticDiscreteGeometricAveragePriceAsianEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        AnalyticDiscreteGeometricAveragePriceAsianEngine(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
@@ -60,8 +61,8 @@ namespace QuantLib {
             pastFixings = 0;
         }
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         Date referenceDate = process_->riskFreeRate()->referenceDate();

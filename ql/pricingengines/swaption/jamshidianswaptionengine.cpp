@@ -18,20 +18,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <ql/pricingengines/swaption/jamshidianswaptionengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     class JamshidianSwaptionEngine::rStarFinder {
       public:
-        rStarFinder(const boost::shared_ptr<OneFactorAffineModel>& model,
+        rStarFinder(const ext::shared_ptr<OneFactorAffineModel>& model,
                     Real nominal,
                     Time maturity,
                     Time valueTime,
-                    const std::vector<Time>& fixedPayTimes,
+                    std::vector<Time> fixedPayTimes,
                     const std::vector<Real>& amounts)
-        : strike_(nominal), maturity_(maturity), valueTime_(valueTime), times_(fixedPayTimes), amounts_(amounts), model_(model) {}
+        : strike_(nominal), maturity_(maturity), valueTime_(valueTime),
+          times_(std::move(fixedPayTimes)), amounts_(amounts), model_(model) {}
 
         Real operator()(Rate x) const {
             Real value = strike_;
@@ -49,26 +51,29 @@ namespace QuantLib {
         Time maturity_,valueTime_;
         std::vector<Time> times_;
         const std::vector<Real>& amounts_;
-        const boost::shared_ptr<OneFactorAffineModel>& model_;
+        const ext::shared_ptr<OneFactorAffineModel>& model_;
     };
 
     void JamshidianSwaptionEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.settlementType==Settlement::Physical,
-                   "cash-settled swaptions not priced by Jamshidian engine");
+        QL_REQUIRE(arguments_.settlementMethod != Settlement::ParYieldCurve,
+                   "cash settled (ParYieldCurve) swaptions not priced with "
+                   "JamshidianSwaptionEngine");
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "cannot use the Jamshidian decomposition "
                    "on exotic swaptions");
 
-        QL_REQUIRE(arguments_.swap->spread() == 0.0, "non zero spread (" << arguments_.swap->spread() << ") not allowed"); // PC
+        QL_REQUIRE(arguments_.swap->spread() == 0.0, "non zero spread (" << arguments_.swap->spread() << ") not allowed");
+
+        QL_REQUIRE(!model_.empty(), "no model specified");
 
         Date referenceDate;
         DayCounter dayCounter;
 
-        boost::shared_ptr<TermStructureConsistentModel> tsmodel =
-            boost::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
-        if (tsmodel) {
+        ext::shared_ptr<TermStructureConsistentModel> tsmodel =
+            ext::dynamic_pointer_cast<TermStructureConsistentModel>(*model_);
+        if (tsmodel != nullptr) {
             referenceDate = tsmodel->termStructure()->referenceDate();
             dayCounter = tsmodel->termStructure()->dayCounter();
         } else {
@@ -98,8 +103,7 @@ namespace QuantLib {
         s1d.setUpperBound(maxStrike);
         Rate rStar = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
 
-        Option::Type w = arguments_.type==VanillaSwap::Payer ?
-                                                Option::Put : Option::Call;
+        Option::Type w = arguments_.type==Swap::Payer ? Option::Put : Option::Call;
         Size size = arguments_.fixedCoupons.size();
 
         Real value = 0.0;

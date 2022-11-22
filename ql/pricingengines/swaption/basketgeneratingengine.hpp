@@ -25,15 +25,16 @@
 #ifndef quantlib_basketgeneratingengine_hpp
 #define quantlib_basketgeneratingengine_hpp
 
-#include <ql/qldefines.hpp>
-#include <ql/math/optimization/costfunction.hpp>
-#include <ql/instruments/vanillaswap.hpp>
-#include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
-#include <ql/indexes/swapindex.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/indexes/swapindex.hpp>
+#include <ql/instruments/vanillaswap.hpp>
+#include <ql/math/optimization/costfunction.hpp>
+#include <ql/models/shortrate/onefactormodels/gaussian1dmodel.hpp>
+#include <ql/qldefines.hpp>
+#include <ql/termstructures/volatility/swaption/swaptionvolstructure.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -62,71 +63,72 @@ namespace QuantLib {
             MaturityStrikeByDeltaGamma
         } CalibrationBasketType;
 
-        Disposable<std::vector<boost::shared_ptr<CalibrationHelper> > >
-        calibrationBasket(
-            const boost::shared_ptr<Exercise> &exercise,
-            boost::shared_ptr<SwapIndex> standardSwapBase,
-            boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
-            const CalibrationBasketType basketType =
-                MaturityStrikeByDeltaGamma) const;
+        virtual ~BasketGeneratingEngine() = default;
+
+        std::vector<ext::shared_ptr<BlackCalibrationHelper>>
+        calibrationBasket(const ext::shared_ptr<Exercise>& exercise,
+                          const ext::shared_ptr<SwapIndex>& standardSwapBase,
+                          const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,
+                          CalibrationBasketType basketType = MaturityStrikeByDeltaGamma) const;
 
       protected:
+        BasketGeneratingEngine(const ext::shared_ptr<Gaussian1dModel>& model,
+                               Handle<Quote> oas,
+                               Handle<YieldTermStructure> discountCurve)
+        : onefactormodel_(model), oas_(std::move(oas)), discountCurve_(std::move(discountCurve)) {}
 
-        BasketGeneratingEngine(const boost::shared_ptr<Gaussian1dModel> &model,
-                               const Handle<Quote> &oas,
-                               const Handle<YieldTermStructure> &discountCurve)
-            : onefactormodel_(model), oas_(oas), discountCurve_(discountCurve) {
-        }
+        BasketGeneratingEngine(Handle<Gaussian1dModel> model,
+                               Handle<Quote> oas,
+                               Handle<YieldTermStructure> discountCurve)
+        : onefactormodel_(std::move(model)), oas_(std::move(oas)),
+          discountCurve_(std::move(discountCurve)) {}
 
-        virtual ~BasketGeneratingEngine() {}
+        virtual Real underlyingNpv(const Date& expiry, Real y) const = 0;
 
-        virtual Real underlyingNpv(const Date &expiry,
-                                   const Real y) const = 0;
-
-        virtual VanillaSwap::Type underlyingType() const = 0;
+        virtual Swap::Type underlyingType() const = 0;
 
         virtual const Date underlyingLastDate() const = 0;
 
-        virtual const Disposable<Array>
-        initialGuess(const Date &expiry) const = 0; // return (nominal,
-                                                    // maturity, rate)
+        virtual const Array initialGuess(const Date &expiry) const = 0; // return (nominal,
+                                                                        // maturity, rate)
 
       private:
 
-        const boost::shared_ptr<Gaussian1dModel> onefactormodel_;
+        const Handle<Gaussian1dModel> onefactormodel_;
         const Handle<Quote> oas_;
         const Handle<YieldTermStructure> discountCurve_;
 
-        class MatchHelper;
-        friend class MatchHelper;
         class MatchHelper : public CostFunction {
           public:
-            MatchHelper(const VanillaSwap::Type type, const Real npv,
-                        const Real delta, const Real gamma,
-                        const boost::shared_ptr<Gaussian1dModel> &model,
-                        const boost::shared_ptr<SwapIndex> &indexBase,
-                        const Date &expiry, const Real maxMaturity,
+            MatchHelper(const Swap::Type type,
+                        const Real npv,
+                        const Real delta,
+                        const Real gamma,
+                        ext::shared_ptr<Gaussian1dModel> model,
+                        ext::shared_ptr<SwapIndex> indexBase,
+                        const Date& expiry,
+                        const Real maxMaturity,
                         const Real h)
-                : type_(type), mdl_(model), indexBase_(indexBase),
-                  expiry_(expiry), maxMaturity_(maxMaturity), npv_(npv),
-                  delta_(delta), gamma_(gamma), h_(h) {}
+            : type_(type), mdl_(std::move(model)), indexBase_(std::move(indexBase)),
+              expiry_(expiry), maxMaturity_(maxMaturity), npv_(npv), delta_(delta), gamma_(gamma),
+              h_(h) {}
 
-            Real NPV(boost::shared_ptr<VanillaSwap> swap, Real fixedRate,
-                     Real nominal, Real y, int type) const {
+            Real NPV(const ext::shared_ptr<VanillaSwap>& swap,
+                     Real fixedRate,
+                     Real nominal,
+                     Real y,
+                     int type) const {
                 Real npv = 0.0;
-                for (Size i = 0; i < swap->fixedLeg().size(); i++) {
-                    boost::shared_ptr<FixedRateCoupon> c =
-                        boost::dynamic_pointer_cast<FixedRateCoupon>(
-                            swap->fixedLeg()[i]);
+                for (const auto& i : swap->fixedLeg()) {
+                    ext::shared_ptr<FixedRateCoupon> c =
+                        ext::dynamic_pointer_cast<FixedRateCoupon>(i);
                     npv -=
                         fixedRate * c->accrualPeriod() * nominal *
                         mdl_->zerobond(c->date(), expiry_, y,
                                        indexBase_->discountingTermStructure());
                 }
-                for (Size i = 0; i < swap->floatingLeg().size(); i++) {
-                    boost::shared_ptr<IborCoupon> c =
-                        boost::dynamic_pointer_cast<IborCoupon>(
-                            swap->floatingLeg()[i]);
+                for (const auto& i : swap->floatingLeg()) {
+                    ext::shared_ptr<IborCoupon> c = ext::dynamic_pointer_cast<IborCoupon>(i);
                     npv +=
                         mdl_->forwardRate(c->fixingDate(), expiry_, y,
                                           c->iborIndex()) *
@@ -137,16 +139,16 @@ namespace QuantLib {
                 return (Real)type * npv;
             }
 
-            Real value(const Array &v) const {
+            Real value(const Array& v) const override {
                 Array vals = values(v);
                 Real res = 0.0;
-                for (Size i = 0; i < vals.size(); i++) {
-                    res += vals[i] * vals[i];
+                for (Real val : vals) {
+                    res += val * val;
                 }
                 return std::sqrt(res / vals.size());
             }
 
-            Disposable<Array> values(const Array &v) const {
+            Array values(const Array& v) const override {
                 // transformations
                 int type = type_; // start with same type as non standard
                                   // underlying (1 means payer, -1 receiver)
@@ -175,12 +177,12 @@ namespace QuantLib {
                 Period lowerPeriod =
                     years * Years + months * Months;           //+days*Days;
                 Period upperPeriod = lowerPeriod + 1 * Months; // 1*Days;
-                boost::shared_ptr<SwapIndex> tmpIndexLower, tmpIndexUpper;
+                ext::shared_ptr<SwapIndex> tmpIndexLower, tmpIndexUpper;
                 tmpIndexLower = indexBase_->clone(lowerPeriod);
                 tmpIndexUpper = indexBase_->clone(upperPeriod);
-                boost::shared_ptr<VanillaSwap> swapLower =
+                ext::shared_ptr<VanillaSwap> swapLower =
                     tmpIndexLower->underlyingSwap(expiry_);
-                boost::shared_ptr<VanillaSwap> swapUpper =
+                ext::shared_ptr<VanillaSwap> swapUpper =
                     tmpIndexUpper->underlyingSwap(expiry_);
                 // compute npv, delta, gamma
                 Real npvm =
@@ -220,9 +222,9 @@ namespace QuantLib {
                 return res;
             }
 
-            const VanillaSwap::Type type_;
-            const boost::shared_ptr<Gaussian1dModel> mdl_;
-            const boost::shared_ptr<SwapIndex> indexBase_;
+            const Swap::Type type_;
+            const ext::shared_ptr<Gaussian1dModel> mdl_;
+            const ext::shared_ptr<SwapIndex> indexBase_;
             const Date expiry_;
             const Real maxMaturity_;
             const Real npv_, delta_, gamma_, h_;

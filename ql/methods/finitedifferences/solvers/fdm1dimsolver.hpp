@@ -39,7 +39,7 @@ namespace QuantLib {
       public:
         Fdm1DimSolver(const FdmSolverDesc& solverDesc,
                       const FdmSchemeDesc& schemeDesc,
-                      const boost::shared_ptr<FdmLinearOpComposite>& op);
+                      ext::shared_ptr<FdmLinearOpComposite> op);
 
         Real interpolateAt(Real x) const;
         Real thetaAt(Real x) const;
@@ -48,19 +48,19 @@ namespace QuantLib {
         Real derivativeXX(Real x) const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
-        const boost::shared_ptr<FdmLinearOpComposite> op_;
+        const ext::shared_ptr<FdmLinearOpComposite> op_;
 
-        const boost::shared_ptr<FdmSnapshotCondition> thetaCondition_;
-        const boost::shared_ptr<FdmStepConditionComposite> conditions_;
+        const ext::shared_ptr<FdmSnapshotCondition> thetaCondition_;
+        const ext::shared_ptr<FdmStepConditionComposite> conditions_;
 
         std::vector<Real> x_, initialValues_;
         mutable Array resultValues_;
-        mutable boost::shared_ptr<CubicInterpolation> interpolation_;
+        mutable ext::shared_ptr<CubicInterpolation> interpolation_;
     };
 }
 

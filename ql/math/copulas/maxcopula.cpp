@@ -19,6 +19,7 @@
 
 #include <ql/math/copulas/maxcopula.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 

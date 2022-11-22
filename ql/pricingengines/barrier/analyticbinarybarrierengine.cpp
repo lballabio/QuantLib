@@ -17,11 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
+#include <ql/instruments/vanillaoption.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/barrier/analyticbinarybarrierengine.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/instruments/vanillaoption.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -31,9 +32,9 @@ namespace QuantLib {
     
     public:
         AnalyticBinaryBarrierEngine_helper(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const boost::shared_ptr<StrikedTypePayoff> &payoff,
-             const boost::shared_ptr<AmericanExercise> &exercise,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<StrikedTypePayoff> &payoff,
+             const ext::shared_ptr<AmericanExercise> &exercise,
              const BarrierOption::arguments &arguments):
         process_(process),
         payoff_(payoff),
@@ -44,35 +45,31 @@ namespace QuantLib {
 
         Real payoffAtExpiry(Real spot, Real variance, Real discount);
     private:
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process_;
-        const boost::shared_ptr<StrikedTypePayoff> &payoff_;
-        const boost::shared_ptr<AmericanExercise> &exercise_;
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process_;
+        const ext::shared_ptr<StrikedTypePayoff> &payoff_;
+        const ext::shared_ptr<AmericanExercise> &exercise_;
         const BarrierOption::arguments &arguments_;
     };
 
 
-
-
-
-
     AnalyticBinaryBarrierEngine::AnalyticBinaryBarrierEngine(
-              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
     void AnalyticBinaryBarrierEngine::calculate() const {
 
-        boost::shared_ptr<AmericanExercise> ex =
-            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        ext::shared_ptr<AmericanExercise> ex =
+            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(ex->payoffAtExpiry(), "payoff must be at expiry");
         QL_REQUIRE(ex->dates()[0] <=
                    process_->blackVolatility()->referenceDate(),
                    "American option with window exercise not handled yet");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real spot = process_->stateVariable()->value();
@@ -105,10 +102,10 @@ namespace QuantLib {
         if ((barrierType == Barrier::DownIn && spot <= barrier) ||
            (barrierType == Barrier::UpIn && spot >= barrier)) {
             // knocked in - is a digital european
-            boost::shared_ptr<Exercise> exercise(new EuropeanExercise(
+            ext::shared_ptr<Exercise> exercise(new EuropeanExercise(
                                              arguments_.exercise->lastDate()));
 
-            boost::shared_ptr<PricingEngine> engine(
+            ext::shared_ptr<PricingEngine> engine(
                                        new AnalyticEuropeanEngine(process_));
 
             VanillaOption opt(payoff, exercise);
@@ -161,16 +158,16 @@ namespace QuantLib {
         Real K = 0;
 
         // binary cash-or-nothing payoff?
-        boost::shared_ptr<CashOrNothingPayoff> coo =
-            boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff_);
-        if (coo) {
+        ext::shared_ptr<CashOrNothingPayoff> coo =
+            ext::dynamic_pointer_cast<CashOrNothingPayoff>(payoff_);
+        if (coo != nullptr) {
             K = coo->cashPayoff();
         }
 
         // binary asset-or-nothing payoff?
-        boost::shared_ptr<AssetOrNothingPayoff> aoo =
-            boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff_);
-        if (aoo) {
+        ext::shared_ptr<AssetOrNothingPayoff> aoo =
+            ext::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff_);
+        if (aoo != nullptr) {
             mu += 1.0; 
             K = spot * dividendDiscount / discount; // forward
         }

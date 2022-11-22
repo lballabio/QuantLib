@@ -19,23 +19,22 @@
 
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsimpleswingcondition.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdmSimpleSwingCondition::FdmSimpleSwingCondition(
-            const std::vector<Time> & exerciseTimes,
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
-            Size swingDirection,
-            Size minExercises)
-    : exerciseTimes_ (exerciseTimes),
-      mesher_        (mesher),
-      calculator_    (calculator),
-      minExercises_  (minExercises),
-      swingDirection_(swingDirection) {
-    }
-    
+        std::vector<Time> exerciseTimes,
+        ext::shared_ptr<FdmMesher> mesher,
+        ext::shared_ptr<FdmInnerValueCalculator> calculator,
+        Size swingDirection,
+        Size minExercises)
+    : exerciseTimes_(std::move(exerciseTimes)), mesher_(std::move(mesher)),
+      calculator_(std::move(calculator)), minExercises_(minExercises),
+      swingDirection_(swingDirection) {}
+
     void FdmSimpleSwingCondition::applyTo(Array& a, Time t) const {
+
         const std::vector<Time>::const_iterator iter
             = std::find(exerciseTimes_.begin(), exerciseTimes_.end(), t);
         const Size maxExerciseValue=mesher_->layout()->dim()[swingDirection_]-1;
@@ -45,7 +44,11 @@ namespace QuantLib {
 
             const Size d = std::distance(iter, exerciseTimes_.end());
 
-            const boost::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+            const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
+
+            QL_REQUIRE(layout->size() == a.size(),
+                       "inconsistent array dimensions");
+
             const FdmLinearOpIterator endIter = layout->end();
             
             for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;

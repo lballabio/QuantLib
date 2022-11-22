@@ -35,43 +35,39 @@ namespace QuantLib {
     class SpreadedSwaptionVolatility : public SwaptionVolatilityStructure {
       public:
         SpreadedSwaptionVolatility(const Handle<SwaptionVolatilityStructure>&,
-                                   const Handle<Quote>& spread);
+                                   Handle<Quote> spread);
         // All virtual methods of base classes must be forwarded
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Date maxDate() const;
-        Time maxTime() const;
-        const Date& referenceDate() const;
-        Calendar calendar() const;
-        Natural settlementDays() const;
+        DayCounter dayCounter() const override;
+        Date maxDate() const override;
+        Time maxTime() const override;
+        const Date& referenceDate() const override;
+        Calendar calendar() const override;
+        Natural settlementDays() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Rate minStrike() const;
-        Rate maxStrike() const;
+        Rate minStrike() const override;
+        Rate maxStrike() const override;
         //@}
         //! \name SwaptionVolatilityStructure interface
         //@{
-        const Period& maxSwapTenor() const;
+        const Period& maxSwapTenor() const override;
         //@}
-        VolatilityType volatilityType() const;
+        VolatilityType volatilityType() const override;
+
       protected:
         //! \name SwaptionVolatilityStructure interface
         //@{
-        boost::shared_ptr<SmileSection> smileSectionImpl(
-                                        const Date& optionDate,
-                                        const Period& swapTenor) const;
-        boost::shared_ptr<SmileSection> smileSectionImpl(
-                                        Time optionTime,
-                                        Time swapLength) const;
-        Volatility volatilityImpl(const Date& optionDate,
-                                  const Period& swapTenor,
-                                  Rate strike) const;
-        Volatility volatilityImpl(Time optionTime,
-                                  Time swapLength,
-                                  Rate strike) const;
-        Real shiftImpl(Time optionTime, Time swapLength) const;
+        ext::shared_ptr<SmileSection> smileSectionImpl(const Date& optionDate,
+                                                       const Period& swapTenor) const override;
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
+                                                       Time swapLength) const override;
+        Volatility
+        volatilityImpl(const Date& optionDate, const Period& swapTenor, Rate strike) const override;
+        Volatility volatilityImpl(Time optionTime, Time swapLength, Rate strike) const override;
+        Real shiftImpl(Time optionTime, Time swapLength) const override;
         //@}
       private:
         const Handle<SwaptionVolatilityStructure> baseVol_;

@@ -33,15 +33,15 @@
 #include <ql/quotes/simplequote.hpp>
 #include <ql/currencies/europe.hpp>
 #include <iostream>
+#include <string>
 
 using namespace QuantLib;
 using namespace std;
-using namespace boost;
 using namespace boost::unit_test_framework;
 
 #ifndef QL_PATCH_SOLARIS
 
-namespace {
+namespace nth_to_default_test {
 
     struct hwDatum {
         Size rank;
@@ -89,7 +89,7 @@ namespace {
         { 6, {   3,   8,   3,   8 } },
         { 7, {   1,   5,   1,   5 } },
         { 8, {   0,   3,   0,   4 } },
-        { 9, {   0,   2,   0,   0 } },
+        { 9, {   0,   2,   0,   2 } },
         {10, {   0,   1,   0,   1 } }
     };
 
@@ -101,6 +101,8 @@ void NthToDefaultTest::testGauss() {
     #ifndef QL_PATCH_SOLARIS
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
                        "with Gaussian copula...");
+
+    using namespace nth_to_default_test;
 
     SavedSettings backup;
 
@@ -133,29 +135,30 @@ void NthToDefaultTest::testGauss() {
 
     Settings::instance().evaluationDate() = asofDate;
 
-    vector<Date> gridDates;
-    gridDates.push_back (asofDate);
-    gridDates.push_back (TARGET().advance (asofDate, Period (1, Years)));
-    gridDates.push_back (TARGET().advance (asofDate, Period (5, Years)));
-    gridDates.push_back (TARGET().advance (asofDate, Period (7, Years)));
+    vector<Date> gridDates = {
+        asofDate,
+        TARGET().advance (asofDate, Period (1, Years)),
+        TARGET().advance (asofDate, Period (5, Years)),
+        TARGET().advance (asofDate, Period (7, Years))
+    };
 
-    boost::shared_ptr<YieldTermStructure> yieldPtr (
+    ext::shared_ptr<YieldTermStructure> yieldPtr (
                                    new FlatForward (asofDate, rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
     vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
-    for (Size i = 0; i < lambda.size(); i++) {
-        Handle<Quote> h(boost::shared_ptr<Quote>(new SimpleQuote(lambda[i])));
-        boost::shared_ptr<DefaultProbabilityTermStructure> ptr (
+    for (Real i : lambda) {
+        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(i)));
+        ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
-        probabilities.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
+        probabilities.emplace_back(ptr);
     }
 
-    boost::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
     Handle<Quote> correlationHandle (simpleQuote);
 
-    boost::shared_ptr<DefaultLossModel> copula( new 
+    ext::shared_ptr<DefaultLossModel> copula( new 
         ConstantLossModel<GaussianCopulaPolicy>( correlationHandle, 
         std::vector<Real>(names, recovery), 
         LatentModelIntegrationType::GaussianQuadrature, names, 
@@ -165,28 +168,23 @@ void NthToDefaultTest::testGauss() {
     instead below. But you need at least 1e6 simulations to pass the pricing 
     error tests
     */
-    //boost::shared_ptr<GaussianDefProbLM> gLM(
-    //    boost::make_shared<GaussianDefProbLM>(correlationHandle, names,
+    //ext::shared_ptr<GaussianDefProbLM> gLM(
+    //    ext::make_shared<GaussianDefProbLM>(correlationHandle, names,
     //    LatentModelIntegrationType::GaussianQuadrature,
     //    // g++ requires this when using make_shared
     //    GaussianCopulaPolicy::initTraits()));
     //Size numSimulations = 1000000;
     //// Size numCoresUsed = 4; use your are in the multithread branch
     //// Sobol, many cores
-    //boost::shared_ptr<RandomDefaultLM<GaussianCopulaPolicy> > copula( 
+    //ext::shared_ptr<RandomDefaultLM<GaussianCopulaPolicy> > copula( 
     //    new RandomDefaultLM<GaussianCopulaPolicy>(gLM, 
     //        std::vector<Real>(names, recovery), numSimulations, 1.e-6, 
     //        2863311530));
 
-
-    vector<Handle<DefaultProbabilityTermStructure> > singleProbability;
-    singleProbability.push_back (probabilities[0]);
-
     // Set up pool and basket
     std::vector<std::string> namesIds;
     for(Size i=0; i<names; i++)
-        namesIds.push_back(std::string("Name") + 
-            boost::lexical_cast<std::string>(i));
+        namesIds.push_back(std::string("Name") + std::to_string(i));
 
     std::vector<Issuer> issuers;
     for(Size i=0; i<names; i++) {
@@ -195,10 +193,10 @@ void NthToDefaultTest::testGauss() {
                 EURCurrency(), QuantLib::SeniorSec,
                 Period(), 1. // amount threshold
                 ), probabilities[i]));
-        issuers.push_back(Issuer(curves));
+        issuers.emplace_back(curves);
     }
 
-    boost::shared_ptr<Pool> thePool = boost::make_shared<Pool>();
+    ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
     for(Size i=0; i<names; i++)
         thePool->add(namesIds[i], issuers[i], NorthAmericaCorpDefaultKey(
                 EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
@@ -206,26 +204,26 @@ void NthToDefaultTest::testGauss() {
     std::vector<DefaultProbKey> defaultKeys(probabilities.size(), 
         NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
 
-    boost::shared_ptr<Basket> basket(new Basket(asofDate, namesIds, 
+    ext::shared_ptr<Basket> basket(new Basket(asofDate, namesIds, 
         std::vector<Real>(names, namesNotional/names), thePool, 0., 1.));
-    basket->setLossModel(copula);
 
-
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
         new IntegralNtdEngine(timeUnit, yieldHandle));
-
-    Real diff, maxDiff = 0;
 
     vector<NthToDefault> ntd;
     for (Size i = 1; i <= probabilities.size(); i++) {
-        ntd.push_back (NthToDefault (basket, i, Protection::Seller, 
-            schedule, 0.0, 0.02, Actual360(), namesNotional*names, true));
+        ntd.emplace_back(basket, i, Protection::Seller, schedule, 0.0, 0.02, Actual360(),
+                         namesNotional * names, true);
         ntd.back().setPricingEngine(engine);
     }
 
     QL_REQUIRE (LENGTH(hwCorrelation) == 3,
                 "correlation length does not match");
 
+    Real diff, maxDiff = 0;
+
+    basket->setLossModel(copula);
+    
     for (Size j = 0; j < LENGTH(hwCorrelation); j++) {
         simpleQuote->setValue (hwCorrelation[j]);
         for (Size i = 0; i < ntd.size(); i++) {
@@ -233,7 +231,7 @@ void NthToDefaultTest::testGauss() {
             QL_REQUIRE (LENGTH(hwCorrelation) == LENGTH(hwData[i].spread),
                         "vector length does not match");
             diff = 1e4 * ntd[i].fairPremium() - hwData[i].spread[j];
-            maxDiff = max (maxDiff, fabs (diff));
+            maxDiff = std::max(maxDiff, fabs (diff));
             BOOST_CHECK_MESSAGE (fabs(diff/hwData[i].spread[j]) < relTolerance
                                  || fabs(diff) < absTolerance,
                                  "tolerance " << relTolerance << "|"
@@ -244,24 +242,25 @@ void NthToDefaultTest::testGauss() {
 }
 
 
-void NthToDefaultTest::testGaussStudent() {
+void NthToDefaultTest::testStudent() {
     #ifndef QL_PATCH_SOLARIS
     BOOST_TEST_MESSAGE("Testing nth-to-default against Hull-White values "
-                       "with Gaussian and Student copula...");
+                       "with Student copula...");
+
+    using namespace nth_to_default_test;
 
     SavedSettings backup;
 
     /*************************
      * Tolerances
      */
-    Real relTolerance = 0.015; // relative difference
+    Real relTolerance = 0.017; // relative difference
     Real absTolerance = 1; // absolute difference in bp
 
     Period timeUnit = 1*Weeks; // required to reach accuracy
 
     Size names = 10;
-    QL_REQUIRE (LENGTH(hwDataDist) == names,
-                "hwDataDist length does not match");
+    QL_REQUIRE (LENGTH(hwDataDist) == names, "hwDataDist length does not match");
 
     Real rate = 0.05;
     DayCounter dc = Actual365Fixed();
@@ -270,6 +269,8 @@ void NthToDefaultTest::testGaussStudent() {
 
     Real recovery = 0.4;
     vector<Real> lambda (names, 0.01);
+
+    Real namesNotional = 100.0;
 
     Schedule schedule = MakeSchedule().from(Date (1, September, 2006))
                                       .to(Date (1, September, 2011))
@@ -280,36 +281,32 @@ void NthToDefaultTest::testGaussStudent() {
 
     Settings::instance().evaluationDate() = asofDate;
 
-    vector<Date> gridDates;
-    gridDates.push_back (asofDate);
-    gridDates.push_back (TARGET().advance (asofDate, Period (1, Years)));
-    gridDates.push_back (TARGET().advance (asofDate, Period (5, Years)));
-    gridDates.push_back (TARGET().advance (asofDate, Period (7, Years)));
+    vector<Date> gridDates {
+        asofDate,
+        TARGET().advance (asofDate, Period (1, Years)),
+        TARGET().advance (asofDate, Period (5, Years)),
+        TARGET().advance (asofDate, Period (7, Years))
+    };
 
-    boost::shared_ptr<YieldTermStructure> yieldPtr (new FlatForward (asofDate, 
-        rate, dc, cmp));
+    ext::shared_ptr<YieldTermStructure> yieldPtr (
+                                new FlatForward (asofDate, rate, dc, cmp));
     Handle<YieldTermStructure> yieldHandle (yieldPtr);
 
     vector<Handle<DefaultProbabilityTermStructure> > probabilities;
     Period maxTerm (10, Years);
-    for (Size i = 0; i < lambda.size(); i++) {
-        Handle<Quote> h(boost::shared_ptr<Quote>(new SimpleQuote(lambda[i])));
-        boost::shared_ptr<DefaultProbabilityTermStructure> ptr (
+    for (Real i : lambda) {
+        Handle<Quote> h(ext::shared_ptr<Quote>(new SimpleQuote(i)));
+        ext::shared_ptr<DefaultProbabilityTermStructure> ptr (
                                          new FlatHazardRate(asofDate, h, dc));
-        probabilities.push_back(Handle<DefaultProbabilityTermStructure>(ptr));
+        probabilities.emplace_back(ptr);
     }
 
-    boost::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.3));
+    ext::shared_ptr<SimpleQuote> simpleQuote (new SimpleQuote(0.0));
     Handle<Quote> correlationHandle (simpleQuote);
 
-    boost::shared_ptr<DefaultLossModel> gaussianCopula( new 
-        ConstantLossModel<GaussianCopulaPolicy>( correlationHandle, 
-        std::vector<Real>(names, recovery), 
-        LatentModelIntegrationType::GaussianQuadrature, names,
-        GaussianCopulaPolicy::initTraits()));
     TCopulaPolicy::initTraits iniT;
     iniT.tOrders = std::vector<QuantLib::Integer>(2,5);
-    boost::shared_ptr<DefaultLossModel> studentCopula( new 
+    ext::shared_ptr<DefaultLossModel> copula( new 
         ConstantLossModel<TCopulaPolicy>( correlationHandle, 
         std::vector<Real>(names, recovery), 
         LatentModelIntegrationType::GaussianQuadrature, names, iniT));
@@ -317,8 +314,7 @@ void NthToDefaultTest::testGaussStudent() {
     // Set up pool and basket
     std::vector<std::string> namesIds;
     for(Size i=0; i<names; i++)
-        namesIds.push_back(std::string("Name") + 
-            boost::lexical_cast<std::string>(i));
+        namesIds.push_back(std::string("Name") + std::to_string(i));
 
     std::vector<Issuer> issuers;
     for(Size i=0; i<names; i++) {
@@ -327,10 +323,10 @@ void NthToDefaultTest::testGaussStudent() {
                 EURCurrency(), QuantLib::SeniorSec,
                 Period(), 1. // amount threshold
                 ), probabilities[i]));
-        issuers.push_back(Issuer(curves));
+        issuers.emplace_back(curves);
     }
 
-    boost::shared_ptr<Pool> thePool = boost::make_shared<Pool>();
+    ext::shared_ptr<Pool> thePool = ext::make_shared<Pool>();
     for(Size i=0; i<names; i++)
         thePool->add(namesIds[i], issuers[i], NorthAmericaCorpDefaultKey(
                 EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
@@ -338,16 +334,16 @@ void NthToDefaultTest::testGaussStudent() {
     std::vector<DefaultProbKey> defaultKeys(probabilities.size(), 
         NorthAmericaCorpDefaultKey(EURCurrency(), SeniorSec, Period(), 1.));
 
-    boost::shared_ptr<Basket> basket(new Basket(asofDate, namesIds, 
-        std::vector<Real>(names, 100./names), thePool, 0., 1.));
+    ext::shared_ptr<Basket> basket(new Basket(asofDate, namesIds, 
+        std::vector<Real>(names, namesNotional/names), thePool, 0., 1.));
 
-    boost::shared_ptr<PricingEngine> engine(
+    ext::shared_ptr<PricingEngine> engine(
         new IntegralNtdEngine(timeUnit, yieldHandle));
 
     vector<NthToDefault> ntd;
     for (Size i = 1; i <= probabilities.size(); i++) {
-        ntd.push_back (NthToDefault (basket, i, Protection::Seller, 
-            schedule, 0.0, 0.02, Actual360(), 100.*names, true));
+        ntd.emplace_back(basket, i, Protection::Seller, schedule, 0.0, 0.02, Actual360(),
+                         namesNotional * names, true);
         ntd.back().setPricingEngine(engine);
     }
 
@@ -356,45 +352,50 @@ void NthToDefaultTest::testGaussStudent() {
 
     Real maxDiff = 0;
 
+    basket->setLossModel(copula);
+
+    // This is the necessary code, but a proper hwData for the t copula is needed.
+    // Real diff;
+    // for (Size j = 0; j < LENGTH(hwCorrelation); j++) {
+    //     simpleQuote->setValue (hwCorrelation[j]);
+    //     for (Size i = 0; i < ntd.size(); i++) {
+    //         QL_REQUIRE (ntd[i].rank() == hwData[i].rank, "rank does not match");
+    //         QL_REQUIRE (LENGTH(hwCorrelation) == LENGTH(hwData[i].spread),
+    //                     "vector length does not match");
+    //         diff = 1e4 * ntd[i].fairPremium() - hwData[i].spread[j];
+    //         maxDiff = std::max(maxDiff, fabs (diff));
+    //         BOOST_CHECK_MESSAGE (fabs(diff/hwData[i].spread[j]) < relTolerance
+    //                              || fabs(diff) < absTolerance,
+    //                              "tolerance2 " << relTolerance << "|"
+    //                              << absTolerance << " exceeded";
+    //     }
+    // }
+
+    //instead of this BEGIN
     simpleQuote->setValue (0.3);
-
-    basket->setLossModel(gaussianCopula);
-
-    for (Size i = 0; i < ntd.size(); i++) {
-        QL_REQUIRE (ntd[i].rank() == hwDataDist[i].rank, "rank does not match");
-
-        Real diff = 1e4 * ntd[i].fairPremium() - hwDataDist[i].spread[0];
-        maxDiff = max (maxDiff, fabs (diff));
-        BOOST_CHECK_MESSAGE (fabs(diff / hwDataDist[i].spread[0]) ||
-                             fabs(diff) < absTolerance,
-                             "tolerance " << relTolerance << "|"
-                             << absTolerance << " exceeded");
-    }
-
-    basket->setLossModel(studentCopula);
-
-    maxDiff = 0;
+    
     for (Size i = 0; i < ntd.size(); i++) {
         QL_REQUIRE (ntd[i].rank() == hwDataDist[i].rank, "rank does not match");
 
         Real diff = 1e4 * ntd[i].fairPremium() - hwDataDist[i].spread[3];
-        maxDiff = max (maxDiff, fabs (diff));
-        BOOST_CHECK_MESSAGE (fabs(diff / hwDataDist[i].spread[3]) ||
+        maxDiff = std::max(maxDiff, fabs (diff));
+        BOOST_CHECK_MESSAGE (fabs(diff / hwDataDist[i].spread[3]) < relTolerance ||
                              fabs(diff) < absTolerance,
                              "tolerance " << relTolerance << "|"
-                             << absTolerance << " exceeded");
+                             << absTolerance << " exceeded" << i << "|"
+                             << abs(diff) << "|" << hwDataDist[i].spread[3]);
     }
+    //END
     #endif
 }
 
 test_suite* NthToDefaultTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Nth-to-default tests");
-    #ifndef QL_PATCH_SOLARIS
+    auto* suite = BOOST_TEST_SUITE("Nth-to-default tests");
+#ifndef QL_PATCH_SOLARIS
     if (speed == Slow) {
         suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testGauss));
-        suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testGaussStudent));
+        suite->add(QUANTLIB_TEST_CASE(&NthToDefaultTest::testStudent));
     }
     #endif
     return suite;
 }
-

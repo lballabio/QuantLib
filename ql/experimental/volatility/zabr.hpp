@@ -27,7 +27,6 @@
 #define quantlib_zabr_hpp
 
 #include <ql/types.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
@@ -39,50 +38,45 @@ namespace QuantLib {
 class ZabrModel {
 
   public:
-    ZabrModel(const Real expiryTime, const Real forward, const Real alpha,
-              const Real beta, const Real nu, const Real rho, const Real gamma);
+    ZabrModel(Real expiryTime, Real forward, Real alpha, Real beta, Real nu, Real rho, Real gamma);
 
-    Real localVolatility(const Real f) const;
-    Disposable<std::vector<Real> >
-    localVolatility(const std::vector<Real> &f) const;
+    Real localVolatility(Real f) const;
+    std::vector<Real> localVolatility(const std::vector<Real> &f) const;
 
-    Real fdPrice(const Real strike) const;
-    Disposable<std::vector<Real> >
-    fdPrice(const std::vector<Real> &strikes) const;
+    Real fdPrice(Real strike) const;
+    std::vector<Real> fdPrice(const std::vector<Real> &strikes) const;
 
-    Real fullFdPrice(const Real strike) const;
+    Real fullFdPrice(Real strike) const;
 
-    Real lognormalVolatility(const Real strike) const;
-    Disposable<std::vector<Real> >
-    lognormalVolatility(const std::vector<Real> &strikes) const;
+    Real lognormalVolatility(Real strike) const;
+    std::vector<Real> lognormalVolatility(const std::vector<Real> &strikes) const;
 
-    Real normalVolatility(const Real strike) const;
-    Disposable<std::vector<Real> >
-    normalVolatility(const std::vector<Real> &strikes) const;
+    Real normalVolatility(Real strike) const;
+    std::vector<Real> normalVolatility(const std::vector<Real> &strikes) const;
 
-    Real forward() { return forward_; }
-    Real expiryTime() { return expiryTime_; }
-    Real alpha() { return alpha_; }
-    Real beta() { return beta_; }
-    Real nu() { return nu_; }
-    Real rho() { return rho_; }
-    Real gamma() { return gamma_; }
+    Real forward() const { return forward_; }
+    Real expiryTime() const { return expiryTime_; }
+    Real alpha() const { return alpha_; }
+    Real beta() const { return beta_; }
+    Real nu() const { return nu_; }
+    Real rho() const { return rho_; }
+    Real gamma() const { return gamma_; }
 
   private:
     const Real expiryTime_, forward_;
     const Real alpha_, beta_, nu_, rho_,
         gamma_; // nu_ here is a tranformed version of the input nu !
 
-    Real x(const Real strike) const;
-    Disposable<std::vector<Real> > x(const std::vector<Real> &strikes) const;
+    Real x(Real strike) const;
+    std::vector<Real> x(const std::vector<Real> &strikes) const;
 
-    Real y(const Real strike) const;
+    Real y(Real strike) const;
 
-    Real F(const Real y, const Real u) const;
+    Real F(Real y, Real u) const;
 
-    Real lognormalVolatilityHelper(const Real strike, const Real x) const;
-    Real normalVolatilityHelper(const Real strike, const Real x) const;
-    Real localVolatilityHelper(const Real f, const Real x) const;
+    Real lognormalVolatilityHelper(Real strike, Real x) const;
+    Real normalVolatilityHelper(Real strike, Real x) const;
+    Real localVolatilityHelper(Real f, Real x) const;
 };
 }
 

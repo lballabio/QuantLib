@@ -26,6 +26,7 @@
 
 #include <ql/time/calendar.hpp>
 #include <map>
+#include <utility>
 
 namespace QuantLib {
 
@@ -33,7 +34,7 @@ namespace QuantLib {
       public:
         enum EventType { TradeDate, PricingDate };
 
-        PaymentTerm();
+        PaymentTerm() = default;
         PaymentTerm(const std::string& name,
                     EventType eventType,
                     Integer offsetDays,
@@ -51,7 +52,7 @@ namespace QuantLib {
         Date getPaymentDate(const Date& date) const;
       protected:
         struct Data;
-        boost::shared_ptr<Data> data_;
+        ext::shared_ptr<Data> data_;
 
         struct Data {
             std::string name;
@@ -59,11 +60,10 @@ namespace QuantLib {
             Integer offsetDays;
             Calendar calendar;
 
-            Data(const std::string& name, EventType eventType, Integer offsetDays,
-                 const Calendar& calendar);
+            Data(std::string name, EventType eventType, Integer offsetDays, Calendar calendar);
         };
 
-        static std::map<std::string, boost::shared_ptr<Data> > paymentTerms_;
+        static std::map<std::string, ext::shared_ptr<Data> > paymentTerms_;
     };
 
     /*! \relates PaymentTerm */
@@ -79,14 +79,12 @@ namespace QuantLib {
                              const PaymentTerm&);
 
 
-    inline PaymentTerm::Data::Data(const std::string& name,
+    inline PaymentTerm::Data::Data(std::string name,
                                    PaymentTerm::EventType eventType,
                                    Integer offsetDays,
-                                   const Calendar& calendar)
-    : name(name), eventType(eventType),
-      offsetDays(offsetDays), calendar(calendar) {}
-
-    inline PaymentTerm::PaymentTerm() {}
+                                   Calendar calendar)
+    : name(std::move(name)), eventType(eventType), offsetDays(offsetDays),
+      calendar(std::move(calendar)) {}
 
     inline const std::string& PaymentTerm::name() const {
         return data_->name;
@@ -98,6 +96,10 @@ namespace QuantLib {
 
     inline Integer PaymentTerm::offsetDays() const {
         return data_->offsetDays;
+    }
+ 
+    inline const Calendar& PaymentTerm::calendar() const {
+        return data_->calendar;
     }
 
     inline Date PaymentTerm::getPaymentDate(const Date& date) const {

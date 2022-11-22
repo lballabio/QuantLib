@@ -21,8 +21,14 @@
 
 #include <ql/exercise.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
 
 namespace QuantLib {
+
+    Date Exercise::lastDate() const {
+        QL_REQUIRE(!dates_.empty(), "no exercise date given");
+        return dates_.back();
+    }
 
     AmericanExercise::AmericanExercise(const Date& earliest,
                                        const Date& latest,

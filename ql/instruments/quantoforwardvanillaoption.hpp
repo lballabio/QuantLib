@@ -38,17 +38,18 @@ namespace QuantLib {
         typedef QuantoOptionResults<ForwardVanillaOption::results> results;
         QuantoForwardVanillaOption(Real moneyness,
                                    const Date& resetDate,
-                                   const boost::shared_ptr<StrikedTypePayoff>&,
-                                   const boost::shared_ptr<Exercise>&);
+                                   const ext::shared_ptr<StrikedTypePayoff>&,
+                                   const ext::shared_ptr<Exercise>&);
         //! \name greeks
         //@{
         Real qvega() const;
         Real qrho() const;
         Real qlambda() const;
         //@}
-        void fetchResults(const PricingEngine::results*) const;
+        void fetchResults(const PricingEngine::results*) const override;
+
       private:
-        void setupExpired() const;
+        void setupExpired() const override;
         // results
         mutable Real qvega_, qrho_, qlambda_;
     };

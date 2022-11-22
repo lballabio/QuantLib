@@ -28,11 +28,12 @@
 #define quantlib_digital_mc_engine_hpp
 
 #include <ql/exercise.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
-#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/methods/montecarlo/mctraits.hpp>
 #include <ql/pricingengines/vanilla/mcvanillaengine.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -69,7 +70,7 @@ namespace QuantLib {
             stats_type;
         // constructor
         MCDigitalEngine(
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                    const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
                     Size timeSteps,
                     Size timeStepsPerYear,
                     bool brownianBridge,
@@ -80,15 +81,14 @@ namespace QuantLib {
                     BigNatural seed);
       protected:
         // McSimulation implementation
-        boost::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
     };
 
     //! Monte Carlo digital engine factory
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCDigitalEngine {
       public:
-        MakeMCDigitalEngine(
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+        MakeMCDigitalEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         // named parameters
         MakeMCDigitalEngine& withSteps(Size steps);
         MakeMCDigitalEngine& withStepsPerYear(Size steps);
@@ -99,29 +99,29 @@ namespace QuantLib {
         MakeMCDigitalEngine& withSeed(BigNatural seed);
         MakeMCDigitalEngine& withAntitheticVariate(bool b = true);
         // conversion to pricing engine
-        operator boost::shared_ptr<PricingEngine>() const;
+        operator ext::shared_ptr<PricingEngine>() const;
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        bool antithetic_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        bool antithetic_ = false;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
-        bool brownianBridge_;
-        BigNatural seed_;
+        bool brownianBridge_ = false;
+        BigNatural seed_ = 0;
     };
 
     class DigitalPathPricer : public PathPricer<Path> {
       public:
-        DigitalPathPricer(
-                    const boost::shared_ptr<CashOrNothingPayoff>& payoff,
-                    const boost::shared_ptr<AmericanExercise>& exercise,
-                    const Handle<YieldTermStructure>& discountTS,
-                    const boost::shared_ptr<StochasticProcess1D>& diffProcess,
-                    const PseudoRandom::ursg_type& sequenceGen);
-        Real operator()(const Path& path) const;
+        DigitalPathPricer(ext::shared_ptr<CashOrNothingPayoff> payoff,
+                          ext::shared_ptr<AmericanExercise> exercise,
+                          Handle<YieldTermStructure> discountTS,
+                          ext::shared_ptr<StochasticProcess1D> diffProcess,
+                          PseudoRandom::ursg_type sequenceGen);
+        Real operator()(const Path& path) const override;
+
       private:
-        boost::shared_ptr<CashOrNothingPayoff> payoff_;
-        boost::shared_ptr<AmericanExercise> exercise_;
-        boost::shared_ptr<StochasticProcess1D> diffProcess_;
+        ext::shared_ptr<CashOrNothingPayoff> payoff_;
+        ext::shared_ptr<AmericanExercise> exercise_;
+        ext::shared_ptr<StochasticProcess1D> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
         Handle<YieldTermStructure> discountTS_;
     };
@@ -132,7 +132,7 @@ namespace QuantLib {
 
     template<class RNG, class S>
     MCDigitalEngine<RNG,S>::MCDigitalEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps,
              Size timeStepsPerYear,
              bool brownianBridge,
@@ -154,21 +154,21 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    boost::shared_ptr<typename MCDigitalEngine<RNG,S>::path_pricer_type>
+    ext::shared_ptr<typename MCDigitalEngine<RNG,S>::path_pricer_type>
     MCDigitalEngine<RNG,S>::pathPricer() const {
 
-        boost::shared_ptr<CashOrNothingPayoff> payoff =
-            boost::dynamic_pointer_cast<CashOrNothingPayoff>(
+        ext::shared_ptr<CashOrNothingPayoff> payoff =
+            ext::dynamic_pointer_cast<CashOrNothingPayoff>(
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "wrong payoff given");
 
-        boost::shared_ptr<AmericanExercise> exercise =
-            boost::dynamic_pointer_cast<AmericanExercise>(
+        ext::shared_ptr<AmericanExercise> exercise =
+            ext::dynamic_pointer_cast<AmericanExercise>(
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process =
-            boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process =
+            ext::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
                                                               this->process_);
         QL_REQUIRE(process, "Black-Scholes process required");
 
@@ -176,7 +176,7 @@ namespace QuantLib {
         PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                             PseudoRandom::urng_type(76));
 
-        return boost::shared_ptr<
+        return ext::shared_ptr<
                         typename MCDigitalEngine<RNG,S>::path_pricer_type>(
           new DigitalPathPricer(payoff,
                                 exercise,
@@ -187,12 +187,10 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline MakeMCDigitalEngine<RNG,S>::MakeMCDigitalEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), antithetic_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
+    inline MakeMCDigitalEngine<RNG, S>::MakeMCDigitalEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()) {}
 
     template <class RNG, class S>
     inline MakeMCDigitalEngine<RNG,S>&
@@ -259,13 +257,13 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    MakeMCDigitalEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
+    MakeMCDigitalEngine<RNG,S>::operator ext::shared_ptr<PricingEngine>()
                                                                       const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return boost::shared_ptr<PricingEngine>(new
+        return ext::shared_ptr<PricingEngine>(new
             MCDigitalEngine<RNG,S>(process_,
                                    steps_,
                                    stepsPerYear_,

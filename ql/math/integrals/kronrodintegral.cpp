@@ -215,6 +215,11 @@ namespace QuantLib {
         0.037361073762679023410321241766599
         } ;
 
+     void GaussKronrodNonAdaptive::setRelativeAccuracy(Real relativeAccuracy) { 
+        relativeAccuracy_ = relativeAccuracy;
+    }
+ 
+ 
     Real GaussKronrodNonAdaptive::relativeAccuracy() const {
         return relativeAccuracy_;
     }
@@ -226,7 +231,7 @@ namespace QuantLib {
       relativeAccuracy_(relativeAccuracy) {}
 
     Real
-    GaussKronrodNonAdaptive::integrate(const boost::function<Real (Real)>& f,
+    GaussKronrodNonAdaptive::integrate(const ext::function<Real (Real)>& f,
                                        Real a,
                                        Real b) const {
         Real result;
@@ -346,7 +351,7 @@ namespace QuantLib {
     }
 
     Real
-    GaussKronrodAdaptive::integrate(const boost::function<Real (Real)>& f,
+    GaussKronrodAdaptive::integrate(const ext::function<Real (Real)>& f,
                                     Real a,
                                     Real b) const {
         return integrateRecursively(f, a, b, absoluteAccuracy());
@@ -379,7 +384,7 @@ namespace QuantLib {
                                  0.991455371120813 };
 
     Real GaussKronrodAdaptive::integrateRecursively(
-                                    const boost::function<Real (Real)>& f,
+                                    const ext::function<Real (Real)>& f,
                                     Real a,
                                     Real b,
                                     Real tolerance) const {

@@ -68,12 +68,13 @@ namespace QuantLib {
                               Seniority seniority = NoSeniority,
                               Real recoveryRate = 0.4);
           public:
-            Date date() const;
+            Date date() const override;
             /*! Returns the recovery rate of a default event which has already
                 settled.
             */
             Real recoveryRate(Seniority sen) const;
-            void accept(AcyclicVisitor&);
+            void accept(AcyclicVisitor&) override;
+
           private:
             Date settlementDate_;
             //! Realized recovery rates
@@ -92,25 +93,24 @@ namespace QuantLib {
         */
         DefaultEvent(const Date& creditEventDate,
                      const DefaultType& atomicEvType,
-                     const Currency& curr,
+                     Currency curr,
                      Seniority bondsSen,
                      // Settlement information:
                      const Date& settleDate = Null<Date>(),
-                     const std::map<Seniority, Real>& recoveryRates =
-                                                                  rate_map());
+                     const std::map<Seniority, Real>& recoveryRates = rate_map());
         /*! Use NoSeniority to settle to all seniorities with that
             recovery. In that case the event is assumed to have
             affected all seniorities.
         */
         DefaultEvent(const Date& creditEventDate,
                      const DefaultType& atomicEvType,
-                     const Currency& curr,
+                     Currency curr,
                      Seniority bondsSen,
                      // Settlement information:
                      const Date& settleDate = Null<Date>(),
                      Real recoveryRate = 0.4);
-      public:
-        Date date() const;
+
+        Date date() const override;
         bool isRestructuring() const { return eventType_.isRestructuring(); }
         bool isDefault() const { return !isRestructuring();}
         bool hasSettled() const {
@@ -148,7 +148,7 @@ namespace QuantLib {
             type.  typically used from Issuer
         */
         virtual bool matchesEventType(
-                 const boost::shared_ptr<DefaultType>& contractEvType) const {
+                 const ext::shared_ptr<DefaultType>& contractEvType) const {
             // remember we are made of an atomic type.
             // behaviour by default...
             return
@@ -162,7 +162,8 @@ namespace QuantLib {
         */
         virtual bool matchesDefaultKey(const DefaultProbKey& contractKey) const;
 
-        void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
+
       protected:
         Currency bondsCurrency_;
         Date defaultDate_;
@@ -185,9 +186,9 @@ namespace QuantLib {
     }
 
     template<>
-    struct earlier_than<DefaultEvent>
-        : public std::binary_function<DefaultEvent, DefaultEvent, bool> {
-        bool operator()(const DefaultEvent& e1, const DefaultEvent& e2) {
+    struct earlier_than<DefaultEvent> {
+        bool operator()(const DefaultEvent& e1,
+                        const DefaultEvent& e2) const {
             return e1.date() < e2.date();
         }
     };
@@ -212,8 +213,8 @@ namespace QuantLib {
                           const Date& settleDate,
                           Real recoveryRates);
         Real amountDefaulted() const {return defaultedAmount_;}
-        bool matchesEventType(
-            const boost::shared_ptr<DefaultType>& contractEvType) const;
+        bool matchesEventType(const ext::shared_ptr<DefaultType>& contractEvType) const override;
+
       private:
         Real defaultedAmount_;
     };
@@ -237,9 +238,7 @@ namespace QuantLib {
                         // means same for all
                         Real recoveryRates);
         //! This is a stronger than all event and will trigger all of them.
-        bool matchesEventType(const boost::shared_ptr<DefaultType>&) const {
-            return true;
-        }
+        bool matchesEventType(const ext::shared_ptr<DefaultType>&) const override { return true; }
     };
 
 }

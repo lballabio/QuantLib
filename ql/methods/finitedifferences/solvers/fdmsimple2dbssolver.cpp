@@ -24,28 +24,25 @@
 #include <ql/methods/finitedifferences/operators/fdmblackscholesop.hpp>
 #include <ql/methods/finitedifferences/solvers/fdm2dimsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmSimple2dBSSolver::FdmSimple2dBSSolver(
-        const Handle<GeneralizedBlackScholesProcess>& process,
-        Real strike,
-        const FdmSolverDesc& solverDesc,
-        const FdmSchemeDesc& schemeDesc)
-    : process_(process),
-      strike_(strike),
-      solverDesc_(solverDesc),
+    FdmSimple2dBSSolver::FdmSimple2dBSSolver(Handle<GeneralizedBlackScholesProcess> process,
+                                             Real strike,
+                                             FdmSolverDesc solverDesc,
+                                             const FdmSchemeDesc& schemeDesc)
+    : process_(std::move(process)), strike_(strike), solverDesc_(std::move(solverDesc)),
       schemeDesc_(schemeDesc) {
 
         registerWith(process_);
     }
 
     void FdmSimple2dBSSolver::performCalculations() const {
-        boost::shared_ptr<FdmBlackScholesOp> op(new FdmBlackScholesOp(
+        ext::shared_ptr<FdmBlackScholesOp> op(ext::make_shared<FdmBlackScholesOp>(
                 solverDesc_.mesher, process_.currentLink(), strike_));
 
-        solver_ = boost::shared_ptr<Fdm2DimSolver>(
-                            new Fdm2DimSolver(solverDesc_, schemeDesc_, op));
+        solver_ = ext::make_shared<Fdm2DimSolver>(solverDesc_, schemeDesc_, op);
     }
 
     Real FdmSimple2dBSSolver::valueAt(Real s, Real a) const {

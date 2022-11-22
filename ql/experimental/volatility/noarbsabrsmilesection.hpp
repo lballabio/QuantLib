@@ -34,30 +34,36 @@ namespace QuantLib {
 class NoArbSabrSmileSection : public SmileSection {
 
   public:
-    NoArbSabrSmileSection(Time timeToExpiry, Rate forward,
-                          const std::vector<Real> &sabrParameters,
-                          const Real shift = 0.0);
-    NoArbSabrSmileSection(const Date &d, Rate forward,
-                          const std::vector<Real> &sabrParameters,
-                          const DayCounter &dc = Actual365Fixed(),
-                          const Real shift = 0.0);
-    Real minStrike() const { return 0.0; }
-    Real maxStrike() const { return QL_MAX_REAL; }
-    Real atmLevel() const { return forward_; }
-    Real optionPrice(Rate strike, Option::Type type = Option::Call,
-                     Real discount = 1.0) const;
-    Real digitalOptionPrice(Rate strike, Option::Type type = Option::Call,
-                            Real discount = 1.0, Real gap = 1.0e-5) const;
-    Real density(Rate strike, Real discount = 1.0, Real gap = 1.0E-4) const;
+    NoArbSabrSmileSection(Time timeToExpiry,
+                          Rate forward,
+                          std::vector<Real> sabrParameters,
+                          Real shift = 0.0,
+                          VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
+    NoArbSabrSmileSection(const Date& d,
+                          Rate forward,
+                          std::vector<Real> sabrParameters,
+                          const DayCounter& dc = Actual365Fixed(),
+                          Real shift = 0.0,
+                          VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
+    Real minStrike() const override { return 0.0; }
+    Real maxStrike() const override { return QL_MAX_REAL; }
+    Real atmLevel() const override { return forward_; }
+    Real
+    optionPrice(Rate strike, Option::Type type = Option::Call, Real discount = 1.0) const override;
+    Real digitalOptionPrice(Rate strike,
+                            Option::Type type = Option::Call,
+                            Real discount = 1.0,
+                            Real gap = 1.0e-5) const override;
+    Real density(Rate strike, Real discount = 1.0, Real gap = 1.0E-4) const override;
 
-    boost::shared_ptr<NoArbSabrModel> model() { return model_; }
+    ext::shared_ptr<NoArbSabrModel> model() { return model_; }
 
   protected:
-    Volatility volatilityImpl(Rate strike) const;
+    Volatility volatilityImpl(Rate strike) const override;
 
   private:
     void init();
-    boost::shared_ptr<NoArbSabrModel> model_;
+    ext::shared_ptr<NoArbSabrModel> model_;
     Rate forward_;
     std::vector<Real> params_;
     Real shift_;

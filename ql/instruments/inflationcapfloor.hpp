@@ -58,16 +58,14 @@ namespace QuantLib {
         class arguments;
         class engine;
         YoYInflationCapFloor(Type type,
-                 const Leg& yoyLeg,
-                 const std::vector<Rate>& capRates,
-                 const std::vector<Rate>& floorRates);
-        YoYInflationCapFloor(Type type,
-                 const Leg& yoyLeg,
-                 const std::vector<Rate>& strikes);
+                             Leg yoyLeg,
+                             std::vector<Rate> capRates,
+                             std::vector<Rate> floorRates);
+        YoYInflationCapFloor(Type type, Leg yoyLeg, const std::vector<Rate>& strikes);
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
         //@}
         //! \name Inspectors
         //@{
@@ -78,9 +76,9 @@ namespace QuantLib {
 
         Date startDate() const;
         Date maturityDate() const;
-        boost::shared_ptr<YoYInflationCoupon> lastYoYInflationCoupon() const;
+        ext::shared_ptr<YoYInflationCoupon> lastYoYInflationCoupon() const;
         //! Returns the n-th optionlet as a cap/floor with only one cash flow.
-        boost::shared_ptr<YoYInflationCapFloor> optionlet(const Size n) const;
+        ext::shared_ptr<YoYInflationCapFloor> optionlet(Size n) const;
         //@}
         virtual Rate atmRate(const YieldTermStructure& discountCurve) const;
         //! implied term volatility
@@ -137,7 +135,7 @@ namespace QuantLib {
       public:
         arguments() : type(YoYInflationCapFloor::Type(-1)) {}
         YoYInflationCapFloor::Type type;
-        boost::shared_ptr<YoYInflationIndex> index;
+        ext::shared_ptr<YoYInflationIndex> index;
         Period observationLag;
         std::vector<Date> startDates;
         std::vector<Date> fixingDates;
@@ -148,7 +146,7 @@ namespace QuantLib {
         std::vector<Real> gearings;
         std::vector<Real> spreads;
         std::vector<Real> nominals;
-        void validate() const;
+        void validate() const override;
     };
 
     //! base class for cap/floor engines

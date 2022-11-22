@@ -24,8 +24,6 @@
 #ifndef quantlib_laplace_interpolation
 #define quantlib_laplace_interpolation
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/sparsematrix.hpp>
 
@@ -41,7 +39,7 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
     struct f_A {
         const SparseMatrix &g;
         explicit f_A(const SparseMatrix &g) : g(g) {}
-        Disposable<Array> operator()(const Array &x) const {
+        Array operator()(const Array &x) const {
             return prod(g, x);
         }
     };
@@ -158,11 +156,8 @@ template <class M> void laplaceInterpolation(M &A, Real relTol = 1E-6) {
             }
         }
     }
-
-    return;
 };
 
 } // namespace QuantLib
 
-#endif // QL_NO_UBLAS_SUPPORT
 #endif // include guard

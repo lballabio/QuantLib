@@ -65,7 +65,7 @@ namespace QuantLib {
           QL_REQUIRE(degFreedom_ > 0, 
               "Invalid degrees of freedom parameter.");
         }
-    public:
+
         //! returns a sample from a Student-t distribution
         sample_type next() const;
     private:
@@ -83,10 +83,7 @@ namespace QuantLib {
             u = 2.* uniformGenerator_.next().value - 1.;
             rSqr = v*v + u*u;
         }while(rSqr >= 1.);
-        return sample_type(u * 
-            std::sqrt(degFreedom_ * (std::pow(rSqr, -2./degFreedom_)-1.) 
-                / rSqr),
-            1.);
+        return {u * std::sqrt(degFreedom_ * (std::pow(rSqr, -2. / degFreedom_) - 1.) / rSqr), 1.};
     }
 
 }

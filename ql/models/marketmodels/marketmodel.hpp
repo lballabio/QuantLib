@@ -38,7 +38,7 @@ namespace QuantLib {
     */
     class MarketModel {
       public:
-        virtual ~MarketModel() {}
+        virtual ~MarketModel() = default;
         virtual const std::vector<Rate>& initialRates() const = 0;
         virtual const std::vector<Spread>& displacements() const = 0;
         virtual const EvolutionDescription& evolution() const = 0;
@@ -56,8 +56,8 @@ namespace QuantLib {
     //! base class for market-model factories
     class MarketModelFactory : public Observable {
       public:
-        virtual ~MarketModelFactory() {}
-        virtual boost::shared_ptr<MarketModel> create(
+        ~MarketModelFactory() override = default;
+        virtual ext::shared_ptr<MarketModel> create(
                                               const EvolutionDescription&,
                                               Size numberOfFactors) const = 0;
     };

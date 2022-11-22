@@ -25,9 +25,8 @@
 #define quantlib_fdm_vpp_step_condition_hpp
 
 #include <ql/methods/finitedifferences/stepcondition.hpp>
-
-#include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
+#include <ql/functional.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -45,20 +44,19 @@ namespace QuantLib {
 
     struct FdmVPPStepConditionMesher {
         const Size stateDirection;
-        const boost::shared_ptr<FdmMesher> mesher;
+        const ext::shared_ptr<FdmMesher> mesher;
     };
 
     class FdmVPPStepCondition : public StepCondition<Array> {
       public:
-        FdmVPPStepCondition(
-            const FdmVPPStepConditionParams& params,
-            Size nStates,
-            const FdmVPPStepConditionMesher& mesh,
-            const boost::shared_ptr<FdmInnerValueCalculator>& gasPrice,
-            const boost::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice);
+        FdmVPPStepCondition(const FdmVPPStepConditionParams& params,
+                            Size nStates,
+                            const FdmVPPStepConditionMesher& mesh,
+                            ext::shared_ptr<FdmInnerValueCalculator> gasPrice,
+                            ext::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice);
 
         Size nStates() const;
-        void applyTo(Array& a, Time t) const;
+        void applyTo(Array& a, Time t) const override;
 
         virtual Real maxValue(const Array& states) const = 0;
 
@@ -68,8 +66,7 @@ namespace QuantLib {
 
         Real evolve(const FdmLinearOpIterator& iter, Time t) const;
 
-        virtual Disposable<Array> changeState(
-            Real gasPrice, const Array& state, Time t) const = 0;
+        virtual Array changeState(Real gasPrice, const Array& state, Time t) const = 0;
 
         const Real heatRate_;
         const Real pMin_, pMax_;
@@ -79,11 +76,11 @@ namespace QuantLib {
         const Size stateDirection_;
         const Size nStates_;
 
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<FdmInnerValueCalculator> gasPrice_;
-        const boost::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<FdmInnerValueCalculator> gasPrice_;
+        const ext::shared_ptr<FdmInnerValueCalculator> sparkSpreadPrice_;
 
-        std::vector<boost::function<Real (Real)> > stateEvolveFcts_;
+        std::vector<ext::function<Real (Real)> > stateEvolveFcts_;
     };
 }
 

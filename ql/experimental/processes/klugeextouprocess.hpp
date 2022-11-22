@@ -55,30 +55,27 @@ namespace QuantLib {
 
     class KlugeExtOUProcess : public StochasticProcess {
       public:
-        KlugeExtOUProcess(
-            Real rho,
-            const boost::shared_ptr<ExtOUWithJumpsProcess>& kluge,
-            const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& extOU);
+        KlugeExtOUProcess(Real rho,
+                          ext::shared_ptr<ExtOUWithJumpsProcess> kluge,
+                          ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> extOU);
 
-        Size size() const;
-        Size factors() const;
+        Size size() const override;
+        Size factors() const override;
 
-        Disposable<Array> initialValues() const;
-        Disposable<Array> drift(Time t, const Array& x) const;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const;
-        Disposable<Array> evolve(Time t0, const Array& x0,
-                                 Time dt, const Array& dw) const;
+        Array initialValues() const override;
+        Array drift(Time t, const Array& x) const override;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
-        boost::shared_ptr<ExtOUWithJumpsProcess> getKlugeProcess() const;
-        boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
-                                                 getExtOUProcess() const;
+        ext::shared_ptr<ExtOUWithJumpsProcess> getKlugeProcess() const;
+        ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> getExtOUProcess() const;
 
         Real rho() const;
 
       private:
         const Real rho_, sqrtMRho_;
-        const boost::shared_ptr<ExtOUWithJumpsProcess> klugeProcess_;
-        const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess_;
+        const ext::shared_ptr<ExtOUWithJumpsProcess> klugeProcess_;
+        const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> ouProcess_;
     };
 }
 #endif

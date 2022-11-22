@@ -1,172 +1,389 @@
 
-QL_TESTS = \
+QL_TEST_SRCS = \
 	quantlibtestsuite.cpp \
-	speedlevel.hpp \
-	americanoption.hpp americanoption.cpp \
-	amortizingbond.hpp amortizingbond.cpp \
-	array.hpp array.cpp \
-	asianoptions.hpp asianoptions.cpp \
-	assetswap.hpp assetswap.cpp \
-	autocovariances.hpp autocovariances.cpp \
-	barrieroption.hpp barrieroption.cpp \
-	binaryoption.hpp binaryoption.cpp \
-	basketoption.hpp basketoption.cpp \
-	batesmodel.hpp batesmodel.cpp \
-	bermudanswaption.hpp bermudanswaption.cpp \
-	blackdeltacalculator.hpp blackdeltacalculator.cpp \
-	blackformula.hpp blackformula.cpp \
-	bonds.hpp bonds.cpp \
-	brownianbridge.hpp brownianbridge.cpp \
-	businessdayconventions.hpp businessdayconventions.cpp \
-	calendars.hpp calendars.cpp \
-	capfloor.hpp capfloor.cpp \
-	capflooredcoupon.hpp capflooredcoupon.cpp \
-	cashflows.hpp cashflows.cpp \
-	catbonds.hpp catbonds.cpp \
-	cdo.hpp cdo.cpp \
-	cdsoption.hpp cdsoption.cpp \
-	chooseroption.hpp chooseroption.cpp \
-	cliquetoption.hpp cliquetoption.cpp \
-	cms.hpp cms.cpp \
-	commodityunitofmeasure.hpp commodityunitofmeasure.cpp \
-	compoundoption.hpp compoundoption.cpp \
-	convertiblebonds.hpp convertiblebonds.cpp \
-	covariance.hpp covariance.cpp \
-	creditdefaultswap.hpp creditdefaultswap.cpp \
-	creditriskplus.hpp creditriskplus.cpp \
-	curvestates.hpp curvestates.cpp \
-	dates.hpp dates.cpp \
-	daycounters.hpp daycounters.cpp \
-	defaultprobabilitycurves.hpp defaultprobabilitycurves.cpp \
-	digitalcoupon.hpp digitalcoupon.cpp \
-	digitaloption.hpp digitaloption.cpp \
-	distributions.hpp distributions.cpp \
-	dividendoption.hpp dividendoption.cpp \
-	doublebarrieroption.hpp doublebarrieroption.cpp \
-	doublebinaryoption.hpp doublebinaryoption.cpp \
-	europeanoption.hpp europeanoption.cpp \
-	everestoption.hpp everestoption.cpp \
-	exchangerate.hpp exchangerate.cpp \
-	extendedtrees.hpp extendedtrees.cpp \
-	extensibleoptions.hpp extensibleoptions.cpp \
-	fastfouriertransform.hpp fastfouriertransform.cpp \
-	fdheston.hpp fdheston.cpp \
-	fdmlinearop.hpp fdmlinearop.cpp \
-	forwardoption.hpp forwardoption.cpp \
-	functions.hpp functions.cpp \
-	garch.hpp garch.cpp \
-	gaussianquadratures.hpp gaussianquadratures.cpp \
-	gjrgarchmodel.hpp gjrgarchmodel.cpp \
-	gsr.hpp gsr.cpp \
-	hestonmodel.hpp hestonmodel.cpp \
-	hestonslvmodel.hpp hestonslvmodel.cpp \
-	himalayaoption.hpp himalayaoption.cpp \
-	hybridhestonhullwhiteprocess.hpp hybridhestonhullwhiteprocess.cpp \
-	inflation.hpp inflation.cpp \
-	inflationcapfloor.hpp inflationcapfloor.cpp \
-	inflationcapflooredcoupon.hpp inflationcapflooredcoupon.cpp \
-    inflationcpibond.hpp inflationcpibond.cpp \
-    inflationcpicapfloor.hpp inflationcpicapfloor.cpp \
-	inflationcpiswap.hpp inflationcpiswap.cpp \
-	inflationvolatility.hpp inflationvolatility.cpp \
-	instruments.hpp instruments.cpp \
-	integrals.hpp integrals.cpp \
-	interestrates.hpp interestrates.cpp \
-	interpolations.hpp interpolations.cpp \
-	jumpdiffusion.hpp jumpdiffusion.cpp \
-	lazyobject.hpp lazyobject.cpp \
-	libormarketmodel.hpp libormarketmodel.cpp \
-	libormarketmodelprocess.hpp libormarketmodelprocess.cpp \
-	linearleastsquaresregression.hpp linearleastsquaresregression.cpp \
-	lookbackoptions.hpp lookbackoptions.cpp \
-	lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \
-	margrabeoption.hpp margrabeoption.cpp \
-	marketmodel.hpp marketmodel.cpp \
-	marketmodel_cms.hpp marketmodel_cms.cpp \
-	marketmodel_smm.hpp marketmodel_smm.cpp \
-	marketmodel_smmcapletalphacalibration.hpp marketmodel_smmcapletalphacalibration.cpp \
-	marketmodel_smmcapletcalibration.hpp marketmodel_smmcapletcalibration.cpp \
-	marketmodel_smmcaplethomocalibration.hpp marketmodel_smmcaplethomocalibration.cpp \
-	markovfunctional.hpp markovfunctional.cpp \
-	matrices.hpp matrices.cpp \
-	mclongstaffschwartzengine.hpp mclongstaffschwartzengine.cpp \
-	mersennetwister.hpp mersennetwister.cpp \
-	money.hpp money.cpp \
-	noarbsabr.hpp noarbsabr.cpp \
-	normalclvmodel.hpp normalclvmodel.cpp \
-	nthtodefault.hpp nthtodefault.cpp \
-	numericaldifferentiation.hpp numericaldifferentiation.cpp \
-	observable.hpp observable.cpp \
-	ode.hpp ode.cpp \
-	operators.hpp operators.cpp \
-	optimizers.hpp optimizers.cpp \
-	optionletstripper.hpp optionletstripper.cpp \
-	overnightindexedswap.hpp overnightindexedswap.cpp \
-	pagodaoption.hpp pagodaoption.cpp \
-	partialtimebarrieroption.hpp partialtimebarrieroption.cpp \
-	pathgenerator.hpp pathgenerator.cpp \
-	period.hpp period.cpp \
-	piecewiseyieldcurve.hpp piecewiseyieldcurve.cpp \
-	piecewisezerospreadedtermstructure.hpp piecewisezerospreadedtermstructure.cpp \
-	quantooption.hpp quantooption.cpp \
-	quotes.hpp quotes.cpp \
-	rangeaccrual.hpp rangeaccrual.cpp \
-	riskneutraldensitycalculator.hpp riskneutraldensitycalculator.cpp \
-	riskstats.hpp riskstats.cpp \
-	rngtraits.hpp rngtraits.cpp \
-	rounding.hpp rounding.cpp \
-	sampledcurve.hpp sampledcurve.cpp \
-	schedule.hpp schedule.cpp \
-	shortratemodels.hpp shortratemodels.cpp \
-	solvers.hpp solvers.cpp \
-	spreadoption.hpp spreadoption.cpp \
-	squarerootclvmodel.hpp squarerootclvmodel.cpp \
-	stats.hpp stats.cpp \
-	swap.hpp swap.cpp \
-	swapforwardmappings.hpp swapforwardmappings.cpp \
-	swaption.hpp swaption.cpp \
-	swaptionvolatilitycube.hpp swaptionvolatilitycube.cpp \
-	swaptionvolatilitymatrix.hpp swaptionvolatilitymatrix.cpp \
-	swaptionvolstructuresutilities.hpp \
-	swingoption.hpp swingoption.cpp \
-	termstructures.hpp termstructures.cpp \
-	timeseries.hpp timeseries.cpp \
-	transformedgrid.hpp transformedgrid.cpp \
-	tqreigendecomposition.hpp tqreigendecomposition.cpp \
-	tracing.hpp tracing.cpp \
-	twoassetbarrieroption.hpp twoassetbarrieroption.cpp \
-	twoassetcorrelationoption.hpp twoassetcorrelationoption.cpp \
-	utilities.hpp utilities.cpp \
-	variancegamma.hpp variancegamma.cpp \
-	varianceoption.hpp varianceoption.cpp \
-	varianceswaps.hpp varianceswaps.cpp \
-	volatilitymodels.hpp volatilitymodels.cpp \
-	vpp.hpp vpp.cpp \
-	zabr.hpp zabr.cpp
+	americanoption.cpp \
+	amortizingbond.cpp \
+	andreasenhugevolatilityinterpl.cpp \
+	array.cpp \
+	asianoptions.cpp \
+	assetswap.cpp \
+	autocovariances.cpp \
+	barrieroption.cpp \
+	binaryoption.cpp \
+	basismodels.cpp \
+	basisswapratehelpers.cpp \
+	basketoption.cpp \
+	batesmodel.cpp \
+	bermudanswaption.cpp \
+	blackdeltacalculator.cpp \
+	blackformula.cpp \
+	bondforward.cpp \
+	bonds.cpp \
+	brownianbridge.cpp \
+	businessdayconventions.cpp \
+	calendars.cpp \
+	callablebonds.cpp \
+	capfloor.cpp \
+	capflooredcoupon.cpp \
+	cashflows.cpp \
+	catbonds.cpp \
+	cdo.cpp \
+	cdsoption.cpp \
+	chooseroption.cpp \
+	cliquetoption.cpp \
+	cms.cpp \
+	cmsspread.cpp \
+	commodityunitofmeasure.cpp \
+	compiledboostversion.cpp \
+	compoundoption.cpp \
+	convertiblebonds.cpp \
+	covariance.cpp \
+	creditdefaultswap.cpp \
+	creditriskplus.cpp \
+	crosscurrencyratehelpers.cpp \
+	currency.cpp \
+	curvestates.cpp \
+	dates.cpp \
+	daycounters.cpp \
+	defaultprobabilitycurves.cpp \
+	digitalcoupon.cpp \
+	digitaloption.cpp \
+	distributions.cpp \
+	dividendoption.cpp \
+	doublebarrieroption.cpp \
+	doublebinaryoption.cpp \
+	europeanoption.cpp \
+	everestoption.cpp \
+	exchangerate.cpp \
+	extendedtrees.cpp \
+	extensibleoptions.cpp \
+	fastfouriertransform.cpp \
+	fdheston.cpp \
+	fdcir.cpp \
+	fdmlinearop.cpp \
+	fdcev.cpp \
+	fdsabr.cpp \
+	fittedbonddiscountcurve.cpp \
+	forwardoption.cpp \
+	forwardrateagreement.cpp \
+	functions.cpp \
+	garch.cpp \
+	gaussianquadratures.cpp \
+	gjrgarchmodel.cpp \
+	gsr.cpp \
+	hestonmodel.cpp \
+	hestonslvmodel.cpp \
+	himalayaoption.cpp \
+	hybridhestonhullwhiteprocess.cpp \
+	indexes.cpp \
+	inflation.cpp \
+	inflationcapfloor.cpp \
+	inflationcapflooredcoupon.cpp \
+	inflationcpibond.cpp \
+	inflationcpicapfloor.cpp \
+	inflationcpiswap.cpp \
+	inflationvolatility.cpp \
+	instruments.cpp \
+	integrals.cpp \
+	interestrates.cpp \
+	interpolations.cpp \
+	jumpdiffusion.cpp \
+	lazyobject.cpp \
+	libormarketmodel.cpp \
+	libormarketmodelprocess.cpp \
+	linearleastsquaresregression.cpp \
+	lookbackoptions.cpp \
+	lowdiscrepancysequences.cpp \
+	margrabeoption.cpp \
+	marketmodel.cpp \
+	marketmodel_cms.cpp \
+	marketmodel_smm.cpp \
+	marketmodel_smmcapletalphacalibration.cpp \
+	marketmodel_smmcapletcalibration.cpp \
+	marketmodel_smmcaplethomocalibration.cpp \
+	markovfunctional.cpp \
+	matrices.cpp \
+	mclongstaffschwartzengine.cpp \
+	mersennetwister.cpp \
+	money.cpp \
+	noarbsabr.cpp \
+	normalclvmodel.cpp \
+	nthorderderivativeop.cpp \
+	nthtodefault.cpp \
+	numericaldifferentiation.cpp \
+	observable.cpp \
+	ode.cpp \
+	operators.cpp \
+	optimizers.cpp \
+	optionletstripper.cpp \
+	overnightindexedcoupon.cpp \
+	overnightindexedswap.cpp \
+	pagodaoption.cpp \
+	partialtimebarrieroption.cpp \
+	pathgenerator.cpp \
+	period.cpp \
+	piecewiseyieldcurve.cpp \
+	piecewisezerospreadedtermstructure.cpp \
+	quantooption.cpp \
+	quotes.cpp \
+	rangeaccrual.cpp \
+	riskneutraldensitycalculator.cpp \
+	riskstats.cpp \
+	rngtraits.cpp \
+	rounding.cpp \
+	sampledcurve.cpp \
+	schedule.cpp \
+	settings.cpp \
+	shortratemodels.cpp \
+	sofrfutures.cpp \
+	solvers.cpp \
+	spreadoption.cpp \
+	squarerootclvmodel.cpp \
+	stats.cpp \
+	subperiodcoupons.cpp \
+	svivolatility.cpp \
+	swap.cpp \
+	swapforwardmappings.cpp \
+	swaption.cpp \
+	swaptionvolatilitycube.cpp \
+	swaptionvolatilitymatrix.cpp \
+	swingoption.cpp \
+	termstructures.cpp \
+	timegrid.cpp \
+	timeseries.cpp \
+	transformedgrid.cpp \
+	tqreigendecomposition.cpp \
+	tracing.cpp \
+	twoassetbarrieroption.cpp \
+	twoassetcorrelationoption.cpp \
+	ultimateforwardtermstructure.cpp \
+	utilities.cpp \
+	variancegamma.cpp \
+	varianceoption.cpp \
+	varianceswaps.cpp \
+	volatilitymodels.cpp \
+	vpp.cpp \
+	zabr.cpp \
+	zerocouponswap.cpp
 
-QL_BENCHMARKS = \
+QL_TEST_HDRS = \
+	speedlevel.hpp \
+	americanoption.hpp \
+	amortizingbond.hpp \
+	andreasenhugevolatilityinterpl.hpp \
+	array.hpp \
+	asianoptions.hpp \
+	assetswap.hpp \
+	autocovariances.hpp \
+	barrieroption.hpp \
+	binaryoption.hpp \
+	basismodels.hpp \
+	basisswapratehelpers.hpp \
+	basketoption.hpp \
+	batesmodel.hpp \
+	bermudanswaption.hpp \
+	blackdeltacalculator.hpp \
+	blackformula.hpp \
+	bondforward.hpp \
+	bonds.hpp \
+	brownianbridge.hpp \
+	businessdayconventions.hpp \
+	calendars.hpp \
+	callablebonds.hpp \
+	capfloor.hpp \
+	capflooredcoupon.hpp \
+	cashflows.hpp \
+	catbonds.hpp \
+	cdo.hpp \
+	cdsoption.hpp \
+	chooseroption.hpp \
+	cliquetoption.hpp \
+	cms.hpp \
+	cmsspread.hpp \
+	commodityunitofmeasure.hpp \
+	compiledboostversion.hpp \
+	compoundoption.hpp \
+	convertiblebonds.hpp \
+	covariance.hpp \
+	creditdefaultswap.hpp \
+	creditriskplus.hpp \
+	crosscurrencyratehelpers.hpp \
+	currency.hpp \
+	curvestates.hpp \
+	dates.hpp \
+	daycounters.hpp \
+	defaultprobabilitycurves.hpp \
+	digitalcoupon.hpp \
+	digitaloption.hpp \
+	distributions.hpp \
+	dividendoption.hpp \
+	doublebarrieroption.hpp \
+	doublebinaryoption.hpp \
+	europeanoption.hpp \
+	everestoption.hpp \
+	exchangerate.hpp \
+	extendedtrees.hpp \
+	extensibleoptions.hpp \
+	fastfouriertransform.hpp \
+	fdheston.hpp \
+	fdcir.hpp \
+	fdmlinearop.hpp \
+	fdcev.hpp \
+	fdsabr.hpp \
+	fittedbonddiscountcurve.hpp \
+	forwardoption.hpp \
+	forwardrateagreement.hpp \
+	functions.hpp \
+	garch.hpp \
+	gaussianquadratures.hpp \
+	gjrgarchmodel.hpp \
+	gsr.hpp \
+	hestonmodel.hpp \
+	hestonslvmodel.hpp \
+	himalayaoption.hpp \
+	hybridhestonhullwhiteprocess.hpp \
+	indexes.hpp \
+	inflation.hpp \
+	inflationcapfloor.hpp \
+	inflationcapflooredcoupon.hpp \
+	inflationcpibond.hpp \
+	inflationcpicapfloor.hpp \
+	inflationcpiswap.hpp \
+	inflationvolatility.hpp \
+	instruments.hpp \
+	integrals.hpp \
+	interestrates.hpp \
+	interpolations.hpp \
+	jumpdiffusion.hpp \
+	lazyobject.hpp \
+	libormarketmodel.hpp \
+	libormarketmodelprocess.hpp \
+	linearleastsquaresregression.hpp \
+	lookbackoptions.hpp \
+	lowdiscrepancysequences.hpp \
+	margrabeoption.hpp \
+	marketmodel.hpp \
+	marketmodel_cms.hpp \
+	marketmodel_smm.hpp \
+	marketmodel_smmcapletalphacalibration.hpp \
+	marketmodel_smmcapletcalibration.hpp \
+	marketmodel_smmcaplethomocalibration.hpp \
+	markovfunctional.hpp \
+	matrices.hpp \
+	mclongstaffschwartzengine.hpp \
+	mersennetwister.hpp \
+	money.hpp \
+	noarbsabr.hpp \
+	normalclvmodel.hpp \
+	nthorderderivativeop.hpp \
+	nthtodefault.hpp \
+	numericaldifferentiation.hpp \
+	observable.hpp \
+	ode.hpp \
+	operators.hpp \
+	optimizers.hpp \
+	optionletstripper.hpp \
+	overnightindexedcoupon.hpp \
+	overnightindexedswap.hpp \
+	pagodaoption.hpp \
+	partialtimebarrieroption.hpp \
+	pathgenerator.hpp \
+	period.hpp \
+	piecewiseyieldcurve.hpp \
+	piecewisezerospreadedtermstructure.hpp \
+	quantooption.hpp \
+	quotes.hpp \
+	rangeaccrual.hpp \
+	riskneutraldensitycalculator.hpp \
+	riskstats.hpp \
+	rngtraits.hpp \
+	rounding.hpp \
+	sampledcurve.hpp \
+	schedule.hpp \
+	settings.hpp \
+	shortratemodels.hpp \
+	sofrfutures.hpp \
+	solvers.hpp \
+	spreadoption.hpp \
+	squarerootclvmodel.hpp \
+	stats.hpp \
+	subperiodcoupons.hpp \
+	svivolatility.hpp \
+	swap.hpp \
+	swapforwardmappings.hpp \
+	swaption.hpp \
+	swaptionvolatilitycube.hpp \
+	swaptionvolatilitymatrix.hpp \
+	swaptionvolstructuresutilities.hpp \
+	swingoption.hpp \
+	termstructures.hpp \
+	timegrid.hpp \
+	timeseries.hpp \
+	transformedgrid.hpp \
+	tqreigendecomposition.hpp \
+	tracing.hpp \
+	twoassetbarrieroption.hpp \
+	twoassetcorrelationoption.hpp \
+	ultimateforwardtermstructure.hpp \
+	utilities.hpp \
+	variancegamma.hpp \
+	varianceoption.hpp \
+	varianceswaps.hpp \
+	volatilitymodels.hpp \
+	vpp.hpp \
+	zabr.hpp \
+	zerocouponswap.hpp
+
+QL_TESTS = ${QL_TEST_SRCS} ${QL_TEST_HDRS}
+
+QL_BENCHMARK_SRCS = \
 	quantlibbenchmark.cpp \
-	americanoption.hpp americanoption.cpp \
-	asianoptions.hpp asianoptions.cpp \
-	barrieroption.hpp barrieroption.cpp \
-	doublebarrieroption.hpp doublebarrieroption.cpp \
-	basketoption.hpp basketoption.cpp \
-	batesmodel.hpp batesmodel.cpp \
-	convertiblebonds.hpp convertiblebonds.cpp \
-	digitaloption.hpp digitaloption.cpp \
-	dividendoption.hpp dividendoption.cpp \
-	europeanoption.hpp europeanoption.cpp \
-	fdheston.hpp fdheston.cpp \
-	hestonmodel.hpp hestonmodel.cpp \
-	interpolations.hpp interpolations.cpp \
-	jumpdiffusion.hpp jumpdiffusion.cpp \
-	lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \
-	marketmodel_cms.hpp marketmodel_cms.cpp \
-	marketmodel_smm.hpp marketmodel_smm.cpp \
-	quantooption.hpp quantooption.cpp \
-	riskstats.hpp riskstats.cpp \
-	shortratemodels.hpp shortratemodels.cpp \
-	utilities.hpp utilities.cpp
+	americanoption.cpp \
+	asianoptions.cpp \
+	barrieroption.cpp \
+	doublebarrieroption.cpp \
+	basketoption.cpp \
+	batesmodel.cpp \
+	convertiblebonds.cpp \
+	digitaloption.cpp \
+	dividendoption.cpp \
+	europeanoption.cpp \
+	fdheston.cpp \
+	hestonmodel.cpp \
+	interpolations.cpp \
+	jumpdiffusion.cpp \
+	lowdiscrepancysequences.cpp \
+	marketmodel_cms.cpp \
+	marketmodel_smm.cpp \
+	quantooption.cpp \
+	riskstats.cpp \
+	shortratemodels.cpp \
+	utilities.cpp
+
+QL_BENCHMARK_HDRS = \
+	americanoption.hpp \
+	asianoptions.hpp \
+	barrieroption.hpp \
+	doublebarrieroption.hpp \
+	basketoption.hpp \
+	batesmodel.hpp \
+	convertiblebonds.hpp \
+	digitaloption.hpp \
+	dividendoption.hpp \
+	europeanoption.hpp \
+	fdheston.hpp \
+	hestonmodel.hpp \
+	interpolations.hpp \
+	jumpdiffusion.hpp \
+	lowdiscrepancysequences.hpp \
+	marketmodel_cms.hpp \
+	marketmodel_smm.hpp \
+	quantooption.hpp \
+	riskstats.hpp \
+	shortratemodels.hpp \
+	utilities.hpp
+
+QL_BENCHMARKS = ${QL_BENCHMARK_SRCS} ${QL_BENCHMARK_HDRS}
 
 dist-hook:
 	mkdir -p $(distdir)/build
@@ -175,7 +392,7 @@ dist-hook:
 
 if BOOST_UNIT_TEST_FOUND
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir} ${BOOST_UNIT_TEST_DEFINE}
+AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 noinst_LTLIBRARIES = libUnitMain.la
 libUnitMain_la_SOURCES = main.cpp
@@ -188,29 +405,59 @@ bin_PROGRAMS = quantlib-test-suite
 noinst_PROGRAMS = quantlib-benchmark
 endif
 
-quantlib_test_suite_SOURCES = ${QL_TESTS}
-quantlib_test_suite_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
-                            -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}  ${BOOST_INTERPROCESS_LIB}
+if UNITY_BUILD
 
-quantlib_benchmark_SOURCES = ${QL_BENCHMARKS}
+nodist_quantlib_test_suite_SOURCES = unity_test.cpp
+
+unity_test.cpp: Makefile.am
+	echo "/* This file is automatically generated; do not edit.     */" > $@
+	echo "/* Add the files to be included into Makefile.am instead. */" >> $@
+	echo >> $@
+	for i in $(QL_TEST_SRCS); do \
+		echo "#include \"test-suite/$$i\"" >> $@; \
+	done
+
+nodist_quantlib_benchmark_SOURCES = unity_benchmark.cpp
+
+unity_benchmark.cpp: Makefile.am
+	echo "/* This file is automatically generated; do not edit.     */" > $@
+	echo "/* Add the files to be included into Makefile.am instead. */" >> $@
+	echo >> $@
+	for i in $(QL_BENCHMARK_SRCS); do \
+		echo "#include \"test-suite/$$i\"" >> $@; \
+	done
+
+EXTRA_DIST = $(QL_TESTS) $(QL_BENCHMARKS)
+
+else
+
+quantlib_test_suite_SOURCES = $(QL_TESTS)
+
+quantlib_benchmark_SOURCES = $(QL_BENCHMARKS)
+
+EXTRA_DIST =
+
+endif
+
+quantlib_test_suite_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
+                            ${PTHREAD_LIB} ${BOOST_INTERPROCESS_LIB}
+
 quantlib_benchmark_LDADD = libUnitMain.la ${top_builddir}/ql/libQuantLib.la \
-                           -l${BOOST_UNIT_TEST_LIB} ${BOOST_THREAD_LIB}
+                           ${PTHREAD_LIB}
 
 TESTS = quantlib-test-suite$(EXEEXT)
-TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message
+TESTS_ENVIRONMENT = BOOST_TEST_LOG_LEVEL=message BOOST_TEST_COLOR_OUTPUT=false
 
 .PHONY: benchmark
 benchmark: quantlib-benchmark$(EXEEXT)
 	BOOST_TEST_LOG_LEVEL=message ./quantlib-benchmark$(EXEEXT)
 
-EXTRA_DIST = \
+EXTRA_DIST += \
 	CMakeLists.txt \
 	paralleltestrunner.hpp \
 	README.txt \
-	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
-	testsuite.vcxproj.filters \
-	testsuite.dev
+	testsuite.vcxproj.filters
 
 else
 
@@ -220,9 +467,7 @@ EXTRA_DIST = \
 	paralleltestrunner.hpp \
 	quantlibbenchmark.cpp \
 	README.txt \
-	testsuite_vc9.vcproj \
 	testsuite.vcxproj \
-	testsuite.vcxproj.filters \
-	testsuite.dev
+	testsuite.vcxproj.filters
 
 endif

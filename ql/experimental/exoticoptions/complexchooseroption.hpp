@@ -37,25 +37,26 @@ namespace QuantLib{
         ComplexChooserOption(Date choosingDate,
                              Real strikeCall,
                              Real strikePut,
-                             const boost::shared_ptr<Exercise>& exerciseCall,
-                             const boost::shared_ptr<Exercise>& exercisePut);
-        void setupArguments(PricingEngine::arguments*) const;
+                             const ext::shared_ptr<Exercise>& exerciseCall,
+                             const ext::shared_ptr<Exercise>& exercisePut);
+        void setupArguments(PricingEngine::arguments*) const override;
+
       protected:
         Date choosingDate_;
         Real strikeCall_;
         Real strikePut_;
-        const boost::shared_ptr<Exercise>& exerciseCall_;
-        const boost::shared_ptr<Exercise>& exercisePut_;
+        const ext::shared_ptr<Exercise>& exerciseCall_;
+        const ext::shared_ptr<Exercise>& exercisePut_;
     };
 
     class ComplexChooserOption::arguments : public OneAssetOption::arguments {
       public:
-        void validate() const;
+        void validate() const override;
         Date choosingDate;
         Real strikeCall;
         Real strikePut;
-        boost::shared_ptr<Exercise> exerciseCall;
-        boost::shared_ptr<Exercise> exercisePut;
+        ext::shared_ptr<Exercise> exerciseCall;
+        ext::shared_ptr<Exercise> exercisePut;
     };
 
     class ComplexChooserOption::engine

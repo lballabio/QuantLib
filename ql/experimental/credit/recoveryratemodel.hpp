@@ -44,7 +44,8 @@ namespace QuantLib {
             the requested seniority.
         */
         virtual bool appliesToSeniority(Seniority) const = 0;
-        virtual ~RecoveryRateModel() {}
+        ~RecoveryRateModel() override = default;
+
       protected:
         /*! Returns Null<Real> if unable to produce a recovery for
             the requested seniority.
@@ -61,21 +62,22 @@ namespace QuantLib {
     class ConstantRecoveryModel : public RecoveryRateModel,
                                   public Observer {
       public:
-        ConstantRecoveryModel(const Handle<RecoveryRateQuote>& quote);
-        ConstantRecoveryModel(Real recovery,
-                              Seniority sen = NoSeniority);
-        void update() { notifyObservers();}
-        bool appliesToSeniority(Seniority) const {return true;}
+        explicit ConstantRecoveryModel(const Handle<RecoveryRateQuote>& quote);
+        explicit ConstantRecoveryModel(Real recovery,
+                                       Seniority sen = NoSeniority);
+        void update() override { notifyObservers(); }
+        bool appliesToSeniority(Seniority) const override { return true; }
+
       protected:
         /*! Notice the quote's value is returned without a
             check on a match of the seniorties of the
             quote and the request.
         */
-        Real recoveryValueImpl(const Date&,
-                               const DefaultProbKey&) const {
+        Real recoveryValueImpl(const Date&, const DefaultProbKey&) const override {
             // no match on requested seniority, all pass
             return quote_->value();
         }
+
       private:
         Handle<RecoveryRateQuote> quote_;
     };

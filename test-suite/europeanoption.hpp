@@ -45,9 +45,12 @@ class EuropeanOptionTest {
     static void testQmcEngines();
     static void testMcEngines();
     static void testFFTEngines();
-    static void testPriceCurve();
     static void testLocalVolatility();
     static void testAnalyticEngineDiscountCurve();
+    static void testPDESchemes();
+    static void testDouglasVsCrankNicolson();
+    static void testFdEngineWithNonConstantParameters();
+
     static boost::unit_test_framework::test_suite* suite();
     static boost::unit_test_framework::test_suite* experimental();
 };

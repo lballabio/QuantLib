@@ -50,9 +50,6 @@ using namespace boost::unit_test_framework;
 using std::fabs;
 using std::sqrt;
 
-#define BEGIN(x) (x+0)
-#define END(x) (x+LENGTH(x))
-
 namespace {
 
     class MarketModelData{
@@ -63,8 +60,9 @@ namespace {
         const std::vector<Volatility>& volatilities(){return volatilities_;}
         const std::vector<Rate>& displacements(){return displacements_;}
         const std::vector<DiscountFactor>& discountFactors(){return discountFactors_;}
-        Size nbRates() {return nbRates_;}
-    private:
+        Size nbRates() const { return nbRates_; }
+
+      private:
         std::vector<Time> rateTimes_, accruals_;
         std::vector<Rate> forwards_;
         std::vector<Spread> displacements_;
@@ -147,11 +145,10 @@ namespace {
             volatilities_[i] =   mktVols[i];//.0;
     }
 
-    const boost::shared_ptr<SequenceStatisticsInc> simulate(
-        const std::vector<Real>& todaysDiscounts,
-        const boost::shared_ptr<MarketModelEvolver>& evolver,
-        const MarketModelMultiProduct& product)
-    {
+    ext::shared_ptr<SequenceStatisticsInc>
+    simulate(const std::vector<Real>& todaysDiscounts,
+             const ext::shared_ptr<MarketModelEvolver>& evolver,
+             const MarketModelMultiProduct& product) {
         Size paths_;
 #ifdef _DEBUG
         paths_ = 127;// //
@@ -163,7 +160,7 @@ namespace {
         Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
         AccountingEngine engine(evolver, product, initialNumeraireValue);
-        boost::shared_ptr<SequenceStatisticsInc> stats(new
+        ext::shared_ptr<SequenceStatisticsInc> stats(new
             SequenceStatisticsInc(product.numberOfProducts()));
         engine.multiplePathValues(*stats, paths_);
         return stats;
@@ -172,10 +169,10 @@ namespace {
     MultiStepCoterminalSwaptions makeMultiStepCoterminalSwaptions(
         const std::vector<Time>& rateTimes, Real strike ){
             std::vector<Time> paymentTimes(rateTimes.begin(), rateTimes.end()-1);
-            std::vector<boost::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size());
-            for (Size i = 0; i < payoffs.size(); ++i){
-                payoffs[i] = boost::shared_ptr<StrikedTypePayoff>(new
-                    PlainVanillaPayoff(Option::Call, strike));
+            std::vector<ext::shared_ptr<StrikedTypePayoff> > payoffs(paymentTimes.size());
+            for (auto& payoff : payoffs) {
+                payoff = ext::shared_ptr<StrikedTypePayoff>(
+                    new PlainVanillaPayoff(Option::Call, strike));
             }
             return MultiStepCoterminalSwaptions (rateTimes,
                 paymentTimes, payoffs);
@@ -217,25 +214,23 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
 
             }
 
-            Matrix modelJacobian(SwapForwardMappings::coinitialSwapForwardJacobian(lmmCurveState));
+        Matrix modelJacobian(SwapForwardMappings::coinitialSwapForwardJacobian(lmmCurveState));
 
-            Real errorTolerance = 1e-5;
+        Real errorTolerance = 1e-5;
 
 
-            for (Size i=0; i < nbRates; ++i)
-                for (Size j=0; j < nbRates; ++j)
-                    if( fabs(modelJacobian[i][j]-coinitialJacobian[i][j]) > errorTolerance)
-                    {
-                        BOOST_TEST_MESSAGE(
-                            "rate " << i
-                            << ", sensitivity "  <<  j
-                            << ", formula value " << modelJacobian[i][j]
-                        << " bumping value " << coinitialJacobian[i][j]
-                        <<  "\n");
+        for (Size i=0; i < nbRates; ++i)
+            for (Size j=0; j < nbRates; ++j)
+                if( fabs(modelJacobian[i][j]-coinitialJacobian[i][j]) > errorTolerance)
+                {
+                    BOOST_TEST_MESSAGE("rate " << i
+                                       << ", sensitivity "  <<  j
+                                       << ", formula value " << modelJacobian[i][j]
+                                       << " bumping value " << coinitialJacobian[i][j]
+                                       <<  "\n");
 
-                        BOOST_ERROR("test failed");
-
-                    }
+                    BOOST_ERROR("test failed");
+                }
     }
 
     {
@@ -272,25 +267,25 @@ void SwapForwardMappingsTest::testForwardSwapJacobians()
 
                 }
 
-                Matrix modelJacobian(SwapForwardMappings::cmSwapForwardJacobian(lmmCurveState, spanningForwards));
+            Matrix modelJacobian(SwapForwardMappings::cmSwapForwardJacobian(lmmCurveState, spanningForwards));
 
-                Real errorTolerance = 1e-5;
+            Real errorTolerance = 1e-5;
 
 
-                for (Size i=0; i < nbRates; ++i)
-                    for (Size j=0; j < nbRates; ++j)
-                        if( fabs(modelJacobian[i][j]-cmsJacobian[i][j]) > errorTolerance)
-                        {
-                            BOOST_TEST_MESSAGE(
-                                "rate " << i
-                                << ", sensitivity "  <<  j
-                                << ", formula value " << modelJacobian[i][j]
-                            << " bumping value " << cmsJacobian[i][j]
-                            <<  "\n");
+            for (Size i=0; i < nbRates; ++i)
+                for (Size j=0; j < nbRates; ++j)
+                    if( fabs(modelJacobian[i][j]-cmsJacobian[i][j]) > errorTolerance)
+                    {
+                        BOOST_TEST_MESSAGE(
+                                           "rate " << i
+                                           << ", sensitivity "  <<  j
+                                           << ", formula value " << modelJacobian[i][j]
+                                           << " bumping value " << cmsJacobian[i][j]
+                                           <<  "\n");
 
-                            BOOST_ERROR("test failed");
+                        BOOST_ERROR("test failed");
 
-                        }
+                    }
         }
 
     }
@@ -313,7 +308,7 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
     MultiStepCoterminalSwaptions product
         = makeMultiStepCoterminalSwaptions(rateTimes, strike);
 
-    const EvolutionDescription evolution = product.evolution();
+    const EvolutionDescription& evolution = product.evolution();
     const Size numberOfFactors = nbRates;
     Spread displacement = marketData.displacements().front();
     Matrix jacobian =
@@ -323,10 +318,10 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
     Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
         longTermCorr,
         beta);
-    boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
+    ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
         TimeHomogeneousForwardCorrelation(correlations,
         rateTimes));
-    boost::shared_ptr<MarketModel> smmMarketModel(new
+    ext::shared_ptr<MarketModel> smmMarketModel(new
         FlatVol(marketData.volatilities(),
         corr,
         evolution,
@@ -334,16 +329,16 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
         lmmCurveState.coterminalSwapRates(),
         marketData.displacements()));
 
-    boost::shared_ptr<MarketModel>
+    ext::shared_ptr<MarketModel>
         lmmMarketModel(new CotSwapToFwdAdapter(smmMarketModel));
 
     SobolBrownianGeneratorFactory generatorFactory(SobolBrownianGenerator::Diagonal);
     std::vector<Size> numeraires(nbRates,
         nbRates);
-    boost::shared_ptr<MarketModelEvolver> evolver(new LogNormalFwdRatePc
+    ext::shared_ptr<MarketModelEvolver> evolver(new LogNormalFwdRatePc
         (lmmMarketModel, generatorFactory, numeraires));
 
-    boost::shared_ptr<SequenceStatisticsInc> stats =
+    ext::shared_ptr<SequenceStatisticsInc> stats =
         simulate(marketData.discountFactors(), evolver, product);
     std::vector<Real> results = stats->mean();
     std::vector<Real> errors = stats->errorEstimate();
@@ -354,7 +349,7 @@ void SwapForwardMappingsTest::testForwardCoterminalMappings() {
         const Matrix& cotSwapsCovariance = smmMarketModel->totalCovariance(i);
         //Matrix cotSwapsCovariance= jacobian * forwardsCovariance * transpose(jacobian);
         //Time expiry = rateTimes[i];
-        boost::shared_ptr<PlainVanillaPayoff> payoff(
+        ext::shared_ptr<PlainVanillaPayoff> payoff(
             new PlainVanillaPayoff(Option::Call, strike+displacement));
         //const std::vector<Time>&  taus = lmmCurveState.rateTaus();
         Real expectedSwaption = BlackCalculator(payoff,
@@ -391,11 +386,11 @@ void SwapForwardMappingsTest::testSwaptionImpliedVolatility()
         
         Size endIndex = nbRates-2;
 
-        boost::shared_ptr<StrikedTypePayoff> payoff(new   
+        ext::shared_ptr<StrikedTypePayoff> payoff(new   
             PlainVanillaPayoff(Option::Call, strike));
         MultiStepSwaption product(rateTimes, startIndex, endIndex,payoff );
 
-        const EvolutionDescription evolution = product.evolution();
+        const EvolutionDescription& evolution = product.evolution();
         const Size numberOfFactors = nbRates;
         Spread displacement = marketData.displacements().front();
         Matrix jacobian =
@@ -405,10 +400,10 @@ void SwapForwardMappingsTest::testSwaptionImpliedVolatility()
         Matrix correlations = exponentialCorrelations(evolution.rateTimes(),
             longTermCorr,
             beta);
-        boost::shared_ptr<PiecewiseConstantCorrelation> corr(new
+        ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
             TimeHomogeneousForwardCorrelation(correlations,
             rateTimes));
-        boost::shared_ptr<MarketModel> lmmMarketModel(new
+        ext::shared_ptr<MarketModel> lmmMarketModel(new
             FlatVol(marketData.volatilities(),
             corr,
             evolution,
@@ -420,10 +415,10 @@ void SwapForwardMappingsTest::testSwaptionImpliedVolatility()
         SobolBrownianGeneratorFactory generatorFactory(SobolBrownianGenerator::Diagonal);
         std::vector<Size> numeraires(nbRates,
             nbRates);
-        boost::shared_ptr<MarketModelEvolver> evolver(new LogNormalFwdRatePc
+        ext::shared_ptr<MarketModelEvolver> evolver(new LogNormalFwdRatePc
             (lmmMarketModel, generatorFactory, numeraires));
 
-        boost::shared_ptr<SequenceStatisticsInc> stats =
+        ext::shared_ptr<SequenceStatisticsInc> stats =
             simulate(marketData.discountFactors(), evolver, product);
         std::vector<Real> results = stats->mean();
         std::vector<Real> errors = stats->errorEstimate();
@@ -434,7 +429,7 @@ void SwapForwardMappingsTest::testSwaptionImpliedVolatility()
         Real swapRate = lmmCurveState.cmSwapRate(startIndex,endIndex-startIndex);
         Real swapAnnuity = lmmCurveState.cmSwapAnnuity(startIndex,startIndex,endIndex-startIndex)*marketData.discountFactors()[startIndex];
 
-        boost::shared_ptr<PlainVanillaPayoff> payoffDis( new PlainVanillaPayoff(Option::Call, strike+displacement));
+        ext::shared_ptr<PlainVanillaPayoff> payoffDis( new PlainVanillaPayoff(Option::Call, strike+displacement));
 
         Real expectedSwaption = BlackCalculator(payoffDis,
             swapRate+displacement, estimatedImpliedVol *sqrt(rateTimes[startIndex]),
@@ -455,18 +450,15 @@ void SwapForwardMappingsTest::testSwaptionImpliedVolatility()
 
 
 test_suite* SwapForwardMappingsTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("swap-forward mappings tests");
-
+    auto* suite = BOOST_TEST_SUITE("swap-forward mappings tests");
 
     suite->add(QUANTLIB_TEST_CASE(
         &SwapForwardMappingsTest::testSwaptionImpliedVolatility));
 
     suite->add(QUANTLIB_TEST_CASE(
         &SwapForwardMappingsTest::testForwardSwapJacobians));
-// #if !defined(QL_NO_UBLAS_SUPPORT)
-//     suite->add(QUANTLIB_TEST_CASE(
-//         &SwapForwardMappingsTest::testForwardCoterminalMappings));
-// #endif
+    // suite->add(QUANTLIB_TEST_CASE(
+    //     &SwapForwardMappingsTest::testForwardCoterminalMappings));
     return suite;
 }
 

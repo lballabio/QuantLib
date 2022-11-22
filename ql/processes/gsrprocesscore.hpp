@@ -38,36 +38,33 @@ namespace detail {
 
 class GsrProcessCore {
   public:
-    GsrProcessCore(const Array &times, const Array &vols,
-                   const Array &reversions,
-                   const Real T = 60.0);
+    GsrProcessCore(const Array& times, const Array& vols, const Array& reversions, Real T = 60.0);
 
     // conditional expectation, x0 dependent part
-    Real expectation_x0dep_part(const Time w, const Real xw,
-                                const Time dt) const;
+    Real expectation_x0dep_part(Time w, Real xw, Time dt) const;
 
     // conditional expectation, x0 independent part
     // in the risk neutral measure
-    Real expectation_rn_part(const Time w, const Time dt) const;
+    Real expectation_rn_part(Time w, Time dt) const;
 
     // conditional expectation, drift adjustment for
     // the T-forward measure
-    Real expectation_tf_part(const Time w, const Time dt) const;
+    Real expectation_tf_part(Time w, Time dt) const;
 
     // conditional variance
-    Real variance(const Time w, const Time dt) const;
+    Real variance(Time w, Time dt) const;
 
     // y(t)
-    Real y(const Time t) const;
+    Real y(Time t) const;
 
     // G(t,w)
-    Real G(const Time t, const Time w) const;
+    Real G(Time t, Time w) const;
 
     // sigma
-    Real sigma(const Time t) const;
+    Real sigma(Time t) const;
 
     // reversion
-    Real reversion(const Time t) const;
+    Real reversion(Time t) const;
 
     // reset cache
     void flushCache() const;

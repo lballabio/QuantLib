@@ -31,8 +31,12 @@
 namespace QuantLib {
 
     //! Galambos copula
-    class GalambosCopula : public std::binary_function<Real,Real,Real> {
+    class GalambosCopula {
       public:
+        typedef Real first_argument_type;
+        typedef Real second_argument_type;
+        typedef Real result_type;
+
         GalambosCopula(Real theta);
         Real operator()(Real x, Real y) const;
       private:

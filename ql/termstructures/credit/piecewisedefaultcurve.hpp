@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2008 Jose Aparicio
+ Copyright (C) 2008, 2016 Jose Aparicio
  Copyright (C) 2008 Chris Kenyon
  Copyright (C) 2008 Roland Lichters
  Copyright (C) 2008 StatPro Italia srl
@@ -27,10 +27,12 @@
 #ifndef quantlib_piecewise_default_curve_hpp
 #define quantlib_piecewise_default_curve_hpp
 
-#include <ql/termstructures/iterativebootstrap.hpp>
-#include <ql/termstructures/credit/probabilitytraits.hpp>
+#include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/quote.hpp>
+#include <ql/termstructures/credit/probabilitytraits.hpp>
+#include <ql/termstructures/iterativebootstrap.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -59,87 +61,119 @@ namespace QuantLib {
       public:
         typedef Traits traits_type;
         typedef Interpolator interpolator_type;
+        typedef Bootstrap<this_curve> bootstrap_type;
+
         //! \name Constructors
         //@{
         PiecewiseDefaultCurve(
-               const Date& referenceDate,
-               const std::vector<boost::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-               const std::vector<Date>& jumpDates = std::vector<Date>(),
-               Real accuracy = 1.0e-12,
-               const Interpolator& i = Interpolator())
+            const Date& referenceDate,
+            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            const DayCounter& dayCounter,
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& i = {},
+            bootstrap_type bootstrap = {})
         : base_curve(referenceDate, dayCounter, jumps, jumpDates, i),
-          instruments_(instruments), accuracy_(accuracy) {
+          instruments_(std::move(instruments)), accuracy_(1.0e-12),
+          bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
+
         PiecewiseDefaultCurve(
                const Date& referenceDate,
-               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+               const std::vector<ext::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                const DayCounter& dayCounter,
-               Real accuracy,
-               const Interpolator& i = Interpolator())
+               const Interpolator& i,
+               const bootstrap_type& bootstrap = bootstrap_type())
         : base_curve(referenceDate, dayCounter,
-                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments), accuracy_(accuracy) {
+                     {}, {}, i),
+          instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
-        PiecewiseDefaultCurve(
-               const Date& referenceDate,
-               const std::vector<boost::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               const Interpolator& i)
-        : base_curve(referenceDate, dayCounter,
-                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments), accuracy_(1.0e-12) {
+
+        PiecewiseDefaultCurve(const Date& referenceDate,
+                              std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+                              const DayCounter& dayCounter,
+                              bootstrap_type bootstrap)
+        : base_curve(referenceDate,
+                     dayCounter),
+          instruments_(std::move(instruments)), accuracy_(1.0e-12),
+          bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
+
         PiecewiseDefaultCurve(
-               Natural settlementDays,
-               const Calendar& calendar,
-               const std::vector<boost::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-               const std::vector<Date>& jumpDates = std::vector<Date>(),
-               Real accuracy = 1.0e-12,
-               const Interpolator& i = Interpolator())
+            Natural settlementDays,
+            const Calendar& calendar,
+            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            const DayCounter& dayCounter,
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& i = {},
+            bootstrap_type bootstrap = {})
         : base_curve(settlementDays, calendar, dayCounter, jumps, jumpDates, i),
-          instruments_(instruments), accuracy_(accuracy) {
+          instruments_(std::move(instruments)), accuracy_(1.0e-12),
+          bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
+
         PiecewiseDefaultCurve(
                Natural settlementDays,
                const Calendar& calendar,
-               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+               const std::vector<ext::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                const DayCounter& dayCounter,
-               Real accuracy,
-               const Interpolator& i = Interpolator())
+               const Interpolator& i,
+               const bootstrap_type& bootstrap = bootstrap_type())
         : base_curve(settlementDays, calendar, dayCounter,
-                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments), accuracy_(accuracy) {
+                     {}, {}, i),
+          instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
+
         PiecewiseDefaultCurve(
                Natural settlementDays,
                const Calendar& calendar,
-               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+               const std::vector<ext::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                const DayCounter& dayCounter,
-               const Interpolator& i)
-        : base_curve(settlementDays, calendar, dayCounter,
-                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments), accuracy_(1.0e-12) {
+               const bootstrap_type& bootstrap)
+        : base_curve(settlementDays, calendar, dayCounter),
+          instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
+            bootstrap_.setup(this);
+        }
+
+        /* AffineHazardRate Traits constructor case. Other constructors of
+        base_curve would fail and this would fail for other cases of Traits.
+        This is a case of substitution failure, it might be preferred
+        to specialization of the class.
+        The way the methods are used in the bootstrapping means the target
+        term structure is the deterministic TS to be added to the model
+        passed in order to reproduce instrument market prices.
+
+        \todo Implement the remaining signatures
+        */
+        PiecewiseDefaultCurve(
+            const Date& referenceDate,
+            const std::vector<ext::shared_ptr<typename Traits::helper> >& instruments,
+            const DayCounter& dayCounter,
+            const ext::shared_ptr<OneFactorAffineModel>& model,
+            const Interpolator& i = {},
+            const bootstrap_type& bootstrap = {})
+        : base_curve(referenceDate,
+                     dayCounter,
+                     model,
+                     {},
+                     {},
+                     i),
+          instruments_(instruments), accuracy_(1.0e-12), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
         }
         //@}
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name base_curve interface
         //@{
@@ -150,19 +184,19 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       private:
         //! \name LazyObject interface
         //@{
-        void performCalculations() const;
+        void performCalculations() const override;
         //@}
         // methods
-        Probability survivalProbabilityImpl(Time) const;
-        Real defaultDensityImpl(Time) const;
-        Real hazardRateImpl(Time) const;
+        Probability survivalProbabilityImpl(Time) const override;
+        Real defaultDensityImpl(Time) const override;
+        Real hazardRateImpl(Time) const override;
         // data members
-        std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
+        std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
 
         // bootstrapper classes are declared as friend to manipulate
@@ -213,8 +247,14 @@ namespace QuantLib {
 
     template <class C, class I, template <class> class B>
     inline void PiecewiseDefaultCurve<C,I,B>::update() {
-        base_curve::update();
+        // it dispatches notifications only if (!calculated_ && !frozen_)
         LazyObject::update();
+
+        // do not use base_curve::update() as it would always notify observers
+
+        // TermStructure::update() update part
+        if (this->moving_)
+            this->updated_ = false;
     }
 
     template <class C, class I, template <class> class B>

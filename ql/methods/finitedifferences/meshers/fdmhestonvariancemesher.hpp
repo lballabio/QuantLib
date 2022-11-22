@@ -3,7 +3,7 @@
 /*
  Copyright (C) 2008 Andreas Gaida
  Copyright (C) 2008 Ralph Schreyer
- Copyright (C) 2008 Klaus Spanderen
+ Copyright (C) 2008, 2019 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,7 +20,7 @@
 */
 
 /*! \file fdmhestonvariancemesher.hpp
-    \brief One-dimensional grid mesher for the variance in the heston problem
+    \brief One-dimensional grid mesher for the variance part of the Heston model
 */
 
 #ifndef quantlib_fdm_heston_variance_mesher_hpp
@@ -35,8 +35,27 @@ namespace QuantLib {
       public:
         FdmHestonVarianceMesher(
             Size size,
-            const boost::shared_ptr<HestonProcess> & process,
-            Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001);
+            const ext::shared_ptr<HestonProcess> & process,
+            Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001,
+            Real mixingFactor = 1.0);
+
+        Real volaEstimate() const { return volaEstimate_; }
+
+      private:
+        Real volaEstimate_;
+    };
+
+
+    class LocalVolTermStructure;
+
+    class FdmHestonLocalVolatilityVarianceMesher : public Fdm1dMesher {
+      public:
+        FdmHestonLocalVolatilityVarianceMesher(
+            Size size,
+            const ext::shared_ptr<HestonProcess>& process,
+            const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+            Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001,
+            Real mixingFactor = 1.0);
 
         Real volaEstimate() const { return volaEstimate_; }
 

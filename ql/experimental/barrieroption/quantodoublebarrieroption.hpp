@@ -40,8 +40,8 @@ namespace QuantLib {
                         Real barrier_lo,
                         Real barrier_hi,
                         Real rebate,
-                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                        const boost::shared_ptr<Exercise>& exercise
+                        const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                        const ext::shared_ptr<Exercise>& exercise
             );
         //! \name greeks
         //@{
@@ -49,9 +49,10 @@ namespace QuantLib {
         Real qrho() const;
         Real qlambda() const;
         //@}
-        void fetchResults(const PricingEngine::results*) const;
+        void fetchResults(const PricingEngine::results*) const override;
+
       private:
-        void setupExpired() const;
+        void setupExpired() const override;
         // results
         mutable Real qvega_, qrho_, qlambda_;
     };

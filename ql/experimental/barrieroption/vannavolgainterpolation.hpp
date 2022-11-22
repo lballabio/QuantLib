@@ -27,7 +27,6 @@
 #include <ql/math/interpolation.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <boost/make_shared.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -47,7 +46,7 @@ namespace QuantLib {
                             DiscountFactor dDiscount,
                             DiscountFactor fDiscount,
                             Time T) {
-            impl_ = boost::make_shared<
+            impl_ = ext::make_shared<
                 detail::VannaVolgaInterpolationImpl<I1,I2> >(
                     xBegin, xEnd, yBegin,
                     spot, dDiscount, fDiscount, T);
@@ -95,7 +94,7 @@ namespace QuantLib {
                 QL_REQUIRE(this->xEnd_-this->xBegin_ == 3,
                     "Vanna Volga Interpolator only interpolates 3 volatilities in strike space");
             }
-            void update() {
+            void update() override {
                 //atmVol should be the second vol
                 atmVol_ = this->yBegin_[1];
                 fwd_ = spot_*fDiscount_/dDiscount_;
@@ -105,7 +104,7 @@ namespace QuantLib {
                     vegas.push_back(vega(this->xBegin_[i]));
                 }
             }
-            Real value(Real k) const {
+            Real value(Real k) const override {
                 Real x1 = vega(k)/vegas[0]
                     * (std::log(this->xBegin_[1]/k) * std::log(this->xBegin_[2]/k))
                     / (std::log(this->xBegin_[1]/this->xBegin_[0]) * std::log(this->xBegin_[2]/this->xBegin_[0]));
@@ -121,13 +120,13 @@ namespace QuantLib {
                 Real std = blackFormulaImpliedStdDev(Option::Call, k, fwd_, c, dDiscount_);
                 return std / sqrt(T_);
             }
-            Real primitive(Real) const {
+            Real primitive(Real) const override {
                 QL_FAIL("Vanna Volga primitive not implemented");
             }
-            Real derivative(Real) const {
+            Real derivative(Real) const override {
                 QL_FAIL("Vanna Volga derivative not implemented");
             }
-            Real secondDerivative(Real) const {
+            Real secondDerivative(Real) const override {
                 QL_FAIL("Vanna Volga secondDerivative not implemented");
             }
 

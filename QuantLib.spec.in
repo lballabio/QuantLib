@@ -12,7 +12,7 @@ Group: System Environment/Libraries
 Packager: Liguo Song (Leo) <liguo.song@vanderbilt.edu>
 Vendor: QuantLib.org
 Source0: http://prdownloads.sourceforge.net/quantlib/QuantLib-%{version}.tar.gz
-URL: http://quantlib.org/
+URL: https://www.quantlib.org/
 BuildRoot:%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: autoconf
@@ -76,11 +76,11 @@ You'll want to install this package if you need a reference to QuantLib.
 CFLAGS="${CFLAGS:-%optflags}" ; export CFLAGS ; \
 CXXFLAGS="${CXXFLAGS:-%optflags}" ; export CXXFLAGS ; \
 FFLAGS="${FFLAGS:-%optflags}" ; export FFLAGS ; \
-%configure --prefix=%{_prefix}
+%configure --prefix=%{_prefix} EMACS=no
 make %{?_smp_mflags}
 # make documentations
 cd Docs
-make docs-all
+make docs
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -89,13 +89,12 @@ make install DESTDIR=$RPM_BUILD_ROOT
 # install the documentation
 mkdir -p %{buildroot}%{docdir}
 mkdir -p %{buildroot}%{_mandir}
-cp -p Authors.txt LICENSE.TXT ChangeLog.txt Readme.txt %{buildroot}%{docdir}
+cp -p LICENSE.TXT ChangeLog.txt Readme.txt %{buildroot}%{docdir}
 cp -p Contributors.txt %{buildroot}%{docdir}
 cp -p News.txt  %{buildroot}%{docdir}
 cp -pr Examples %{buildroot}%{docdir}
 cp -pr Docs/html %{buildroot}%{docdir}
 rm -f %{buildroot}%{docdir}/html/*.dot
-cp -pr Docs/man/man3 %{buildroot}%{_mandir}/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -106,7 +105,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{docdir}/Authors.txt
 %{docdir}/LICENSE.TXT
 %{docdir}/ChangeLog.txt
 %{docdir}/Readme.txt
@@ -130,10 +128,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files docs
 %defattr(-,root,root)
-%{_mandir}/man3/*
 %{docdir}/html
 
 %changelog
+* Tue Sep 18 2018 Simon John Rees
+- Updated spec file to work with latest QuantLib version (1.13.0)
+
 * Wed Sep 14 2011 Matt Fair
 - Updated spec file to work with current QuantLib versions
 
@@ -146,6 +146,6 @@ rm -rf $RPM_BUILD_ROOT
 - Modified Makefile.am and Makefile.in in Docs/:
     $(DVIPS) refman -> $(DVIPS) -o refman.ps refman
 
-* Tue Aug 22 2003 Liguo Song <liguo.song@vanderbilt.edu>
+* Fri Aug 22 2003 Liguo Song <liguo.song@vanderbilt.edu>
 - Initial package. Refer to Changelog.txt for previous changes.
 - RPM package beta test

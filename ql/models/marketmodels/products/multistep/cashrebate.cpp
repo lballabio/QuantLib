@@ -19,17 +19,16 @@
 
 #include <ql/models/marketmodels/products/multistep/cashrebate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    MarketModelCashRebate::MarketModelCashRebate(
-                              const EvolutionDescription& evolution,
-                              const std::vector<Time>& paymentTimes,
-                              const Matrix& amounts,
-                              Size numberOfProducts)
-    : evolution_(evolution), paymentTimes_(paymentTimes),
-      amounts_(amounts), numberOfProducts_(numberOfProducts)
-    {
+    MarketModelCashRebate::MarketModelCashRebate(EvolutionDescription evolution,
+                                                 const std::vector<Time>& paymentTimes,
+                                                 Matrix amounts,
+                                                 Size numberOfProducts)
+    : evolution_(std::move(evolution)), paymentTimes_(paymentTimes), amounts_(std::move(amounts)),
+      numberOfProducts_(numberOfProducts) {
 
         checkIncreasingTimes(paymentTimes);
 
@@ -94,11 +93,10 @@ namespace QuantLib {
         return true;
     }
 
-    std::auto_ptr<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     MarketModelCashRebate::clone() const 
     {
-        return std::auto_ptr<MarketModelMultiProduct>(
-                                            new MarketModelCashRebate(*this));
+        return std::unique_ptr<MarketModelMultiProduct>(new MarketModelCashRebate(*this));
     }
 
 }

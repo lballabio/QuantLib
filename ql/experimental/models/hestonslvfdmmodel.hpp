@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
  Copyright (C) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -45,6 +45,9 @@ class SimpleQuote;
         const Size tMaxStepsPerYear, tMinStepsPerYear;
         const Real tStepNumberDecay;
 
+        // Rannacher smoothing steps at the beginning
+        const Size nRannacherTimeSteps;
+
         const Size predictionCorretionSteps;
 
         // local volatility forward equation
@@ -69,36 +72,37 @@ class SimpleQuote;
 
     class HestonSLVFDMModel : public LazyObject {
       public:
-        HestonSLVFDMModel(
-            const Handle<LocalVolTermStructure>& localVol,
-            const Handle<HestonModel>& hestonModel,
-            const Date& endDate,
-            const HestonSLVFokkerPlanckFdmParams& params,
-            const bool logging = false,
-            const std::vector<Date>& mandatoryDates = std::vector<Date>());
+        HestonSLVFDMModel(Handle<LocalVolTermStructure> localVol,
+                          Handle<HestonModel> hestonModel,
+                          const Date& endDate,
+                          HestonSLVFokkerPlanckFdmParams params,
+                          bool logging = false,
+                          std::vector<Date> mandatoryDates = std::vector<Date>(),
+                          Real mixingFactor = 1.0);
 
-        boost::shared_ptr<HestonProcess> hestonProcess() const;
-        boost::shared_ptr<LocalVolTermStructure> localVol() const;
-        boost::shared_ptr<LocalVolTermStructure> leverageFunction() const;
+        ext::shared_ptr<HestonProcess> hestonProcess() const;
+        ext::shared_ptr<LocalVolTermStructure> localVol() const;
+        ext::shared_ptr<LocalVolTermStructure> leverageFunction() const;
 
         struct LogEntry {
             const Time t;
-            const boost::shared_ptr<Array> prob;
-            const boost::shared_ptr<FdmMesherComposite> mesher;
+            const ext::shared_ptr<Array> prob;
+            const ext::shared_ptr<FdmMesherComposite> mesher;
         };
 
         const std::list<LogEntry>& logEntries() const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
         const Handle<LocalVolTermStructure> localVol_;
         const Handle<HestonModel> hestonModel_;
         const Date endDate_;
         const HestonSLVFokkerPlanckFdmParams params_;
         const std::vector<Date> mandatoryDates_;
+        const Real mixingFactor_;
 
-        mutable boost::shared_ptr<LocalVolTermStructure> leverageFunction_;
+        mutable ext::shared_ptr<LocalVolTermStructure> leverageFunction_;
 
         const bool logging_;
         mutable std::list<LogEntry> logEntries_;

@@ -37,15 +37,15 @@ namespace QuantLib {
     class MakeArithmeticAverageOIS {
       public:
         MakeArithmeticAverageOIS(const Period& swapTenor,
-                const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                const ext::shared_ptr<OvernightIndex>& overnightIndex,
                 Rate fixedRate = Null<Rate>(),
                 const Period& fwdStart = 0*Days);
 
         operator ArithmeticAverageOIS() const;
-        operator boost::shared_ptr<ArithmeticAverageOIS>() const;
+        operator ext::shared_ptr<ArithmeticAverageOIS>() const;
 
         MakeArithmeticAverageOIS& receiveFixed(bool flag = true);
-        MakeArithmeticAverageOIS& withType(ArithmeticAverageOIS::Type type);
+        MakeArithmeticAverageOIS& withType(Swap::Type type);
         MakeArithmeticAverageOIS& withNominal(Real n);
 
         MakeArithmeticAverageOIS& withSettlementDays(Natural settlementDays);
@@ -64,37 +64,37 @@ namespace QuantLib {
         MakeArithmeticAverageOIS& withDiscountingTermStructure(
                   const Handle<YieldTermStructure>& discountingTermStructure);
         MakeArithmeticAverageOIS& withPricingEngine(
-                              const boost::shared_ptr<PricingEngine>& engine);
+                              const ext::shared_ptr<PricingEngine>& engine);
         MakeArithmeticAverageOIS& withArithmeticAverage(
                                        Real meanReversionSpeed = 0.03,
                                        Real volatility = 0.00, // NO convexity adjustment by default
                                        bool byApprox = false); // TRUE to use Katsumi Takada approximation
       private:
         Period swapTenor_;
-        boost::shared_ptr<OvernightIndex> overnightIndex_;
+        ext::shared_ptr<OvernightIndex> overnightIndex_;
         Rate fixedRate_;
         Period forwardStart_;
 
-        Natural settlementDays_;
+        Natural settlementDays_ = 2;
         Date effectiveDate_, terminationDate_;
         Calendar calendar_;
 
-        Frequency fixedLegPaymentFrequency_;
-        Frequency overnightLegPaymentFrequency_;
-        DateGeneration::Rule rule_;
-        bool endOfMonth_, isDefaultEOM_;
+        Frequency fixedLegPaymentFrequency_ = Annual;
+        Frequency overnightLegPaymentFrequency_ = Annual;
+        DateGeneration::Rule rule_ = DateGeneration::Backward;
+        bool endOfMonth_, isDefaultEOM_ = true;
 
-        bool byApprox_;
-        Real mrs_;
-        Real vol_;
+        bool byApprox_ = false;
+        Real mrs_ = 0.03;
+        Real vol_ = 0.00;
 
-        ArithmeticAverageOIS::Type type_;
-        Real nominal_;
+        Swap::Type type_ = Swap::Payer;
+        Real nominal_ = 1.0;
 
-        Spread overnightSpread_;
+        Spread overnightSpread_ = 0.0;
         DayCounter fixedDayCount_;
 
-        boost::shared_ptr<PricingEngine> engine_;
+        ext::shared_ptr<PricingEngine> engine_;
     };
 
 }

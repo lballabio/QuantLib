@@ -3,6 +3,8 @@
 /*
  Copyright (C) 2009, 2014, 2015 Ferdinando Ametrano
  Copyright (C) 2015 Paolo Mazzocchi
+ Copyright (C) 2017 Joseph Jeisman
+ Copyright (C) 2017 Fabrice Lecuyer
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,32 +25,25 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
     MakeOIS::MakeOIS(const Period& swapTenor,
-                     const shared_ptr<OvernightIndex>& overnightIndex,
+                     const ext::shared_ptr<OvernightIndex>& overnightIndex,
                      Rate fixedRate,
                      const Period& forwardStart)
-    : swapTenor_(swapTenor), overnightIndex_(overnightIndex),
-      fixedRate_(fixedRate), forwardStart_(forwardStart),
-      settlementDays_(2),
+    : swapTenor_(swapTenor), overnightIndex_(overnightIndex), fixedRate_(fixedRate),
+      forwardStart_(forwardStart),
+
       calendar_(overnightIndex->fixingCalendar()),
-      paymentFrequency_(Annual),
-      rule_(DateGeneration::Backward),
-      // any value here for endOfMonth_ would not be actually used
-      isDefaultEOM_(true),
-      type_(OvernightIndexedSwap::Payer), nominal_(1.0),
-      overnightSpread_(0.0),
+
       fixedDayCount_(overnightIndex->dayCounter()) {}
 
     MakeOIS::operator OvernightIndexedSwap() const {
-        shared_ptr<OvernightIndexedSwap> ois = *this;
+        ext::shared_ptr<OvernightIndexedSwap> ois = *this;
         return *ois;
     }
 
-    MakeOIS::operator shared_ptr<OvernightIndexedSwap>() const {
+    MakeOIS::operator ext::shared_ptr<OvernightIndexedSwap>() const {
 
         Date startDate;
         if (effectiveDate_ != Date())
@@ -68,7 +63,7 @@ namespace QuantLib {
         }
 
         // OIS end of month default
-        bool usedEndOfMonth = 
+        bool usedEndOfMonth =
             isDefaultEOM_ ? calendar_.isEndOfMonth(startDate) : endOfMonth_;
 
         Date endDate = terminationDate_;
@@ -96,15 +91,17 @@ namespace QuantLib {
                                       schedule,
                                       0.0, // fixed rate
                                       fixedDayCount_,
-                                      overnightIndex_, overnightSpread_);
-            if (engine_ == 0) {
+                                      overnightIndex_, overnightSpread_,
+                                      paymentLag_, paymentAdjustment_,
+                                      paymentCalendar_, telescopicValueDates_);
+            if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                     overnightIndex_->forwardingTermStructure();
                 QL_REQUIRE(!disc.empty(),
                            "null term structure set to this instance of " <<
                            overnightIndex_->name());
                 bool includeSettlementDateFlows = false;
-                shared_ptr<PricingEngine> engine(new
+                ext::shared_ptr<PricingEngine> engine(new
                     DiscountingSwapEngine(disc, includeSettlementDateFlows));
                 temp.setPricingEngine(engine);
             } else
@@ -113,17 +110,20 @@ namespace QuantLib {
             usedFixedRate = temp.fairRate();
         }
 
-        shared_ptr<OvernightIndexedSwap> ois(new
+        ext::shared_ptr<OvernightIndexedSwap> ois(new
             OvernightIndexedSwap(type_, nominal_,
                                  schedule,
                                  usedFixedRate, fixedDayCount_,
-                                 overnightIndex_, overnightSpread_));
+                                 overnightIndex_, overnightSpread_,
+                                 paymentLag_, paymentAdjustment_,
+                                 paymentCalendar_, telescopicValueDates_, 
+                                 averagingMethod_));
 
-        if (engine_ == 0) {
+        if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
                                 overnightIndex_->forwardingTermStructure();
             bool includeSettlementDateFlows = false;
-            shared_ptr<PricingEngine> engine(new
+            ext::shared_ptr<PricingEngine> engine(new
                 DiscountingSwapEngine(disc, includeSettlementDateFlows));
             ois->setPricingEngine(engine);
         } else
@@ -133,11 +133,11 @@ namespace QuantLib {
     }
 
     MakeOIS& MakeOIS::receiveFixed(bool flag) {
-        type_ = flag ? OvernightIndexedSwap::Receiver : OvernightIndexedSwap::Payer ;
+        type_ = flag ? Swap::Receiver : Swap::Payer ;
         return *this;
     }
 
-    MakeOIS& MakeOIS::withType(OvernightIndexedSwap::Type type) {
+    MakeOIS& MakeOIS::withType(Swap::Type type) {
         type_ = type;
         return *this;
     }
@@ -171,6 +171,21 @@ namespace QuantLib {
         return *this;
     }
 
+    MakeOIS& MakeOIS::withPaymentAdjustment(BusinessDayConvention convention) {
+        paymentAdjustment_ = convention;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withPaymentLag(Natural lag) {
+        paymentLag_ = lag;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withPaymentCalendar(const Calendar& cal) {
+        paymentCalendar_ = cal;
+        return *this;
+    }
+
     MakeOIS& MakeOIS::withRule(DateGeneration::Rule r) {
         rule_ = r;
         if (r==DateGeneration::Zero)
@@ -181,13 +196,13 @@ namespace QuantLib {
     MakeOIS& MakeOIS::withDiscountingTermStructure(
                                         const Handle<YieldTermStructure>& d) {
         bool includeSettlementDateFlows = false;
-        engine_ = shared_ptr<PricingEngine>(new
+        engine_ = ext::shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(d, includeSettlementDateFlows));
         return *this;
     }
 
     MakeOIS& MakeOIS::withPricingEngine(
-                             const shared_ptr<PricingEngine>& engine) {
+                             const ext::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
         return *this;
     }
@@ -205,6 +220,16 @@ namespace QuantLib {
 
     MakeOIS& MakeOIS::withOvernightLegSpread(Spread sp) {
         overnightSpread_ = sp;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withTelescopicValueDates(bool telescopicValueDates) {
+        telescopicValueDates_ = telescopicValueDates;
+        return *this;
+    }
+
+    MakeOIS& MakeOIS::withAveragingMethod(RateAveraging::Type averagingMethod) {
+        averagingMethod_ = averagingMethod;
         return *this;
     }
 

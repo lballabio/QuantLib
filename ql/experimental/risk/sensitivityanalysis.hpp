@@ -26,7 +26,7 @@
 
 #include <ql/types.hpp>
 #include <ql/utilities/null.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -48,7 +48,7 @@ namespace QuantLib {
                              SensitivityAnalysis);
 
     //! utility fuction for weighted sum of NPVs
-    Real aggregateNPV(const std::vector<boost::shared_ptr<Instrument> >&,
+    Real aggregateNPV(const std::vector<ext::shared_ptr<Instrument> >&,
                       const std::vector<Real>& quantities);
 
     //! parallel shift PV01 sensitivity analysis for a SimpleQuote vector
@@ -63,7 +63,7 @@ namespace QuantLib {
     */
     std::pair<Real, Real>
     parallelAnalysis(const std::vector<Handle<SimpleQuote> >&,
-                     const std::vector<boost::shared_ptr<Instrument> >&,
+                     const std::vector<ext::shared_ptr<Instrument> >&,
                      const std::vector<Real>& quantities,
                      Real shift = 0.0001,
                      SensitivityAnalysis type = Centered,
@@ -81,7 +81,7 @@ namespace QuantLib {
     */
     std::pair<Real, Real>
     parallelAnalysis(const std::vector<std::vector<Handle<SimpleQuote> > >&,
-                     const std::vector<boost::shared_ptr<Instrument> >&,
+                     const std::vector<ext::shared_ptr<Instrument> >&,
                      const std::vector<Real>& quantities,
                      Real shift = 0.0001,
                      SensitivityAnalysis type = Centered,
@@ -95,13 +95,12 @@ namespace QuantLib {
         Empty quantities vector is considered as unit vector. The same if
         the vector is of size one.
     */
-    std::pair<Real, Real>
-    bucketAnalysis(Handle<SimpleQuote> quote,
-                   const std::vector<boost::shared_ptr<Instrument> >&,
-                   const std::vector<Real>& quantities,
-                   Real shift = 0.0001,
-                   SensitivityAnalysis type = Centered,
-                   Real referenceNpv = Null<Real>());
+    std::pair<Real, Real> bucketAnalysis(const Handle<SimpleQuote>& quote,
+                                         const std::vector<ext::shared_ptr<Instrument> >&,
+                                         const std::vector<Real>& quantities,
+                                         Real shift = 0.0001,
+                                         SensitivityAnalysis type = Centered,
+                                         Real referenceNpv = Null<Real>());
 
     //! (bucket) parameters' sensitivity analysis for a (single) SimpleQuote
     /*! returns a vector (one element for each paramet) of pair of first and
@@ -112,14 +111,13 @@ namespace QuantLib {
         Empty quantities vector is considered as unit vector. The same if
         the vector is of size one.
     */
-    void
-    bucketAnalysis(std::vector<Real>& deltaVector, // result
-                   std::vector<Real>& gammaVector, // result
-                   std::vector<Real>& referenceValues,
-                   Handle<SimpleQuote> quote,
-                   const std::vector<Handle<Quote> >& parameters,
-                   Real shift = 0.0001,
-                   SensitivityAnalysis type = Centered);
+    void bucketAnalysis(std::vector<Real>& deltaVector, // result
+                        std::vector<Real>& gammaVector, // result
+                        std::vector<Real>& referenceValues,
+                        const Handle<SimpleQuote>& quote,
+                        const std::vector<Handle<Quote> >& parameters,
+                        Real shift = 0.0001,
+                        SensitivityAnalysis type = Centered);
 
     //! bucket PV01 sensitivity analysis for a SimpleQuote vector
     /*! returns a pair of first and second derivative vectors calculated as
@@ -133,7 +131,7 @@ namespace QuantLib {
     */
     std::pair<std::vector<Real>, std::vector<Real> >
     bucketAnalysis(const std::vector<Handle<SimpleQuote> >& quotes,
-                   const std::vector<boost::shared_ptr<Instrument> >&,
+                   const std::vector<ext::shared_ptr<Instrument> >&,
                    const std::vector<Real>& quantities,
                    Real shift = 0.0001,
                    SensitivityAnalysis type = Centered);
@@ -170,7 +168,7 @@ namespace QuantLib {
     */
     std::pair<std::vector<std::vector<Real> >, std::vector<std::vector<Real> > >
     bucketAnalysis(const std::vector<std::vector<Handle<SimpleQuote> > >&,
-                   const std::vector<boost::shared_ptr<Instrument> >&,
+                   const std::vector<ext::shared_ptr<Instrument> >&,
                    const std::vector<Real>& quantities,
                    Real shift = 0.0001,
                    SensitivityAnalysis type = Centered);

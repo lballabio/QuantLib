@@ -71,7 +71,7 @@ namespace QuantLib {
         // alternative delta type
         Real strikeFromDelta(Real delta, DeltaVolQuote::DeltaType dt) const;
 
-      private:
+
         DeltaVolQuote::DeltaType dt_;
         Option::Type ot_;
         DiscountFactor dDiscount_, fDiscount_;

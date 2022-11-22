@@ -39,19 +39,18 @@ namespace QuantLib {
     : BlackAtmVolCurve(settlDays, cal, bdc, dc) {}
 
     Real BlackVolSurface::atmVarianceImpl(Time t) const {
-        const boost::shared_ptr<SmileSection>& s = smileSectionImpl(t);
+        const ext::shared_ptr<SmileSection>& s = smileSectionImpl(t);
         return s->variance(s->atmLevel());
     }
 
     Volatility BlackVolSurface::atmVolImpl(Time t) const {
-        const boost::shared_ptr<SmileSection>& s = smileSectionImpl(t);
+        const ext::shared_ptr<SmileSection>& s = smileSectionImpl(t);
         return s->volatility(s->atmLevel());
     }
 
     void BlackVolSurface::accept(AcyclicVisitor& v) {
-        Visitor<BlackVolSurface>* v1 =
-            dynamic_cast<Visitor<BlackVolSurface>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<BlackVolSurface>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             QL_FAIL("not a BlackVolSurface term structure visitor");

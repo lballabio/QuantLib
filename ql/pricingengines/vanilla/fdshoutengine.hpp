@@ -18,42 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdshoutengine.hpp
-    \brief Finite-differences shout engine
-*/
-
 #ifndef quantlib_fd_shout_engine_hpp
 #define quantlib_fd_shout_engine_hpp
 
-#include <ql/pricingengines/vanilla/fdstepconditionengine.hpp>
-#include <ql/pricingengines/vanilla/fdconditions.hpp>
-#include <ql/instruments/vanillaoption.hpp>
-
-namespace QuantLib {
-
-    //! Finite-differences pricing engine for shout vanilla options
-    /*! \ingroup vanillaengines
-
-        \test the correctness of the returned greeks is tested by
-              reproducing numerical derivatives.
-    */
-    template <template <class> class Scheme = CrankNicolson>
-    class FDShoutEngine
-        : public FDEngineAdapter<FDShoutCondition<
-                                     FDStepConditionEngine<Scheme> >,
-                                 OneAssetOption::engine> {
-        typedef FDEngineAdapter<FDShoutCondition<
-                                     FDStepConditionEngine<Scheme> >,
-                                OneAssetOption::engine> super;
-      public:
-        FDShoutEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps=100, Size gridPoints=100,
-             bool timeDependent = false)
-        : super(process, timeSteps, gridPoints,timeDependent) {}
-    };
-
-}
+// Deprecated in version 1.27
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 
 #endif

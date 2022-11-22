@@ -82,7 +82,7 @@ namespace QuantLib {
     }
 
     Real GaussHermitePolynomial::beta(Size i) const {
-        return (i%2)? i/2.0 + mu_ : i/2.0;
+        return (i % 2) != 0U ? Real(i / 2.0 + mu_) : Real(i / 2.0);
     }
 
     Real GaussHermitePolynomial::w(Real x) const {
@@ -172,7 +172,7 @@ namespace QuantLib {
     }
 
     Real GaussHyperbolicPolynomial::beta(Size i) const {
-        return i ? M_PI_2*M_PI_2*i*i : M_PI;
+        return i != 0U ? M_PI_2 * M_PI_2 * i * i : M_PI;
     }
 
     Real GaussHyperbolicPolynomial::w(Real x) const {

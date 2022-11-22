@@ -69,7 +69,7 @@ namespace QuantLib {
         double result = (ranf_arr_ptr != ranf_arr_sentinel ?
                          ranf_arr_buf[ranf_arr_ptr++] :
                          ranf_arr_cycle());
-        return sample_type(result,1.0);
+        return {result, 1.0};
     }
 
     inline double KnuthUniformRng::mod_sum(double x, double y) const {

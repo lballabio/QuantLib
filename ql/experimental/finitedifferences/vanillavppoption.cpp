@@ -31,9 +31,9 @@ namespace QuantLib {
 
         class IdenticalPayoff : public Payoff {
           public:
-            std::string name() const { return "IdenticalPayoff"; }
-            std::string description() const { return name(); }
-            Real operator()(Real price) const { return price; }
+            std::string name() const override { return "IdenticalPayoff"; }
+            std::string description() const override { return name(); }
+            Real operator()(Real price) const override { return price; }
         };
     }
 
@@ -42,9 +42,9 @@ namespace QuantLib {
         Real pMin, Real pMax,
         Size tMinUp, Size tMinDown,
         Real startUpFuel, Real startUpFixCost,
-        const boost::shared_ptr<SwingExercise>& exercise,
+        const ext::shared_ptr<SwingExercise>& exercise,
         Size nStarts, Size nRunningHours)
-    : MultiAssetOption(boost::shared_ptr<Payoff>(), exercise),
+    : MultiAssetOption(ext::shared_ptr<Payoff>(), exercise),
       heatRate_(heatRate),
       pMin_(pMin), pMax_(pMax),
       tMinUp_(tMinUp), tMinDown_(tMinDown),
@@ -55,8 +55,8 @@ namespace QuantLib {
         Array weigths(2);
         weigths[0] = 1.0; weigths[1] = -heatRate;
 
-        payoff_ = boost::shared_ptr<Payoff>(new AverageBasketPayoff(
-            boost::shared_ptr<Payoff>(new IdenticalPayoff()), weigths));
+        payoff_ = ext::shared_ptr<Payoff>(new AverageBasketPayoff(
+            ext::shared_ptr<Payoff>(new IdenticalPayoff()), weigths));
     }
 
     void VanillaVPPOption::arguments::validate() const {
@@ -70,9 +70,8 @@ namespace QuantLib {
 
         MultiAssetOption::setupArguments(args);
 
-        VanillaVPPOption::arguments* arguments =
-            dynamic_cast<VanillaVPPOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong argument type");
+        auto* arguments = dynamic_cast<VanillaVPPOption::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong argument type");
 
         arguments->heatRate       = heatRate_;
         arguments->pMin           = pMin_;

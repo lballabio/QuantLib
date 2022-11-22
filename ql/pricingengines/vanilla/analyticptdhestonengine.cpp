@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2010 Klaus Spanderen
+ Copyright (C) 2010, 2017 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,13 +24,12 @@
 #include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/pricingengines/vanilla/analyticptdhestonengine.hpp>
-
+#include <ql/pricingengines/blackcalculator.hpp>
 
 namespace QuantLib {
+
     // helper class for integration
-    class AnalyticPTDHestonEngine::Fj_Helper
-        : public std::unary_function<Real, Real> {
-            
+    class AnalyticPTDHestonEngine::Fj_Helper {
       public:
         Fj_Helper(
             const Handle<PiecewiseTimeDependentHestonModel>& model,
@@ -44,7 +43,7 @@ namespace QuantLib {
         const Real v0_, x_, sx_;
         
         std::vector<Rate> r_, q_;
-        const boost::shared_ptr<YieldTermStructure> qTS_;
+        const ext::shared_ptr<YieldTermStructure> qTS_;
         const Handle<PiecewiseTimeDependentHestonModel> model_;
         
         const TimeGrid timeGrid_;
@@ -72,11 +71,6 @@ namespace QuantLib {
             q_[i] = model->dividendYield()
                     ->forwardRate(begin, end, Continuous, NoFrequency).rate();
         }
-
-        QL_REQUIRE(term_ < model_->timeGrid().back() ||
-                       close_enough(term_, model_->timeGrid().back()),
-                   "maturity (" << term_ << ") is too large, time grid is bounded by "
-                                << model_->timeGrid().back());
     }
         
     Real AnalyticPTDHestonEngine::Fj_Helper::operator()(Real phi) const {
@@ -99,9 +93,9 @@ namespace QuantLib {
                 const Real sigma = model_->sigma(t);
                 const Real kappa = model_->kappa(t);
                 const Real theta = model_->theta(t);
-                
+
                 const Real sigma2 = sigma*sigma;
-                const Real t0 = kappa - ((j_== 1)? rho*sigma : 0);
+                const Real t0 = kappa - ((j_== 1)? Real(rho*sigma) : 0);
                 const Real rpsig = rho*sigma*phi;
 
                 const std::complex<Real> t1 = t0+std::complex<Real>(0, -rpsig);
@@ -125,26 +119,135 @@ namespace QuantLib {
                 /phi; 
     }
 
+    class AnalyticPTDHestonEngine::AP_Helper {
+      public:
+        AP_Helper(Time term, Real s0, Real strike, Real ratio,
+                  Volatility sigmaBS,
+                  const AnalyticPTDHestonEngine* const enginePtr)
+        : term_(term),
+          sigmaBS_(sigmaBS),
+          x_(std::log(s0)),
+          sx_(std::log(strike)),
+          dd_(x_-std::log(ratio)),
+          enginePtr_(enginePtr) {
+            QL_REQUIRE(enginePtr != nullptr, "pricing engine required");
+        }
+
+        Real operator()(Real u) const {
+            const std::complex<Real> z(u, -0.5);
+
+            const std::complex<Real> phiBS
+                = std::exp(-0.5*sigmaBS_*sigmaBS_*term_
+                           *(z*z + std::complex<Real>(-z.imag(), z.real())));
+
+            return (std::exp(std::complex<Real>(0.0, u*(dd_-sx_)))
+                * (phiBS - enginePtr_->chF(z, term_)) / (u*u + 0.25)).real();
+        }
+
+      private:
+        const Time term_;
+        const Volatility sigmaBS_;
+        const Real x_, sx_, dd_;
+        const AnalyticPTDHestonEngine* const enginePtr_;
+    };
+
+
+    std::complex<Real> AnalyticPTDHestonEngine::lnChF(
+        const std::complex<Real>& z, Time T) const {
+
+        const Real v0 = model_->v0();
+
+        std::complex<Real> D = 0.0;
+        std::complex<Real> C = 0.0;
+
+        const TimeGrid& timeGrid = model_->timeGrid();
+        const Time lastModelTime = timeGrid.back();
+
+        QL_REQUIRE(T <= lastModelTime,
+                   "maturity (" << T << ") is too large, "
+                   "time grid is bounded by " << lastModelTime);
+
+        const Size lastI = std::distance(timeGrid.begin(),
+            std::lower_bound(timeGrid.begin(), timeGrid.end(), T));
+
+        for (Integer i=lastI-1; i >= 0; --i) {
+            const Time begin = timeGrid[i];
+            const Time end = std::min(T, timeGrid[i+1]);
+            const Time tau = end - begin;
+
+            const Time t     = 0.5*(end+begin);
+            const Real kappa = model_->kappa(t);
+            const Real sigma = model_->sigma(t);
+            const Real theta = model_->theta(t);
+            const Real rho   = model_->rho(t);
+
+            const Real sigma2 = sigma*sigma;
+
+            const std::complex<Real> k
+                = kappa + rho*sigma*std::complex<Real>(z.imag(), -z.real());
+
+            const std::complex<Real> d = std::sqrt(
+                k*k + (z*z + std::complex<Real>(-z.imag(), z.real()))*sigma2);
+
+            const std::complex<Real> g = (k-d)/(k+d);
+
+            const std::complex<Real> gt = (k-d-D*sigma2)/(k+d-D*sigma2);
+
+            C += kappa*theta/sigma2*( (k-d)*tau
+                   - 2.0*std::log((1.0-gt*std::exp(-d*tau))/(1.0-gt)));
+
+            D = (k+d)/sigma2 * (g - gt*std::exp(-d*tau))
+                    /(1.0 - gt*std::exp(-d*tau));
+        }
+
+        return D*v0 + C;
+    }
+
+    std::complex<Real> AnalyticPTDHestonEngine::chF(
+        const std::complex<Real>& z, Time T) const {
+        return std::exp(lnChF(z, T));
+    }
+
     AnalyticPTDHestonEngine::AnalyticPTDHestonEngine(
-        const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
         Size integrationOrder)
     : GenericModelEngine<PiecewiseTimeDependentHestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
-      integration_(new AnalyticHestonEngine::Integration(
-        AnalyticHestonEngine::Integration::gaussLaguerre(integrationOrder))) {
+      evaluations_(0),
+      cpxLog_(Gatheral),
+      integration_(new Integration(
+          Integration::gaussLaguerre(integrationOrder))),
+      andersenPiterbargEpsilon_(Null<Real>()) {
     }
                          
     AnalyticPTDHestonEngine::AnalyticPTDHestonEngine(
-        const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
         Real relTolerance, Size maxEvaluations)
     : GenericModelEngine<PiecewiseTimeDependentHestonModel,
                          VanillaOption::arguments,
                          VanillaOption::results>(model),
-      integration_(new AnalyticHestonEngine::Integration(
-        AnalyticHestonEngine::Integration::gaussLobatto(
-                               relTolerance, Null<Real>(), maxEvaluations))) {
+      evaluations_(0),
+      cpxLog_(Gatheral),
+      integration_(new Integration(Integration::gaussLobatto(
+            relTolerance, Null<Real>(), maxEvaluations))),
+      andersenPiterbargEpsilon_(Null<Real>()) {
     }
+
+    AnalyticPTDHestonEngine::AnalyticPTDHestonEngine(
+        const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        ComplexLogFormula cpxLog,
+        const Integration& itg,
+        Real andersenPiterbargEpsilon)
+    : GenericModelEngine<PiecewiseTimeDependentHestonModel,
+                         VanillaOption::arguments,
+                         VanillaOption::results>(model),
+      evaluations_(0),
+      cpxLog_(cpxLog),
+      integration_(new Integration(itg)),
+      andersenPiterbargEpsilon_(andersenPiterbargEpsilon) {
+    }
+
 
     void AnalyticPTDHestonEngine::calculate() const {
         // this is an european option pricer
@@ -152,8 +255,8 @@ namespace QuantLib {
                 "not an European option");
 
         // plain vanilla
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
         
         const Real v0 = model_->v0();
@@ -165,6 +268,12 @@ namespace QuantLib {
             = model_->riskFreeRate()->dayCounter().yearFraction(
                                      model_->riskFreeRate()->referenceDate(), 
                                      arguments_.exercise->lastDate());
+
+        QL_REQUIRE(term < model_->timeGrid().back() ||
+                       close_enough(term, model_->timeGrid().back()),
+                   "maturity (" << term << ") is too large, time grid is bounded by "
+                                << model_->timeGrid().back());
+
         const Real riskFreeDiscount = model_->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate());
         const Real dividendDiscount = model_->dividendYield()->discount(
@@ -172,6 +281,8 @@ namespace QuantLib {
 
         //average values
         const TimeGrid& timeGrid = model_->timeGrid();
+        QL_REQUIRE(timeGrid.size() > 1, "at least two model points needed");
+
         const Size n = timeGrid.size()-1;
         Real kappaAvg = 0.0, thetaAvg = 0.0,  sigmaAvg=0.0, rhoAvg = 0.0;
 
@@ -183,29 +294,118 @@ namespace QuantLib {
             rhoAvg   += model_->rho(t);
         }
         kappaAvg/=n; thetaAvg/=n; sigmaAvg/=n; rhoAvg/=n;
-        
-        const Real c_inf = std::min(10.0, std::max(0.0001,
-                std::sqrt(1.0-square<Real>()(rhoAvg))/sigmaAvg))
+
+        evaluations_ = 0;
+
+        switch(cpxLog_) {
+          case Gatheral: {
+            const Real c_inf = std::min(0.2, std::max(0.0001,
+                std::sqrt(1.0-squared(rhoAvg))/sigmaAvg))
                 *(v0 + kappaAvg*thetaAvg*term);
 
-        const Real p1 = integration_->calculate(c_inf,
-                                Fj_Helper(model_, term, strike, 1))/M_PI;
+            const Real p1 = integration_->calculate(c_inf,
+                                    Fj_Helper(model_, term, strike, 1))/M_PI;
+            evaluations_ += integration_->numberOfEvaluations();
 
-        const Real p2 = integration_->calculate(c_inf,
-                                Fj_Helper(model_, term, strike, 2))/M_PI;
+            const Real p2 = integration_->calculate(c_inf,
+                                    Fj_Helper(model_, term, strike, 2))/M_PI;
+            evaluations_ += integration_->numberOfEvaluations();
 
-        switch (payoff->optionType())
-        {
-          case Option::Call:
-            results_.value = spotPrice*dividendDiscount*(p1+0.5)
-                            - strike*riskFreeDiscount*(p2+0.5);
+            switch (payoff->optionType())
+            {
+              case Option::Call:
+                results_.value = spotPrice*dividendDiscount*(p1+0.5)
+                                - strike*riskFreeDiscount*(p2+0.5);
+                break;
+              case Option::Put:
+                results_.value = spotPrice*dividendDiscount*(p1-0.5)
+                                - strike*riskFreeDiscount*(p2-0.5);
+                break;
+              default:
+                QL_FAIL("unknown option type");
+            }
+          }
+          break;
+          case AndersenPiterbarg: {
+              QL_REQUIRE(term <= timeGrid.back(),
+                         "maturity (" << term << ") is too large, "
+                         "time grid is bounded by " << timeGrid.back());
+
+              const Time t05 = 0.5*timeGrid.at(1);
+
+              const std::complex<Real> D_u_inf =
+                  -std::complex<Real>(
+                      std::sqrt(1-squared(model_->rho(t05))),
+                      model_->rho(t05)) / model_->sigma(t05);
+
+              const Size lastI = std::distance(timeGrid.begin(),
+                  std::lower_bound(timeGrid.begin(), timeGrid.end(), term));
+
+              std::complex<Real> C_u_inf(0.0, 0.0);
+              for (Size i=0; i < lastI; ++i) {
+                  const Time begin = timeGrid[i];
+                  const Time end   = std::min(term, timeGrid[i+1]);
+                  const Time tau   = end - begin;
+                  const Time t     = 0.5*(end+begin);
+
+                  const Real kappa = model_->kappa(t);
+                  const Real theta = model_->theta(t);
+                  const Real sigma = model_->sigma(t);
+                  const Real rho = model_->rho(t);
+
+                  C_u_inf += -kappa*theta*tau / sigma
+                      *std::complex<Real>(std::sqrt(1-rho*rho), rho);
+              }
+
+              const Real ratio = riskFreeDiscount/dividendDiscount;
+
+              const Real fwdPrice = spotPrice / ratio;
+
+              const Real epsilon = andersenPiterbargEpsilon_
+                  *M_PI/(std::sqrt(strike*fwdPrice)*riskFreeDiscount);
+
+              const Real c_inf = -(C_u_inf + D_u_inf*v0).real();
+
+              const ext::function<Real()> uM = [=](){
+                  return Integration::andersenPiterbargIntegrationLimit(c_inf, epsilon, v0, term);
+              };
+
+              const Real vAvg
+                  = (1-std::exp(-kappaAvg*term))*(v0-thetaAvg)
+                    /(kappaAvg*term) + thetaAvg;
+
+              const Real bsPrice
+                  = BlackCalculator(Option::Call, strike,
+                                    fwdPrice, std::sqrt(vAvg*term),
+                                    riskFreeDiscount).value();
+
+              const Real h_cv = integration_->calculate(c_inf,
+                      AP_Helper(term, spotPrice, strike,
+                                ratio, std::sqrt(vAvg), this),uM)
+                  * std::sqrt(strike * fwdPrice)*riskFreeDiscount/M_PI;
+              evaluations_ += integration_->numberOfEvaluations();
+
+              switch (payoff->optionType())
+              {
+                case Option::Call:
+                  results_.value = bsPrice + h_cv;
+                  break;
+                case Option::Put:
+                  results_.value = bsPrice + h_cv
+                      - riskFreeDiscount*(fwdPrice - strike);
+                  break;
+                default:
+                  QL_FAIL("unknown option type");
+              }
+            }
             break;
-          case Option::Put:
-            results_.value = spotPrice*dividendDiscount*(p1-0.5)
-                            - strike*riskFreeDiscount*(p2-0.5);
-            break;
-          default:
-            QL_FAIL("unknown option type");
-        }
+
+            default:
+              QL_FAIL("unknown complex log formula");
+          }
+    }
+ 
+    Size AnalyticPTDHestonEngine::numberOfEvaluations() const {
+        return evaluations_;
     }
 }

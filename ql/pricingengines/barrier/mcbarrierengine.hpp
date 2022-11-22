@@ -26,10 +26,11 @@
 #ifndef quantlib_mc_barrier_engines_hpp
 #define quantlib_mc_barrier_engines_hpp
 
+#include <ql/exercise.hpp>
 #include <ql/instruments/barrieroption.hpp>
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -64,20 +65,19 @@ namespace QuantLib {
         typedef typename McSimulation<SingleVariate,RNG,S>::stats_type
             stats_type;
         // constructor
-        MCBarrierEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps,
-             Size timeStepsPerYear,
-             bool brownianBridge,
-             bool antitheticVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             bool isBiased,
-             BigNatural seed);
-        void calculate() const {
+        MCBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                        Size timeSteps,
+                        Size timeStepsPerYear,
+                        bool brownianBridge,
+                        bool antitheticVariate,
+                        Size requiredSamples,
+                        Real requiredTolerance,
+                        Size maxSamples,
+                        bool isBiased,
+                        BigNatural seed);
+        void calculate() const override {
             Real spot = process_->x0();
-            QL_REQUIRE(spot >= 0.0, "negative or null underlying given");
+            QL_REQUIRE(spot > 0.0, "negative or null underlying given");
             QL_REQUIRE(!triggered(spot), "barrier touched");
             McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
                                                          requiredSamples_,
@@ -87,20 +87,21 @@ namespace QuantLib {
             results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
         }
+
       protected:
         // McSimulation implementation
-        TimeGrid timeGrid() const;
-        boost::shared_ptr<path_generator_type> pathGenerator() const {
+        TimeGrid timeGrid() const override;
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
             TimeGrid grid = timeGrid();
             typename RNG::rsg_type gen =
                 RNG::make_sequence_generator(grid.size()-1,seed_);
-            return boost::shared_ptr<path_generator_type>(
+            return ext::shared_ptr<path_generator_type>(
                          new path_generator_type(process_,
                                                  grid, gen, brownianBridge_));
         }
-        boost::shared_ptr<path_pricer_type> pathPricer() const;
+        ext::shared_ptr<path_pricer_type> pathPricer() const override;
         // data members
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Size timeSteps_, timeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
@@ -114,8 +115,7 @@ namespace QuantLib {
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCBarrierEngine {
       public:
-        MakeMCBarrierEngine(
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+        MakeMCBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>);
         // named parameters
         MakeMCBarrierEngine& withSteps(Size steps);
         MakeMCBarrierEngine& withStepsPerYear(Size steps);
@@ -127,33 +127,33 @@ namespace QuantLib {
         MakeMCBarrierEngine& withBias(bool b = true);
         MakeMCBarrierEngine& withSeed(BigNatural seed);
         // conversion to pricing engine
-        operator boost::shared_ptr<PricingEngine>() const;
+        operator ext::shared_ptr<PricingEngine>() const;
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        bool brownianBridge_, antithetic_, biased_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        bool brownianBridge_ = false, antithetic_ = false, biased_ = false;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
-        BigNatural seed_;
+        BigNatural seed_ = 0;
     };
 
 
     class BarrierPathPricer : public PathPricer<Path> {
       public:
-        BarrierPathPricer(
-                    Barrier::Type barrierType,
-                    Real barrier,
-                    Real rebate,
-                    Option::Type type,
-                    Real strike,
-                    const std::vector<DiscountFactor>& discounts,
-                    const boost::shared_ptr<StochasticProcess1D>& diffProcess,
-                    const PseudoRandom::ursg_type& sequenceGen);
-        Real operator()(const Path& path) const;
+        BarrierPathPricer(Barrier::Type barrierType,
+                          Real barrier,
+                          Real rebate,
+                          Option::Type type,
+                          Real strike,
+                          std::vector<DiscountFactor> discounts,
+                          ext::shared_ptr<StochasticProcess1D> diffProcess,
+                          PseudoRandom::ursg_type sequenceGen);
+        Real operator()(const Path& path) const override;
+
       private:
         Barrier::Type barrierType_;
         Real barrier_;
         Real rebate_;
-        boost::shared_ptr<StochasticProcess1D> diffProcess_;
+        ext::shared_ptr<StochasticProcess1D> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
         PlainVanillaPayoff payoff_;
         std::vector<DiscountFactor> discounts_;
@@ -167,8 +167,9 @@ namespace QuantLib {
                                 Real rebate,
                                 Option::Type type,
                                 Real strike,
-                                const std::vector<DiscountFactor>& discounts);
-        Real operator()(const Path& path) const;
+                                std::vector<DiscountFactor> discounts);
+        Real operator()(const Path& path) const override;
+
       private:
         Barrier::Type barrierType_;
         Real barrier_;
@@ -182,23 +183,20 @@ namespace QuantLib {
     // template definitions
 
     template <class RNG, class S>
-    inline MCBarrierEngine<RNG,S>::MCBarrierEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps,
-             Size timeStepsPerYear,
-             bool brownianBridge,
-             bool antitheticVariate,
-             Size requiredSamples,
-             Real requiredTolerance,
-             Size maxSamples,
-             bool isBiased,
-             BigNatural seed)
-    : McSimulation<SingleVariate,RNG,S>(antitheticVariate, false),
-      process_(process), timeSteps_(timeSteps),
-      timeStepsPerYear_(timeStepsPerYear),
-      requiredSamples_(requiredSamples), maxSamples_(maxSamples),
-      requiredTolerance_(requiredTolerance),
-      isBiased_(isBiased),
+    inline MCBarrierEngine<RNG, S>::MCBarrierEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Size timeSteps,
+        Size timeStepsPerYear,
+        bool brownianBridge,
+        bool antitheticVariate,
+        Size requiredSamples,
+        Real requiredTolerance,
+        Size maxSamples,
+        bool isBiased,
+        BigNatural seed)
+    : McSimulation<SingleVariate, RNG, S>(antitheticVariate, false), process_(std::move(process)),
+      timeSteps_(timeSteps), timeStepsPerYear_(timeStepsPerYear), requiredSamples_(requiredSamples),
+      maxSamples_(maxSamples), requiredTolerance_(requiredTolerance), isBiased_(isBiased),
       brownianBridge_(brownianBridge), seed_(seed) {
         QL_REQUIRE(timeSteps != Null<Size>() ||
                    timeStepsPerYear != Null<Size>(),
@@ -232,10 +230,10 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    boost::shared_ptr<typename MCBarrierEngine<RNG,S>::path_pricer_type>
+    ext::shared_ptr<typename MCBarrierEngine<RNG,S>::path_pricer_type>
     MCBarrierEngine<RNG,S>::pathPricer() const {
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         TimeGrid grid = timeGrid();
@@ -245,7 +243,7 @@ namespace QuantLib {
 
         // do this with template parameters?
         if (isBiased_) {
-            return boost::shared_ptr<
+            return ext::shared_ptr<
                         typename MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BiasedBarrierPathPricer(
                        arguments_.barrierType,
@@ -257,7 +255,7 @@ namespace QuantLib {
         } else {
             PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                                 PseudoRandom::urng_type(5));
-            return boost::shared_ptr<
+            return ext::shared_ptr<
                         typename MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(
                     arguments_.barrierType,
@@ -273,12 +271,10 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline MakeMCBarrierEngine<RNG,S>::MakeMCBarrierEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process), brownianBridge_(false), antithetic_(false),
-      biased_(false), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+    inline MakeMCBarrierEngine<RNG, S>::MakeMCBarrierEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()) {}
 
     template <class RNG, class S>
     inline MakeMCBarrierEngine<RNG,S>&
@@ -352,13 +348,13 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    MakeMCBarrierEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
+    MakeMCBarrierEngine<RNG,S>::operator ext::shared_ptr<PricingEngine>()
                                                                       const {
         QL_REQUIRE(steps_ != Null<Size>() || stepsPerYear_ != Null<Size>(),
                    "number of steps not given");
         QL_REQUIRE(steps_ == Null<Size>() || stepsPerYear_ == Null<Size>(),
                    "number of steps overspecified");
-        return boost::shared_ptr<PricingEngine>(new
+        return ext::shared_ptr<PricingEngine>(new
             MCBarrierEngine<RNG,S>(process_,
                                    steps_,
                                    stepsPerYear_,

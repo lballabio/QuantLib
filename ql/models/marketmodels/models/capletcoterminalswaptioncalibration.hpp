@@ -29,12 +29,12 @@ namespace QuantLib {
       public:
         CTSMMCapletOriginalCalibration(
             const EvolutionDescription& evolution,
-            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
-            const std::vector<boost::shared_ptr<
+            const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
+            const std::vector<ext::shared_ptr<
                         PiecewiseConstantVariance> >&
                                     displacedSwapVariances,
             const std::vector<Volatility>& capletVols,
-            const boost::shared_ptr<CurveState>& cs,
+            const ext::shared_ptr<CurveState>& cs,
             Spread displacement,
             const std::vector<Real>& alpha,
             bool lowestRoot,
@@ -43,7 +43,7 @@ namespace QuantLib {
         static Natural calibrationFunction(
                             const EvolutionDescription& evolution,
                             const PiecewiseConstantCorrelation& corr,
-                            const std::vector<boost::shared_ptr<
+                            const std::vector<ext::shared_ptr<
                                 PiecewiseConstantVariance> >&
                                     displacedSwapVariances,
                             const std::vector<Volatility>& capletVols,
@@ -60,9 +60,7 @@ namespace QuantLib {
 
                             std::vector<Matrix>& swapCovariancePseudoRoots);
       private:
-        Natural calibrationImpl_(Natural numberOfFactors,
-                                 Natural ,
-                                 Real );
+        Natural calibrationImpl_(Natural numberOfFactors, Natural, Real) override;
         // input
         std::vector<Real> alpha_;
         bool lowestRoot_, useFullApprox_;

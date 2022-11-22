@@ -58,10 +58,11 @@ namespace QuantLib
             return bumps_;
         }
 
-        const std::vector<Real> derivativesVolatility(Size j) const; 
+        std::vector<Real> derivativesVolatility(Size j) const;
 
-        const std::vector<Real> onePercentBump(Size j) const; // vector of smallest size that changes instrument implied vol by 1 percent
-                                                              // i.e. 0.01 v / <v,v> with v result of derivativesVolatility
+        std::vector<Real> onePercentBump(
+            Size j) const; // vector of smallest size that changes instrument implied vol by 1
+                           // percent i.e. 0.01 v / <v,v> with v result of derivativesVolatility
 
         const Matrix& getAllOnePercentBumps() const;
 

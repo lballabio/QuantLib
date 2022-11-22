@@ -26,10 +26,11 @@
 #ifndef quantlib_piecewise_yield_curve_hpp
 #define quantlib_piecewise_yield_curve_hpp
 
+#include <ql/patterns/lazyobject.hpp>
 #include <ql/termstructures/iterativebootstrap.hpp>
 #include <ql/termstructures/localbootstrap.hpp>
 #include <ql/termstructures/yield/bootstraptraits.hpp>
-#include <ql/patterns/lazyobject.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -37,7 +38,7 @@ namespace QuantLib {
 
     //! Piecewise yield term structure
     /*! This term structure is bootstrapped on a number of interest
-        rate instruments which are passed as a vector of handles to
+        rate instruments which are passed as a vector of pointers to
         RateHelper instances. Their maturities mark the boundaries of
         the interpolated segments.
 
@@ -67,92 +68,87 @@ namespace QuantLib {
       public:
         typedef Traits traits_type;
         typedef Interpolator interpolator_type;
+        typedef Bootstrap<this_curve> bootstrap_type;
+
         //! \name Constructors
         //@{
         PiecewiseYieldCurve(
-               const Date& referenceDate,
-               const std::vector<boost::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               const std::vector<Handle<Quote> >& jumps =
-                                                std::vector<Handle<Quote> >(),
-               const std::vector<Date>& jumpDates = std::vector<Date>(),
-               Real accuracy = 1.0e-12,
-               const Interpolator& i = Interpolator(),
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+            const Date& referenceDate,
+            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            const DayCounter& dayCounter,
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& i = {},
+            bootstrap_type bootstrap = {})
         : base_curve(referenceDate, dayCounter, jumps, jumpDates, i),
-          instruments_(instruments),
-          accuracy_(accuracy), bootstrap_(bootstrap) {
+          instruments_(std::move(instruments)), accuracy_(1.0e-12),
+          bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
-        PiecewiseYieldCurve(
-               const Date& referenceDate,
-               const std::vector<boost::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               Real accuracy,
-               const Interpolator& i = Interpolator(),
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
-        : base_curve(referenceDate, dayCounter,
-                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments),
-          accuracy_(accuracy), bootstrap_(bootstrap) {
+
+        PiecewiseYieldCurve(const Date& referenceDate,
+                            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+                            const DayCounter& dayCounter,
+                            const Interpolator& i,
+                            bootstrap_type bootstrap = bootstrap_type())
+        : base_curve(
+              referenceDate, dayCounter, {}, {}, i),
+          instruments_(std::move(instruments)), accuracy_(1.0e-12),
+          bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
-        PiecewiseYieldCurve(
-               const Date& referenceDate,
-               const std::vector<boost::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               const Interpolator& i,
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
-        : base_curve(referenceDate, dayCounter,
-                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments),
-          accuracy_(1.0e-12), bootstrap_(bootstrap) {
+
+        PiecewiseYieldCurve(const Date& referenceDate,
+                            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+                            const DayCounter& dayCounter,
+                            bootstrap_type bootstrap)
+        : base_curve(referenceDate,
+                     dayCounter),
+          instruments_(std::move(instruments)), accuracy_(1.0e-12),
+          bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
+
         PiecewiseYieldCurve(
-               Natural settlementDays,
-               const Calendar& calendar,
-               const std::vector<boost::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-               const std::vector<Date>& jumpDates = std::vector<Date>(),
-               Real accuracy = 1.0e-12,
-               const Interpolator& i = Interpolator(),
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
+            Natural settlementDays,
+            const Calendar& calendar,
+            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+            const DayCounter& dayCounter,
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {},
+            const Interpolator& i = {},
+            bootstrap_type bootstrap = {})
         : base_curve(settlementDays, calendar, dayCounter, jumps, jumpDates, i),
-          instruments_(instruments),
-          accuracy_(accuracy), bootstrap_(bootstrap) {
+          instruments_(std::move(instruments)), accuracy_(1.0e-12),
+          bootstrap_(std::move(bootstrap)) {
             bootstrap_.setup(this);
         }
+
+        PiecewiseYieldCurve(Natural settlementDays,
+                            const Calendar& calendar,
+                            std::vector<ext::shared_ptr<typename Traits::helper> > instruments,
+                            const DayCounter& dayCounter,
+                            const Interpolator& i,
+                            bootstrap_type bootstrap = bootstrap_type())
+        : base_curve(settlementDays,
+                     calendar,
+                     dayCounter,
+                     {},
+                     {},
+                     i),
+          instruments_(std::move(instruments)), accuracy_(1.0e-12),
+          bootstrap_(std::move(bootstrap)) {
+            bootstrap_.setup(this);
+        }
+
         PiecewiseYieldCurve(
                Natural settlementDays,
                const Calendar& calendar,
-               const std::vector<boost::shared_ptr<typename Traits::helper> >&
+               const std::vector<ext::shared_ptr<typename Traits::helper> >&
                                                                   instruments,
                const DayCounter& dayCounter,
-               Real accuracy,
-               const Interpolator& i = Interpolator(),
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
-        : base_curve(settlementDays, calendar, dayCounter,
-                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
-          instruments_(instruments),
-          accuracy_(accuracy), bootstrap_(bootstrap) {
-            bootstrap_.setup(this);
-        }
-        PiecewiseYieldCurve(
-               Natural settlementDays,
-               const Calendar& calendar,
-               const std::vector<boost::shared_ptr<typename Traits::helper> >&
-                                                                  instruments,
-               const DayCounter& dayCounter,
-               const Interpolator& i,
-               const Bootstrap<this_curve>& bootstrap = Bootstrap<this_curve>())
-        : base_curve(settlementDays, calendar, dayCounter,
-                     std::vector<Handle<Quote> >(), std::vector<Date>(), i),
+               const bootstrap_type& bootstrap)
+        : base_curve(settlementDays, calendar, dayCounter),
           instruments_(instruments),
           accuracy_(1.0e-12), bootstrap_(bootstrap) {
             bootstrap_.setup(this);
@@ -160,7 +156,7 @@ namespace QuantLib {
         //@}
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name base_curve interface
         //@{
@@ -171,17 +167,17 @@ namespace QuantLib {
         //@}
         //! \name Observer interface
         //@{
-        void update();
+        void update() override;
         //@}
       private:
         //! \name LazyObject interface
         //@{
-        void performCalculations() const;
+        void performCalculations() const override;
         //@}
         // methods
-        DiscountFactor discountImpl(Time) const;
+        DiscountFactor discountImpl(Time) const override;
         // data members
-        std::vector<boost::shared_ptr<typename Traits::helper> > instruments_;
+        std::vector<ext::shared_ptr<typename Traits::helper> > instruments_;
         Real accuracy_;
 
         // bootstrapper classes are declared as friend to manipulate

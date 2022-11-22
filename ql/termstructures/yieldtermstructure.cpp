@@ -21,6 +21,7 @@
 
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -29,61 +30,47 @@ namespace QuantLib {
         const Time dt = 0.0001;
     }
 
-    YieldTermStructure::YieldTermStructure(
-                                    const DayCounter& dc,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates)
-    : TermStructure(dc), jumps_(jumps),
-      jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
-      nJumps_(jumps_.size()) {
-        setJumps();
+    YieldTermStructure::YieldTermStructure(const DayCounter& dc) : TermStructure(dc) {}
+
+    YieldTermStructure::YieldTermStructure(const Date& referenceDate,
+                                           const Calendar& cal,
+                                           const DayCounter& dc,
+                                           std::vector<Handle<Quote> > jumps,
+                                           const std::vector<Date>& jumpDates)
+    : TermStructure(referenceDate, cal, dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
+      jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
+        setJumps(YieldTermStructure::referenceDate());
         for (Size i=0; i<nJumps_; ++i)
             registerWith(jumps_[i]);
     }
 
-    YieldTermStructure::YieldTermStructure(
-                                    const Date& referenceDate,
-                                    const Calendar& cal,
-                                    const DayCounter& dc,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates)
-    : TermStructure(referenceDate, cal, dc), jumps_(jumps),
-      jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
-      nJumps_(jumps_.size()) {
-        setJumps();
+    YieldTermStructure::YieldTermStructure(Natural settlementDays,
+                                           const Calendar& cal,
+                                           const DayCounter& dc,
+                                           std::vector<Handle<Quote> > jumps,
+                                           const std::vector<Date>& jumpDates)
+    : TermStructure(settlementDays, cal, dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
+      jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
+        setJumps(YieldTermStructure::referenceDate());
         for (Size i=0; i<nJumps_; ++i)
             registerWith(jumps_[i]);
     }
 
-    YieldTermStructure::YieldTermStructure(
-                                    Natural settlementDays,
-                                    const Calendar& cal,
-                                    const DayCounter& dc,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates)
-    : TermStructure(settlementDays, cal, dc), jumps_(jumps),
-      jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
-      nJumps_(jumps_.size()) {
-        setJumps();
-        for (Size i=0; i<nJumps_; ++i)
-            registerWith(jumps_[i]);
-    }
-
-    void YieldTermStructure::setJumps() {
+    void YieldTermStructure::setJumps(const Date& referenceDate) {
         if (jumpDates_.empty() && !jumps_.empty()) { // turn of year dates
             jumpDates_.resize(nJumps_);
             jumpTimes_.resize(nJumps_);
-            Year y = referenceDate().year();
+            Year y = referenceDate.year();
             for (Size i=0; i<nJumps_; ++i)
                 jumpDates_[i] = Date(31, December, y+i);
-        } else { // fixed dats
+        } else { // fixed dates
             QL_REQUIRE(jumpDates_.size()==nJumps_,
                        "mismatch between number of jumps (" << nJumps_ <<
                        ") and jump dates (" << jumpDates_.size() << ")");
         }
         for (Size i=0; i<nJumps_; ++i)
             jumpTimes_[i] = timeFromReference(jumpDates_[i]);
-        latestReference_ = referenceDate();
+        latestReference_ = referenceDate;
     }
 
     DiscountFactor YieldTermStructure::discount(Time t,
@@ -102,11 +89,6 @@ namespace QuantLib {
                 QL_REQUIRE(thisJump > 0.0,
                            "invalid " << io::ordinal(i+1) << " jump value: " <<
                            thisJump);
-                #if !defined(QL_NEGATIVE_RATES)
-                QL_REQUIRE(thisJump <= 1.0,
-                           "invalid " << io::ordinal(i+1) << " jump value: " <<
-                           thisJump);
-                #endif
                 jumpEffect *= thisJump;
             }
         }
@@ -194,7 +176,7 @@ namespace QuantLib {
         try {
             newReference = referenceDate();
             if (newReference != latestReference_)
-                setJumps();
+                setJumps(newReference);
         } catch (Error&) {
             if (newReference == Date()) {
                 // the curve couldn't calculate the reference

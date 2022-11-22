@@ -22,37 +22,26 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 
-using boost::shared_ptr;
-
 namespace QuantLib {
 
     MakeArithmeticAverageOIS::MakeArithmeticAverageOIS(
-                     const Period& swapTenor,
-                     const shared_ptr<OvernightIndex>& overnightIndex,
-                     Rate fixedRate,
-                     const Period& forwardStart)
-    : swapTenor_(swapTenor), overnightIndex_(overnightIndex),
-      fixedRate_(fixedRate), forwardStart_(forwardStart),
-      settlementDays_(2),
+        const Period& swapTenor,
+        const ext::shared_ptr<OvernightIndex>& overnightIndex,
+        Rate fixedRate,
+        const Period& forwardStart)
+    : swapTenor_(swapTenor), overnightIndex_(overnightIndex), fixedRate_(fixedRate),
+      forwardStart_(forwardStart),
+
       calendar_(overnightIndex->fixingCalendar()),
-      fixedLegPaymentFrequency_(Annual),
-      overnightLegPaymentFrequency_(Annual),
-      rule_(DateGeneration::Backward),
-      // any value here for endOfMonth_ would not be actually used
-      isDefaultEOM_(true),
-      byApprox_(false),
-      mrs_(0.03),
-      vol_(0.00),
-      type_(ArithmeticAverageOIS::Payer), nominal_(1.0),
-      overnightSpread_(0.0),
+
       fixedDayCount_(overnightIndex->dayCounter()) {}
 
     MakeArithmeticAverageOIS::operator ArithmeticAverageOIS() const {
-        shared_ptr<ArithmeticAverageOIS> ois = *this;
+        ext::shared_ptr<ArithmeticAverageOIS> ois = *this;
         return *ois;
     }
 
-    MakeArithmeticAverageOIS::operator shared_ptr<ArithmeticAverageOIS>() const {
+    MakeArithmeticAverageOIS::operator ext::shared_ptr<ArithmeticAverageOIS>() const {
 
         Date startDate;
         if (effectiveDate_ != Date())
@@ -112,14 +101,14 @@ namespace QuantLib {
                                       overnightLegSchedule,
                                       overnightSpread_,
                                       mrs_, vol_, byApprox_);
-            if (engine_ == 0) {
+            if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                     overnightIndex_->forwardingTermStructure();
                 QL_REQUIRE(!disc.empty(),
                            "null term structure set to this instance of " <<
                            overnightIndex_->name());
                 bool includeSettlementDateFlows = false;
-                shared_ptr<PricingEngine> engine(new
+                ext::shared_ptr<PricingEngine> engine(new
                     DiscountingSwapEngine(disc, includeSettlementDateFlows));
                 temp.setPricingEngine(engine);
             } else
@@ -128,7 +117,7 @@ namespace QuantLib {
             usedFixedRate = temp.fairRate();
         }
 
-        shared_ptr<ArithmeticAverageOIS> ois(new
+        ext::shared_ptr<ArithmeticAverageOIS> ois(new
             ArithmeticAverageOIS(type_, nominal_,
                                  fixedLegSchedule,
                                  usedFixedRate, fixedDayCount_,
@@ -137,11 +126,11 @@ namespace QuantLib {
                                  overnightSpread_,
                                  mrs_, vol_, byApprox_));
 
-        if (engine_ == 0) {
+        if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
                                 overnightIndex_->forwardingTermStructure();
             bool includeSettlementDateFlows = false;
-            shared_ptr<PricingEngine> engine(new
+            ext::shared_ptr<PricingEngine> engine(new
                 DiscountingSwapEngine(disc, includeSettlementDateFlows));
             ois->setPricingEngine(engine);
         } else
@@ -151,11 +140,11 @@ namespace QuantLib {
     }
 
     MakeArithmeticAverageOIS& MakeArithmeticAverageOIS::receiveFixed(bool flag) {
-        type_ = flag ? ArithmeticAverageOIS::Receiver : ArithmeticAverageOIS::Payer;
+        type_ = flag ? Swap::Receiver : Swap::Payer;
         return *this;
     }
 
-    MakeArithmeticAverageOIS& MakeArithmeticAverageOIS::withType(ArithmeticAverageOIS::Type type) {
+    MakeArithmeticAverageOIS& MakeArithmeticAverageOIS::withType(Swap::Type type) {
         type_ = type;
         return *this;
     }
@@ -198,22 +187,23 @@ namespace QuantLib {
 
     MakeArithmeticAverageOIS& MakeArithmeticAverageOIS::withRule(DateGeneration::Rule r) {
         rule_ = r;
-        if (r==DateGeneration::Zero)
+        if (r==DateGeneration::Zero) {
             fixedLegPaymentFrequency_ = Once;
             overnightLegPaymentFrequency_ = Once;
+        }
         return *this;
     }
 
     MakeArithmeticAverageOIS& MakeArithmeticAverageOIS::withDiscountingTermStructure(
                                         const Handle<YieldTermStructure>& d) {
         bool includeSettlementDateFlows = false;
-        engine_ = shared_ptr<PricingEngine>(new
+        engine_ = ext::shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(d, includeSettlementDateFlows));
         return *this;
     }
 
     MakeArithmeticAverageOIS& MakeArithmeticAverageOIS::withPricingEngine(
-                             const shared_ptr<PricingEngine>& engine) {
+                             const ext::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
         return *this;
     }

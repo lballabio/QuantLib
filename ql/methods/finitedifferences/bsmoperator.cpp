@@ -24,8 +24,6 @@
 
 namespace QuantLib {
 
-    BSMOperator::BSMOperator() {}
-
     BSMOperator::BSMOperator(Size size, Real dx, Rate r,
                              Rate q, Volatility sigma)
     : TridiagonalOperator(size) {
@@ -37,15 +35,18 @@ namespace QuantLib {
         setMidRows(pd,pm,pu);
     }
 
-    BSMOperator::BSMOperator(
-             const Array& grid,
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Time residualTime)
+    BSMOperator::BSMOperator(const Array& grid,
+                             Rate r, Rate q, Volatility sigma)
     : TridiagonalOperator(grid.size()) {
-        PdeBSM::grid_type  logGrid(grid);
-        PdeConstantCoeff<PdeBSM> cc(process, residualTime,
-                                    process->stateVariable()->value());
-        cc.generateOperator(residualTime, logGrid, *this);
+        PdeBSM::grid_type logGrid(grid);
+        Real sigma2 = sigma*sigma;
+        Real nu = r-q-sigma2/2;
+        for (Size i=1; i<logGrid.size()-1; ++i) {
+            Real pd = -(sigma2/logGrid.dxm(i)-nu)/logGrid.dx(i);
+            Real pu = -(sigma2/logGrid.dxp(i)+nu)/logGrid.dx(i);
+            Real pm = sigma2/(logGrid.dxm(i)*logGrid.dxp(i)) + r;
+            setMidRow(i,pd,pm,pu);
+        }
     }
 
 }

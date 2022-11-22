@@ -30,10 +30,8 @@ namespace QuantLib {
     class MarketModelParametricExercise : public MarketModelNodeDataProvider,
                                           public ParametricExercise {
       public:
-        std::vector<Size> numberOfData() const {
-            return numberOfVariables();
-        }
-        virtual std::auto_ptr<MarketModelParametricExercise> clone() const = 0;
+        std::vector<Size> numberOfData() const override { return numberOfVariables(); }
+        virtual std::unique_ptr<MarketModelParametricExercise> clone() const = 0;
     };
 
 }

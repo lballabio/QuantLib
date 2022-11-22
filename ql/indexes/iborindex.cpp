@@ -21,6 +21,7 @@
 
 #include <ql/indexes/iborindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -32,12 +33,11 @@ namespace QuantLib {
                          BusinessDayConvention convention,
                          bool endOfMonth,
                          const DayCounter& dayCounter,
-                         const Handle<YieldTermStructure>& h)
-    : InterestRateIndex(familyName, tenor, settlementDays, currency,
-                        fixingCalendar, dayCounter),
-      convention_(convention), termStructure_(h), endOfMonth_(endOfMonth) {
+                         Handle<YieldTermStructure> h)
+    : InterestRateIndex(familyName, tenor, settlementDays, currency, fixingCalendar, dayCounter),
+      convention_(convention), termStructure_(std::move(h)), endOfMonth_(endOfMonth) {
         registerWith(termStructure_);
-      }
+    }
 
     Rate IborIndex::forecastFixing(const Date& fixingDate) const {
         Date d1 = valueDate(fixingDate);
@@ -58,10 +58,10 @@ namespace QuantLib {
                                         endOfMonth_);
     }
 
-    boost::shared_ptr<IborIndex> IborIndex::clone(
+    ext::shared_ptr<IborIndex> IborIndex::clone(
                                const Handle<YieldTermStructure>& h) const {
-        return boost::shared_ptr<IborIndex>(
-                                        new IborIndex(familyName(),
+        return ext::make_shared<IborIndex>(
+                                        familyName(),
                                                       tenor(),
                                                       fixingDays(),
                                                       currency(),
@@ -69,7 +69,7 @@ namespace QuantLib {
                                                       businessDayConvention(),
                                                       endOfMonth(),
                                                       dayCounter(),
-                                                      h));
+                                                      h);
     }
 
 
@@ -82,9 +82,9 @@ namespace QuantLib {
    : IborIndex(familyName, 1*Days, settlementDays, curr,
                fixCal, Following, false, dc, h) {}
 
-    boost::shared_ptr<IborIndex> OvernightIndex::clone(
+    ext::shared_ptr<IborIndex> OvernightIndex::clone(
                                const Handle<YieldTermStructure>& h) const {
-        return boost::shared_ptr<IborIndex>(
+        return ext::shared_ptr<IborIndex>(
                                         new OvernightIndex(familyName(),
                                                            fixingDays(),
                                                            currency(),

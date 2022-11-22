@@ -48,20 +48,18 @@ namespace QuantLib {
         if (!arguments_.normalizedLeg[0]->hasOccurred(today)) 
              // cast to fixed rate coupon?
             e1 = arguments_.basket->expectedTrancheLoss(
-                boost::dynamic_pointer_cast<Coupon>(
+                ext::dynamic_pointer_cast<Coupon>(
                     arguments_.normalizedLeg[0])->accrualStartDate()); 
         results_.expectedTrancheLoss.push_back(e1);// zero or realized losses?
 
-        for (Size i = 0; i < arguments_.normalizedLeg.size(); i++) {
-            if(arguments_.normalizedLeg[i]->hasOccurred(today)) {
+        for (auto& i : arguments_.normalizedLeg) {
+            if (i->hasOccurred(today)) {
                 // add includeSettlement date flows variable to engine.
                 results_.expectedTrancheLoss.push_back(0.);
                 continue;
             }
 
-            const boost::shared_ptr<Coupon> coupon =
-                boost::dynamic_pointer_cast<Coupon>(
-                    arguments_.normalizedLeg[i]);
+            const ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(i);
 
             Date d1 = coupon->accrualStartDate();
             Date d2 = coupon->date();
@@ -101,7 +99,7 @@ namespace QuantLib {
             results_.upfrontPremiumValue
                 = inceptionTrancheNotional * arguments_.upfrontRate
                     * discountCurve_->discount(
-                        boost::dynamic_pointer_cast<Coupon>(
+                        ext::dynamic_pointer_cast<Coupon>(
                             arguments_.normalizedLeg[0])->accrualStartDate());
 
         if (arguments_.side == Protection::Buyer) {

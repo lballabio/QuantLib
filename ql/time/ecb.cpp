@@ -21,15 +21,9 @@
 #include <ql/time/ecb.hpp>
 #include <ql/settings.hpp>
 #include <ql/utilities/dataparsers.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
 #include <boost/algorithm/string/case_conv.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
 #include <algorithm>
+#include <string>
 
 using boost::algorithm::to_upper_copy;
 using std::string;
@@ -103,10 +97,7 @@ namespace QuantLib {
         else if (monthString=="DEC") m = December;
         else QL_FAIL("not an ECB month (and it should have been)");
 
-        // lexical_cast causes compilation errors with x64
-        //Year y = boost::lexical_cast<Year>(code.substr(3, 2));
-
-        Year y = io::to_integer(code.substr(3, 2));
+        Year y = std::stoi(code.substr(3, 2));
         Date referenceDate = (refDate != Date() ?
                               refDate :
                               Date(Settings::instance().evaluationDate()));
@@ -184,12 +175,11 @@ namespace QuantLib {
                   Settings::instance().evaluationDate() :
                   date);
 
-        std::set<Date>::const_iterator i =
-            std::upper_bound(knownDates().begin(), knownDates().end(), d);
+        auto i = std::upper_bound(knownDates().begin(), knownDates().end(), d);
 
         QL_REQUIRE(i!=knownDates().end(),
                    "ECB dates after " << *(--knownDates().end()) << " are unknown");
-        return Date(*i);
+        return *i;
     }
 
     std::vector<Date> ECB::nextDates(const Date& date) {
@@ -197,8 +187,7 @@ namespace QuantLib {
                   Settings::instance().evaluationDate() :
                   date);
 
-        std::set<Date>::const_iterator i =
-            std::upper_bound(knownDates().begin(), knownDates().end(), d);
+        auto i = std::upper_bound(knownDates().begin(), knownDates().end(), d);
 
         QL_REQUIRE(i!=knownDates().end(),
                    "ECB dates after " << *knownDates().end() << " are unknown");
@@ -257,9 +246,7 @@ namespace QuantLib {
         else if (monthString=="OCT") result << "NOV" << code.substr(3, 2);
         else if (monthString=="NOV") result << "DEC" << code.substr(3, 2);
         else if (monthString=="DEC") {
-            // lexical_cast causes compilation errors with x64
-            //Year y = boost::lexical_cast<Year>(code.substr(3, 2));
-            unsigned int y = (io::to_integer(code.substr(3, 2)) + 1) % 100;
+            unsigned int y = (std::stoi(code.substr(3, 2)) + 1) % 100;
             string padding;
             if (y < 10)
                 padding = "0";

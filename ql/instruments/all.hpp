@@ -9,6 +9,7 @@
 #include <ql/instruments/basketoption.hpp>
 #include <ql/instruments/bmaswap.hpp>
 #include <ql/instruments/bond.hpp>
+#include <ql/instruments/bondforward.hpp>
 #include <ql/instruments/callabilityschedule.hpp>
 #include <ql/instruments/capfloor.hpp>
 #include <ql/instruments/claim.hpp>
@@ -32,6 +33,7 @@
 #include <ql/instruments/inflationcapfloor.hpp>
 #include <ql/instruments/lookbackoption.hpp>
 #include <ql/instruments/makecapfloor.hpp>
+#include <ql/instruments/makecds.hpp>
 #include <ql/instruments/makecms.hpp>
 #include <ql/instruments/makeois.hpp>
 #include <ql/instruments/makeswaption.hpp>
@@ -42,6 +44,7 @@
 #include <ql/instruments/nonstandardswaption.hpp>
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
+#include <ql/instruments/overnightindexfuture.hpp>
 #include <ql/instruments/payoffs.hpp>
 #include <ql/instruments/quantobarrieroption.hpp>
 #include <ql/instruments/quantoforwardvanillaoption.hpp>
@@ -57,5 +60,6 @@
 #include <ql/instruments/varianceswap.hpp>
 #include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/instruments/zerocouponinflationswap.hpp>
+#include <ql/instruments/zerocouponswap.hpp>
 
 #include <ql/instruments/bonds/all.hpp>

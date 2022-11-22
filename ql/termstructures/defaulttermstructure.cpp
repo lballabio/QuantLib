@@ -22,44 +22,40 @@
 
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/utilities/dataformatters.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     DefaultProbabilityTermStructure::DefaultProbabilityTermStructure(
-                                    const DayCounter& dc,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates)
-    : TermStructure(dc), jumps_(jumps),
-      jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
-      nJumps_(jumps_.size()) {
+        const DayCounter& dc, std::vector<Handle<Quote> > jumps, const std::vector<Date>& jumpDates)
+    : TermStructure(dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
+      jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
         setJumps();
         for (Size i=0; i<nJumps_; ++i)
             registerWith(jumps_[i]);
     }
 
     DefaultProbabilityTermStructure::DefaultProbabilityTermStructure(
-                                    const Date& referenceDate,
-                                    const Calendar& cal,
-                                    const DayCounter& dc,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates)
-    : TermStructure(referenceDate, cal, dc), jumps_(jumps),
-      jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
-      nJumps_(jumps_.size()) {
+        const Date& referenceDate,
+        const Calendar& cal,
+        const DayCounter& dc,
+        std::vector<Handle<Quote> > jumps,
+        const std::vector<Date>& jumpDates)
+    : TermStructure(referenceDate, cal, dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
+      jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
         setJumps();
         for (Size i=0; i<nJumps_; ++i)
             registerWith(jumps_[i]);
     }
 
     DefaultProbabilityTermStructure::DefaultProbabilityTermStructure(
-                                    Natural settlementDays,
-                                    const Calendar& cal,
-                                    const DayCounter& dc,
-                                    const std::vector<Handle<Quote> >& jumps,
-                                    const std::vector<Date>& jumpDates)
-    : TermStructure(settlementDays, cal, dc), jumps_(jumps),
-      jumpDates_(jumpDates), jumpTimes_(jumpDates.size()),
-      nJumps_(jumps_.size()) {
+        Natural settlementDays,
+        const Calendar& cal,
+        const DayCounter& dc,
+        std::vector<Handle<Quote> > jumps,
+        const std::vector<Date>& jumpDates)
+    : TermStructure(settlementDays, cal, dc), jumps_(std::move(jumps)), jumpDates_(jumpDates),
+      jumpTimes_(jumpDates.size()), nJumps_(jumps_.size()) {
         setJumps();
         for (Size i=0; i<nJumps_; ++i)
             registerWith(jumps_[i]);

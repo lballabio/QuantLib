@@ -21,6 +21,7 @@
 #define quantlib_test_forward_option_hpp
 
 #include <boost/test/unit_test.hpp>
+#include "speedlevel.hpp"
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
@@ -32,7 +33,10 @@ class ForwardOptionTest {
     static void testPerformanceValues();
     static void testPerformanceGreeks();
     static void testGreeksInitialization();
-    static boost::unit_test_framework::test_suite* suite();
+    static void testMCPrices();
+    static void testHestonMCPrices();
+    static void testHestonAnalyticalVsMCPrices();
+    static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 
 

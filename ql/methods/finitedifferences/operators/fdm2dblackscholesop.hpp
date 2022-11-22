@@ -36,32 +36,30 @@ namespace QuantLib {
     class Fdm2dBlackScholesOp : public FdmLinearOpComposite {
       public:
         Fdm2dBlackScholesOp(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& p1,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& p2,
+            const ext::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
             Real correlation,
             Time maturity,
             bool localVol = false,
             Real illegalLocalVolOverwrite = -Null<Real>());
-           
-        Size size() const;
-        void setTime(Time t1, Time t2);    
-        Disposable<Array> apply(const Array& x) const;
-        Disposable<Array> apply_mixed(const Array& x) const;
-    
-        Disposable<Array> apply_direction(Size direction,const Array& x) const;
-        
-        Disposable<Array> solve_splitting(Size direction,
-                                          const Array& x, Real s) const;
-        Disposable<Array> preconditioner(const Array& r, Real s) const;
-    
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
-#endif
+
+        Size size() const override;
+        void setTime(Time t1, Time t2) override;
+        Array apply(const Array& x) const override;
+        Array apply_mixed(const Array& x) const override;
+
+        Array apply_direction(Size direction, const Array& x) const override;
+
+        Array solve_splitting(Size direction, const Array& x, Real s) const override;
+        Array preconditioner(const Array& r, Real s) const override;
+
+        std::vector<SparseMatrix> toMatrixDecomp() const override;
+
       private:
-        const boost::shared_ptr<FdmMesher> mesher_;
-        const boost::shared_ptr<GeneralizedBlackScholesProcess> p1_, p2_;
-        const boost::shared_ptr<LocalVolTermStructure> localVol1_, localVol2_;
+        const ext::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<GeneralizedBlackScholesProcess> p1_, p2_;
+        const ext::shared_ptr<LocalVolTermStructure> localVol1_, localVol2_;
         const Array x_, y_;
         
         Real currentForwardRate_;

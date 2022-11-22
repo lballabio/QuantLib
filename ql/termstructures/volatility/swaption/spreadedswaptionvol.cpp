@@ -18,38 +18,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
-#include <ql/termstructures/volatility/spreadedsmilesection.hpp>
 #include <ql/quote.hpp>
+#include <ql/termstructures/volatility/spreadedsmilesection.hpp>
+#include <ql/termstructures/volatility/swaption/spreadedswaptionvol.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     SpreadedSwaptionVolatility::SpreadedSwaptionVolatility(
-                            const Handle<SwaptionVolatilityStructure>& baseVol,
-                            const Handle<Quote>& spread)
-    : SwaptionVolatilityStructure(baseVol->businessDayConvention(),
-                                  baseVol->dayCounter()),
-      baseVol_(baseVol), spread_(spread) {
-          enableExtrapolation(baseVol->allowsExtrapolation());
-          registerWith(baseVol_);
-          registerWith(spread_);
+        const Handle<SwaptionVolatilityStructure>& baseVol, Handle<Quote> spread)
+    : SwaptionVolatilityStructure(baseVol->businessDayConvention(), baseVol->dayCounter()),
+      baseVol_(baseVol), spread_(std::move(spread)) {
+        enableExtrapolation(baseVol->allowsExtrapolation());
+        registerWith(baseVol_);
+        registerWith(spread_);
     }
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     SpreadedSwaptionVolatility::smileSectionImpl(const Date& d,
                                                  const Period& swapT) const {
-        boost::shared_ptr<SmileSection> baseSmile =
+        ext::shared_ptr<SmileSection> baseSmile =
             baseVol_->smileSection(d, swapT, true);
-        return boost::shared_ptr<SmileSection>(new
+        return ext::shared_ptr<SmileSection>(new
             SpreadedSmileSection(baseSmile, spread_));
     }
 
-    boost::shared_ptr<SmileSection>
+    ext::shared_ptr<SmileSection>
     SpreadedSwaptionVolatility::smileSectionImpl(Time optionTime,
                                                  Time swapLength) const {
-        boost::shared_ptr<SmileSection> baseSmile =
+        ext::shared_ptr<SmileSection> baseSmile =
             baseVol_->smileSection(optionTime, swapLength, true);
-        return boost::shared_ptr<SmileSection>(new
+        return ext::shared_ptr<SmileSection>(new
             SpreadedSmileSection(baseSmile, spread_));
     }
 

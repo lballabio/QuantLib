@@ -17,14 +17,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/products/multiproductmultistep.hpp>
 #include <ql/errors.hpp>
+#include <ql/models/marketmodels/products/multiproductmultistep.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    MultiProductMultiStep::MultiProductMultiStep(
-            const std::vector<Time>& rateTimes)
-    : rateTimes_(rateTimes) {
+    MultiProductMultiStep::MultiProductMultiStep(std::vector<Time> rateTimes)
+    : rateTimes_(std::move(rateTimes)) {
         QL_REQUIRE(rateTimes_.size()>1,
                    "Rate times must contain at least two values");
         Size n = rateTimes_.size()-1;

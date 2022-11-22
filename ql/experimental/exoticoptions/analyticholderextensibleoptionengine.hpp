@@ -33,12 +33,12 @@ namespace QuantLib {
     class AnalyticHolderExtensibleOptionEngine
         : public HolderExtensibleOption::engine {
       public:
-        AnalyticHolderExtensibleOptionEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
-        void calculate() const;
+        explicit AnalyticHolderExtensibleOptionEngine(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        void calculate() const override;
 
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Real strike() const;
         Time firstExpiryTime() const;
         Time secondExpiryTime() const;

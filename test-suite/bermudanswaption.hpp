@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2021, 2022 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,6 +31,7 @@ class BermudanSwaptionTest {
   public:
     static void testCachedValues();
     static void testCachedG2Values();
+    static void testTreeEngineTimeSnapping();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
 

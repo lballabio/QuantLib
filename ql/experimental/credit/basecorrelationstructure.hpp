@@ -75,13 +75,10 @@ namespace QuantLib {
           lossLevel_(lossLevel),
           trancheTimes_(tenors.size(), 0.) {
               checkTrancheTenors();
-               
-              for(Size i=0; i<tenors_.size(); i++)
+
+              for (auto& tenor : tenors_)
                   trancheDates_.push_back(
-                      calendar().advance(referenceDate(),
-                                         tenors_[i],
-                                         businessDayConvention())
-                                          );
+                      calendar().advance(referenceDate(), tenor, businessDayConvention()));
 
               initializeTrancheTimes();
               checkInputs(correlations_.rows(), correlations_.columns());
@@ -93,27 +90,23 @@ namespace QuantLib {
     private:
         virtual void setupInterpolation() ;
     public:
-        Size correlationSize() const {return 1;}
-        //! Implicit correlation for the given loss interval.
-        Real ImplicitCorrelation(Real, Real);
+      Size correlationSize() const override { return 1; }
+      //! Implicit correlation for the given loss interval.
+      Real ImplicitCorrelation(Real, Real);
 
-        void checkTrancheTenors() const ;
-        void checkLosses() const;
-        void initializeTrancheTimes() const;
-        void checkInputs(Size volRows, Size volsColumns) const;
-        void registerWithMarketData();
+      void checkTrancheTenors() const;
+      void checkLosses() const;
+      void initializeTrancheTimes() const;
+      void checkInputs(Size volRows, Size volsColumns) const;
+      void registerWithMarketData();
 
-        void update();
-        void updateMatrix() const;
+      void update() override;
+      void updateMatrix() const;
 
-        // TermStructure interface
-        Date maxDate() const {
-            return trancheDates_.back();
-        }
-        Real correlation(const Date& d, Real lossLevel, 
-            bool extrapolate = false) const 
-        {
-            return correlation(timeFromReference(d), lossLevel, extrapolate);
+      // TermStructure interface
+      Date maxDate() const override { return trancheDates_.back(); }
+      Real correlation(const Date& d, Real lossLevel, bool extrapolate = false) const {
+          return correlation(timeFromReference(d), lossLevel, extrapolate);
         }
         Real correlation(Time t, Real lossLevel, 
             bool extrapolate = false) const 

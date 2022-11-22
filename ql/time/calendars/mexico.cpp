@@ -23,7 +23,7 @@ namespace QuantLib {
 
     Mexico::Mexico(Market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Mexico::BmvImpl);
+        static ext::shared_ptr<Calendar::Impl> impl(new Mexico::BmvImpl);
         impl_ = impl;
     }
 
@@ -50,6 +50,8 @@ namespace QuantLib {
             || (d == 1 && m == May)
             // National Day
             || (d == 16 && m == September)
+            // All Souls Day
+            || (d == 2 && m == November)
             // Revolution Day
             || (y <= 2005 && d == 20 && m == November)
             || (y >= 2006 && (d >= 15 && d <= 21) && w == Monday && m == November)
@@ -57,7 +59,7 @@ namespace QuantLib {
             || (d == 12 && m == December)
             // Christmas
             || (d == 25 && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

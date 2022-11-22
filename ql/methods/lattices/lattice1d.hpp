@@ -40,7 +40,7 @@ namespace QuantLib {
       public:
         TreeLattice1D(const TimeGrid& timeGrid, Size n)
         : TreeLattice<Impl>(timeGrid,n) {}
-        Disposable<Array> grid(Time t) const {
+        Array grid(Time t) const override {
             Size i = this->timeGrid().index(t);
             Array grid(this->impl().size(i));
             for (Size j=0; j<grid.size(); j++)

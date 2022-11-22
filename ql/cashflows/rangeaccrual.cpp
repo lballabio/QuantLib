@@ -19,15 +19,15 @@
 */
 
 
-#include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/pricingengines/blackformula.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/time/schedule.hpp>
+#include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/indexes/iborindex.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-
+#include <ql/time/schedule.hpp>
 #include <cmath>
+#include <utility>
 
 namespace QuantLib {
 
@@ -36,27 +36,34 @@ namespace QuantLib {
     //===========================================================================//
 
     RangeAccrualFloatersCoupon::RangeAccrualFloatersCoupon(
-                const Date& paymentDate,
-                Real nominal,
-                const boost::shared_ptr<IborIndex>& index,
-                const Date& startDate,                                  // S
-                const Date& endDate,                                    // T
-                Natural fixingDays,
-                const DayCounter& dayCounter,
-                Real gearing,
-                Rate spread,
-                const Date& refPeriodStart,
-                const Date& refPeriodEnd,
-                const boost::shared_ptr<Schedule>&  observationsSchedule,
-                Real lowerTrigger,                                    // l
-                Real upperTrigger                                     // u
+        const Date& paymentDate,
+        Real nominal,
+        const ext::shared_ptr<IborIndex>& index,
+        const Date& startDate, // S
+        const Date& endDate,   // T
+        Natural fixingDays,
+        const DayCounter& dayCounter,
+        Real gearing,
+        Rate spread,
+        const Date& refPeriodStart,
+        const Date& refPeriodEnd,
+        ext::shared_ptr<Schedule> observationsSchedule,
+        Real lowerTrigger, // l
+        Real upperTrigger  // u
         )
-    : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                         fixingDays, index, gearing, spread,
-                         refPeriodStart, refPeriodEnd, dayCounter),
-    observationsSchedule_(observationsSchedule),
-    lowerTrigger_(lowerTrigger),
-    upperTrigger_(upperTrigger){
+    : FloatingRateCoupon(paymentDate,
+                         nominal,
+                         startDate,
+                         endDate,
+                         fixingDays,
+                         index,
+                         gearing,
+                         spread,
+                         refPeriodStart,
+                         refPeriodEnd,
+                         dayCounter),
+      observationsSchedule_(std::move(observationsSchedule)), lowerTrigger_(lowerTrigger),
+      upperTrigger_(upperTrigger) {
 
         QL_REQUIRE(lowerTrigger_<upperTrigger,
                    "lowerTrigger_>=upperTrigger");
@@ -80,13 +87,11 @@ namespace QuantLib {
             observationTimes_.push_back(
                 dayCounter.yearFraction(referenceDate, observationDates_[i]));
         }
-
-     }
+    }
 
     void RangeAccrualFloatersCoupon::accept(AcyclicVisitor& v) {
-        Visitor<RangeAccrualFloatersCoupon>* v1 =
-            dynamic_cast<Visitor<RangeAccrualFloatersCoupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<RangeAccrualFloatersCoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             FloatingRateCoupon::accept(v);
@@ -111,8 +116,8 @@ namespace QuantLib {
 
         Date paymentDate = coupon_->date();
 
-        boost::shared_ptr<IborIndex> index =
-            boost::dynamic_pointer_cast<IborIndex>(coupon_->index());
+        ext::shared_ptr<IborIndex> index =
+            ext::dynamic_pointer_cast<IborIndex>(coupon_->index());
         const Handle<YieldTermStructure>& rateCurve =
             index->forwardingTermStructure();
         discount_ = rateCurve->discount(paymentDate);
@@ -165,20 +170,13 @@ namespace QuantLib {
     //===========================================================================//
     //                          RangeAccrualPricerByBgm                          //
     //===========================================================================//
-    RangeAccrualPricerByBgm::RangeAccrualPricerByBgm(
-            Real correlation,
-            const  boost::shared_ptr<SmileSection>& smilesOnExpiry,
-            const  boost::shared_ptr<SmileSection>& smilesOnPayment,
-            bool withSmile,
-            bool byCallSpread)
-    : correlation_(correlation),
-      withSmile_(withSmile),
-      byCallSpread_(byCallSpread),
-      smilesOnExpiry_(smilesOnExpiry),
-      smilesOnPayment_(smilesOnPayment),
-      eps_(1.0e-8) {
-
-    }
+    RangeAccrualPricerByBgm::RangeAccrualPricerByBgm(Real correlation,
+                                                     ext::shared_ptr<SmileSection> smilesOnExpiry,
+                                                     ext::shared_ptr<SmileSection> smilesOnPayment,
+                                                     bool withSmile,
+                                                     bool byCallSpread)
+    : correlation_(correlation), withSmile_(withSmile), byCallSpread_(byCallSpread),
+      smilesOnExpiry_(std::move(smilesOnExpiry)), smilesOnPayment_(std::move(smilesOnPayment)) {}
     Real RangeAccrualPricerByBgm::swapletPrice() const{
 
         Real result = 0.;
@@ -335,7 +333,7 @@ namespace QuantLib {
             const Real lowerPrice = digitalPrice(lowerTrigger, initialValue, expiry, deflator);
             const Real upperPrice = digitalPrice(upperTrigger, initialValue, expiry, deflator);
             const Real result =  lowerPrice - upperPrice;
-            QL_REQUIRE(result >0.,
+            QL_REQUIRE(result >=0.,
                 "RangeAccrualPricerByBgm::digitalRangePrice:\n digitalPrice("<<upperTrigger<<
                 "): "<<upperPrice<<" >  digitalPrice("<<lowerTrigger<<"): "<<lowerPrice);
             return result;
@@ -385,7 +383,7 @@ namespace QuantLib {
             "RangeAccrualPricerByBgm::digitalPriceWithoutSmile: result/deflator > 1. Ratio: "
             << result/deflator << " result: " << result<< " deflator: " << deflator);
 
-        return result;
+       return result;
     }
 
     Real RangeAccrualPricerByBgm::digitalPriceWithSmile(Real strike,
@@ -525,14 +523,8 @@ namespace QuantLib {
     }
 
 
-
-
-    RangeAccrualLeg::RangeAccrualLeg(
-                            const Schedule& schedule,
-                            const boost::shared_ptr<IborIndex>& index)
-    : schedule_(schedule), index_(index),
-      paymentAdjustment_(Following),
-      observationConvention_(ModifiedFollowing) {}
+    RangeAccrualLeg::RangeAccrualLeg(Schedule schedule, ext::shared_ptr<IborIndex> index)
+    : schedule_(std::move(schedule)), index_(std::move(index)) {}
 
     RangeAccrualLeg& RangeAccrualLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);
@@ -655,22 +647,22 @@ namespace QuantLib {
 
         Date refStart, start, refEnd, end;
         Date paymentDate;
-        std::vector<boost::shared_ptr<Schedule> > observationsSchedules;
+        std::vector<ext::shared_ptr<Schedule> > observationsSchedules;
 
         for (Size i=0; i<n; ++i) {
             refStart = start = schedule_.date(i);
             refEnd   =   end = schedule_.date(i+1);
             paymentDate = calendar.adjust(end, paymentAdjustment_);
-            if (i==0   && !schedule_.isRegular(i+1)) {
+            if (i==0 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1)) {
                 BusinessDayConvention bdc = schedule_.businessDayConvention();
                 refStart = calendar.adjust(end - schedule_.tenor(), bdc);
             }
-            if (i==n-1 && !schedule_.isRegular(i+1)) {
+            if (i==n-1 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1)) {
                 BusinessDayConvention bdc = schedule_.businessDayConvention();
                 refEnd = calendar.adjust(start + schedule_.tenor(), bdc);
             }
             if (detail::get(gearings_, i, 1.0) == 0.0) { // fixed coupon
-                leg.push_back(boost::shared_ptr<CashFlow>(new
+                leg.push_back(ext::shared_ptr<CashFlow>(new
                     FixedRateCoupon(paymentDate,
                                     detail::get(notionals_, i, Null<Real>()),
                                     detail::get(spreads_, i, 0.0),
@@ -678,14 +670,13 @@ namespace QuantLib {
                                     start, end, refStart, refEnd)));
             } else { // floating coupon
                 observationsSchedules.push_back(
-                    boost::shared_ptr<Schedule>(new
-                        Schedule(start, end,
+                    ext::make_shared<Schedule>(start, end,
                                  observationTenor_, calendar,
                                  observationConvention_,
                                  observationConvention_,
-                                 DateGeneration::Forward, false)));
+                                 DateGeneration::Forward, false));
 
-                    leg.push_back(boost::shared_ptr<CashFlow>(new
+                    leg.push_back(ext::shared_ptr<CashFlow>(new
                        RangeAccrualFloatersCoupon(
                             paymentDate,
                             detail::get(notionals_, i, Null<Real>()),

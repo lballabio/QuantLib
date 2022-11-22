@@ -30,6 +30,7 @@
 #include <ql/methods/montecarlo/multipath.hpp>
 #include <ql/methods/montecarlo/sample.hpp>
 #include <ql/stochasticprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -50,7 +51,7 @@ namespace QuantLib {
     class MultiPathGenerator {
       public:
         typedef Sample<MultiPath> sample_type;
-        MultiPathGenerator(const boost::shared_ptr<StochasticProcess>&,
+        MultiPathGenerator(const ext::shared_ptr<StochasticProcess>&,
                            const TimeGrid&,
                            GSG generator,
                            bool brownianBridge = false);
@@ -59,7 +60,7 @@ namespace QuantLib {
       private:
         const sample_type& next(bool antithetic) const;
         bool brownianBridge_;
-        boost::shared_ptr<StochasticProcess> process_;
+        ext::shared_ptr<StochasticProcess> process_;
         GSG generator_;
         mutable sample_type next_;
     };
@@ -68,13 +69,12 @@ namespace QuantLib {
     // template definitions
 
     template <class GSG>
-    MultiPathGenerator<GSG>::MultiPathGenerator(
-                   const boost::shared_ptr<StochasticProcess>& process,
-                   const TimeGrid& times,
-                   GSG generator,
-                   bool brownianBridge)
-    : brownianBridge_(brownianBridge), process_(process),
-      generator_(generator), next_(MultiPath(process->size(), times), 1.0) {
+    MultiPathGenerator<GSG>::MultiPathGenerator(const ext::shared_ptr<StochasticProcess>& process,
+                                                const TimeGrid& times,
+                                                GSG generator,
+                                                bool brownianBridge)
+    : brownianBridge_(brownianBridge), process_(process), generator_(std::move(generator)),
+      next_(MultiPath(process->size(), times), 1.0) {
 
         QL_REQUIRE(generator_.dimension() ==
                    process->factors()*(times.size()-1),
@@ -136,7 +136,7 @@ namespace QuantLib {
                     std::transform(sequence_.value.begin()+offset,
                                    sequence_.value.begin()+offset+n,
                                    temp.begin(),
-                                   std::negate<Real>());
+                                   std::negate<>());
                 else
                     std::copy(sequence_.value.begin()+offset,
                               sequence_.value.begin()+offset+n,

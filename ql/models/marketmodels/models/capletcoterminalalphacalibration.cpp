@@ -18,38 +18,36 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/models/capletcoterminalalphacalibration.hpp>
+#include <ql/math/matrixutilities/pseudosqrt.hpp>
 #include <ql/models/marketmodels/models/alphafinder.hpp>
 #include <ql/models/marketmodels/models/alphaformconcrete.hpp>
+#include <ql/models/marketmodels/models/capletcoterminalalphacalibration.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantvariance.hpp>
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
-#include <ql/math/matrixutilities/pseudosqrt.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     CTSMMCapletAlphaFormCalibration::CTSMMCapletAlphaFormCalibration(
-                            const EvolutionDescription& evolution,
-                            const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
-                            const std::vector<boost::shared_ptr<
-                                        PiecewiseConstantVariance> >&
-                                                displacedSwapVariances,
-                            const std::vector<Volatility>& mktCapletVols,
-                            const boost::shared_ptr<CurveState>& cs,
-                            Spread displacement,
-                            const std::vector<Real>& alphaInitial,
-                            const std::vector<Real>& alphaMax,
-                            const std::vector<Real>& alphaMin,
-                            bool maximizeHomogeneity,
-                            boost::shared_ptr<AlphaForm> parametricForm)
-    : CTSMMCapletCalibration(evolution, corr, displacedSwapVariances,
-                             mktCapletVols, cs, displacement),
+        const EvolutionDescription& evolution,
+        const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
+        const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
+        const std::vector<Volatility>& mktCapletVols,
+        const ext::shared_ptr<CurveState>& cs,
+        Spread displacement,
+        const std::vector<Real>& alphaInitial,
+        const std::vector<Real>& alphaMax,
+        const std::vector<Real>& alphaMin,
+        bool maximizeHomogeneity,
+        ext::shared_ptr<AlphaForm> parametricForm)
+    : CTSMMCapletCalibration(
+          evolution, corr, displacedSwapVariances, mktCapletVols, cs, displacement),
       alphaInitial_(alphaInitial), alphaMax_(alphaMax), alphaMin_(alphaMin),
-      maximizeHomogeneity_(maximizeHomogeneity),
-      parametricForm_(parametricForm),
+      maximizeHomogeneity_(maximizeHomogeneity), parametricForm_(std::move(parametricForm)),
       alpha_(numberOfRates_), a_(numberOfRates_), b_(numberOfRates_) {
-          if (!parametricForm_)
-              parametricForm_ = boost::shared_ptr<AlphaForm>(new
-                AlphaFormLinearHyperbolic(evolution.rateTimes()));
+        if (!parametricForm_)
+            parametricForm_ =
+                ext::shared_ptr<AlphaForm>(new AlphaFormLinearHyperbolic(evolution.rateTimes()));
 
         QL_REQUIRE(numberOfRates_==alphaInitial.size(),
             "mismatch between number of rates (" << numberOfRates_ <<
@@ -62,34 +60,31 @@ namespace QuantLib {
         QL_REQUIRE(numberOfRates_==alphaMin.size(),
             "mismatch between number of rates (" << numberOfRates_ <<
             ") and alphaMin (" << alphaMin.size() << ")");
-
     }
 
     Natural CTSMMCapletAlphaFormCalibration::capletAlphaFormCalibration(
-            const EvolutionDescription& evolution,
-            const PiecewiseConstantCorrelation& corr,
-            const std::vector<boost::shared_ptr<
-                PiecewiseConstantVariance> >&
-                    displacedSwapVariances,
-            const std::vector<Volatility>& capletVols,
-            const CurveState& cs,
-            const Spread displacement,
+        const EvolutionDescription& evolution,
+        const PiecewiseConstantCorrelation& corr,
+        const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >& displacedSwapVariances,
+        const std::vector<Volatility>& capletVols,
+        const CurveState& cs,
+        const Spread displacement,
 
-            const std::vector<Real>& alphaInitial,
-            const std::vector<Real>& alphaMax,
-            const std::vector<Real>& alphaMin,
-            bool maximizeHomogeneity,
-            boost::shared_ptr<AlphaForm> parametricForm,
+        const std::vector<Real>& alphaInitial,
+        const std::vector<Real>& alphaMax,
+        const std::vector<Real>& alphaMin,
+        bool maximizeHomogeneity,
+        const ext::shared_ptr<AlphaForm>& parametricForm,
 
-            const Size numberOfFactors,
-            Integer maxIterations,
-            Real tolerance,
+        const Size numberOfFactors,
+        Integer maxIterations,
+        Real tolerance,
 
-            std::vector<Real>& alpha,
-            std::vector<Real>& a,
-            std::vector<Real>& b,
+        std::vector<Real>& alpha,
+        std::vector<Real>& a,
+        std::vector<Real>& b,
 
-            std::vector<Matrix>& swapCovariancePseudoRoots) {
+        std::vector<Matrix>& swapCovariancePseudoRoots) {
 
         CTSMMCapletCalibration::performChecks(evolution, corr,
             displacedSwapVariances, capletVols, cs);

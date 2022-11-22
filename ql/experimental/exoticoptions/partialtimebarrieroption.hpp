@@ -45,9 +45,10 @@ namespace QuantLib {
             Real barrier,
             Real rebate,
             Date coverEventDate,
-            const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise);
-        void setupArguments(PricingEngine::arguments*) const;
+            const ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const ext::shared_ptr<Exercise>& exercise);
+        void setupArguments(PricingEngine::arguments*) const override;
+
       protected:
         PartialBarrier::Type barrierType_;
         PartialBarrier::Range barrierRange_;
@@ -66,7 +67,7 @@ namespace QuantLib {
         Real barrier;
         Real rebate;
         Date coverEventDate;
-        void validate() const;
+        void validate() const override;
     };
 
     //! %Partial-Time-Barrier-Option %engine base class

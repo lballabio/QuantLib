@@ -31,8 +31,7 @@ namespace QuantLib {
     //! %Eonia (Euro Overnight Index Average) rate fixed by the ECB.
     class Eonia : public OvernightIndex {
       public:
-        explicit Eonia(const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+        explicit Eonia(const Handle<YieldTermStructure>& h = {});
     };
 
 }

@@ -34,26 +34,26 @@ namespace QuantLib {
     //! Predictor-Corrector
     class LogNormalCotSwapRatePc : public MarketModelEvolver {
       public:
-        LogNormalCotSwapRatePc(const boost::shared_ptr<MarketModel>&,
+        LogNormalCotSwapRatePc(const ext::shared_ptr<MarketModel>&,
                                const BrownianGeneratorFactory&,
                                const std::vector<Size>& numeraires,
                                Size initialStep = 0);
         //! \name MarketModel interface
         //@{
-        const std::vector<Size>& numeraires() const;
-        Real startNewPath();
-        Real advanceStep();
-        Size currentStep() const;
-        const CurveState& currentState() const;
-        void setInitialState(const CurveState&);
+        const std::vector<Size>& numeraires() const override;
+        Real startNewPath() override;
+        Real advanceStep() override;
+        Size currentStep() const override;
+        const CurveState& currentState() const override;
+        void setInitialState(const CurveState&) override;
         //@}
       private:
         void setCoterminalSwapRates(const std::vector<Real>& swapRates);
         // inputs
-        boost::shared_ptr<MarketModel> marketModel_;
+        ext::shared_ptr<MarketModel> marketModel_;
         std::vector<Size> numeraires_;
         Size initialStep_;
-        boost::shared_ptr<BrownianGenerator> generator_;
+        ext::shared_ptr<BrownianGenerator> generator_;
         // fixed variables
         std::vector<std::vector<Real> > fixedDrifts_;
          // working variables

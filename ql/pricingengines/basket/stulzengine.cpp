@@ -19,12 +19,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
+#include <ql/math/distributions/bivariatenormaldistribution.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/basket/stulzengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/math/distributions/bivariatenormaldistribution.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/exercise.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -83,7 +84,7 @@ namespace QuantLib {
                                        Real variance1, Real variance2,
                                        Real rho) {
 
-            boost::shared_ptr<StrikedTypePayoff> payoff(new
+            ext::shared_ptr<StrikedTypePayoff> payoff(new
                 PlainVanillaPayoff(Option::Call, strike));
 
             Real black1 = blackFormula(payoff->optionType(), payoff->strike(),
@@ -99,11 +100,10 @@ namespace QuantLib {
         }
     }
 
-    StulzEngine::StulzEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process1,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process2,
-            Real correlation)
-    : process1_(process1), process2_(process2), rho_(correlation) {
+    StulzEngine::StulzEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+                             ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+                             Real correlation)
+    : process1_(std::move(process1)), process2_(std::move(process2)), rho_(correlation) {
         registerWith(process1_);
         registerWith(process2_);
     }
@@ -113,22 +113,22 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        boost::shared_ptr<EuropeanExercise> exercise =
-            boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
+        ext::shared_ptr<EuropeanExercise> exercise =
+            ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise, "not an European Option");
 
-        boost::shared_ptr<BasketPayoff> basket_payoff =
-            boost::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
+        ext::shared_ptr<BasketPayoff> basket_payoff =
+            ext::dynamic_pointer_cast<BasketPayoff>(arguments_.payoff);
 
-        boost::shared_ptr<MinBasketPayoff> min_basket =
-            boost::dynamic_pointer_cast<MinBasketPayoff>(arguments_.payoff);
+        ext::shared_ptr<MinBasketPayoff> min_basket =
+            ext::dynamic_pointer_cast<MinBasketPayoff>(arguments_.payoff);
 
-        boost::shared_ptr<MaxBasketPayoff> max_basket =
-            boost::dynamic_pointer_cast<MaxBasketPayoff>(arguments_.payoff);
+        ext::shared_ptr<MaxBasketPayoff> max_basket =
+            ext::dynamic_pointer_cast<MaxBasketPayoff>(arguments_.payoff);
         QL_REQUIRE(min_basket || max_basket, "unknown basket type");
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(basket_payoff->basePayoff());
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(basket_payoff->basePayoff());
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         Real strike = payoff->strike();
@@ -152,7 +152,7 @@ namespace QuantLib {
         Real forward2 = process2_->stateVariable()->value() *
             dividendDiscount2 / riskFreeDiscount;
 
-        if (max_basket) {
+        if (max_basket != nullptr) {
             switch (payoff->optionType()) {
               // euro call on a two asset max basket
               case Option::Call:
@@ -176,7 +176,7 @@ namespace QuantLib {
               default:
                 QL_FAIL("unknown option type");
             }
-        } else if (min_basket) {
+        } else if (min_basket != nullptr) {
             switch (payoff->optionType()) {
               // euro call on a two asset min basket
               case Option::Call:

@@ -21,36 +21,25 @@
     \brief Analytic engine for arbitrary European payoffs under the Heston model
 */
 
-
-#include <ql/math/integrals/gausslobattointegral.hpp>
-#include <ql/experimental/finitedifferences/hestonrndcalculator.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <ql/math/integrals/gausslobattointegral.hpp>
+#include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    AnalyticPDFHestonEngine::AnalyticPDFHestonEngine(
-        const boost::shared_ptr<HestonModel>& model,
-        Real integrationEps_,
-        Size maxIntegrationIterations)
-    : maxIntegrationIterations_(maxIntegrationIterations),
-      integrationEps_(integrationEps_),
-      model_(model) {  }
+    AnalyticPDFHestonEngine::AnalyticPDFHestonEngine(ext::shared_ptr<HestonModel> model,
+                                                     Real integrationEps_,
+                                                     Size maxIntegrationIterations)
+    : maxIntegrationIterations_(maxIntegrationIterations), integrationEps_(integrationEps_),
+      model_(std::move(model)) {}
 
     void AnalyticPDFHestonEngine::calculate() const {
         // this is an European option pricer
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
 
-        const boost::shared_ptr<HestonProcess>& process = model_->process();
+        const ext::shared_ptr<HestonProcess>& process = model_->process();
 
         const Time t = process->time(arguments_.exercise->lastDate());
 
@@ -64,10 +53,9 @@ namespace QuantLib {
 
         const Real drift = x0 + std::log(rD/qD);
 
-        results_.value = GaussLobattoIntegral(
-            maxIntegrationIterations_, integrationEps_)(
-            boost::bind(&AnalyticPDFHestonEngine::weightedPayoff, this,_1, t),
-                         -xMax+drift, xMax+drift);
+        results_.value = GaussLobattoIntegral(maxIntegrationIterations_, integrationEps_)(
+            [&](Real _x){ return weightedPayoff(_x, t); },
+            -xMax+drift, xMax+drift);
     }
 
     Real AnalyticPDFHestonEngine::Pv(Real x_t, Time t) const {
@@ -90,7 +78,7 @@ namespace QuantLib {
         const Real s_t = std::exp(x_t);
         const Real payoff = (*arguments_.payoff)(s_t);
 
-        return (payoff != 0.0) ? payoff*Pv(x_t, t)*rD : 0.0;
+        return (payoff != 0.0) ? payoff*Pv(x_t, t)*rD : Real(0.0);
     }
 }
 

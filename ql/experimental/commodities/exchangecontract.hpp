@@ -26,13 +26,14 @@
 
 #include <ql/time/date.hpp>
 #include <map>
+#include <utility>
 
 namespace QuantLib {
 
     class ExchangeContract {
       public:
-        ExchangeContract();
-        ExchangeContract(const std::string& code,
+        ExchangeContract() = default;
+        ExchangeContract(std::string code,
                          Date expirationDate,
                          Date underlyingStartDate,
                          Date underlyingEndDate);
@@ -48,15 +49,12 @@ namespace QuantLib {
         Date underlyingEndDate_;
     };
 
-    inline ExchangeContract::ExchangeContract() {}
-
-    inline ExchangeContract::ExchangeContract(const std::string& code,
+    inline ExchangeContract::ExchangeContract(std::string code,
                                               Date expirationDate,
                                               Date underlyingStartDate,
                                               Date underlyingEndDate)
-    : code_(code), expirationDate_(expirationDate),
-      underlyingStartDate_(underlyingStartDate),
-      underlyingEndDate_(underlyingEndDate) {}
+    : code_(std::move(code)), expirationDate_(expirationDate),
+      underlyingStartDate_(underlyingStartDate), underlyingEndDate_(underlyingEndDate) {}
 
     inline const std::string& ExchangeContract::code() const {
         return code_;

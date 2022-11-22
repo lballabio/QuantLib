@@ -27,6 +27,7 @@
 #include <ql/pricingengines/lookback/analyticcontinuousfixedlookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuouspartialfloatinglookback.hpp>
 #include <ql/pricingengines/lookback/analyticcontinuouspartialfixedlookback.hpp>
+#include <ql/pricingengines/lookback/mclookbackengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/utilities/dataformatters.hpp>
@@ -35,6 +36,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#undef REPORT_FAILURE_FLOATING
 #define REPORT_FAILURE_FLOATING(greekName, minmax, payoff, exercise, \
                                 s, q, r, today, v, \
                                 expected, calculated, error, tolerance) \
@@ -53,6 +55,7 @@ using namespace boost::unit_test_framework;
         << "    error:            " << error << "\n" \
         << "    tolerance:        " << tolerance);
 
+#undef REPORT_FAILURE_FIXED
 #define REPORT_FAILURE_FIXED(greekName, minmax, payoff, exercise, \
                              s, q, r, today, v, \
                              expected, calculated, error, tolerance) \
@@ -71,6 +74,15 @@ using namespace boost::unit_test_framework;
         << "    calculated " << greekName << ": " << calculated << "\n"\
         << "    error:            " << error << "\n" \
         << "    tolerance:        " << tolerance);
+
+#undef REPORT_FAILURE_MC
+#define REPORT_FAILURE_MC(lookbackType, optionType, analytical, monteCarlo, tolerance) \
+    BOOST_ERROR( \
+        "Analytical and MC " << lookbackType << " " << optionType << " values differed by more than tolerance" << "\n" \
+        << "    Analytical:    " << analytical << "\n" \
+        << "    Monte Carlo:   " << monteCarlo << "\n" \
+        << "    tolerance:     " << tolerance << "\n" \
+        << "    difference:    " << std::abs(analytical - monteCarlo));
 
 namespace {
 
@@ -123,50 +135,45 @@ void LookbackOptionTest::testAnalyticContinuousFloatingLookback() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*360+0.5);
-        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    for (auto& value : values) {
+        Date exDate = today + timeToDays(value.t);
+        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
-        boost::shared_ptr<FloatingTypePayoff> payoff(
-                                      new FloatingTypePayoff(values[i].type));
+        ext::shared_ptr<FloatingTypePayoff> payoff(new FloatingTypePayoff(value.type));
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
                             new BlackScholesMertonProcess(
                                        Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
-        boost::shared_ptr<PricingEngine> engine(
+        ext::shared_ptr<PricingEngine> engine(
                   new AnalyticContinuousFloatingLookbackEngine(stochProcess));
 
-        ContinuousFloatingLookbackOption option(values[i].minmax,
-                                                payoff,
-                                                exercise);
+        ContinuousFloatingLookbackOption option(value.minmax, payoff, exercise);
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real expected = values[i].result;
+        Real expected = value.result;
         Real error = std::fabs(calculated-expected);
-        if (error>values[i].tol) {
-            REPORT_FAILURE_FLOATING("value", values[i].minmax, payoff,
-                                    exercise, values[i].s, values[i].q,
-                                    values[i].r, today, values[i].v,
-                                    expected, calculated, error,
-                                    values[i].tol);
+        if (error > value.tol) {
+            REPORT_FAILURE_FLOATING("value", values[i].minmax, payoff, exercise, value.s, value.q,
+                                    value.r, today, value.v, expected, calculated, error,
+                                    value.tol);
         }
     }
 }
@@ -223,49 +230,44 @@ void LookbackOptionTest::testAnalyticContinuousFixedLookback() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*360+0.5);
-        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    for (auto& value : values) {
+        Date exDate = today + timeToDays(value.t);
+        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
-        boost::shared_ptr<StrikedTypePayoff> payoff(
-                     new PlainVanillaPayoff(values[i].type, values[i].strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
                             new BlackScholesMertonProcess(
                                        Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
-        boost::shared_ptr<PricingEngine> engine(
+        ext::shared_ptr<PricingEngine> engine(
                      new AnalyticContinuousFixedLookbackEngine(stochProcess));
 
-        ContinuousFixedLookbackOption option(values[i].minmax,
-                                             payoff,
-                                             exercise);
+        ContinuousFixedLookbackOption option(value.minmax, payoff, exercise);
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real expected = values[i].result;
+        Real expected = value.result;
         Real error = std::fabs(calculated-expected);
-        if (error>values[i].tol) {
-            REPORT_FAILURE_FIXED("value", values[i].minmax, payoff, exercise,
-                                 values[i].s, values[i].q, values[i].r, today,
-                                 values[i].v, expected, calculated, error,
-                                 values[i].tol);
+        if (error > value.tol) {
+            REPORT_FAILURE_FIXED("value", values[i].minmax, payoff, exercise, value.s, value.q,
+                                 value.r, today, value.v, expected, calculated, error, value.tol);
         }
     }
 }
@@ -333,53 +335,47 @@ void LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*360+0.5);
-        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    for (auto& value : values) {
+        Date exDate = today + timeToDays(value.t);
+        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
-        boost::shared_ptr<FloatingTypePayoff> payoff(
-                                      new FloatingTypePayoff(values[i].type));
+        ext::shared_ptr<FloatingTypePayoff> payoff(new FloatingTypePayoff(value.type));
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
                             new BlackScholesMertonProcess(
                                        Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
-        boost::shared_ptr<PricingEngine> engine(
+        ext::shared_ptr<PricingEngine> engine(
                   new AnalyticContinuousPartialFloatingLookbackEngine(stochProcess));
 
-        Date lookbackEnd = today + Integer(values[i].t1*360+0.5);
-        ContinuousPartialFloatingLookbackOption option(values[i].minmax,
-                                                values[i].l,
-                                                lookbackEnd,
-                                                payoff,
-                                                exercise);
+        Date lookbackEnd = today + timeToDays(value.t1);
+        ContinuousPartialFloatingLookbackOption option(value.minmax, value.l, lookbackEnd, payoff,
+                                                       exercise);
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real expected = values[i].result;
+        Real expected = value.result;
         Real error = std::fabs(calculated-expected);
-        if (error>values[i].tol) {
-            REPORT_FAILURE_FLOATING("value", values[i].minmax, payoff,
-                                    exercise, values[i].s, values[i].q,
-                                    values[i].r, today, values[i].v,
-                                    expected, calculated, error,
-                                    values[i].tol);
+        if (error > value.tol) {
+            REPORT_FAILURE_FLOATING("value", values[i].minmax, payoff, exercise, value.s, value.q,
+                                    value.r, today, value.v, expected, calculated, error,
+                                    value.tol);
         }
     }
 }
@@ -444,65 +440,236 @@ void LookbackOptionTest::testAnalyticContinuousPartialFixedLookback() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*360+0.5);
-        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    for (auto& value : values) {
+        Date exDate = today + timeToDays(value.t);
+        ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-        spot ->setValue(values[i].s);
-        qRate->setValue(values[i].q);
-        rRate->setValue(values[i].r);
-        vol  ->setValue(values[i].v);
+        spot->setValue(value.s);
+        qRate->setValue(value.q);
+        rRate->setValue(value.r);
+        vol->setValue(value.v);
 
-        boost::shared_ptr<StrikedTypePayoff> payoff(
-                     new PlainVanillaPayoff(values[i].type, values[i].strike));
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
 
-        boost::shared_ptr<BlackScholesMertonProcess> stochProcess(
+        ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
                             new BlackScholesMertonProcess(
                                        Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
-        boost::shared_ptr<PricingEngine> engine(
+        ext::shared_ptr<PricingEngine> engine(
                      new AnalyticContinuousPartialFixedLookbackEngine(stochProcess));
 
-        Date lookbackStart = today + Integer(values[i].t1*360+0.5);
+        Date lookbackStart = today + timeToDays(value.t1);
         ContinuousPartialFixedLookbackOption option(lookbackStart,
                                              payoff,
                                              exercise);
         option.setPricingEngine(engine);
 
         Real calculated = option.NPV();
-        Real expected = values[i].result;
+        Real expected = value.result;
         Real error = std::fabs(calculated-expected);
-        if (error>values[i].tol) {
-            REPORT_FAILURE_FIXED("value", values[i].minmax, payoff, exercise,
-                                 values[i].s, values[i].q, values[i].r, today,
-                                 values[i].v, expected, calculated, error,
-                                 values[i].tol);
+        if (error > value.tol) {
+            REPORT_FAILURE_FIXED("value", values[i].minmax, payoff, exercise, value.s, value.q,
+                                 value.r, today, value.v, expected, calculated, error, value.tol);
         }
     }
 }
 
-test_suite* LookbackOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Lookback option tests");
+void LookbackOptionTest::testMonteCarloLookback() {
+    BOOST_TEST_MESSAGE("Testing Monte Carlo engines for lookback options...");
 
-    suite->add(QUANTLIB_TEST_CASE(
-                &LookbackOptionTest::testAnalyticContinuousFloatingLookback));
-    suite->add(QUANTLIB_TEST_CASE(
-                &LookbackOptionTest::testAnalyticContinuousFixedLookback));
-    suite->add(QUANTLIB_TEST_CASE(
-                &LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback));
-    suite->add(QUANTLIB_TEST_CASE(
-                &LookbackOptionTest::testAnalyticContinuousPartialFixedLookback));
+    Real tolerance = 0.1;
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    Real strike = 90;
+    Real t = 1;
+    Real t1= 0.25;
+
+    Date exDate = today + timeToDays(t);
+    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    spot ->setValue(100);
+    qRate->setValue(0);
+    rRate->setValue(0.06);
+    vol  ->setValue(0.1);
+
+    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
+        new BlackScholesMertonProcess(
+            Handle<Quote>(spot),
+            Handle<YieldTermStructure>(qTS),
+            Handle<YieldTermStructure>(rTS),
+            Handle<BlackVolTermStructure>(volTS)));
+
+    Option::Type types[] = { Option::Call, Option::Put };
+
+    for (auto type : types) {
+        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+
+        /**
+         * Partial Fixed
+         * **/
+
+        Date lookbackStart = today + timeToDays(t1);
+        ContinuousPartialFixedLookbackOption partialFixedLookback(lookbackStart,
+                                                                  payoff,
+                                                                  exercise);
+        ext::shared_ptr<PricingEngine> engine(
+            new AnalyticContinuousPartialFixedLookbackEngine(stochProcess));
+        partialFixedLookback.setPricingEngine(engine);
+
+        Real analytical = partialFixedLookback.NPV();
+
+        ext::shared_ptr<PricingEngine> mcpartialfixedengine =
+            MakeMCLookbackEngine<ContinuousPartialFixedLookbackOption, PseudoRandom>
+            (stochProcess)
+            .withSteps(2000)
+            .withAntitheticVariate()
+            .withSeed(1)
+            .withAbsoluteTolerance(tolerance);
+
+        partialFixedLookback.setPricingEngine(mcpartialfixedengine);
+        Real monteCarlo = partialFixedLookback.NPV();
+
+        Real diff = std::abs(analytical - monteCarlo);
+
+        if (diff > tolerance){
+            REPORT_FAILURE_MC("Partial Fixed", type, analytical, monteCarlo, tolerance);
+        }
+
+        /**
+         * Fixed
+         * **/
+
+        Real minMax = 100;
+
+        ContinuousFixedLookbackOption fixedLookback(minMax,
+                                                    payoff,
+                                                    exercise);
+        ext::shared_ptr<PricingEngine> analyticalfixedengine(
+            new AnalyticContinuousFixedLookbackEngine(stochProcess));
+        fixedLookback.setPricingEngine(analyticalfixedengine);
+
+        analytical = fixedLookback.NPV();
+
+        ext::shared_ptr<PricingEngine> mcfixedengine =
+            MakeMCLookbackEngine<ContinuousFixedLookbackOption, PseudoRandom>
+            (stochProcess)
+            .withSteps(2000)
+            .withAntitheticVariate()
+            .withSeed(1)
+            .withAbsoluteTolerance(tolerance);
+
+        fixedLookback.setPricingEngine(mcfixedengine);
+        monteCarlo = fixedLookback.NPV();
+
+        diff = std::abs(analytical - monteCarlo);
+
+        if (diff > tolerance){
+            REPORT_FAILURE_MC("Fixed", type, analytical, monteCarlo, tolerance);
+        }
+
+        /**
+         * Partial Floating
+         * **/
+
+        Real lambda = 1;
+        Date lookbackEnd = today + timeToDays(t1);
+
+        ext::shared_ptr<FloatingTypePayoff> floatingPayoff(new FloatingTypePayoff(type));
+
+        ContinuousPartialFloatingLookbackOption partialFloating(minMax,
+                                                                lambda,
+                                                                lookbackEnd,
+                                                                floatingPayoff,
+                                                                exercise);
+        ext::shared_ptr<PricingEngine> analyticalpartialFloatingengine(
+            new AnalyticContinuousPartialFloatingLookbackEngine(stochProcess));
+        partialFloating.setPricingEngine(analyticalpartialFloatingengine);
+
+        analytical = partialFloating.NPV();
+
+        ext::shared_ptr<PricingEngine> mcpartialfloatingengine =
+            MakeMCLookbackEngine<ContinuousPartialFloatingLookbackOption, PseudoRandom>
+            (stochProcess)
+            .withSteps(2000)
+            .withAntitheticVariate()
+            .withSeed(1)
+            .withAbsoluteTolerance(tolerance);
+
+        partialFloating.setPricingEngine(mcpartialfloatingengine);
+        monteCarlo = partialFloating.NPV();
+
+        diff = std::abs(analytical - monteCarlo);
+
+        if (diff > tolerance){
+            REPORT_FAILURE_MC("Partial Floating", type, analytical, monteCarlo, tolerance);
+        }
+
+        /**
+         * Floating
+         * **/
+
+        ContinuousFloatingLookbackOption floating(minMax,
+                                                  floatingPayoff,
+                                                  exercise);
+        ext::shared_ptr<PricingEngine> analyticalFloatingengine(
+            new AnalyticContinuousFloatingLookbackEngine(stochProcess));
+        floating.setPricingEngine(analyticalFloatingengine);
+
+        analytical = floating.NPV();
+
+        ext::shared_ptr<PricingEngine> mcfloatingengine =
+            MakeMCLookbackEngine<ContinuousFloatingLookbackOption, PseudoRandom>
+            (stochProcess)
+            .withSteps(2000)
+            .withAntitheticVariate()
+            .withSeed(1)
+            .withAbsoluteTolerance(tolerance);
+
+        floating.setPricingEngine(mcfloatingengine);
+        monteCarlo = floating.NPV();
+
+        diff = std::abs(analytical - monteCarlo);
+
+        if (diff > tolerance){
+            REPORT_FAILURE_MC("Floating", type, analytical, monteCarlo, tolerance);
+        }
+    }
+}
+
+
+test_suite* LookbackOptionTest::suite(SpeedLevel speed) {
+    auto* suite = BOOST_TEST_SUITE("Lookback option tests");
+
+    suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testAnalyticContinuousFloatingLookback));
+    suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testAnalyticContinuousFixedLookback));
+    suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testAnalyticContinuousPartialFloatingLookback));
+    suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testAnalyticContinuousPartialFixedLookback));
+
+    if (speed == Slow) {
+        suite->add(QUANTLIB_TEST_CASE(&LookbackOptionTest::testMonteCarloLookback));
+    }
+
     return suite;
 }
 

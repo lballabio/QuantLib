@@ -20,25 +20,27 @@
 #include <ql/experimental/volatility/noarbsabrsmilesection.hpp>
 #include <ql/pricingengines/blackformula.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
+#include <utility>
 
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
-NoArbSabrSmileSection::NoArbSabrSmileSection(
-    Time timeToExpiry, Rate forward, const std::vector<Real> &sabrParams,
-    Real shift)
-    : SmileSection(timeToExpiry, DayCounter()), forward_(forward),
-      params_(sabrParams), shift_(shift) {
-    init();
-}
+    NoArbSabrSmileSection::NoArbSabrSmileSection(Time timeToExpiry,
+                                                 Rate forward,
+                                                 std::vector<Real> sabrParams,
+                                                 Real shift,
+                                                 VolatilityType volatilityType)
+    : SmileSection(timeToExpiry, DayCounter(), volatilityType), forward_(forward), params_(std::move(sabrParams)),
+      shift_(shift) {
+        init();
+    }
 
-NoArbSabrSmileSection::NoArbSabrSmileSection(
-    const Date &d, Rate forward, const std::vector<Real> &sabrParams,
-    const DayCounter &dc, Real shift)
-    : SmileSection(d, dc, Date()), forward_(forward), params_(sabrParams), shift_(shift) {
-    init();
-}
+    NoArbSabrSmileSection::NoArbSabrSmileSection(
+        const Date& d, Rate forward, std::vector<Real> sabrParams, const DayCounter& dc, Real shift, VolatilityType volatilityType)
+    : SmileSection(d, dc, Date(), volatilityType), forward_(forward), params_(std::move(sabrParams)),
+      shift_(shift) {
+        init();
+    }
 
 void NoArbSabrSmileSection::init() {
     QL_REQUIRE(params_.size() >= 4,
@@ -50,7 +52,7 @@ void NoArbSabrSmileSection::init() {
         "shift (" << shift_
                   << ") must be zero, other shifts are not implemented yet");
     model_ =
-        boost::make_shared<NoArbSabrModel>(exerciseTime(), forward_, params_[0],
+        ext::make_shared<NoArbSabrModel>(exerciseTime(), forward_, params_[0],
                                            params_[1], params_[2], params_[3]);
 }
 
@@ -88,9 +90,9 @@ Real NoArbSabrSmileSection::volatilityImpl(Rate strike) const {
     }
     if (impliedVol == 0.0)
         // fall back on Hagan 2002 expansion
-        impliedVol =
+        impliedVol = 
             unsafeSabrVolatility(strike, forward_, exerciseTime(), params_[0],
-                                 params_[1], params_[2], params_[3]);
+                                 params_[1], params_[2], params_[3], volatilityType());
 
     return impliedVol;
 }

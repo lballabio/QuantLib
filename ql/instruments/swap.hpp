@@ -28,6 +28,7 @@
 
 #include <ql/instrument.hpp>
 #include <ql/cashflow.hpp>
+#include <iosfwd>
 
 namespace QuantLib {
 
@@ -39,6 +40,15 @@ namespace QuantLib {
     */
     class Swap : public Instrument {
       public:
+        /*! In most cases, the swap has just two legs and can be
+            defined as receiver or payer.
+
+            Its type is usually defined with respect to the leg paying
+            a fixed rate; derived swap classes will document any
+            exceptions to the rule.
+        */
+        enum Type { Receiver = -1, Payer = 1 };
+
         class arguments;
         class results;
         class engine;
@@ -53,16 +63,21 @@ namespace QuantLib {
         Swap(const std::vector<Leg>& legs,
              const std::vector<bool>& payer);
         //@}
+        //! \name Observable interface
+        //@{
+        void deepUpdate() override;
+        //@}
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results*) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results*) const override;
         //@}
         //! \name Additional interface
         //@{
-        Date startDate() const;
-        Date maturityDate() const;
+        Size numberOfLegs() const;
+        virtual Date startDate() const;
+        virtual Date maturityDate() const;
         Real legBPS(Size j) const {
             QL_REQUIRE(j<legs_.size(), "leg# " << j << " doesn't exist!");
             calculate();
@@ -96,6 +111,10 @@ namespace QuantLib {
             QL_REQUIRE(j<legs_.size(), "leg #" << j << " doesn't exist!");
             return legs_[j];
         }
+        bool payer(Size j) const {
+            QL_REQUIRE(j<legs_.size(), "leg #" << j << " doesn't exist!");
+            return payer_[j] < 0.0;
+        }
         //@}
       protected:
         //! \name Constructors
@@ -107,7 +126,7 @@ namespace QuantLib {
         //@}
         //! \name Instrument interface
         //@{
-        void setupExpired() const;
+        void setupExpired() const override;
         //@}
         // data members
         std::vector<Leg> legs_;
@@ -123,7 +142,7 @@ namespace QuantLib {
       public:
         std::vector<Leg> legs;
         std::vector<Real> payer;
-        void validate() const;
+        void validate() const override;
     };
 
     class Swap::results : public Instrument::results {
@@ -132,11 +151,13 @@ namespace QuantLib {
         std::vector<Real> legBPS;
         std::vector<DiscountFactor> startDiscounts, endDiscounts;
         DiscountFactor npvDateDiscount;
-        void reset();
+        void reset() override;
     };
 
     class Swap::engine : public GenericEngine<Swap::arguments,
                                               Swap::results> {};
+
+    std::ostream& operator<<(std::ostream& out, Swap::Type t);
 
 }
 

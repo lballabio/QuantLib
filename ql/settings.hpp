@@ -107,11 +107,12 @@ namespace QuantLib {
 
         bool& enforcesTodaysHistoricFixings();
         bool enforcesTodaysHistoricFixings() const;
+
       private:
         DateProxy evaluationDate_;
-        bool includeReferenceDateEvents_;
+        bool includeReferenceDateEvents_ = false;
         boost::optional<bool> includeTodaysCashFlows_;
-        bool enforcesTodaysHistoricFixings_;
+        bool enforcesTodaysHistoricFixings_ = false;
     };
 
 
@@ -138,7 +139,8 @@ namespace QuantLib {
     }
 
     inline Settings::DateProxy& Settings::DateProxy::operator=(const Date& d) {
-        ObservableValue<Date>::operator=(d);
+        if (value() != d) // avoid notifications if the date doesn't actually change
+            ObservableValue<Date>::operator=(d);
         return *this;
     }
 

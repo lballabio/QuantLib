@@ -51,13 +51,13 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        EquityFXVolSurface(BusinessDayConvention bdc = Following,
-                           const DayCounter& dc = DayCounter());
+        explicit EquityFXVolSurface(BusinessDayConvention bdc = Following,
+                                    const DayCounter& dc = DayCounter());
         //! initialize with a fixed reference date
-        EquityFXVolSurface(const Date& referenceDate,
-                           const Calendar& cal = Calendar(),
-                           BusinessDayConvention bdc = Following,
-                           const DayCounter& dc = DayCounter());
+        explicit EquityFXVolSurface(const Date& referenceDate,
+                                    const Calendar& cal = Calendar(),
+                                    BusinessDayConvention bdc = Following,
+                                    const DayCounter& dc = DayCounter());
         //! calculate the reference date based on the global evaluation date
         EquityFXVolSurface(Natural settlementDays,
                            const Calendar&,
@@ -85,7 +85,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
     };
 

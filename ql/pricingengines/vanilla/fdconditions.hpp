@@ -25,50 +25,40 @@
 #define quantlib_fd_conditions_hpp
 
 #include <ql/methods/finitedifferences/fdtypedefs.hpp>
-#include <ql/methods/finitedifferences/americancondition.hpp>
 #include <ql/methods/finitedifferences/shoutcondition.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/interestrate.hpp>
 
 namespace QuantLib {
 
-    template <typename baseEngine>
-    class FDAmericanCondition : public baseEngine {
-      public:
-        FDAmericanCondition(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps = 100, Size gridPoints = 100,
-             bool timeDependent = false)
-        : baseEngine(process, timeSteps, gridPoints, timeDependent) {}
-      protected:
-        void initializeStepCondition() const {
-            baseEngine::stepCondition_ =
-                boost::shared_ptr<StandardStepCondition>(
-                  new AmericanCondition(baseEngine::intrinsicValues_.values()));
-        }
-    };
+    QL_DEPRECATED_DISABLE_WARNING
 
+    /*! \deprecated Use the new finite-differences framework instead.
+                    Deprecated in version 1.27.
+    */
     template <typename baseEngine>
-    class FDShoutCondition : public baseEngine {
+    class QL_DEPRECATED FDShoutCondition : public baseEngine {
       public:
         FDShoutCondition(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps = 100, Size gridPoints = 100,
              bool timeDependent = false)
         : baseEngine(process, timeSteps, gridPoints, timeDependent) {}
       protected:
-        void initializeStepCondition() const {
+        void initializeStepCondition() const override {
             Time residualTime = baseEngine::getResidualTime();
             Rate riskFreeRate = baseEngine::process_->riskFreeRate()
                 ->zeroRate(residualTime, Continuous);
 
             baseEngine::stepCondition_ =
-                boost::shared_ptr<StandardStepCondition>(
+                ext::shared_ptr<StandardStepCondition>(
                      new ShoutCondition(baseEngine::intrinsicValues_.values(),
                                         residualTime,
                                         riskFreeRate));
         }
     };
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

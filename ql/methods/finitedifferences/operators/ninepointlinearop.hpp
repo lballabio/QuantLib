@@ -28,43 +28,58 @@
 
 #include <ql/math/matrixutilities/sparsematrix.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
-
-#include <boost/shared_array.hpp>
+#include <memory>
 
 namespace QuantLib {
+
     class FdmMesher;
 
     class NinePointLinearOp : public FdmLinearOp {
       public:
         NinePointLinearOp(Size d0, Size d1,
-                const boost::shared_ptr<FdmMesher>& mesher);
+                const ext::shared_ptr<FdmMesher>& mesher);
         NinePointLinearOp(const NinePointLinearOp& m);
-        NinePointLinearOp(const Disposable<NinePointLinearOp>& m);
+        NinePointLinearOp(NinePointLinearOp&& m) noexcept;
         NinePointLinearOp& operator=(const NinePointLinearOp& m);
-        NinePointLinearOp& operator=(const Disposable<NinePointLinearOp>& m);
+        NinePointLinearOp& operator=(NinePointLinearOp&& m) noexcept;
 
-        Disposable<Array> apply(const Array& r) const;
-        Disposable<NinePointLinearOp> mult(const Array& u) const;
+        Array apply(const Array& r) const override;
+        NinePointLinearOp mult(const Array& u) const;
 
         void swap(NinePointLinearOp& m);
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        Disposable<SparseMatrix> toMatrix() const;
-#endif
+        SparseMatrix toMatrix() const override;
 
       protected:
-        NinePointLinearOp() {}
+        NinePointLinearOp() = default;
 
         Size d0_, d1_;
-        boost::shared_array<Size> i00_, i10_, i20_;
-        boost::shared_array<Size> i01_, i21_;
-        boost::shared_array<Size> i02_, i12_, i22_;
-        boost::shared_array<Real> a00_, a10_, a20_;
-        boost::shared_array<Real> a01_, a11_, a21_;
-        boost::shared_array<Real> a02_, a12_, a22_;
+        std::unique_ptr<Size[]> i00_, i10_, i20_;
+        std::unique_ptr<Size[]> i01_, i21_;
+        std::unique_ptr<Size[]> i02_, i12_, i22_;
+        std::unique_ptr<Real[]> a00_, a10_, a20_;
+        std::unique_ptr<Real[]> a01_, a11_, a21_;
+        std::unique_ptr<Real[]> a02_, a12_, a22_;
 
-        boost::shared_ptr<FdmMesher> mesher_;
+        ext::shared_ptr<FdmMesher> mesher_;
     };
+
+
+    inline NinePointLinearOp::NinePointLinearOp(NinePointLinearOp&& m) noexcept {
+        swap(m);
+    }
+
+    inline NinePointLinearOp& NinePointLinearOp::operator=(const NinePointLinearOp& m) {
+        NinePointLinearOp temp(m);
+        swap(temp);
+        return *this;
+    }
+
+    inline NinePointLinearOp& NinePointLinearOp::operator=(NinePointLinearOp&& m) noexcept {
+        swap(m);
+        return *this;
+    }
+
 }
 
 #endif

@@ -21,14 +21,14 @@
 #define quantlib_alpha_finder_hpp
 
 #include <ql/models/marketmodels/models/alphaform.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {
 
     class AlphaFinder {
       public:
-        AlphaFinder(boost::shared_ptr<AlphaForm> parametricform);
+        AlphaFinder(ext::shared_ptr<AlphaForm> parametricform);
 
         bool solve(Real alpha0,
                    Integer stepindex,
@@ -81,7 +81,7 @@ namespace QuantLib {
                        Real& b,
                        std::vector<Volatility>& ratetwovols);
         Real homogeneityfailure(Real alpha);
-        boost::shared_ptr<AlphaForm> parametricform_;
+        ext::shared_ptr<AlphaForm> parametricform_;
         Integer stepindex_;
         std::vector<Volatility> rateonevols_, ratetwohomogeneousvols_;
         std::vector<Volatility> putativevols_;

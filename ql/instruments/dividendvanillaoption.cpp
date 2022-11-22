@@ -17,20 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/exercise.hpp>
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
-#include <ql/pricingengines/vanilla/fddividendamericanengine.hpp>
+#include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/exercise.hpp>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 namespace QuantLib {
 
     DividendVanillaOption::DividendVanillaOption(
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise,
+                           const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                           const ext::shared_ptr<Exercise>& exercise,
                            const std::vector<Date>& dividendDates,
                            const std::vector<Real>& dividends)
     : OneAssetOption(payoff, exercise),
@@ -39,7 +39,7 @@ namespace QuantLib {
 
     Volatility DividendVanillaOption::impliedVolatility(
              Real targetValue,
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Real accuracy,
              Size maxEvaluations,
              Volatility minVol,
@@ -47,21 +47,20 @@ namespace QuantLib {
 
         QL_REQUIRE(!isExpired(), "option expired");
 
-        boost::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
+        ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
 
-        boost::shared_ptr<GeneralizedBlackScholesProcess> newProcess =
+        ext::shared_ptr<GeneralizedBlackScholesProcess> newProcess =
             detail::ImpliedVolatilityHelper::clone(process, volQuote);
 
         // engines are built-in for the time being
-        boost::scoped_ptr<PricingEngine> engine;
+        std::unique_ptr<PricingEngine> engine;
         switch (exercise_->type()) {
           case Exercise::European:
-            engine.reset(new AnalyticDividendEuropeanEngine(newProcess));
-            break;
+              engine = std::make_unique<AnalyticDividendEuropeanEngine>(newProcess);
+              break;
           case Exercise::American:
-            engine.reset(new FDDividendAmericanEngine<CrankNicolson>(
-                                                                 newProcess));
-            break;
+              engine = std::make_unique<FdBlackScholesVanillaEngine>(newProcess);
+              break;
           case Exercise::Bermudan:
             QL_FAIL("engine not available for Bermudan option with dividends");
             break;
@@ -83,9 +82,8 @@ namespace QuantLib {
                                        PricingEngine::arguments* args) const {
         OneAssetOption::setupArguments(args);
 
-        DividendVanillaOption::arguments* arguments =
-            dynamic_cast<DividendVanillaOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0, "wrong engine type");
+        auto* arguments = dynamic_cast<DividendVanillaOption::arguments*>(args);
+        QL_REQUIRE(arguments != nullptr, "wrong engine type");
 
         arguments->cashFlow = cashFlow_;
     }

@@ -39,17 +39,17 @@ namespace QuantLib {
         typedef FiniteDifferenceModel<Scheme<TridiagonalOperator> > model_type;
 
         FDMultiPeriodEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps = 100, Size gridPoints = 100,
              bool timeDependent = false);
-        mutable std::vector<boost::shared_ptr<Event> > events_;
+        mutable std::vector<ext::shared_ptr<Event> > events_;
         mutable std::vector<Time> stoppingTimes_;
         Size timeStepPerPeriod_;
         mutable SampledCurve prices_;
 
         virtual void setupArguments(
                const PricingEngine::arguments* args,
-               const std::vector<boost::shared_ptr<Event> >& schedule) const {
+               const std::vector<ext::shared_ptr<Event> >& schedule) const {
             FDVanillaEngine::setupArguments(args);
             events_ = schedule;
             stoppingTimes_.clear();
@@ -59,10 +59,9 @@ namespace QuantLib {
                 stoppingTimes_.push_back(process_->time(events_[i]->date()));
         }
 
-        virtual void setupArguments(const PricingEngine::arguments* a) const {
+        void setupArguments(const PricingEngine::arguments* a) const override {
             FDVanillaEngine::setupArguments(a);
-            const OneAssetOption::arguments *args =
-                dynamic_cast<const OneAssetOption::arguments*>(a);
+            const auto* args = dynamic_cast<const OneAssetOption::arguments*>(a);
             QL_REQUIRE(args, "incorrect argument type");
             events_.clear();
 
@@ -74,8 +73,8 @@ namespace QuantLib {
         }
 
         virtual void calculate(PricingEngine::results*) const;
-        mutable boost::shared_ptr<StandardStepCondition > stepCondition_;
-        mutable boost::shared_ptr<model_type> model_;
+        mutable ext::shared_ptr<StandardStepCondition > stepCondition_;
+        mutable ext::shared_ptr<model_type> model_;
         virtual void executeIntermediateStep(Size step) const = 0;
         virtual void initializeStepCondition() const;
         virtual void initializeModel() const;
@@ -89,7 +88,7 @@ namespace QuantLib {
 
     template <template <class> class Scheme>
     FDMultiPeriodEngine<Scheme>::FDMultiPeriodEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
              Size timeSteps, Size gridPoints, bool timeDependent)
     : FDVanillaEngine(process, timeSteps, gridPoints, timeDependent),
       timeStepPerPeriod_(timeSteps) {}
@@ -97,8 +96,7 @@ namespace QuantLib {
     template <template <class> class Scheme>
     void FDMultiPeriodEngine<Scheme>::calculate(
                                             PricingEngine::results* r) const {
-        OneAssetOption::results *results =
-            dynamic_cast<OneAssetOption::results *>(r);
+        auto* results = dynamic_cast<OneAssetOption::results*>(r);
         QL_REQUIRE(results, "incorrect argument type");
         Time beginDate, endDate;
         Size dateNumber = stoppingTimes_.size();
@@ -189,13 +187,13 @@ namespace QuantLib {
 
     template <template <class> class Scheme>
     void FDMultiPeriodEngine<Scheme>::initializeStepCondition() const{
-        stepCondition_ = boost::shared_ptr<StandardStepCondition>(
+        stepCondition_ = ext::shared_ptr<StandardStepCondition>(
                                                   new NullCondition<Array>());
     }
 
     template <template <class> class Scheme>
     void FDMultiPeriodEngine<Scheme>::initializeModel() const{
-        model_ = boost::shared_ptr<model_type>(
+        model_ = ext::shared_ptr<model_type>(
                               new model_type(finiteDifferenceOperator_,BCs_));
     }
 

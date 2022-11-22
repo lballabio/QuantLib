@@ -7,6 +7,8 @@
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 Toyin Akin
  Copyright (C) 2015 Klaus Spanderen
+ Copyright (C) 2020 Leonardo Arcari
+ Copyright (C) 2020 Kline s.r.l.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,15 +27,9 @@
 #include <ql/time/date.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/errors.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <boost/functional/hash.hpp>
 #include <iomanip>
 #include <ctime>
 
@@ -81,7 +77,7 @@ namespace QuantLib {
         bool leap = isLeap(year());
         while (d <= monthOffset(Month(m),leap))
             --m;
-        while (d > monthOffset(Month(m+1),leap))
+        while (d > monthOffset(Month(m+1),leap)) // NOLINT(misc-misplaced-widening-cast)
             ++m;
         return Month(m);
     }
@@ -159,7 +155,7 @@ namespace QuantLib {
             if (d > length)
                 d = length;
 
-            return Date(d, Month(m), y);
+            return {d, Month(m), y};
           }
           case Years: {
               Day d = date.dayOfMonth();
@@ -173,7 +169,7 @@ namespace QuantLib {
               if (d == 29 && m == February && !isLeap(y))
                   d = 28;
 
-              return Date(d,m,y);
+              return {d, m, y};
           }
           default:
             QL_FAIL("undefined time units");
@@ -770,11 +766,9 @@ namespace QuantLib {
         std::time_t t;
 
         if (std::time(&t) == std::time_t(-1)) // -1 means time() didn't work
-            return Date();
+            return {};
         std::tm *lt = std::localtime(&t);
-        return Date(Day(lt->tm_mday),
-                        Month(lt->tm_mon+1),
-                        Year(lt->tm_year+1900));
+        return {Day(lt->tm_mday), Month(lt->tm_mon + 1), Year(lt->tm_year + 1900)};
     }
 
     Date Date::nextWeekday(const Date& d, Weekday dayOfWeek) {
@@ -790,7 +784,7 @@ namespace QuantLib {
                    "no more than 5 weekday in a given (month, year)");
         Weekday first = Date(1, m, y).weekday();
         Size skip = nth - (dayOfWeek>=first ? 1 : 0);
-        return Date((1 + dayOfWeek + skip*7) - first, m, y);
+        return {Day((1 + dayOfWeek + skip * 7) - first), m, y};
     }
 
     // month formatting
@@ -826,6 +820,17 @@ namespace QuantLib {
         }
     }
 
+    std::size_t hash_value(const Date& d) {
+#ifdef QL_HIGH_RESOLUTION_DATE
+        std::size_t seed = 0;
+        boost::hash_combine(seed, d.serialNumber());
+        boost::hash_combine(seed, d.dateTime().time_of_day().total_nanoseconds());
+        return seed;
+#else
+
+        return boost::hash<Date::serial_type>()(d.serialNumber());
+#endif
+    }
 
     // date formatting
 
@@ -840,7 +845,7 @@ namespace QuantLib {
             // if the object out passed in the constructor is destroyed
             // before this instance
             struct nopunct : std::numpunct<char> {
-                std::string do_grouping() const {return "";}
+                std::string do_grouping() const override { return ""; }
             };
             explicit FormatResetter(std::ostream &out)
                 : out_(&out), flags_(out.flags()), filler_(out.fill()),

@@ -37,13 +37,13 @@ namespace QuantLib {
         ConstantCapFloorTermVolatility(Natural settlementDays,
                                        const Calendar& cal,
                                        BusinessDayConvention bdc,
-                                       const Handle<Quote>& volatility,
+                                       Handle<Quote> volatility,
                                        const DayCounter& dc);
         //! fixed reference date, floating market data
         ConstantCapFloorTermVolatility(const Date& referenceDate,
                                        const Calendar& cal,
                                        BusinessDayConvention bdc,
-                                       const Handle<Quote>& volatility,
+                                       Handle<Quote> volatility,
                                        const DayCounter& dc);
         //! floating reference date, fixed market data
         ConstantCapFloorTermVolatility(Natural settlementDays,
@@ -59,16 +59,16 @@ namespace QuantLib {
                                        const DayCounter& dc);
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
       protected:
-        Volatility volatilityImpl(Time,
-                                  Rate) const;
+        Volatility volatilityImpl(Time, Rate) const override;
+
       private:
         Handle<Quote> volatility_;
     };

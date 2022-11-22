@@ -35,14 +35,13 @@ namespace QuantLib {
 
     class Fdm2dBlackScholesSolver : public LazyObject {
       public:
-        Fdm2dBlackScholesSolver(
-            const Handle<GeneralizedBlackScholesProcess>& p1,
-            const Handle<GeneralizedBlackScholesProcess>& p2,
-            const Real correlation,
-            const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            bool localVol = false,
-            Real illegalLocalVolOverwrite = -Null<Real>());
+        Fdm2dBlackScholesSolver(Handle<GeneralizedBlackScholesProcess> p1,
+                                Handle<GeneralizedBlackScholesProcess> p2,
+                                Real correlation,
+                                FdmSolverDesc solverDesc,
+                                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                                bool localVol = false,
+                                Real illegalLocalVolOverwrite = -Null<Real>());
 
         Real valueAt(Real x, Real y) const;
         Real thetaAt(Real x, Real y) const;
@@ -54,7 +53,7 @@ namespace QuantLib {
         Real gammaXYat(Real x, Real y) const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         const Handle<GeneralizedBlackScholesProcess> p1_;
@@ -65,7 +64,7 @@ namespace QuantLib {
         const bool localVol_;
         const Real illegalLocalVolOverwrite_;
 
-        mutable boost::shared_ptr<Fdm2DimSolver> solver_;
+        mutable ext::shared_ptr<Fdm2DimSolver> solver_;
     };
 }
 

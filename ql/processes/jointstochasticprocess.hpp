@@ -33,56 +33,52 @@ namespace QuantLib {
 
     class JointStochasticProcess : public StochasticProcess {
       public:
-        JointStochasticProcess(
-            const std::vector<boost::shared_ptr<StochasticProcess> > & l,
-            Size factors = Null<Size>() );
+        JointStochasticProcess(std::vector<ext::shared_ptr<StochasticProcess> > l,
+                               Size factors = Null<Size>());
 
-        Size size() const;
-        Size factors() const;
+        Size size() const override;
+        Size factors() const override;
 
-        Disposable<Array> initialValues() const;
-        Disposable<Array> drift(Time t, const Array& x) const;
-        Disposable<Array> expectation(Time t0, const Array& x0, Time dt) const;
+        Array initialValues() const override;
+        Array drift(Time t, const Array& x) const override;
+        Array expectation(Time t0, const Array& x0, Time dt) const override;
 
-        Disposable<Matrix> diffusion(Time t, const Array& x) const;
-        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const;
-        Disposable<Matrix> stdDeviation(Time t0, const Array& x0,
-                                        Time dt) const;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Matrix covariance(Time t0, const Array& x0, Time dt) const override;
+        Matrix stdDeviation(Time t0, const Array& x0, Time dt) const override;
 
-        Disposable<Array> apply(const Array& x0, const Array& dx) const;
-        Disposable<Array> evolve(Time t0, const Array& x0,
-                                 Time dt, const Array& dw) const;
+        Array apply(const Array& x0, const Array& dx) const override;
+        Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
         virtual void preEvolve(Time t0, const Array& x0,
                                Time dt, const Array& dw) const = 0;
-        virtual Disposable<Array> postEvolve(Time t0, const Array& x0,
-                                             Time dt, const Array& dw,
-                                             const Array& y0) const = 0;
+        virtual Array postEvolve(Time t0, const Array& x0,
+                                 Time dt, const Array& dw,
+                                 const Array& y0) const = 0;
 
         virtual DiscountFactor numeraire(Time t, const Array& x) const = 0;
         virtual bool correlationIsStateDependent() const = 0;
-        virtual Disposable<Matrix> crossModelCorrelation(
-                                Time t0, const Array& x0) const = 0;
+        virtual Matrix crossModelCorrelation(Time t0, const Array& x0) const = 0;
 
-        const std::vector<boost::shared_ptr<StochasticProcess> > &
+        const std::vector<ext::shared_ptr<StochasticProcess> > &
                                                        constituents() const;
 
-        void update();
-        Time time(const Date& date) const;
+        void update() override;
+        Time time(const Date& date) const override;
 
       protected:
-        std::vector<boost::shared_ptr<StochasticProcess> > l_;
-        Disposable<Array> slice(const Array& x, Size i) const;
+        std::vector<ext::shared_ptr<StochasticProcess> > l_;
+        Array slice(const Array& x, Size i) const;
 
       private:
         typedef
-            std::vector<boost::shared_ptr<StochasticProcess> >::const_iterator
+            std::vector<ext::shared_ptr<StochasticProcess> >::const_iterator
             const_iterator;
 
-        typedef std::vector<boost::shared_ptr<StochasticProcess> >::iterator
+        typedef std::vector<ext::shared_ptr<StochasticProcess> >::iterator
             iterator;
 
-        Size size_, factors_, modelFactors_;
+        Size size_ = 0, factors_, modelFactors_ = 0;
         std::vector<Size> vsize_, vfactors_;
 
         struct CachingKey {

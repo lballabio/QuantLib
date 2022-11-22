@@ -24,23 +24,24 @@
 #ifndef quantlib_risky_notional_hpp
 #define quantlib_risky_notional_hpp
 
-#include <ql/time/date.hpp>
 #include <ql/errors.hpp>
-#include <boost/shared_ptr.hpp>
-#include <vector>
+#include <ql/shared_ptr.hpp>
+#include <ql/time/date.hpp>
 #include <algorithm>
+#include <utility>
+#include <vector>
 
 namespace QuantLib {
 
     class EventPaymentOffset {
       public:
-        virtual ~EventPaymentOffset() {}
+        virtual ~EventPaymentOffset() = default;
         virtual Date paymentDate(const Date& eventDate) = 0;
     };
 
     class NoOffset : public EventPaymentOffset {
       public:
-        virtual Date paymentDate(const Date& eventDate) { return eventDate; }
+        Date paymentDate(const Date& eventDate) override { return eventDate; }
     };
 
     class NotionalPath {
@@ -61,25 +62,26 @@ namespace QuantLib {
 
     class NotionalRisk {
     public:
-        NotionalRisk(boost::shared_ptr<EventPaymentOffset> paymentOffset)
-        : paymentOffset_(paymentOffset) {}
-        virtual ~NotionalRisk() {}
+      explicit NotionalRisk(ext::shared_ptr<EventPaymentOffset> paymentOffset)
+      : paymentOffset_(std::move(paymentOffset)) {}
+      virtual ~NotionalRisk() = default;
 
-        virtual void updatePath(const std::vector<std::pair<Date, Real> >  &events, NotionalPath &path) const = 0;
+      virtual void updatePath(const std::vector<std::pair<Date, Real> >& events,
+                              NotionalPath& path) const = 0;
 
-      protected:
-        boost::shared_ptr<EventPaymentOffset> paymentOffset_;       
+    protected:
+      ext::shared_ptr<EventPaymentOffset> paymentOffset_;       
     };
 
     class DigitalNotionalRisk : public NotionalRisk {
       public:
-        DigitalNotionalRisk(boost::shared_ptr<EventPaymentOffset> paymentOffset,
-                           Real threshold)
-        : NotionalRisk(paymentOffset) , threshold_(threshold)
-        {}
+        DigitalNotionalRisk(const ext::shared_ptr<EventPaymentOffset>& paymentOffset,
+                            Real threshold)
+        : NotionalRisk(paymentOffset), threshold_(threshold) {}
 
-        virtual void updatePath(const std::vector<std::pair<Date, Real> >  &events, 
-                                NotionalPath &path) const;
+        void updatePath(const std::vector<std::pair<Date, Real> >& events,
+                        NotionalPath& path) const override;
+
       protected:
         Real threshold_;
     };
@@ -88,28 +90,29 @@ namespace QuantLib {
     class ProportionalNotionalRisk : public NotionalRisk
     {
     public:
-        ProportionalNotionalRisk(boost::shared_ptr<EventPaymentOffset> paymentOffset,
-                           Real attachement, Real exhaustion)
-                           : NotionalRisk(paymentOffset) , attachement_(attachement), exhaustion_(exhaustion)
-        {
-            QL_REQUIRE(attachement<exhaustion, "exhaustion level needs to be greater than attachement");
+      ProportionalNotionalRisk(const ext::shared_ptr<EventPaymentOffset>& paymentOffset,
+                               Real attachement,
+                               Real exhaustion)
+      : NotionalRisk(paymentOffset), attachement_(attachement), exhaustion_(exhaustion) {
+          QL_REQUIRE(attachement < exhaustion,
+                     "exhaustion level needs to be greater than attachement");
         }
 
-        virtual void updatePath(const std::vector<std::pair<Date, Real> >  &events, NotionalPath &path) const
-        {
+        void updatePath(const std::vector<std::pair<Date, Real> >& events,
+                        NotionalPath& path) const override {
             path.reset();
             Real losses = 0;
             Real previousNotional = 1;
-            for(size_t i=0; i<events.size(); ++i)
-            {
-                losses+=events[i].second;
+            for (const auto& event : events) {
+                losses += event.second;
                 if(losses>attachement_ && previousNotional>0)
                 {
                     previousNotional = std::max(0.0, (exhaustion_-losses)/(exhaustion_-attachement_));
-                    path.addReduction(paymentOffset_->paymentDate(events[i].first), previousNotional);
+                    path.addReduction(paymentOffset_->paymentDate(event.first), previousNotional);
                 }
             }
         }
+
     protected:
         Real attachement_;
         Real exhaustion_;

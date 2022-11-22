@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2006, 2007 Ferdinando Ametrano
- Copyright (C) 2006 François du Vignaud
+ Copyright (C) 2006 FranÃ§ois du Vignaud
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,13 +19,12 @@
 */
 
 #include <ql/quotes/forwardvaluequote.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    ForwardValueQuote::ForwardValueQuote(
-                            const boost::shared_ptr<Index>& index,
-                            const Date& fixingDate)
-    : index_(index), fixingDate_(fixingDate) {
+    ForwardValueQuote::ForwardValueQuote(ext::shared_ptr<Index> index, const Date& fixingDate)
+    : index_(std::move(index)), fixingDate_(fixingDate) {
         registerWith(index_);
     }
 

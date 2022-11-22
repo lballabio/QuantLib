@@ -42,8 +42,8 @@ namespace QuantLib {
                                                      zData) {
                 calculate();
             }
-            void calculate() {}
-            Real value(Real x, Real y) const {
+            void calculate() override {}
+            Real value(Real x, Real y) const override {
                 Size j = this->locateY(y);
                 Real z1,z2;
                 if(x <= this->xBegin_[0]) {
@@ -71,6 +71,9 @@ namespace QuantLib {
 
     }
 
+    /*! \warning See the Interpolation class for information about the
+                 required lifetime of the underlying data.
+    */
     class BackwardflatLinearInterpolation : public Interpolation2D {
       public:
         /*! \pre the \f$ x \f$ and \f$ y \f$ values must be sorted. */
@@ -78,7 +81,7 @@ namespace QuantLib {
         BackwardflatLinearInterpolation(const I1& xBegin, const I1& xEnd,
                               const I2& yBegin, const I2& yEnd,
                               const M& zData) {
-            impl_ = boost::shared_ptr<Interpolation2D::Impl>(
+            impl_ = ext::shared_ptr<Interpolation2D::Impl>(
                   new detail::BackwardflatLinearInterpolationImpl<I1,I2,M>(xBegin, xEnd,
                                                                  yBegin, yEnd,
                                                                  zData));

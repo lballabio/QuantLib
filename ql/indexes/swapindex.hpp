@@ -25,6 +25,7 @@
 
 #include <ql/indexes/interestrateindex.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 
 namespace QuantLib {
 
@@ -42,64 +43,64 @@ namespace QuantLib {
         SwapIndex(const std::string& familyName,
                   const Period& tenor,
                   Natural settlementDays,
-                  Currency currency,
+                  const Currency& currency,
                   const Calendar& fixingCalendar,
                   const Period& fixedLegTenor,
                   BusinessDayConvention fixedLegConvention,
                   const DayCounter& fixedLegDayCounter,
-                  const boost::shared_ptr<IborIndex>& iborIndex);
+                  ext::shared_ptr<IborIndex> iborIndex);
         SwapIndex(const std::string& familyName,
                   const Period& tenor,
                   Natural settlementDays,
-                  Currency currency,
+                  const Currency& currency,
                   const Calendar& fixingCalendar,
                   const Period& fixedLegTenor,
                   BusinessDayConvention fixedLegConvention,
                   const DayCounter& fixedLegDayCounter,
-                  const boost::shared_ptr<IborIndex>& iborIndex,
-                  const Handle<YieldTermStructure>& discountingTermStructure);
+                  ext::shared_ptr<IborIndex> iborIndex,
+                  Handle<YieldTermStructure> discountingTermStructure);
         //! \name InterestRateIndex interface
         //@{
-        Date maturityDate(const Date& valueDate) const;
+        Date maturityDate(const Date& valueDate) const override;
         //@}
         //! \name Inspectors
         //@{
         Period fixedLegTenor() const { return fixedLegTenor_; }
         BusinessDayConvention fixedLegConvention() const;
-        boost::shared_ptr<IborIndex> iborIndex() const { return iborIndex_; }
+        ext::shared_ptr<IborIndex> iborIndex() const { return iborIndex_; }
         Handle<YieldTermStructure> forwardingTermStructure() const;
         Handle<YieldTermStructure> discountingTermStructure() const;
         bool exogenousDiscount() const;
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
         */
-        boost::shared_ptr<VanillaSwap> underlyingSwap(
+        ext::shared_ptr<VanillaSwap> underlyingSwap(
                                                 const Date& fixingDate) const;
         //@}
         //! \name Other methods
         //@{
         //! returns a copy of itself linked to a different forwarding curve
-        virtual boost::shared_ptr<SwapIndex> clone(
+        virtual ext::shared_ptr<SwapIndex> clone(
                         const Handle<YieldTermStructure>& forwarding) const;
         //! returns a copy of itself linked to different curves
-        virtual boost::shared_ptr<SwapIndex> clone(
+        virtual ext::shared_ptr<SwapIndex> clone(
                         const Handle<YieldTermStructure>& forwarding,
                         const Handle<YieldTermStructure>& discounting) const;
         //! returns a copy of itself with different tenor
-        virtual boost::shared_ptr<SwapIndex> clone(
+        virtual ext::shared_ptr<SwapIndex> clone(
                         const Period& tenor) const;
         // @}
       protected:
-        Rate forecastFixing(const Date& fixingDate) const;
+        Rate forecastFixing(const Date& fixingDate) const override;
         Period tenor_;
-        boost::shared_ptr<IborIndex> iborIndex_;
+        ext::shared_ptr<IborIndex> iborIndex_;
         Period fixedLegTenor_;
         BusinessDayConvention fixedLegConvention_;
         bool exogenousDiscount_;
         Handle<YieldTermStructure> discount_;
         // cache data to avoid swap recreation when the same fixing date
         // is used multiple time to forecast changing fixing
-        mutable boost::shared_ptr<VanillaSwap> lastSwap_;
+        mutable ext::shared_ptr<VanillaSwap> lastSwap_;
         mutable Date lastFixingDate_;
     };
 
@@ -111,22 +112,26 @@ namespace QuantLib {
                   const std::string& familyName,
                   const Period& tenor,
                   Natural settlementDays,
-                  Currency currency,
-                  const boost::shared_ptr<OvernightIndex>& overnightIndex);
+                  const Currency& currency,
+                  const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                  bool telescopicValueDates = false,
+                  RateAveraging::Type averagingMethod = RateAveraging::Compound);
         //! \name Inspectors
         //@{
-        boost::shared_ptr<OvernightIndex> overnightIndex() const;
+        ext::shared_ptr<OvernightIndex> overnightIndex() const;
         /*! \warning Relinking the term structure underlying the index will
                      not have effect on the returned swap.
         */
-        boost::shared_ptr<OvernightIndexedSwap> underlyingSwap(
+        ext::shared_ptr<OvernightIndexedSwap> underlyingSwap(
                                                 const Date& fixingDate) const;
         //@}
       protected:
-        boost::shared_ptr<OvernightIndex> overnightIndex_;
+        ext::shared_ptr<OvernightIndex> overnightIndex_;
+        bool telescopicValueDates_;
+        RateAveraging::Type averagingMethod_;
         // cache data to avoid swap recreation when the same fixing date
         // is used multiple time to forecast changing fixing
-        mutable boost::shared_ptr<OvernightIndexedSwap> lastSwap_;
+        mutable ext::shared_ptr<OvernightIndexedSwap> lastSwap_;
         mutable Date lastFixingDate_;
     };
 
@@ -140,7 +145,7 @@ namespace QuantLib {
         return exogenousDiscount_;
     }
 
-    inline boost::shared_ptr<OvernightIndex>
+    inline ext::shared_ptr<OvernightIndex>
     OvernightIndexedSwapIndex::overnightIndex() const {
         return overnightIndex_;
     }

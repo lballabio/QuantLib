@@ -41,18 +41,18 @@ namespace QuantLib {
                             Real displacement = 0.0);
         //! \name TermStructure interface
         //@{
-        DayCounter dayCounter() const;
-        Date maxDate() const;
+        DayCounter dayCounter() const override;
+        Date maxDate() const override;
         //@}
-        Real minStrike() const;
-        Real maxStrike() const;
-        VolatilityType volatilityType() const;
-        Real displacement() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
+        VolatilityType volatilityType() const override;
+        Real displacement() const override;
 
       protected:
-        boost::shared_ptr<SmileSection> smileSectionImpl(Time t) const;
-        Volatility volatilityImpl(Time t,
-                                  Rate) const;
+        ext::shared_ptr<SmileSection> smileSectionImpl(Time t) const override;
+        Volatility volatilityImpl(Time t, Rate) const override;
+
       private:
         BlackVarianceCurve blackCurve_;
         VolatilityType type_;
@@ -83,11 +83,11 @@ namespace QuantLib {
         return blackCurve_.maxStrike();
     }
 
-    inline boost::shared_ptr<SmileSection>
+    inline ext::shared_ptr<SmileSection>
     CapletVarianceCurve::smileSectionImpl(Time t) const {
         // dummy strike
         Volatility atmVol = blackCurve_.blackVol(t, 0.05, true);
-        return boost::shared_ptr<SmileSection>(new
+        return ext::shared_ptr<SmileSection>(new
             FlatSmileSection(t,
                              atmVol,
                              dayCounter()));

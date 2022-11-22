@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     JarrowRudd::JarrowRudd(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : EqualProbabilitiesBinomialTree<JarrowRudd>(process, end, steps) {
         // drift removed
@@ -35,7 +35,7 @@ namespace QuantLib {
 
 
     CoxRossRubinstein::CoxRossRubinstein(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : EqualJumpsBinomialTree<CoxRossRubinstein>(process, end, steps) {
 
@@ -49,7 +49,7 @@ namespace QuantLib {
 
 
     AdditiveEQPBinomialTree::AdditiveEQPBinomialTree(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : EqualProbabilitiesBinomialTree<AdditiveEQPBinomialTree>(process,
                                                               end, steps) {
@@ -60,7 +60,7 @@ namespace QuantLib {
 
 
     Trigeorgis::Trigeorgis(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : EqualJumpsBinomialTree<Trigeorgis>(process, end, steps) {
 
@@ -74,7 +74,7 @@ namespace QuantLib {
     }
 
 
-    Tian::Tian(const boost::shared_ptr<StochasticProcess1D>& process,
+    Tian::Tian(const ext::shared_ptr<StochasticProcess1D>& process,
                Time end, Size steps, Real)
     : BinomialTree<Tian>(process, end, steps) {
 
@@ -96,14 +96,14 @@ namespace QuantLib {
     }
 
 
-    LeisenReimer::LeisenReimer(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
-                        Time end, Size steps, Real strike)
-    : BinomialTree<LeisenReimer>(process, end,
-                                 ((steps%2) ? steps : (steps+1))) {
+    LeisenReimer::LeisenReimer(const ext::shared_ptr<StochasticProcess1D>& process,
+                               Time end,
+                               Size steps,
+                               Real strike)
+    : BinomialTree<LeisenReimer>(process, end, ((steps % 2) != 0U ? steps : (steps + 1))) {
 
         QL_REQUIRE(strike>0.0, "strike must be positive");
-        Size oddSteps = ((steps%2) ? steps : (steps+1));
+        Size oddSteps = ((steps % 2) != 0U ? steps : (steps + 1));
         Real variance = process->variance(0.0, x0_, end);
         Real ermqdt = std::exp(driftPerStep_ + 0.5*variance/oddSteps);
         Real d2 = (std::log(x0_/strike) + driftPerStep_*oddSteps ) /
@@ -114,7 +114,6 @@ namespace QuantLib {
                                                  oddSteps);
         up_ = ermqdt * pdash / pu_;
         down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
-
     }
 
     Real Joshi4::computeUpProb(Real k, Real dj) const {
@@ -138,12 +137,14 @@ namespace QuantLib {
         return p;
     }
 
-    Joshi4::Joshi4(const boost::shared_ptr<StochasticProcess1D>& process,
-                   Time end, Size steps, Real strike)
-    : BinomialTree<Joshi4>(process, end, (steps%2) ? steps : (steps+1)) {
+    Joshi4::Joshi4(const ext::shared_ptr<StochasticProcess1D>& process,
+                   Time end,
+                   Size steps,
+                   Real strike)
+    : BinomialTree<Joshi4>(process, end, (steps % 2) != 0U ? steps : (steps + 1)) {
 
         QL_REQUIRE(strike>0.0, "strike must be positive");
-        Size oddSteps = (steps%2) ? steps : (steps+1);
+        Size oddSteps = (steps % 2) != 0U ? steps : (steps + 1);
         Real variance = process->variance(0.0, x0_, end);
         Real ermqdt = std::exp(driftPerStep_ + 0.5*variance/oddSteps);
         Real d2 = (std::log(x0_/strike) + driftPerStep_*oddSteps ) /
@@ -154,5 +155,4 @@ namespace QuantLib {
         up_ = ermqdt * pdash / pu_;
         down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
     }
-
 }

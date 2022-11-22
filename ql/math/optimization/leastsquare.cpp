@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
+ Copyright (C) 2001, 2002, 2003 Nicolas Di CÃ©sarÃ©
  Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -18,9 +18,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/math/optimization/conjugategradient.hpp>
 #include <ql/math/optimization/leastsquare.hpp>
 #include <ql/math/optimization/problem.hpp>
-#include <ql/math/optimization/conjugategradient.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -35,7 +36,7 @@ namespace QuantLib {
         return DotProduct(diff, diff);
     }
 
-    Disposable<Array> LeastSquareFunction::values(const Array& x) const {
+    Array LeastSquareFunction::values(const Array& x) const {
         // size of target and function to fit vectors
         Array target(lsp_.size()), fct2fit(lsp_.size());
         // compute its values
@@ -79,17 +80,15 @@ namespace QuantLib {
                                                Real accuracy,
                                                Size maxiter)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-      om_ (boost::shared_ptr<OptimizationMethod>(new ConjugateGradient())),
+      om_ (ext::shared_ptr<OptimizationMethod>(new ConjugateGradient())),
       c_(c)
     {}
 
-    NonLinearLeastSquare::NonLinearLeastSquare(
-                                     Constraint& c,
-                                     Real accuracy,
-                                     Size maxiter,
-                                     boost::shared_ptr<OptimizationMethod> om)
-    : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-      om_ (om), c_(c) {}
+    NonLinearLeastSquare::NonLinearLeastSquare(Constraint& c,
+                                               Real accuracy,
+                                               Size maxiter,
+                                               ext::shared_ptr<OptimizationMethod> om)
+    : exitFlag_(-1), accuracy_(accuracy), maxIterations_(maxiter), om_(std::move(om)), c_(c) {}
 
     Array& NonLinearLeastSquare::perform(LeastSquareProblem& lsProblem) {
         Real eps = accuracy_;

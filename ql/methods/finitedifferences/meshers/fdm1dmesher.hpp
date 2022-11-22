@@ -35,7 +35,7 @@ namespace QuantLib {
       public:
         explicit Fdm1dMesher(Size size)
         : locations_(size), dplus_(size), dminus_(size) {}
-        virtual ~Fdm1dMesher() {}
+        virtual ~Fdm1dMesher() = default;
 
         Size size() const { return locations_.size(); }
         Real dplus(Size index) const {return dplus_[index];}

@@ -18,15 +18,13 @@
 */
 
 #include <ql/math/optimization/constraint.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    Constraint::Constraint(const boost::shared_ptr<Constraint::Impl>& impl)
-    : impl_(impl) {}
+    Constraint::Constraint(ext::shared_ptr<Constraint::Impl> impl) : impl_(std::move(impl)) {}
 
-    Real Constraint::update(Array& params,
-                            const Array& direction,
-                            Real beta) {
+    Real Constraint::update(Array& params, const Array& direction, Real beta) const {
 
         Real diff=beta;
         Array newParams = params + diff*direction;
@@ -43,5 +41,4 @@ namespace QuantLib {
         params += diff*direction;
         return diff;
     }
-
 }

@@ -26,19 +26,16 @@
 
 namespace QuantLib {
 
-    LMMDriftCalculator::LMMDriftCalculator(
-                                    const Matrix& pseudo,
-                                    const std::vector<Spread>& displacements,
-                                    const std::vector<Time>& taus,
-                                    Size numeraire,
-                                    Size alive)
+    LMMDriftCalculator::LMMDriftCalculator(const Matrix& pseudo,
+                                           const std::vector<Spread>& displacements,
+                                           const std::vector<Time>& taus,
+                                           Size numeraire,
+                                           Size alive)
     : numberOfRates_(taus.size()), numberOfFactors_(pseudo.columns()),
-      isFullFactor_(numberOfFactors_==numberOfRates_ ? true : false),
-      numeraire_(numeraire), alive_(alive),
-      displacements_(displacements), oneOverTaus_(taus.size()),
-      pseudo_(pseudo), tmp_(taus.size(), 0.0),
-      e_(pseudo_.columns(), pseudo_.rows(), 0.0),
-      downs_(taus.size()), ups_(taus.size()) {
+      isFullFactor_(numberOfFactors_ == numberOfRates_), numeraire_(numeraire), alive_(alive),
+      displacements_(displacements), oneOverTaus_(taus.size()), pseudo_(pseudo),
+      tmp_(taus.size(), 0.0), e_(pseudo_.columns(), pseudo_.rows(), 0.0), downs_(taus.size()),
+      ups_(taus.size()) {
 
         // Check requirements
         QL_REQUIRE(numberOfRates_>0, "Dim out of range");
@@ -57,7 +54,7 @@ namespace QuantLib {
             oneOverTaus_[i] = 1.0/taus[i];
 
         // Compute covariance matrix from pseudoroot
-        const Disposable<Matrix> pT = transpose(pseudo_);
+        Matrix pT = transpose(pseudo_);
         C_ = pseudo_*pT;
 
         // Compute lower and upper extrema for (non reduced) drift calculation
@@ -106,7 +103,7 @@ namespace QuantLib {
         for (i=alive_; i<numberOfRates_; ++i) {
             drifts[i] = std::inner_product(tmp_.begin()+downs_[i],
                                            tmp_.begin()+ups_[i],
-                                           C_.row_begin(i)+downs_[i], 0.0);
+                                           C_.row_begin(i)+downs_[i], Real(0.0));
             if (numeraire_>i+1)
                 drifts[i] = -drifts[i];
         }

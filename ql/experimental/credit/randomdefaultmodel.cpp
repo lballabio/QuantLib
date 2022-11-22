@@ -20,6 +20,7 @@
 
 #include <ql/experimental/credit/randomdefaultmodel.hpp>
 #include <ql/math/solvers1d/brent.hpp>
+#include <utility>
 
 using namespace std;
 
@@ -30,8 +31,8 @@ namespace QuantLib {
         // Utility for the numerical solver
         class Root {
           public:
-            Root(const Handle<DefaultProbabilityTermStructure> dts, Real pd)
-            : dts_(dts), pd_(pd) {}
+            Root(Handle<DefaultProbabilityTermStructure> dts, Real pd)
+            : dts_(std::move(dts)), pd_(pd) {}
             Real operator()(Real t) const {
                 QL_REQUIRE (t >= 0.0, "t < 0");
                 return dts_->defaultProbability(t, true) - pd_;
@@ -44,16 +45,13 @@ namespace QuantLib {
     }
 
     GaussianRandomDefaultModel::GaussianRandomDefaultModel(
-                               boost::shared_ptr<Pool> pool,
-                               const std::vector<DefaultProbKey>& defaultKeys,
-                               Handle<OneFactorCopula> copula,
-                               Real accuracy,
-                               long seed)
-        : RandomDefaultModel(pool, defaultKeys),
-          copula_(copula),
-          accuracy_(accuracy),
-          seed_(seed),
-          rsg_(PseudoRandom::make_sequence_generator(pool->size()+1, seed)) {
+        const ext::shared_ptr<Pool>& pool,
+        const std::vector<DefaultProbKey>& defaultKeys,
+        const Handle<OneFactorCopula>& copula,
+        Real accuracy,
+        long seed)
+    : RandomDefaultModel(pool, defaultKeys), copula_(copula), accuracy_(accuracy), seed_(seed),
+      rsg_(PseudoRandom::make_sequence_generator(pool->size() + 1, seed)) {
         registerWith(copula);
     }
 

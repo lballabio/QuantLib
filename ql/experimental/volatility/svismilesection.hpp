@@ -30,20 +30,36 @@
 
 namespace QuantLib {
 
+//! Stochastic Volatility Inspired Smile Section
+/*! \test the correctness of the result is tested by checking it
+          against known good values.
+*/
 class SviSmileSection : public SmileSection {
 
   public:
-    SviSmileSection(Time timeToExpiry, Rate forward,
-                          const std::vector<Real> &sviParameters);
-    SviSmileSection(const Date &d, Rate forward,
-                          const std::vector<Real> &sviParameters,
-                          const DayCounter &dc = Actual365Fixed());
-    Real minStrike() const { return 0.0; }
-    Real maxStrike() const { return QL_MAX_REAL; }
-    Real atmLevel() const { return forward_; }
+    //! \name Constructors
+    //@{
+    /*! @param timeToExpiry Time to expiry
+        @param forward Forward price corresponding to the expiry date
+        @param sviParameters Expects SVI parameters as a vector composed of a, b, sigma, rho, m
+    */
+    SviSmileSection(Time timeToExpiry, Rate forward, std::vector<Real> sviParameters);
+    /*! @param d Date of expiry
+        @param forward Forward price corresponding to the expiry date
+        @param sviParameters Expects SVI parameters as a vector composed of a, b, sigma, rho, m
+        @param dc Day count method used to compute the time to expiry
+    */
+    SviSmileSection(const Date& d,
+                    Rate forward,
+                    std::vector<Real> sviParameters,
+                    const DayCounter& dc = Actual365Fixed());
+    //@}
+    Real minStrike() const override { return 0.0; }
+    Real maxStrike() const override { return QL_MAX_REAL; }
+    Real atmLevel() const override { return forward_; }
 
   protected:
-    Volatility volatilityImpl(Rate strike) const;
+    Volatility volatilityImpl(Rate strike) const override;
 
   private:
     void init();

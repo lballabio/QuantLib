@@ -18,41 +18,36 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
  */
 
-#include <ql/instruments/yearonyearinflationswap.hpp>
-#include <ql/time/schedule.hpp>
+#include <ql/cashflows/cashflows.hpp>
+#include <ql/cashflows/cashflowvectors.hpp>
+#include <ql/cashflows/couponpricer.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/yoyinflationcoupon.hpp>
-#include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/cashflows/cashflows.hpp>
-#include <ql/cashflows/couponpricer.hpp>
 #include <ql/indexes/inflationindex.hpp>
+#include <ql/instruments/yearonyearinflationswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/time/schedule.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    YearOnYearInflationSwap::
-    YearOnYearInflationSwap(
-                            Type type,
-                            Real nominal,
-                            const Schedule& fixedSchedule,
-                            Rate fixedRate,
-                            const DayCounter& fixedDayCount,
-                            const Schedule& yoySchedule,
-                            const boost::shared_ptr<YoYInflationIndex>& yoyIndex,
-                            const Period& observationLag,
-                            Spread spread,
-                            const DayCounter& yoyDayCount,
-                            const Calendar& paymentCalendar,
-                            BusinessDayConvention paymentConvention)
-    : Swap(2), type_(type), nominal_(nominal),
-    fixedSchedule_(fixedSchedule), fixedRate_(fixedRate),
-    fixedDayCount_(fixedDayCount),
-    yoySchedule_(yoySchedule), yoyIndex_(yoyIndex),
-    observationLag_(observationLag),
-    spread_(spread),
-    yoyDayCount_(yoyDayCount), paymentCalendar_(paymentCalendar),
-    paymentConvention_(paymentConvention)
-    {
+    YearOnYearInflationSwap::YearOnYearInflationSwap(Type type,
+                                                     Real nominal,
+                                                     Schedule fixedSchedule,
+                                                     Rate fixedRate,
+                                                     DayCounter fixedDayCount,
+                                                     Schedule yoySchedule,
+                                                     ext::shared_ptr<YoYInflationIndex> yoyIndex,
+                                                     const Period& observationLag,
+                                                     Spread spread,
+                                                     DayCounter yoyDayCount,
+                                                     Calendar paymentCalendar,
+                                                     BusinessDayConvention paymentConvention)
+    : Swap(2), type_(type), nominal_(nominal), fixedSchedule_(std::move(fixedSchedule)),
+      fixedRate_(fixedRate), fixedDayCount_(std::move(fixedDayCount)),
+      yoySchedule_(std::move(yoySchedule)), yoyIndex_(std::move(yoyIndex)),
+      observationLag_(observationLag), spread_(spread), yoyDayCount_(std::move(yoyDayCount)),
+      paymentCalendar_(std::move(paymentCalendar)), paymentConvention_(paymentConvention) {
         // N.B. fixed leg gets its calendar from the schedule!
         Leg fixedLeg = FixedRateLeg(fixedSchedule_)
         .withNotionals(nominal_)
@@ -85,10 +80,9 @@ namespace QuantLib {
 
         Swap::setupArguments(args);
 
-        YearOnYearInflationSwap::arguments* arguments =
-        dynamic_cast<YearOnYearInflationSwap::arguments*>(args);
+        auto* arguments = dynamic_cast<YearOnYearInflationSwap::arguments*>(args);
 
-        if (!arguments)  // it's a swap engine...
+        if (arguments == nullptr) // it's a swap engine...
             return;
 
         arguments->type = type_;
@@ -101,8 +95,8 @@ namespace QuantLib {
         arguments->fixedCoupons = std::vector<Real>(fixedCoupons.size());
 
         for (Size i=0; i<fixedCoupons.size(); ++i) {
-            boost::shared_ptr<FixedRateCoupon> coupon =
-            boost::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
+            ext::shared_ptr<FixedRateCoupon> coupon =
+            ext::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
 
             arguments->fixedPayDates[i] = coupon->date();
             arguments->fixedResetDates[i] = coupon->accrualStartDate();
@@ -120,8 +114,8 @@ namespace QuantLib {
         std::vector<Spread>(yoyCoupons.size());
         arguments->yoyCoupons = std::vector<Real>(yoyCoupons.size());
         for (Size i=0; i<yoyCoupons.size(); ++i) {
-            boost::shared_ptr<YoYInflationCoupon> coupon =
-            boost::dynamic_pointer_cast<YoYInflationCoupon>(yoyCoupons[i]);
+            ext::shared_ptr<YoYInflationCoupon> coupon =
+            ext::dynamic_pointer_cast<YoYInflationCoupon>(yoyCoupons[i]);
 
             arguments->yoyResetDates[i] = coupon->accrualStartDate();
             arguments->yoyPayDates[i] = coupon->date();
@@ -179,9 +173,8 @@ namespace QuantLib {
 
         Swap::fetchResults(r);
 
-        const YearOnYearInflationSwap::results* results =
-        dynamic_cast<const YearOnYearInflationSwap::results*>(r);
-        if (results) { // might be a swap engine, so no error is thrown
+        const auto* results = dynamic_cast<const YearOnYearInflationSwap::results*>(r);
+        if (results != nullptr) { // might be a swap engine, so no error is thrown
             fairRate_ = results->fairRate;
             fairSpread_ = results->fairSpread;
         } else {
@@ -232,18 +225,6 @@ namespace QuantLib {
         Swap::results::reset();
         fairRate = Null<Rate>();
         fairSpread = Null<Spread>();
-    }
-
-    std::ostream& operator<<(std::ostream& out,
-                             YearOnYearInflationSwap::Type t) {
-        switch (t) {
-            case YearOnYearInflationSwap::Payer:
-                return out << "Payer";
-            case YearOnYearInflationSwap::Receiver:
-                return out << "Receiver";
-            default:
-                QL_FAIL("unknown VanillaSwap::Type(" << Integer(t) << ")");
-        }
     }
 
 }

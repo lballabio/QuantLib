@@ -17,10 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file disposable.hpp
-    \brief generic disposable object with move semantics
-*/
-
 #ifndef quantlib_disposable_hpp
 #define quantlib_disposable_hpp
 
@@ -28,64 +24,12 @@
 
 namespace QuantLib {
 
-    //! generic disposable object with move semantics
-    /*! This class can be used for returning a value by copy. It relies
-        on the returned object exposing a <tt>swap(T\&)</tt> method through
-        which the copy constructor and assignment operator are implemented,
-        thus resulting in actual move semantics. Typical use of this
-        class is along the following lines:
-        \code
-        Disposable<Foo> bar(Integer i) {
-            Foo f(i*2);
-            return f;
-        }
-        \endcode
-
-        \warning In order to avoid copies in code such as shown above,
-                 the conversion from <tt>T</tt> to <tt>Disposable\<T\></tt>
-                 is destructive, i.e., it does <b>not</b> preserve the
-                 state of the original object. Therefore, it is necessary
-                 for the developer to avoid code such as
-        \code
-        Disposable<Foo> bar(Foo& f) {
-            return f;
-        }
-        \endcode
-                 which would likely render the passed object unusable.
-                 The correct way to obtain the desired behavior would be:
-        \code
-        Disposable<Foo> bar(Foo& f) {
-            Foo temp = f;
-            return temp;
-        }
-        \endcode
-    */
-    template <class T>
-    class Disposable : public T {
-      public:
-        Disposable(T& t);
-        Disposable(const Disposable<T>& t);
-        Disposable<T>& operator=(const Disposable<T>& t);
-    };
-
-
-    // inline definitions
+    // Deprecated in version 1.27
+    #pragma message("Warning: the deprecated Disposable<T> class is no longer used. Replace it with T.")
+    #pragma message("    This file will disappear in a future release; do not include it.")
 
     template <class T>
-    inline Disposable<T>::Disposable(T& t) {
-        this->swap(t);
-    }
-
-    template <class T>
-    inline Disposable<T>::Disposable(const Disposable<T>& t) : T() {
-        this->swap(const_cast<Disposable<T>&>(t));
-    }
-
-    template <class T>
-    inline Disposable<T>& Disposable<T>::operator=(const Disposable<T>& t) {
-        this->swap(const_cast<Disposable<T>&>(t));
-        return *this;
-    }
+    using Disposable = T;
 
 }
 

@@ -67,7 +67,7 @@ namespace QuantLib {
         };
 
         Gaussian1dFloatFloatSwaptionEngine(
-            const boost::shared_ptr<Gaussian1dModel> &model,
+            const ext::shared_ptr<Gaussian1dModel> &model,
             const int integrationPoints = 64, const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
@@ -82,7 +82,7 @@ namespace QuantLib {
                                  FloatFloatSwaption::results>(model),
               integrationPoints_(integrationPoints), stddevs_(stddevs),
               extrapolatePayoff_(extrapolatePayoff),
-              flatPayoffExtrapolation_(flatPayoffExtrapolation), model_(model),
+              flatPayoffExtrapolation_(flatPayoffExtrapolation),
               oas_(oas), discountCurve_(discountCurve),
               includeTodaysExercise_(includeTodaysExercise),
               probabilities_(probabilities) {
@@ -94,7 +94,35 @@ namespace QuantLib {
                 registerWith(oas_);
         }
 
-        void calculate() const;
+        Gaussian1dFloatFloatSwaptionEngine(
+            const Handle<Gaussian1dModel> &model,
+            const int integrationPoints = 64, const Real stddevs = 7.0,
+            const bool extrapolatePayoff = true,
+            const bool flatPayoffExtrapolation = false,
+            const Handle<Quote> &oas =
+                Handle<Quote>(), // continously compounded w.r.t. yts daycounter
+            const Handle<YieldTermStructure> &discountCurve =
+                Handle<YieldTermStructure>(),
+            const bool includeTodaysExercise = false,
+            const Probabilities probabilities = None)
+            : BasketGeneratingEngine(model, oas, discountCurve),
+              GenericModelEngine<Gaussian1dModel, FloatFloatSwaption::arguments,
+                                 FloatFloatSwaption::results>(model),
+              integrationPoints_(integrationPoints), stddevs_(stddevs),
+              extrapolatePayoff_(extrapolatePayoff),
+              flatPayoffExtrapolation_(flatPayoffExtrapolation),
+              oas_(oas), discountCurve_(discountCurve),
+              includeTodaysExercise_(includeTodaysExercise),
+              probabilities_(probabilities) {
+
+            if (!discountCurve_.empty())
+                registerWith(discountCurve_);
+
+            if (!oas_.empty())
+                registerWith(oas_);
+        }
+
+        void calculate() const override;
 
         Handle<YieldTermStructure> discountingCurve() const {
             return discountCurve_.empty() ? model_->termStructure()
@@ -102,27 +130,26 @@ namespace QuantLib {
         }
 
       protected:
-        Real underlyingNpv(const Date &expiry, const Real y) const;
-        VanillaSwap::Type underlyingType() const;
-        const Date underlyingLastDate() const;
-        const Disposable<Array> initialGuess(const Date &expiry) const;
+        Real underlyingNpv(const Date& expiry, Real y) const override;
+        Swap::Type underlyingType() const override;
+        const Date underlyingLastDate() const override;
+        const Array initialGuess(const Date& expiry) const override;
 
       private:
         const int integrationPoints_;
         const Real stddevs_;
         const bool extrapolatePayoff_, flatPayoffExtrapolation_;
-        const boost::shared_ptr<Gaussian1dModel> model_;
         const Handle<Quote> oas_;
         const Handle<YieldTermStructure> discountCurve_;
         const bool includeTodaysExercise_;
         const Probabilities probabilities_;
 
-        const std::pair<Real, Real>
-        npvs(const Date &expiry, const Real y,
-             const bool includeExerciseOnxpiry,
-             const bool considerProbabilities=false) const;
+        std::pair<Real, Real> npvs(const Date& expiry,
+                                   Real y,
+                                   bool includeExerciseOnxpiry,
+                                   bool considerProbabilities = false) const;
 
-        mutable boost::shared_ptr<RebatedExercise> rebatedExercise_;
+        mutable ext::shared_ptr<RebatedExercise> rebatedExercise_;
     };
 }
 

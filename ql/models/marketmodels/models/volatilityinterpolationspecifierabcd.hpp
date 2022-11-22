@@ -23,7 +23,7 @@
 #include <ql/models/marketmodels/models/volatilityinterpolationspecifier.hpp>
 #include <ql/models/marketmodels/models/piecewiseconstantabcdvariance.hpp>
 #include <ql/types.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 
@@ -39,25 +39,27 @@ namespace QuantLib
                                                                    Real lastCapletVol=0.0
                                                                    );
 
-        virtual ~VolatilityInterpolationSpecifierabcd();
-        virtual void setScalingFactors(const std::vector<Real>& scales);
-        virtual void setLastCapletVol(Real vol);
+        ~VolatilityInterpolationSpecifierabcd() override = default;
+        void setScalingFactors(const std::vector<Real>& scales) override;
+        void setLastCapletVol(Real vol) override;
 
 
-        virtual const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& interpolatedVariances() const;
-        virtual const std::vector<boost::shared_ptr<PiecewiseConstantVariance> >& originalVariances() const;
+        const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >&
+        interpolatedVariances() const override;
+        const std::vector<ext::shared_ptr<PiecewiseConstantVariance> >&
+        originalVariances() const override;
 
-        virtual Size getPeriod() const;
-        virtual Size getOffset() const;
-        virtual Size getNoBigRates() const;
-        virtual Size getNoSmallRates() const;
+        Size getPeriod() const override;
+        Size getOffset() const override;
+        Size getNoBigRates() const override;
+        Size getNoSmallRates() const override;
 
-    private:
+      private:
         Size period_;
         Size offset_;
 
-         std::vector<boost::shared_ptr<PiecewiseConstantVariance> > interpolatedVariances_;
-         std::vector<boost::shared_ptr<PiecewiseConstantVariance> > originalVariances_;
+         std::vector<ext::shared_ptr<PiecewiseConstantVariance> > interpolatedVariances_;
+         std::vector<ext::shared_ptr<PiecewiseConstantVariance> > originalVariances_;
          std::vector< PiecewiseConstantAbcdVariance> originalABCDVariances_;
          std::vector< PiecewiseConstantAbcdVariance> originalABCDVariancesScaled_;
          Real lastCapletVol_;

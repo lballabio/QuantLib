@@ -35,11 +35,11 @@ namespace QuantLib {
       public:
         class engine;
         class results;
-        OneAssetOption(const boost::shared_ptr<Payoff>&,
-                       const boost::shared_ptr<Exercise>&);
+        OneAssetOption(const ext::shared_ptr<Payoff>&,
+                       const ext::shared_ptr<Exercise>&);
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
+        bool isExpired() const override;
         //@}
         //! \name greeks
         //@{
@@ -55,9 +55,10 @@ namespace QuantLib {
         Real strikeSensitivity() const;
         Real itmCashProbability() const;
         //@}
-        void fetchResults(const PricingEngine::results*) const;
+        void fetchResults(const PricingEngine::results*) const override;
+
       protected:
-        void setupExpired() const;
+        void setupExpired() const override;
         // results
         mutable Real delta_, deltaForward_, elasticity_, gamma_, theta_,
             thetaPerDay_, vega_, rho_, dividendRho_, strikeSensitivity_,
@@ -69,7 +70,7 @@ namespace QuantLib {
                                     public Greeks,
                                     public MoreGreeks {
       public:
-        void reset() {
+        void reset() override {
             Instrument::results::reset();
             Greeks::reset();
             MoreGreeks::reset();

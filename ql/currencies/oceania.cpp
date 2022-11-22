@@ -31,7 +31,7 @@ namespace QuantLib {
        It is divided into 100 cents.
     */
     AUDCurrency::AUDCurrency() {
-        static boost::shared_ptr<Data> audData(
+        static ext::shared_ptr<Data> audData(
                                   new Data("Australian dollar", "AUD", 36,
                                            "A$", "", 100,
                                            Rounding(),
@@ -44,7 +44,7 @@ namespace QuantLib {
        It is divided in 100 cents.
     */
     NZDCurrency::NZDCurrency() {
-        static boost::shared_ptr<Data> nzdData(
+        static ext::shared_ptr<Data> nzdData(
                                 new Data("New Zealand dollar", "NZD", 554,
                                          "NZ$", "", 100,
                                          Rounding(),

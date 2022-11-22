@@ -20,26 +20,24 @@
 */
 
 #include <ql/math/optimization/projection.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    Projection::Projection(const Array &parameterValues,
-                           const std::vector<bool> &fixParameters)
-        : numberOfFreeParameters_(0), fixedParameters_(parameterValues),
-          actualParameters_(parameterValues),
-          fixParameters_(fixParameters) {
+    Projection::Projection(const Array& parameterValues, std::vector<bool> fixParameters)
+    : fixedParameters_(parameterValues), actualParameters_(parameterValues),
+      fixParameters_(std::move(fixParameters)) {
 
-        if (fixParameters_.size() == 0)
+        if (fixParameters_.empty())
             fixParameters_ =
                 std::vector<bool>(actualParameters_.size(), false);
 
         QL_REQUIRE(fixedParameters_.size() == fixParameters_.size(),
                    "fixedParameters_.size()!=parametersFreedoms_.size()");
-        for (Size i = 0; i < fixParameters_.size(); i++)
-            if (!fixParameters_[i])
+        for (auto&& fixParameter : fixParameters_)
+            if (!fixParameter)
                 numberOfFreeParameters_++;
         QL_REQUIRE(numberOfFreeParameters_ > 0, "numberOfFreeParameters==0");
-
     }
 
     void Projection::mapFreeParameters(const Array &parameterValues) const {
@@ -53,7 +51,7 @@ namespace QuantLib {
 
     }
 
-    Disposable<Array> Projection::project(const Array &parameters) const {
+    Array Projection::project(const Array &parameters) const {
 
         QL_REQUIRE(parameters.size() == fixParameters_.size(),
                    "parameters.size()!=parametersFreedoms_.size()");
@@ -66,8 +64,7 @@ namespace QuantLib {
 
     }
 
-    Disposable<Array>
-    Projection::include(const Array &projectedParameters) const {
+    Array Projection::include(const Array &projectedParameters) const {
 
         QL_REQUIRE(projectedParameters.size() == numberOfFreeParameters_,
                    "projectedParameters.size()!=numberOfFreeParameters");

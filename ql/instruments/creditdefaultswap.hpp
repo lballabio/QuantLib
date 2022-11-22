@@ -27,7 +27,7 @@
 #define quantlib_credit_default_swap_hpp
 
 #include <ql/instrument.hpp>
-#include <ql/cashflow.hpp>
+#include <ql/cashflows/simplecashflow.hpp>
 #include <ql/default.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/time/schedule.hpp>
@@ -47,14 +47,20 @@ namespace QuantLib {
                  NPV and therefore affect the fair-spread
                  calculation. This might not be what you want.
 
-         \ingroup instruments
+        \warning conventionalSpread (and impliedHazardRate) by default
+                 use the mid-point engine, which is not ISDA conform.
+
+        \ingroup instruments
     */
     class CreditDefaultSwap : public Instrument {
       public:
         class arguments;
         class results;
         class engine;
-
+        enum PricingModel {
+            Midpoint,
+            ISDA
+        };
         //! \name Constructors
         //@{
         //! CDS quoted as running-spread only
@@ -72,8 +78,22 @@ namespace QuantLib {
                                       due at default time. If set to
                                       false, they are due at the end of
                                       the accrual period.
-            @param protectionStart  The first date where a default
-                                    event will trigger the contract.
+            @param protectionStart  The first date where a default event will trigger the contract. 
+                                    Before the CDS Big Bang 2009, this was typically trade date (T) + 1 calendar day.
+                                    After the CDS Big Bang 2009, protection is typically effective immediately i.e. on 
+                                    trade date so this is what should be entered for protection start.
+                                    Notice that there is no default lookback period and protection start here. 
+                                    In the way it determines the dirty amount it is more like the trade execution date.
+            @param lastPeriodDayCounter Day-count convention for accrual in last period
+            @param rebatesAccrual  The protection seller pays the accrued 
+                                    scheduled current coupon at the start 
+                                    of the contract. The rebate date is not
+                                    provided but computed to be two days after
+                                    protection start.
+            @param tradeDate  The contract's trade date. It will be used with the \p cashSettlementDays to determine 
+                              the date on which the cash settlement amount is paid. If not given, the trade date is 
+                              guessed from the protection start date and \p schedule date generation rule.
+            @param cashSettlementDays  The number of business days from \p tradeDate to cash settlement date.
         */
         CreditDefaultSwap(Protection::Side side,
                           Real notional,
@@ -84,8 +104,11 @@ namespace QuantLib {
                           bool settlesAccrual = true,
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
-                          const boost::shared_ptr<Claim>& =
-                                                  boost::shared_ptr<Claim>());
+                          ext::shared_ptr<Claim> = ext::shared_ptr<Claim>(),
+                          const DayCounter& lastPeriodDayCounter = DayCounter(),
+                          bool rebatesAccrual = true,
+                          const Date& tradeDate = Date(),
+                          Natural cashSettlementDays = 3);
         //! CDS quoted as upfront and running spread
         /*! @param side  Whether the protection is bought or sold.
             @param notional  Notional value
@@ -102,9 +125,27 @@ namespace QuantLib {
                                      due at default time. If set to
                                      false, they are due at the end of
                                      the accrual period.
-            @param protectionStart The first date where a default
-                                   event will trigger the contract.
-            @param upfrontDate Settlement date for the upfront payment.
+            @param protectionStart  The first date where a default event will trigger the contract. 
+                                    Before the CDS Big Bang 2009, this was typically trade date (T) + 1 calendar day.
+                                    After the CDS Big Bang 2009, protection is typically effective immediately i.e. on 
+                                    trade date so this is what should be entered for protection start.
+                                    Notice that there is no default lookback period and protection start here. 
+                                    In the way it determines the dirty amount it is more like the trade execution date.
+            @param upfrontDate Settlement date for the upfront and accrual 
+                                    rebate (if any) payments.
+                                    Typically T+3, this is also the default 
+                                    value.
+            @param lastPeriodDayCounter Day-count convention for accrual in last period
+            @param rebatesAccrual  The protection seller pays the accrued 
+                                    scheduled current coupon at the start 
+                                    of the contract. The rebate date is not
+                                    provided but computed to be two days after
+                                    protection start.
+            @param tradeDate  The contract's trade date. It will be used with the \p cashSettlementDays to determine 
+                              the date on which the cash settlement amount is paid if \p upfrontDate is empty. If not 
+                              given, the trade date is guessed from the protection start date and \p schedule date 
+                              generation rule.
+            @param cashSettlementDays  The number of business days from \p tradeDate to cash settlement date.
         */
         CreditDefaultSwap(Protection::Side side,
                           Real notional,
@@ -117,14 +158,17 @@ namespace QuantLib {
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
                           const Date& upfrontDate = Date(),
-                          const boost::shared_ptr<Claim>& =
-                                                  boost::shared_ptr<Claim>());
+                          ext::shared_ptr<Claim> = ext::shared_ptr<Claim>(),
+                          const DayCounter& lastPeriodDayCounter = DayCounter(),
+                          bool rebatesAccrual = true,
+                          const Date& tradeDate = Date(),
+                          Natural cashSettlementDays = 3);
         //@}
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
-        void fetchResults(const PricingEngine::results*) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
+        void fetchResults(const PricingEngine::results*) const override;
         //@}
         //! \name Inspectors
         //@{
@@ -139,6 +183,11 @@ namespace QuantLib {
         const Date& protectionStartDate() const;
         //! The last date for which defaults will trigger the contract
         const Date& protectionEndDate() const;
+        bool rebatesAccrual() const { return accrualRebate_ != nullptr; }
+        const ext::shared_ptr<SimpleCashFlow>& upfrontPayment() const;
+        const ext::shared_ptr<SimpleCashFlow>& accrualRebate() const;
+        const Date& tradeDate() const;
+        Natural cashSettlementDays() const;
         //@}
         //! \name Results
         //@{
@@ -162,6 +211,7 @@ namespace QuantLib {
         Real couponLegNPV() const;
         Real defaultLegNPV() const;
         Real upfrontNPV() const;
+        Real accrualRebateNPV() const;
 
         //! Implied hazard rate calculation
         /*! \note This method performs the calculation with the
@@ -184,7 +234,8 @@ namespace QuantLib {
                                const Handle<YieldTermStructure>& discountCurve,
                                const DayCounter& dayCounter,
                                Real recoveryRate = 0.4,
-                               Real accuracy = 1.0e-6) const;
+                               Real accuracy = 1.0e-8,
+                               PricingModel model = Midpoint) const;
 
         //! Conventional/standard upfront-to-spread conversion
         /*! Under a standard ISDA model and a set of standardised
@@ -219,12 +270,13 @@ namespace QuantLib {
         */
         Rate conventionalSpread(Real conventionalRecovery,
                                 const Handle<YieldTermStructure>& discountCurve,
-                                const DayCounter& dayCounter) const;
+                                const DayCounter& dayCounter,
+                                PricingModel model = Midpoint) const;
         //@}
       protected:
         //! \name Instrument interface
         //@{
-        void setupExpired() const;
+        void setupExpired() const override;
         //@}
         // data members
         Protection::Side side_;
@@ -232,16 +284,26 @@ namespace QuantLib {
         boost::optional<Rate> upfront_;
         Rate runningSpread_;
         bool settlesAccrual_, paysAtDefaultTime_;
-        boost::shared_ptr<Claim> claim_;
+        ext::shared_ptr<Claim> claim_;
         Leg leg_;
-        boost::shared_ptr<CashFlow> upfrontPayment_;
+        ext::shared_ptr<SimpleCashFlow> upfrontPayment_;
+        ext::shared_ptr<SimpleCashFlow> accrualRebate_;
         Date protectionStart_;
+        Date tradeDate_;
+        Natural cashSettlementDays_;
+        Date maturity_;
         // results
         mutable Rate fairUpfront_;
         mutable Rate fairSpread_;
         mutable Real couponLegBPS_, couponLegNPV_;
         mutable Real upfrontBPS_, upfrontNPV_;
         mutable Real defaultLegNPV_;
+        mutable Real accrualRebateNPV_;
+
+      private:
+        //! Shared initialisation.
+        void init(const Schedule& schedule, BusinessDayConvention paymentConvention, const DayCounter& dayCounter,
+            const DayCounter& lastPeriodDayCounter, bool rebatesAccrual, const Date& upfrontDate = Date());
     };
 
 
@@ -254,12 +316,15 @@ namespace QuantLib {
         boost::optional<Rate> upfront;
         Rate spread;
         Leg leg;
-        boost::shared_ptr<CashFlow> upfrontPayment;
+        // if not initialized by constructors means theres no flows.
+        ext::shared_ptr<SimpleCashFlow> upfrontPayment;
+        ext::shared_ptr<SimpleCashFlow> accrualRebate;
         bool settlesAccrual;
         bool paysAtDefaultTime;
-        boost::shared_ptr<Claim> claim;
+        ext::shared_ptr<Claim> claim;
         Date protectionStart;
-        void validate() const;
+        Date maturity;
+        void validate() const override;
     };
 
     class CreditDefaultSwap::results : public Instrument::results {
@@ -271,12 +336,28 @@ namespace QuantLib {
         Real defaultLegNPV;
         Real upfrontBPS;
         Real upfrontNPV;
-        void reset();
+        Real accrualRebateNPV;
+        void reset() override;
     };
 
     class CreditDefaultSwap::engine
         : public GenericEngine<CreditDefaultSwap::arguments,
                                CreditDefaultSwap::results> {};
+
+    /*! Return the CDS maturity date given the CDS trade date, \p tradeDate, the CDS \p tenor and a CDS \p rule.
+
+        A \c Null<Date>() is returned when a \p rule of \c CDS2015 and a \p tenor length of zero fail to yield a valid
+        CDS maturity date.
+
+        \warning An exception will be thrown if the \p rule is not \c CDS2015, \c CDS or \c OldCDS.
+
+        \warning An exception will be thrown if the \p rule is \c OldCDS and a \p tenor of 0 months is provided. This
+                 restriction can be removed if 0M tenor was available before the CDS Big Bang 2009.
+
+        \warning An exception will be thrown if the \p tenor is not a multiple of 3 months. For the avoidance of
+                 doubt, a \p tenor of 0 months is supported.
+    */
+    Date cdsMaturity(const Date& tradeDate, const Period& tenor, DateGeneration::Rule rule);
 
 }
 

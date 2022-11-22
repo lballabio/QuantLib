@@ -23,8 +23,7 @@
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/math/integrals/integral.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <ql/functional.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -40,16 +39,14 @@ namespace QuantLib {
     class MultidimIntegral {
     public:
         explicit MultidimIntegral(
-            const std::vector<boost::shared_ptr<Integrator> >& integrators);
+            const std::vector<ext::shared_ptr<Integrator> >& integrators);
 
-        // scalar variant:
-        /*!
-            @param f Integrand function.
-            @param a Lower integration limit domain for each dimension.
-            @param b Upper integration limit domain for each dimension.
+        // scalar variant
+        /*! f is the integrand function; a and b are the lower and
+            upper integration limit domain for each dimension.
         */
         Real operator()(
-            const boost::function<Real (const std::vector<Real>&)>& f,
+            const ext::function<Real (const std::vector<Real>&)>& f,
             const std::vector<Real>& a,
             const std::vector<Real>& b) const 
         {
@@ -74,20 +71,20 @@ namespace QuantLib {
         // Splits the integration in cross-sections per dimension.
         template<int T_N> 
         Real vectorBinder (
-            const boost::function<Real (const std::vector<Real>&)>& f,
+            const ext::function<Real (const std::vector<Real>&)>& f,
             Real z,
             const std::vector<Real>& a,
             const std::vector<Real>& b) const ;
         // actual integration of dimension nT
         template<int nT>
         Real integrate(
-            const boost::function<Real (const std::vector<Real>&)>& f,
+            const ext::function<Real (const std::vector<Real>&)>& f,
             const std::vector<Real>& a,
             const std::vector<Real>& b) const;
-    private:
-        const std::vector<boost::shared_ptr<Integrator> > integrators_;
 
-        /* typedef (const boost::function<Real 
+        const std::vector<ext::shared_ptr<Integrator> > integrators_;
+
+        /* typedef (const ext::function<Real 
             (const std::vector<Real>&arg1)>&arg2) integrableFunctType;
         */
 
@@ -99,9 +96,9 @@ namespace QuantLib {
          dimension at run time, this can not be done before because of the 
          template argument restriction to be constant known at compilation.
         */
-        mutable std::vector<boost::function<Real (//<- members: integrate<N>
+        mutable std::vector<ext::function<Real (//<- members: integrate<N>
             // integrable function:
-            const boost::function<Real (const std::vector<Real>&)>&, 
+            const ext::function<Real (const std::vector<Real>&)>&, 
             const std::vector<Real>&, //<- a
             const std::vector<Real>&) //<- b
             > > 
@@ -117,7 +114,7 @@ namespace QuantLib {
     // spez last call/dimension
     template<>
     Real inline MultidimIntegral::vectorBinder<0> (
-        const boost::function<Real (const std::vector<Real>&)>& f, 
+        const ext::function<Real (const std::vector<Real>&)>& f, 
         Real z,
         const std::vector<Real>& a,
         const std::vector<Real>& b) const
@@ -128,25 +125,26 @@ namespace QuantLib {
 
     template<>
     void inline MultidimIntegral::spawnFcts<1>() const {
-        integrationLevelEntries_[0] = 
-            boost::bind(&MultidimIntegral::integrate<0>, this, _1, _2, _3);
+        integrationLevelEntries_[0] = [this](const auto& f, const auto& a, const auto& b) {
+            return this->integrate<0>(f, a, b);
+        };
     }
 
     template<int nT>
     inline Real MultidimIntegral::integrate(
-        const boost::function<Real (const std::vector<Real>&)>& f,
+        const ext::function<Real (const std::vector<Real>&)>& f,
         const std::vector<Real>& a,
         const std::vector<Real>& b) const 
     {
         return 
-            (*integrators_[nT])(
-                boost::bind(&MultidimIntegral::vectorBinder<nT>, this, f, 
-                    _1, boost::cref(a), boost::cref(b)), a[nT], b[nT]);
+            (*integrators_[nT])([this, &f, &a, &b](auto z) {
+                return this->vectorBinder<nT>(f, z, a, b);
+            }, a[nT], b[nT]);
     }
 
     template<int T_N> 
     inline Real MultidimIntegral::vectorBinder (
-        const boost::function<Real (const std::vector<Real>&)>& f,
+        const ext::function<Real (const std::vector<Real>&)>& f,
         Real z,
         const std::vector<Real>& a,
         const std::vector<Real>& b) const 
@@ -157,9 +155,9 @@ namespace QuantLib {
 
     template<Size depth>
     void MultidimIntegral::spawnFcts() const {
-        integrationLevelEntries_[depth-1] =
-          boost::bind(&MultidimIntegral::integrate<depth-1>, this, 
-            _1, _2, _3);
+        integrationLevelEntries_[depth-1] = [this](const auto& f, const auto& a, const auto& b) {
+            return this->integrate<depth-1>(f, a, b);
+        };
         spawnFcts<depth-1>();
     }
 

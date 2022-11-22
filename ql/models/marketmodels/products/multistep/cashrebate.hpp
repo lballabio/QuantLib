@@ -36,23 +36,22 @@ namespace QuantLib
     class MarketModelCashRebate : public MarketModelMultiProduct 
     {
       public:
-        MarketModelCashRebate(const EvolutionDescription& evolution,
+        MarketModelCashRebate(EvolutionDescription evolution,
                               const std::vector<Time>& paymentTimes,
-                              const Matrix& amounts,
+                              Matrix amounts,
                               Size numberOfProducts);
         //! \name MarketModelMultiProduct interface
         //@{
-        std::vector<Size> suggestedNumeraires() const;
-        const EvolutionDescription& evolution() const;
-        std::vector<Time> possibleCashFlowTimes() const;
-        Size numberOfProducts() const;
-        Size maxNumberOfCashFlowsPerProductPerStep() const;
-        void reset();
-        bool nextTimeStep(
-                    const CurveState& currentState,
-                    std::vector<Size>& numberCashFlowsThisStep,
-                    std::vector<std::vector<CashFlow> >& cashFlowsGenerated);
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
+        std::vector<Size> suggestedNumeraires() const override;
+        const EvolutionDescription& evolution() const override;
+        std::vector<Time> possibleCashFlowTimes() const override;
+        Size numberOfProducts() const override;
+        Size maxNumberOfCashFlowsPerProductPerStep() const override;
+        void reset() override;
+        bool nextTimeStep(const CurveState& currentState,
+                          std::vector<Size>& numberCashFlowsThisStep,
+                          std::vector<std::vector<CashFlow> >& cashFlowsGenerated) override;
+        std::unique_ptr<MarketModelMultiProduct> clone() const override;
         //@}
       private:
         EvolutionDescription evolution_;

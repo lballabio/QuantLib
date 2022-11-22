@@ -42,10 +42,11 @@ namespace QuantLib {
     template<class copulaPolicy>
     class HomogeneousPoolLossModel : public DefaultLossModel {
     private:
-        void resetModel();
+      void resetModel() override;
+
     public:
         HomogeneousPoolLossModel(
-            const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& 
+            const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> >& 
                 copula,
             Size nBuckets,
             Real max = 5.,
@@ -61,28 +62,27 @@ namespace QuantLib {
     protected:
         Distribution lossDistrib(const Date& d) const;
     public:
-        Real expectedTrancheLoss(const Date& d) const {
-            return lossDistrib(d).cumulativeExcessProbability(attachAmount_, 
-                detachAmount_);
-            // This one if the distribution is over the whole loss structure:
-            // but it becomes very expensive
-            /*
-            return lossDistrib(d).trancheExpectedValue(attach_ * notional_, 
-                detach_ * notional_);
-            */
-        }
-        Real percentile(const Date& d, Real percentile) const {
-            Real portfLoss = lossDistrib(d).confidenceLevel(percentile);
-            return std::min(std::max(portfLoss - attachAmount_, 0.), 
-                detachAmount_ - attachAmount_);
-        }
-        Real expectedShortfall(const Date& d, Probability percentile) const {
-            Distribution dist = lossDistrib(d);
-            dist.tranche(attachAmount_, detachAmount_);
-            return dist.expectedShortfall(percentile);
-        }
+      Real expectedTrancheLoss(const Date& d) const override {
+          return lossDistrib(d).cumulativeExcessProbability(attachAmount_, detachAmount_);
+          // This one if the distribution is over the whole loss structure:
+          // but it becomes very expensive
+          /*
+          return lossDistrib(d).trancheExpectedValue(attach_ * notional_,
+              detach_ * notional_);
+          */
+      }
+      Real percentile(const Date& d, Real percentile) const override {
+          Real portfLoss = lossDistrib(d).confidenceLevel(percentile);
+          return std::min(std::max(portfLoss - attachAmount_, 0.), detachAmount_ - attachAmount_);
+      }
+      Real expectedShortfall(const Date& d, Probability percentile) const override {
+          Distribution dist = lossDistrib(d);
+          dist.tranche(attachAmount_, detachAmount_);
+          return dist.expectedShortfall(percentile);
+      }
+
     protected:
-        const boost::shared_ptr<ConstantLossLatentmodel<copulaPolicy> > copula_;
+        const ext::shared_ptr<ConstantLossLatentmodel<copulaPolicy> > copula_;
         Size nBuckets_;
         mutable Real attach_, detach_, notional_, attachAmount_, detachAmount_;
         mutable std::vector<Real> notionals_;
@@ -128,9 +128,10 @@ namespace QuantLib {
         std::vector<Real> lgd;// switch to a mutable cache member
         std::vector<Real> recoveries = copula_->recoveries();
         std::transform(recoveries.begin(), recoveries.end(), 
-            std::back_inserter(lgd), std::bind1st(std::minus<Real>(), 1.));
+                       std::back_inserter(lgd),
+                       [](Real x) -> Real { return 1.0-x; });
         std::transform(lgd.begin(), lgd.end(), notionals_.begin(), 
-            lgd.begin(), std::multiplies<Real>());
+            lgd.begin(), std::multiplies<>());
         std::vector<Real> prob = basket_->remainingProbabilities(d);
         for(Size iName=0; iName<prob.size(); iName++)
             prob[iName] = copula_->inverseCumulativeY(prob[iName], iName);
@@ -147,12 +148,12 @@ namespace QuantLib {
                 conditionalProbs.push_back(
                 copula_->conditionalDefaultProbabilityInvP(prob[iName], iName, 
                     mkft));
-            Distribution d = bucktLDistBuff(lgd, conditionalProbs);
+            Distribution bld = bucktLDistBuff(lgd, conditionalProbs);
             Real densitydm = delta_ * copula_->density(mkft);
             // also, instead of calling the static method it could be wrapped 
             // through an inlined call in the latent model
             for (Size j = 0; j < nBuckets_; j++)
-                dist.addDensity(j, d.density(j) * densitydm);
+                dist.addDensity(j, bld.density(j) * densitydm);
             mkft[0] += delta_;
         }
         return dist;

@@ -25,7 +25,7 @@ namespace QuantLib {
 
     HongKong::HongKong(Market m) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new HongKong::HkexImpl);
+        static ext::shared_ptr<Calendar::Impl> impl(new HongKong::HkexImpl);
         switch (m) {
           case HKEx:
             impl_ = impl;
@@ -44,18 +44,18 @@ namespace QuantLib {
 
         if (isWeekend(w)
             // New Year's Day
-            || ((d == 1 || ((d == 2 || d == 3) && w == Monday))
+            || ((d == 1 || ((d == 2) && w == Monday))
                 && m == January)
             // Good Friday
             || (dd == em-3)
             // Easter Monday
             || (dd == em)
             // Labor Day
-            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == May)
+            || ((d == 1 || ((d == 2) && w == Monday)) && m == May)
             // SAR Establishment Day
-            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == July)
+            || ((d == 1 || ((d == 2) && w == Monday)) && m == July)
             // National Day
-            || ((d == 1 || ((d == 2 || d == 3) && w == Monday))
+            || ((d == 1 || ((d == 2) && w == Monday))
                 && m == October)
             // Christmas Day
             || (d == 25 && m == December)
@@ -71,7 +71,7 @@ namespace QuantLib {
                 || (d == 5 && m == April)
                 // Buddha's birthday
                 || (d == 26 && m == May)
-                // Tuen NG festival
+                // Tuen Ng festival
                 || (d == 22 && m == June)
                 // Mid-autumn festival
                 || (d == 29 && m == September)
@@ -87,7 +87,7 @@ namespace QuantLib {
                 || (d == 5 && m == April)
                 // Buddha's birthday
                 || (d == 16 && m == May)
-                // Tuen NG festival
+                // Tuen Ng festival
                 || (d == 11 && m == June)
                 // Mid-autumn festival
                 || (d == 19 && m == September)
@@ -103,7 +103,7 @@ namespace QuantLib {
                 || (d == 5 && m == April)
                 // Buddha's birthday
                 || (d == 5 && m == May)
-                // Tuen NG festival
+                // Tuen Ng festival
                 || (d == 31 && m == May)
                 // Mid-autumn festival
                 || (d == 7 && m == October)
@@ -119,7 +119,7 @@ namespace QuantLib {
                 || (d == 5 && m == April)
                 // Buddha's birthday
                 || (d == 24 && m == May)
-                // Tuen NG festival
+                // Tuen Ng festival
                 || (d == 19 && m == June)
                 // Mid-autumn festival
                 || (d == 26 && m == September)
@@ -135,7 +135,7 @@ namespace QuantLib {
                 || (d == 4 && m == April)
                 // Buddha's birthday
                 || (d == 12 && m == May)
-                // Tuen NG festival
+                // Tuen Ng festival
                 || (d == 9 && m == June)
                 // Mid-autumn festival
                 || (d == 15 && m == September)
@@ -151,7 +151,7 @@ namespace QuantLib {
                 || (d == 4 && m == April)
                 // Buddha's birthday
                 || (d == 2 && m == May)
-                // Tuen NG festival
+                // Tuen Ng festival
                 || (d == 28 && m == May)
                 // Mid-autumn festival
                 || (d == 3 && m == October)
@@ -167,7 +167,7 @@ namespace QuantLib {
                 || (d == 6 && m == April)
                 // Buddha's birthday
                 || (d == 21 && m == May)
-                // Tuen NG festival
+                // Tuen Ng festival
                 || (d == 16 && m == June)
                 // Mid-autumn festival
                 || (d == 23 && m == September))
@@ -181,7 +181,7 @@ namespace QuantLib {
                 || (d == 5 && m == April)
                 // Buddha's birthday
                 || (d == 10 && m == May)
-                // Tuen NG festival
+                // Tuen Ng festival
                 || (d == 6 && m == June)
                 // Mid-autumn festival
                 || (d == 13 && m == September)
@@ -245,11 +245,88 @@ namespace QuantLib {
                 || (d == 25 && m == May)
                 // Tuen Ng festival
                 || (d == 20 && m == June)
+                // The 70th anniversary day of the victory of the Chinese 
+                // people's war of resistance against Japanese aggression
+                || (d == 3 && m == September)
                 // Mid-autumn festival
                 || (d == 28 && m == September)
                 // Chung Yeung festival
                 || (d == 21 && m == October))
                 return false;
+        }
+
+        if (y == 2016) {
+            if (// Lunar New Year
+                ((d >= 8 && d <= 10) && m == February)
+                // Ching Ming Festival
+                || (d == 4 && m == April)
+                // Tuen Ng festival
+                || (d == 9 && m == June)
+                // Mid-autumn festival
+                || (d == 16 && m == September)
+                // Chung Yeung festival
+                || (d == 10 && m == October)
+                // Second day after Christmas
+                || (d == 27 && m == December))
+                return false;
+        }
+
+        if (y == 2017) {
+            if (// Lunar New Year
+                ((d == 30 || d == 31) && m == January)
+                // Ching Ming Festival
+                || (d == 4 && m == April)
+                // Buddha's birthday
+                || (d == 3 && m == May)
+                // Tuen Ng festival
+                || (d == 30 && m == May)
+                // Mid-autumn festival
+                || (d == 5 && m == October))
+                return false;
+        }
+
+        if (y == 2018) {
+            if (// Lunar New Year
+                ((d == 16 && m == February) || (d == 19 && m == February))
+                // Ching Ming Festival
+                || (d == 5 && m == April)
+                // Buddha's birthday
+                || (d == 22 && m == May)
+                // Tuen Ng festival
+                || (d == 18 && m == June)
+                // Mid-autumn festival
+                || (d == 25 && m == September)
+                // Chung Yeung festival
+                || (d == 17 && m == October))
+                return false;
+        }
+
+        if (y == 2019) {
+           if (// Lunar New Year
+               ((d >= 5 && d <= 7) && m == February)
+               // Ching Ming Festival
+               || (d == 5 && m == April)
+               // Tuen Ng festival
+               || (d == 7 && m == June)
+               // Chung Yeung festival
+               || (d == 7 && m == October))
+               return false;
+        }
+
+        if (y == 2020) {
+           if (// Lunar New Year
+               ((d == 27 || d == 28) && m == January)
+               // Ching Ming Festival
+               || (d == 4 && m == April)
+               // Buddha's birthday
+               || (d == 30 && m == April)
+               // Tuen Ng festival
+               || (d == 25 && m == June)
+               // Mid-autumn festival
+               || (d == 2 && m == October)
+               // Chung Yeung festival
+               || (d == 26 && m == October))
+               return false;
         }
 
         return true;

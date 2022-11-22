@@ -24,13 +24,15 @@
 namespace QuantLib {
 
     TrinomialTree::TrinomialTree(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         const TimeGrid& timeGrid,
                         bool isPositive)
     : Tree<TrinomialTree>(timeGrid.size()), dx_(1, 0.0), timeGrid_(timeGrid) {
         x0_ = process->x0();
 
         Size nTimeSteps = timeGrid.size() - 1;
+        QL_REQUIRE(nTimeSteps > 0, "null time steps for trinomial tree");
+
         Integer jMin = 0;
         Integer jMax = 0;
 
@@ -47,7 +49,7 @@ namespace QuantLib {
             for (Integer j=jMin; j<=jMax; j++) {
                 Real x = x0_ + j*dx_[i];
                 Real m = process->expectation(t, x, dt);
-                Integer temp = Integer(std::floor((m-x0_)/dx_[i+1] + 0.5));
+                auto temp = Integer(std::floor((m - x0_) / dx_[i + 1] + 0.5));
 
                 if (isPositive) {
                     while (x0_+(temp-1)*dx_[i+1]<=0) {

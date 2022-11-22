@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2005, 2007 StatPro Italia srl
  Copyright (C) 2016 Klaus Spanderen
+ Copyright (C) 2021, 2022 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,24 +21,26 @@
 
 #include "bermudanswaption.hpp"
 #include "utilities.hpp"
+#include <ql/cashflows/coupon.hpp>
+#include <ql/cashflows/iborcoupon.hpp>
+#include <ql/indexes/ibor/euribor.hpp>
+#include <ql/instruments/makevanillaswap.hpp>
 #include <ql/instruments/swaption.hpp>
-#include <ql/pricingengines/swaption/treeswaptionengine.hpp>
-#include <ql/pricingengines/swap/discountingswapengine.hpp>
-#include <ql/pricingengines/swaption/fdhullwhiteswaptionengine.hpp>
-#include <ql/pricingengines/swaption/fdg2swaptionengine.hpp>
 #include <ql/models/shortrate/onefactormodels/hullwhite.hpp>
 #include <ql/models/shortrate/twofactormodels/g2.hpp>
-#include <ql/cashflows/coupon.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/pricingengines/swaption/fdg2swaptionengine.hpp>
+#include <ql/pricingengines/swaption/fdhullwhiteswaptionengine.hpp>
+#include <ql/pricingengines/swaption/treeswaptionengine.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
-#include <ql/indexes/ibor/euribor.hpp>
 #include <ql/time/schedule.hpp>
 
-#include <boost/make_shared.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace {
+namespace bermudan_swaption_test {
 
     struct CommonVars {
         // global data
@@ -46,12 +49,12 @@ namespace {
 
         // underlying swap parameters
         Integer startYears, length;
-        VanillaSwap::Type type;
+        Swap::Type type;
         Real nominal;
         BusinessDayConvention fixedConvention, floatingConvention;
         Frequency fixedFrequency, floatingFrequency;
         DayCounter fixedDayCount;
-        boost::shared_ptr<IborIndex> index;
+        ext::shared_ptr<IborIndex> index;
         Natural settlementDays;
 
         RelinkableHandle<YieldTermStructure> termStructure;
@@ -63,22 +66,22 @@ namespace {
         CommonVars() {
             startYears = 1;
             length = 5;
-            type = VanillaSwap::Payer;
+            type = Swap::Payer;
             nominal = 1000.0;
             settlementDays = 2;
             fixedConvention = Unadjusted;
             floatingConvention = ModifiedFollowing;
             fixedFrequency = Annual;
             floatingFrequency = Semiannual;
-            fixedDayCount = Thirty360();
-            index = boost::shared_ptr<IborIndex>(new Euribor6M(termStructure));
+            fixedDayCount = Thirty360(Thirty360::BondBasis);
+            index = ext::shared_ptr<IborIndex>(new Euribor6M(termStructure));
             calendar = index->fixingCalendar();
             today = calendar.adjust(Date::todaysDate());
             settlement = calendar.advance(today,settlementDays,Days);
         }
 
         // utilities
-        boost::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) {
+        ext::shared_ptr<VanillaSwap> makeSwap(Rate fixedRate) const {
             Date start = calendar.advance(settlement, startYears, Years);
             Date maturity = calendar.advance(start, length, Years);
             Schedule fixedSchedule(start, maturity,
@@ -93,12 +96,12 @@ namespace {
                                    floatingConvention,
                                    floatingConvention,
                                    DateGeneration::Forward, false);
-            boost::shared_ptr<VanillaSwap> swap(
+            ext::shared_ptr<VanillaSwap> swap(
                       new VanillaSwap(type, nominal,
                                       fixedSchedule, fixedRate, fixedDayCount,
                                       floatSchedule, index, 0.0,
                                       index->dayCounter()));
-            swap->setPricingEngine(boost::shared_ptr<PricingEngine>(
+            swap->setPricingEngine(ext::shared_ptr<PricingEngine>(
                                    new DiscountingSwapEngine(termStructure)));
             return swap;
         }
@@ -111,6 +114,10 @@ void BermudanSwaptionTest::testCachedValues() {
 
     BOOST_TEST_MESSAGE(
         "Testing Bermudan swaption with HW model against cached values...");
+
+    using namespace bermudan_swaption_test;
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
 
     CommonVars vars;
 
@@ -126,34 +133,35 @@ void BermudanSwaptionTest::testCachedValues() {
 
     Rate atmRate = vars.makeSwap(0.0)->fairRate();
 
-    boost::shared_ptr<VanillaSwap> itmSwap = vars.makeSwap(0.8*atmRate);
-    boost::shared_ptr<VanillaSwap> atmSwap = vars.makeSwap(atmRate);
-    boost::shared_ptr<VanillaSwap> otmSwap = vars.makeSwap(1.2*atmRate);
+    ext::shared_ptr<VanillaSwap> itmSwap = vars.makeSwap(0.8*atmRate);
+    ext::shared_ptr<VanillaSwap> atmSwap = vars.makeSwap(atmRate);
+    ext::shared_ptr<VanillaSwap> otmSwap = vars.makeSwap(1.2*atmRate);
 
     Real a = 0.048696, sigma = 0.0058904;
-    boost::shared_ptr<HullWhite> model(new HullWhite(vars.termStructure,
+    ext::shared_ptr<HullWhite> model(new HullWhite(vars.termStructure,
                                                      a, sigma));
     std::vector<Date> exerciseDates;
     const Leg& leg = atmSwap->fixedLeg();
-    for (Size i=0; i<leg.size(); i++) {
-        boost::shared_ptr<Coupon> coupon =
-            boost::dynamic_pointer_cast<Coupon>(leg[i]);
-            exerciseDates.push_back(coupon->accrualStartDate());
+    for (const auto& i : leg) {
+        ext::shared_ptr<Coupon> coupon = ext::dynamic_pointer_cast<Coupon>(i);
+        exerciseDates.push_back(coupon->accrualStartDate());
     }
-    boost::shared_ptr<Exercise> exercise(new BermudanExercise(exerciseDates));
+    ext::shared_ptr<Exercise> exercise(new BermudanExercise(exerciseDates));
 
-    boost::shared_ptr<PricingEngine> treeEngine(
+    ext::shared_ptr<PricingEngine> treeEngine(
                                             new TreeSwaptionEngine(model, 50));
-    boost::shared_ptr<PricingEngine> fdmEngine(
+    ext::shared_ptr<PricingEngine> fdmEngine(
                                          new FdHullWhiteSwaptionEngine(model));
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    Real itmValue = 42.2413, atmValue = 12.8789, otmValue = 2.4759;
-    Real itmValueFdm = 42.2111, atmValueFdm = 12.8879, otmValueFdm = 2.44443;
-    #else
-    Real itmValue = 42.2470, atmValue = 12.8826, otmValue = 2.4769;
-    Real itmValueFdm = 42.2091, atmValueFdm = 12.8864, otmValueFdm = 2.4437;
-    #endif
+    Real itmValue,    atmValue,    otmValue;
+    Real itmValueFdm, atmValueFdm, otmValueFdm;
+    if (!usingAtParCoupons) {
+        itmValue    = 42.2402,    atmValue = 12.9032,    otmValue = 2.49758;
+        itmValueFdm = 42.2111, atmValueFdm = 12.8879, otmValueFdm = 2.44443;
+    } else {
+        itmValue    = 42.2460,    atmValue = 12.9069,    otmValue = 2.4985;
+        itmValueFdm = 42.2091, atmValueFdm = 12.8864, otmValueFdm = 2.4437;
+    }
 
     Real tolerance = 1.0e-4;
 
@@ -198,16 +206,16 @@ void BermudanSwaptionTest::testCachedValues() {
                     << "expected:   " << otmValueFdm);
 
 
-    for (Size j=0; j<exerciseDates.size(); j++)
-        exerciseDates[j] = vars.calendar.adjust(exerciseDates[j]-10);
+    for (auto& exerciseDate : exerciseDates)
+        exerciseDate = vars.calendar.adjust(exerciseDate - 10);
     exercise =
-        boost::shared_ptr<Exercise>(new BermudanExercise(exerciseDates));
+        ext::shared_ptr<Exercise>(new BermudanExercise(exerciseDates));
 
-    #if defined(QL_USE_INDEXED_COUPON)
-    itmValue = 42.1917; atmValue = 12.7788; otmValue = 2.4388;
-    #else
-    itmValue = 42.1974; atmValue = 12.7825; otmValue = 2.4399;
-    #endif
+    if (!usingAtParCoupons) {
+        itmValue = 42.1791; atmValue = 12.7699; otmValue = 2.4368;
+    } else {
+        itmValue = 42.1849; atmValue = 12.7736; otmValue = 2.4379;
+    }
 
     swaption = Swaption(itmSwap, exercise);
     swaption.setPricingEngine(treeEngine);
@@ -234,6 +242,10 @@ void BermudanSwaptionTest::testCachedG2Values() {
     BOOST_TEST_MESSAGE(
         "Testing Bermudan swaption with G2 model against cached values...");
 
+    using namespace bermudan_swaption_test;
+
+    bool usingAtParCoupons = IborCoupon::Settings::instance().usingAtParCoupons();
+
     CommonVars vars;
 
     vars.today = Date(15, September, 2016);
@@ -246,35 +258,39 @@ void BermudanSwaptionTest::testCachedG2Values() {
                                           Actual365Fixed()));
 
     const Rate atmRate = vars.makeSwap(0.0)->fairRate();
-    std::vector<boost::shared_ptr<Swaption> > swaptions;
+    std::vector<ext::shared_ptr<Swaption> > swaptions;
     for (Real s=0.5; s<1.51; s+=0.25) {
-        const boost::shared_ptr<VanillaSwap> swap(vars.makeSwap(s*atmRate));
+        const ext::shared_ptr<VanillaSwap> swap(vars.makeSwap(s*atmRate));
 
         std::vector<Date> exerciseDates;
-        for (Size i=0; i < swap->fixedLeg().size(); i++) {
-            exerciseDates.push_back(boost::dynamic_pointer_cast<Coupon>(
-                swap->fixedLeg()[i])->accrualStartDate());
+        for (const auto& i : swap->fixedLeg()) {
+            exerciseDates.push_back(ext::dynamic_pointer_cast<Coupon>(i)->accrualStartDate());
         }
-        swaptions.push_back(boost::make_shared<Swaption>(swap,
-            boost::make_shared<BermudanExercise>(exerciseDates)));
+        swaptions.push_back(ext::make_shared<Swaption>(swap,
+            ext::make_shared<BermudanExercise>(exerciseDates)));
     }
 
     const Real a=0.1, sigma=0.01, b=0.2, eta=0.013, rho=-0.5;
 
-    const boost::shared_ptr<G2> g2Model(boost::make_shared<G2>(
+    const ext::shared_ptr<G2> g2Model(ext::make_shared<G2>(
         vars.termStructure, a, sigma, b, eta, rho));
-    const boost::shared_ptr<PricingEngine> fdmEngine(
-        boost::make_shared<FdG2SwaptionEngine>(g2Model, 50, 75, 75, 0, 1e-3));
-    const boost::shared_ptr<PricingEngine> treeEngine(
-        boost::make_shared<TreeSwaptionEngine>(g2Model, 50));
+    const ext::shared_ptr<PricingEngine> fdmEngine(
+        ext::make_shared<FdG2SwaptionEngine>(g2Model, 50, 75, 75, 0, 1e-3));
+    const ext::shared_ptr<PricingEngine> treeEngine(
+        ext::make_shared<TreeSwaptionEngine>(g2Model, 50));
 
-#if defined(QL_USE_INDEXED_COUPON)
-    const Real expectedFdm[] = { 103.231, 54.6519, 20.0475, 5.26941, 1.07097 };
-    const Real expectedTree[]= { 103.253, 54.6685, 20.1399, 5.40517, 1.10642 };
-#else
-    const Real expectedFdm[] = { 103.227, 54.6502, 20.0469, 5.26924, 1.07093 };
-    const Real expectedTree[]= { 103.256, 54.6726, 20.1429, 5.4064 , 1.10677 };
-#endif
+    Real expectedFdm[5], expectedTree[5];
+    if (!usingAtParCoupons) {
+        Real tmpExpectedFdm[]  = { 103.231, 54.6519, 20.0475, 5.26941, 1.07097 };
+        Real tmpExpectedTree[] = { 103.245, 54.6685, 20.1656, 5.43999, 1.12702 };
+        std::copy(tmpExpectedFdm,  tmpExpectedFdm + 5,  expectedFdm);
+        std::copy(tmpExpectedTree, tmpExpectedTree + 5, expectedTree);
+    } else {
+        Real tmpExpectedFdm[]  = { 103.227, 54.6502, 20.0469, 5.26924, 1.07093 };
+        Real tmpExpectedTree[] = { 103.248, 54.6726, 20.1685, 5.44118, 1.12737 };
+        std::copy(tmpExpectedFdm,  tmpExpectedFdm + 5,  expectedFdm);
+        std::copy(tmpExpectedTree, tmpExpectedTree + 5, expectedTree);
+    }
 
     const Real tol = 0.005;
     for (Size i=0; i < swaptions.size(); ++i) {
@@ -298,16 +314,76 @@ void BermudanSwaptionTest::testCachedG2Values() {
     }
 }
 
+void BermudanSwaptionTest::testTreeEngineTimeSnapping() {
+    BOOST_TEST_MESSAGE("Testing snap of exercise dates for discretized swaption...");
+
+    Date today = Date(8, Jul, 2021);
+    SavedSettings backup;
+    Settings::instance().evaluationDate() = today;
+
+    RelinkableHandle<YieldTermStructure> termStructure;
+    termStructure.linkTo(ext::make_shared<FlatForward>(today, 0.02, Actual365Fixed()));
+    auto index = ext::make_shared<Euribor3M>(termStructure);
+
+    auto makeBermudanSwaption = [&index](Date callDate) {
+        auto effectiveDate = Date(15, May, 2025);
+        ext::shared_ptr<VanillaSwap> swap = MakeVanillaSwap(Period(10, Years), index, 0.05)
+                                                .withEffectiveDate(effectiveDate)
+                                                .withNominal(10000.00)
+                                                .withType(Swap::Type::Payer);
+
+        std::vector<Date> exerciseDates{effectiveDate, callDate};
+        auto bermudanExercise = ext::make_shared<BermudanExercise>(exerciseDates);
+        auto bermudanSwaption = ext::make_shared<Swaption>(swap, bermudanExercise);
+
+        return bermudanSwaption;
+    };
+
+    int intervalOfDaysToTest = 10;
+
+    for (int i = -intervalOfDaysToTest; i < intervalOfDaysToTest + 1; i++) {
+        static auto initialCallDate = Date(15, May, 2030);
+        static auto calendar = index->fixingCalendar();
+
+        auto callDate = initialCallDate + i * Days;
+        if (calendar.isBusinessDay(callDate)) {
+            auto bermudanSwaption = makeBermudanSwaption(callDate);
+
+            auto model = ext::make_shared<HullWhite>(termStructure);
+
+            bermudanSwaption->setPricingEngine(ext::make_shared<FdHullWhiteSwaptionEngine>(model));
+            auto npvFD = bermudanSwaption->NPV();
+
+            constexpr auto timesteps = 14 * 4 * 4;
+
+            bermudanSwaption->setPricingEngine(
+                ext::make_shared<TreeSwaptionEngine>(model, timesteps));
+            auto npvTree = bermudanSwaption->NPV();
+
+            auto npvDiff = npvTree - npvFD;
+
+            static auto tolerance = 1.0;
+            if (std::abs(npvTree - npvFD) > tolerance) {
+                BOOST_ERROR(std::fixed << std::setprecision(2) << std::setw(5) << "At "
+                                       << io::iso_date(callDate)
+                                       << ": The difference between the npv of the FD and the tree "
+                                          "engine is expected to be smaller than "
+                                       << tolerance << " but was " << npvDiff << ". (FD: " << npvFD
+                                       << ", tree: " << npvTree << ")");
+            }
+        }
+    }
+}
+
 test_suite* BermudanSwaptionTest::suite(SpeedLevel speed) {
-    test_suite* suite = BOOST_TEST_SUITE("Bermudan swaption tests");
+    auto* suite = BOOST_TEST_SUITE("Bermudan swaption tests");
 
     suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedValues));
+    suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testTreeEngineTimeSnapping));
 
     if (speed == Slow) {
-        suite->add(QUANTLIB_TEST_CASE(
-            &BermudanSwaptionTest::testCachedG2Values));
+        suite->add(QUANTLIB_TEST_CASE(&BermudanSwaptionTest::testCachedG2Values));
     }
 
     return suite;
 }
-

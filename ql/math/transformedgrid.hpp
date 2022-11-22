@@ -46,6 +46,12 @@ namespace QuantLib {
                 dx_[i] = dxm_[i] + dxp_[i];
             }
         }
+
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnoexcept-type"
+#endif
+
         template <class T>
         TransformedGrid (const Array &grid, T func) :
             grid_(grid), transformedGrid_(grid.size()),
@@ -61,6 +67,11 @@ namespace QuantLib {
                 dx_[i] = dxm_[i] + dxp_[i];
             }
         }
+
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+#pragma GCC diagnostic pop
+#endif
+
         const Array &gridArray() const { return grid_;}
         const Array &transformedGridArray() const { return transformedGrid_;}
         const Array &dxmArray() const { return dxm_;}
@@ -85,10 +96,11 @@ namespace QuantLib {
     class LogGrid : public TransformedGrid {
     public:
         LogGrid(const Array &grid) :
-            TransformedGrid(grid, std::ptr_fun<Real,Real>(std::log)) {};
+            TransformedGrid(grid, [](Real x) -> Real { return std::log(x); }){};
         const Array & logGridArray() const { return transformedGridArray();}
         Real logGrid(Size i) const { return transformedGrid(i);}
     };
+
 }
 
 

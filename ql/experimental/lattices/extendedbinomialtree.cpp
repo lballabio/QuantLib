@@ -26,7 +26,7 @@
 namespace QuantLib {
 
     ExtendedJarrowRudd::ExtendedJarrowRudd(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : ExtendedEqualProbabilitiesBinomialTree<ExtendedJarrowRudd>(
                                                         process, end, steps) {
@@ -41,7 +41,7 @@ namespace QuantLib {
 
 
     ExtendedCoxRossRubinstein::ExtendedCoxRossRubinstein(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : ExtendedEqualJumpsBinomialTree<ExtendedCoxRossRubinstein>(
                                                         process, end, steps) {
@@ -64,7 +64,7 @@ namespace QuantLib {
 
 
     ExtendedAdditiveEQPBinomialTree::ExtendedAdditiveEQPBinomialTree(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : ExtendedEqualProbabilitiesBinomialTree<ExtendedAdditiveEQPBinomialTree>(
                                                         process, end, steps) {
@@ -84,7 +84,7 @@ namespace QuantLib {
 
 
     ExtendedTrigeorgis::ExtendedTrigeorgis(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : ExtendedEqualJumpsBinomialTree<ExtendedTrigeorgis>(process, end, steps) {
 
@@ -108,7 +108,7 @@ namespace QuantLib {
 
 
     ExtendedTian::ExtendedTian(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
+                        const ext::shared_ptr<StochasticProcess1D>& process,
                         Time end, Size steps, Real)
     : ExtendedBinomialTree<ExtendedTian>(process, end, steps) {
 
@@ -157,15 +157,13 @@ namespace QuantLib {
     }
 
 
-
-
-
-    ExtendedLeisenReimer::ExtendedLeisenReimer(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
-                        Time end, Size steps, Real strike)
-    : ExtendedBinomialTree<ExtendedLeisenReimer>(process, end,
-                                                 (steps%2 ? steps : steps+1)),
-      end_(end), oddSteps_(steps%2 ? steps : steps+1), strike_(strike) {
+    ExtendedLeisenReimer::ExtendedLeisenReimer(const ext::shared_ptr<StochasticProcess1D>& process,
+                                               Time end,
+                                               Size steps,
+                                               Real strike)
+    : ExtendedBinomialTree<ExtendedLeisenReimer>(
+          process, end, ((steps % 2) != 0U ? steps : steps + 1)),
+      end_(end), oddSteps_((steps % 2) != 0U ? steps : steps + 1), strike_(strike) {
 
         QL_REQUIRE(strike>0.0, "strike " << strike << "must be positive");
         Real variance = process->variance(0.0, x0_, end);
@@ -180,7 +178,6 @@ namespace QuantLib {
                                                  oddSteps_);
         up_ = ermqdt * pdash / pu_;
         down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
-
     }
 
     Real ExtendedLeisenReimer::underlying(Size i, Size index) const {
@@ -235,12 +232,12 @@ namespace QuantLib {
         return p;
     }
 
-    ExtendedJoshi4::ExtendedJoshi4(
-                        const boost::shared_ptr<StochasticProcess1D>& process,
-                        Time end, Size steps, Real strike)
-    : ExtendedBinomialTree<ExtendedJoshi4>(process, end,
-                                           (steps%2 ? steps : steps+1)),
-      end_(end), oddSteps_(steps%2 ? steps : steps+1), strike_(strike) {
+    ExtendedJoshi4::ExtendedJoshi4(const ext::shared_ptr<StochasticProcess1D>& process,
+                                   Time end,
+                                   Size steps,
+                                   Real strike)
+    : ExtendedBinomialTree<ExtendedJoshi4>(process, end, ((steps % 2) != 0U ? steps : steps + 1)),
+      end_(end), oddSteps_((steps % 2) != 0U ? steps : steps + 1), strike_(strike) {
 
         QL_REQUIRE(strike>0.0, "strike " << strike << "must be positive");
         Real variance = process->variance(0.0, x0_, end);

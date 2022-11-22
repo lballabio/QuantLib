@@ -42,7 +42,7 @@ namespace QuantLib {
             // specified in the settings (if any)
             boost::optional<bool> includeToday =
                 Settings::instance().includeTodaysCashFlows();
-            if (includeToday)
+            if (includeToday) // NOLINT(readability-implicit-bool-conversion)
                 includeRefDate = *includeToday;
         }
         return Event::hasOccurred(refDate, includeRefDate);
@@ -61,12 +61,11 @@ namespace QuantLib {
     }
 
     void CashFlow::accept(AcyclicVisitor& v) {
-        Visitor<CashFlow>* v1 = dynamic_cast<Visitor<CashFlow>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<CashFlow>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             Event::accept(v);
     }
 
 }
-

@@ -25,9 +25,9 @@ namespace QuantLib {
 
     Russia::Russia(Russia::Market market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> settlementImpl(
+        static ext::shared_ptr<Calendar::Impl> settlementImpl(
                                                   new Russia::SettlementImpl);
-        static boost::shared_ptr<Calendar::Impl> exchangeImpl(
+        static ext::shared_ptr<Calendar::Impl> exchangeImpl(
                                                     new Russia::ExchangeImpl);
 
         switch (market) {
@@ -42,14 +42,59 @@ namespace QuantLib {
         }
     }
 
+    namespace {
+
+        bool isExtraHolidaySettlementImpl(Day d, Month month, Year year) {
+            switch (year) {
+              case 2017:
+                switch (month) {
+                  case February: return d == 24;
+                  case May:      return d == 8;
+                  case November: return d == 6;
+                  default:       return false;
+                }
+              case 2018:
+                switch (month) {
+                  case March:     return d == 9;
+                  case April:     return d == 30;
+                  case May:       return d == 2;
+                  case June:      return d == 11;
+                  case December:  return d == 31;
+                  default:        return false;
+                }
+              case 2019:
+                switch (month) {
+                  case May: return d == 2 || d == 3 || d == 10;
+                  default: return false;
+                }
+              case 2020:
+                switch (month) {
+                  case March:     return d == 30 || d == 31;
+                  case April:     return d == 1 || d == 2 || d == 3;
+                  case May:       return d == 4 || d == 5;
+                  default:        return false;
+                }
+              default:
+                return false;
+            }
+        }
+
+    }
 
     bool Russia::SettlementImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
         Month m = date.month();
+        Year y = date.year();
         if (isWeekend(w)
             // New Year's holidays
-            || (d >= 1 && d <= 8 && m == January)
+            || (y <= 2005 && d <= 2 && m == January)
+            || (y >= 2005 && d <= 5 && m == January)
+            // in 2012, the 6th was also a holiday
+            || (y == 2012 && d == 6 && m == January)
+            // Christmas (possibly moved to Monday)
+            || ((d == 7 || ((d == 8 || d == 9) && w == Monday)) &&
+                m == January)
             // Defender of the Fatherland Day (possibly moved to Monday)
             || ((d == 23 || ((d == 24 || d == 25) && w == Monday)) &&
                 m == February)
@@ -68,7 +113,11 @@ namespace QuantLib {
             // Unity Day (possibly moved to Monday)
             || ((d == 4 || ((d == 5 || d == 6) && w == Monday)) &&
                 m == November))
+            return false; // NOLINT(readability-simplify-boolean-expr)
+
+        if (isExtraHolidaySettlementImpl(d,m,y))
             return false;
+
         return true;
     }
 
@@ -90,12 +139,19 @@ namespace QuantLib {
                 case February: return d == 20;
                 default: return false;
                 }
+              case 2018:
+                switch (month) {
+                  case April: return d == 28;
+                  case June: return d == 9;
+                  case December: return d == 29;
+                  default: return false;
+                }
               default:
                 return false;
             }
         }
 
-        bool isExtraHoliday(Day d, Month month, Year year) {
+        bool isExtraHolidayExchangeImpl(Day d, Month month, Year year) {
             switch (year) {
               case 2012:
                 switch (month) {
@@ -129,6 +185,32 @@ namespace QuantLib {
                 case June:    return d == 13;
                 case December: return d == 30;
                 default:      return false;
+                }
+              case 2017:
+                switch (month) {
+                  case January: return d == 2;
+                  case May:     return d == 8;
+                  default:      return false;
+                }
+              case 2018:
+                switch (month) {
+                  case January:   return d == 1 || d == 2 || d == 8;
+                  case December:  return d == 31;
+                  default:        return false;
+                }
+              case 2019:
+                switch (month) {
+                case January:   return d == 1 || d == 2 || d == 7;
+                case December:  return d == 31;
+                default:        return false;
+                }
+              case 2020:
+                switch (month) {
+                  case January:   return d == 1 || d == 2 || d == 7;
+                  case February:  return d == 24;
+                  case June:      return d == 24;
+                  case July:      return d == 1;
+                  default:        return false;
                 }
               default:
                 return false;
@@ -171,7 +253,7 @@ namespace QuantLib {
             || (d == 31 && m == December))
             return false;
 
-        if (isExtraHoliday(d,m,y))
+        if (isExtraHolidayExchangeImpl(d,m,y))
             return false;
 
         return true;

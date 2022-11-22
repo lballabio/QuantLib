@@ -37,7 +37,7 @@
 
 #include <boost/config.hpp>
 #include <boost/version.hpp>
-#if BOOST_VERSION < 103900
+#if BOOST_VERSION < 104800
     #error using an old version of Boost, please update.
 #endif
 #if !defined(BOOST_ENABLE_ASSERT_HANDLER)
@@ -50,7 +50,7 @@
    The idea is to provide a hook for defining QL_REAL and at the
    same time including any necessary headers for the new type.
 */
-#define INCLUDE_FILE(F) INCLUDE_FILE__(F)
+#define INCLUDE_FILE(F) INCLUDE_FILE_(F)
 #define INCLUDE_FILE_(F) #F
 #ifdef QL_INCLUDE_FIRST
 #    include INCLUDE_FILE(QL_INCLUDE_FIRST)
@@ -168,7 +168,7 @@
 /*! \def QL_EPSILON
     Defines the machine precision for operations over doubles
 */
-#include <boost/limits.hpp>
+#include <limits>
 // limits used as such
 #define QL_MIN_INTEGER         ((std::numeric_limits<QL_INTEGER>::min)())
 #define QL_MAX_INTEGER         ((std::numeric_limits<QL_INTEGER>::max)())
@@ -176,8 +176,15 @@
 #define QL_MAX_REAL            ((std::numeric_limits<QL_REAL>::max)())
 #define QL_MIN_POSITIVE_REAL   ((std::numeric_limits<QL_REAL>::min)())
 #define QL_EPSILON             ((std::numeric_limits<QL_REAL>::epsilon)())
-// specific values---these should fit into any Integer or Real
+/*! \def QL_NULL_INTEGER
+    \deprecated Don't use this macro.
+                Deprecated in version 1.27.
+*/
 #define QL_NULL_INTEGER        ((std::numeric_limits<int>::max)())
+/*! \def QL_NULL_REAL
+    \deprecated Don't use this macro.
+                Deprecated in version 1.27.
+*/
 #define QL_NULL_REAL           ((std::numeric_limits<float>::max)())
 /*! @} */
 
@@ -185,14 +192,51 @@
 
 
 // emit warning when using deprecated features
+// clang-format off
 #if defined(BOOST_MSVC)       // Microsoft Visual C++
-#define QL_DEPRECATED __declspec(deprecated)
-#elif defined(__GNUC__) || defined(__clang__)
-#define QL_DEPRECATED __attribute__((deprecated))
+#    define QL_DEPRECATED __declspec(deprecated)
+#    define QL_DEPRECATED_DISABLE_WARNING \
+        __pragma(warning(push))           \
+        __pragma(warning(disable : 4996))
+#    define QL_DEPRECATED_ENABLE_WARNING \
+        __pragma(warning(pop))
+#elif defined(__GNUC__)
+#    define QL_DEPRECATED __attribute__((deprecated))
+#    define QL_DEPRECATED_DISABLE_WARNING                               \
+        _Pragma("GCC diagnostic push")                                  \
+        _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+#    define QL_DEPRECATED_ENABLE_WARNING \
+        _Pragma("GCC diagnostic pop")
+#elif defined(__clang__)
+#    define QL_DEPRECATED __attribute__((deprecated))
+#    define QL_DEPRECATED_DISABLE_WARNING                                 \
+        _Pragma("clang diagnostic push")                                  \
+        _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+#    define QL_DEPRECATED_ENABLE_WARNING \
+        _Pragma("clang diagnostic pop")
 #else
-// we don't know how to enable it, just define the macro away
-#define QL_DEPRECATED
+// we don't know how to enable it, just define the macros away
+#    define QL_DEPRECATED
+#    define QL_DEPRECATED_DISABLE_WARNING
+#    define QL_DEPRECATED_ENABLE_WARNING
 #endif
+// clang-format on
 
+/*! \deprecated Use the noexcept keyword instead.
+                Deprecated in version 1.27.
+*/
+#define QL_NOEXCEPT noexcept
+
+/*! \deprecated Use the constexpr keyword instead.
+                Deprecated in version 1.27.
+*/
+#define QL_CONSTEXPR constexpr
+
+/*! \deprecated Do not check; always use std::unique_ptr.
+                Deprecated in version 1.27
+*/
+#ifndef QL_USE_STD_UNIQUE_PTR
+#define QL_USE_STD_UNIQUE_PTR 1
+#endif
 
 #endif

@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2013, 2015 Peter Caspers
+ Copyright (C) 2013, 2015, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,9 +27,9 @@ namespace QuantLib {
                                          const Real atm,
                                          const bool deleteArbitragePoints) {
 
-        if (moneynessGrid.size() != 0) {
+        if (!moneynessGrid.empty()) {
             QL_REQUIRE(
-                moneynessGrid[0] >= 0.0,
+                section.volatilityType() == Normal || moneynessGrid[0] >= 0.0,
                 "moneyness grid should only contain non negative values ("
                     << moneynessGrid[0] << ")");
             for (Size i = 0; i < moneynessGrid.size() - 1; i++) {
@@ -57,26 +57,36 @@ namespace QuantLib {
                                              0.50, 0.60, 0.70, 0.80, 0.90, 1.0,
                                              1.25, 1.5,  1.75, 2.0,  5.0,  7.5,
                                              10.0, 15.0, 20.0 };
+        static const Real defaultMoneyNormal[] = {
+            -0.20,  -0.15,  -0.10,  -0.075,  -0.05,   -0.04,   -0.03,
+            -0.02,  -0.015, -0.01,  -0.0075, -0.0050, -0.0025, 0.0,
+            0.0025, 0.0050, 0.0075, 0.01,    0.015,   0.02,    0.03,
+            0.04,   0.05,   0.075,  0.10,    0.15,    0.20
+        };
 
-        if (moneynessGrid.size() == 0)
-            tmp = std::vector<Real>(defaultMoney, defaultMoney + 21);
+        if (moneynessGrid.empty()) {
+            tmp = section.volatilityType() == Normal
+                      ? std::vector<Real>(defaultMoneyNormal,
+                                          defaultMoneyNormal + 27)
+                      : std::vector<Real>(defaultMoney, defaultMoney + 21);
+        }
         else
             tmp = std::vector<Real>(moneynessGrid);
 
         Real shift = section.shift();
 
-        if (tmp[0] > QL_EPSILON) {
+        if (section.volatilityType() == ShiftedLognormal && tmp[0] > QL_EPSILON) {
             m_.push_back(0.0);
             k_.push_back(-shift);
         }
 
         bool minStrikeAdded = false, maxStrikeAdded = false;
-        for (Size i = 0; i < tmp.size(); i++) {
-            Real k = tmp[i] * (f_ + shift) - shift;
-            if (tmp[i] <= QL_EPSILON ||
+        for (Real& i : tmp) {
+            Real k = section.volatilityType() == Normal ? Real(f_ + i) : Real(i * (f_ + shift) - shift);
+            if ((section.volatilityType() == ShiftedLognormal && i <= QL_EPSILON) ||
                 (k >= section.minStrike() && k <= section.maxStrike())) {
                 if (!minStrikeAdded || !close(k, section.minStrike())) {
-                    m_.push_back(tmp[i]);
+                    m_.push_back(i);
                     k_.push_back(k);
                 }
                 if (close(k, section.maxStrike()))
@@ -85,26 +95,36 @@ namespace QuantLib {
                      // we put the respective endpoint in our grid
                      // in order to not loose too much information
                 if (k < section.minStrike() && !minStrikeAdded) {
-                    m_.push_back((section.minStrike()+shift) / f_);
+                    m_.push_back(section.volatilityType() == Normal
+                                     ? Real(section.minStrike() - f_)
+                                     : Real((section.minStrike() + shift) / f_));
                     k_.push_back(section.minStrike());
                     minStrikeAdded = true;
                 }
                 if (k > section.maxStrike() && !maxStrikeAdded) {
-                    m_.push_back((section.maxStrike()+shift)/ f_);
+                    m_.push_back(section.volatilityType() == Normal
+                                     ? Real(section.maxStrike() - f_)
+                                     : Real((section.maxStrike() + shift) / f_));
                     k_.push_back(section.maxStrike());
                     maxStrikeAdded = true;
                 }
             }
         }
 
-        c_.push_back(f_ + shift);
+        // only known for shifted lognormal vols, otherwise we include
+        // the lower strike in the loop below
+        if(section.volatilityType() == ShiftedLognormal)
+            c_.push_back(f_ + shift);
 
-        for (Size i = 1; i < k_.size(); i++) {
+        for (Size i = (section.volatilityType() == Normal ? 0 : 1);
+             i < k_.size(); i++) {
             c_.push_back(section.optionPrice(k_[i], Option::Call, 1.0));
         }
 
         Size centralIndex =
-            std::upper_bound(m_.begin(), m_.end(), 1.0 - QL_EPSILON) -
+            std::upper_bound(m_.begin(), m_.end(),
+                             (section.volatilityType() == Normal ? 0.0 : 1.0) -
+                                 QL_EPSILON) -
             m_.begin();
         QL_REQUIRE(centralIndex < k_.size() - 1 && centralIndex > 1,
                    "Atm point in moneyness grid ("
@@ -118,7 +138,7 @@ namespace QuantLib {
             centralIndex++;
 
         QL_REQUIRE(centralIndex < k_.size(),
-                   "central index is at right boundary")
+                   "central index is at right boundary");
 
         leftIndex_ = centralIndex;
         rightIndex_ = centralIndex;
@@ -173,13 +193,12 @@ namespace QuantLib {
 
     }
 
-    const std::pair<Real, Real> SmileSectionUtils::arbitragefreeRegion() const {
-        return std::pair<Real, Real>(k_[leftIndex_], k_[rightIndex_]);
+    std::pair<Real, Real> SmileSectionUtils::arbitragefreeRegion() const {
+        return {k_[leftIndex_], k_[rightIndex_]};
     }
 
-    const std::pair<Size, Size>
-    SmileSectionUtils::arbitragefreeIndices() const {
-        return std::pair<Size, Size>(leftIndex_, rightIndex_);
+    std::pair<Size, Size> SmileSectionUtils::arbitragefreeIndices() const {
+        return {leftIndex_, rightIndex_};
     }
 
     bool SmileSectionUtils::af(const Size i0, const Size i,
@@ -193,8 +212,6 @@ namespace QuantLib {
         if (i >= i1)
             return true;
         Real q2 = (c_[i + 1] - c_[i]) / (k_[i + 1] - k_[i]);
-        if (q1 <= q2 && q2 <= 0.0)
-            return true;
-        return false;
+        return q1 <= q2 && q2 <= 0.0;
     }
 }

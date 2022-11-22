@@ -26,14 +26,7 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/math/distributions/gammadistribution.hpp>
 #include <ql/methods/finitedifferences/meshers/exponentialjump1dmesher.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#include <boost/bind.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <algorithm>
 
 namespace QuantLib {
     ExponentialJump1dMesher::ExponentialJump1dMesher(
@@ -45,13 +38,15 @@ namespace QuantLib {
         QL_REQUIRE(steps > 1, "minimum number of steps is two");
         
         const Real start = 0.0;
-        const Real end   = 1.0-eps;    
+        const Real end   = 1.0-eps;
         const Real dx    = (end-start)/(steps-1);
-    
+        const Real scale = 1/(1-std::exp(-beta/jumpIntensity));
+
         for (Size i=0; i < steps; ++i) {
             const Real p = start + i*dx;
-            locations_[i] = -1.0/eta*std::log(1.0-p);
+            locations_[i] = scale*(-1.0/eta*std::log(1.0-p));
         }
+
         for (Size i=0; i < steps-1; ++i) {
             dminus_[i+1] = dplus_[i] = locations_[i+1]-locations_[i];
         }
@@ -81,9 +76,9 @@ namespace QuantLib {
 
     Real ExponentialJump1dMesher::jumpSizeDistribution(Real x, Time t) const {
         const Real xmin = std::min(x, 1.0e-100);
-        
+
         return GaussLobattoIntegral(1000000, 1e-12)(
-            boost::bind(&ExponentialJump1dMesher::jumpSizeDensity, this, _1, t),
+            [&](Real _x){ return jumpSizeDensity(_x, t); },
             xmin, std::max(x, xmin));
     }
 
@@ -97,7 +92,7 @@ namespace QuantLib {
             (std::pow(xmin, a)/a - std::pow(xmin, a+1)/(a+1))/gammaValue;
         
         return lowerEps + GaussLobattoIntegral(10000, 1e-12)(
-            boost::bind(&ExponentialJump1dMesher::jumpSizeDensity, this, _1),
+            [&](Real _x){ return jumpSizeDensity(_x); },
             xmin/eta_, std::max(x, xmin/eta_));
     }
 }

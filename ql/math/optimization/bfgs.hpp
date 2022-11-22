@@ -38,15 +38,13 @@ namespace QuantLib {
     */
     class BFGS: public LineSearchBasedMethod {
       public:
-        BFGS(const boost::shared_ptr<LineSearch>& lineSearch =
-                                              boost::shared_ptr<LineSearch>())
+        BFGS(const ext::shared_ptr<LineSearch>& lineSearch =
+                                              ext::shared_ptr<LineSearch>())
         : LineSearchBasedMethod(lineSearch) {}
       private:
         //! \name LineSearchBasedMethod interface
         //@{
-        Disposable<Array> getUpdatedDirection(const Problem &P,
-                                              Real gold2,
-                                              const Array& oldGradient);
+        Array getUpdatedDirection(const Problem& P, Real gold2, const Array& oldGradient) override;
         //@}
         //! inverse of hessian matrix
         Matrix inverseHessian_;

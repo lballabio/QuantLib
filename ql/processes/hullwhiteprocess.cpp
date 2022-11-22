@@ -64,7 +64,7 @@ namespace QuantLib {
 
     Real HullWhiteProcess::alpha(Time t) const {
         Real alfa = a_ > QL_EPSILON ?
-                    (sigma_/a_)*(1 - std::exp(-a_*t)) :
+                    Real((sigma_/a_)*(1 - std::exp(-a_*t))) :
                     sigma_*t;
         alfa *= 0.5*alfa;
         alfa += h_->forwardRate(t, t, Continuous, NoFrequency);
@@ -123,7 +123,7 @@ namespace QuantLib {
 
     Real HullWhiteForwardProcess::alpha(Time t) const {
         Real alfa = a_ > QL_EPSILON ?
-                    (sigma_/a_)*(1 - std::exp(-a_*t)) :
+                    Real((sigma_/a_)*(1 - std::exp(-a_*t))) :
                     sigma_*t;
         alfa *= 0.5*alfa;
         alfa += h_->forwardRate(t, t, Continuous, NoFrequency);
@@ -147,7 +147,7 @@ namespace QuantLib {
 
     Real HullWhiteForwardProcess::B(Time t, Time T) const {
         return a_ > QL_EPSILON ?
-               1/a_ * (1-std::exp(-a_*(T-t))) :
+               Real(1/a_ * (1-std::exp(-a_*(T-t)))) :
                T-t;
     }
 

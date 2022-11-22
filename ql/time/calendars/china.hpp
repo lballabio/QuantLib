@@ -41,7 +41,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given (data available for
-        2004-2017 only):
+        2004-2019 only):
         <ul>
         <li>Chinese New Year</li>
         <li>Ching Ming Festival</li>
@@ -59,21 +59,21 @@ namespace QuantLib {
       private:
         class SseImpl : public Calendar::Impl {
           public:
-            std::string name() const { return "Shanghai stock exchange"; }
-            bool isWeekend(Weekday) const;
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Shanghai stock exchange"; }
+            bool isWeekend(Weekday) const override;
+            bool isBusinessDay(const Date&) const override;
         };
 
         class IbImpl : public Calendar::Impl {
           public:
-            IbImpl() {
-                sseImpl = boost::shared_ptr<Calendar::Impl>(new China::SseImpl);
-            }
-            std::string name() const { return "China inter bank market";}
-            bool isWeekend(Weekday) const;
-            bool isBusinessDay(const Date&) const;
+            IbImpl()
+            : sseImpl(ext::make_shared<China::SseImpl>()) {}
+            std::string name() const override { return "China inter bank market"; }
+            bool isWeekend(Weekday) const override;
+            bool isBusinessDay(const Date&) const override;
+
           private:
-            boost::shared_ptr<Calendar::Impl> sseImpl;
+            ext::shared_ptr<Calendar::Impl> sseImpl;
         };
       public:
         enum Market { SSE,    //!< Shanghai stock exchange

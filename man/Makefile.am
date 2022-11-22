@@ -18,12 +18,13 @@ dist_man_MANS += BasketLosses.1 \
                  FittedBondCurve.1 \
                  FRA.1 \
                  Gaussian1dModels.1 \
+                 GlobalOptimizer.1 \
                  LatentModel.1 \
                  MarketModels.1 \
                  MultidimIntegral.1 \
+                 MulticurveBootstrapping.1 \
                  Replication.1 \
-                 Repo.1 \
-                 SwapValuation.1
+                 Repo.1
 
 else
 
@@ -39,12 +40,13 @@ EXTRA_DIST += BasketLosses.1 \
               FittedBondCurve.1 \
               FRA.1 \
               Gaussian1dModels.1 \
+              GlobalOptimizer.1 \
               LatentModel.1 \
               MarketModels.1 \
               MultidimIntegral.1 \
+              MulticurveBootstrapping.1 \
               Replication.1 \
-              Repo.1 \
-              SwapValuation.1
+              Repo.1
 
 endif
 

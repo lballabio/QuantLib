@@ -27,6 +27,7 @@
 #include <ql/cashflow.hpp>
 #include <ql/money.hpp>
 #include <map>
+#include <utility>
 
 namespace QuantLib {
 
@@ -40,20 +41,19 @@ namespace QuantLib {
                           Real discountFactor,
                           Real paymentDiscountFactor,
                           bool finalized)
-        : date_(date), discountedAmount_(discountedAmount),
-          undiscountedAmount_(undiscountedAmount),
-          discountedPaymentAmount_(discountedPaymentAmount),
-          undiscountedPaymentAmount_(undiscountedPaymentAmount),
-          discountFactor_(discountFactor),
-          paymentDiscountFactor_(paymentDiscountFactor),
+        : date_(date), discountedAmount_(std::move(discountedAmount)),
+          undiscountedAmount_(std::move(undiscountedAmount)),
+          discountedPaymentAmount_(std::move(discountedPaymentAmount)),
+          undiscountedPaymentAmount_(std::move(undiscountedPaymentAmount)),
+          discountFactor_(discountFactor), paymentDiscountFactor_(paymentDiscountFactor),
           finalized_(finalized) {}
         //! \name Event interface
         //@{
-        Date date() const { return date_; }
+        Date date() const override { return date_; }
         //@}
         //! \name CashFlow interface
         //@{
-        Real amount() const { return discountedAmount_.value(); }
+        Real amount() const override { return discountedAmount_.value(); }
         //@}
         const Currency& currency() const {
             return discountedAmount_.currency();
@@ -73,7 +73,7 @@ namespace QuantLib {
 
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
         Date date_;
@@ -83,7 +83,7 @@ namespace QuantLib {
         bool finalized_;
     };
 
-    typedef std::map<Date, boost::shared_ptr<CommodityCashFlow> >
+    typedef std::map<Date, ext::shared_ptr<CommodityCashFlow> >
                                                            CommodityCashFlows;
 
     #ifndef __DOXYGEN__

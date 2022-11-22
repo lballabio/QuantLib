@@ -17,9 +17,10 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/products/pathwise/pathwiseproductinversefloater.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
+#include <ql/models/marketmodels/products/pathwise/pathwiseproductinversefloater.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
+#include <utility>
 
 namespace QuantLib 
 {
@@ -30,25 +31,20 @@ namespace QuantLib
         return false;
     }
 
-    MarketModelPathwiseInverseFloater::MarketModelPathwiseInverseFloater(const std::vector<Time>& rateTimes,
-        const std::vector<Real>& fixedAccruals,
+    MarketModelPathwiseInverseFloater::MarketModelPathwiseInverseFloater(
+        const std::vector<Time>& rateTimes,
+        std::vector<Real> fixedAccruals,
         const std::vector<Real>& floatingAccruals,
         const std::vector<Real>& fixedStrikes,
-        const std::vector<Real>& fixedMultipliers, 
+        const std::vector<Real>& fixedMultipliers,
         const std::vector<Real>& floatingSpreads,
         const std::vector<Time>& paymentTimes,
         bool payer)
-        : rateTimes_(rateTimes),
-        fixedAccruals_(fixedAccruals), 
-        floatingAccruals_(floatingAccruals),
-        fixedStrikes_(fixedStrikes),
-        fixedMultipliers_(fixedMultipliers),
-        floatingSpreads_(floatingSpreads),
-        paymentTimes_(paymentTimes),
-        payer_(payer),
-        multiplier_(payer ? -1.0 : 1.0), 
-        lastIndex_(rateTimes.size()-1)
-    {
+    : rateTimes_(rateTimes), fixedAccruals_(std::move(fixedAccruals)),
+      floatingAccruals_(floatingAccruals), fixedStrikes_(fixedStrikes),
+      fixedMultipliers_(fixedMultipliers), floatingSpreads_(floatingSpreads),
+      paymentTimes_(paymentTimes), multiplier_(payer ? -1.0 : 1.0),
+      lastIndex_(rateTimes.size() - 1) {
         checkIncreasingTimes(paymentTimes);
         QL_REQUIRE(fixedAccruals_.size() == lastIndex_," Incorrect number of fixedAccruals given, should be " <<  lastIndex_ << " not " << fixedAccruals_.size() );
         QL_REQUIRE(floatingAccruals.size() == lastIndex_," Incorrect number of floatingAccruals given, should be " <<  lastIndex_ << " not " << floatingAccruals.size() );
@@ -62,7 +58,6 @@ namespace QuantLib
 
 
         evolution_ = EvolutionDescription(rateTimes,evolTimes);
-
     }
 
     bool MarketModelPathwiseInverseFloater::nextTimeStep(
@@ -103,10 +98,10 @@ namespace QuantLib
 
     }
 
-    std::auto_ptr<MarketModelPathwiseMultiProduct> MarketModelPathwiseInverseFloater::clone() const 
+    std::unique_ptr<MarketModelPathwiseMultiProduct>
+    MarketModelPathwiseInverseFloater::clone() const 
     {
-        return std::auto_ptr<MarketModelPathwiseMultiProduct>(
-            new MarketModelPathwiseInverseFloater(*this));
+        return std::unique_ptr<MarketModelPathwiseMultiProduct>(new MarketModelPathwiseInverseFloater(*this));
     }
 
     std::vector<Size> MarketModelPathwiseInverseFloater::suggestedNumeraires() const

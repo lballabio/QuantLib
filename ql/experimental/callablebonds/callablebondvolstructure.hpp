@@ -60,7 +60,7 @@ namespace QuantLib {
                                         const DayCounter& dc = DayCounter(),
                                         BusinessDayConvention bdc = Following);
         //@}
-        virtual ~CallableBondVolatilityStructure() {}
+        ~CallableBondVolatilityStructure() override = default;
         //! \name Volatility, variance and smile
         //@{
         //! returns the volatility for a given option time and bondLength
@@ -84,7 +84,7 @@ namespace QuantLib {
                            const Period& bondTenor,
                            Rate strike,
                            bool extrapolate = false) const;
-        virtual boost::shared_ptr<SmileSection> smileSection(
+        virtual ext::shared_ptr<SmileSection> smileSection(
                                               const Date& optionDate,
                                               const Period& bondTenor) const {
             const std::pair<Time, Time> p = convertDates(optionDate, bondTenor);
@@ -101,7 +101,7 @@ namespace QuantLib {
                            const Period& bondTenor,
                            Rate strike,
                            bool extrapolate = false) const;
-        boost::shared_ptr<SmileSection> smileSection(
+        ext::shared_ptr<SmileSection> smileSection(
                                                const Period& optionTenor,
                                                const Period& bondTenor) const;
         //@}
@@ -127,7 +127,7 @@ namespace QuantLib {
     protected:
 
         //! return smile section
-        virtual boost::shared_ptr<SmileSection> smileSectionImpl(
+        virtual ext::shared_ptr<SmileSection> smileSectionImpl(
                                                    Time optionTime,
                                                    Time bondLength) const = 0;
 
@@ -227,7 +227,7 @@ namespace QuantLib {
     }
 
 
-    inline boost::shared_ptr<SmileSection>
+    inline ext::shared_ptr<SmileSection>
     CallableBondVolatilityStructure::smileSection(
                                               const Period& optionTenor,
                                               const Period& bondTenor) const {

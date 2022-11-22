@@ -36,7 +36,7 @@ void EverestOptionTest::testCached() {
 
     DayCounter dc = Actual360();
     Date exerciseDate = today+360;
-    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+    ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     Real notional = 1.0;
     Rate guarantee = 0.0;
@@ -44,28 +44,28 @@ void EverestOptionTest::testCached() {
 
     Handle<YieldTermStructure> riskFreeRate(flatRate(today, 0.05, dc));
 
-    std::vector<boost::shared_ptr<StochasticProcess1D> > processes(4);
-    Handle<Quote> dummyUnderlying(boost::shared_ptr<Quote>(
+    std::vector<ext::shared_ptr<StochasticProcess1D> > processes(4);
+    Handle<Quote> dummyUnderlying(ext::shared_ptr<Quote>(
                                                        new SimpleQuote(1.0)));
-    processes[0] = boost::shared_ptr<StochasticProcess1D>(
+    processes[0] = ext::shared_ptr<StochasticProcess1D>(
         new BlackScholesMertonProcess(
                     dummyUnderlying,
                     Handle<YieldTermStructure>(flatRate(today, 0.01, dc)),
                     riskFreeRate,
                     Handle<BlackVolTermStructure>(flatVol(today, 0.30, dc))));
-    processes[1] = boost::shared_ptr<StochasticProcess1D>(
+    processes[1] = ext::shared_ptr<StochasticProcess1D>(
         new BlackScholesMertonProcess(
                     dummyUnderlying,
                     Handle<YieldTermStructure>(flatRate(today, 0.05, dc)),
                     riskFreeRate,
                     Handle<BlackVolTermStructure>(flatVol(today, 0.35, dc))));
-    processes[2] = boost::shared_ptr<StochasticProcess1D>(
+    processes[2] = ext::shared_ptr<StochasticProcess1D>(
         new BlackScholesMertonProcess(
                     dummyUnderlying,
                     Handle<YieldTermStructure>(flatRate(today, 0.04, dc)),
                     riskFreeRate,
                     Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc))));
-    processes[3] = boost::shared_ptr<StochasticProcess1D>(
+    processes[3] = ext::shared_ptr<StochasticProcess1D>(
         new BlackScholesMertonProcess(
                     dummyUnderlying,
                     Handle<YieldTermStructure>(flatRate(today, 0.03, dc)),
@@ -96,7 +96,7 @@ void EverestOptionTest::testCached() {
     Size fixedSamples = 1023;
     Real minimumTol = 1.0e-2;
 
-    boost::shared_ptr<StochasticProcessArray> process(
+    ext::shared_ptr<StochasticProcessArray> process(
                           new StochasticProcessArray(processes, correlation));
 
     option.setPricingEngine(MakeMCEverestEngine<PseudoRandom>(process)
@@ -131,7 +131,7 @@ void EverestOptionTest::testCached() {
 
 
 test_suite* EverestOptionTest::suite() {
-    test_suite* suite = BOOST_TEST_SUITE("Everest-option tests");
+    auto* suite = BOOST_TEST_SUITE("Everest-option tests");
     suite->add(QUANTLIB_TEST_CASE(&EverestOptionTest::testCached));
     return suite;
 }

@@ -41,13 +41,14 @@ namespace QuantLib {
         class engine;
         MargrabeOption(Integer Q1,
                        Integer Q2,
-                       const boost::shared_ptr<Exercise>&);
-        void setupArguments(PricingEngine::arguments*) const;
+                       const ext::shared_ptr<Exercise>&);
+        void setupArguments(PricingEngine::arguments*) const override;
         Real delta1() const;
         Real delta2() const;
         Real gamma1() const;
         Real gamma2() const;
-        void fetchResults(const PricingEngine::results*) const;
+        void fetchResults(const PricingEngine::results*) const override;
+
       protected:
         Integer Q1_;
         Integer Q2_;
@@ -60,7 +61,7 @@ namespace QuantLib {
       public:
         arguments() : Q1(Null<Integer>()),
                       Q2(Null<Integer>()) {}
-        void validate() const;
+        void validate() const override;
         Integer Q1;
         Integer Q2;
     };
@@ -77,7 +78,7 @@ namespace QuantLib {
         Real delta2;
         Real gamma1;
         Real gamma2;
-        void reset() {
+        void reset() override {
             MultiAssetOption::results::reset();
             delta1 = Null<Real>();
             delta2 = Null<Real>();

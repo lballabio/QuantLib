@@ -39,21 +39,24 @@ namespace QuantLib {
     /*! \ingroup processes */
     class GsrProcess : public ForwardMeasureProcess1D {
       public:
-        GsrProcess(const Array &times, const Array &vols,
-                   const Array &reversions, const Real T = 60.0,
-                   const Date &referenceDate = Null<Date>(), const DayCounter &dc = DayCounter());
+        GsrProcess(const Array& times,
+                   const Array& vols,
+                   const Array& reversions,
+                   Real T = 60.0,
+                   const Date& referenceDate = Null<Date>(),
+                   DayCounter dc = DayCounter());
         //! \name StochasticProcess1D interface
         //@{
-        Real x0() const;
-        Real drift(Time t, Real x) const;
-        Real diffusion(Time t, Real) const;
-        Real expectation(Time t0, Real x0, Time dt) const;
-        Real stdDeviation(Time t0, Real x0, Time dt) const;
-        Real variance(Time t0, Real, Time dt) const;
-        Real time(const Date& d) const;
+        Real x0() const override;
+        Real drift(Time t, Real x) const override;
+        Real diffusion(Time t, Real) const override;
+        Real expectation(Time t0, Real x0, Time dt) const override;
+        Real stdDeviation(Time t0, Real x0, Time dt) const override;
+        Real variance(Time t0, Real, Time dt) const override;
+        Real time(const Date& d) const override;
         //@}
         //! \name ForwardMeasureProcess1D interface
-        void setForwardMeasureTime(Time t);
+        void setForwardMeasureTime(Time t) override;
         //@}
         //! additional inspectors
         Real sigma(Time t) const;
@@ -64,7 +67,7 @@ namespace QuantLib {
         void flushCache() const;
 
       private:
-        void checkT(const Time t) const;
+        void checkT(Time t) const;
         const detail::GsrProcessCore core_;
         Date referenceDate_;
         DayCounter dc_;

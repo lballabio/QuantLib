@@ -27,77 +27,62 @@
 #include <ql/indexes/iborindex.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/daycounters/actual360.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
     MakeCms::MakeCms(const Period& swapTenor,
-                     const boost::shared_ptr<SwapIndex>& swapIndex,
-                     const boost::shared_ptr<IborIndex>& iborIndex,
+                     const ext::shared_ptr<SwapIndex>& swapIndex,
+                     const ext::shared_ptr<IborIndex>& iborIndex,
                      Spread iborSpread,
                      const Period& forwardStart)
-    : swapTenor_(swapTenor), swapIndex_(swapIndex),
-      iborIndex_(iborIndex), iborSpread_(iborSpread),
+    : swapTenor_(swapTenor), swapIndex_(swapIndex), iborIndex_(iborIndex), iborSpread_(iborSpread),
       useAtmSpread_(false), forwardStart_(forwardStart),
 
-      cmsSpread_(0.0), cmsGearing_(1.0),
-      cmsCap_(Null<Real>()), cmsFloor_(Null<Real>()),
+      cmsSpread_(0.0), cmsGearing_(1.0), cmsCap_(Null<Real>()), cmsFloor_(Null<Real>()),
 
-      effectiveDate_(Date()),
-      cmsCalendar_(swapIndex->fixingCalendar()),
-      floatCalendar_(iborIndex->fixingCalendar()),
-      payCms_(true), nominal_(1.0),
-      cmsTenor_(3*Months), floatTenor_(iborIndex->tenor()),
-      cmsConvention_(ModifiedFollowing),
-      cmsTerminationDateConvention_(ModifiedFollowing),
+
+      cmsCalendar_(swapIndex->fixingCalendar()), floatCalendar_(iborIndex->fixingCalendar()),
+      payCms_(true), nominal_(1.0), cmsTenor_(3 * Months), floatTenor_(iborIndex->tenor()),
+      cmsConvention_(ModifiedFollowing), cmsTerminationDateConvention_(ModifiedFollowing),
       floatConvention_(iborIndex->businessDayConvention()),
       floatTerminationDateConvention_(iborIndex->businessDayConvention()),
       cmsRule_(DateGeneration::Backward), floatRule_(DateGeneration::Backward),
       cmsEndOfMonth_(false), floatEndOfMonth_(false),
-      cmsFirstDate_(Date()), cmsNextToLastDate_(Date()),
-      floatFirstDate_(Date()), floatNextToLastDate_(Date()),
-      cmsDayCount_(Actual360()),
-      floatDayCount_(iborIndex->dayCounter()),
+
+      cmsDayCount_(Actual360()), floatDayCount_(iborIndex->dayCounter()),
       // arbitrary choice:
-      //engine_(new DiscountingSwapEngine(iborIndex->termStructure())),
+      // engine_(new DiscountingSwapEngine(iborIndex->termStructure())),
       engine_(new DiscountingSwapEngine(swapIndex->forwardingTermStructure())) {}
 
 
     MakeCms::MakeCms(const Period& swapTenor,
-                     const boost::shared_ptr<SwapIndex>& swapIndex,
+                     const ext::shared_ptr<SwapIndex>& swapIndex,
                      Spread iborSpread,
                      const Period& forwardStart)
-    : swapTenor_(swapTenor), swapIndex_(swapIndex),
-      iborIndex_(swapIndex->iborIndex()), iborSpread_(iborSpread),
-      useAtmSpread_(false), forwardStart_(forwardStart),
+    : swapTenor_(swapTenor), swapIndex_(swapIndex), iborIndex_(swapIndex->iborIndex()),
+      iborSpread_(iborSpread), useAtmSpread_(false), forwardStart_(forwardStart),
 
-      cmsSpread_(0.0), cmsGearing_(1.0),
-      cmsCap_(Null<Real>()), cmsFloor_(Null<Real>()),
+      cmsSpread_(0.0), cmsGearing_(1.0), cmsCap_(Null<Real>()), cmsFloor_(Null<Real>()),
 
-      effectiveDate_(Date()),
-      cmsCalendar_(swapIndex->fixingCalendar()),
-      floatCalendar_(iborIndex_->fixingCalendar()),
-      payCms_(true), nominal_(1.0),
-      cmsTenor_(3*Months), floatTenor_(iborIndex_->tenor()),
-      cmsConvention_(ModifiedFollowing),
-      cmsTerminationDateConvention_(ModifiedFollowing),
+
+      cmsCalendar_(swapIndex->fixingCalendar()), floatCalendar_(iborIndex_->fixingCalendar()),
+      payCms_(true), nominal_(1.0), cmsTenor_(3 * Months), floatTenor_(iborIndex_->tenor()),
+      cmsConvention_(ModifiedFollowing), cmsTerminationDateConvention_(ModifiedFollowing),
       floatConvention_(iborIndex_->businessDayConvention()),
       floatTerminationDateConvention_(iborIndex_->businessDayConvention()),
       cmsRule_(DateGeneration::Backward), floatRule_(DateGeneration::Backward),
       cmsEndOfMonth_(false), floatEndOfMonth_(false),
-      cmsFirstDate_(Date()), cmsNextToLastDate_(Date()),
-      floatFirstDate_(Date()), floatNextToLastDate_(Date()),
-      cmsDayCount_(Actual360()),
-      floatDayCount_(iborIndex_->dayCounter()),
+
+      cmsDayCount_(Actual360()), floatDayCount_(iborIndex_->dayCounter()),
       engine_(new DiscountingSwapEngine(swapIndex->forwardingTermStructure())) {}
 
 
     MakeCms::operator Swap() const {
-        boost::shared_ptr<Swap> swap = *this;
+        ext::shared_ptr<Swap> swap = *this;
         return *swap;
     }
 
-    MakeCms::operator boost::shared_ptr<Swap>() const {
+    MakeCms::operator ext::shared_ptr<Swap>() const {
 
         Date startDate;
         if (effectiveDate_ != Date())
@@ -138,7 +123,7 @@ namespace QuantLib {
             .withSpreads(cmsSpread_)
             .withCaps(cmsCap_)
             .withFloors(cmsFloor_);
-        if (couponPricer_)
+        if (couponPricer_ != nullptr)
             setCouponPricer(cmsLeg, couponPricer_);
 
         Rate usedSpread = iborSpread_;
@@ -175,11 +160,11 @@ namespace QuantLib {
             .withFixingDays(iborIndex_->fixingDays())
             .withSpreads(usedSpread);
 
-        boost::shared_ptr<Swap> swap;
+        ext::shared_ptr<Swap> swap;
         if (payCms_)
-            swap = boost::make_shared<Swap>(cmsLeg, floatLeg);
+            swap = ext::make_shared<Swap>(cmsLeg, floatLeg);
         else
-            swap = boost::make_shared<Swap>(floatLeg, cmsLeg);
+            swap = ext::make_shared<Swap>(floatLeg, cmsLeg);
         swap->setPricingEngine(engine_);
         return swap;
     }
@@ -202,12 +187,12 @@ namespace QuantLib {
 
     MakeCms& MakeCms::withDiscountingTermStructure(
                 const Handle<YieldTermStructure>& discountingTermStructure) {
-        engine_ = boost::make_shared<DiscountingSwapEngine>(discountingTermStructure);
+        engine_ = ext::make_shared<DiscountingSwapEngine>(discountingTermStructure);
         return *this;
     }
 
     MakeCms& MakeCms::withCmsCouponPricer(
-                    const boost::shared_ptr<CmsCouponPricer>& couponPricer) {
+                    const ext::shared_ptr<CmsCouponPricer>& couponPricer) {
         couponPricer_ = couponPricer;
         return *this;
     }

@@ -40,7 +40,8 @@ namespace QuantLib {
     */
     class VarianceGammaModel : public CalibratedModel {
       public:
-        VarianceGammaModel(const boost::shared_ptr<VarianceGammaProcess>& process);
+        explicit VarianceGammaModel(
+                      const ext::shared_ptr<VarianceGammaProcess>& process);
 
         // sigma
         Real sigma() const { return arguments_[0](0.0); }
@@ -50,11 +51,11 @@ namespace QuantLib {
         Real theta() const { return arguments_[2](0.0); }
 
         // underlying process
-        boost::shared_ptr<VarianceGammaProcess> process() const { return process_; }
+        ext::shared_ptr<VarianceGammaProcess> process() const { return process_; }
 
     protected:
-        void generateArguments();
-        boost::shared_ptr<VarianceGammaProcess> process_;
+      void generateArguments() override;
+      ext::shared_ptr<VarianceGammaProcess> process_;
     };
 
 }

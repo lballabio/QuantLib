@@ -30,7 +30,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/models/fwdperiodadapter.hpp>
 #include <ql/models/marketmodels/models/fwdtocotswapadapter.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib
@@ -40,11 +40,11 @@ namespace QuantLib
 
     Integer capletSwaptionPeriodicCalibration(
         const EvolutionDescription& evolution,
-        const boost::shared_ptr<PiecewiseConstantCorrelation>& corr,
+        const ext::shared_ptr<PiecewiseConstantCorrelation>& corr,
         VolatilityInterpolationSpecifier&
         displacedSwapVariances,
         const std::vector<Volatility>& capletVols,
-        const boost::shared_ptr<CurveState>& cs,
+        const ext::shared_ptr<CurveState>& cs,
         const Spread displacement,
         Real caplet0Swaption1Priority,
         Size numberOfFactors,
@@ -122,25 +122,27 @@ namespace QuantLib
                 caplet0Swaption1Priority);
 
 
-            failures= unperiodicCalibrator.calibrate(numberOfFactors, maxUnperiodicIterations,toleranceUnperiodic,max1dIterations,tolerance1d);
+            failures = static_cast<QuantLib::Integer>(
+                unperiodicCalibrator.calibrate(numberOfFactors, maxUnperiodicIterations,
+                                               toleranceUnperiodic, max1dIterations, tolerance1d));
 
             swapCovariancePseudoRoots = unperiodicCalibrator.swapPseudoRoots();
 
-            boost::shared_ptr<MarketModel> smm(new
+            ext::shared_ptr<MarketModel> smm(new
                 PseudoRootFacade(swapCovariancePseudoRoots,
                 evolution.rateTimes(),
                 cs->coterminalSwapRates(),
                 std::vector<Spread>(evolution.numberOfRates(), displacement)));
 
-            boost::shared_ptr<MarketModel> flmm(new CotSwapToFwdAdapter(smm));
+            ext::shared_ptr<MarketModel> flmm(new CotSwapToFwdAdapter(smm));
 
             Matrix capletTotCovariance = flmm->totalCovariance(numberSmallRates-1);
 
-            boost::shared_ptr<MarketModel> periodflmm( new FwdPeriodAdapter(flmm, period,
+            ext::shared_ptr<MarketModel> periodflmm( new FwdPeriodAdapter(flmm, period,
                 offset,
                 newDisplacements));
 
-            boost::shared_ptr<MarketModel> periodsmm(new FwdToCotSwapAdapter(periodflmm));
+            ext::shared_ptr<MarketModel> periodsmm(new FwdToCotSwapAdapter(periodflmm));
 
 
             Matrix swaptionTotCovariance(periodsmm->totalCovariance(periodsmm->numberOfSteps()-1));

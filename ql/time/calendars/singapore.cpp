@@ -24,7 +24,7 @@ namespace QuantLib {
 
     Singapore::Singapore(Market) {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Singapore::SgxImpl);
+        static ext::shared_ptr<Calendar::Impl> impl(new Singapore::SgxImpl);
         impl_ = impl;
     }
 
@@ -110,7 +110,7 @@ namespace QuantLib {
             || (d == 8 && m == August && y == 2013)
             || (d == 28 && m == July && y == 2014)
             )
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

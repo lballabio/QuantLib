@@ -34,9 +34,7 @@ namespace QuantLib {
     {
       public:
         typedef Sample<std::vector<Real> > sample_type;
-         LatticeRsg(Size dimensionality,
-             const std::vector<Real>& z,
-             Size N);
+        LatticeRsg(Size dimensionality, std::vector<Real> z, Size N);
         /*! skip to the n-th sample in the low-discrepancy sequence */
         void skipTo(unsigned long n);
         const LatticeRsg::sample_type& nextSequence();     
@@ -46,7 +44,7 @@ namespace QuantLib {
       private:
         Size dimensionality_;
         Size N_;
-        Size i_;
+        Size i_ = 0;
         std::vector<Real> z_;
         
         sample_type sequence_;

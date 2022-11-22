@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2016 Quaternion Risk Management Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -478,6 +479,46 @@ namespace QuantLib {
     class UAHCurrency : public Currency {
     public:
         UAHCurrency();
+    };
+
+    //! Serbian dinar
+    /*! The ISO three-letter code is RSD; the numeric code is 941.
+     It is divided into 100 para/napa.
+     \ingroup currencies
+    */
+    class RSDCurrency : public Currency {
+      public:
+        RSDCurrency();
+    };
+
+    //! Croatian kuna
+    /*! The ISO three-letter code is HRK; the numeric code is 191.
+     It is divided into 100 lipa.
+     \ingroup currencies
+    */
+    class HRKCurrency : public Currency {
+      public:
+        HRKCurrency();
+    };
+
+    //! Bulgarian lev
+    /*! The ISO three-letter code is BGN; the numeric code is 975.
+     It is divided into 100 stotinki.
+     \ingroup currencies
+    */
+    class BGNCurrency : public Currency {
+      public:
+        BGNCurrency();
+    };
+
+    //! Georgian lari
+    /*! The ISO three-letter code is GEL; the numeric code is 981.
+     It is divided into 100 tetri.
+     \ingroup currencies
+    */
+    class GELCurrency : public Currency {
+      public:
+        GELCurrency();
     };
 
 }

@@ -24,10 +24,10 @@
 #ifndef quantlib_isotropic_random_walk_hpp
 #define quantlib_isotropic_random_walk_hpp
 
-#include <ql/mathconstants.hpp>
-#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
 #include <ql/math/array.hpp>
-#include <boost/random/variate_generator.hpp>
+#include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <ql/mathconstants.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -43,20 +43,20 @@ namespace QuantLib {
     template <class Distribution, class Engine>
     class IsotropicRandomWalk {
       public:
-        typedef boost::variate_generator<Engine, Distribution> VariateGenerator;
-        IsotropicRandomWalk(Engine eng, Distribution dist, Size dim, 
-                            const Array& weights = Array(), 
-                            unsigned long seed = 0) :
-            variate_(eng, dist), rng_(seed), 
-            weights_(weights), dim_(dim) {
+        IsotropicRandomWalk(Engine eng,
+                            Distribution dist,
+                            Size dim,
+                            Array weights = Array(),
+                            unsigned long seed = 0)
+        : engine_(std::move(eng)), distribution_(std::move(dist)), rng_(seed), weights_(std::move(weights)), dim_(dim) {
             if (weights_.empty())
                 weights_ = Array(dim, 1.0);
             else
                 QL_REQUIRE(dim_ == weights_.size(), "Invalid weights");
         }
         template <class InputIterator>
-        inline void nextReal(InputIterator first) const {
-            Real radius = variate_();
+        inline void nextReal(InputIterator first) {
+            Real radius = distribution_(engine_);
             Array::const_iterator weight = weights_.begin();
             if (dim_ > 1) {
                 //Isotropic random direction
@@ -109,7 +109,8 @@ namespace QuantLib {
             setDimension(dim, bounds);
         }
       protected:
-        mutable VariateGenerator variate_;
+        Engine engine_;
+        Distribution distribution_;
         MersenneTwisterUniformRng rng_;
         Array weights_;
         Size dim_;

@@ -137,8 +137,8 @@ namespace QuantLib {
     }
 
     //--------------------------------------------------------------------------
-    Real BinomialProbabilityOfAtLeastNEvents::operator()(vector<Real> p) {
-    //--------------------------------------------------------------------------
+    Real BinomialProbabilityOfAtLeastNEvents::operator()(vector<Real> p) const {
+        //--------------------------------------------------------------------------
         return LossDist::binomialProbabilityOfAtLeastNEvents(n_, p);
     }
 

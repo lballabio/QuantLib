@@ -20,17 +20,18 @@
 */
 
 #include <ql/pricingengines/vanilla/mcdigitalengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    DigitalPathPricer::DigitalPathPricer(
-                    const boost::shared_ptr<CashOrNothingPayoff>& payoff,
-                    const boost::shared_ptr<AmericanExercise>& exercise,
-                    const Handle<YieldTermStructure>& discountTS,
-                    const boost::shared_ptr<StochasticProcess1D>& diffProcess,
-                    const PseudoRandom::ursg_type& sequenceGen)
-    : payoff_(payoff), exercise_(exercise), diffProcess_(diffProcess),
-      sequenceGen_(sequenceGen), discountTS_(discountTS) {}
+    DigitalPathPricer::DigitalPathPricer(ext::shared_ptr<CashOrNothingPayoff> payoff,
+                                         ext::shared_ptr<AmericanExercise> exercise,
+                                         Handle<YieldTermStructure> discountTS,
+                                         ext::shared_ptr<StochasticProcess1D> diffProcess,
+                                         PseudoRandom::ursg_type sequenceGen)
+    : payoff_(std::move(payoff)), exercise_(std::move(exercise)),
+      diffProcess_(std::move(diffProcess)), sequenceGen_(std::move(sequenceGen)),
+      discountTS_(std::move(discountTS)) {}
 
     Real DigitalPathPricer::operator()(const Path& path) const {
         Size n = path.length();
@@ -39,7 +40,7 @@ namespace QuantLib {
         Real log_asset_price = std::log(path.front());
         Real x, y;
         Volatility vol;
-        TimeGrid timeGrid = path.timeGrid();
+        const TimeGrid& timeGrid = path.timeGrid();
         Time dt;
         std::vector<Real> u = sequenceGen_.nextSequence().value;
         Real log_strike = std::log(payoff_->strike());

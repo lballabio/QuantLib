@@ -21,7 +21,6 @@
 #define convolved_student_t_hpp
 
 #include <ql/types.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <vector>
 #include <numeric>
 #include <functional>
@@ -58,8 +57,7 @@ namespace QuantLib {
         independent Student t-random vectors' C.Berg, C.Vignat; June 2009;
         eprint arXiv:0906.3037
     */
-    class CumulativeBehrensFisher // ODD orders only by now, rename?
-        : public std::unary_function<Real, Probability> {
+    class CumulativeBehrensFisher { // ODD orders only by now, rename?
     public:
         typedef Probability result_type;
         typedef Real argument_type;
@@ -100,9 +98,9 @@ namespace QuantLib {
              T is then \f$ \nu=2n+1 \f$
         */
         // move outside of the class, as a separate problem?
-        Disposable<std::vector<Real> > polynCharactT(Natural n) const;
+        std::vector<Real> polynCharactT(Natural n) const;
 
-        Disposable<std::vector<Real> > convolveVectorPolynomials(
+        std::vector<Real> convolveVectorPolynomials(
             const std::vector<Real>& v1,
             const std::vector<Real>& v2) const ;
     public:
@@ -127,16 +125,17 @@ namespace QuantLib {
             The GP complex integration is simplified thanks to the symetry of
             the distribution.
         */
-        Probability operator()(const Real x) const;
+      Probability operator()(Real x) const;
 
-        /*! \brief Returns the probability density of the resulting
-        distribution.\par
-            Similarly to the cumulative probability, Gil-Pelaez theorem is
-            applied, the integration is similar.
+      /*! \brief Returns the probability density of the resulting
+      distribution.\par
+          Similarly to the cumulative probability, Gil-Pelaez theorem is
+          applied, the integration is similar.
 
-            \todo Implement in a separate class? given the name of this class..
-        */
-        Probability density(const Real x) const;
+          \todo Implement in a separate class? given the name of this class..
+      */
+      Probability density(Real x) const;
+
     private:
         mutable std::vector<Integer> degreesFreedom_;
         mutable std::vector<Real> factors_;
@@ -145,7 +144,7 @@ namespace QuantLib {
         mutable std::vector<Real> polyConvolved_;
 
         // cached factor in the exponential of the characteristic function
-        mutable Real a_, a2_;
+        mutable Real a_ = 0., a2_;
     };
 
 
@@ -161,8 +160,7 @@ namespace QuantLib {
     is used.
     Also the fact that the combination is symmetric is used.
      */
-    class InverseCumulativeBehrensFisher
-        : public std::unary_function<Probability, Real> {
+    class InverseCumulativeBehrensFisher {
     public:
         typedef Real result_type;
         typedef Probability argument_type;
@@ -177,8 +175,9 @@ namespace QuantLib {
             const std::vector<Real>& factors = std::vector<Real>(),
             Real accuracy = 1.e-6);
         //! Returns the cumulative inverse value.
-        Real operator()(const Probability q) const;
-    private:
+        Real operator()(Probability q) const;
+
+      private:
         mutable Real normSqr_, accuracy_;
         mutable CumulativeBehrensFisher distrib_;
     };

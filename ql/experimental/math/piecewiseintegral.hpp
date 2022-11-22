@@ -29,48 +29,46 @@
 
 #include <ql/math/integrals/integral.hpp>
 #include <ql/math/comparison.hpp>
-#include <boost/shared_ptr.hpp>
-
+#include <ql/shared_ptr.hpp>
+#include <algorithm>
 #include <vector>
 
 namespace QuantLib {
 
 class PiecewiseIntegral : public Integrator {
   public:
-    PiecewiseIntegral(const boost::shared_ptr<Integrator> &integrator,
-                      const std::vector<Real> &criticalPoints,
-                      const bool avoidCriticalPoints = true);
+    PiecewiseIntegral(ext::shared_ptr<Integrator> integrator,
+                      std::vector<Real> criticalPoints,
+                      bool avoidCriticalPoints = true);
 
   protected:
-    Real integrate(const boost::function<Real(Real)> &f, Real a, Real b) const;
+    Real integrate(const ext::function<Real(Real)>& f, Real a, Real b) const override;
 
   private:
-    Real integrate_h(const boost::function<Real(Real)> &f, Real a,
+    Real integrate_h(const ext::function<Real(Real)> &f, Real a,
                      Real b) const;
-    const boost::shared_ptr<Integrator> integrator_;
+    const ext::shared_ptr<Integrator> integrator_;
     std::vector<Real> criticalPoints_;
     const Real eps_;
 };
 
 // inline
 
-inline Real PiecewiseIntegral::integrate_h(const boost::function<Real(Real)> &f,
+inline Real PiecewiseIntegral::integrate_h(const ext::function<Real(Real)> &f,
                                            Real a, Real b) const {
 
     if (!close_enough(a, b))
-        return integrator_->operator()(f, a, b);
+        return (*integrator_)(f, a, b);
     else
         return 0.0;
 }
 
-inline Real PiecewiseIntegral::integrate(const boost::function<Real(Real)> &f,
+inline Real PiecewiseIntegral::integrate(const ext::function<Real(Real)> &f,
                                          Real a, Real b) const {
 
-    std::vector<Real>::const_iterator a0 =
-        std::lower_bound(criticalPoints_.begin(), criticalPoints_.end(), a);
+    auto a0 = std::lower_bound(criticalPoints_.begin(), criticalPoints_.end(), a);
 
-    std::vector<Real>::const_iterator b0 =
-        std::lower_bound(criticalPoints_.begin(), criticalPoints_.end(), b);
+    auto b0 = std::lower_bound(criticalPoints_.begin(), criticalPoints_.end(), b);
 
     if (a0 == criticalPoints_.end()) {
         Real tmp = 1.0;
@@ -95,7 +93,7 @@ inline Real PiecewiseIntegral::integrate(const boost::function<Real(Real)> &f,
         }
     }
 
-    for (std::vector<Real>::const_iterator x = a0; x < b0; ++x) {
+    for (auto x = a0; x < b0; ++x) {
         res += integrate_h(f, (*x) * eps_, std::min(*(x + 1) / eps_, b));
     }
 

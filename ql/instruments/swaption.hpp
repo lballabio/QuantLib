@@ -6,7 +6,7 @@
  Copyright (C) 2006 Marco Bianchetti
  Copyright (C) 2007 StatPro Italia srl
  Copyright (C) 2014 Ferdinando Ametrano
- Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2016, 2018 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -39,10 +39,22 @@ namespace QuantLib {
     //! %settlement information
     struct Settlement {
         enum Type { Physical, Cash };
+        enum Method {
+            PhysicalOTC,
+            PhysicalCleared,
+            CollateralizedCashPrice,
+            ParYieldCurve
+        };
+        //! check consistency of settlement type and method
+        static void checkTypeAndMethodConsistency(Settlement::Type,
+                                                  Settlement::Method);
     };
 
     std::ostream& operator<<(std::ostream& out,
                              Settlement::Type type);
+
+    std::ostream& operator<<(std::ostream& out,
+                             Settlement::Method method);
 
     //! %Swaption class
     /*! \ingroup instruments
@@ -70,19 +82,23 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        Swaption(const boost::shared_ptr<VanillaSwap>& swap,
-                 const boost::shared_ptr<Exercise>& exercise,
-                 Settlement::Type delivery = Settlement::Physical);
+        Swaption(ext::shared_ptr<VanillaSwap> swap,
+                 const ext::shared_ptr<Exercise>& exercise,
+                 Settlement::Type delivery = Settlement::Physical,
+                 Settlement::Method settlementMethod = Settlement::PhysicalOTC);
         //! \name Instrument interface
         //@{
-        bool isExpired() const;
-        void setupArguments(PricingEngine::arguments*) const;
+        bool isExpired() const override;
+        void setupArguments(PricingEngine::arguments*) const override;
         //@}
         //! \name Inspectors
         //@{
         Settlement::Type settlementType() const { return settlementType_; }
-        VanillaSwap::Type type() const { return swap_->type(); }
-        const boost::shared_ptr<VanillaSwap>& underlyingSwap() const {
+        Settlement::Method settlementMethod() const {
+            return settlementMethod_;
+        }
+        Swap::Type type() const { return swap_->type(); }
+        const ext::shared_ptr<VanillaSwap>& underlyingSwap() const {
             return swap_;
         }
         //@}
@@ -97,32 +113,23 @@ namespace QuantLib {
                               Volatility maxVol = 4.0,
                               VolatilityType type = ShiftedLognormal,
                               Real displacement = 0.0) const;
-        QL_DEPRECATED
-        Volatility impliedVolatility(
-                              Real price,
-                              const Handle<YieldTermStructure>& discountCurve,
-                              Volatility guess,
-                              Real accuracy,
-                              Natural maxEvaluations,
-                              Volatility minVol,
-                              Volatility maxVol,
-                              Real displacement,
-                              VolatilityType type = ShiftedLognormal) const;
       private:
         // arguments
-        boost::shared_ptr<VanillaSwap> swap_;
+        ext::shared_ptr<VanillaSwap> swap_;
         //Handle<YieldTermStructure> termStructure_;
         Settlement::Type settlementType_;
+        Settlement::Method settlementMethod_;
     };
 
     //! %Arguments for swaption calculation
     class Swaption::arguments : public VanillaSwap::arguments,
                                 public Option::arguments {
       public:
-        arguments() : settlementType(Settlement::Physical) {}
-        boost::shared_ptr<VanillaSwap> swap;
-        Settlement::Type settlementType;
-        void validate() const;
+        arguments() = default;
+        ext::shared_ptr<VanillaSwap> swap;
+        Settlement::Type settlementType = Settlement::Physical;
+        Settlement::Method settlementMethod;
+        void validate() const override;
     };
 
     //! base class for swaption engines

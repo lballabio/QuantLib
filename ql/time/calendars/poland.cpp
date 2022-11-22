@@ -23,7 +23,7 @@ namespace QuantLib {
 
     Poland::Poland() {
         // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Poland::Impl);
+        static ext::shared_ptr<Calendar::Impl> impl(new Poland::Impl);
         impl_ = impl;
     }
 
@@ -56,7 +56,7 @@ namespace QuantLib {
             || (d == 25 && m == December)
             // 2nd Day of Christmas
             || (d == 26 && m == December))
-            return false;
+            return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
 

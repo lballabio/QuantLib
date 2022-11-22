@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2011 Master IMAFA - Polytech'Nice Sophia - Universit� de Nice Sophia Antipolis
+ Copyright (C) 2011 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,20 +17,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/exercise.hpp>
+#include <ql/experimental/exoticoptions/continuousarithmeticasianlevyengine.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <utility>
 
 using namespace std;
 
 namespace QuantLib {
 
     ContinuousArithmeticAsianLevyEngine::ContinuousArithmeticAsianLevyEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            const Handle<Quote>& currentAverage,
-            Date startDate)
-    : process_(process), currentAverage_(currentAverage),
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Handle<Quote> currentAverage,
+        Date startDate)
+    : process_(std::move(process)), currentAverage_(std::move(currentAverage)),
       startDate_(startDate) {
         registerWith(process_);
         registerWith(currentAverage_);
@@ -50,8 +51,8 @@ namespace QuantLib {
         Real spot = process_->stateVariable()->value();
 
         // payoff
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         // original time to maturity
@@ -76,8 +77,8 @@ namespace QuantLib {
         Real b = riskFreeRate - dividendYield;
 
         Real Se = (std::fabs(b) > 1000*QL_EPSILON) 
-            ? (spot/(T*b))*(exp((b-riskFreeRate)*T2)-exp(-riskFreeRate*T2))
-            : spot*T2/T * std::exp(-riskFreeRate*T2);
+            ? Real((spot/(T*b))*(exp((b-riskFreeRate)*T2)-exp(-riskFreeRate*T2)))
+            : Real(spot*T2/T * std::exp(-riskFreeRate*T2));
 
         Real X;
         if (T2 < T) {

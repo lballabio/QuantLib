@@ -22,11 +22,12 @@
 #ifndef quantlib_cmsspread_coupon_hpp
 #define quantlib_cmsspread_coupon_hpp
 
-#include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/capflooredcoupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/experimental/coupons/swapspreadindex.hpp>
 #include <ql/time/schedule.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -44,25 +45,26 @@ namespace QuantLib {
                   const Date& startDate,
                   const Date& endDate,
                   Natural fixingDays,
-                  const boost::shared_ptr<SwapSpreadIndex>& index,
+                  const ext::shared_ptr<SwapSpreadIndex>& index,
                   Real gearing = 1.0,
                   Spread spread = 0.0,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
-                  bool isInArrears = false);
+                  bool isInArrears = false,
+                  const Date& exCouponDate = Date());
         //! \name Inspectors
         //@{
-        const boost::shared_ptr<SwapSpreadIndex>& swapSpreadIndex() const {
+        const ext::shared_ptr<SwapSpreadIndex>& swapSpreadIndex() const {
             return index_;
         }
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(AcyclicVisitor&);
+        void accept(AcyclicVisitor&) override;
         //@}
       private:
-        boost::shared_ptr<SwapSpreadIndex> index_;
+        ext::shared_ptr<SwapSpreadIndex> index_;
     };
 
     class CappedFlooredCmsSpreadCoupon : public CappedFlooredCoupon {
@@ -73,7 +75,7 @@ namespace QuantLib {
                   const Date& startDate,
                   const Date& endDate,
                   Natural fixingDays,
-                  const boost::shared_ptr<SwapSpreadIndex>& index,
+                  const ext::shared_ptr<SwapSpreadIndex>& index,
                   Real gearing = 1.0,
                   Spread spread= 0.0,
                   const Rate cap = Null<Rate>(),
@@ -81,16 +83,16 @@ namespace QuantLib {
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
-                  bool isInArrears = false)
-        : CappedFlooredCoupon(boost::shared_ptr<FloatingRateCoupon>(new
+                  bool isInArrears = false,
+                  const Date& exCouponDate = Date())
+        : CappedFlooredCoupon(ext::shared_ptr<FloatingRateCoupon>(new
             CmsSpreadCoupon(paymentDate, nominal, startDate, endDate, fixingDays,
                       index, gearing, spread, refPeriodStart, refPeriodEnd,
-                      dayCounter, isInArrears)), cap, floor) {}
+                      dayCounter, isInArrears, exCouponDate)), cap, floor) {}
 
-        virtual void accept(AcyclicVisitor& v) {
-            Visitor<CappedFlooredCmsSpreadCoupon>* v1 =
-                dynamic_cast<Visitor<CappedFlooredCmsSpreadCoupon>*>(&v);
-            if (v1 != 0)
+        void accept(AcyclicVisitor& v) override {
+            auto* v1 = dynamic_cast<Visitor<CappedFlooredCmsSpreadCoupon>*>(&v);
+            if (v1 != nullptr)
                 v1->visit(*this);
             else
                 CappedFlooredCoupon::accept(v);
@@ -100,8 +102,7 @@ namespace QuantLib {
     //! helper class building a sequence of capped/floored cms-spread-rate coupons
     class CmsSpreadLeg {
       public:
-        CmsSpreadLeg(const Schedule& schedule,
-               const boost::shared_ptr<SwapSpreadIndex>& swapSpreadIndex);
+        CmsSpreadLeg(Schedule schedule, ext::shared_ptr<SwapSpreadIndex> swapSpreadIndex);
         CmsSpreadLeg& withNotionals(Real notional);
         CmsSpreadLeg& withNotionals(const std::vector<Real>& notionals);
         CmsSpreadLeg& withPaymentDayCounter(const DayCounter&);
@@ -121,24 +122,23 @@ namespace QuantLib {
         operator Leg() const;
       private:
         Schedule schedule_;
-        boost::shared_ptr<SwapSpreadIndex> swapSpreadIndex_;
+        ext::shared_ptr<SwapSpreadIndex> swapSpreadIndex_;
         std::vector<Real> notionals_;
         DayCounter paymentDayCounter_;
-        BusinessDayConvention paymentAdjustment_;
+        BusinessDayConvention paymentAdjustment_ = Following;
         std::vector<Natural> fixingDays_;
         std::vector<Real> gearings_;
         std::vector<Spread> spreads_;
         std::vector<Rate> caps_, floors_;
-        bool inArrears_, zeroPayments_;
+        bool inArrears_ = false, zeroPayments_ = false;
     };
 
 
     //! base pricer for vanilla CMS spread coupons
     class CmsSpreadCouponPricer : public FloatingRateCouponPricer {
       public:
-        CmsSpreadCouponPricer(
-                           const Handle<Quote> &correlation = Handle<Quote>())
-        : correlation_(correlation) {
+        explicit CmsSpreadCouponPricer(Handle<Quote> correlation = Handle<Quote>())
+        : correlation_(std::move(correlation)) {
             registerWith(correlation_);
         }
 

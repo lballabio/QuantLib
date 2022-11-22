@@ -25,10 +25,8 @@ namespace QuantLib {
 
     void Gaussian1dCapFloorEngine::calculate() const {
 
-        for (Size i = 0; i < arguments_.spreads.size(); i++)
-            QL_REQUIRE(arguments_.spreads[i] == 0.0,
-                       "Non zero spreads (" << arguments_.spreads[i]
-                                            << ") are not allowed.");
+        for (Real spread : arguments_.spreads)
+            QL_REQUIRE(spread == 0.0, "Non zero spreads (" << spread << ") are not allowed.");
 
         Size optionlets = arguments_.startDates.size();
         std::vector<Real> values(optionlets, 0.0);
@@ -46,8 +44,8 @@ namespace QuantLib {
 
             Date valueDate = arguments_.startDates[i];
             Date paymentDate = arguments_.endDates[i];
-            boost::shared_ptr<IborIndex> iborIndex =
-                boost::dynamic_pointer_cast<IborIndex>(arguments_.indexes[i]);
+            ext::shared_ptr<IborIndex> iborIndex =
+                ext::dynamic_pointer_cast<IborIndex>(arguments_.indexes[i]);
             // if we do not find an ibor index with associated forwarding curve
             // we fall back on the model curve
 
@@ -72,7 +70,7 @@ namespace QuantLib {
 
                         for (Size j = 0; j < z.size(); j++) {
                             Real floatingLegNpv;
-                            if (iborIndex != NULL)
+                            if (iborIndex != nullptr)
                                 floatingLegNpv =
                                     arguments_.accrualTimes[i] *
                                     model_->forwardRate(fixingDate, fixingDate,
@@ -101,7 +99,7 @@ namespace QuantLib {
                             CubicInterpolation::Lagrange, 0.0);
                         Real price = 0.0;
                         for (Size j = 0; j < z.size() - 1; j++) {
-                            price += model_->gaussianShiftedPolynomialIntegral(
+                            price += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                 0.0, payoff.cCoefficients()[j],
                                 payoff.bCoefficients()[j],
                                 payoff.aCoefficients()[j], p[j], z[j], z[j],
@@ -110,17 +108,17 @@ namespace QuantLib {
                         if (extrapolatePayoff_) {
                             if (flatPayoffExtrapolation_) {
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, 0.0, 0.0, 0.0, p[z.size() - 2],
                                         z[z.size() - 2], z[z.size() - 1],
                                         100.0);
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0,
                                         z[0]);
                             } else {
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0,
                                         payoff.cCoefficients()[z.size() - 2],
                                         payoff.bCoefficients()[z.size() - 2],
@@ -144,7 +142,7 @@ namespace QuantLib {
                     } else {
                         for (Size j = 0; j < z.size(); j++) {
                             Real floatingLegNpv;
-                            if (iborIndex != NULL)
+                            if (iborIndex != nullptr)
                                 floatingLegNpv =
                                     arguments_.accrualTimes[i] *
                                     model_->forwardRate(fixingDate, fixingDate,
@@ -173,7 +171,7 @@ namespace QuantLib {
                             CubicInterpolation::Lagrange, 0.0);
                         Real price = 0.0;
                         for (Size j = 0; j < z.size() - 1; j++) {
-                            price += model_->gaussianShiftedPolynomialIntegral(
+                            price += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                 0.0, payoff.cCoefficients()[j],
                                 payoff.bCoefficients()[j],
                                 payoff.aCoefficients()[j], p[j], z[j], z[j],
@@ -182,17 +180,17 @@ namespace QuantLib {
                         if (extrapolatePayoff_) {
                             if (flatPayoffExtrapolation_) {
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, 0.0, 0.0, 0.0, p[z.size() - 2],
                                         z[z.size() - 2], z[z.size() - 1],
                                         100.0);
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0,
                                         z[0]);
                             } else {
                                 price +=
-                                    model_->gaussianShiftedPolynomialIntegral(
+                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
                                         0.0, payoff.cCoefficients()[0],
                                         payoff.bCoefficients()[0],
                                         payoff.aCoefficients()[0], p[0], z[0],

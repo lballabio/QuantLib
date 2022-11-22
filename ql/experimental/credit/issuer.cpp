@@ -19,11 +19,12 @@
 */
 
 #include <ql/experimental/credit/issuer.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     namespace {
-        bool between(const boost::shared_ptr<DefaultEvent>& e,
+        bool between(const ext::shared_ptr<DefaultEvent>& e,
                      const Date& start,
                      const Date& end,
                      bool includeRefDate = false) {
@@ -32,21 +33,17 @@ namespace QuantLib {
         }
     }
 
-    Issuer::Issuer(const std::vector<std::pair<DefaultProbKey,
-                    Handle<DefaultProbabilityTermStructure> > >&
-                    probabilities,
-                   const DefaultEventSet& events
-        )
-    : probabilities_(probabilities), events_(events) { }
+    Issuer::Issuer(std::vector<std::pair<DefaultProbKey, Handle<DefaultProbabilityTermStructure> > >
+                       probabilities,
+                   DefaultEventSet events)
+    : probabilities_(std::move(probabilities)), events_(std::move(events)) {}
 
-    Issuer::Issuer(const std::vector<std::vector<
-                       boost::shared_ptr<DefaultType> > >& eventTypes,
+    Issuer::Issuer(const std::vector<std::vector<ext::shared_ptr<DefaultType> > >& eventTypes,
                    const std::vector<Currency>& currencies,
                    const std::vector<Seniority>& seniorities,
-                   const std::vector<Handle<
-                       DefaultProbabilityTermStructure> >& curves,
-                   const DefaultEventSet& events)
-    : events_(events) {
+                   const std::vector<Handle<DefaultProbabilityTermStructure> >& curves,
+                   DefaultEventSet events)
+    : events_(std::move(events)) {
         QL_REQUIRE((eventTypes.size() == curves.size()) &&
             (curves.size()== currencies.size()) &&
             (currencies.size() == seniorities.size()),
@@ -55,19 +52,19 @@ namespace QuantLib {
         for(Size i=0; i <eventTypes.size(); i++) {
             DefaultProbKey keytmp(eventTypes[i], currencies[i],
                 seniorities[i]);
-            probabilities_.push_back(std::make_pair(keytmp, curves[i]));
+            probabilities_.emplace_back(keytmp, curves[i]);
         }
     }
 
     const Handle<DefaultProbabilityTermStructure>&
         Issuer::defaultProbability(const DefaultProbKey& key) const {
-        for(Size i=0; i<probabilities_.size(); i++)
-            if(key == probabilities_[i].first)
-                return probabilities_[i].second;
+        for (const auto& probabilitie : probabilities_)
+            if (key == probabilitie.first)
+                return probabilitie.second;
         QL_FAIL("Probability curve not available.");
     }
 
-    boost::shared_ptr<DefaultEvent>
+    ext::shared_ptr<DefaultEvent>
     Issuer::defaultedBetween(const Date& start,
                              const Date& end,
                              const DefaultProbKey& contractKey,
@@ -75,34 +72,26 @@ namespace QuantLib {
                              ) const
     {
         // to do: the set is ordered, see how to use it to speed this up
-        for(DefaultEventSet::const_iterator itev = events_.begin();
-            // am i really speeding things up with the date comp?
-            itev != events_.end(); // && (*itev)->date() > start;
-            ++itev) {
-            if((*itev)->matchesDefaultKey(contractKey) &&
-                between(*itev, start, end, includeRefDate))
-                return *itev;
+        for (const auto& event : events_) {
+            if (event->matchesDefaultKey(contractKey) && between(event, start, end, includeRefDate))
+                return event;
         }
-        return boost::shared_ptr<DefaultEvent>();
+        return ext::shared_ptr<DefaultEvent>();
     }
 
 
-    std::vector<boost::shared_ptr<DefaultEvent> >
+    std::vector<ext::shared_ptr<DefaultEvent> >
     Issuer::defaultsBetween(const Date& start,
                             const Date& end,
                             const DefaultProbKey& contractKey,
                             bool includeRefDate
                             ) const
     {
-        std::vector<boost::shared_ptr<DefaultEvent> > defaults;
+        std::vector<ext::shared_ptr<DefaultEvent> > defaults;
         // to do: the set is ordered, see how to use it to speed this up
-        for(DefaultEventSet::const_iterator itev = events_.begin();
-            // am i really speeding things up with the date comp?
-            itev != events_.end(); // && (*itev)->date() > start;
-            ++itev) {
-            if((*itev)->matchesDefaultKey(contractKey) &&
-                between(*itev, start, end, includeRefDate))
-                defaults.push_back(*itev);
+        for (const auto& event : events_) {
+            if (event->matchesDefaultKey(contractKey) && between(event, start, end, includeRefDate))
+                defaults.push_back(event);
         }
         return defaults;
     }

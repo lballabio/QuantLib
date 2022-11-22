@@ -51,16 +51,12 @@ namespace QuantLib {
     /*! return the MidEquivalent price, i.e. the mid if available,
         or a suitable substitute if the proper mid is not available
     */
-    Real midEquivalent(const Real bid,
-                       const Real ask,
-                       const Real last,
-                       const Real close);
+    Real midEquivalent(Real bid, Real ask, Real last, Real close);
 
     /*! return the MidSafe price, i.e. the mid only if
         both bid and ask prices are available
     */
-    Real midSafe(const Real bid,
-                 const Real ask);
+    Real midSafe(Real bid, Real ask);
 
     //! interval price
     class IntervalPrice {
@@ -104,14 +100,24 @@ namespace QuantLib {
         Real open_, close_, high_, low_;
     };
 
-    
+    #ifdef QL_NULL_AS_FUNCTIONS
+
     template <>
-    class Null<IntervalPrice> 
+    inline IntervalPrice Null<IntervalPrice>() {
+        return {};
+    };
+
+    #else
+
+    template <>
+    class Null<IntervalPrice>
     {
       public:
-        Null() {}
-        operator IntervalPrice() const { return IntervalPrice(); }
+        Null() = default;
+        operator IntervalPrice() const { return {}; }
     };
+
+    #endif
 
 }
 

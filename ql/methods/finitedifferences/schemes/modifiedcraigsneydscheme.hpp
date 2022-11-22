@@ -47,9 +47,10 @@ namespace QuantLib {
         typedef traits::condition_type condition_type;
 
         // constructors
-        ModifiedCraigSneydScheme(Real theta, Real mu,
-            const boost::shared_ptr<FdmLinearOpComposite> & map,
-            const bc_set& bcSet = bc_set());
+        ModifiedCraigSneydScheme(Real theta,
+                                 Real mu,
+                                 ext::shared_ptr<FdmLinearOpComposite> map,
+                                 const bc_set& bcSet = bc_set());
 
         void step(array_type& a, Time t);
         void setStep(Time dt);
@@ -58,7 +59,7 @@ namespace QuantLib {
         Time dt_;
         const Real theta_;
         const Real mu_;
-        const boost::shared_ptr<FdmLinearOpComposite> map_;
+        const ext::shared_ptr<FdmLinearOpComposite> map_;
         const BoundaryConditionSchemeHelper bcSet_;
     };
 }

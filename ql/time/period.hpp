@@ -43,8 +43,7 @@ namespace QuantLib {
     */
     class Period {
       public:
-        Period()
-        : length_(0), units_(Days) {}
+        Period() = default;
         Period(Integer n, TimeUnit units)
         : length_(n), units_(units) {}
         explicit Period(Frequency f);
@@ -53,11 +52,13 @@ namespace QuantLib {
         Frequency frequency() const;
         Period& operator+=(const Period&);
         Period& operator-=(const Period&);
+        Period& operator*=(Integer);
         Period& operator/=(Integer);
         void normalize();
+        Period normalized() const;
       private:
-        Integer length_;
-        TimeUnit units_;
+        Integer length_ = 0;
+        TimeUnit units_ = Days;
     };
 
     /*! \relates Period */
@@ -109,13 +110,13 @@ namespace QuantLib {
     namespace detail {
 
         struct long_period_holder {
-            long_period_holder(const Period& p) : p(p) {}
+            explicit long_period_holder(const Period& p) : p(p) {}
             Period p;
         };
         std::ostream& operator<<(std::ostream&, const long_period_holder&);
 
         struct short_period_holder {
-            short_period_holder(Period p) : p(p) {}
+            explicit short_period_holder(Period p) : p(p) {}
             Period p;
         };
         std::ostream& operator<<(std::ostream&, const short_period_holder&);
@@ -136,27 +137,27 @@ namespace QuantLib {
 
     // inline definitions
 
+    inline Period Period::normalized() const {
+        Period p = *this;
+        p.normalize();
+        return p;
+    }
+
     template <typename T>
     inline Period operator*(T n, TimeUnit units) {
-        return Period(Integer(n),units);
+        return {Integer(n), units};
     }
 
     template <typename T>
     inline Period operator*(TimeUnit units, T n) {
-        return Period(Integer(n),units);
+        return {Integer(n), units};
     }
 
-    inline Period operator-(const Period& p) {
-        return Period(-p.length(),p.units());
-    }
+    inline Period operator-(const Period& p) { return {-p.length(), p.units()}; }
 
-    inline Period operator*(Integer n, const Period& p) {
-        return Period(n*p.length(),p.units());
-    }
+    inline Period operator*(Integer n, const Period& p) { return {n * p.length(), p.units()}; }
 
-    inline Period operator*(const Period& p, Integer n) {
-        return Period(n*p.length(),p.units());
-    }
+    inline Period operator*(const Period& p, Integer n) { return {n * p.length(), p.units()}; }
 
     inline bool operator==(const Period& p1, const Period& p2) {
         return !(p1 < p2 || p2 < p1);

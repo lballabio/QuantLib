@@ -172,7 +172,7 @@ namespace QuantLib {
                     e[k+1] += 1.0;
                 }
                 e[k] = -e[k];
-                if ((k+1 < m_) & (e[k] != 0.0)) {
+                if ((k+1 < m_) && (e[k] != 0.0)) {
 
                     // Apply the transformation.
 
@@ -249,7 +249,7 @@ namespace QuantLib {
         // generate V
 
         for (k = n_-1; k >= 0; --k) {
-            if ((k < nrt) & (e[k] != 0.0)) {
+            if ((k < nrt) && (e[k] != 0.0)) {
                 for (j = k+1; j < n_; ++j) {
                     Real t = 0;
                     for (i = k+1; i < n_; i++) {
@@ -306,8 +306,8 @@ namespace QuantLib {
                     if (ks == k) {
                         break;
                     }
-                    Real t = (ks != p ? std::fabs(e[ks]) : 0.) +
-                        (ks != k+1 ? std::fabs(e[ks-1]) : 0.);
+                    Real t = (ks != p ? Real(std::fabs(e[ks])) : 0.) +
+                        (ks != k+1 ? Real(std::fabs(e[ks-1])) : 0.);
                     if (std::fabs(s_[ks]) <= eps*t)  {
                         s_[ks] = 0.0;
                         break;
@@ -393,7 +393,7 @@ namespace QuantLib {
                   Real b = ((spm1 + sp)*(spm1 - sp) + epm1*epm1)/2.0;
                   Real c = (sp*epm1)*(sp*epm1);
                   Real shift = 0.0;
-                  if ((b != 0.0) | (c != 0.0)) {
+                  if ((b != 0.0) || (c != 0.0)) {
                       shift = std::sqrt(b*b + c);
                       if (b < 0.0) {
                           shift = -shift;
@@ -449,7 +449,7 @@ namespace QuantLib {
                   // Make the singular values positive.
 
                   if (s_[k] <= 0.0) {
-                      s_[k] = (s_[k] < 0.0 ? -s_[k] : 0.0);
+                      s_[k] = (s_[k] < 0.0 ? Real(-s_[k]) : 0.0);
                       for (i = 0; i <= pp; i++) {
                           V_[i][k] = -V_[i][k];
                       }
@@ -494,7 +494,7 @@ namespace QuantLib {
         return s_;
     }
 
-    Disposable<Matrix> SVD::S() const {
+    Matrix SVD::S() const {
         Matrix S(n_,n_);
         for (Size i = 0; i < Size(n_); i++) {
             for (Size j = 0; j < Size(n_); j++) {
@@ -514,26 +514,25 @@ namespace QuantLib {
     }
 
     Size SVD::rank() const {
-        Real eps = QL_EPSILON;
+        constexpr auto eps = QL_EPSILON;
         Real tol = m_*s_[0]*eps;
         Size r = 0;
-        for (Size i = 0; i < s_.size(); i++) {
-            if (s_[i] > tol) {
+        for (Real i : s_) {
+            if (i > tol) {
                 r++;
             }
         }
         return r;
     }
 
-    Disposable<Array> SVD::solveFor(const Array& b) const{
+    Array SVD::solveFor(const Array& b) const{
         Matrix W(n_, n_, 0.0);
         const Size numericalRank = this->rank();
         for (Size i=0; i<numericalRank; i++)
             W[i][i] = 1./s_[i];
 
         Matrix inverse = V()* W * transpose(U());
-        Array result = inverse * b;
-        return result;
+        return inverse * b;
     }
 
 }

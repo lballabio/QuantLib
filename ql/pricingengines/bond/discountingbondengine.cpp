@@ -18,15 +18,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/bond/discountingbondengine.hpp>
 #include <ql/cashflows/cashflows.hpp>
+#include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     DiscountingBondEngine::DiscountingBondEngine(
-                             const Handle<YieldTermStructure>& discountCurve,
-                             boost::optional<bool> includeSettlementDateFlows)
-    : discountCurve_(discountCurve),
+        Handle<YieldTermStructure> discountCurve,
+        const boost::optional<bool>& includeSettlementDateFlows)
+    : discountCurve_(std::move(discountCurve)),
       includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(discountCurve_);
     }
@@ -37,10 +38,9 @@ namespace QuantLib {
 
         results_.valuationDate = (*discountCurve_)->referenceDate();
 
-        bool includeRefDateFlows =
-            includeSettlementDateFlows_ ?
-            *includeSettlementDateFlows_ :
-            Settings::instance().includeReferenceDateEvents();
+        bool includeRefDateFlows = includeSettlementDateFlows_ ? // NOLINT(readability-implicit-bool-conversion)
+                                       *includeSettlementDateFlows_ :
+                                       Settings::instance().includeReferenceDateEvents();
 
         results_.value = CashFlows::npv(arguments_.cashflows,
                                         **discountCurve_,

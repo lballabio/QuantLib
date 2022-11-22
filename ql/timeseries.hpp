@@ -28,12 +28,14 @@
 #include <ql/time/date.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/errors.hpp>
+#include <ql/functional.hpp>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
-#include <boost/function.hpp>
 #include <boost/utility.hpp>
+#include <algorithm>
 #include <map>
 #include <vector>
+#include <type_traits>
 
 namespace QuantLib {
 
@@ -55,7 +57,7 @@ namespace QuantLib {
         mutable Container values_;
       public:
         /*! Default constructor */
-        TimeSeries() {}
+        TimeSeries() = default;
         /*! This constructor initializes the history with a set of
             values passed as two sequences, the first containing dates
             and the second containing corresponding values.
@@ -146,10 +148,8 @@ namespace QuantLib {
         // bidirectional_iterator_tag category.
         typedef typename boost::mpl::if_ <
             boost::mpl::or_ <
-                boost::is_same<iterator_category,
-                               std::bidirectional_iterator_tag>,
-                boost::is_base_of<std::bidirectional_iterator_tag,
-                                  iterator_category> >,
+                std::is_same<iterator_category, std::bidirectional_iterator_tag>,
+                std::is_base_of<std::bidirectional_iterator_tag, iterator_category> >,
             std::bidirectional_iterator_tag, 
             std::input_iterator_tag>::type enable_reverse;
 
@@ -173,9 +173,9 @@ namespace QuantLib {
 
       private:
         typedef typename Container::value_type container_value_type;
-        typedef boost::function1<Date, const container_value_type&>
+        typedef ext::function<Date(const container_value_type&)>
                                                               projection_time;
-        typedef boost::function1<T, const container_value_type&>
+        typedef ext::function<T(const container_value_type&)>
                                                              projection_value;
 
       public:

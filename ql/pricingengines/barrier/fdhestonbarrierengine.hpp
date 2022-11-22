@@ -51,20 +51,24 @@ namespace QuantLib {
                                     DividendBarrierOption::results> {
       public:
         // Constructor
-        FdHestonBarrierEngine(
-            const boost::shared_ptr<HestonModel>& model,
-            Size tGrid = 100, Size xGrid = 100, 
-            Size vGrid = 50, Size dampingSteps = 0,
+        explicit FdHestonBarrierEngine(
+            const ext::shared_ptr<HestonModel>& model,
+            Size tGrid = 100,
+            Size xGrid = 100,
+            Size vGrid = 50,
+            Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>());
+            ext::shared_ptr<LocalVolTermStructure> leverageFct =
+                ext::shared_ptr<LocalVolTermStructure>(),
+            Real mixingFactor = 1.0);
 
-        void calculate() const;
+        void calculate() const override;
 
       private:
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
-        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const Real mixingFactor_;
     };
 
 

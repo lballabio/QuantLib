@@ -26,6 +26,7 @@
 #define quantlib_gaussian_quadratures_hpp
 
 #include <ql/math/array.hpp>
+#include <ql/math/integrals/integral.hpp>
 #include <ql/math/integrals/gaussianorthogonalpolynomial.hpp>
 
 namespace QuantLib {
@@ -49,14 +50,23 @@ namespace QuantLib {
         GaussianQuadrature(Size n,
                            const GaussianOrthogonalPolynomial& p);
 
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnoexcept-type"
+#endif
+
         template <class F>
         Real operator()(const F& f) const {
             Real sum = 0.0;
-            for (Integer i = order()-1; i >= 0; --i) {
+            for (Integer i = Integer(order())-1; i >= 0; --i) {
                 sum += w_[i] * f(x_[i]);
             }
             return sum;
         }
+
+#if defined(__GNUC__) && (__GNUC__ >= 7)
+#pragma GCC diagnostic pop
+#endif
 
         Size order() const { return x_.size(); }
         const Array& weights() { return w_; }
@@ -80,7 +90,7 @@ namespace QuantLib {
     */
     class GaussLaguerreIntegration : public GaussianQuadrature {
       public:
-        GaussLaguerreIntegration(Size n, Real s = 0.0)
+        explicit GaussLaguerreIntegration(Size n, Real s = 0.0)
         : GaussianQuadrature(n, GaussLaguerrePolynomial(s)) {}
     };
 
@@ -97,7 +107,7 @@ namespace QuantLib {
     */
     class GaussHermiteIntegration : public GaussianQuadrature {
       public:
-        GaussHermiteIntegration(Size n, Real mu = 0.0)
+        explicit GaussHermiteIntegration(Size n, Real mu = 0.0)
         : GaussianQuadrature(n, GaussHermitePolynomial(mu)) {}
     };
 
@@ -129,7 +139,7 @@ namespace QuantLib {
     */
     class GaussHyperbolicIntegration : public GaussianQuadrature {
       public:
-        GaussHyperbolicIntegration(Size n)
+        explicit GaussHyperbolicIntegration(Size n)
         : GaussianQuadrature(n, GaussHyperbolicPolynomial()) {}
     };
 
@@ -145,7 +155,7 @@ namespace QuantLib {
     */
     class GaussLegendreIntegration : public GaussianQuadrature {
       public:
-        GaussLegendreIntegration(Size n)
+        explicit GaussLegendreIntegration(Size n)
         : GaussianQuadrature(n, GaussJacobiPolynomial(0.0, 0.0)) {}
     };
 
@@ -161,7 +171,7 @@ namespace QuantLib {
     */
     class GaussChebyshevIntegration : public GaussianQuadrature {
       public:
-        GaussChebyshevIntegration(Size n)
+        explicit GaussChebyshevIntegration(Size n)
         : GaussianQuadrature(n, GaussJacobiPolynomial(-0.5, -0.5)) {}
     };
 
@@ -177,7 +187,7 @@ namespace QuantLib {
     */
     class GaussChebyshev2ndIntegration : public GaussianQuadrature {
       public:
-        GaussChebyshev2ndIntegration(Size n)
+        explicit GaussChebyshev2ndIntegration(Size n)
       : GaussianQuadrature(n, GaussJacobiPolynomial(0.5, 0.5)) {}
     };
 
@@ -199,14 +209,40 @@ namespace QuantLib {
     };
 
 
+    namespace detail {
+        template <class Integration>
+        class GaussianQuadratureIntegrator: public Integrator {
+          public:
+            explicit GaussianQuadratureIntegrator(Size n);
+
+            ext::shared_ptr<Integration> getIntegration() const { return integration_; }
+
+          private:
+            Real integrate(const ext::function<Real (Real)>& f,
+                                           Real a,
+                                           Real b) const override;
+
+            const ext::shared_ptr<Integration> integration_;
+        };
+    }
+
+    typedef detail::GaussianQuadratureIntegrator<GaussLegendreIntegration>
+        GaussLegendreIntegrator;
+
+    typedef detail::GaussianQuadratureIntegrator<GaussChebyshevIntegration>
+        GaussChebyshevIntegrator;
+
+    typedef detail::GaussianQuadratureIntegrator<GaussChebyshev2ndIntegration>
+        GaussChebyshev2ndIntegrator;
+
     //! tabulated Gauss-Legendre quadratures
     class TabulatedGaussLegendre {
       public:
-        TabulatedGaussLegendre(Size n = 20) { order(n); }
+        explicit TabulatedGaussLegendre(Size n = 20) { order(n); }
         template <class F>
         Real operator() (const F& f) const {
-            QL_ASSERT(w_!=0, "Null weights" );
-            QL_ASSERT(x_!=0, "Null abscissas");
+            QL_ASSERT(w_ != nullptr, "Null weights");
+            QL_ASSERT(x_ != nullptr, "Null abscissas");
             Size startIdx;
             Real val;
 

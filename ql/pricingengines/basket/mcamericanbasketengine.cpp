@@ -18,45 +18,38 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/methods/montecarlo/lsmbasissystem.hpp>
-#include <boost/bind.hpp>
-
-using boost::bind;
+#include <ql/pricingengines/basket/mcamericanbasketengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AmericanBasketPathPricer::AmericanBasketPathPricer(
         Size assetNumber,
-        const boost::shared_ptr<Payoff>& payoff,
-        Size polynomOrder,
-        LsmBasisSystem::PolynomType polynomType)
-    : assetNumber_ (assetNumber),
-      payoff_      (payoff),
-      scalingValue_(1.0),
-      v_           (LsmBasisSystem::multiPathBasisSystem(assetNumber_,
-                                                         polynomOrder,
-                                                         polynomType)) {
-        QL_REQUIRE(   polynomType == LsmBasisSystem::Monomial
-                   || polynomType == LsmBasisSystem::Laguerre
-                   || polynomType == LsmBasisSystem::Hermite
-                   || polynomType == LsmBasisSystem::Hyperbolic
-                   || polynomType == LsmBasisSystem::Chebyshev2nd,
-                   "insufficient polynom type");
-        const boost::shared_ptr<BasketPayoff> basketPayoff
-            = boost::dynamic_pointer_cast<BasketPayoff>(payoff_);
+        ext::shared_ptr<Payoff> payoff,
+        Size polynomialOrder,
+        LsmBasisSystem::PolynomialType polynomialType)
+    : assetNumber_(assetNumber), payoff_(std::move(payoff)),
+      v_(LsmBasisSystem::multiPathBasisSystem(assetNumber_, polynomialOrder, polynomialType)) {
+        QL_REQUIRE(   polynomialType == LsmBasisSystem::Monomial
+                   || polynomialType == LsmBasisSystem::Laguerre
+                   || polynomialType == LsmBasisSystem::Hermite
+                   || polynomialType == LsmBasisSystem::Hyperbolic
+                   || polynomialType == LsmBasisSystem::Chebyshev2nd,
+                   "insufficient polynomial type");
+
+        const ext::shared_ptr<BasketPayoff> basketPayoff
+            = ext::dynamic_pointer_cast<BasketPayoff>(payoff_);
         QL_REQUIRE(basketPayoff, "payoff not a basket payoff");
 
-        const boost::shared_ptr<StrikedTypePayoff> strikePayoff
-            = boost::dynamic_pointer_cast<StrikedTypePayoff>(basketPayoff->basePayoff());
+        const ext::shared_ptr<StrikedTypePayoff> strikePayoff
+            = ext::dynamic_pointer_cast<StrikedTypePayoff>(basketPayoff->basePayoff());
 
-        if (strikePayoff) {
+        if (strikePayoff != nullptr) {
             scalingValue_/=strikePayoff->strike();
         }
 
-        v_.push_back(boost::bind(&AmericanBasketPathPricer::payoff,
-                                 this, _1));
+        v_.emplace_back([&](const Array& state) { return this->payoff(state); });
     }
 
     Array AmericanBasketPathPricer::state(const MultiPath& path,
@@ -72,8 +65,8 @@ namespace QuantLib {
     }
 
     Real AmericanBasketPathPricer::payoff(const Array& state) const {
-        const boost::shared_ptr<BasketPayoff> basketPayoff
-            = boost::dynamic_pointer_cast<BasketPayoff>(payoff_);
+        const ext::shared_ptr<BasketPayoff> basketPayoff
+            = ext::dynamic_pointer_cast<BasketPayoff>(payoff_);
         QL_REQUIRE(basketPayoff, "payoff not a basket payoff");
 
         Real value = basketPayoff->accumulate(state);
@@ -85,7 +78,7 @@ namespace QuantLib {
         return this->payoff(this->state(path, t));
     }
 
-    std::vector<boost::function1<Real, Array> >
+    std::vector<ext::function<Real(Array)> >
     AmericanBasketPathPricer::basisSystem() const {
         return v_;
     }

@@ -19,6 +19,8 @@
 */
 
 #include <ql/math/optimization/differentialevolution.hpp>
+#include <algorithm>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -31,21 +33,54 @@ namespace QuantLib {
             }
         };
 
+        template <class I>
+        void randomize(I begin, I end,
+                       const MersenneTwisterUniformRng& rng) {
+            Size n = static_cast<Size>(end-begin);
+            for (Size i=n-1; i>0; --i) {
+                std::swap(begin[i], begin[rng.nextInt32() % (i+1)]);
+            }
+        }
+
     }
 
     EndCriteria::Type DifferentialEvolution::minimize(Problem& p, const EndCriteria& endCriteria) {
         EndCriteria::Type ecType;
+        p.reset();
 
-        upperBound_ = p.constraint().upperBound(p.currentValue());
-        lowerBound_ = p.constraint().lowerBound(p.currentValue());
-        currGenSizeWeights_ = Array(configuration().populationMembers,
-                                    configuration().stepsizeWeight);
+        if (configuration().upperBound.empty()) {
+            upperBound_ = p.constraint().upperBound(p.currentValue());
+        } else {
+            QL_REQUIRE(configuration().upperBound.size() == p.currentValue().size(),
+                       "wrong upper bound size in differential evolution configuration");
+            upperBound_ = configuration().upperBound;
+        }
+        if (configuration().lowerBound.empty()) {
+            lowerBound_ = p.constraint().lowerBound(p.currentValue());
+        } else {
+            QL_REQUIRE(configuration().lowerBound.size() == p.currentValue().size(),
+                       "wrong lower bound size in differential evolution configuration");
+            lowerBound_ = configuration().lowerBound;
+        }
+        currGenSizeWeights_ =
+            Array(configuration().populationMembers, configuration().stepsizeWeight);
         currGenCrossover_ = Array(configuration().populationMembers,
                                   configuration().crossoverProbability);
 
-        std::vector<Candidate> population(configuration().populationMembers,
-                                          Candidate(p.currentValue().size()));
-        fillInitialPopulation(population, p);
+        std::vector<Candidate> population;
+        if (!configuration().initialPopulation.empty()) {
+            population.resize(configuration().initialPopulation.size());
+            for (Size i = 0; i < population.size(); ++i) {
+                population[i].values = configuration().initialPopulation[i];
+                QL_REQUIRE(population[i].values.size() == p.currentValue().size(),
+                           "wrong values size in initial population");
+                population[i].cost = p.costFunction().value(population[i].values);
+            }
+        } else {
+            population = std::vector<Candidate>(configuration().populationMembers,
+                                                Candidate(p.currentValue().size()));
+            fillInitialPopulation(population, p);
+        }
 
         std::partial_sort(population.begin(), population.begin() + 1, population.end(),
                           sort_by_cost());
@@ -55,7 +90,7 @@ namespace QuantLib {
 
         // main loop - calculate consecutive emerging populations
         while (!endCriteria.checkMaxIterations(iteration++, ecType)) {
-            calculateNextGeneration(population, p.costFunction());
+            calculateNextGeneration(population, p);
             std::partial_sort(population.begin(), population.begin() + 1, population.end(),
                               sort_by_cost());
             if (population.front().cost < bestMemberEver_.cost)
@@ -73,7 +108,7 @@ namespace QuantLib {
 
     void DifferentialEvolution::calculateNextGeneration(
                                      std::vector<Candidate>& population,
-                                     const CostFunction& costFunction) const {
+                                     Problem& p) const {
 
         std::vector<Candidate> mirrorPopulation;
         std::vector<Candidate> oldPopulation = population;
@@ -81,11 +116,11 @@ namespace QuantLib {
         switch (configuration().strategy) {
 
           case Rand1Standard: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop2 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
 
               for (Size popIter = 0; popIter < population.size(); popIter++) {
@@ -97,14 +132,14 @@ namespace QuantLib {
             break;
 
           case BestMemberWithJitter: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               Array jitter(population[0].values.size(), 0.0);
 
               for (Size popIter = 0; popIter < population.size(); popIter++) {
-                  for (Size jitterIter = 0; jitterIter < jitter.size(); jitterIter++) {
-                      jitter[jitterIter] = rng_.nextReal();
+                  for (Real& jitterIter : jitter) {
+                      jitterIter = rng_.nextReal();
                   }
                   population[popIter].values = bestMemberEver_.values
                       + (shuffledPop1[popIter].values - population[popIter].values)
@@ -116,9 +151,9 @@ namespace QuantLib {
             break;
 
           case CurrentToBest2Diffs: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
 
               for (Size popIter = 0; popIter < population.size(); popIter++) {
                   population[popIter].values = oldPopulation[popIter].values
@@ -132,16 +167,16 @@ namespace QuantLib {
             break;
 
           case Rand1DiffWithPerVectorDither: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop2 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
               Array FWeight = Array(population.front().values.size(), 0.0);
-              for (Size fwIter = 0; fwIter < FWeight.size(); fwIter++)
-                  FWeight[fwIter] = (1.0 - configuration().stepsizeWeight)
-                      * rng_.nextReal() + configuration().stepsizeWeight;
+              for (Real& fwIter : FWeight)
+                  fwIter = (1.0 - configuration().stepsizeWeight) * rng_.nextReal() +
+                           configuration().stepsizeWeight;
               for (Size popIter = 0; popIter < population.size(); popIter++) {
                   population[popIter].values = population[popIter].values
                       + FWeight * (shuffledPop1[popIter].values - shuffledPop2[popIter].values);
@@ -150,11 +185,11 @@ namespace QuantLib {
             break;
 
           case Rand1DiffWithDither: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop2 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
               Real FWeight = (1.0 - configuration().stepsizeWeight) * rng_.nextReal()
                   + configuration().stepsizeWeight;
@@ -166,11 +201,11 @@ namespace QuantLib {
             break;
 
           case EitherOrWithOptimalRecombination: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop2 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
               Real probFWeight = 0.5;
               if (rng_.nextReal() < probFWeight) {
@@ -192,11 +227,11 @@ namespace QuantLib {
             break;
 
           case Rand1SelfadaptiveWithRotation: {
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop1 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               std::vector<Candidate> shuffledPop2 = population;
-              std::random_shuffle(population.begin(), population.end());
+              randomize(population.begin(), population.end(), rng_);
               mirrorPopulation = shuffledPop1;
 
               adaptSizeWeights();
@@ -218,8 +253,7 @@ namespace QuantLib {
                     << Integer(configuration().strategy) << ")");
         }
         // in order to avoid unnecessary copying we use the same population object for mutants
-        crossover(oldPopulation, population, population, mirrorPopulation,
-                  costFunction);
+        crossover(oldPopulation, population, population, mirrorPopulation, p);
     }
 
     void DifferentialEvolution::crossover(
@@ -227,7 +261,7 @@ namespace QuantLib {
                                std::vector<Candidate>& population,
                                const std::vector<Candidate>& mutantPopulation,
                                const std::vector<Candidate>& mirrorPopulation,
-                               const CostFunction& costFunction) const {
+                               Problem& p) const {
 
         if (configuration().crossoverIsAdaptive) {
             adaptCrossover();
@@ -261,10 +295,13 @@ namespace QuantLib {
             }
             // evaluate objective function as soon as possible to avoid unnecessary loops
             try {
-                population[popIter].cost = costFunction.value(population[popIter].values);
+                population[popIter].cost = p.value(population[popIter].values);
             } catch (Error&) {
                 population[popIter].cost = QL_MAX_REAL;
             }
+            if (!std::isfinite(population[popIter].cost))
+                population[popIter].cost = QL_MAX_REAL;
+
         }
     }
 
@@ -312,7 +349,7 @@ namespace QuantLib {
     }
 
     Array DifferentialEvolution::rotateArray(Array a) const {
-        std::random_shuffle(a.begin(), a.end());
+        randomize(a.begin(), a.end(), rng_);
         return a;
     }
 
@@ -324,17 +361,17 @@ namespace QuantLib {
          // [=tau1] A Comparative Study on Numerical Benchmark
          // Problems." page 649 for reference
         Real sizeWeightChangeProb = 0.1;
-        for (Size coIter = 0;coIter < currGenSizeWeights_.size(); coIter++){
+        for (Real& currGenSizeWeight : currGenSizeWeights_) {
             if (rng_.nextReal() < sizeWeightChangeProb)
-                currGenSizeWeights_[coIter] = sizeWeightLowerBound + rng_.nextReal() * sizeWeightUpperBound;
+                currGenSizeWeight = sizeWeightLowerBound + rng_.nextReal() * sizeWeightUpperBound;
         }
     }
 
     void DifferentialEvolution::adaptCrossover() const {
         Real crossoverChangeProb = 0.1; // [=tau2]
-        for (Size coIter = 0;coIter < currGenCrossover_.size(); coIter++){
+        for (Real& coIter : currGenCrossover_) {
             if (rng_.nextReal() < crossoverChangeProb)
-                currGenCrossover_[coIter] = rng_.nextReal();
+                coIter = rng_.nextReal();
         }
     }
 
@@ -352,8 +389,9 @@ namespace QuantLib {
                 population[j].values[i] = l + (u-l)*rng_.nextReal();
             }
             population[j].cost = p.costFunction().value(population[j].values);
+            if (!std::isfinite(population[j].cost))
+                population[j].cost = QL_MAX_REAL;
         }
     }
 
 }
-

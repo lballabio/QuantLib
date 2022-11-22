@@ -23,8 +23,8 @@
 namespace QuantLib {
 
     LfmHullWhiteParameterization::LfmHullWhiteParameterization(
-        const boost::shared_ptr<LiborForwardModelProcess> & process,
-        const boost::shared_ptr<OptionletVolatilityStructure> & capletVol,
+        const ext::shared_ptr<LiborForwardModelProcess> & process,
+        const ext::shared_ptr<OptionletVolatilityStructure> & capletVol,
         const Matrix& correlation, Size factors)
     : LfmCovarianceParameterization(process->size(), factors),
       diffusion_  (size_-1, factors_),
@@ -50,17 +50,16 @@ namespace QuantLib {
             // "Reconstructing a valid correlation matrix from invalid data"
             // (<http://www.quarchome.org/correlationmatrix.pdf>)
             for (Size i=0; i < size_-1; ++i) {
+                Real p = std::sqrt(std::inner_product(
+                                     tmpSqrtCorr[i],tmpSqrtCorr[i]+factors_,
+                                     tmpSqrtCorr[i], Real(0.0)));
                 std::transform(
                     tmpSqrtCorr[i], tmpSqrtCorr[i]+factors_, sqrtCorr[i],
-                    std::bind2nd(std::divides<Real>(),
-                                 std::sqrt(std::inner_product(
-                                     tmpSqrtCorr[i],tmpSqrtCorr[i]+factors_,
-                                     tmpSqrtCorr[i], 0.0))));
+                               [=](Real x) -> Real { return x / p; });
             }
         }
 
         std::vector<Volatility> lambda;
-        const DayCounter dayCounter = process->index()->dayCounter();
         const std::vector<Time> fixingTimes = process->fixingTimes();
         const std::vector<Date> fixingDates = process->fixingDates();
 
@@ -94,8 +93,7 @@ namespace QuantLib {
     }
 
 
-    Disposable<Matrix> LfmHullWhiteParameterization::diffusion(
-                                                 Time t, const Array&) const {
+    Matrix LfmHullWhiteParameterization::diffusion(Time t, const Array&) const {
         Matrix tmp(size_, factors_, 0.0);
         const Size m = nextIndexReset(t);
 
@@ -107,8 +105,7 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Matrix> LfmHullWhiteParameterization::covariance(
-                                                 Time t, const Array&) const {
+    Matrix LfmHullWhiteParameterization::covariance(Time t, const Array&) const {
         Matrix tmp(size_, size_, 0.0);
         const Size m = nextIndexReset(t);
 
@@ -121,8 +118,7 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Matrix> LfmHullWhiteParameterization::integratedCovariance(
-                                                 Time t, const Array&) const {
+    Matrix LfmHullWhiteParameterization::integratedCovariance(Time t, const Array&) const {
 
         Matrix tmp(size_, size_, 0.0);
 

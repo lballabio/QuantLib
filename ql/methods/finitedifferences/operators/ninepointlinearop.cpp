@@ -27,7 +27,7 @@ namespace QuantLib {
 
     NinePointLinearOp::NinePointLinearOp(
         Size d0, Size d1,
-        const boost::shared_ptr<FdmMesher>& mesher)
+        const ext::shared_ptr<FdmMesher>& mesher)
     : d0_(d0), d1_(d1),
       i00_(new Size[mesher->layout()->size()]),
       i10_(new Size[mesher->layout()->size()]),
@@ -53,7 +53,7 @@ namespace QuantLib {
             && d1_ < mesher->layout()->dim().size(),
             "inconsistent derivative directions");
 
-        const boost::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> layout = mesher->layout();
         const FdmLinearOpIterator endIter = layout->end();
 
         for (FdmLinearOpIterator iter = layout->begin(); iter!=endIter; ++iter) {
@@ -110,28 +110,9 @@ namespace QuantLib {
         std::copy(m.a22_.get(), m.a22_.get()+size, a22_.get());
     }
 
-    NinePointLinearOp& NinePointLinearOp::operator=(
-        const NinePointLinearOp& m) {
-        NinePointLinearOp temp(m);
-        swap(temp);
-        return *this;
-    }
+    Array NinePointLinearOp::apply(const Array& u) const {
 
-    NinePointLinearOp& NinePointLinearOp::operator=(
-        const Disposable<NinePointLinearOp>& m) {
-        swap(const_cast<Disposable<NinePointLinearOp>&>(m));
-        return *this;
-    }
-
-    NinePointLinearOp::NinePointLinearOp(
-        const Disposable<NinePointLinearOp>& from) {
-        swap(const_cast<Disposable<NinePointLinearOp>&>(from));
-    }
-
-    Disposable<Array> NinePointLinearOp::apply(const Array& u)
-        const {
-
-        const boost::shared_ptr<FdmLinearOpLayout> index=mesher_->layout();
+        const ext::shared_ptr<FdmLinearOpLayout> index=mesher_->layout();
         QL_REQUIRE(u.size() == index->size(),"inconsistent length of r "
                     << u.size() << " vs " << index->size());
 
@@ -159,9 +140,8 @@ namespace QuantLib {
         return retVal;
     }
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-    Disposable<SparseMatrix> NinePointLinearOp::toMatrix() const {
-        const boost::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
+    SparseMatrix NinePointLinearOp::toMatrix() const {
+        const ext::shared_ptr<FdmLinearOpLayout> index = mesher_->layout();
         const Size n = index->size();
 
         SparseMatrix retVal(n, n, 9*n);
@@ -179,11 +159,9 @@ namespace QuantLib {
 
         return retVal;
     }
-#endif
 
 
-    Disposable<NinePointLinearOp>
-        NinePointLinearOp::mult(const Array & u) const {
+    NinePointLinearOp NinePointLinearOp::mult(const Array & u) const {
 
         NinePointLinearOp retVal(d0_, d1_, mesher_);
         const Size size = mesher_->layout()->size();

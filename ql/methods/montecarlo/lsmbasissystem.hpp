@@ -29,21 +29,29 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/math/array.hpp>
-#include <boost/function.hpp>
+#include <ql/functional.hpp>
 #include <vector>
 
 namespace QuantLib {
 
     class LsmBasisSystem {
       public:
-        enum PolynomType { Monomial, Laguerre, Hermite, Hyperbolic,
-                           Legendre, Chebyshev, Chebyshev2nd };
+        enum PolynomialType {
+            Monomial, Laguerre, Hermite, Hyperbolic,
+            Legendre, Chebyshev, Chebyshev2nd
+        };
 
-        static std::vector<boost::function1<Real, Real> >
-            pathBasisSystem(Size order, PolynomType polyType);
+        /*! \deprecated Renamed to PolynomialType.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED
+        typedef PolynomialType PolynomType;
 
-        static std::vector<boost::function1<Real, Array> >
-            multiPathBasisSystem(Size dim, Size order, PolynomType polyType);
+        static std::vector<ext::function<Real(Real)> >
+        pathBasisSystem(Size order, PolynomialType type);
+
+        static std::vector<ext::function<Real(Array)> >
+        multiPathBasisSystem(Size dim, Size order, PolynomialType type);
     };
 
 

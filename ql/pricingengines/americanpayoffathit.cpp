@@ -24,7 +24,7 @@ namespace QuantLib {
 
     AmericanPayoffAtHit::AmericanPayoffAtHit(
          Real spot, DiscountFactor discount, DiscountFactor dividendDiscount,
-         Real variance, const boost::shared_ptr<StrikedTypePayoff>& payoff)
+         Real variance, const ext::shared_ptr<StrikedTypePayoff>& payoff)
     : spot_(spot), discount_(discount), dividendDiscount_(dividendDiscount),
       variance_(variance) {
 
@@ -135,17 +135,17 @@ namespace QuantLib {
 
 
         // Binary Cash-Or-Nothing payoff?
-        boost::shared_ptr<CashOrNothingPayoff> coo =
-            boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
-        if (coo) {
+        ext::shared_ptr<CashOrNothingPayoff> coo =
+            ext::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
+        if (coo != nullptr) {
             K_ = coo->cashPayoff();
             DKDstrike_ = 0.0;
         }
 
         // Binary Asset-Or-Nothing payoff?
-        boost::shared_ptr<AssetOrNothingPayoff> aoo =
-            boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
-        if (aoo) {
+        ext::shared_ptr<AssetOrNothingPayoff> aoo =
+            ext::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
+        if (aoo != nullptr) {
             if (inTheMoney_) {
                 K_ = spot_;
                 DKDstrike_ = 0.0;
@@ -154,10 +154,6 @@ namespace QuantLib {
                 DKDstrike_ = 1.0;
             }
         }
-
-
-
-
     }
 
 

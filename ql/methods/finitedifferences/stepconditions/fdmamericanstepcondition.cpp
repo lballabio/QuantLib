@@ -21,18 +21,20 @@
 
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmamericanstepcondition.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     FdmAmericanStepCondition::FdmAmericanStepCondition(
-            const boost::shared_ptr<FdmMesher> & mesher,
-            const boost::shared_ptr<FdmInnerValueCalculator> & calculator)
-    : mesher_(mesher),
-      calculator_(calculator) {
-    }
+        ext::shared_ptr<FdmMesher> mesher, ext::shared_ptr<FdmInnerValueCalculator> calculator)
+    : mesher_(std::move(mesher)), calculator_(std::move(calculator)) {}
 
     void FdmAmericanStepCondition::applyTo(Array& a, Time t) const {
-        boost::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+        ext::shared_ptr<FdmLinearOpLayout> layout = mesher_->layout();
+
+        QL_REQUIRE(layout->size() == a.size(),
+                   "inconsistent array dimensions");
+
         const FdmLinearOpIterator endIter = layout->end();
 
         for (FdmLinearOpIterator iter = layout->begin(); iter != endIter;

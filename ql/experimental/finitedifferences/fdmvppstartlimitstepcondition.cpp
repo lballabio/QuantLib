@@ -21,7 +21,6 @@
 */
 
 #include <ql/math/array.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
 #include <ql/experimental/finitedifferences/fdmvppstartlimitstepcondition.hpp>
@@ -35,8 +34,8 @@ namespace QuantLib {
         const FdmVPPStepConditionParams& params,
         Size nStarts,
         const FdmVPPStepConditionMesher& mesh,
-        const boost::shared_ptr<FdmInnerValueCalculator>& gasPrice,
-        const boost::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice)
+        const ext::shared_ptr<FdmInnerValueCalculator>& gasPrice,
+        const ext::shared_ptr<FdmInnerValueCalculator>& sparkSpreadPrice)
     : FdmVPPStepCondition(params,
                           nStates(params.tMinUp, params.tMinDown, nStarts),
                           mesh, gasPrice, sparkSpreadPrice),
@@ -45,8 +44,9 @@ namespace QuantLib {
         QL_REQUIRE(tMinDown_ > 0, "minimum down time must be greater than one");
     }
 
-    Disposable<Array> FdmVPPStartLimitStepCondition::changeState(
+    Array FdmVPPStartLimitStepCondition::changeState(
         const Real gasPrice, const Array& state, Time) const {
+
         const Real startUpCost
                 = startUpFixCost_ + (gasPrice + fuelCostAddon_)*startUpFuel_;
 

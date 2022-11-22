@@ -26,6 +26,7 @@
 
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/processes/ornsteinuhlenbeckprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -44,11 +45,9 @@ namespace QuantLib {
         BlackKarasinski(const Handle<YieldTermStructure>& termStructure,
                         Real a = 0.1, Real sigma = 0.1);
 
-        boost::shared_ptr<ShortRateDynamics> dynamics() const {
-            QL_FAIL("no defined process for Black-Karasinski");
-        }
+        ext::shared_ptr<ShortRateDynamics> dynamics() const override;
 
-        boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
+        ext::shared_ptr<Lattice> tree(const TimeGrid& grid) const override;
 
       private:
         class Dynamics;
@@ -59,6 +58,7 @@ namespace QuantLib {
 
         Parameter& a_;
         Parameter& sigma_;
+        Parameter phi_;
     };
 
     //! Short-rate dynamics in the Black-Karasinski model
@@ -74,24 +74,20 @@ namespace QuantLib {
     class BlackKarasinski::Dynamics
         : public BlackKarasinski::ShortRateDynamics {
       public:
-        Dynamics(const Parameter& fitting, Real alpha, Real sigma)
-        : ShortRateDynamics(boost::shared_ptr<StochasticProcess1D>(
-                                 new OrnsteinUhlenbeckProcess(alpha, sigma))),
-          fitting_(fitting) {}
+        Dynamics(Parameter fitting, Real alpha, Real sigma)
+        : ShortRateDynamics(
+              ext::shared_ptr<StochasticProcess1D>(new OrnsteinUhlenbeckProcess(alpha, sigma))),
+          fitting_(std::move(fitting)) {}
 
-        Real variable(Time t, Rate r) const {
-            return std::log(r) - fitting_(t);
-        }
+        Real variable(Time t, Rate r) const override { return std::log(r) - fitting_(t); }
 
-        Real shortRate(Time t, Real x) const {
-            return std::exp(x + fitting_(t));
-        }
+        Real shortRate(Time t, Real x) const override { return std::exp(x + fitting_(t)); }
+
       private:
         Parameter fitting_;
     };
 
 }
-
 
 #endif
 

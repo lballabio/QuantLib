@@ -21,9 +21,9 @@
 
 namespace QuantLib {
 
-    void CompositeInstrument::add(
-           const boost::shared_ptr<Instrument>& instrument, Real multiplier) {
-        components_.push_back(std::make_pair(instrument,multiplier));
+    void CompositeInstrument::add(const ext::shared_ptr<Instrument>& instrument, Real multiplier) {
+        QL_REQUIRE(instrument, "null instrument provided");
+        components_.emplace_back(instrument, multiplier);
         registerWith(instrument);
         update();
         // When we ask for the NPV of an expired composite, the
@@ -38,13 +38,13 @@ namespace QuantLib {
     }
 
     void CompositeInstrument::subtract(
-           const boost::shared_ptr<Instrument>& instrument, Real multiplier) {
+           const ext::shared_ptr<Instrument>& instrument, Real multiplier) {
         add(instrument, -multiplier);
     }
 
     bool CompositeInstrument::isExpired() const {
-        for (const_iterator i=components_.begin(); i!=components_.end(); ++i) {
-            if (!i->first->isExpired())
+        for (const auto& component : components_) {
+            if (!component.first->isExpired())
                 return false;
         }
         return true;
@@ -52,9 +52,16 @@ namespace QuantLib {
 
     void CompositeInstrument::performCalculations() const {
         NPV_ = 0.0;
-        for (const_iterator i=components_.begin(); i!=components_.end(); ++i) {
-            NPV_ += i->second * i->first->NPV();
+        for (const auto& component : components_) {
+            NPV_ += component.second * component.first->NPV();
         }
+    }
+
+    void CompositeInstrument::deepUpdate() {
+        for (const_iterator i=components_.begin(); i!=components_.end(); ++i) {
+            i->first->deepUpdate();
+        }
+        update();
     }
 
 }

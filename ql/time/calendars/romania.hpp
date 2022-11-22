@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2010 StatPro Italia srl
  Copyright (C) 2015 Riccardo Barone
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,6 +42,7 @@ namespace QuantLib {
         <li>Labour Day, May 1st</li>
         <li>Pentecost with Monday (50th and 51st days after the 
             Othodox Easter)</li>
+        <li>Children's Day, June 1st (since 2017)</li>
         <li>St Marys Day, August 15th</li>
         <li>Feast of St Andrew, November 30th</li>
         <li>National Day, December 1st</li>
@@ -48,19 +50,30 @@ namespace QuantLib {
         <li>2nd Day of Christmas, December 26th</li>
         </ul>
         
+        Holidays for the Bucharest stock exchange
+        (data from <http://www.bvb.ro/Marketplace/TradingCalendar/index.aspx>):
+        all public holidays, plus a few one-off closing days (2014 only).
+
         \ingroup calendars
     */
     class Romania : public Calendar {
       private:
-        class Impl : public Calendar::OrthodoxImpl {
+        class PublicImpl : public Calendar::OrthodoxImpl {
           public:
-            std::string name() const { return "Romania"; }
-            bool isBusinessDay(const Date&) const;
+            std::string name() const override { return "Romania"; }
+            bool isBusinessDay(const Date&) const override;
+        };
+        class BVBImpl : public PublicImpl {
+          public:
+            std::string name() const override { return "Bucharest stock exchange"; }
+            bool isBusinessDay(const Date&) const override;
         };
       public:
-        Romania();
+        enum Market { Public,     //!< Public holidays
+                      BVB         //!< Bucharest stock-exchange
+        };
+        Romania(Market market = BVB);
     };
-
 
 }
 

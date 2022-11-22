@@ -18,49 +18,71 @@
  */
 
 
-
-#include <ql/cashflows/inflationcoupon.hpp>
 #include <ql/cashflows/cashflowvectors.hpp>
-#include <ql/time/daycounters/thirty360.hpp>
-
 #include <ql/cashflows/cpicoupon.hpp>
 #include <ql/cashflows/cpicouponpricer.hpp>
+#include <ql/cashflows/inflationcoupon.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
+#include <utility>
 
 
 namespace QuantLib {
 
-    CPICoupon::
-    CPICoupon(
-              Real baseCPI, // user provided
-              const Date& paymentDate,
-              Real nominal,
-              const Date& startDate,
-              const Date& endDate,
-              Natural fixingDays,
-              const boost::shared_ptr<ZeroInflationIndex>& zeroIndex,
-              const Period& observationLag,
-              CPI::InterpolationType observationInterpolation,
-              const DayCounter& dayCounter,
-              Real fixedRate, // aka gearing
-              Spread spread,
-              const Date& refPeriodStart,
-              const Date& refPeriodEnd,
-              const Date& exCouponDate)
+    CPICoupon::CPICoupon(Real baseCPI,
+                         const Date& paymentDate,
+                         Real nominal,
+                         const Date& startDate,
+                         const Date& endDate,
+                         const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
+                         const Period& observationLag,
+                         CPI::InterpolationType observationInterpolation,
+                         const DayCounter& dayCounter,
+                         Real fixedRate,
+                         Spread spread,
+                         const Date& refPeriodStart,
+                         const Date& refPeriodEnd,
+                         const Date& exCouponDate)
+    : InflationCoupon(paymentDate, nominal, startDate, endDate,
+                      0, zeroIndex, observationLag,
+                      dayCounter, refPeriodStart, refPeriodEnd, exCouponDate),
+      baseCPI_(baseCPI), fixedRate_(fixedRate), spread_(spread),
+      observationInterpolation_(observationInterpolation) {
+
+        QL_REQUIRE(zeroIndex, "no index provided");
+        QL_REQUIRE(std::fabs(baseCPI_) > 1e-16,
+                   "|baseCPI_| < 1e-16, future divide-by-zero problem");
+    }
+
+    CPICoupon::CPICoupon(Real baseCPI,
+                         const Date& paymentDate,
+                         Real nominal,
+                         const Date& startDate,
+                         const Date& endDate,
+                         Natural fixingDays,
+                         const ext::shared_ptr<ZeroInflationIndex>& zeroIndex,
+                         const Period& observationLag,
+                         CPI::InterpolationType observationInterpolation,
+                         const DayCounter& dayCounter,
+                         Real fixedRate,
+                         Spread spread,
+                         const Date& refPeriodStart,
+                         const Date& refPeriodEnd,
+                         const Date& exCouponDate)
     : InflationCoupon(paymentDate, nominal, startDate, endDate,
                       fixingDays, zeroIndex, observationLag,
                       dayCounter, refPeriodStart, refPeriodEnd, exCouponDate),
-        baseCPI_(baseCPI), fixedRate_(fixedRate), spread_(spread),
-        observationInterpolation_(observationInterpolation) {
+      baseCPI_(baseCPI), fixedRate_(fixedRate), spread_(spread),
+      observationInterpolation_(observationInterpolation) {
 
-            QL_REQUIRE(std::fabs(baseCPI_) > 1e-16,
-                       "|baseCPI_| < 1e-16, future divide-by-zero problem");
-        }
+        QL_REQUIRE(zeroIndex, "no index provided");
+        QL_REQUIRE(std::fabs(baseCPI_) > 1e-16,
+                   "|baseCPI_| < 1e-16, future divide-by-zero problem");
+    }
 
 
     void CPICoupon::accept(AcyclicVisitor& v) {
-        Visitor<CPICoupon>* v1 =
-        dynamic_cast<Visitor<CPICoupon>*>(&v);
-        if (v1 != 0)
+        auto* v1 = dynamic_cast<Visitor<CPICoupon>*>(&v);
+        if (v1 != nullptr)
             v1->visit(*this);
         else
             InflationCoupon::accept(v);
@@ -68,9 +90,9 @@ namespace QuantLib {
 
 
     bool CPICoupon::checkPricerImpl(
-            const boost::shared_ptr<InflationCouponPricer>&pricer) const {
+            const ext::shared_ptr<InflationCouponPricer>&pricer) const {
         return static_cast<bool>(
-                        boost::dynamic_pointer_cast<CPICouponPricer>(pricer));
+                        ext::dynamic_pointer_cast<CPICouponPricer>(pricer));
     }
 
 
@@ -103,10 +125,51 @@ namespace QuantLib {
 
 
 
+    CPICashFlow::CPICashFlow(Real notional,
+                             const ext::shared_ptr<ZeroInflationIndex>& index,
+                             const Date& baseDate,
+                             Real baseFixing,
+                             const Date& observationDate,
+                             const Period& observationLag,
+                             CPI::InterpolationType interpolation,
+                             const Date& paymentDate,
+                             bool growthOnly)
+    : IndexedCashFlow(notional, index, baseDate, observationDate - observationLag, paymentDate, growthOnly),
+      baseFixing_(baseFixing), observationDate_(observationDate), observationLag_(observationLag),
+      interpolation_(interpolation), frequency_(index ? index->frequency() : NoFrequency) {
+        QL_REQUIRE(index, "no index provided");
+        QL_REQUIRE(std::fabs(baseFixing_)>1e-16,
+                   "|baseFixing|<1e-16, future divide-by-zero error");
+    }
+
+    CPICashFlow::CPICashFlow(Real notional,
+                             const ext::shared_ptr<ZeroInflationIndex>& index,
+                             const Date& baseDate,
+                             Real baseFixing,
+                             const Date& fixingDate,
+                             const Date& paymentDate,
+                             bool growthOnly,
+                             CPI::InterpolationType interpolation,
+                             const Frequency& frequency)
+    : IndexedCashFlow(notional, index, baseDate, fixingDate,
+                      paymentDate, growthOnly),
+      baseFixing_(baseFixing), interpolation_(interpolation),
+      frequency_(frequency) {
+        QL_REQUIRE(std::fabs(baseFixing_)>1e-16,
+                   "|baseFixing|<1e-16, future divide-by-zero error");
+        if (interpolation_ != CPI::AsIndex) {
+            QL_REQUIRE(frequency_ != QuantLib::NoFrequency,
+                       "non-index interpolation w/o frequency");
+        }
+    }
 
     Date CPICashFlow::baseDate() const {
-        // you may not have a valid date
-        QL_FAIL("no base date specified");
+        Date base = IndexedCashFlow::baseDate();
+        if (base != Date()) {
+            return base;
+        } else {
+            QL_FAIL("no base date specified");
+        }
     }
 
     Real CPICashFlow::baseFixing() const {
@@ -117,30 +180,26 @@ namespace QuantLib {
         Real I0 = baseFixing();
         Real I1;
 
-        // what interpolation do we use? Index / flat / linear
-        if (interpolation() == CPI::AsIndex ) {
-            I1 = index()->fixing(fixingDate());
+        if (observationDate_ != Date()) {
+            I1 = CPI::laggedFixing(cpiIndex(), observationDate_, observationLag_, interpolation_);
         } else {
-            // work out what it should be
-            //std::cout << fixingDate() << " and " << frequency() << std::endl;
-            //std::pair<Date,Date> dd = inflationPeriod(fixingDate(), frequency());
-            //std::cout << fixingDate() << " and " << dd.first << " " << dd.second << std::endl;
-            // work out what it should be
-            std::pair<Date,Date> dd = inflationPeriod(fixingDate(), frequency());
-            Real indexStart = index()->fixing(dd.first);
-            if (interpolation() == CPI::Linear) {
-                Real indexEnd = index()->fixing(dd.second+Period(1,Days));
-                // linear interpolation
-                //std::cout << indexStart << " and " << indexEnd << std::endl;
-                I1 = indexStart + (indexEnd - indexStart) * (fixingDate() - dd.first)
-                / ( (dd.second+Period(1,Days)) - dd.first); // can't get to next period's value within current period
+            // we get to this branch when the deprecated constructor was used; it will be phased out
+            if (interpolation() == CPI::AsIndex ) {
+                I1 = index()->fixing(fixingDate());
             } else {
-                // no interpolation, i.e. flat = constant, so use start-of-period value
-                I1 = indexStart;
+                std::pair<Date,Date> dd = inflationPeriod(fixingDate(), frequency());
+                Real indexStart = index()->fixing(dd.first);
+                if (interpolation() == CPI::Linear) {
+                    Real indexEnd = index()->fixing(dd.second+Period(1,Days));
+                    // linear interpolation
+                    I1 = indexStart + (indexEnd - indexStart) * (fixingDate() - dd.first)
+                        / ( (dd.second+Period(1,Days)) - dd.first);
+                } else {
+                    // no interpolation, i.e. flat = constant, so use start-of-period value
+                    I1 = indexStart;
+                }
             }
-
         }
-
 
         if (growthOnly())
             return notional() * (I1 / I0 - 1.0);
@@ -149,18 +208,15 @@ namespace QuantLib {
     }
 
 
-    CPILeg::CPILeg(const Schedule& schedule, const boost::shared_ptr<ZeroInflationIndex>& index,
-                   const Real baseCPI, const Period& observationLag) :
-    schedule_(schedule), index_(index),
-    baseCPI_(baseCPI), observationLag_(observationLag),
-    paymentDayCounter_(Thirty360()),
-    paymentAdjustment_(ModifiedFollowing),
-    paymentCalendar_(schedule.calendar()),
-    fixingDays_(std::vector<Natural>(1,0)),
-    observationInterpolation_(CPI::AsIndex),
-    subtractInflationNominal_(true),
-    spreads_(std::vector<Real>(1,0))
-    {}
+    CPILeg::CPILeg(const Schedule& schedule,
+                   ext::shared_ptr<ZeroInflationIndex> index,
+                   const Real baseCPI,
+                   const Period& observationLag)
+    : schedule_(schedule), index_(std::move(index)), baseCPI_(baseCPI),
+      observationLag_(observationLag), paymentDayCounter_(Thirty360(Thirty360::BondBasis)),
+      paymentCalendar_(schedule.calendar()),
+
+      spreads_(std::vector<Real>(1, 0)) {}
 
 
     CPILeg& CPILeg::withObservationInterpolation(CPI::InterpolationType interp) {
@@ -210,12 +266,10 @@ namespace QuantLib {
     }
 
     CPILeg& CPILeg::withFixingDays(Natural fixingDays) {
-        fixingDays_ = std::vector<Natural>(1,fixingDays);
         return *this;
     }
 
     CPILeg& CPILeg::withFixingDays(const std::vector<Natural>& fixingDays) {
-        fixingDays_ = fixingDays;
         return *this;
     }
 
@@ -288,44 +342,32 @@ namespace QuantLib {
                                                                 exCouponEndOfMonth_);
                 }
 
-                if (i==0   && !schedule_.isRegular(i+1)) {
+                if (i==0   && schedule_.hasIsRegular() && !schedule_.isRegular(i+1)) {
                     BusinessDayConvention bdc = schedule_.businessDayConvention();
                     refStart = schedule_.calendar().adjust(end - schedule_.tenor(), bdc);
                 }
-                if (i==n-1 && !schedule_.isRegular(i+1)) {
+                if (i==n-1 && schedule_.hasIsRegular() && !schedule_.isRegular(i+1)) {
                     BusinessDayConvention bdc = schedule_.businessDayConvention();
                     refEnd = schedule_.calendar().adjust(start + schedule_.tenor(), bdc);
                 }
                 if (detail::get(fixedRates_, i, 1.0) == 0.0) { // fixed coupon
-                    leg.push_back(boost::shared_ptr<CashFlow>
-                                  (new FixedRateCoupon
+                    leg.push_back(ext::make_shared<FixedRateCoupon>
                                    (paymentDate, detail::get(notionals_, i, 0.0),
                                     detail::effectiveFixedRate(spreads_,caps_,floors_,i),
-                                    paymentDayCounter_, start, end, refStart, refEnd, exCouponDate)));
+                                    paymentDayCounter_, start, end, refStart, refEnd, exCouponDate));
                 } else { // zero inflation coupon
                     if (detail::noOption(caps_, floors_, i)) { // just swaplet
-                        boost::shared_ptr<CPICoupon> coup;
-
-                        coup = boost::shared_ptr<CPICoupon>
-                            (new CPICoupon(baseCPI_,    // all have same base for ratio
+                        leg.push_back(ext::make_shared<CPICoupon>
+                                    (baseCPI_,    // all have same base for ratio
                                      paymentDate,
                                      detail::get(notionals_, i, 0.0),
                                      start, end,
-                                     detail::get(fixingDays_, i, 0.0),
                                      index_, observationLag_,
                                      observationInterpolation_,
                                      paymentDayCounter_,
                                      detail::get(fixedRates_, i, 0.0),
                                      detail::get(spreads_, i, 0.0),
                                      refStart, refEnd, exCouponDate));
-
-                        // in this case you can set a pricer
-                        // straight away because it only provides computation - not data
-                        boost::shared_ptr<CPICouponPricer> pricer
-                            (new CPICouponPricer);
-                        coup->setPricer(pricer);
-                        leg.push_back(boost::dynamic_pointer_cast<CashFlow>(coup));
-
                     } else  {     // cap/floorlet
                         QL_FAIL("caps/floors on CPI coupons not implemented.");
                     }
@@ -335,24 +377,17 @@ namespace QuantLib {
 
         // in CPI legs you always have a notional flow of some sort
         Date paymentDate = paymentCalendar_.adjust(schedule_.date(n), paymentAdjustment_);
-        Date fixingDate = paymentDate - observationLag_;
-        boost::shared_ptr<CashFlow> xnl(new CPICashFlow
+        leg.push_back(ext::make_shared<CPICashFlow>
                           (detail::get(notionals_, n, 0.0), index_,
-                           Date(), // is fake, i.e. you do not have one
-                           baseCPI_, fixingDate, paymentDate,
-                           subtractInflationNominal_, observationInterpolation_,
-                           index_->frequency())
-                         );
-        leg.push_back(xnl);
+                           Date(), baseCPI_, // no base date provided
+                           schedule_.date(n), observationLag_, observationInterpolation_,
+                           paymentDate, subtractInflationNominal_));
 
+        // no caps and floors here, so this is enough
+        setCouponPricer(leg, ext::make_shared<CPICouponPricer>());
 
         return leg;
     }
 
-
-
-
-
-
-} // namespace RiskLib
+}
 

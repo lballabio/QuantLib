@@ -18,25 +18,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
+#include <ql/exercise.hpp>
+#include <ql/math/comparison.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/comparison.hpp>
-#include <ql/exercise.hpp>
+#include <ql/pricingengines/vanilla/baroneadesiwhaleyengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     BaroneAdesiWhaleyApproximationEngine::BaroneAdesiWhaleyApproximationEngine(
-              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
 
     // critical commodity price
     Real BaroneAdesiWhaleyApproximationEngine::criticalPrice(
-        const boost::shared_ptr<StrikedTypePayoff>& payoff,
+        const ext::shared_ptr<StrikedTypePayoff>& payoff,
         DiscountFactor riskFreeDiscount,
         DiscountFactor dividendDiscount,
         Real variance, Real tolerance) {
@@ -75,8 +76,8 @@ namespace QuantLib {
             std::sqrt(variance);
         CumulativeNormalDistribution cumNormalDist;
         Real K = (!close(riskFreeDiscount, 1.0, 1000))
-                ? -2.0*std::log(riskFreeDiscount)
-                   / (variance*(1.0-riskFreeDiscount))
+                ? Real(-2.0*std::log(riskFreeDiscount)
+                   / (variance*(1.0-riskFreeDiscount)))
                  : 2.0/variance;
         Real temp = blackFormula(payoff->optionType(), payoff->strike(),
                 forwardSi, std::sqrt(variance))*riskFreeDiscount;
@@ -136,14 +137,14 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American Option");
 
-        boost::shared_ptr<AmericanExercise> ex =
-            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        ext::shared_ptr<AmericanExercise> ex =
+            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(!ex->payoffAtExpiry(),
                    "payoff at expiry not handled");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real variance = process_->blackVolatility()->blackVariance(
@@ -197,8 +198,8 @@ namespace QuantLib {
                 /std::sqrt(variance);
             Real n = 2.0*std::log(dividendDiscount/riskFreeDiscount)/variance;
             Real K = (!close(riskFreeDiscount, 1.0, 1000))
-                    ? -2.0*std::log(riskFreeDiscount)
-                       / (variance*(1.0-riskFreeDiscount))
+                    ? Real(-2.0*std::log(riskFreeDiscount)
+                       / (variance*(1.0-riskFreeDiscount)))
                      : 2.0/variance;
             Real Q, a;
             switch (payoff->optionType()) {

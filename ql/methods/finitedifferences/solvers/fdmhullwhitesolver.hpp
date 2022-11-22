@@ -35,22 +35,21 @@ namespace QuantLib {
 
     class FdmHullWhiteSolver : public LazyObject {
       public:
-        FdmHullWhiteSolver(
-            const Handle<HullWhite>& model,
-            const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+        FdmHullWhiteSolver(Handle<HullWhite> model,
+                           FdmSolverDesc solverDesc,
+                           const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         Real valueAt(Real r) const;
 
       protected:
-        void performCalculations() const;
+        void performCalculations() const override;
 
       private:
         const Handle<HullWhite> model_;
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
 
-        mutable boost::shared_ptr<Fdm1DimSolver> solver_;
+        mutable ext::shared_ptr<Fdm1DimSolver> solver_;
     };
 }
 

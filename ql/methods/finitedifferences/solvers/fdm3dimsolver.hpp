@@ -38,9 +38,9 @@ namespace QuantLib {
       public:
         Fdm3DimSolver(const FdmSolverDesc& solverDesc,
                       const FdmSchemeDesc& schemeDesc,
-                      const boost::shared_ptr<FdmLinearOpComposite>& op);
+                      ext::shared_ptr<FdmLinearOpComposite> op);
 
-        void performCalculations() const;
+        void performCalculations() const override;
 
         Real interpolateAt(Real x, Real y, Rate z) const;
         Real thetaAt(Real x, Real y, Rate z) const;
@@ -48,14 +48,14 @@ namespace QuantLib {
       private:
         const FdmSolverDesc solverDesc_;
         const FdmSchemeDesc schemeDesc_;
-        const boost::shared_ptr<FdmLinearOpComposite> op_;
+        const ext::shared_ptr<FdmLinearOpComposite> op_;
 
-        const boost::shared_ptr<FdmSnapshotCondition> thetaCondition_;
-        const boost::shared_ptr<FdmStepConditionComposite> conditions_;
+        const ext::shared_ptr<FdmSnapshotCondition> thetaCondition_;
+        const ext::shared_ptr<FdmStepConditionComposite> conditions_;
 
         std::vector<Real> x_, y_, z_, initialValues_;
         mutable std::vector<Matrix> resultValues_;
-        mutable std::vector<boost::shared_ptr<BicubicSpline> > interpolation_;
+        mutable std::vector<ext::shared_ptr<BicubicSpline> > interpolation_;
     };
 }
 

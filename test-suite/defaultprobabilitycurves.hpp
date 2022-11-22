@@ -36,6 +36,7 @@ class DefaultProbabilityCurveTest {
     static void testLogLinearSurvivalConsistency();
     static void testSingleInstrumentBootstrap();
     static void testUpfrontBootstrap();
+    static void testIterativeBootstrapRetries();
     static boost::unit_test_framework::test_suite* suite();
 };
 

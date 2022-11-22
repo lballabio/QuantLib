@@ -28,7 +28,10 @@
 #include <ql/errors.hpp>
 #include <ql/math/comparison.hpp>
 #include <vector>
+#include <algorithm>
+#include <iterator>
 #include <numeric>
+#include <cmath>
 
 namespace QuantLib {
 
@@ -41,7 +44,7 @@ namespace QuantLib {
       public:
         //! \name Constructors
         //@{
-        TimeGrid() {}
+        TimeGrid() = default;
         //! Regularly spaced time-grid
         TimeGrid(Time end, Size steps);
         //! Time grid with mandatory time points
@@ -51,15 +54,15 @@ namespace QuantLib {
         template <class Iterator>
         TimeGrid(Iterator begin, Iterator end)
         : mandatoryTimes_(begin, end) {
+            QL_REQUIRE(begin != end, "empty time sequence");
             std::sort(mandatoryTimes_.begin(),mandatoryTimes_.end());
             // We seem to assume that the grid begins at 0.
             // Let's enforce the assumption for the time being
             // (even though I'm not sure that I agree.)
             QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
                        "negative times not allowed");
-            std::vector<Time>::iterator e =
-                std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end(),
-                            std::ptr_fun(close_enough));
+            auto e = std::unique(mandatoryTimes_.begin(), mandatoryTimes_.end(),
+                                 static_cast<bool (*)(Real, Real)>(close_enough));
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
             if (mandatoryTimes_[0] > 0.0)
@@ -68,6 +71,7 @@ namespace QuantLib {
             times_.insert(times_.end(),
                           mandatoryTimes_.begin(), mandatoryTimes_.end());
 
+            dt_.reserve(times_.size()-1);
             std::adjacent_difference(times_.begin()+1,times_.end(),
                                      std::back_inserter(dt_));
 
@@ -81,15 +85,15 @@ namespace QuantLib {
         template <class Iterator>
         TimeGrid(Iterator begin, Iterator end, Size steps)
         : mandatoryTimes_(begin, end) {
+            QL_REQUIRE(begin != end, "empty time sequence");
             std::sort(mandatoryTimes_.begin(),mandatoryTimes_.end());
             // We seem to assume that the grid begins at 0.
             // Let's enforce the assumption for the time being
             // (even though I'm not sure that I agree.)
             QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
                        "negative times not allowed");
-            std::vector<Time>::iterator e =
-                std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end(),
-                            std::ptr_fun(close_enough));
+            auto e = std::unique(mandatoryTimes_.begin(), mandatoryTimes_.end(),
+                                 static_cast<bool (*)(Real, Real)>(close_enough));
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
             Time last = mandatoryTimes_.back();
@@ -116,21 +120,23 @@ namespace QuantLib {
                                                    ++t) {
                 Time periodEnd = *t;
                 if (periodEnd != 0.0) {
-                    // the nearest integer
-                    Size nSteps = Size((periodEnd - periodBegin)/dtMax+0.5);
-                    // at least one time step!
-                    nSteps = (nSteps!=0 ? nSteps : 1);
+                    // the nearest integer, at least 1
+                    Size nSteps = std::max(Size(std::lround((periodEnd - periodBegin)/dtMax)), Size(1));
                     Time dt = (periodEnd - periodBegin)/nSteps;
-                    times_.reserve(nSteps);
                     for (Size n=1; n<=nSteps; ++n)
                         times_.push_back(periodBegin + n*dt);
                 }
                 periodBegin = periodEnd;
             }
 
+            dt_.reserve(times_.size()-1);
             std::adjacent_difference(times_.begin()+1,times_.end(),
                                      std::back_inserter(dt_));
         }
+        TimeGrid(std::initializer_list<Time> times)
+        : TimeGrid(times.begin(), times.end()) {}
+        TimeGrid(std::initializer_list<Time> times, Size steps)
+        : TimeGrid(times.begin(), times.end(), steps) {}
         //@}
         //! \name Time grid interface
         //@{

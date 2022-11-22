@@ -17,15 +17,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/exercise.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticDividendEuropeanEngine::AnalyticDividendEuropeanEngine(
-              const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
@@ -34,18 +35,24 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Date settlementDate = process_->riskFreeRate()->referenceDate();
         Real riskless = 0.0;
         Size i;
-        for (i=0; i<arguments_.cashFlow.size(); i++)
-            if (arguments_.cashFlow[i]->date() >= settlementDate)
+        for (i=0; i<arguments_.cashFlow.size(); i++) {
+            const Date cashFlowDate = arguments_.cashFlow[i]->date();
+
+            if (   cashFlowDate >= settlementDate
+                && cashFlowDate <= arguments_.exercise->lastDate()) {
+
                 riskless += arguments_.cashFlow[i]->amount() *
-                    process_->riskFreeRate()->discount(
-                                              arguments_.cashFlow[i]->date());
+                    process_->riskFreeRate()->discount(cashFlowDate) /
+                    process_->dividendYield()->discount(cashFlowDate);
+            }
+        }
 
         Real spot = process_->stateVariable()->value() - riskless;
         QL_REQUIRE(spot > 0.0,
@@ -70,7 +77,8 @@ namespace QuantLib {
         results_.delta = black.delta(spot);
         results_.gamma = black.gamma(spot);
 
-        DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
+        DayCounter rfdc = process_->riskFreeRate()->dayCounter();
+        DayCounter dydc = process_->dividendYield()->dayCounter();
         DayCounter voldc = process_->blackVolatility()->dayCounter();
         Time t = voldc.yearFraction(
                                  process_->blackVolatility()->referenceDate(),
@@ -80,13 +88,20 @@ namespace QuantLib {
         Real delta_theta = 0.0, delta_rho = 0.0;
         for (i = 0; i < arguments_.cashFlow.size(); i++) {
             Date d = arguments_.cashFlow[i]->date();
-            if (d >= settlementDate) {
+
+            if (   d >= settlementDate
+                && d <= arguments_.exercise->lastDate()) {
+
                 delta_theta -= arguments_.cashFlow[i]->amount() *
-                  process_->riskFreeRate()->zeroRate(d,rfdc,Continuous,Annual)*
-                  process_->riskFreeRate()->discount(d);
+                  (  process_->riskFreeRate()->zeroRate(d,rfdc,Continuous,Annual).rate()
+                   - process_->dividendYield()->zeroRate(d,dydc,Continuous,Annual).rate()) *
+                  process_->riskFreeRate()->discount(d) /
+                  process_->dividendYield()->discount(d);
+
                 Time t = process_->time(d);
                 delta_rho += arguments_.cashFlow[i]->amount() * t *
-                             process_->riskFreeRate()->discount(t);
+                             process_->riskFreeRate()->discount(t) /
+                             process_->dividendYield()->discount(t);
             }
         }
         t = process_->time(arguments_.exercise->lastDate());

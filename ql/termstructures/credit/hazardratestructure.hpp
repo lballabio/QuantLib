@@ -54,20 +54,20 @@ namespace QuantLib {
         //@{
         HazardRateStructure(
             const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         HazardRateStructure(
             const Date& referenceDate,
             const Calendar& cal = Calendar(),
             const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         HazardRateStructure(
             Natural settlementDays,
             const Calendar& cal,
             const DayCounter& dayCounter = DayCounter(),
-            const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-            const std::vector<Date>& jumpDates = std::vector<Date>());
+            const std::vector<Handle<Quote> >& jumps = {},
+            const std::vector<Date>& jumpDates = {});
         //@}
       protected:
         /*! \name Calculations
@@ -79,7 +79,7 @@ namespace QuantLib {
         */
         //@{
         //! hazard rate calculation
-        virtual Real hazardRateImpl(Time) const = 0;
+        Real hazardRateImpl(Time) const override;
         //@}
 
         //! \name DefaultProbabilityTermStructure implementation
@@ -95,9 +95,9 @@ namespace QuantLib {
                      Derived classes should override it if a more efficient
                      implementation is available.
         */
-        Probability survivalProbabilityImpl(Time) const;
+        Probability survivalProbabilityImpl(Time) const override;
         //! default density calculation
-        Real defaultDensityImpl(Time) const;
+        Real defaultDensityImpl(Time) const override;
         //@}
     };
 

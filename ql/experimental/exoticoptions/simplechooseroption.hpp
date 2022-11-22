@@ -40,8 +40,9 @@ namespace QuantLib {
         class engine;
         SimpleChooserOption(Date choosingDate,
                             Real strike,
-                            const boost::shared_ptr<Exercise>& exercise);
-        void setupArguments(PricingEngine::arguments*) const;
+                            const ext::shared_ptr<Exercise>& exercise);
+        void setupArguments(PricingEngine::arguments*) const override;
+
       protected:
         Date choosingDate_;
     };
@@ -51,7 +52,7 @@ namespace QuantLib {
         : public OneAssetOption::arguments {
       public:
         arguments() : choosingDate(Null<Date>()) {}
-        void validate() const;
+        void validate() const override;
         Date choosingDate;
     };
 

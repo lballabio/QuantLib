@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 Chris Kenyon
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,7 +33,7 @@ namespace QuantLib {
     class GenericRegion : public Region {
       public:
         GenericRegion() {
-            static boost::shared_ptr<Data> GENERICdata(
+            static ext::shared_ptr<Data> GENERICdata(
                                                new Data("Generic","GENERIC"));
             data_ = GENERICdata;
         }
@@ -42,21 +43,29 @@ namespace QuantLib {
     //! Generic CPI index
     class GenericCPI : public ZeroInflationIndex {
       public:
+        GenericCPI(
+            Frequency frequency,
+            bool revised,
+            const Period& lag,
+            const Currency& ccy,
+            const Handle<ZeroInflationTermStructure>& ts = {})
+        : ZeroInflationIndex("CPI", GenericRegion(), revised, frequency, lag, ccy, ts) {}
+
+        /*! \deprecated Use the constructor without the "interpolated" parameter.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         GenericCPI(Frequency frequency,
                    bool revised,
                    bool interpolated,
                    const Period &lag,
                    const Currency &ccy,
-                   const Handle<ZeroInflationTermStructure>& ts =
-                                         Handle<ZeroInflationTermStructure>())
-        : ZeroInflationIndex("CPI",
-                             GenericRegion(),
-                             revised,
-                             interpolated,
-                             frequency,
-                             lag,
-                             ccy,
-                             ts) {}
+                   const Handle<ZeroInflationTermStructure>& ts = {})
+        : GenericCPI(frequency, revised, lag, ccy, ts) {
+            QL_DEPRECATED_DISABLE_WARNING
+            interpolated_ = interpolated;
+            QL_DEPRECATED_ENABLE_WARNING
+        }
     };
 
 
@@ -68,8 +77,7 @@ namespace QuantLib {
                      bool interpolated,
                      const Period &lag,
                      const Currency &ccy,
-                     const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                     const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YY_CPI",
                             GenericRegion(),
                             revised,
@@ -89,8 +97,7 @@ namespace QuantLib {
                       bool interpolated,
                       const Period &lag,
                       const Currency &ccy,
-                      const Handle<YoYInflationTermStructure>& ts =
-                                          Handle<YoYInflationTermStructure>())
+                      const Handle<YoYInflationTermStructure>& ts = {})
         : YoYInflationIndex("YYR_CPI",
                             GenericRegion(),
                             revised,

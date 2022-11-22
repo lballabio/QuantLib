@@ -19,7 +19,6 @@
 
 #include <ql/experimental/exoticoptions/twoassetcorrelationoption.hpp>
 #include <ql/exercise.hpp>
-#include <boost/make_shared.hpp>
 
 namespace QuantLib {
 
@@ -27,16 +26,15 @@ namespace QuantLib {
                            Option::Type type,
                            Real strike1,
                            Real strike2,
-                           const boost::shared_ptr<Exercise>& exercise)
-    : MultiAssetOption(boost::make_shared<PlainVanillaPayoff>(type, strike1),
+                           const ext::shared_ptr<Exercise>& exercise)
+    : MultiAssetOption(ext::make_shared<PlainVanillaPayoff>(type, strike1),
                        exercise), X2_(strike2) {}
 
     void TwoAssetCorrelationOption::setupArguments(
                                        PricingEngine::arguments* args) const {
         MultiAssetOption::setupArguments(args);
-        TwoAssetCorrelationOption::arguments* moreArgs =
-            dynamic_cast<TwoAssetCorrelationOption::arguments*>(args);
-        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        auto* moreArgs = dynamic_cast<TwoAssetCorrelationOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != nullptr, "wrong argument type");
 
         moreArgs->X2 = X2_;
     }

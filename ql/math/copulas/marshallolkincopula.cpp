@@ -19,6 +19,7 @@
 
 #include <ql/math/copulas/marshallolkincopula.hpp>
 #include <ql/errors.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 

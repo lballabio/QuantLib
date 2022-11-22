@@ -25,10 +25,11 @@
 #ifndef quantlib_replicating_varianceswap_engine_hpp
 #define quantlib_replicating_varianceswap_engine_hpp
 
-#include <ql/instruments/varianceswap.hpp>
-#include <ql/instruments/europeanoption.hpp>
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/exercise.hpp>
+#include <ql/instruments/europeanoption.hpp>
+#include <ql/instruments/varianceswap.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -43,20 +44,20 @@ namespace QuantLib {
     class ReplicatingVarianceSwapEngine : public VarianceSwap::engine {
       public:
         typedef std::vector<std::pair<
-                   boost::shared_ptr<StrikedTypePayoff>, Real> > weights_type;
+                   ext::shared_ptr<StrikedTypePayoff>, Real> > weights_type;
         // constructor
-        ReplicatingVarianceSwapEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Real dk = 5.0,
-             const std::vector<Real>& callStrikes = std::vector<Real>(),
-             const std::vector<Real>& putStrikes = std::vector<Real>());
-        void calculate() const;
+        ReplicatingVarianceSwapEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+                                      Real dk = 5.0,
+                                      const std::vector<Real>& callStrikes = std::vector<Real>(),
+                                      const std::vector<Real>& putStrikes = std::vector<Real>());
+        void calculate() const override;
+
       protected:
         // helper methods
         void computeOptionWeights(const std::vector<Real>&,
-                                  const Option::Type,
+                                  Option::Type,
                                   weights_type& optionWeights) const;
-        Real computeLogPayoff(const Real, const Real) const;
+        Real computeLogPayoff(Real, Real) const;
         Real computeReplicatingPortfolio(
                                      const weights_type& optionWeights) const;
         Rate riskFreeRate() const;
@@ -64,7 +65,7 @@ namespace QuantLib {
         Real underlying() const;
         Time residualTime() const;
       private:
-        boost::shared_ptr<GeneralizedBlackScholesProcess> process_;
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
         Real dk_;
         std::vector<Real> callStrikes_, putStrikes_;
     };
@@ -73,12 +74,11 @@ namespace QuantLib {
     // inline definitions
 
     inline ReplicatingVarianceSwapEngine::ReplicatingVarianceSwapEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Real dk,
-             const std::vector<Real>& callStrikes,
-             const std::vector<Real>& putStrikes)
-    : process_(process), dk_(dk),
-      callStrikes_(callStrikes), putStrikes_(putStrikes) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Real dk,
+        const std::vector<Real>& callStrikes,
+        const std::vector<Real>& putStrikes)
+    : process_(std::move(process)), dk_(dk), callStrikes_(callStrikes), putStrikes_(putStrikes) {
 
         QL_REQUIRE(process_, "no process given");
         QL_REQUIRE(!callStrikes.empty() && !putStrikes.empty(),
@@ -107,7 +107,7 @@ namespace QuantLib {
             strikes.push_back(strikes.back() + dk_);
             break;
           case Option::Put:
-            std::sort(strikes.begin(), strikes.end(), std::greater<Real>());
+            std::sort(strikes.begin(), strikes.end(), std::greater<>());
             strikes.push_back(std::max(strikes.back() - dk_, 0.0));
             break;
           default:
@@ -115,8 +115,7 @@ namespace QuantLib {
         }
 
         // remove duplicate strikes
-        std::vector<Real>::iterator last =
-            std::unique(strikes.begin(), strikes.end());
+        auto last = std::unique(strikes.begin(), strikes.end());
         strikes.erase(last, strikes.end());
 
         // compute weights
@@ -133,7 +132,7 @@ namespace QuantLib {
             slope = std::fabs((computeLogPayoff(*(k+1), f) -
                                computeLogPayoff(*k, f))/
                               (*(k+1) - *k));
-            boost::shared_ptr<StrikedTypePayoff> payoff(
+            ext::shared_ptr<StrikedTypePayoff> payoff(
                                             new PlainVanillaPayoff(type, *k));
             if ( k == strikes.begin() )
                 optionWeights.push_back(std::make_pair(payoff,slope));
@@ -157,15 +156,14 @@ namespace QuantLib {
     Real ReplicatingVarianceSwapEngine::computeReplicatingPortfolio(
                                     const weights_type& optionWeights) const {
 
-        boost::shared_ptr<Exercise> exercise(
+        ext::shared_ptr<Exercise> exercise(
                                new EuropeanExercise(arguments_.maturityDate));
-        boost::shared_ptr<PricingEngine> optionEngine(
+        ext::shared_ptr<PricingEngine> optionEngine(
                                         new AnalyticEuropeanEngine(process_));
         Real optionsValue = 0.0;
 
-        for (weights_type::const_iterator i = optionWeights.begin();
-             i < optionWeights.end(); ++i) {
-            boost::shared_ptr<StrikedTypePayoff> payoff = i->first;
+        for (auto i = optionWeights.begin(); i < optionWeights.end(); ++i) {
+            ext::shared_ptr<StrikedTypePayoff> payoff = i->first;
             EuropeanOption option(payoff, exercise);
             option.setPricingEngine(optionEngine);
             Real weight = i->second;

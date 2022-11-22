@@ -36,14 +36,12 @@ namespace QuantLib {
 
     class FdmBatesSolver : public LazyObject {
       public:
-        FdmBatesSolver(
-            const Handle<BatesProcess>& process,
-            const FdmSolverDesc& solverDesc,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            Size integroIntegrationOrder = 12,
-            const Handle<FdmQuantoHelper>& quantoHelper
-                                                = Handle<FdmQuantoHelper>());
-        
+        FdmBatesSolver(Handle<BatesProcess> process,
+                       FdmSolverDesc solverDesc,
+                       const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                       Size integroIntegrationOrder = 12,
+                       Handle<FdmQuantoHelper> quantoHelper = Handle<FdmQuantoHelper>());
+
         Real valueAt(Real s, Real v) const;
         Real thetaAt(Real s, Real v) const;
 
@@ -56,8 +54,8 @@ namespace QuantLib {
         Real gammaAt(Real s, Real v) const;
 
       protected:
-        void performCalculations() const;
-        
+        void performCalculations() const override;
+
       private:
         const Handle<BatesProcess> process_;
         const FdmSolverDesc solverDesc_;
@@ -65,7 +63,7 @@ namespace QuantLib {
         const Size integroIntegrationOrder_;
         const Handle<FdmQuantoHelper> quantoHelper_;
 
-        mutable boost::shared_ptr<Fdm2DimSolver> solver_;
+        mutable ext::shared_ptr<Fdm2DimSolver> solver_;
     };
 }
 

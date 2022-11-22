@@ -23,7 +23,6 @@
 
 #include <ql/instruments/claim.hpp>
 #include <ql/experimental/credit/defaultprobabilitykey.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <ql/experimental/credit/basket.hpp>
 
 #include <ql/utilities/null_deleter.hpp>
@@ -56,7 +55,7 @@ namespace QuantLib {
         // argument basket:
         mutable RelinkableHandle<Basket> basket_;
 
-        DefaultLossModel() { }
+        DefaultLossModel() = default;
         //! \name Statistics
         //@{
         /* Non mandatory implementations, fails if client is not providing what 
@@ -87,21 +86,18 @@ namespace QuantLib {
             QL_FAIL("eSF Not implemented for this model.");   
         }
         //! Associated VaR fraction to each counterparty.
-        virtual Disposable<std::vector<Real> >
-            splitVaRLevel(const Date& d, Real loss) const {
+        virtual std::vector<Real> splitVaRLevel(const Date& d, Real loss) const {
             QL_FAIL("splitVaRLevel Not implemented for this model.");   
         }
         //! Associated ESF fraction to each counterparty.
-        virtual Disposable<std::vector<Real> >
-            splitESFLevel(const Date& d, Real loss) const {
+        virtual std::vector<Real> splitESFLevel(const Date& d, Real loss) const {
             QL_FAIL("splitESFLevel Not implemented for this model.");   
         }
 
         // \todo Add splits by instrument position.
 
         //! Full loss distribution.
-        virtual Disposable<std::map<Real, Probability> > 
-            lossDistribution(const Date&) const {
+        virtual std::map<Real, Probability> lossDistribution(const Date&) const {
             QL_FAIL("lossDistribution Not implemented for this model.");   
         }
         //! Probability density of a given loss fraction of the basket notional.
@@ -116,8 +112,7 @@ namespace QuantLib {
             The the probabilities ordering in the vector coincides with the 
             pool order.
         */
-        virtual Disposable<std::vector<Probability> > probsBeingNthEvent(
-            Size n, const Date& d) const {
+        virtual std::vector<Probability> probsBeingNthEvent(Size n, const Date& d) const {
             QL_FAIL("probsBeingNthEvent Not implemented for this model.");
         }
         //! Pearsons' default probability correlation. 
@@ -153,7 +148,7 @@ namespace QuantLib {
             until the basket takes in a new model....
             ..alternatively both old basket and model could be forced reset here
             */
-            basket_.linkTo(boost::shared_ptr<Basket>(bskt, null_deleter()),
+            basket_.linkTo(ext::shared_ptr<Basket>(bskt, null_deleter()),
                            false);
             resetModel();// or rename to setBasketImpl(...)
         }

@@ -25,7 +25,7 @@
 #define quantlib_volatility_cube_h
 
 #include <ql/handle.hpp>
-#include <boost/shared_ptr.hpp>
+#include <ql/shared_ptr.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -37,8 +37,8 @@ namespace QuantLib {
 
     class VolatilityCube {
       public:
-        VolatilityCube(const std::vector<Handle<InterestRateVolSurface> >&,
-                       const std::vector<Handle<AbcdAtmVolCurve> >&);
+        VolatilityCube(std::vector<Handle<InterestRateVolSurface> >,
+                       std::vector<Handle<AbcdAtmVolCurve> >);
         const Period& minIndexTenor() const;
         const Period& maxIndexTenor() const;
         const std::vector<Handle<InterestRateVolSurface> >& surfaces() const;

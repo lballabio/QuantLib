@@ -41,50 +41,45 @@ namespace QuantLib {
 
     class FdmHestonFwdOp : public FdmLinearOpComposite {
       public:
-        FdmHestonFwdOp(
-            const boost::shared_ptr<FdmMesher>& mesher,
-            const boost::shared_ptr<HestonProcess>& process,
-            FdmSquareRootFwdOp::TransformationType type 
-                = FdmSquareRootFwdOp::Plain,
-            const boost::shared_ptr<LocalVolTermStructure> & leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>());
+        FdmHestonFwdOp(const ext::shared_ptr<FdmMesher>& mesher,
+                       const ext::shared_ptr<HestonProcess>& process,
+                       FdmSquareRootFwdOp::TransformationType type = FdmSquareRootFwdOp::Plain,
+                       ext::shared_ptr<LocalVolTermStructure> leverageFct =
+                           ext::shared_ptr<LocalVolTermStructure>(),
+                       Real mixingFactor = 1.0);
 
-        Size size() const;
-        void setTime(Time t1, Time t2);
+        Size size() const override;
+        void setTime(Time t1, Time t2) override;
 
-        Disposable<Array> apply(const Array& r) const;
-        Disposable<Array> apply_mixed(const Array& r) const;
+        Array apply(const Array& r) const override;
+        Array apply_mixed(const Array& r) const override;
 
-        Disposable<Array> apply_direction(Size direction,
-                                          const Array& r) const;
-        Disposable<Array> solve_splitting(Size direction,
-                                          const Array& r, Real s) const;
-        Disposable<Array> preconditioner(const Array& r, Real s) const;
+        Array apply_direction(Size direction, const Array& r) const override;
+        Array solve_splitting(Size direction, const Array& r, Real s) const override;
+        Array preconditioner(const Array& r, Real s) const override;
 
-#if !defined(QL_NO_UBLAS_SUPPORT)
-        Disposable<std::vector<SparseMatrix> > toMatrixDecomp() const;
-#endif
+        std::vector<SparseMatrix> toMatrixDecomp() const override;
       private:
-        Disposable<Array> getLeverageFctSlice(Time t1, Time t2) const;
+        Array getLeverageFctSlice(Time t1, Time t2) const;
         const FdmSquareRootFwdOp::TransformationType type_;
-        const Real kappa_, theta_, sigma_, rho_, v0_;
+        const Real kappa_, theta_, sigma_, rho_, v0_, mixedSigma_;
 
-        const boost::shared_ptr<YieldTermStructure> rTS_;
-        const boost::shared_ptr<YieldTermStructure> qTS_;
+        const ext::shared_ptr<YieldTermStructure> rTS_;
+        const ext::shared_ptr<YieldTermStructure> qTS_;
 
         const Array varianceValues_;
-        const boost::shared_ptr<FirstDerivativeOp> dxMap_;
-        const boost::shared_ptr<ModTripleBandLinearOp> dxxMap_;
-        const boost::shared_ptr<ModTripleBandLinearOp> boundary_;
+        const ext::shared_ptr<FirstDerivativeOp> dxMap_;
+        const ext::shared_ptr<ModTripleBandLinearOp> dxxMap_;
+        const ext::shared_ptr<ModTripleBandLinearOp> boundary_;
         Array L_;
 
-        const boost::shared_ptr<TripleBandLinearOp> mapX_;
-        const boost::shared_ptr<FdmSquareRootFwdOp> mapY_;
+        const ext::shared_ptr<TripleBandLinearOp> mapX_;
+        const ext::shared_ptr<FdmSquareRootFwdOp> mapY_;
 
-        const boost::shared_ptr<NinePointLinearOp> correlation_;
+        const ext::shared_ptr<NinePointLinearOp> correlation_;
 
-        const boost::shared_ptr<LocalVolTermStructure> leverageFct_;
-        const boost::shared_ptr<FdmMesher> mesher_;
+        const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
+        const ext::shared_ptr<FdmMesher> mesher_;
         const Array x_;
     };
 }

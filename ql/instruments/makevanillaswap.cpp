@@ -5,6 +5,7 @@
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2006 StatPro Italia srl
  Copyright (C) 2015 Paolo Mazzocchi
+ Copyright (C) 2018 Matthias Groncki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,39 +32,31 @@
 #include <ql/currencies/asia.hpp>
 #include <ql/currencies/europe.hpp>
 #include <ql/currencies/oceania.hpp>
-
-using boost::shared_ptr;
+#include <ql/utilities/null.hpp>
 
 namespace QuantLib {
 
     MakeVanillaSwap::MakeVanillaSwap(const Period& swapTenor,
-                                     const shared_ptr<IborIndex>& index,
+                                     const ext::shared_ptr<IborIndex>& index,
                                      Rate fixedRate,
                                      const Period& forwardStart)
-    : swapTenor_(swapTenor), iborIndex_(index),
-      fixedRate_(fixedRate), forwardStart_(forwardStart),
-      settlementDays_(iborIndex_->fixingDays()),
-      fixedCalendar_(index->fixingCalendar()),
+    : swapTenor_(swapTenor), iborIndex_(index), fixedRate_(fixedRate), forwardStart_(forwardStart),
+      settlementDays_(Null<Natural>()), fixedCalendar_(index->fixingCalendar()),
       floatCalendar_(index->fixingCalendar()),
-      type_(VanillaSwap::Payer), nominal_(1.0),
+
       floatTenor_(index->tenor()),
-      fixedConvention_(ModifiedFollowing),
-      fixedTerminationDateConvention_(ModifiedFollowing),
+
       floatConvention_(index->businessDayConvention()),
       floatTerminationDateConvention_(index->businessDayConvention()),
-      fixedRule_(DateGeneration::Backward), floatRule_(DateGeneration::Backward),
-      fixedEndOfMonth_(false), floatEndOfMonth_(false),
-      fixedFirstDate_(Date()), fixedNextToLastDate_(Date()),
-      floatFirstDate_(Date()), floatNextToLastDate_(Date()),
-      floatSpread_(0.0),
+
       floatDayCount_(index->dayCounter()) {}
 
     MakeVanillaSwap::operator VanillaSwap() const {
-        shared_ptr<VanillaSwap> swap = *this;
+        ext::shared_ptr<VanillaSwap> swap = *this;
         return *swap;
     }
 
-    MakeVanillaSwap::operator shared_ptr<VanillaSwap>() const {
+    MakeVanillaSwap::operator ext::shared_ptr<VanillaSwap>() const {
 
         Date startDate;
         if (effectiveDate_ != Date())
@@ -73,15 +66,21 @@ namespace QuantLib {
             // if the evaluation date is not a business day
             // then move to the next business day
             refDate = floatCalendar_.adjust(refDate);
-            Date spotDate = floatCalendar_.advance(refDate,
-                                                   settlementDays_*Days);
+            // use index valueDate interface wherever possible to estimate spot date.
+            // Unless we pass an explicit settlementDays_ which does not match the index-defined number of fixing days.
+            Date spotDate;
+            if (settlementDays_ == Null<Natural>())
+                spotDate = iborIndex_->valueDate(refDate);
+            else
+                spotDate = floatCalendar_.advance(refDate, settlementDays_ * Days);
             startDate = spotDate+forwardStart_;
             if (forwardStart_.length()<0)
                 startDate = floatCalendar_.adjust(startDate,
                                                   Preceding);
-            else
+            else if (forwardStart_.length()>0)
                 startDate = floatCalendar_.adjust(startDate,
                                                   Following);
+            // no explicit date adjustment needed for forwardStart_.length()==0 (already handled by spotDate arithmetic above)
         }
 
         Date endDate = terminationDate_;
@@ -141,7 +140,8 @@ namespace QuantLib {
                      curr == SEKCurrency())
                 fixedDayCount = Thirty360(Thirty360::BondBasis);
             else if (curr == GBPCurrency() || curr == JPYCurrency() ||
-                     curr == AUDCurrency() || curr == HKDCurrency())
+                     curr == AUDCurrency() || curr == HKDCurrency() ||
+                     curr == THBCurrency())
                 fixedDayCount = Actual365Fixed();
             else
                 QL_FAIL("unknown fixed leg day counter for " << curr);
@@ -149,20 +149,18 @@ namespace QuantLib {
 
         Rate usedFixedRate = fixedRate_;
         if (fixedRate_ == Null<Rate>()) {
-            VanillaSwap temp(type_, nominal_,
-                             fixedSchedule,
+            VanillaSwap temp(type_, 100.00, fixedSchedule,
                              0.0, // fixed rate
-                             fixedDayCount,
-                             floatSchedule, iborIndex_,
-                             floatSpread_, floatDayCount_);
-            if (engine_ == 0) {
+                             fixedDayCount, floatSchedule, iborIndex_, floatSpread_, floatDayCount_,
+                             boost::none, useIndexedCoupons_);
+            if (engine_ == nullptr) {
                 Handle<YieldTermStructure> disc =
                                         iborIndex_->forwardingTermStructure();
                 QL_REQUIRE(!disc.empty(),
                            "null term structure set to this instance of " <<
                            iborIndex_->name());
                 bool includeSettlementDateFlows = false;
-                shared_ptr<PricingEngine> engine(new
+                ext::shared_ptr<PricingEngine> engine(new
                     DiscountingSwapEngine(disc, includeSettlementDateFlows));
                 temp.setPricingEngine(engine);
             } else
@@ -171,18 +169,15 @@ namespace QuantLib {
             usedFixedRate = temp.fairRate();
         }
 
-        shared_ptr<VanillaSwap> swap(new
-            VanillaSwap(type_, nominal_,
-                        fixedSchedule,
-                        usedFixedRate, fixedDayCount,
-                        floatSchedule,
-                        iborIndex_, floatSpread_, floatDayCount_));
+        ext::shared_ptr<VanillaSwap> swap(new VanillaSwap(
+            type_, nominal_, fixedSchedule, usedFixedRate, fixedDayCount, floatSchedule, iborIndex_,
+            floatSpread_, floatDayCount_, boost::none, useIndexedCoupons_));
 
-        if (engine_ == 0) {
+        if (engine_ == nullptr) {
             Handle<YieldTermStructure> disc =
                                     iborIndex_->forwardingTermStructure();
             bool includeSettlementDateFlows = false;
-            shared_ptr<PricingEngine> engine(new
+            ext::shared_ptr<PricingEngine> engine(new
                 DiscountingSwapEngine(disc, includeSettlementDateFlows));
             swap->setPricingEngine(engine);
         } else
@@ -192,11 +187,11 @@ namespace QuantLib {
     }
 
     MakeVanillaSwap& MakeVanillaSwap::receiveFixed(bool flag) {
-        type_ = flag ? VanillaSwap::Receiver : VanillaSwap::Payer ;
+        type_ = flag ? Swap::Receiver : Swap::Payer ;
         return *this;
     }
 
-    MakeVanillaSwap& MakeVanillaSwap::withType(VanillaSwap::Type type) {
+    MakeVanillaSwap& MakeVanillaSwap::withType(Swap::Type type) {
         type_ = type;
         return *this;
     }
@@ -234,13 +229,13 @@ namespace QuantLib {
     MakeVanillaSwap& MakeVanillaSwap::withDiscountingTermStructure(
                                         const Handle<YieldTermStructure>& d) {
         bool includeSettlementDateFlows = false;
-        engine_ = shared_ptr<PricingEngine>(new
+        engine_ = ext::shared_ptr<PricingEngine>(new
             DiscountingSwapEngine(d, includeSettlementDateFlows));
         return *this;
     }
 
     MakeVanillaSwap& MakeVanillaSwap::withPricingEngine(
-                             const shared_ptr<PricingEngine>& engine) {
+                             const ext::shared_ptr<PricingEngine>& engine) {
         engine_ = engine;
         return *this;
     }
@@ -348,6 +343,16 @@ namespace QuantLib {
 
     MakeVanillaSwap& MakeVanillaSwap::withFloatingLegSpread(Spread sp) {
         floatSpread_ = sp;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withIndexedCoupons(const boost::optional<bool>& b) {
+        useIndexedCoupons_ = b;
+        return *this;
+    }
+
+    MakeVanillaSwap& MakeVanillaSwap::withAtParCoupons(bool b) {
+        useIndexedCoupons_ = !b;
         return *this;
     }
 

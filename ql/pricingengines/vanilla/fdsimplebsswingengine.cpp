@@ -21,77 +21,75 @@
     \brief Finite Differences Black-Scholes engine for simple swing options
 */
 
-#include <ql/processes/blackscholesprocess.hpp>
-#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
-#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
-#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
-#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
-#include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
+#include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
+#include <ql/methods/finitedifferences/meshers/uniform1dmesher.hpp>
+#include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsimpleswingcondition.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmstepconditioncomposite.hpp>
-#include <ql/methods/finitedifferences/solvers/fdmsimple2dbssolver.hpp>
+#include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
+#include <ql/processes/blackscholesprocess.hpp>
+#include <utility>
 
 namespace QuantLib {
-    
+
     FdSimpleBSSwingEngine::FdSimpleBSSwingEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid, Size xGrid,
-            const FdmSchemeDesc& schemeDesc)
-    : process_(process),
-      tGrid_(tGrid),
-      xGrid_(xGrid),
-      schemeDesc_(schemeDesc) { 
-    }
-            
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Size tGrid,
+        Size xGrid,
+        const FdmSchemeDesc& schemeDesc)
+    : process_(std::move(process)), tGrid_(tGrid), xGrid_(xGrid), schemeDesc_(schemeDesc) {}
+
     void FdSimpleBSSwingEngine::calculate() const {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::Bermudan,
                    "Bermudan exercise supported only");
 
         // 1. Mesher
-        const boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        const ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "Strike type payoff expected");
             
         const Time maturity = process_->time(arguments_.exercise->lastDate());
-        const boost::shared_ptr<Fdm1dMesher> equityMesher(
+        const ext::shared_ptr<Fdm1dMesher> equityMesher(
             new FdmBlackScholesMesher(xGrid_, process_,
                                       maturity, payoff->strike()));
         
-        const boost::shared_ptr<Fdm1dMesher> exerciseMesher(
+        const ext::shared_ptr<Fdm1dMesher> exerciseMesher(
                  new Uniform1dMesher(
                            0, static_cast<Real>(arguments_.maxExerciseRights),
                            arguments_.maxExerciseRights+1));
 
-        const boost::shared_ptr<FdmMesher> mesher (
+        const ext::shared_ptr<FdmMesher> mesher (
             new FdmMesherComposite(equityMesher, exerciseMesher));
         
         // 2. Calculator
-        boost::shared_ptr<FdmInnerValueCalculator> calculator(
+        ext::shared_ptr<FdmInnerValueCalculator> calculator(
                                                     new FdmZeroInnerValue());
         
         // 3. Step conditions
-        std::list<boost::shared_ptr<StepCondition<Array> > > stepConditions;
+        std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
         std::list<std::vector<Time> > stoppingTimes;
         
         // 3.1 Bermudan step conditions
         std::vector<Time> exerciseTimes;
-        for (Size i=0; i<arguments_.exercise->dates().size(); ++i) {
-            Time t = process_->time(arguments_.exercise->dates()[i]);
+        for (auto i : arguments_.exercise->dates()) {
+            Time t = process_->time(i);
             QL_REQUIRE(t >= 0, "exercise dates must not contain past date");
             exerciseTimes.push_back(t);
         }
         stoppingTimes.push_back(exerciseTimes);
         
-        boost::shared_ptr<FdmInnerValueCalculator> exerciseCalculator(
+        ext::shared_ptr<FdmInnerValueCalculator> exerciseCalculator(
                                     new FdmLogInnerValue(payoff, mesher, 0));
 
-        stepConditions.push_back(boost::shared_ptr<StepCondition<Array> >(
+        stepConditions.push_back(ext::shared_ptr<StepCondition<Array> >(
             new FdmSimpleSwingCondition(
                 exerciseTimes, mesher, exerciseCalculator,
                 1, arguments_.minExerciseRights)));
         
-        boost::shared_ptr<FdmStepConditionComposite> conditions(
+        ext::shared_ptr<FdmStepConditionComposite> conditions(
                 new FdmStepConditionComposite(stoppingTimes, stepConditions));
         
         // 4. Boundary conditions
@@ -100,7 +98,7 @@ namespace QuantLib {
         // 5. Solver
         FdmSolverDesc solverDesc = { mesher, boundaries, conditions,
                                      calculator, maturity, tGrid_, 0 };
-        boost::shared_ptr<FdmSimple2dBSSolver> solver(
+        ext::shared_ptr<FdmSimple2dBSSolver> solver(
                 new FdmSimple2dBSSolver(
                                Handle<GeneralizedBlackScholesProcess>(process_),
                                payoff->strike(), solverDesc, schemeDesc_));

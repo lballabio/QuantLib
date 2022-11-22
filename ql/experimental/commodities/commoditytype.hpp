@@ -25,10 +25,11 @@
 #define quantlib_commodity_type_hpp
 
 #include <ql/qldefines.hpp>
-#include <boost/shared_ptr.hpp>
-#include <map>
+#include <ql/shared_ptr.hpp>
 #include <iosfwd>
+#include <map>
 #include <string>
+#include <utility>
 
 namespace QuantLib {
 
@@ -41,7 +42,7 @@ namespace QuantLib {
           and must be reassigned to a valid currency before being
           used.
         */
-        CommodityType() {}
+        CommodityType() = default;
         CommodityType(const std::string& code, const std::string& name);
         //! \name Inspectors
         //@{
@@ -59,17 +60,16 @@ namespace QuantLib {
 
       protected:
         struct Data;
-        boost::shared_ptr<Data> data_;
+        ext::shared_ptr<Data> data_;
 
         struct Data {
             std::string name, code;
 
-            Data(const std::string& name,
-                 const std::string& code)
-            : name(name), code(code) {}
+            Data(std::string name, std::string code)
+            : name(std::move(name)), code(std::move(code)) {}
         };
 
-        static std::map<std::string, boost::shared_ptr<Data> > commodityTypes_;
+        static std::map<std::string, ext::shared_ptr<Data> > commodityTypes_;
     };
 
     /*! \relates CommodityType */

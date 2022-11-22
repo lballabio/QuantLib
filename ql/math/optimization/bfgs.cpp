@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
  /*
- Copyright (C) 2009 Frédéric Degraeve
+ Copyright (C) 2009 FrÃ©dÃ©ric Degraeve
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,9 +23,9 @@
 
 namespace QuantLib {
 
-    Disposable<Array> BFGS::getUpdatedDirection(const Problem& P,
-                                                Real,
-                                                const Array& oldGradient) {
+    Array BFGS::getUpdatedDirection(const Problem& P,
+                                    Real,
+                                    const Array& oldGradient) {
         if (inverseHessian_.rows() == 0)
         {
             // first time in this update, we create needed structures

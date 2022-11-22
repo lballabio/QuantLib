@@ -41,18 +41,18 @@ namespace QuantLib {
         */
         //@{
         TreeCallableFixedRateBondEngine(
-                           const boost::shared_ptr<ShortRateModel>&,
-                           const Size timeSteps,
-                           const Handle<YieldTermStructure>& termStructure =
-                                                 Handle<YieldTermStructure>());
+            const ext::shared_ptr<ShortRateModel>&,
+            Size timeSteps,
+            Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>());
         TreeCallableFixedRateBondEngine(
-                           const boost::shared_ptr<ShortRateModel>&,
-                           const TimeGrid& timeGrid,
-                           const Handle<YieldTermStructure>& termStructure =
-                                                 Handle<YieldTermStructure>()) ;
+            const ext::shared_ptr<ShortRateModel>&,
+            const TimeGrid& timeGrid,
+            Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>());
         //@}
-        void calculate() const;
+        void calculate() const override;
+
       private:
+        void calculateWithSpread(Spread s) const;
         Handle<YieldTermStructure> termStructure_;
     };
 
@@ -63,14 +63,14 @@ namespace QuantLib {
 
       public:
         TreeCallableZeroCouponBondEngine(
-                           const boost::shared_ptr<ShortRateModel>& model,
+                           const ext::shared_ptr<ShortRateModel>& model,
                            const Size timeSteps,
                            const Handle<YieldTermStructure>& termStructure =
                                                  Handle<YieldTermStructure>())
         : TreeCallableFixedRateBondEngine(model, timeSteps, termStructure) {}
 
         TreeCallableZeroCouponBondEngine(
-                               const boost::shared_ptr<ShortRateModel>& model,
+                               const ext::shared_ptr<ShortRateModel>& model,
                                const TimeGrid& timeGrid,
                            const Handle<YieldTermStructure>& termStructure =
                                                  Handle<YieldTermStructure>())

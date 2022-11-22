@@ -23,22 +23,19 @@
 */
 
 #include <ql/methods/finitedifferences/utilities/fdmquantohelper.hpp>
-#include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    FdmQuantoHelper::FdmQuantoHelper(
-        const boost::shared_ptr<YieldTermStructure> & rTS,
-        const boost::shared_ptr<YieldTermStructure> & fTS,
-        const boost::shared_ptr<BlackVolTermStructure> & fxVolTS,
-        Real equityFxCorrelation,
-        Real exchRateATMlevel)
-    : rTS_(rTS),
-      fTS_(fTS),
-      fxVolTS_(fxVolTS),
-      equityFxCorrelation_(equityFxCorrelation),
-      exchRateATMlevel_(exchRateATMlevel) {}
+    FdmQuantoHelper::FdmQuantoHelper(ext::shared_ptr<YieldTermStructure> rTS,
+                                     ext::shared_ptr<YieldTermStructure> fTS,
+                                     ext::shared_ptr<BlackVolTermStructure> fxVolTS,
+                                     Real equityFxCorrelation,
+                                     Real exchRateATMlevel)
+    : rTS_(std::move(rTS)), fTS_(std::move(fTS)), fxVolTS_(std::move(fxVolTS)),
+      equityFxCorrelation_(equityFxCorrelation), exchRateATMlevel_(exchRateATMlevel) {}
 
     Rate FdmQuantoHelper::quantoAdjustment(Volatility equityVol,
                                                  Time t1, Time t2) const {
@@ -50,7 +47,7 @@ namespace QuantLib {
         return rDomestic - rForeign + equityVol*fxVol*equityFxCorrelation_;
     }
 
-    Disposable<Array> FdmQuantoHelper::quantoAdjustment(
+    Array FdmQuantoHelper::quantoAdjustment(
         const Array& equityVol, Time t1, Time t2) const {
 
         const Rate rDomestic = rTS_->forwardRate(t1, t2, Continuous).rate();

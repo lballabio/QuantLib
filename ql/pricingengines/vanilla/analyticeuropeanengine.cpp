@@ -18,22 +18,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
-#include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/exercise.hpp>
+#include <ql/pricingengines/blackcalculator.hpp>
+#include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticEuropeanEngine::AnalyticEuropeanEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
     AnalyticEuropeanEngine::AnalyticEuropeanEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             const Handle<YieldTermStructure>& discountCurve)
-    : process_(process), discountCurve_(discountCurve) {
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Handle<YieldTermStructure> discountCurve)
+    : process_(std::move(process)), discountCurve_(std::move(discountCurve)) {
         registerWith(process_);
         registerWith(discountCurve_);
     }
@@ -42,7 +43,7 @@ namespace QuantLib {
 
         // if the discount curve is not specified, we default to the
         // risk free rate curve embedded within the GBM process
-        boost::shared_ptr<YieldTermStructure> discountPtr = 
+        ext::shared_ptr<YieldTermStructure> discountPtr = 
             discountCurve_.empty() ? 
             process_->riskFreeRate().currentLink() :
             discountCurve_.currentLink();
@@ -50,8 +51,8 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European option");
 
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        ext::shared_ptr<StrikedTypePayoff> payoff =
+            ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         Real variance =
@@ -102,6 +103,15 @@ namespace QuantLib {
 
         results_.strikeSensitivity  = black.strikeSensitivity();
         results_.itmCashProbability = black.itmCashProbability();
+
+        Real tte = process_->blackVolatility()->timeFromReference(arguments_.exercise->lastDate());
+        results_.additionalResults["spot"] = spot;
+        results_.additionalResults["dividendDiscount"] = dividendDiscount;
+        results_.additionalResults["riskFreeDiscount"] = riskFreeDiscountForFwdEstimation;
+        results_.additionalResults["forward"] = forwardPrice;
+        results_.additionalResults["strike"] = payoff->strike();
+        results_.additionalResults["volatility"] = std::sqrt(variance / tte);
+        results_.additionalResults["timeToExpiry"] = tte;
     }
 
 }

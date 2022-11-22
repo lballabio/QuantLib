@@ -32,41 +32,13 @@
 
 namespace QuantLib {
 
-    /*! \example tracing_example.cpp
-        This code exemplifies how to insert trace statements to follow
-        the flow of program execution. When compiler under gcc 3.3 and
-        run, the following program will output the following trace:
-        \code
-        trace[1]: Entering int main()
-        trace[2]: Entering int foo(int)
-        trace[3]: Entering int Foo::bar(int)
-        trace[3]: i = 21
-        trace[3]: At line 16 in tracing_example.cpp
-        trace[3]: Wrong answer
-        trace[3]: i = 42
-        trace[3]: Exiting int Foo::bar(int)
-        trace[3]: Entering int Foo::bar(int)
-        trace[3]: i = 42
-        trace[3]: At line 13 in tracing_example.cpp
-        trace[3]: Right answer, but no question
-        trace[3]: i = 42
-        trace[3]: Exiting int Foo::bar(int)
-        trace[2]: Exiting int foo(int)
-        trace[1]: Exiting int main()
-        \endcode
-        Of course, a word of warning must be added: adding so much
-        tracing to your code might degrade its readability, at least
-        until we devise an Emacs macro to hide trace statements with a
-        couple of keystrokes.
-    */
-
     namespace detail {
 
         class Tracing : public Singleton<Tracing> {
             friend class QuantLib::Singleton<Tracing>;
-        private:
-            Tracing();
-        public:
+          private:
+            Tracing();  // NOLINT(modernize-use-equals-delete)
+          public:
             void enable() {
                 #if defined(QL_ENABLE_TRACING)
                 enabled_ = true;
@@ -81,10 +53,10 @@ namespace QuantLib {
             Integer depth() const { return depth_; }
             void down() { depth_++; }
             void up() { depth_--; }
-        private:
+          private:
             std::ostream* out_;
-            bool enabled_;
-            Integer depth_;
+            bool enabled_ = false;
+            Integer depth_ = 0;
         };
 
     }
@@ -98,7 +70,42 @@ namespace QuantLib {
 /*! \defgroup debugMacros Debugging macros
 
     For debugging purposes, macros can be used to output information
-    about the code being executed.
+    about the code being executed.  Instrumenting code as in:
+    \code
+    namespace Foo {
+
+        int bar(int i) {
+            QL_TRACE_ENTER_FUNCTION;
+            QL_TRACE_VARIABLE(i);
+
+            if (i == 42) {
+                QL_TRACE_LOCATION;
+                QL_TRACE("Right answer, but no question");
+            } else {
+                QL_TRACE_LOCATION;
+                QL_TRACE("Wrong answer");
+                i *= 2;
+            }
+
+            QL_TRACE_VARIABLE(i);
+            QL_TRACE_EXIT_FUNCTION;
+            return i;
+        }
+
+    }
+    \endcode
+    will output a trace like the following when the code is run:
+    \code
+    trace[3]: Entering int Foo::bar(int)
+    trace[3]: i = 21
+    trace[3]: At line 16 in tracing_example.cpp
+    trace[3]: Wrong answer
+    trace[3]: i = 42
+    trace[3]: Exiting int Foo::bar(int)
+    \endcode
+    (the actual output will depend on the compiler and the file
+    names).  A word of warning must be added: adding so much tracing
+    to your code might degrade its readability.
 
     @{
 */

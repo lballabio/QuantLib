@@ -17,8 +17,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/models/marketmodels/models/alphafinder.hpp>
 #include <ql/math/quadratic.hpp>
+#include <ql/models/marketmodels/models/alphafinder.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -175,21 +176,21 @@ namespace
     }
 }
 
-    AlphaFinder::AlphaFinder(boost::shared_ptr<AlphaForm> parametricform)
-    : parametricform_(parametricform) {}
+AlphaFinder::AlphaFinder(ext::shared_ptr<AlphaForm> parametricform)
+: parametricform_(std::move(parametricform)) {}
 
 
-    Real AlphaFinder::computeLinearPart(Real alpha) {
-        Real cov =0.0;
-        parametricform_->setAlpha(alpha);
+Real AlphaFinder::computeLinearPart(Real alpha) {
+    Real cov = 0.0;
+    parametricform_->setAlpha(alpha);
 
-        for (Integer i=0; i < stepindex_+1; ++i) {
-            Real vol1 = ratetwohomogeneousvols_[i]*(*parametricform_)(i);
-            cov += vol1*rateonevols_[i]*correlations_[i];
-        }
+    for (Integer i = 0; i < stepindex_ + 1; ++i) {
+        Real vol1 = ratetwohomogeneousvols_[i] * (*parametricform_)(i);
+        cov += vol1 * rateonevols_[i] * correlations_[i];
+    }
 
-        cov *= 2*w0_*w1_;
-        return cov;
+    cov *= 2 * w0_ * w1_;
+    return cov;
     }
 
 

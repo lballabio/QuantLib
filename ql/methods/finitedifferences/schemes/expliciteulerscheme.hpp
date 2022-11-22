@@ -42,16 +42,18 @@ namespace QuantLib {
         typedef traits::condition_type condition_type;
 
         // constructors
-        ExplicitEulerScheme(
-            const boost::shared_ptr<FdmLinearOpComposite>& map,
-            const bc_set& bcSet = bc_set());
+        explicit ExplicitEulerScheme(ext::shared_ptr<FdmLinearOpComposite> map,
+                                     const bc_set& bcSet = bc_set());
 
         void step(array_type& a, Time t);
         void setStep(Time dt);
 
       protected:
+        friend class CrankNicolsonScheme;
+        void step(array_type& a, Time t, Real theta);
+
         Time dt_;
-        const boost::shared_ptr<FdmLinearOpComposite> map_;
+        const ext::shared_ptr<FdmLinearOpComposite> map_;
         const BoundaryConditionSchemeHelper bcSet_;
     };
 }

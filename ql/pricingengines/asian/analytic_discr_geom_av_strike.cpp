@@ -17,16 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/pricingengines/asian/analytic_discr_geom_av_strike.hpp>
-#include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/exercise.hpp>
+#include <ql/math/distributions/normaldistribution.hpp>
+#include <ql/pricingengines/asian/analytic_discr_geom_av_strike.hpp>
+#include <utility>
 
 namespace QuantLib {
 
     AnalyticDiscreteGeometricAverageStrikeAsianEngine::
-    AnalyticDiscreteGeometricAverageStrikeAsianEngine(
-             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process)
-    : process_(process) {
+        AnalyticDiscreteGeometricAverageStrikeAsianEngine(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process)
+    : process_(std::move(process)) {
         registerWith(process_);
     }
 
@@ -45,8 +46,8 @@ namespace QuantLib {
         Size pastFixings = arguments_.pastFixings;
         QL_REQUIRE(pastFixings == 0, "past fixings currently not managed");
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        ext::shared_ptr<PlainVanillaPayoff> payoff =
+            ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         DayCounter rfdc  = process_->riskFreeRate()->dayCounter();
@@ -54,10 +55,9 @@ namespace QuantLib {
         DayCounter voldc = process_->blackVolatility()->dayCounter();
 
         std::vector<Time> fixingTimes;
-        for (Size i=0; i<arguments_.fixingDates.size(); i++) {
-            if (arguments_.fixingDates[i]>=arguments_.fixingDates[0]) {
-                Time t = voldc.yearFraction(arguments_.fixingDates[0],
-                    arguments_.fixingDates[i]);
+        for (auto& fixingDate : arguments_.fixingDates) {
+            if (fixingDate >= arguments_.fixingDates[0]) {
+                Time t = voldc.yearFraction(arguments_.fixingDates[0], fixingDate);
                 fixingTimes.push_back(t);
             }
         }

@@ -31,7 +31,7 @@
 #include <ql/math/interpolation.hpp>
 #include <ql/quote.hpp>
 #include <ql/patterns/lazyobject.hpp>
-#include <boost/noncopyable.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -42,8 +42,7 @@ namespace QuantLib {
         volatilities of a set of caps/floors with given length.
     */
     class CapFloorTermVolCurve : public LazyObject,
-                                 public CapFloorTermVolatilityStructure,
-                                 private boost::noncopyable {
+                                 public CapFloorTermVolatilityStructure {
       public:
         //! floating reference date, floating market data
         CapFloorTermVolCurve(Natural settlementDays,
@@ -73,19 +72,28 @@ namespace QuantLib {
                              const std::vector<Period>& optionTenors,
                              const std::vector<Volatility>& vols,
                              const DayCounter& dc = Actual365Fixed());
+
+        // make class non-copyable and non-movable
+        CapFloorTermVolCurve(CapFloorTermVolCurve&&) = delete;
+        CapFloorTermVolCurve(const CapFloorTermVolCurve&) = delete;
+        CapFloorTermVolCurve& operator=(CapFloorTermVolCurve&&) = delete;
+        CapFloorTermVolCurve& operator=(const CapFloorTermVolCurve&) = delete;
+
+        ~CapFloorTermVolCurve() override = default;
+
         //! \name TermStructure interface
         //@{
-        Date maxDate() const;
+        Date maxDate() const override;
         //@}
         //! \name VolatilityTermStructure interface
         //@{
-        Real minStrike() const;
-        Real maxStrike() const;
+        Real minStrike() const override;
+        Real maxStrike() const override;
         //@}
         //! \name LazyObject interface
         //@{
-        void update();
-        void performCalculations() const;
+        void update() override;
+        void performCalculations() const override;
         //@}
         //! \name some inspectors
         //@{
@@ -94,8 +102,8 @@ namespace QuantLib {
         const std::vector<Time>& optionTimes() const;
         //@}
       protected:
-        Volatility volatilityImpl(Time length,
-                                  Rate) const;
+        Volatility volatilityImpl(Time length, Rate) const override;
+
       private:
         void checkInputs() const;
         void initializeOptionDatesAndTimes() const;

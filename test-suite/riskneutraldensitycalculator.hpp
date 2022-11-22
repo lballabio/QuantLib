@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Johannes Goettker-Schnetmann
+ Copyright (C) 2015 Johannes Göttker-Schnetmann
  Copyright (C) 2015 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
@@ -33,6 +33,8 @@ class RiskNeutralDensityCalculatorTest {
     static void testBSMagainstHestonRND();
     static void testLocalVolatilityRND();
     static void testSquareRootProcessRND();
+    static void testMassAtZeroCEVProcessRND();
+    static void testCEVCDF();
     static void testBlackScholesWithSkew();
     static boost::unit_test_framework::test_suite* experimental(SpeedLevel);
 };

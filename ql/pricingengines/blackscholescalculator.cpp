@@ -22,7 +22,7 @@
 namespace QuantLib {
 
     BlackScholesCalculator::BlackScholesCalculator(
-                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                        const ext::shared_ptr<StrikedTypePayoff>& payoff,
                         Real spot,
                         DiscountFactor growth,
                         Real stdDev,

@@ -43,9 +43,10 @@ namespace QuantLib {
         GeometricBrownianMotionProcess(double initialValue,
                                        double mue,
                                        double sigma);
-        Real x0() const;
-        Real drift(Time t, Real x) const;
-        Real diffusion(Time t, Real x) const;
+        Real x0() const override;
+        Real drift(Time t, Real x) const override;
+        Real diffusion(Time t, Real x) const override;
+
       protected:
         double initialValue_;
         double mue_;

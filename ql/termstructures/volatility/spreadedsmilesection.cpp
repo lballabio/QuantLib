@@ -17,17 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/spreadedsmilesection.hpp>
 #include <ql/quote.hpp>
+#include <ql/termstructures/volatility/spreadedsmilesection.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    SpreadedSmileSection::SpreadedSmileSection(
-                    const boost::shared_ptr<SmileSection>& underlyingSection,
-                    const Handle<Quote>& spread)
-    : underlyingSection_(underlyingSection), spread_(spread) {
-            registerWith(underlyingSection_);
-            registerWith(spread_);
+    SpreadedSmileSection::SpreadedSmileSection(ext::shared_ptr<SmileSection> underlyingSection,
+                                               Handle<Quote> spread)
+    : underlyingSection_(std::move(underlyingSection)), spread_(std::move(spread)) {
+        registerWith(underlyingSection_);
+        registerWith(spread_);
     }
 
     Volatility SpreadedSmileSection::volatilityImpl(Rate k) const {

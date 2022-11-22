@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2005, 2007, 2010, 2012, 2014 Klaus Spanderen
+ Copyright (C) 2022 Ignacio Anguita
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -47,6 +48,23 @@ class HestonModelTest {
     static void testAllIntegrationMethods();
     static void testCosHestonCumulants();
     static void testCosHestonEngine();
+    static void testCosHestonEngineTruncation();
+    static void testCharacteristicFct();
+    static void testAndersenPiterbargPricing();
+    static void testAndersenPiterbargControlVariateIntegrand();
+    static void testAndersenPiterbargConvergence();
+    static void testPiecewiseTimeDependentChFvsHestonChF();
+    static void testPiecewiseTimeDependentComparison();
+    static void testPiecewiseTimeDependentChFAsymtotic();
+    static void testSmallSigmaExpansion();
+    static void testSmallSigmaExpansion4ExpFitting();
+    static void testExponentialFitting4StrikesAndMaturities();
+    static void testHestonEngineIntegration();
+    static void testOptimalControlVariateChoice();
+    static void testAsymptoticControlVariate();
+    static void testLocalVolFromHestonModel();
+    
+
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
     static boost::unit_test_framework::test_suite* experimental();
 };

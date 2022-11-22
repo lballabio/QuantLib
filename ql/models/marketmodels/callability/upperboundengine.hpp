@@ -42,16 +42,14 @@ namespace QuantLib {
     */
     class UpperBoundEngine {
       public:
-        UpperBoundEngine(
-                   const boost::shared_ptr<MarketModelEvolver>& evolver,
-                   const std::vector<boost::shared_ptr<MarketModelEvolver> >&
-                                                                 innerEvolvers,
-                   const MarketModelMultiProduct& underlying,
-                   const MarketModelExerciseValue& rebate,
-                   const MarketModelMultiProduct& hedge,
-                   const MarketModelExerciseValue& hedgeRebate,
-                   const ExerciseStrategy<CurveState>& hedgeStrategy,
-                   Real initialNumeraireValue);
+        UpperBoundEngine(ext::shared_ptr<MarketModelEvolver> evolver,
+                         std::vector<ext::shared_ptr<MarketModelEvolver> > innerEvolvers,
+                         const MarketModelMultiProduct& underlying,
+                         const MarketModelExerciseValue& rebate,
+                         const MarketModelMultiProduct& hedge,
+                         const MarketModelExerciseValue& hedgeRebate,
+                         const ExerciseStrategy<CurveState>& hedgeStrategy,
+                         Real initialNumeraireValue);
         void multiplePathValues(Statistics& stats,
                                 Size outerPaths,
                                 Size innerPaths);
@@ -62,8 +60,8 @@ namespace QuantLib {
                               Size beginProduct,
                               Size endProduct) const;
 
-        boost::shared_ptr<MarketModelEvolver> evolver_;
-        std::vector<boost::shared_ptr<MarketModelEvolver> > innerEvolvers_;
+        ext::shared_ptr<MarketModelEvolver> evolver_;
+        std::vector<ext::shared_ptr<MarketModelEvolver> > innerEvolvers_;
         MultiProductComposite composite_;
 
         Real initialNumeraireValue_;

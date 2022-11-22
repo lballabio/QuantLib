@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009 StatPro Italia srl
+ Copyright (C) 2019 Aprexo Limited
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,7 +19,7 @@
 */
 
 /*! \file version.hpp
-    \brief Version number
+    \brief Version number, and version of boost the library is compiled with
 */
 
 #ifndef quantlib_version_hpp
@@ -30,18 +31,21 @@
 /*! @{ */
 
 //! version string
-#ifdef QL_DEBUG
-    #define QL_VERSION "1.11-debug"
-#else
-    #define QL_VERSION "1.11"
-#endif
+#define QL_VERSION "1.29-dev"
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x011100f0
-//! version string for output lib name
-#define QL_LIB_VERSION "1_11"
+#define QL_HEX_VERSION 0x01290000
 
 /*! @}  */
 
+namespace QuantLib {
+
+    /*! Returns the version of boost that the QuantLib library was built with
+        Use to check that client code is using a consistent version of boost.
+        Using QuantLib header files compiled with a different version of boost
+        than the library itself may result in undefined behaviour */
+    std::size_t compiledBoostVersion();
+
+}
 
 #endif

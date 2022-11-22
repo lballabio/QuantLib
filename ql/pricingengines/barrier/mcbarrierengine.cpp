@@ -20,22 +20,21 @@
 */
 
 #include <ql/pricingengines/barrier/mcbarrierengine.hpp>
+#include <utility>
 
 namespace QuantLib {
 
-    BarrierPathPricer::BarrierPathPricer(
-                    Barrier::Type barrierType,
-                    Real barrier,
-                    Real rebate,
-                    Option::Type type,
-                    Real strike,
-                    const std::vector<DiscountFactor>& discounts,
-                    const boost::shared_ptr<StochasticProcess1D>& diffProcess,
-                    const PseudoRandom::ursg_type& sequenceGen)
-    : barrierType_(barrierType), barrier_(barrier),
-      rebate_(rebate), diffProcess_(diffProcess),
-      sequenceGen_(sequenceGen), payoff_(type, strike),
-      discounts_(discounts) {
+    BarrierPathPricer::BarrierPathPricer(Barrier::Type barrierType,
+                                         Real barrier,
+                                         Real rebate,
+                                         Option::Type type,
+                                         Real strike,
+                                         std::vector<DiscountFactor> discounts,
+                                         ext::shared_ptr<StochasticProcess1D> diffProcess,
+                                         PseudoRandom::ursg_type sequenceGen)
+    : barrierType_(barrierType), barrier_(barrier), rebate_(rebate),
+      diffProcess_(std::move(diffProcess)), sequenceGen_(std::move(sequenceGen)),
+      payoff_(type, strike), discounts_(std::move(discounts)) {
         QL_REQUIRE(strike>=0.0,
                    "strike less than zero not allowed");
         QL_REQUIRE(barrier>0.0,
@@ -54,7 +53,7 @@ namespace QuantLib {
         Real new_asset_price;
         Real x, y;
         Volatility vol;
-        TimeGrid timeGrid = path.timeGrid();
+        const TimeGrid& timeGrid = path.timeGrid();
         Time dt;
         std::vector<Real> u = sequenceGen_.nextSequence().value;
         Size i;
@@ -157,15 +156,14 @@ namespace QuantLib {
     }
 
 
-    BiasedBarrierPathPricer::BiasedBarrierPathPricer(
-                                 Barrier::Type barrierType,
-                                 Real barrier,
-                                 Real rebate,
-                                 Option::Type type,
-                                 Real strike,
-                                 const std::vector<DiscountFactor>& discounts)
-    : barrierType_(barrierType), barrier_(barrier),
-      rebate_(rebate), payoff_(type, strike), discounts_(discounts) {
+    BiasedBarrierPathPricer::BiasedBarrierPathPricer(Barrier::Type barrierType,
+                                                     Real barrier,
+                                                     Real rebate,
+                                                     Option::Type type,
+                                                     Real strike,
+                                                     std::vector<DiscountFactor> discounts)
+    : barrierType_(barrierType), barrier_(barrier), rebate_(rebate), payoff_(type, strike),
+      discounts_(std::move(discounts)) {
         QL_REQUIRE(strike>=0.0,
                    "strike less than zero not allowed");
         QL_REQUIRE(barrier>0.0,
