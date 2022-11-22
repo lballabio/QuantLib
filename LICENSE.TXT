@@ -131,9 +131,9 @@ QuantLib is
 
     Copyright (C) 2017 BN Algorithms Ltd
     Copyright (C) 2017 Joseph Jeisman
-    Copyright (C) 2017 Oleg Kulkov
     Copyright (C) 2017 Paul Giltinan
     Copyright (C) 2017 Werner Kuerzinger
+    Copyright (C) 2017, 2022 Oleg Kulkov
 
     Copyright (C) 2018 Alexey Indiryakov
     Copyright (C) 2018 Jose Garcia
