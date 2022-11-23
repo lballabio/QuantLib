@@ -224,8 +224,8 @@ void AmortizingBondTest::testAmortizingFixedRateBondWithDrawDown() {
     Schedule schedule(issueDate, maturityDate, Period(Semiannual), calendar,
                       Unadjusted, Unadjusted, DateGeneration::Backward, false);
 
-    std::vector<double> nominals = { 100.0, 100.0, 100.5, 100.5, 101.5, 101.5, 90.0, 80.0, 70.0, 60.0 };
-    std::vector<double> rates = { 0.042 };
+    std::vector<Real> nominals = { 100.0, 100.0, 100.5, 100.5, 101.5, 101.5, 90.0, 80.0, 70.0, 60.0 };
+    std::vector<Real> rates = { 0.042 };
 
     Leg leg = FixedRateLeg(schedule)
         .withNotionals(nominals)
