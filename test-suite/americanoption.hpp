@@ -50,6 +50,8 @@ class AmericanOptionTest {
     static void testQdEngineStandardExample();
     static void testBulkQdFpAmericanEngine();
     static void testQdEngineWithLobattoIntegral();
+    static void testQdNegativeDividendYield();
+
 
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
