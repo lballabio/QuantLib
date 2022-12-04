@@ -72,7 +72,6 @@ QL_CHECK_SYSTEM_HEADER_PREFIX
 
 # Check for Boost components
 QL_CHECK_BOOST
-AM_CONDITIONAL(BOOST_UNIT_TEST_FOUND, test "x${HAVE_BOOST_TEST}" != "x")
 
 # Check for Emacs
 AM_PATH_LISPDIR
@@ -417,6 +416,17 @@ if test "$ql_use_null_functions" = "yes" ; then
              [Define this if you want to enable the implementation of Null as template functions.])
 fi
 AC_MSG_RESULT([$ql_use_null_functions])
+
+AC_MSG_CHECKING([whether to compile the test suite])
+AC_ARG_ENABLE([test-suite],
+              AS_HELP_STRING([--enable-test-suite],
+                             [If enabled (the default), the test suite is
+                              also built, assuming Boost.Test could be found.
+                              If disabled, it is not. Do not try this at home.]),
+              [ql_build_test_suite=$enableval],
+              [ql_build_test_suite=yes])
+AM_CONDITIONAL(BUILD_TEST_SUITE, test "$ql_build_test_suite" != "no" && test "x${HAVE_BOOST_TEST}" != "x" )
+AC_MSG_RESULT([$ql_build_test_suite])
 
 
 # manual configurations for specific hosts

@@ -390,7 +390,7 @@ dist-hook:
 	mkdir -p $(distdir)/bin
 	cp -p $(srcdir)/bin/runtest.bat $(distdir)/bin
 
-if BOOST_UNIT_TEST_FOUND
+if BUILD_TEST_SUITE
 
 AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
