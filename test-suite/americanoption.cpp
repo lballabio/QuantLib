@@ -1787,6 +1787,79 @@ void AmericanOptionTest::testQdEngineWithLobattoIntegral() {
     }
 }
 
+void AmericanOptionTest::testQdNegativeDividendYield() {
+    BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
+                        "with positive or zero interest rate and "
+                        "negative dividend yield...");
+
+    SavedSettings backup;
+
+    const DayCounter dc = Actual365Fixed();
+    const Date today = Date(5, December, 2022);
+    Settings::instance().evaluationDate() = today;
+    const Date maturityDate = today + Period(18, Months);
+
+    const Real K = 90;
+    const auto spot = ext::make_shared<SimpleQuote>(100);
+    const auto qRate = ext::make_shared<SimpleQuote>(0);
+    const auto rRate = ext::make_shared<SimpleQuote>(0);
+
+    const auto process = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(flatRate(qRate, dc)),
+        Handle<YieldTermStructure>(flatRate(rRate, dc)),
+        Handle<BlackVolTermStructure>(flatVol(0.4, dc))
+    );
+
+    VanillaOption option(
+        ext::make_shared<PlainVanillaPayoff>(Option::Put, K),
+        ext::make_shared<AmericanExercise>(today, maturityDate)
+    );
+    const auto qdPlusEngine =
+        ext::make_shared<QdPlusAmericanEngine>(process);
+    const auto qdFpEngine =
+        ext::make_shared<QdFpAmericanEngine>(process);
+    const auto fdmEngine =
+        ext::make_shared<FdBlackScholesVanillaEngine>(process, 800, 200);
+
+    const Rate rRates[] = {0.025, 0.5, 0.0, 1e-6};
+    const Rate qRates[] = {-0.05, -0.1, -0.5, 0.0};
+
+    for (auto r: rRates) {
+        rRate->setValue(r);
+        for (auto q: qRates) {
+            qRate->setValue(q);
+
+            option.setPricingEngine(qdFpEngine);
+            const Real qdFpNPV = option.NPV();
+            option.setPricingEngine(qdPlusEngine);
+            const Real qdPlusNPV = option.NPV();
+            option.setPricingEngine(fdmEngine);
+            const Real fdmNPV = option.NPV();
+
+            const Real tol = 1.5e-2;
+            const Real diffFdmQqFp = std::abs(fdmNPV - qdFpNPV);
+
+            if (diffFdmQqFp > tol || std::isnan(diffFdmQqFp)) {
+                BOOST_ERROR("failed to reproduce QD+ fixed point values"
+                        << "\n    r        : " << r
+                        << "\n    q        : " << q
+                        << "\n    diff     : " << diffFdmQqFp
+                        << "\n    tol      : " << tol);
+            }
+
+            const Real diffFdmQdPlus = std::abs(fdmNPV - qdPlusNPV);
+            if (diffFdmQdPlus > 5*tol || std::isnan(diffFdmQdPlus)) {
+                BOOST_ERROR("failed to reproduce QD+ values"
+                        << "\n    r        : " << r
+                        << "\n    q        : " << q
+                        << "\n    diff     : " << diffFdmQdPlus
+                        << "\n    tol      : " << 5*tol);
+            }
+        }
+    }
+}
+
 test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("American option tests");
 
@@ -1809,6 +1882,7 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineStandardExample));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBulkQdFpAmericanEngine));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineWithLobattoIntegral));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdNegativeDividendYield));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
