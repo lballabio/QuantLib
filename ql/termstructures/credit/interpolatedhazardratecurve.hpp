@@ -254,23 +254,12 @@ namespace QuantLib {
         QL_REQUIRE(this->data_.size() == dates_.size(),
                    "dates/data count mismatch");
 
-        this->times_.resize(dates_.size());
-        this->times_[0] = 0.0;
-        for (Size i=1; i<dates_.size(); ++i) {
-            QL_REQUIRE(dates_[i] > dates_[i-1],
-                       "invalid date (" << dates_[i] << ", vs "
-                       << dates_[i-1] << ")");
-            this->times_[i] = dayCounter().yearFraction(dates_[0], dates_[i]);
-            QL_REQUIRE(!close(this->times_[i], this->times_[i-1]),
-                       "two dates correspond to the same time "
-                       "under this curve's day count convention");
+        for (Size i=0; i<dates_.size(); ++i) {
             QL_REQUIRE(this->data_[i] >= 0.0, "negative hazard rate");
         }
 
-        this->interpolation_ =
-            this->interpolator_.interpolate(this->times_.begin(),
-                                            this->times_.end(),
-                                            this->data_.begin());
+        this->setupTimes(dates_, dates_[0], dayCounter());
+        this->setupInterpolation();
         this->interpolation_.update();
     }
 
