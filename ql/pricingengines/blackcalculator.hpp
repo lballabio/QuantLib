@@ -102,6 +102,9 @@ namespace QuantLib {
         /*! Sensitivity to strike. */
         Real strikeSensitivity() const;
 
+        /*! gamma w.r.t. strike. */
+        Real strikeGamma() const;
+
         Real alpha() const;
         Real beta() const;
       protected:

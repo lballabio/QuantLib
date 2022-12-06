@@ -22,6 +22,7 @@
 #include "americanoption.hpp"
 #include "utilities.hpp"
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
@@ -1860,6 +1861,185 @@ void AmericanOptionTest::testQdNegativeDividendYield() {
     }
 }
 
+void AmericanOptionTest::testBjerksundStenslandEuorpeanGreeks() {
+    BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland greeks when early "
+                       "exercise is not optimal...");
+
+    SavedSettings backup;
+
+    const Date today = Date(5, November, 2022);
+    Settings::instance().evaluationDate() = today;
+
+    const auto spot = ext::make_shared<SimpleQuote>(100);
+    const Real K = 105;
+
+    const Volatility sigma = 0.40;
+    const Date maturityDate = today + Period(724, Days);
+
+    const auto qTS = ext::make_shared<SimpleQuote>(0.0);
+    const auto rTS = ext::make_shared<SimpleQuote>(0.0);
+
+    const auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(flatRate(qTS, Actual365Fixed())),
+        Handle<YieldTermStructure>(flatRate(rTS, Actual360())),
+        Handle<BlackVolTermStructure>(
+            flatVol(today, sigma, Thirty360(Thirty360::European)))
+    );
+
+    struct OptionSpec {
+        Option::Type type;
+        Real r;
+        Real q;
+    };
+
+    const OptionSpec testCaseSpecs[] = {
+        {Option::Put, -0.05, 0.02},
+        {Option::Call, 0.05, -0.025}
+    };
+
+    const auto europeanExercise =
+        ext::make_shared<EuropeanExercise>(maturityDate);
+    const auto americanExercise =
+        ext::make_shared<AmericanExercise>(today, maturityDate);
+
+    const auto europeanEngine =
+        ext::make_shared<AnalyticEuropeanEngine>(bsProcess);
+
+    const auto bjerksundStenslandEngine =
+        ext::make_shared<BjerksundStenslandApproximationEngine>(bsProcess);
+
+
+    for (const auto& testCaseSpec: testCaseSpecs) {
+        qTS->setValue(testCaseSpec.q);
+        rTS->setValue(testCaseSpec.r);
+
+        VanillaOption americanOption(
+            ext::make_shared<PlainVanillaPayoff>(testCaseSpec.type, K),
+            americanExercise
+        );
+        americanOption.setPricingEngine(bjerksundStenslandEngine);
+
+        VanillaOption europeanOption(
+            ext::make_shared<PlainVanillaPayoff>(testCaseSpec.type, K),
+            europeanExercise
+        );
+        europeanOption.setPricingEngine(europeanEngine);
+
+        const Real tol = 1000*QL_EPSILON;
+
+        BOOST_CHECK_CLOSE(europeanOption.NPV(), americanOption.NPV(), tol);
+        BOOST_CHECK_CLOSE(europeanOption.delta(), americanOption.delta(), tol);
+        BOOST_CHECK_CLOSE(europeanOption.strikeSensitivity(), americanOption.strikeSensitivity(), tol);
+        BOOST_CHECK_CLOSE(europeanOption.deltaForward(), americanOption.deltaForward(), tol);
+        BOOST_CHECK_CLOSE(europeanOption.elasticity(), americanOption.elasticity(), tol);
+        BOOST_CHECK_CLOSE(europeanOption.gamma(), americanOption.gamma(), tol);
+        BOOST_CHECK_CLOSE(europeanOption.vega(), americanOption.vega(), tol);
+        BOOST_CHECK_CLOSE(europeanOption.theta(), americanOption.theta(), tol);
+        BOOST_CHECK_CLOSE(europeanOption.thetaPerDay(), americanOption.thetaPerDay(), tol);
+        BOOST_CHECK_CLOSE(europeanOption.rho(), americanOption.rho(), tol);
+        BOOST_CHECK_CLOSE(europeanOption.dividendRho(), americanOption.dividendRho(), tol);
+    }
+}
+
+void AmericanOptionTest::testBjerksundStenslandAmericanGreeks() {
+    BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland American greeks...");
+
+    SavedSettings backup;
+
+    const Date today = Date(5, December, 2022);
+    Settings::instance().evaluationDate() = today;
+
+    const auto spot = ext::make_shared<SimpleQuote>(0);
+    const auto vol = ext::make_shared<SimpleQuote>(0);
+
+    const auto qRate = ext::make_shared<SimpleQuote>(0);
+    const auto rRate = ext::make_shared<SimpleQuote>(0);
+
+    const auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(
+        Handle<Quote>(spot),
+        Handle<YieldTermStructure>(flatRate(qRate, Actual365Fixed())),
+        Handle<YieldTermStructure>(flatRate(rRate, Actual360())),
+        Handle<BlackVolTermStructure>(
+            flatVol(today, vol, Thirty360(Thirty360::European)))
+    );
+
+    const auto bjerksundStenslandEngine =
+        ext::make_shared<BjerksundStenslandApproximationEngine>(bsProcess);
+
+    const Real strike = 100;
+    const Option::Type types[] = { Option::Call/*, Option::Put*/};
+    const Rate rf[] = {0.01};//{0.0, 0.02, 0.04, 0.06, 0.08, 0.1};
+    const Rate qy[] = {0.01};//{0.0, 0.04, 0.08, 0.12};
+
+    const Volatility sig[] = {0.1, 0.2, 0.4, 0.5, 1.0};
+    const Real S[] = {100};//{25, 50, 80, 90, 100, 110, 120, 150, 175, 200};
+    const Size T[] = {30, 91, 182, 365, 730, 1825};
+
+    const Real f_d = 1e-5;
+    for (auto type: types) {
+        const auto payoff = [type](Real strike) {
+            return ext::make_shared<PlainVanillaPayoff>(type, strike);};
+
+        for (auto t: T) {
+            const Date maturityDate = today + Period(t, Days);
+            const auto exercise =
+                ext::make_shared<AmericanExercise>(today, maturityDate);
+
+            VanillaOption option(payoff(strike), exercise);
+            option.setPricingEngine(bjerksundStenslandEngine);
+
+            VanillaOption strike_up(payoff(strike*(1+f_d)), exercise);
+            strike_up.setPricingEngine(bjerksundStenslandEngine);
+            VanillaOption strike_down(payoff(strike*(1-f_d)), exercise);
+            strike_down.setPricingEngine(bjerksundStenslandEngine);
+
+            for (auto r: rf) {
+                rRate->setValue(r);
+                for (auto q: qy) {
+                    qRate->setValue(q);
+                    for (auto v: sig) {
+                        vol->setValue(v);
+                        for (auto s: S) {
+                            spot->setValue(s);
+
+                            const Real npv = option.NPV();
+                            const Real delta = option.delta();
+                            const Real strikeSensitivity = option.strikeSensitivity();
+                            const Real dividendRho = option.dividendRho();
+
+                            OneAssetOption::results numericalResults;
+
+                            spot->setValue(s*(1+f_d));
+                            const Real f2 = option.NPV();
+                            spot->setValue(s*(1-f_d));
+                            const Real f1 = option.NPV();
+                            spot->setValue(s);
+                            numericalResults.delta = (f2 - f1)/(2*f_d*s);
+                            //std::cout << numericalResults.delta  - delta << std::endl;
+
+                            const Real k2 = strike_up.NPV();
+                            const Real k1 = strike_down.NPV();
+                            numericalResults.strikeSensitivity = (k2 - k1)/(2*f_d*strike);
+                            //std::cout << strikeSensitivity << " " << numericalResults.strikeSensitivity  - strikeSensitivity << std::endl;
+
+                            qRate->setValue(q + f_d);
+                            const Real q2 = option.NPV();
+                            qRate->setValue(q - f_d);
+                            const Real q1 = option.NPV();
+                            qRate->setValue(q);
+                            numericalResults.dividendRho = (q2-q1)/(2*f_d);
+
+                            std::cout << dividendRho << " "
+                                    << numericalResults.dividendRho - dividendRho << std::endl;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("American option tests");
 
@@ -1883,6 +2063,8 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBulkQdFpAmericanEngine));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineWithLobattoIntegral));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdNegativeDividendYield));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandEuorpeanGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandAmericanGreeks));
 
     if (speed <= Fast) {
         suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
