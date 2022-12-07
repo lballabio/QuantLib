@@ -73,8 +73,22 @@ namespace QuantLib {
 
     template <>
     struct earlier_than<CashFlow> {
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef CashFlow first_argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef CashFlow second_argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef bool result_type;
 
         bool operator()(const CashFlow& c1,

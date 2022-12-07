@@ -41,7 +41,16 @@ namespace QuantLib {
     */
     class StudentDistribution {
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real result_type;
 
         StudentDistribution(Integer n) : n_(n) {
@@ -66,7 +75,16 @@ namespace QuantLib {
     */
     class CumulativeStudentDistribution {
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real result_type;
 
         CumulativeStudentDistribution(Integer n) : n_(n) {
@@ -84,7 +102,16 @@ namespace QuantLib {
     */
     class InverseCumulativeStudent {
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real result_type;
 
         InverseCumulativeStudent(Integer n,
