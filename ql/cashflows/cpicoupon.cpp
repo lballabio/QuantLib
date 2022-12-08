@@ -178,28 +178,7 @@ namespace QuantLib {
 
     Real CPICashFlow::amount() const {
         Real I0 = baseFixing();
-        Real I1;
-
-        if (observationDate_ != Date()) {
-            I1 = CPI::laggedFixing(cpiIndex(), observationDate_, observationLag_, interpolation_);
-        } else {
-            // we get to this branch when the deprecated constructor was used; it will be phased out
-            if (interpolation() == CPI::AsIndex ) {
-                I1 = index()->fixing(fixingDate());
-            } else {
-                std::pair<Date,Date> dd = inflationPeriod(fixingDate(), frequency());
-                Real indexStart = index()->fixing(dd.first);
-                if (interpolation() == CPI::Linear) {
-                    Real indexEnd = index()->fixing(dd.second+Period(1,Days));
-                    // linear interpolation
-                    I1 = indexStart + (indexEnd - indexStart) * (fixingDate() - dd.first)
-                        / ( (dd.second+Period(1,Days)) - dd.first);
-                } else {
-                    // no interpolation, i.e. flat = constant, so use start-of-period value
-                    I1 = indexStart;
-                }
-            }
-        }
+        Real I1 = indexFixing();
 
         if (growthOnly())
             return notional() * (I1 / I0 - 1.0);
