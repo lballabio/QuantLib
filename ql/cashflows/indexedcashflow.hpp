@@ -60,6 +60,7 @@ namespace QuantLib {
         virtual Date fixingDate() const { return fixingDate_; }
         virtual ext::shared_ptr<Index> index() const { return index_; }
         virtual bool growthOnly() const { return growthOnly_; }
+        virtual Real baseFixing() const { return index_->fixing(baseDate()); }
         virtual Real indexFixing() const { return index_->fixing(fixingDate_); }
         //! \name CashFlow interface
         //@{

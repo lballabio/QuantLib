@@ -176,16 +176,6 @@ namespace QuantLib {
         return baseFixing_;
     }
 
-    Real CPICashFlow::amount() const {
-        Real I0 = baseFixing();
-        Real I1 = indexFixing();
-
-        if (growthOnly())
-            return notional() * (I1 / I0 - 1.0);
-        else
-            return notional() * (I1 / I0);
-    }
-
     Real CPICashFlow::indexFixing() const {
         if (observationDate_ != Date()) {
             return CPI::laggedFixing(cpiIndex(), observationDate_, observationLag_, interpolation_);
