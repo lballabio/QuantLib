@@ -42,7 +42,7 @@ namespace QuantLib {
                   BusinessDayConvention convention,
                   bool endOfMonth,
                   const DayCounter& dayCounter,
-                  Handle<YieldTermStructure> h = Handle<YieldTermStructure>());
+                  Handle<YieldTermStructure> h = {});
         //! \name InterestRateIndex interface
         //@{
         Date maturityDate(const Date& valueDate) const override;
@@ -92,8 +92,7 @@ namespace QuantLib {
                        const Currency& currency,
                        const Calendar& fixingCalendar,
                        const DayCounter& dayCounter,
-                       const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+                       const Handle<YieldTermStructure>& h = {});
         //! returns a copy of itself linked to a different forwarding curve
         ext::shared_ptr<IborIndex> clone(const Handle<YieldTermStructure>& h) const override;
     };

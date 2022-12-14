@@ -19,7 +19,7 @@ QuantLib is
     Copyright (C) 2004 M-Dimension Consulting Inc.
     Copyright (C) 2004 Mike Parker
     Copyright (C) 2004 Walter Penschke
-    Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Klaus Spanderen
+    Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Klaus Spanderen
 
     Copyright (C) 2005 Charles Whitmore
     Copyright (C) 2005 Sercan Atalik
@@ -131,9 +131,9 @@ QuantLib is
 
     Copyright (C) 2017 BN Algorithms Ltd
     Copyright (C) 2017 Joseph Jeisman
-    Copyright (C) 2017 Oleg Kulkov
     Copyright (C) 2017 Paul Giltinan
     Copyright (C) 2017 Werner Kuerzinger
+    Copyright (C) 2017, 2022 Oleg Kulkov
 
     Copyright (C) 2018 Alexey Indiryakov
     Copyright (C) 2018 Jose Garcia

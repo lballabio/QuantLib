@@ -1,5 +1,9 @@
 name: Coverage report
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 jobs:
   coverage:
     runs-on: ubuntu-latest

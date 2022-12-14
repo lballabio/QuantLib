@@ -38,7 +38,7 @@ namespace QuantLib {
                       const Handle<Quote>& fixedRate,
                       ext::shared_ptr<OvernightIndex> overnightIndex,
                       // exogenous discounting curve
-                      Handle<YieldTermStructure> discountingCurve = Handle<YieldTermStructure>(),
+                      Handle<YieldTermStructure> discountingCurve = {},
                       bool telescopicValueDates = false,
                       Natural paymentLag = 0,
                       BusinessDayConvention paymentConvention = Following,
@@ -97,7 +97,7 @@ namespace QuantLib {
             const Handle<Quote>& fixedRate,
             const ext::shared_ptr<OvernightIndex>& overnightIndex,
             // exogenous discounting curve
-            Handle<YieldTermStructure> discountingCurve = Handle<YieldTermStructure>(),
+            Handle<YieldTermStructure> discountingCurve = {},
             bool telescopicValueDates = false,
             RateAveraging::Type averagingMethod = RateAveraging::Compound);
         //! \name RateHelper interface

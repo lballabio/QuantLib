@@ -35,7 +35,16 @@ namespace QuantLib {
     class AbcdMathFunction {
 
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Time argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real result_type;
 
         AbcdMathFunction(Real a = 0.002,

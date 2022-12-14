@@ -42,8 +42,7 @@ namespace QuantLib {
 	class Mosprime : public IborIndex {
 	public:
 		Mosprime(const Period& tenor,
-			const Handle<YieldTermStructure>& h =
-			Handle<YieldTermStructure>())
+                 const Handle<YieldTermStructure>& h = {})
 			: IborIndex("MOSPRIME", tenor, (tenor == 1 * Days ? 0 : 1), RUBCurrency(),
 				Russia(), ModifiedFollowing, false,
 				ActualActual(ActualActual::ISDA), h) {}

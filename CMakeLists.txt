@@ -5,14 +5,14 @@ cmake_policy(SET CMP0091 NEW)
 
 # Version info
 set(QUANTLIB_VERSION_MAJOR 1)
-set(QUANTLIB_VERSION_MINOR 28)
+set(QUANTLIB_VERSION_MINOR 29)
 set(QUANTLIB_VERSION_PATCH 0)
 set(QUANTLIB_VERSION ${QUANTLIB_VERSION_MAJOR}.${QUANTLIB_VERSION_MINOR}.${QUANTLIB_VERSION_PATCH})
 
 # Project Info
 set(PACKAGE_NAME          "QuantLib")
-set(PACKAGE_VERSION       "${QUANTLIB_VERSION}-rc")
-set(PACKAGE_VERSION_HEX   "0x012800c0")
+set(PACKAGE_VERSION       "${QUANTLIB_VERSION}-dev")
+set(PACKAGE_VERSION_HEX   "0x01290000")
 set(PACKAGE_STRING        "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_TARNAME       "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 set(PACKAGE_BUGREPORT     "https://github.com/lballabio/QuantLib/issues/")
@@ -45,7 +45,6 @@ option(QL_BUILD_TEST_SUITE "Build test suite" ON)
 option(QL_ENABLE_OPENMP "Detect and use OpenMP" OFF)
 option(QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER "Enable the parallel unit test runner" OFF)
 option(QL_ENABLE_SESSIONS "Singletons return different instances for different sessions" OFF)
-option(QL_ENABLE_SINGLETON_THREAD_SAFE_INIT "Enable thread-safe singleton initialization" OFF)
 option(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN "Enable the thread-safe observer pattern" OFF)
 option(QL_ENABLE_TRACING "Tracing messages should be allowed" OFF)
 option(QL_ERROR_FUNCTIONS "Error messages should include current function information" OFF)
@@ -125,15 +124,7 @@ if (NOT DEFINED QL_BOOST_VERSION)
     endif()
 endif()
 
-if (NOT DEFINED QL_BOOST_COMPONENTS)
-    set(QL_BOOST_COMPONENTS "")
-    # Boost thread needed for sessions, singleton thread-safe init and thread-safe observer pattern
-    if(QL_ENABLE_SESSIONS OR QL_ENABLE_SINGLETON_THREAD_SAFE_INIT OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
-        set(QL_BOOST_COMPONENTS "${QL_BOOST_COMPONENTS};thread")
-    endif()
-endif()
-
-find_package(Boost ${QL_BOOST_VERSION} REQUIRED COMPONENTS ${QL_BOOST_COMPONENTS})
+find_package(Boost ${QL_BOOST_VERSION} REQUIRED)
 
 # Do not warn about Boost versions higher than 1.58.0
 set(Boost_NO_WARN_NEW_VERSIONS ON)
@@ -150,20 +141,16 @@ if (NOT DEFINED THREADS_PREFER_PTHREAD_FLAG)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
 endif()
 
-set(QL_THREAD_LIBRARIES)
-
-if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER)
+# Add Threads dependency when any of the threading features are enabled
+if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER OR QL_ENABLE_SESSIONS OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
     find_package(Threads REQUIRED)
-    set(QL_THREAD_LIBRARIES Threads::Threads ${QL_THREAD_LIBRARIES})
     # Parallel test runner needs library rt on *nix for shm_open, etc.
-    if (UNIX AND NOT APPLE)
+    if (QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER AND UNIX AND NOT APPLE)
         find_library(RT_LIBRARY rt REQUIRED)
-        set(QL_THREAD_LIBRARIES ${RT_LIBRARY} ${QL_THREAD_LIBRARIES})
+        set(QL_THREAD_LIBRARIES Threads::Threads ${RT_LIBRARY})
+    else()
+        set(QL_THREAD_LIBRARIES Threads::Threads)
     endif()
-endif()
-
-if (QL_ENABLE_SESSIONS OR QL_ENABLE_SINGLETON_THREAD_SAFE_INIT OR QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN)
-    set(QL_THREAD_LIBRARIES Boost::thread ${QL_THREAD_LIBRARIES})
 endif()
 
 # If available, use PIC for shared libs and PIE for executables

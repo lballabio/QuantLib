@@ -39,7 +39,16 @@ namespace QuantLib {
     */
     class PoissonDistribution {
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real result_type;
 
         PoissonDistribution(Real mu);
@@ -63,7 +72,16 @@ namespace QuantLib {
     */
     class CumulativePoissonDistribution {
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real result_type;
 
         CumulativePoissonDistribution(Real mu) : mu_(mu) {}
@@ -81,7 +99,16 @@ namespace QuantLib {
     */
     class InverseCumulativePoisson {
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real result_type;
 
         InverseCumulativePoisson(Real lambda = 1.0);

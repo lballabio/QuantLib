@@ -89,14 +89,6 @@
     at least C++17.
 
     \code
-    #define QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-    \endcode
-    Define this to make `Singleton` initialization thread-safe.
-    Undefined by default.  Not compatible with `QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN`.
-    Note that defining QL_ENABLE_SESSIONS implies thread-safe initialization,
-    whether this is defined or not.
-
-    \code
     #define QL_HIGH_RESOLUTION_DATE
     \endcode
     If defined, date objects support an intraday datetime

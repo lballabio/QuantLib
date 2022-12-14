@@ -214,7 +214,7 @@ namespace QuantLib {
 
         //! value used on base date
         /*! This does not have to agree with index on that date. */
-        virtual Real baseFixing() const;
+        Real baseFixing() const override;
         //! you may not have a valid date
         Date baseDate() const override;
 
@@ -228,8 +228,7 @@ namespace QuantLib {
 
         ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
 
-        //! redefined to use baseFixing() and interpolation
-        Real amount() const override;
+        Real indexFixing() const override;
 
       protected:
         Real baseFixing_;

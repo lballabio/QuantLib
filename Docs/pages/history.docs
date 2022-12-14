@@ -103,9 +103,9 @@
       see above.
 
     Thanks go also to Konstantin Novitsky, Peter Caspers, Klaus
-    Spanderen and Fredrik Gerdin Börjesson for a number of smaller fixes,
-    and to Jonathan Sweemer for various improvements to the automated CI
-    builds.
+    Spanderen, Fredrik Gerdin Börjesson and Dirk Eddelbuettel for a
+    number of smaller fixes, and to Jonathan Sweemer for various
+    improvements to the automated CI builds.
 
     <strong>Release 1.27.1 - August 30th, 2022</strong>
 

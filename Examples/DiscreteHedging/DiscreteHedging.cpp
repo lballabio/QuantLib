@@ -63,15 +63,6 @@
 
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
-
 /* The ReplicationError class carries out Monte Carlo simulations to evaluate
    the outcome (the replication error) of the discrete hedging strategy over
    different, randomly generated scenarios of future stock price evolution.

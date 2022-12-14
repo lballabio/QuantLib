@@ -22,6 +22,7 @@
     \brief Integral of a 1-dimensional function using the Gauss quadratures
 */
 
+#include <ql/utilities/null.hpp>
 #include <ql/math/integrals/gaussianquadratures.hpp>
 #include <ql/math/matrixutilities/tqreigendecomposition.hpp>
 #include <ql/math/matrixutilities/symmetricschurdecomposition.hpp>
@@ -57,6 +58,30 @@ namespace QuantLib {
         }
     }
 
+
+    namespace detail {
+        template <class Integration>
+        GaussianQuadratureIntegrator<Integration>::GaussianQuadratureIntegrator(
+            Size n)
+        : Integrator(Null<Real>(), n),
+          integration_(ext::make_shared<Integration>(n))
+         {  }
+
+        template <class Integration>
+        Real GaussianQuadratureIntegrator<Integration>::integrate(
+            const ext::function<Real (Real)>& f, Real a, Real b) const {
+
+            const Real c1 = 0.5*(b-a);
+            const Real c2 = 0.5*(a+b);
+
+            return c1*integration_->operator()(
+                [c1, c2, f](Real x) { return f(c1*x+c2);});
+        }
+
+        template class GaussianQuadratureIntegrator<GaussLegendreIntegration>;
+        template class GaussianQuadratureIntegrator<GaussChebyshevIntegration>;
+        template class GaussianQuadratureIntegrator<GaussChebyshev2ndIntegration>;
+    }
 
     void TabulatedGaussLegendre::order(Size order) {
         switch(order) {

@@ -59,7 +59,7 @@ namespace QuantLib {
                           BusinessDayConvention convention,
                           bool endOfMonth,
                           const DayCounter& dayCounter,
-                          Handle<Quote> convexityAdjustment = Handle<Quote>(),
+                          Handle<Quote> convexityAdjustment = {},
                           Futures::Type type = Futures::IMM);
         FuturesRateHelper(Real price,
                           const Date& iborStartDate,
@@ -74,7 +74,7 @@ namespace QuantLib {
                           const Date& iborStartDate,
                           const Date& iborEndDate,
                           const DayCounter& dayCounter,
-                          Handle<Quote> convexityAdjustment = Handle<Quote>(),
+                          Handle<Quote> convexityAdjustment = {},
                           Futures::Type type = Futures::IMM);
         FuturesRateHelper(Real price,
                           const Date& iborStartDate,
@@ -85,7 +85,7 @@ namespace QuantLib {
         FuturesRateHelper(const Handle<Quote>& price,
                           const Date& iborStartDate,
                           const ext::shared_ptr<IborIndex>& iborIndex,
-                          const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                          const Handle<Quote>& convexityAdjustment = {},
                           Futures::Type type = Futures::IMM);
         FuturesRateHelper(Real price,
                           const Date& iborStartDate,
@@ -261,10 +261,10 @@ namespace QuantLib {
       public:
         SwapRateHelper(const Handle<Quote>& rate,
                        const ext::shared_ptr<SwapIndex>& swapIndex,
-                       Handle<Quote> spread = Handle<Quote>(),
+                       Handle<Quote> spread = {},
                        const Period& fwdStart = 0 * Days,
                        // exogenous discounting curve
-                       Handle<YieldTermStructure> discountingCurve = Handle<YieldTermStructure>(),
+                       Handle<YieldTermStructure> discountingCurve = {},
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
@@ -278,10 +278,10 @@ namespace QuantLib {
                        DayCounter fixedDayCount,
                        // floating leg
                        const ext::shared_ptr<IborIndex>& iborIndex,
-                       Handle<Quote> spread = Handle<Quote>(),
+                       Handle<Quote> spread = {},
                        const Period& fwdStart = 0 * Days,
                        // exogenous discounting curve
-                       Handle<YieldTermStructure> discountingCurve = Handle<YieldTermStructure>(),
+                       Handle<YieldTermStructure> discountingCurve = {},
                        Natural settlementDays = Null<Natural>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
@@ -289,10 +289,10 @@ namespace QuantLib {
                        const boost::optional<bool>& useIndexedCoupons = boost::none);
         SwapRateHelper(Rate rate,
                        const ext::shared_ptr<SwapIndex>& swapIndex,
-                       Handle<Quote> spread = Handle<Quote>(),
+                       Handle<Quote> spread = {},
                        const Period& fwdStart = 0 * Days,
                        // exogenous discounting curve
-                       Handle<YieldTermStructure> discountingCurve = Handle<YieldTermStructure>(),
+                       Handle<YieldTermStructure> discountingCurve = {},
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
@@ -306,10 +306,10 @@ namespace QuantLib {
                        DayCounter fixedDayCount,
                        // floating leg
                        const ext::shared_ptr<IborIndex>& iborIndex,
-                       Handle<Quote> spread = Handle<Quote>(),
+                       Handle<Quote> spread = {},
                        const Period& fwdStart = 0 * Days,
                        // exogenous discounting curve
-                       Handle<YieldTermStructure> discountingCurve = Handle<YieldTermStructure>(),
+                       Handle<YieldTermStructure> discountingCurve = {},
                        Natural settlementDays = Null<Natural>(),
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),

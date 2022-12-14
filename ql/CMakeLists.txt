@@ -125,7 +125,6 @@ set(QL_SOURCES
     experimental/credit/recoveryratequote.cpp
     experimental/credit/riskyassetswap.cpp
     experimental/credit/riskyassetswapoption.cpp
-    experimental/credit/riskybond.cpp
     experimental/credit/syntheticcdo.cpp
     experimental/exoticoptions/analyticamericanmargrabeengine.cpp
     experimental/exoticoptions/analyticcomplexchooserengine.cpp
@@ -385,6 +384,7 @@ set(QL_SOURCES
     math/integrals/integral.cpp
     math/integrals/kronrodintegral.cpp
     math/integrals/segmentintegral.cpp
+    math/interpolations/chebyshevinterpolation.cpp    
     math/matrix.cpp
     math/matrixutilities/basisincompleteordered.cpp
     math/matrixutilities/bicgstab.cpp
@@ -752,6 +752,8 @@ set(QL_SOURCES
     pricingengines/vanilla/mcamericanengine.cpp
     pricingengines/vanilla/mcdigitalengine.cpp
     pricingengines/vanilla/mchestonhullwhiteengine.cpp
+    pricingengines/vanilla/qdfpamericanengine.cpp
+    pricingengines/vanilla/qdplusamericanengine.cpp
     processes/batesprocess.cpp
     processes/blackscholesprocess.cpp
     processes/endeulerdiscretization.cpp
@@ -1432,6 +1434,7 @@ set(QL_HEADERS
     math/integrals/momentbasedgaussianpolynomial.hpp
     math/integrals/segmentintegral.hpp
     math/integrals/simpsonintegral.hpp
+    math/integrals/tanhsinhintegral.hpp
     math/integrals/trapezoidintegral.hpp
     math/integrals/twodimensionalintegral.hpp
     math/interpolation.hpp
@@ -1440,6 +1443,7 @@ set(QL_HEADERS
     math/interpolations/backwardflatlinearinterpolation.hpp
     math/interpolations/bicubicsplineinterpolation.hpp
     math/interpolations/bilinearinterpolation.hpp
+    math/interpolations/chebyshevinterpolation.hpp    
     math/interpolations/convexmonotoneinterpolation.hpp
     math/interpolations/cubicinterpolation.hpp
     math/interpolations/extrapolation.hpp
@@ -1960,6 +1964,8 @@ set(QL_HEADERS
     pricingengines/vanilla/mceuropeanhestonengine.hpp
     pricingengines/vanilla/mchestonhullwhiteengine.hpp
     pricingengines/vanilla/mcvanillaengine.hpp
+    pricingengines/vanilla/qdfpamericanengine.hpp
+    pricingengines/vanilla/qdplusamericanengine.hpp
     processes/batesprocess.hpp
     processes/blackscholesprocess.hpp
     processes/endeulerdiscretization.hpp
@@ -2337,6 +2343,11 @@ target_compile_definitions(ql_library PRIVATE
 target_compile_options(ql_library PRIVATE
     ${OpenMP_CXX_FLAGS})
 
+if(MSVC AND CMAKE_UNITY_BUILD)
+    # for Unity builds, we need to add /bigobj
+    target_compile_options(ql_library PRIVATE "/bigobj")
+endif()
+
 if(NOT "${QL_EXTRA_LINK_LIBRARIES}" STREQUAL "")
     target_link_libraries(ql_library PUBLIC ${QL_EXTRA_LINK_LIBRARIES})
 endif()
@@ -2349,9 +2360,6 @@ target_include_directories(ql_library PUBLIC
 target_include_directories(ql_library SYSTEM PUBLIC
     ${Boost_INCLUDE_DIRS}
     ${OpenMP_CXX_INCLUDE_DIRS})
-
-target_link_directories(ql_library PUBLIC
-    ${BOOST_LIBRARY_DIRS})
 
 target_link_libraries(ql_library PUBLIC
     ${OpenMP_CXX_LIBRARIES})

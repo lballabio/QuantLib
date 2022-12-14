@@ -1,5 +1,8 @@
 name: Linux build with non-default configuration
-on: workflow_dispatch
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -92,6 +95,11 @@ jobs:
             tag: jammy
             cc: clang
             cxx: clang++
+          - name: "Clang 15"
+            shortname: clang15
+            tag: kinetic
+            cc: clang
+            cxx: clang++
           - name: "C++14 mode"
             shortname: c++14
             tag: rolling
@@ -149,6 +157,6 @@ jobs:
     - name: Check global header
       run: |
         echo "#include <ql/quantlib.hpp>" > test1.cpp && echo "int main() { return 0; }" >> test1.cpp
-        echo "#include <ql/quantlib.hpp>" > test2.cpp && echo "namespace QuantLib { ThreadKey sessionId() { return 0; } }" >> test2.cpp
+        echo "#include <ql/quantlib.hpp>" > test2.cpp
         make install
         ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs`

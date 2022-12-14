@@ -164,24 +164,13 @@ namespace QuantLib {
         QL_REQUIRE(this->data_.size() == dates_.size(),
                    "indices/dates count mismatch: " << this->data_.size() << " vs "
                                                     << dates_.size());
-
-        this->times_.resize(dates_.size());
-        this->times_[0] = timeFromReference(dates_[0]);
         for (Size i = 1; i < dates_.size(); i++) {
-            QL_REQUIRE(dates_[i] > dates_[i - 1], "dates not sorted");
-
-            // but must be greater than -1
+            // must be greater than -1
             QL_REQUIRE(this->data_[i] > -1.0, "zero inflation data < -100 %");
-
-            // this can be negative
-            this->times_[i] = timeFromReference(dates_[i]);
-            QL_REQUIRE(!close(this->times_[i], this->times_[i - 1]),
-                       "two dates correspond to the same time "
-                       "under this curve's day count convention");
         }
 
-        this->interpolation_ = this->interpolator_.interpolate(
-            this->times_.begin(), this->times_.end(), this->data_.begin());
+        this->setupTimes(dates_, referenceDate, dayCounter);
+        this->setupInterpolation();
         this->interpolation_.update();
     }
 

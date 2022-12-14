@@ -95,6 +95,12 @@ jobs:
             cc: clang
             cxx: clang++
             tests: true
+          - name: "Clang 15"
+            shortname: clang15
+            tag: kinetic
+            cc: clang
+            cxx: clang++
+            tests: true
           - name: "C++14 mode"
             shortname: c++14
             tag: rolling
@@ -147,13 +153,6 @@ jobs:
             cxx: g++
             configureflags: --enable-thread-safe-observer-pattern
             tests: true
-          - name: "Thread-safe singleton init enabled"
-            shortname: threadsafeinit
-            tag: rolling
-            cc: gcc
-            cxx: g++
-            configureflags: --enable-thread-safe-singleton-init
-            tests: true
           - name: "Sessions enabled"
             shortname: sessions
             tag: rolling
@@ -188,11 +187,10 @@ jobs:
     - name: Cache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp') }}
+        key: linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}
         restore-keys: |
-          linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}-${{ github.head_ref }}-
-          linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}-
-          linux-ci-build-${{ matrix.shortname }}-refs/heads/master-
+          linux-ci-build-${{ matrix.shortname }}-${{ github.ref }}
+          linux-ci-build-${{ matrix.shortname }}-refs/heads/master
           linux-ci-build-${{ matrix.shortname }}-
     - name: Compiler version
       run: |
@@ -215,8 +213,5 @@ jobs:
       run: |
         echo "#include <ql/quantlib.hpp>" > test1.cpp && echo "int main() { return 0; }" >> test1.cpp
         echo "#include <ql/quantlib.hpp>" > test2.cpp
-        if test ${{ matrix.shortname }} = sessions ; then
-            echo "namespace QuantLib { ThreadKey sessionId() { return 0; } }" >> test2.cpp
-        fi
         make install
         ${{ matrix.cxx }} -O2 -g0 -Wall -Wno-unknown-pragmas -Werror ${{ matrix.cxxflags }} `quantlib-config --cflags` test1.cpp test2.cpp `quantlib-config --libs` ${{ matrix.moreflags }}
