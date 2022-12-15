@@ -116,7 +116,7 @@ namespace QuantLib {
                       refPeriodEnd,
                       exCouponDate),
       baseCPI_(baseCPI), fixedRate_(fixedRate), spread_(spread),
-      observationInterpolation_(observationInterpolation) {
+      observationInterpolation_(observationInterpolation), baseDate_(baseDate) {
 
         QL_REQUIRE(index_, "no index provided");
         QL_REQUIRE(
@@ -261,6 +261,22 @@ namespace QuantLib {
             return CPI::laggedFixing(cpiIndex(), fixingDate() + observationLag_, observationLag_,
                                      interpolation_);
         }
+    }
+
+    Real CPICashFlow::amount() const {
+        Rate I0 = baseFixing();
+
+        // If BaseFixing is null, use the observed index fixing
+        if (I0 == Null<Rate>()) {
+            I0 = IndexedCashFlow::baseFixing();
+        }
+
+        Rate I1 = indexFixing();
+
+        if (growthOnly())
+            return notional() * (I1 / I0 - 1.0);
+        else
+            return notional() * (I1 / I0);
     }
 
     CPILeg::CPILeg(const Schedule& schedule,
