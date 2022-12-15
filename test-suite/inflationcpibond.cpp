@@ -246,26 +246,28 @@ void InflationCPIBondTest::testCPILegWithoutBaseCPI() {
                                  .from(startDate)
                                  .to(endDate)
                                  .withTenor(Period(6, Months))
-                                 .withCalendar(UnitedKingdom())
+                                 .withCalendar(fixedPaymentCalendar)
                                  .withConvention(Unadjusted)
                                  .backwards();
 
     Leg legWithBaseDate = CPILeg(fixedSchedule, fixedIndex, Null<Real>(), contractObservationLag)
-                          .withSubtractInflationNominal(growthOnly)
-                          .withNotionals(notional)
-                          .withBaseDate(baseDate)
-                          .withFixedRates({0.1})
-                          .withPaymentDayCounter(fixedDayCount)
-                          .withObservationInterpolation(CPI::Flat)
-                          .withPaymentAdjustment(fixedPaymentConvention);
+                              .withSubtractInflationNominal(growthOnly)
+                              .withNotionals(notional)
+                              .withBaseDate(baseDate)
+                              .withFixedRates(fixedRates)
+                              .withPaymentDayCounter(fixedDayCount)
+                              .withObservationInterpolation(observationInterpolation)
+                              .withPaymentAdjustment(fixedPaymentConvention)
+                              .withPaymentCalendar(fixedPaymentCalendar);
 
     Leg legWithBaseCPI = CPILeg(fixedSchedule, fixedIndex, baseCPI, contractObservationLag)
-                          .withSubtractInflationNominal(growthOnly)
-                          .withNotionals(notional)
-                          .withFixedRates({0.1})
-                          .withPaymentDayCounter(fixedDayCount)
-                          .withObservationInterpolation(CPI::Flat)
-                          .withPaymentAdjustment(fixedPaymentConvention);
+                             .withSubtractInflationNominal(growthOnly)
+                             .withNotionals(notional)
+                             .withFixedRates(fixedRates)
+                             .withPaymentDayCounter(fixedDayCount)
+                             .withObservationInterpolation(observationInterpolation)
+                             .withPaymentAdjustment(fixedPaymentConvention)
+                             .withPaymentCalendar(fixedPaymentCalendar);
 
     Date settlementDate = fixedPaymentCalendar.advance(common.evaluationDate, settlementDays * Days,
                                                        fixedPaymentConvention);
@@ -281,12 +283,12 @@ void InflationCPIBondTest::testCPILegWithoutBaseCPI() {
 
     Real cleanPriceWithBaseDate = (npvWithBaseDate - accruedsBaseDate) * 100. / notional;
     Real cleanPriceWithBaseCPI = (npvWithBaseCPI - accruedsBaseCPI) * 100. / notional;
-    
+
     Real tolerance = 1.0e-8;
     if (std::fabs(cleanPriceWithBaseDate - cleanPriceWithBaseCPI) > tolerance) {
         BOOST_FAIL("prices of CPI leg with base date and explicit base CPI fixing are not equal "
-                   << std::fixed << std::setprecision(12) << "\n  clean npv of leg with baseDate:   "
-                   << cleanPriceWithBaseDate
+                   << std::fixed << std::setprecision(12)
+                   << "\n  clean npv of leg with baseDate:   " << cleanPriceWithBaseDate
                    << "\n clean npv of leg with explicit baseCPI: " << cleanPriceWithBaseCPI);
     }
     // Compare to expected price
