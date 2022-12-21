@@ -66,13 +66,13 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.81.0/binaries/boost_1_81_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.78.0"
+        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
         choco install -y ninja
     - name: Compile
       env:
-        BOOST_ROOT: C:\local\boost-1.78.0
+        BOOST_ROOT: C:\local\boost
       shell: cmd
       run: |
         mkdir build
@@ -99,13 +99,13 @@ jobs:
         variant: sccache
     - name: Setup
       run: |
-        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.78.0/binaries/boost_1_78_0-msvc-14.3-64.exe"
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.81.0/binaries/boost_1_81_0-msvc-14.3-64.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost-1.78.0"
+        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
         choco install -y ninja
     - name: Compile
       env:
-        BOOST_ROOT: C:\local\boost-1.78.0
+        BOOST_ROOT: C:\local\boost
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
