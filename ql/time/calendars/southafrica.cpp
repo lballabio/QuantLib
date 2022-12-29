@@ -73,6 +73,8 @@ namespace QuantLib {
             || (d == 22 && m == April && y == 2009)
             // one-shot: Election day 2016
             || (d == 3 && m == August && y == 2016)
+            // one-shot: In lieu of Christmas falling on Sunday in 2022
+            || (d == 27 && m == December && y == 2022)
             )
             return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
