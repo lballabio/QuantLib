@@ -1278,23 +1278,61 @@ void BarrierOptionTest::testDividendBarrierOption() {
     }
 }
 
+void BarrierOptionTest::testBarrierAndDividendEngine() {
+    BOOST_TEST_MESSAGE("Testing the use of a single engine for barrier and dividend options...");
+
+    SavedSettings backup;
+
+    auto today = Date(1, January, 2023);
+    Settings::instance().evaluationDate() = today;
+
+    auto u = Handle<Quote>(ext::make_shared<SimpleQuote>(100.0));
+    auto r = Handle<YieldTermStructure>(ext::make_shared<FlatForward>(today, 0.01, Actual360()));
+    auto sigma = Handle<BlackVolTermStructure>(
+        ext::make_shared<BlackConstantVol>(today, TARGET(), 0.20, Actual360()));
+    auto process = ext::make_shared<BlackScholesProcess>(u, r, sigma);
+
+    auto engine = ext::make_shared<FdBlackScholesBarrierEngine>(process);
+
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Call, 90.0);
+
+    auto option1 = BarrierOption(Barrier::DownIn, 80.0, 0.0, payoff,
+                                 ext::make_shared<EuropeanExercise>(Date(1, June, 2023)));
+    auto option2 = DividendBarrierOption(Barrier::DownIn, 80.0, 0.0, payoff,
+                                         ext::make_shared<EuropeanExercise>(Date(1, June, 2023)),
+                                         {Date(1, February, 2023)}, {1.0});
+
+    option1.setPricingEngine(engine);
+    option2.setPricingEngine(engine);
+
+    auto npv_before = option1.NPV();
+    option2.NPV();
+
+    option1.recalculate();
+    auto npv_after = option1.NPV();
+
+    if (npv_after != npv_before) {
+        BOOST_FAIL("Failed to price barrier option correctly "
+                   "after using the engine on a dividend option: "
+                   << "\n    before usage: " << npv_before << "\n    after usage:  " << npv_after);
+    }
+}
+
 test_suite* BarrierOptionTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Barrier option tests");
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testParity));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testHaugValues));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBabsiriValues));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBeagleholeValues));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BarrierOptionTest::testLocalVolAndHestonComparison));
-    suite->add(QUANTLIB_TEST_CASE(
-        &BarrierOptionTest::testDividendBarrierOption));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testLocalVolAndHestonComparison));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testDividendBarrierOption));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBarrierAndDividendEngine));
     return suite;
 }
 
 test_suite* BarrierOptionTest::experimental() {
     auto* suite = BOOST_TEST_SUITE("Barrier option experimental tests");
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testPerturbative));
-    suite->add(QUANTLIB_TEST_CASE(
-                      &BarrierOptionTest::testVannaVolgaSimpleBarrierValues));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testVannaVolgaSimpleBarrierValues));
     return suite;
 }

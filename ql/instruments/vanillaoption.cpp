@@ -72,5 +72,17 @@ namespace QuantLib {
                                                           minVol, maxVol);
     }
 
+    void VanillaOption::setupArguments(PricingEngine::arguments* args) const {
+        OneAssetOption::setupArguments(args);
+
+        /* this is a workaround in case an engine is used for both vanilla
+           and dividend options.  The dividends might have been set by another
+           instrument and need to be cleared. */
+        auto* arguments = dynamic_cast<DividendVanillaOption::arguments*>(args);
+        if (arguments != nullptr) {
+            arguments->cashFlow.clear();
+        }
+    }
+    
 }
 
