@@ -77,13 +77,12 @@ namespace QuantLib {
         for (Size i=0; i<n; ++i) {
             try {
                 const YieldTermStructure& discount_ref = **discountCurve_;
-                CashFlows::npvbps(arguments_.legs[i],
-                                  discount_ref,
-                                  includeRefDateFlows,
-                                  settlementDate,
-                                  results_.valuationDate,
-                                  results_.legNPV[i],
-                                  results_.legBPS[i]);
+                std::tie(results_.legNPV[i], results_.legBPS[i]) =
+                    CashFlows::npvbps(arguments_.legs[i],
+                                      discount_ref,
+                                      includeRefDateFlows,
+                                      settlementDate,
+                                      results_.valuationDate);
                 results_.legNPV[i] *= arguments_.payer[i];
                 results_.legBPS[i] *= arguments_.payer[i];
 

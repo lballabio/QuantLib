@@ -183,11 +183,21 @@ namespace QuantLib {
                         Date settlementDate = Date(),
                         Date npvDate = Date());
 
-        //@{
         //! NPV and BPS of the cash flows.
         /*! The NPV and BPS of the cash flows calculated
             together for performance reason
         */
+        static std::pair<Real, Real> npvbps(const Leg& leg,
+                                            const YieldTermStructure& discountCurve,
+                                            bool includeSettlementDateFlows,
+                                            Date settlementDate = Date(),
+                                            Date npvDate = Date());
+
+        //! NPV and BPS of the cash flows.
+        /*! \deprecated Use the overload returning a pair of Reals.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         static void npvbps(const Leg& leg,
                            const YieldTermStructure& discountCurve,
                            bool includeSettlementDateFlows,
