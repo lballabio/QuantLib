@@ -64,6 +64,8 @@ namespace QuantLib {
              Size maxEvaluations = 100,
              Volatility minVol = 1.0e-7,
              Volatility maxVol = 4.0) const;
+
+        void setupArguments(PricingEngine::arguments*) const override;
     };
 
 }

@@ -50,6 +50,7 @@ class EuropeanOptionTest {
     static void testPDESchemes();
     static void testDouglasVsCrankNicolson();
     static void testFdEngineWithNonConstantParameters();
+    static void testVanillaAndDividendEngine();
 
     static boost::unit_test_framework::test_suite* suite();
     static boost::unit_test_framework::test_suite* experimental();
