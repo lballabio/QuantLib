@@ -47,9 +47,9 @@ namespace QuantLib {
         //! \name StochasticProcess1D interface
         //@{
         Real x0() const override;
-        Real drift(Time, Real) const override { QL_FAIL("not implemented"); }
-        Real diffusion(Time, Real) const override { QL_FAIL("not implemented"); }
-        Real apply(Real, Real) const override { QL_FAIL("not implemented"); }
+        Real drift(Time, Real) const override { QL_FAIL("Merton76Process does not implement drift"); }
+        Real diffusion(Time, Real) const override { QL_FAIL("Merton76Process does not implement diffusion"); }
+        Real apply(Real, Real) const override { QL_FAIL("Merton76Process does not implement apply"); }
         //@}
         Time time(const Date&) const override;
         //! \name Inspectors
