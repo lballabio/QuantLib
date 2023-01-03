@@ -124,6 +124,10 @@ if (NOT DEFINED QL_BOOST_VERSION)
     endif()
 endif()
 
+if (CMAKE_CXX_COMPILER STREQUAL "icpx")
+    find_package(IntelDPCPP REQUIRED)
+endif()
+
 find_package(Boost ${QL_BOOST_VERSION} REQUIRED)
 
 # Do not warn about Boost versions higher than 1.58.0
