@@ -59,10 +59,10 @@ namespace QuantLib {
 
     #ifdef QL_NULL_AS_FUNCTIONS
 
-    //! template function providing a null value for a given type.
     template <typename T>
     T Null() {
-        return T(detail::FloatingPointNull<std::is_floating_point<T>::value>::nullValue());
+        // as long as class T has a default constructor this should suffice
+        return T{};
     }
 
     #else
@@ -71,13 +71,13 @@ namespace QuantLib {
     template <class Type>
     class Null;
 
-    // default implementation for built-in types
     template <typename T>
     class Null {
       public:
         Null() = default;
         operator T() const {
-            return T(detail::FloatingPointNull<std::is_floating_point<T>::value>::nullValue());
+            // as long as class T has a default constructor this should suffice
+            return T{};
         }
     };
 
