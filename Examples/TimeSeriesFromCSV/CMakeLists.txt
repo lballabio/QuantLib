@@ -1,0 +1,6 @@
+add_executable(TimeSeriesFromCSV TimeSeriesFromCSV.cpp)
+target_include_directories(TimeSeriesFromCSV PRIVATE .)
+target_link_libraries(TimeSeriesFromCSV ql_library ${QL_THREAD_LIBRARIES})
+if(QL_INSTALL_EXAMPLES)
+    install(TARGETS TimeSeriesFromCSV RUNTIME DESTINATION ${QL_INSTALL_EXAMPLESDIR})
+endif()
