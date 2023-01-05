@@ -79,7 +79,42 @@ jobs:
         cd build
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
         cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
-        cmake --build .
+        cmake --build . --verbose
+        dir ql\*.lib
+    - name: Test
+      run: |
+        cd build
+        .\test-suite\quantlib-test-suite --log_level=message
+  cmake-win-dynamic-runtime:
+    runs-on: windows-2022
+    steps:
+    - uses: actions/checkout@v3
+    - name: Cache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: cmake-windows-ci-dyn-build-${{ github.ref }}
+        restore-keys: |
+          cmake-windows-ci-dyn-build-${{ github.ref }}
+          cmake-windows-ci-dyn-build-refs/heads/master
+          cmake-windows-ci-dyn-build-
+        variant: sccache
+    - name: Setup
+      run: |
+        $Url = "https://boostorg.jfrog.io/artifactory/main/release/1.81.0/binaries/boost_1_81_0-msvc-14.3-64.exe"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
+        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost"
+        choco install -y ninja
+    - name: Compile
+      env:
+        BOOST_ROOT: C:\local\boost
+      shell: cmd
+      run: |
+        mkdir build
+        cd build
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
+        cmake .. -GNinja -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+        cmake --build . --verbose
+        dir ql\*.lib
     - name: Test
       run: |
         cd build
