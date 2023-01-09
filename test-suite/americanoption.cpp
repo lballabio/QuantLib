@@ -934,7 +934,7 @@ void AmericanOptionTest::testTodayIsDividendDate() {
 
 
 void AmericanOptionTest::testCallPutParity() {
-    BOOST_TEST_MESSAGE("Testing Call/Put parity for American options...");
+    BOOST_TEST_MESSAGE("Testing call/put parity for American options...");
 
     // R.L. McDonald, M.D. Schroder: A parity result for American option
 
@@ -1014,7 +1014,7 @@ void AmericanOptionTest::testCallPutParity() {
         const Real tol = 0.001;
 
         if (diff > tol) {
-            BOOST_FAIL("failed to reproduce American Call/Put parity"
+            BOOST_FAIL("failed to reproduce American call/put parity"
                     << "\n    Put NPV   : " << putNpv
                     << "\n    Call NPV  : " << callNpv
                     << "\n    difference: " << diff
@@ -1140,7 +1140,7 @@ void AmericanOptionTest::testQdPlusBoundaryConvergence() {
 }
 
 void AmericanOptionTest::testQdAmericanEngines() {
-    BOOST_TEST_MESSAGE("Testing QD+ American Option pricing...");
+    BOOST_TEST_MESSAGE("Testing QD+ American option pricing...");
 
     SavedSettings backup;
 
@@ -1388,7 +1388,7 @@ void AmericanOptionTest::testQdAmericanEngines() {
 
 void AmericanOptionTest::testQdFpIterationScheme() {
     BOOST_TEST_MESSAGE("Testing Legendre and tanh-sinh iteration "
-                       "scheme for QD+ Fixed Point American engine...");
+                       "scheme for QD+ fixed-point American engine...");
 
     const Real tol = 1e-8;
     const Size l=32, m=6, n=18, p=36;
@@ -1720,7 +1720,7 @@ void AmericanOptionTest::testBulkQdFpAmericanEngine() {
 
 void AmericanOptionTest::testQdEngineWithLobattoIntegral() {
     BOOST_TEST_MESSAGE("Testing Andersen, Lake and Offengenden "
-                        "with high precision Gauss-Lobatto-Integration...");
+                        "with high precision Gauss-Lobatto integration...");
 
     SavedSettings backup;
 
