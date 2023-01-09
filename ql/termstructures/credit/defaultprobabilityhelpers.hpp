@@ -65,7 +65,7 @@ namespace QuantLib {
                                distinction.
             @param recoveryRate  The recovery rate of the underlying reference entity.
             @param discountCurve  A handle to the relevant discount curve.
-            @param settlesAccrual  Set to \c true if accrued fee is paid on the occurence of a credit event and set 
+            @param settlesAccrual  Set to \c true if accrued fee is paid on the occurrence of a credit event and set 
                                    to \c false if it is not. Typically this is \c true.
             @param paysAtDefaultTime  Set to \c true if default payment is made at time of credit event or postponed 
                                       to the end of the coupon period. Typically this is \c true.
