@@ -217,7 +217,7 @@ namespace QuantLib {
             const Real extremT
                 = close_enough(r, q)? QL_MAX_REAL : Real(std::log(r*K/(q*S))/(r-q));
 
-             if (extremT > 0.0 && extremT < T)
+            if (extremT > 0.0 && extremT < T)
                 return std::max(npv0, std::max(npvT, intrinsic(extremT)));
             else
                 return std::max(npv0, npvT);

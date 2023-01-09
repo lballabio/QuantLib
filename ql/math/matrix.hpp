@@ -515,7 +515,7 @@ namespace QuantLib {
 
     inline Matrix operator-(const Matrix& m1) {
         Matrix temp(m1.rows(), m1.columns());
-        std::transform(m1.begin(), m1.end(), temp.begin(), std::negate<Real>());
+        std::transform(m1.begin(), m1.end(), temp.begin(), std::negate<>());
         return temp;
     }
 
