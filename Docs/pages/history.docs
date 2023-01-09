@@ -17,7 +17,105 @@
 
 /*! \page history Version history
 
-    <strong>Release 1.28 - October 2022</strong>
+    <strong>Release 1.29 - January 2023</strong>
+
+    PORTABILITY
+    - <b>End of support:</b> as announced in the notes for the previous
+      release, this release no longer manages thread-local singletons via
+      a user-provided `sessionId` function, and therefore the latter is no
+      longer needed.  Instead, the code now uses the built-in language
+      support for thread-local variables.  Thanks go to Peter Caspers.
+    - **Future end of support:** as announced in the notes for the
+      previous release, after the next couple of releases, using
+      `std::tuple`, `std::function` and `std::bind` (instead of their
+      `boost` counterparts) will become the default.  If you're using
+      `ext::tuple` etc. in your code (which is suggested), this should be
+      a transparent change.  If not, you'll still be able to choose the
+      `boost` versions via a configure switch for a while; but we do
+      suggest you start using `ext::tuple` etc. in the meantime.
+    - Replaced internal usage of `boost::thread` with `std::thread`;
+      thanks to Jonathan Sweemer.  This removed our last dependency on
+      Boost binaries and makes it possible to compile QuantLib using a
+      header-only Boost installation.
+    - On Windows, it is now possible to use the MSVC dynamic runtime when
+      using cmake by passing
+      `-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL`
+      on the command line; thanks to Jonathan Sweemer.  The
+      static runtime remains the default.
+    - It is now possible to build QuantLib with Intel's `icpx` compiler
+      using cmake; thanks to Jonathan Sweemer.  Note that in order to get
+      all the unit tests passing, `-fp-model=precise` must be added to
+      `CMAKE_CXX_FLAGS`.
+
+    DATE/TIME
+    - Updated Chinese holidays for 2023; thanks to Cheng Li.
+    - Added in-lieu holiday for Christmas 2022 to South-African calendar;
+      thanks to Joshua Hayes.
+    - Added King Charles III coronation holiday to UK calendar; thanks to
+      Fredrik Gerdin Börjesson.
+    - Added holiday for National Day of Mourning to Australian calendar;
+      thanks to Fredrik Gerdin Börjesson.
+
+    INSTRUMENTS
+    - Added high performance/precision American engine based on
+      fixed-point iteration for the exercise boundary; thanks to Klaus
+      Spanderen.
+    - Bonds with draw-down (i.e., increasing notionals) are now allowed;
+      thanks to Oleg Kulkov.
+    - Added `withIndexedCoupons` and `withAtParCoupons` methods to
+      `MakeSwaption` for easier initialization; thanks to Ralf Konrad.
+    - It is now possible to use the same pricing engine for vanilla and
+      dividend vanilla options, or for barrier and dividend barrier
+      options.
+
+    INDEXES
+    - Creating a zero inflation index as "interpolated" is now deprecated;
+      thanks to Ralf Konrad.  The index should only return
+      monthly fixings.  Interpolation is now the responsibility of
+      inflation-based coupons.
+
+    TERM STRUCTURES
+    - The `ConstantCPIVolatility` constructor can now take a handle to a
+      volatility quote, instead of just an immutable number.
+
+    DEPRECATED FEATURES
+    - <b>Removed</b> features deprecated in version 1.24:
+      - the `createAtParCoupons`, `createIndexedCoupons` and
+        `usingAtParCoupons` methods of `IborCoupon`;
+      - the `RiskyBond` class and its subclasses `RiskyFixedBond` and
+        `RiskyFloatingBond`;
+      - the `CrossCurrencyBasisSwapRateHelper` typedef;
+      - the `termStructure_` data member of `BlackCalibrationHelper`;
+      - the static `baseCurrency` and `conversionType` data members of `Money`;
+      - the `nominalTermStructure` method and the `nominalTermStructure_`
+        data member of `InflationTermStructure`;
+      - the constructor of the `UnitedStates` calendar not taking an
+        explicit market.
+    - Deprecated the `argument_type`, `first_argument_type`,
+      `second_argument_type` and `result_type` typedefs in a number of
+      classes; use `auto` or `decltype` instead.
+    - Deprecated the constructors of `InflationIndex`,
+      `ZeroInflationIndex`, `FRHICP`, `ZACPI`, `UKRPI`, `EUHICP`,
+      `EUHICPXT`, `USCPI`, `AUCPI` and `GenericCPI` taking an
+      `interpolated` parameter; use another constructor.
+    - Deprecated the `interpolated` method and the `interpolated_` data
+      member of `InflationIndex`.
+    - Deprecated the `ThreadKey` typedef.  It was used in the signature of
+      `sessionId`, which is no longer needed after the changes in the
+      `Singleton` implementation.
+    - Deprecated the `rateCurve_` data member of the
+      `InflationCouponPricer` base class.  If you need it, provide it in
+      your derived class.
+    - Deprecated the `npvbps` function taking NPV and BPS as references.
+      Use the overload returning a pair of `Real`s.
+
+    Thanks go also to Matthias Groncki, Jonathan Sweemer
+    and Nijaz Kovacevic for a number of smaller fixes
+    and improvements, to the Xcelerit Dev Team for
+    improvements to the automated CI builds, and to Vincenzo Ferrazzanno
+    and GitHub users alienbrett, xuruilong100 and philippb90 for raising issues.
+
+    <strong>Release 1.28 - October 25th, 2022</strong>
 
     PORTABILITY
     - <b>New language standard:</b> as announced in the notes for the
