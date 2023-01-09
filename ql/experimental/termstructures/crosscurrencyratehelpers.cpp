@@ -107,7 +107,7 @@ namespace QuantLib {
                 DiscountFactor discountStart = helper_.discount(start);
                 DiscountFactor discountEnd = helper_.discount(end);
 
-                // NPV of a resetting coupon consists of a redemption of borrowed amount occuring
+                // NPV of a resetting coupon consists of a redemption of borrowed amount occurring
                 // at the end of the accrual period plus the accrued interest, minus the borrowed
                 // amount at the start of the period. All amounts are corrected by an adjustment
                 // corresponding to the implied forward exchange rate, which is estimated by
