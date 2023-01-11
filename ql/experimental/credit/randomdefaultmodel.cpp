@@ -19,6 +19,7 @@
 */
 
 #include <ql/experimental/credit/randomdefaultmodel.hpp>
+#include <ql/math/solvers1d/bisection.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <utility>
 
