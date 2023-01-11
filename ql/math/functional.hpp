@@ -41,7 +41,9 @@ namespace QuantLib {
       public:
         typedef T argument_type;
         typedef U result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         explicit constant(const U& u) : u_(u) {}
+        QL_DEPRECATED_ENABLE_WARNING
         U operator()(const T&) const { return u_; }
       private:
         U u_;
@@ -105,7 +107,9 @@ namespace QuantLib {
       public:
         typedef T argument_type;
         typedef Real result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         explicit add(Real y) : y(y) {}
+        QL_DEPRECATED_ENABLE_WARNING
         Real operator()(T x) const { return x + y; }
     };
 
@@ -118,7 +122,9 @@ namespace QuantLib {
       public:
         typedef T argument_type;
         typedef Real result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         explicit subtract(Real y) : y(y) {}
+        QL_DEPRECATED_ENABLE_WARNING
         Real operator()(T x) const { return x - y; }
     };
 
@@ -131,7 +137,9 @@ namespace QuantLib {
       public:
         typedef T argument_type;
         typedef Real result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         explicit subtract_from(Real y) : y(y) {}
+        QL_DEPRECATED_ENABLE_WARNING
         Real operator()(T x) const { return y - x; }
     };
 
@@ -144,7 +152,9 @@ namespace QuantLib {
       public:
         typedef T argument_type;
         typedef Real result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         explicit multiply_by(Real y) : y(y) {}
+        QL_DEPRECATED_ENABLE_WARNING
         Real operator()(T x) const { return x * y; }
     };
 
@@ -157,7 +167,9 @@ namespace QuantLib {
       public:
         typedef T argument_type;
         typedef Real result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         explicit divide(Real y) : y(y) {}
+        QL_DEPRECATED_ENABLE_WARNING
         Real operator()(T x) const { return y / x; }
     };
 
@@ -170,7 +182,9 @@ namespace QuantLib {
       public:
         typedef T argument_type;
         typedef Real result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         explicit divide_by(Real y) : y(y) {}
+        QL_DEPRECATED_ENABLE_WARNING
         Real operator()(T x) const { return x / y; }
     };
 
@@ -183,7 +197,9 @@ namespace QuantLib {
       public:
         typedef T argument_type;
         typedef bool result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         explicit less_than(Real y) : y(y) {}
+        QL_DEPRECATED_ENABLE_WARNING
         bool operator()(T x) const { return x < y; }
     };
 
@@ -196,7 +212,9 @@ namespace QuantLib {
       public:
         typedef T argument_type;
         typedef bool result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         explicit greater_than(Real y) : y(y) {}
+        QL_DEPRECATED_ENABLE_WARNING
         bool operator()(T x) const { return x > y; }
     };
 
@@ -209,7 +227,9 @@ namespace QuantLib {
       public:
         typedef T argument_type;
         typedef bool result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         explicit greater_or_equal_to(Real y) : y(y) {}
+        QL_DEPRECATED_ENABLE_WARNING
         bool operator()(T x) const { return x >= y; }
     };
 
@@ -233,10 +253,12 @@ namespace QuantLib {
       public:
         typedef T argument_type;
         typedef bool result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         not_null() : null(Null<T>()) {}
+        QL_DEPRECATED_ENABLE_WARNING
         bool operator()(T x) const { return x != null; }
     };
-    
+
     // predicates
 
     /*! \deprecated Use a lambda instead.
@@ -268,7 +290,9 @@ namespace QuantLib {
         typedef T first_argument_type;
         typedef T second_argument_type;
         typedef bool result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         explicit equal_within(const T& eps) : eps_(eps) {}
+        QL_DEPRECATED_ENABLE_WARNING
         bool operator()(const T& a, const T& b) const {
             return std::fabs(a-b) <= eps_;
         }
@@ -286,7 +310,9 @@ namespace QuantLib {
       public:
         typedef typename F::argument_type argument_type;
         typedef typename F::result_type result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         clipped_function(const F& f, const R& r) : f_(f), r_(r) {}
+        QL_DEPRECATED_ENABLE_WARNING
         result_type operator()(const argument_type& x) const {
             return r_(x) ? f_(x) : result_type();
         }
@@ -322,7 +348,9 @@ namespace QuantLib {
       public:
         typedef typename G::argument_type argument_type;
         typedef typename F::result_type result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         composed_function(const F& f, G g) : f_(f), g_(std::move(g)) {}
+        QL_DEPRECATED_ENABLE_WARNING
         result_type operator()(const argument_type& x) const {
             return f_(g_(x));
         }
@@ -359,8 +387,10 @@ namespace QuantLib {
         typedef typename G::argument_type first_argument_type;
         typedef typename H::argument_type second_argument_type;
         typedef typename F::result_type result_type;
+        QL_DEPRECATED_DISABLE_WARNING
         binary_compose3_function(const F& f, const G& g, const H& h)
         : f_(f), g_(g), h_(h) {}
+        QL_DEPRECATED_ENABLE_WARNING
         result_type operator()(const first_argument_type&  x,
                                const second_argument_type& y) const {
             return f_(g_(x), h_(y));
