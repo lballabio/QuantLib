@@ -61,7 +61,7 @@ namespace QuantLib {
                 && m == December)
             // Boxing Day, December 26th (possibly Monday or Tuesday)
             || ((d == 26 || (d == 28 && (w == Monday || w == Tuesday)))
-                && m == December))
+                && m == December)
             // Matariki, it happens on Friday in June or July
             // official calendar released by the NZ government for the
             // next 30 years
@@ -81,7 +81,7 @@ namespace QuantLib {
             || (d == 14 && m == July && (y == 2023 || y == 2028))
             || (d == 15 && m == July && (y == 2039 || y == 2050))
             || (d == 18 && m == July && y == 2036)
-            || (d == 19 && m == July && (y == 2041 || y == 2047))
+            || (d == 19 && m == July && (y == 2041 || y == 2047)))
             return false; // NOLINT(readability-simplify-boolean-expr)
         return true;
     }
