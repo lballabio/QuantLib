@@ -47,9 +47,12 @@ namespace QuantLib {
         <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
         <li>Boxing Day, December 26th (possibly moved to Monday or
             Tuesday)</li>
+        <li>Matariki, in June or July, official calendar released for years 2022-2052</li>
         </ul>
         \note The holiday rules for New Zealand were documented by
               David Gilbert for IDB (http://www.jrefinery.com/ibd/)
+              The Matariki holiday calendar has been released by the NZ Government
+              (https://www.legislation.govt.nz/act/public/2022/0014/latest/LMS557893.html)
 
         \ingroup calendars
     */
