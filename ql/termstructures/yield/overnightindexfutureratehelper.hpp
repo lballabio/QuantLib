@@ -67,30 +67,6 @@ namespace QuantLib {
     */
     class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
       public:
-        /*! \deprecated Use the constructor without index and averaging method.
-                        Deprecated in version 1.25.
-        */
-        QL_DEPRECATED
-        SofrFutureRateHelper(const Handle<Quote>& price,
-                             Month referenceMonth,
-                             Year referenceYear,
-                             Frequency referenceFreq,
-                             const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                             const Handle<Quote>& convexityAdjustment = {},
-                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
-
-        /*! \deprecated Use the constructor without index and averaging method.
-                        Deprecated in version 1.25.
-        */
-        QL_DEPRECATED
-        SofrFutureRateHelper(Real price,
-                             Month referenceMonth,
-                             Year referenceYear,
-                             Frequency referenceFreq,
-                             const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                             Real convexityAdjustment = 0.0,
-                             RateAveraging::Type averagingMethod = RateAveraging::Compound);
-
         SofrFutureRateHelper(const Handle<Quote>& price,
                              Month referenceMonth,
                              Year referenceYear,

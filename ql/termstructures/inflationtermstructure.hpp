@@ -31,8 +31,6 @@ namespace QuantLib {
 
     class InflationIndex;
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     //! Interface for inflation term structures.
     /*! \ingroup inflationtermstructures */
     class InflationTermStructure : public TermStructure {
@@ -58,44 +56,6 @@ namespace QuantLib {
                                Frequency frequency,
                                const DayCounter& dayCounter = DayCounter(),
                                const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
-
-        /*! \deprecated Use the constructor without the
-                        indexIsInterpolated parameter.
-                        Deprecated in version 1.25.
-        */
-        QL_DEPRECATED
-        InflationTermStructure(Rate baseRate,
-                               const Period& observationLag,
-                               Frequency frequency,
-                               bool indexIsInterpolated,
-                               const DayCounter& dayCounter = DayCounter(),
-                               const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
-        /*! \deprecated Use the constructor without the
-                        indexIsInterpolated parameter.
-                        Deprecated in version 1.25.
-        */
-        QL_DEPRECATED
-        InflationTermStructure(const Date& referenceDate,
-                               Rate baseRate,
-                               const Period& observationLag,
-                               Frequency frequency,
-                               bool indexIsInterpolated,
-                               const Calendar& calendar = Calendar(),
-                               const DayCounter& dayCounter = DayCounter(),
-                               const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
-        /*! \deprecated Use the constructor without the
-                        indexIsInterpolated parameter.
-                        Deprecated in version 1.25.
-        */
-        QL_DEPRECATED
-        InflationTermStructure(Natural settlementDays,
-                               const Calendar& calendar,
-                               Rate baseRate,
-                               const Period& observationLag,
-                               Frequency frequency,
-                               bool indexIsInterpolated,
-                               const DayCounter& dayCounter = DayCounter(),
-                               const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
         //@}
 
         //! \name Inflation interface
@@ -106,16 +66,6 @@ namespace QuantLib {
         virtual Period observationLag() const;
         virtual Frequency frequency() const;
         virtual Rate baseRate() const;
-
-        /*! \deprecated Don't use this method.  Inflation indexes no
-                        longer rely on the curve for interpolation.
-                        Coupons that need to interpolate between two
-                        index fixings should do so explicitly.
-                        Curves can return flat rates over an inflation period.
-                        Deprecated in version 1.25.
-        */
-        QL_DEPRECATED
-        virtual bool indexIsInterpolated() const;
 
         //! minimum (base) date
         /*! Important in inflation since it starts before nominal
@@ -159,18 +109,7 @@ namespace QuantLib {
         Period observationLag_;
         Frequency frequency_;
         mutable Rate baseRate_;
-        /*! \deprecated Don't use this data member.  Inflation indexes
-                        no longer rely on the curve for interpolation,
-                        and coupons that need to interpolate between two
-                        index fixings should do so explicitly.
-                        Curves can return flat rates over an inflation period.
-                        Deprecated in version 1.25.
-        */
-        QL_DEPRECATED
-        bool indexIsInterpolated_;
     };
-
-    QL_DEPRECATED_ENABLE_WARNING
 
     //! Interface for zero inflation term structures.
     // Child classes use templates but do not want that exposed to
@@ -199,46 +138,6 @@ namespace QuantLib {
                                    Rate baseZeroRate,
                                    const Period& lag,
                                    Frequency frequency,
-                                   const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
-
-        /*! \deprecated Use the constructor without the
-                        indexIsInterpolated parameter.
-                        Deprecated in version 1.25.
-        */
-        QL_DEPRECATED
-        ZeroInflationTermStructure(const DayCounter& dayCounter,
-                                   Rate baseZeroRate,
-                                   const Period& lag,
-                                   Frequency frequency,
-                                   bool indexIsInterpolated,
-                                   const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
-
-        /*! \deprecated Use the constructor without the
-                        indexIsInterpolated parameter.
-                        Deprecated in version 1.25.
-        */
-        QL_DEPRECATED
-        ZeroInflationTermStructure(const Date& referenceDate,
-                                   const Calendar& calendar,
-                                   const DayCounter& dayCounter,
-                                   Rate baseZeroRate,
-                                   const Period& lag,
-                                   Frequency frequency,
-                                   bool indexIsInterpolated,
-                                   const ext::shared_ptr<Seasonality>& seasonality = ext::shared_ptr<Seasonality>());
-
-        /*! \deprecated Use the constructor without the
-                        indexIsInterpolated parameter.
-                        Deprecated in version 1.25.
-        */
-        QL_DEPRECATED
-        ZeroInflationTermStructure(Natural settlementDays,
-                                   const Calendar& calendar,
-                                   const DayCounter& dayCounter,
-                                   Rate baseZeroRate,
-                                   const Period& lag,
-                                   Frequency frequency,
-                                   bool indexIsInterpolated,
                                    const ext::shared_ptr<Seasonality> &seasonality = ext::shared_ptr<Seasonality>());
         //@}
 
@@ -326,10 +225,12 @@ namespace QuantLib {
                      bool extrapolate = false) const;
         //@}
 
-        bool indexIsInterpolated() const override;
+        virtual bool indexIsInterpolated() const;
       protected:
         //! to be defined in derived classes
         virtual Rate yoyRateImpl(Time time) const = 0;
+      private:
+        bool indexIsInterpolated_;
     };
 
 
@@ -355,12 +256,6 @@ namespace QuantLib {
         return frequency_;
     }
 
-    inline bool InflationTermStructure::indexIsInterpolated() const {
-        QL_DEPRECATED_DISABLE_WARNING
-        return indexIsInterpolated_;
-        QL_DEPRECATED_ENABLE_WARNING
-    }
-
     inline Rate InflationTermStructure::baseRate() const {
         return baseRate_;
     }
@@ -374,9 +269,7 @@ namespace QuantLib {
     }
 
     inline bool YoYInflationTermStructure::indexIsInterpolated() const {
-        QL_DEPRECATED_DISABLE_WARNING
         return indexIsInterpolated_;
-        QL_DEPRECATED_ENABLE_WARNING
     }
 
 }
