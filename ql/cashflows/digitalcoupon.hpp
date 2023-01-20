@@ -155,17 +155,17 @@ namespace QuantLib {
         //! strike rate for the the put option
         Rate putStrike_;
         //! multiplicative factor of call payoff
-        Real callCsi_;
+        Real callCsi_ = 0.;
         //! multiplicative factor of put payoff
-        Real putCsi_;
+        Real putCsi_ = 0.;
         //! inclusion flag og the call payoff if the call option ends at-the-money
         bool isCallATMIncluded_;
         //! inclusion flag og the put payoff if the put option ends at-the-money
         bool isPutATMIncluded_;
         //! digital call option type: if true, cash-or-nothing, if false asset-or-nothing
-        bool isCallCashOrNothing_;
+        bool isCallCashOrNothing_ = false;
         //! digital put option type: if true, cash-or-nothing, if false asset-or-nothing
-        bool isPutCashOrNothing_;
+        bool isPutCashOrNothing_ = false;
         //! digital call option payoff rate, if any
         Rate callDigitalPayoff_;
         //! digital put option payoff rate, if any
@@ -175,7 +175,7 @@ namespace QuantLib {
         //! the left and right gaps applied in payoff replication for put
         Real putLeftEps_, putRightEps_;
         //!
-        bool hasPutStrike_, hasCallStrike_;
+        bool hasPutStrike_ = false, hasCallStrike_ = false;
         //! Type of replication
         Replication::Type replicationType_;
         //! underlying excluded from the payoff

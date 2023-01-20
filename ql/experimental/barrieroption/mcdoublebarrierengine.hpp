@@ -52,7 +52,7 @@ namespace QuantLib {
                               BigNatural seed);
         void calculate() const override {
             Real spot = process_->x0();
-            QL_REQUIRE(spot >= 0.0, "negative or null underlying given");
+            QL_REQUIRE(spot > 0.0, "negative or null underlying given");
             QL_REQUIRE(!triggered(spot), "barrier touched");
             McSimulation<SingleVariate,RNG,S>::calculate(requiredTolerance_,
                                                          requiredSamples_,
@@ -103,10 +103,10 @@ namespace QuantLib {
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        bool brownianBridge_, antithetic_;
+        bool brownianBridge_ = false, antithetic_ = false;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
         Real tolerance_;
-        BigNatural seed_;
+        BigNatural seed_ = 0;
     };
 
     class DoubleBarrierPathPricer : public PathPricer<Path> {
@@ -203,9 +203,8 @@ namespace QuantLib {
         template <class RNG, class S>
         inline MakeMCDoubleBarrierEngine<RNG, S>::MakeMCDoubleBarrierEngine(
             ext::shared_ptr<GeneralizedBlackScholesProcess> process)
-        : process_(std::move(process)), brownianBridge_(false), antithetic_(false),
-          steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
-          maxSamples_(Null<Size>()), tolerance_(Null<Real>()), seed_(0) {}
+        : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+          samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()) {}
 
         template <class RNG, class S>
         inline MakeMCDoubleBarrierEngine<RNG, S>&

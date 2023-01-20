@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/products/multistep/multistepforwards.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
@@ -50,10 +49,9 @@ namespace QuantLib {
         return (currentIndex_ == strikes_.size());
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>
+    std::unique_ptr<MarketModelMultiProduct>
     MultiStepForwards::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelMultiProduct>(
-                                                new MultiStepForwards(*this));
+        return std::unique_ptr<MarketModelMultiProduct>(new MultiStepForwards(*this));
     }
 
 }

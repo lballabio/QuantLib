@@ -50,10 +50,9 @@ namespace QuantLib {
         Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) override;
 
       private:
-        Disposable<Array> getState(
-            const ext::shared_ptr<ModelType>& model,
-            Time t,
-            const FdmLinearOpIterator& iter) const;
+        Array getState(const ext::shared_ptr<ModelType>& model,
+                       Time t,
+                       const FdmLinearOpIterator& iter) const;
 
         RelinkableHandle<YieldTermStructure> disTs_, fwdTs_;
         const ext::shared_ptr<ModelType> disModel_, fwdModel_;
@@ -127,7 +126,7 @@ namespace QuantLib {
             for (const auto& i : swap_->leg(j)) {
                 npv +=
                     ext::dynamic_pointer_cast<Coupon>(i)->accrualStartDate() >= iterExerciseDate ?
-                        i->amount() * disTs_->discount(i->date()) :
+                        Real(i->amount() * disTs_->discount(i->date())) :
                         0.0;
             }
             if (j == 0)

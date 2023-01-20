@@ -200,19 +200,18 @@ namespace QuantLib {
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        bool antithetic_, controlVariate_;
+        bool antithetic_ = false, controlVariate_ = false;
         Size samples_, maxSamples_;
         Real tolerance_;
-        bool brownianBridge_;
-        BigNatural seed_;
+        bool brownianBridge_ = true;
+        BigNatural seed_ = 0;
     };
 
     template <class RNG, class S>
     inline MakeMCDiscreteArithmeticAPEngine<RNG, S>::MakeMCDiscreteArithmeticAPEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process)
-    : process_(std::move(process)), antithetic_(false), controlVariate_(false),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()),
-      brownianBridge_(true), seed_(0) {}
+    : process_(std::move(process)), samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      tolerance_(Null<Real>()) {}
 
     template <class RNG, class S>
     inline MakeMCDiscreteArithmeticAPEngine<RNG,S>&

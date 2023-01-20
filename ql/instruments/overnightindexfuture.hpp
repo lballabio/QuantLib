@@ -47,6 +47,9 @@ namespace QuantLib {
 
         Real convexityAdjustment() const;
         bool isExpired() const override;
+        const ext::shared_ptr<OvernightIndex>& overnightIndex() const { return overnightIndex_; }
+        Date valueDate() const { return valueDate_; }
+        Date maturityDate() const { return maturityDate_; }
       private:
         void performCalculations() const override;
         Real rate() const;

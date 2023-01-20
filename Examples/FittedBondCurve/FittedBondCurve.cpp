@@ -47,12 +47,6 @@
 using namespace std;
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-    ThreadKey sessionId() { return {}; }
-}
-#endif
-
 // par-rate approximation
 Rate parRate(const YieldTermStructure& yts,
              const std::vector<Date>& dates,
@@ -89,12 +83,12 @@ int main(int, char* []) {
         const Size numberOfBonds = 15;
         Real cleanPrice[numberOfBonds];
 
-        for (double& i : cleanPrice) {
+        for (Real& i : cleanPrice) {
             i = 100.0;
         }
 
         std::vector< ext::shared_ptr<SimpleQuote> > quote;
-        for (double i : cleanPrice) {
+        for (Real i : cleanPrice) {
             ext::shared_ptr<SimpleQuote> cp(new SimpleQuote(i));
             quote.push_back(cp);
         }
@@ -227,7 +221,7 @@ int main(int, char* []) {
                            20.0,  25.0, 30.0, 40.0, 50.0 };
 
         std::vector<Time> knotVector;
-        for (double& knot : knots) {
+        for (Real& knot : knots) {
             knotVector.push_back(knot);
         }
 
@@ -273,7 +267,7 @@ int main(int, char* []) {
                                                     tolerance,
                                                     max));
 
-        printOutput("(f) Nelson-Siegel spreaded", ts6);
+        printOutput("(f) Nelson-Siegel spread", ts6);
 
         //Fixed kappa, and 7 coefficients
         ExponentialSplinesFitting exponentialSplinesFixed(constrainAtZero,7,0.02);
@@ -345,7 +339,7 @@ int main(int, char* []) {
                  // Svensson
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts5,keyDates,dc)  << " | "
-                 // Nelson-Siegel Spreaded
+                 // Nelson-Siegel Spread
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts6,keyDates,dc) << " | "
                  // Exponential, fixed kappa
@@ -377,7 +371,7 @@ int main(int, char* []) {
 
         printOutput("(e) Svensson", ts5);
 
-        printOutput("(f) Nelson-Siegel spreaded", ts6);
+        printOutput("(f) Nelson-Siegel spread", ts6);
 
         printOutput("(g) exponential spline, fixed kappa", ts7);
 
@@ -435,7 +429,7 @@ int main(int, char* []) {
                  // Svensson
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts5,keyDates,dc) << " | "
-                 // Nelson-Siegel Spreaded
+                 // Nelson-Siegel Spread
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts6,keyDates,dc) << " | "
                  // exponential, fixed kappa
@@ -533,7 +527,7 @@ int main(int, char* []) {
                                                     tolerance,
                                                     max));
 
-        printOutput("(f) Nelson-Siegel spreaded", ts66);
+        printOutput("(f) Nelson-Siegel spread", ts66);
 
         ext::shared_ptr<FittedBondDiscountCurve> ts77(
                         new FittedBondDiscountCurve(curveSettlementDays, 
@@ -596,7 +590,7 @@ int main(int, char* []) {
                  // Svensson
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts55,keyDates,dc) << " | "
-                 // Nelson-Siegel Spreaded
+                 // Nelson-Siegel Spread
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts66,keyDates,dc) << " | "
                  // exponential, fixed kappa
@@ -682,7 +676,7 @@ int main(int, char* []) {
                  // Svensson
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts55,keyDates,dc) << " | "
-                 // Nelson-Siegel Spreaded
+                 // Nelson-Siegel Spread
                  << setw(6) << fixed << setprecision(3)
                  << 100.*parRate(*ts66,keyDates,dc) << " | "
                  // exponential spline, fixed kappa

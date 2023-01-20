@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+ Copyright (C) 2016 Quaternion Risk Management Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -522,6 +523,34 @@ namespace QuantLib {
                                               Rounding(),
                                               "%1$.2f %3%"));
         data_ = uahData;
+    }
+
+    // Serbian dinar
+    RSDCurrency::RSDCurrency() {
+        static ext::shared_ptr<Data> rsdData(
+            new Data("Serbian dinar", "RSD", 941, "RSD", "", 100, Rounding(), "1$.2f %3%"));
+        data_ = rsdData;
+    }
+
+    // Croatian kuna
+    HRKCurrency::HRKCurrency() {
+        static ext::shared_ptr<Data> hrkData(
+            new Data("Croatian kuna", "HRK", 191, "HRK", "", 100, Rounding(), "1$.2f %3%"));
+        data_ = hrkData;
+    }
+
+    // Bulgarian lev
+    BGNCurrency::BGNCurrency() {
+        static ext::shared_ptr<Data> bgnData(
+            new Data("Bulgarian lev", "BGN", 975, "BGN", "", 100, Rounding(), "1$.2F %3%"));
+        data_ = bgnData;
+    }
+
+    // Georgian lari
+    GELCurrency::GELCurrency() {
+        static ext::shared_ptr<Data> gelData(
+            new Data("Georgian lari", "GEL", 981, "GEL", "", 100, Rounding(), "1$.2F %3%"));
+        data_ = gelData;
     }
 }
 

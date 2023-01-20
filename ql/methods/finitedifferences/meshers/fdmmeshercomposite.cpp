@@ -98,7 +98,7 @@ namespace QuantLib {
         return mesher_[direction]->location(iter.coordinates()[direction]);
     }
 
-    Disposable<Array> FdmMesherComposite::locations(Size direction) const {
+    Array FdmMesherComposite::locations(Size direction) const {
         Array retVal(layout_->size());
 
         const FdmLinearOpIterator endIter = layout_->end();

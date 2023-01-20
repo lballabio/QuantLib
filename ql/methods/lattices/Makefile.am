@@ -9,6 +9,7 @@ this_include_HEADERS = \
     lattice.hpp \
     lattice1d.hpp \
     lattice2d.hpp \
+    tflattice.hpp \
     tree.hpp \
     trinomialtree.hpp
 

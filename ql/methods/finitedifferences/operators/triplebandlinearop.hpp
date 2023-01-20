@@ -28,9 +28,6 @@
 #define quantlib_triple_band_linear_op_hpp
 
 #include <ql/methods/finitedifferences/operators/fdmlinearop.hpp>
-#if !defined(QL_USE_STD_UNIQUE_PTR)
-#include <boost/shared_array.hpp>
-#endif
 #include <memory>
 
 namespace QuantLib {
@@ -43,26 +40,19 @@ namespace QuantLib {
                            const ext::shared_ptr<FdmMesher>& mesher);
 
         TripleBandLinearOp(const TripleBandLinearOp& m);
-        TripleBandLinearOp(TripleBandLinearOp&& m) QL_NOEXCEPT;
-        #ifdef QL_USE_DISPOSABLE
-        TripleBandLinearOp(const Disposable<TripleBandLinearOp>& m);
-        #endif
+        TripleBandLinearOp(TripleBandLinearOp&& m) noexcept;
         TripleBandLinearOp& operator=(const TripleBandLinearOp& m);
-        TripleBandLinearOp& operator=(TripleBandLinearOp&& m) QL_NOEXCEPT;
-        #ifdef QL_USE_DISPOSABLE
-        TripleBandLinearOp& operator=(const Disposable<TripleBandLinearOp>& m);
-        #endif
+        TripleBandLinearOp& operator=(TripleBandLinearOp&& m) noexcept;
 
-        Disposable<Array> apply(const Array& r) const override;
-        Disposable<Array> solve_splitting(const Array& r, Real a,
-                                          Real b = 1.0) const;
+        Array apply(const Array& r) const override;
+        Array solve_splitting(const Array& r, Real a, Real b = 1.0) const;
 
-        Disposable<TripleBandLinearOp> mult(const Array& u) const;
+        TripleBandLinearOp mult(const Array& u) const;
         // interpret u as the diagonal of a diagonal matrix, multiplied on LHS
-        Disposable<TripleBandLinearOp> multR(const Array& u) const;
+        TripleBandLinearOp multR(const Array& u) const;
         // interpret u as the diagonal of a diagonal matrix, multiplied on RHS
-        Disposable<TripleBandLinearOp> add(const TripleBandLinearOp& m) const;
-        Disposable<TripleBandLinearOp> add(const Array& u) const;
+        TripleBandLinearOp add(const TripleBandLinearOp& m) const;
+        TripleBandLinearOp add(const Array& u) const;
 
         // some very basic linear algebra routines
         void axpyb(const Array& a, const TripleBandLinearOp& x,
@@ -70,27 +60,21 @@ namespace QuantLib {
 
         void swap(TripleBandLinearOp& m);
 
-        Disposable<SparseMatrix> toMatrix() const override;
+        SparseMatrix toMatrix() const override;
 
       protected:
         TripleBandLinearOp() = default;
 
         Size direction_;
-        #if !defined(QL_USE_STD_UNIQUE_PTR)
-        boost::shared_array<Size> i0_, i2_;
-        boost::shared_array<Size> reverseIndex_;
-        boost::shared_array<Real> lower_, diag_, upper_;
-        #else
         std::unique_ptr<Size[]> i0_, i2_;
         std::unique_ptr<Size[]> reverseIndex_;
         std::unique_ptr<Real[]> lower_, diag_, upper_;
-        #endif
 
         ext::shared_ptr<FdmMesher> mesher_;
     };
 
 
-    inline TripleBandLinearOp::TripleBandLinearOp(TripleBandLinearOp&& m) QL_NOEXCEPT {
+    inline TripleBandLinearOp::TripleBandLinearOp(TripleBandLinearOp&& m) noexcept {
         swap(m);
     }
 
@@ -100,7 +84,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline TripleBandLinearOp& TripleBandLinearOp::operator=(TripleBandLinearOp&& m) QL_NOEXCEPT {
+    inline TripleBandLinearOp& TripleBandLinearOp::operator=(TripleBandLinearOp&& m) noexcept {
         swap(m);
         return *this;
     }

@@ -4,6 +4,7 @@
  Copyright (C) 2006 Klaus Spanderen
  Copyright (C) 2007 StatPro Italia srl
  Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2022 Jonghee Lee
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -60,8 +61,8 @@ namespace QuantLib {
                          Real requiredTolerance,
                          Size maxSamples,
                          BigNatural seed,
-                         Size polynomOrder,
-                         LsmBasisSystem::PolynomType polynomType,
+                         Size polynomialOrder,
+                         LsmBasisSystem::PolynomialType polynomialType,
                          Size nCalibrationSamples = Null<Size>(),
                          const boost::optional<bool>& antitheticVariateCalibration = boost::none,
                          BigNatural seedCalibration = Null<Size>());
@@ -76,15 +77,15 @@ namespace QuantLib {
         ext::shared_ptr<PathPricer<Path> > controlPathPricer() const override;
 
       private:
-        const Size polynomOrder_;
-        const LsmBasisSystem::PolynomType polynomType_;
+        const Size polynomialOrder_;
+        const LsmBasisSystem::PolynomialType polynomialType_;
     };
 
     class AmericanPathPricer : public EarlyExercisePathPricer<Path>  {
       public:
         AmericanPathPricer(ext::shared_ptr<Payoff> payoff,
-                           Size polynomOrder,
-                           LsmBasisSystem::PolynomType polynomType);
+                           Size polynomialOrder,
+                           LsmBasisSystem::PolynomialType polynomialType);
 
         Real state(const Path& path, Size t) const override;
         Real operator()(const Path& path, Size t) const override;
@@ -94,7 +95,7 @@ namespace QuantLib {
       protected:
         Real payoff(Real state) const;
 
-        Real scalingValue_;
+        Real scalingValue_ = 1.0;
         const ext::shared_ptr<Payoff> payoff_;
         std::vector<ext::function<Real(Real)> > v_;
     };
@@ -115,23 +116,29 @@ namespace QuantLib {
         MakeMCAmericanEngine& withSeed(BigNatural seed);
         MakeMCAmericanEngine& withAntitheticVariate(bool b = true);
         MakeMCAmericanEngine& withControlVariate(bool b = true);
-        MakeMCAmericanEngine& withPolynomOrder(Size polynomOrer);
-        MakeMCAmericanEngine& withBasisSystem(LsmBasisSystem::PolynomType);
+        MakeMCAmericanEngine& withPolynomialOrder(Size polynomialOrder);
+        MakeMCAmericanEngine& withBasisSystem(LsmBasisSystem::PolynomialType);
         MakeMCAmericanEngine& withCalibrationSamples(Size calibrationSamples);
         MakeMCAmericanEngine& withAntitheticVariateCalibration(bool b = true);
         MakeMCAmericanEngine& withSeedCalibration(BigNatural seed);
+
+        /*! \deprecated Renamed to withPolynomialOrder.
+                        Deprecated in version 1.26.
+        */
+        QL_DEPRECATED
+        MakeMCAmericanEngine& withPolynomOrder(Size polynomialOrder);
 
         // conversion to pricing engine
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
-        bool antithetic_, controlVariate_;
+        bool antithetic_ = false, controlVariate_ = false;
         Size steps_, stepsPerYear_;
-        Size samples_, maxSamples_, calibrationSamples_;
+        Size samples_, maxSamples_, calibrationSamples_ = 2048;
         Real tolerance_;
-        BigNatural seed_;
-        Size polynomOrder_;
-        LsmBasisSystem::PolynomType polynomType_;
+        BigNatural seed_ = 0;
+        Size polynomialOrder_ = 2;
+        LsmBasisSystem::PolynomialType polynomialType_ = LsmBasisSystem::Monomial;
         boost::optional<bool> antitheticCalibration_;
         BigNatural seedCalibration_;
     };
@@ -147,8 +154,8 @@ namespace QuantLib {
         Real requiredTolerance,
         Size maxSamples,
         BigNatural seed,
-        Size polynomOrder,
-        LsmBasisSystem::PolynomType polynomType,
+        Size polynomialOrder,
+        LsmBasisSystem::PolynomialType polynomialType,
         Size nCalibrationSamples,
         const boost::optional<bool>& antitheticVariateCalibration,
         BigNatural seedCalibration)
@@ -167,7 +174,7 @@ namespace QuantLib {
           false,
           antitheticVariateCalibration,
           seedCalibration),
-      polynomOrder_(polynomOrder), polynomType_(polynomType) {}
+      polynomialOrder_(polynomialOrder), polynomialType_(polynomialType) {}
 
     template <class RNG, class S, class RNG_Calibration>
     inline void MCAmericanEngine<RNG, S, RNG_Calibration>::calculate() const {
@@ -197,7 +204,7 @@ namespace QuantLib {
 
         ext::shared_ptr<AmericanPathPricer> earlyExercisePathPricer(
             new AmericanPathPricer(this->arguments_.payoff,
-                                   polynomOrder_, polynomType_));
+                                   polynomialOrder_, polynomialType_));
 
         return ext::make_shared<LongstaffSchwartzPathPricer<Path> > (
              
@@ -265,25 +272,27 @@ namespace QuantLib {
     template <class RNG, class S, class RNG_Calibration>
     inline MakeMCAmericanEngine<RNG, S, RNG_Calibration>::MakeMCAmericanEngine(
         ext::shared_ptr<GeneralizedBlackScholesProcess> process)
-    : process_(std::move(process)), antithetic_(false), controlVariate_(false),
-      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), samples_(Null<Size>()),
-      maxSamples_(Null<Size>()), calibrationSamples_(2048), tolerance_(Null<Real>()), seed_(0),
-      polynomOrder_(2), polynomType_(LsmBasisSystem::Monomial), antitheticCalibration_(boost::none),
-      seedCalibration_(Null<Size>()) {}
+    : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()),
+      antitheticCalibration_(boost::none), seedCalibration_(Null<Size>()) {}
 
     template <class RNG, class S, class RNG_Calibration>
     inline MakeMCAmericanEngine<RNG, S, RNG_Calibration> &
-    MakeMCAmericanEngine<RNG, S, RNG_Calibration>::withPolynomOrder(
-        Size polynomOrder) {
-        polynomOrder_ = polynomOrder;
+    MakeMCAmericanEngine<RNG, S, RNG_Calibration>::withPolynomialOrder(Size polynomialOrder) {
+        polynomialOrder_ = polynomialOrder;
         return *this;
     }
 
     template <class RNG, class S, class RNG_Calibration>
     inline MakeMCAmericanEngine<RNG, S, RNG_Calibration> &
-    MakeMCAmericanEngine<RNG, S, RNG_Calibration>::withBasisSystem(
-        LsmBasisSystem::PolynomType polynomType) {
-        polynomType_ = polynomType;
+    MakeMCAmericanEngine<RNG, S, RNG_Calibration>::withPolynomOrder(Size polynomialOrder) {
+        return withPolynomialOrder(polynomialOrder);
+    }
+
+    template <class RNG, class S, class RNG_Calibration>
+    inline MakeMCAmericanEngine<RNG, S, RNG_Calibration> &
+    MakeMCAmericanEngine<RNG, S, RNG_Calibration>::withBasisSystem(LsmBasisSystem::PolynomialType polynomialType) {
+        polynomialType_ = polynomialType;
         return *this;
     }
 
@@ -393,8 +402,8 @@ namespace QuantLib {
                                      samples_, tolerance_,
                                      maxSamples_,
                                      seed_,
-                                     polynomOrder_,
-                                     polynomType_,
+                                     polynomialOrder_,
+                                     polynomialType_,
                                      calibrationSamples_,
                                      antitheticCalibration_,
                                      seedCalibration_));

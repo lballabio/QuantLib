@@ -63,6 +63,10 @@ class InterpolationTest {
     static void testLagrangeInterpolationOnChebyshevPoints();
     static void testBSplines();
     static void testBackwardFlatOnSinglePoint();
+    static void testChebyshevInterpolation();
+    static void testChebyshevInterpolationOnNodes();
+    static void testChebyshevInterpolationUpdateY();
+
 
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };

@@ -91,7 +91,7 @@ namespace QuantLib {
         // calculate affine TSR model u and v
         // Sum tau_j   (fixed leg)
         Real sumTauj = 0.0;
-        for (double k : cfs.annuityWeights())
+        for (Real k : cfs.annuityWeights())
             sumTauj += k;
         // Sum tau_j (T_M - T_j)   (fixed leg)
         Real sumTaujDeltaT = 0.0;
@@ -100,7 +100,7 @@ namespace QuantLib {
                 cfs.annuityWeights()[k] * (cfs.fixedTimes().back() - cfs.fixedTimes()[k]);
         // Sum w_i   (float leg)
         Real sumWi = 0.0;
-        for (double k : cfs.floatWeights())
+        for (Real k : cfs.floatWeights())
             sumWi += k;
         // Sum w_i (T_N - T_i)    (float leg)
         Real sumWiDeltaT = 0.0;

@@ -82,10 +82,10 @@ namespace QuantLib {
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<P> process_;
-        bool antithetic_;
+        bool antithetic_ = false;
         Size samples_, maxSamples_, steps_, stepsPerYear_;
         Real tolerance_;
-        BigNatural seed_;
+        BigNatural seed_ = 0;
     };
 
     class GeometricAPOHestonPathPricer : public PathPricer<MultiPath> {
@@ -144,7 +144,7 @@ namespace QuantLib {
         std::vector<Time> fixingTimes = timeGrid.mandatoryTimes();
         std::vector<Size> fixingIndexes;
         fixingIndexes.reserve(fixingTimes.size());
-        for (double fixingTime : fixingTimes) {
+        for (Real fixingTime : fixingTimes) {
             fixingIndexes.push_back(timeGrid.closestIndex(fixingTime));
         }
 
@@ -176,9 +176,8 @@ namespace QuantLib {
     template <class RNG, class S, class P>
     inline MakeMCDiscreteGeometricAPHestonEngine<RNG, S, P>::MakeMCDiscreteGeometricAPHestonEngine(
         ext::shared_ptr<P> process)
-    : process_(std::move(process)), antithetic_(false), samples_(Null<Size>()),
-      maxSamples_(Null<Size>()), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+    : process_(std::move(process)), samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      steps_(Null<Size>()), stepsPerYear_(Null<Size>()), tolerance_(Null<Real>()) {}
 
     template<class RNG, class S, class P>
     inline MakeMCDiscreteGeometricAPHestonEngine<RNG,S,P>&

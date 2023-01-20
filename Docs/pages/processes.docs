@@ -21,6 +21,6 @@
     The classes <tt>QuantLib::StochasticProcess</tt> and
     <tt>QuantLib::StochasticProcess1D</tt> provide the interface for a
     generic stochastic process. A number of specific processes is
-    contained in the <tt>ql/Processes</tt> directory.
+    contained in the <tt>ql/processes</tt> directory.
 */
 

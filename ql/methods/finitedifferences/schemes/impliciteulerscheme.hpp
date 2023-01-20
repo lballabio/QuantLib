@@ -57,7 +57,7 @@ namespace QuantLib {
         friend class CrankNicolsonScheme;
         void step(array_type& a, Time t, Real theta);
 
-        Disposable<Array> apply(const Array& r, Real theta) const;
+        Array apply(const Array& r, Real theta) const;
           
         Time dt_;
         ext::shared_ptr<Size> iterations_;

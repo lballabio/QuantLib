@@ -56,7 +56,7 @@ namespace QuantLib {
         Real value(const Array& x);
 
         //! call cost values computation and increment evaluation counter
-        Disposable<Array> values(const Array& x);
+        Array values(const Array& x);
 
         //! call cost function gradient computation and increment
         //  evaluation counter
@@ -118,7 +118,7 @@ namespace QuantLib {
         return costFunction_.value(x);
     }
 
-    inline Disposable<Array> Problem::values(const Array& x) {
+    inline Array Problem::values(const Array& x) {
         ++functionEvaluation_;
         return costFunction_.values(x);
     }

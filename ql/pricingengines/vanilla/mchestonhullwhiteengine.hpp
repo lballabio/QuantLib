@@ -86,9 +86,9 @@ namespace QuantLib {
       private:
         ext::shared_ptr<HybridHestonHullWhiteProcess> process_;
         Size steps_, stepsPerYear_, samples_, maxSamples_;
-        bool antithetic_, controlVariate_;
+        bool antithetic_ = false, controlVariate_ = false;
         Real tolerance_;
-        BigNatural seed_;
+        BigNatural seed_ = 0;
     };
 
 
@@ -224,8 +224,7 @@ namespace QuantLib {
     inline MakeMCHestonHullWhiteEngine<RNG, S>::MakeMCHestonHullWhiteEngine(
         ext::shared_ptr<HybridHestonHullWhiteProcess> process)
     : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
-      samples_(Null<Size>()), maxSamples_(Null<Size>()), antithetic_(false), controlVariate_(false),
-      tolerance_(Null<Real>()), seed_(0) {}
+      samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()) {}
 
     template <class RNG, class S>
     inline MakeMCHestonHullWhiteEngine<RNG,S>&

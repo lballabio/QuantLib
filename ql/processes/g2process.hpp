@@ -37,12 +37,12 @@ namespace QuantLib {
         //! \name StochasticProcess interface
         //@{
         Size size() const override;
-        Disposable<Array> initialValues() const override;
-        Disposable<Array> drift(Time t, const Array& x) const override;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const override;
-        Disposable<Array> expectation(Time t0, const Array& x0, Time dt) const override;
-        Disposable<Matrix> stdDeviation(Time t0, const Array& x0, Time dt) const override;
-        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const override;
+        Array initialValues() const override;
+        Array drift(Time t, const Array& x) const override;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Array expectation(Time t0, const Array& x0, Time dt) const override;
+        Matrix stdDeviation(Time t0, const Array& x0, Time dt) const override;
+        Matrix covariance(Time t0, const Array& x0, Time dt) const override;
         //@}
         Real x0() const;
         Real y0() const;
@@ -52,7 +52,7 @@ namespace QuantLib {
         Real eta() const;
         Real rho() const;
       private:
-        Real x0_, y0_, a_, sigma_, b_, eta_, rho_;
+        Real x0_ = 0.0, y0_ = 0.0, a_, sigma_, b_, eta_, rho_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> xProcess_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> yProcess_;
     };
@@ -65,15 +65,15 @@ namespace QuantLib {
         //! \name StochasticProcess interface
         //@{
         Size size() const override;
-        Disposable<Array> initialValues() const override;
-        Disposable<Array> drift(Time t, const Array& x) const override;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const override;
-        Disposable<Array> expectation(Time t0, const Array& x0, Time dt) const override;
-        Disposable<Matrix> stdDeviation(Time t0, const Array& x0, Time dt) const override;
-        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const override;
+        Array initialValues() const override;
+        Array drift(Time t, const Array& x) const override;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Array expectation(Time t0, const Array& x0, Time dt) const override;
+        Matrix stdDeviation(Time t0, const Array& x0, Time dt) const override;
+        Matrix covariance(Time t0, const Array& x0, Time dt) const override;
         //@}
       protected:
-        Real x0_, y0_, a_, sigma_, b_, eta_, rho_;
+        Real x0_ = 0.0, y0_ = 0.0, a_, sigma_, b_, eta_, rho_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> xProcess_;
         ext::shared_ptr<QuantLib::OrnsteinUhlenbeckProcess> yProcess_;
         Real xForwardDrift(Time t, Time T) const;

@@ -27,21 +27,7 @@
 #include <ql/time/date.hpp>
 #include <ql/errors.hpp>
 #include <ql/shared_ptr.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-overlap-compare"
-#endif
-#include <boost/random.hpp>
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
+#include <random>
 #include <vector>
 
 namespace QuantLib {
@@ -83,7 +69,7 @@ namespace QuantLib {
         Year years_;
         Date periodStart_;
         Date periodEnd_;
-        unsigned int i_;
+        unsigned int i_ = 0;
     };
 
     class EventSet : public CatRisk {        
@@ -119,10 +105,10 @@ namespace QuantLib {
         Integer dayCount_;
         Real yearFraction_;
     
-        boost::mt19937 rng_;
-        boost::variate_generator<boost::mt19937&, boost::exponential_distribution<> > exponential_;
-        boost::variate_generator<boost::mt19937&, boost::gamma_distribution<> > gammaAlpha_;
-        boost::variate_generator<boost::mt19937&, boost::gamma_distribution<> > gammaBeta_;
+        std::mt19937 rng_;
+        std::exponential_distribution<Real> exponential_;
+        std::gamma_distribution<Real> gammaAlpha_;
+        std::gamma_distribution<Real> gammaBeta_;
     };
 
     class BetaRisk : public CatRisk {

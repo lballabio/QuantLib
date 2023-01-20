@@ -31,7 +31,7 @@ using namespace boost::unit_test_framework;
 
 namespace {
     bool isTheSame(Real a, Real b) {
-        const Real eps = 500*QL_EPSILON;
+        constexpr double eps = 500 * QL_EPSILON;
 
         if (std::fabs(b) < QL_EPSILON)
             return std::fabs(a) < eps;
@@ -193,7 +193,7 @@ void NumericalDifferentiationTest::testDerivativesOfSineFunction() {
     BOOST_TEST_MESSAGE("Testing numerical differentiation"
                        " of sin function...");
 
-    const ext::function<Real(Real)> f = static_cast<Real(*)(Real)>(std::sin);
+    const ext::function<Real(Real)> f = [](Real x) -> Real { return std::sin(x); };
 
     const ext::function<Real(Real)> df_central
         = NumericalDifferentiation(f, 1, std::sqrt(QL_EPSILON), 3,
@@ -253,7 +253,7 @@ void NumericalDifferentiationTest::testDerivativesOfSineFunction() {
 }
 
 namespace {
-    Disposable<Array> vandermondeCoefficients(
+    Array vandermondeCoefficients(
         Size order, Real x, const Array& gridPoints) {
 
         const Array q = gridPoints - x;

@@ -65,7 +65,7 @@ namespace QuantLib {
         //calculate payoff discount factor assuming continuous compounding
         DiscountFactor discount = riskFreeDiscount(t1);
         Real result = 0;
-        Real minusInf=-std::numeric_limits<Real>::infinity();
+        constexpr double minusInf = -std::numeric_limits<double>::infinity();
 
         Real y1 = this->y1(payoff->optionType()),
              y2 = this->y2(payoff->optionType());

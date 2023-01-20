@@ -133,7 +133,7 @@ namespace QuantLib {
 
         Real x2sq = s_*s_ - (x1-alpha_)*(x1-alpha_);
          // a negative number will be minuscule and a result of rounding error
-        Real x2 = x2sq >= 0.0 ? std::sqrt(x2sq) : 0.0;
+        Real x2 = x2sq >= 0.0 ? Real(std::sqrt(x2sq)) : 0.0;
         Real x3= std::sqrt(r_*r_ - x1*x1-x2*x2);
 
         Real err=0.0;

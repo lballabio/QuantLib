@@ -116,7 +116,7 @@ namespace QuantLib {
 
                 Array diffVec=Abs(M_*alphaVec_ - yVec_);
 
-                for (double i : diffVec) {
+                for (Real i : diffVec) {
                     QL_REQUIRE(i < invPrec_, "Inversion failed in 1d kernel interpolation");
                 }
             }

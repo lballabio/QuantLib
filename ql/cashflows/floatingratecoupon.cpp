@@ -45,8 +45,9 @@ namespace QuantLib {
                                            const Date& exCouponDate)
     : Coupon(paymentDate, nominal, startDate, endDate, refPeriodStart, refPeriodEnd, exCouponDate),
       index_(index), dayCounter_(std::move(dayCounter)),
-      fixingDays_(fixingDays == Null<Natural>() ? index->fixingDays() : fixingDays),
+      fixingDays_(fixingDays == Null<Natural>() ? (index ? index->fixingDays() : 0) : fixingDays),
       gearing_(gearing), spread_(spread), isInArrears_(isInArrears) {
+        QL_REQUIRE(index_, "no index provided");
         QL_REQUIRE(gearing_!=0, "Null gearing not allowed");
 
         if (dayCounter_.empty())
@@ -70,17 +71,8 @@ namespace QuantLib {
         if (d <= accrualStartDate_ || d > paymentDate_) {
             // out of coupon range
             return 0.0;
-        } else if (tradingExCoupon(d)) {
-            return -nominal() * rate() *
-                   dayCounter().yearFraction(d, std::max(d, accrualEndDate_),
-                                             refPeriodStart_, refPeriodEnd_);
         } else {
-            // usual case
-            return nominal() * rate() *
-                dayCounter().yearFraction(accrualStartDate_,
-                                          std::min(d, accrualEndDate_),
-                                          refPeriodStart_,
-                                          refPeriodEnd_);
+            return nominal() * rate() * accruedPeriod(d);
         }
     }
 

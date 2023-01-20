@@ -71,8 +71,8 @@ namespace QuantLib {
     HaganPricer::HaganPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol,
                              GFunctionFactory::YieldCurveModel modelOfYieldCurve,
                              Handle<Quote> meanReversion)
-    : CmsCouponPricer(swaptionVol), modelOfYieldCurve_(modelOfYieldCurve), cutoffForCaplet_(2),
-      cutoffForFloorlet_(0), meanReversion_(std::move(meanReversion)) {
+    : CmsCouponPricer(swaptionVol), modelOfYieldCurve_(modelOfYieldCurve),
+      meanReversion_(std::move(meanReversion)) {
         registerWith(meanReversion_);
     }
 
@@ -239,23 +239,19 @@ namespace QuantLib {
 
     }
 
-    NumericHaganPricer::NumericHaganPricer(
-        const Handle<SwaptionVolatilityStructure>& swaptionVol,
-        GFunctionFactory::YieldCurveModel modelOfYieldCurve,
-        const Handle<Quote>& meanReversion,
-        Real lowerLimit,
-        Real upperLimit,
-        Real precision,
-        Real hardUpperLimit)
-    : HaganPricer(swaptionVol, modelOfYieldCurve, meanReversion),
-       upperLimit_(upperLimit),
-       lowerLimit_(lowerLimit),
-       requiredStdDeviations_(8),
-       precision_(precision),
-       refiningIntegrationTolerance_(.0001),
-       hardUpperLimit_(hardUpperLimit) {
+    NumericHaganPricer::NumericHaganPricer(const Handle<SwaptionVolatilityStructure>& swaptionVol,
+                                           GFunctionFactory::YieldCurveModel modelOfYieldCurve,
+                                           const Handle<Quote>& meanReversion,
+                                           Real lowerLimit,
+                                           Real upperLimit,
+                                           Real precision,
+                                           Real hardUpperLimit)
+    : HaganPricer(swaptionVol, modelOfYieldCurve, meanReversion), upperLimit_(upperLimit),
+      lowerLimit_(lowerLimit),
 
-    }
+      precision_(precision),
+
+      hardUpperLimit_(hardUpperLimit) {}
 
     Real NumericHaganPricer::integrate(Real a, Real b, const ConundrumIntegrand& integrand) const {
 
@@ -340,7 +336,7 @@ namespace QuantLib {
 
         // v. HAGAN, Conundrums..., formule 2.17a, 2.18a
         return coupon_->accrualPeriod() * (discount_/annuity_) *
-            ((1 + dFdK) * swaptionPrice + optionType*integralValue);
+            ((1 + dFdK) * swaptionPrice + Integer(optionType) * integralValue);
     }
 
     Real NumericHaganPricer::swapletPrice() const {
@@ -475,13 +471,14 @@ namespace QuantLib {
         const Real dminus12 =  (lnRoverK-.5*variance)/sqrtSigma2T;
 
         CumulativeNormalDistribution cumulativeOfNormal;
-        const Real N32 = cumulativeOfNormal(optionType*d32);
-        const Real N12 = cumulativeOfNormal(optionType*d12);
-        const Real Nminus12 = cumulativeOfNormal(optionType*dminus12);
+        auto sign = Integer(optionType);
+        const Real N32 = cumulativeOfNormal(sign * d32);
+        const Real N12 = cumulativeOfNormal(sign * d12);
+        const Real Nminus12 = cumulativeOfNormal(sign * dminus12);
 
-        price += optionType * firstDerivativeOfGAtForwardValue * annuity_ *
-            swapRateValue_ * (swapRateValue_ * std::exp(variance) * N32-
-            (swapRateValue_+strike) * N12 + strike * Nminus12);
+        price += sign * firstDerivativeOfGAtForwardValue * annuity_ *
+            swapRateValue_ * (swapRateValue_ * std::exp(variance) * N32 -
+            (swapRateValue_ + strike) * N12 + strike * Nminus12);
         price *= coupon_->accrualPeriod();
         return price;
     }
@@ -600,7 +597,7 @@ namespace QuantLib {
 
     Real GFunctionFactory::GFunctionExactYield::operator()(Real x) {
         Real product = 1.;
-        for (double accrual : accruals_) {
+        for (Real accrual : accruals_) {
             product *= 1. / (1. + accrual * x);
         }
         return x*std::pow(1.+ accruals_[0]*x,-delta_)*(1./(1.-product));
@@ -611,7 +608,7 @@ namespace QuantLib {
         Real derC = 0.;
         std::vector<Real> b;
         b.reserve(accruals_.size());
-        for (double accrual : accruals_) {
+        for (Real accrual : accruals_) {
             Real temp = 1.0 / (1.0 + accrual * x);
             b.push_back(temp);
             c *= temp;
@@ -633,7 +630,7 @@ namespace QuantLib {
         Real sumOfSquare = 0.;
         std::vector<Real> b;
         b.reserve(accruals_.size());
-        for (double accrual : accruals_) {
+        for (Real accrual : accruals_) {
             Real temp = 1.0 / (1.0 + accrual * x);
             b.push_back(temp);
             c *= temp;
@@ -664,8 +661,7 @@ namespace QuantLib {
 
     GFunctionFactory::GFunctionWithShifts::GFunctionWithShifts(const CmsCoupon& coupon,
                                                                Handle<Quote> meanReversion)
-    : meanReversion_(std::move(meanReversion)), calibratedShift_(0.03), tmpRs_(10000000.0),
-      accuracy_(1.0e-14) {
+    : meanReversion_(std::move(meanReversion)) {
 
         const ext::shared_ptr<SwapIndex>& swapIndex = coupon.swapIndex();
         const ext::shared_ptr<VanillaSwap>& swap = swapIndex->underlyingSwap(coupon.fixingDate());
@@ -698,7 +694,7 @@ namespace QuantLib {
                 ext::dynamic_pointer_cast<Coupon>(fixedLeg[i]);
             accruals_.push_back(cpn->accrualPeriod());
             const Date paymentDate(cpn->date());
-            const double swapPaymentTime(dc.yearFraction(rateCurve->referenceDate(), paymentDate));
+            const Real swapPaymentTime(dc.yearFraction(rateCurve->referenceDate(), paymentDate));
             shapedSwapPaymentTimes_.push_back(shapeOfShift(swapPaymentTime));
             swapPaymentDiscounts_.push_back(rateCurve->discount(paymentDate));
         }

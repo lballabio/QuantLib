@@ -69,8 +69,7 @@ namespace QuantLib {
         return part1-part2;
     }
 
-    Disposable<Matrix>
-    SwapForwardMappings::coterminalSwapForwardJacobian(const CurveState& cs)
+    Matrix SwapForwardMappings::coterminalSwapForwardJacobian(const CurveState& cs)
     {
         Size n = cs.numberOfRates();
         const std::vector<Rate>& f = cs.forwardRates();
@@ -100,9 +99,8 @@ namespace QuantLib {
         return jacobian;
     }
 
-    Disposable<Matrix>
-    SwapForwardMappings::coterminalSwapZedMatrix(const CurveState& cs,
-                                                 const Spread displacement) {
+    Matrix SwapForwardMappings::coterminalSwapZedMatrix(const CurveState& cs,
+                                                        const Spread displacement) {
             Size n = cs.numberOfRates();
             Matrix zMatrix = coterminalSwapForwardJacobian(cs);
             const std::vector<Rate>& f = cs.forwardRates();
@@ -114,8 +112,7 @@ namespace QuantLib {
     }
 
 
-    Disposable<Matrix>
-    SwapForwardMappings::coinitialSwapForwardJacobian(const CurveState& cs)
+    Matrix SwapForwardMappings::coinitialSwapForwardJacobian(const CurveState& cs)
     {
         Size n = cs.numberOfRates();
 
@@ -127,9 +124,8 @@ namespace QuantLib {
         return jacobian;
     }
 
-    Disposable<Matrix>
-    SwapForwardMappings::cmSwapForwardJacobian(const CurveState& cs,
-                                               const Size spanningForwards)
+    Matrix SwapForwardMappings::cmSwapForwardJacobian(const CurveState& cs,
+                                                      const Size spanningForwards)
     {
         Size n = cs.numberOfRates();
 
@@ -141,9 +137,8 @@ namespace QuantLib {
         return jacobian;
     }
 
-    Disposable<Matrix>
-    SwapForwardMappings::coinitialSwapZedMatrix(const CurveState& cs,
-                                                const Spread displacement)
+    Matrix SwapForwardMappings::coinitialSwapZedMatrix(const CurveState& cs,
+                                                       const Spread displacement)
     {
         Size n = cs.numberOfRates();
         Matrix zMatrix = coinitialSwapForwardJacobian(cs);
@@ -159,10 +154,9 @@ namespace QuantLib {
         return zMatrix;
     }
 
-    Disposable<Matrix>
-    SwapForwardMappings::cmSwapZedMatrix(const CurveState& cs,
-                                         const Size spanningForwards,
-                                         const Spread displacement)
+    Matrix SwapForwardMappings::cmSwapZedMatrix(const CurveState& cs,
+                                                const Size spanningForwards,
+                                                const Spread displacement)
     {
         Size n = cs.numberOfRates();
         Matrix zMatrix = cmSwapForwardJacobian(cs,spanningForwards);
@@ -178,11 +172,10 @@ namespace QuantLib {
         return zMatrix;
     }
 
-      Real 
-      SwapForwardMappings::swaptionImpliedVolatility(const MarketModel& volStructure,
-                                  Size startIndex,
-                                  Size endIndex)
-      {
+    Real SwapForwardMappings::swaptionImpliedVolatility(const MarketModel& volStructure,
+                                                        Size startIndex,
+                                                        Size endIndex)
+    {
           QL_REQUIRE(startIndex < endIndex, "start index must be before end index in swaptionImpliedVolatility");
 
           LMMCurveState cs(volStructure.evolution().rateTimes());
@@ -223,6 +216,6 @@ namespace QuantLib {
           Real expiry = evolution.rateTimes()[startIndex];
           return std::sqrt(variance/expiry);
 
-      }
+    }
 
 }

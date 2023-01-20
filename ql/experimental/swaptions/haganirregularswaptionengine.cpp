@@ -43,7 +43,7 @@ namespace QuantLib {
         Handle<YieldTermStructure> termStructure,
         Handle<SwaptionVolatilityStructure> volatilityStructure)
     : swap_(std::move(swap)), termStructure_(std::move(termStructure)),
-      volatilityStructure_(std::move(volatilityStructure)), targetNPV_(0.0), lambda_(0.0) {
+      volatilityStructure_(std::move(volatilityStructure)) {
 
         engine_ = ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(termStructure_));
 
@@ -107,7 +107,7 @@ namespace QuantLib {
 
     //computes a replication of the swap in terms of a basket of vanilla swaps 
     //by solving a linear system of equation 
-    Disposable<Array> HaganIrregularSwaptionEngine::Basket::compute(Rate lambda) const {
+    Array HaganIrregularSwaptionEngine::Basket::compute(Rate lambda) const {
 
         //update members
         lambda_ = lambda;
@@ -164,21 +164,19 @@ namespace QuantLib {
 
         SVD svd(arr);
 
-        Disposable<Array> weights = svd.solveFor(rhs);
-
-        return weights;
-
+        return svd.solveFor(rhs);
     }
 
 
 
     Real HaganIrregularSwaptionEngine::Basket::operator()(Rate lambda) const {
 
-        Disposable<Array> weights = compute(lambda);
+        Array weights = compute(lambda);
 
         Real defect = -targetNPV_;
 
-        for(Size i=0; i< weights.size();++i)   defect -= swap_->type()*lambda*weights[i]*annuities_[i];
+        for (Size i=0; i< weights.size();++i)
+            defect -= Integer(swap_->type()) * lambda*weights[i] * annuities_[i];
 
         return defect;
     }
@@ -361,7 +359,7 @@ namespace QuantLib {
              ext::shared_ptr<PricingEngine>(new BlackSwaptionEngine(termStructure_,volatilityStructure_));
 
         //retrieve weights of underlying swaps
-        Disposable<Array> weights = basket.weights();
+        Array weights = basket.weights();
 
         Real npv = 0.0;
 

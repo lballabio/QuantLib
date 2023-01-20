@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/callability/triggeredswapexercise.hpp>
 #include <ql/models/marketmodels/curvestate.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
@@ -29,7 +28,7 @@ namespace QuantLib {
                                                  const std::vector<Time>& exerciseTimes,
                                                  std::vector<Rate> strikes)
     : rateTimes_(rateTimes), exerciseTimes_(exerciseTimes), strikes_(std::move(strikes)),
-      currentStep_(0), rateIndex_(exerciseTimes.size()), evolution_(rateTimes, exerciseTimes) {
+      rateIndex_(exerciseTimes.size()), evolution_(rateTimes, exerciseTimes) {
         Size j = 0;
         for (Size i=0; i<exerciseTimes.size(); ++i) {
             while (j < rateTimes.size() && rateTimes[j] < exerciseTimes[i])
@@ -86,10 +85,9 @@ namespace QuantLib {
         parameters[0] = strikes_.at(exerciseIndex);
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<MarketModelParametricExercise>
+    std::unique_ptr<MarketModelParametricExercise>
     TriggeredSwapExercise::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<MarketModelParametricExercise>(
-                                            new TriggeredSwapExercise(*this));
+        return std::unique_ptr<MarketModelParametricExercise>(new TriggeredSwapExercise(*this));
     }
 
 }

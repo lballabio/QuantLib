@@ -19,10 +19,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/exercise.hpp>
 #include <ql/instruments/barrieroption.hpp>
+#include <ql/instruments/dividendbarrieroption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
-#include <ql/exercise.hpp>
 #include <memory>
 
 namespace QuantLib {
@@ -45,6 +46,14 @@ namespace QuantLib {
         moreArgs->barrierType = barrierType_;
         moreArgs->barrier = barrier_;
         moreArgs->rebate = rebate_;
+
+        /* this is a workaround in case an engine is used for both barrier
+           and dividend options.  The dividends might have been set by another
+           instrument and need to be cleared. */
+        auto* arguments = dynamic_cast<DividendBarrierOption::arguments*>(args);
+        if (arguments != nullptr) {
+            arguments->cashFlow.clear();
+        }
     }
 
 
@@ -67,8 +76,8 @@ namespace QuantLib {
         std::unique_ptr<PricingEngine> engine;
         switch (exercise_->type()) {
           case Exercise::European:
-            engine.reset(new AnalyticBarrierEngine(newProcess));
-            break;
+              engine = std::make_unique<AnalyticBarrierEngine>(newProcess);
+              break;
           case Exercise::American:
           case Exercise::Bermudan:
             QL_FAIL("engine not available for non-European barrier option");

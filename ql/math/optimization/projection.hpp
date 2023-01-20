@@ -37,17 +37,16 @@ namespace QuantLib {
 
         //! returns the subset of free parameters corresponding
         // to set of parameters
-        virtual Disposable<Array> project(const Array &parameters) const;
+        virtual Array project(const Array &parameters) const;
 
         //! returns whole set of parameters corresponding to the set
         // of projected parameters
-        virtual Disposable<Array>
-        include(const Array &projectedParameters) const;
+        virtual Array include(const Array &projectedParameters) const;
         virtual ~Projection() = default;
 
       protected:
         void mapFreeParameters(const Array &parameterValues) const;
-        Size numberOfFreeParameters_;
+        Size numberOfFreeParameters_ = 0;
         const Array fixedParameters_;
         mutable Array actualParameters_;
         std::vector<bool> fixParameters_;

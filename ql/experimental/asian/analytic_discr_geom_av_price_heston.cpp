@@ -45,8 +45,8 @@ namespace QuantLib {
           tauK_(std::move(tauK)), parent_(parent), xiRightLimit_(xiRightLimit),
           i_(std::complex<Real>(0.0, 1.0)) {}
 
-        double operator()(double xi) const {
-            double xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
+        Real operator()(Real xi) const {
+            Real xiDash = (0.5+1e-8+0.5*xi) * xiRightLimit_; // Map xi to full range
 
             std::complex<Real> inner1 = parent_->Phi(1.0 + xiDash*i_, 0, t_, T_, kStar_, t_n_, tauK_);
             std::complex<Real> inner2 = -K_*parent_->Phi(xiDash*i_, 0, t_, T_, kStar_, t_n_, tauK_);
@@ -96,8 +96,8 @@ namespace QuantLib {
 
     std::complex<Real> AnalyticDiscreteGeometricAveragePriceAsianHestonEngine::z(
             const std::complex<Real>& s, const std::complex<Real>& w, Size k, Size n) const {
-        auto k_ = double(k);
-        auto n_ = double(n);
+        auto k_ = Real(k);
+        auto n_ = Real(n);
         std::complex<Real> term1 = (2*rho_*kappa_ - sigma_)*((n_-k_+1)*s + n_*w)/(2*sigma_*n_);
         std::complex<Real> term2 = (1-rho_*rho_)*pow(((n_-k_+1)*s + n_*w), 2)/(2*n_*n_);
 
@@ -120,8 +120,8 @@ namespace QuantLib {
             const std::complex<Real>& w,
             Time t, Time T, Size kStar,
             const std::vector<Time>& t_n) const {
-        auto kStar_ = double(kStar);
-        auto n_ = double(t_n.size());
+        auto kStar_ = Real(kStar);
+        auto n_ = Real(t_n.size());
         Real temp = -rho_*kappa_*theta_/sigma_;
 
         Time summation = 0.0;
@@ -262,7 +262,7 @@ namespace QuantLib {
         tkr_tk_ = std::vector<Real>();
         tr_t_ = -std::log(riskFreeRate_->discount(startTime) / dividendYield_->discount(startTime));
         Tr_T_ = -std::log(riskFreeRate_->discount(expiryTime) / dividendYield_->discount(expiryTime));
-        for (double fixingTime : fixingTimes) {
+        for (Real fixingTime : fixingTimes) {
             if (fixingTime < 0) {
                 tkr_tk_.push_back(1.0);
             } else {

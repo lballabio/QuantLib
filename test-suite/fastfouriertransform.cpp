@@ -68,7 +68,7 @@ void FastFourierTransformTest::testInverse() {
 
     fft.inverse_transform(x.begin(), x.end(), ft.begin());
     for (Size i=0; i<nFrq; ++i) {
-        tmp[i] = std::norm<Real>(ft[i]);
+        tmp[i] = std::norm(ft[i]);
         ft[i] = z;
     }
     fft.inverse_transform(tmp.begin(), tmp.end(), ft.begin());

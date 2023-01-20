@@ -149,19 +149,17 @@ namespace QuantLib {
         }
 
 
-        Disposable<Array> rescalePDF(
+        Array rescalePDF(
             const Array& p,
             const ext::shared_ptr<FdmMesherComposite>& mesher,
             FdmSquareRootFwdOp::TransformationType trafoType, Real alpha) {
 
-            Array retVal = p/integratePDF(p, mesher, trafoType, alpha);
-
-            return retVal;
+            return p/integratePDF(p, mesher, trafoType, alpha);
         }
 
 
         template <class Interpolator>
-        Disposable<Array> reshapePDF(
+        Array reshapePDF(
             const Array& p,
             const ext::shared_ptr<FdmMesherComposite>& oldMesher,
             const ext::shared_ptr<FdmMesherComposite>& newMesher,
@@ -418,7 +416,7 @@ namespace QuantLib {
                 std::transform(xMesher[i]->locations().begin(),
                                xMesher[i]->locations().end(),
                                vStrikes[i]->begin(),
-                               static_cast<Real(*)(Real)>(std::exp));
+                               [](Real x) -> Real { return std::exp(x); });
             }
         }
 
@@ -493,7 +491,7 @@ namespace QuantLib {
                     const Volatility localVol = localVol_->localVol(t, x[j]);
 
                     const Real l = (scale >= 0.0)
-                      ? localVol*std::sqrt(scale) : 1.0;
+                      ? localVol*std::sqrt(scale) : Real(1.0);
 
                     (*L)[j][i] = std::min(50.0, std::max(0.001, l));
 

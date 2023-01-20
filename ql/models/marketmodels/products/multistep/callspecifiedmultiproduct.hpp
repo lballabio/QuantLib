@@ -46,11 +46,7 @@ namespace QuantLib {
        bool nextTimeStep(const CurveState& currentState,
                          std::vector<Size>& numberCashFlowsThisStep,
                          std::vector<std::vector<CashFlow> >& cashFlowsGenerated) override;
-#if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<MarketModelMultiProduct> clone() const override;
-#else
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
-        #endif
         //@}
         const MarketModelMultiProduct& underlying() const;
         const ExerciseStrategy<CurveState>& strategy() const;
@@ -64,12 +60,12 @@ namespace QuantLib {
         EvolutionDescription evolution_;
         std::vector<std::valarray<bool> > isPresent_;
         std::vector<Time> cashFlowTimes_;
-        Size rebateOffset_;
-        bool wasCalled_;
+        Size rebateOffset_ = 0UL;
+        bool wasCalled_ = false;
         std::vector<Size> dummyCashFlowsThisStep_;
         std::vector<std::vector<CashFlow> > dummyCashFlowsGenerated_;
-        Size currentIndex_;
-        bool callable_;
+        Size currentIndex_ = 0UL;
+        bool callable_ = true;
     };
 
 }

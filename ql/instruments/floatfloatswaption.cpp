@@ -60,7 +60,7 @@ namespace QuantLib {
                                                   settlementMethod);
     }
 
-    Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
+    std::vector<ext::shared_ptr<BlackCalibrationHelper>>
     FloatFloatSwaption::calibrationBasket(
         const ext::shared_ptr<SwapIndex>& standardSwapBase,
         const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,

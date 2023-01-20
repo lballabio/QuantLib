@@ -28,13 +28,11 @@
 #include <ql/pricingengines/vanilla/fdblackscholesshoutengine.hpp>
 #include <ql/pricingengines/vanilla/fdcevvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fddividendengine.hpp>
-#include <ql/pricingengines/vanilla/fddividendshoutengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonhullwhitevanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdcirvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdmultiperiodengine.hpp>
 #include <ql/pricingengines/vanilla/fdsabrvanillaengine.hpp>
-#include <ql/pricingengines/vanilla/fdshoutengine.hpp>
 #include <ql/pricingengines/vanilla/fdsimplebsswingengine.hpp>
 #include <ql/pricingengines/vanilla/fdstepconditionengine.hpp>
 #include <ql/pricingengines/vanilla/fdvanillaengine.hpp>
@@ -46,4 +44,6 @@
 #include <ql/pricingengines/vanilla/mceuropeangjrgarchengine.hpp>
 #include <ql/pricingengines/vanilla/mchestonhullwhiteengine.hpp>
 #include <ql/pricingengines/vanilla/mcvanillaengine.hpp>
+#include <ql/pricingengines/vanilla/qdfpamericanengine.hpp>
+#include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
 

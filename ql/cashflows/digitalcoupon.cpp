@@ -26,16 +26,16 @@
 namespace QuantLib {
 
     DigitalCoupon::DigitalCoupon(const ext::shared_ptr<FloatingRateCoupon>& underlying,
-                  Rate callStrike,
-                  Position::Type callPosition,
-                  bool isCallATMIncluded,
-                  Rate callDigitalPayoff,
-                  Rate putStrike,
-                  Position::Type putPosition,
-                  bool isPutATMIncluded,
-                  Rate putDigitalPayoff,
-                  const ext::shared_ptr<DigitalReplication>& replication,
-                  const bool nakedOption)
+                                 Rate callStrike,
+                                 Position::Type callPosition,
+                                 bool isCallATMIncluded,
+                                 Rate callDigitalPayoff,
+                                 Rate putStrike,
+                                 Position::Type putPosition,
+                                 bool isPutATMIncluded,
+                                 Rate putDigitalPayoff,
+                                 const ext::shared_ptr<DigitalReplication>& replication,
+                                 const bool nakedOption)
     : FloatingRateCoupon(underlying->date(),
                          underlying->nominal(),
                          underlying->accrualStartDate(),
@@ -48,12 +48,12 @@ namespace QuantLib {
                          underlying->referencePeriodEnd(),
                          underlying->dayCounter(),
                          underlying->isInArrears()),
-      underlying_(underlying), callCsi_(0.), putCsi_(0.),
-      isCallATMIncluded_(isCallATMIncluded), isPutATMIncluded_(isPutATMIncluded),
-      isCallCashOrNothing_(false), isPutCashOrNothing_(false),
-      callLeftEps_(replication->gap()/2.), callRightEps_(replication->gap()/2.),
-      putLeftEps_(replication->gap()/2.), putRightEps_(replication->gap()/2.),
-      hasPutStrike_(false), hasCallStrike_(false),
+      underlying_(underlying), isCallATMIncluded_(isCallATMIncluded),
+      isPutATMIncluded_(isPutATMIncluded),
+
+      callLeftEps_(replication->gap() / 2.), callRightEps_(replication->gap() / 2.),
+      putLeftEps_(replication->gap() / 2.), putRightEps_(replication->gap() / 2.),
+
       replicationType_(replication->replicationType()), nakedOption_(nakedOption) {
 
         QL_REQUIRE(replication->gap()>0.0, "Non positive epsilon not allowed");

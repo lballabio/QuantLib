@@ -1,5 +1,8 @@
 name: Mac OS build with non-default configuration
-on: workflow_dispatch
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -7,37 +10,27 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: [macos-10.15]
-            shortname: default
-          - os: [macos-10.15]
-            shortname: stdclasses
-            cxxflags: "-std=c++17"
-            configureflags: --enable-std-classes
           - os: [macos-11]
             shortname: default-11
           - os: [macos-11]
             shortname: stdclasses-11
             cxxflags: "-std=c++17"
             configureflags: --enable-std-classes
+          - os: [macos-12]
+            shortname: default-12
+          - os: [macos-12]
+            shortname: stdclasses-12
+            cxxflags: "-std=c++17"
+            configureflags: --enable-std-classes
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
-        brew install automake boost ccache
-    - name: Cache
-      uses: actions/cache@v2
-      with:
-        path: ~/Library/Caches/ccache
-        key: ${{ matrix.os }}-${{ matrix.shortname }}-nondef-build-${{ github.ref }}-${{ github.head_ref }}-${{ hashFiles('**/*.hpp', '**/*.cpp', '**/macos.yml') }}
-        restore-keys: |
-          ${{ matrix.os }}-${{ matrix.shortname }}-nondef-build-${{ github.ref }}-${{ github.head_ref }}-
-          ${{ matrix.os }}-${{ matrix.shortname }}-nondef-build-${{ github.ref }}-
-          ${{ matrix.os }}-${{ matrix.shortname }}-nondef-build-refs/heads/master-
-          ${{ matrix.os }}-${{ matrix.shortname }}-nondef-build-
+        brew install automake boost
     - name: Build
       run: |
         ./autogen.sh
-        ./configure --disable-shared --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday ${{ matrix.configureflags }}  CC="ccache clang" CXX="ccache clang++" CXXFLAGS="-O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9 ${{ matrix.cxxflags }}" LDFLAGS="-stdlib=libc++ -mmacosx-version-min=10.9"
+        ./configure --disable-shared --enable-error-lines --enable-error-functions --enable-tracing --enable-indexed-coupons --enable-extra-safety-checks --enable-sessions --enable-thread-safe-observer-pattern --enable-intraday --enable-null-as-functions ${{ matrix.configureflags }}  CC="clang" CXX="clang++" CXXFLAGS="-O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9 ${{ matrix.cxxflags }}" LDFLAGS="-stdlib=libc++ -mmacosx-version-min=10.9"
         make -j 2
     - name: Run tests
       run: |

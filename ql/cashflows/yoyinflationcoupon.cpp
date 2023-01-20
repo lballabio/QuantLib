@@ -66,7 +66,7 @@ namespace QuantLib {
                                      ext::shared_ptr<YoYInflationIndex> index,
                                      const Period& observationLag)
     : schedule_(std::move(schedule)), index_(std::move(index)), observationLag_(observationLag),
-      paymentAdjustment_(ModifiedFollowing), paymentCalendar_(std::move(paymentCalendar)) {}
+      paymentCalendar_(std::move(paymentCalendar)) {}
 
 
     yoyInflationLeg& yoyInflationLeg::withNotionals(Real notional) {

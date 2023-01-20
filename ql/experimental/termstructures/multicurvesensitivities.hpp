@@ -56,10 +56,12 @@ quoted par rates.
 
 \note It's the users job to provide all curves that <em>influence</em> the implied rates.
 
-    \ingroup yieldtermstructures
+    \deprecated To be removed as unused.
+                Copy it in your codebase if you need it.
+                Deprecated in version 1.27.
 
 */
-class MultiCurveSensitivities : public LazyObject {
+class QL_DEPRECATED MultiCurveSensitivities : public LazyObject {
 private:
   typedef std::map< std::string, Handle< YieldTermStructure > > curvespec;
 

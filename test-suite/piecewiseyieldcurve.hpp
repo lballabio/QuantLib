@@ -46,10 +46,6 @@ class PiecewiseYieldCurveTest {
 
     static void testJpyLibor();
 
-    static void testDiscountCopy();
-    static void testForwardCopy();
-    static void testZeroCopy();
-
     static void testSwapRateHelperLastRelevantDate();
     static void testSwapRateHelperSpotDate();
 

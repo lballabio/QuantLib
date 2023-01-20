@@ -23,7 +23,6 @@
 #include <ql/cashflows/floatingratecoupon.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/legacy/libormarketmodels/lfmprocess.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/processes/eulerdiscretization.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/time/schedule.hpp>
@@ -66,8 +65,8 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> LiborForwardModelProcess::drift(Time t,
-                                                      const Array& x) const {
+    Array LiborForwardModelProcess::drift(Time t,
+                                          const Array& x) const {
         Array f(size_, 0.0);
         Matrix covariance(lfmParam_->covariance(t, x));
 
@@ -76,25 +75,22 @@ namespace QuantLib {
         for (Size k=m; k<size_; ++k) {
             m1[k] = accrualPeriod_[k]*x[k]/(1+accrualPeriod_[k]*x[k]);
             f[k]  = std::inner_product(m1.begin()+m, m1.begin()+k+1,
-                                       covariance.column_begin(k)+m,0.0)
+                                       covariance.column_begin(k)+m,Real(0.0))
                     - 0.5*covariance[k][k];
         }
 
         return f;
     }
 
-    Disposable<Matrix>
-    LiborForwardModelProcess::diffusion(Time t, const Array& x) const {
+    Matrix LiborForwardModelProcess::diffusion(Time t, const Array& x) const {
         return lfmParam_->diffusion(t, x);
     }
 
-    Disposable<Matrix> LiborForwardModelProcess::covariance(
-        Time t, const Array& x, Time dt) const {
+    Matrix LiborForwardModelProcess::covariance(Time t, const Array& x, Time dt) const {
         return lfmParam_->covariance(t, x)*dt;
     }
 
-    Disposable<Array> LiborForwardModelProcess::apply(
-        const Array& x0, const Array& dx) const {
+    Array LiborForwardModelProcess::apply(const Array& x0, const Array& dx) const {
         Array tmp(size_);
 
         for (Size k=0; k<size_; ++k) {
@@ -104,9 +100,8 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Array> LiborForwardModelProcess::evolve(
-                                             Time t0, const Array& x0,
-                                             Time dt, const Array& dw) const {
+    Array LiborForwardModelProcess::evolve(Time t0, const Array& x0,
+                                           Time dt, const Array& dw) const {
         /* predictor-corrector step to reduce discretization errors.
 
            Short - but slow - solution would be
@@ -132,26 +127,25 @@ namespace QuantLib {
             m1[k] = y/(1+y);
             const Real d = (
                 std::inner_product(m1.begin()+m, m1.begin()+k+1,
-                                   covariance.column_begin(k)+m,0.0)
+                                   covariance.column_begin(k)+m,Real(0.0))
                 -0.5*covariance[k][k]) * dt;
 
             const Real r = std::inner_product(
-                diff.row_begin(k), diff.row_end(k), dw.begin(), 0.0)*sdt;
+                diff.row_begin(k), diff.row_end(k), dw.begin(), Real(0.0))*sdt;
 
             const Real x = y*std::exp(d + r);
             m2[k] = x/(1+x);
             f[k] = x0[k] * std::exp(0.5*(d+
                  (std::inner_product(m2.begin()+m, m2.begin()+k+1,
-                                     covariance.column_begin(k)+m,0.0)
+                                     covariance.column_begin(k)+m,Real(0.0))
                   -0.5*covariance[k][k])*dt)+ r);
         }
 
         return f;
     }
 
-    Disposable<Array> LiborForwardModelProcess::initialValues() const {
-        Array tmp = initialValues_;
-        return tmp;
+    Array LiborForwardModelProcess::initialValues() const {
+        return initialValues_;
     }
 
     void LiborForwardModelProcess::setCovarParam(

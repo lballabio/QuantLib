@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/callability/marketmodelparametricexercise.hpp>
 #include <ql/models/marketmodels/callability/parametricexerciseadapter.hpp>
 #include <ql/models/marketmodels/evolutiondescription.hpp>
@@ -27,7 +26,7 @@ namespace QuantLib {
 
     ParametricExerciseAdapter::ParametricExerciseAdapter(
         const MarketModelParametricExercise& exercise, std::vector<std::vector<Real> > parameters)
-    : exercise_(exercise), parameters_(std::move(parameters)), currentStep_(0), currentExercise_(0),
+    : exercise_(exercise), parameters_(std::move(parameters)),
       isExerciseTime_(exercise.isExerciseTime()), numberOfVariables_(exercise.numberOfVariables()) {
         std::vector<Time> evolutionTimes =
             exercise_->evolution().evolutionTimes();
@@ -65,10 +64,8 @@ namespace QuantLib {
                                    variables_);
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<ExerciseStrategy<CurveState> >
-    ParametricExerciseAdapter::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<ExerciseStrategy<CurveState> >(
-                                        new ParametricExerciseAdapter(*this));
+    std::unique_ptr<ExerciseStrategy<CurveState>> ParametricExerciseAdapter::clone() const {
+        return std::unique_ptr<ExerciseStrategy<CurveState>>(new ParametricExerciseAdapter(*this));
     }
 
 }

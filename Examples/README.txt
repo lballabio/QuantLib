@@ -1,6 +1,13 @@
 
 This folder includes examples on how to use QuantLib.
 
+Basket Losses
+-------------
+
+This example uses a default basket losses portfolio construction to mitigate risk 
+with additional models such as binomial model, Inhomogeneous model, and Random model.
+
+
 BermudanSwaption
 ----------------
 
@@ -28,6 +35,14 @@ CDS
 
 This example bootstraps a default-probability curve over a number of
 CDS and reprices them.
+
+
+CVAIRS
+------
+
+This example reproduces Table 2 on page 11 of 
+A Formula for Interest Rate Swaps Valuation under
+Counterparty Risk in presence of Netting Agreements.
 
 
 ConvertibleBonds
@@ -67,10 +82,30 @@ This example fits a discount curve over a set of bonds with a number
 of methods.
 
 
+Gaussian1dModels
+----------------
+
+This example calibrates models using Gaussian short rate (GSR) and
+Markov Functional Model.
+
+
 GlobalOptimizer
 ---------------
 
 Examples showing how to use the global optimizers in QuantLib.
+
+
+Latent Model
+------------
+
+This sample code shows basic usage of a Latent variable model.
+
+
+Market Models
+-------------
+
+This example explores various market models' delta and vega computes. 
+Additional features include lower, upper bound, and standard error.
 
 
 MulticurveBootstrapping

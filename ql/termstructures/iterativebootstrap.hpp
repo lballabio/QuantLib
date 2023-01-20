@@ -285,9 +285,9 @@ namespace detail {
                 } else {
                     // Extending a previous attempt.  A negative min
                     // is enlarged; a positive one is shrunk towards 0.
-                    min = (min < 0.0 ? min * minFactor_ : min / minFactor_);
+                    min = (min < 0.0 ? Real(min * minFactor_) : Real(min / minFactor_));
                     // The opposite holds for the max.
-                    max = (max > 0.0 ? max * maxFactor_ : max / maxFactor_);
+                    max = (max > 0.0 ? Real(max * maxFactor_) : Real(max / maxFactor_));
                 }
                 Real guess = Traits::guess(i, ts_, validData, firstAliveHelper_);
 

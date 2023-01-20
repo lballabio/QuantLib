@@ -18,86 +18,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fddividendshoutengine.hpp
-    \brief base class for shout engine with dividends
-*/
-
 #ifndef quantlib_fd_dividend_shout_engine_hpp
 #define quantlib_fd_dividend_shout_engine_hpp
 
-#include <ql/instruments/dividendvanillaoption.hpp>
-#include <ql/pricingengines/vanilla/fddividendengine.hpp>
-#include <ql/pricingengines/vanilla/fdconditions.hpp>
-#include <ql/methods/finitedifferences/shoutcondition.hpp>
-
-namespace QuantLib {
-
-    //! Finite-differences shout engine with dividends
-    /*! \ingroup vanillaengines
-
-        \deprecated Use FdBlackScholesShoutEngine instead.
-                    Deprecated in version 1.22.
-    */
-    template <template <class> class Scheme = CrankNicolson>
-    class QL_DEPRECATED FDDividendShoutEngine
-        : public FDEngineAdapter<FDShoutCondition<FDDividendEngine<Scheme> >,
-                                 DividendVanillaOption::engine> {
-        typedef FDEngineAdapter<FDShoutCondition<FDDividendEngine<Scheme> >,
-                                DividendVanillaOption::engine> super;
-      public:
-        QL_DEPRECATED_DISABLE_WARNING
-        FDDividendShoutEngine(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps=100, Size gridPoints=100,
-             bool timeDependent = false)
-        : super(process, timeSteps, gridPoints,timeDependent) {}
-        QL_DEPRECATED_ENABLE_WARNING
-    };
-
-
-    /*! \deprecated Use FdBlackScholesShoutEngine instead.
-                    Deprecated in version 1.22.
-    */
-    template <template <class> class Scheme = CrankNicolson>
-    class QL_DEPRECATED FDDividendShoutEngineMerton73
-        : public FDEngineAdapter<FDShoutCondition<
-                                     FDDividendEngineMerton73<Scheme> >,
-                                 DividendVanillaOption::engine> {
-        typedef FDEngineAdapter<FDShoutCondition<
-                                    FDDividendEngineMerton73<Scheme> >,
-                                DividendVanillaOption::engine> super;
-      public:
-        QL_DEPRECATED_DISABLE_WARNING
-        FDDividendShoutEngineMerton73(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps=100, Size gridPoints=100,
-             bool timeDependent = false)
-        : super(process, timeSteps, gridPoints,timeDependent) {}
-        QL_DEPRECATED_ENABLE_WARNING
-    };
-
-    /*! \deprecated Use FdBlackScholesShoutEngine instead.
-                    Deprecated in version 1.22.
-    */
-    template <template <class> class Scheme = CrankNicolson>
-    class QL_DEPRECATED FDDividendShoutEngineShiftScale
-        : public FDEngineAdapter<FDShoutCondition<
-                                     FDDividendEngineShiftScale<Scheme> >,
-                                 DividendVanillaOption::engine> {
-        typedef FDEngineAdapter<FDShoutCondition<
-                                    FDDividendEngineShiftScale<Scheme> >,
-                                DividendVanillaOption::engine> super;
-      public:
-        QL_DEPRECATED_DISABLE_WARNING
-        FDDividendShoutEngineShiftScale(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps=100, Size gridPoints=100,
-             bool timeDependent = false)
-        : super(process, timeSteps, gridPoints,timeDependent) {}
-        QL_DEPRECATED_ENABLE_WARNING
-    };
-
-}
+// Deprecated in version 1.27
+#pragma message("Warning: this file is empty and will disappear in a future release; do not include it.")
 
 
 #endif

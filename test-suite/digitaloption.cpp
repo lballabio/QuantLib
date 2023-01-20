@@ -564,17 +564,17 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
     bool knockin=true;
     for (Size j=0; j<LENGTH(engines); j++) {
         for (auto& type : types) {
-            for (double strike : strikes) {
+            for (Real strike : strikes) {
                 ext::shared_ptr<StrikedTypePayoff> payoff(
                     new CashOrNothingPayoff(type, strike, cashPayoff));
 
                 VanillaOption opt(payoff, exercises[j]);
                 opt.setPricingEngine(engines[j]);
 
-                for (double u : underlyings) {
-                    for (double q : qRates) {
-                        for (double r : rRates) {
-                            for (double v : vols) {
+                for (Real u : underlyings) {
+                    for (Real q : qRates) {
+                        for (Real r : rRates) {
+                            for (Real v : vols) {
                                 // test data
                                 spot->setValue(u);
                                 qRate->setValue(q);

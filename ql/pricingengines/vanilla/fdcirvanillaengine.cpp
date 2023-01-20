@@ -113,10 +113,8 @@ namespace QuantLib {
         ext::shared_ptr<CoxIngersollRossProcess> cirProcess,
         ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
         const Real rho)
-    : cirProcess_(std::move(cirProcess)), bsProcess_(std::move(bsProcess)), rho_(rho), tGrid_(10),
-      xGrid_(100), rGrid_(100), dampingSteps_(0),
-      schemeDesc_(ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::ModifiedHundsdorfer())),
-      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()) {}
+    : cirProcess_(std::move(cirProcess)), bsProcess_(std::move(bsProcess)), rho_(rho),
+      schemeDesc_(ext::make_shared<FdmSchemeDesc>(FdmSchemeDesc::ModifiedHundsdorfer())) {}
 
     MakeFdCIRVanillaEngine& MakeFdCIRVanillaEngine::withQuantoHelper(
         const ext::shared_ptr<FdmQuantoHelper>& quantoHelper) {

@@ -23,15 +23,7 @@
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/functional.hpp>
-
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
-#endif
 #include <boost/math/distributions/students_t.hpp>
-#if defined(__GNUC__) && (((__GNUC__ == 4) && (__GNUC_MINOR__ >= 8)) || (__GNUC__ > 4))
-#pragma GCC diagnostic pop
-#endif
 
 namespace QuantLib {
 
@@ -77,8 +69,7 @@ namespace QuantLib {
           a2_ = a_ * a_;
     }
 
-    Disposable<std::vector<Real> >
-    CumulativeBehrensFisher::polynCharactT(Natural n) const {
+    std::vector<Real> CumulativeBehrensFisher::polynCharactT(Natural n) const {
         Natural nu = 2 * n +1;
         std::vector<Real> low(1,1.), high(1,1.);
         high.push_back(std::sqrt(static_cast<Real>(nu)));
@@ -100,8 +91,7 @@ namespace QuantLib {
         return high;
     }
 
-    Disposable<std::vector<Real> >
-    CumulativeBehrensFisher::convolveVectorPolynomials(
+    std::vector<Real> CumulativeBehrensFisher::convolveVectorPolynomials(
         const std::vector<Real>& v1,
         const std::vector<Real>& v2) const {
     #if defined(QL_EXTRA_SAFETY_CHECKS)
@@ -160,7 +150,7 @@ namespace QuantLib {
         const std::vector<Real>& factors,
         Real accuracy)
     : normSqr_(std::inner_product(factors.begin(), factors.end(),
-        factors.begin(), 0.)),
+        factors.begin(), Real(0.))),
       accuracy_(accuracy), distrib_(degreesFreedom, factors) { }
 
     Real InverseCumulativeBehrensFisher::operator()(const Probability q) const {

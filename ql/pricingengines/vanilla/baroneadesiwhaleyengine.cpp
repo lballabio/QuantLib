@@ -76,8 +76,8 @@ namespace QuantLib {
             std::sqrt(variance);
         CumulativeNormalDistribution cumNormalDist;
         Real K = (!close(riskFreeDiscount, 1.0, 1000))
-                ? -2.0*std::log(riskFreeDiscount)
-                   / (variance*(1.0-riskFreeDiscount))
+                ? Real(-2.0*std::log(riskFreeDiscount)
+                   / (variance*(1.0-riskFreeDiscount)))
                  : 2.0/variance;
         Real temp = blackFormula(payoff->optionType(), payoff->strike(),
                 forwardSi, std::sqrt(variance))*riskFreeDiscount;
@@ -198,8 +198,8 @@ namespace QuantLib {
                 /std::sqrt(variance);
             Real n = 2.0*std::log(dividendDiscount/riskFreeDiscount)/variance;
             Real K = (!close(riskFreeDiscount, 1.0, 1000))
-                    ? -2.0*std::log(riskFreeDiscount)
-                       / (variance*(1.0-riskFreeDiscount))
+                    ? Real(-2.0*std::log(riskFreeDiscount)
+                       / (variance*(1.0-riskFreeDiscount)))
                      : 2.0/variance;
             Real Q, a;
             switch (payoff->optionType()) {

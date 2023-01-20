@@ -101,72 +101,6 @@ void ArrayTest::testConstruction() {
                         << "\n    copy:      " << a6[i]);
     }
 
-    #ifdef QL_USE_DISPOSABLE
-
-    // creation of disposable array
-    Array temp1(size, value);
-    Disposable<Array> temp2(temp1);
-    if (temp2.size() != size || !temp1.empty())
-        BOOST_ERROR("array not correctly moved into disposable array"
-                    << "\n    original size of source: " << size
-                    << "\n    current size of source:  " << temp1.size()
-                    << "\n    current size of target:  " << temp2.size());
-    for (i=0; i<size; i++) {
-        if (temp2[i] != value)
-            BOOST_ERROR(io::ordinal(i+1) << " element of disposable "
-                        "not moved correctly"
-                        << "\n    required:  " << value
-                        << "\n    resulting: " << temp2[i]);
-    }
-
-    // copy constructor from disposable
-    Array a7(temp2);
-    if (a7.size() != size || !temp2.empty())
-        BOOST_ERROR("disposable array not correctly moved into array"
-                    << "\n    original size of source: " << size
-                    << "\n    current size of source:  " << temp2.size()
-                    << "\n    current size of target:  " << a7.size());
-    for (i=0; i<size; i++) {
-        if (a7[i] != value)
-            BOOST_ERROR(io::ordinal(i+1) << " element not moved correctly"
-                        << "\n    required:  " << value
-                        << "\n    resulting: " << a7[i]);
-    }
-
-    // assignment
-    Array a8;
-    a8 = a7;
-    if (a8.size() != a7.size())
-        BOOST_ERROR("copy not of the same size as original"
-                    << "\n    original:  " << a7.size()
-                    << "\n    copy:      " << a8.size());
-    for (i=0; i<a7.size(); i++) {
-        if (a8[i] != a7[i])
-            BOOST_ERROR(io::ordinal(i+1) << " element of copy "
-                        "not with same value as original"
-                        << "\n    original:  " << a7[i]
-                        << "\n    copy:      " << a8[i]);
-    }
-
-    // assignment from disposable
-    Array temp3(size, value);
-    Disposable<Array> temp4(temp3);
-    Array a9;
-    a9 = temp4;
-    if (a9.size() != size || !temp4.empty())
-        BOOST_ERROR("disposable array not correctly moved into array"
-                    << "\n    original size of source: " << size
-                    << "\n    current size of source:  " << temp4.size()
-                    << "\n    current size of target:  " << a9.size());
-    for (i=0; i<size; i++) {
-        if (a9[i] != value)
-            BOOST_ERROR(io::ordinal(i+1) << " element not moved correctly"
-                        << "\n    required:  " << value
-                        << "\n    resulting: " << a9[i]);
-    }
-
-    #endif
-
     // transform
     Array a10(5);
     for (i=0; i < a10.size(); i++) {
@@ -192,13 +126,13 @@ void ArrayTest::testArrayFunctions() {
         a[i] = std::sin(Real(i))+1.1;
     }
 
-    const Real exponential = -2.3;
+    constexpr double exponential = -2.3;
     const Array p = Pow(a, exponential);
     const Array e = Exp(a);
     const Array l = Log(a);
     const Array s = Sqrt(a);
 
-    const Real tol = 10*QL_EPSILON;
+    constexpr double tol = 10*QL_EPSILON;
     for (Size i=0; i < a.size(); ++i) {
         if (std::fabs(p[i]-std::pow(a[i], exponential)) > tol) {
             BOOST_FAIL("Array function test Pow failed");
@@ -221,19 +155,19 @@ void ArrayTest::testArrayResize() {
     Array a(10,1.0,1.0);
 
     for (Size i=0; i < 10; ++i)
-        BOOST_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
+        QL_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
 
     a.resize(5);
     BOOST_CHECK(a.size() == 5);
 
     for (Size i=0; i < 5; ++i)
-        BOOST_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
+        QL_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
 
     a.resize(15);
     BOOST_CHECK(a.size() == 15);
 
     for (Size i=0; i < 5; ++i)
-        BOOST_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
+        QL_CHECK_CLOSE(a[i], Real(1+i), 10*QL_EPSILON);
 
     const Array::const_iterator iter = a.begin();
     a.resize(a.size());

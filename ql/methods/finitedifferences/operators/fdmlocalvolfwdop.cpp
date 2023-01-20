@@ -50,8 +50,7 @@ namespace QuantLib {
             iter != endIter; ++iter) {
             const Size i = iter.index();
 
-            v[i] = square<Real>()(
-                localVol_->localVol(0.5*(t1+t2), x_[i], true));
+            v[i] = squared(localVol_->localVol(0.5*(t1+t2), x_[i], true));
         }
         mapT_.axpyb(Array(1, 1.0), dxMap_.multR(- r + q + 0.5*v),
                     dxxMap_.multR(0.5*v), Array(1, 0.0));
@@ -59,44 +58,39 @@ namespace QuantLib {
 
     Size FdmLocalVolFwdOp::size() const { return 1U; }
 
-    Disposable<Array> FdmLocalVolFwdOp::apply(const Array& u) const {
+    Array FdmLocalVolFwdOp::apply(const Array& u) const {
         return mapT_.apply(u);
     }
 
-    Disposable<Array> FdmLocalVolFwdOp::apply_direction(
+    Array FdmLocalVolFwdOp::apply_direction(
         Size direction, const Array& r) const {
         if (direction == direction_)
             return mapT_.apply(r);
         else {
-            Array retVal(r.size(), 0.0);
-            return retVal;
+            return Array(r.size(), 0.0);
         }
     }
 
-    Disposable<Array> FdmLocalVolFwdOp::apply_mixed(const Array& r) const {
-        Array retVal(r.size(), 0.0);
-        return retVal;
+    Array FdmLocalVolFwdOp::apply_mixed(const Array& r) const {
+        return Array(r.size(), 0.0);
     }
 
-    Disposable<Array> FdmLocalVolFwdOp::solve_splitting(
+    Array FdmLocalVolFwdOp::solve_splitting(
         Size direction, const Array& r, Real dt) const {
         if (direction == direction_)
             return mapT_.solve_splitting(r, dt, 1.0);
         else {
-            Array retVal(r);
-            return retVal;
+            return r;
         }
     }
 
-    Disposable<Array> FdmLocalVolFwdOp::preconditioner(
+    Array FdmLocalVolFwdOp::preconditioner(
         const Array& r, Real dt) const {
         return solve_splitting(direction_, r, dt);
     }
 
-    Disposable<std::vector<SparseMatrix> >
-    FdmLocalVolFwdOp::toMatrixDecomp() const {
-        std::vector<SparseMatrix> retVal(1, mapT_.toMatrix());
-        return retVal;
+    std::vector<SparseMatrix> FdmLocalVolFwdOp::toMatrixDecomp() const {
+        return std::vector<SparseMatrix>(1, mapT_.toMatrix());
     }
 
 }

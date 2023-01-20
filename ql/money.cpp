@@ -21,6 +21,7 @@
 #include <ql/money.hpp>
 #include <ql/currencies/exchangeratemanager.hpp>
 #include <ql/math/comparison.hpp>
+
 #include <boost/format.hpp>
 
 namespace QuantLib {
@@ -251,9 +252,5 @@ namespace QuantLib {
     Money::ConversionTypeProxy::operator Money::ConversionType() const {
         return Money::Settings::instance().conversionType();
     }
-
-    Money::BaseCurrencyProxy Money::baseCurrency;
-    Money::ConversionTypeProxy Money::conversionType;
-
 
 }

@@ -27,15 +27,11 @@
 #define quantlib_longstaff_schwartz_path_pricer_hpp
 
 #include <ql/functional.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/math/generallinearleastsquares.hpp>
 #include <ql/math/statistics/incrementalstatistics.hpp>
 #include <ql/methods/montecarlo/earlyexercisepathpricer.hpp>
 #include <ql/methods/montecarlo/pathpricer.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
-#if !defined(QL_USE_STD_UNIQUE_PTR)
-#include <boost/scoped_array.hpp>
-#endif
 #include <utility>
 #include <memory>
 
@@ -72,19 +68,14 @@ namespace QuantLib {
                                      const std::vector<StateType> &state,
                                      const std::vector<Real> &price,
                                      const std::vector<Real> &exercise) {}
-        bool  calibrationPhase_;
+        bool calibrationPhase_ = true;
         const ext::shared_ptr<EarlyExercisePathPricer<PathType> >
             pathPricer_;
 
         mutable QuantLib::IncrementalStatistics exerciseProbability_;
 
-        #if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<Array[]> coeff_;
         std::unique_ptr<DiscountFactor[]> dF_;
-        #else
-        boost::scoped_array<Array> coeff_;
-        boost::scoped_array<DiscountFactor> dF_;
-        #endif
 
         mutable std::vector<PathType> paths_;
         const   std::vector<ext::function<Real(StateType)> > v_;
@@ -97,9 +88,9 @@ namespace QuantLib {
         const TimeGrid& times,
         ext::shared_ptr<EarlyExercisePathPricer<PathType> > pathPricer,
         const ext::shared_ptr<YieldTermStructure>& termStructure)
-    : calibrationPhase_(true), pathPricer_(std::move(pathPricer)),
-      coeff_(new Array[times.size() - 2]), dF_(new DiscountFactor[times.size() - 1]),
-      v_(pathPricer_->basisSystem()), len_(times.size()) {
+    : pathPricer_(std::move(pathPricer)), coeff_(new Array[times.size() - 2]),
+      dF_(new DiscountFactor[times.size() - 1]), v_(pathPricer_->basisSystem()),
+      len_(times.size()) {
 
         for (Size i=0; i<times.size()-1; ++i) {
             dF_[i] =   termStructure->discount(times[i+1])

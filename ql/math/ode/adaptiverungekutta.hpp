@@ -29,7 +29,6 @@
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
-#include <ql/utilities/disposable.hpp>
 #include <ql/functional.hpp>
 #include <vector>
 #include <cmath>
@@ -39,9 +38,7 @@ namespace QuantLib {
     template <class T = Real>
     class AdaptiveRungeKutta {
       public:
-        typedef ext::function<
-          Disposable<std::vector<T> >(const Real,
-                                      const std::vector<T>&)> OdeFct;
+        typedef ext::function<std::vector<T>(const Real, const std::vector<T>&)> OdeFct;
         typedef ext::function<T(const Real, const T)> OdeFct1d;
 
         /*! The class is constructed with the following inputs:
@@ -64,8 +61,7 @@ namespace QuantLib {
             The ode is given by a function \f$ F: R \times K^n
             \rightarrow K^n \f$ as \f$ f'(x) = F(x,f(x)) \f$, $K=R,
             C$ */
-        Disposable<std::vector<T> >
-        operator()(const OdeFct& ode, const std::vector<T>& y1, Real x1, Real x2);
+        std::vector<T> operator()(const OdeFct& ode, const std::vector<T>& y1, Real x1, Real x2);
         T operator()(const OdeFct1d& ode, T y1, Real x1, Real x2);
 
       private:
@@ -99,8 +95,7 @@ namespace QuantLib {
 
 
     template<class T>
-    Disposable<std::vector<T> > AdaptiveRungeKutta<T>::operator()(
-                                                     const OdeFct& ode,
+    std::vector<T> AdaptiveRungeKutta<T>::operator()(const OdeFct& ode,
                                                      const std::vector<T>& y1,
                                                      const Real x1,
                                                      const Real x2) {
@@ -138,8 +133,7 @@ namespace QuantLib {
             typedef typename AdaptiveRungeKutta<T>::OdeFct1d OdeFct1d;
             explicit OdeFctWrapper(const OdeFct1d& ode1d)
             : ode1d_(ode1d) {}
-            Disposable<std::vector<T> > operator()(const Real x,
-                                                   const std::vector<T>& y) {
+            std::vector<T> operator()(const Real x, const std::vector<T>& y) {
                 std::vector<T> res(1,ode1d_(x,y[0]));
                 return res;
             }

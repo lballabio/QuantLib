@@ -27,6 +27,7 @@
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hybridhestonhullwhiteprocess.hpp>
+#include <ql/math/functional.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/math/randomnumbers/sobolbrownianbridgersg.hpp>
 #include <ql/math/optimization/simplex.hpp>
@@ -212,7 +213,7 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
     const Option::Type types[] = { Option::Put, Option::Call };
 
     for (auto type : types) {
-        for (double j : strike) {
+        for (Real j : strike) {
             for (unsigned long l : maturity) {
                 const Date maturityDate = today + Period(l, Years);
 
@@ -408,8 +409,8 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
     const Real corr[] = {-0.9, -0.5, 0.0, 0.5, 0.9 };
     const Real strike[] = { 100 };
 
-    for (double i : corr) {
-        for (double j : strike) {
+    for (Real i : corr) {
+        for (Real j : strike) {
             ext::shared_ptr<HybridHestonHullWhiteProcess> jointProcess(
                 new HybridHestonHullWhiteProcess(hestonProcess, hwProcess, i));
 
@@ -495,8 +496,8 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
     const Real corr[] = { -0.45, 0.45, 0.25 };
     const Real strike[] = { 100, 75, 50, 150 };
 
-    for (double i : corr) {
-        for (double j : strike) {
+    for (Real i : corr) {
+        for (Real j : strike) {
             ext::shared_ptr<HybridHestonHullWhiteProcess> jointProcess(
                 new HybridHestonHullWhiteProcess(hestonProcess, hwProcess, i,
                                                  HybridHestonHullWhiteProcess::Euler));
@@ -585,7 +586,7 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
     const Option::Type types[] = { Option::Put, Option::Call };
 
     for (auto type : types) {
-        for (double j : strike) {
+        for (Real j : strike) {
             ext::shared_ptr<HybridHestonHullWhiteProcess> jointProcess(
                 new HybridHestonHullWhiteProcess(
                         hestonProcess, hwFwdProcess, 0.0,
@@ -788,8 +789,8 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
     const Real corr[] = {-0.85, 0.5 };
     const Real strike[] = { 50, 100, 125 };
 
-    for (double i : corr) {
-        for (double j : strike) {
+    for (Real i : corr) {
+        for (Real j : strike) {
             ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(Option::Put, j));
             ext::shared_ptr<Exercise> exercise(
                                new EuropeanExercise(maturity));
@@ -860,8 +861,8 @@ void HybridHestonHullWhiteProcessTest::testFdmHestonHullWhiteEngine() {
     const Real corr[] = {-0.85, 0.5 };
     const Real strike[] = { 75, 120, 160 };
 
-    for (double i : corr) {
-        for (double j : strike) {
+    for (Real i : corr) {
+        for (Real j : strike) {
             ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(Option::Call, j));
             VanillaOption option(payoff, exercise);
 
@@ -1053,7 +1054,7 @@ void HybridHestonHullWhiteProcessTest::testBsmHullWhitePricing() {
                 fdEngine->enableMultipleStrikesCaching(strikes);
 
                 Real avgPriceDiff = 0.0;
-                for (double& strike : strikes) {
+                for (Real& strike : strikes) {
                     VanillaOptionData optionData = {strike, maturity, Option::Call};
                     ext::shared_ptr<VanillaOption> option
                                         = makeVanillaOption(optionData);
@@ -1118,7 +1119,7 @@ void HybridHestonHullWhiteProcessTest::testSpatialDiscretizatinError() {
                         schemes[i].schemeDesc));
                 fdEngine->enableMultipleStrikesCaching(strikes);
 
-                for (double& strike : strikes) {
+                for (Real& strike : strikes) {
                     VanillaOptionData optionData = {strike, maturity, Option::Call};
                     ext::shared_ptr<VanillaOption> option
                                         = makeVanillaOption(optionData);
@@ -1157,8 +1158,7 @@ namespace hybrid_heston_hullwhite_process_test {
             bool test(const Array& params) const override {
                 const Real rho = params[3];
 
-                return (  square<Real>()(rho)
-                        + square<Real>()(equityShortRateCorr_) <= 1.0);
+                return (squared(rho) + squared(equityShortRateCorr_) <= 1.0);
             }
 
           private:

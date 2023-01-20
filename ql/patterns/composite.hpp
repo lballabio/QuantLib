@@ -30,21 +30,12 @@
 
 namespace QuantLib {
 
-    //! %Composite pattern.
-    /*! The typical use of this class is:
-        \code
-        class CompositeFoo : public Composite<Foo> {
-            ...
-        };
-        \endcode
-        which causes CompositeFoo to inherit from Foo and provides it
-        with methods for adding components. Of course, any abstract
-        Foo interface must still be implemented.
-
-        \ingroup patterns
+    /*! \deprecated To be removed as unused.
+                    Copy it in your codebase if you need it.
+                    Deprecated in version 1.26.
     */
     template <class T>
-    class Composite : public T {
+    class QL_DEPRECATED Composite : public T {
       protected:
         std::list<ext::shared_ptr<T> > components_;
         void add(const ext::shared_ptr<T>& c) { components_.push_back(c); }

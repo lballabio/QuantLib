@@ -1,105 +1,142 @@
-Changes for QuantLib 1.24:
+Changes for QuantLib 1.29:
 ==========================
 
-QuantLib 1.24 includes 25 pull requests from several contributors.
+QuantLib 1.29 includes 42 pull requests from several contributors.
 
-The most notable changes are included below.
+Some of the most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib/milestone/20?closed=1>.
+<https://github.com/lballabio/QuantLib/milestone/26?closed=1>.
+
 
 Portability
 -----------
 
-- Overhauled the CMake build system (thanks to Philip Kovacs).  Among
-  other things, it now allows to specify the available configuration
-  options from the `cmake` invocation and adds the required Boost
-  libraries accordingly.
+- **End of support:** as announced in the notes for the previous
+  release, this release no longer manages thread-local singletons via
+  a user-provided `sessionId` function, and therefore the latter is no
+  longer needed.  Instead, the code now uses the built-in language
+  support for thread-local variables.  Thanks go to Peter Caspers
+  (@pcaspers).
 
-Instruments
------------
+- **Future end of support:** as announced in the notes for the
+  previous release, after the next couple of releases, using
+  `std::tuple`, `std::function` and `std::bind` (instead of their
+  `boost` counterparts) will become the default.  If you're using
+  `ext::tuple` etc. in your code (which is suggested), this should be
+  a transparent change.  If not, you'll still be able to choose the
+  `boost` versions via a configure switch for a while; but we do
+  suggest you start using `ext::tuple` etc. in the meantime.
 
-- Avoid callable-bond mispricing when a call date is close but not equal
-  to a coupon date (thanks to Ralf Konrad for the fix and to GitHub user
-  @aichao for the analysis).
-  See <https://github.com/lballabio/QuantLib/issues/930> for details.
+- Replaced internal usage of `boost::thread` with `std::thread`;
+  thanks to Jonathan Sweemer (@sweemer).  This removed our last
+  dependency on Boost binaries and makes it possible to compile
+  QuantLib using a header-only Boost installation.
 
-- A new `RiskyBondEngine` is available for bonds (thanks to Lew Wei
-  Hao).  It prices bonds based on a risk-free discount cure and a
-  default-probability curve used to assess the probability of each
-  coupon payment.  It makes accessible to all bonds the calculations
-  previously available in the experimental `RiskyBond` class.
+- On Windows, it is now possible to use the MSVC dynamic runtime when
+  using cmake by passing
+  `-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL`
+  on the command line; thanks to Jonathan Sweemer (@sweemer).  The
+  static runtime remains the default.
 
-Cashflows
----------
+- It is now possible to build QuantLib with Intel's `icpx` compiler
+  using cmake; thanks to Jonathan Sweemer (@sweemer).  Note that in
+  order to get all the unit tests passing, `-fp-model=precise` must be
+  added to `CMAKE_CXX_FLAGS`.
 
-- The choice between par and indexed coupons was moved to
-  `IborCouponPricer` (thanks to Peter Caspers).  This also made it
-  possible to override the choice locally when building a
-  `VanillaSwap` or a `SwapRateHelper`, so that coupons with both
-  behaviors can now be used at the same time.
-
-Term structures
----------------
-
-- Cross-currency basis swap rate helpers now support both
-  constant-notional and marked-to-market swaps (thanks to Marcin
-  Rybacki).
 
 Date/time
 ---------
 
-- Added Chilean calendar (thanks to Anubhav Pandey).
+- Updated Chinese holidays for 2023; thanks to Cheng Li
+  (@wegamekinglc).
 
-- Added new `ThirdWednesdayInclusive` date-generation rule that also
-  adjusts start and end dates (thanks to Lew Wei Hao).
+- Added in-lieu holiday for Christmas 2022 to South-African calendar;
+  thanks to Joshua Hayes (@JoshHayes).
 
-Patterns
---------
+- Added King Charles III coronation holiday to UK calendar; thanks to
+  Fredrik Gerdin Börjesson (@gbfredrik).
 
-- Overhauled `Singleton` implementation (thanks to Peter Caspers).
-  Singletons are now initialized in a thread-safe way when sessions
-  are enabled, global singletons (that is, independent of sessions)
-  were made available, and static initialization was made safer.
+- Added holiday for National Day of Mourning to Australian calendar;
+  thanks to Fredrik Gerdin Börjesson (@gbfredrik).
 
-Test suite
-----------
 
-- Sped up some of the longer-running tests (thanks to Mohammad Shojatalab).
+Instruments
+-----------
+
+- Added high performance/precision American engine based on
+  fixed-point iteration for the exercise boundary; thanks to Klaus
+  Spanderen (@klausspanderen).
+
+- Bonds with draw-down (i.e., increasing notionals) are now allowed;
+  thanks to Oleg Kulkov (@Borgomi42 ).
+
+- Added `withIndexedCoupons` and `withAtParCoupons` methods to
+  `MakeSwaption` for easier initialization; thanks to Ralf Konrad
+  (@ralfkonrad).
+
+- It is now possible to use the same pricing engine for vanilla and
+  dividend vanilla options, or for barrier and dividend barrier
+  options (@lballabio).
+
+
+Indexes
+-------
+
+- Creating a zero inflation index as "interpolated" is now deprecated;
+  thanks to Ralf Konrad (@ralfkonrad).  The index should only return
+  monthly fixings.  Interpolation is now the responsibility of
+  inflation-based coupons.
+
+
+Term structures
+---------------
+
+- The `ConstantCPIVolatility` constructor can now take a handle to a
+  volatility quote, instead of just an immutable number (@lballabio).
+
 
 Deprecated features
 -------------------
 
-- Deprecated default constructor for the U.S. calendar; the desired
-  market should now be passed explicitly.
+- **Removed** features deprecated in version 1.24:
+  - the `createAtParCoupons`, `createIndexedCoupons` and
+    `usingAtParCoupons` methods of `IborCoupon`;
+  - the `RiskyBond` class and its subclasses `RiskyFixedBond` and
+    `RiskyFloatingBond`;
+  - the `CrossCurrencyBasisSwapRateHelper` typedef;
+  - the `termStructure_` data member of `BlackCalibrationHelper`;
+  - the static `baseCurrency` and `conversionType` data members of `Money`;
+  - the `nominalTermStructure` method and the `nominalTermStructure_`
+    data member of `InflationTermStructure`;
+  - the constructor of the `UnitedStates` calendar not taking an
+    explicit market.
 
-- Deprecated the `nominalTermStructure` method and the corresponding
-  data member in inflation term structures.  Any object needing the
-  nominal term structure should have it passed explicitly.
+- Deprecated the `argument_type`, `first_argument_type`,
+  `second_argument_type` and `result_type` typedefs in a number of
+  classes; use `auto` or `decltype` instead.
 
-- Deprecated the `termStructure_` data member in
-  `BlackCalibrationHelper`.  It you're inheriting from
-  `BlackCalibrationHelper` and need it, declare it in your derived
-  class.
+- Deprecated the constructors of `InflationIndex`,
+  `ZeroInflationIndex`, `FRHICP`, `ZACPI`, `UKRPI`, `EUHICP`,
+  `EUHICPXT`, `USCPI`, `AUCPI` and `GenericCPI` taking an
+  `interpolated` parameter; use another constructor.
 
-- Deprecated the `createAtParCoupons`, `createIndexedCoupons` and
-  `usingAtParCoupons` methods of `IborCoupon`, now moved to a new
-  `IborCoupon::Settings` singleton (thanks to Philip Kovacs).
+- Deprecated the `interpolated` method and the `interpolated_` data
+  member of `InflationIndex`.
 
-- Deprecated the `conversionType` and `baseCurrency` static data
-  members of `Money`, now moved to a new `Money::Settings` singleton
-  (thanks to Philip Kovacs).
+- Deprecated the `ThreadKey` typedef.  It was used in the signature of
+  `sessionId`, which is no longer needed after the changes in the
+  `Singleton` implementation.
 
-- Removed features deprecated in version 1.19: the `BMAIndex`
-  constructor taking a calendar, the `AmericanCondition` and
-  `ShoutCondition` constructors taking an option type and strike, the
-  `CurveDependentStepCondition` class and the
-  `StandardCurveDependentStepCondition` typedef, the
-  `BlackCalibrationHelper` constructor taking a yield term structure,
-  the various inflation term structure constructors taking a yield
-  term structure, the various yield term constructors taking a vector
-  of jumps but not specifying a reference date.
+- Deprecated the `rateCurve_` data member of the
+  `InflationCouponPricer` base class.  If you need it, provide it in
+  your derived class.
+
+- Deprecated the `npvbps` function taking NPV and BPS as references.
+  Use the overload returning a pair of `Real`s.
 
 
-Thanks go also to Mickael Anas Laaouini, Jack Gillett, Bojan Nikolic
-and Klaus Spanderen for smaller fixes, enhancements and bug reports.
-
+**Thanks go also** to Matthias Groncki (@mgroncki), Jonathan Sweemer
+(@sweemer) and Nijaz Kovacevic (@NijazK) for a number of smaller fixes
+and improvements, to the Xcelerit Dev Team (@xcelerit-dev) for
+improvements to the automated CI builds, and to Vincenzo Ferrazzanno
+(@vincferr), @alienbrett, @xuruilong100 and @philippb90 for raising issues.

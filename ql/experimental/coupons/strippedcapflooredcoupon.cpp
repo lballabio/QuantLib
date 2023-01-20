@@ -58,8 +58,9 @@ namespace QuantLib {
         // if the underlying is collared we return the value of the embedded
         // collar, otherwise the value of a long floor or a long cap respectively
 
-        rate_ = (underlying_->isFloored() && underlying_->isCapped()) ? floorletRate - capletRate :
-                                                                        floorletRate + capletRate;
+        rate_ = (underlying_->isFloored() && underlying_->isCapped()) ?
+                    Real(floorletRate - capletRate) :
+                    Real(floorletRate + capletRate);
     }
 
     Rate StrippedCappedFlooredCoupon::rate() const {

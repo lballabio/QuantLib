@@ -39,21 +39,21 @@ namespace QuantLib {
                   const Matrix& correlation);
         // stochastic process interface
         Size size() const override;
-        Disposable<Array> initialValues() const override;
-        Disposable<Array> drift(Time t, const Array& x) const override;
-        Disposable<Array> expectation(Time t0, const Array& x0, Time dt) const override;
+        Array initialValues() const override;
+        Array drift(Time t, const Array& x) const override;
+        Array expectation(Time t0, const Array& x0, Time dt) const override;
 
-        Disposable<Matrix> diffusion(Time t, const Array& x) const override;
-        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const override;
-        Disposable<Matrix> stdDeviation(Time t0, const Array& x0, Time dt) const override;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Matrix covariance(Time t0, const Array& x0, Time dt) const override;
+        Matrix stdDeviation(Time t0, const Array& x0, Time dt) const override;
 
-        Disposable<Array> apply(const Array& x0, const Array& dx) const override;
-        Disposable<Array> evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
+        Array apply(const Array& x0, const Array& dx) const override;
+        Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
         Time time(const Date&) const override;
         // inspectors
         const ext::shared_ptr<StochasticProcess1D>& process(Size i) const;
-        Disposable<Matrix> correlation() const;
+        Matrix correlation() const;
       protected:
         std::vector<ext::shared_ptr<StochasticProcess1D> > processes_;
         Matrix sqrtCorrelation_;

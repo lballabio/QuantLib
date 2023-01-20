@@ -28,7 +28,6 @@
 #include <ql/experimental/math/gaussiancopulapolicy.hpp>
 #include <ql/experimental/math/tcopulapolicy.hpp>
 #include <ql/math/randomnumbers/boxmullergaussianrng.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/experimental/math/polarstudenttrng.hpp>
 #include <ql/handle.hpp>
 #include <ql/quote.hpp>
@@ -43,12 +42,16 @@ namespace QuantLib {
     namespace detail {
         // havent figured out how to do this in-place
         struct multiplyV {
-            typedef Disposable<std::vector<Real> > result_type;
-            Disposable<std::vector<Real> > 
-                operator()(Real d,  Disposable<std::vector<Real> > v) 
+            /*! \deprecated Use `auto` or `decltype` instead.
+                            Deprecated in version 1.29.
+            */
+            QL_DEPRECATED
+            typedef std::vector<Real> result_type;
+
+            std::vector<Real> operator()(Real d, std::vector<Real> v) 
             {
                 std::transform(v.begin(), v.end(), v.begin(), 
-                               multiply_by<Real>(d));
+                               [=](Real x) -> Real { return x * d; });
                 return v;
             }
         };
@@ -79,8 +82,8 @@ namespace QuantLib {
         why the overload fails....
                     FIX ME
         */
-        virtual Disposable<std::vector<Real> > integrateV(
-            const ext::function<Disposable<std::vector<Real> >  (
+        virtual std::vector<Real> integrateV(
+            const ext::function<std::vector<Real>  (
             const std::vector<Real>& arg)>& f) const {
             QL_FAIL("No vector integration provided");
         }
@@ -94,7 +97,6 @@ namespace QuantLib {
      // this class template always to be fully specialized:
      private:
        IntegrationBase() = default;
-       ~IntegrationBase() override = default;
     };
     //@}
     
@@ -123,10 +125,10 @@ namespace QuantLib {
         Real integrate(const ext::function<Real(const std::vector<Real>& arg)>& f) const override {
             return GaussianQuadMultidimIntegrator::integrate<Real>(f);
         }
-        Disposable<std::vector<Real> > integrateV(
-            const ext::function<Disposable<std::vector<Real> >(const std::vector<Real>& arg)>& f)
+        std::vector<Real> integrateV(
+            const ext::function<std::vector<Real>(const std::vector<Real>& arg)>& f)
             const override {
-            return GaussianQuadMultidimIntegrator::integrate<Disposable<std::vector<Real> > >(f);
+            return GaussianQuadMultidimIntegrator::integrate<std::vector<Real>>(f);
         }
         ~IntegrationBase() override = default;
     };
@@ -144,7 +146,7 @@ namespace QuantLib {
         Real integrate(const ext::function<Real(const std::vector<Real>& arg)>& f) const override {
             return MultidimIntegral::operator()(f, a_, b_);
         }
-        // disposable vector version here....
+        // vector version here....
         ~IntegrationBase() override = default;
         const std::vector<Real> a_, b_;
     };
@@ -324,8 +326,7 @@ namespace QuantLib {
             model. These are all the systemic factors plus all the idiosyncratic
             ones, so the size of the inversion is the number of systemic factors
             plus the number of latent modelled variables*/
-        Disposable<std::vector<Real> > 
-            allFactorCumulInverter(const std::vector<Real>& probs) const {
+        std::vector<Real> allFactorCumulInverter(const std::vector<Real>& probs) const {
             return copula_.allFactorCumulInverter(probs);
         }
         //@}
@@ -346,7 +347,7 @@ namespace QuantLib {
                 // systemic term:
                 factorWeights_[iVar].end(), allFactors.begin(),
                 // idiosyncratic term:
-                allFactors[numFactors()+iVar] * idiosyncFctrs_[iVar]);
+                Real(allFactors[numFactors()+iVar] * idiosyncFctrs_[iVar]));
         }
         // \to do write variants of the above, although is the most common case
 
@@ -430,8 +431,6 @@ namespace QuantLib {
             const sample_type& nextSequence() const {
                 typename USNG::sample_type sample =
                     sequenceGen_.nextSequence();
-                //Not possible to overload operator member access in Disposable
-                //return copula_.allFactorCumulInverter(sample.value).value;
                 x_.value = copula_.allFactorCumulInverter(sample.value);
                 return x_;
             }
@@ -574,7 +573,7 @@ namespace QuantLib {
         Real latentVariableCorrel(Size iVar1, Size iVar2) const {
             // true for any normalized combination
             Real init = (iVar1 == iVar2 ? 
-                idiosyncFctrs_[iVar1] * idiosyncFctrs_[iVar1] : 0.);
+                idiosyncFctrs_[iVar1] * idiosyncFctrs_[iVar1] : Real(0.));
             return std::inner_product(factorWeights_[iVar1].begin(), 
                 factorWeights_[iVar1].end(), factorWeights_[iVar2].begin(), 
                     init);
@@ -594,9 +593,9 @@ namespace QuantLib {
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).
         */
-        Disposable<std::vector<Real> > integratedExpectedValueV(
+        std::vector<Real> integratedExpectedValueV(
             // const ext::function<std::vector<Real>(
-            const ext::function<Disposable<std::vector<Real> >(
+            const ext::function<std::vector<Real>(
                 const std::vector<Real>& v1)>& f ) const {
             detail::multiplyV M;
             return integration()->integrateV(//see note in LMIntegrators base class
@@ -659,7 +658,7 @@ namespace QuantLib {
             idiosyncFctrs_.push_back(std::sqrt(1.-
                     std::inner_product(factorWeights[i].begin(), 
                 factorWeights[i].end(), 
-                factorWeights[i].begin(), 0.)));
+                factorWeights[i].begin(), Real(0.))));
             // while at it, check sizes are coherent:
             QL_REQUIRE(factorWeights[i].size() == nFactors_, 
                 "Name " << i << " provides a different number of factors");
@@ -673,9 +672,9 @@ namespace QuantLib {
     : nFactors_(1),
       nVariables_(factorWeights.size())
     {
-        for (double factorWeight : factorWeights)
+        for (Real factorWeight : factorWeights)
             factorWeights_.emplace_back(1, factorWeight);
-        for (double factorWeight : factorWeights)
+        for (Real factorWeight : factorWeights)
             idiosyncFctrs_.push_back(std::sqrt(1. - factorWeight * factorWeight));
         //convert row to column vector....
         copula_ = copulaType(factorWeights_, ini);
@@ -783,7 +782,7 @@ namespace QuantLib {
           urng_(seed) {
             // 1 == urng.dimension() is enforced by the sample type
             const std::vector<Real>& varF = copula.varianceFactors();
-            for (double i : varF) // ...use back inserter lambda
+            for (Real i : varF) // ...use back inserter lambda
                 trng_.push_back(PolarStudentTRng<urng_type>(2. / (1. - i * i), urng_));
         }
         const sample_type& nextSequence() const {

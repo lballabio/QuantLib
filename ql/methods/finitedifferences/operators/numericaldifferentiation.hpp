@@ -40,7 +40,16 @@ namespace QuantLib {
     */
     class NumericalDifferentiation {
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real result_type;
 
         enum Scheme { Central, Backward, Forward };

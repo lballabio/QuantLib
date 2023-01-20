@@ -29,12 +29,11 @@
 
 namespace QuantLib {
 
-    Disposable<Matrix> exponentialCorrelations(
-                                        const std::vector<Time>& rateTimes,
-                                        Real longTermCorr,
-                                        Real beta,
-                                        Real gamma,
-                                        Time time) {
+    Matrix exponentialCorrelations(const std::vector<Time>& rateTimes,
+                                   Real longTermCorr,
+                                   Real beta,
+                                   Real gamma,
+                                   Time time) {
         // preliminary checks
         checkIncreasingTimes(rateTimes);
         QL_REQUIRE(longTermCorr<=1.0 && longTermCorr>=0.0,

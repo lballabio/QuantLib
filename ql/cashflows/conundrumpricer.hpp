@@ -136,8 +136,8 @@ namespace QuantLib {
             Real swapRateValue_;
             Handle<Quote> meanReversion_;
 
-            Real calibratedShift_, tmpRs_;
-            const Real accuracy_;
+            Real calibratedShift_ = 0.03, tmpRs_ = 10000000.0;
+            const Real accuracy_ = 1.0e-14;
 
             //* function describing the non-parallel shape of the curve shift*/
             Real shapeOfShift(Real s) const;
@@ -149,8 +149,6 @@ namespace QuantLib {
             Real der2Rs_derX2(Real x);
             Real der2Z_derX2(Real x);
 
-            class ObjectiveFunction;
-            friend class ObjectiveFunction;
             class ObjectiveFunction {
                 const GFunctionWithShifts& o_;
                 Real Rs_;
@@ -232,7 +230,7 @@ namespace QuantLib {
         Real gearing_;
         Spread spread_;
         Real spreadLegValue_;
-        Rate cutoffForCaplet_, cutoffForFloorlet_;
+        Rate cutoffForCaplet_ = 2, cutoffForFloorlet_ = 0;
         Handle<Quote> meanReversion_;
         Period swapTenor_;
         ext::shared_ptr<VanillaOptionPricer> vanillaOptionPricer_;
@@ -261,7 +259,16 @@ namespace QuantLib {
         // private:
         class Function {
           public:
+            /*! \deprecated Use `auto` or `decltype` instead.
+                            Deprecated in version 1.29.
+            */
+            QL_DEPRECATED
             typedef Real argument_type;
+
+            /*! \deprecated Use `auto` or `decltype` instead.
+                            Deprecated in version 1.29.
+            */
+            QL_DEPRECATED
             typedef Real result_type;
             virtual ~Function() = default;
             virtual Real operator()(Real x) const = 0;
@@ -308,7 +315,8 @@ namespace QuantLib {
         Real refineIntegration(Real integralValue, const ConundrumIntegrand& integrand) const;
 
         mutable Real upperLimit_, stdDeviationsForUpperLimit_;
-        const Real lowerLimit_, requiredStdDeviations_, precision_, refiningIntegrationTolerance_;
+        const Real lowerLimit_, requiredStdDeviations_ = 8, precision_,
+                                refiningIntegrationTolerance_ = .0001;
         const Real hardUpperLimit_;
     };
 

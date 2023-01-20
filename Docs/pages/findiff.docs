@@ -18,7 +18,7 @@
 
 /*! \defgroup findiff Finite-differences framework
 
-    This framework (corresponding to the ql/FiniteDifferences directory)
+    This framework (corresponding to the ql/methods/finitedifferences directory)
     contains basic building blocks for the numerical solution of partial
     differential equations by means of finite-difference methods.
 

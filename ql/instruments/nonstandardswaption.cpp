@@ -73,7 +73,7 @@ namespace QuantLib {
                                                   settlementMethod);
     }
 
-    Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
+    std::vector<ext::shared_ptr<BlackCalibrationHelper>>
     NonstandardSwaption::calibrationBasket(
         const ext::shared_ptr<SwapIndex>& standardSwapBase,
         const ext::shared_ptr<SwaptionVolatilityStructure>& swaptionVolatility,

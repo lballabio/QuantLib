@@ -32,9 +32,8 @@
 #include <ql/time/asx.hpp>
 #include <ql/utilities/dataparsers.hpp>
 
-#include <boost/unordered_set.hpp>
-#include <boost/functional/hash.hpp>
 #include <sstream>
+#include <unordered_set>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -415,7 +414,7 @@ void DateTest::canHash() {
     Date start_date = Date(1, Jan, 2020);
     int nb_tests = 500;
 
-    boost::hash<Date> hasher;
+    std::hash<Date> hasher;
 
     // Check hash values
     for (int i = 0; i < nb_tests; ++i) {
@@ -442,7 +441,7 @@ void DateTest::canHash() {
     }
 
     // Check if Date can be used as unordered_set key
-    boost::unordered_set<Date> set;
+    std::unordered_set<Date> set;
     set.insert(start_date);
 
     if (set.count(start_date) == 0) {

@@ -91,7 +91,7 @@ namespace QuantLib {
         Real w, wp, wm, dwdy, d2wdy2;
         strike = underlyingLevel;
         y = std::log(strike/forwardValue);
-        dy = ((std::fabs(y) > 0.001) ? y*0.0001 : 0.000001);
+        dy = ((std::fabs(y) > 0.001) ? Real(y*0.0001) : 0.000001);
         strikep=strike*std::exp(dy);
         strikem=strike/std::exp(dy);
         w  = blackTS_->blackVariance(t, strike,  true);

@@ -37,7 +37,7 @@ namespace QuantLib {
         return false;
     }
 
-    Disposable<Matrix> LmCorrelationModel::pseudoSqrt(
+    Matrix LmCorrelationModel::pseudoSqrt(
         Time t, const Array& x) const {
         return QuantLib::pseudoSqrt(this->correlation(t, x),
                                     SalvagingAlgorithm::Spectral);

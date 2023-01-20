@@ -33,40 +33,34 @@ void FdmDupire1dOp::setTime(Time t1, Time t2) {}
 
 Size FdmDupire1dOp::size() const { return 1; }
 
-Disposable<Array> FdmDupire1dOp::apply(const Array &u) const {
+Array FdmDupire1dOp::apply(const Array &u) const {
     return mapT_.apply(u);
 }
 
-Disposable<Array> FdmDupire1dOp::apply_direction(Size direction,
-                                                 const Array &r) const {
+Array FdmDupire1dOp::apply_direction(Size direction, const Array &r) const {
     if (direction == 0)
         return mapT_.apply(r);
     QL_FAIL("direction too large");
 }
 
-Disposable<Array> FdmDupire1dOp::apply_mixed(const Array &r) const {
-    Array s(r);
-    return s;
+Array FdmDupire1dOp::apply_mixed(const Array &r) const {
+    return r;
 }
 
-Disposable<Array> FdmDupire1dOp::solve_splitting(Size direction, const Array &r,
-                                                 Real a) const {
-
+Array FdmDupire1dOp::solve_splitting(Size direction, const Array &r, Real a) const {
     if (direction == 0) {
         return mapT_.solve_splitting(r, a, 1.0);
     }
     QL_FAIL("direction too large");
 }
 
-Disposable<Array> FdmDupire1dOp::preconditioner(const Array &r, Real dt) const {
+Array FdmDupire1dOp::preconditioner(const Array &r, Real dt) const {
 
     return solve_splitting(0, r, dt);
 }
 
-Disposable<std::vector<SparseMatrix> > FdmDupire1dOp::toMatrixDecomp() const {
-    std::vector<SparseMatrix> retVal(1);
-    retVal[0] = mapT_.toMatrix();
-    return retVal;
+std::vector<SparseMatrix> FdmDupire1dOp::toMatrixDecomp() const {
+    return std::vector<SparseMatrix>(1, mapT_.toMatrix());
 }
 
 }

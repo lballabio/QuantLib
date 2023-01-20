@@ -59,14 +59,14 @@ namespace QuantLib {
       public:
         LiborForwardModelProcess(Size size, ext::shared_ptr<IborIndex> index);
 
-        Disposable<Array> initialValues() const override;
-        Disposable<Array> drift(Time t, const Array& x) const override;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const override;
-        Disposable<Matrix> covariance(Time t0, const Array& x0, Time dt) const override;
-        Disposable<Array> apply(const Array& x0, const Array& dx) const override;
+        Array initialValues() const override;
+        Array drift(Time t, const Array& x) const override;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Matrix covariance(Time t0, const Array& x0, Time dt) const override;
+        Array apply(const Array& x0, const Array& dx) const override;
 
         // implements the predictor-corrector schema
-        Disposable<Array> evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
+        Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
         Size size() const override;
         Size factors() const override;

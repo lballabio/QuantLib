@@ -107,7 +107,7 @@ namespace QuantLib {
                                           Duration::Modified,
                                           false, exerciseDate);
 
-        Real cashStrike = arguments_.callabilityPrices[0];
+        Real cashStrike = arguments_.callabilityPrices[0] * arguments_.faceAmount / 100.0;
         dayCounter = volatility_->dayCounter();
         Date referenceDate = volatility_->referenceDate();
         Time exerciseTime = dayCounter.yearFraction(referenceDate,
@@ -145,7 +145,7 @@ namespace QuantLib {
         Real fwdCashPrice = (value - spotIncome())/
                             discountCurve_->discount(exerciseDate);
 
-        Real cashStrike = arguments_.callabilityPrices[0];
+        Real cashStrike = arguments_.callabilityPrices[0] * arguments_.faceAmount / 100.0;
 
         Option::Type type = (arguments_.putCallSchedule[0]->type() ==
                              Callability::Call ? Option::Call : Option::Put);

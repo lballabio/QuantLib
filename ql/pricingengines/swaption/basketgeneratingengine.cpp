@@ -31,7 +31,7 @@ using std::fabs;
 
 namespace QuantLib {
 
-    Disposable<std::vector<ext::shared_ptr<BlackCalibrationHelper> > >
+    std::vector<ext::shared_ptr<BlackCalibrationHelper>>
     BasketGeneratingEngine::calibrationBasket(
         const ext::shared_ptr<Exercise>& exercise,
         const ext::shared_ptr<SwapIndex>& standardSwapBase,
@@ -111,7 +111,7 @@ namespace QuantLib {
                 const Real h = 0.0001; // finite difference step in $y$, make
                                        // this a parameter of the engine ?
                 Real zSpreadDsc =
-                    oas_.empty() ? 1.0
+                    oas_.empty() ? Real(1.0)
                                  : exp(-oas_->value() *
                                        onefactormodel_->termStructure()
                                            ->dayCounter()

@@ -25,40 +25,19 @@
 #define quantlib_fd_conditions_hpp
 
 #include <ql/methods/finitedifferences/fdtypedefs.hpp>
-#include <ql/methods/finitedifferences/americancondition.hpp>
 #include <ql/methods/finitedifferences/shoutcondition.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/interestrate.hpp>
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     /*! \deprecated Use the new finite-differences framework instead.
-                    Deprecated in version 1.22.
+                    Deprecated in version 1.27.
     */
     template <typename baseEngine>
-    class QL_DEPRECATED FDAmericanCondition : public baseEngine {
-      public:
-        FDAmericanCondition(
-             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-             Size timeSteps = 100, Size gridPoints = 100,
-             bool timeDependent = false)
-        : baseEngine(process, timeSteps, gridPoints, timeDependent) {}
-      protected:
-        void initializeStepCondition() const {
-
-            QL_DEPRECATED_DISABLE_WARNING
-
-            baseEngine::stepCondition_ =
-                ext::shared_ptr<StandardStepCondition>(
-                  new AmericanCondition(baseEngine::intrinsicValues_.values()));
-
-            QL_DEPRECATED_ENABLE_WARNING
-
-        }
-    };
-
-    template <typename baseEngine>
-    class FDShoutCondition : public baseEngine {
+    class QL_DEPRECATED FDShoutCondition : public baseEngine {
       public:
         FDShoutCondition(
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -78,6 +57,8 @@ namespace QuantLib {
                                         riskFreeRate));
         }
     };
+
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

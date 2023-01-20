@@ -56,6 +56,17 @@ namespace QuantLib {
         // 1. Mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+
+        QL_REQUIRE(payoff, "non-striked type payoff given");
+        QL_REQUIRE(payoff->strike() > 0.0, "strike must be positive");
+
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
+                   "only european style option are supported");
+
+        const auto spot = process_->x0();
+        QL_REQUIRE(spot > 0.0, "negative or null underlying given");
+        QL_REQUIRE(!triggered(spot), "barrier touched");
+
         const Time maturity = process_->time(arguments_.exercise->lastDate());
 
         Real xMin=Null<Real>();
@@ -98,9 +109,6 @@ namespace QuantLib {
             stoppingTimes.push_back(dividendCondition->dividendTimes());
         }
 
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "only european style option are supported");
-
         ext::shared_ptr<FdmStepConditionComposite> conditions(
             ext::make_shared<FdmStepConditionComposite>(stoppingTimes, stepConditions));
 
@@ -131,7 +139,6 @@ namespace QuantLib {
                                payoff->strike(), solverDesc, schemeDesc_,
                                localVol_, illegalLocalVolOverwrite_));
 
-        const Real spot = process_->x0();
         results_.value = solver->valueAt(spot);
         results_.delta = solver->deltaAt(spot);
         results_.gamma = solver->gammaAt(spot);

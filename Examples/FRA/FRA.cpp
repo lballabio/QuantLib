@@ -38,14 +38,6 @@
 using namespace std;
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
 int main(int, char* []) {
 
     try {
@@ -172,13 +164,6 @@ int main(int, char* []) {
                                          settlementDate, fraInstruments,
                                          termStructureDayCounter));
 
-
-        // Term structures used for pricing/discounting
-
-        RelinkableHandle<YieldTermStructure> discountingTermStructure;
-        discountingTermStructure.linkTo(fraTermStructure);
-
-
         /***********************
          ***  construct FRA's ***
          ***********************/
@@ -188,7 +173,6 @@ int main(int, char* []) {
             euribor3m->businessDayConvention();
         Position::Type fraFwdType = Position::Long;
         Real fraNotional = 100.0;
-        const Integer FraTermMonths = 3;
         Integer monthsToStart[] = { 1, 2, 3, 6, 9 };
 
         euriborTermStructure.linkTo(fraTermStructure);
@@ -205,16 +189,11 @@ int main(int, char* []) {
                                        settlementDate,monthsToStart[i],Months,
                                        fraBusinessDayConvention);
 
-            Date fraMaturityDate = fraCalendar.advance(
-                                            fraValueDate,FraTermMonths,Months,
-                                            fraBusinessDayConvention);
-
             Rate fraStrikeRate = threeMonthFraQuote[monthsToStart[i]];
 
-            ForwardRateAgreement myFRA(fraValueDate, fraMaturityDate,
+            ForwardRateAgreement myFRA(fraValueDate,
                                        fraFwdType,fraStrikeRate,
-                                       fraNotional, euribor3m,
-                                       discountingTermStructure);
+                                       fraNotional, euribor3m);
 
             cout << "3m Term FRA, Months to Start: "
                  << monthsToStart[i]
@@ -228,23 +207,8 @@ int main(int, char* []) {
             cout << "FRA market quote: "
                  << io::rate(threeMonthFraQuote[monthsToStart[i]])
                  << endl;
-            cout << "FRA spot value: "
-                 << myFRA.spotValue()
-                 << endl;
-            cout << "FRA forward value: "
-                 << myFRA.forwardValue()
-                 << endl;
-            cout << "FRA implied Yield: "
-                 << myFRA.impliedYield(myFRA.spotValue(),
-                                       myFRA.forwardValue(),
-                                       settlementDate,
-                                       Simple,
-                                       fraDayCounter)
-                 << endl;
-            cout << "market Zero Rate: "
-                 << discountingTermStructure->zeroRate(fraMaturityDate,
-                                                       fraDayCounter,
-                                                       Simple)
+            cout << "FRA amount [should be zero]: "
+                 << myFRA.amount()
                  << endl;
             cout << "FRA NPV [should be zero]: "
                  << myFRA.NPV()
@@ -283,17 +247,12 @@ int main(int, char* []) {
                                        settlementDate,monthsToStart[i],Months,
                                        fraBusinessDayConvention);
 
-            Date fraMaturityDate = fraCalendar.advance(
-                                            fraValueDate,FraTermMonths,Months,
-                                            fraBusinessDayConvention);
-
             Rate fraStrikeRate =
                 threeMonthFraQuote[monthsToStart[i]] - BpsShift;
 
-            ForwardRateAgreement myFRA(fraValueDate, fraMaturityDate,
+            ForwardRateAgreement myFRA(fraValueDate,
                                        fraFwdType, fraStrikeRate,
-                                       fraNotional, euribor3m,
-                                       discountingTermStructure);
+                                       fraNotional, euribor3m);
 
             cout << "3m Term FRA, 100 notional, Months to Start = "
                  << monthsToStart[i]
@@ -307,23 +266,8 @@ int main(int, char* []) {
             cout << "FRA market quote: "
                  << io::rate(threeMonthFraQuote[monthsToStart[i]])
                  << endl;
-            cout << "FRA spot value: "
-                 << myFRA.spotValue()
-                 << endl;
-            cout << "FRA forward value: "
-                 << myFRA.forwardValue()
-                 << endl;
-            cout << "FRA implied Yield: "
-                 << myFRA.impliedYield(myFRA.spotValue(),
-                                       myFRA.forwardValue(),
-                                       settlementDate,
-                                       Simple,
-                                       fraDayCounter)
-                 << endl;
-            cout << "market Zero Rate: "
-                 << discountingTermStructure->zeroRate(fraMaturityDate,
-                                                       fraDayCounter,
-                                                       Simple)
+            cout << "FRA amount [should be positive]: "
+                 << myFRA.amount()
                  << endl;
             cout << "FRA NPV [should be positive]: "
                  << myFRA.NPV()

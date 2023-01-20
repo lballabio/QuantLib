@@ -183,7 +183,7 @@ namespace QuantLib {
                 totalQuantityAmount += periodQuantityAmount;
 
                 Real avgDailyQuantityAmount =
-                    periodDayCount == 0 ? 0 :
+                    periodDayCount == 0 ? Real(0) :
                                           periodQuantityAmount / periodDayCount;
 
                 Real payLegValue = 0;

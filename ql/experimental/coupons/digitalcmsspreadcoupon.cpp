@@ -51,9 +51,7 @@ namespace QuantLib {
 
     DigitalCmsSpreadLeg::DigitalCmsSpreadLeg(Schedule schedule,
                                              ext::shared_ptr<SwapSpreadIndex> index)
-    : schedule_(std::move(schedule)), index_(std::move(index)), paymentAdjustment_(Following),
-      inArrears_(false), longCallOption_(Position::Long), callATM_(false),
-      longPutOption_(Position::Long), putATM_(false) {}
+    : schedule_(std::move(schedule)), index_(std::move(index)) {}
 
     DigitalCmsSpreadLeg& DigitalCmsSpreadLeg::withNotionals(Real notional) {
         notionals_ = std::vector<Real>(1,notional);

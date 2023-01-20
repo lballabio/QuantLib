@@ -41,7 +41,6 @@
 #include <ql/experimental/credit/recursivelossmodel.hpp>
 #include <ql/experimental/credit/riskyassetswap.hpp>
 #include <ql/experimental/credit/riskyassetswapoption.hpp>
-#include <ql/experimental/credit/riskybond.hpp>
 #include <ql/experimental/credit/saddlepointlossmodel.hpp>
 #include <ql/experimental/credit/spotlosslatentmodel.hpp>
 #include <ql/experimental/credit/spreadedhazardratecurve.hpp>

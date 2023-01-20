@@ -49,9 +49,10 @@ namespace QuantLib {
                               const Date& paymentDate,
                               bool growthOnly = false);
 
-        /*! The fixings dates for the index are `startDate - observationLag` and
-            `endDate - observationLag`, adjusted on the passed calendar.
+        /*! \deprecated Use the other constructor.
+                        Deprecated in version 1.26.
         */
+        QL_DEPRECATED
         ZeroInflationCashFlow(Real notional,
                               const ext::shared_ptr<ZeroInflationIndex>& index,
                               CPI::InterpolationType observationInterpolation,

@@ -63,18 +63,18 @@ namespace QuantLib {
             return IborLeg(sch, idx).withNotionals(1.0);
         }
 
-        void npvbpsConstNotionalLeg(const Leg& iborLeg,
-                                    const Handle<YieldTermStructure>& discountCurveHandle,
-                                    Real& npv,
-                                    Real& bps) {
+        std::pair<Real, Real> npvbpsConstNotionalLeg(const Leg& iborLeg,
+                                                     const Handle<YieldTermStructure>& discountCurveHandle) {
             const Spread basisPoint = 1.0e-4;
             Date refDt = discountCurveHandle->referenceDate();
             const YieldTermStructure& discountRef = **discountCurveHandle;
             bool includeSettleDtFlows = true;
-            CashFlows::npvbps(iborLeg, discountRef, includeSettleDtFlows, refDt, refDt, npv, bps);
+            Real npv, bps;
+            std::tie(npv, bps) = CashFlows::npvbps(iborLeg, discountRef, includeSettleDtFlows, refDt, refDt);
             // Include NPV of the notional exchange at start and maturity.
             npv += discountRef.discount(iborLeg.back()->date()) - 1.0;
             bps /= basisPoint;
+            return { npv, bps };
         }
 
         class ResettingLegHelper {
@@ -98,7 +98,7 @@ namespace QuantLib {
           public:
             explicit ResettingLegCalculator(const YieldTermStructure& discountCurve,
                                             const YieldTermStructure& foreignCurve)
-            : helper_(discountCurve, foreignCurve), npv_(0.0), bps_(0.0) {}
+            : helper_(discountCurve, foreignCurve) {}
             void visit(Coupon& c) override {
                 Date start = c.accrualStartDate();
                 Date end = c.accrualEndDate();
@@ -107,7 +107,7 @@ namespace QuantLib {
                 DiscountFactor discountStart = helper_.discount(start);
                 DiscountFactor discountEnd = helper_.discount(end);
 
-                // NPV of a resetting coupon consists of a redemption of borrowed amount occuring
+                // NPV of a resetting coupon consists of a redemption of borrowed amount occurring
                 // at the end of the accrual period plus the accrued interest, minus the borrowed
                 // amount at the start of the period. All amounts are corrected by an adjustment
                 // corresponding to the implied forward exchange rate, which is estimated by
@@ -124,15 +124,13 @@ namespace QuantLib {
 
           private:
             ResettingLegHelper helper_;
-            Real npv_;
-            Real bps_;
+            Real npv_ = 0.0;
+            Real bps_ = 0.0;
         };
 
-        void npvbpsResettingLeg(const Leg& iborLeg,
-                                const Handle<YieldTermStructure>& discountCurveHandle,
-                                const Handle<YieldTermStructure>& foreignCurveHandle,
-                                Real& npv,
-                                Real& bps) {
+        std::pair<Real, Real> npvbpsResettingLeg(const Leg& iborLeg,
+                                                 const Handle<YieldTermStructure>& discountCurveHandle,
+                                                 const Handle<YieldTermStructure>& foreignCurveHandle) {
             const YieldTermStructure& discountCurveRef = **discountCurveHandle;
             const YieldTermStructure& foreignCurveRef = **foreignCurveHandle;
 
@@ -141,8 +139,7 @@ namespace QuantLib {
                 CashFlow& cf = *i;
                 cf.accept(calc);
             }
-            npv = calc.NPV();
-            bps = calc.BPS();
+            return { calc.NPV(), calc.BPS() };
         }
     }
 
@@ -233,10 +230,9 @@ namespace QuantLib {
 
     Real ConstNotionalCrossCurrencyBasisSwapRateHelper::impliedQuote() const {
         Real npvBaseCcy = 0.0, bpsBaseCcy = 0.0;
-        npvbpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle(), npvBaseCcy, bpsBaseCcy);
+        std::tie(npvBaseCcy, bpsBaseCcy) = npvbpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
         Real npvQuoteCcy = 0.0, bpsQuoteCcy = 0.0;
-        npvbpsConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle(), npvQuoteCcy,
-                               bpsQuoteCcy);
+        std::tie(npvQuoteCcy, bpsQuoteCcy) = npvbpsConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle());
         Real bps = isBasisOnFxBaseCurrencyLeg_ ? -bpsBaseCcy : bpsQuoteCcy;
         return -(npvQuoteCcy - npvBaseCcy) / bps;
     }
@@ -279,15 +275,17 @@ namespace QuantLib {
         Real npvBaseCcy = 0.0, bpsBaseCcy = 0.0;
         Real npvQuoteCcy = 0.0, bpsQuoteCcy = 0.0;
         if (isFxBaseCurrencyLegResettable_) {
-            npvbpsResettingLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle(),
-                               quoteCcyLegDiscountHandle(), npvBaseCcy, bpsBaseCcy);
-            npvbpsConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle(), npvQuoteCcy,
-                                   bpsQuoteCcy);
+            std::tie(npvBaseCcy, bpsBaseCcy) =
+                npvbpsResettingLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle(),
+                                   quoteCcyLegDiscountHandle());
+            std::tie(npvQuoteCcy, bpsQuoteCcy) =
+                npvbpsConstNotionalLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle());
         } else {
-            npvbpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle(), npvBaseCcy,
-                                   bpsBaseCcy);
-            npvbpsResettingLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle(),
-                               baseCcyLegDiscountHandle(), npvQuoteCcy, bpsQuoteCcy);
+            std::tie(npvBaseCcy, bpsBaseCcy) =
+                npvbpsConstNotionalLeg(baseCcyIborLeg_, baseCcyLegDiscountHandle());
+            std::tie(npvQuoteCcy, bpsQuoteCcy) =
+                npvbpsResettingLeg(quoteCcyIborLeg_, quoteCcyLegDiscountHandle(),
+                                   baseCcyLegDiscountHandle());
         }
 
         Real bps = isBasisOnFxBaseCurrencyLeg_ ? -bpsBaseCcy : bpsQuoteCcy;

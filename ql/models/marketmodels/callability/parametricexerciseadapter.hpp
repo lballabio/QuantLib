@@ -39,16 +39,12 @@ namespace QuantLib {
         void reset() override;
         void nextStep(const CurveState& currentState) override;
         bool exercise(const CurveState& currentState) const override;
-#if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<ExerciseStrategy<CurveState> > clone() const override;
-#else
-        std::auto_ptr<ExerciseStrategy<CurveState> > clone() const;
-        #endif
       private:
         Clone<MarketModelParametricExercise> exercise_;
         std::vector<std::vector<Real> > parameters_;
         std::vector<Time> exerciseTimes_;
-        Size currentStep_, currentExercise_;
+        Size currentStep_ = 0, currentExercise_ = 0;
         std::valarray<bool> isExerciseTime_;
         std::vector<Size> numberOfVariables_;
         mutable std::vector<Real> variables_;

@@ -43,7 +43,7 @@ namespace QuantLib {
 
         Real spot2 = process2_->x0();
         // option is triggered by S2
-        QL_REQUIRE(spot2 >= 0.0, "negative or null underlying given");
+        QL_REQUIRE(spot2 > 0.0, "negative or null underlying given");
         QL_REQUIRE(!triggered(spot2), "barrier touched");
 
         Barrier::Type barrierType = arguments_.barrierType;

@@ -31,7 +31,7 @@ namespace QuantLib {
                                 std::vector<Real> fixedAccruals,
                                 std::vector<Real> floatingAccruals,
                                 const std::vector<Time>& paymentTimes,
-                                double fixedRate);
+                                Real fixedRate);
         //! \name MarketModelMultiProduct interface
         //@{
         std::vector<Time> possibleCashFlowTimes() const override;
@@ -41,16 +41,12 @@ namespace QuantLib {
         bool nextTimeStep(const CurveState& currentState,
                           std::vector<Size>& numberCashFlowsThisStep,
                           std::vector<std::vector<CashFlow> >& cashFlowsGenerated) override;
-#if defined(QL_USE_STD_UNIQUE_PTR)
         std::unique_ptr<MarketModelMultiProduct> clone() const override;
-#else
-        std::auto_ptr<MarketModelMultiProduct> clone() const;
-        #endif
         //@}
       private:
         std::vector<Real> fixedAccruals_, floatingAccruals_;
         std::vector<Time> paymentTimes_;
-        double fixedRate_;
+        Real fixedRate_;
         Size lastIndex_;
         // things that vary in a path
         Size currentIndex_;

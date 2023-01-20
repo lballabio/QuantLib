@@ -18,7 +18,7 @@
 
 /*! \defgroup lattices Lattice methods
 
-    The framework (corresponding to the ql/Lattices directory)
+    The framework (corresponding to the ql/methods/lattices directory)
     contains basic building blocks for pricing instruments using lattice
     methods (trees). A lattice, i.e. an instance of the abstract class
     QuantLib::Lattice, relies on one or several trees (each one

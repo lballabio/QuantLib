@@ -72,8 +72,8 @@ namespace QuantLib {
         }
     }
 
-    Disposable<Array> FdmHestonEquityPart::getLeverageFctSlice(Time t1, Time t2)
-    const {
+    Array FdmHestonEquityPart::getLeverageFctSlice(Time t1, Time t2) const {
+
         const ext::shared_ptr<FdmLinearOpLayout> layout=mesher_->layout();
         Array v(layout->size(), 1.0);
 
@@ -155,13 +155,13 @@ namespace QuantLib {
         return 2;
     }
 
-    Disposable<Array> FdmHestonOp::apply(const Array& u) const {
+    Array FdmHestonOp::apply(const Array& u) const {
         return dyMap_.getMap().apply(u) + dxMap_.getMap().apply(u)
               + dxMap_.getL()*correlationMap_.apply(u);
     }
 
-    Disposable<Array> FdmHestonOp::apply_direction(Size direction,
-                                                   const Array& r) const {
+    Array FdmHestonOp::apply_direction(Size direction,
+                                       const Array& r) const {
         if (direction == 0)
             return dxMap_.getMap().apply(r);
         else if (direction == 1)
@@ -170,13 +170,12 @@ namespace QuantLib {
             QL_FAIL("direction too large");
     }
 
-    Disposable<Array> FdmHestonOp::apply_mixed(const Array& r) const {
+    Array FdmHestonOp::apply_mixed(const Array& r) const {
         return dxMap_.getL()*correlationMap_.apply(r);
     }
 
-    Disposable<Array>
-        FdmHestonOp::solve_splitting(Size direction,
-                                     const Array& r, Real a) const {
+    Array FdmHestonOp::solve_splitting(Size direction,
+                                       const Array& r, Real a) const {
 
         if (direction == 0) {
             return dxMap_.getMap().solve_splitting(r, a, 1.0);
@@ -188,21 +187,16 @@ namespace QuantLib {
             QL_FAIL("direction too large");
     }
 
-    Disposable<Array>
-        FdmHestonOp::preconditioner(const Array& r, Real dt) const {
-
+    Array FdmHestonOp::preconditioner(const Array& r, Real dt) const {
         return solve_splitting(1, solve_splitting(0, r, dt), dt) ;
     }
 
-    Disposable<std::vector<SparseMatrix> >
-    FdmHestonOp::toMatrixDecomp() const {
-        std::vector<SparseMatrix> retVal(3);
-
-        retVal[0] = dxMap_.getMap().toMatrix();
-        retVal[1] = dyMap_.getMap().toMatrix();
-        retVal[2] = correlationMap_.toMatrix();
-
-        return retVal;
+    std::vector<SparseMatrix> FdmHestonOp::toMatrixDecomp() const {
+        return {
+            dxMap_.getMap().toMatrix(),
+            dyMap_.getMap().toMatrix(),
+            correlationMap_.toMatrix()
+        };
     }
 
 }

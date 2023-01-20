@@ -25,7 +25,8 @@
 #define quantlib_ranlux_uniform_rng_h
 
 #include <ql/methods/montecarlo/sample.hpp>
-#include <boost/random/ranlux.hpp>
+
+#include <random>
 
 namespace QuantLib {
 
@@ -42,31 +43,25 @@ namespace QuantLib {
                  of being observed.
         Ranlux4: highest possible luxury.         
     */
-    class Ranlux3UniformRng {
+    template <std::size_t P, std::size_t R>
+    class Ranlux64UniformRng {
       public:
         typedef Sample<Real> sample_type;
 
-        explicit Ranlux3UniformRng(Size seed = 19780503U)
-        : ranlux3_(boost::random::ranlux64_base_01(seed)) {}
+        explicit Ranlux64UniformRng(std::uint_fast64_t seed = 19780503U)
+        : ranlux_(ranlux64_base_01(seed)) {}
 
-        sample_type next() const { return {ranlux3_(), 1.0}; }
-
-      private:
-        mutable boost::ranlux64_3_01 ranlux3_;
-    };
-
-    class Ranlux4UniformRng {
-      public:
-        typedef Sample<Real> sample_type;
-
-        explicit Ranlux4UniformRng(Size seed = 19780503U)
-        : ranlux4_(boost::random::ranlux64_base_01(seed)) {}
-
-        sample_type next() const { return {ranlux4_(), 1.0}; }
+        sample_type next() const { return {ranlux_()*nx, 1.0}; }
 
       private:
-        mutable boost::ranlux64_4_01 ranlux4_;
+        const double nx = 1.0/(std::uint_fast64_t(1) << 48);
+        typedef std::subtract_with_carry_engine<std::uint_fast64_t, 48, 10, 24>
+            ranlux64_base_01;
+        mutable std::discard_block_engine<ranlux64_base_01, P, R> ranlux_;
     };
+
+    typedef Ranlux64UniformRng<223, 24> Ranlux3UniformRng;
+    typedef Ranlux64UniformRng<389, 24> Ranlux4UniformRng;
 }
 
 

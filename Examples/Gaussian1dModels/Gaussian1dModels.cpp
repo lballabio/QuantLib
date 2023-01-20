@@ -48,14 +48,6 @@
 
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
 // helper function that prints a basket of calibrating swaptions to std::cout
 
 void printBasket(
@@ -89,7 +81,7 @@ void printBasket(
     }
 }
 
-// helper function that prints the result of a model calibraiton to std::cout
+// helper function that prints the result of a model calibration to std::cout
 
 void printModelCalibration(
     const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &basket,

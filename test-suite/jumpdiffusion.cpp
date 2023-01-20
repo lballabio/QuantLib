@@ -400,14 +400,14 @@ void JumpDiffusionTest::testGreeks() {
                                  new JumpDiffusionEngine(stochProcess,1e-08));
 
     for (auto& type : types) {
-        for (double strike : strikes) {
-            for (double& jj1 : jInt) {
+        for (Real strike : strikes) {
+            for (Real& jj1 : jInt) {
                 jumpIntensity->setValue(jj1);
-                for (double& jj2 : mLJ) {
+                for (Real& jj2 : mLJ) {
                     meanLogJump->setValue(jj2);
-                    for (double& jj3 : jV) {
+                    for (Real& jj3 : jV) {
                         jumpVol->setValue(jj3);
-                        for (double residualTime : residualTimes) {
+                        for (Real residualTime : residualTimes) {
                             Date exDate = today + timeToDays(residualTime);
                             ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
                             for (Size kk = 0; kk < 1; kk++) {
@@ -422,10 +422,10 @@ void JumpDiffusionTest::testGreeks() {
                                 EuropeanOption option(payoff, exercise);
                                 option.setPricingEngine(engine);
 
-                                for (double u : underlyings) {
-                                    for (double q : qRates) {
-                                        for (double r : rRates) {
-                                            for (double v : vols) {
+                                for (Real u : underlyings) {
+                                    for (Real q : qRates) {
+                                        for (Real r : rRates) {
+                                            for (Real v : vols) {
                                                 spot->setValue(u);
                                                 qRate->setValue(q);
                                                 rRate->setValue(r);

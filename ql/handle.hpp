@@ -52,7 +52,7 @@ namespace QuantLib {
 
           private:
             ext::shared_ptr<T> h_;
-            bool isObserver_;
+            bool isObserver_ = false;
         };
         ext::shared_ptr<Link> link_;
       public:
@@ -73,7 +73,9 @@ namespace QuantLib {
                      destroyed before the pointed object does.
         */
         //@{
-        explicit Handle(const ext::shared_ptr<T>& p = ext::shared_ptr<T>(),
+        Handle()
+        : Handle(ext::shared_ptr<T>()) {}
+        explicit Handle(const ext::shared_ptr<T>& p,
                         bool registerAsObserver = true)
         : link_(new Link(p,registerAsObserver)) {}
         //@}
@@ -123,9 +125,7 @@ namespace QuantLib {
     // inline definitions
 
     template <class T>
-    inline Handle<T>::Link::Link(const ext::shared_ptr<T>& h,
-                                 bool registerAsObserver)
-    : isObserver_(false) {
+    inline Handle<T>::Link::Link(const ext::shared_ptr<T>& h, bool registerAsObserver) {
         linkTo(h,registerAsObserver);
     }
 

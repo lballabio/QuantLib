@@ -283,8 +283,8 @@ namespace QuantLib {
                 Rate forwardRate =
                     termStructure_->forwardRate(t, t, Continuous, NoFrequency);
                 Real temp = a_ < std::sqrt(QL_EPSILON) ?
-                            sigma_*t :
-                            sigma_*(1.0 - std::exp(-a_*t))/a_;
+                            Real(sigma_*t) :
+                            Real(sigma_*(1.0 - std::exp(-a_*t))/a_);
                 return (forwardRate + 0.5*temp*temp);
             }
 

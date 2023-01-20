@@ -139,7 +139,7 @@ namespace QuantLib {
 
     inline Rate
     FloatingRateCoupon::convexityAdjustmentImpl(Rate fixing) const {
-        return (gearing() == 0.0 ? 0.0 : adjustedFixing()-fixing);
+        return (gearing() == 0.0 ? Rate(0.0) : Rate(adjustedFixing()-fixing));
     }
 
     inline void FloatingRateCoupon::accept(AcyclicVisitor& v) {

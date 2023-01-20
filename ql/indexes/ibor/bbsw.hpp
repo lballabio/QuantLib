@@ -39,8 +39,7 @@ namespace QuantLib {
     class Bbsw : public IborIndex {
       public:
         Bbsw(const Period& tenor,
-             const Handle<YieldTermStructure>& h =
-                             Handle<YieldTermStructure>())
+             const Handle<YieldTermStructure>& h = {})
         : IborIndex("Bbsw", tenor,
                     0, // settlement days
                     AUDCurrency(), Australia(),
@@ -55,48 +54,42 @@ namespace QuantLib {
     //! 1-month %Bbsw index
     class Bbsw1M : public Bbsw {
       public:
-        explicit Bbsw1M(const Handle<YieldTermStructure>& h =
-                               Handle<YieldTermStructure>())
+        explicit Bbsw1M(const Handle<YieldTermStructure>& h = {})
         : Bbsw(Period(1, Months), h) {}
     };
 
     //! 2-months %Bbsw index
     class Bbsw2M : public Bbsw {
       public:
-        explicit Bbsw2M(const Handle<YieldTermStructure>& h =
-                               Handle<YieldTermStructure>())
+        explicit Bbsw2M(const Handle<YieldTermStructure>& h = {})
         : Bbsw(Period(2, Months), h) {}
     };
 
     //! 3-months %Bbsw index
     class Bbsw3M : public Bbsw {
       public:
-        explicit Bbsw3M(const Handle<YieldTermStructure>& h =
-                               Handle<YieldTermStructure>())
+        explicit Bbsw3M(const Handle<YieldTermStructure>& h = {})
         : Bbsw(Period(3, Months), h) {}
     };
 
     //! 4-months %Bbsw index
     class Bbsw4M : public Bbsw {
       public:
-        explicit Bbsw4M(const Handle<YieldTermStructure>& h =
-                               Handle<YieldTermStructure>())
+        explicit Bbsw4M(const Handle<YieldTermStructure>& h = {})
         : Bbsw(Period(4, Months), h) {}
     };
 
     //! 5-months %Bbsw index
     class Bbsw5M : public Bbsw {
       public:
-        explicit Bbsw5M(const Handle<YieldTermStructure>& h =
-                               Handle<YieldTermStructure>())
+        explicit Bbsw5M(const Handle<YieldTermStructure>& h = {})
         : Bbsw(Period(5, Months), h) {}
     };
 
     //! 6-months %Bbsw index
     class Bbsw6M : public Bbsw {
       public:
-        explicit Bbsw6M(const Handle<YieldTermStructure>& h =
-                               Handle<YieldTermStructure>())
+        explicit Bbsw6M(const Handle<YieldTermStructure>& h = {})
         : Bbsw(Period(6, Months), h) {}
     };
 

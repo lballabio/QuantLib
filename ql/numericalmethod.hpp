@@ -90,7 +90,7 @@ namespace QuantLib {
         //@}
 
         // this is a smell, but we need it. We'll rethink it later.
-        virtual Disposable<Array> grid(Time) const = 0;
+        virtual Array grid(Time) const = 0;
       protected:
         TimeGrid t_;
     };

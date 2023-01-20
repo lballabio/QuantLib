@@ -168,11 +168,11 @@ namespace QuantLib {
         operator ext::shared_ptr<PricingEngine>() const;
       private:
         ext::shared_ptr<HullWhite> model_;
-        bool antithetic_;
+        bool antithetic_ = false;
         Size samples_, maxSamples_;
         Real tolerance_;
-        bool brownianBridge_;
-        BigNatural seed_;
+        bool brownianBridge_ = false;
+        BigNatural seed_ = 0;
     };
 
 
@@ -181,8 +181,8 @@ namespace QuantLib {
     template <class RNG, class S>
     inline MakeMCHullWhiteCapFloorEngine<RNG, S>::MakeMCHullWhiteCapFloorEngine(
         ext::shared_ptr<HullWhite> model)
-    : model_(std::move(model)), antithetic_(false), samples_(Null<Size>()),
-      maxSamples_(Null<Size>()), tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
+    : model_(std::move(model)), samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      tolerance_(Null<Real>()) {}
 
     template <class RNG, class S>
     inline MakeMCHullWhiteCapFloorEngine<RNG,S>&

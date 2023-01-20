@@ -46,15 +46,6 @@
 
 using namespace QuantLib;
 
-#if defined(QL_ENABLE_SESSIONS)
-namespace QuantLib {
-
-    ThreadKey sessionId() { return {}; }
-
-}
-#endif
-
-
 int main(int, char* []) {
 
     try {
@@ -163,7 +154,7 @@ int main(int, char* []) {
         };
 
         std::vector< ext::shared_ptr<SimpleQuote> > quote;
-        for (double marketQuote : marketQuotes) {
+        for (Real marketQuote : marketQuotes) {
             ext::shared_ptr<SimpleQuote> cp(new SimpleQuote(marketQuote));
             quote.push_back(cp);
         }

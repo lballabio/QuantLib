@@ -41,6 +41,27 @@
 #include <utility>
 #include <vector>
 
+// This adapts the BOOST_CHECK_SMALL and BOOST_CHECK_CLOSE macros to
+// support a struct as Real for arguments, while fully transparant to regular doubles.
+// Unfortunately boost does not provide a portable way to customize these macros' behaviour,
+// so we need to define wrapper macros QL_CHECK_SMALL etc.
+//
+// It is required to have a function `value` defined that returns the double-value
+// of the Real type (or a value function in the Real type's namespace for ADT).
+
+namespace QuantLib {
+    // overload this function in case Real is something different - it should alway return double
+    inline double value(double x) {
+        return x;
+    }
+}
+
+using QuantLib::value;
+
+#define QL_CHECK_SMALL(FPV, T)  BOOST_CHECK_SMALL(value(FPV), value(T))
+#define QL_CHECK_CLOSE(L, R, T) BOOST_CHECK_CLOSE(value(L), value(R), value(T))
+
+
 // This makes it easier to use array literals (for new code, use std::vector though)
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
@@ -142,8 +163,7 @@ namespace QuantLib {
     Real norm(const Iterator& begin, const Iterator& end, Real h) {
         // squared values
         std::vector<Real> f2(end-begin);
-        std::transform(begin,end,begin,f2.begin(),
-                       std::multiplies<Real>());
+        std::transform(begin, end, begin, f2.begin(), std::multiplies<>());
         // numeric integral of f^2
         Real I = h * (std::accumulate(f2.begin(),f2.end(),Real(0.0))
                       - 0.5*f2.front() - 0.5*f2.back());

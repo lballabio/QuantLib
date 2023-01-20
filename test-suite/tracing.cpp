@@ -36,6 +36,11 @@ namespace {
         }
     };
 
+#if defined(__clang__) && __clang_major__ >= 15
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
+#endif
+
     void testTraceOutput(bool enable,
 #if defined(QL_ENABLE_TRACING)
                          const std::string& result) {
@@ -69,6 +74,10 @@ namespace {
         }
     }
 
+#if defined(__clang__) && __clang_major__ >= 15
+#pragma clang diagnostic pop
+#endif
+
 }
 
 
@@ -87,4 +96,3 @@ test_suite* TracingTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&TracingTest::testOutput));
     return suite;
 }
-

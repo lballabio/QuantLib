@@ -32,7 +32,16 @@ namespace QuantLib {
 
     class CumulativeChiSquareDistribution {
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real result_type;
 
         explicit CumulativeChiSquareDistribution(Real df) : df_(df) {}
@@ -43,7 +52,16 @@ namespace QuantLib {
 
     class NonCentralCumulativeChiSquareDistribution {
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real result_type;
 
         NonCentralCumulativeChiSquareDistribution(Real df, Real ncp)
@@ -55,7 +73,16 @@ namespace QuantLib {
 
     class NonCentralCumulativeChiSquareSankaranApprox {
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real result_type;
 
         NonCentralCumulativeChiSquareSankaranApprox(Real df, Real ncp)
@@ -67,7 +94,16 @@ namespace QuantLib {
 
     class InverseNonCentralCumulativeChiSquareDistribution {
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real argument_type;
+
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef Real result_type;
 
         InverseNonCentralCumulativeChiSquareDistribution(Real df, Real ncp,

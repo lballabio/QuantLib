@@ -40,22 +40,15 @@ namespace QuantLib {
                                      const ext::shared_ptr<IborIndex>& index,
                                      Rate fixedRate,
                                      const Period& forwardStart)
-    : swapTenor_(swapTenor), iborIndex_(index),
-      fixedRate_(fixedRate), forwardStart_(forwardStart),
-      settlementDays_(Null<Natural>()),
-      fixedCalendar_(index->fixingCalendar()),
+    : swapTenor_(swapTenor), iborIndex_(index), fixedRate_(fixedRate), forwardStart_(forwardStart),
+      settlementDays_(Null<Natural>()), fixedCalendar_(index->fixingCalendar()),
       floatCalendar_(index->fixingCalendar()),
-      type_(Swap::Payer), nominal_(1.0),
+
       floatTenor_(index->tenor()),
-      fixedConvention_(ModifiedFollowing),
-      fixedTerminationDateConvention_(ModifiedFollowing),
+
       floatConvention_(index->businessDayConvention()),
       floatTerminationDateConvention_(index->businessDayConvention()),
-      fixedRule_(DateGeneration::Backward), floatRule_(DateGeneration::Backward),
-      fixedEndOfMonth_(false), floatEndOfMonth_(false),
-      fixedFirstDate_(Date()), fixedNextToLastDate_(Date()),
-      floatFirstDate_(Date()), floatNextToLastDate_(Date()),
-      floatSpread_(0.0),
+
       floatDayCount_(index->dayCounter()) {}
 
     MakeVanillaSwap::operator VanillaSwap() const {

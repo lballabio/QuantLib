@@ -241,7 +241,7 @@ namespace {
         };
 
         q6m.reserve(10 + 15 + 35);
-        for (double i : q6mh) {
+        for (Real i : q6mh) {
             q6m.push_back(ext::shared_ptr<Quote>(new SimpleQuote(i)));
         }
 
@@ -549,7 +549,7 @@ namespace {
 
     // Calibration Basket 1: CMS10y Swaptions, 5 yearly fixings
 
-    Disposable<std::vector<Date> > expiriesCalBasket1() {
+    std::vector<Date> expiriesCalBasket1() {
 
         std::vector<Date> res;
         Date referenceDate_ = Settings::instance().evaluationDate();
@@ -560,7 +560,7 @@ namespace {
         return res;
     }
 
-    Disposable<std::vector<Period> > tenorsCalBasket1() {
+    std::vector<Period> tenorsCalBasket1() {
 
         std::vector<Period> res(5, 10 * Years);
 
@@ -569,7 +569,7 @@ namespace {
 
     // Calibration Basket 2: 6m caplets, 5 years
 
-    Disposable<std::vector<Date> > expiriesCalBasket2() {
+    std::vector<Date> expiriesCalBasket2() {
 
         Date referenceDate_ = Settings::instance().evaluationDate();
 
@@ -591,7 +591,7 @@ namespace {
 
     // Calibration Basket 3: Coterminal Swaptions 10y
 
-    Disposable<std::vector<Date> > expiriesCalBasket3() {
+    std::vector<Date> expiriesCalBasket3() {
 
         Date referenceDate_ = Settings::instance().evaluationDate();
 
@@ -610,16 +610,15 @@ namespace {
         return res;
     }
 
-    Disposable<std::vector<Period> > tenorsCalBasket3() {
+    std::vector<Period> tenorsCalBasket3() {
 
         std::vector<Period> res = {9 * Years, 8 * Years, 7 * Years, 6 * Years, 5 * Years,
                                    4 * Years, 3 * Years, 2 * Years, 1 * Years};
         return res;
     }
 
-    Disposable<std::vector<Real> >
-    impliedStdDevs(const Real atm, const std::vector<Real> &strikes,
-                   const std::vector<Real> &prices) {
+    std::vector<Real> impliedStdDevs(const Real atm, const std::vector<Real> &strikes,
+                                     const std::vector<Real> &prices) {
 
         std::vector<Real> result;
 
@@ -651,7 +650,7 @@ void MarkovFunctionalTest::testKahaleSmileSection() {
     std::vector<Real> money;
     std::vector<Real> calls0;
 
-    for (double strike : strikes) {
+    for (Real strike : strikes) {
         money.push_back(strike / atm);
         calls0.push_back(blackFormula(Option::Call, strike, atm, 0.50 * std::sqrt(t), 1.0, 0.0));
     }

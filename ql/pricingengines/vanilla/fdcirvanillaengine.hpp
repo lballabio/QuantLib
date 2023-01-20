@@ -92,7 +92,7 @@ namespace QuantLib {
         ext::shared_ptr<CoxIngersollRossProcess> cirProcess_;
         ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
         const Real rho_;
-        Size tGrid_, xGrid_, rGrid_, dampingSteps_;
+        Size tGrid_ = 10, xGrid_ = 100, rGrid_ = 100, dampingSteps_ = 0;
         ext::shared_ptr<FdmSchemeDesc> schemeDesc_;
         ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
     };

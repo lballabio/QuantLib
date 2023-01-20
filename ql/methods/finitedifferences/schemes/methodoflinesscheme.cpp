@@ -31,15 +31,13 @@ namespace QuantLib {
       bcSet_(bcSet) {}
 
 
-    Disposable<std::vector<Real> >
-    MethodOfLinesScheme::apply(Time t, const std::vector<Real>& u) const {
+    std::vector<Real> MethodOfLinesScheme::apply(Time t, const std::vector<Real>& u) const {
         map_->setTime(t, t + 0.0001);
         bcSet_.applyBeforeApplying(*map_);
 
         const Array dxdt = -map_->apply(Array(u.begin(), u.end()));
 
-        std::vector<Real> retVal(dxdt.begin(), dxdt.end());
-        return retVal;
+        return std::vector<Real>(dxdt.begin(), dxdt.end());
     }
 
     void MethodOfLinesScheme::step(array_type& a, Time t) {

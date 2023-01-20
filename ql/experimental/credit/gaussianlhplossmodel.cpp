@@ -60,7 +60,7 @@ namespace QuantLib {
           beta_(sqrt(correlation)),
           biphi_(-sqrt(correlation))
         {
-        for (double recoverie : recoveries)
+        for (Real recoverie : recoveries)
             rrQuotes_.emplace_back(ext::make_shared<RecoveryRateQuote>(recoverie));
         }
 
@@ -77,7 +77,7 @@ namespace QuantLib {
           biphi_(-sqrt(correlQuote->value()))
         {
             registerWith(correl_);
-            for (double recoverie : recoveries)
+            for (Real recoverie : recoveries)
                 rrQuotes_.emplace_back(ext::make_shared<RecoveryRateQuote>(recoverie));
         }
 

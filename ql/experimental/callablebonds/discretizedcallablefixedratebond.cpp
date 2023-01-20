@@ -2,7 +2,7 @@
 
 /*
  Copyright (C) 2008 Allen Kuo
- Copyright (C) 2021 Ralf Konrad Eckel
+ Copyright (C) 2021, 2022 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -73,15 +73,28 @@ namespace QuantLib {
                     couponAdjustments_[j] = CouponAdjustment::pre;
 
                     /* We snapped the callabilityTime so we need to take into account the missing
-                     * discount factor. */
-                    auto discountTillCallDate = termStructure->discount(callabilityDate);
-                    auto discountTillCouponDate = termStructure->discount(couponDate);
-                    adjustedCallabilityPrices_[i] *= discountTillCallDate / discountTillCouponDate;
+                     * discount factor including any possible spread e.g. set in the OAS
+                     * calculation. */
+                    auto spread  = arguments_.spread;
+                    auto calcDiscountFactorInclSpread = [&termStructure, spread](Date date) {
+                        auto time = termStructure->timeFromReference(date);
+                        auto zeroRateInclSpread =
+                            termStructure->zeroRate(date, termStructure->dayCounter(), Continuous,
+                                                    NoFrequency) +
+                            spread;
+                        auto df = std::exp(-zeroRateInclSpread * time);
+                        return df;
+                    };
+
+                    auto dfTillCallDate = calcDiscountFactorInclSpread(callabilityDate);
+                    auto dfTillCouponDate = calcDiscountFactorInclSpread(couponDate);
+                    adjustedCallabilityPrices_[i] *= dfTillCallDate / dfTillCouponDate;
 
                     break;
                 }
             }
 
+            adjustedCallabilityPrices_[i] *= arguments_.faceAmount / 100.0;
             callabilityTimes_[i] = callabilityTime;
         }
     }

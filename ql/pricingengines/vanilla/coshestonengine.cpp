@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2017 Klaus Spanderen
+ Copyright (C) 2022 Ignacio Anguita
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -83,6 +84,20 @@ namespace QuantLib {
 
         const Real a = x + cum1 - L_*w;
         const Real b = x + cum1 + L_*w;
+        
+        // Check if it exceeds the truncation bound
+        
+        if (x >= b/2 || x <= a/2) {
+            //returns lower/upper bounds
+            if (payoff->optionType() == Option::Put)
+                results_.value = std::max(-spot*qf+k*df,0.0);
+            else if (payoff->optionType() == Option::Call)
+           	    results_.value = std::max(spot*qf-k*df,0.0);
+       	    else
+                QL_FAIL("unknown payoff type");
+            return;
+        }
+		
 
         const Real d = 1.0/(b-a);
 
@@ -119,8 +134,7 @@ namespace QuantLib {
         const Real sigma2 = sigma_*sigma_;
 
         const std::complex<Real> D = std::sqrt(
-            square<std::complex<Real> >()(
-                std::complex<Real>(kappa_, -rho_*sigma_*u))
+            squared(std::complex<Real>(kappa_, -rho_*sigma_*u))
             + std::complex<Real>(u*u, u)*sigma2);
 
         const std::complex<Real> g(kappa_, -rho_*sigma_*u);
@@ -281,9 +295,8 @@ namespace QuantLib {
        return c3(t)/std::pow(c2(t), 1.5);
    }
    Real COSHestonEngine::kurtosis(Time t) const {
-       return c4(t)/square<Real>()(c2(t));
+       return c4(t)/squared(c2(t));
    }
+
 }
-
-
 

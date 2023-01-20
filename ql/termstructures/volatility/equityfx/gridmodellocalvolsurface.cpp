@@ -83,7 +83,6 @@ namespace QuantLib {
     }
 
     void GridModelLocalVolSurface::generateArguments() {
-        using namespace ext::placeholders;
         const ext::shared_ptr<Matrix> localVolMatrix(
             new Matrix(strikes_.front()->size(), times_.size()));
 

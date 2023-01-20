@@ -12,7 +12,7 @@ Group: System Environment/Libraries
 Packager: Liguo Song (Leo) <liguo.song@vanderbilt.edu>
 Vendor: QuantLib.org
 Source0: http://prdownloads.sourceforge.net/quantlib/QuantLib-%{version}.tar.gz
-URL: http://quantlib.org/
+URL: https://www.quantlib.org/
 BuildRoot:%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires: autoconf
@@ -80,7 +80,7 @@ FFLAGS="${FFLAGS:-%optflags}" ; export FFLAGS ; \
 make %{?_smp_mflags}
 # make documentations
 cd Docs
-make docs-all
+make docs
 
 %install
 rm -rf $RPM_BUILD_ROOT

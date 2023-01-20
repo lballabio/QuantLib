@@ -28,26 +28,9 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/math/randomnumbers/seedgenerator.hpp>
 #include <ql/math/optimization/problem.hpp>
 
-#include <boost/random/mersenne_twister.hpp>
-typedef boost::mt19937 base_generator_type;
-
-#include <boost/random/normal_distribution.hpp>
-#include <boost/random/lognormal_distribution.hpp>
-#include <boost/random/cauchy_distribution.hpp>
-#include <boost/random/uniform_real_distribution.hpp>
-typedef boost::random::uniform_real_distribution<double> uniform;
-typedef boost::random::normal_distribution<> normal_random;
-typedef boost::random::lognormal_distribution<> lognormal_random;
-typedef boost::random::cauchy_distribution<> cauchy_random;
-
-#include <boost/random/variate_generator.hpp>
-typedef boost::variate_generator<base_generator_type&, uniform > uniform_variate;
-typedef boost::variate_generator<base_generator_type, normal_random > normal_variate;
-typedef boost::variate_generator<base_generator_type&, lognormal_random > lognormal_variate;
-typedef boost::variate_generator<base_generator_type&, cauchy_random > cauchy_variate;
-
-#include <algorithm> //for std::max
-#include <cmath>     //for log
+#include <algorithm>
+#include <cmath>
+#include <random>
 #include <utility>
 #include <vector>
 
@@ -61,28 +44,17 @@ namespace QuantLib
     {
     public:
         explicit SamplerLogNormal(unsigned long seed = SeedGenerator::instance().get()) :
-            generator_(seed),
-            distribution_(0.0, 1.0), gaussian_(generator_, distribution_) {};
-        SamplerLogNormal(const SamplerLogNormal& sampler) : generator_(sampler.gaussian_.engine()),
-            distribution_(sampler.gaussian_.distribution()),
-            gaussian_(generator_, distribution_) {};
-        SamplerLogNormal& operator=(const SamplerLogNormal& sampler) {
-            generator_ = sampler.gaussian_.engine();
-            distribution_ = sampler.gaussian_.distribution();
-            gaussian_ = normal_variate(generator_, distribution_);
-            return *this;
-        }
+            generator_(seed), distribution_(0.0, 1.0) {};
 
-        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
+        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
             for (Size i = 0; i < currentPoint.size(); i++)
-                newPoint[i] = currentPoint[i] * exp(sqrt(temp[i])*gaussian_());
+                newPoint[i] = currentPoint[i] * exp(sqrt(temp[i]) * distribution_(generator_));
         };
     private:
-        base_generator_type generator_;
-        normal_random distribution_;
-        mutable normal_variate gaussian_;
+        std::mt19937 generator_;
+        std::normal_distribution<Real> distribution_;
     };
 
     //! Gaussian Sampler
@@ -93,28 +65,17 @@ namespace QuantLib
     {
     public:
         explicit SamplerGaussian(unsigned long seed = SeedGenerator::instance().get()) :
-            generator_(seed),
-            distribution_(0.0, 1.0), gaussian_(generator_, distribution_) {};
-        SamplerGaussian(const SamplerGaussian& sampler) : generator_(sampler.gaussian_.engine()),
-            distribution_(sampler.gaussian_.distribution()),
-            gaussian_(generator_, distribution_) {};
-        SamplerGaussian& operator=(const SamplerGaussian& sampler) {
-            generator_ = sampler.gaussian_.engine();
-            distribution_ = sampler.gaussian_.distribution();
-            gaussian_ = normal_variate(generator_, distribution_);
-            return *this;
-        }
+            generator_(seed), distribution_(0.0, 1.0) {};
 
-        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
+        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
             for (Size i = 0; i < currentPoint.size(); i++)
-                newPoint[i] = currentPoint[i] + std::sqrt(temp[i])*gaussian_();
+                newPoint[i] = currentPoint[i] + std::sqrt(temp[i]) * distribution_(generator_);
         };
     private:
-        base_generator_type generator_;
-        normal_random distribution_;
-        mutable normal_variate gaussian_;
+        std::mt19937 generator_;
+        std::normal_distribution<Real> distribution_;
     };
     
     //! Gaussian Ring Sampler
@@ -128,25 +89,14 @@ namespace QuantLib
       SamplerRingGaussian(Array lower,
                           Array upper,
                           unsigned long seed = SeedGenerator::instance().get())
-      : generator_(seed), distribution_(0.0, 1.0), gaussian_(generator_, distribution_),
+      : generator_(seed), distribution_(0.0, 1.0),
         lower_(std::move(lower)), upper_(std::move(upper)){};
-      SamplerRingGaussian(const SamplerRingGaussian& sampler)
-      : generator_(sampler.gaussian_.engine()), distribution_(sampler.gaussian_.distribution()),
-        gaussian_(generator_, distribution_), lower_(sampler.lower_), upper_(sampler.upper_){};
-      SamplerRingGaussian& operator=(const SamplerRingGaussian& sampler) {
-          generator_ = sampler.gaussian_.engine();
-          distribution_ = sampler.gaussian_.distribution();
-          gaussian_ = normal_variate(generator_, distribution_);
-          lower_ = sampler.lower_;
-          upper_ = sampler.upper_;
-          return *this;
-        }
 
-        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
+        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
             for (Size i = 0; i < currentPoint.size(); i++){
-                newPoint[i] = currentPoint[i] + std::sqrt(temp[i])*gaussian_();
+                newPoint[i] = currentPoint[i] + std::sqrt(temp[i]) * distribution_(generator_);
                 while(newPoint[i] < lower_[i] || newPoint[i] > upper_[i]){
 					if(newPoint[i] < lower_[i]){
 						newPoint[i] = upper_[i] + newPoint[i] - lower_[i];
@@ -157,9 +107,8 @@ namespace QuantLib
             }
         };
     private:
-        base_generator_type generator_;
-        normal_random distribution_;
-        mutable normal_variate gaussian_;
+        std::mt19937 generator_;
+        std::normal_distribution<Real> distribution_;
         Array lower_, upper_;
     };
     
@@ -174,25 +123,14 @@ namespace QuantLib
       SamplerMirrorGaussian(Array lower,
                             Array upper,
                             unsigned long seed = SeedGenerator::instance().get())
-      : generator_(seed), distribution_(0.0, 1.0), gaussian_(generator_, distribution_),
+      : generator_(seed), distribution_(0.0, 1.0),
         lower_(std::move(lower)), upper_(std::move(upper)){};
-      SamplerMirrorGaussian(const SamplerMirrorGaussian& sampler)
-      : generator_(sampler.gaussian_.engine()), distribution_(sampler.gaussian_.distribution()),
-        gaussian_(generator_, distribution_), lower_(sampler.lower_), upper_(sampler.upper_){};
-      SamplerMirrorGaussian& operator=(const SamplerMirrorGaussian& sampler) {
-          generator_ = sampler.gaussian_.engine();
-          distribution_ = sampler.gaussian_.distribution();
-          gaussian_ = normal_variate(generator_, distribution_);
-          lower_ = sampler.lower_;
-          upper_ = sampler.upper_;
-          return *this;
-        }
 
-        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
+        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
             for (Size i = 0; i < currentPoint.size(); i++){
-                newPoint[i] = currentPoint[i] + std::sqrt(temp[i])*gaussian_();
+                newPoint[i] = currentPoint[i] + std::sqrt(temp[i]) * distribution_(generator_);
                 while(newPoint[i] < lower_[i] || newPoint[i] > upper_[i]){
 					if(newPoint[i] < lower_[i]){
 						newPoint[i] = lower_[i] + lower_[i] - newPoint[i];
@@ -203,9 +141,8 @@ namespace QuantLib
             }
         };
     private:
-        base_generator_type generator_;
-        normal_random distribution_;
-        mutable normal_variate gaussian_;
+        std::mt19937 generator_;
+        std::normal_distribution<Real> distribution_;
         Array lower_, upper_;
     };
 
@@ -219,22 +156,17 @@ namespace QuantLib
     {
     public:
         explicit SamplerCauchy(unsigned long seed = SeedGenerator::instance().get()) :
-            generator_(seed),
-            distribution_(0.0, 1.0), cauchy_(generator_, distribution_) {};
-        SamplerCauchy(const SamplerCauchy& sampler) : generator_(sampler.cauchy_.engine()),
-            distribution_(sampler.cauchy_.distribution()),
-            cauchy_(generator_, distribution_) {};
+            generator_(seed), distribution_(0.0, 1.0) {};
 
-        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
+        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
             for (Size i = 0; i < currentPoint.size(); i++)
-                newPoint[i] = currentPoint[i] + temp[i] * cauchy_();
+                newPoint[i] = currentPoint[i] + temp[i] * distribution_(generator_);
         };
     protected:
-        base_generator_type generator_;
-        cauchy_random distribution_;
-        mutable cauchy_variate cauchy_;
+        std::mt19937 generator_;
+        std::cauchy_distribution<Real> distribution_;
     };
 
     //! Very Fast Annealing Sampler
@@ -247,25 +179,18 @@ namespace QuantLib
       SamplerVeryFastAnnealing(Array lower,
                                Array upper,
                                unsigned long seed = SeedGenerator::instance().get())
-      : lower_(std::move(lower)), upper_(std::move(upper)), generator_(seed),
-        uniform_(generator_, distribution_) {
-          QL_REQUIRE(lower_.size() == upper_.size(), "Incompatible input");
-      };
-        SamplerVeryFastAnnealing(const SamplerVeryFastAnnealing& sampler) :
-            lower_(sampler.lower_), upper_(sampler.upper_),
-            generator_(sampler.uniform_.engine()), distribution_(sampler.uniform_.distribution()),
-            uniform_(generator_, distribution_) {
+        : lower_(std::move(lower)), upper_(std::move(upper)), generator_(seed) {
             QL_REQUIRE(lower_.size() == upper_.size(), "Incompatible input");
         };
 
-        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) const {
+        inline void operator()(Array &newPoint, const Array &currentPoint, const Array &temp) {
             QL_REQUIRE(newPoint.size() == currentPoint.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == lower_.size(), "Incompatible input");
             QL_REQUIRE(newPoint.size() == temp.size(), "Incompatible input");
             for (Size i = 0; i < currentPoint.size(); i++) {
                 newPoint[i] = lower_[i] - 1.0;
                 while (newPoint[i] < lower_[i] || newPoint[i] > upper_[i]) {
-                    Real draw = uniform_();
+                    Real draw = distribution_(generator_);
                     Real sign = static_cast<int>(0.5 < draw) - static_cast<int>(draw < 0.5);
                     Real y = sign*temp[i] * (std::pow(1.0 + 1.0 / temp[i],
                                                       std::abs(2 * draw - 1.0)) - 1.0);
@@ -275,9 +200,8 @@ namespace QuantLib
         };
     private:
         Array lower_, upper_;
-        base_generator_type generator_;
-        uniform distribution_;
-        mutable uniform_variate uniform_;
+        std::mt19937 generator_;
+        std::uniform_real_distribution<Real> distribution_;
     };
 
     //! Always Downhill Probability
@@ -286,7 +210,7 @@ namespace QuantLib
     optimizer will be able to escape a local optimum.
     */
     struct ProbabilityAlwaysDownhill {
-        inline bool operator()(Real currentValue, Real newValue, const Array &temp) const {
+        inline bool operator()(Real currentValue, Real newValue, const Array &temp) {
             return currentValue > newValue; //return true if new value is lower than old value
         }
     };
@@ -298,20 +222,15 @@ namespace QuantLib
     */
     class ProbabilityBoltzmann {
     public:
-        explicit ProbabilityBoltzmann(unsigned long seed = SeedGenerator::instance().get()) :
-            generator_(seed),
-            uniform_(generator_, distribution_) {};
-        ProbabilityBoltzmann(const ProbabilityBoltzmann &probability) :
-            generator_(probability.uniform_.engine()), distribution_(probability.uniform_.distribution()),
-            uniform_(generator_, distribution_) {};
-        inline bool operator()(Real currentValue, Real newValue, const Array &temp) const {
+        explicit ProbabilityBoltzmann(unsigned long seed = SeedGenerator::instance().get()) : generator_(seed) {};
+
+        inline bool operator()(Real currentValue, Real newValue, const Array &temp) {
             Real temperature = *std::max_element(temp.begin(), temp.end());
-            return (1.0 / (1.0 + exp((newValue - currentValue) / temperature))) > uniform_();
+            return (1.0 / (1.0 + exp((newValue - currentValue) / temperature))) > distribution_(generator_);
         }
     private:
-        base_generator_type generator_;
-        uniform distribution_;
-        mutable uniform_variate uniform_;
+        std::mt19937 generator_;
+        std::uniform_real_distribution<Real> distribution_;
     };
     //! Boltzmann Downhill Probability
     /*!    Similarly to the Boltzmann Probability, but if new < current, then the point is
@@ -320,22 +239,17 @@ namespace QuantLib
     class ProbabilityBoltzmannDownhill
     {
     public:
-        explicit ProbabilityBoltzmannDownhill(unsigned long seed = SeedGenerator::instance().get()) :
-            generator_(seed),
-            uniform_(generator_, distribution_) {};
-        ProbabilityBoltzmannDownhill(const ProbabilityBoltzmannDownhill& probability) :
-            generator_(probability.uniform_.engine()), distribution_(probability.uniform_.distribution()),
-            uniform_(generator_, distribution_) {};
-        inline bool operator()(Real currentValue, Real newValue, const Array &temp) const {
+        explicit ProbabilityBoltzmannDownhill(unsigned long seed = SeedGenerator::instance().get()) : generator_(seed) {};
+
+        inline bool operator()(Real currentValue, Real newValue, const Array &temp) {
             if (newValue < currentValue)
                 return true;
-            double mTemperature = *std::max_element(temp.begin(), temp.end());
-            return (1.0 / (1.0 + exp((newValue - currentValue) / mTemperature))) > uniform_();
+            Real mTemperature = *std::max_element(temp.begin(), temp.end());
+            return (1.0 / (1.0 + exp((newValue - currentValue) / mTemperature))) > distribution_(generator_);
         }
     private:
-        base_generator_type generator_;
-        uniform distribution_;
-        mutable uniform_variate uniform_;
+        std::mt19937 generator_;
+        std::uniform_real_distribution<Real> distribution_;
     };
     //! Temperature Boltzmann
     /*!    For use with the Gaussian sampler
@@ -344,11 +258,11 @@ namespace QuantLib
     public:
         TemperatureBoltzmann(Real initialTemp, Size dimension)
             : initialTemp_(dimension, initialTemp) {}
-        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) const {
+        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
-                newTemp[i] = initialTemp_[i] / log(steps[i]);
+                newTemp[i] = initialTemp_[i] / std::log(steps[i]);
         }
     private:
         Array initialTemp_;
@@ -360,7 +274,7 @@ namespace QuantLib
     public:
         TemperatureCauchy(Real initialTemp, Size dimension)
             : initialTemp_(dimension, initialTemp) {}
-        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) const {
+        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
@@ -375,7 +289,7 @@ namespace QuantLib
         TemperatureCauchy1D(Real initialTemp, Size dimension) :
             inverseN_(1.0 / dimension),
             initialTemp_(dimension, initialTemp) {}
-        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) const {
+        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
@@ -390,7 +304,7 @@ namespace QuantLib
     public:
         TemperatureExponential(Real initialTemp, Size dimension, Real power = 0.95)
             : initialTemp_(dimension, initialTemp), power_(power) {}
-        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) const {
+        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
@@ -410,9 +324,9 @@ namespace QuantLib
             finalTemp_(dimension, finalTemp), exponent_(dimension, 0.0) {
             Real coeff = std::pow(maxSteps, -inverseN_);
             for (Size i = 0; i < initialTemp_.size(); i++)
-                exponent_[i] = -log(finalTemp_[i] / initialTemp_[i])*coeff;
+                exponent_[i] = -std::log(finalTemp_[i] / initialTemp_[i])*coeff;
         }
-        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) const {
+        inline void operator()(Array &newTemp, const Array &currTemp, const Array &steps) {
             QL_REQUIRE(currTemp.size() == initialTemp_.size(), "Incompatible input");
             QL_REQUIRE(currTemp.size() == newTemp.size(), "Incompatible input");
             for (Size i = 0; i < initialTemp_.size(); i++)
@@ -430,7 +344,7 @@ namespace QuantLib
         ;
         inline void setProblem(Problem &P) {};
         inline void operator()(Array & steps, const Array &currentPoint,
-            Real aCurrentValue, const Array & currTemp) const {};
+            Real aCurrentValue, const Array & currTemp) {};
     };
     //! Reannealing Finite Difference
     /*!    In multidimensional problems, different dimensions might have different
@@ -442,34 +356,33 @@ namespace QuantLib
     */
     class ReannealingFiniteDifferences {
     public:
-        ReannealingFiniteDifferences(Real initialTemp,
-            Size dimension,
-            const Array & lower = Array(),
-            const Array & upper = Array(),
-            Real stepSize = 1e-7,
-            Real minSize = 1e-10,
-            Real functionTol = 1e-10)
-            : stepSize_(stepSize), minSize_(minSize),
-            functionTol_(functionTol), N_(dimension), bound_(false),
-            lower_(lower), upper_(upper), initialTemp_(dimension, initialTemp),
-            bounded_(dimension, 1.0) {
-            if (!lower.empty() && !upper.empty()) {
-                QL_REQUIRE(lower.size() == N_, "Incompatible input");
-                QL_REQUIRE(upper.size() == N_, "Incompatible input");
-                bound_ = true;
-                for (Size i = 0; i < N_; i++) {
-                    bounded_[i] = upper[i] - lower[i];
-                }
-            }
-        }
+      ReannealingFiniteDifferences(Real initialTemp,
+                                   Size dimension,
+                                   const Array& lower = Array(),
+                                   const Array& upper = Array(),
+                                   Real stepSize = 1e-7,
+                                   Real minSize = 1e-10,
+                                   Real functionTol = 1e-10)
+      : stepSize_(stepSize), minSize_(minSize), functionTol_(functionTol), N_(dimension),
+        lower_(lower), upper_(upper), initialTemp_(dimension, initialTemp),
+        bounded_(dimension, 1.0) {
+          if (!lower.empty() && !upper.empty()) {
+              QL_REQUIRE(lower.size() == N_, "Incompatible input");
+              QL_REQUIRE(upper.size() == N_, "Incompatible input");
+              bound_ = true;
+              for (Size i = 0; i < N_; i++) {
+                  bounded_[i] = upper[i] - lower[i];
+              }
+          }
+      }
         inline void setProblem(Problem &P) { problem_ = &P; };
         inline void operator()(Array & steps, const Array &currentPoint,
-            Real currentValue, const Array & currTemp) const {
+            Real currentValue, const Array & currTemp) {
             QL_REQUIRE(currTemp.size() == N_, "Incompatible input");
             QL_REQUIRE(steps.size() == N_, "Incompatible input");
 
             Array finiteDiffs(N_, 0.0);
-            double finiteDiffMax = 0.0;
+            Real finiteDiffMax = 0.0;
             Array ofssetPoint(currentPoint);
             for (Size i = 0; i < N_; i++) {
                 ofssetPoint[i] += stepSize_;
@@ -495,7 +408,7 @@ namespace QuantLib
         Problem *problem_;
         Real stepSize_, minSize_, functionTol_;
         Size N_;
-        bool bound_;
+        bool bound_ = false;
         Array lower_, upper_, initialTemp_, bounded_;
     };
 }

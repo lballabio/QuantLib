@@ -7,7 +7,6 @@
 #  include <ql/auto_link.hpp>
 #endif
 
-#include <ql/auto_ptr.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/compounding.hpp>
 #include <ql/currency.hpp>

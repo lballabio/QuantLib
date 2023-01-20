@@ -1,22 +1,48 @@
+#projectname, #projectname a, #projectname a:visited
+{
+    font-family: "Lato", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    color: black;
+}
 #projectname
 {
-    font-size: 16px;
     padding: 1em;
 }
-
-#projectbrief
-{
-    font-family: 'Merriweather Sans', serif;
-    font-size: 120%;
-    margin-top: 2px;
-    margin-bottom: 0;
-}
-
+                   
 #projectnumber
 {
-    font-family: 'Merriweather Sans', serif;
-    font-size: 100%;
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 60%;
     margin-top: 1em;
     margin-bottom: 0;
 }
 
+body, table, div, p, dl {
+	font: 300 16px/22px Lato,sans-serif;
+}
+
+p.reference, p.definition {
+	font: 300 16px/22px Lato,sans-serif;
+}
+
+.title {
+    font-family: "Lato", sans-serif;
+    font-style: italic;
+}
+
+table.directory {
+    font: 400 16px "Lato",sans-serif;
+}
+
+h1 {
+    font-style: italic;
+}
+
+.sm-dox a,.sm-dox a:focus,.sm-dox a:hover,.sm-dox a:active {
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+}

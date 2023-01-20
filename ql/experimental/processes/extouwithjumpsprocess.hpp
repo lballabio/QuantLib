@@ -67,13 +67,12 @@ namespace QuantLib {
         Size size() const override;
         Size factors() const override;
 
-        Disposable<Array> initialValues() const override;
-        Disposable<Array> drift(Time t, const Array& x) const override;
-        Disposable<Matrix> diffusion(Time t, const Array& x) const override;
-        Disposable<Array> evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
+        Array initialValues() const override;
+        Array drift(Time t, const Array& x) const override;
+        Matrix diffusion(Time t, const Array& x) const override;
+        Array evolve(Time t0, const Array& x0, Time dt, const Array& dw) const override;
 
-        ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>
-                                 getExtendedOrnsteinUhlenbeckProcess() const;
+        ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess> getExtendedOrnsteinUhlenbeckProcess() const;
 
         Real beta()          const;
         Real eta()           const;

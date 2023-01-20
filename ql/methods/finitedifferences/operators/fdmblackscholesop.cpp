@@ -62,17 +62,14 @@ namespace QuantLib {
                 const Size i = iter.index();
 
                 if (illegalLocalVolOverwrite_ < 0.0) {
-                    v[i] = square<Real>()(
-                        localVol_->localVol(0.5*(t1+t2), x_[i], true));
+                    v[i] = squared(localVol_->localVol(0.5*(t1+t2), x_[i], true));
                 }
                 else {
                     try {
-                        v[i] = square<Real>()(
-                            localVol_->localVol(0.5*(t1+t2), x_[i], true));
+                        v[i] = squared(localVol_->localVol(0.5*(t1+t2), x_[i], true));
                     } catch (Error&) {
-                        v[i] = square<Real>()(illegalLocalVolOverwrite_);
+                        v[i] = squared(illegalLocalVolOverwrite_);
                     }
-
                 }
             }
 
@@ -106,44 +103,39 @@ namespace QuantLib {
 
     Size FdmBlackScholesOp::size() const { return 1U; }
 
-    Disposable<Array> FdmBlackScholesOp::apply(const Array& u) const {
+    Array FdmBlackScholesOp::apply(const Array& u) const {
         return mapT_.apply(u);
     }
 
-    Disposable<Array> FdmBlackScholesOp::apply_direction(Size direction,
-                                                    const Array& r) const {
+    Array FdmBlackScholesOp::apply_direction(Size direction,
+                                             const Array& r) const {
         if (direction == direction_)
             return mapT_.apply(r);
         else {
-            Array retVal(r.size(), 0.0);
-            return retVal;
+            return Array(r.size(), 0.0);
         }
     }
 
-    Disposable<Array> FdmBlackScholesOp::apply_mixed(const Array& r) const {
-        Array retVal(r.size(), 0.0);
-        return retVal;
+    Array FdmBlackScholesOp::apply_mixed(const Array& r) const {
+        return Array(r.size(), 0.0);
     }
 
-    Disposable<Array> FdmBlackScholesOp::solve_splitting(Size direction,
-                                                const Array& r, Real dt) const {
+    Array FdmBlackScholesOp::solve_splitting(Size direction,
+                                             const Array& r, Real dt) const {
         if (direction == direction_)
             return mapT_.solve_splitting(r, dt, 1.0);
         else {
-            Array retVal(r);
-            return retVal;
+            return r;
         }
     }
 
-    Disposable<Array> FdmBlackScholesOp::preconditioner(const Array& r,
-                                                        Real dt) const {
+    Array FdmBlackScholesOp::preconditioner(const Array& r,
+                                            Real dt) const {
         return solve_splitting(direction_, r, dt);
     }
 
-    Disposable<std::vector<SparseMatrix> >
-    FdmBlackScholesOp::toMatrixDecomp() const {
-        std::vector<SparseMatrix> retVal(1, mapT_.toMatrix());
-        return retVal;
+    std::vector<SparseMatrix> FdmBlackScholesOp::toMatrixDecomp() const {
+        return std::vector<SparseMatrix>(1, mapT_.toMatrix());
     }
 
 }

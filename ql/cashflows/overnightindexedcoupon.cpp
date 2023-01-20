@@ -27,6 +27,7 @@
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/utilities/vectors.hpp>
 #include <utility>
+#include <algorithm>
 
 using std::vector;
 
@@ -40,40 +41,47 @@ namespace QuantLib {
                 coupon_ = dynamic_cast<const OvernightIndexedCoupon*>(&coupon);
                 QL_ENSURE(coupon_, "wrong coupon type");
             }
-            Rate swapletRate() const override {
 
-                ext::shared_ptr<OvernightIndex> index =
+            Rate averageRate(const Date& date) const {
+
+                const Date today = Settings::instance().evaluationDate();
+
+                const ext::shared_ptr<OvernightIndex> index =
                     ext::dynamic_pointer_cast<OvernightIndex>(coupon_->index());
+                const auto& pastFixings = IndexManager::instance().getHistory(index->name());
 
                 const vector<Date>& fixingDates = coupon_->fixingDates();
+                const vector<Date>& valueDates = coupon_->valueDates();
                 const vector<Time>& dt = coupon_->dt();
 
-                Size n = dt.size(),
-                     i = 0;
-
+                Size i = 0;
+                const size_t n = std::lower_bound(valueDates.begin(), valueDates.end(), date) - valueDates.begin();
                 Real compoundFactor = 1.0;
 
                 // already fixed part
-                Date today = Settings::instance().evaluationDate();
-                while (i<n && fixingDates[i]<today) {
+                while (i < n && fixingDates[i] < today) {
                     // rate must have been fixed
-                    Rate pastFixing = IndexManager::instance().getHistory(
-                                                index->name())[fixingDates[i]];
-                    QL_REQUIRE(pastFixing != Null<Real>(),
+                    const Rate fixing = pastFixings[fixingDates[i]];
+                    QL_REQUIRE(fixing != Null<Real>(),
                                "Missing " << index->name() <<
                                " fixing for " << fixingDates[i]);
-                    compoundFactor *= (1.0 + pastFixing*dt[i]);
+                    Time span = (date >= valueDates[i+1] ?
+                                 dt[i] :
+                                 index->dayCounter().yearFraction(valueDates[i], date));
+                    compoundFactor *= (1.0 + fixing * span);
                     ++i;
                 }
 
                 // today is a border case
-                if (i<n && fixingDates[i] == today) {
+                if (i < n && fixingDates[i] == today) {
                     // might have been fixed
                     try {
-                        Rate pastFixing = IndexManager::instance().getHistory(
-                                                index->name())[fixingDates[i]];
-                        if (pastFixing != Null<Real>()) {
-                            compoundFactor *= (1.0 + pastFixing*dt[i]);
+                        Rate fixing = pastFixings[fixingDates[i]];
+                        if (fixing != Null<Real>()) {
+                            Time span = (date >= valueDates[i+1] ?
+                                         dt[i] :
+                                         index->dayCounter().yearFraction(valueDates[i], date));
+                            compoundFactor *= (1.0 + fixing * span);
                             ++i;
                         } else {
                             ;   // fall through and forecast
@@ -86,21 +94,34 @@ namespace QuantLib {
                 // forward part using telescopic property in order
                 // to avoid the evaluation of multiple forward fixings
                 if (i<n) {
-                    Handle<YieldTermStructure> curve =
-                        index->forwardingTermStructure();
+                    const Handle<YieldTermStructure> curve = index->forwardingTermStructure();
                     QL_REQUIRE(!curve.empty(),
-                               "null term structure set to this instance of "<<
-                               index->name());
+                               "null term structure set to this instance of " << index->name());
 
-                    const vector<Date>& dates = coupon_->valueDates();
-                    DiscountFactor startDiscount = curve->discount(dates[i]);
-                    DiscountFactor endDiscount = curve->discount(dates[n]);
+                    const DiscountFactor startDiscount = curve->discount(valueDates[i]);
+                    if (valueDates[n] == date) {
+                        // full telescopic formula
+                        const DiscountFactor endDiscount = curve->discount(valueDates[n]);
+                        compoundFactor *= startDiscount / endDiscount;
+                    } else {
+                        // The last fixing is not used for its full period (the date is between its
+                        // start and end date).  We can use the telescopic formula until the previous
+                        // date, then we'll add the missing bit.
+                        const DiscountFactor endDiscount = curve->discount(valueDates[n-1]);
+                        compoundFactor *= startDiscount / endDiscount;
 
-                    compoundFactor *= startDiscount/endDiscount;
+                        Rate fixing = index->fixing(fixingDates[n-1]);
+                        Time span = index->dayCounter().yearFraction(valueDates[n-1], date);
+                        compoundFactor *= (1.0 + fixing * span);
+                    }
                 }
 
-                Rate rate = (compoundFactor - 1.0) / coupon_->accrualPeriod();
+                const Rate rate = (compoundFactor - 1.0) / coupon_->accruedPeriod(date);
                 return coupon_->gearing() * rate + coupon_->spread();
+            }
+
+            Rate swapletRate() const override {
+                return averageRate(coupon_->accrualEndDate());
             }
 
             Real swapletPrice() const override { QL_FAIL("swapletPrice not available"); }
@@ -128,7 +149,8 @@ namespace QuantLib {
                     bool telescopicValueDates, 
                     RateAveraging::Type averagingMethod)
     : FloatingRateCoupon(paymentDate, nominal, startDate, endDate,
-                         overnightIndex->fixingDays(), overnightIndex,
+                         overnightIndex ? overnightIndex->fixingDays() : 0,
+                         overnightIndex,
                          gearing, spread,
                          refPeriodStart, refPeriodEnd,
                          dayCounter, false) {
@@ -141,7 +163,7 @@ namespace QuantLib {
            of valuation dates, a front and back stub will do. However notice
            that if the global evaluation date moves forward it might run past
            the front stub of valuation dates we build here (which incorporates
-           a grace period of 7 business after the evluation date). This will
+           a grace period of 7 business after the evaluation date). This will
            lead to false coupon projections (see the warning the class header). */
 
         if (telescopicValueDates) {
@@ -182,7 +204,7 @@ namespace QuantLib {
         n_ = valueDates_.size()-1;
         if (overnightIndex->fixingDays()==0) {
             fixingDates_ = vector<Date>(valueDates_.begin(),
-                                             valueDates_.end()-1);
+                                        valueDates_.end() - 1);
         } else {
             fixingDates_.resize(n_);
             for (Size i=0; i<n_; ++i)
@@ -209,6 +231,28 @@ namespace QuantLib {
         }
     }
 
+    Real OvernightIndexedCoupon::accruedAmount(const Date& d) const {
+        if (d <= accrualStartDate_ || d > paymentDate_) {
+            // out of coupon range
+            return 0.0;
+        } else if (tradingExCoupon(d)) {
+            return nominal() * averageRate(d) * accruedPeriod(d);
+        } else {
+            // usual case
+            return nominal() * averageRate(std::min(d, accrualEndDate_)) * accruedPeriod(d);
+        }
+    }
+
+    Rate OvernightIndexedCoupon::averageRate(const Date& d) const {
+        QL_REQUIRE(pricer_, "pricer not set");
+        pricer_->initialize(*this);
+        const auto overnightIndexPricer = ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer_);
+        if (overnightIndexPricer)
+            return overnightIndexPricer->averageRate(d);
+
+        return pricer_->swapletRate();
+    }
+
     const vector<Rate>& OvernightIndexedCoupon::indexFixings() const {
         fixings_.resize(n_);
         for (Size i=0; i<n_; ++i)
@@ -226,9 +270,9 @@ namespace QuantLib {
     }
 
     OvernightLeg::OvernightLeg(const Schedule& schedule, ext::shared_ptr<OvernightIndex> i)
-    : schedule_(schedule), overnightIndex_(std::move(i)), paymentCalendar_(schedule.calendar()),
-      paymentAdjustment_(Following), paymentLag_(0), telescopicValueDates_(false),
-      averagingMethod_(RateAveraging::Compound) {}
+    : schedule_(schedule), overnightIndex_(std::move(i)), paymentCalendar_(schedule.calendar()) {
+        QL_REQUIRE(overnightIndex_, "no index provided");
+    }
 
     OvernightLeg& OvernightLeg::withNotionals(Real notional) {
         notionals_ = vector<Real>(1, notional);

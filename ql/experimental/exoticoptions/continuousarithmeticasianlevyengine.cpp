@@ -77,8 +77,8 @@ namespace QuantLib {
         Real b = riskFreeRate - dividendYield;
 
         Real Se = (std::fabs(b) > 1000*QL_EPSILON) 
-            ? (spot/(T*b))*(exp((b-riskFreeRate)*T2)-exp(-riskFreeRate*T2))
-            : spot*T2/T * std::exp(-riskFreeRate*T2);
+            ? Real((spot/(T*b))*(exp((b-riskFreeRate)*T2)-exp(-riskFreeRate*T2)))
+            : Real(spot*T2/T * std::exp(-riskFreeRate*T2));
 
         Real X;
         if (T2 < T) {

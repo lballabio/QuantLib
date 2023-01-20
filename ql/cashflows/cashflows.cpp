@@ -401,7 +401,7 @@ namespace QuantLib {
                               public Visitor<Coupon> {
           public:
             explicit BPSCalculator(const YieldTermStructure& discountCurve)
-            : discountCurve_(discountCurve), bps_(0.0), nonSensNPV_(0.0) {}
+            : discountCurve_(discountCurve) {}
             void visit(Coupon& c) override {
                 Real bps = c.nominal() *
                            c.accrualPeriod() *
@@ -416,7 +416,7 @@ namespace QuantLib {
             Real nonSensNPV() const { return nonSensNPV_; }
           private:
             const YieldTermStructure& discountCurve_;
-            Real bps_, nonSensNPV_;
+            Real bps_ = 0.0, nonSensNPV_ = 0.0;
         };
 
         const Spread basisPoint_ = 1.0e-4;
@@ -477,12 +477,27 @@ namespace QuantLib {
                            Date npvDate,
                            Real& npv,
                            Real& bps) {
+        std::tie(npv, bps) =
+            npvbps(leg, discountCurve, includeSettlementDateFlows, settlementDate, npvDate);
+    }
 
-        npv = 0.0;
+    std::pair<Real, Real> CashFlows::npvbps(const Leg& leg,
+                                            const YieldTermStructure& discountCurve,
+                                            bool includeSettlementDateFlows,
+                                            Date settlementDate,
+                                            Date npvDate) {
+        Real npv = 0.0;
+        Real bps = 0.0;
+
         if (leg.empty()) {
-            bps = 0.0;
-            return;
+            return { npv, bps };
         }
+
+        if (settlementDate == Date())
+            settlementDate = Settings::instance().evaluationDate();
+
+        if (npvDate == Date())
+            npvDate = settlementDate;
 
         for (const auto& i : leg) {
             CashFlow& cf = *i;
@@ -499,6 +514,8 @@ namespace QuantLib {
         DiscountFactor d = discountCurve.discount(npvDate);
         npv /= d;
         bps = basisPoint_ * bps / d;
+
+        return { npv, bps };
     }
 
     Rate CashFlows::atmRate(const Leg& leg,
@@ -710,7 +727,7 @@ namespace QuantLib {
             QL_REQUIRE(y.compounding() == Compounded,
                        "compounded rate required");
 
-            return (1.0+y.rate()/y.frequency()) *
+            return (1.0+y.rate()/Integer(y.frequency())) *
                 modifiedDuration(leg, y,
                                  includeSettlementDateFlows,
                                  settlementDate, npvDate);
@@ -766,7 +783,7 @@ namespace QuantLib {
         // flows of the opposite sign have been specified (otherwise
         // IRR is nonsensical.)
 
-        Integer lastSign = sign(-npv_),
+        Integer lastSign = sign(Real(-npv_)),
                 signChanges = 0;
         for (const auto& i : leg_) {
             if (!i->hasOccurred(settlementDate_, includeSettlementDateFlows_) &&

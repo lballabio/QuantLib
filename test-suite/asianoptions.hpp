@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2008, 2017 StatPro Italia srl
  Copyright (C) 2009 Master IMAFA - Polytech'Nice Sophia - Université de Nice Sophia Antipolis
+ Copyright (C) 2021 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,9 +45,11 @@ class AsianOptionTest {
     static void testMCDiscreteArithmeticAverageStrike();
     static void testAnalyticDiscreteGeometricAveragePriceGreeks();
     static void testPastFixings();
+    static void testPastFixingsModelDependency();
     static void testAllFixingsInThePast();
     static void testLevyEngine();
     static void testVecerEngine();
+    static void testTurnbullWakemanAsianEngine();
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
     static boost::unit_test_framework::test_suite* experimental(SpeedLevel);
 };

@@ -84,7 +84,6 @@ namespace QuantLib {
         Real integrand_normal(Real) const;
 
         class integrand_f;
-        friend class integrand_f;
 
         ext::shared_ptr<CmsCouponPricer> cmsPricer_;
 

@@ -217,8 +217,8 @@ namespace QuantLib {
                                    const Interpolator2& factory2 = Interpolator2())
             : Interpolation::templateImpl<I1,I2>(
                                xBegin, xEnd, yBegin,
-                               std::max<Size>(Interpolator1::requiredPoints,
-                                              Interpolator2::requiredPoints)),
+                               std::max(Size(Interpolator1::requiredPoints),
+                                        Size(Interpolator2::requiredPoints))),
               n_(n) {
 
                 xBegin2_ = this->xBegin_ + n_;

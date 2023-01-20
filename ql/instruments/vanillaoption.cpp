@@ -19,11 +19,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/vanillaoption.hpp>
+#include <ql/exercise.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
-#include <ql/exercise.hpp>
 #include <memory>
 
 namespace QuantLib {
@@ -53,12 +53,12 @@ namespace QuantLib {
         std::unique_ptr<PricingEngine> engine;
         switch (exercise_->type()) {
           case Exercise::European:
-            engine.reset(new AnalyticEuropeanEngine(newProcess));
-            break;
+              engine = std::make_unique<AnalyticEuropeanEngine>(newProcess);
+              break;
           case Exercise::American:
           case Exercise::Bermudan:
-            engine.reset(new FdBlackScholesVanillaEngine(newProcess));
-            break;
+              engine = std::make_unique<FdBlackScholesVanillaEngine>(newProcess);
+              break;
           default:
             QL_FAIL("unknown exercise type");
         }
@@ -72,5 +72,17 @@ namespace QuantLib {
                                                           minVol, maxVol);
     }
 
+    void VanillaOption::setupArguments(PricingEngine::arguments* args) const {
+        OneAssetOption::setupArguments(args);
+
+        /* this is a workaround in case an engine is used for both vanilla
+           and dividend options.  The dividends might have been set by another
+           instrument and need to be cleared. */
+        auto* arguments = dynamic_cast<DividendVanillaOption::arguments*>(args);
+        if (arguments != nullptr) {
+            arguments->cashFlow.clear();
+        }
+    }
+    
 }
 

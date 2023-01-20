@@ -10,6 +10,6 @@
 #include <ql/pricingengines/asian/mc_discr_arith_av_strike.hpp>
 #include <ql/pricingengines/asian/mc_discr_geom_av_price.hpp>
 #include <ql/pricingengines/asian/mc_discr_geom_av_price_heston.hpp>
-#include <ql/pricingengines/asian/mcdiscreteasianengine.hpp>
 #include <ql/pricingengines/asian/mcdiscreteasianenginebase.hpp>
+#include <ql/pricingengines/asian/turnbullwakemanasianengine.hpp>
 

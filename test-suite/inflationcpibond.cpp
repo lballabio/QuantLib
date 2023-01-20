@@ -74,7 +74,7 @@ namespace inflation_cpi_bond_test {
 
 
     struct CommonVars {
-
+    
         Calendar calendar;
         BusinessDayConvention convention;
         Date evaluationDate;
@@ -109,8 +109,7 @@ namespace inflation_cpi_bond_test {
                 .withCalendar(UnitedKingdom())
                 .withConvention(ModifiedFollowing);
 
-            bool interp = false;
-            ii = ext::make_shared<UKRPI>(interp, cpiTS);
+            ii = ext::make_shared<UKRPI>(cpiTS);
 
             Real fixData[] = {
                 206.1, 207.3, 208.0, 208.9, 209.7, 210.9,
@@ -157,8 +156,7 @@ namespace inflation_cpi_bond_test {
             cpiTS.linkTo(ext::shared_ptr<ZeroInflationTermStructure>(
                   new PiecewiseZeroInflationCurve<Linear>(
                          evaluationDate, calendar, dayCounter, observationLag,
-                         ii->frequency(),ii->interpolated(), baseZeroRate,
-                         helpers)));
+                         ii->frequency(), baseZeroRate, helpers)));
         }
 
         // teardown

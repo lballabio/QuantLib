@@ -61,7 +61,6 @@ namespace QuantLib {
       private:
         Handle<YieldTermStructure> termStructure_;
         class rStarFinder;
-        friend class rStarFinder;
     };
 
 }

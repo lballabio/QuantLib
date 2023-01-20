@@ -46,7 +46,7 @@ namespace QuantLib {
                        "Incompatible number of T functions and number of factors.");
 
             Real factorsNorm = std::inner_product(factorWeight.begin(), factorWeight.end(),
-                                                  factorWeight.begin(), 0.);
+                                                  factorWeight.begin(), Real(0.));
             QL_REQUIRE(factorsNorm < 1., 
                 "Non normal random factor combination.");
             Real idiosyncFctr = std::sqrt(1.-factorsNorm);
@@ -62,8 +62,7 @@ namespace QuantLib {
         }
     }
 
-    Disposable<std::vector<Real> > 
-    TCopulaPolicy::allFactorCumulInverter(
+    std::vector<Real> TCopulaPolicy::allFactorCumulInverter(
         const std::vector<Real>& probs) const 
     {
     #if defined(QL_EXTRA_SAFETY_CHECKS)

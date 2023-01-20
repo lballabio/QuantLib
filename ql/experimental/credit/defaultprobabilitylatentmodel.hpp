@@ -153,7 +153,7 @@ namespace QuantLib {
             const std::vector<Real>& m) const {
             Real sumMs = 
                 std::inner_product(factorWeights_[iName].begin(), 
-                    factorWeights_[iName].end(), m.begin(), 0.);
+                    factorWeights_[iName].end(), m.begin(), Real(0.));
             Real res = cumulativeZ((invCumYProb - sumMs) / 
                     idiosyncFctrs_[iName] );
             #if defined(QL_EXTRA_SAFETY_CHECKS)

@@ -20,7 +20,6 @@
 #ifndef quantlib_gaussian_copula_policy_hpp
 #define quantlib_gaussian_copula_policy_hpp
 
-#include <ql/utilities/disposable.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <vector>
 #include <numeric>
@@ -46,7 +45,7 @@ namespace QuantLib {
             /* check factors in LM are normalized. */
             for (const auto& factorWeight : factorWeights) {
                 Real factorsNorm = std::inner_product(factorWeight.begin(), factorWeight.end(),
-                                                      factorWeight.begin(), 0.);
+                                                      factorWeight.begin(), Real(0.));
                 QL_REQUIRE(factorsNorm < 1., 
                     "Non normal random factor combination.");
             }
@@ -108,8 +107,7 @@ namespace QuantLib {
         }
         //! 
         //to use this (by default) version, the generator must be a uniform one.
-        Disposable<std::vector<Real> > 
-            allFactorCumulInverter(const std::vector<Real>& probs) const {
+        std::vector<Real> allFactorCumulInverter(const std::vector<Real>& probs) const {
             std::vector<Real> result;
             result.resize(probs.size());
             std::transform(probs.begin(), probs.end(), result.begin(),

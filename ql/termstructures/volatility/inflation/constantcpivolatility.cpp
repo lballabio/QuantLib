@@ -18,10 +18,11 @@
  */
 
 #include <ql/termstructures/volatility/inflation/constantcpivolatility.hpp>
+#include <ql/quotes/simplequote.hpp>
 
 namespace QuantLib {
 
-    ConstantCPIVolatility:: ConstantCPIVolatility(const Volatility v,
+    ConstantCPIVolatility:: ConstantCPIVolatility(const Handle<Quote>& vol,
                                                   Natural settlementDays,
                                                   const Calendar& cal,
                                                   BusinessDayConvention bdc,
@@ -31,11 +32,23 @@ namespace QuantLib {
                                                   bool indexIsInterpolated)
     : CPIVolatilitySurface(settlementDays, cal, bdc, dc,
                            observationLag, frequency, indexIsInterpolated),
-      volatility_(v) {}
+      volatility_(vol) {}
+
+    ConstantCPIVolatility:: ConstantCPIVolatility(Volatility vol,
+                                                  Natural settlementDays,
+                                                  const Calendar& cal,
+                                                  BusinessDayConvention bdc,
+                                                  const DayCounter& dc,
+                                                  const Period& observationLag,
+                                                  Frequency frequency,
+                                                  bool indexIsInterpolated)
+    : CPIVolatilitySurface(settlementDays, cal, bdc, dc,
+                           observationLag, frequency, indexIsInterpolated),
+      volatility_(ext::make_shared<SimpleQuote>(vol)) {}
 
 
     Volatility ConstantCPIVolatility::volatilityImpl(Time, Rate) const {
-        return volatility_;
+        return volatility_->value();
     }
 
 }

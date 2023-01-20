@@ -37,11 +37,11 @@ namespace {
               calibrationType_(smileAndCms->calibrationType_) {};
 
         Real value(const Array& x) const override;
-        Disposable<Array> values(const Array& x) const override;
+        Array values(const Array& x) const override;
 
       protected:
         Real switchErrorFunctionOnCalibrationType() const;
-        Disposable<Array> switchErrorsFunctionOnCalibrationType() const;
+        Array switchErrorsFunctionOnCalibrationType() const;
 
         CmsMarketCalibration *smileAndCms_;
         Handle<SwaptionVolatilityStructure> volCube_;
@@ -116,7 +116,7 @@ namespace {
         return switchErrorFunctionOnCalibrationType();
     }
 
-    Disposable<Array> ObjectiveFunction::values(const Array &x) const {
+    Array ObjectiveFunction::values(const Array &x) const {
         updateVolatilityCubeAndCmsMarket(x);
         return switchErrorsFunctionOnCalibrationType();
     }
@@ -150,8 +150,7 @@ namespace {
         }
     }
 
-    Disposable<Array>
-    ObjectiveFunction::switchErrorsFunctionOnCalibrationType() const {
+    Array ObjectiveFunction::switchErrorsFunctionOnCalibrationType() const {
         switch (calibrationType_) {
         case CmsMarketCalibration::OnSpread:
             return cmsMarket_->weightedSpreadErrors(weights_);
@@ -203,7 +202,7 @@ namespace {
         for (Size i = 0; i < nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin() + (i * nSwapLengths),
                                    x.begin() + ((i + 1) * nSwapLengths));
-            for (double& j : beta)
+            for (Real& j : beta)
                 j = CmsMarketCalibration::betaTransformDirect(j);
             volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
         }
@@ -230,7 +229,7 @@ namespace {
         for (Size i = 0; i < nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin() + (i * nSwapLengths),
                                    x.begin() + ((i + 1) * nSwapLengths));
-            for (double& j : beta)
+            for (Real& j : beta)
                 j = CmsMarketCalibration::betaTransformDirect(j);
             volCubeBySabr->recalibration(swapLengths, beta, swapTenors[i]);
         }

@@ -24,7 +24,6 @@
 
 #include <ql/experimental/processes/hestonslvprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
-#include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 #include <utility>
 
@@ -48,14 +47,14 @@ namespace QuantLib {
         mixedSigma_ = mixingFactor_ * sigma_;
     }
 
-    Disposable<Array> HestonSLVProcess::drift(Time t, const Array& x) const {
+    Array HestonSLVProcess::drift(Time t, const Array& x) const {
         Array tmp(2);
 
         const Volatility vol =
            std::max(1e-8, std::sqrt(x[1])*leverageFct_->localVol(t, x[0], true));
 
-        tmp[0] = riskFreeRate()->forwardRate(t, t, Continuous)
-               - dividendYield()->forwardRate(t, t, Continuous)
+        tmp[0] = riskFreeRate()->forwardRate(t, t, Continuous).rate()
+               - dividendYield()->forwardRate(t, t, Continuous).rate()
                - 0.5*vol*vol;
 
         tmp[1] = kappa_*(theta_ - x[1]);
@@ -63,8 +62,7 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Matrix> HestonSLVProcess::diffusion(Time t, const Array& x)
-    const {
+    Matrix HestonSLVProcess::diffusion(Time t, const Array& x) const {
 
         const Real vol =
             std::max(1e-8, std::sqrt(x[1])*leverageFct_->localVol(t, x[0], true));
@@ -79,7 +77,7 @@ namespace QuantLib {
         return tmp;
     }
 
-    Disposable<Array> HestonSLVProcess::evolve(
+    Array HestonSLVProcess::evolve(
         Time t0, const Array& x0, Time dt, const Array& dw) const {
         Array retVal(2);
 
@@ -102,11 +100,11 @@ namespace QuantLib {
             const Real beta = (1-p)/m;
             const Real u = CumulativeNormalDistribution()(dw[1]);
 
-            retVal[1] = ((u <= p) ? 0.0 : std::log((1-p)/(1-u))/beta);
+            retVal[1] = ((u <= p) ? Real(0.0) : std::log((1-p)/(1-u))/beta);
         }
 
-        const Real mu = riskFreeRate()->forwardRate(t0, t0+dt, Continuous)
-             - dividendYield()->forwardRate(t0, t0+dt, Continuous);
+        const Real mu = riskFreeRate()->forwardRate(t0, t0+dt, Continuous).rate()
+             - dividendYield()->forwardRate(t0, t0+dt, Continuous).rate();
 
         const Real rho1 = std::sqrt(1-rho_*rho_);
 

@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/auto_ptr.hpp>
 #include <ql/models/marketmodels/callability/swapratetrigger.hpp>
 #include <ql/models/marketmodels/utilities.hpp>
 #include <utility>
@@ -69,10 +68,9 @@ namespace QuantLib {
         ++currentIndex_;
     }
 
-    QL_UNIQUE_OR_AUTO_PTR<ExerciseStrategy<CurveState> >
+    std::unique_ptr<ExerciseStrategy<CurveState>>
     SwapRateTrigger::clone() const {
-        return QL_UNIQUE_OR_AUTO_PTR<ExerciseStrategy<CurveState> >(
-                                                  new SwapRateTrigger(*this));
+        return std::unique_ptr<ExerciseStrategy<CurveState>>(new SwapRateTrigger(*this));
     }
 
 }

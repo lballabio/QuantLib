@@ -17,6 +17,443 @@
 
 /*! \page history Version history
 
+    <strong>Release 1.29 - January 2023</strong>
+
+    PORTABILITY
+    - <b>End of support:</b> as announced in the notes for the previous
+      release, this release no longer manages thread-local singletons via
+      a user-provided `sessionId` function, and therefore the latter is no
+      longer needed.  Instead, the code now uses the built-in language
+      support for thread-local variables.  Thanks go to Peter Caspers.
+    - **Future end of support:** as announced in the notes for the
+      previous release, after the next couple of releases, using
+      `std::tuple`, `std::function` and `std::bind` (instead of their
+      `boost` counterparts) will become the default.  If you're using
+      `ext::tuple` etc. in your code (which is suggested), this should be
+      a transparent change.  If not, you'll still be able to choose the
+      `boost` versions via a configure switch for a while; but we do
+      suggest you start using `ext::tuple` etc. in the meantime.
+    - Replaced internal usage of `boost::thread` with `std::thread`;
+      thanks to Jonathan Sweemer.  This removed our last dependency on
+      Boost binaries and makes it possible to compile QuantLib using a
+      header-only Boost installation.
+    - On Windows, it is now possible to use the MSVC dynamic runtime when
+      using cmake by passing
+      `-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL`
+      on the command line; thanks to Jonathan Sweemer.  The
+      static runtime remains the default.
+    - It is now possible to build QuantLib with Intel's `icpx` compiler
+      using cmake; thanks to Jonathan Sweemer.  Note that in order to get
+      all the unit tests passing, `-fp-model=precise` must be added to
+      `CMAKE_CXX_FLAGS`.
+
+    DATE/TIME
+    - Updated Chinese holidays for 2023; thanks to Cheng Li.
+    - Added in-lieu holiday for Christmas 2022 to South-African calendar;
+      thanks to Joshua Hayes.
+    - Added King Charles III coronation holiday to UK calendar; thanks to
+      Fredrik Gerdin Börjesson.
+    - Added holiday for National Day of Mourning to Australian calendar;
+      thanks to Fredrik Gerdin Börjesson.
+
+    INSTRUMENTS
+    - Added high performance/precision American engine based on
+      fixed-point iteration for the exercise boundary; thanks to Klaus
+      Spanderen.
+    - Bonds with draw-down (i.e., increasing notionals) are now allowed;
+      thanks to Oleg Kulkov.
+    - Added `withIndexedCoupons` and `withAtParCoupons` methods to
+      `MakeSwaption` for easier initialization; thanks to Ralf Konrad.
+    - It is now possible to use the same pricing engine for vanilla and
+      dividend vanilla options, or for barrier and dividend barrier
+      options.
+
+    INDEXES
+    - Creating a zero inflation index as "interpolated" is now deprecated;
+      thanks to Ralf Konrad.  The index should only return
+      monthly fixings.  Interpolation is now the responsibility of
+      inflation-based coupons.
+
+    TERM STRUCTURES
+    - The `ConstantCPIVolatility` constructor can now take a handle to a
+      volatility quote, instead of just an immutable number.
+
+    DEPRECATED FEATURES
+    - <b>Removed</b> features deprecated in version 1.24:
+      - the `createAtParCoupons`, `createIndexedCoupons` and
+        `usingAtParCoupons` methods of `IborCoupon`;
+      - the `RiskyBond` class and its subclasses `RiskyFixedBond` and
+        `RiskyFloatingBond`;
+      - the `CrossCurrencyBasisSwapRateHelper` typedef;
+      - the `termStructure_` data member of `BlackCalibrationHelper`;
+      - the static `baseCurrency` and `conversionType` data members of `Money`;
+      - the `nominalTermStructure` method and the `nominalTermStructure_`
+        data member of `InflationTermStructure`;
+      - the constructor of the `UnitedStates` calendar not taking an
+        explicit market.
+    - Deprecated the `argument_type`, `first_argument_type`,
+      `second_argument_type` and `result_type` typedefs in a number of
+      classes; use `auto` or `decltype` instead.
+    - Deprecated the constructors of `InflationIndex`,
+      `ZeroInflationIndex`, `FRHICP`, `ZACPI`, `UKRPI`, `EUHICP`,
+      `EUHICPXT`, `USCPI`, `AUCPI` and `GenericCPI` taking an
+      `interpolated` parameter; use another constructor.
+    - Deprecated the `interpolated` method and the `interpolated_` data
+      member of `InflationIndex`.
+    - Deprecated the `ThreadKey` typedef.  It was used in the signature of
+      `sessionId`, which is no longer needed after the changes in the
+      `Singleton` implementation.
+    - Deprecated the `rateCurve_` data member of the
+      `InflationCouponPricer` base class.  If you need it, provide it in
+      your derived class.
+    - Deprecated the `npvbps` function taking NPV and BPS as references.
+      Use the overload returning a pair of `Real`s.
+
+    Thanks go also to Matthias Groncki, Jonathan Sweemer
+    and Nijaz Kovacevic for a number of smaller fixes
+    and improvements, to the Xcelerit Dev Team for
+    improvements to the automated CI builds, and to Vincenzo Ferrazzanno
+    and GitHub users alienbrett, xuruilong100 and philippb90 for raising issues.
+
+    <strong>Release 1.28 - October 25th, 2022</strong>
+
+    PORTABILITY
+    - <b>New language standard:</b> as announced in the notes for the
+      previous release, this release started using some C++14 syntax.
+      This should be supported by most compilers released in the past
+      several years.
+    - <b>End of support:</b> as announced in the notes for the previous
+      release, this release is the last to manage thread-local singletons
+      via a user-provided `sessionId` function.  Future releases will use
+      the built-in language support for thread-local variables.
+    - <b>Future end of support:</b> after the next two or three releases,
+      using `std::tuple`, `std::function` and `std::bind` (instead of
+      their `boost` counterparts) will become the default.  If you're
+      using `ext::tuple` etc. in your code (which is suggested), this
+      should be a transparent change.  If not, you'll still be able to
+      choose the `boost` versions via a configure switch for a while.
+
+    DATE/TIME
+    - Added Act/366 and Act/365.25 day counters; thanks to Ignacio Anguita.
+    - Added H.M. the Queen's funeral to the UK calendars; thanks to Tomass
+      Wilson.
+
+    INSTRUMENTS
+    - Amortizing bonds were moved out of the experimental folder.  Also, a
+      couple of utility functions were provided to calculate amortization
+      schedules and notionals.
+
+    PRICING ENGINES
+    - Fixed results from `COSHestonEngine` in the case of an option with
+      short time to expiration and deep ITM or deep OTM strike prices;
+      thanks to Ignacio Anguita.
+    - The ISDA engine for CDS could calculate the fair upfront with the
+      wrong sign; this is now fixed, thanks to Gualtiero Chiaia.
+
+    TERM STRUCTURES
+    - The constructor for `OISRateHelper` now allows to specify the
+      `endOfMonth` parameter; thanks to Guillaume Horel.
+
+    FINITE DIFFERENCES
+    - Fixed computation of cds boundaries in `LocalVolRNDCalculator`;
+      thanks to GitHub user mdotlic.
+
+    EXPERIMENTAL FOLDER
+
+    The `ql/experimental` folder contains code whose interface is not
+    fully stable, but is released in order to get user
+    feedback. Experimental classes make no guarantees of backward
+    compatibility; their interfaces might change in future releases.
+
+    - <b>Breaking change</b>: the constructor of the
+      `CPICapFloorTermPriceSurface` class now also takes an explicit
+      interpolation type.
+    - <b>Possibly breaking</b>: the protected constructor for `CallableBond`
+      changes its arguments.  If you inherited from this class, you'll
+      need to update your code.  If you're using the existing derived bond
+      classes, the change will be transparent.
+    - Pricing engines for callable bonds worked incorrectly when the face
+      amount was not 100. This is now fixed.
+    - The `impliedVolatility` method for callable bonds was taking a
+      target NPV, not a price. This implementation is now deprecated, and
+      a new overload was added taking a price in base 100.
+
+    DEPRECATED FEATURES
+    - <b>Removed</b> features deprecated in version 1.23:
+      - the constructors of `ZeroCouponInflationSwap` and
+        `ZeroCouponInflationSwapHelper` missing an explicit CPI
+        interpolation type;
+      - the constructors of `ActualActual` and `Thirty360` missing an
+        explicit choice of convention, and the constructor of `Thirty360`
+        passing an `isLastPeriod` boolean flag.
+    - Deprecated the constructors of `FixedRateBond` taking an
+      `InterestRate` instance or not taking a `Schedule` instance.
+    - Deprecated the constructor of `FloatingRateBond` not taking a
+      `Schedule` instance.
+    - Deprecated the constructors of `AmortizingFixedRateBond` taking a
+      sinking frequency or a vector of `InterestRate` instances.
+    - Deprecated the constructor of `CPICapFloor` taking a `Handle` to an
+      inflation index, and its `inflationIndex` method returning a `Handle`.
+      New versions of both were added using `shared_ptr` instead.
+    - Deprecated one of the constructors of `SabrSmileSection`; a new
+      version was added also taking an optional reference date.
+    - Deprecated the old `impliedVolatility` method for callable bonds;
+      see above.
+
+    Thanks go also to Konstantin Novitsky, Peter Caspers, Klaus
+    Spanderen, Fredrik Gerdin Börjesson and Dirk Eddelbuettel for a
+    number of smaller fixes, and to Jonathan Sweemer for various
+    improvements to the automated CI builds.
+
+    <strong>Release 1.27.1 - August 30th, 2022</strong>
+
+    QuantLib 1.27.1 is a bug-fix release.
+
+    It restores the old implementation of `Null<T>` which was replaced
+    in version 1.27 with a new one; the latter was reported to cause
+    an internal compiler error under Visual C++ 2022 for some client code.
+    The new version (which avoids some problems when replacing `Real`
+    with some AAD-enabled types) is still available; depending on how
+    you compile QuantLib, it can be enabled through the
+    `--enable-null-as-functions` configure flag, the cmake variable
+    `QL_NULL_AS_FUNCTIONS`, or the define with the same name in the
+    `ql/userconfig.hpp` header.
+
+    <strong>Release 1.27 - July 22nd, 2022</strong>
+
+    PORTABILITY
+    - <b>Removed support:</b> as announced in the notes for the previous
+      release, support for Visual Studio 2013 was dropped.
+    - <b>End of support:</b> as announced in the notes for the previous
+      release, this release will be the last to avoid C++14 syntax.
+      Allowing the newer (but still oldish) standard should still support
+      most compilers released in the past several years.
+    - <b>Future end of support:</b> this release and the next will be the
+      last to manage thread-local singletons via a user-provided
+      `sessionId` function.  Future releases will use the built-in
+      language support for thread-local variables.
+    - The `Real` type is now used consistently throughout the codebase,
+      thanks to the Xcelerit dev team.  This, along with
+      other changes, allows its default definition to `double` to be
+      replaced with one of the available third-party AAD types.
+    - The test suite is now built using the header-only version of
+      Boost.Test, thanks to Jonathan Sweemer.  This might
+      simplify Boost installation for some users, since in the default
+      configuration QuantLib now only needs the Boost headers.
+    - Replaced some Boost facilities with the corresponding C++11
+      counterparts; thanks to Klaus Spanderen and
+      Jonathan Sweemer.
+    
+    DATE/TIME
+    - Fixed the behavior of a couple of Australian holidays; thanks to
+      Pradeep Krishnamurthy and Fredrik Gerdin Börjesson.
+    
+    INSTRUMENTS
+    - Added the Turnbull-Wakeman engine for discrete Asian options; thanks
+      to Fredrik Gerdin Börjesson for the main engine code
+      and to Jack Gillett for the Greeks.
+    - Added more validation to barrier options; thanks to Jonathan Sweemer.
+    
+    MODELS
+    - Fixed the start date of the underlying swap in swaption calibration
+      helpers; thanks to Peter Caspers.
+    - Fixed parameter checks in SVI volatility smiles; thanks to Fredrik
+      Gerdin Börjesson.
+    
+    PATTERNS
+    - Avoid possible iterator invalidation while notifying observers;
+      thanks to Klaus Spanderen.
+    
+    DEPRECATED FEATURES
+    - <b>Removed</b> the `--enable-disposable` and `--enable-std-unique-ptr`
+      configure switches.
+    - <b>Removed</b> features deprecated in version 1.22:
+      - the unused `AmericanCondition` and `FDAmericanCondition` classes;
+      - the old-style FD shout and dividend shout engines;
+      - the unused `OneFactorOperator` class;
+      - the `io::to_integer` function;
+      - the `ArrayProxy` and `MatrixProxy` classes.
+    - Deprecated the `QL_NOEXCEPT` and `QL_CONSTEXPR` macros.
+    - Deprecated the `QL_NULL_INTEGER` and `QL_NULL_REAL` macros.
+    - Deprecated some unused parts of the old-style FD framework:
+      - the `PdeShortRate` class;
+      - the `ShoutCondition` and `FDShoutCondition` classes;
+      - the `FDDividendEngineBase`, `FDDividendEngineMerton73`,
+        `FDDividendEngineShiftScale` and `FDDividendEngine` classes;
+      - the `FDStepConditionEngine` and `FDEngineAdapter` classes.
+    - Deprecated a number of function objects in the
+      `ql/math/functional.hpp` header.
+    - Deprecated the unused `MultiCurveSensitivities` class.
+    - Deprecated the unused `inner_product` function.
+    
+    Thanks go also to Ryan Russell for documentation fixes.
+
+    <strong>Release 1.26 - April 20th, 2022</strong>
+
+    PORTABILITY
+    - <b>End of support:</b> as announced in the notes for the previous
+      release, this release is the last to support Visual Studio 2013.
+    - <b>End of support:</b> this release is the last to support the
+      long-deprecated configure switches `--enable-disposable` and
+      `--enable-std-unique-ptr`.  From the next release, `Disposable` will
+      always be disabled (and eventually removed) and `std::unique_ptr`
+      will always be used instead of `std::auto_ptr`.  This has already
+      been the default in the last few releases.
+    - <b>Future end of support:</b> this release and the next will be the
+      last to avoid C++14 syntax.  This should still support most
+      compilers released in the past several years (except for Visual
+      Studio 2013, which we're already dropping in this release).
+    - If tagged libraries are specified, as is the default on Windows,
+      CMake now gives the built libraries the same names as the Visual
+      Studio solution (for instance, `QuantLib-x64-mt-s` instead of
+      `QuantLib-mt-s-x64`) so that the pragma in `ql/auto_link.hpp` works.
+    - QuantLib can now also be built as a subproject in a larger CMake
+      build (thanks to Peter Caspers).
+
+    DATE/TIME
+    - When printed, `Period` instances now display transparently what
+      their units and length are, instead of doing more fancy formatting
+      (e.g., "16 months" is now displayed instead of "1 year 4 months").
+      Also, `Period` instances that compare as equal now return the same
+      period from their `normalize` method.
+
+    INDEXES
+    - Added Tona (Tokyo overnight average) index (thanks to Jonghee Lee).
+    - Added static `laggedFixing` method to `CPI` structure which provides
+      interpolation of inflation index fixings.
+
+    CASH FLOWS
+    - The `CPICoupon` and `CPICashFlow` classes now take into account the
+      correct dates and observation lag for interpolation.
+
+    INSTRUMENTS
+    - Added a `BondForward` class that generalizes the existing
+      `FixedRateBondForward` to any kind of bond (thanks to Marcin
+      Rybacki).
+    - Avoided unexpected jumps in callable bond OAS (thanks to Ralf Konrad).
+    - Fixed `TreeSwaptionEngine` mispricing when adjusting the instrument
+      schedule to a near exercise date (thanks to Ralf Konrad).
+    - the `ForwardRateAgreement` class now works correctly without an
+      explicit discount curve.
+
+    TERM STRUCTURES
+    - Dates explicitly passed to `InterpolatedZeroInflationCurve` are no
+      longer adjusted automatically to the beginning of their inflation period.
+
+    DEPRECATED FEATURES
+    - <b>Removed</b> the `MCDiscreteAveragingAsianEngine` class,
+      deprecated in version 1.21.
+    - Deprecated the `LsmBasisSystem::PolynomType` typedef, now renamed to
+      `PolynomialType`; `MakeMCAmericanEngine::withPolynomOrder` was also
+      deprecated and renamed to `withPolynomialOrder`.
+    - Deprecated the `ZeroInflationCashFlow` constructor taking an unused
+      calendar and business-day convention.
+    - Deprecated the `CPICoupon` constructor taking a number of fixing
+      days, as well as the `CPICoupon::indexObservation`,
+      `CPICoupon::adjustedFixing` and `CPICoupon::indexFixing` methods
+      and the `CPILeg::withFixingDays` method.
+    - Deprecated the `CPICashFlow` constructor taking a precalculated fixing date and a frequency.
+    - Deprecated the `Observer::set_type` and `Observable::set_type` typedefs.
+    - Deprecated the unused `Curve` class.
+    - Deprecated the unused `LexicographicalView` class.
+    - Deprecated the unused `Composite` class.
+    - Deprecated the unused `DriftTermStructure` class.
+
+    Thanks go also to Matthias Groncki, Jonathan Sweemer and Li Zhong
+    for smaller fixes, enhancements and bug reports.
+
+    <strong>Release 1.25 - January 18th, 2022</strong>
+
+    PORTABILITY
+    - <b>End of support:</b> this release and the next will be the last
+      two to support Visual Studio 2013.
+    - Added a few CMake presets for building the library (thanks to
+      Jonathan Sweemer).
+    - When built and installed through CMake, the library now installs
+      a `QuantLibConfig.cmake` file that allows other CMake projects
+      to find and use QuantLib (thanks to Jonathan Sweemer).
+
+    CASHFLOWS
+    - Fixed the accrual calculation in overnight-indexed coupons
+      (thanks to Mohammad Shojatalab).
+    - Fixed fixing-days usage in `SubPeriodsCoupon` class (thanks to
+      Marcin Rybacki).
+    - IBOR coupons fixed in the past no longer need a forecast curve
+      to return their amount.
+
+    INDEXES
+
+    - <b>Important change:</b> inflation indexes inherited from the
+      `ZeroInflationIndex` class no longer rely on their forecast
+      curve for interpolation.  For coupons that already took care of
+      interpolation (as in the case of `CPICoupon` and
+      `ZeroInflationCashFlow`) this should not change the results. In
+      other cases, figures will change but should be more correct as
+      the interpolation is now performed according to market
+      conventions.  Also, most inflation curves now assume that the
+      index is not implemented.  Year-on-year inflation indexes and
+      curves are not affected.
+
+    INSTRUMENTS
+    - <b>Breaking change:</b> convertible bonds were moved out of the
+      `ql/experimental` folder.  Also, being market values and not
+      part of the contract, dividends and credit spread were moved
+      from the bond to the `BinomialConvertibleEngine` class (thanks
+      to Lew Wei Hao).
+    - The `ForwardRateAgreement` no longer inherits from `Forward`.
+      This also made it possible to implement the `amount` method
+      returning the expected cash settlement (thanks to Lew Wei Hao).
+      The methods from `Forward` were kept available but deprecated so
+      code using them won't break.  Client code might break if it
+      performed casts to `Forward`.
+
+    MODELS
+    - Fixed formula for discount bond option in CIR++ model (thanks to
+      Magnus Mencke).
+
+    TERM STRUCTURES
+    - It is now possible to use normal volatilities in SABR smile
+      sections, and thus in the `SwaptionVolCube1` class (thanks to
+      Lew Wei Hao).
+
+    DATE/TIME
+    - Added Chinese holidays for 2022 (thanks to Cheng Li).
+
+    CURRENCIES
+    - Added a number of African, American, Asian and European
+      currencies from Quaternion's `QuantExt` project (thanks to Ole
+      Bueker).
+
+    EXPERIMENTAL FOLDER
+    
+    The `ql/experimental` folder contains code whose interface is not
+    fully stable, but is released in order to get user
+    feedback. Experimental classes make no guarantees of backward
+    compatibility; their interfaces might change in future releases.
+
+    - Added experimental rate helpers for LIBOR-LIBOR and
+      Overnight-LIBOR basis swaps.
+    - Renamed `WulinYongDoubleBarrierEngine` to
+     `SuoWangDoubleBarrierEngine` (thanks to Adityakumar Sinha for the
+     fix and Ruilong Xu for the heads-up).
+
+    DEPRECATED FEATURES
+    - Deprecated the constructors of zero-coupon inflation term
+      structures taking an `indexIsInterpolated` boolean argument.
+    - Deprecated a number of methods in the `ForwardRateAgreement`
+      class that used to be inherited from `Forward`.
+    - Deprecated a couple of constructors in the
+      `SofrFutureRateHelper` class.
+    - Deprecated the `WulinYongDoubleBarrierEngine` alias for
+      `SuoWangDoubleBarrierEngine`.
+    - Deprecated the protected `spreadLegValue_` data member in the
+      `BlackIborCouponPricer` class.
+
+    Thanks go also to Tom Anderson, Francois Botha, Matthew Kolbe,
+    Benson Luk, Marcin Rybacki, Henning Segger, Klaus Spanderen, and
+    GitHub users jxcv0 and azsrz for smaller fixes, enhancements and
+    bug reports.
+
     <strong>Release 1.24 - October 2021</strong>
 
     PORTABILITY
@@ -3001,7 +3438,7 @@
       ISDA definitions.
 
     MATH
-    - Added rounding algorythms as per OMG enumeration/definition.
+    - Added rounding algorithms as per OMG enumeration/definition.
 
     TEST SUITE
     - Moved to Boost unit test framework. CppUnit is no longer needed.

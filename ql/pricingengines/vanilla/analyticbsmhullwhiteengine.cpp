@@ -68,6 +68,8 @@ namespace QuantLib {
         const ext::shared_ptr<HullWhite>& model)
     : GenericModelEngine<HullWhite, VanillaOption::arguments, VanillaOption::results>(model),
       rho_(equityShortRateCorrelation), process_(std::move(process)) {
+        QL_REQUIRE(process_, "no Black-Scholes process specified");
+        QL_REQUIRE(!model_.empty(), "no Hull-White model specified");
         registerWith(process_);
     }
 

@@ -4,11 +4,11 @@ jobs:
   filelists:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Setup
       run: |
         sudo apt update
-        sudo apt install -y libboost-all-dev
+        sudo apt install -y libboost-dev
     - name: Configure
       run: |
         ./autogen.sh

@@ -4,16 +4,24 @@ AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
+    amortizingcmsratebond.hpp \
+    amortizingfixedratebond.hpp \
+    amortizingfloatingratebond.hpp \
     btp.hpp \
     cmsratebond.hpp \
+    convertiblebonds.hpp \
     cpibond.hpp \
     fixedratebond.hpp \
     floatingratebond.hpp \
     zerocouponbond.hpp
 
 cpp_files = \
+    amortizingcmsratebond.cpp \
+    amortizingfixedratebond.cpp \
+    amortizingfloatingratebond.cpp \
     btp.cpp \
     cmsratebond.cpp \
+    convertiblebonds.cpp \
     cpibond.cpp \
     fixedratebond.cpp \
     floatingratebond.cpp \

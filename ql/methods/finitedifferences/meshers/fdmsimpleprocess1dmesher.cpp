@@ -17,7 +17,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/math/functional.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmsimpleprocess1dmesher.hpp>
@@ -56,7 +55,7 @@ namespace QuantLib {
             locations_.back() += qMax;
         }
         std::transform(locations_.begin(), locations_.end(), locations_.begin(),
-                       divide_by<Real>(Real(tAvgSteps)));
+                       [=](Real x) -> Real { return x / tAvgSteps; });
         for (Size i=0; i < size-1; ++i) {
             dminus_[i+1] = dplus_[i] = locations_[i+1] - locations_[i];
         }

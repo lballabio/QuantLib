@@ -60,9 +60,9 @@ namespace QuantLib {
 
         Spread dividendYield = 0.5 * (
             process_->riskFreeRate()->zeroRate(exercise, rfdc,
-                                               Continuous, NoFrequency) +
+                                               Continuous, NoFrequency).rate() +
             process_->dividendYield()->zeroRate(exercise, divdc,
-                                                Continuous, NoFrequency) +
+                                                Continuous, NoFrequency).rate() +
             volatility*volatility/6.0);
 
         Time t_q = divdc.yearFraction(

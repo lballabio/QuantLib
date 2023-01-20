@@ -22,6 +22,8 @@
     or undefining such macros triggers variations in some library
     functionality.
 
+    When using CMake, they can be set to `ON` or `OFF` as properties.
+
     Under a Linux/Unix system, they are (un)set by `configure`;
     run
     \code
@@ -87,14 +89,6 @@
     at least C++17.
 
     \code
-    #define QL_ENABLE_SINGLETON_THREAD_SAFE_INIT
-    \endcode
-    Define this to make `Singleton` initialization thread-safe.
-    Undefined by default.  Not compatible with `QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN`.
-    Note that defining QL_ENABLE_SESSIONS implies thread-safe initialization,
-    whether this is defined or not.
-
-    \code
     #define QL_HIGH_RESOLUTION_DATE
     \endcode
     If defined, date objects support an intraday datetime
@@ -114,12 +108,6 @@
     does not check access and can cause segmentation faults.
 
     \code
-    #define QL_USE_STD_UNIQUE_PTR
-    \endcode
-    If defined (the default), `std::unique_ptr` is
-    used instead of `std::auto_ptr`. If disabled, `std::auto_ptr` is used.
-
-    \code
     #define QL_USE_STD_FUNCTION
     \endcode
     If defined, `std::function`, `std::bind` and related classes and functions
@@ -134,12 +122,13 @@
     default) the Boost facilities are used.
 
     \code
-    #define QL_USE_DISPOSABLE
+    #define QL_NULL_AS_FUNCTIONS
     \endcode
-    If defined, the old `Disposable` class template is used; this
-    should be no longer necessary in C++11 and might interfere with
-    compiler optimizations. If disabled (the default) `Disposable<T>` is
-    still available but is just an alias to `T`.
+    If defined, `Null` will be implemented as a set of template
+    functions.  This allows the code to work with user-defined `Real`
+    types but was reported to cause internal compiler errors with
+    Visual C++ 2022 in some cases.  If disabled (the default) `Null`
+    will be implemented as a class template, as in previous releases.
 
     \code
     #define QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER

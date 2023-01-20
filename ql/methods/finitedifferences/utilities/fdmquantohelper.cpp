@@ -47,7 +47,7 @@ namespace QuantLib {
         return rDomestic - rForeign + equityVol*fxVol*equityFxCorrelation_;
     }
 
-    Disposable<Array> FdmQuantoHelper::quantoAdjustment(
+    Array FdmQuantoHelper::quantoAdjustment(
         const Array& equityVol, Time t1, Time t2) const {
 
         const Rate rDomestic = rTS_->forwardRate(t1, t2, Continuous).rate();

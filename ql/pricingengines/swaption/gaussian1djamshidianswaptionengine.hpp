@@ -49,7 +49,6 @@ namespace QuantLib {
 
       private:
         class rStarFinder;
-        friend class rStarFinder;
     };
 }
 
