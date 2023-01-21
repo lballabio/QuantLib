@@ -30,19 +30,12 @@
 
 namespace QuantLib {
 
-    //! Vanna Volga barrier option engine
-
-    QL_DEPRECATED_DISABLE_WARNING
-
+    //! Vanna/Volga barrier option engine
     /*!
         \ingroup barrierengines
     */
-    class VannaVolgaBarrierEngine
-        : public GenericEngine<DividendBarrierOption::arguments,
-                               DividendBarrierOption::results> {
+    class VannaVolgaBarrierEngine : public BarrierOption::engine {
       public:
-
-    QL_DEPRECATED_ENABLE_WARNING
 
         // Constructor
         VannaVolgaBarrierEngine(Handle<DeltaVolQuote> atmVol,
