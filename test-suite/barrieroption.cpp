@@ -1518,6 +1518,87 @@ void BarrierOptionTest::testBarrierAndDividendEngine() {
     }
 }
 
+void BarrierOptionTest::testImpliedVolatility() {
+    BOOST_TEST_MESSAGE("Testing implied volatility for barrier option...");
+
+    SavedSettings backup;
+
+    DayCounter dc = Actual365Fixed();
+
+    Date today(11, February, 2018);
+    Date maturity = today + Period(1, Years);
+    Settings::instance().evaluationDate() = today;
+
+    Real spot = 100.0;
+
+    Rate r = 0.05;
+    Rate q = 0.0;
+
+    Handle<Quote> s0(ext::make_shared<SimpleQuote>(spot));
+    Handle<YieldTermStructure> qTS(flatRate(today, q, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
+    Handle<BlackVolTermStructure> dummyVolTS(flatVol(today, 0.0, dc));
+
+    auto bsProcess = ext::make_shared<BlackScholesMertonProcess>(s0, qTS, rTS, dummyVolTS);
+
+    Real divAmount = 10;
+    Date divDate = today + Period(6, Months);
+    auto dividends = DividendVector({ divDate }, { divAmount });
+
+    Real strike = 105.0;
+    Real rebate = 5.0;
+
+    auto payoff = ext::make_shared<PlainVanillaPayoff>(Option::Put, strike);
+    auto exercise = ext::make_shared<EuropeanExercise>(maturity);
+
+    Real barriers[] = { 90.0, 110.0, 90.0, 110.0 };
+    Barrier::Type barrierTypes[] = { Barrier::DownOut, Barrier::UpOut, Barrier::DownIn, Barrier::UpIn };
+    Real targetWithoutDividends[] = { 1.0, 1.0, 5.0, 5.0 };
+    Real targetWithDividends[] = { 8.0, 12.0, 9.0, 8.0 };
+    Real tolerance = 1e-5;
+
+    for (Size i=0; i < LENGTH(barriers); ++i) {
+        Real barrier = barriers[i];
+        Barrier::Type barrierType = barrierTypes[i];
+
+        BarrierOption barrierOption(barrierType, barrier, rebate, payoff, exercise);
+        Volatility impliedVol = barrierOption.impliedVolatility(targetWithoutDividends[i], bsProcess, 1e-6, 100, 0.01, 4.0);
+
+        RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, impliedVol, dc));
+        auto process = ext::make_shared<BlackScholesMertonProcess>(s0, qTS, rTS, volTS);
+        barrierOption.setPricingEngine(ext::make_shared<AnalyticBarrierEngine>(process));
+
+        Real diff = std::fabs(barrierOption.NPV() - targetWithoutDividends[i]);
+        if (diff > tolerance) {
+            BOOST_ERROR("Failed to reproduce target option price:"
+                        << "\n    strike:       " << strike
+                        << "\n    barrier:      " << barrier
+                        << "\n    maturity:     " << maturity
+                        << "\n    target value: " << targetWithoutDividends[i]
+                        << "\n    calculated:   " << barrierOption.NPV()
+                        << std::scientific
+                        << "\n    difference    " << diff);
+        }
+
+        impliedVol = barrierOption.impliedVolatility(targetWithDividends[i], bsProcess, dividends, 1e-6, 100, 0.01, 4.0);
+
+        volTS.linkTo(flatVol(today, impliedVol, dc));
+        barrierOption.setPricingEngine(ext::make_shared<FdBlackScholesBarrierEngine>(process, dividends));
+
+        diff = std::fabs(barrierOption.NPV() - targetWithDividends[i]);
+        if (diff > tolerance) {
+            BOOST_ERROR("Failed to reproduce target option price:"
+                        << "\n    strike:       " << strike
+                        << "\n    barrier:      " << barrier
+                        << "\n    maturity:     " << maturity
+                        << "\n    target value: " << targetWithDividends[i]
+                        << "\n    calculated:   " << barrierOption.NPV()
+                        << std::scientific
+                        << "\n    difference    " << diff);
+        }
+    }
+}
+
 test_suite* BarrierOptionTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Barrier option tests");
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testParity));
@@ -1529,6 +1610,7 @@ test_suite* BarrierOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testDividendBarrierOption));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testDividendBarrierOptionWithDividendsPastMaturity));
     suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testBarrierAndDividendEngine));
+    suite->add(QUANTLIB_TEST_CASE(&BarrierOptionTest::testImpliedVolatility));
     return suite;
 }
 

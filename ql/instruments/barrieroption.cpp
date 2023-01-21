@@ -24,6 +24,7 @@
 #include <ql/instruments/dividendbarrieroption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
+#include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <memory>
 
 namespace QuantLib {
@@ -66,7 +67,18 @@ namespace QuantLib {
              Size maxEvaluations,
              Volatility minVol,
              Volatility maxVol) const {
+        return impliedVolatility(targetValue, process, DividendSchedule(),
+                                 accuracy, maxEvaluations, minVol, maxVol);
+    }
 
+    Volatility BarrierOption::impliedVolatility(
+             Real targetValue,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const DividendSchedule& dividends,
+             Real accuracy,
+             Size maxEvaluations,
+             Volatility minVol,
+             Volatility maxVol) const {
         QL_REQUIRE(!isExpired(), "option expired");
 
         ext::shared_ptr<SimpleQuote> volQuote(new SimpleQuote);
@@ -78,8 +90,11 @@ namespace QuantLib {
         std::unique_ptr<PricingEngine> engine;
         switch (exercise_->type()) {
           case Exercise::European:
-              engine = std::make_unique<AnalyticBarrierEngine>(newProcess);
-              break;
+            if (dividends.empty())
+                engine = std::make_unique<AnalyticBarrierEngine>(newProcess);
+            else
+                engine = std::make_unique<FdBlackScholesBarrierEngine>(newProcess, dividends);
+            break;
           case Exercise::American:
           case Exercise::Bermudan:
             QL_FAIL("engine not available for non-European barrier option");
