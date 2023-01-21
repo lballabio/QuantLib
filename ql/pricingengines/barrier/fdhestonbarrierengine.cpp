@@ -45,10 +45,29 @@ namespace QuantLib {
     : GenericModelEngine<HestonModel,
                          DividendBarrierOption::arguments,
                          DividendBarrierOption::results>(model),
+      explicitDividends_(false), tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
+      schemeDesc_(schemeDesc), leverageFct_(std::move(leverageFct)), mixingFactor_(mixingFactor) {}
+
+    FdHestonBarrierEngine::FdHestonBarrierEngine(const ext::shared_ptr<HestonModel>& model,
+                                                 DividendSchedule dividends,
+                                                 Size tGrid,
+                                                 Size xGrid,
+                                                 Size vGrid,
+                                                 Size dampingSteps,
+                                                 const FdmSchemeDesc& schemeDesc,
+                                                 ext::shared_ptr<LocalVolTermStructure> leverageFct,
+                                                 const Real mixingFactor)
+    : GenericModelEngine<HestonModel,
+                         DividendBarrierOption::arguments,
+                         DividendBarrierOption::results>(model),
+      dividends_(std::move(dividends)), explicitDividends_(true),
       tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), leverageFct_(std::move(leverageFct)), mixingFactor_(mixingFactor) {}
 
     void FdHestonBarrierEngine::calculate() const {
+
+        // dividends will eventually be moved out of arguments, but for now we need the switch
+        const DividendSchedule& dividendSchedule = explicitDividends_ ? dividends_ : arguments_.cashFlow;
 
         // 1. Mesher
         const ext::shared_ptr<HestonProcess>& process = model_->process();
@@ -86,7 +105,7 @@ namespace QuantLib {
                 maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                arguments_.cashFlow));
+                dividendSchedule));
 
         const ext::shared_ptr<FdmMesher> mesher (
 			ext::make_shared<FdmMesherComposite>(equityMesher, vMesher));
@@ -101,13 +120,17 @@ namespace QuantLib {
 
         // 3.1 Step condition if discrete dividends
         ext::shared_ptr<FdmDividendHandler> dividendCondition(
-			ext::make_shared<FdmDividendHandler>(arguments_.cashFlow, mesher,
+			ext::make_shared<FdmDividendHandler>(dividendSchedule, mesher,
                                    process->riskFreeRate()->referenceDate(),
                                    process->riskFreeRate()->dayCounter(), 0));
 
-        if(!arguments_.cashFlow.empty()) {
+        if (!dividendSchedule.empty()) {
             stepConditions.push_back(dividendCondition);
-            stoppingTimes.push_back(dividendCondition->dividendTimes());
+            std::vector<Time> dividendTimes = dividendCondition->dividendTimes();
+            // this effectively excludes times after maturity
+            for (auto& t: dividendTimes)
+                t = std::min(maturity, t);
+            stoppingTimes.push_back(dividendTimes);
         }
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,

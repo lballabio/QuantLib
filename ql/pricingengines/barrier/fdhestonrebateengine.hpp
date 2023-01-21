@@ -45,9 +45,20 @@ namespace QuantLib {
                                     DividendBarrierOption::arguments,
                                     DividendBarrierOption::results> {
       public:
-        // Constructor
         explicit FdHestonRebateEngine(
             const ext::shared_ptr<HestonModel>& model,
+            Size tGrid = 100,
+            Size xGrid = 100,
+            Size vGrid = 50,
+            Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+            ext::shared_ptr<LocalVolTermStructure> leverageFct =
+                ext::shared_ptr<LocalVolTermStructure>(),
+            Real mixingFactor = 1.0);
+
+        explicit FdHestonRebateEngine(
+            const ext::shared_ptr<HestonModel>& model,
+            DividendSchedule dividends,
             Size tGrid = 100,
             Size xGrid = 100,
             Size vGrid = 50,
@@ -60,6 +71,8 @@ namespace QuantLib {
         void calculate() const override;
 
       private:
+        DividendSchedule dividends_;
+        bool explicitDividends_;
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
         const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
@@ -69,4 +82,4 @@ namespace QuantLib {
 
 }
 
-#endif /*quantlib_fd_heston_rebate_engine_hpp*/
+#endif
