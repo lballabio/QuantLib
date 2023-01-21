@@ -33,8 +33,11 @@
 namespace QuantLib {
 
     //! Single-asset barrier option with discrete dividends
-    /*! \ingroup instruments */
-    class DividendBarrierOption : public BarrierOption {
+    /*! \deprecated Use BarrierOption instead and pass the dividends
+                    to the desired engine.
+                    Deprecated in version 1.30.
+    */
+    class QL_DEPRECATED DividendBarrierOption : public BarrierOption {
       public:
         class arguments;
         class engine;

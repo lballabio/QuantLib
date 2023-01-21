@@ -20,7 +20,7 @@
 */
 
 /*! \file fdhestonrebateengine.hpp
-    \brief Finite-Differences Heston barrier option rebate helper engine
+    \brief Finite-differences Heston barrier-option rebate helper engine
 */
 
 #ifndef quantlib_fd_heston_rebate_engine_hpp
@@ -35,15 +35,15 @@
 
 namespace QuantLib {
 
-    //! Finite-Differences Heston Barrier Option rebate helper engine
+    QL_DEPRECATED_DISABLE_WARNING
 
-    /*!
-        \ingroup barrierengines
-    */
+    //! Finite-differences Heston barrier-option rebate helper engine
+    /*! \ingroup barrierengines */
     class FdHestonRebateEngine
         : public GenericModelEngine<HestonModel,
                                     DividendBarrierOption::arguments,
                                     DividendBarrierOption::results> {
+        QL_DEPRECATED_ENABLE_WARNING
       public:
         explicit FdHestonRebateEngine(
             const ext::shared_ptr<HestonModel>& model,
@@ -52,8 +52,7 @@ namespace QuantLib {
             Size vGrid = 50,
             Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            ext::shared_ptr<LocalVolTermStructure> leverageFct =
-                ext::shared_ptr<LocalVolTermStructure>(),
+                ext::shared_ptr<LocalVolTermStructure> leverageFct = {},
             Real mixingFactor = 1.0);
 
         explicit FdHestonRebateEngine(
@@ -64,8 +63,7 @@ namespace QuantLib {
             Size vGrid = 50,
             Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            ext::shared_ptr<LocalVolTermStructure> leverageFct =
-                ext::shared_ptr<LocalVolTermStructure>(),
+                ext::shared_ptr<LocalVolTermStructure> leverageFct = {},
             Real mixingFactor = 1.0);
 
         void calculate() const override;
@@ -78,7 +76,6 @@ namespace QuantLib {
         const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
         const Real mixingFactor_;
     };
-
 
 }
 

@@ -34,6 +34,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     FdHestonBarrierEngine::FdHestonBarrierEngine(const ext::shared_ptr<HestonModel>& model,
                                                  Size tGrid,
                                                  Size xGrid,
@@ -63,6 +65,8 @@ namespace QuantLib {
       dividends_(std::move(dividends)), explicitDividends_(true),
       tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), leverageFct_(std::move(leverageFct)), mixingFactor_(mixingFactor) {}
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     void FdHestonBarrierEngine::calculate() const {
 
@@ -187,23 +191,22 @@ namespace QuantLib {
                                               vGrid_, dampingSteps_,
                                               schemeDesc_)));
             // Calculate the rebate value
-            ext::shared_ptr<DividendBarrierOption> rebateOption(
-				ext::make_shared<DividendBarrierOption>(arguments_.barrierType,
-                                          arguments_.barrier,
-                                          arguments_.rebate,
-                                          payoff, arguments_.exercise,
-                                          dividendCondition->dividendDates(), 
-                                          dividendCondition->dividends()));
+            auto rebateOption =
+                ext::make_shared<BarrierOption>(arguments_.barrierType,
+                                                arguments_.barrier,
+                                                arguments_.rebate,
+                                                payoff, arguments_.exercise);
             const Size xGridMin = 20;
             const Size vGridMin = 10;
             const Size rebateDampingSteps 
                 = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
             rebateOption->setPricingEngine(
-				ext::make_shared<FdHestonRebateEngine>(*model_, tGrid_,
-                                             std::max(xGridMin, xGrid_/4), 
-                                             std::max(vGridMin, vGrid_/4),
-                                             rebateDampingSteps,
-                                             schemeDesc_));
+                ext::make_shared<FdHestonRebateEngine>(*model_, dividendSchedule,
+                                                       tGrid_,
+                                                       std::max(xGridMin, xGrid_/4), 
+                                                       std::max(vGridMin, vGrid_/4),
+                                                       rebateDampingSteps,
+                                                       schemeDesc_));
 
             results_.value = vanillaOption->NPV()   + rebateOption->NPV()
                                                     - results_.value;

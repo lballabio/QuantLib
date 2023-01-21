@@ -20,7 +20,7 @@
 */
 
 /*! \file fdblackscholesrebateengine.hpp
-    \brief Finite-Differences Black Scholes barrier option rebate helper engine
+    \brief Finite-differences Black/Scholes barrier option rebate helper engine
 */
 
 #ifndef quantlib_fd_black_scholes_rebate_engine_hpp
@@ -32,11 +32,12 @@
 
 namespace QuantLib {
 
-    //! Finite-Differences Black Scholes barrier option rebate helper engine
-    /*!
-        \ingroup barrierengines
-    */
+    QL_DEPRECATED_DISABLE_WARNING
+
+    //! Finite-differences Black/Scholes barrier-option rebate helper engine
+    /*! \ingroup barrierengines */
     class FdBlackScholesRebateEngine : public DividendBarrierOption::engine {
+        QL_DEPRECATED_ENABLE_WARNING
       public:
         explicit FdBlackScholesRebateEngine(
             ext::shared_ptr<GeneralizedBlackScholesProcess> process,
@@ -67,8 +68,7 @@ namespace QuantLib {
         FdmSchemeDesc schemeDesc_;
         bool localVol_;
         Real illegalLocalVolOverwrite_;
-};
-
+    };
 
 }
 

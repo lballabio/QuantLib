@@ -190,20 +190,18 @@ namespace QuantLib {
                         schemeDesc_, localVol_, illegalLocalVolOverwrite_));
 
             // Calculate the rebate value
-            ext::shared_ptr<DividendBarrierOption> rebateOption(
-                ext::make_shared<DividendBarrierOption>(arguments_.barrierType,
-                                          arguments_.barrier,
-                                          arguments_.rebate,
-                                          payoff, arguments_.exercise,
-                                          dividendCondition->dividendDates(), 
-                                          dividendCondition->dividends()));
+            auto rebateOption =
+                ext::make_shared<BarrierOption>(arguments_.barrierType,
+                                                arguments_.barrier,
+                                                arguments_.rebate,
+                                                payoff, arguments_.exercise);
             
             const Size min_grid_size = 50;
             const Size rebateDampingSteps 
                 = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
 
             rebateOption->setPricingEngine(ext::make_shared<FdBlackScholesRebateEngine>(
-                            process_, tGrid_, std::max(min_grid_size, xGrid_/5), 
+                            process_, dividendSchedule, tGrid_, std::max(min_grid_size, xGrid_/5), 
                             rebateDampingSteps, schemeDesc_, localVol_, 
                             illegalLocalVolOverwrite_));
 

@@ -32,6 +32,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     FdHestonRebateEngine::FdHestonRebateEngine(const ext::shared_ptr<HestonModel>& model,
                                                Size tGrid,
                                                Size xGrid,
@@ -61,6 +63,8 @@ namespace QuantLib {
       dividends_(std::move(dividends)), explicitDividends_(true),
       tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), leverageFct_(std::move(leverageFct)), mixingFactor_(mixingFactor) {}
+
+    QL_DEPRECATED_ENABLE_WARNING
 
     void FdHestonRebateEngine::calculate() const {
 

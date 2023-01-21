@@ -1251,10 +1251,14 @@ void BarrierOptionTest::testOldDividendBarrierOption() {
             const Real barrier = barriers[i];
             const Barrier::Type barrierType = barrierTypes[i];
 
+            QL_DEPRECATED_DISABLE_WARNING
+
             DividendBarrierOption barrierOption(
                 barrierType, barrier, rebate, payoff, exercise,
                 std::vector<Date>(1, divDate),
                 std::vector<Real>(1, divAmount));
+
+            QL_DEPRECATED_ENABLE_WARNING
 
             barrierOption.setPricingEngine(engine);
 
@@ -1292,8 +1296,8 @@ void BarrierOptionTest::testDividendBarrierOption() {
     Real strike = 105.0;
     Real rebate = 5.0;
 
-    Real barriers[] = { 80.0, 120.0 };
-    Barrier::Type barrierTypes[] = { Barrier::DownOut, Barrier::UpOut };
+    Real barriers[] = { 80.0, 120.0, 80.0, 120.0 };
+    Barrier::Type barrierTypes[] = { Barrier::DownOut, Barrier::UpOut, Barrier::DownIn, Barrier::UpIn };
 
     Rate r = 0.05;
     Rate q = 0.0;
@@ -1353,10 +1357,12 @@ void BarrierOptionTest::testDividendBarrierOption() {
         rTS->discount(divDate)*rebate,
         (*payoff)(
             (spot - divAmount*rTS->discount(divDate))/rTS->discount(maturity))
-            *rTS->discount(maturity)
+            *rTS->discount(maturity),
+        29.154,
+        4.765
     };
 
-    Real relTol = 1e-4;
+    Real relTol = 2e-4;
     for (Size i=0; i < LENGTH(barriers); ++i) {
         for (Size j=0; j < LENGTH(engines); ++j) {
             Real barrier = barriers[i];
@@ -1490,9 +1496,11 @@ void BarrierOptionTest::testBarrierAndDividendEngine() {
 
     auto option1 = BarrierOption(Barrier::DownIn, 80.0, 0.0, payoff,
                                  ext::make_shared<EuropeanExercise>(Date(1, June, 2023)));
+    QL_DEPRECATED_DISABLE_WARNING
     auto option2 = DividendBarrierOption(Barrier::DownIn, 80.0, 0.0, payoff,
                                          ext::make_shared<EuropeanExercise>(Date(1, June, 2023)),
                                          {Date(1, February, 2023)}, {1.0});
+    QL_DEPRECATED_ENABLE_WARNING
 
     option1.setPricingEngine(engine);
     option2.setPricingEngine(engine);

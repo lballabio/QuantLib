@@ -32,6 +32,8 @@ namespace QuantLib {
 
     //! Vanna Volga barrier option engine
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     /*!
         \ingroup barrierengines
     */
@@ -39,6 +41,8 @@ namespace QuantLib {
         : public GenericEngine<DividendBarrierOption::arguments,
                                DividendBarrierOption::results> {
       public:
+
+    QL_DEPRECATED_ENABLE_WARNING
 
         // Constructor
         VannaVolgaBarrierEngine(Handle<DeltaVolQuote> atmVol,
@@ -68,4 +72,4 @@ namespace QuantLib {
 
 }
 
-#endif /*quantlib_fd_black_scholes_barrier_engine_hpp*/
+#endif
