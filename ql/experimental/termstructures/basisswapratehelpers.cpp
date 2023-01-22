@@ -95,8 +95,6 @@ namespace QuantLib {
     }
 
     void IborIborBasisSwapRateHelper::setTermStructure(YieldTermStructure* t) {
-        // do not set the relinkable handle as an observer -
-        // force recalculation when needed---the index is not lazy
         bool observer = false;
 
         ext::shared_ptr<YieldTermStructure> temp(t, null_deleter());
@@ -106,7 +104,7 @@ namespace QuantLib {
     }
 
     Real IborIborBasisSwapRateHelper::impliedQuote() const {
-        swap_->recalculate();
+        swap_->deepUpdate();
         return - (swap_->NPV() / swap_->legBPS(0)) * 1.0e-4;
     }
 
@@ -185,7 +183,7 @@ namespace QuantLib {
     }
 
     Real OvernightIborBasisSwapRateHelper::impliedQuote() const {
-        swap_->recalculate();
+        swap_->deepUpdate();
         return - (swap_->NPV() / swap_->legBPS(0)) * 1.0e-4;
     }
 
