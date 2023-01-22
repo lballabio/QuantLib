@@ -68,7 +68,9 @@ namespace QuantLib {
     void FdBlackScholesRebateEngine::calculate() const {
 
         // dividends will eventually be moved out of arguments, but for now we need the switch
+        QL_DEPRECATED_DISABLE_WARNING
         const DividendSchedule& dividendSchedule = explicitDividends_ ? dividends_ : arguments_.cashFlow;
+        QL_DEPRECATED_ENABLE_WARNING
 
         // 1. Mesher
         const ext::shared_ptr<StrikedTypePayoff> payoff =

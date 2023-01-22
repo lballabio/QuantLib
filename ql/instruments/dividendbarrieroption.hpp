@@ -58,17 +58,27 @@ namespace QuantLib {
 
 
     //! %Arguments for dividend barrier option calculation
-    class DividendBarrierOption::arguments : public BarrierOption::arguments {
+    /*! \deprecated If you're writing an engine for DividendBarrierOption,
+                    use BarrierOption instead and pass the dividends to the engine.
+                    Deprecated in version 1.30.
+    */
+    class QL_DEPRECATED DividendBarrierOption::arguments : public BarrierOption::arguments {
       public:
         DividendSchedule cashFlow;
         arguments() = default;
         void validate() const override;
     };
 
+    QL_DEPRECATED_DISABLE_WARNING
     //! %Dividend-barrier-option %engine base class
+    /*! \deprecated If you're writing an engine for DividendBarrierOption,
+                    use BarrierOption instead and pass the dividends to the engine.
+                    Deprecated in version 1.30.
+    */
     class DividendBarrierOption::engine
         : public GenericEngine<DividendBarrierOption::arguments,
                                DividendBarrierOption::results> {
+    QL_DEPRECATED_ENABLE_WARNING
       protected:
         bool triggered(Real underlying) const;
     };
