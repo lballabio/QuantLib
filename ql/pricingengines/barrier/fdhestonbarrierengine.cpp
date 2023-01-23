@@ -34,6 +34,8 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     FdHestonBarrierEngine::FdHestonBarrierEngine(const ext::shared_ptr<HestonModel>& model,
                                                  Size tGrid,
                                                  Size xGrid,
@@ -45,10 +47,33 @@ namespace QuantLib {
     : GenericModelEngine<HestonModel,
                          DividendBarrierOption::arguments,
                          DividendBarrierOption::results>(model),
+      explicitDividends_(false), tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
+      schemeDesc_(schemeDesc), leverageFct_(std::move(leverageFct)), mixingFactor_(mixingFactor) {}
+
+    FdHestonBarrierEngine::FdHestonBarrierEngine(const ext::shared_ptr<HestonModel>& model,
+                                                 DividendSchedule dividends,
+                                                 Size tGrid,
+                                                 Size xGrid,
+                                                 Size vGrid,
+                                                 Size dampingSteps,
+                                                 const FdmSchemeDesc& schemeDesc,
+                                                 ext::shared_ptr<LocalVolTermStructure> leverageFct,
+                                                 const Real mixingFactor)
+    : GenericModelEngine<HestonModel,
+                         DividendBarrierOption::arguments,
+                         DividendBarrierOption::results>(model),
+      dividends_(std::move(dividends)), explicitDividends_(true),
       tGrid_(tGrid), xGrid_(xGrid), vGrid_(vGrid), dampingSteps_(dampingSteps),
       schemeDesc_(schemeDesc), leverageFct_(std::move(leverageFct)), mixingFactor_(mixingFactor) {}
 
+    QL_DEPRECATED_ENABLE_WARNING
+
     void FdHestonBarrierEngine::calculate() const {
+
+        // dividends will eventually be moved out of arguments, but for now we need the switch
+        QL_DEPRECATED_DISABLE_WARNING
+        const DividendSchedule& dividendSchedule = explicitDividends_ ? dividends_ : arguments_.cashFlow;
+        QL_DEPRECATED_ENABLE_WARNING
 
         // 1. Mesher
         const ext::shared_ptr<HestonProcess>& process = model_->process();
@@ -86,7 +111,7 @@ namespace QuantLib {
                 maturity, payoff->strike(),
                 xMin, xMax, 0.0001, 1.5,
                 std::make_pair(Null<Real>(), Null<Real>()),
-                arguments_.cashFlow));
+                dividendSchedule));
 
         const ext::shared_ptr<FdmMesher> mesher (
 			ext::make_shared<FdmMesherComposite>(equityMesher, vMesher));
@@ -101,13 +126,17 @@ namespace QuantLib {
 
         // 3.1 Step condition if discrete dividends
         ext::shared_ptr<FdmDividendHandler> dividendCondition(
-			ext::make_shared<FdmDividendHandler>(arguments_.cashFlow, mesher,
+			ext::make_shared<FdmDividendHandler>(dividendSchedule, mesher,
                                    process->riskFreeRate()->referenceDate(),
                                    process->riskFreeRate()->dayCounter(), 0));
 
-        if(!arguments_.cashFlow.empty()) {
+        if (!dividendSchedule.empty()) {
             stepConditions.push_back(dividendCondition);
-            stoppingTimes.push_back(dividendCondition->dividendTimes());
+            std::vector<Time> dividendTimes = dividendCondition->dividendTimes();
+            // this effectively excludes times after maturity
+            for (auto& t: dividendTimes)
+                t = std::min(maturity, t);
+            stoppingTimes.push_back(dividendTimes);
         }
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
@@ -164,23 +193,22 @@ namespace QuantLib {
                                               vGrid_, dampingSteps_,
                                               schemeDesc_)));
             // Calculate the rebate value
-            ext::shared_ptr<DividendBarrierOption> rebateOption(
-				ext::make_shared<DividendBarrierOption>(arguments_.barrierType,
-                                          arguments_.barrier,
-                                          arguments_.rebate,
-                                          payoff, arguments_.exercise,
-                                          dividendCondition->dividendDates(), 
-                                          dividendCondition->dividends()));
+            auto rebateOption =
+                ext::make_shared<BarrierOption>(arguments_.barrierType,
+                                                arguments_.barrier,
+                                                arguments_.rebate,
+                                                payoff, arguments_.exercise);
             const Size xGridMin = 20;
             const Size vGridMin = 10;
             const Size rebateDampingSteps 
                 = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
             rebateOption->setPricingEngine(
-				ext::make_shared<FdHestonRebateEngine>(*model_, tGrid_,
-                                             std::max(xGridMin, xGrid_/4), 
-                                             std::max(vGridMin, vGrid_/4),
-                                             rebateDampingSteps,
-                                             schemeDesc_));
+                ext::make_shared<FdHestonRebateEngine>(*model_, dividendSchedule,
+                                                       tGrid_,
+                                                       std::max(xGridMin, xGrid_/4), 
+                                                       std::max(vGridMin, vGrid_/4),
+                                                       rebateDampingSteps,
+                                                       schemeDesc_));
 
             results_.value = vanillaOption->NPV()   + rebateOption->NPV()
                                                     - results_.value;

@@ -89,19 +89,21 @@ namespace QuantLib {
         std::list<std::vector<Time> > stoppingTimes;
         std::list<ext::shared_ptr<StepCondition<Array> > > stepConditions;
 
-        if(!cashFlow.empty()) {
-            ext::shared_ptr<FdmDividendHandler> dividendCondition(
-                new FdmDividendHandler(cashFlow, mesher,
-                                       refDate, dayCounter, 0));
+        if (!cashFlow.empty()) {
+            auto dividendCondition =
+                ext::make_shared<FdmDividendHandler>(cashFlow, mesher,
+                                                     refDate, dayCounter, 0);
             stepConditions.push_back(dividendCondition);
 
             std::vector<Time> dividendTimes = dividendCondition->dividendTimes();
+            const Time maturityTime = dayCounter.yearFraction(refDate, exercise->lastDate());
+
+            // this effectively excludes times after maturity
+            for (auto& t: dividendTimes)
+                t = std::min(maturityTime, t);
             stoppingTimes.push_back(dividendTimes);
 
             // smoother convergence behavior with number of time steps
-            const Time maturityTime = dayCounter.yearFraction(
-                refDate,exercise->lastDate());
-
             for (auto& t: dividendTimes)
                 t = std::min(maturityTime, t+1e-5);
             stoppingTimes.push_back(dividendTimes);

@@ -29,6 +29,7 @@
 #include <ql/instruments/oneassetoption.hpp>
 #include <ql/instruments/barriertype.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/instruments/dividendschedule.hpp>
 
 namespace QuantLib {
 
@@ -49,9 +50,11 @@ namespace QuantLib {
                       const ext::shared_ptr<StrikedTypePayoff>& payoff,
                       const ext::shared_ptr<Exercise>& exercise);
         void setupArguments(PricingEngine::arguments*) const override;
+
         /*! \warning see VanillaOption for notes on implied-volatility
                      calculation.
         */
+        //@{
         Volatility impliedVolatility(
              Real price,
              const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -59,6 +62,15 @@ namespace QuantLib {
              Size maxEvaluations = 100,
              Volatility minVol = 1.0e-7,
              Volatility maxVol = 4.0) const;
+        Volatility impliedVolatility(
+             Real price,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const DividendSchedule& dividends,
+             Real accuracy = 1.0e-4,
+             Size maxEvaluations = 100,
+             Volatility minVol = 1.0e-7,
+             Volatility maxVol = 4.0) const;
+        //@}
       protected:
         // arguments
         Barrier::Type barrierType_;
