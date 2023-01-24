@@ -21,7 +21,7 @@
 
 #include <ql/termstructures/volatility/swaption/cmsmarketcalibration.hpp>
 #include <ql/termstructures/volatility/swaption/cmsmarket.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp>
 #include <ql/math/optimization/problem.hpp>
 #include <ql/math/optimization/constraint.hpp>
 
@@ -127,8 +127,8 @@ namespace {
         Size nSwapTenors = swapTenors.size();
         QL_REQUIRE(nSwapTenors + 1 == x.size(),
                    "bad calibration guess nSwapTenors+1 != x.size()");
-        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SabrSwaptionVolatilityCube> volCubeBySabr =
+            ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i)
             volCubeBySabr->recalibration(CmsMarketCalibration::betaTransformDirect(x[i]),
                                          swapTenors[i]);
@@ -173,8 +173,8 @@ namespace {
         Size nSwapTenors = swapTenors.size();
         QL_REQUIRE(nSwapTenors == x.size(),
                    "bad calibration guess nSwapTenors != x.size()");
-        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SabrSwaptionVolatilityCube> volCubeBySabr =
+            ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i)
             volCubeBySabr->recalibration(QuantLib::CmsMarketCalibration::betaTransformDirect(x[i]),
                                          swapTenors[i]);
@@ -197,8 +197,8 @@ namespace {
         QL_REQUIRE(
             (nSwapLengths * nSwapTenors) + 1 == x.size(),
             "bad calibration guess (nSwapLengths*nSwapTenors)+1 != x.size()");
-        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SabrSwaptionVolatilityCube> volCubeBySabr =
+            ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin() + (i * nSwapLengths),
                                    x.begin() + ((i + 1) * nSwapLengths));
@@ -224,8 +224,8 @@ namespace {
         QL_REQUIRE(
             (nSwapLengths * nSwapTenors) == x.size(),
             "bad calibration guess (nSwapLengths*nSwapTenors) != x.size()");
-        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SabrSwaptionVolatilityCube> volCubeBySabr =
+            ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i) {
             std::vector<Real> beta(x.begin() + (i * nSwapLengths),
                                    x.begin() + ((i + 1) * nSwapLengths));
@@ -251,8 +251,8 @@ namespace {
         Size nSwapLengths = swapLengths.size();
         QL_REQUIRE((3 * nSwapTenors) == x.size(),
                    "bad calibration guess (3*nSwapTenors) != x.size()");
-        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SabrSwaptionVolatilityCube> volCubeBySabr =
+            ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i) {
             Real betaInf = CmsMarketCalibration::betaTransformDirect(x[0 + 3 * i]);
             Real beta0 = CmsMarketCalibration::betaTransformDirect(x[1 + 3 * i]);
@@ -283,8 +283,8 @@ namespace {
         Size nSwapLengths = swapLengths.size();
         QL_REQUIRE((3 * nSwapTenors) == x.size(),
                    "bad calibration guess (3*nSwapTenors) != x.size()");
-        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SabrSwaptionVolatilityCube> volCubeBySabr =
+            ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*volCube_);
         for (Size i = 0; i < nSwapTenors; ++i) {
             Real betaInf = CmsMarketCalibration::betaTransformDirect(x[0 + 3 * i]);
             Real beta0 = CmsMarketCalibration::betaTransformDirect(x[1 + 3 * i]);
@@ -380,8 +380,8 @@ namespace QuantLib {
                 result[i] = betaTransformDirect(result[i]);
             result[nBeta] = reversionTransformDirect(result[nBeta]);
         }
-        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SabrSwaptionVolatilityCube> volCubeBySabr =
+            ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*volCube_);
         volCubeBySabr->updateAfterRecalibration();
         sparseSabrParameters_ = volCubeBySabr->sparseSabrParameters();
         denseSabrParameters_ = volCubeBySabr->denseSabrParameters();
@@ -469,8 +469,8 @@ namespace QuantLib {
                 result[j][nSwapTenors] = reversionTransformDirect(tmp[nBeta]);
             }
         }
-        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SabrSwaptionVolatilityCube> volCubeBySabr =
+            ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*volCube_);
         volCubeBySabr->updateAfterRecalibration();
         sparseSabrParameters_ = volCubeBySabr->sparseSabrParameters();
         denseSabrParameters_ = volCubeBySabr->denseSabrParameters();
@@ -564,8 +564,8 @@ namespace QuantLib {
             }
         }
 
-        const ext::shared_ptr<SwaptionVolCube1> volCubeBySabr =
-            ext::dynamic_pointer_cast<SwaptionVolCube1>(*volCube_);
+        const ext::shared_ptr<SabrSwaptionVolatilityCube> volCubeBySabr =
+            ext::dynamic_pointer_cast<SabrSwaptionVolatilityCube>(*volCube_);
         volCubeBySabr->updateAfterRecalibration();
         sparseSabrParameters_ = volCubeBySabr->sparseSabrParameters();
         denseSabrParameters_ = volCubeBySabr->denseSabrParameters();

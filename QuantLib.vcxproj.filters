@@ -2064,10 +2064,10 @@
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolcube.hpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolcube1.hpp">
+    <ClInclude Include="ql\termstructures\volatility\swaption\sabrswaptionvolatilitycube.hpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolcube2.hpp">
+    <ClInclude Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.hpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvoldiscrete.hpp">
@@ -5470,7 +5470,7 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
-    <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube2.cpp">
+    <ClCompile Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvoldiscrete.cpp">

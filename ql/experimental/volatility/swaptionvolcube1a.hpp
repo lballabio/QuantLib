@@ -25,7 +25,7 @@
 #ifndef quantlib_swaption_volcube_1a_hpp
 #define quantlib_swaption_volcube_1a_hpp
 
-#include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp>
 #include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 
 namespace QuantLib {
@@ -35,7 +35,7 @@ namespace QuantLib {
         typedef NoArbSabrSmileSection SmileSection;
     };
 
-    typedef SwaptionVolCube1x<SwaptionVolCubeNoArbSabrModel> SwaptionVolCube1a;
+    typedef XabrSwaptionVolatilityCube<SwaptionVolCubeNoArbSabrModel> SwaptionVolCube1a;
 
 }
 

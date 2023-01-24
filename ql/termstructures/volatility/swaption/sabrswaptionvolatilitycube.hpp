@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2006, 2007 Giorgio Facchinetti
  Copyright (C) 2014, 2015 Peter Caspers
+ Copyright (C) 2023 Ignacio Anguita
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,10 +19,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swaptionvolcube1.hpp
+/*! \file sabrswaptionvolatilitycube.hpp
     \brief Swaption volatility cube, fit-early-interpolate-later approach
            The provided types are
-           SwaptionVolCube1 using the classic Hagan 2002 Sabr formula
+           SabrSwaptionVolatilityCube using the classic Hagan 2002 Sabr formula
            SwaptionVolCube1a using the No Arbitrage Sabr model (Doust)
 */
 
@@ -47,14 +48,19 @@
     #define SWAPTIONVOLCUBE_TOL 100.0e-4
 #endif
 
-namespace QuantLib {
+namespace QuantLib {    
 
     class Interpolation2D;
     class EndCriteria;
     class OptimizationMethod;
 
+    //! XABR Swaption Volatility Cube
+    /*! This class implements the XABR Swaption Volatility Cube
+        which is a generic for different SABR, ZABR and 
+        different smile models that can be used to instantiate concrete cubes.
+    */
     template<class Model>
-    class SwaptionVolCube1x : public SwaptionVolatilityCube {
+    class XabrSwaptionVolatilityCube : public SwaptionVolatilityCube {
         class Cube {
           public:
             Cube() = default;
@@ -108,7 +114,7 @@ namespace QuantLib {
             mutable std::vector< ext::shared_ptr<Interpolation2D> > interpolators_;
          };
       public:
-        SwaptionVolCube1x(
+        XabrSwaptionVolatilityCube(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& optionTenors,
             const std::vector<Period>& swapTenors,
@@ -194,7 +200,7 @@ namespace QuantLib {
 
         class PrivateObserver : public Observer {
           public:
-            explicit PrivateObserver(SwaptionVolCube1x<Model> *v)
+            explicit PrivateObserver(XabrSwaptionVolatilityCube<Model> *v)
                 : v_(v) {}
             void update() override {
                 v_->setParameterGuess();
@@ -202,7 +208,7 @@ namespace QuantLib {
             }
 
           private:
-            SwaptionVolCube1x<Model> *v_;
+            XabrSwaptionVolatilityCube<Model> *v_;
         };
 
        ext::shared_ptr<PrivateObserver> privateObserver_;
@@ -210,11 +216,11 @@ namespace QuantLib {
     };
 
     //=======================================================================//
-    //                        SwaptionVolCube1x                              //
+    //                        XabrSwaptionVolatilityCube                              //
     //=======================================================================//
 
     template <class Model>
-    SwaptionVolCube1x<Model>::SwaptionVolCube1x(
+    XabrSwaptionVolatilityCube<Model>::XabrSwaptionVolatilityCube(
         const Handle<SwaptionVolatilityStructure>& atmVolStructure,
         const std::vector<Period>& optionTenors,
         const std::vector<Period>& swapTenors,
@@ -265,7 +271,7 @@ namespace QuantLib {
         setParameterGuess();
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::registerWithParametersGuess()
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::registerWithParametersGuess()
     {
         for (Size i=0; i<4; i++)
             for (Size j=0; j<nOptionTenors_; j++)
@@ -273,7 +279,7 @@ namespace QuantLib {
                     privateObserver_->registerWith(parametersGuessQuotes_[j+k*nOptionTenors_][i]);
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::setParameterGuess() const {
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::setParameterGuess() const {
 
         //! set parametersGuess_ by parametersGuessQuotes_
         parametersGuess_ = Cube(optionDates_, swapTenors_,
@@ -290,7 +296,7 @@ namespace QuantLib {
 
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::performCalculations() const {
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::performCalculations() const {
 
         SwaptionVolatilityCube::performCalculations();
 
@@ -325,7 +331,7 @@ namespace QuantLib {
         }
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::updateAfterRecalibration() {
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::updateAfterRecalibration() {
         volCubeAtmCalibrated_ = marketVolCube_;
         if(isAtmCalibrated_){
             fillVolatilityCube();
@@ -336,8 +342,8 @@ namespace QuantLib {
     }
 
     template <class Model>
-    typename SwaptionVolCube1x<Model>::Cube
-    SwaptionVolCube1x<Model>::sabrCalibration(const Cube &marketVolCube) const {
+    typename XabrSwaptionVolatilityCube<Model>::Cube
+    XabrSwaptionVolatilityCube<Model>::sabrCalibration(const Cube &marketVolCube) const {
 
         const std::vector<Time>& optionTimes = marketVolCube.optionTimes();
         const std::vector<Time>& swapLengths = marketVolCube.swapLengths();
@@ -451,7 +457,7 @@ namespace QuantLib {
 
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::sabrCalibrationSection(
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::sabrCalibrationSection(
                                             const Cube& marketVolCube,
                                             Cube& parametersCube,
                                             const Period& swapTenor) const {
@@ -553,7 +559,7 @@ namespace QuantLib {
 
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::fillVolatilityCube() const {
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::fillVolatilityCube() const {
 
         const ext::shared_ptr<SwaptionVolatilityDiscrete> atmVolStructure =
             ext::dynamic_pointer_cast<SwaptionVolatilityDiscrete>(*atmVol_);
@@ -626,7 +632,7 @@ namespace QuantLib {
     }
 
 
-    template<class Model> void SwaptionVolCube1x<Model>::createSparseSmiles() const {
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::createSparseSmiles() const {
 
         std::vector<Time> optionTimes(sparseParameters_.optionTimes());
         std::vector<Time> swapLengths(sparseParameters_.swapLengths());
@@ -644,7 +650,7 @@ namespace QuantLib {
     }
 
 
-    template<class Model> std::vector<Real> SwaptionVolCube1x<Model>::spreadVolInterpolation(
+    template<class Model> std::vector<Real> XabrSwaptionVolatilityCube<Model>::spreadVolInterpolation(
         const Date& atmOptionDate, const Period& atmSwapTenor) const {
 
         Time atmOptionTime = timeFromReference(atmOptionDate);
@@ -768,7 +774,7 @@ namespace QuantLib {
     }
 
     template<class Model> ext::shared_ptr<SmileSection>
-    SwaptionVolCube1x<Model>::smileSection(Time optionTime, Time swapLength,
+    XabrSwaptionVolatilityCube<Model>::smileSection(Time optionTime, Time swapLength,
                                    const Cube& sabrParametersCube) const {
 
         calculate();
@@ -780,7 +786,7 @@ namespace QuantLib {
     }
 
     template<class Model> ext::shared_ptr<SmileSection>
-    SwaptionVolCube1x<Model>::smileSectionImpl(Time optionTime,
+    XabrSwaptionVolatilityCube<Model>::smileSectionImpl(Time optionTime,
                                        Time swapLength) const {
         if (isAtmCalibrated_)
             return smileSection(optionTime, swapLength, denseParameters_);
@@ -788,27 +794,27 @@ namespace QuantLib {
             return smileSection(optionTime, swapLength, sparseParameters_);
     }
 
-    template<class Model> Matrix SwaptionVolCube1x<Model>::sparseSabrParameters() const {
+    template<class Model> Matrix XabrSwaptionVolatilityCube<Model>::sparseSabrParameters() const {
         calculate();
         return sparseParameters_.browse();
     }
 
-    template<class Model> Matrix SwaptionVolCube1x<Model>::denseSabrParameters() const {
+    template<class Model> Matrix XabrSwaptionVolatilityCube<Model>::denseSabrParameters() const {
         calculate();
         return denseParameters_.browse();
     }
 
-    template<class Model> Matrix SwaptionVolCube1x<Model>::marketVolCube() const {
+    template<class Model> Matrix XabrSwaptionVolatilityCube<Model>::marketVolCube() const {
         calculate();
         return marketVolCube_.browse();
     }
 
-    template<class Model> Matrix SwaptionVolCube1x<Model>::volCubeAtmCalibrated() const {
+    template<class Model> Matrix XabrSwaptionVolatilityCube<Model>::volCubeAtmCalibrated() const {
         calculate();
         return volCubeAtmCalibrated_.browse();
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::recalibration(Real beta,
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::recalibration(Real beta,
                                          const Period& swapTenor) {
 
         std::vector<Real> betaVector(nOptionTenors_, beta);
@@ -816,7 +822,7 @@ namespace QuantLib {
 
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::recalibration(const std::vector<Real> &beta,
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::recalibration(const std::vector<Real> &beta,
                                          const Period& swapTenor) {
 
         QL_REQUIRE(beta.size() == nOptionTenors_,
@@ -849,7 +855,7 @@ namespace QuantLib {
 
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::recalibration(const std::vector<Period> &swapLengths,
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::recalibration(const std::vector<Period> &swapLengths,
                                          const std::vector<Real> &beta,
                                          const Period &swapTenor) {
 
@@ -883,11 +889,11 @@ namespace QuantLib {
     }
 
     //======================================================================//
-    //                      SwaptionVolCube1x::Cube                         //
+    //                      XabrSwaptionVolatilityCube::Cube                         //
     //======================================================================//
 
 
-    template<class Model> SwaptionVolCube1x<Model>::Cube::Cube(const std::vector<Date>& optionDates,
+    template<class Model> XabrSwaptionVolatilityCube<Model>::Cube::Cube(const std::vector<Date>& optionDates,
                                     const std::vector<Period>& swapTenors,
                                     const std::vector<Time>& optionTimes,
                                     const std::vector<Time>& swapLengths,
@@ -931,7 +937,7 @@ namespace QuantLib {
         setPoints(points);
      }
 
-    template<class Model> SwaptionVolCube1x<Model>::Cube::Cube(const Cube& o)
+    template<class Model> XabrSwaptionVolatilityCube<Model>::Cube::Cube(const Cube& o)
     : optionTimes_(o.optionTimes_), swapLengths_(o.swapLengths_),
       optionDates_(o.optionDates_), swapTenors_(o.swapTenors_),
       nLayers_(o.nLayers_), transposedPoints_(o.transposedPoints_),
@@ -957,8 +963,8 @@ namespace QuantLib {
         setPoints(o.points_);
     }
 
-    template<class Model> typename SwaptionVolCube1x<Model>::Cube&
-    SwaptionVolCube1x<Model>::Cube::operator=(const Cube& o) {
+    template<class Model> typename XabrSwaptionVolatilityCube<Model>::Cube&
+    XabrSwaptionVolatilityCube<Model>::Cube::operator=(const Cube& o) {
         optionTimes_ = o.optionTimes_;
         swapLengths_ = o.swapLengths_;
         optionDates_ = o.optionDates_;
@@ -989,7 +995,7 @@ namespace QuantLib {
         return *this;
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::Cube::setElement(Size IndexOfLayer,
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::Cube::setElement(Size IndexOfLayer,
                                                         Size IndexOfRow,
                                                         Size IndexOfColumn,
                                                         Real x) {
@@ -1002,7 +1008,7 @@ namespace QuantLib {
         points_[IndexOfLayer][IndexOfRow][IndexOfColumn] = x;
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::Cube::setPoints(
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::Cube::setPoints(
                                                const std::vector<Matrix>& x) {
         QL_REQUIRE(x.size()==nLayers_,
             "Cube::setPoints: incompatible number of layers ");
@@ -1014,7 +1020,7 @@ namespace QuantLib {
         points_ = x;
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::Cube::setLayer(Size i,
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::Cube::setLayer(Size i,
                                                       const Matrix& x) {
         QL_REQUIRE(i<nLayers_,
             "Cube::setLayer: incompatible number of layer ");
@@ -1027,7 +1033,7 @@ namespace QuantLib {
     }
 
     template <class Model>
-    void SwaptionVolCube1x<Model>::Cube::setPoint(const Date& optionDate,
+    void XabrSwaptionVolatilityCube<Model>::Cube::setPoint(const Date& optionDate,
                                                   const Period& swapTenor,
                                                   Time optionTime,
                                                   Time swapLength,
@@ -1062,7 +1068,7 @@ namespace QuantLib {
         swapTenors_[swapLengthsIndex] = swapTenor;
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::Cube::expandLayers(Size i, bool expandOptionTimes,
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::Cube::expandLayers(Size i, bool expandOptionTimes,
                                               Size j, bool expandSwapLengths) {
         QL_REQUIRE(i<=optionTimes_.size(),"Cube::expandLayers: incompatible size 1");
         QL_REQUIRE(j<=swapLengths_.size(),"Cube::expandLayers: incompatible size 2");
@@ -1094,11 +1100,11 @@ namespace QuantLib {
     }
 
     template<class Model> const std::vector<Matrix>&
-    SwaptionVolCube1x<Model>::Cube::points() const {
+    XabrSwaptionVolatilityCube<Model>::Cube::points() const {
         return points_;
     }
 
-    template<class Model> std::vector<Real> SwaptionVolCube1x<Model>::Cube::operator()(
+    template<class Model> std::vector<Real> XabrSwaptionVolatilityCube<Model>::Cube::operator()(
                             const Time optionTime, const Time swapLength) const {
         std::vector<Real> result;
         for (Size k=0; k<nLayers_; ++k)
@@ -1107,16 +1113,16 @@ namespace QuantLib {
     }
 
     template<class Model> const std::vector<Time>&
-    SwaptionVolCube1x<Model>::Cube::optionTimes() const {
+    XabrSwaptionVolatilityCube<Model>::Cube::optionTimes() const {
         return optionTimes_;
     }
 
     template<class Model> const std::vector<Time>&
-    SwaptionVolCube1x<Model>::Cube::swapLengths() const {
+    XabrSwaptionVolatilityCube<Model>::Cube::swapLengths() const {
         return swapLengths_;
     }
 
-    template<class Model> void SwaptionVolCube1x<Model>::Cube::updateInterpolators() const {
+    template<class Model> void XabrSwaptionVolatilityCube<Model>::Cube::updateInterpolators() const {
         for (Size k = 0; k < nLayers_; ++k) {
             transposedPoints_[k] = transpose(points_[k]);
             ext::shared_ptr<Interpolation2D> interpolation;
@@ -1138,7 +1144,7 @@ namespace QuantLib {
         }
     }
 
-    template<class Model> Matrix SwaptionVolCube1x<Model>::Cube::browse() const {
+    template<class Model> Matrix XabrSwaptionVolatilityCube<Model>::Cube::browse() const {
         Matrix result(swapLengths_.size()*optionTimes_.size(), nLayers_+2, 0.0);
         for (Size i=0; i<swapLengths_.size(); ++i) {
             for (Size j=0; j<optionTimes_.size(); ++j) {
@@ -1151,16 +1157,30 @@ namespace QuantLib {
         return result;
     }
 
+    /*! \deprecated Use XabrSwaptionVolatilityCube instead.
+                    Deprecated in version 1.29.
+    */    
+
     //======================================================================//
-    //                      SwaptionVolCube1 (Sabr)                         //
+    //                      SabrSwaptionVolatilityCube (Sabr)                         //
     //======================================================================//
 
+    //! Swation Volatility Cube SABR 
+    /*! This struct defines two types of SABR Volatility cubes, one for the
+        SABRInterpolation and another one for smiles: SabrSmileSection.
+    */
     struct SwaptionVolCubeSabrModel {
         typedef SABRInterpolation Interpolation;
         typedef SabrSmileSection SmileSection;
     };
 
-    typedef SwaptionVolCube1x<SwaptionVolCubeSabrModel> SwaptionVolCube1;
+
+    typedef XabrSwaptionVolatilityCube<SwaptionVolCubeSabrModel> SabrSwaptionVolatilityCube;
+
+    /*! \deprecated Use SabrSwaptionVolatilityCube instead.
+                    Deprecated in version 1.29.
+    */
+    
 
 }
 

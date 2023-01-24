@@ -10,8 +10,8 @@ this_include_HEADERS = \
     spreadedswaptionvol.hpp \
     swaptionconstantvol.hpp \
     swaptionvolcube.hpp \
-    swaptionvolcube1.hpp \
-    swaptionvolcube2.hpp \
+    sabrswaptionvolatilitycube.hpp \
+    interpolatedswaptionvolatilitycube.hpp \
     swaptionvoldiscrete.hpp \
     swaptionvolmatrix.hpp \
     swaptionvolstructure.hpp
@@ -23,7 +23,7 @@ cpp_files = \
     spreadedswaptionvol.cpp \
     swaptionconstantvol.cpp \
     swaptionvolcube.cpp \
-    swaptionvolcube2.cpp \
+    interpolatedswaptionvolatilitycube.cpp \
     swaptionvoldiscrete.cpp \
     swaptionvolmatrix.cpp \
     swaptionvolstructure.cpp

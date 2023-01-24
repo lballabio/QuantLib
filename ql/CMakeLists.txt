@@ -838,7 +838,7 @@ set(QL_SOURCES
     termstructures/volatility/swaption/spreadedswaptionvol.cpp
     termstructures/volatility/swaption/swaptionconstantvol.cpp
     termstructures/volatility/swaption/swaptionvolcube.cpp
-    termstructures/volatility/swaption/swaptionvolcube2.cpp
+    termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.cpp
     termstructures/volatility/swaption/swaptionvoldiscrete.cpp
     termstructures/volatility/swaption/swaptionvolmatrix.cpp
     termstructures/volatility/swaption/swaptionvolstructure.cpp
@@ -2079,8 +2079,8 @@ set(QL_HEADERS
     termstructures/volatility/swaption/spreadedswaptionvol.hpp
     termstructures/volatility/swaption/swaptionconstantvol.hpp
     termstructures/volatility/swaption/swaptionvolcube.hpp
-    termstructures/volatility/swaption/swaptionvolcube1.hpp
-    termstructures/volatility/swaption/swaptionvolcube2.hpp
+    termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp
+    termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp
     termstructures/volatility/swaption/swaptionvoldiscrete.hpp
     termstructures/volatility/swaption/swaptionvolmatrix.hpp
     termstructures/volatility/swaption/swaptionvolstructure.hpp

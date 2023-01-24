@@ -32,8 +32,8 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp>
+#include <ql/termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/schedule.hpp>
@@ -279,8 +279,8 @@ namespace range_accrual_test {
                 }
             }
 
-            ext::shared_ptr<SwaptionVolCube1>
-            flatSwaptionVolatilityCube1ptr(new SwaptionVolCube1(
+            ext::shared_ptr<SabrSwaptionVolatilityCube>
+            flatSwaptionVolatilityCube1ptr(new SabrSwaptionVolatilityCube(
                 atmVol,
                 optionTenors,
                 swapTenors,
@@ -297,8 +297,8 @@ namespace range_accrual_test {
                                              flatSwaptionVolatilityCube1ptr));
             flatSwaptionVolatilityCube1->enableExtrapolation();
 
-            ext::shared_ptr<SwaptionVolCube2>
-            flatSwaptionVolatilityCube2ptr(new SwaptionVolCube2(atmVol,
+            ext::shared_ptr<InterpolatedSwaptionVolatilityCube>
+            flatSwaptionVolatilityCube2ptr(new InterpolatedSwaptionVolatilityCube(atmVol,
                                                              optionTenors,
                                                              swapTenors,
                                                              strikeSpreads,
@@ -322,8 +322,8 @@ namespace range_accrual_test {
                 }
             }
 
-            ext::shared_ptr<SwaptionVolCube1>
-            swaptionVolatilityCubeBySabrPtr(new SwaptionVolCube1(
+            ext::shared_ptr<SabrSwaptionVolatilityCube>
+            swaptionVolatilityCubeBySabrPtr(new SabrSwaptionVolatilityCube(
                 atmVol,
                 optionTenors,
                 swapTenors,

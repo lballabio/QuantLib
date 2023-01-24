@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2023 Ignacio Anguita
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,7 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swaptionvolcube2.hpp
+/*! \file interpolatedswaptionvolatilitycube.hpp
     \brief Swaption volatility cube, fit-later-interpolate-early approach
 */
 
@@ -27,9 +28,14 @@
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>
 
-namespace QuantLib {
+namespace QuantLib {    
 
-    class SwaptionVolCube2 : public SwaptionVolatilityCube{
+    //! Interpolated Swaption Volatility Cube
+    /*! This class implements the Interpolated Swaption Volatility Cube,
+        which is able to interpolate between the volatility spreads provided.
+
+    */
+    class InterpolatedSwaptionVolatilityCube : public SwaptionVolatilityCube{
       public:
           /*! The swaption vol cube is made up of ordered swaption vol surface
               layers, each layer referring to a swap index of a given length
@@ -43,7 +49,7 @@ namespace QuantLib {
               while swap vs 3M Euribor is used for the 1Y length. The
               shortSwapIndexBase is used to identify this second family.
         */
-        SwaptionVolCube2(
+        InterpolatedSwaptionVolatilityCube(
             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
             const std::vector<Period>& optionTenors,
             const std::vector<Period>& swapTenors,
@@ -68,6 +74,12 @@ namespace QuantLib {
         mutable std::vector<Interpolation2D> volSpreadsInterpolator_;
         mutable std::vector<Matrix> volSpreadsMatrix_;
     };
+
+    /*! \deprecated Use InterpolatedSwaptionVolatilityCube instead.
+                    Deprecated in version 1.29.
+    */
+    QL_DEPRECATED
+    typedef InterpolatedSwaptionVolatilityCube SwaptionVolCube2;
 
 }
 
