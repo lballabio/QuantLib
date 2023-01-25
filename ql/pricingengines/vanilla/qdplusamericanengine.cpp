@@ -43,7 +43,7 @@ namespace QuantLib {
             Real S, Real strike, Rate rf, Rate dy, Volatility vol, Time t, Time T)
         : tau(t), K(strike), sigma(vol), sigma2(sigma * sigma), v(sigma * std::sqrt(tau)), r(rf),
           q(dy), dr(std::exp(-r * tau)), dq(std::exp(-q * tau)),
-          ddr((std::abs(r*tau) > 1e-5)? r/(1-dr) : 1/(tau*(1-0.5*r*tau*(1-r*tau/3)))),
+          ddr((std::abs(r*tau) > 1e-5)? Real(r/(1-dr)) : Real(1/(tau*(1-0.5*r*tau*(1-r*tau/3))))),
           omega(2 * (r - q) / sigma2),
           lambda(0.5 *
                  (-(omega - 1) - std::sqrt(squared(omega - 1) + 8 * ddr / sigma2))),
@@ -217,7 +217,7 @@ namespace QuantLib {
             const Real extremT
                 = close_enough(r, q)? QL_MAX_REAL : Real(std::log(r*K/(q*S))/(r-q));
 
-             if (extremT > 0.0 && extremT < T)
+            if (extremT > 0.0 && extremT < T)
                 return std::max(npv0, std::max(npvT, intrinsic(extremT)));
             else
                 return std::max(npv0, npvT);

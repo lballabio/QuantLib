@@ -981,8 +981,8 @@ void FdHestonTest::testSpuriousOscillations() {
 
 
 void FdHestonTest::testAmericanCallPutParity() {
-    BOOST_TEST_MESSAGE("Testing Call/Put parity for American option "
-            "under the Heston model...");
+    BOOST_TEST_MESSAGE("Testing call/put parity for American options "
+                       "under the Heston model...");
 
     // A. Battauz, M. De Donno,m A. Sbuelz:
     // The put-call symmetry for American options in
@@ -1081,7 +1081,7 @@ void FdHestonTest::testAmericanCallPutParity() {
         const Real tol = 0.025;
 
         if (diff > tol) {
-            BOOST_FAIL("failed to reproduce American Call/Put parity"
+            BOOST_FAIL("failed to reproduce American call/put parity"
                     << "\n    Put NPV   : " << putNpv
                     << "\n    Call NPV  : " << callNpv
                     << "\n    difference: " << diff

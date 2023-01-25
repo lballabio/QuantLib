@@ -1123,7 +1123,7 @@ void InflationTest::testCpiLinearInterpolation() {
     testIndex1->addFixing(Date(1, February, 2021), 296.0);
     testIndex1->addFixing(Date(1, March,    2021), 296.9);
 
-    for (const auto& testIndex : {testIndex1, testIndex2}) {
+    auto check = [&](const ext::shared_ptr<ZeroInflationIndex>& testIndex) {
         Real calculated = CPI::laggedFixing(testIndex, Date(10, February, 2021), 3 * Months, CPI::Linear);
         Real expected = 293.5 * (19/28.0) + 295.4 * (9/28.0);
 
@@ -1153,7 +1153,10 @@ void InflationTest::testCpiLinearInterpolation() {
                             "failed to retrieve inflation fixing" <<
                             "\n    expected:   " << expected <<
                             "\n    calculated: " << calculated);
-    }
+    };
+
+    check(testIndex1);
+    check(testIndex2);
 }
 
 void InflationTest::testCpiAsIndexInterpolation() {

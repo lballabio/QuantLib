@@ -477,12 +477,27 @@ namespace QuantLib {
                            Date npvDate,
                            Real& npv,
                            Real& bps) {
+        std::tie(npv, bps) =
+            npvbps(leg, discountCurve, includeSettlementDateFlows, settlementDate, npvDate);
+    }
 
-        npv = 0.0;
+    std::pair<Real, Real> CashFlows::npvbps(const Leg& leg,
+                                            const YieldTermStructure& discountCurve,
+                                            bool includeSettlementDateFlows,
+                                            Date settlementDate,
+                                            Date npvDate) {
+        Real npv = 0.0;
+        Real bps = 0.0;
+
         if (leg.empty()) {
-            bps = 0.0;
-            return;
+            return { npv, bps };
         }
+
+        if (settlementDate == Date())
+            settlementDate = Settings::instance().evaluationDate();
+
+        if (npvDate == Date())
+            npvDate = settlementDate;
 
         for (const auto& i : leg) {
             CashFlow& cf = *i;
@@ -499,6 +514,8 @@ namespace QuantLib {
         DiscountFactor d = discountCurve.discount(npvDate);
         npv /= d;
         bps = basisPoint_ * bps / d;
+
+        return { npv, bps };
     }
 
     Rate CashFlows::atmRate(const Leg& leg,

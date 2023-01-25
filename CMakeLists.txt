@@ -5,14 +5,14 @@ cmake_policy(SET CMP0091 NEW)
 
 # Version info
 set(QUANTLIB_VERSION_MAJOR 1)
-set(QUANTLIB_VERSION_MINOR 29)
+set(QUANTLIB_VERSION_MINOR 30)
 set(QUANTLIB_VERSION_PATCH 0)
 set(QUANTLIB_VERSION ${QUANTLIB_VERSION_MAJOR}.${QUANTLIB_VERSION_MINOR}.${QUANTLIB_VERSION_PATCH})
 
 # Project Info
 set(PACKAGE_NAME          "QuantLib")
 set(PACKAGE_VERSION       "${QUANTLIB_VERSION}-dev")
-set(PACKAGE_VERSION_HEX   "0x01290000")
+set(PACKAGE_VERSION_HEX   "0x01300000")
 set(PACKAGE_STRING        "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_TARNAME       "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 set(PACKAGE_BUGREPORT     "https://github.com/lballabio/QuantLib/issues/")
@@ -124,6 +124,10 @@ if (NOT DEFINED QL_BOOST_VERSION)
     endif()
 endif()
 
+if (CMAKE_CXX_COMPILER STREQUAL "icpx")
+    find_package(IntelDPCPP REQUIRED)
+endif()
+
 find_package(Boost ${QL_BOOST_VERSION} REQUIRED)
 
 # Do not warn about Boost versions higher than 1.58.0
@@ -169,7 +173,8 @@ set(QL_VERSION ${PACKAGE_VERSION})
 set(QL_HEX_VERSION ${PACKAGE_VERSION_HEX})
 configure_file(ql/config.hpp.cfg ql/config.hpp @ONLY)
 configure_file(ql/qldefines.hpp.cfg ql/qldefines.hpp @ONLY)
-configure_file(ql/version.hpp.cfg ql/version.hpp @ONLY)
+
+include(Platform)
 
 # Check for library name layout tagging
 if (QL_TAGGED_LAYOUT)
@@ -179,11 +184,11 @@ if (QL_TAGGED_LAYOUT)
     endif()
     set(DEBUG_POSTFIX ${DEBUG_POSTFIX}-mt)
     set(RELEASE_POSTFIX ${RELEASE_POSTFIX}-mt)
-    if (NOT BUILD_SHARED_LIBS)
+    if (CMAKE_MSVC_RUNTIME_LIBRARY MATCHES ".*DLL$")
+        set(DEBUG_POSTFIX ${DEBUG_POSTFIX}-gd)
+    else()
         set(DEBUG_POSTFIX ${DEBUG_POSTFIX}-sgd)
         set(RELEASE_POSTFIX ${RELEASE_POSTFIX}-s)
-    else()
-        set(DEBUG_POSTFIX ${DEBUG_POSTFIX}-gd)
     endif()
     set(CMAKE_DEBUG_POSTFIX ${DEBUG_POSTFIX})
     set(CMAKE_RELEASE_POSTFIX ${RELEASE_POSTFIX})
@@ -192,7 +197,6 @@ if (QL_TAGGED_LAYOUT)
 endif()
 
 include(CTest)
-include(Platform)
 
 # extension subdirectories if they exist (hook for external projects)
 foreach(extdir ${QL_EXTERNAL_SUBDIRECTORIES})

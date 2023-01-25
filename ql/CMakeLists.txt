@@ -2194,13 +2194,13 @@ set(QL_HEADERS
     utilities/steppingiterator.hpp
     utilities/tracing.hpp
     utilities/vectors.hpp
+    version.hpp
     volatilitymodel.hpp
 )
 
 set(QL_CONFIGURED_HEADERS
     ${PROJECT_BINARY_DIR}/ql/config.hpp
-    ${PROJECT_BINARY_DIR}/ql/qldefines.hpp
-    ${PROJECT_BINARY_DIR}/ql/version.hpp)
+    ${PROJECT_BINARY_DIR}/ql/qldefines.hpp)
 
 set(QL_GENERATED_HEADERS
     ${PROJECT_BINARY_DIR}/ql/quantlib.hpp

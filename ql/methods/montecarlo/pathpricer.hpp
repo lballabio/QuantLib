@@ -39,6 +39,10 @@ namespace QuantLib {
     template<class PathType, class ValueType=Real>
     class PathPricer {
       public:
+        /*! \deprecated Use `auto` or `decltype` instead.
+                        Deprecated in version 1.29.
+        */
+        QL_DEPRECATED
         typedef PathType argument_type;
         typedef ValueType result_type;
 
