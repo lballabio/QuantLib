@@ -25,6 +25,7 @@
 #define quantlib_lazy_object_h
 
 #include <ql/patterns/observable.hpp>
+#include <ql/shared_ptr.hpp>
 
 namespace QuantLib {
 
@@ -182,7 +183,7 @@ namespace QuantLib {
 
     inline std::pair<Observer::iterator, bool>
     LazyObject::registerWith(const ext::shared_ptr<Observable>& h) {
-        if (auto l = boost::dynamic_pointer_cast<LazyObject>(h))
+        if (auto l = ext::dynamic_pointer_cast<LazyObject>(h))
             l->alwaysForwardNotifications();
         return Observer::registerWith(h);
     }
