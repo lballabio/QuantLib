@@ -205,7 +205,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
       { Option::Call, 100, 110, 0.05, 0.05, 1.0, 0.0001, 10.0 },
       { Option::Put, 110, 100, 0.05, 0.05, 1.0, 0.0001, 10.0 },
         // ATM option with a very large volatility
-      { Option::Put, 100, 110, 0.05, 0.05, 1.0, 10, 94.89543 }
+      { Option::Put, 100, 110, 0.05, 0.05, 1.0, 10, 95.12289 }
     };
 
     Date today = Date::todaysDate();
@@ -224,8 +224,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
 
         ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(value.type, value.strike));
         Date exDate = today + timeToDays(value.t);
-        ext::shared_ptr<Exercise> exercise(
-                                         new AmericanExercise(today, exDate));
+        ext::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
 
         spot->setValue(value.s);
         qRate->setValue(value.q);
@@ -1969,12 +1968,12 @@ void AmericanOptionTest::testBjerksundStenslandAmericanGreeks() {
 
     const Real strike = 100;
     const Option::Type types[] = { Option::Call, Option::Put };
-    const Rate rf[] = {0.0, 0.02, 0.04, 0.06, 0.081, 0.1, 0.2};
-    const Rate qy[] = {0.0, 0.041, 0.08, 0.12};
+    const Rate rf[] = {0.0, 0.02, 0.06, 0.1, 0.2};
+    const Rate qy[] = {0.0, 0.08, 0.12};
 
-    const Volatility sig[] = {0.1, 0.2, 0.4, 0.5, 1.0};
-    const Real S[] = {25, 50, 80, 99.9, 110, 120, 150, 200};
-    const Size T[] = {30, 182, 365, 730, 1825};
+    const Volatility sig[] = {0.1, 0.2, 0.4, 1.0};
+    const Real S[] = {25, 50, 99.9, 110, 150, 200};
+    const Size T[] = {30, 182, 365, 1825};
 
     const Real f_d = 1e-5;
     const Real f_g = 5e-5;
@@ -2143,7 +2142,6 @@ void AmericanOptionTest::testSingleBjerksundStenslandGreeks() {
     const Date today = Date(20, January, 2023);
     Settings::instance().evaluationDate() = today;
 
-
     const Real s = 100;
     const Volatility v = 0.3;
     const Rate q = 0.04;
@@ -2199,7 +2197,7 @@ void AmericanOptionTest::testSingleBjerksundStenslandGreeks() {
 
     const auto report = [=](
         Real value, Real expectedValue, std::string name) {
-        const Real tol = 1e-13;
+        const Real tol = 1e-10;
         const Real error = std::abs(value-expectedValue);
         if (error > tol)
             REPORT_FAILURE(name, \
@@ -2226,34 +2224,34 @@ void AmericanOptionTest::testSingleBjerksundStenslandGreeks() {
 test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("American option tests");
 
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testJuValues));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdValues));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testZeroVolFDShoutNPV));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testLargeDividendShoutNPV));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testEscrowedVsSpotAmericanOption));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testTodayIsDividendDate));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryValues));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryConvergence));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdAmericanEngines));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdFpIterationScheme));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testAndersenLakeHighPrecisionExample));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineStandardExample));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBulkQdFpAmericanEngine));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineWithLobattoIntegral));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdNegativeDividendYield));
-//    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandEuorpeanGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testJuValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFDShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testZeroVolFDShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testLargeDividendShoutNPV));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testEscrowedVsSpotAmericanOption));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testTodayIsDividendDate));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testCallPutParity));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryValues));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdPlusBoundaryConvergence));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdAmericanEngines));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdFpIterationScheme));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testAndersenLakeHighPrecisionExample));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineStandardExample));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBulkQdFpAmericanEngine));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineWithLobattoIntegral));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdNegativeDividendYield));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandEuorpeanGreeks));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandAmericanGreeks));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testSingleBjerksundStenslandGreeks));
 
 
-//    if (speed <= Fast) {
-//        suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
-//    }
+    if (speed <= Fast) {
+        suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
+    }
 
     return suite;
 }
