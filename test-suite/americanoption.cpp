@@ -2197,7 +2197,7 @@ void AmericanOptionTest::testSingleBjerksundStenslandGreeks() {
 
     const auto report = [=](
         Real value, Real expectedValue, std::string name) {
-        const Real tol = 1e-10;
+        const Real tol = 1e5*QL_EPSILON;
         const Real error = std::abs(value-expectedValue);
         if (error > tol)
             REPORT_FAILURE(name, \

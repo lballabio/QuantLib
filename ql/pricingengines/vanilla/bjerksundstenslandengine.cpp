@@ -26,6 +26,8 @@
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <utility>
+#include <cmath>
+
 
 namespace QuantLib {
 
@@ -50,7 +52,7 @@ namespace QuantLib {
             const Real lis = std::log(I/S);
             const Real sv = std::sqrt(v);
 
-            return std::exp(bT*gamma - rT + ((-1 +gamma)*gamma*v)/2.)*((-(std::pow(I/S,2*(gamma + bT/v))/(std::exp(squared(2*bT - v + 2*gamma*v + 4*lis + 2*lsh)/(8.*v))*I))- 1/(std::exp(squared(2*bT - v + 2*gamma*v + 2*lsh)/(8.*v))*S))/(M_SQRT2*M_SQRTPI*sv) +(std::pow(I/S,2*(gamma + bT/v))*(2*bT + (-1 + 2*gamma)*v)*erfc((2*bT- v + 2*gamma*v + 4*lis + 2*lsh)/(2.*M_SQRT2*sv)))/(2.*I*v));
+            return std::exp(bT*gamma - rT + ((-1 +gamma)*gamma*v)/2.)*((-(std::pow(I/S,2*(gamma + bT/v))/(std::exp(squared(2*bT - v + 2*gamma*v + 4*lis + 2*lsh)/(8.*v))*I))- 1/(std::exp(squared(2*bT - v + 2*gamma*v + 2*lsh)/(8.*v))*S))/(M_SQRT2*M_SQRTPI*sv) +(std::pow(I/S,2*(gamma + bT/v))*(2*bT + (-1 + 2*gamma)*v)*std::erfc((2*bT- v + 2*gamma*v + 4*lis + 2*lsh)/(2.*M_SQRT2*sv)))/(2.*I*v));
         }
 
         Real phi_SS(Real S, Real gamma, Real H, Real I, Real rT, Real bT, Real v) {
@@ -60,7 +62,7 @@ namespace QuantLib {
             const Real ex = std::exp(squared(2*bT - v + 2*gamma*v + 4*lis + 2*lsh)/(8.*v));
             const Real ey = std::exp(squared(2*bT + (-1 + 2*gamma)*v + 2*lsh)/(8.*v));
 
-            return (std::exp(bT*gamma - rT + ((-1 +gamma)*gamma*v)/2.)*((M_SQRT2*I*v*sv)/ey +(2*M_SQRT2*std::pow(I/S,2*(gamma + bT/v))*S*sv*(2*bT +(-1 + 2*gamma)*v))/ex -2*std::sqrt(M_PI)*std::pow(I/S,2*(gamma + bT/v))*S*(bT +gamma*v)*(2*bT + (-1 + 2*gamma)*v)*erfc((2*bT - v + 2*gamma*v +4*lis + 2*lsh)/(2.*M_SQRT2*sv)) +(M_SQRT2*I*sv*(bT + (-0.5 + gamma)*v +lsh))/ey - (std::pow(I/S,2*(gamma + bT/v))*S*sv*(2*bT - 3*v + 2*gamma*v + 4*lis +2*lsh))/(M_SQRT2*ex)))/(2.*I*M_SQRTPI*squared(S*v));
+            return (std::exp(bT*gamma - rT + ((-1 +gamma)*gamma*v)/2.)*((M_SQRT2*I*v*sv)/ey +(2*M_SQRT2*std::pow(I/S,2*(gamma + bT/v))*S*sv*(2*bT +(-1 + 2*gamma)*v))/ex -2*std::sqrt(M_PI)*std::pow(I/S,2*(gamma + bT/v))*S*(bT +gamma*v)*(2*bT + (-1 + 2*gamma)*v)*std::erfc((2*bT - v + 2*gamma*v +4*lis + 2*lsh)/(2.*M_SQRT2*sv)) +(M_SQRT2*I*sv*(bT + (-0.5 + gamma)*v +lsh))/ey - (std::pow(I/S,2*(gamma + bT/v))*S*sv*(2*bT - 3*v + 2*gamma*v + 4*lis +2*lsh))/(M_SQRT2*ex)))/(2.*I*M_SQRTPI*squared(S*v));
         }
 
         Real phi_gamma(Real S, Real gamma, Real H, Real I, Real rT, Real bT, Real v) {
@@ -68,7 +70,7 @@ namespace QuantLib {
             const Real lis = std::log(I/S);
             const Real sv = std::sqrt(v);
 
-            return std::exp(bT*gamma - rT + ((-1 + gamma)*gamma*v)/2)*(((-std::exp(-squared(2*bT - v + 2*gamma*v +2*lsh)/(8*v)) + std::pow(I/S,-1 + 2*gamma +(2*bT)/v)/std::exp(squared(2*bT - v + 2*gamma*v + 4*lis +2*lsh)/(8*v)))*sv)/(M_SQRT2*M_SQRTPI) + ((2*bT+ (-1 + 2*gamma)*v)*erfc((2*bT + (-1 + 2*gamma)*v +2*lsh)/(2.*M_SQRT2*sv)))/4. -(std::pow(I/S,-1 + 2*gamma + (2*bT)/v)*erfc((2*bT - v + 2*gamma*v + 4*lis +2*lsh)/(2.*M_SQRT2*sv))*(2*bT + (-1 + 2*gamma)*v + 4*lis))/4.);
+            return std::exp(bT*gamma - rT + ((-1 + gamma)*gamma*v)/2)*(((-std::exp(-squared(2*bT - v + 2*gamma*v +2*lsh)/(8*v)) + std::pow(I/S,-1 + 2*gamma +(2*bT)/v)/std::exp(squared(2*bT - v + 2*gamma*v + 4*lis +2*lsh)/(8*v)))*sv)/(M_SQRT2*M_SQRTPI) + ((2*bT+ (-1 + 2*gamma)*v)*std::erfc((2*bT + (-1 + 2*gamma)*v +2*lsh)/(2.*M_SQRT2*sv)))/4. -(std::pow(I/S,-1 + 2*gamma + (2*bT)/v)*std::erfc((2*bT - v + 2*gamma*v + 4*lis +2*lsh)/(2.*M_SQRT2*sv))*(2*bT + (-1 + 2*gamma)*v + 4*lis))/4.);
         }
 
         Real phi_H(Real S, Real gamma, Real H, Real I, Real rT, Real bT, Real v) {
@@ -82,12 +84,12 @@ namespace QuantLib {
             const Real lis = std::log(I/S);
             const Real sv = std::sqrt(v);
 
-            return (std::exp(bT*gamma - rT + ((-1 + gamma)*gamma*v)/2.)*std::pow(I/S,2*(gamma + bT/v))*S*((2*std::sqrt(2/M_PI))/(std::exp(squared(2*bT - v + 2*gamma*v + 4*lis + 2*lsh)/(8.*v))*sv) + (1 - 2*gamma - (2*bT)/v)*erfc((2*bT - v + 2*gamma*v + 4*lis +2*lsh)/(2.*M_SQRT2*sv))))/(2.*I*I);
+            return (std::exp(bT*gamma - rT + ((-1 + gamma)*gamma*v)/2.)*std::pow(I/S,2*(gamma + bT/v))*S*((2*std::sqrt(2/M_PI))/(std::exp(squared(2*bT - v + 2*gamma*v + 4*lis + 2*lsh)/(8.*v))*sv) + (1 - 2*gamma - (2*bT)/v)*std::erfc((2*bT - v + 2*gamma*v + 4*lis +2*lsh)/(2.*M_SQRT2*sv))))/(2.*I*I);
         }
 
         Real phi_rt(Real S, Real gamma, Real H, Real I, Real rT, Real bT, Real v) {
             const Real lsh = std::log(S/H);
-            return (std::exp(bT*gamma - rT + ((-1 + gamma)*gamma*v)/2.)*(-(I*erfc((2*bT- v + 2*gamma*v + 2*lsh)/(2.*std::sqrt(2*v)))) +std::pow(I/S,2*(gamma + bT/v))*S*erfc((2*bT - v + 2*gamma*v + 4*std::log(I/S) +2*lsh)/(2.*std::sqrt(2*v)))))/(2.*I);
+            return (std::exp(bT*gamma - rT + ((-1 + gamma)*gamma*v)/2.)*(-(I*std::erfc((2*bT- v + 2*gamma*v + 2*lsh)/(2.*std::sqrt(2*v)))) +std::pow(I/S,2*(gamma + bT/v))*S*std::erfc((2*bT - v + 2*gamma*v + 4*std::log(I/S) +2*lsh)/(2.*std::sqrt(2*v)))))/(2.*I);
         }
 
         Real phi_bt(Real S, Real gamma, Real H, Real I, Real rT, Real bT, Real v) {
@@ -95,16 +97,16 @@ namespace QuantLib {
             const Real lis = std::log(I/S);
             const Real sv = std::sqrt(v);
 
-            return (std::exp(bT*gamma - rT + ((-1 + gamma)*gamma*v)/2.)*(M_SQRT2*(-(I/std::exp(squared(2*bT - v +2*gamma*v + 2*lsh)/(8.*v))) + (std::pow(I/S,2*(gamma +bT/v))*S)/std::exp(squared(2*bT - v + 2*gamma*v + 4*lis +2*lsh)/(8.*v)))*sv + gamma*I*std::sqrt(M_PI)*v*erfc((2*bT - v + 2*gamma*v +2*lsh)/(2.*M_SQRT2*sv)) - M_SQRTPI*std::pow(I/S,2*(gamma + bT/v))*S*erfc((2*bT - v +2*gamma*v + 4*lis + 2*lsh)/(2.*M_SQRT2*sv))*(gamma*v +2*lis)))/(2.*I*std::sqrt(M_PI)*v);
+            return (std::exp(bT*gamma - rT + ((-1 + gamma)*gamma*v)/2.)*(M_SQRT2*(-(I/std::exp(squared(2*bT - v +2*gamma*v + 2*lsh)/(8.*v))) + (std::pow(I/S,2*(gamma +bT/v))*S)/std::exp(squared(2*bT - v + 2*gamma*v + 4*lis +2*lsh)/(8.*v)))*sv + gamma*I*std::sqrt(M_PI)*v*std::erfc((2*bT - v + 2*gamma*v +2*lsh)/(2.*M_SQRT2*sv)) - M_SQRTPI*std::pow(I/S,2*(gamma + bT/v))*S*std::erfc((2*bT - v +2*gamma*v + 4*lis + 2*lsh)/(2.*M_SQRT2*sv))*(gamma*v +2*lis)))/(2.*I*std::sqrt(M_PI)*v);
         }
 
         Real phi_v(Real S, Real gamma, Real H, Real I, Real rT, Real bT, Real v) {
             const Real lsh = std::log(S/H);
             const Real lis = std::log(I/S);
             const Real sv = std::sqrt(v);
-            const Real er = erfc((2*bT - v + 2*gamma*v + 4*lis + 2*lsh)/(2.*M_SQRT2*sv));
+            const Real er = std::erfc((2*bT - v + 2*gamma*v + 4*lis + 2*lsh)/(2.*M_SQRT2*sv));
 
-            return (std::exp(bT*gamma - rT + ((-1 + gamma)*gamma*v)/2.)*(((-1 +gamma)*gamma*(I*erfc((2*bT - v + 2*gamma*v + 2*lsh)/(2.*M_SQRT2*sv)) -std::pow(I/S,2*(gamma + bT/v))*S*er))/(2.*I) +(2*bT*std::pow(I/S,-1 + 2*gamma + (2*bT)/v)*er*lis)/(v*v)+ (2*bT + v - 2*gamma*v + 2*lsh)/(2.*std::exp(std::pow(2*bT + (-1 + 2*gamma)*v +2*lsh,2)/(8.*v))*M_SQRT2*M_SQRTPI*v*sv) -(std::pow(I/S,-1 + 2*gamma + (2*bT)/v)*(2*bT + v - 2*gamma*v +4*lis + 2*lsh))/(2.*std::exp(squared(2*bT - v + 2*gamma*v + 4*lis + 2*lsh)/(8.*v))*M_SQRT2*M_SQRTPI*v*sv)))/2.;
+            return (std::exp(bT*gamma - rT + ((-1 + gamma)*gamma*v)/2.)*(((-1 +gamma)*gamma*(I*std::erfc((2*bT - v + 2*gamma*v + 2*lsh)/(2.*M_SQRT2*sv)) -std::pow(I/S,2*(gamma + bT/v))*S*er))/(2.*I) +(2*bT*std::pow(I/S,-1 + 2*gamma + (2*bT)/v)*er*lis)/(v*v)+ (2*bT + v - 2*gamma*v + 2*lsh)/(2.*std::exp(std::pow(2*bT + (-1 + 2*gamma)*v +2*lsh,2)/(8.*v))*M_SQRT2*M_SQRTPI*v*sv) -(std::pow(I/S,-1 + 2*gamma + (2*bT)/v)*(2*bT + v - 2*gamma*v +4*lis + 2*lsh))/(2.*std::exp(squared(2*bT - v + 2*gamma*v + 4*lis + 2*lsh)/(8.*v))*M_SQRT2*M_SQRTPI*v*sv)))/2.;
         }
     }
 
