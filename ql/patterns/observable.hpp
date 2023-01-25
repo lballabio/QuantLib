@@ -119,7 +119,7 @@ namespace QuantLib {
         virtual ~Observer();
 
         // observer interface
-        std::pair<iterator, bool>
+        virtual std::pair<iterator, bool>
         registerWith(const ext::shared_ptr<Observable>&);
 
         /*! register with all observables of a given observer. Note
@@ -294,7 +294,7 @@ namespace QuantLib {
         Observer& operator=(const Observer&);
         virtual ~Observer();
         // observer interface
-        std::pair<iterator, bool>
+        virtual std::pair<iterator, bool>
         registerWith(const ext::shared_ptr<Observable>&);
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer

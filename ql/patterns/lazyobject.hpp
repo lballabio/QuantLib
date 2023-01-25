@@ -38,6 +38,8 @@ namespace QuantLib {
         //! \name Observer interface
         //@{
         void update() override;
+        std::pair<Observer::iterator, bool>
+        registerWith(const ext::shared_ptr<Observable>&) override;
         //@}
         /*! \name Calculations
             These methods do not modify the structure of the object
@@ -178,6 +180,12 @@ namespace QuantLib {
         }
     }
 
+    inline std::pair<Observer::iterator, bool>
+    LazyObject::registerWith(const ext::shared_ptr<Observable>& h) {
+        if (auto l = boost::dynamic_pointer_cast<LazyObject>(h))
+            l->alwaysForwardNotifications();
+        return Observer::registerWith(h);
+    }
 }
 
 #endif

@@ -82,11 +82,6 @@ namespace QuantLib {
         underlying_->deepUpdate();
     }
 
-    void CappedFlooredCoupon::alwaysForwardNotifications() {
-        LazyObject::alwaysForwardNotifications();
-        underlying_->alwaysForwardNotifications();
-    }
-
     void CappedFlooredCoupon::performCalculations() const {
         QL_REQUIRE(underlying_->pricer(), "pricer not set");
         Rate swapletRate = underlying_->rate();

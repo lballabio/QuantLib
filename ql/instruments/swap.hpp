@@ -63,10 +63,6 @@ namespace QuantLib {
         Swap(const std::vector<Leg>& legs,
              const std::vector<bool>& payer);
         //@}
-        //! \name LazyObject interface
-        //@{
-        void alwaysForwardNotifications() override;
-        //@}
         //! \name Observable interface
         //@{
         void deepUpdate() override;

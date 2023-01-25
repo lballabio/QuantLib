@@ -35,7 +35,6 @@ namespace QuantLib {
               underlying->isInArrears()),
           underlying_(underlying) {
         registerWith(underlying_);
-        underlying_->alwaysForwardNotifications();
     }
 
     void StrippedCappedFlooredCoupon::deepUpdate() {

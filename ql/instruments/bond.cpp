@@ -353,15 +353,6 @@ namespace QuantLib {
         redemptions_.push_back(redemption);
     }
 
-    void Bond::alwaysForwardNotifications() {
-        for (auto& cashflow : cashflows_) {
-            if(auto lazy = ext::dynamic_pointer_cast<LazyObject>(cashflow)) {
-                lazy->alwaysForwardNotifications();
-            }
-        }
-        LazyObject::alwaysForwardNotifications();
-    }
-
     void Bond::deepUpdate() {
         for (auto& cashflow : cashflows_) {
             if(auto lazy = ext::dynamic_pointer_cast<LazyObject>(cashflow)) {

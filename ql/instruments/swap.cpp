@@ -167,16 +167,6 @@ namespace QuantLib {
         update();
     }
 
-    void Swap::alwaysForwardNotifications() {
-        for (auto& leg : legs_) {
-            for (auto& k : leg) {
-                if (auto lazy = ext::dynamic_pointer_cast<LazyObject>(k))
-                    lazy->alwaysForwardNotifications();
-            }
-        }
-        LazyObject::alwaysForwardNotifications();
-    }
-
     void Swap::arguments::validate() const {
         QL_REQUIRE(legs.size() == payer.size(),
                    "number of legs and multipliers differ");
