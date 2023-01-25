@@ -45,6 +45,11 @@ namespace QuantLib {
       private:
         OneAssetOption::results americanCallApproximation(
             Real S, Real X, Real rfD, Real dD, Real variance) const;
+        OneAssetOption::results europeanCallResults(
+            Real S, Real X, Real rfD, Real dD, Real variance) const;
+        OneAssetOption::results immediateExercise(Real S, Real X) const;
+
+
         ext::shared_ptr<GeneralizedBlackScholesProcess> process_;
     };
 

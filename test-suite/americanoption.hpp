@@ -53,6 +53,7 @@ class AmericanOptionTest {
     static void testQdNegativeDividendYield();
     static void testBjerksundStenslandEuorpeanGreeks();
     static void testBjerksundStenslandAmericanGreeks();
+    static void testSingleBjerksundStenslandGreeks();
 
     static boost::unit_test_framework::test_suite* suite(SpeedLevel);
 };
