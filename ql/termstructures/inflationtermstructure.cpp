@@ -32,7 +32,11 @@ namespace QuantLib {
     : TermStructure(dayCounter),
       observationLag_(observationLag), frequency_(frequency),
       baseRate_(baseRate) {
-        setSeasonality(seasonality);
+        if (seasonality != nullptr) {
+            QL_REQUIRE(seasonality->isConsistent(*this),
+                       "Seasonality inconsistent with inflation term structure");
+            seasonality_ = seasonality;
+        }
     }
 
     InflationTermStructure::InflationTermStructure(
@@ -46,7 +50,11 @@ namespace QuantLib {
     : TermStructure(referenceDate, calendar, dayCounter),
       observationLag_(observationLag), frequency_(frequency),
       baseRate_(baseRate) {
-        setSeasonality(seasonality);
+        if (seasonality != nullptr) {
+            QL_REQUIRE(seasonality->isConsistent(*this),
+                       "Seasonality inconsistent with inflation term structure");
+            seasonality_ = seasonality;
+        }
     }
 
     InflationTermStructure::InflationTermStructure(
@@ -60,7 +68,11 @@ namespace QuantLib {
     : TermStructure(settlementDays, calendar, dayCounter),
       observationLag_(observationLag), frequency_(frequency),
       baseRate_(baseRate) {
-        setSeasonality(seasonality);
+        if (seasonality != nullptr) {
+            QL_REQUIRE(seasonality->isConsistent(*this),
+                       "Seasonality inconsistent with inflation term structure");
+            seasonality_ = seasonality;
+        }
     }
 
     void InflationTermStructure::setSeasonality(
@@ -69,10 +81,9 @@ namespace QuantLib {
         seasonality_ = seasonality;
         if (seasonality_ != nullptr) {
             QL_REQUIRE(seasonality_->isConsistent(*this),
-                       "Seasonality inconsistent with "
-                       "inflation term structure");
+                       "Seasonality inconsistent with inflation term structure");
         }
-        notifyObservers();
+        update();
     }
 
 
