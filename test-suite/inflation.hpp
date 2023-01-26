@@ -30,6 +30,7 @@ public:
     static void testPeriod();
     static void testZeroIndex();
     static void testZeroTermStructure();
+    static void testSeasonalityCorrection();
     static void testZeroIndexFutureFixing();
     static void testInterpolatedZeroTermStructure();
     static void testYYIndex();
