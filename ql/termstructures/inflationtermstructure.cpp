@@ -29,13 +29,12 @@ namespace QuantLib {
                                         Frequency frequency,
                                         const DayCounter& dayCounter,
                                         const ext::shared_ptr<Seasonality> &seasonality)
-    : TermStructure(dayCounter),
+    : TermStructure(dayCounter), seasonality_(seasonality),
       observationLag_(observationLag), frequency_(frequency),
       baseRate_(baseRate) {
-        if (seasonality != nullptr) {
-            QL_REQUIRE(seasonality->isConsistent(*this),
+        if (seasonality_ != nullptr) {
+            QL_REQUIRE(seasonality_->isConsistent(*this),
                        "Seasonality inconsistent with inflation term structure");
-            seasonality_ = seasonality;
         }
     }
 
@@ -47,13 +46,11 @@ namespace QuantLib {
                                         const Calendar& calendar,
                                         const DayCounter& dayCounter,
                                         const ext::shared_ptr<Seasonality> &seasonality)
-    : TermStructure(referenceDate, calendar, dayCounter),
-      observationLag_(observationLag), frequency_(frequency),
-      baseRate_(baseRate) {
-        if (seasonality != nullptr) {
-            QL_REQUIRE(seasonality->isConsistent(*this),
+    : TermStructure(referenceDate, calendar, dayCounter), seasonality_(seasonality),
+      observationLag_(observationLag), frequency_(frequency), baseRate_(baseRate) {
+        if (seasonality_ != nullptr) {
+            QL_REQUIRE(seasonality_->isConsistent(*this),
                        "Seasonality inconsistent with inflation term structure");
-            seasonality_ = seasonality;
         }
     }
 
@@ -65,13 +62,12 @@ namespace QuantLib {
                                         Frequency frequency,
                                         const DayCounter &dayCounter,
                                         const ext::shared_ptr<Seasonality> &seasonality)
-    : TermStructure(settlementDays, calendar, dayCounter),
+    : TermStructure(settlementDays, calendar, dayCounter), seasonality_(seasonality),
       observationLag_(observationLag), frequency_(frequency),
       baseRate_(baseRate) {
-        if (seasonality != nullptr) {
-            QL_REQUIRE(seasonality->isConsistent(*this),
+        if (seasonality_ != nullptr) {
+            QL_REQUIRE(seasonality_->isConsistent(*this),
                        "Seasonality inconsistent with inflation term structure");
-            seasonality_ = seasonality;
         }
     }
 
