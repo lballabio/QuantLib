@@ -484,10 +484,6 @@ namespace QuantLib {
         if (ext::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff)
                 ->optionType() == Option::Put) {
 
-            // swap greeks w.r.t. S <-> K and r <-> q
-            std::swap(spot, strike);
-            std::swap(riskFreeDiscount, dividendDiscount);
-
             std::swap(results_.delta, results_.strikeSensitivity);
 
             Real tmp = results_.gamma;
