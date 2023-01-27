@@ -1861,7 +1861,7 @@ void AmericanOptionTest::testQdNegativeDividendYield() {
     }
 }
 
-void AmericanOptionTest::testBjerksundStenslandEuorpeanGreeks() {
+void AmericanOptionTest::testBjerksundStenslandEuropeanGreeks() {
     BOOST_TEST_MESSAGE("Testing Bjerksund-Stensland greeks when early "
                        "exercise is not optimal...");
 
@@ -2244,7 +2244,7 @@ test_suite* AmericanOptionTest::suite(SpeedLevel speed) {
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBulkQdFpAmericanEngine));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdEngineWithLobattoIntegral));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testQdNegativeDividendYield));
-    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandEuorpeanGreeks));
+    suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandEuropeanGreeks));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandAmericanGreeks));
     suite->add(QUANTLIB_TEST_CASE(&AmericanOptionTest::testSingleBjerksundStenslandGreeks));
 

@@ -51,7 +51,7 @@ class AmericanOptionTest {
     static void testBulkQdFpAmericanEngine();
     static void testQdEngineWithLobattoIntegral();
     static void testQdNegativeDividendYield();
-    static void testBjerksundStenslandEuorpeanGreeks();
+    static void testBjerksundStenslandEuropeanGreeks();
     static void testBjerksundStenslandAmericanGreeks();
     static void testSingleBjerksundStenslandGreeks();
 
