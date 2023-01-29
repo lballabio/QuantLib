@@ -4,14 +4,10 @@ AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    hestonslvfdmmodel.hpp \
-    hestonslvmcmodel.hpp \
     normalclvmodel.hpp \
     squarerootclvmodel.hpp
 
 cpp_files = \
-    hestonslvfdmmodel.cpp \
-    hestonslvmcmodel.cpp \
     normalclvmodel.cpp \
     squarerootclvmodel.cpp
 

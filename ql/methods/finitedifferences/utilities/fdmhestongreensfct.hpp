@@ -24,7 +24,7 @@
 #ifndef quantlib_fdm_heston_greens_fct_hpp
 #define quantlib_fdm_heston_greens_fct_hpp
 
-#include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmsquarerootfwdop.hpp>
 
 namespace QuantLib {
 

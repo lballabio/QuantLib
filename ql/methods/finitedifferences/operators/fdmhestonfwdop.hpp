@@ -26,7 +26,7 @@
 #define quantlib_fdm_heston_fwd_op_hpp
 
 #include <ql/types.hpp>
-#include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmsquarerootfwdop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopcomposite.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
 

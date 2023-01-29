@@ -21,11 +21,11 @@
     \brief Heston Fokker-Planck Green's function
 */
 
-#include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearopiterator.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmhestongreensfct.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <utility>

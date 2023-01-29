@@ -4,13 +4,9 @@ AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
     all.hpp \
-    analyticdoublebarrierbinaryengine.hpp \
-	analyticdoublebarrierengine.hpp \
 	mcdoublebarrierengine.hpp \
     binomialdoublebarrierengine.hpp \
     discretizeddoublebarrieroption.hpp \
-    doublebarrieroption.hpp \
-    doublebarriertype.hpp \
     perturbativebarrieroptionengine.hpp \
     quantodoublebarrieroption.hpp \
     suowangdoublebarrierengine.hpp \
@@ -19,12 +15,8 @@ this_include_HEADERS = \
     vannavolgainterpolation.hpp
 
 cpp_files = \
-    analyticdoublebarrierbinaryengine.cpp \
-	analyticdoublebarrierengine.cpp \
 	mcdoublebarrierengine.cpp \
     discretizeddoublebarrieroption.cpp \
-    doublebarrieroption.cpp \
-    doublebarriertype.cpp \
     perturbativebarrieroptionengine.cpp \
     quantodoublebarrieroption.cpp \
     suowangdoublebarrierengine.cpp \

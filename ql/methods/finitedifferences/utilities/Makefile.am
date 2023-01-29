@@ -14,6 +14,7 @@ this_include_HEADERS = \
 	fdmdiscountdirichletboundary.hpp \
 	fdmdividendhandler.hpp \
 	fdmescrowedloginnervaluecalculator.hpp \
+	fdmhestongreensfct.hpp \
 	fdmindicesonboundary.hpp \
 	fdminnervaluecalculator.hpp \
 	fdmshoutloginnervaluecalculator.hpp \
@@ -36,6 +37,7 @@ cpp_files = \
 	fdmdiscountdirichletboundary.cpp \
 	fdmdividendhandler.cpp \
 	fdmescrowedloginnervaluecalculator.cpp \
+	fdmhestongreensfct.cpp \
 	fdmindicesonboundary.cpp \
 	fdminnervaluecalculator.cpp \
 	fdmshoutloginnervaluecalculator.cpp \

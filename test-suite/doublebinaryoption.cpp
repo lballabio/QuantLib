@@ -23,8 +23,8 @@ Copyright (C) 2015 Thema Consulting SA
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
-#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
 #include <ql/experimental/barrieroption/binomialdoublebarrierengine.hpp>
 #include <ql/utilities/dataformatters.hpp>
 

@@ -26,7 +26,7 @@
 
 #include <ql/discretizedasset.hpp>
 #include <ql/methods/lattices/bsmlattice.hpp>
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/pricingengines/vanilla/discretizedvanillaoption.hpp>
 
 namespace QuantLib {

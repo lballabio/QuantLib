@@ -26,6 +26,8 @@ this_include_HEADERS = \
 	dividendbarrieroption.hpp \
     dividendschedule.hpp \
     dividendvanillaoption.hpp \
+    doublebarrieroption.hpp \
+    doublebarriertype.hpp \
     europeanoption.hpp \
     fixedratebondforward.hpp \
     floatfloatswap.hpp \
@@ -86,6 +88,8 @@ cpp_files = \
     creditdefaultswap.cpp \
 	dividendbarrieroption.cpp \
     dividendvanillaoption.cpp \
+    doublebarrieroption.cpp \
+    doublebarriertype.cpp \
     europeanoption.cpp \
     floatfloatswap.cpp \
     floatfloatswaption.cpp \

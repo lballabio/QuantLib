@@ -15,6 +15,7 @@ this_include_HEADERS = \
 	gsrprocess.hpp \
 	gsrprocesscore.hpp \
 	hestonprocess.hpp \
+	hestonslvprocess.hpp \
 	hullwhiteprocess.hpp \
 	hybridhestonhullwhiteprocess.hpp \
 	jointstochasticprocess.hpp \
@@ -37,6 +38,7 @@ cpp_files = \
 	gsrprocess.cpp \
 	gsrprocesscore.cpp \
 	hestonprocess.cpp \
+	hestonslvprocess.cpp \
 	hullwhiteprocess.cpp \
 	hybridhestonhullwhiteprocess.cpp \
 	jointstochasticprocess.cpp \

@@ -18,9 +18,9 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/instruments/impliedvolatility.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
 #include <memory>
 
 namespace QuantLib {

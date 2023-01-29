@@ -23,8 +23,8 @@
 
 #include <ql/math/functional.hpp>
 #include <ql/termstructures/volatility/equityfx/fixedlocalvolsurface.hpp>
-#include <ql/experimental/models/hestonslvmcmodel.hpp>
-#include <ql/experimental/processes/hestonslvprocess.hpp>
+#include <ql/models/equity/hestonslvmcmodel.hpp>
+#include <ql/processes/hestonslvprocess.hpp>
 
 #pragma push_macro("BOOST_DISABLE_ASSERTS")
 #ifndef BOOST_DISABLE_ASSERTS

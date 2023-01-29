@@ -24,12 +24,12 @@
 #ifndef quantlib_fd_heston_double_barrier_engine_hpp
 #define quantlib_fd_heston_double_barrier_engine_hpp
 
+#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/pricingengines/genericmodelengine.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmhestonsolver.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/termstructures/volatility/equityfx/localvoltermstructure.hpp>
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
 
 
 namespace QuantLib {

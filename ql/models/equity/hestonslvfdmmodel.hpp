@@ -30,7 +30,7 @@
 #include <ql/patterns/observable.hpp>
 #include <ql/methods/finitedifferences/solvers/fdmbackwardsolver.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
-#include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmhestongreensfct.hpp>
 
 #include <list>
 
