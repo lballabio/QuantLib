@@ -29,8 +29,6 @@
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/fdmsquarerootfwdop.hpp>
 #include <ql/methods/finitedifferences/operators/modtriplebandlinearop.hpp>
-#include <boost/math/special_functions/gamma.hpp>
-#include <boost/math/distributions/non_central_chi_squared.hpp>
 
 namespace QuantLib {
 
