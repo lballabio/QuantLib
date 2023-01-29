@@ -7,7 +7,7 @@ this_include_HEADERS = \
     analyticdoublebarrierbinaryengine.hpp \
     analyticbarrierengine.hpp \
 	analyticbinarybarrierengine.hpp \
-	analyticdoublebarrierengine.hpp \
+    analyticdoublebarrierengine.hpp \
 	binomialbarrierengine.hpp \
     discretizedbarrieroption.hpp \
 	fdblackscholesbarrierengine.hpp \

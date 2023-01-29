@@ -28,6 +28,7 @@
 class DoubleBinaryOptionTest {
   public:
     static void testHaugValues();
+    static void testPdeDoubleBarrierWithAnalytical();
     static boost::unit_test_framework::test_suite* suite();
 };
 
