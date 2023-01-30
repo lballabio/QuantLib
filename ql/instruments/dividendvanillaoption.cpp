@@ -56,7 +56,9 @@ namespace QuantLib {
         std::unique_ptr<PricingEngine> engine;
         switch (exercise_->type()) {
           case Exercise::European:
+              QL_DEPRECATED_DISABLE_WARNING
               engine = std::make_unique<AnalyticDividendEuropeanEngine>(newProcess);
+              QL_DEPRECATED_ENABLE_WARNING
               break;
           case Exercise::American:
               engine = std::make_unique<FdBlackScholesVanillaEngine>(newProcess);
