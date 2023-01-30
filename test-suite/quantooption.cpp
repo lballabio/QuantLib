@@ -32,7 +32,7 @@
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
 #include <ql/pricingengines/barrier/analyticbarrierengine.hpp>
-#include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/quanto/quantoengine.hpp>
 #include <ql/pricingengines/forward/forwardperformanceengine.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>

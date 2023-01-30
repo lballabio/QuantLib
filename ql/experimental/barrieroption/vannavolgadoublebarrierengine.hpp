@@ -24,7 +24,7 @@
 #ifndef quantlib_vanna_volga_double_barrier_engine_hpp
 #define quantlib_vanna_volga_double_barrier_engine_hpp
 
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/experimental/barrieroption/vannavolgainterpolation.hpp>
 #include <ql/experimental/fx/blackdeltacalculator.hpp>
 #include <ql/experimental/fx/deltavolquote.hpp>

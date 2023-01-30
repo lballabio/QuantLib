@@ -403,6 +403,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(GJRGARCHModelTest::suite(speed));
     test->add(GsrTest::suite());
     test->add(HestonModelTest::suite(speed));
+    test->add(HestonSLVModelTest::suite(speed));
     test->add(HybridHestonHullWhiteProcessTest::suite(speed));
     test->add(IndexTest::suite());
     test->add(InflationTest::suite());
@@ -497,7 +498,6 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ExtensibleOptionsTest::suite());
     test->add(GaussianQuadraturesTest::experimental());
     test->add(HestonModelTest::experimental());
-    test->add(HestonSLVModelTest::experimental(speed));
     test->add(HimalayaOptionTest::suite());
     test->add(InflationCPICapFloorTest::suite());
     test->add(InflationVolTest::suite());

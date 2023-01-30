@@ -25,7 +25,7 @@
 #define quantlib_mc_double_barrier_engines_hpp
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/pricingengines/mcsimulation.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <utility>

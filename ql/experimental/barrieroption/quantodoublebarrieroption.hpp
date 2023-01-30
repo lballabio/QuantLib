@@ -25,7 +25,7 @@
 #define quantlib_quanto_double_barrier_option_hpp
 
 #include <ql/instruments/quantovanillaoption.hpp>
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
 
 namespace QuantLib {
 
