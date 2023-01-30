@@ -41,21 +41,21 @@ namespace QuantLib {
                                const Period& observationLag,
                                Frequency frequency,
                                const DayCounter& dayCounter = DayCounter(),
-                               const ext::shared_ptr<Seasonality> &seasonality = {});
+                               ext::shared_ptr<Seasonality> seasonality = {});
         InflationTermStructure(const Date& referenceDate,
                                Rate baseRate,
                                const Period& observationLag,
                                Frequency frequency,
                                const Calendar& calendar = Calendar(),
                                const DayCounter& dayCounter = DayCounter(),
-                               const ext::shared_ptr<Seasonality> &seasonality = {});
+                               ext::shared_ptr<Seasonality> seasonality = {});
         InflationTermStructure(Natural settlementDays,
                                const Calendar& calendar,
                                Rate baseRate,
                                const Period& observationLag,
                                Frequency frequency,
                                const DayCounter& dayCounter = DayCounter(),
-                               const ext::shared_ptr<Seasonality> &seasonality = {});
+                               ext::shared_ptr<Seasonality> seasonality = {});
         //@}
 
         //! \name Inflation interface

@@ -28,8 +28,8 @@ namespace QuantLib {
                                         const Period& observationLag,
                                         Frequency frequency,
                                         const DayCounter& dayCounter,
-                                        const ext::shared_ptr<Seasonality> &seasonality)
-    : TermStructure(dayCounter), seasonality_(seasonality),
+                                        ext::shared_ptr<Seasonality> seasonality)
+    : TermStructure(dayCounter), seasonality_(std::move(seasonality)),
       observationLag_(observationLag), frequency_(frequency),
       baseRate_(baseRate) {
         if (seasonality_ != nullptr) {
@@ -45,8 +45,8 @@ namespace QuantLib {
                                         Frequency frequency,
                                         const Calendar& calendar,
                                         const DayCounter& dayCounter,
-                                        const ext::shared_ptr<Seasonality> &seasonality)
-    : TermStructure(referenceDate, calendar, dayCounter), seasonality_(seasonality),
+                                        ext::shared_ptr<Seasonality> seasonality)
+    : TermStructure(referenceDate, calendar, dayCounter), seasonality_(std::move(seasonality)),
       observationLag_(observationLag), frequency_(frequency), baseRate_(baseRate) {
         if (seasonality_ != nullptr) {
             QL_REQUIRE(seasonality_->isConsistent(*this),
@@ -61,8 +61,8 @@ namespace QuantLib {
                                         const Period& observationLag,
                                         Frequency frequency,
                                         const DayCounter &dayCounter,
-                                        const ext::shared_ptr<Seasonality> &seasonality)
-    : TermStructure(settlementDays, calendar, dayCounter), seasonality_(seasonality),
+                                        ext::shared_ptr<Seasonality> seasonality)
+    : TermStructure(settlementDays, calendar, dayCounter), seasonality_(std::move(seasonality)),
       observationLag_(observationLag), frequency_(frequency),
       baseRate_(baseRate) {
         if (seasonality_ != nullptr) {
