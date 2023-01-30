@@ -28,3 +28,4 @@
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/secondordermixedderivativeop.hpp>
 #include <ql/methods/finitedifferences/operators/triplebandlinearop.hpp>
+

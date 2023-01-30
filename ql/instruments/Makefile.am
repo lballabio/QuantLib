@@ -20,10 +20,10 @@ this_include_HEADERS = \
     claim.hpp \
     cliquetoption.hpp \
     compositeinstrument.hpp \
-    cpiswap.hpp \
     cpicapfloor.hpp \
+    cpiswap.hpp \
     creditdefaultswap.hpp \
-	dividendbarrieroption.hpp \
+    dividendbarrieroption.hpp \
     dividendschedule.hpp \
     dividendvanillaoption.hpp \
     doublebarrieroption.hpp \
@@ -61,9 +61,9 @@ this_include_HEADERS = \
     swap.hpp \
     swaption.hpp \
     vanillaoption.hpp \
-	vanillastorageoption.hpp \
-	vanillaswingoption.hpp \
+    vanillastorageoption.hpp \
     vanillaswap.hpp \
+    vanillaswingoption.hpp \
     varianceswap.hpp \
     yearonyearinflationswap.hpp \
     zerocouponinflationswap.hpp \
@@ -83,10 +83,10 @@ cpp_files = \
     claim.cpp \
     cliquetoption.cpp \
     compositeinstrument.cpp \
-    cpiswap.cpp \
     cpicapfloor.cpp \
+    cpiswap.cpp \
     creditdefaultswap.cpp \
-	dividendbarrieroption.cpp \
+    dividendbarrieroption.cpp \
     dividendvanillaoption.cpp \
     doublebarrieroption.cpp \
     doublebarriertype.cpp \
