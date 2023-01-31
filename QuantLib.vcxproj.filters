@@ -1191,9 +1191,6 @@
     <ClInclude Include="ql\math\matrixutilities\choleskydecomposition.hpp">
       <Filter>math\matrixutilities</Filter>
     </ClInclude>
-    <ClInclude Include="ql\math\matrixutilities\expm.hpp">
-      <Filter>math\matrixutilities</Filter>
-    </ClInclude>
     <ClInclude Include="ql\math\matrixutilities\factorreduction.hpp">
       <Filter>math\matrixutilities</Filter>
     </ClInclude>
@@ -3675,6 +3672,9 @@
     <ClInclude Include="ql\experimental\math\convolvedstudentt.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\math\expm.hpp">
+      <Filter>experimental\math</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
@@ -4865,9 +4865,6 @@
       <Filter>math\matrixutilities</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\matrixutilities\choleskydecomposition.cpp">
-      <Filter>math\matrixutilities</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\math\matrixutilities\expm.cpp">
       <Filter>math\matrixutilities</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\matrixutilities\factorreduction.cpp">
@@ -6596,6 +6593,9 @@
       <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp">
+      <Filter>experimental\math</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\experimental\math\expm.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp">

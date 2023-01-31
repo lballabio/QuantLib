@@ -178,6 +178,7 @@ set(QL_SOURCES
     experimental/inflation/yoyoptionlethelpers.cpp
     experimental/lattices/extendedbinomialtree.cpp
     experimental/math/convolvedstudentt.cpp
+    experimental/math/expm.cpp
     experimental/math/fireflyalgorithm.cpp
     experimental/math/gaussiancopulapolicy.cpp
     experimental/math/gaussiannoncentralchisquaredpolynomial.cpp
@@ -378,7 +379,6 @@ set(QL_SOURCES
     math/matrixutilities/basisincompleteordered.cpp
     math/matrixutilities/bicgstab.cpp
     math/matrixutilities/choleskydecomposition.cpp
-    math/matrixutilities/expm.cpp
     math/matrixutilities/factorreduction.cpp
     math/matrixutilities/getcovariance.cpp
     math/matrixutilities/gmres.cpp
@@ -1153,6 +1153,7 @@ set(QL_HEADERS
     experimental/lattices/extendedbinomialtree.hpp
     experimental/math/claytoncopularng.hpp
     experimental/math/convolvedstudentt.hpp
+    experimental/math/expm.hpp
     experimental/math/farliegumbelmorgensterncopularng.hpp
     experimental/math/fireflyalgorithm.hpp
     experimental/math/frankcopularng.hpp
@@ -1455,7 +1456,6 @@ set(QL_HEADERS
     math/matrixutilities/bicgstab.hpp
     math/matrixutilities/choleskydecomposition.hpp
     math/matrixutilities/factorreduction.hpp
-    math/matrixutilities/expm.hpp
     math/matrixutilities/getcovariance.hpp
     math/matrixutilities/gmres.hpp
     math/matrixutilities/pseudosqrt.hpp

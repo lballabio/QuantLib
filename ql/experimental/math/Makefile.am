@@ -6,6 +6,7 @@ this_include_HEADERS = \
     all.hpp \
     claytoncopularng.hpp \
     convolvedstudentt.hpp \
+    expm.hpp \
     farliegumbelmorgensterncopularng.hpp \
     fireflyalgorithm.hpp \
     frankcopularng.hpp \
@@ -29,6 +30,7 @@ this_include_HEADERS = \
 
 cpp_files = \
     convolvedstudentt.cpp \
+    expm.cpp \
     fireflyalgorithm.cpp \
     gaussiancopulapolicy.cpp \
     gaussiannoncentralchisquaredpolynomial.cpp \

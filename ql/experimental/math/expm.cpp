@@ -22,7 +22,7 @@
 */
 
 
-#include <ql/math/matrixutilities/expm.hpp>
+#include <ql/experimental/math/expm.hpp>
 #include <ql/math/ode/adaptiverungekutta.hpp>
 #include <algorithm>
 #include <numeric>
