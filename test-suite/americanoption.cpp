@@ -2195,8 +2195,7 @@ void AmericanOptionTest::testSingleBjerksundStenslandGreeks() {
     const Real expectedVega = 49.2906331545933227;
     const Real expectedTheta = -4.22540293840206704;
 
-    const auto report = [=](
-        Real value, Real expectedValue, std::string name) {
+    const auto report = [=](Real value, Real expectedValue, const std::string& name) {
         const Real tol = 1e6*QL_EPSILON;
         const Real error = std::abs(value-expectedValue);
         if (error > tol)

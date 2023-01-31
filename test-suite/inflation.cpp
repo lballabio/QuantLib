@@ -262,13 +262,13 @@ void InflationTest::testZeroTermStructure() {
     const Real eps = 1.0e-6;
     auto engine = ext::make_shared<DiscountingSwapEngine>(nominalTS);
     
-    for (Size i=0; i<zcData.size(); i++) {
+    for (const auto& datum: zcData) {
         ZeroCouponInflationSwap nzcis(Swap::Payer,
                                       1000000.0,
                                       evaluationDate,
-                                      zcData[i].date,
+                                      datum.date,
                                       calendar, bdc, dc,
-                                      zcData[i].rate/100.0,
+                                      datum.rate/100.0,
                                       ii, observationLag,
                                       CPI::AsIndex);
         nzcis.setPricingEngine(engine);
@@ -277,7 +277,7 @@ void InflationTest::testZeroTermStructure() {
                             "zero-coupon inflation swap does not reprice to zero"
                             << "\n    NPV:      " << nzcis.NPV()
                             << "\n    maturity: " << nzcis.maturityDate()
-                            << "\n    rate:     " << zcData[i].rate);
+                            << "\n    rate:     " << datum.rate);
     }
 
     //===========================================================================================
@@ -333,13 +333,13 @@ void InflationTest::testZeroTermStructure() {
 
     pZITS->setSeasonality(nonUnitSeasonality);
     
-    for (Size i=0; i<zcData.size(); i++) {
+    for (const auto& datum: zcData) {
         ZeroCouponInflationSwap nzcis(Swap::Payer,
                                       1000000.0,
                                       evaluationDate,
-                                      zcData[i].date,
+                                      datum.date,
                                       calendar, bdc, dc,
-                                      zcData[i].rate/100.0,
+                                      datum.rate/100.0,
                                       ii, observationLag,
                                       CPI::AsIndex);
         nzcis.setPricingEngine(engine);
@@ -348,7 +348,7 @@ void InflationTest::testZeroTermStructure() {
                             "zero-coupon inflation swap does not reprice to zero"
                             << "\n    NPV:      " << nzcis.NPV()
                             << "\n    maturity: " << nzcis.maturityDate()
-                            << "\n    rate:     " << zcData[i].rate);
+                            << "\n    rate:     " << datum.rate);
     }
 
     //==============================================================================
@@ -380,13 +380,13 @@ void InflationTest::testZeroTermStructure() {
     //===========================================================================================
     // Test zero coupon swaps
     
-    for (Size i=0; i<zcData.size(); i++) {
+    for (const auto& datum: zcData) {
         ZeroCouponInflationSwap nzcis(Swap::Payer,
                                       1000000.0,
                                       evaluationDate,
-                                      zcData[i].date,
+                                      datum.date,
                                       calendar, bdc, dc,
-                                      zcData[i].rate/100.0,
+                                      datum.rate/100.0,
                                       iiyes, observationLag,
                                       CPI::AsIndex);
         nzcis.setPricingEngine(engine);
@@ -395,7 +395,7 @@ void InflationTest::testZeroTermStructure() {
                             "zero-coupon inflation swap does not reprice to zero"
                             << "\n    NPV:      " << nzcis.NPV()
                             << "\n    maturity: " << nzcis.maturityDate()
-                            << "\n    rate:     " << zcData[i].rate);
+                            << "\n    rate:     " << datum.rate);
     }
 
     //===========================================================================================
@@ -403,13 +403,13 @@ void InflationTest::testZeroTermStructure() {
 
     pZITSyes->setSeasonality(nonUnitSeasonality);
 
-    for (Size i=0; i<zcData.size(); i++) {
+    for (const auto& datum: zcData) {
         ZeroCouponInflationSwap nzcis(Swap::Payer,
                                       1000000.0,
                                       evaluationDate,
-                                      zcData[i].date,
+                                      datum.date,
                                       calendar, bdc, dc,
-                                      zcData[i].rate/100.0,
+                                      datum.rate/100.0,
                                       iiyes, observationLag,
                                       CPI::AsIndex);
         nzcis.setPricingEngine(engine);
@@ -418,7 +418,7 @@ void InflationTest::testZeroTermStructure() {
                             "zero-coupon inflation swap does not reprice to zero"
                             << "\n    NPV:      " << nzcis.NPV()
                             << "\n    maturity: " << nzcis.maturityDate()
-                            << "\n    rate:     " << zcData[i].rate);
+                            << "\n    rate:     " << datum.rate);
     }
 
     // remove circular refernce
