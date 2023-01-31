@@ -20,6 +20,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
@@ -180,14 +181,12 @@ namespace QuantLib {
                                                             arguments_.payoff);
             // Calculate the vanilla option
             
-            ext::shared_ptr<DividendVanillaOption> vanillaOption(
-                ext::make_shared<DividendVanillaOption>(payoff,arguments_.exercise,
-                                          dividendCondition->dividendDates(), 
-                                          dividendCondition->dividends()));
+            auto vanillaOption =
+                ext::make_shared<VanillaOption>(payoff, arguments_.exercise);
             
             vanillaOption->setPricingEngine(
                 ext::make_shared<FdBlackScholesVanillaEngine>(
-                        process_, tGrid_, xGrid_,
+                        process_, dividendSchedule, tGrid_, xGrid_,
                         0, // dampingSteps
                         schemeDesc_, localVol_, illegalLocalVolOverwrite_));
 

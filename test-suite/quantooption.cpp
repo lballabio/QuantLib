@@ -1270,15 +1270,17 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
 
     const Real strike = 105.0;
 
-    DividendVanillaOption option(
+    std::vector<Date> dividendDates = { today + Period(6, Months) };
+    std::vector<Real> dividendAmounts = { 8.0 };
+    auto dividends = DividendVector(dividendDates, dividendAmounts);
+
+    VanillaOption option(
         ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
-        ext::make_shared<AmericanExercise>(maturity),
-        std::vector<Date>(1, today + Period(6, Months)),
-        std::vector<Real>(1, 8.0));
+        ext::make_shared<AmericanExercise>(maturity));
 
     option.setPricingEngine(
         ext::make_shared<FdBlackScholesVanillaEngine>(
-            bsmProcess, quantoHelper, 100, 400, 1));
+            bsmProcess, dividends, quantoHelper, 100, 400, 1));
 
     const Real tol = 1e-4;
     const Real expected = 8.90611734;
@@ -1293,7 +1295,7 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
 
     option.setPricingEngine(
         ext::make_shared<FdBlackScholesVanillaEngine>(
-            bsmProcess, quantoHelper, 100, 400, 1));
+            bsmProcess, dividends, quantoHelper, 100, 400, 1));
 
     const Real localVolCalculated = option.NPV();
     if (std::fabs(expected - localVolCalculated) > tol) {
@@ -1311,6 +1313,11 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
                     << "\n    calculated Black-Scholes: " << bsCalculated);
     }
 
+    DividendVanillaOption divOption(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+        ext::make_shared<AmericanExercise>(maturity),
+        dividendDates, dividendAmounts);
+
     const Real v0    = vol*vol;
     const Real kappa = 1.0;
     const Real theta = v0;
@@ -1322,11 +1329,11 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
             ext::make_shared<HestonProcess>(
                 domesticTS, divTS, spot, v0, kappa, theta, sigma, rho));
 
-    option.setPricingEngine(
+    divOption.setPricingEngine(
         ext::make_shared<FdHestonVanillaEngine>(
             hestonModel, quantoHelper, 100, 400, 3, 1));
 
-    const Real hestonCalculated = option.NPV();
+    const Real hestonCalculated = divOption.NPV();
 
     if (std::fabs(expected - hestonCalculated) > tol) {
         BOOST_ERROR("failed to reproduce American quanto option prices "
@@ -1343,12 +1350,12 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
             ext::make_shared<HestonProcess>(
                 domesticTS, divTS, spot, 0.25*v0, kappa, 0.25*theta, sigma, rho));
 
-    option.setPricingEngine(
+    divOption.setPricingEngine(
         ext::make_shared<FdHestonVanillaEngine>(
             hestonModel05, quantoHelper, 100, 400, 3, 1,
             FdmSchemeDesc::Hundsdorfer(), localConstVol));
 
-    const Real hestoSlvCalculated = option.NPV();
+    const Real hestoSlvCalculated = divOption.NPV();
 
     if (std::fabs(expected - hestoSlvCalculated) > tol) {
         BOOST_ERROR("failed to reproduce American quanto option prices "

@@ -1463,8 +1463,7 @@ void EuropeanOptionTest::testAnalyticEngineDiscountCurve() {
 
 
 void EuropeanOptionTest::testPDESchemes() {
-    BOOST_TEST_MESSAGE("Testing different PDE schemes "
-            "to solve Black-Scholes PDEs...");
+    BOOST_TEST_MESSAGE("Testing different PDE schemes to solve Black-Scholes PDEs...");
 
     SavedSettings backup;
 
@@ -1537,8 +1536,6 @@ void EuropeanOptionTest::testPDESchemes() {
         std::make_pair(trBDF2, "TR-BDF2")
     };
 
-    const Size nEngines = LENGTH(engines);
-
     const ext::shared_ptr<PlainVanillaPayoff> payoff(
         ext::make_shared<PlainVanillaPayoff>(Option::Put, spot->value()));
 
@@ -1563,59 +1560,6 @@ void EuropeanOptionTest::testPDESchemes() {
                        << "\n    calculated: " << calculated << "\n    expected:   " << expected
                        << "\n    difference: " << diff << "\n    tolerance:  " << tol);
         }
-    }
-
-    DividendVanillaOption dividendOption(
-        payoff, exercise,
-        std::vector<Date>(1, today + Period(3, Months)),
-        std::vector<Real>(1, 5.0));
-
-    Array dividendPrices(nEngines);
-    for (Size i=0; i < nEngines; ++i) {
-        dividendOption.setPricingEngine(engines[i].first);
-        dividendPrices[i] = dividendOption.NPV();
-    }
-
-    const Real expectedDiv = std::accumulate(
-        dividendPrices.begin(), dividendPrices.end(), Real(0.0))/nEngines;
-
-    for (Size i=0; i < nEngines; ++i) {
-        const Real calculated = dividendPrices[i];
-        const Real diff = std::fabs(expectedDiv - calculated);
-
-        if (diff > tol) {
-            BOOST_FAIL("Failed to reproduce European option values "
-                    "with dividend and the "
-                    << engines[i].second << " PDE scheme"
-                       << "\n    calculated: " << calculated
-                       << "\n    expected:   " << expectedDiv
-                       << "\n    difference: " << diff
-                       << "\n    tolerance:  " << tol);
-        }
-    }
-
-    // make sure that Douglas and Crank-Nicolson are giving the same result
-    const Size idxDouglas =
-        std::distance(std::begin(engines),
-                      std::find(std::begin(engines), std::end(engines),
-                                std::make_pair(douglas, std::string("Douglas"))));
-    const Real douglasNPV = dividendPrices[idxDouglas];
-
-    const Size idxCrankNicolson =
-        std::distance(std::begin(engines),
-                      std::find(std::begin(engines), std::end(engines),
-                                std::make_pair(crankNicolson, std::string("Crank-Nicolson"))));
-    const Real crankNicolsonNPV = dividendPrices[idxCrankNicolson];
-
-    const Real schemeTol = 1e-12;
-    const Real schemeDiff = std::fabs(crankNicolsonNPV - douglasNPV);
-    if (schemeDiff > schemeTol) {
-        BOOST_FAIL("Failed to reproduce Douglas scheme option values "
-                "with the Crank-Nicolson PDE scheme "
-                   << "\n    Dougles NPV:        " << douglasNPV
-                   << "\n    Crank-Nicolson NPV: " << crankNicolsonNPV
-                   << "\n    difference:         " << schemeDiff
-                   << "\n    tolerance:          " << schemeTol);
     }
 }
 
@@ -1764,9 +1708,11 @@ void EuropeanOptionTest::testVanillaAndDividendEngine() {
 
     auto option1 =
         VanillaOption(payoff, ext::make_shared<AmericanExercise>(today, Date(1, June, 2023)));
+    QL_DEPRECATED_DISABLE_WARNING
     auto option2 = DividendVanillaOption(
         payoff, ext::make_shared<AmericanExercise>(today, Date(1, June, 2023)),
         {Date(1, February, 2023)}, {1.0});
+    QL_DEPRECATED_ENABLE_WARNING
 
     option1.setPricingEngine(engine);
     option2.setPricingEngine(engine);
