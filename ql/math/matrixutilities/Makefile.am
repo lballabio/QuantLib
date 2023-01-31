@@ -7,6 +7,7 @@ this_include_HEADERS = \
 	basisincompleteordered.hpp \
 	bicgstab.hpp \
 	choleskydecomposition.hpp \
+    expm.hpp \
 	factorreduction.hpp \
 	getcovariance.hpp \
 	gmres.hpp \
@@ -23,6 +24,7 @@ cpp_files = \
 	bicgstab.cpp \
 	basisincompleteordered.cpp \
 	choleskydecomposition.cpp \
+    expm.cpp \
 	factorreduction.cpp \
 	getcovariance.cpp \
 	gmres.cpp \

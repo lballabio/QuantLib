@@ -20,7 +20,7 @@
 
 #include "ode.hpp"
 #include "utilities.hpp"
-#include <ql/experimental/math/expm.hpp>
+#include <ql/math/matrixutilities/expm.hpp>
 #include <ql/math/ode/adaptiverungekutta.hpp>
 #include <complex>
 
