@@ -184,6 +184,7 @@ namespace QuantLib {
 			// Ramadan
 			if ((m == April && d >= 21 && d <= 23)
 				// Kurban
+                // July 1 is also a holiday but falls on a Saturday which is already flagged
 				|| (m == June && d >= 28 && d <= 30))
 				return false;
 		} else if (y == 2024) {
