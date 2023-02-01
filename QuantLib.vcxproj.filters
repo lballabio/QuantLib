@@ -4421,6 +4421,9 @@
     <ClInclude Include="ql\methods\finitedifferences\operators\modtriplebandlinearop.hpp">
       <Filter>methods\finitedifferences\operators</Filter>
     </ClInclude>
+    <ClInclude Include="ql\indexes\inflation\ukhicp.hpp">
+      <Filter>indexes\inflation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
