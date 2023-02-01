@@ -28,6 +28,7 @@
 #include <ql/math/interpolations/bicubicsplineinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <ql/experimental/variancegamma/fftvanillaengine.hpp>
@@ -92,9 +93,9 @@ namespace european_option_test {
                 const ext::shared_ptr<BlackVolTermStructure>& vol) {
         return ext::make_shared<BlackScholesMertonProcess>(
            Handle<Quote>(u),
-                                         Handle<YieldTermStructure>(q),
-                                         Handle<YieldTermStructure>(r),
-                                         Handle<BlackVolTermStructure>(vol));
+           Handle<YieldTermStructure>(q),
+           Handle<YieldTermStructure>(r),
+           Handle<BlackVolTermStructure>(vol));
     }
 
     ext::shared_ptr<VanillaOption>
@@ -820,6 +821,125 @@ void EuropeanOptionTest::testImpliedVol() {
                                     try {
                                         implVol = option->impliedVolatility(
                                             value, process, tolerance, maxEvaluations);
+                                    } catch (std::exception& e) {
+                                        BOOST_ERROR("\nimplied vol calculation failed:"
+                                                    << "\n   option:         " << type
+                                                    << "\n   strike:         " << strike
+                                                    << "\n   spot value:     " << u
+                                                    << "\n   dividend yield: " << io::rate(q)
+                                                    << "\n   risk-free rate: " << io::rate(r)
+                                                    << "\n   today:          " << today
+                                                    << "\n   maturity:       " << exDate
+                                                    << "\n   volatility:     " << io::volatility(v)
+                                                    << "\n   option value:   " << value << "\n"
+                                                    << e.what());
+                                    }
+                                    if (std::fabs(implVol - v) > tolerance) {
+                                        // the difference might not matter
+                                        vol->setValue(implVol);
+                                        Real value2 = option->NPV();
+                                        Real error = relativeError(value, value2, u);
+                                        if (error > tolerance) {
+                                            BOOST_ERROR(
+                                                type
+                                                << " option :\n"
+                                                << "    spot value:          " << u << "\n"
+                                                << "    strike:              " << strike << "\n"
+                                                << "    dividend yield:      " << io::rate(q)
+                                                << "\n"
+                                                << "    risk-free rate:      " << io::rate(r)
+                                                << "\n"
+                                                << "    maturity:            " << exDate << "\n\n"
+                                                << "    original volatility: " << io::volatility(v)
+                                                << "\n"
+                                                << "    price:               " << value << "\n"
+                                                << "    implied volatility:  "
+                                                << io::volatility(implVol) << "\n"
+                                                << "    corresponding price: " << value2 << "\n"
+                                                << "    error:               " << error);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+void EuropeanOptionTest::testImpliedVolWithDividends() {
+
+    BOOST_TEST_MESSAGE("Testing European option implied volatility with dividends...");
+
+    using namespace european_option_test;
+
+    SavedSettings backup;
+
+    Size maxEvaluations = 100;
+    Real tolerance = 1.0e-6;
+
+    // test options
+    Option::Type types[] = { Option::Call, Option::Put };
+    Real strikes[] = { 90.0, 99.5, 100.0, 100.5, 110.0 };
+    Integer lengths[] = { 36, 180, 360, 1080 };
+
+    // test data
+    Real underlyings[] = { 90.0, 95.0, 99.9, 100.0, 100.1, 105.0, 110.0 };
+    Rate qRates[] = { 0.01, 0.05, 0.10 };
+    Rate rRates[] = { 0.01, 0.05, 0.10 };
+    Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
+    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
+
+    for (auto& type : types) {
+        for (Real& strike : strikes) {
+            for (int length : lengths) {
+                // option to check
+                Date exDate = today + length;
+                ext::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+                ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type, strike));
+                auto process = makeProcess(spot, qTS, rTS, volTS);
+                auto dividends = DividendVector({ today + length/2 }, { 1.0 });
+                auto option = makeOption(
+                    payoff, exercise, spot, qTS, rTS, volTS, Analytic, Null<Size>(), Null<Size>());
+                auto divEngine = ext::make_shared<AnalyticDividendEuropeanEngine>(process, dividends);
+                option->setPricingEngine(divEngine);
+
+                for (Real u : underlyings) {
+                    for (Real m : qRates) {
+                        for (Real n : rRates) {
+                            for (Real v : vols) {
+                                Rate q = m, r = n;
+                                spot->setValue(u);
+                                qRate->setValue(q);
+                                rRate->setValue(r);
+                                vol->setValue(v);
+
+                                Real value = option->NPV();
+                                Volatility implVol = 0.0; // just to remove a warning...
+                                if (value != 0.0) {
+                                    // shift guess somehow
+                                    vol->setValue(v * 0.5);
+                                    if (std::fabs(value - option->NPV()) <= 1.0e-12) {
+                                        // flat price vs vol --- pointless (and
+                                        // numerically unstable) to solve
+                                        continue;
+                                    }
+                                    try {
+                                        implVol = option->impliedVolatility(
+                                            value, process, dividends, tolerance, maxEvaluations);
                                     } catch (std::exception& e) {
                                         BOOST_ERROR("\nimplied vol calculation failed:"
                                                     << "\n   option:         " << type
@@ -1737,6 +1857,7 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testGreekValues));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testGreeks));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testImpliedVol));
+    suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testImpliedVolWithDividends));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testImpliedVolContainment));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testJRBinomialEngines));
     suite->add(QUANTLIB_TEST_CASE(&EuropeanOptionTest::testCRRBinomialEngines));
