@@ -654,6 +654,7 @@ void AmericanOptionTest::testZeroVolFDShoutNPV() {
    const auto maturityDate = today + Period(1, Years);
    const Date dividendDate = today + Period(3, Months);
    const Real dividendAmount = 10.0;
+   auto dividends = DividendVector({ dividendDate },{ dividendAmount });
 
    VanillaOption option(
        ext::make_shared<PlainVanillaPayoff>(Option::Put, 100.0),
@@ -662,29 +663,51 @@ void AmericanOptionTest::testZeroVolFDShoutNPV() {
 
    option.setPricingEngine(
        ext::make_shared<FdBlackScholesVanillaEngine>(
-           process, DividendVector({ dividendDate },{ dividendAmount }), 50, 50));
+           process, dividends, 50, 50));
 
    const Real americanNPV = option.NPV();
 
+   QL_DEPRECATED_DISABLE_WARNING
    DividendVanillaOption divOption(
        ext::make_shared<PlainVanillaPayoff>(Option::Put, 100.0),
        ext::make_shared<AmericanExercise>(today, maturityDate),
        std::vector<Date>{dividendDate},
        std::vector<Real>{dividendAmount}
    );
+   QL_DEPRECATED_ENABLE_WARNING
 
    divOption.setPricingEngine(
        ext::make_shared<FdBlackScholesShoutEngine>(process, 50, 50));
 
-   const Real shoutNPV = divOption.NPV();
+   Real shoutNPV = divOption.NPV();
    const DiscountFactor df = r->discount(maturityDate)/r->discount(dividendDate);
 
    const Real tol = 1e-3;
-   const Real diff = std::fabs(americanNPV - shoutNPV/df);
+   Real diff = std::fabs(americanNPV - shoutNPV/df);
 
    if (diff > tol) {
        BOOST_FAIL("failed to reproduce American option NPV with "
-                  "Shout option pricing engine for "
+                  "shout option pricing engine for "
+                  << "\n    calculated: " << shoutNPV/df
+                  << "\n    expected  : " << americanNPV
+                  << "\n    difference: " << diff
+                  << "\n    tolerance:  " << tol);
+   }
+
+   VanillaOption option2(
+       ext::make_shared<PlainVanillaPayoff>(Option::Put, 100.0),
+       ext::make_shared<AmericanExercise>(today, maturityDate)
+   );
+
+   option2.setPricingEngine(
+       ext::make_shared<FdBlackScholesShoutEngine>(process, dividends, 50, 50));
+
+   shoutNPV = option2.NPV();
+   diff = std::fabs(americanNPV - shoutNPV/df);
+
+   if (diff > tol) {
+       BOOST_FAIL("failed to reproduce American option NPV with "
+                  "shout option pricing engine for "
                   << "\n    calculated: " << shoutNPV/df
                   << "\n    expected  : " << americanNPV
                   << "\n    difference: " << diff
@@ -693,8 +716,7 @@ void AmericanOptionTest::testZeroVolFDShoutNPV() {
 }
 
 void AmericanOptionTest::testLargeDividendShoutNPV() {
-    BOOST_TEST_MESSAGE("Testing zero strike shout option pricing"
-                       " with discrete dividends...");
+    BOOST_TEST_MESSAGE("Testing zero strike shout option pricing with discrete dividends...");
 
     SavedSettings backup;
 
@@ -715,41 +737,65 @@ void AmericanOptionTest::testLargeDividendShoutNPV() {
    const auto maturityDate = today + Period(6, Months);
    const Date dividendDate = today + Period(3, Months);
    const Real divAmount = 30.0;
+   auto dividends = DividendVector({ dividendDate }, { divAmount });
 
    const Real strike = 80.0;
+   VanillaOption option(
+       ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+       ext::make_shared<AmericanExercise>(today, maturityDate)
+   );
+
+   option.setPricingEngine(
+       ext::make_shared<FdBlackScholesShoutEngine>(process, dividends, 100, 400));
+
+   Real calculated = option.NPV();
+
+   VanillaOption ref_option(
+       ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
+       ext::make_shared<AmericanExercise>(today, dividendDate)
+   );
+
+   ref_option.setPricingEngine(
+       ext::make_shared<FdBlackScholesShoutEngine>(process, 100, 400));
+
+   const Real expected = ref_option.NPV()
+       * r->discount(maturityDate) / r->discount(dividendDate);
+
+   const Real tol = 5e-2;
+   Real diff = std::fabs(expected - calculated);
+
+   if (diff > tol) {
+       BOOST_FAIL("failed to reproduce American option NPV with "
+                  "shout option pricing engine for "
+                  << "\n    calculated: " << calculated
+                  << "\n    expected  : " << expected
+                  << "\n    difference: " << diff
+                  << "\n    tolerance:  " << tol);
+   }
+
+   QL_DEPRECATED_DISABLE_WARNING
    DividendVanillaOption divOption(
        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
        ext::make_shared<AmericanExercise>(today, maturityDate),
        std::vector<Date>{dividendDate},
        std::vector<Real>{divAmount}
    );
+   QL_DEPRECATED_ENABLE_WARNING
 
    divOption.setPricingEngine(
        ext::make_shared<FdBlackScholesShoutEngine>(process, 100, 400));
 
-   const Real calculated = divOption.NPV();
+   calculated = divOption.NPV();
 
-   VanillaOption option(
-       ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
-       ext::make_shared<AmericanExercise>(today, dividendDate)
-   );
-
-   option.setPricingEngine(
-       ext::make_shared<FdBlackScholesShoutEngine>(process, 100, 400));
-
-   const Real expected = option.NPV()
-       * r->discount(maturityDate) / r->discount(dividendDate);
-
-   const Real tol = 5e-2;
-   const Real diff = std::fabs(expected - calculated);
+   diff = std::fabs(expected - calculated);
 
    if (diff > tol) {
        BOOST_FAIL("failed to reproduce American option NPV with "
-               "Shout option pricing engine for "
-               << "\n    calculated: " << calculated
-               << "\n    expected  : " << expected
-               << "\n    difference: " << diff
-               << "\n    tolerance:  " << tol);
+                  "shout option pricing engine for "
+                  << "\n    calculated: " << calculated
+                  << "\n    expected  : " << expected
+                  << "\n    difference: " << diff
+                  << "\n    tolerance:  " << tol);
    }
 }
 
