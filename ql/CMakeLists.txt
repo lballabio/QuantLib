@@ -1273,6 +1273,7 @@ set(QL_HEADERS
     indexes/inflation/aucpi.hpp
     indexes/inflation/euhicp.hpp
     indexes/inflation/frhicp.hpp
+    indexes/inflation/ukhicp.hpp
     indexes/inflation/ukrpi.hpp
     indexes/inflation/uscpi.hpp
     indexes/inflation/zacpi.hpp
