@@ -4,6 +4,7 @@
  Copyright (C) 2005 Sercan Atalik
  Copyright (C) 2010 StatPro Italia srl
  Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -156,10 +157,8 @@ namespace QuantLib {
 				|| (m == August && d >= 21 && d <= 24))
 				return false;
 		} else if (y == 2019) {
-		// Note: Holidays >= 2019 are not yet officially anounced by borsaistanbul.com
-		// and need further validation
 			// Ramadan
-			if ((m == June && d >= 5 && d <= 7)
+			if ((m == June && d >= 4 && d <= 6)
 				// Kurban
 				|| (m == August && d >= 11 && d <= 14))
 				return false;
@@ -167,27 +166,29 @@ namespace QuantLib {
 			// Ramadan
 			if ((m == May && d >= 24 && d <= 26)
 				// Kurban
-				|| (m == July && d >= 30 && d <= 31))
+				|| (m == July && d == 31) || (m == August && d >= 1 && d <= 3))
 				return false;
 		} else if (y == 2021) {
 			// Ramadan
-			if ((m == May && d >= 13 && d <= 14)
+			if ((m == May && d >= 13 && d <= 15)
 				// Kurban
-				|| (m == July && d >= 19 && d <= 22))
+				|| (m == July && d >= 20 && d <= 23))
 				return false;
 		} else if (y == 2022) {
 			// Ramadan
-			if ((m == May && d >= 3 && d <= 5)
+			if ((m == May && d >= 2 && d <= 4)
 				// Kurban
 				|| (m == July && d >= 9 && d <= 12))
 				return false;
 		} else if (y == 2023) {
 			// Ramadan
-			if ((m == April && d >= 22 && d <= 24)
+			if ((m == April && d >= 21 && d <= 23)
 				// Kurban
 				|| (m == June && d >= 28 && d <= 30))
 				return false;
 		} else if (y == 2024) {
+		// Note: Holidays >= 2024 are not yet officially anounced by borsaistanbul.com
+		// and need further validation
 			// Ramadan
 			if ((m == April && d >= 10 && d <= 12)
 				// Kurban
