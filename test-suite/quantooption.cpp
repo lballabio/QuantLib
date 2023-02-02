@@ -1313,10 +1313,9 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
                     << "\n    calculated Black-Scholes: " << bsCalculated);
     }
 
-    DividendVanillaOption divOption(
+    VanillaOption divOption(
         ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
-        ext::make_shared<AmericanExercise>(maturity),
-        dividendDates, dividendAmounts);
+        ext::make_shared<AmericanExercise>(maturity));
 
     const Real v0    = vol*vol;
     const Real kappa = 1.0;
@@ -1331,7 +1330,7 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
 
     divOption.setPricingEngine(
         ext::make_shared<FdHestonVanillaEngine>(
-            hestonModel, quantoHelper, 100, 400, 3, 1));
+            hestonModel, dividends, quantoHelper, 100, 400, 3, 1));
 
     const Real hestonCalculated = divOption.NPV();
 
@@ -1352,7 +1351,7 @@ void QuantoOptionTest::testAmericanQuantoOption()  {
 
     divOption.setPricingEngine(
         ext::make_shared<FdHestonVanillaEngine>(
-            hestonModel05, quantoHelper, 100, 400, 3, 1,
+            hestonModel05, dividends, quantoHelper, 100, 400, 3, 1,
             FdmSchemeDesc::Hundsdorfer(), localConstVol));
 
     const Real hestoSlvCalculated = divOption.NPV();

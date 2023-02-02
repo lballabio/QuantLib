@@ -44,6 +44,7 @@ namespace QuantLib {
 
     void FdBatesVanillaEngine::calculate() const {
         FdHestonVanillaEngine helperEngine(model_.currentLink(),
+                                           arguments_.cashFlow,
                                            tGrid_, xGrid_, vGrid_,
                                            dampingSteps_, schemeDesc_);
 

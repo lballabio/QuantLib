@@ -20,7 +20,7 @@
 */
 
 /*! \file fdblackscholesvanillaengine.hpp
-    \brief Finite-Differences Black Scholes vanilla option engine
+    \brief Finite-differences Black Scholes vanilla option engine
 */
 
 #ifndef quantlib_fd_black_scholes_vanilla_engine_hpp
@@ -37,7 +37,7 @@ namespace QuantLib {
 
     QL_DEPRECATED_DISABLE_WARNING
 
-    //! Finite-Differences Black Scholes vanilla option engine
+    //! Finite-differences Black Scholes vanilla option engine
     /*! \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by
@@ -49,7 +49,6 @@ namespace QuantLib {
       public:
         enum CashDividendModel { Spot, Escrowed };
 
-        // Constructor
         explicit FdBlackScholesVanillaEngine(
             ext::shared_ptr<GeneralizedBlackScholesProcess>,
             Size tGrid = 100,

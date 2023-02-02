@@ -27,6 +27,7 @@
 #include <ql/methods/finitedifferences/utilities/fdmdirichletboundary.hpp>
 #include <ql/methods/finitedifferences/utilities/fdmdividendhandler.hpp>
 #include <ql/methods/finitedifferences/utilities/fdminnervaluecalculator.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdhestonrebateengine.hpp>
 #include <ql/pricingengines/vanilla/fdhestonvanillaengine.hpp>
@@ -184,14 +185,13 @@ namespace QuantLib {
                     ext::dynamic_pointer_cast<StrikedTypePayoff>(
                                                             arguments_.payoff);
             // Calculate the vanilla option
-            ext::shared_ptr<DividendVanillaOption> vanillaOption(
-				ext::make_shared<DividendVanillaOption>(payoff,arguments_.exercise,
-                                          dividendCondition->dividendDates(), 
-                                          dividendCondition->dividends()));
+            auto vanillaOption =
+				ext::make_shared<VanillaOption>(payoff, arguments_.exercise);
             vanillaOption->setPricingEngine(ext::shared_ptr<PricingEngine>(
-				ext::make_shared<FdHestonVanillaEngine>(*model_, tGrid_, xGrid_,
-                                              vGrid_, dampingSteps_,
-                                              schemeDesc_)));
+				ext::make_shared<FdHestonVanillaEngine>(*model_, dividendSchedule,
+                                                        tGrid_, xGrid_,
+                                                        vGrid_, dampingSteps_,
+                                                        schemeDesc_)));
             // Calculate the rebate value
             auto rebateOption =
                 ext::make_shared<BarrierOption>(arguments_.barrierType,
