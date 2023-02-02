@@ -38,12 +38,18 @@ namespace QuantLib {
         <li>Easter Monday</li>
         <li>General Prayer Day, 25 days after Easter Monday</li>
         <li>Ascension</li>
+        <li>Day after Ascension</li>
         <li>Whit (Pentecost) Monday </li>
         <li>New Year's Day, January 1st</li>
         <li>Constitution Day, June 5th</li>
+        <li>Christmas Eve, December 24th</li>
         <li>Christmas, December 25th</li>
         <li>Boxing Day, December 26th</li>
+        <li>New Year's Eve, December 31st</li>
         </ul>
+
+        See: https://www.nasdaqomxnordic.com/tradinghours, 
+        and: https://www.nationalbanken.dk/da/Kontakt/aabningstider/Sider/default.aspx
 
         \ingroup calendars
     */
