@@ -46,7 +46,7 @@ namespace QuantLib {
             // Ascension
             || (dd == em+38)
             // Day after Ascension
-            || (dd == em+39)
+            || (dd == em+39 && y >= 2009)
             // Whit Monday
             || (dd == em+49)
             // New Year's Day

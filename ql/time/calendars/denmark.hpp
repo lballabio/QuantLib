@@ -38,7 +38,7 @@ namespace QuantLib {
         <li>Easter Monday</li>
         <li>General Prayer Day, 25 days after Easter Monday</li>
         <li>Ascension</li>
-        <li>Day after Ascension</li>
+        <li>Day after Ascension (from 2009)</li>
         <li>Whit (Pentecost) Monday </li>
         <li>New Year's Day, January 1st</li>
         <li>Constitution Day, June 5th</li>
