@@ -863,6 +863,7 @@
     <ClInclude Include="ql\indexes\inflation\aucpi.hpp" />
     <ClInclude Include="ql\indexes\inflation\euhicp.hpp" />
     <ClInclude Include="ql\indexes\inflation\frhicp.hpp" />
+    <ClInclude Include="ql\indexes\inflation\ukhicp.hpp" />
     <ClInclude Include="ql\indexes\inflation\ukrpi.hpp" />
     <ClInclude Include="ql\indexes\inflation\uscpi.hpp" />
     <ClInclude Include="ql\indexes\inflation\zacpi.hpp" />
