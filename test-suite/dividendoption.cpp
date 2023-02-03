@@ -110,9 +110,9 @@ void DividendOptionTest::testEuropeanValues() {
 
                 QL_DEPRECATED_DISABLE_WARNING
                 ext::shared_ptr<PricingEngine> engine1(new AnalyticDividendEuropeanEngine(stochProcess));
-                QL_DEPRECATED_ENABLE_WARNING
 
                 DividendVanillaOption option1(payoff, exercise, dividendDates, dividends);
+                QL_DEPRECATED_ENABLE_WARNING
                 option1.setPricingEngine(engine1);
 
                 auto engine2 =
@@ -208,10 +208,10 @@ void DividendOptionTest::testEuropeanKnownValue() {
     QL_DEPRECATED_DISABLE_WARNING
     ext::shared_ptr<PricingEngine> engine1(
                             new AnalyticDividendEuropeanEngine(stochProcess));
-    QL_DEPRECATED_ENABLE_WARNING
 
     DividendVanillaOption option1(payoff, exercise,
                                   dividendDates, dividends);
+    QL_DEPRECATED_ENABLE_WARNING
     option1.setPricingEngine(engine1);
 
     auto engine2 = ext::make_shared<AnalyticDividendEuropeanEngine>(
@@ -302,9 +302,9 @@ void DividendOptionTest::testEuropeanStartLimit() {
                 QL_DEPRECATED_DISABLE_WARNING
                 ext::shared_ptr<PricingEngine> engine1(
                     new AnalyticDividendEuropeanEngine(stochProcess));
-                QL_DEPRECATED_ENABLE_WARNING
 
                 DividendVanillaOption option1(payoff, exercise, dividendDates, dividends);
+                QL_DEPRECATED_ENABLE_WARNING
                 option1.setPricingEngine(engine1);
 
                 auto engine2 = ext::make_shared<AnalyticDividendEuropeanEngine>(
@@ -401,9 +401,9 @@ void DividendOptionTest::testEuropeanEndLimit() {
                 QL_DEPRECATED_DISABLE_WARNING
                 ext::shared_ptr<PricingEngine> engine1(
                     new AnalyticDividendEuropeanEngine(stochProcess));
-                QL_DEPRECATED_ENABLE_WARNING
 
                 DividendVanillaOption option1(payoff, exercise, dividendDates, dividends);
+                QL_DEPRECATED_ENABLE_WARNING
                 option1.setPricingEngine(engine1);
 
                 auto engine2 = ext::make_shared<AnalyticDividendEuropeanEngine>(
@@ -499,9 +499,9 @@ void DividendOptionTest::testOldEuropeanGreeks() {
                 QL_DEPRECATED_DISABLE_WARNING
                 ext::shared_ptr<PricingEngine> engine(
                     new AnalyticDividendEuropeanEngine(stochProcess));
-                QL_DEPRECATED_ENABLE_WARNING
 
                 DividendVanillaOption option(payoff, exercise, dividendDates, dividends);
+                QL_DEPRECATED_ENABLE_WARNING
                 option.setPricingEngine(engine);
 
                 for (Real u : underlyings) {

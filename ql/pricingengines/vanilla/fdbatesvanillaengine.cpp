@@ -71,8 +71,10 @@ namespace QuantLib {
                                            tGrid_, xGrid_, vGrid_,
                                            dampingSteps_, schemeDesc_);
 
+        QL_DEPRECATED_DISABLE_WARNING
         *dynamic_cast<DividendVanillaOption::arguments*>(
                                helperEngine.getArguments()) = arguments_;
+        QL_DEPRECATED_ENABLE_WARNING
 
         FdmSolverDesc solverDesc = helperEngine.getSolverDesc(2.0);
 
