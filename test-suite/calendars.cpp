@@ -9,6 +9,7 @@
  Copyright (C) 2020 Piotr Siejda
  Copyright (C) 2020 Leonardo Arcari
  Copyright (C) 2020 Kline s.r.l.
+ Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +32,7 @@
 #include <ql/time/calendars/bespokecalendar.hpp>
 #include <ql/time/calendars/brazil.hpp>
 #include <ql/time/calendars/china.hpp>
+#include <ql/time/calendars/denmark.hpp>
 #include <ql/time/calendars/germany.hpp>
 #include <ql/time/calendars/italy.hpp>
 #include <ql/time/calendars/japan.hpp>
@@ -1366,6 +1368,65 @@ void CalendarTest::testBrazil() {
                                  << hol.size() << " calculated holidays");
 }
 
+void CalendarTest::testDenmark() {
+
+    BOOST_TEST_MESSAGE("Testing Denmark holiday list...");
+
+    std::vector<Date> expectedHol;
+    expectedHol.emplace_back(1, January, 2020);
+    expectedHol.emplace_back(9, April, 2020);
+    expectedHol.emplace_back(10, April, 2020);
+    expectedHol.emplace_back(13, April, 2020);
+    expectedHol.emplace_back(8, May, 2020);
+    expectedHol.emplace_back(21, May, 2020);
+    expectedHol.emplace_back(22, May, 2020);
+    expectedHol.emplace_back(1, June, 2020);
+    expectedHol.emplace_back(5, June, 2020);
+    expectedHol.emplace_back(24, December, 2020);
+    expectedHol.emplace_back(25, December, 2020);
+    // Saturday: expectedHol.emplace_back(26, December, 2020);
+    expectedHol.emplace_back(31, December, 2020);
+
+    expectedHol.emplace_back(1, January, 2021);
+    expectedHol.emplace_back(1, April, 2021);
+    expectedHol.emplace_back(2, April, 2021);
+    expectedHol.emplace_back(5, April, 2021);
+    expectedHol.emplace_back(30, April, 2021);
+    expectedHol.emplace_back(13, May, 2021);
+    expectedHol.emplace_back(14, May, 2021);
+    expectedHol.emplace_back(24, May, 2021);
+    // Saturday: expectedHol.emplace_back(5, June, 2021);
+    expectedHol.emplace_back(24, December, 2021);
+    // Saturday: expectedHol.emplace_back(25, December, 2021);
+    // Sunday: expectedHol.emplace_back(26, December, 2021);
+    expectedHol.emplace_back(31, December, 2021);
+
+    // Saturday: expectedHol.emplace_back(1, January, 2022);
+    expectedHol.emplace_back(14, April, 2022);
+    expectedHol.emplace_back(15, April, 2022);
+    expectedHol.emplace_back(18, April, 2022);
+    expectedHol.emplace_back(13, May, 2022);
+    expectedHol.emplace_back(26, May, 2022);
+    expectedHol.emplace_back(27, May, 2022);
+    // Sunday: expectedHol.emplace_back(5, June, 2022);
+    expectedHol.emplace_back(6, June, 2022);
+    // Saturday: expectedHol.emplace_back(24, December, 2022);
+    // Sunday: expectedHol.emplace_back(25, December, 2022);
+    expectedHol.emplace_back(26, December, 2022);
+    // Saturday: expectedHol.emplace_back(31, December, 2022);
+
+    Calendar c = Denmark();
+    std::vector<Date> hol = c.holidayList(Date(1, January, 2020), Date(31, December, 2022));
+
+    for (Size i = 0; i < std::min<Size>(hol.size(), expectedHol.size()); i++) {
+        if (hol[i] != expectedHol[i])
+            BOOST_FAIL("expected holiday was " << expectedHol[i] << " while calculated holiday is "
+                                               << hol[i]);
+    }
+    if (hol.size() != expectedHol.size())
+        BOOST_FAIL("there were " << expectedHol.size() << " expected holidays, while there are "
+                                 << hol.size() << " calculated holidays");
+}
 
 void CalendarTest::testSouthKoreanSettlement() {
     BOOST_TEST_MESSAGE("Testing South-Korean settlement holiday list...");
@@ -2217,6 +2278,8 @@ test_suite* CalendarTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testGermanyEurex));
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testTARGET));
+
+    suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testDenmark));
 
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSSettlement));
     suite->add(QUANTLIB_TEST_CASE(&CalendarTest::testUSGovernmentBondMarket));
