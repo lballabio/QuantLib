@@ -185,24 +185,22 @@ namespace QuantLib {
                     ext::dynamic_pointer_cast<StrikedTypePayoff>(
                                                             arguments_.payoff);
             // Calculate the vanilla option
-            auto vanillaOption =
-				ext::make_shared<VanillaOption>(payoff, arguments_.exercise);
-            vanillaOption->setPricingEngine(ext::shared_ptr<PricingEngine>(
+            VanillaOption vanillaOption(payoff, arguments_.exercise);
+            vanillaOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
 				ext::make_shared<FdHestonVanillaEngine>(*model_, dividendSchedule,
                                                         tGrid_, xGrid_,
                                                         vGrid_, dampingSteps_,
                                                         schemeDesc_)));
             // Calculate the rebate value
-            auto rebateOption =
-                ext::make_shared<BarrierOption>(arguments_.barrierType,
-                                                arguments_.barrier,
-                                                arguments_.rebate,
-                                                payoff, arguments_.exercise);
+            BarrierOption rebateOption(arguments_.barrierType,
+                                       arguments_.barrier,
+                                       arguments_.rebate,
+                                       payoff, arguments_.exercise);
             const Size xGridMin = 20;
             const Size vGridMin = 10;
             const Size rebateDampingSteps 
                 = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
-            rebateOption->setPricingEngine(
+            rebateOption.setPricingEngine(
                 ext::make_shared<FdHestonRebateEngine>(*model_, dividendSchedule,
                                                        tGrid_,
                                                        std::max(xGridMin, xGrid_/4), 
@@ -210,14 +208,10 @@ namespace QuantLib {
                                                        rebateDampingSteps,
                                                        schemeDesc_));
 
-            results_.value = vanillaOption->NPV()   + rebateOption->NPV()
-                                                    - results_.value;
-            results_.delta = vanillaOption->delta() + rebateOption->delta()
-                                                    - results_.delta;
-            results_.gamma = vanillaOption->gamma() + rebateOption->gamma()
-                                                    - results_.gamma;
-            results_.theta = vanillaOption->theta() + rebateOption->theta()
-                                                    - results_.theta;
+            results_.value = vanillaOption.NPV()   + rebateOption.NPV()   - results_.value;
+            results_.delta = vanillaOption.delta() + rebateOption.delta() - results_.delta;
+            results_.gamma = vanillaOption.gamma() + rebateOption.gamma() - results_.gamma;
+            results_.theta = vanillaOption.theta() + rebateOption.theta() - results_.theta;
         }
     }
 }

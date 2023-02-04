@@ -47,7 +47,7 @@ namespace QuantLib {
                         Deprecated in version 1.30.
         */
         QL_DEPRECATED
-        AnalyticDividendEuropeanEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+        explicit AnalyticDividendEuropeanEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
 
         void calculate() const override;
       private:
