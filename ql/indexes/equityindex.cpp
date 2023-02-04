@@ -21,3 +21,56 @@
 #include <ql/settings.hpp>
 #include <sstream>
 #include <utility>
+
+namespace QuantLib {
+
+    EquityIndex::EquityIndex(std::string name,
+                             Currency currency,
+                             Calendar fixingCalendar,
+                             Handle<YieldTermStructure> rate,
+                             Handle<YieldTermStructure> dividend)
+    : name_(std::move(name)), currency_(std::move(currency)),
+      rate_(std::move(rate)), dividend_(std::move(dividend)),
+      settlementCalendar_(std::move(fixingCalendar)) {
+
+        registerWith(rate_);
+        registerWith(dividend_);
+        registerWith(Settings::instance().evaluationDate());
+        registerWith(IndexManager::instance().notifier(EquityIndex::name()));
+    }
+
+    Rate EquityIndex::fixing(const Date& fixingDate, bool forecastTodaysFixing) const {
+
+        QL_REQUIRE(isValidFixingDate(fixingDate), "Fixing date " << fixingDate << " is not valid");
+
+        Date today = Settings::instance().evaluationDate();
+
+        if (fixingDate > today || (fixingDate == today && forecastTodaysFixing))
+            return forecastFixing(fixingDate);
+
+        if (fixingDate <= today) {
+            // today's fixing is required
+            // even without enforcing today's fixing
+            return pastFixing(fixingDate);
+        }
+
+        return forecastFixing(fixingDate);
+    }
+
+    Real EquityIndex::forecastFixing(const Date& fixingDate) const {
+        QL_REQUIRE(!rate_.empty(),
+                   "null interest rate term structure set to this instance of " << name());
+
+        Date today = Settings::instance().evaluationDate();
+        Real spot = pastFixing(today);
+
+        Real forward;
+        if (!dividend_.empty()) {
+            forward = spot * dividend_->discount(fixingDate) / rate_->discount(fixingDate);
+        } else {
+            forward = spot / rate_->discount(fixingDate);
+        }
+        return forward;
+    }
+
+}

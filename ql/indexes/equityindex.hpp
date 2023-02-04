@@ -35,7 +35,6 @@ namespace QuantLib {
     class EquityIndex : public Index, public Observer {
       public:
         EquityIndex(std::string name,
-                    Natural settlementDays,
                     Currency currency,
                     Calendar fixingCalendar,
                     Handle<YieldTermStructure> rate = {},
@@ -46,7 +45,7 @@ namespace QuantLib {
         std::string name() const override { return name_; }
         Calendar fixingCalendar() const override { return settlementCalendar_; }
         bool isValidFixingDate(const Date& fixingDate) const override;
-        Rate fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
+        Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
         //@}
         //! \name Observer interface
         //@{
@@ -54,8 +53,6 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        Natural settlementDays() const { return settlementDays_; }
-        Date settlementDate(const Date& valueDate) const;
         const Currency& currency() const { return currency_; }
         //! the rate curve used to forecast fixings
         Handle<YieldTermStructure> equityInterestRateCurve() const { return rate_; }
@@ -65,17 +62,19 @@ namespace QuantLib {
         //! \name Fixing calculations
         //@{
         //! It can be overridden to implement particular conventions
-        virtual Rate forecastFixing(const Date& fixingDate) const;
-        virtual Rate pastFixing(const Date& fixingDate) const;
+        virtual Real forecastFixing(const Date& fixingDate) const;
+        virtual Real pastFixing(const Date& fixingDate) const;
         // @}
 
       protected:
         std::string name_;
         Natural settlementDays_;
         Currency currency_;
-        Calendar settlementCalendar_;
         Handle<YieldTermStructure> rate_;
         Handle<YieldTermStructure> dividend_;
+
+      private:
+        Calendar settlementCalendar_;
     };
 
     inline bool EquityIndex::isValidFixingDate(const Date& d) const {
@@ -84,10 +83,12 @@ namespace QuantLib {
 
     inline void EquityIndex::update() { notifyObservers(); }
 
-    inline Date EquityIndex::settlementDate(const Date& valueDate) const {
-        Date fixingDate =
-            fixingCalendar().advance(valueDate, +static_cast<Integer>(settlementDays_), Days);
-        return fixingDate;
+    inline Real EquityIndex::pastFixing(const Date& fixingDate) const {
+        QL_REQUIRE(isValidFixingDate(fixingDate), fixingDate << " is not a valid fixing date");
+        Real result = timeSeries()[fixingDate];
+
+        QL_REQUIRE(result != Null<Real>(), "Missing " << name() << " fixing for " << fixingDate);
+        return result;
     }
 }
 
