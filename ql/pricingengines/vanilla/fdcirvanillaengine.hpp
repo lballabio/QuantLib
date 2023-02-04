@@ -18,7 +18,7 @@
 */
 
 /*! \file fdcirvanillaengine.hpp
-    \brief Finite-Differences CIR vanilla option engine
+    \brief Finite-differences CIR vanilla option engine
 */
 
 #ifndef quantlib_fd_cir_vanilla_engine_hpp
@@ -34,38 +34,52 @@
 
 namespace QuantLib {
 
-    //! Finite-Differences CIR Vanilla Option engine
+    class FdmQuantoHelper;
 
+    QL_DEPRECATED_DISABLE_WARNING
+
+    //! Finite-differences CIR vanilla option engine
     /*! \ingroup vanillaengines
 
         \test the engine has been tested to converge among different schemes.
     */
-    class FdmQuantoHelper;
-
     class FdCIRVanillaEngine : public DividendVanillaOption::engine {
+        QL_DEPRECATED_ENABLE_WARNING
       public:
-        explicit FdCIRVanillaEngine(ext::shared_ptr<CoxIngersollRossProcess> cirProcess,
-                                    ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
-                                    Size tGrid,
-                                    Size xGrid,
-                                    Size vGrid,
-                                    Size dampingSteps,
-                                    Real rho,
-                                    const FdmSchemeDesc& schemeDesc,
-                                    ext::shared_ptr<FdmQuantoHelper> quantoHelper);
+        FdCIRVanillaEngine(ext::shared_ptr<CoxIngersollRossProcess> cirProcess,
+                           ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+                           Size tGrid,
+                           Size xGrid,
+                           Size vGrid,
+                           Size dampingSteps,
+                           Real rho,
+                           const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::ModifiedHundsdorfer(),
+                           ext::shared_ptr<FdmQuantoHelper> quantoHelper = {});
+
+        FdCIRVanillaEngine(ext::shared_ptr<CoxIngersollRossProcess> cirProcess,
+                           ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+                           DividendSchedule dividends,
+                           Size tGrid,
+                           Size xGrid,
+                           Size vGrid,
+                           Size dampingSteps,
+                           Real rho,
+                           const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::ModifiedHundsdorfer(),
+                           ext::shared_ptr<FdmQuantoHelper> quantoHelper = {});
 
         void calculate() const override;
 
         FdmSolverDesc getSolverDesc(Real equityScaleFactor) const;
 
       private:
+        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
+        ext::shared_ptr<CoxIngersollRossProcess> cirProcess_;
+        ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
+        DividendSchedule dividends_;
+        bool explicitDividends_;
         const Size tGrid_, xGrid_, rGrid_, dampingSteps_;
         const Real rho_;
         const FdmSchemeDesc schemeDesc_;
-        ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
-        ext::shared_ptr<CoxIngersollRossProcess> cirProcess_;
-        
-        ext::shared_ptr<FdmQuantoHelper> quantoHelper_;
     };
 
     class MakeFdCIRVanillaEngine {
@@ -86,11 +100,17 @@ namespace QuantLib {
         MakeFdCIRVanillaEngine& withFdmSchemeDesc(
             const FdmSchemeDesc& schemeDesc);
 
+        MakeFdCIRVanillaEngine& withCashDividends(
+            const std::vector<Date>& dividendDates,
+            const std::vector<Real>& dividendAmounts);
+
         operator ext::shared_ptr<PricingEngine>() const;
 
       private:
         ext::shared_ptr<CoxIngersollRossProcess> cirProcess_;
         ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess_;
+        DividendSchedule dividends_;
+        bool explicitDividends_ = false;
         const Real rho_;
         Size tGrid_ = 10, xGrid_ = 100, rGrid_ = 100, dampingSteps_ = 0;
         ext::shared_ptr<FdmSchemeDesc> schemeDesc_;

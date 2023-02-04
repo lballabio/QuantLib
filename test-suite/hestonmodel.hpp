@@ -37,6 +37,8 @@ class HestonModelTest {
     static void testMcVsCached();
     static void testFdBarrierVsCached();    
     static void testFdVanillaVsCached();    
+    static void testFdVanillaWithDividendsVsCached();    
+    static void testFdAmerican();    
     static void testDifferentIntegrals();
     static void testMultipleStrikesEngine();
     static void testAnalyticPiecewiseTimeDependent();

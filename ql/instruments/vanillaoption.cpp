@@ -23,6 +23,7 @@
 #include <ql/instruments/impliedvolatility.hpp>
 #include <ql/instruments/vanillaoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/pricingengines/vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/pricingengines/vanilla/fdblackscholesvanillaengine.hpp>
 #include <memory>
 
@@ -41,6 +42,18 @@ namespace QuantLib {
              Size maxEvaluations,
              Volatility minVol,
              Volatility maxVol) const {
+        return impliedVolatility(targetValue, process, DividendSchedule(),
+                                 accuracy, maxEvaluations, minVol, maxVol);
+    }
+
+    Volatility VanillaOption::impliedVolatility(
+             Real targetValue,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             const DividendSchedule& dividends,
+             Real accuracy,
+             Size maxEvaluations,
+             Volatility minVol,
+             Volatility maxVol) const {
 
         QL_REQUIRE(!isExpired(), "option expired");
 
@@ -53,12 +66,18 @@ namespace QuantLib {
         std::unique_ptr<PricingEngine> engine;
         switch (exercise_->type()) {
           case Exercise::European:
-              engine = std::make_unique<AnalyticEuropeanEngine>(newProcess);
-              break;
+            if (dividends.empty())
+                engine = std::make_unique<AnalyticEuropeanEngine>(newProcess);
+            else
+                engine = std::make_unique<AnalyticDividendEuropeanEngine>(newProcess, dividends);
+            break;
           case Exercise::American:
           case Exercise::Bermudan:
-              engine = std::make_unique<FdBlackScholesVanillaEngine>(newProcess);
-              break;
+            if (dividends.empty())
+                engine = std::make_unique<FdBlackScholesVanillaEngine>(newProcess);
+            else
+                engine = std::make_unique<FdBlackScholesVanillaEngine>(newProcess, dividends);
+            break;
           default:
             QL_FAIL("unknown exercise type");
         }
@@ -78,7 +97,9 @@ namespace QuantLib {
         /* this is a workaround in case an engine is used for both vanilla
            and dividend options.  The dividends might have been set by another
            instrument and need to be cleared. */
+        QL_DEPRECATED_DISABLE_WARNING
         auto* arguments = dynamic_cast<DividendVanillaOption::arguments*>(args);
+        QL_DEPRECATED_ENABLE_WARNING
         if (arguments != nullptr) {
             arguments->cashFlow.clear();
         }
