@@ -43,11 +43,9 @@ namespace QuantLib {
         bool localVol,
         Real illegalLocalVolOverwrite,
         CashDividendModel cashDividendModel)
-    : process_(std::move(process)), explicitDividends_(false),
-      tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
-      schemeDesc_(schemeDesc), localVol_(localVol),
-      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
-      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()), cashDividendModel_(cashDividendModel) {
+    : process_(std::move(process)), explicitDividends_(false), tGrid_(tGrid), xGrid_(xGrid),
+      dampingSteps_(dampingSteps), schemeDesc_(schemeDesc), localVol_(localVol),
+      illegalLocalVolOverwrite_(illegalLocalVolOverwrite), cashDividendModel_(cashDividendModel) {
         registerWith(process_);
     }
 
@@ -62,10 +60,9 @@ namespace QuantLib {
         Real illegalLocalVolOverwrite,
         CashDividendModel cashDividendModel)
     : process_(std::move(process)), dividends_(std::move(dividends)), explicitDividends_(true),
-      tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps),
-      schemeDesc_(schemeDesc), localVol_(localVol),
-      illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
-      quantoHelper_(ext::shared_ptr<FdmQuantoHelper>()), cashDividendModel_(cashDividendModel) {
+      tGrid_(tGrid), xGrid_(xGrid), dampingSteps_(dampingSteps), schemeDesc_(schemeDesc),
+      localVol_(localVol), illegalLocalVolOverwrite_(illegalLocalVolOverwrite),
+      cashDividendModel_(cashDividendModel) {
         registerWith(process_);
     }
 
