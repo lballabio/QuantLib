@@ -68,7 +68,6 @@ namespace QuantLib {
 
       protected:
         std::string name_;
-        Natural settlementDays_;
         Currency currency_;
         Handle<YieldTermStructure> rate_;
         Handle<YieldTermStructure> dividend_;
@@ -82,14 +81,6 @@ namespace QuantLib {
     }
 
     inline void EquityIndex::update() { notifyObservers(); }
-
-    inline Real EquityIndex::pastFixing(const Date& fixingDate) const {
-        QL_REQUIRE(isValidFixingDate(fixingDate), fixingDate << " is not a valid fixing date");
-        Real result = timeSeries()[fixingDate];
-
-        QL_REQUIRE(result != Null<Real>(), "Missing " << name() << " fixing for " << fixingDate);
-        return result;
-    }
 }
 
 #endif

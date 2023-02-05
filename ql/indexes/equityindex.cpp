@@ -50,11 +50,19 @@ namespace QuantLib {
 
         if (fixingDate <= today) {
             // today's fixing is required
-            // even without enforcing today's fixing
+            // even without enforcing it
             return pastFixing(fixingDate);
         }
 
         return forecastFixing(fixingDate);
+    }
+
+    Real EquityIndex::pastFixing(const Date& fixingDate) const {
+        QL_REQUIRE(isValidFixingDate(fixingDate), fixingDate << " is not a valid fixing date");
+        Real result = timeSeries()[fixingDate];
+
+        QL_REQUIRE(result != Null<Real>(), "Missing " << name() << " fixing for " << fixingDate);
+        return result;
     }
 
     Real EquityIndex::forecastFixing(const Date& fixingDate) const {
@@ -62,6 +70,7 @@ namespace QuantLib {
                    "null interest rate term structure set to this instance of " << name());
 
         Date today = Settings::instance().evaluationDate();
+        
         Real spot = pastFixing(today);
 
         Real forward;
