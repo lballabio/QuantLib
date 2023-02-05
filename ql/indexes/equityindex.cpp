@@ -19,7 +19,6 @@
 
 #include <ql/indexes/equityindex.hpp>
 #include <ql/settings.hpp>
-#include <sstream>
 #include <utility>
 
 namespace QuantLib {
