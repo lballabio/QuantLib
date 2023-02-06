@@ -25,6 +25,8 @@
 class EquityIndexTest {
   public:
     static void testTodaysFixingForecast();
+    static void testFixingForecast();
+    static void testFixingForecastWithoutDividend();
 
     static boost::unit_test_framework::test_suite* suite();
 };

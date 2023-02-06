@@ -234,6 +234,7 @@ set(QL_SOURCES
     experimental/volatility/zabr.cpp
     index.cpp
     indexes/bmaindex.cpp
+    indexes/equityindex.cpp
     indexes/ibor/bibor.cpp
     indexes/ibor/eonia.cpp
     indexes/ibor/estr.cpp
@@ -1233,6 +1234,7 @@ set(QL_HEADERS
     handle.hpp
     index.hpp
     indexes/bmaindex.hpp
+    indexes/equityindex.hpp
     indexes/ibor/aonia.hpp
     indexes/ibor/audlibor.hpp
     indexes/ibor/bbsw.hpp

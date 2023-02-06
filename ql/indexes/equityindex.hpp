@@ -37,7 +37,7 @@ namespace QuantLib {
         EquityIndex(std::string name,
                     Currency currency,
                     Calendar fixingCalendar,
-                    Handle<YieldTermStructure> rate = {},
+                    Handle<YieldTermStructure> interest = {},
                     Handle<YieldTermStructure> dividend = {});
 
         //! \name Index interface
@@ -55,7 +55,7 @@ namespace QuantLib {
         //@{
         const Currency& currency() const { return currency_; }
         //! the rate curve used to forecast fixings
-        Handle<YieldTermStructure> equityInterestRateCurve() const { return rate_; }
+        Handle<YieldTermStructure> equityInterestRateCurve() const { return interest_; }
         //! the dividend curve used to forecast fixings
         Handle<YieldTermStructure> equityDividendCurve() const { return dividend_; }
         //@}
@@ -65,11 +65,18 @@ namespace QuantLib {
         virtual Real forecastFixing(const Date& fixingDate) const;
         virtual Real pastFixing(const Date& fixingDate) const;
         // @}
+        //! \name Other methods
+        //@{
+        //! returns a copy of itself linked to a different forwarding curve
+        virtual ext::shared_ptr<EquityIndex> clone(
+                const Handle<YieldTermStructure>& interest,
+                const Handle<YieldTermStructure>& dividend) const;
+        // @}
 
       protected:
         std::string name_;
         Currency currency_;
-        Handle<YieldTermStructure> rate_;
+        Handle<YieldTermStructure> interest_;
         Handle<YieldTermStructure> dividend_;
 
       private:

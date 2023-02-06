@@ -26,13 +26,13 @@ namespace QuantLib {
     EquityIndex::EquityIndex(std::string name,
                              Currency currency,
                              Calendar fixingCalendar,
-                             Handle<YieldTermStructure> rate,
+                             Handle<YieldTermStructure> interest,
                              Handle<YieldTermStructure> dividend)
     : name_(std::move(name)), currency_(std::move(currency)),
-      rate_(std::move(rate)), dividend_(std::move(dividend)),
+      interest_(std::move(interest)), dividend_(std::move(dividend)),
       settlementCalendar_(std::move(fixingCalendar)) {
 
-        registerWith(rate_);
+        registerWith(interest_);
         registerWith(dividend_);
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(EquityIndex::name()));
@@ -65,7 +65,7 @@ namespace QuantLib {
     }
 
     Real EquityIndex::forecastFixing(const Date& fixingDate) const {
-        QL_REQUIRE(!rate_.empty(),
+        QL_REQUIRE(!interest_.empty(),
                    "null interest rate term structure set to this instance of " << name());
 
         Date today = Settings::instance().evaluationDate();
@@ -74,11 +74,16 @@ namespace QuantLib {
 
         Real forward;
         if (!dividend_.empty()) {
-            forward = spot * dividend_->discount(fixingDate) / rate_->discount(fixingDate);
+            forward = spot * dividend_->discount(fixingDate) / interest_->discount(fixingDate);
         } else {
-            forward = spot / rate_->discount(fixingDate);
+            forward = spot / interest_->discount(fixingDate);
         }
         return forward;
     }
 
+    ext::shared_ptr<EquityIndex> EquityIndex::clone(const Handle<YieldTermStructure>& interest,
+                                                    const Handle<YieldTermStructure>& dividend) const {
+        return ext::make_shared<EquityIndex>(name(), currency(), fixingCalendar(), interest,
+                                             dividend);
+    }
 }
