@@ -92,6 +92,7 @@
 #include "doublebinaryoption.hpp"
 #include "europeanoption.hpp"
 #include "everestoption.hpp"
+#include "equityindex.hpp"
 #include "exchangerate.hpp"
 #include "extendedtrees.hpp"
 #include "extensibleoptions.hpp"
@@ -386,6 +387,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DigitalOptionTest::suite());
     test->add(DistributionTest::suite(speed));
     test->add(DividendOptionTest::suite());
+    test->add(EquityIndexTest::suite());
     test->add(EuropeanOptionTest::suite());
     test->add(ExchangeRateTest::suite());
     test->add(FastFourierTransformTest::suite());
