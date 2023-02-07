@@ -189,14 +189,14 @@ void EquityIndexTest::testFixingObservability() {
     CommonVars vars;
 
     ext::shared_ptr<EquityIndex> i1 = ext::make_shared<EquityIndex>(
-        "observable", vars.currency, vars.calendar);
+        "observableEquityIndex", vars.currency, vars.calendar);
 
     Flag flag;
     flag.registerWith(i1);
     flag.lower();
 
     ext::shared_ptr<Index> i2 =
-        ext::make_shared<EquityIndex>("observable", vars.currency, vars.calendar);
+        ext::make_shared<EquityIndex>("observableEquityIndex", vars.currency, vars.calendar);
 
     i2->addFixing(vars.today, 100.0);
     if (!flag.isUp())
