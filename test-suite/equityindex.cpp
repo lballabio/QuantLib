@@ -200,7 +200,7 @@ void EquityIndexTest::testFixingObservability() {
 
     i2->addFixing(vars.today, 100.0);
     if (!flag.isUp())
-        BOOST_FAIL("Observer was not notified of added Euribor fixing");
+        BOOST_FAIL("Observer was not notified of added equity index fixing");
 }
 
 test_suite* EquityIndexTest::suite() {
