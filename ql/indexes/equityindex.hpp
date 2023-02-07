@@ -31,7 +31,33 @@
 
 namespace QuantLib {
 
-    //! base class for equity indexes
+    //! Base class for equity indexes
+    /*! The equity index object allows to retrieve past fixings,
+        as well as project future fixings using either both
+        the risk free interest rate term structure and the dividend
+        term structure, or just the interest rate term structure
+        in which case one can provide a term structure of equity
+        forwards implied from, e.g. option prices.
+        
+        In case of the first method, the forward is calculated as:
+        \f[
+        I(t, T) = I(t, t) \frac{P_{D}(t, T)}{P_{R}(t, T)},
+        \f]
+        where \f$ I(t, t) \f$ is today's value of the index,
+        \f$ P_{D}(t, T) \f$ is a discount factor of the dividend
+        curve at future time \f$ T \f$, and \f$ P_{R}(t, T) \f$ is
+        a discount factor of the risk free curve at future time
+        \f$ T \f$.
+
+        In case of the latter method, the forward is calculated as:
+        \f[
+        I(t, T) = I(t, t) \frac{1}{P_{F}(t, T)},
+        \f]
+        where \f$ P_{F}(t, T) \f$ is a discount factor of the equity
+        forward term structure.
+
+        To forecast future fixings, the index requires today's fixing.
+    */
     class EquityIndex : public Index, public Observer {
       public:
         EquityIndex(std::string name,
