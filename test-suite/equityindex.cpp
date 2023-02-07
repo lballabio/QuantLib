@@ -21,11 +21,31 @@
 #include <ql/indexes/equityindex.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/currencies/europe.hpp>
+#include <string>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 namespace equityindex_test {
+
+    // Used to check that the exception message contains the expected message string, expMsg.
+    struct ExpErrorPred {
+
+        explicit ExpErrorPred(std::string msg) : expMsg(std::move(msg)) {}
+
+        bool operator()(const Error& ex) const {
+            std::string errMsg(ex.what());
+            if (errMsg.find(expMsg) == std::string::npos) {
+                BOOST_TEST_MESSAGE("Error expected to contain: '" << expMsg << "'.");
+                BOOST_TEST_MESSAGE("Actual error is: '" << errMsg << "'.");
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        std::string expMsg;
+    };
 
     struct CommonVars {
 
@@ -123,12 +143,76 @@ void EquityIndexTest::testFixingForecastWithoutDividend() {
                     << "    expected forecast:    " << expectedForecast << "\n");
 }
 
+void EquityIndexTest::testErrorWhenInvalidFixingDate() {
+    BOOST_TEST_MESSAGE("Testing error when invalid fixing date is used...");
+
+    using namespace equityindex_test;
+
+    CommonVars vars;
+
+    BOOST_CHECK_EXCEPTION(vars.equityIndex->fixing(Date(1, January, 2023)), Error,
+                          ExpErrorPred("Fixing date January 1st, 2023 is not valid"));
+}
+
+void EquityIndexTest::testErrorWhenFixingMissing() {
+    BOOST_TEST_MESSAGE("Testing error when required fixing is missing...");
+
+    using namespace equityindex_test;
+
+    CommonVars vars;
+
+    BOOST_CHECK_EXCEPTION(vars.equityIndex->fixing(Date(2, January, 2023)), Error,
+                          ExpErrorPred("Missing eqIndex fixing for January 2nd, 2023"));
+}
+
+void EquityIndexTest::testErrorWhenInterestHandleMissing() {
+    BOOST_TEST_MESSAGE("Testing error when interest handle is missing...");
+
+    using namespace equityindex_test;
+
+    CommonVars vars;
+
+    Date forecastedDate(20, May, 2030);
+
+    auto equityIndexExDiv =
+        vars.equityIndex->clone(Handle<YieldTermStructure>(), Handle<YieldTermStructure>());
+
+    BOOST_CHECK_EXCEPTION(equityIndexExDiv->fixing(forecastedDate), Error,
+                          ExpErrorPred("null interest rate term structure set to this instance of eqIndex"));
+}
+
+void EquityIndexTest::testFixingObservability() {
+    BOOST_TEST_MESSAGE("Testing observability of index fixings...");
+
+    using namespace equityindex_test;
+
+    CommonVars vars;
+
+    ext::shared_ptr<EquityIndex> i1 = ext::make_shared<EquityIndex>(
+        "observable", vars.currency, vars.calendar);
+
+    Flag flag;
+    flag.registerWith(i1);
+    flag.lower();
+
+    ext::shared_ptr<Index> i2 =
+        ext::make_shared<EquityIndex>("observable", vars.currency, vars.calendar);
+
+    i2->addFixing(vars.today, 100.0);
+    if (!flag.isUp())
+        BOOST_FAIL("Observer was not notified of added Euribor fixing");
+}
+
 test_suite* EquityIndexTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Equity index tests");
 
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testTodaysFixingForecast));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecast));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecastWithoutDividend));
+    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenInvalidFixingDate));
+    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenFixingMissing));
+    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenInterestHandleMissing));
+    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingObservability));
 
     return suite;
 }
