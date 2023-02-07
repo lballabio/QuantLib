@@ -150,8 +150,9 @@ void EquityIndexTest::testErrorWhenInvalidFixingDate() {
 
     CommonVars vars;
 
-    BOOST_CHECK_EXCEPTION(vars.equityIndex->fixing(Date(1, January, 2023)), Error,
-                          ExpErrorPred("Fixing date January 1st, 2023 is not valid"));
+    BOOST_CHECK_EXCEPTION(
+        vars.equityIndex->fixing(Date(1, January, 2023)), Error,
+        equityindex_test::ExpErrorPred("Fixing date January 1st, 2023 is not valid"));
 }
 
 void EquityIndexTest::testErrorWhenFixingMissing() {
@@ -161,8 +162,9 @@ void EquityIndexTest::testErrorWhenFixingMissing() {
 
     CommonVars vars;
 
-    BOOST_CHECK_EXCEPTION(vars.equityIndex->fixing(Date(2, January, 2023)), Error,
-                          ExpErrorPred("Missing eqIndex fixing for January 2nd, 2023"));
+    BOOST_CHECK_EXCEPTION(
+        vars.equityIndex->fixing(Date(2, January, 2023)), Error,
+        equityindex_test::ExpErrorPred("Missing eqIndex fixing for January 2nd, 2023"));
 }
 
 void EquityIndexTest::testErrorWhenInterestHandleMissing() {
@@ -178,7 +180,8 @@ void EquityIndexTest::testErrorWhenInterestHandleMissing() {
         vars.equityIndex->clone(Handle<YieldTermStructure>(), Handle<YieldTermStructure>());
 
     BOOST_CHECK_EXCEPTION(equityIndexExDiv->fixing(forecastedDate), Error,
-                          ExpErrorPred("null interest rate term structure set to this instance of eqIndex"));
+                          equityindex_test::ExpErrorPred(
+                              "null interest rate term structure set to this instance of eqIndex"));
 }
 
 void EquityIndexTest::testFixingObservability() {
