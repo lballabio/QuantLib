@@ -67,8 +67,8 @@ namespace equityindex_test {
             dayCount = Actual365Fixed();
             currency = EURCurrency();
 
-            equityIndex = ext::shared_ptr<EquityIndex>(
-                new EquityIndex("eqIndex", currency, calendar, interestHandle, dividendHandle));
+            equityIndex = ext::make_shared<EquityIndex>("eqIndex", currency, calendar,
+                                                        interestHandle, dividendHandle);
 
             equityIndex->addFixing(Date(31, January, 2023), 8690.0);
 
