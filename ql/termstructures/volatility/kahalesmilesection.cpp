@@ -39,8 +39,7 @@ namespace QuantLib {
         // only shifted lognormal smile sections are supported
 
         QL_REQUIRE(source->volatilityType() == ShiftedLognormal,
-                   "KahaleSmileSection only supports shifted lognormal source "
-                   "sections");
+                   "KahaleSmileSection only supports shifted lognormal source sections");
 
         ssutils_ = ext::make_shared<SmileSectionUtils>(
             *source, moneynessGrid, atm, deleteArbitragePoints);
@@ -54,10 +53,10 @@ namespace QuantLib {
         // and do as if we were in a lognormal setting
 
         for (Real& i : k_) {
-            i += KahaleSmileSection::shift();
+            i += source_->shift();
         }
 
-        f_ += KahaleSmileSection::shift();
+        f_ += source_->shift();
 
         compute();
     }
@@ -90,8 +89,7 @@ namespace QuantLib {
                 if (interpolate_)
                     c1p = (secl + sec) / 2;
                 else {
-                    // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
-                    c1p = -source_->digitalOptionPrice(k1 - shift() + gap_ / 2.0, Option::Call, 1.0, gap_);
+                    c1p = -source_->digitalOptionPrice(k1 - source_->shift() + gap_ / 2.0, Option::Call, 1.0, gap_);
                     QL_REQUIRE(secl < c1p && c1p <= 0.0, "dummy");
                     // can not extrapolate so throw exception which is caught
                     // below
@@ -108,9 +106,7 @@ namespace QuantLib {
                 // which are not monotonic or greater than 1.0
                 // due to numerical effects. Move to the next index in
                 // these cases.
-                // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
-                Real dig = digitalOptionPrice((k1 - shift()) / 2.0, Option::Call,
-                                              1.0, gap_);
+                Real dig = digitalOptionPrice((k1 - source_->shift()) / 2.0, Option::Call, 1.0, gap_);
                 QL_REQUIRE(dig >= -c1p && dig <= 1.0, "dummy");
                 if(static_cast<int>(leftIndex_) < forcedLeftIndex_) {
                     leftIndex_++;
