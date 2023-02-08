@@ -30,7 +30,7 @@
 #define quantlib_instruments_swaption_hpp
 
 #include <ql/option.hpp>
-#include <ql/instruments/vanillaswap.hpp>
+#include <ql/instruments/fixedvsfloatingswap.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/volatility/volatilitytype.hpp>
 
@@ -82,7 +82,7 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        Swaption(ext::shared_ptr<VanillaSwap> swap,
+        Swaption(ext::shared_ptr<FixedVsFloatingSwap> swap,
                  const ext::shared_ptr<Exercise>& exercise,
                  Settlement::Type delivery = Settlement::Physical,
                  Settlement::Method settlementMethod = Settlement::PhysicalOTC);
@@ -102,7 +102,7 @@ namespace QuantLib {
             return settlementMethod_;
         }
         Swap::Type type() const { return swap_->type(); }
-        const ext::shared_ptr<VanillaSwap>& underlyingSwap() const {
+        const ext::shared_ptr<FixedVsFloatingSwap>& underlyingSwap() const {
             return swap_;
         }
         //@}
@@ -119,18 +119,18 @@ namespace QuantLib {
                               Real displacement = 0.0) const;
       private:
         // arguments
-        ext::shared_ptr<VanillaSwap> swap_;
+        ext::shared_ptr<FixedVsFloatingSwap> swap_;
         //Handle<YieldTermStructure> termStructure_;
         Settlement::Type settlementType_;
         Settlement::Method settlementMethod_;
     };
 
     //! %Arguments for swaption calculation
-    class Swaption::arguments : public VanillaSwap::arguments,
+    class Swaption::arguments : public FixedVsFloatingSwap::arguments,
                                 public Option::arguments {
       public:
         arguments() = default;
-        ext::shared_ptr<VanillaSwap> swap;
+        ext::shared_ptr<FixedVsFloatingSwap> swap;
         Settlement::Type settlementType = Settlement::Physical;
         Settlement::Method settlementMethod;
         void validate() const override;

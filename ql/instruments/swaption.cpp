@@ -130,7 +130,7 @@ namespace QuantLib {
         }
     }
 
-    Swaption::Swaption(ext::shared_ptr<VanillaSwap> swap,
+    Swaption::Swaption(ext::shared_ptr<FixedVsFloatingSwap> swap,
                        const ext::shared_ptr<Exercise>& exercise,
                        Settlement::Type delivery,
                        Settlement::Method settlementMethod)
@@ -160,7 +160,6 @@ namespace QuantLib {
     void Swaption::setupArguments(PricingEngine::arguments* args) const {
 
         swap_->setupArguments(args);
-
         auto* arguments = dynamic_cast<Swaption::arguments*>(args);
 
         QL_REQUIRE(arguments != nullptr, "wrong argument type");
@@ -172,11 +171,10 @@ namespace QuantLib {
     }
 
     void Swaption::arguments::validate() const {
-        VanillaSwap::arguments::validate();
-        QL_REQUIRE(swap, "vanilla swap not set");
+        FixedVsFloatingSwap::arguments::validate();
+        QL_REQUIRE(swap, "swap not set");
         QL_REQUIRE(exercise, "exercise not set");
-        Settlement::checkTypeAndMethodConsistency(settlementType,
-                                                  settlementMethod);
+        Settlement::checkTypeAndMethodConsistency(settlementType, settlementMethod);
     }
 
     Volatility Swaption::impliedVolatility(Real targetValue,

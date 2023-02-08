@@ -25,7 +25,7 @@
 #define quantlib_nonstandard_swap_hpp
 
 #include <ql/instruments/swap.hpp>
-#include <ql/instruments/vanillaswap.hpp>
+#include <ql/instruments/fixedvsfloatingswap.hpp>
 #include <ql/time/daycounter.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/optional.hpp>
@@ -42,7 +42,7 @@ namespace QuantLib {
         class arguments;
         class results;
         class engine;
-        NonstandardSwap(const VanillaSwap &fromVanilla);
+        NonstandardSwap(const FixedVsFloatingSwap &fromVanilla);
         NonstandardSwap(Swap::Type type,
                         std::vector<Real> fixedNominal,
                         const std::vector<Real>& floatingNominal,

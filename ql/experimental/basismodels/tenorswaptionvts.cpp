@@ -24,6 +24,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/experimental/basismodels/tenorswaptionvts.hpp>
 #include <ql/experimental/basismodels/swaptioncfs.hpp>
+#include <ql/instruments/vanillaswap.hpp>
 #include <ql/exercise.hpp>
 #include <ql/indexes/iborindex.hpp>
 #include <ql/math/rounding.hpp>
@@ -60,15 +61,15 @@ namespace QuantLib {
                                    volTS.baseIndex_->fixingCalendar(), ModifiedFollowing,
                                    Unadjusted, DateGeneration::Backward, false);
         // and swaps
-        ext::shared_ptr<VanillaSwap> baseSwap(new VanillaSwap(
+        auto baseSwap = ext::make_shared<VanillaSwap>(
             Swap::Payer, 1.0, baseFixedSchedule, 1.0, volTS.baseFixedDC_, baseFloatSchedule,
-            volTS.baseIndex_, 0.0, volTS.baseIndex_->dayCounter()));
-        ext::shared_ptr<VanillaSwap> targSwap(new VanillaSwap(
+            volTS.baseIndex_, 0.0, volTS.baseIndex_->dayCounter());
+        auto targSwap = ext::make_shared<VanillaSwap>(
             Swap::Payer, 1.0, baseFixedSchedule, 1.0, volTS.baseFixedDC_, targFloatSchedule,
-            volTS.targIndex_, 0.0, volTS.targIndex_->dayCounter()));
-        ext::shared_ptr<VanillaSwap> finlSwap(new VanillaSwap(
+            volTS.targIndex_, 0.0, volTS.targIndex_->dayCounter());
+        auto finlSwap = ext::make_shared<VanillaSwap>(
             Swap::Payer, 1.0, finlFixedSchedule, 1.0, volTS.targFixedDC_, targFloatSchedule,
-            volTS.targIndex_, 0.0, volTS.targIndex_->dayCounter()));
+            volTS.targIndex_, 0.0, volTS.targIndex_->dayCounter());
         // adding engines
         baseSwap->setPricingEngine(
             ext::shared_ptr<PricingEngine>(new DiscountingSwapEngine(volTS.discountCurve_)));

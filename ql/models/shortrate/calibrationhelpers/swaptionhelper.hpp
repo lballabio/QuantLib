@@ -28,6 +28,7 @@
 #include <ql/models/calibrationhelper.hpp>
 #include <ql/instruments/swaption.hpp>
 #include <ql/termstructures/volatility/volatilitytype.hpp>
+#include <ql/cashflows/rateaveraging.hpp>
 
 namespace QuantLib {
 
@@ -48,7 +49,9 @@ namespace QuantLib {
                        Real strike = Null<Real>(),
                        Real nominal = 1.0,
                        VolatilityType type = ShiftedLognormal,
-                       Real shift = 0.0);
+                       Real shift = 0.0,
+                       Natural settlementDays = Null<Size>(),
+                       RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         SwaptionHelper(const Date& exerciseDate,
                        const Period& length,
@@ -63,7 +66,9 @@ namespace QuantLib {
                        Real strike = Null<Real>(),
                        Real nominal = 1.0,
                        VolatilityType type = ShiftedLognormal,
-                       Real shift = 0.0);
+                       Real shift = 0.0,
+                       Natural settlementDays = Null<Size>(),
+                       RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         SwaptionHelper(const Date& exerciseDate,
                        const Date& endDate,
@@ -78,13 +83,18 @@ namespace QuantLib {
                        Real strike = Null<Real>(),
                        Real nominal = 1.0,
                        VolatilityType type = ShiftedLognormal,
-                       Real shift = 0.0);
+                       Real shift = 0.0,
+                       Natural settlementDays = Null<Size>(),
+                       RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
         void addTimesTo(std::list<Time>& times) const override;
         Real modelValue() const override;
         Real blackPrice(Volatility volatility) const override;
 
-        ext::shared_ptr<VanillaSwap> underlyingSwap() const { calculate(); return swap_; }
+        ext::shared_ptr<FixedVsFloatingSwap> underlyingSwap() const {
+            calculate();
+            return swap_;
+        }
         ext::shared_ptr<Swaption> swaption() const { calculate(); return swaption_; }
 
       private:
@@ -95,8 +105,10 @@ namespace QuantLib {
         const Handle<YieldTermStructure> termStructure_;
         const DayCounter fixedLegDayCounter_, floatingLegDayCounter_;
         const Real strike_, nominal_;
+        const Natural settlementDays_;
+        const RateAveraging::Type averagingMethod_;
         mutable Rate exerciseRate_;
-        mutable ext::shared_ptr<VanillaSwap> swap_;
+        mutable ext::shared_ptr<FixedVsFloatingSwap> swap_;
         mutable ext::shared_ptr<Swaption> swaption_;
     };
 
