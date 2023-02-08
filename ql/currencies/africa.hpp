@@ -38,29 +38,24 @@
 
 namespace QuantLib {
 
-    //! South-African rand
-    /*! The ISO three-letter code is ZAR; the numeric code is 710.
-        It is divided into 100 cents.
-
-        \ingroup currencies
-    */
-    class ZARCurrency : public Currency {
-      public:
-        ZARCurrency();
-    };
-
-    class NGNCurrency : public Currency {
-      public:
-        NGNCurrency();
-    };
-    //! Tunisian dinar
-    /*! The ISO three-letter code is TND; the numeric code is 788.
-     It is divided into 1000 millim.
+    // Angolan kwanza
+    /*! The ISO three-letter code is AOA; the numeric code is 973.
+     It is divided into 100 cêntimo.
      \ingroup currencies
-     */
-    class TNDCurrency : public Currency {
+    */
+    class AOACurrency : public Currency {
       public:
-        TNDCurrency();
+        AOACurrency();
+    };
+
+    // Botswanan Pula
+    /*! The ISO three-letter code is BWP; the numeric code is 72.
+     It is divided into 100 thebe.
+     \ingroup currencies
+    */
+    class BWPCurrency : public Currency {
+      public:
+        BWPCurrency();
     };
 
     //! Egyptian pound
@@ -73,54 +68,14 @@ namespace QuantLib {
         EGPCurrency();
     };
 
-    //! Mauritian rupee
-    /*! The ISO three-letter code is MUR; the numeric code is 480.
-     It is divided into 100 cents.
-     \ingroup currencies
-    */
-    class MURCurrency : public Currency {
-      public:
-        MURCurrency();
-    };
-
-    //! Ugandan shilling
-    /*! The ISO three-letter code is UGX; the numeric code is 800.
-    It is the smallest unit.
-     \ingroup currencies
-    */
-    class UGXCurrency : public Currency {
-      public:
-        UGXCurrency();
-    };
-
-    //! Zambian kwacha
-    /*! The ISO three-letter code is ZMW; the numeric code is 967.
-    It is divided into 100 ngwee.
-     \ingroup currencies
-    */
-    class ZMWCurrency : public Currency {
-      public:
-        ZMWCurrency();
-    };
-
-    //! Moroccan dirham
-    /*! The ISO three-letter code is MAD; the numeric code is 504.
+    // Ethiopian birr
+    /*! The ISO three-letter code is ETB; the numeric code is 230.
      It is divided into 100 santim.
      \ingroup currencies
     */
-    class MADCurrency : public Currency {
+    class ETBCurrency : public Currency {
       public:
-        MADCurrency();
-    };
-
-    //! Kenyan shilling
-    /*! The ISO three-letter code is KES; the numeric code is 404.
-     It is divided into 100 cents.
-     \ingroup currencies
-    */
-    class KESCurrency : public Currency {
-      public:
-        KESCurrency();
+        ETBCurrency();
     };
 
     //! Ghanaian cedi
@@ -133,24 +88,59 @@ namespace QuantLib {
         GHSCurrency();
     };
 
-    // Angolan kwanza
-    /*! The ISO three-letter code is AOA; the numeric code is 973.
-     It is divided into 100 cêntimo.
+    //! Kenyan shilling
+    /*! The ISO three-letter code is KES; the numeric code is 404.
+     It is divided into 100 cents.
      \ingroup currencies
     */
-    class AOACurrency : public Currency {
+    class KESCurrency : public Currency {
       public:
-        AOACurrency();
+        KESCurrency();
     };
 
-    // Ethiopian birr
-    /*! The ISO three-letter code is ETB; the numeric code is 230.
+    //! Moroccan dirham
+    /*! The ISO three-letter code is MAD; the numeric code is 504.
      It is divided into 100 santim.
      \ingroup currencies
     */
-    class ETBCurrency : public Currency {
+    class MADCurrency : public Currency {
       public:
-        ETBCurrency();
+        MADCurrency();
+    };
+
+    //! Mauritian rupee
+    /*! The ISO three-letter code is MUR; the numeric code is 480.
+     It is divided into 100 cents.
+     \ingroup currencies
+    */
+    class MURCurrency : public Currency {
+      public:
+        MURCurrency();
+    };
+
+    class NGNCurrency : public Currency {
+      public:
+        NGNCurrency();
+    };
+
+    //! Tunisian dinar
+    /*! The ISO three-letter code is TND; the numeric code is 788.
+     It is divided into 1000 millim.
+     \ingroup currencies
+     */
+    class TNDCurrency : public Currency {
+      public:
+        TNDCurrency();
+    };
+
+    //! Ugandan shilling
+    /*! The ISO three-letter code is UGX; the numeric code is 800.
+    It is the smallest unit.
+     \ingroup currencies
+    */
+    class UGXCurrency : public Currency {
+      public:
+        UGXCurrency();
     };
 
     // West African CFA franc
@@ -163,14 +153,25 @@ namespace QuantLib {
         XOFCurrency();
     };
 
-    // Botswanan Pula
-    /*! The ISO three-letter code is BWP; the numeric code is 72.
-     It is divided into 100 thebe.
+    //! South-African rand
+    /*! The ISO three-letter code is ZAR; the numeric code is 710.
+        It is divided into 100 cents.
+
+        \ingroup currencies
+    */
+    class ZARCurrency : public Currency {
+      public:
+        ZARCurrency();
+    };
+
+    //! Zambian kwacha
+    /*! The ISO three-letter code is ZMW; the numeric code is 967.
+    It is divided into 100 ngwee.
      \ingroup currencies
     */
-    class BWPCurrency : public Currency {
+    class ZMWCurrency : public Currency {
       public:
-        BWPCurrency();
+        ZMWCurrency();
     };
 }
 
