@@ -20,7 +20,7 @@ this_include_HEADERS = \
     sviinterpolatedsmilesection.hpp \
     sviinterpolation.hpp \
     svismilesection.hpp \
-    swaptionvolcube1a.hpp \
+    noarbsabrswaptionvolatilitycube.hpp \
     volcube.hpp \
     zabr.hpp \
     zabrinterpolatedsmilesection.hpp \

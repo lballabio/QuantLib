@@ -1236,7 +1236,7 @@ set(QL_HEADERS
     experimental/volatility/sviinterpolatedsmilesection.hpp
     experimental/volatility/sviinterpolation.hpp
     experimental/volatility/svismilesection.hpp
-    experimental/volatility/swaptionvolcube1a.hpp
+    experimental/volatility/noarbsabrswaptionvolatilitycube.hpp
     experimental/volatility/volcube.hpp
     experimental/volatility/zabr.hpp
     experimental/volatility/zabrinterpolatedsmilesection.hpp

@@ -829,7 +829,7 @@
     <ClInclude Include="ql\experimental\volatility\sviinterpolatedsmilesection.hpp" />
     <ClInclude Include="ql\experimental\volatility\sviinterpolation.hpp" />
     <ClInclude Include="ql\experimental\volatility\svismilesection.hpp" />
-    <ClInclude Include="ql\experimental\volatility\swaptionvolcube1a.hpp" />
+    <ClInclude Include="ql\experimental\volatility\noarbsabrswaptionvolatilitycube.hpp" />
     <ClInclude Include="ql\experimental\volatility\volcube.hpp" />
     <ClInclude Include="ql\experimental\volatility\zabr.hpp" />
     <ClInclude Include="ql\experimental\volatility\zabrinterpolatedsmilesection.hpp" />

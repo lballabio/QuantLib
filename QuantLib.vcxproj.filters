@@ -3009,7 +3009,7 @@
     <ClInclude Include="ql\experimental\volatility\svismilesection.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\volatility\swaptionvolcube1a.hpp">
+    <ClInclude Include="ql\experimental\volatility\noarbsabrswaptionvolatilitycube.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\volatility\volcube.hpp">

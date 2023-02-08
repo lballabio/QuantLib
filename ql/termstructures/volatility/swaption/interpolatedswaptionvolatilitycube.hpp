@@ -76,7 +76,7 @@ namespace QuantLib {
     };
 
     /*! \deprecated Use InterpolatedSwaptionVolatilityCube instead.
-                    Deprecated in version 1.29.
+                    Deprecated in version 1.30.
     */
     QL_DEPRECATED
     typedef InterpolatedSwaptionVolatilityCube SwaptionVolCube2;

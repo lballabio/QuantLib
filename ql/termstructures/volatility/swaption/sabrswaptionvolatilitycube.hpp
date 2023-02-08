@@ -23,7 +23,7 @@
     \brief Swaption volatility cube, fit-early-interpolate-later approach
            The provided types are
            SabrSwaptionVolatilityCube using the classic Hagan 2002 Sabr formula
-           SwaptionVolCube1a using the No Arbitrage Sabr model (Doust)
+           NoArbSabrSwaptionVolatilityCube using the No Arbitrage Sabr model (Doust)
 */
 
 #ifndef quantlib_swaption_volcube_fit_early_interpolate_later_h
@@ -1158,14 +1158,16 @@ namespace QuantLib {
     }
 
     /*! \deprecated Use XabrSwaptionVolatilityCube instead.
-                    Deprecated in version 1.29.
+                    Deprecated in version 1.30.
     */    
+   template <class Model>
+   using SwaptionVolCube1x = XabrSwaptionVolatilityCube<Model>;
 
     //======================================================================//
     //                      SabrSwaptionVolatilityCube (Sabr)                         //
     //======================================================================//
 
-    //! Swation Volatility Cube SABR 
+    //! Swaption Volatility Cube SABR 
     /*! This struct defines two types of SABR Volatility cubes, one for the
         SABRInterpolation and another one for smiles: SabrSmileSection.
     */
@@ -1178,8 +1180,9 @@ namespace QuantLib {
     typedef XabrSwaptionVolatilityCube<SwaptionVolCubeSabrModel> SabrSwaptionVolatilityCube;
 
     /*! \deprecated Use SabrSwaptionVolatilityCube instead.
-                    Deprecated in version 1.29.
+                    Deprecated in version 1.30.
     */
+    typedef XabrSwaptionVolatilityCube<SwaptionVolCubeSabrModel> SwaptionVolCube1;
     
 
 }
