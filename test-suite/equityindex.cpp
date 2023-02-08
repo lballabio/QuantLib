@@ -21,6 +21,7 @@
 #include <ql/indexes/equityindex.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/currencies/europe.hpp>
+#include <ql/quotes/simplequote.hpp>
 #include <string>
 
 using namespace QuantLib;
@@ -56,6 +57,8 @@ namespace equityindex_test {
         ext::shared_ptr<EquityIndex> equityIndex;
         RelinkableHandle<YieldTermStructure> interestHandle;
         RelinkableHandle<YieldTermStructure> dividendHandle;
+        ext::shared_ptr<Quote> spot;
+        RelinkableHandle<Quote> spotHandle;
 
         // cleanup
         SavedSettings backup;
@@ -65,36 +68,44 @@ namespace equityindex_test {
             calendar = TARGET();
             dayCount = Actual365Fixed();
 
-            equityIndex =
-                ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle, dividendHandle);
+            equityIndex = ext::make_shared<EquityIndex>("eqIndex", calendar, interestHandle,
+                                                        dividendHandle, spotHandle);
 
-            equityIndex->addFixing(Date(31, January, 2023), 8690.0);
+            equityIndex->addFixing(Date(30, January, 2023), 8690.0);
 
             today = calendar.adjust(Date(31, January, 2023));
             Settings::instance().evaluationDate() = today;
 
-            interestHandle.linkTo(flatRate(today, 0.03, dayCount));
-            dividendHandle.linkTo(flatRate(today, 0.01, dayCount));
+            interestHandle.linkTo(flatRate(0.03, dayCount));
+            dividendHandle.linkTo(flatRate(0.01, dayCount));
+            
+            spot = ext::make_shared<SimpleQuote>(8700.0);
+            spotHandle.linkTo(spot);
         }
     };
 }
 
-void EquityIndexTest::testTodaysFixingForecast() {
-    BOOST_TEST_MESSAGE("Testing todays fixing forecast...");
+void EquityIndexTest::testTodaysFixing() {
+    BOOST_TEST_MESSAGE("Testing todays fixing...");
 
     using namespace equityindex_test;
 
     CommonVars vars;
     const Real tolerance = 1.0e-8;
 
+    Real todaysFixing = vars.equityIndex->fixing(vars.today);
+
+    if ((std::fabs(todaysFixing - vars.equityIndex->spot()->value()) > tolerance))
+        BOOST_ERROR("today's fixing should be equal to spot\n"
+                    << "    actual forecast:    " << todaysFixing << "\n"
+                    << "    expected forecast:    " << vars.equityIndex->spot()->value() << "\n");
+
     Real forecastedFixing = vars.equityIndex->fixing(vars.today, true);
-    Real pastFixing = vars.equityIndex->fixing(vars.today, false);
 
-    if ((std::fabs(pastFixing - forecastedFixing) > tolerance))
-        BOOST_ERROR("forecasted fixing should be equal to past fixing\n"
-                    << "    past fixing:    " << pastFixing << "\n"
-                    << "    forecasted fixing:    " << forecastedFixing << "\n");
-
+    if ((std::fabs(forecastedFixing - vars.equityIndex->spot()->value()) > tolerance))
+        BOOST_ERROR("today's fixing forecast should be equal to spot\n"
+                    << "    actual forecast:    " << forecastedFixing << "\n"
+                    << "    expected forecast:    " << vars.equityIndex->spot()->value() << "\n");
 }
 
 void EquityIndexTest::testFixingForecast() {
@@ -108,7 +119,7 @@ void EquityIndexTest::testFixingForecast() {
     Date forecastedDate(20, May, 2030);
     
     Real forecast = vars.equityIndex->fixing(forecastedDate);
-    Real expectedForecast = vars.equityIndex->pastFixing(vars.today) *
+    Real expectedForecast = vars.spotHandle->value() *
                             vars.dividendHandle->discount(forecastedDate) /
                             vars.interestHandle->discount(forecastedDate);
 
@@ -128,17 +139,71 @@ void EquityIndexTest::testFixingForecastWithoutDividend() {
 
     Date forecastedDate(20, May, 2030);
 
-    auto equityIndexExDiv = vars.equityIndex->clone(vars.equityIndex->equityInterestRateCurve(),
-                                                    Handle<YieldTermStructure>());
+    auto equityIndexExDiv =
+        vars.equityIndex->clone(vars.interestHandle, Handle<YieldTermStructure>(), vars.spotHandle);
 
     Real forecast = equityIndexExDiv->fixing(forecastedDate);
-    Real expectedForecast = equityIndexExDiv->pastFixing(vars.today) /
-                            vars.interestHandle->discount(forecastedDate);
+    Real expectedForecast =
+        vars.spotHandle->value() / vars.interestHandle->discount(forecastedDate);
 
     if ((std::fabs(forecast - expectedForecast) > tolerance))
         BOOST_ERROR("could not replicate index forecast without dividend\n"
                     << "    actual forecast:    " << forecast << "\n"
                     << "    expected forecast:    " << expectedForecast << "\n");
+}
+
+void EquityIndexTest::testFixingForecastWithoutSpot() {
+    BOOST_TEST_MESSAGE("Testing fixing forecast without spot handle...");
+
+    using namespace equityindex_test;
+
+    CommonVars vars;
+    const Real tolerance = 1.0e-8;
+
+    Date forecastedDate(20, May, 2030);
+    
+    Date yesterday(30, January, 2023);
+    Settings::instance().evaluationDate() = yesterday;
+
+    auto equityIndexExSpot =
+        vars.equityIndex->clone(vars.interestHandle, vars.dividendHandle, Handle<Quote>());
+
+    Real forecast = equityIndexExSpot->fixing(forecastedDate);
+    Real expectedForecast = equityIndexExSpot->pastFixing(yesterday) *
+                            vars.dividendHandle->discount(forecastedDate) /
+                            vars.interestHandle->discount(forecastedDate);
+
+    // Set evaluation date back to today
+    Settings::instance().evaluationDate() = vars.today;
+
+    if ((std::fabs(forecast - expectedForecast) > tolerance))
+        BOOST_ERROR("could not replicate index forecast without spot handle\n"
+                    << "    actual forecast:    " << forecast << "\n"
+                    << "    expected forecast:    " << expectedForecast << "\n");
+}
+
+void EquityIndexTest::testSpotChange() {
+    BOOST_TEST_MESSAGE("Testing spot change...");
+
+    using namespace equityindex_test;
+
+    CommonVars vars;
+    const Real tolerance = 1.0e-8;
+
+    ext::shared_ptr<Quote> newSpot = ext::make_shared<SimpleQuote>(9000.0);
+    vars.spotHandle.linkTo(newSpot);
+
+    if ((std::fabs(newSpot->value() - vars.equityIndex->spot()->value()) > tolerance))
+        BOOST_ERROR("could not re-link spot quote to new value\n"
+                    << "    actual spot:    " << vars.equityIndex->spot()->value() << "\n"
+                    << "    expected spot:    " << newSpot->value() << "\n");
+
+    vars.spotHandle.linkTo(vars.spot);
+
+    if ((std::fabs(vars.spot->value() - vars.equityIndex->spot()->value()) > tolerance))
+        BOOST_ERROR("could not re-link spot quote back to old value\n"
+                    << "    actual spot:    " << vars.equityIndex->spot()->value() << "\n"
+                    << "    expected spot:    " << vars.spot->value() << "\n");
 }
 
 void EquityIndexTest::testErrorWhenInvalidFixingDate() {
@@ -175,7 +240,8 @@ void EquityIndexTest::testErrorWhenInterestHandleMissing() {
     Date forecastedDate(20, May, 2030);
 
     auto equityIndexExDiv =
-        vars.equityIndex->clone(Handle<YieldTermStructure>(), Handle<YieldTermStructure>());
+        vars.equityIndex->clone(
+            Handle<YieldTermStructure>(), Handle<YieldTermStructure>(), Handle<Quote>());
 
     BOOST_CHECK_EXCEPTION(equityIndexExDiv->fixing(forecastedDate), Error,
                           equityindex_test::ExpErrorPred(
@@ -207,9 +273,11 @@ void EquityIndexTest::testFixingObservability() {
 test_suite* EquityIndexTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Equity index tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testTodaysFixingForecast));
+    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testTodaysFixing));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecast));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecastWithoutDividend));
+    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecastWithoutSpot));
+    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testSpotChange));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenInvalidFixingDate));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenFixingMissing));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenInterestHandleMissing));

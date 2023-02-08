@@ -26,12 +26,14 @@ namespace QuantLib {
     EquityIndex::EquityIndex(std::string name,
                              Calendar fixingCalendar,
                              Handle<YieldTermStructure> interest,
-                             Handle<YieldTermStructure> dividend)
+                             Handle<YieldTermStructure> dividend,
+                             Handle<Quote> spot)
     : name_(std::move(name)), settlementCalendar_(std::move(fixingCalendar)),
-      interest_(std::move(interest)), dividend_(std::move(dividend)) {
+      interest_(std::move(interest)), dividend_(std::move(dividend)), spot_(std::move(spot)) {
 
         registerWith(interest_);
         registerWith(dividend_);
+        registerWith(spot_);
         registerWith(Settings::instance().evaluationDate());
         registerWith(IndexManager::instance().notifier(EquityIndex::name()));
     }
@@ -44,6 +46,9 @@ namespace QuantLib {
 
         if (fixingDate > today || (fixingDate == today && forecastTodaysFixing))
             return forecastFixing(fixingDate);
+
+        if (fixingDate == today && !spot_.empty())
+            return spot_->value();
         
         return pastFixing(fixingDate);
     }
@@ -61,8 +66,8 @@ namespace QuantLib {
                    "null interest rate term structure set to this instance of " << name());
 
         Date today = Settings::instance().evaluationDate();
-        
-        Real spot = pastFixing(today);
+
+        Real spot = spot_.empty() ? pastFixing(today) : spot_->value();
 
         Real forward;
         if (!dividend_.empty()) {
@@ -74,7 +79,8 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<EquityIndex> EquityIndex::clone(const Handle<YieldTermStructure>& interest,
-                                                    const Handle<YieldTermStructure>& dividend) const {
-        return ext::make_shared<EquityIndex>(name(), fixingCalendar(), interest, dividend);
+                                                    const Handle<YieldTermStructure>& dividend,
+                                                    const Handle<Quote>& spot) const {
+        return ext::make_shared<EquityIndex>(name(), fixingCalendar(), interest, dividend, spot);
     }
 }

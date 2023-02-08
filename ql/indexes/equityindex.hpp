@@ -56,14 +56,17 @@ namespace QuantLib {
         where \f$ P_{F}(t, T) \f$ is a discount factor of the equity
         forward term structure.
 
-        To forecast future fixings, the index requires today's fixing.
+        To forecast future fixings, the user can either provide a
+        handle to the current index spot. If spot handle is empty,
+        today's fixing will be used, instead.
     */
     class EquityIndex : public Index, public Observer {
       public:
         EquityIndex(std::string name,
                     Calendar fixingCalendar,
                     Handle<YieldTermStructure> interest = {},
-                    Handle<YieldTermStructure> dividend = {});
+                    Handle<YieldTermStructure> dividend = {},
+                    Handle<Quote> spot = {});
 
         //! \name Index interface
         //@{
@@ -82,6 +85,8 @@ namespace QuantLib {
         Handle<YieldTermStructure> equityInterestRateCurve() const { return interest_; }
         //! the dividend curve used to forecast fixings
         Handle<YieldTermStructure> equityDividendCurve() const { return dividend_; }
+        //! index spot value
+        Handle<Quote> spot() const { return spot_; }
         //@}
         //! \name Fixing calculations
         //@{
@@ -91,16 +96,18 @@ namespace QuantLib {
         // @}
         //! \name Other methods
         //@{
-        //! returns a copy of itself linked to a different forwarding curve
-        virtual ext::shared_ptr<EquityIndex> clone(
-                const Handle<YieldTermStructure>& interest,
-                const Handle<YieldTermStructure>& dividend) const;
+        //! returns a copy of itself linked to different interest, dividend curves
+        //! or spot quote
+        virtual ext::shared_ptr<EquityIndex> clone(const Handle<YieldTermStructure>& interest,
+                                                   const Handle<YieldTermStructure>& dividend,
+                                                   const Handle<Quote>& spot) const;
         // @}
       private:
         std::string name_;
         Calendar settlementCalendar_;
         Handle<YieldTermStructure> interest_;
         Handle<YieldTermStructure> dividend_;
+        Handle<Quote> spot_;
     };
 
     inline bool EquityIndex::isValidFixingDate(const Date& d) const {

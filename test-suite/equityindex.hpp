@@ -24,9 +24,11 @@
 
 class EquityIndexTest {
   public:
-    static void testTodaysFixingForecast();
+    static void testTodaysFixing();
     static void testFixingForecast();
     static void testFixingForecastWithoutDividend();
+    static void testFixingForecastWithoutSpot();
+    static void testSpotChange();
     static void testErrorWhenInvalidFixingDate();
     static void testErrorWhenFixingMissing();
     static void testErrorWhenInterestHandleMissing();
