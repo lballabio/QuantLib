@@ -1519,7 +1519,7 @@ void BarrierOptionTest::testBarrierAndDividendEngine() {
 }
 
 void BarrierOptionTest::testImpliedVolatility() {
-    BOOST_TEST_MESSAGE("Testing implied volatility for barrier option...");
+    BOOST_TEST_MESSAGE("Testing implied volatility for barrier options...");
 
     SavedSettings backup;
 
@@ -1562,7 +1562,7 @@ void BarrierOptionTest::testImpliedVolatility() {
         Barrier::Type barrierType = barrierTypes[i];
 
         BarrierOption barrierOption(barrierType, barrier, rebate, payoff, exercise);
-        Volatility impliedVol = barrierOption.impliedVolatility(targetWithoutDividends[i], bsProcess, 1e-6, 100, 0.01, 4.0);
+        Volatility impliedVol = barrierOption.impliedVolatility(targetWithoutDividends[i], bsProcess, 1e-6);
 
         RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, impliedVol, dc));
         auto process = ext::make_shared<BlackScholesMertonProcess>(s0, qTS, rTS, volTS);
@@ -1580,7 +1580,7 @@ void BarrierOptionTest::testImpliedVolatility() {
                         << "\n    difference    " << diff);
         }
 
-        impliedVol = barrierOption.impliedVolatility(targetWithDividends[i], bsProcess, dividends, 1e-6, 100, 0.01, 4.0);
+        impliedVol = barrierOption.impliedVolatility(targetWithDividends[i], bsProcess, dividends, 1e-6);
 
         volTS.linkTo(flatVol(today, impliedVol, dc));
         barrierOption.setPricingEngine(ext::make_shared<FdBlackScholesBarrierEngine>(process, dividends));
