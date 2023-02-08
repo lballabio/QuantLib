@@ -19,11 +19,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*
-    Data from http://fx.sauder.ubc.ca/currency_table.html
-    and http://www.thefinancials.com/vortex/CurrencyFormats.html
-*/
-
 #include <ql/currencies/africa.hpp>
 
 namespace QuantLib {
@@ -85,10 +80,6 @@ namespace QuantLib {
     }
 
     // Nigerian Naira
-    /* ISO-4217 code -> NGN
-     * Corresponding code Number -> 566
-     * The NGN ISO code has a currency exponent of 2 ( i.e subdivided into 100 kobo), 100k = 1NGN.
-     */
     NGNCurrency::NGNCurrency() {
         static ext::shared_ptr<Data> ngnData(
             new Data("Nigerian Naira", "NGN", 566, "N", "K", 100, Rounding(), "%3% %1N.2f"));

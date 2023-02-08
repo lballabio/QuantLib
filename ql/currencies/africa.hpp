@@ -22,8 +22,7 @@
 /*! \file africa.hpp
     \brief African currencies
 
-    Data from http://fx.sauder.ubc.ca/currency_table.html
-    and http://www.thefinancials.com/vortex/CurrencyFormats.html
+    See <https://www.thefinancials.com/Default.aspx?SubSectionID=curformat>.
 */
 
 #ifndef quantlib_african_currencies_hpp
@@ -118,6 +117,11 @@ namespace QuantLib {
         MURCurrency();
     };
 
+    //! Nigerian Naira
+    /*! The ISO three-letter code is NGN; the numeric code is 566.
+     It is divided into 100 kobo.
+     \ingroup currencies
+    */
     class NGNCurrency : public Currency {
       public:
         NGNCurrency();
