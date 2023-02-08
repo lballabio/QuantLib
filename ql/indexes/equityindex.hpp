@@ -61,7 +61,6 @@ namespace QuantLib {
     class EquityIndex : public Index, public Observer {
       public:
         EquityIndex(std::string name,
-                    Currency currency,
                     Calendar fixingCalendar,
                     Handle<YieldTermStructure> interest = {},
                     Handle<YieldTermStructure> dividend = {});
@@ -79,7 +78,6 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        const Currency& currency() const { return currency_; }
         //! the rate curve used to forecast fixings
         Handle<YieldTermStructure> equityInterestRateCurve() const { return interest_; }
         //! the dividend curve used to forecast fixings
@@ -98,15 +96,11 @@ namespace QuantLib {
                 const Handle<YieldTermStructure>& interest,
                 const Handle<YieldTermStructure>& dividend) const;
         // @}
-
-      protected:
+      private:
         std::string name_;
-        Currency currency_;
+        Calendar settlementCalendar_;
         Handle<YieldTermStructure> interest_;
         Handle<YieldTermStructure> dividend_;
-
-      private:
-        Calendar settlementCalendar_;
     };
 
     inline bool EquityIndex::isValidFixingDate(const Date& d) const {

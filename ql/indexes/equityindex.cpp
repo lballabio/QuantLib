@@ -24,13 +24,11 @@
 namespace QuantLib {
 
     EquityIndex::EquityIndex(std::string name,
-                             Currency currency,
                              Calendar fixingCalendar,
                              Handle<YieldTermStructure> interest,
                              Handle<YieldTermStructure> dividend)
-    : name_(std::move(name)), currency_(std::move(currency)),
-      interest_(std::move(interest)), dividend_(std::move(dividend)),
-      settlementCalendar_(std::move(fixingCalendar)) {
+    : name_(std::move(name)), settlementCalendar_(std::move(fixingCalendar)),
+      interest_(std::move(interest)), dividend_(std::move(dividend)) {
 
         registerWith(interest_);
         registerWith(dividend_);
@@ -38,7 +36,7 @@ namespace QuantLib {
         registerWith(IndexManager::instance().notifier(EquityIndex::name()));
     }
 
-    Rate EquityIndex::fixing(const Date& fixingDate, bool forecastTodaysFixing) const {
+    Real EquityIndex::fixing(const Date& fixingDate, bool forecastTodaysFixing) const {
 
         QL_REQUIRE(isValidFixingDate(fixingDate), "Fixing date " << fixingDate << " is not valid");
 
@@ -46,14 +44,8 @@ namespace QuantLib {
 
         if (fixingDate > today || (fixingDate == today && forecastTodaysFixing))
             return forecastFixing(fixingDate);
-
-        if (fixingDate <= today) {
-            // today's fixing is required
-            // even without enforcing it
-            return pastFixing(fixingDate);
-        }
-
-        return forecastFixing(fixingDate);
+        
+        return pastFixing(fixingDate);
     }
 
     Real EquityIndex::pastFixing(const Date& fixingDate) const {
@@ -83,7 +75,6 @@ namespace QuantLib {
 
     ext::shared_ptr<EquityIndex> EquityIndex::clone(const Handle<YieldTermStructure>& interest,
                                                     const Handle<YieldTermStructure>& dividend) const {
-        return ext::make_shared<EquityIndex>(name(), currency(), fixingCalendar(), interest,
-                                             dividend);
+        return ext::make_shared<EquityIndex>(name(), fixingCalendar(), interest, dividend);
     }
 }
