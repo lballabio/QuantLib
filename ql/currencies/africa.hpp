@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004, 2005 StatPro Italia srl
  Copyright (C) 2016 Quaternion Risk Management Ltd
+ Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -160,6 +161,16 @@ namespace QuantLib {
     class XOFCurrency : public Currency {
       public:
         XOFCurrency();
+    };
+
+    // Botswanan Pula
+    /*! The ISO three-letter code is BWP; the numeric code is 72.
+     It is divided into 100 thebe.
+     \ingroup currencies
+    */
+    class BWPCurrency : public Currency {
+      public:
+        BWPCurrency();
     };
 }
 

@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2004, 2005 StatPro Italia srl
  Copyright (C) 2016 Quaternion Risk Management Ltd
+ Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -127,6 +128,14 @@ namespace QuantLib {
         static ext::shared_ptr<Data> xofData(new Data("West African CFA franc", "XOF", 952, "XOF",
                                                         "", 100, Rounding(), "1$.2f %3%"));
         data_ = xofData;
+    }
+
+    
+    // Botswanan pula
+    BWPCurrency::BWPCurrency() {
+        static ext::shared_ptr<Data> bwpData(
+            new Data("Botswanan pula", "BWP", 72, "P", "", 100, Rounding(), "1$.2f %3%"));
+        data_ = bwpData;
     }
 
 }
