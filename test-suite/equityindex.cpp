@@ -204,7 +204,6 @@ void EquityIndexTest::testFixingForecastWithoutSpotAndHistoricalFixing() {
     using namespace equityindex_test;
 
     CommonVars vars(false);
-    const Real tolerance = 1.0e-1;
 
     Date forecastedDate(20, May, 2030);
 
