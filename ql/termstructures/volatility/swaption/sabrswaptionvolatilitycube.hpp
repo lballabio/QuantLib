@@ -1168,8 +1168,9 @@ namespace QuantLib {
     //======================================================================//
 
     //! Swaption Volatility Cube SABR 
-    /*! This struct defines two types of SABR Volatility cubes, one for the
-        SABRInterpolation and another one for smiles: SabrSmileSection.
+    /*! This struct defines the types used by SABR Volatility cubes
+        for interpolation (SABRInterpolation) and for modeling the
+        smile (SabrSmileSection).
     */
     struct SwaptionVolCubeSabrModel {
         typedef SABRInterpolation Interpolation;
@@ -1177,11 +1178,13 @@ namespace QuantLib {
     };
 
 
+    //! SABR volatility cube for swaptions
     typedef XabrSwaptionVolatilityCube<SwaptionVolCubeSabrModel> SabrSwaptionVolatilityCube;
 
     /*! \deprecated Renamed to SabrSwaptionVolatilityCube.
                     Deprecated in version 1.30.
     */
+    QL_DEPRECATED
     typedef XabrSwaptionVolatilityCube<SwaptionVolCubeSabrModel> SwaptionVolCube1;
 
 }
