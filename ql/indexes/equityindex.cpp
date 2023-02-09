@@ -24,10 +24,10 @@
 namespace QuantLib {
 
     namespace {
-        Real resolveSpot(const Handle<Quote>& spot, Real lastFixingDate) {
-            QL_REQUIRE(!spot.empty() || lastFixingDate != Null<Real>(),
+        Real resolveSpot(const Handle<Quote>& spot, Real lastFixing) {
+            QL_REQUIRE(!spot.empty() || lastFixing != Null<Real>(),
                        "Cannot forecast equity index, missing both spot and historical index");
-            return spot.empty() ? lastFixingDate : spot->value();
+            return spot.empty() ? lastFixing : spot->value();
         }
     }
 
