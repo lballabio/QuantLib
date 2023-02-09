@@ -72,7 +72,7 @@ namespace equityindex_test {
                                                         dividendHandle, spotHandle);
             IndexManager::instance().clearHistory(equityIndex->name());
 
-            today = calendar.adjust(Date(31, January, 2023));
+            today = calendar.adjust(Date(27, January, 2023));
             
             if (addTodaysFixing)
                 equityIndex->addFixing(today, 8690.0);
@@ -304,6 +304,24 @@ void EquityIndexTest::testFixingObservability() {
         BOOST_FAIL("Observer was not notified of added equity index fixing");
 }
 
+void EquityIndexTest::testNoErrorIfTodayIsNotBusinessDay() {
+    BOOST_TEST_MESSAGE("Testing no error if today is not a business day...");
+
+    using namespace equityindex_test;
+
+    CommonVars vars;
+
+    Date today(28, January, 2023);
+    Date forecastedDate(20, May, 2030);
+
+    Settings::instance().evaluationDate() = today;
+
+    auto equityIndex =
+        vars.equityIndex->clone(vars.interestHandle, vars.dividendHandle, Handle<Quote>());
+
+    BOOST_REQUIRE_NO_THROW(vars.equityIndex->fixing(forecastedDate));
+}
+
 test_suite* EquityIndexTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Equity index tests");
 
@@ -319,6 +337,7 @@ test_suite* EquityIndexTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenFixingMissing));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenInterestHandleMissing));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingObservability));
+    suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testNoErrorIfTodayIsNotBusinessDay));
 
     return suite;
 }

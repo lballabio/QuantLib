@@ -35,6 +35,7 @@ class EquityIndexTest {
     static void testErrorWhenFixingMissing();
     static void testErrorWhenInterestHandleMissing();
     static void testFixingObservability();
+    static void testNoErrorIfTodayIsNotBusinessDay();
 
     static boost::unit_test_framework::test_suite* suite();
 };

@@ -79,6 +79,7 @@ namespace QuantLib {
                    "null interest rate term structure set to this instance of " << name());
 
         Date today = Settings::instance().evaluationDate();
+        today = settlementCalendar_.adjust(today, BusinessDayConvention::Preceding);
 
         Real spot = resolveSpot(spot_, pastFixing(today));
 
