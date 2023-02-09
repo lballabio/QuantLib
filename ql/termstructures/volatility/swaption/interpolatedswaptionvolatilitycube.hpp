@@ -75,10 +75,10 @@ namespace QuantLib {
         mutable std::vector<Matrix> volSpreadsMatrix_;
     };
 
-    /*! \deprecated Use InterpolatedSwaptionVolatilityCube instead.
+    /*! \deprecated Renamed to InterpolatedSwaptionVolatilityCube.
                     Deprecated in version 1.30.
     */
-    QL_DEPRECATED
+    [[deprecated("renamed to InterpolatedSwaptionVolatilityCube")]]
     typedef InterpolatedSwaptionVolatilityCube SwaptionVolCube2;
 
 }

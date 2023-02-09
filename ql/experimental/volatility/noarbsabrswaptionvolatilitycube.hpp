@@ -36,11 +36,13 @@ namespace QuantLib {
         typedef NoArbSabrSmileSection SmileSection;
     };
 
+    //! no-arbitrage SABR volatility cube for swaptions
     typedef XabrSwaptionVolatilityCube<SwaptionVolCubeNoArbSabrModel> NoArbSabrSwaptionVolatilityCube;
 
     /*! \deprecated Renamed to NoArbSabrSwaptionVolatilityCube.
                     Deprecated in version 1.30. 
     */
+    [[deprecated("renamed to NoArbSabrSwaptionVolatilityCube")]]
     typedef XabrSwaptionVolatilityCube<SwaptionVolCubeNoArbSabrModel> SwaptionVolCube1a;
 
 }
