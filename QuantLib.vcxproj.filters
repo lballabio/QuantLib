@@ -2055,6 +2055,12 @@
     <ClInclude Include="ql\termstructures\volatility\swaption\cmsmarketcalibration.hpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.hpp">
+      <Filter>termstructures\volatility\swaption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\swaption\sabrswaptionvolatilitycube.hpp">
+      <Filter>termstructures\volatility\swaption</Filter>
+    </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\swaption\spreadedswaptionvol.hpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
@@ -2064,10 +2070,10 @@
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolcube.hpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\termstructures\volatility\swaption\sabrswaptionvolatilitycube.hpp">
+    <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolcube1.hpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.hpp">
+    <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolcube2.hpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvoldiscrete.hpp">
@@ -2997,6 +3003,9 @@
     <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabrswaptionvolatilitycube.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\volatility\sabrvolsurface.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
@@ -3009,7 +3018,7 @@
     <ClInclude Include="ql\experimental\volatility\svismilesection.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\volatility\noarbsabrswaptionvolatilitycube.hpp">
+    <ClInclude Include="ql\experimental\volatility\swaptionvolcube1a.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\volatility\volcube.hpp">
@@ -5461,6 +5470,9 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\cmsmarketcalibration.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.cpp">
+      <Filter>termstructures\volatility\swaption</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\swaption\spreadedswaptionvol.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
@@ -5468,9 +5480,6 @@
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube.cpp">
-      <Filter>termstructures\volatility\swaption</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvoldiscrete.cpp">

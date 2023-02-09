@@ -835,10 +835,10 @@ set(QL_SOURCES
     termstructures/volatility/swaption/cmsmarket.cpp
     termstructures/volatility/swaption/cmsmarketcalibration.cpp
     termstructures/volatility/swaption/gaussian1dswaptionvolatility.cpp
+    termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.cpp
     termstructures/volatility/swaption/spreadedswaptionvol.cpp
     termstructures/volatility/swaption/swaptionconstantvol.cpp
     termstructures/volatility/swaption/swaptionvolcube.cpp
-    termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.cpp
     termstructures/volatility/swaption/swaptionvoldiscrete.cpp
     termstructures/volatility/swaption/swaptionvolmatrix.cpp
     termstructures/volatility/swaption/swaptionvolstructure.cpp
@@ -1231,12 +1231,13 @@ set(QL_HEADERS
     experimental/volatility/noarbsabrinterpolatedsmilesection.hpp
     experimental/volatility/noarbsabrinterpolation.hpp
     experimental/volatility/noarbsabrsmilesection.hpp
+    experimental/volatility/noarbsabrswaptionvolatilitycube.hpp
     experimental/volatility/sabrvolsurface.hpp
     experimental/volatility/sabrvoltermstructure.hpp
     experimental/volatility/sviinterpolatedsmilesection.hpp
     experimental/volatility/sviinterpolation.hpp
     experimental/volatility/svismilesection.hpp
-    experimental/volatility/noarbsabrswaptionvolatilitycube.hpp
+    experimental/volatility/swaptionvolcube1a.hpp
     experimental/volatility/volcube.hpp
     experimental/volatility/zabr.hpp
     experimental/volatility/zabrinterpolatedsmilesection.hpp
@@ -2076,11 +2077,13 @@ set(QL_HEADERS
     termstructures/volatility/swaption/cmsmarket.hpp
     termstructures/volatility/swaption/cmsmarketcalibration.hpp
     termstructures/volatility/swaption/gaussian1dswaptionvolatility.hpp
+    termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp
+    termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp
     termstructures/volatility/swaption/spreadedswaptionvol.hpp
     termstructures/volatility/swaption/swaptionconstantvol.hpp
     termstructures/volatility/swaption/swaptionvolcube.hpp
-    termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp
-    termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp
+    termstructures/volatility/swaption/swaptionvolcube1.hpp
+    termstructures/volatility/swaption/swaptionvolcube2.hpp
     termstructures/volatility/swaption/swaptionvoldiscrete.hpp
     termstructures/volatility/swaption/swaptionvolmatrix.hpp
     termstructures/volatility/swaption/swaptionvolstructure.hpp

@@ -22,8 +22,8 @@
     \brief Swaption volatility cube, fit-later-interpolate-early approach
 */
 
-#ifndef quantlib_swaption_volcube_fit_later_interpolate_early_h
-#define quantlib_swaption_volcube_fit_later_interpolate_early_h
+#ifndef quantlib_interpolated_swaption_volatility_cube_hpp
+#define quantlib_interpolated_swaption_volatility_cube_hpp
 
 #include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
 #include <ql/math/interpolations/interpolation2d.hpp>

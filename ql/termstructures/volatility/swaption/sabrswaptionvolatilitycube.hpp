@@ -26,8 +26,8 @@
            NoArbSabrSwaptionVolatilityCube using the No Arbitrage Sabr model (Doust)
 */
 
-#ifndef quantlib_swaption_volcube_fit_early_interpolate_later_h
-#define quantlib_swaption_volcube_fit_early_interpolate_later_h
+#ifndef quantlib_sabr_swaption_volatility_cube_hpp
+#define quantlib_sabr_swaption_volatility_cube_hpp
 
 #include <ql/math/interpolations/backwardflatlinearinterpolation.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
@@ -1157,11 +1157,11 @@ namespace QuantLib {
         return result;
     }
 
-    /*! \deprecated Use XabrSwaptionVolatilityCube instead.
+    /*! \deprecated Renamed to XabrSwaptionVolatilityCube.
                     Deprecated in version 1.30.
     */    
-   template <class Model>
-   using SwaptionVolCube1x = XabrSwaptionVolatilityCube<Model>;
+    template <class Model>
+    using SwaptionVolCube1x = XabrSwaptionVolatilityCube<Model>;
 
     //======================================================================//
     //                      SabrSwaptionVolatilityCube (Sabr)                         //
@@ -1179,11 +1179,10 @@ namespace QuantLib {
 
     typedef XabrSwaptionVolatilityCube<SwaptionVolCubeSabrModel> SabrSwaptionVolatilityCube;
 
-    /*! \deprecated Use SabrSwaptionVolatilityCube instead.
+    /*! \deprecated Renamed to SabrSwaptionVolatilityCube.
                     Deprecated in version 1.30.
     */
     typedef XabrSwaptionVolatilityCube<SwaptionVolCubeSabrModel> SwaptionVolCube1;
-    
 
 }
 

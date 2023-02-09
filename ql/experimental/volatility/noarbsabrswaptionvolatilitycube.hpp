@@ -23,8 +23,8 @@
            using the No Arbitrage Sabr model (Doust)
 */
 
-#ifndef quantlib_swaption_volcube_1a_hpp
-#define quantlib_swaption_volcube_1a_hpp
+#ifndef quantlib_noarb_sabr_swaption_volatility_cube_hpp
+#define quantlib_noarb_sabr_swaption_volatility_cube_hpp
 
 #include <ql/termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp>
 #include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
@@ -38,7 +38,7 @@ namespace QuantLib {
 
     typedef XabrSwaptionVolatilityCube<SwaptionVolCubeNoArbSabrModel> NoArbSabrSwaptionVolatilityCube;
 
-    /*! \deprecated Use NoArbSabrSwaptionVolatilityCube instead.
+    /*! \deprecated Renamed to NoArbSabrSwaptionVolatilityCube.
                     Deprecated in version 1.30. 
     */
     typedef XabrSwaptionVolatilityCube<SwaptionVolCubeNoArbSabrModel> SwaptionVolCube1a;
