@@ -42,7 +42,7 @@ namespace QuantLib {
     /*! \deprecated Renamed to NoArbSabrSwaptionVolatilityCube.
                     Deprecated in version 1.30. 
     */
-    QL_DEPRECATED
+    [[deprecated("renamed to NoArbSabrSwaptionVolatilityCube")]]
     typedef XabrSwaptionVolatilityCube<SwaptionVolCubeNoArbSabrModel> SwaptionVolCube1a;
 
 }

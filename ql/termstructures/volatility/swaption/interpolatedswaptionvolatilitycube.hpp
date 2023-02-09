@@ -78,7 +78,7 @@ namespace QuantLib {
     /*! \deprecated Renamed to InterpolatedSwaptionVolatilityCube.
                     Deprecated in version 1.30.
     */
-    QL_DEPRECATED
+    [[deprecated("renamed to InterpolatedSwaptionVolatilityCube")]]
     typedef InterpolatedSwaptionVolatilityCube SwaptionVolCube2;
 
 }

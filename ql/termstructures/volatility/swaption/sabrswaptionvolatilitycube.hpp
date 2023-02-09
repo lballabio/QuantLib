@@ -1161,7 +1161,7 @@ namespace QuantLib {
                     Deprecated in version 1.30.
     */    
     template <class Model>
-    using SwaptionVolCube1x [[deprecated("Renamed to XabrSwaptionVolatilityCube")]] = XabrSwaptionVolatilityCube<Model>;
+    using SwaptionVolCube1x [[deprecated("renamed to XabrSwaptionVolatilityCube")]] = XabrSwaptionVolatilityCube<Model>;
 
     //======================================================================//
     //                      SabrSwaptionVolatilityCube                      //
@@ -1184,7 +1184,7 @@ namespace QuantLib {
     /*! \deprecated Renamed to SabrSwaptionVolatilityCube.
                     Deprecated in version 1.30.
     */
-    QL_DEPRECATED
+    [[deprecated("renamed to SabrSwaptionVolatilityCube")]]
     typedef XabrSwaptionVolatilityCube<SwaptionVolCubeSabrModel> SwaptionVolCube1;
 
 }
