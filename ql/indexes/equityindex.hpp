@@ -71,7 +71,7 @@ namespace QuantLib {
         //! \name Index interface
         //@{
         std::string name() const override { return name_; }
-        Calendar fixingCalendar() const override { return settlementCalendar_; }
+        Calendar fixingCalendar() const override { return fixingCalendar_; }
         bool isValidFixingDate(const Date& fixingDate) const override;
         Real fixing(const Date& fixingDate, bool forecastTodaysFixing = false) const override;
         //@}
@@ -104,7 +104,7 @@ namespace QuantLib {
         // @}
       private:
         std::string name_;
-        Calendar settlementCalendar_;
+        Calendar fixingCalendar_;
         Handle<YieldTermStructure> interest_;
         Handle<YieldTermStructure> dividend_;
         Handle<Quote> spot_;

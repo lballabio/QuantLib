@@ -24,10 +24,10 @@
 namespace QuantLib {
 
     namespace {
-        Real resolveSpot(const Handle<Quote>& spot, Real todaysFixing) {
-            QL_REQUIRE(!spot.empty() || todaysFixing != Null<Real>(),
+        Real resolveSpot(const Handle<Quote>& spot, Real lastFixingDate) {
+            QL_REQUIRE(!spot.empty() || lastFixingDate != Null<Real>(),
                        "Cannot forecast equity index, missing both spot and historical index");
-            return spot.empty() ? todaysFixing : spot->value();
+            return spot.empty() ? lastFixingDate : spot->value();
         }
     }
 
@@ -36,7 +36,7 @@ namespace QuantLib {
                              Handle<YieldTermStructure> interest,
                              Handle<YieldTermStructure> dividend,
                              Handle<Quote> spot)
-    : name_(std::move(name)), settlementCalendar_(std::move(fixingCalendar)),
+    : name_(std::move(name)), fixingCalendar_(std::move(fixingCalendar)),
       interest_(std::move(interest)), dividend_(std::move(dividend)), spot_(std::move(spot)) {
 
         registerWith(interest_);
@@ -79,9 +79,9 @@ namespace QuantLib {
                    "null interest rate term structure set to this instance of " << name());
 
         Date today = Settings::instance().evaluationDate();
-        today = settlementCalendar_.adjust(today, BusinessDayConvention::Preceding);
+        Date lastFixingDate = fixingCalendar_.adjust(today, BusinessDayConvention::Preceding);
 
-        Real spot = resolveSpot(spot_, pastFixing(today));
+        Real spot = resolveSpot(spot_, pastFixing(lastFixingDate));
 
         Real forward;
         if (!dividend_.empty()) {
