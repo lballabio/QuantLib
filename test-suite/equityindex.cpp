@@ -198,6 +198,25 @@ void EquityIndexTest::testFixingForecastWithoutSpot() {
                     << "    expected forecast:    " << expectedForecast << "\n");
 }
 
+void EquityIndexTest::testFixingForecastWithoutSpotAndHistoricalFixing() {
+    BOOST_TEST_MESSAGE("Testing fixing forecast without spot handle and historical fixing...");
+
+    using namespace equityindex_test;
+
+    CommonVars vars(false);
+    const Real tolerance = 1.0e-1;
+
+    Date forecastedDate(20, May, 2030);
+
+    auto equityIndexExSpot =
+        vars.equityIndex->clone(vars.interestHandle, vars.dividendHandle, Handle<Quote>());
+
+    BOOST_CHECK_EXCEPTION(
+        equityIndexExSpot->fixing(forecastedDate), Error,
+        equityindex_test::ExpErrorPred(
+            "Cannot forecast equity index, missing both spot and historical index"));
+}
+
 void EquityIndexTest::testSpotChange() {
     BOOST_TEST_MESSAGE("Testing spot change...");
 
@@ -294,6 +313,8 @@ test_suite* EquityIndexTest::suite() {
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecast));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecastWithoutDividend));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecastWithoutSpot));
+    suite->add(
+        QUANTLIB_TEST_CASE(&EquityIndexTest::testFixingForecastWithoutSpotAndHistoricalFixing));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testSpotChange));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenInvalidFixingDate));
     suite->add(QUANTLIB_TEST_CASE(&EquityIndexTest::testErrorWhenFixingMissing));

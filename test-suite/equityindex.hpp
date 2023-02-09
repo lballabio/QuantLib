@@ -29,6 +29,7 @@ class EquityIndexTest {
     static void testFixingForecast();
     static void testFixingForecastWithoutDividend();
     static void testFixingForecastWithoutSpot();
+    static void testFixingForecastWithoutSpotAndHistoricalFixing();
     static void testSpotChange();
     static void testErrorWhenInvalidFixingDate();
     static void testErrorWhenFixingMissing();

@@ -23,6 +23,14 @@
 
 namespace QuantLib {
 
+    namespace {
+        Real resolveSpot(const Handle<Quote>& spot, Real todaysFixing) {
+            QL_REQUIRE(!spot.empty() || todaysFixing != Null<Real>(),
+                       "Cannot forecast equity index, missing both spot and historical index");
+            return spot.empty() ? todaysFixing : spot->value();
+        }
+    }
+
     EquityIndex::EquityIndex(std::string name,
                              Calendar fixingCalendar,
                              Handle<YieldTermStructure> interest,
@@ -72,7 +80,7 @@ namespace QuantLib {
 
         Date today = Settings::instance().evaluationDate();
 
-        Real spot = spot_.empty() ? pastFixing(today) : spot_->value();
+        Real spot = resolveSpot(spot_, pastFixing(today));
 
         Real forward;
         if (!dividend_.empty()) {
