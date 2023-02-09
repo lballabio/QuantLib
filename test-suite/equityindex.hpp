@@ -25,6 +25,7 @@
 class EquityIndexTest {
   public:
     static void testTodaysFixing();
+    static void testTodaysFixingWithSpotAsProxy();
     static void testFixingForecast();
     static void testFixingForecastWithoutDividend();
     static void testFixingForecastWithoutSpot();

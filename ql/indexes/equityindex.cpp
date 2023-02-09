@@ -47,18 +47,23 @@ namespace QuantLib {
         if (fixingDate > today || (fixingDate == today && forecastTodaysFixing))
             return forecastFixing(fixingDate);
 
+        Real result = pastFixing(fixingDate);
+
+        if (result != Null<Real>())
+            // if historical fixing is present use it
+            return result;
+        
         if (fixingDate == today && !spot_.empty())
+            // Today's fixing is missing, but spot is
+            // provided, so use it as proxy
             return spot_->value();
         
-        return pastFixing(fixingDate);
+        QL_FAIL("Missing " << name() << " fixing for " << fixingDate);
     }
 
     Real EquityIndex::pastFixing(const Date& fixingDate) const {
         QL_REQUIRE(isValidFixingDate(fixingDate), fixingDate << " is not a valid fixing date");
-        Real result = timeSeries()[fixingDate];
-
-        QL_REQUIRE(result != Null<Real>(), "Missing " << name() << " fixing for " << fixingDate);
-        return result;
+        return timeSeries()[fixingDate];
     }
 
     Real EquityIndex::forecastFixing(const Date& fixingDate) const {
