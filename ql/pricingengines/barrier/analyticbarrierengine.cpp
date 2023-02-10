@@ -206,8 +206,8 @@ namespace QuantLib {
         Real N2 = f_(eta*(y1-stdDeviation()));
         // when N1 or N2 are zero, the corresponding powHS might
         // be infinity, resulting in a NaN for their products.  The limit should be 0.
-        return phi*(underlying() * dividendDiscount() * (N1 == 0.0 ? 0.0 : powHS1 * N1)
-                      - strike() * riskFreeDiscount() * (N2 == 0.0 ? 0.0 : powHS0 * N2));
+        return phi*(underlying() * dividendDiscount() * (N1 == 0.0 ? Real(0.0) : Real(powHS1 * N1))
+                      - strike() * riskFreeDiscount() * (N2 == 0.0 ? Real(0.0) : Real(powHS0 * N2)));
     }
 
     Real AnalyticBarrierEngine::D(Real eta, Real phi) const {
@@ -219,8 +219,8 @@ namespace QuantLib {
         Real N2 = f_(eta*(y2-stdDeviation()));
         // when N1 or N2 are zero, the corresponding powHS might
         // be infinity, resulting in a NaN for their products.  The limit should be 0.
-        return phi*(underlying() * dividendDiscount() * (N1 == 0.0 ? 0.0 : powHS1 * N1)
-                      - strike() * riskFreeDiscount() * (N2 == 0.0 ? 0.0 : powHS0 * N2));
+        return phi*(underlying() * dividendDiscount() * (N1 == 0.0 ? Real(0.0) : Real(powHS1 * N1))
+                      - strike() * riskFreeDiscount() * (N2 == 0.0 ? Real(0.0) : Real(powHS0 * N2)));
     }
 
     Real AnalyticBarrierEngine::E(Real eta) const {
@@ -234,7 +234,7 @@ namespace QuantLib {
             Real N2 = f_(eta*(y2 - stdDeviation()));
             // when N2 is zero, powHS0 might be infinity, resulting in
             // a NaN for their product.  The limit should be 0.
-            return rebate() * riskFreeDiscount() * (N1 - (N2 == 0.0 ? 0.0 : powHS0 * N2));
+            return rebate() * riskFreeDiscount() * (N1 - (N2 == 0.0 ? Real(0.0) : Real(powHS0 * N2)));
         } else {
             return 0.0;
         }
@@ -257,7 +257,7 @@ namespace QuantLib {
             Real N2 = f_(eta * (z - 2.0 * lambda * sigmaSqrtT));
             // when N1 or N2 are zero, the corresponding powHS might
             // be infinity, resulting in a NaN for their product.  The limit should be 0.
-            return rebate() * ((N1 == 0.0 ? 0.0 : powHSplus * N1) + (N2 == 0.0 ? 0.0 : powHSminus * N2));
+            return rebate() * ((N1 == 0.0 ? Real(0.0) : Real(powHSplus * N1)) + (N2 == 0.0 ? Real(0.0) : Real(powHSminus * N2)));
         } else {
             return 0.0;
         }
