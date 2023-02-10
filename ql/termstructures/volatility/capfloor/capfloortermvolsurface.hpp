@@ -87,6 +87,7 @@ namespace QuantLib {
         //@{
         void update() override;
         void performCalculations() const override;
+        using LazyObject::registerWith;
         //@}
         //! \name some inspectors
         //@{
