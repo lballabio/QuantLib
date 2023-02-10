@@ -87,6 +87,9 @@ namespace QuantLib {
         //@{
         void update() override;
         void performCalculations() const override;
+        //@}
+        //! \name Observer interface
+        //@{
         std::pair<Observer::iterator, bool>
         registerWith(const ext::shared_ptr<Observable>& o) override;
         //@}

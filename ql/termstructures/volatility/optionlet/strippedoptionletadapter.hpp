@@ -60,6 +60,11 @@ namespace QuantLib {
           //@}
           //! \name Observer interface
           //@{
+          std::pair<Observer::iterator, bool>
+          registerWith(const ext::shared_ptr<Observable>& o) override;
+          //@}
+          //! \name Observer interface
+          //@{
           void deepUpdate() override;
           //@}
 
@@ -92,6 +97,11 @@ namespace QuantLib {
     StrippedOptionletAdapter::optionletStripper() const {
         return ext::dynamic_pointer_cast< OptionletStripper >(
             optionletStripper_);
+    }
+
+    inline std::pair<Observer::iterator, bool>
+    StrippedOptionletAdapter::registerWith(const ext::shared_ptr<Observable>& o) {
+        return LazyObject::registerWith(o);
     }
 }
 

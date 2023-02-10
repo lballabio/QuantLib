@@ -358,6 +358,11 @@ namespace QuantLib {
 
         void update() override { LazyObject::update(); }
 
+        std::pair<Observer::iterator, bool>
+        registerWith(const ext::shared_ptr<Observable>& o) override {
+            return LazyObject::registerWith(o);
+        }
+
         // returns the indices of the af region from the last smile update
         std::vector<std::pair<Size, Size> > arbitrageIndices() const {
             calculate();

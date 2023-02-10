@@ -118,6 +118,11 @@ namespace QuantLib {
         //@{
         void performCalculations() const override;
         //@}
+        //! \name Observer interface
+        //@{
+        std::pair<Observer::iterator, bool>
+        registerWith(const ext::shared_ptr<Observable>& o) override;
+        //@}
         //! \name TermStructure interface
         //@{
         Date maxDate() const override;
@@ -204,6 +209,11 @@ namespace QuantLib {
         calculate();
         Real tmp = interpolationShifts_(swapLength, optionTime, true);
         return tmp;
+    }
+
+    inline std::pair<Observer::iterator, bool>
+    SwaptionVolatilityMatrix::registerWith(const ext::shared_ptr<Observable>& o) {
+        return LazyObject::registerWith(o);
     }
 } // namespace QuantLib
 

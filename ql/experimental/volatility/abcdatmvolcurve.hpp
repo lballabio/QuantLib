@@ -73,6 +73,11 @@ namespace QuantLib {
         void update() override;
         void performCalculations() const override;
         //@}
+        //! \name Observer interface
+        //@{
+        std::pair<Observer::iterator, bool>
+        registerWith(const ext::shared_ptr<Observable>& o) override;
+        //@}
         //! \name some inspectors
         //@{
         const std::vector<Period>& optionTenors() const;
@@ -194,6 +199,11 @@ namespace QuantLib {
 
     inline EndCriteria::Type AbcdAtmVolCurve::endCriteria() const { 
         return interpolation_->endCriteria();
+    }
+
+    inline std::pair<Observer::iterator, bool>
+    AbcdAtmVolCurve::registerWith(const ext::shared_ptr<Observable>& o) {
+        return LazyObject::registerWith(o);
     }
 }
 

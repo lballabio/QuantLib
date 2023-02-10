@@ -60,6 +60,8 @@ namespace QuantLib {
         //! \name Observer interface
         //@{
         void update() override;
+        std::pair<Observer::iterator, bool>
+        registerWith(const ext::shared_ptr<Observable>& o) override;
         //@}
         //! \name LazyObject interface
         //@{
@@ -118,6 +120,11 @@ namespace QuantLib {
 
     inline Date SwaptionVolatilityDiscrete::optionDateFromTime(Time optionTime) const {
         return Date(static_cast<Date::serial_type>(optionInterpolator_(optionTime)));
+    }
+
+    inline std::pair<Observer::iterator, bool>
+    SwaptionVolDiscrete::registerWith(const ext::shared_ptr<Observable>& o) {
+        return LazyObject::registerWith(o);
     }
 }
 

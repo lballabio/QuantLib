@@ -59,6 +59,11 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
         std::vector<Handle<Quote> > reversions,
         Real T = 60.0);
 
+    std::pair<Observer::iterator, bool>
+    registerWith(const ext::shared_ptr<Observable>& o) override {
+        return LazyObject::registerWith(o);
+    }
+
     Real numeraireTime() const;
     void numeraireTime(Real T);
 
