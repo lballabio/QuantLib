@@ -82,7 +82,8 @@ namespace QuantLib {
         Real maxStrike() const override { return strikes_.back(); }
         Real atmLevel() const override { return atmLevel_->value(); }
         void update() override;
-        std::pair<Observer::iterator, bool> registerWith(const ext::shared_ptr<Observable>& o);
+        std::pair<Observer::iterator, bool>
+        registerWith(const ext::shared_ptr<Observable>& o) override;
 
       private:
         Real exerciseTimeSquareRoot_;
@@ -220,13 +221,13 @@ namespace QuantLib {
         LazyObject::update();
         SmileSection::update();
     }
-    #endif
 
     template <class Interpolator>
     std::pair<Observer::iterator, bool>
-    InterpolatedSmileSection::registerWith(const ext::shared_ptr<Observable>& o) {
+    InterpolatedSmileSection<Interpolator>::registerWith(const ext::shared_ptr<Observable>& o) {
         return LazyObject::registerWith(o);
     }
+    #endif
 }
 
 #endif

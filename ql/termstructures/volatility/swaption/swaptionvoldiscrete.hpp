@@ -123,7 +123,7 @@ namespace QuantLib {
     }
 
     inline std::pair<Observer::iterator, bool>
-    SwaptionVolDiscrete::registerWith(const ext::shared_ptr<Observable>& o) {
+    SwaptionVolatilityDiscrete::registerWith(const ext::shared_ptr<Observable>& o) {
         return LazyObject::registerWith(o);
     }
 }
