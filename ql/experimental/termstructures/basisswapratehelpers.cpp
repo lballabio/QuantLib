@@ -57,7 +57,7 @@ namespace QuantLib {
         registerWith(otherIndex_);
         registerWith(discountHandle_);
 
-        initializeDates();
+        IborIborBasisSwapRateHelper::initializeDates();
     }
 
     void IborIborBasisSwapRateHelper::initializeDates() {
@@ -142,7 +142,7 @@ namespace QuantLib {
         registerWith(otherIndex_);
         registerWith(discountHandle_);
 
-        initializeDates();
+        OvernightIborBasisSwapRateHelper::initializeDates();
     }
 
     void OvernightIborBasisSwapRateHelper::initializeDates() {

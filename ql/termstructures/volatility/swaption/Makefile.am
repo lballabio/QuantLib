@@ -7,6 +7,8 @@ this_include_HEADERS = \
     cmsmarket.hpp \
     cmsmarketcalibration.hpp \
     gaussian1dswaptionvolatility.hpp \
+    interpolatedswaptionvolatilitycube.hpp \
+    sabrswaptionvolatilitycube.hpp \
     spreadedswaptionvol.hpp \
     swaptionconstantvol.hpp \
     swaptionvolcube.hpp \
@@ -20,10 +22,10 @@ cpp_files = \
     cmsmarket.cpp \
     cmsmarketcalibration.cpp \
     gaussian1dswaptionvolatility.cpp \
+    interpolatedswaptionvolatilitycube.cpp \
     spreadedswaptionvol.cpp \
     swaptionconstantvol.cpp \
     swaptionvolcube.cpp \
-    swaptionvolcube2.cpp \
     swaptionvoldiscrete.cpp \
     swaptionvolmatrix.cpp \
     swaptionvolstructure.cpp

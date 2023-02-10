@@ -4,6 +4,7 @@
 #include <ql/math/matrixutilities/basisincompleteordered.hpp>
 #include <ql/math/matrixutilities/bicgstab.hpp>
 #include <ql/math/matrixutilities/choleskydecomposition.hpp>
+#include <ql/math/matrixutilities/expm.hpp>
 #include <ql/math/matrixutilities/factorreduction.hpp>
 #include <ql/math/matrixutilities/getcovariance.hpp>
 #include <ql/math/matrixutilities/gmres.hpp>

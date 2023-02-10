@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2015 Thema Consulting SA
+ Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,26 +17,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/experimental/barrieroption/doublebarriertype.hpp>
-#include <ql/types.hpp>
-#include <ql/errors.hpp>
+/*! \file ukhicp.hpp
+    \brief UK HICP index
+*/
+
+#ifndef quantlib_ukhicp_hpp
+#define quantlib_ukhicp_hpp
+
+#include <ql/currencies/europe.hpp>
+#include <ql/indexes/inflationindex.hpp>
 
 namespace QuantLib {
 
-    std::ostream& operator<<(std::ostream& out,
-                             DoubleBarrier::Type type) {
-        switch (type) {
-          case DoubleBarrier::KnockIn:
-            return out << "KnockIn";
-          case DoubleBarrier::KnockOut:
-            return out << "KnockOut";
-          case DoubleBarrier::KIKO:
-            return out << "KI lo+KO up";
-          case DoubleBarrier::KOKI:
-            return out << "KO lo+KI up";
-          default:
-            QL_FAIL("unknown DoubleBarrier::Type (" << Integer(type) << ")");
-        }
-    }
-
+    //! UK HICP index
+    class UKHICP : public ZeroInflationIndex {
+      public:
+        explicit UKHICP(const Handle<ZeroInflationTermStructure>& ts = {})
+        : ZeroInflationIndex(
+              "HICP", UKRegion(), false, Monthly, Period(1, Months), GBPCurrency(), ts) {}
+    };
 }
+
+#endif

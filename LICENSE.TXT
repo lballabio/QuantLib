@@ -19,7 +19,7 @@ QuantLib is
     Copyright (C) 2004 M-Dimension Consulting Inc.
     Copyright (C) 2004 Mike Parker
     Copyright (C) 2004 Walter Penschke
-    Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Klaus Spanderen
+    Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Klaus Spanderen
 
     Copyright (C) 2005 Charles Whitmore
     Copyright (C) 2005 Sercan Atalik
@@ -152,15 +152,15 @@ QuantLib is
     Copyright (C) 2020 Piotr Siejda
     Copyright (C) 2020, 2021 Jack Gillett
     Copyright (C) 2020, 2021 Lew Wei Hao
-    Copyright (C) 2020, 2021, 2022 Marcin Rybacki
+    Copyright (C) 2020, 2021, 2022, 2023 Marcin Rybacki
 
     Copyright (C) 2021 Anubhav Pandey
     Copyright (C) 2021 Magnus Mencke
     Copyright (C) 2021, 2022 Ralf Konrad Eckel
-    Copyright (C) 2021, 2022 Skandinaviska Enskilda Banken AB (publ)
+    Copyright (C) 2021, 2022, 2023 Skandinaviska Enskilda Banken AB (publ)
 
-    Copyright (C) 2022 Ignacio Anguita
     Copyright (C) 2022 Jonghee Lee
+    Copyright (C) 2022, 2023 Ignacio Anguita
 
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".

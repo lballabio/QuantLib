@@ -1,3 +1,55 @@
+commit 051afbcd73dd8b11165449b1f905e4c964e74aec
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Jul 2021 09:46:54 +0200
+
+    Set version to 1.29 final.
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 0305de0259df6902d268060ae251c0d951ca637b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 13 Jan 2023 09:22:08 +0100
+
+    Avoid weird error on 32-bit VC++2015
+
+ test-suite/inflation.cpp | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+commit df7eeb4ecc450fd63ffe244e8a7a2ad6be8f4b18
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 11 Jan 2023 11:49:29 +0100
+
+    Avoid some deprecation warnings on VC++15
+
+ ql/math/functional.hpp | 32 +++++++++++++++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
+
+commit c95610040ef9337b99ce34320476dff9458a56bd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 1 Apr 2021 11:28:16 +0200
+
+    Set version to 1.29 rc
+
+ CMakeLists.txt | 4 ++--
+ configure.ac   | 2 +-
+ ql/version.hpp | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 5c4605be3d5e217092e58776fd09964a42737f3b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 9 Jan 2023 18:07:02 +0100
+
+    Update news and changelog
+
+ ChangeLog.txt           | 3694 +++++++++++++++++++++++++++++++----------------
+ Contributors.txt        |    2 +
+ Docs/pages/history.docs |  100 +-
+ News.md                 |  201 +--
+ 4 files changed, 2643 insertions(+), 1354 deletions(-)
+
 commit 87be46e7c5a59d25eb0bb691174caccf296252f3
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 9 Jan 2023 14:56:29 +0100

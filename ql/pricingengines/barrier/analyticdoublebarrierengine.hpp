@@ -26,7 +26,7 @@
 #ifndef quantlib_analytic_double_barrier_engine_hpp
 #define quantlib_analytic_double_barrier_engine_hpp
 
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 

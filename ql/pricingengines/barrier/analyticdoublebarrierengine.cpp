@@ -18,7 +18,7 @@
 */
 
 #include <ql/exercise.hpp>
-#include <ql/experimental/barrieroption/analyticdoublebarrierengine.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <utility>
 

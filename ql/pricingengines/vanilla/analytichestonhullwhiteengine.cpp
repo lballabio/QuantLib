@@ -29,8 +29,7 @@ namespace QuantLib {
         Size integrationOrder)
     : AnalyticHestonEngine(hestonModel, integrationOrder),
       hullWhiteModel_(std::move(hullWhiteModel)) {
-
-        update();
+        setParameters();
         registerWith(hullWhiteModel_);
     }
 
@@ -41,15 +40,12 @@ namespace QuantLib {
         Size maxEvaluations)
     : AnalyticHestonEngine(hestonModel, relTolerance, maxEvaluations),
       hullWhiteModel_(std::move(hullWhiteModel)) {
-
-        update();
+        setParameters();
         registerWith(hullWhiteModel_);
     }
 
     void AnalyticHestonHullWhiteEngine::update() {
-        a_ = hullWhiteModel_->params()[0];
-        sigma_ = hullWhiteModel_->params()[1];
-
+        setParameters();
         AnalyticHestonEngine::update();
     }
 
@@ -66,6 +62,11 @@ namespace QuantLib {
         }
 
         AnalyticHestonEngine::calculate();
+    }
+
+    void AnalyticHestonHullWhiteEngine::setParameters() {
+        a_ = hullWhiteModel_->params()[0];
+        sigma_ = hullWhiteModel_->params()[1];
     }
 
 }

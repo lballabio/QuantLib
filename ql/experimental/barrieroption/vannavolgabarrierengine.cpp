@@ -140,28 +140,28 @@ namespace QuantLib {
             results_.value = 0.0;
             results_.additionalResults["VanillaPrice"] = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
             results_.additionalResults["BarrierInPrice"] = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
-            results_.additionalResults["BarrierOutPrice"] = 0.0;
+            results_.additionalResults["BarrierOutPrice"] = Real(0.0);
         }
         //spot > barrier up&in vanilla
         else if(x0Quote->value() >= arguments_.barrier && arguments_.barrierType == Barrier::UpIn){
             results_.value = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
             results_.additionalResults["VanillaPrice"] = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
             results_.additionalResults["BarrierInPrice"] = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
-            results_.additionalResults["BarrierOutPrice"] = 0.0;
+            results_.additionalResults["BarrierOutPrice"] = Real(0.0);
         }
         //spot < barrier down&out 0
         else if(x0Quote->value() <= arguments_.barrier && arguments_.barrierType == Barrier::DownOut){
             results_.value = 0.0;
             results_.additionalResults["VanillaPrice"] = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
             results_.additionalResults["BarrierInPrice"] = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
-            results_.additionalResults["BarrierOutPrice"] = 0.0;
+            results_.additionalResults["BarrierOutPrice"] = Real(0.0);
         }
         //spot < barrier down&in vanilla
         else if(x0Quote->value() <= arguments_.barrier && arguments_.barrierType == Barrier::DownIn){
             results_.value = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
             results_.additionalResults["VanillaPrice"] = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
             results_.additionalResults["BarrierInPrice"] = adaptVanDelta_? bsPriceWithSmile_ : vanillaOption;
-            results_.additionalResults["BarrierOutPrice"] = 0.0;
+            results_.additionalResults["BarrierOutPrice"] = Real(0.0);
         }
         else{
 

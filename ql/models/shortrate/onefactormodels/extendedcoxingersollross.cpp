@@ -30,7 +30,7 @@ namespace QuantLib {
                               bool withFellerConstraint)
     : CoxIngersollRoss(x0, theta, k, sigma, withFellerConstraint),
       TermStructureConsistentModel(termStructure){
-        generateArguments();
+        ExtendedCoxIngersollRoss::generateArguments();
     }
 
     ext::shared_ptr<Lattice> ExtendedCoxIngersollRoss::tree(

@@ -32,6 +32,7 @@ class EuropeanOptionTest {
     static void testGreekValues();
     static void testGreeks();
     static void testImpliedVol();
+    static void testImpliedVolWithDividends();
     static void testImpliedVolContainment();
     static void testJRBinomialEngines();
     static void testCRRBinomialEngines();

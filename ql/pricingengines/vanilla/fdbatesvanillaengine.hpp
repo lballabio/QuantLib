@@ -18,7 +18,7 @@
 */
 
 /*! \file fdbatesvanillaengine.hpp
-    \brief Partial Integro Finite-Differences Bates vanilla option engine
+    \brief Partial integro finite-differences Bates vanilla option engine
 */
 
 #ifndef quantlib_fd_bates_vanilla_engine_hpp
@@ -31,29 +31,39 @@
 
 namespace QuantLib {
 
+    QL_DEPRECATED_DISABLE_WARNING
 
-    //! Partial Integro FiniteDifferences Bates Vanilla Option engine
-
-    /*! \ingroup vanillaengines
-    */
+    //! Partial integro finite-differences Bates vanilla option engine
+    /*! \ingroup vanillaengines */
     class FdBatesVanillaEngine
         : public GenericModelEngine<BatesModel,
                                     DividendVanillaOption::arguments,
                                     DividendVanillaOption::results> {
+        QL_DEPRECATED_ENABLE_WARNING
       public:
-        explicit FdBatesVanillaEngine(
+        explicit
+        FdBatesVanillaEngine(
             const ext::shared_ptr<BatesModel>& model,
             Size tGrid = 100, Size xGrid = 100, 
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
+        FdBatesVanillaEngine(
+            const ext::shared_ptr<BatesModel>& model,
+            DividendSchedule dividends,
+            Size tGrid = 100, Size xGrid = 100, 
+            Size vGrid = 50, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
         void calculate() const override;
 
       private:
+        DividendSchedule dividends_;
+        bool explicitDividends_;
         const Size tGrid_, xGrid_, vGrid_, dampingSteps_;
         const FdmSchemeDesc schemeDesc_;
     };
+
 }
 
 #endif

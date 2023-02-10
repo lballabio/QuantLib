@@ -55,7 +55,7 @@ namespace QuantLib {
                                     const Matrix& cPrice,
                                     const Matrix& fPrice);
 
-        bool indexIsInterpolated() const override;
+        bool indexIsInterpolated() const;
 
         //! atm yoy swaps from put-call parity on cap/floor data
         /*! uses interpolation (on surface price data), yearly maturities. */
@@ -132,6 +132,7 @@ namespace QuantLib {
         mutable std::vector<Real> cfMaturityTimes_;
         Matrix cPrice_;
         Matrix fPrice_;
+        bool indexIsInterpolated_;
         // constructed
         mutable std::vector<Rate> cfStrikes_;
         mutable ext::shared_ptr<YoYInflationTermStructure> yoy_;
@@ -230,9 +231,7 @@ namespace QuantLib {
     // inline definitions
 
     inline bool YoYCapFloorTermPriceSurface::indexIsInterpolated() const {
-        QL_DEPRECATED_DISABLE_WARNING
         return indexIsInterpolated_;
-        QL_DEPRECATED_ENABLE_WARNING
     }
 
     // template definitions

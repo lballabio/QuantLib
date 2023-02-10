@@ -1191,6 +1191,9 @@
     <ClInclude Include="ql\math\matrixutilities\choleskydecomposition.hpp">
       <Filter>math\matrixutilities</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\matrixutilities\expm.hpp">
+      <Filter>math\matrixutilities</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\matrixutilities\factorreduction.hpp">
       <Filter>math\matrixutilities</Filter>
     </ClInclude>
@@ -2053,6 +2056,12 @@
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\swaption\cmsmarketcalibration.hpp">
+      <Filter>termstructures\volatility\swaption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.hpp">
+      <Filter>termstructures\volatility\swaption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\swaption\sabrswaptionvolatilitycube.hpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\swaption\spreadedswaptionvol.hpp">
@@ -2997,6 +3006,9 @@
     <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabrswaptionvolatilitycube.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\volatility\sabrvolsurface.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
@@ -3597,12 +3609,6 @@
     <ClInclude Include="ql\experimental\barrieroption\all.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.hpp">
-      <Filter>experimental\barrieroption</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\barrieroption\analyticdoublebarrierengine.hpp">
-      <Filter>experimental\barrieroption</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\mcdoublebarrierengine.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
@@ -3610,12 +3616,6 @@
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.hpp">
-      <Filter>experimental\barrieroption</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\barrieroption\doublebarrieroption.hpp">
-      <Filter>experimental\barrieroption</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\barrieroption\doublebarriertype.hpp">
       <Filter>experimental\barrieroption</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.hpp">
@@ -3682,9 +3682,6 @@
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\convolvedstudentt.hpp">
-      <Filter>experimental\math</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\math\expm.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp">
@@ -3815,9 +3812,6 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmdupire1dop.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\finitedifferences\fdhestondoublebarrierengine.hpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
@@ -3878,8 +3872,8 @@
     <ClInclude Include="ql\experimental\processes\klugeextouprocess.hpp">
       <Filter>experimental\processes</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\processes\hestonslvprocess.hpp">
-      <Filter>experimental\processes</Filter>
+    <ClInclude Include="ql\processes\hestonslvprocess.hpp">
+      <Filter>processes</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\finitedifferences\fdsimpleklugeextouvppengine.hpp">
       <Filter>experimental\finitedifferences</Filter>
@@ -4172,18 +4166,6 @@
     <ClInclude Include="ql\experimental\finitedifferences\fdmvppstepconditionfactory.hpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.hpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\finitedifferences\fdmhestonfwdop.hpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\finitedifferences\fdmsquarerootfwdop.hpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\finitedifferences\modtriplebandlinearop.hpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClInclude>
     <ClInclude Include="ql\math\matrixutilities\sparsematrix.hpp">
       <Filter>math\matrixutilities</Filter>
     </ClInclude>
@@ -4217,20 +4199,11 @@
     <ClInclude Include="ql\experimental\models\all.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
-    <ClInclude Include="ql\experimental\models\hestonslvfdmmodel.hpp">
-      <Filter>experimental\models</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\models\hestonslvmcmodel.hpp">
-      <Filter>experimental\models</Filter>
-    </ClInclude>
     <ClInclude Include="ql\experimental\models\normalclvmodel.hpp">
       <Filter>experimental\models</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.hpp">
       <Filter>termstructures\volatility\equityfx</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\finitedifferences\fdmhestongreensfct.hpp">
-      <Filter>experimental\finitedifferences</Filter>
     </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\operators\fdmlocalvolfwdop.hpp">
       <Filter>methods\finitedifferences\operators</Filter>
@@ -4411,16 +4384,58 @@
     </ClInclude>
     <ClInclude Include="ql\math\integrals\tanhsinhintegral.hpp">
       <Filter>math\integrals</Filter>
-    </ClInclude>    
+    </ClInclude>
     <ClInclude Include="ql\math\interpolations\chebyshevinterpolation.hpp">
       <Filter>math\interpolations</Filter>
-    </ClInclude>    
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\qdfpamericanengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
-    </ClInclude>    
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\vanilla\qdplusamericanengine.hpp">
       <Filter>pricingengines\vanilla</Filter>
-    </ClInclude>    
+    </ClInclude>
+    <ClInclude Include="ql\models\equity\hestonslvfdmmodel.hpp">
+      <Filter>models\equity</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\models\equity\hestonslvmcmodel.hpp">
+      <Filter>models\equity</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\fdhestondoublebarrierengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\analyticdoublebarrierbinaryengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\pricingengines\barrier\analyticdoublebarrierengine.hpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\doublebarrieroption.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\doublebarriertype.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmblackscholesfwdop.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmhestonfwdop.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\operators\fdmsquarerootfwdop.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\utilities\fdmhestongreensfct.hpp">
+      <Filter>methods\finitedifferences\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\methods\finitedifferences\operators\modtriplebandlinearop.hpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\inflation\ukhicp.hpp">
+      <Filter>indexes\inflation</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\equityindex.hpp">
+      <Filter>indexes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -4865,6 +4880,9 @@
       <Filter>math\matrixutilities</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\matrixutilities\choleskydecomposition.cpp">
+      <Filter>math\matrixutilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\matrixutilities\expm.cpp">
       <Filter>math\matrixutilities</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\matrixutilities\factorreduction.cpp">
@@ -5461,6 +5479,9 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\cmsmarketcalibration.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.cpp">
+      <Filter>termstructures\volatility\swaption</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\swaption\spreadedswaptionvol.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
@@ -5468,9 +5489,6 @@
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube.cpp">
-      <Filter>termstructures\volatility\swaption</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube2.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvoldiscrete.cpp">
@@ -6541,22 +6559,10 @@
     <ClCompile Include="ql\experimental\averageois\makearithmeticaverageois.cpp">
       <Filter>experimental\averageois</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierbinaryengine.cpp">
-      <Filter>experimental\barrieroption</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\barrieroption\analyticdoublebarrierengine.cpp">
-      <Filter>experimental\barrieroption</Filter>
-    </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\mcdoublebarrierengine.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\discretizeddoublebarrieroption.cpp">
-      <Filter>experimental\barrieroption</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\barrieroption\doublebarrieroption.cpp">
-      <Filter>experimental\barrieroption</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\barrieroption\doublebarriertype.cpp">
       <Filter>experimental\barrieroption</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\barrieroption\perturbativebarrieroptionengine.cpp">
@@ -6607,9 +6613,6 @@
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\math\expm.cpp">
-      <Filter>experimental\math</Filter>
-    </ClCompile>
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
@@ -6650,9 +6653,6 @@
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmdupire1dop.cpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\finitedifferences\fdhestondoublebarrierengine.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\experimental\finitedifferences\fdmextendedornsteinuhlenbeckop.cpp">
@@ -6697,8 +6697,8 @@
     <ClCompile Include="ql\experimental\processes\klugeextouprocess.cpp">
       <Filter>experimental\processes</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\processes\hestonslvprocess.cpp">
-      <Filter>experimental\processes</Filter>
+    <ClCompile Include="ql\processes\hestonslvprocess.cpp">
+      <Filter>processes</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\vanillaswingoption.cpp">
       <Filter>instruments</Filter>
@@ -6940,15 +6940,6 @@
     <ClCompile Include="ql\experimental\finitedifferences\glued1dmesher.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\finitedifferences\fdmblackscholesfwdop.cpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\finitedifferences\fdmhestonfwdop.cpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\finitedifferences\fdmsquarerootfwdop.cpp">
-      <Filter>experimental\finitedifferences</Filter>
-    </ClCompile>
     <ClCompile Include="ql\math\optimization\differentialevolution.cpp">
       <Filter>math\optimization</Filter>
     </ClCompile>
@@ -6976,17 +6967,8 @@
     <ClCompile Include="ql\experimental\finitedifferences\fdornsteinuhlenbeckvanillaengine.cpp">
       <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\models\hestonslvfdmmodel.cpp">
-      <Filter>experimental\models</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\models\hestonslvmcmodel.cpp">
-      <Filter>experimental\models</Filter>
-    </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\equityfx\fixedlocalvolsurface.cpp">
       <Filter>termstructures\volatility\equityfx</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\experimental\finitedifferences\fdmhestongreensfct.cpp">
-      <Filter>experimental\finitedifferences</Filter>
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\operators\fdmlocalvolfwdop.cpp">
       <Filter>methods\finitedifferences\operators</Filter>
@@ -7143,6 +7125,42 @@
     </ClCompile>
     <ClCompile Include="ql\pricingengines\vanilla\qdplusamericanengine.cpp">
       <Filter>pricingengines\vanilla</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\models\equity\hestonslvfdmmodel.cpp">
+      <Filter>models\equity</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\models\equity\hestonslvmcmodel.cpp">
+      <Filter>models\equity</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\barrier\fdhestondoublebarrierengine.cpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\barrier\analyticdoublebarrierbinaryengine.cpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\pricingengines\barrier\analyticdoublebarrierengine.cpp">
+      <Filter>pricingengines\barrier</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\doublebarrieroption.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\doublebarriertype.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmblackscholesfwdop.cpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmhestonfwdop.cpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\operators\fdmsquarerootfwdop.cpp">
+      <Filter>methods\finitedifferences\operators</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\methods\finitedifferences\utilities\fdmhestongreensfct.cpp">
+      <Filter>methods\finitedifferences\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\indexes\equityindex.cpp">
+      <Filter>indexes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

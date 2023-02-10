@@ -3,25 +3,31 @@ AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
-	all.hpp \
+    all.hpp \
     analyticbarrierengine.hpp \
-	analyticbinarybarrierengine.hpp \
+    analyticbinarybarrierengine.hpp \
+    analyticdoublebarrierbinaryengine.hpp \
+    analyticdoublebarrierengine.hpp \
     binomialbarrierengine.hpp \
     discretizedbarrieroption.hpp \
-	fdblackscholesbarrierengine.hpp \
-	fdblackscholesrebateengine.hpp \
-	fdhestonbarrierengine.hpp \
-	fdhestonrebateengine.hpp \
+    fdblackscholesbarrierengine.hpp \
+    fdblackscholesrebateengine.hpp \
+    fdhestonbarrierengine.hpp \
+    fdhestondoublebarrierengine.hpp \
+    fdhestonrebateengine.hpp \
     mcbarrierengine.hpp 
 
 cpp_files = \
     analyticbarrierengine.cpp \
     analyticbinarybarrierengine.cpp \
+    analyticdoublebarrierbinaryengine.cpp \
+    analyticdoublebarrierengine.cpp \
     discretizedbarrieroption.cpp \
-	fdblackscholesbarrierengine.cpp \
-	fdblackscholesrebateengine.cpp \
-	fdhestonbarrierengine.cpp \
-	fdhestonrebateengine.cpp \
+    fdblackscholesbarrierengine.cpp \
+    fdblackscholesrebateengine.cpp \
+    fdhestonbarrierengine.cpp \
+    fdhestondoublebarrierengine.cpp \
+    fdhestonrebateengine.cpp \
     mcbarrierengine.cpp
 
 if UNITY_BUILD

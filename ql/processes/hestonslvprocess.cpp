@@ -22,7 +22,7 @@
     \brief Heston stochastic local volatility process
 */
 
-#include <ql/experimental/processes/hestonslvprocess.hpp>
+#include <ql/processes/hestonslvprocess.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
 #include <utility>
@@ -35,16 +35,12 @@ namespace QuantLib {
     : mixingFactor_(mixingFactor), hestonProcess_(hestonProcess),
       leverageFct_(std::move(leverageFct)) {
         registerWith(hestonProcess);
-        update();
+        setParameters();
     };
 
     void HestonSLVProcess::update() {
-        v0_    = hestonProcess_->v0();
-        kappa_ = hestonProcess_->kappa();
-        theta_ = hestonProcess_->theta();
-        sigma_ = hestonProcess_->sigma();
-        rho_   = hestonProcess_->rho();
-        mixedSigma_ = mixingFactor_ * sigma_;
+        setParameters();
+        StochasticProcess::update();
     }
 
     Array HestonSLVProcess::drift(Time t, const Array& x) const {
@@ -119,4 +115,14 @@ namespace QuantLib {
 
         return retVal;
     }
+
+    void HestonSLVProcess::setParameters() {
+        v0_    = hestonProcess_->v0();
+        kappa_ = hestonProcess_->kappa();
+        theta_ = hestonProcess_->theta();
+        sigma_ = hestonProcess_->sigma();
+        rho_   = hestonProcess_->rho();
+        mixedSigma_ = mixingFactor_ * sigma_;
+    }
+
 }

@@ -504,6 +504,9 @@
     <ClCompile Include="svivolatility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="equityindex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="americanoption.hpp">
@@ -1005,6 +1008,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="svivolatility.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="equityindex.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

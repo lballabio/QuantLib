@@ -72,19 +72,19 @@
 #include <ql/methods/finitedifferences/operators/fdmlocalvolfwdop.hpp>
 #include <ql/models/marketmodels/browniangenerators/mtbrowniangenerator.hpp>
 #include <ql/models/marketmodels/browniangenerators/sobolbrowniangenerator.hpp>
-#include <ql/experimental/models/hestonslvfdmmodel.hpp>
-#include <ql/experimental/models/hestonslvmcmodel.hpp>
-#include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
-#include <ql/experimental/finitedifferences/fdmsquarerootfwdop.hpp>
-#include <ql/experimental/finitedifferences/fdmblackscholesfwdop.hpp>
-#include <ql/experimental/finitedifferences/fdmhestongreensfct.hpp>
+#include <ql/models/equity/hestonslvfdmmodel.hpp>
+#include <ql/models/equity/hestonslvmcmodel.hpp>
+#include <ql/methods/finitedifferences/operators/fdmhestonfwdop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmsquarerootfwdop.hpp>
+#include <ql/methods/finitedifferences/operators/fdmblackscholesfwdop.hpp>
+#include <ql/methods/finitedifferences/utilities/fdmhestongreensfct.hpp>
 #include <ql/methods/finitedifferences/utilities/localvolrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/squarerootprocessrndcalculator.hpp>
-#include <ql/experimental/finitedifferences/fdhestondoublebarrierengine.hpp>
+#include <ql/pricingengines/barrier/fdhestondoublebarrierengine.hpp>
 #include <ql/experimental/exoticoptions/analyticpdfhestonengine.hpp>
-#include <ql/experimental/processes/hestonslvprocess.hpp>
-#include <ql/experimental/barrieroption/doublebarrieroption.hpp>
-#include <ql/experimental/barrieroption/analyticdoublebarrierbinaryengine.hpp>
+#include <ql/processes/hestonslvprocess.hpp>
+#include <ql/instruments/doublebarrieroption.hpp>
+#include <ql/pricingengines/barrier/analyticdoublebarrierbinaryengine.hpp>
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/multi_array.hpp>
 #include <iomanip>
@@ -2748,7 +2748,7 @@ void HestonSLVModelTest::testBarrierPricingMixedModelsMonteCarloVsFdmPricing() {
     }
 }
 
-test_suite* HestonSLVModelTest::experimental(SpeedLevel speed) {
+test_suite* HestonSLVModelTest::suite(SpeedLevel speed) {
     auto* suite = BOOST_TEST_SUITE("Heston Stochastic Local Volatility tests");
 
     suite->add(QUANTLIB_TEST_CASE(&HestonSLVModelTest::testBlackScholesFokkerPlanckFwdEquation));

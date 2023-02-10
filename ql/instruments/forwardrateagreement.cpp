@@ -25,8 +25,6 @@
 
 namespace QuantLib {
 
-    QL_DEPRECATED_DISABLE_WARNING
-
     ForwardRateAgreement::ForwardRateAgreement(const Date& valueDate,
                                                const Date& maturityDate,
                                                Position::Type type,
@@ -38,7 +36,7 @@ namespace QuantLib {
     : fraType_(type), notionalAmount_(notionalAmount), index_(index),
       useIndexedCoupon_(useIndexedCoupon), dayCounter_(index->dayCounter()),
       calendar_(index->fixingCalendar()), businessDayConvention_(index->businessDayConvention()),
-      settlementDays_(index->fixingDays()), valueDate_(valueDate), maturityDate_(maturityDate),
+      valueDate_(valueDate), maturityDate_(maturityDate),
       discountCurve_(std::move(discountCurve)) {
 
         maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
@@ -51,17 +49,6 @@ namespace QuantLib {
         strikeForwardRate_ = InterestRate(strikeForwardRate,
                                           index->dayCounter(),
                                           Simple, Once);
-        Real strike = notionalAmount_ *
-                      strikeForwardRate_.compoundFactor(valueDate_,
-                                                        maturityDate_);
-
-        payoff_ = ext::shared_ptr<Payoff>(new ForwardTypePayoff(fraType_,
-                                                                  strike));
-        // incomeDiscountCurve_ is irrelevant to an FRA
-        incomeDiscountCurve_ = discountCurve_;
-        // income is irrelevant to FRA - set it to zero
-        underlyingIncome_ = 0.0;
-
         registerWith(index_);
     }
 
@@ -74,41 +61,12 @@ namespace QuantLib {
     : ForwardRateAgreement(valueDate, index->maturityDate(valueDate), type, strikeForwardRate,
                            notionalAmount, index, std::move(discountCurve), true) {}
 
-    Date ForwardRateAgreement::settlementDate() const {
-        return calendar_.advance(Settings::instance().evaluationDate(),
-                                 settlementDays_, Days);
-    }
-
-    QL_DEPRECATED_ENABLE_WARNING
-
     Date ForwardRateAgreement::fixingDate() const {
         return index_->fixingDate(valueDate_);
     }
 
     bool ForwardRateAgreement::isExpired() const {
         return detail::simple_event(valueDate_).hasOccurred();
-    }
-
-    Real ForwardRateAgreement::spotIncome(
-                                    const Handle<YieldTermStructure>&) const {
-        return 0.0;
-    }
-
-    // In theory, no need to implement this for a FRA (could directly
-    // supply a forwardValue). For the sake of keeping a consistent
-    // framework, we adhere to the concept of the forward contract as
-    // defined in the base class, with an underlying having a
-    // spotPrice (in this case, a loan or deposit with an NPV). Thus,
-    // spotValue() is defined here.
-    Real ForwardRateAgreement::spotValue() const {
-        calculate();
-
-        Handle<YieldTermStructure> discount =
-            discountCurve_.empty() ? index_->forwardingTermStructure() : discountCurve_;
-
-        return notionalAmount_ *
-               forwardRate().compoundFactor(valueDate_, maturityDate_) *
-               discount->discount(maturityDate_);
     }
 
     Real ForwardRateAgreement::amount() const {
@@ -134,11 +92,6 @@ namespace QuantLib {
             discountCurve_.empty() ? index_->forwardingTermStructure() : discountCurve_;
 
         NPV_ = amount_ * discount->discount(valueDate_);
-
-        QL_DEPRECATED_DISABLE_WARNING
-        underlyingSpotValue_ = spotValue();
-        underlyingIncome_    = 0.0;
-        QL_DEPRECATED_ENABLE_WARNING
     }
 
     void ForwardRateAgreement::calculateForwardRate() const {
@@ -166,28 +119,4 @@ namespace QuantLib {
         amount_ = notionalAmount_ * sign * (F - K) * T / (1.0 + F * T);
     }
 
-    QL_DEPRECATED_DISABLE_WARNING
-
-    Real ForwardRateAgreement::forwardValue() const {
-        calculate();
-
-        Handle<YieldTermStructure> discount =
-            discountCurve_.empty() ? index_->forwardingTermStructure() : discountCurve_;
-
-        return (underlyingSpotValue_ - underlyingIncome_) / discount->discount(maturityDate_);
-    }
-
-    InterestRate ForwardRateAgreement::impliedYield(Real underlyingSpotValue,
-                                       Real forwardValue,
-                                       Date settlementDate,
-                                       Compounding comp,
-                                       const DayCounter& dayCounter) {
-
-        Time t = dayCounter.yearFraction(settlementDate, maturityDate_);
-        Real compoundingFactor =
-            forwardValue / (underlyingSpotValue - spotIncome(incomeDiscountCurve_));
-        return InterestRate::impliedRate(compoundingFactor, dayCounter, comp, Annual, t);
-    }
-
-    QL_DEPRECATED_ENABLE_WARNING
 }

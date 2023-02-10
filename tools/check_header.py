@@ -3,14 +3,24 @@
 import multiprocessing as mp
 import os
 import sys
+import shutil
 
 
 def check(header):
-    print("Checking %s" % header, file=sys.stderr)
-    command = "g++ -std=c++14 -c -Wno-unknown-pragmas -Wall -Werror -I. %s -o /dev/null" % header
+    cxx = os.environ.get("CXX", "g++")
+    source_file = header + ".cpp"
+    shutil.copy(header, source_file)
+    object_file = header + ".o"
+    command = f"{cxx} -std=c++14 -c -Wno-unknown-pragmas -Wall -Werror -I. {source_file} -o {object_file}"
+    print(command, file=sys.stderr)
     code = os.system(command)
+    try:
+        os.remove(source_file)
+        os.remove(object_file)
+    except:
+        pass
     if code != 0:
-        print("Errors while checking %s" % header, file=sys.stderr)
+        print(f"Errors while checking {header}", file=sys.stderr)
         return 1
     return 0
 

@@ -8,6 +8,8 @@ this_include_HEADERS = \
     gjrgarchmodel.hpp \
     hestonmodel.hpp \
     hestonmodelhelper.hpp \
+    hestonslvfdmmodel.hpp \
+    hestonslvmcmodel.hpp \
     piecewisetimedependenthestonmodel.hpp
 
 cpp_files = \
@@ -15,6 +17,8 @@ cpp_files = \
     gjrgarchmodel.cpp \
     hestonmodel.cpp \
     hestonmodelhelper.cpp \
+    hestonslvfdmmodel.cpp \
+    hestonslvmcmodel.cpp \
     piecewisetimedependenthestonmodel.cpp
 
 if UNITY_BUILD

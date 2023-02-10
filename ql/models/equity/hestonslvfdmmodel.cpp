@@ -19,8 +19,7 @@
 */
 
 
-#include <ql/experimental/finitedifferences/fdmhestonfwdop.hpp>
-#include <ql/experimental/models/hestonslvfdmmodel.hpp>
+#include <ql/models/equity/hestonslvfdmmodel.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/math/integrals/discreteintegrals.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
@@ -28,6 +27,7 @@
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
 #include <ql/methods/finitedifferences/meshers/predefined1dmesher.hpp>
 #include <ql/methods/finitedifferences/operators/fdmlinearoplayout.hpp>
+#include <ql/methods/finitedifferences/operators/fdmhestonfwdop.hpp>
 #include <ql/methods/finitedifferences/schemes/craigsneydscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/douglasscheme.hpp>
 #include <ql/methods/finitedifferences/schemes/expliciteulerscheme.hpp>

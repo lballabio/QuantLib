@@ -40,7 +40,7 @@ namespace QuantLib {
         eta_   = ConstantParameter(eta,   PositiveConstraint());
         rho_   = ConstantParameter(rho,   BoundaryConstraint(-1.0, 1.0));
 
-        generateArguments();
+        G2::generateArguments();
 
         registerWith(termStructure);
     }

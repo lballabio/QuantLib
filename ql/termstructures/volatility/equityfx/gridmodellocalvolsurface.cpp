@@ -56,7 +56,7 @@ namespace QuantLib {
             times_[i] = dayCounter.yearFraction(referenceDate_, dates[i]);
         }
 
-        generateArguments();
+        GridModelLocalVolSurface::generateArguments();
     }
 
     void GridModelLocalVolSurface::update() {
