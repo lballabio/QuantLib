@@ -257,7 +257,7 @@ namespace QuantLib {
             Real N2 = f_(eta * (z - 2.0 * lambda * sigmaSqrtT));
             // when N1 or N2 are zero, the corresponding powHS might
             // be infinity, resulting in a NaN for their product.  The limit should be 0.
-            return rebate() * ((N1 == 0.0 ? 0.0 : powHSplus * N1) + (N2 == 0.0 ? Real(0.0) : Real(powHSminus * N2)));
+            return rebate() * ((N1 == 0.0 ? Real(0.0) : Real(powHSplus * N1)) + (N2 == 0.0 ? Real(0.0) : Real(powHSminus * N2)));
         } else {
             return 0.0;
         }
