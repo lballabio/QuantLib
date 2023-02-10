@@ -413,7 +413,7 @@
 
     TERM STRUCTURES
     - It is now possible to use normal volatilities in SABR smile
-      sections, and thus in the `SwaptionVolCube1` class (thanks to
+      sections, and thus in the `SabrSwaptionVolatilityCube` class (thanks to
       Lew Wei Hao).
 
     DATE/TIME
@@ -2277,7 +2277,7 @@
       the reference due to adjustments (for instance, when the protection
       starts on a Saturday and the reference is rolled to the following
       Monday).
-    - Pass correct ATM forward rate to smile section of SwaptionVolCube2
+    - Pass correct ATM forward rate to smile section of InterpolatedSwaptionVolatilityCube
       (thanks to Peter Caspers).
     - Added exogenous discount to OptionletStripper1 (thanks to Peter
       Caspers).

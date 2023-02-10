@@ -4,6 +4,7 @@
  Copyright (C) 2006 Ferdinando Ametrano
  Copyright (C) 2006 Katiuscia Manzoni
  Copyright (C) 2015 Peter Caspers
+ Copyright (C) 2023 Ignacio Anguita
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,7 +20,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
+#include <ql/termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp>
 #include <ql/termstructures/volatility/interpolatedsmilesection.hpp>
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/math/rounding.hpp>
@@ -27,7 +28,7 @@
 
 namespace QuantLib {
 
-    SwaptionVolCube2::SwaptionVolCube2(
+    InterpolatedSwaptionVolatilityCube::InterpolatedSwaptionVolatilityCube(
         const Handle<SwaptionVolatilityStructure>& atmVolStructure,
         const std::vector<Period>& optionTenors,
         const std::vector<Period>& swapTenors,
@@ -44,7 +45,7 @@ namespace QuantLib {
       volSpreadsMatrix_(nStrikes_, Matrix(optionTenors.size(), swapTenors.size(), 0.0)) {
     }
 
-    void SwaptionVolCube2::performCalculations() const{
+    void InterpolatedSwaptionVolatilityCube::performCalculations() const{
 
         SwaptionVolatilityCube::performCalculations();
         //! set volSpreadsMatrix_ by volSpreads_ quotes
@@ -65,7 +66,7 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<SmileSection>
-    SwaptionVolCube2::smileSectionImpl(Time optionTime,
+    InterpolatedSwaptionVolatilityCube::smileSectionImpl(Time optionTime,
                                        Time swapLength) const {
 
         calculate();
@@ -82,7 +83,7 @@ namespace QuantLib {
     }
 
     ext::shared_ptr<SmileSection>
-    SwaptionVolCube2::smileSectionImpl(const Date& optionDate,
+    InterpolatedSwaptionVolatilityCube::smileSectionImpl(const Date& optionDate,
                                        const Period& swapTenor) const {
         calculate();
         Rate atmForward = atmStrike(optionDate, swapTenor);

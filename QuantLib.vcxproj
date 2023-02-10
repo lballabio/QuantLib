@@ -809,6 +809,7 @@
     <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.hpp" />
     <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolation.hpp" />
     <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.hpp" />
+    <ClInclude Include="ql\experimental\volatility\noarbsabrswaptionvolatilitycube.hpp" />
     <ClInclude Include="ql\experimental\volatility\sabrvolsurface.hpp" />
     <ClInclude Include="ql\experimental\volatility\sabrvoltermstructure.hpp" />
     <ClInclude Include="ql\experimental\volatility\sviinterpolatedsmilesection.hpp" />
@@ -1727,6 +1728,8 @@
     <ClInclude Include="ql\termstructures\volatility\swaption\cmsmarket.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\cmsmarketcalibration.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\gaussian1dswaptionvolatility.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\swaption\sabrswaptionvolatilitycube.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\spreadedswaptionvol.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionconstantvol.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolcube.hpp" />
@@ -2712,10 +2715,10 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\cmsmarket.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\cmsmarketcalibration.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\gaussian1dswaptionvolatility.cpp" />
+    <ClCompile Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\spreadedswaptionvol.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionconstantvol.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube.cpp" />
-    <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube2.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvoldiscrete.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolmatrix.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolstructure.cpp" />

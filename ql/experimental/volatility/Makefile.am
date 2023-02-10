@@ -15,6 +15,7 @@ this_include_HEADERS = \
     noarbsabrinterpolatedsmilesection.hpp \
     noarbsabrinterpolation.hpp \
     noarbsabrsmilesection.hpp \
+    noarbsabrswaptionvolatilitycube.hpp \
     sabrvolsurface.hpp \
     sabrvoltermstructure.hpp \
     sviinterpolatedsmilesection.hpp \
