@@ -35,6 +35,7 @@ namespace QuantLib {
 
     void MultiplicativePriceSeasonality::validate() const
     {
+        // NOLINTBEGIN(clang-analyzer-optin.cplusplus.VirtualCall)
         switch (this->frequency()) {
             case Semiannual:        //2
             case EveryFourthMonth:  //3
@@ -56,6 +57,7 @@ namespace QuantLib {
                         << ", only semi-annual through daily permitted.");
             break;
         }
+        // NOLINTEND(clang-analyzer-optin.cplusplus.VirtualCall)
     }
 
 
@@ -89,7 +91,7 @@ namespace QuantLib {
     MultiplicativePriceSeasonality::MultiplicativePriceSeasonality(const Date& seasonalityBaseDate, const Frequency frequency,
                                                                    const std::vector<Rate>& seasonalityFactors)
     {
-        set(seasonalityBaseDate, frequency, seasonalityFactors);
+        MultiplicativePriceSeasonality::set(seasonalityBaseDate, frequency, seasonalityFactors);
     }
 
     void MultiplicativePriceSeasonality::set(const Date& seasonalityBaseDate, const Frequency frequency,
@@ -101,6 +103,7 @@ namespace QuantLib {
             seasonalityFactors_[i] = seasonalityFactors[i];
         }
         seasonalityBaseDate_ = seasonalityBaseDate;
+        // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
         validate();
     }
 

@@ -90,7 +90,7 @@ namespace QuantLib {
 
         dx_ = std::sqrt(process->variance(0.0, x0_, dt_)+
             this->driftStep(0.0)*this->driftStep(0.0));
-        pu_ = 0.5 + 0.5*this->driftStep(0.0)/this->dxStep(0.0);
+        pu_ = 0.5 + 0.5*this->driftStep(0.0) / ExtendedTrigeorgis::dxStep(0.0);
         pd_ = 1.0 - pu_;
 
         QL_REQUIRE(pu_<=1.0, "negative probability");

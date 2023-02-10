@@ -53,7 +53,7 @@ namespace QuantLib {
             : Interpolation2D::templateImpl<I1,I2,M>(xBegin,xEnd,
                                                      yBegin,yEnd,
                                                      zData) {
-                calculate();
+                BicubicSplineImpl::calculate();
             }
             void calculate() override {
                 splines_.resize(this->zData_.rows());

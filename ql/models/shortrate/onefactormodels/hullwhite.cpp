@@ -35,7 +35,7 @@ namespace QuantLib {
       TermStructureConsistentModel(termStructure) {
         b_ = NullParameter();
         lambda_ = NullParameter();
-        generateArguments();
+        HullWhite::generateArguments();
 
         registerWith(termStructure);
     }
