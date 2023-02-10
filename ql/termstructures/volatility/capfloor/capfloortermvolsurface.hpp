@@ -87,7 +87,8 @@ namespace QuantLib {
         //@{
         void update() override;
         void performCalculations() const override;
-        using LazyObject::registerWith;
+        std::pair<Observer::iterator, bool>
+        registerWith(const ext::shared_ptr<Observable>& o) override;
         //@}
         //! \name some inspectors
         //@{
@@ -164,6 +165,11 @@ namespace QuantLib {
 
     inline const std::vector<Rate>& CapFloorTermVolSurface::strikes() const {
         return strikes_;
+    }
+
+    inline std::pair<Observer::iterator, bool>
+    CapFloorTermVolSurface::registerWith(const ext::shared_ptr<Observable>& o) {
+        return LazyObject::registerWith(o);
     }
 }
 
