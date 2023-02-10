@@ -52,6 +52,7 @@ QL_TEST_SRCS = \
 	dividendoption.cpp \
 	doublebarrieroption.cpp \
 	doublebinaryoption.cpp \
+	equityindex.cpp \
 	europeanoption.cpp \
 	everestoption.cpp \
 	exchangerate.cpp \
@@ -219,6 +220,7 @@ QL_TEST_HDRS = \
 	dividendoption.hpp \
 	doublebarrieroption.hpp \
 	doublebinaryoption.hpp \
+	equityindex.hpp \
 	europeanoption.hpp \
 	everestoption.hpp \
 	exchangerate.hpp \

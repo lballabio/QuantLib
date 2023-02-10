@@ -4424,6 +4424,9 @@
     <ClInclude Include="ql\indexes\inflation\ukhicp.hpp">
       <Filter>indexes\inflation</Filter>
     </ClInclude>
+    <ClInclude Include="ql\indexes\equityindex.hpp">
+      <Filter>indexes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -7146,6 +7149,9 @@
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmhestongreensfct.cpp">
       <Filter>methods\finitedifferences\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\indexes\equityindex.cpp">
+      <Filter>indexes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

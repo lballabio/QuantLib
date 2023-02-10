@@ -687,6 +687,7 @@
     <ClCompile Include="dividendoption.cpp" />
     <ClCompile Include="doublebarrieroption.cpp" />
     <ClCompile Include="doublebinaryoption.cpp" />
+    <ClCompile Include="equityindex.cpp" />
     <ClCompile Include="europeanoption.cpp" />
     <ClCompile Include="everestoption.cpp" />
     <ClCompile Include="exchangerate.cpp" />
@@ -854,6 +855,7 @@
     <ClInclude Include="dividendoption.hpp" />
     <ClInclude Include="doublebarrieroption.hpp" />
     <ClInclude Include="doublebinaryoption.hpp" />
+    <ClInclude Include="equityindex.hpp" />
     <ClInclude Include="europeanoption.hpp" />
     <ClInclude Include="everestoption.hpp" />
     <ClInclude Include="exchangerate.hpp" />
