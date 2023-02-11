@@ -51,16 +51,23 @@ namespace QuantLib {
     */
     class Australia : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class SettlementImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const override { return "Australia"; }
+            std::string name() const override { return "Australia settlement"; }
+            bool isBusinessDay(const Date&) const override;
+        };
+        class ExchangeImpl : public Calendar::WesternImpl {
+          public:
+            std::string name() const override { return "Australia exchange"; }
             bool isBusinessDay(const Date&) const override;
         };
       public:
-        Australia();
+        enum Market { Settlement,     //!< generic settlement calendar
+                      Exchange,       //!< Australia securities-exchange calendar
+        };
+        Australia(Market market = Settlement);
     };
 
 }
-
 
 #endif
