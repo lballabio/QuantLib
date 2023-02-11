@@ -87,6 +87,8 @@ namespace QuantLib {
         //! \name Observer interface
         //@{
         void update() override;
+        std::pair<Observer::iterator, bool>
+        registerWith(const ext::shared_ptr<Observable>& o) override;
         //@}
       private:
         // methods
@@ -151,6 +153,10 @@ namespace QuantLib {
         LazyObject::update();
     }
 
+    template <class I, template <class> class B, class T>
+    void PiecewiseZeroInflationCurve<I, B, T>::registerWith(const ext::shared_ptr<Observable>& o) {
+        return LazyObject::registerWith(o);
+    }
 }
 
 #endif
