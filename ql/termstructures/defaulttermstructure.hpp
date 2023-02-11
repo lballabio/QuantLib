@@ -248,9 +248,9 @@ namespace QuantLib {
             setJumps();
     }
 
-    inline void
+    inline std::pair<Observer::iterator, bool>
     DefaultProbabilityTermStructure::registerWith(const ext::shared_ptr<Observable>& o) {
-        return LazyObject::registerWith(o);
+        return TermStructure::registerWith(o);
     }
 }
 

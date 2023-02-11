@@ -255,7 +255,8 @@ namespace QuantLib {
     }
 
     template <class C, class I, template <class> class B>
-    inline void PiecewiseYieldCurve<C, I, B>::registerWith(const ext::shared_ptr<Observable>& o) {
+    inline std::pair<Observer::iterator, bool>
+    PiecewiseYieldCurve<C, I, B>::registerWith(const ext::shared_ptr<Observable>& o) {
         return LazyObject::registerWith(o);
     }
 }
