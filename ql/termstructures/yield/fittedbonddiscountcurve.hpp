@@ -120,6 +120,8 @@ namespace QuantLib {
         //! \name Observer interface
         //@{
         void update() override;
+        std::pair<Observer::iterator, bool>
+        registerWith(const ext::shared_ptr<Observable>& o) override;
         //@}
 
       private:
@@ -336,6 +338,11 @@ namespace QuantLib {
         } else {
             return discountFunction(x, t);
         }
+    }
+
+    inline std::pair<Observer::iterator, bool>
+    FittedBondDiscountCurve::registerWith(const ext::shared_ptr<Observable>& o) {
+        return LazyObject::registerWith(o);
     }
 }
 
