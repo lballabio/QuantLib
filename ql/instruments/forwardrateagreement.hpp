@@ -65,6 +65,10 @@ namespace QuantLib {
     */
     class ForwardRateAgreement: public Instrument {
       public:
+        /*! \deprecated use the new constructors
+                        deprecated in version 1.30
+        */
+        QL_DEPRECATED
         ForwardRateAgreement(
             const Date& valueDate,
             const Date& maturityDate,
@@ -74,12 +78,46 @@ namespace QuantLib {
             const ext::shared_ptr<IborIndex>& index,
             Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
             bool useIndexedCoupon = true);
+
+        /*! \deprecated use the new constructors
+                        deprecated in version 1.30
+        */
+        QL_DEPRECATED            
         ForwardRateAgreement(
             const Date& valueDate,
             Position::Type type,
             Rate strikeForwardRate,
             Real notionalAmount,
             const ext::shared_ptr<IborIndex>& index,
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
+
+        /*! \brief constructor taking the index
+            \details constructor taking the index, the FRA maturityDate is calculated from the index
+                     in this way we are avoiding conflicting information in the definition of the FRA
+        */
+        ForwardRateAgreement(
+            Position::Type type,
+            const Date& valueDate,
+            Rate strikeForwardRate,
+            Real notionalAmount,
+            const ext::shared_ptr<IborIndex>& index,
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
+            bool useIndexedCoupon = true);
+
+        /*! \brief constructor not taking the index
+            \details constructor not taking the index, all the FRA components must be provided
+                     the FRA evaluationDate must be specified in Settings::instance().evaluationDate()
+        */
+        ForwardRateAgreement(
+            const Date& valueDate,
+            const Date& maturityDate,
+            Position::Type type,
+            Rate strikeForwardRate,
+            Rate referenceRate,
+            Real notionalAmount,
+            const DayCounter dayCounter,
+            const Calendar fixingCalendar,
+            const BusinessDayConvention businessDayConvention,
             Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
 
         //! \name Calculations
@@ -95,6 +133,7 @@ namespace QuantLib {
         //! term structure relevant to the contract (e.g. repo curve)
         Handle<YieldTermStructure> discountCurve() const;
 
+        //! if the FRA is constructed without the index it returns the valueDate
         Date fixingDate() const;
 
         //! Returns the relevant forward rate associated with the FRA term
@@ -122,6 +161,13 @@ namespace QuantLib {
         //! maturityDate of the underlying index; not the date the FRA is settled.
         Date maturityDate_;
         Handle<YieldTermStructure> discountCurve_;
+
+        //! needed for FRA calculations without index
+        Time valueDateTime_;
+        Time maturityDateTime_;
+        //! the interest rate the FRA contract rate will be compared
+        //  against in order to determine the settlement amount 
+        InterestRate referenceRate_;
 
       private:
         void calculateForwardRate() const;
