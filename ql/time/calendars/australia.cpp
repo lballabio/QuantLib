@@ -25,14 +25,14 @@ namespace QuantLib {
         // all calendar instances share the same implementation instance
         static ext::shared_ptr<Calendar::Impl> settlementImpl(
                                             new Australia::SettlementImpl);
-        static ext::shared_ptr<Calendar::Impl> exchangeImpl(
-                                            new Australia::ExchangeImpl);
+        static ext::shared_ptr<Calendar::Impl> asxImpl(
+                                            new Australia::AsxImpl);
         switch (market) {
           case Settlement:
             impl_ = settlementImpl;
             break;
-          case Exchange:
-            impl_ = exchangeImpl;
+          case ASX:
+            impl_ = asxImpl;
             break;
           default:
             QL_FAIL("unknown market");
@@ -75,7 +75,7 @@ namespace QuantLib {
         return true;
     }
 
-    bool Australia::ExchangeImpl::isBusinessDay(const Date& date) const {
+    bool Australia::AsxImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();
