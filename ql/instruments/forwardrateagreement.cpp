@@ -45,6 +45,7 @@ namespace QuantLib {
         registerWith(discountCurve_);
 
         QL_REQUIRE(notionalAmount > 0.0, "notionalAmount must be positive");
+        QL_REQUIRE(valueDate_ < maturityDate_, "valueDate must be earlier than maturityDate");
 
         strikeForwardRate_ = InterestRate(strikeForwardRate,
                                           index->dayCounter(),
@@ -54,56 +55,27 @@ namespace QuantLib {
 
     ForwardRateAgreement::ForwardRateAgreement(const Date& valueDate,
                                                Position::Type type,
-                                               Rate strikeForwardRate,
-                                               Real notionalAmount,
-                                               const ext::shared_ptr<IborIndex>& index,
-                                               Handle<YieldTermStructure> discountCurve)
-    : ForwardRateAgreement(valueDate, index->maturityDate(valueDate), type, strikeForwardRate,
-                           notionalAmount, index, std::move(discountCurve), true) {}
-
-    ForwardRateAgreement::ForwardRateAgreement(Position::Type type,
-                                               const Date& valueDate,
                                                Rate strikeForwardRate,
                                                Real notionalAmount,
                                                const ext::shared_ptr<IborIndex>& index,
                                                Handle<YieldTermStructure> discountCurve,
                                                bool useIndexedCoupon)
-    : fraType_(type), valueDate_(valueDate), notionalAmount_(notionalAmount),
-      index_(index), discountCurve_(std::move(discountCurve)),
-      useIndexedCoupon_(useIndexedCoupon), 
-      dayCounter_(index->dayCounter()), calendar_(index->fixingCalendar()),
-      businessDayConvention_(index->businessDayConvention()),
-      maturityDate_(index->maturityDate(valueDate)) {
-
-        QL_REQUIRE(notionalAmount > 0.0, "notionalAmount must be positive");
-
-        registerWith(Settings::instance().evaluationDate());
-        registerWith(discountCurve_);
-        registerWith(index_);
-        
-        maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
-        QL_REQUIRE(valueDate_ < maturityDate_, "valueDate must be earlier than maturityDate");
-        strikeForwardRate_ = InterestRate(strikeForwardRate,
-                                          index->dayCounter(),
-                                          Simple, Once);
-    }
+    : ForwardRateAgreement(valueDate, index->maturityDate(valueDate), type, strikeForwardRate,
+                           notionalAmount, index, std::move(discountCurve), useIndexedCoupon) {}
 
     ForwardRateAgreement::ForwardRateAgreement(const Date& valueDate,
                                                const Date& maturityDate,
                                                Position::Type type,
                                                Rate strikeForwardRate,
-                                               Rate referenceRate,
                                                Real notionalAmount,
-                                               const DayCounter dayCounter,
-                                               const Calendar fixingCalendar,
-                                               const BusinessDayConvention businessDayConvention,
-                                               Handle<YieldTermStructure> discountCurve)
-    : valueDate_(valueDate), maturityDate_(maturityDate),
-      fraType_(type), notionalAmount_(notionalAmount),
-      dayCounter_(dayCounter), calendar_(fixingCalendar),
-      businessDayConvention_(businessDayConvention),
-      discountCurve_(std::move(discountCurve)),
-      useIndexedCoupon_(false) {
+                                               Handle<YieldTermStructure> discountCurve,
+                                               const Real fixingDays,
+                                               const BusinessDayConvention businessDayConvention)
+    : fraType_(type), notionalAmount_(notionalAmount),
+      useIndexedCoupon_(false), dayCounter_(discountCurve->dayCounter()),
+      calendar_(discountCurve->calendar()), businessDayConvention_(businessDayConvention),
+      valueDate_(valueDate), maturityDate_(maturityDate),
+      discountCurve_(std::move(discountCurve)), fixingDays_(fixingDays) {
 
         QL_REQUIRE(notionalAmount > 0.0, "notionalAmount must be positive");
 
@@ -113,20 +85,18 @@ namespace QuantLib {
         maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
         QL_REQUIRE(valueDate_ < maturityDate_, "valueDate must be earlier than maturityDate");
         strikeForwardRate_ = InterestRate(strikeForwardRate,
-                                          dayCounter,
+                                          discountCurve_->dayCounter(),
                                           Simple, Once);
-        referenceRate_ = InterestRate(referenceRate,
-                                      dayCounter,
-                                      Simple, Once);    
-        valueDateTime_ = dayCounter_.yearFraction(Settings::instance().evaluationDate(), valueDate_);
-        maturityDateTime_ = dayCounter_.yearFraction(Settings::instance().evaluationDate(), maturityDate_);                              
     }
 
     Date ForwardRateAgreement::fixingDate() const {
         if (index_)
             return index_->fixingDate(valueDate_);
-        else // if FRA is constructed without the index it returns the valueDate
-            return valueDate_;
+        else {
+            Date fixingDate_ = calendar_.advance(valueDate_,
+                -static_cast<Integer>(fixingDays_), Days, businessDayConvention_);
+            return fixingDate_;
+        }
     }
 
     bool ForwardRateAgreement::isExpired() const {
@@ -152,14 +122,10 @@ namespace QuantLib {
     void ForwardRateAgreement::performCalculations() const {
         calculateAmount();
 
-        if (!discountCurve_.empty() || index_) {
+        Handle<YieldTermStructure> discount =
+            discountCurve_.empty() ? index_->forwardingTermStructure() : discountCurve_;
 
-            Handle<YieldTermStructure> discount =
-                discountCurve_.empty() ? index_->forwardingTermStructure() : discountCurve_;
-
-            NPV_ = amount_ * discount->discount(valueDate_);
-        } else
-            NPV_ = amount_ * referenceRate_.discountFactor(valueDateTime_);
+        NPV_ = amount_ * discount->discount(valueDate_);
     }
 
     void ForwardRateAgreement::calculateForwardRate() const {
@@ -174,13 +140,13 @@ namespace QuantLib {
                               1.0) /
                                  index_->dayCounter().yearFraction(valueDate_, maturityDate_),
                              index_->dayCounter(), Simple, Once);
-        else
+        else // calculating forward rate using the term structure
             forwardRate_ =
-                InterestRate((referenceRate_.discountFactor(valueDateTime_) /
-                              referenceRate_.discountFactor(maturityDateTime_) -
+                InterestRate((discountCurve_->discount(valueDate_) /
+                              discountCurve_->discount(maturityDate_) -
                               1.0) /
-                              dayCounter_.yearFraction(valueDate_, maturityDate_),
-                            dayCounter_, Simple, Once);          
+                              discountCurve_->dayCounter().yearFraction(valueDate_, maturityDate_),
+                              discountCurve_->dayCounter(), Simple, Once);
                           
     }
 
