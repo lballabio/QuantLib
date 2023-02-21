@@ -43,10 +43,8 @@ namespace QuantLib {
             }
             Date paymentDate =
                 cal.advance(endDate, paymentDelay, Days, paymentConvention, schedule.endOfMonth());
-            /*return ext::make_shared<IndexedCashFlow>(nominal, equityIndex, startDate, endDate,
-                                                     paymentDate, true);*/
-            return ext::shared_ptr<CashFlow>(
-                new IndexedCashFlow(nominal, equityIndex, startDate, endDate, paymentDate, true));
+            return ext::make_shared<IndexedCashFlow>(nominal, equityIndex, startDate, endDate,
+                                                     paymentDate, true);
         }
 
         Leg createInterestLeg(const Schedule& schedule,
