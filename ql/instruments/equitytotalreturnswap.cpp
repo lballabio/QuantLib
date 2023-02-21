@@ -18,6 +18,7 @@ Copyright (C) 2023 Marcin Rybacki
 */
 
 #include <ql/instruments/equitytotalreturnswap.hpp>
+#include <ql/indexes/equityindex.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/cashflows/indexedcashflow.hpp>
@@ -42,8 +43,10 @@ namespace QuantLib {
             }
             Date paymentDate =
                 cal.advance(endDate, paymentDelay, Days, paymentConvention, schedule.endOfMonth());
-            return ext::make_shared<IndexedCashFlow>(nominal, equityIndex, startDate, endDate,
-                                                     paymentDate, true);
+            /*return ext::make_shared<IndexedCashFlow>(nominal, equityIndex, startDate, endDate,
+                                                     paymentDate, true);*/
+            return ext::shared_ptr<CashFlow>(
+                new IndexedCashFlow(nominal, equityIndex, startDate, endDate, paymentDate, true));
         }
 
         Leg createInterestLeg(const Schedule& schedule,
@@ -85,19 +88,19 @@ namespace QuantLib {
         }
     }
 
-    EquityTotalReturnSwap::EquityTotalReturnSwap(Type type,
+    EquityTotalReturnSwap::EquityTotalReturnSwap(ext::shared_ptr<EquityIndex> equityIndex,
+                                                 const ext::shared_ptr<InterestRateIndex>& interestRateIndex,
+                                                 Type type,
                                                  Real nominal,
                                                  Schedule schedule,
-                                                 ext::shared_ptr<EquityIndex> equityIndex,
-                                                 const ext::shared_ptr<InterestRateIndex>& interestRateIndex,
                                                  DayCounter dayCounter,
                                                  Rate margin,
                                                  Real gearing,
                                                  Calendar paymentCalendar,
                                                  BusinessDayConvention paymentConvention,
                                                  Natural paymentDelay)
-    : Swap(2), type_(type), nominal_(nominal), schedule_(std::move(schedule)),
-      equityIndex_(std::move(equityIndex)), interestRateIndex_(interestRateIndex),
+    : Swap(2), equityIndex_(std::move(equityIndex)), interestRateIndex_(interestRateIndex),
+      type_(type), nominal_(nominal), schedule_(std::move(schedule)),
       dayCounter_(std::move(dayCounter)), margin_(margin), gearing_(gearing),
       paymentCalendar_(std::move(paymentCalendar)), paymentConvention_(paymentConvention),
       paymentDelay_(paymentDelay) {
@@ -134,11 +137,11 @@ namespace QuantLib {
                                                  Calendar paymentCalendar,
                                                  BusinessDayConvention paymentConvention,
                                                  Natural paymentDelay)
-    : EquityTotalReturnSwap(type, 
+    : EquityTotalReturnSwap(std::move(equityIndex),
+                            interestRateIndex,
+                            type, 
                             nominal, 
                             std::move(schedule), 
-                            std::move(equityIndex),
-                            interestRateIndex,
                             std::move(dayCounter),
                             margin,
                             gearing,
@@ -162,11 +165,11 @@ namespace QuantLib {
                                                  Calendar paymentCalendar,
                                                  BusinessDayConvention paymentConvention,
                                                  Natural paymentDelay)
-    : EquityTotalReturnSwap(type, 
+    : EquityTotalReturnSwap(std::move(equityIndex),
+                            interestRateIndex,
+                            type, 
                             nominal, 
                             std::move(schedule), 
-                            std::move(equityIndex),
-                            interestRateIndex,
                             std::move(dayCounter),
                             margin,
                             gearing,
