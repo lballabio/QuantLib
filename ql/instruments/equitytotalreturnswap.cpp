@@ -179,4 +179,13 @@ namespace QuantLib {
     Real EquityTotalReturnSwap::interestRateLegNPV() const {
         return legNPV(1);
     }
+
+    Real EquityTotalReturnSwap::fairMargin() const {
+        // Knowing that for the fair margin NPV = 0.0, where:
+        // NPV =
+        const Spread basisPoint = 1.0e-4;
+        Real interestLegBps = legBPS(1) / basisPoint;
+        Real exMarginInterestLegNpv = interestRateLegNPV() - margin() * interestLegBps;
+        return -(equityLegNPV() + exMarginInterestLegNpv) / interestLegBps;
+    }
 }

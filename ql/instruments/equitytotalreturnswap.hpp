@@ -67,9 +67,14 @@ namespace QuantLib {
         Type type() const { return type_; }
         Real nominal() const { return nominal_; }
         const ext::shared_ptr<EquityIndex>& equityIndex() const { return equityIndex_; } 
-        const ext::shared_ptr<InterestRateIndex>& interestRateIndex() const {
-            return interestRateIndex_;
-        }
+        const ext::shared_ptr<InterestRateIndex>& interestRateIndex() const { return interestRateIndex_; }
+        const Schedule& schedule() const { return schedule_; }
+        DayCounter dayCounter() const { return dayCounter_; }
+        Rate margin() const { return margin_; }
+        Real gearing() const { return gearing_; }
+        Calendar paymentCalendar() const { return paymentCalendar_; }
+        BusinessDayConvention paymentConvention() const { return paymentConvention_; }
+        Natural paymentDelay() const { return paymentDelay_; }
 
         const Leg& equityLeg() const;
         const Leg& interestRateLeg() const;

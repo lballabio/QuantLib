@@ -121,8 +121,8 @@ namespace equitytotalreturnswap_test {
                                                          const Date& start,
                                                          const Date& end,
                                                          bool useOvernightIndex,
-                                                         Real nominal = 1.0e7,
                                                          Rate margin = 0.0,
+                                                         Real nominal = 1.0e7,
                                                          Real gearing = 1.0,
                                                          Natural paymentDelay = 0) {
             auto schedule = MakeSchedule()
@@ -141,8 +141,8 @@ namespace equitytotalreturnswap_test {
     };
 }
 
-void EquityTotalReturnSwapTest::test() {
-    BOOST_TEST_MESSAGE("Testing ...");
+void EquityTotalReturnSwapTest::testFairMargin() {
+    BOOST_TEST_MESSAGE("Testing fair margin...");
 
     using namespace equitytotalreturnswap_test;
 
@@ -154,18 +154,22 @@ void EquityTotalReturnSwapTest::test() {
     Date end(5, April, 2023);
 
     auto trsVsLibor = vars.createTRS(Swap::Receiver, start, end, false);
+    auto fairMargin = trsVsLibor->fairMargin();
+    auto parTrsVsLibor = vars.createTRS(Swap::Receiver, start, end, false, fairMargin);
+    
     auto trsVsSofr = vars.createTRS(Swap::Receiver, start, end, true);
 
-    if ((std::fabs(trsVsLibor->NPV()) > tolerance))
+    if ((std::fabs(parTrsVsLibor->NPV()) > tolerance))
         BOOST_ERROR("unable to replicate NPV\n"
-                    << "    actual NPV:    " << trsVsLibor->NPV() << "\n"
-                    << "    expected NPV:    " << trsVsSofr->NPV() << "\n");
+                    << "    actual NPV:    " << parTrsVsLibor->NPV() << "\n"
+                    << "    expected NPV:    " << fairMargin << "\n"
+                    << "    expected NPV:    " << parTrsVsLibor->equityLegNPV() + parTrsVsLibor->interestRateLegNPV() << "\n");
 }
 
 test_suite* EquityTotalReturnSwapTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Equity total return swap tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&EquityTotalReturnSwapTest::test));
+    suite->add(QUANTLIB_TEST_CASE(&EquityTotalReturnSwapTest::testFairMargin));
 
     return suite;
 }

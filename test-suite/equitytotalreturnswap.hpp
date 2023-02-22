@@ -24,7 +24,7 @@
 
 class EquityTotalReturnSwapTest {
   public:
-    static void test();
+    static void testFairMargin();
 
     static boost::unit_test_framework::test_suite* suite();
 };
