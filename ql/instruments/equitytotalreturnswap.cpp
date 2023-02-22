@@ -51,7 +51,7 @@ namespace QuantLib {
         Leg createInterestLeg(const Schedule& schedule,
                               const ext::shared_ptr<IndexType>& interestRateIndex,
                               Real nominal,
-                              DayCounter dayCounter,
+                              const DayCounter& dayCounter,
                               Rate margin,
                               Real gearing,
                               const Calendar& paymentCalendar,
