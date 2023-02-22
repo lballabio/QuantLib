@@ -77,7 +77,6 @@ void ForwardRateAgreementTest::testConstructionWithoutACurve() {
 
         // set up the instrument to price
         ForwardRateAgreement fra(settlementDate + Period(12, Months),
-                                 settlementDate + Period(15, Months),
                                  Position::Long,
                                  0,
                                  1,

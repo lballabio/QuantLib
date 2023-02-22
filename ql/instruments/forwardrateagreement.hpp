@@ -66,8 +66,9 @@ namespace QuantLib {
     class ForwardRateAgreement: public Instrument {
       public:
         /*! \deprecated use the new constructors
-                        the one without the maturityDate
-                        or the one without the index
+                        the second one without the maturityDate
+                        or the third one without the index and
+                        with the term structure handle
                         deprecated in version 1.30
         */
         QL_DEPRECATED

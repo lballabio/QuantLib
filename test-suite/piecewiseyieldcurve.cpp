@@ -456,11 +456,8 @@ namespace piecewise_yield_curve_test {
                                       euribor3m->businessDayConvention(),
                                       euribor3m->endOfMonth());
             BOOST_REQUIRE(fraData[i].units == Months);
-            Date end = vars.calendar.advance(vars.settlement, 3 + fraData[i].n, Months,
-                                             euribor3m->businessDayConvention(),
-                                             euribor3m->endOfMonth());
 
-            ForwardRateAgreement fra(start, end, Position::Long,
+            ForwardRateAgreement fra(start, Position::Long,
                                      fraData[i].rate/100, 100.0,
                                      euribor3m, curveHandle,
                                      useIndexedFra);
@@ -489,11 +486,8 @@ namespace piecewise_yield_curve_test {
             if (euribor3m->fixingDate(immStart) <
                 Settings::instance().evaluationDate())
                 immStart = IMM::nextDate(immStart, false);
-            Date end = vars.calendar.advance(immStart, 3, Months,
-                euribor3m->businessDayConvention(),
-                euribor3m->endOfMonth());
-
-            ForwardRateAgreement immFut(immStart, end, Position::Long,
+                
+            ForwardRateAgreement immFut(immStart, Position::Long,
                 immFutData[i].rate / 100, 100.0,
                 euribor3m, curveHandle);
             Rate expectedRate = immFutData[i].rate / 100,
@@ -523,11 +517,8 @@ namespace piecewise_yield_curve_test {
                 asxStart = ASX::nextDate(asxStart, false);
             if (euribor3m->fixingCalendar().isHoliday(asxStart))
                 continue;
-            Date end = vars.calendar.advance(asxStart, 3, Months,
-                euribor3m->businessDayConvention(),
-                euribor3m->endOfMonth());
 
-            ForwardRateAgreement asxFut(asxStart, end, Position::Long,
+            ForwardRateAgreement asxFut(asxStart, Position::Long,
                 asxFutData[i].rate / 100, 100.0,
                 euribor3m, curveHandle);
             Rate expectedRate = asxFutData[i].rate / 100,
