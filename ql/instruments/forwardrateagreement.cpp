@@ -86,8 +86,8 @@ namespace QuantLib {
                                                Rate strikeForwardRate,
                                                Real notionalAmount,
                                                Handle<YieldTermStructure> discountCurve,
-                                               const Real fixingDays,
-                                               const BusinessDayConvention businessDayConvention)
+                                               Natural fixingDays,
+                                               BusinessDayConvention businessDayConvention)
     : fraType_(type), notionalAmount_(notionalAmount),
       useIndexedCoupon_(false), dayCounter_(discountCurve->dayCounter()),
       calendar_(discountCurve->calendar()), businessDayConvention_(businessDayConvention),

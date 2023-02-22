@@ -104,8 +104,8 @@ namespace QuantLib {
             Rate strikeForwardRate,
             Real notionalAmount,
             Handle<YieldTermStructure> discountCurve,
-            const Real fixingDays,
-            const BusinessDayConvention businessDayConvention);
+            Natural fixingDays,
+            BusinessDayConvention businessDayConvention);
 
         //! \name Calculations
         //@{
