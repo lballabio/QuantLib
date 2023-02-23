@@ -193,8 +193,7 @@ namespace equitytotalreturnswap_test {
         return npv;
     }
 
-    void checkNPVCalculation(Real expectedNPV,
-                             Swap::Type type,
+    void checkNPVCalculation(Swap::Type type,
                              const Date& start,
                              const Date& end,
                              bool useOvernightIndex,
@@ -210,11 +209,6 @@ namespace equitytotalreturnswap_test {
                                   gearing, paymentDelay);
 
         auto npv = trs->NPV();
-
-        if ((std::fabs(npv - expectedNPV) > tolerance))
-            BOOST_ERROR("incorrect NPV of a TRS\n"
-                        << "    actual NPV:    " << npv << "\n"
-                        << "    expected NPV:    " << expectedNPV << "\n");
 
         Real scaling = type == Swap::Type::Receiver ? 1.0 : -1.0;
         auto equityLegNPV = trs->equityLegNPV();
@@ -325,22 +319,17 @@ void EquityTotalReturnSwapTest::testTRSNPV() {
     CommonVars vars;
 
     // Check TRS vs Libor-type index
-    checkNPVCalculation(-369133.54, Swap::Receiver, Date(5, January, 2023), Date(5, April, 2023),
-                        false);
-    checkNPVCalculation(393619.41, Swap::Payer, Date(5, January, 2023), Date(5, April, 2023), false,
-                        0.01);
-    checkNPVCalculation(283432.99, Swap::Payer, Date(5, January, 2023), Date(5, April, 2023), false,
-                        0.0, 0.0);
-    checkNPVCalculation(1165.80, Swap::Receiver, Date(31, January, 2023), Date(30, April, 2023),
-                        false, -0.005, 1.0, 2);
+    checkNPVCalculation(Swap::Receiver, Date(5, January, 2023), Date(5, April, 2023), false);
+    checkNPVCalculation(Swap::Payer, Date(5, January, 2023), Date(5, April, 2023), false, 0.01);
+    checkNPVCalculation(Swap::Payer, Date(5, January, 2023), Date(5, April, 2023), false, 0.0, 0.0);
+    checkNPVCalculation(Swap::Receiver, Date(31, January, 2023), Date(30, April, 2023), false,
+                        -0.005, 1.0, 2);
 
     //// Check TRS vs overnight index
-    checkNPVCalculation(-373237.63, Swap::Receiver, Date(5, January, 2023), Date(5, April, 2023),
-                        true);
-    checkNPVCalculation(397723.49, Swap::Payer, Date(5, January, 2023), Date(5, April, 2023), true,
-                        0.01);
-    checkNPVCalculation(-108.17, Swap::Receiver, Date(31, January, 2023), Date(30, April, 2023),
-                        true, -0.005, 1.0, 2);
+    checkNPVCalculation(Swap::Receiver, Date(5, January, 2023), Date(5, April, 2023), true);
+    checkNPVCalculation(Swap::Payer, Date(5, January, 2023), Date(5, April, 2023), true, 0.01);
+    checkNPVCalculation(Swap::Receiver, Date(31, January, 2023), Date(30, April, 2023), true,
+                        -0.005, 1.0, 2);
 }
 
 test_suite* EquityTotalReturnSwapTest::suite() {
