@@ -25,6 +25,10 @@
 class EquityTotalReturnSwapTest {
   public:
     static void testFairMargin();
+    static void testErrorWhenNegativeNominal();
+    static void testErrorWhenNoPaymentCalendar();
+    static void testEquityLegNPV();
+    static void testTRSNPV();
 
     static boost::unit_test_framework::test_suite* suite();
 };

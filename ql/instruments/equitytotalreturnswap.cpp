@@ -38,7 +38,7 @@ namespace QuantLib {
 
             Calendar cal = paymentCalendar;
             if (cal.empty()) {
-                QL_REQUIRE(!schedule.calendar().empty(), "Calendar in schedule cannot be empty.");
+                QL_REQUIRE(!schedule.calendar().empty(), "Calendar in schedule cannot be empty");
                 cal = schedule.calendar();
             }
             Date paymentDate =
@@ -85,7 +85,7 @@ namespace QuantLib {
       paymentCalendar_(std::move(paymentCalendar)), paymentConvention_(paymentConvention),
       paymentDelay_(paymentDelay) {
 
-        QL_REQUIRE(!(nominal_ < 0.0), "nominal cannot be negative");
+        QL_REQUIRE(!(nominal_ < 0.0), "Nominal cannot be negative");
 
         legs_[0].push_back(createEquityCashFlow(schedule_, equityIndex_, nominal_, paymentCalendar_,
                                                 paymentConvention_, paymentDelay_));
