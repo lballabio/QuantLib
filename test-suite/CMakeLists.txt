@@ -51,6 +51,7 @@ set(QL_TEST_SOURCES
     doublebarrieroption.cpp
     doublebinaryoption.cpp
     equityindex.cpp
+    equitytotalreturnswap.cpp
     europeanoption.cpp
     everestoption.cpp
     exchangerate.cpp
@@ -220,6 +221,7 @@ set(QL_TEST_HEADERS
     doublebarrieroption.hpp
     doublebinaryoption.hpp
     equityindex.hpp
+    equitytotalreturnswap.hpp
     europeanoption.hpp
     everestoption.hpp
     exchangerate.hpp
