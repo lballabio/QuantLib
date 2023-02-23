@@ -299,7 +299,6 @@ void EquityTotalReturnSwapTest::testEquityLegNPV() {
     CommonVars vars;
 
     const Real tolerance = 1.0e-8;
-    const Real nominal = 1.0e7;
 
     Date start(5, January, 2023);
     Date end(5, April, 2023);
