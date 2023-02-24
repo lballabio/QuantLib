@@ -182,7 +182,9 @@ namespace QuantLib {
 
     Real EquityTotalReturnSwap::fairMargin() const {
         // Knowing that for the fair margin NPV = 0.0, where:
-        // NPV =
+        // NPV = NPV Equity Leg + [NPV Floating Leg + margin * BPS / 10000]
+        // hence,
+        // fair margin = - [NPV Equity Leg + NPV Floating Leg] / BPS * 10000
         const Spread basisPoint = 1.0e-4;
         Real interestLegBps = legBPS(1) / basisPoint;
         Real exMarginInterestLegNpv = interestRateLegNPV() - margin() * interestLegBps;

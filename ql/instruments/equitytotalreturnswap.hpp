@@ -35,6 +35,22 @@ namespace QuantLib {
     class OvernightIndex;
     class EquityIndex;
 
+    //! Equity total return swap
+    /*! It exchanges a total return of an equity index for a set of
+        floating cash flows linked to either Ibor or overnight index.
+        The equity leg future value (FV) is:
+        \f[
+        FV^{equity} = N \left[ \frac{I(t, T_{M})}{I(T_{0})} -1 \right],
+        \f]
+        where \f$ N \f$ is the swap notional, \f$ I(T_{0}) \f$ is the
+        value of the equity index on the start date and \f$ I(t, T_{M}) \f$
+        is the value of the equity index at maturity.
+        The floating leg payments are linked to either an Ibor or
+        an overnight index. In case of an overnight index the interest
+        rate fixings are compounded over the accrual period.
+
+        Swap type (payer of receiver) refers to the equity leg.
+    */
     class EquityTotalReturnSwap : public Swap {
       public:
         EquityTotalReturnSwap(Type type,
@@ -63,7 +79,6 @@ namespace QuantLib {
 
         //! \name Inspectors
         //@{
-        //! "payer" or "receiver" refer to the equity leg.
         Type type() const { return type_; }
         Real nominal() const { return nominal_; }
         const ext::shared_ptr<EquityIndex>& equityIndex() const { return equityIndex_; } 
@@ -78,7 +93,6 @@ namespace QuantLib {
 
         const Leg& equityLeg() const;
         const Leg& interestRateLeg() const;
-
         //@}
 
         //! \name Results
