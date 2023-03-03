@@ -32,6 +32,7 @@ Checks: >
           -cppcoreguidelines-pro-type-vararg,
           -cppcoreguidelines-special-member-functions,
         misc-*,
+          -misc-const-correctness,
           -misc-no-recursion,
           -misc-non-private-member-variables-in-classes,
           -misc-unused-parameters,
