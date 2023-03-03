@@ -34,7 +34,7 @@
 #define QL_VERSION "1.30-dev"
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x01300000
+enum { QL_HEX_VERSION = 0x01300000 };
 
 /*! @}  */
 
