@@ -94,7 +94,8 @@
         "BOOST_ROOT": "/usr",
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_CXX_COMPILER": "g++",
-        "QL_CLANG_TIDY": "clang-tidy-14",
+        "CMAKE_UNITY_BUILD": "ON",
+        "QL_CLANG_TIDY": "clang-tidy-15",
         "QL_CLANG_TIDY_OPTIONS": "-quiet;-fix",
         "QL_USE_CLANG_TIDY": "ON",
         "QL_USE_STD_CLASSES": "ON"
