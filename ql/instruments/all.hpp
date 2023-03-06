@@ -23,6 +23,7 @@
 #include <ql/instruments/dividendvanillaoption.hpp>
 #include <ql/instruments/doublebarrieroption.hpp>
 #include <ql/instruments/doublebarriertype.hpp>
+#include <ql/instruments/equitytotalreturnswap.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/instruments/fixedratebondforward.hpp>
 #include <ql/instruments/floatfloatswap.hpp>
