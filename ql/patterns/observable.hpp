@@ -119,15 +119,18 @@ namespace QuantLib {
         virtual ~Observer();
 
         // observer interface
-        virtual std::pair<iterator, bool>
+        std::pair<iterator, bool>
         registerWith(const ext::shared_ptr<Observable>&);
 
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
             itself.
 
-            \deprecated consider using LazyObject::alwaysForwardNotifications() instead,
-            the registration with the next-level observables was just a workaround for that.
+            \deprecated This method was introduced to work around incorrect behaviour 
+            caused by limiting notifications from LazyObject instances to the first
+            notification. The default behaviour of LazyObject was changed to forward
+            all notifications so that a call to this method should no longer be
+            necessary.
         */
         QL_DEPRECATED void registerWithObservables(const ext::shared_ptr<Observer>&);
         Size unregisterWith(const ext::shared_ptr<Observable>&);
@@ -294,7 +297,7 @@ namespace QuantLib {
         Observer& operator=(const Observer&);
         virtual ~Observer();
         // observer interface
-        virtual std::pair<iterator, bool>
+        std::pair<iterator, bool>
         registerWith(const ext::shared_ptr<Observable>&);
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer

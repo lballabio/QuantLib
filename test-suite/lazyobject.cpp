@@ -29,14 +29,16 @@ using ext::shared_ptr;
 void LazyObjectTest::testDiscardingNotifications() {
 
     BOOST_TEST_MESSAGE(
-        "Testing that lazy objects discard notifications after the first...");
+        "Testing that lazy objects discard notifications after the first (if requested)...");
 
     ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
 
     Flag f;
     f.registerWith(s);
-    
+
+    s->forwardFirstNotificationOnly();
+
     s->NPV();
     q->setValue(1.0);
     if (!f.isUp())
@@ -58,7 +60,7 @@ void LazyObjectTest::testDiscardingNotifications() {
 void LazyObjectTest::testForwardingNotifications() {
 
     BOOST_TEST_MESSAGE(
-        "Testing that lazy objects forward all notifications by default...");
+        "Testing that lazy objects forward all notifications (default behaviour)...");
 
     ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));

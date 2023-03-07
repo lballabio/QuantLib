@@ -78,7 +78,12 @@ namespace QuantLib {
             The behaviour is not always correct though and should only be enabled in
             appropriate configurations.
         */
-        virtual void forwardFirstNotificationOnly();
+        void forwardFirstNotificationOnly();
+
+        /*! Restore the default behaviour after a call to forwardFirstNotificationOnly(),
+          see above. */
+        void alwaysForwardNotifications();
+
       protected:
         /*! This method performs all needed calculations by calling
             the <i><b>performCalculations</b></i> method.
@@ -153,6 +158,10 @@ namespace QuantLib {
 
     inline void LazyObject::forwardFirstNotificationOnly() {
         alwaysForward_ = false;
+    }
+
+    inline void LazyObject::alwaysForwardNotifications() {
+        alwaysForward_ = true;
     }
 
     inline void LazyObject::calculate() const {
