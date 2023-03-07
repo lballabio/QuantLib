@@ -164,11 +164,6 @@ namespace QuantLib {
     inline const std::vector<Rate>& CapFloorTermVolSurface::strikes() const {
         return strikes_;
     }
-
-    inline std::pair<Observer::iterator, bool>
-    CapFloorTermVolSurface::registerWith(const ext::shared_ptr<Observable>& o) {
-        return LazyObject::registerWith(o);
-    }
 }
 
 #endif
