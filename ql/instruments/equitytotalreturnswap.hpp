@@ -102,6 +102,9 @@ namespace QuantLib {
         Real fairMargin() const;
         //@}
 
+      protected:
+        virtual ext::shared_ptr<CashFlow> createEquityCashFlow() const;
+
       private:
         EquityTotalReturnSwap(ext::shared_ptr<EquityIndex> equityIndex,
                               const ext::shared_ptr<InterestRateIndex>& interestRateIndex,
