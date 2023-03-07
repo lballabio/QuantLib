@@ -24,6 +24,15 @@
 
 namespace QuantLib {
 
+    void setCouponPricer(const Leg& leg, const ext::shared_ptr<EquityQuantoCashFlowPricer>& p) {
+        for (const auto& i : leg) {
+            ext::shared_ptr<EquityQuantoCashFlow> c =
+                ext::dynamic_pointer_cast<EquityQuantoCashFlow>(i);
+            if (c != nullptr)
+                c->setPricer(p);
+        }
+    }
+
     EquityQuantoCashFlow::EquityQuantoCashFlow(Real notional,
         ext::shared_ptr<EquityIndex> equityIndex,
         const Date& startDate,
@@ -45,7 +54,7 @@ namespace QuantLib {
     }
 
     Real EquityQuantoCashFlow::amount() const {
-        QL_REQUIRE(pricer_, "pricer not set");
+        QL_REQUIRE(pricer_, "Equity quanto cash flow pricer not set.");
         pricer_->initialize(*this);
         return pricer_->quantoAmount();
     }
@@ -90,11 +99,10 @@ namespace QuantLib {
         
         ext::shared_ptr<EquityIndex> quantoIndex = originalIndex->clone(
             quantoCurrencyTermStructure_, quantoTermStructure, originalIndex->spot());
-        
-        auto quantoCashFlow = ext::make_shared<IndexedCashFlow>(cashFlow_->notional(), quantoIndex,
-                                                                cashFlow_->startDate(), endDate,
-                                                                cashFlow_->paymentDate(), true);
 
-        return quantoCashFlow->amount();
+        Real I0 = quantoIndex->fixing(cashFlow_->startDate());
+        Real I1 = quantoIndex->fixing(endDate);
+
+        return cashFlow_->notional() * (I1 / I0 - 1.0);
     }
 }

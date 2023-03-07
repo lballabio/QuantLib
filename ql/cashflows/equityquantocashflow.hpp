@@ -79,6 +79,8 @@ namespace QuantLib {
             CashFlow::accept(v);
     }
 
+    void setCouponPricer(const Leg& leg, const ext::shared_ptr<EquityQuantoCashFlowPricer>&);
+
     class EquityQuantoCashFlowPricer : public virtual Observer, public virtual Observable {
       public:
         EquityQuantoCashFlowPricer(Handle<YieldTermStructure> quantoCurrencyTermStructure,
