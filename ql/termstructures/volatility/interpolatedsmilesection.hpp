@@ -219,6 +219,7 @@ namespace QuantLib {
         LazyObject::update();
         SmileSection::update();
     }
+    #endif
 
 }
 
