@@ -142,8 +142,6 @@ namespace QuantLib {
         //! \name Observer interface
         //@{
         void update() override;
-        std::pair<Observer::iterator, bool>
-        registerWith(const ext::shared_ptr<Observable>& o) override;
         //@}
       protected:
         /*! \name Calculations
@@ -248,10 +246,6 @@ namespace QuantLib {
             setJumps();
     }
 
-    inline void
-    DefaultProbabilityTermStructure::registerWith(const ext::shared_ptr<Observable>& o) {
-        return LazyObject::registerWith(o);
-    }
 }
 
 #endif
