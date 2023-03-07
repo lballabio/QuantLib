@@ -87,11 +87,6 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
     void performCalculations() const override;
     void update() override;
     //@}
-        //! \name Observer interface
-        //@{
-        std::pair<Observer::iterator, bool>
-        registerWith(const ext::shared_ptr<Observable>& o) override;
-        //@}
     //! \name SmileSection interface
     //@{
     Real minStrike() const override;
@@ -200,11 +195,6 @@ inline Real SviInterpolatedSmileSection::maxStrike() const {
 inline Real SviInterpolatedSmileSection::atmLevel() const {
     calculate();
     return forwardValue_;
-}
-
-inline std::pair<Observer::iterator, bool>
-SviInterpolatedSmileSection::registerWith(const ext::shared_ptr<Observable>& o) {
-    return LazyObject::registerWith(o);
 }
 }
 

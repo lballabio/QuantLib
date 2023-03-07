@@ -74,8 +74,6 @@ namespace QuantLib {
         //! \name Observer interface
         //@{
         void update() override;
-        std::pair<Observer::iterator, bool>
-        registerWith(const ext::shared_ptr<Observable>& o) override;
         //@}
       private:
         //! \name LazyObject interface
@@ -111,10 +109,6 @@ namespace QuantLib {
                              compounding_, frequency_);
     }
 
-    inline std::pair<Observer::iterator, bool>
-    FlatForward::registerWith(const ext::shared_ptr<Observable>& o) {
-        return LazyObject::registerWith(o);
-    }
 }
 
 #endif

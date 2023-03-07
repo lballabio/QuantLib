@@ -88,11 +88,6 @@ namespace QuantLib {
         void performCalculations() const override;
         void update() override;
         //@}
-        //! \name Observer interface
-        //@{
-        std::pair<Observer::iterator, bool>
-        registerWith(const ext::shared_ptr<Observable>& o) override;
-        //@}
         //! \name SmileSection interface
         //@{
         Real minStrike() const override;
@@ -201,10 +196,6 @@ namespace QuantLib {
         return forwardValue_;
     }
 
-    inline std::pair<Observer::iterator, bool>
-    SabrInterpolatedSmileSection::registerWith(const ext::shared_ptr<Observable>& o) {
-        return LazyObject::registerWith(o);
-    }
 
 }
 

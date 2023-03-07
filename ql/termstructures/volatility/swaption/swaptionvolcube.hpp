@@ -64,11 +64,6 @@ namespace QuantLib {
         //@{
         const Period& maxSwapTenor() const override { return atmVol_->maxSwapTenor(); }
         //@}
-        //! \name Observer interface
-        //@{
-        std::pair<Observer::iterator, bool>
-        registerWith(const ext::shared_ptr<Observable>& o) override;
-        //@}
         //! \name Other inspectors
         //@{
         Rate atmStrike(const Date& optionDate,
@@ -137,11 +132,6 @@ namespace QuantLib {
     inline Real SwaptionVolatilityCube::shiftImpl(Time optionTime,
                                                   Time swapLength) const {
         return atmVol_->shift(optionTime, swapLength);
-    }
-
-    inline std::pair<Observer::iterator, bool>
-    SwaptionVolatilityCube::registerWith(const ext::shared_ptr<Observable>& o) {
-        return LazyObject::registerWith(o);
     }
 }
 
