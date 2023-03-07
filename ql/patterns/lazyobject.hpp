@@ -39,8 +39,6 @@ namespace QuantLib {
         //! \name Observer interface
         //@{
         void update() override;
-        std::pair<Observer::iterator, bool>
-        registerWith(const ext::shared_ptr<Observable>&) override;
         //@}
         /*! \name Calculations
             These methods do not modify the structure of the object
@@ -70,28 +68,17 @@ namespace QuantLib {
             method, thus re-enabling recalculations.
         */
         void unfreeze();
-        /*! This method causes the object to forward all
-            notifications, even when not calculated.  The default
-            behavior is to forward the first notification received,
-            and discard the others until recalculated; the rationale
-            is that observers were already notified, and don't need
-            further notification until they recalculate, at which
-            point this object would be recalculated too.  After
-            recalculation, this object would again forward the first
-            notification received.
+        /*! This method causes the object to forward the first notification received,
+            and discard the others until recalculated; the rationale is that observers
+            were already notified, and don't need further notifications until they
+            recalculate, at which point this object would be recalculated too.
+            After recalculation, this object would again forward the first notification
+            received.
 
-            The method should be overridden in derived classes which
-            contain nested lazy objects. It should then call the method
-            on itself and the nested lazy objects to ensure that
-            notifications from the nested objects are always forwarded
-            all the way through the observable chain.
-
-            \warning Forwarding all notifications will cause a
-                     performance hit, and should be used only when
-                     discarding notifications cause an incorrect
-                     behavior.
+            The behaviour is not always correct though and should only be enabled in
+            appropriate configurations.
         */
-        virtual void alwaysForwardNotifications();
+        virtual void forwardFirstNotificationOnly();
       protected:
         /*! This method performs all needed calculations by calling
             the <i><b>performCalculations</b></i> method.
@@ -115,7 +102,7 @@ namespace QuantLib {
         */
         virtual void performCalculations() const = 0;
         //@}
-        mutable bool calculated_ = false, frozen_ = false, alwaysForward_ = false;
+        mutable bool calculated_ = false, frozen_ = false, alwaysForward_ = true;
     };
 
 
@@ -164,8 +151,8 @@ namespace QuantLib {
         }
     }
 
-    inline void LazyObject::alwaysForwardNotifications() {
-        alwaysForward_ = true;
+    inline void LazyObject::forwardFirstNotificationOnly() {
+        alwaysForward_ = false;
     }
 
     inline void LazyObject::calculate() const {
@@ -179,13 +166,6 @@ namespace QuantLib {
                 throw;
             }
         }
-    }
-
-    inline std::pair<Observer::iterator, bool>
-    LazyObject::registerWith(const ext::shared_ptr<Observable>& h) {
-        if (auto l = ext::dynamic_pointer_cast<LazyObject>(h))
-            l->alwaysForwardNotifications();
-        return Observer::registerWith(h);
     }
 }
 
