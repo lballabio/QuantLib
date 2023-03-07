@@ -154,8 +154,7 @@ namespace QuantLib {
     }
 
     template <class I, template <class> class B, class T>
-    std::pair<Observer::iterator, bool>
-    PiecewiseZeroInflationCurve<I, B, T>::registerWith(const ext::shared_ptr<Observable>& o) {
+    void PiecewiseZeroInflationCurve<I, B, T>::registerWith(const ext::shared_ptr<Observable>& o) {
         return LazyObject::registerWith(o);
     }
 }

@@ -185,8 +185,7 @@ namespace QuantLib {
         //! \name Observer interface
         //@{
         void update() override;
-        std::pair<Observer::iterator, bool>
-        registerWith(const ext::shared_ptr<Observable>& o) override;
+        //@}
       private:
         //! \name LazyObject interface
         //@{
@@ -281,12 +280,6 @@ namespace QuantLib {
     inline void PiecewiseDefaultCurve<C,I,B>::performCalculations() const {
         // just delegate to the bootstrapper
         bootstrap_.calculate();
-    }
-
-    template <class C, class I, template <class> class B>
-    inline std::pair<Observer::iterator, bool>
-    PiecewiseDefaultCurve<C,I,B>::registerWith(const ext::shared_ptr<Observable>& o) {
-        return LazyObject::registerWith(o);
     }
 
 }
