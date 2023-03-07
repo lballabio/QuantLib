@@ -58,12 +58,10 @@ void LazyObjectTest::testDiscardingNotifications() {
 void LazyObjectTest::testForwardingNotifications() {
 
     BOOST_TEST_MESSAGE(
-        "Testing that lazy objects forward all notifications when told...");
+        "Testing that lazy objects forward all notifications by default...");
 
     ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
-
-    s->alwaysForwardNotifications();
 
     Flag f;
     f.registerWith(s);
