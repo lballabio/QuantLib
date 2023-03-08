@@ -176,6 +176,18 @@ namespace QuantLib {
             }
         }
     }
+
+    /*! Calls fowardFirstNotificationOnly on o and all observables of o that are a lazy object,
+       recursively. This reduces the number of notifications sent from the lazy objects, but might
+       result in missing recalculations of objects observing one of the lazy object directly or
+       indireclty. */
+    inline void enableSingleNotificationFromLazyObjects(ext::shared_ptr<Observer>& o) {
+        if (auto l = ext::dynamic_pointer_cast<LazyObject>(o))
+            l->forwardFirstNotificationOnly();
+        for (auto& o : o->observables())
+            if (auto l = ext::dynamic_pointer_cast<Observer>(o))
+                enableSingleNotificationFromLazyObjects(l);
+    }
 }
 
 #endif

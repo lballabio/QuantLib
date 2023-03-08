@@ -149,6 +149,11 @@ namespace QuantLib {
           should be implemented in derived classes whenever applicable */
         virtual void deepUpdate();
 
+        /*! returns the set of observables */
+        const boost::unordered_set<ext::shared_ptr<Observable>>& observables() const {
+            return observables_;
+        }
+
       private:
         QL_DEPRECATED_DISABLE_WARNING
         set_type observables_;
