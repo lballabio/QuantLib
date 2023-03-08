@@ -34,15 +34,12 @@ namespace QuantLib {
     }
 
     EquityQuantoCashFlow::EquityQuantoCashFlow(Real notional,
-        ext::shared_ptr<EquityIndex> equityIndex,
-        const Date& startDate,
-        const Date& endDate,
-        const Date& paymentDate)
-     : notional_(notional), equityIndex_(std::move(equityIndex)), startDate_(startDate),
-       endDate_(endDate), paymentDate_(paymentDate) {
-        registerWith(equityIndex_);
-        registerWith(Settings::instance().evaluationDate());
-    }
+                                               ext::shared_ptr<EquityIndex> index,
+                                               const Date& baseDate,
+                                               const Date& fixingDate,
+                                               const Date& paymentDate,
+                                               bool growthOnly)
+    : IndexedCashFlow(notional, std::move(index), baseDate, fixingDate, paymentDate, growthOnly) {}
 
     void EquityQuantoCashFlow::setPricer(const ext::shared_ptr<EquityQuantoCashFlowPricer>& pricer) {
         if (pricer_ != nullptr)
@@ -56,7 +53,7 @@ namespace QuantLib {
     Real EquityQuantoCashFlow::amount() const {
         QL_REQUIRE(pricer_, "Equity quanto cash flow pricer not set.");
         pricer_->initialize(*this);
-        return pricer_->quantoAmount();
+        return notional() * pricer_->quantoPrice();
     }
 
 	EquityQuantoCashFlowPricer::EquityQuantoCashFlowPricer(
@@ -87,10 +84,10 @@ namespace QuantLib {
                    "reference date.");
     }
 
-    Real EquityQuantoCashFlowPricer::quantoAmount() const {
+    Real EquityQuantoCashFlowPricer::quantoPrice() const {
         const ext::shared_ptr<EquityIndex>& originalIndex = cashFlow_->equityIndex();
-        auto endDate = cashFlow_->endDate();
-        auto strike = originalIndex->fixing(endDate);
+        Date fixingDate = cashFlow_->fixingDate();
+        Real strike = originalIndex->fixing(fixingDate);
         
         Handle<YieldTermStructure> quantoTermStructure(ext::make_shared<QuantoTermStructure>(
             originalIndex->equityDividendCurve(), quantoCurrencyTermStructure_,
@@ -100,9 +97,11 @@ namespace QuantLib {
         ext::shared_ptr<EquityIndex> quantoIndex = originalIndex->clone(
             quantoCurrencyTermStructure_, quantoTermStructure, originalIndex->spot());
 
-        Real I0 = quantoIndex->fixing(cashFlow_->startDate());
-        Real I1 = quantoIndex->fixing(endDate);
+        Real I0 = quantoIndex->fixing(cashFlow_->baseDate());
+        Real I1 = quantoIndex->fixing(fixingDate);
 
-        return cashFlow_->notional() * (I1 / I0 - 1.0);
+        if (cashFlow_->growthOnly())
+            return I1 / I0 - 1.0;
+        return I1 / I0;
     }
 }

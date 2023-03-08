@@ -26,7 +26,7 @@
 
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
-#include <ql/cashflow.hpp>
+#include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/patterns/visitor.hpp>
 
 namespace QuantLib {
@@ -34,28 +34,21 @@ namespace QuantLib {
     class EquityIndex;
     class EquityQuantoCashFlowPricer;
     
-    class EquityQuantoCashFlow : public CashFlow, public Observer {
+    class EquityQuantoCashFlow : public IndexedCashFlow {
        public:
         EquityQuantoCashFlow(Real notional,
-                             ext::shared_ptr<EquityIndex> equityIndex,
-                             const Date& startDate,
-                             const Date& endDate,
-                             const Date& paymentDate);
-        //! \name Inspectors
-        //@{
-        Real notional() const { return notional_; }
+                             ext::shared_ptr<EquityIndex> index,
+                             const Date& baseDate,
+                             const Date& fixingDate,
+                             const Date& paymentDate,
+                             bool growthOnly = true);
+         //! \name EquityQuantoCashFlow interface
+         //@{
         const ext::shared_ptr<EquityIndex>& equityIndex() const { return equityIndex_; }
-        Date startDate() const { return startDate_; }
-        Date endDate() const { return endDate_; }
-        Date paymentDate() const { return paymentDate_; }
-        //@}
+         //@}
         //! \name CashFlow interface
         //@{
         Real amount() const override;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update() override { notifyObservers(); }
         //@}
         //! \name Visitability
         //@{
@@ -65,9 +58,7 @@ namespace QuantLib {
         const ext::shared_ptr<EquityQuantoCashFlowPricer>& pricer() const { return pricer_; };
 
       private:
-        Real notional_;
         ext::shared_ptr<EquityIndex> equityIndex_;
-        Date startDate_, endDate_, paymentDate_;
         ext::shared_ptr<EquityQuantoCashFlowPricer> pricer_;
     };
 
@@ -76,7 +67,7 @@ namespace QuantLib {
         if (v1 != nullptr)
             v1->visit(*this);
         else
-            CashFlow::accept(v);
+            IndexedCashFlow::accept(v);
     }
 
     void setCouponPricer(const Leg& leg, const ext::shared_ptr<EquityQuantoCashFlowPricer>&);
@@ -89,7 +80,7 @@ namespace QuantLib {
                                    Handle<Quote> correlation);
         //! \name Interface
         //@{
-        virtual Real quantoAmount() const;
+        virtual Real quantoPrice() const;
         virtual void initialize(const EquityQuantoCashFlow&);
         //@}
 
