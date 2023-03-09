@@ -825,8 +825,7 @@ void PiecewiseYieldCurveTest::testObservability() {
                                                    vars.instruments,
                                                    Actual360()));
 
-    auto o = ext::static_pointer_cast<Observer>(vars.termStructure);
-    enableSingleNotificationFromLazyObjects(o);
+    enableSingleNotificationFromLazyObjects(vars.termStructure);
 
     Flag f;
     f.registerWith(vars.termStructure);
