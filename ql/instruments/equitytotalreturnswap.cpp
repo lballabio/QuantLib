@@ -26,6 +26,27 @@ Copyright (C) 2023 Marcin Rybacki
 namespace QuantLib {
 
     namespace {
+        ext::shared_ptr<CashFlow>
+        createEquityCashFlow(const Schedule& schedule,
+                             const ext::shared_ptr<EquityIndex>& equityIndex,
+                             Real nominal,
+                             const Calendar& paymentCalendar,
+                             BusinessDayConvention paymentConvention,
+                             Natural paymentDelay) {
+            Date startDate = schedule.startDate();
+            Date endDate = schedule.endDate();
+
+            Calendar cal = paymentCalendar;
+            if (cal.empty()) {
+                QL_REQUIRE(!schedule.calendar().empty(), "Calendar in schedule cannot be empty");
+                cal = schedule.calendar();
+            }
+            Date paymentDate =
+                cal.advance(endDate, paymentDelay, Days, paymentConvention, schedule.endOfMonth());
+            return ext::make_shared<EquityCashFlow>(nominal, equityIndex, startDate, endDate,
+                                                    paymentDate);
+        }
+
         template <typename IndexType, typename LegType>
         Leg createInterestLeg(const Schedule& schedule,
                               const ext::shared_ptr<IndexType>& interestRateIndex,
@@ -47,20 +68,6 @@ namespace QuantLib {
         }
     }
 
-    ext::shared_ptr<CashFlow> EquityTotalReturnSwap::createEquityCashFlow() const {
-        Date startDate = schedule_.startDate();
-        Date endDate = schedule_.endDate();
-
-        Calendar cal = paymentCalendar_;
-        if (cal.empty()) {
-            QL_REQUIRE(!schedule_.calendar().empty(), "Calendar in schedule cannot be empty");
-            cal = schedule_.calendar();
-        }
-        Date paymentDate =
-            cal.advance(endDate, paymentDelay_, Days, paymentConvention_, schedule_.endOfMonth());
-        return ext::make_shared<EquityCashFlow>(nominal_, equityIndex_, startDate, endDate, paymentDate);
-    }
-
     EquityTotalReturnSwap::EquityTotalReturnSwap(ext::shared_ptr<EquityIndex> equityIndex,
                                                  const ext::shared_ptr<InterestRateIndex>& interestRateIndex,
                                                  Type type,
@@ -80,7 +87,8 @@ namespace QuantLib {
 
         QL_REQUIRE(!(nominal_ < 0.0), "Nominal cannot be negative");
 
-        legs_[0].push_back(createEquityCashFlow());
+        legs_[0].push_back(createEquityCashFlow(schedule_, equityIndex_, nominal_, paymentCalendar_,
+                                                paymentConvention_, paymentDelay_));
         for (Leg::const_iterator i = legs_[0].begin(); i < legs_[0].end(); ++i)
             registerWith(*i);
 

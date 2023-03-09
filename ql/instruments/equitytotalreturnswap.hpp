@@ -103,7 +103,6 @@ namespace QuantLib {
         //@}
 
       protected:
-        virtual ext::shared_ptr<CashFlow> createEquityCashFlow() const;
 
       private:
         EquityTotalReturnSwap(ext::shared_ptr<EquityIndex> equityIndex,

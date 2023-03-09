@@ -108,7 +108,7 @@ namespace equitycashflow_test {
     };
 }
 
-void EquityCashFlowTest::test() {
+void EquityCashFlowTest::testQuantoCorrection() {
     BOOST_TEST_MESSAGE("Testing quanto correction...");
 
     using namespace equitycashflow_test;
@@ -154,7 +154,7 @@ void EquityCashFlowTest::test() {
 test_suite* EquityCashFlowTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Equity quanto cash flow tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::test));
+    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::testQuantoCorrection));
 
     return suite;
 }
