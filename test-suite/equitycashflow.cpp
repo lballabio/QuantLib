@@ -16,9 +16,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "equityquantocashflow.hpp"
+#include "equitycashflow.hpp"
 #include "utilities.hpp"
-#include <ql/cashflows/equityquantocashflow.hpp>
+#include <ql/cashflows/equitycashflow.hpp>
 #include <ql/indexes/equityindex.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/quotes/simplequote.hpp>
@@ -26,7 +26,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-namespace equityquantocashflow_test {
+namespace equitycashflow_test {
 
     // Used to check that the exception message contains the expected message string, expMsg.
     struct ExpErrorPred {
@@ -96,22 +96,22 @@ namespace equityquantocashflow_test {
             correlationHandle.linkTo(ext::make_shared<SimpleQuote>(0.4));
         }
 
-        ext::shared_ptr<EquityQuantoCashFlow> createEquityQuantoCashFlow(const Date& start,
+        ext::shared_ptr<EquityCashFlow> createEquityQuantoCashFlow(const Date& start,
                                                                          const Date& end) {
-            return ext::make_shared<EquityQuantoCashFlow>(notional, equityIndex, start, end, end);
+            return ext::make_shared<EquityCashFlow>(notional, equityIndex, start, end, end);
         }
 
-        ext::shared_ptr<EquityQuantoCashFlowPricer> createEquityQuantoPricer() {
+        ext::shared_ptr<EquityCashFlowPricer> createEquityQuantoPricer() {
             return ext::make_shared<EquityQuantoCashFlowPricer>(
                 quantoCcyInterestHandle, equityVolHandle, fxVolHandle, correlationHandle);
         }
     };
 }
 
-void EquityQuantoCashFlowTest::test() {
+void EquityCashFlowTest::test() {
     BOOST_TEST_MESSAGE("Testing quanto correction...");
 
-    using namespace equityquantocashflow_test;
+    using namespace equitycashflow_test;
 
     const Real tolerance = 1.0e-6;
 
@@ -129,12 +129,13 @@ void EquityQuantoCashFlowTest::test() {
 
     Real time = vars.localCcyInterestHandle->timeFromReference(endDate);
     Real rf = vars.localCcyInterestHandle->zeroRate(time, Continuous);
+    Real q = vars.dividendHandle->zeroRate(time, Continuous);
     Real eqVol = vars.equityVolHandle->blackVol(endDate, strike);
     Real fxVol = vars.fxVolHandle->blackVol(endDate, 1.0);
     Real rho = vars.correlationHandle->value();
     Real spot = vars.spotHandle->value();
     
-    Real quantoForward = spot * std::exp((rf - rho * eqVol * fxVol) * time);
+    Real quantoForward = spot * std::exp((rf - q - rho * eqVol * fxVol) * time);
     Real expectedAmount = (quantoForward / indexStart - 1.0) * vars.notional;
 
     Real actualAmount = cf->amount();
@@ -150,10 +151,10 @@ void EquityQuantoCashFlowTest::test() {
                     << "    spot:    " << spot << "\n");
 }
 
-test_suite* EquityQuantoCashFlowTest::suite() {
+test_suite* EquityCashFlowTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Equity quanto cash flow tests");
 
-    suite->add(QUANTLIB_TEST_CASE(&EquityQuantoCashFlowTest::test));
+    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::test));
 
     return suite;
 }

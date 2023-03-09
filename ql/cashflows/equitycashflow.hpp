@@ -17,12 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file equityquantocashflow.hpp
-    \brief equity quanto cash flow
+/*! \file equitycashflow.hpp
+    \brief equity cash flow
 */
 
-#ifndef quantlib_equity_quanto_cash_flow_hpp
-#define quantlib_equity_quanto_cash_flow_hpp
+#ifndef quantlib_equity_cash_flow_hpp
+#define quantlib_equity_cash_flow_hpp
 
 #include <ql/termstructures/volatility/equityfx/blackvoltermstructure.hpp>
 #include <ql/termstructures/yield/zeroyieldstructure.hpp>
@@ -32,20 +32,16 @@
 namespace QuantLib {
     
     class EquityIndex;
-    class EquityQuantoCashFlowPricer;
+    class EquityCashFlowPricer;
     
-    class EquityQuantoCashFlow : public IndexedCashFlow {
+    class EquityCashFlow : public IndexedCashFlow {
        public:
-        EquityQuantoCashFlow(Real notional,
-                             ext::shared_ptr<EquityIndex> index,
-                             const Date& baseDate,
-                             const Date& fixingDate,
-                             const Date& paymentDate,
-                             bool growthOnly = true);
-         //! \name EquityQuantoCashFlow interface
-         //@{
-        const ext::shared_ptr<EquityIndex>& equityIndex() const { return equityIndex_; }
-         //@}
+        EquityCashFlow(Real notional,
+                       ext::shared_ptr<EquityIndex> index,
+                       const Date& baseDate,
+                       const Date& fixingDate,
+                       const Date& paymentDate,
+                       bool growthOnly = true);
         //! \name CashFlow interface
         //@{
         Real amount() const override;
@@ -54,25 +50,43 @@ namespace QuantLib {
         //@{
         void accept(AcyclicVisitor&) override;
         //@}
-        void setPricer(const ext::shared_ptr<EquityQuantoCashFlowPricer>&);
-        const ext::shared_ptr<EquityQuantoCashFlowPricer>& pricer() const { return pricer_; };
+        void setPricer(const ext::shared_ptr<EquityCashFlowPricer>&);
+        const ext::shared_ptr<EquityCashFlowPricer>& pricer() const { return pricer_; };
 
       private:
-        ext::shared_ptr<EquityIndex> equityIndex_;
-        ext::shared_ptr<EquityQuantoCashFlowPricer> pricer_;
+        ext::shared_ptr<EquityCashFlowPricer> pricer_;
     };
 
-    inline void EquityQuantoCashFlow::accept(AcyclicVisitor& v) {
-        auto* v1 = dynamic_cast<Visitor<EquityQuantoCashFlow>*>(&v);
+    inline void EquityCashFlow::accept(AcyclicVisitor& v) {
+        auto* v1 = dynamic_cast<Visitor<EquityCashFlow>*>(&v);
         if (v1 != nullptr)
             v1->visit(*this);
         else
             IndexedCashFlow::accept(v);
     }
 
-    void setCouponPricer(const Leg& leg, const ext::shared_ptr<EquityQuantoCashFlowPricer>&);
+    void setCouponPricer(const Leg& leg, const ext::shared_ptr<EquityCashFlowPricer>&);
 
-    class EquityQuantoCashFlowPricer : public virtual Observer, public virtual Observable {
+    class EquityCashFlowPricer : public virtual Observer, public virtual Observable {
+      public:
+        EquityCashFlowPricer() = default;
+        //! \name Interface
+        //@{
+        virtual Real price() const = 0;
+        virtual void initialize(const EquityCashFlow&) = 0;
+        //@}
+
+        //! \name Observer interface
+        //@{
+        void update() override { notifyObservers(); }
+        //@}
+      protected:
+        ext::shared_ptr<EquityIndex> index_;
+        Date baseDate_, fixingDate_;
+        bool growthOnlyPayoff_;
+    };
+
+    class EquityQuantoCashFlowPricer : public EquityCashFlowPricer {
       public:
         EquityQuantoCashFlowPricer(Handle<YieldTermStructure> quantoCurrencyTermStructure,
                                    Handle<BlackVolTermStructure> equityVolatility,
@@ -80,20 +94,13 @@ namespace QuantLib {
                                    Handle<Quote> correlation);
         //! \name Interface
         //@{
-        virtual Real quantoPrice() const;
-        virtual void initialize(const EquityQuantoCashFlow&);
-        //@}
-
-        //! \name Observer interface
-        //@{
-        void update() override { notifyObservers(); }
+        Real price() const override;
+        void initialize(const EquityCashFlow&) override;
         //@}
       private:
         Handle<YieldTermStructure> quantoCurrencyTermStructure_, quantoTermStructure;
         Handle<BlackVolTermStructure> equityVolatility_, fxVolatility_;
         Handle<Quote> correlation_;
-
-        const EquityQuantoCashFlow* cashFlow_;
     };
 }
 

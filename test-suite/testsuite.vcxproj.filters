@@ -510,7 +510,7 @@
     <ClCompile Include="equitytotalreturnswap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="equityquantocashflow.cpp">
+    <ClCompile Include="equitycashflow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1022,7 +1022,7 @@
     <ClInclude Include="equitytotalreturnswap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="equityquantocashflow.hpp">
+    <ClInclude Include="equitycashflow.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -517,7 +517,7 @@
     <ClInclude Include="ql\cashflows\digitaliborcoupon.hpp" />
     <ClInclude Include="ql\cashflows\dividend.hpp" />
     <ClInclude Include="ql\cashflows\duration.hpp" />
-    <ClInclude Include="ql\cashflows\equityquantocashflow.hpp" />
+    <ClInclude Include="ql\cashflows\equitycashflow.hpp" />
     <ClInclude Include="ql\cashflows\fixedratecoupon.hpp" />
     <ClInclude Include="ql\cashflows\floatingratecoupon.hpp" />
     <ClInclude Include="ql\cashflows\iborcoupon.hpp" />
@@ -1912,7 +1912,7 @@
     <ClCompile Include="ql\cashflows\digitaliborcoupon.cpp" />
     <ClCompile Include="ql\cashflows\dividend.cpp" />
     <ClCompile Include="ql\cashflows\duration.cpp" />
-    <ClCompile Include="ql\cashflows\equityquantocashflow.cpp" />
+    <ClCompile Include="ql\cashflows\equitycashflow.cpp" />
     <ClCompile Include="ql\cashflows\fixedratecoupon.cpp" />
     <ClCompile Include="ql\cashflows\floatingratecoupon.cpp" />
     <ClCompile Include="ql\cashflows\iborcoupon.cpp" />

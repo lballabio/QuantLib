@@ -17,12 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_equityquantocashflow_hpp
-#define quantlib_test_equityquantocashflow_hpp
+#ifndef quantlib_test_equitycashflow_hpp
+#define quantlib_test_equitycashflow_hpp
 
 #include <boost/test/unit_test.hpp>
 
-class EquityQuantoCashFlowTest {
+class EquityCashFlowTest {
   public:
     static void test();
 

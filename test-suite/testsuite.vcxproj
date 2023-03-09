@@ -688,7 +688,7 @@
     <ClCompile Include="doublebarrieroption.cpp" />
     <ClCompile Include="doublebinaryoption.cpp" />
     <ClCompile Include="equityindex.cpp" />
-    <ClCompile Include="equityquantocashflow.cpp" />
+    <ClCompile Include="equitycashflow.cpp" />
     <ClCompile Include="equitytotalreturnswap.cpp" />
     <ClCompile Include="europeanoption.cpp" />
     <ClCompile Include="everestoption.cpp" />
@@ -858,7 +858,7 @@
     <ClInclude Include="doublebarrieroption.hpp" />
     <ClInclude Include="doublebinaryoption.hpp" />
     <ClInclude Include="equityindex.hpp" />
-    <ClInclude Include="equityquantocashflow.hpp" />
+    <ClInclude Include="equitycashflow.hpp" />
     <ClInclude Include="equitytotalreturnswap.hpp" />
     <ClInclude Include="europeanoption.hpp" />
     <ClInclude Include="everestoption.hpp" />

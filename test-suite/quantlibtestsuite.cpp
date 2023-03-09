@@ -93,7 +93,7 @@
 #include "europeanoption.hpp"
 #include "everestoption.hpp"
 #include "equityindex.hpp"
-#include "equityquantocashflow.hpp"
+#include "equitycashflow.hpp"
 #include "equitytotalreturnswap.hpp"
 #include "exchangerate.hpp"
 #include "extendedtrees.hpp"
@@ -390,7 +390,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DistributionTest::suite(speed));
     test->add(DividendOptionTest::suite());
     test->add(EquityIndexTest::suite());
-    test->add(EquityQuantoCashFlowTest::suite());
+    test->add(EquityCashFlowTest::suite());
     test->add(EquityTotalReturnSwapTest::suite());
     test->add(EuropeanOptionTest::suite());
     test->add(ExchangeRateTest::suite());
