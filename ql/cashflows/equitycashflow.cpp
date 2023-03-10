@@ -21,8 +21,25 @@
 #include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/indexes/equityindex.hpp>
 #include <ql/termstructures/yield/quantotermstructure.hpp>
+#include <ql/termstructures/yield/flatforward.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
+#include <ql/quotes/simplequote.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 
 namespace QuantLib {
+
+    namespace {
+        Handle<YieldTermStructure>
+            configureDividendHandle(const Handle<YieldTermStructure>& dividendHandle) {
+            if (dividendHandle.empty()) {
+                ext::shared_ptr<YieldTermStructure> flatTs(ext::make_shared<FlatForward>(
+                    0, NullCalendar(), Handle<Quote>(ext::make_shared<SimpleQuote>(0.0)),
+                    Actual365Fixed()));
+                return Handle<YieldTermStructure>(flatTs);
+            }
+            return dividendHandle;
+        }
+    }
 
     void setCouponPricer(const Leg& leg, const ext::shared_ptr<EquityCashFlowPricer>& p) {
         for (const auto& i : leg) {
@@ -94,9 +111,11 @@ namespace QuantLib {
 
     Real EquityQuantoCashFlowPricer::price() const {
         Real strike = index_->fixing(fixingDate_);
-        
+        Handle<YieldTermStructure> dividendHandle =
+            configureDividendHandle(index_->equityDividendCurve());
+
         Handle<YieldTermStructure> quantoTermStructure(ext::make_shared<QuantoTermStructure>(
-            index_->equityDividendCurve(), quantoCurrencyTermStructure_,
+            dividendHandle, quantoCurrencyTermStructure_,
             index_->equityInterestRateCurve(), equityVolatility_, strike, fxVolatility_, 1.0,
             correlation_->value()));
         ext::shared_ptr<EquityIndex> quantoIndex =

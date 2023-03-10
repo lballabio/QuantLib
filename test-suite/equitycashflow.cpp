@@ -96,20 +96,88 @@ namespace equitycashflow_test {
             correlationHandle.linkTo(ext::make_shared<SimpleQuote>(0.4));
         }
 
-        ext::shared_ptr<EquityCashFlow> createEquityQuantoCashFlow(const Date& start,
-                                                                         const Date& end) {
-            return ext::make_shared<EquityCashFlow>(notional, equityIndex, start, end, end);
+        ext::shared_ptr<EquityCashFlow> createEquityQuantoCashFlow(
+            const ext::shared_ptr<EquityIndex>& index, const Date& start, const Date& end) {
+            return ext::make_shared<EquityCashFlow>(notional, index, start, end, end);
         }
 
         ext::shared_ptr<EquityCashFlowPricer> createEquityQuantoPricer() {
             return ext::make_shared<EquityQuantoCashFlowPricer>(
                 quantoCcyInterestHandle, equityVolHandle, fxVolHandle, correlationHandle);
         }
+
+        ext::shared_ptr<EquityCashFlowPricer> createEquityQuantoPricerWithMissingHandles() {
+            Handle<BlackVolTermStructure> vol;
+            return ext::make_shared<EquityQuantoCashFlowPricer>(quantoCcyInterestHandle, vol, vol,
+                                                                correlationHandle);
+        }
     };
+
+    void bumpMarketData(CommonVars& vars) {
+        
+        vars.localCcyInterestHandle.linkTo(flatRate(0.04, vars.dayCount));
+        vars.dividendHandle.linkTo(flatRate(0.01, vars.dayCount));
+        vars.quantoCcyInterestHandle.linkTo(flatRate(0.03, vars.dayCount));
+
+        vars.equityVolHandle.linkTo(flatVol(0.45, vars.dayCount));
+        vars.fxVolHandle.linkTo(flatVol(0.25, vars.dayCount));
+
+        vars.spotHandle.linkTo(ext::make_shared<SimpleQuote>(8710.0));
+    }
+
+    void checkQuantoCorrection(const Date& start,
+                               const Date& end,
+                               bool includeDividend,
+                               bool bumpData = false) {
+        const Real tolerance = 1.0e-6;
+
+        CommonVars vars;
+
+        ext::shared_ptr<EquityIndex> equityIndex =
+            includeDividend ?
+                vars.equityIndex :
+                vars.equityIndex->clone(vars.localCcyInterestHandle, Handle<YieldTermStructure>(),
+                                        vars.spotHandle);
+
+        auto cf = vars.createEquityQuantoCashFlow(equityIndex, start, end);
+        auto pricer = vars.createEquityQuantoPricer();
+        cf->setPricer(pricer);
+
+        if (bumpData)
+            bumpMarketData(vars);
+
+        Real strike = vars.equityIndex->fixing(end);
+        Real indexStart = vars.equityIndex->fixing(start);
+
+        Real time = vars.localCcyInterestHandle->timeFromReference(end);
+        Real rf = vars.localCcyInterestHandle->zeroRate(time, Continuous);
+        Real q = includeDividend ? vars.dividendHandle->zeroRate(time, Continuous) : 0.0;
+        Real eqVol = vars.equityVolHandle->blackVol(end, strike);
+        Real fxVol = vars.fxVolHandle->blackVol(end, 1.0);
+        Real rho = vars.correlationHandle->value();
+        Real spot = vars.spotHandle->value();
+
+        Real quantoForward = spot * std::exp((rf - q - rho * eqVol * fxVol) * time);
+        Real expectedAmount = (quantoForward / indexStart - 1.0) * vars.notional;
+
+        Real actualAmount = cf->amount();
+
+        if ((std::fabs(actualAmount - expectedAmount) > tolerance))
+            BOOST_ERROR("could not replicate equity quanto correction\n"
+                        << "    actual amount:    " << actualAmount << "\n"
+                        << "    expected amount:    " << expectedAmount << "\n"
+                        << "    index start:    " << indexStart << "\n"
+                        << "    index end:    " << quantoForward << "\n"
+                        << "    local rate:    " << rf << "\n"
+                        << "    equity volatility:    " << eqVol << "\n"
+                        << "    FX volatility:    " << fxVol << "\n"
+                        << "    correlation:    " << rho << "\n"
+                        << "    spot:    " << spot << "\n");
+    }
 }
 
-void EquityCashFlowTest::testQuantoCorrection() {
-    BOOST_TEST_MESSAGE("Testing quanto correction...");
+void EquityCashFlowTest::testSimpleEquityCashFlow() {
+    BOOST_TEST_MESSAGE("Testing simple equity cash flow...");
 
     using namespace equitycashflow_test;
 
@@ -120,41 +188,110 @@ void EquityCashFlowTest::testQuantoCorrection() {
     Date startDate(5, January, 2023);
     Date endDate(5, April, 2023);
 
-    auto cf = vars.createEquityQuantoCashFlow(startDate, endDate);
-    auto pricer = vars.createEquityQuantoPricer();
-    cf->setPricer(pricer);
+    auto cf = vars.createEquityQuantoCashFlow(vars.equityIndex, startDate, endDate);
 
-    Real strike = vars.equityIndex->fixing(endDate);
     Real indexStart = vars.equityIndex->fixing(startDate);
+    Real indexEnd = vars.equityIndex->fixing(endDate);
 
-    Real time = vars.localCcyInterestHandle->timeFromReference(endDate);
-    Real rf = vars.localCcyInterestHandle->zeroRate(time, Continuous);
-    Real q = vars.dividendHandle->zeroRate(time, Continuous);
-    Real eqVol = vars.equityVolHandle->blackVol(endDate, strike);
-    Real fxVol = vars.fxVolHandle->blackVol(endDate, 1.0);
-    Real rho = vars.correlationHandle->value();
-    Real spot = vars.spotHandle->value();
-    
-    Real quantoForward = spot * std::exp((rf - q - rho * eqVol * fxVol) * time);
-    Real expectedAmount = (quantoForward / indexStart - 1.0) * vars.notional;
+    Real expectedAmount = (indexEnd / indexStart - 1.0) * vars.notional;
 
     Real actualAmount = cf->amount();
 
     if ((std::fabs(actualAmount - expectedAmount) > tolerance))
-        BOOST_ERROR("could not replicate equity quanto correction\n"
+        BOOST_ERROR("could not replicate simple equity quanto cash flow\n"
                     << "    actual amount:    " << actualAmount << "\n"
                     << "    expected amount:    " << expectedAmount << "\n"
-                    << "    local rate:    " << rf << "\n"
-                    << "    equity volatility:    " << eqVol << "\n"
-                    << "    FX volatility:    " << fxVol << "\n"
-                    << "    correlation:    " << rho << "\n"
-                    << "    spot:    " << spot << "\n");
+                    << "    index start:    " << indexStart << "\n"
+                    << "    index end:    " << indexEnd << "\n");
+}
+
+void EquityCashFlowTest::testQuantoCorrection() {
+    BOOST_TEST_MESSAGE("Testing quanto correction...");
+
+    using namespace equitycashflow_test;
+
+    Date startDate(5, January, 2023);
+    Date endDate(5, April, 2023);
+
+    checkQuantoCorrection(startDate, endDate, true);
+    checkQuantoCorrection(startDate, endDate, false);
+
+    // Checks whether observers are being notified
+    // about changes in market data handles.
+    checkQuantoCorrection(startDate, endDate, false, true);
+}
+
+void EquityCashFlowTest::testErrorWhenBaseDateAfterFixingDate() {
+    BOOST_TEST_MESSAGE("Testing error when base date after fixing date...");
+
+    using namespace equitycashflow_test;
+
+    CommonVars vars;
+
+    Date endDate(5, January, 2023);
+    Date startDate(5, April, 2023);
+
+    auto cf = vars.createEquityQuantoCashFlow(vars.equityIndex, startDate, endDate);
+    auto pricer = vars.createEquityQuantoPricer();
+    cf->setPricer(pricer);
+
+    BOOST_CHECK_EXCEPTION(
+        cf->amount(), Error,
+        equitycashflow_test::ExpErrorPred("Fixing date cannot fall before base date."));
+}
+
+void EquityCashFlowTest::testErrorWhenHandleInPricerIsEmpty() {
+    BOOST_TEST_MESSAGE("Testing error when market data handle in pricer is empty...");
+
+    using namespace equitycashflow_test;
+
+    CommonVars vars;
+
+    Date startDate(5, January, 2023);
+    Date endDate(5, April, 2023);
+
+    auto cf = vars.createEquityQuantoCashFlow(vars.equityIndex, startDate, endDate);
+    auto pricer = vars.createEquityQuantoPricerWithMissingHandles();
+    cf->setPricer(pricer);
+
+    BOOST_CHECK_EXCEPTION(
+        cf->amount(), Error,
+        equitycashflow_test::ExpErrorPred(
+            "Quanto currency, equity and FX volatility term structure handles cannot be empty."));
+}
+
+void EquityCashFlowTest::testErrorWhenInconsistentMarketDataReferenceDate() {
+    BOOST_TEST_MESSAGE("Testing error when market data reference dates are inconsistent...");
+
+    using namespace equitycashflow_test;
+
+    CommonVars vars;
+
+    Date startDate(5, January, 2023);
+    Date endDate(5, April, 2023);
+
+    auto cf = vars.createEquityQuantoCashFlow(vars.equityIndex, startDate, endDate);
+    auto pricer = vars.createEquityQuantoPricer();
+    cf->setPricer(pricer);
+
+    vars.quantoCcyInterestHandle.linkTo(flatRate(Date(26, January, 2023), 0.02, vars.dayCount));
+
+    BOOST_CHECK_EXCEPTION(
+        cf->amount(), Error,
+        equitycashflow_test::ExpErrorPred(
+            "Quanto currency term structure, equity and FX volatility need to have the same "
+            "reference date."));
 }
 
 test_suite* EquityCashFlowTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Equity quanto cash flow tests");
 
+    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::testSimpleEquityCashFlow));
     suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::testQuantoCorrection));
+    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::testErrorWhenBaseDateAfterFixingDate));
+    suite->add(QUANTLIB_TEST_CASE(&EquityCashFlowTest::testErrorWhenHandleInPricerIsEmpty));
+    suite->add(
+        QUANTLIB_TEST_CASE(&EquityCashFlowTest::testErrorWhenInconsistentMarketDataReferenceDate));
 
     return suite;
 }

@@ -24,7 +24,11 @@
 
 class EquityCashFlowTest {
   public:
+    static void testSimpleEquityCashFlow();
     static void testQuantoCorrection();
+    static void testErrorWhenBaseDateAfterFixingDate();
+    static void testErrorWhenHandleInPricerIsEmpty();
+    static void testErrorWhenInconsistentMarketDataReferenceDate();
 
     static boost::unit_test_framework::test_suite* suite();
 };
