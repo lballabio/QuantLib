@@ -98,10 +98,14 @@ namespace QuantLib {
         QL_REQUIRE(fixingDate_ >= baseDate_, "Fixing date cannot fall before base date.");
         growthOnlyPayoff_ = cashFlow.growthOnly();
         
-        QL_REQUIRE(
-            !quantoCurrencyTermStructure_.empty() && !equityVolatility_.empty() &&
-                !fxVolatility_.empty(),
-            "Quanto currency, equity and FX volatility term structure handles cannot be empty.");
+        QL_REQUIRE(!quantoCurrencyTermStructure_.empty(),
+                   "Quanto currency term structure handle cannot be empty.");
+        QL_REQUIRE(!equityVolatility_.empty(),
+                   "Equity volatility term structure handle cannot be empty.");
+        QL_REQUIRE(!fxVolatility_.empty(),
+                   "FX volatility term structure handle cannot be empty.");
+        QL_REQUIRE(!correlation_.empty(), "Correlation handle cannot be empty.");
+
         QL_REQUIRE(quantoCurrencyTermStructure_->referenceDate() ==
                            equityVolatility_->referenceDate() &&
                        equityVolatility_->referenceDate() == fxVolatility_->referenceDate(),
