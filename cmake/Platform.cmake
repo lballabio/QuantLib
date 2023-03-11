@@ -16,6 +16,7 @@ if (MSVC)
     endif()
 
     add_compile_definitions(NOMINMAX)
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 
     # /wd4267
     # Suppress warnings: assignment of 64-bit value to 32-bit QuantLib::Integer (x64)
