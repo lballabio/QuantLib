@@ -104,7 +104,7 @@ namespace QuantLib {
 
       private:
         EquityTotalReturnSwap(ext::shared_ptr<EquityIndex> equityIndex,
-                              const ext::shared_ptr<InterestRateIndex>& interestRateIndex,
+                              ext::shared_ptr<InterestRateIndex> interestRateIndex,
                               Type type,
                               Real nominal,
                               Schedule schedule,
