@@ -121,6 +121,7 @@ endif()
 if (QL_ENABLE_DEFAULT_WARNING_LEVEL)
     if (MSVC)
         # warning level 3
+        # There are also specific warnings disabled for MSCV in cmake/Platform.cmake.
         add_compile_options(-W3)
     else()
         # lots of warnings
