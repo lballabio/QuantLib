@@ -16,6 +16,8 @@ if (MSVC)
     endif()
 
     add_compile_definitions(NOMINMAX)
+
+    # caused by ql\time\date.cpp: warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead.
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 
     # /wd4267
@@ -28,4 +30,11 @@ if (MSVC)
     # Suppress warnings: "Prefer enum class over enum" (Enum.3)
 
     add_compile_options(/wd4267 /wd4819 /wd26812)
+
+    # prevent warnings when using /std:c++17 and above
+    if(CMAKE_CXX_STANDARD GREATER 14)
+        # E.g. caused by #include <boost/numeric/ublas/matrix.hpp>
+        # In c++17 std::iterator is deprecated. As of boost 1.81 boost::ublas has not provided a fix for this.
+        add_compile_definitions(_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
+    endif()
 endif()
