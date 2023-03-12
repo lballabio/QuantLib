@@ -27,7 +27,8 @@
 #include <ql/patterns/singleton.hpp>
 #include <ql/timeseries.hpp>
 #include <ql/utilities/observablevalue.hpp>
-
+#include <algorithm>
+#include <cctype>
 
 namespace QuantLib {
 
@@ -58,7 +59,15 @@ namespace QuantLib {
         bool hasHistoricalFixing(const std::string& name, const Date& fixingDate) const;
 
       private:
-        mutable std::map<std::string, ObservableValue<TimeSeries<Real>>> data_;
+        struct CaseInsensitiveCompare {
+          bool operator()(const std::string& s1, const std::string& s2) const {
+            return std::lexicographical_compare(s1.begin(), s1.end(), s2.begin(), s2.end(), [](const auto& c1, const auto& c2) {
+              return std::toupper(static_cast<unsigned char>(c1)) < std::toupper(static_cast<unsigned char>(c2));
+            });
+          }
+        };
+
+        mutable std::map<std::string, ObservableValue<TimeSeries<Real>>, CaseInsensitiveCompare> data_;
     };
 
 }
