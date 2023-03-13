@@ -18,9 +18,9 @@ Copyright (C) 2023 Marcin Rybacki
 */
 
 #include <ql/cashflows/iborcoupon.hpp>
-#include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/indexes/equityindex.hpp>
+#include <ql/cashflows/equitycashflow.hpp>
 #include <ql/instruments/equitytotalreturnswap.hpp>
 #include <utility>
 
