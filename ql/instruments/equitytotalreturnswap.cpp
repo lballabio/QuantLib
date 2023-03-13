@@ -17,11 +17,12 @@ Copyright (C) 2023 Marcin Rybacki
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/instruments/equitytotalreturnswap.hpp>
-#include <ql/indexes/equityindex.hpp>
 #include <ql/cashflows/iborcoupon.hpp>
+#include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
-#include <ql/cashflows/equitycashflow.hpp>
+#include <ql/indexes/equityindex.hpp>
+#include <ql/instruments/equitytotalreturnswap.hpp>
+#include <utility>
 
 namespace QuantLib {
 
@@ -68,22 +69,23 @@ namespace QuantLib {
         }
     }
 
-    EquityTotalReturnSwap::EquityTotalReturnSwap(ext::shared_ptr<EquityIndex> equityIndex,
-                                                 const ext::shared_ptr<InterestRateIndex>& interestRateIndex,
-                                                 Type type,
-                                                 Real nominal,
-                                                 Schedule schedule,
-                                                 DayCounter dayCounter,
-                                                 Rate margin,
-                                                 Real gearing,
-                                                 Calendar paymentCalendar,
-                                                 BusinessDayConvention paymentConvention,
-                                                 Natural paymentDelay)
-    : Swap(2), equityIndex_(std::move(equityIndex)), interestRateIndex_(interestRateIndex),
-      type_(type), nominal_(nominal), schedule_(std::move(schedule)),
-      dayCounter_(std::move(dayCounter)), margin_(margin), gearing_(gearing),
-      paymentCalendar_(std::move(paymentCalendar)), paymentConvention_(paymentConvention),
-      paymentDelay_(paymentDelay) {
+    EquityTotalReturnSwap::EquityTotalReturnSwap(
+        ext::shared_ptr<EquityIndex> equityIndex,
+        ext::shared_ptr<InterestRateIndex> interestRateIndex,
+        Type type,
+        Real nominal,
+        Schedule schedule,
+        DayCounter dayCounter,
+        Rate margin,
+        Real gearing,
+        Calendar paymentCalendar,
+        BusinessDayConvention paymentConvention,
+        Natural paymentDelay)
+    : Swap(2), equityIndex_(std::move(equityIndex)),
+      interestRateIndex_(std::move(interestRateIndex)), type_(type), nominal_(nominal),
+      schedule_(std::move(schedule)), dayCounter_(std::move(dayCounter)), margin_(margin),
+      gearing_(gearing), paymentCalendar_(std::move(paymentCalendar)),
+      paymentConvention_(paymentConvention), paymentDelay_(paymentDelay) {
 
         QL_REQUIRE(!(nominal_ < 0.0), "Nominal cannot be negative");
 
