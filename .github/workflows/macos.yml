@@ -28,7 +28,7 @@ jobs:
       run: |
         ./autogen.sh
         ./configure --disable-shared ${{ matrix.configureflags }} CC="ccache clang" CXX="ccache clang++" CXXFLAGS="-O2 -g0 -Wall -Werror -stdlib=libc++ -mmacosx-version-min=10.9 ${{ matrix.cxxflags }}" LDFLAGS="-stdlib=libc++ -mmacosx-version-min=10.9"
-        make -j 2
+        make -j 3
     - name: Run tests
       run: |
         ./test-suite/quantlib-test-suite --log_level=message

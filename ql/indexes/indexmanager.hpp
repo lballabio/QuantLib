@@ -45,7 +45,7 @@ namespace QuantLib {
         //! returns the (possibly empty) history of the index fixings
         const TimeSeries<Real>& getHistory(const std::string& name) const;
         //! stores the historical fixings of the index
-        void setHistory(const std::string& name, const TimeSeries<Real>&);
+        void setHistory(const std::string& name, TimeSeries<Real> history);
         //! observer notifying of changes in the index fixings
         ext::shared_ptr<Observable> notifier(const std::string& name) const;
         //! returns all names of the indexes for which fixings were stored
@@ -58,8 +58,7 @@ namespace QuantLib {
         bool hasHistoricalFixing(const std::string& name, const Date& fixingDate) const;
 
       private:
-        typedef std::map<std::string, ObservableValue<TimeSeries<Real> > > history_map;
-        mutable history_map data_;
+        mutable std::map<std::string, ObservableValue<TimeSeries<Real>>> data_;
     };
 
 }

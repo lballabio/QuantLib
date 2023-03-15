@@ -512,7 +512,6 @@ namespace {
                                     qRate->setValue(q);
                                     rRate->setValue(r);
                                     vol->setValue(v);
-                                    // FLOATING_POINT_EXCEPTION
                                     Real value = option.NPV();
                                     calculated["delta"] = option.delta();
                                     calculated["gamma"] = option.gamma();

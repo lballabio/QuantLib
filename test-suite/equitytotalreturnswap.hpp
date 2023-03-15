@@ -1,7 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2005 StatPro Italia srl
+ Copyright (C) 2023 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,22 +17,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_array_hpp
-#define quantlib_test_array_hpp
+#ifndef quantlib_test_equitytotalreturnswap_hpp
+#define quantlib_test_equitytotalreturnswap_hpp
 
 #include <boost/test/unit_test.hpp>
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
-
-class ArrayTest {
+class EquityTotalReturnSwapTest {
   public:
-    static void testConstruction();
-    static void testArrayFunctions();
-    static void testArrayResize();
-    static void testArrayOperators();
+    static void testFairMargin();
+    static void testErrorWhenNegativeNominal();
+    static void testErrorWhenNoPaymentCalendar();
+    static void testEquityLegNPV();
+    static void testTRSNPV();
+
     static boost::unit_test_framework::test_suite* suite();
 };
-
 
 #endif

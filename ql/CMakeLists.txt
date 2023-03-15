@@ -287,6 +287,7 @@ set(QL_SOURCES
     instruments/dividendvanillaoption.cpp
     instruments/doublebarrieroption.cpp
     instruments/doublebarriertype.cpp
+    instruments/equitytotalreturnswap.cpp
     instruments/europeanoption.cpp
     instruments/floatfloatswap.cpp
     instruments/floatfloatswaption.cpp
@@ -1322,6 +1323,7 @@ set(QL_HEADERS
     instruments/dividendvanillaoption.hpp
     instruments/doublebarrieroption.hpp
     instruments/doublebarriertype.hpp
+    instruments/equitytotalreturnswap.hpp
     instruments/europeanoption.hpp
     instruments/fixedratebondforward.hpp
     instruments/floatfloatswap.hpp

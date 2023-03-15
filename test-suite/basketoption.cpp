@@ -527,7 +527,6 @@ void BasketOptionTest::testBarraquandThreeValues() {
             correlation[j][j] = 1.0;
         }
 
-        // FLOATING_POINT_EXCEPTION
         ext::shared_ptr<StochasticProcessArray> process(
                                new StochasticProcessArray(procs,correlation));
 

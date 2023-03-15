@@ -94,7 +94,6 @@ namespace {
             dates.push_back(settlementDate + t[i]);
             rates.push_back(r[i]);
         }
-        // FLOATING_POINT_EXCEPTION
         Handle<YieldTermStructure> riskFreeTS(
             ext::make_shared<ZeroCurve>(dates, rates, dayCounter));
         
@@ -171,7 +170,6 @@ void HestonModelTest::testBlackCalibration() {
 
     for (auto& optionMaturitie : optionMaturities) {
         for (Real moneyness = -1.0; moneyness < 2.0; moneyness += 1.0) {
-            // FLOATING_POINT_EXCEPTION
             const Time tau = dayCounter.yearFraction(
                 riskFreeTS->referenceDate(),
                 calendar.advance(riskFreeTS->referenceDate(), optionMaturitie));
@@ -321,7 +319,6 @@ void HestonModelTest::testAnalyticVsBlack() {
                    riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
 
     VanillaOption option(payoff, exercise);
-    // FLOATING_POINT_EXCEPTION
     ext::shared_ptr<PricingEngine> engine(
         ext::make_shared<AnalyticHestonEngine>(
             ext::make_shared<HestonModel>(process), 144));

@@ -33,8 +33,8 @@ namespace QuantLib {
         return data_[to_upper_copy(name)].value();
     }
 
-    void IndexManager::setHistory(const string& name, const TimeSeries<Real>& history) {
-        data_[to_upper_copy(name)] = history;
+    void IndexManager::setHistory(const string& name, TimeSeries<Real> history) {
+        data_[to_upper_copy(name)] = std::move(history);
     }
 
     ext::shared_ptr<Observable> IndexManager::notifier(const string& name) const {
@@ -44,8 +44,8 @@ namespace QuantLib {
     std::vector<string> IndexManager::histories() const {
         std::vector<string> temp;
         temp.reserve(data_.size());
-        for (history_map::const_iterator i = data_.begin(); i != data_.end(); ++i)
-            temp.push_back(i->first);
+        for (const auto& i : data_)
+            temp.push_back(i.first);
         return temp;
     }
 
