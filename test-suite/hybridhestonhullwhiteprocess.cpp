@@ -171,7 +171,6 @@ void HybridHestonHullWhiteProcessTest::testCompareBsmHWandHestonHW() {
 
     for (Size i=0; i <= 40; ++i) {
         dates.push_back(today+Period(i, Years));
-        // FLOATING_POINT_EXCEPTION
         rates.push_back(0.01 + 0.0002*std::exp(std::sin(i/4.0)));
         divRates.push_back(0.02 + 0.0001*std::exp(std::sin(i/5.0)));
     }
@@ -381,7 +380,6 @@ void HybridHestonHullWhiteProcessTest::testMcVanillaPricing() {
 
     for (Size i=0; i <= 40; ++i) {
         dates.push_back(today+Period(i, Years));
-        // FLOATING_POINT_EXCEPTION
         rates.push_back(0.03 + 0.0003*std::exp(std::sin(i/4.0)));
         divRates.push_back(0.02 + 0.0001*std::exp(std::sin(i/5.0)));
     }
@@ -471,7 +469,6 @@ void HybridHestonHullWhiteProcessTest::testMcPureHestonPricing() {
 
     for (Size i=0; i <= 100; ++i) {
         dates.push_back(today+Period(i, Months));
-        // FLOATING_POINT_EXCEPTION
         rates.push_back(0.02 + 0.0002*std::exp(std::sin(i/10.0)));
         divRates.push_back(0.02 + 0.0001*std::exp(std::sin(i/20.0)));
     }
@@ -557,7 +554,6 @@ void HybridHestonHullWhiteProcessTest::testAnalyticHestonHullWhitePricing() {
 
     for (Size i=0; i <= 40; ++i) {
         dates.push_back(today+Period(i, Years));
-        // FLOATING_POINT_EXCEPTION
         rates.push_back(0.03 + 0.0001*std::exp(std::sin(i/4.0)));
         divRates.push_back(0.02 + 0.0002*std::exp(std::sin(i/3.0)));
     }
@@ -653,7 +649,6 @@ void HybridHestonHullWhiteProcessTest::testCallableEquityPricing() {
     const ext::shared_ptr<HestonProcess> hestonProcess(
             new HestonProcess(rTS, qTS, spot, 0.0625, 1.0,
                               0.24*0.24, 1e-4, 0.0));
-    // FLOATING_POINT_EXCEPTION
     const ext::shared_ptr<HullWhiteForwardProcess> hwProcess(
             new HullWhiteForwardProcess(rTS, 0.00883, 0.00526));
     hwProcess->setForwardMeasureTime(
@@ -758,7 +753,6 @@ void HybridHestonHullWhiteProcessTest::testDiscretizationError() {
 
     for (Size i=0; i <= 31; ++i) {
         dates.push_back(today+Period(i, Years));
-        // FLOATING_POINT_EXCEPTION
         rates.push_back(0.04 + 0.0001*std::exp(std::sin(double(i))));
         divRates.push_back(0.04 + 0.0001*std::exp(std::sin(double(i))));
     }

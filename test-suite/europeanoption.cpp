@@ -1128,7 +1128,6 @@ namespace {
                                     expected.clear();
                                     calculated.clear();
 
-                                    // FLOATING_POINT_EXCEPTION
                                     expected["value"] = refOption->NPV();
                                     calculated["value"] = option->NPV();
 

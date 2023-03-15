@@ -189,7 +189,6 @@ void BatesModelTest::testAnalyticAndMcVsJumpDiffusion() {
     Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100)));
 
     Real v0 = 0.0433;
-    // FLOATING_POINT_EXCEPTION
     ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(std::sqrt(v0)));
     ext::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(settlementDate, vol, dayCounter);
@@ -403,7 +402,6 @@ void BatesModelTest::testDAXCalibration() {
         dates.push_back(settlementDate + t[i]);
         rates.push_back(r[i]);
     }
-     // FLOATING_POINT_EXCEPTION
     Handle<YieldTermStructure> riskFreeTS(
                        ext::shared_ptr<YieldTermStructure>(
                                     new ZeroCurve(dates, rates, dayCounter)));
@@ -529,10 +527,8 @@ void BatesModelTest::testDAXCalibration() {
 test_suite* BatesModelTest::suite() {
     auto* suite = BOOST_TEST_SUITE("Bates model tests");
     suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testAnalyticVsBlack));
-    suite->add(QUANTLIB_TEST_CASE(
-                        &BatesModelTest::testAnalyticAndMcVsJumpDiffusion));
+    suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testAnalyticAndMcVsJumpDiffusion));
     suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testAnalyticVsMCPricing));
-    // FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&BatesModelTest::testDAXCalibration));
     return suite;
 }
