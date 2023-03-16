@@ -822,6 +822,9 @@
     <ClInclude Include="ql\instruments\fixedratebondforward.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
+    <ClInclude Include="ql\instruments\fixedvsfloatingswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
     <ClInclude Include="ql\instruments\forward.hpp">
       <Filter>instruments</Filter>
     </ClInclude>
@@ -4675,6 +4678,9 @@
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\europeanoption.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\fixedvsfloatingswap.cpp">
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\instruments\forward.cpp">

@@ -31,6 +31,7 @@ this_include_HEADERS = \
     equitytotalreturnswap.hpp \
     europeanoption.hpp \
     fixedratebondforward.hpp \
+    fixedvsfloatingswap.hpp \
     floatfloatswap.hpp \
     floatfloatswaption.hpp \
     forward.hpp \
@@ -93,6 +94,7 @@ cpp_files = \
     doublebarriertype.cpp \
     equitytotalreturnswap.cpp \
     europeanoption.cpp \
+    fixedvsfloatingswap.cpp \
     floatfloatswap.cpp \
     floatfloatswaption.cpp \
     forward.cpp \

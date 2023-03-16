@@ -290,6 +290,7 @@ set(QL_SOURCES
     instruments/doublebarriertype.cpp
     instruments/equitytotalreturnswap.cpp
     instruments/europeanoption.cpp
+    instruments/fixedvsfloatingswap.cpp
     instruments/floatfloatswap.cpp
     instruments/floatfloatswaption.cpp
     instruments/forward.cpp
@@ -1331,6 +1332,7 @@ set(QL_HEADERS
     instruments/equitytotalreturnswap.hpp
     instruments/europeanoption.hpp
     instruments/fixedratebondforward.hpp
+    instruments/fixedvsfloatingswap.hpp
     instruments/floatfloatswap.hpp
     instruments/floatfloatswaption.hpp
     instruments/forward.hpp
