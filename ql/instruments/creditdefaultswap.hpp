@@ -31,6 +31,7 @@
 #include <ql/default.hpp>
 #include <ql/termstructures/defaulttermstructure.hpp>
 #include <ql/time/schedule.hpp>
+#include <ql/optional.hpp>
 
 namespace QuantLib {
 
@@ -175,7 +176,7 @@ namespace QuantLib {
         Protection::Side side() const;
         Real notional() const;
         Rate runningSpread() const;
-        boost::optional<Rate> upfront() const;
+        ext::optional<Rate> upfront() const;
         bool settlesAccrual() const;
         bool paysAtDefaultTime() const;
         const Leg& coupons() const;
@@ -281,7 +282,7 @@ namespace QuantLib {
         // data members
         Protection::Side side_;
         Real notional_;
-        boost::optional<Rate> upfront_;
+        ext::optional<Rate> upfront_;
         Rate runningSpread_;
         bool settlesAccrual_, paysAtDefaultTime_;
         ext::shared_ptr<Claim> claim_;
@@ -313,7 +314,7 @@ namespace QuantLib {
         arguments();
         Protection::Side side;
         Real notional;
-        boost::optional<Rate> upfront;
+        ext::optional<Rate> upfront;
         Rate spread;
         Leg leg;
         // if not initialized by constructors means theres no flows.

@@ -21,6 +21,7 @@ AM_CPPFLAGS = -I${top_builddir} -I${top_srcdir}
 
 this_includedir=${includedir}/${subdir}
 this_include_HEADERS = \
+	any.hpp \
 	auto_link.hpp \
 	auto_ptr.hpp \
 	cashflow.hpp \
@@ -43,6 +44,7 @@ this_include_HEADERS = \
 	money.hpp \
 	numericalmethod.hpp \
 	option.hpp \
+	optional.hpp \
 	payoff.hpp \
 	position.hpp \
 	prices.hpp \

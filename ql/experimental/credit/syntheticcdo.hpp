@@ -30,6 +30,7 @@
 
 #include <ql/instrument.hpp>
 #include <ql/default.hpp>
+#include <ql/optional.hpp>
 #include <ql/time/schedule.hpp>
 
 #include <ql/experimental/credit/basket.hpp>
@@ -123,7 +124,7 @@ namespace QuantLib {
                       Rate runningRate,
                       const DayCounter& dayCounter,
                       BusinessDayConvention paymentConvention,
-                      boost::optional<Real> notional = boost::none);
+                      ext::optional<Real> notional = ext::nullopt());
 
         const ext::shared_ptr<Basket>& basket() const { return basket_; }
 
