@@ -825,7 +825,7 @@ void PiecewiseYieldCurveTest::testObservability() {
                                                    vars.instruments,
                                                    Actual360()));
 
-    vars.termStrucure.forwardFirstNotificaionOnly();
+    boost::dynamic_pointer_cast<LazyObject>(vars.termStructure)->forwardFirstNotificationOnly();
 
     Flag f;
     f.registerWith(vars.termStructure);
