@@ -825,7 +825,7 @@ void PiecewiseYieldCurveTest::testObservability() {
                                                    vars.instruments,
                                                    Actual360()));
 
-    enableSingleNotificationFromLazyObjects(vars.termStructure);
+    vars.termStrucure.forwardFirstNotificaionOnly();
 
     Flag f;
     f.registerWith(vars.termStructure);
