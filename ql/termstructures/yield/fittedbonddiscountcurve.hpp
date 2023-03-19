@@ -31,6 +31,7 @@
 #include <ql/patterns/lazyobject.hpp>
 #include <ql/math/array.hpp>
 #include <ql/utilities/clone.hpp>
+#include <ql/math/optimization/constraint.hpp>
 
 namespace QuantLib {
 
@@ -205,6 +206,8 @@ namespace QuantLib {
         ext::shared_ptr<OptimizationMethod> optimizationMethod() const;
         //! open discountFunction to public
         DiscountFactor discount(const Array& x, Time t) const;
+        //! set constraint for the fitting method.
+        void setConstraint(const Constraint& constraint);
       protected:
         //! constructors
         FittingMethod(bool constrainAtZero = true,
@@ -253,6 +256,8 @@ namespace QuantLib {
         ext::shared_ptr<OptimizationMethod> optimizationMethod_;
         // flat extrapolation of instantaneous forward before / after cutoff
         Real minCutoffTime_, maxCutoffTime_;
+        // constraint for the fitting method
+        Constraint constraint_ = NoConstraint();
     };
 
     // inline

@@ -19,7 +19,6 @@
 */
 
 #include <ql/cashflows/cashflows.hpp>
-#include <ql/math/optimization/constraint.hpp>
 #include <ql/math/optimization/costfunction.hpp>
 #include <ql/math/optimization/simplex.hpp>
 #include <ql/pricingengines/bond/bondfunctions.hpp>
@@ -175,10 +174,13 @@ namespace QuantLib {
         }
     }
 
+    void FittedBondDiscountCurve::FittingMethod::setConstraint(const Constraint& constraint) {
+        constraint_ = constraint;
+    }
+
     void FittedBondDiscountCurve::FittingMethod::calculate() {
 
         FittingCost& costFunction = *costFunction_;
-        Constraint constraint = NoConstraint();
 
         // start with the guess solution, if it exists
         Array x(size(), 0.0);
@@ -210,7 +212,7 @@ namespace QuantLib {
         if(!optimization){
             optimization = ext::make_shared<Simplex>(curve_->simplexLambda_);
         }
-        Problem problem(costFunction, constraint, x);
+        Problem problem(costFunction, constraint_, x);
 
         Real rootEpsilon = curve_->accuracy_;
         Real functionEpsilon =  curve_->accuracy_;

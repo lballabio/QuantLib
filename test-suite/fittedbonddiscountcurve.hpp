@@ -29,6 +29,7 @@ class FittedBondDiscountCurveTest {
   public:
     static void testEvaluation();
     static void testFlatExtrapolation();
+    static void testConstraint();
     static boost::unit_test_framework::test_suite* suite();
 };
 
