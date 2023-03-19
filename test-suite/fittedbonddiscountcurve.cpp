@@ -202,12 +202,14 @@ void FittedBondDiscountCurveTest::testConstraint() {
 
     std::vector<ext::shared_ptr<FittedBondDiscountCurve>> curves;
 
+    // some - unrealistic - values
     std::vector<std::pair<Date, Real>> dates_rates = {{Date(3, Feb, 2020), -0.01},
                                                 {Date(12, Jun, 2020), -0.02},
                                                 {Date(24, Nov, 2020), -0.03},
                                                 {Date(21, Feb, 2022), -0.04}
     };
 
+    // set up bond helpers
     std::vector<ext::shared_ptr<Bond>> bonds;
     std::transform(
         dates_rates.begin(), dates_rates.end(), std::back_inserter(bonds),
@@ -227,24 +229,26 @@ void FittedBondDiscountCurveTest::testConstraint() {
                            Handle<Quote>(ext::make_shared<SimpleQuote>(quote)), bond);
                    });
 
-    NelsonSiegelFitting nelson_siegel;
     
+    // Build unconstrained curve.
+    NelsonSiegelFitting nelson_siegel;
     auto orig_curve = ext::make_shared<FittedBondDiscountCurve>(
         eval_date, helpers, Actual365Fixed(), nelson_siegel);
     
     auto orig_sol = orig_curve->fitResults().solution();
-    std::copy(orig_sol.begin(), orig_sol.end(), std::ostream_iterator<Real>(std::cout, "\n"));
-    std::cout << std::endl;
     
+    // Build constrained curve: only positive values allowed.
     nelson_siegel.setConstraint(PositiveConstraint());
     Array guess = {0.01, 0.01, 0.01, 0.01};
     auto constrained_curve = ext::make_shared<FittedBondDiscountCurve>(
         eval_date, helpers, Actual365Fixed(), nelson_siegel, 1E-10, 10000, guess);
     auto constrained_sol = constrained_curve->fitResults().solution();
-    std::copy(constrained_sol.begin(), constrained_sol.end(),
-              std::ostream_iterator<Real>(std::cout, "\n"));
+
+    // At least one param of the unconstrained curve should be negative.
     BOOST_ASSERT(
         std::any_of(orig_sol.begin(), orig_sol.end(), [](auto param) { return param < 0; }));
+
+    // All params of the constrained curve should be positive.
     BOOST_ASSERT(std::all_of(constrained_sol.begin(), constrained_sol.end(),
                              [](auto param) { return param > 0; }));
 }
