@@ -174,10 +174,6 @@ namespace QuantLib {
         }
     }
 
-    void FittedBondDiscountCurve::FittingMethod::setConstraint(const Constraint& constraint) {
-        constraint_ = constraint;
-    }
-
     void FittedBondDiscountCurve::FittingMethod::calculate() {
 
         FittingCost& costFunction = *costFunction_;

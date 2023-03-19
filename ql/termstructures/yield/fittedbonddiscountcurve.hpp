@@ -208,6 +208,8 @@ namespace QuantLib {
         DiscountFactor discount(const Array& x, Time t) const;
         //! set constraint for the fitting method.
         void setConstraint(const Constraint& constraint);
+        //! get constraint.
+        const Constraint& constraint() const;
       protected:
         //! constructors
         FittingMethod(bool constrainAtZero = true,
@@ -341,6 +343,14 @@ namespace QuantLib {
         } else {
             return discountFunction(x, t);
         }
+    }
+
+    inline void FittedBondDiscountCurve::FittingMethod::setConstraint(const Constraint& constraint) {
+        constraint_ = constraint;
+    }
+
+    inline const Constraint& FittedBondDiscountCurve::FittingMethod::constraint() const {
+    	return constraint_;
     }
 }
 
