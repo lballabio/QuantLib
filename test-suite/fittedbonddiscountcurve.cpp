@@ -239,6 +239,8 @@ void FittedBondDiscountCurveTest::testConstraint() {
     
     // Build constrained curve: only positive values allowed.
     nelson_siegel.setConstraint(PositiveConstraint());
+
+    // Initial guess must be within feasible region.
     Array guess = {0.01, 0.01, 0.01, 0.01};
     auto constrained_curve = ext::make_shared<FittedBondDiscountCurve>(
         eval_date, helpers, Actual365Fixed(), nelson_siegel, 1E-10, 10000, guess);
