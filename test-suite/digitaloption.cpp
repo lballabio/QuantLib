@@ -750,7 +750,6 @@ test_suite* DigitalOptionTest::suite() {
                &DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues));
     suite->add(QUANTLIB_TEST_CASE(
                &DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues));
-    //FLOATING_POINT_EXCEPTION
     suite->add(QUANTLIB_TEST_CASE(&DigitalOptionTest::testMCCashAtHit));
     return suite;
 }

@@ -175,7 +175,6 @@ namespace market_model_test {
 
         for (Size i=0; i<todaysForwards.size(); ++i)
         {
-            // FLOATING_POINT_EXCEPTION
             todaysForwards[i] = 0.03 + 0.0010*i;
             meanForward+= todaysForwards[i];
         }
