@@ -61,6 +61,8 @@ namespace QuantLib {
 
     // inline definitions
 
+    QL_DEPRECATED_DISABLE_WARNING
+
     inline DriftTermStructure::DriftTermStructure(const Handle<YieldTermStructure>& riskFreeTS,
                                                   Handle<YieldTermStructure> dividendTS,
                                                   Handle<BlackVolTermStructure> blackVolTS)
@@ -105,6 +107,9 @@ namespace QuantLib {
              - 0.5 * blackVolTS_->blackVol(t, underlyingLevel_, true)
                    * blackVolTS_->blackVol(t, underlyingLevel_, true);
     }
+
+    QL_DEPRECATED_ENABLE_WARNING
+
 }
 
 
