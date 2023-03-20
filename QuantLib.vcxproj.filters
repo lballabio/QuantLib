@@ -1191,6 +1191,9 @@
     <ClInclude Include="ql\math\matrixutilities\choleskydecomposition.hpp">
       <Filter>math\matrixutilities</Filter>
     </ClInclude>
+    <ClInclude Include="ql\math\matrixutilities\expm.hpp">
+      <Filter>math\matrixutilities</Filter>
+    </ClInclude>
     <ClInclude Include="ql\math\matrixutilities\factorreduction.hpp">
       <Filter>math\matrixutilities</Filter>
     </ClInclude>
@@ -2053,6 +2056,12 @@
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\swaption\cmsmarketcalibration.hpp">
+      <Filter>termstructures\volatility\swaption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.hpp">
+      <Filter>termstructures\volatility\swaption</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\termstructures\volatility\swaption\sabrswaptionvolatilitycube.hpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClInclude>
     <ClInclude Include="ql\termstructures\volatility\swaption\spreadedswaptionvol.hpp">
@@ -2997,6 +3006,9 @@
     <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
+    <ClInclude Include="ql\experimental\volatility\noarbsabrswaptionvolatilitycube.hpp">
+      <Filter>experimental\volatility</Filter>
+    </ClInclude>
     <ClInclude Include="ql\experimental\volatility\sabrvolsurface.hpp">
       <Filter>experimental\volatility</Filter>
     </ClInclude>
@@ -3670,9 +3682,6 @@
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\convolvedstudentt.hpp">
-      <Filter>experimental\math</Filter>
-    </ClInclude>
-    <ClInclude Include="ql\experimental\math\expm.hpp">
       <Filter>experimental\math</Filter>
     </ClInclude>
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp">
@@ -4421,6 +4430,15 @@
     <ClInclude Include="ql\methods\finitedifferences\operators\modtriplebandlinearop.hpp">
       <Filter>methods\finitedifferences\operators</Filter>
     </ClInclude>
+    <ClInclude Include="ql\indexes\inflation\ukhicp.hpp">
+      <Filter>indexes\inflation</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\indexes\equityindex.hpp">
+      <Filter>indexes</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\instruments\equitytotalreturnswap.hpp">
+      <Filter>instruments</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ql\methods\montecarlo\brownianbridge.cpp">
@@ -4865,6 +4883,9 @@
       <Filter>math\matrixutilities</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\matrixutilities\choleskydecomposition.cpp">
+      <Filter>math\matrixutilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\math\matrixutilities\expm.cpp">
       <Filter>math\matrixutilities</Filter>
     </ClCompile>
     <ClCompile Include="ql\math\matrixutilities\factorreduction.cpp">
@@ -5461,6 +5482,9 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\cmsmarketcalibration.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
+    <ClCompile Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.cpp">
+      <Filter>termstructures\volatility\swaption</Filter>
+    </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\swaption\spreadedswaptionvol.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
@@ -5468,9 +5492,6 @@
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube.cpp">
-      <Filter>termstructures\volatility\swaption</Filter>
-    </ClCompile>
-    <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube2.cpp">
       <Filter>termstructures\volatility\swaption</Filter>
     </ClCompile>
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvoldiscrete.cpp">
@@ -6595,9 +6616,6 @@
     <ClCompile Include="ql\experimental\math\tcopulapolicy.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
-    <ClCompile Include="ql\experimental\math\expm.cpp">
-      <Filter>experimental\math</Filter>
-    </ClCompile>
     <ClCompile Include="ql\experimental\math\zigguratrng.cpp">
       <Filter>experimental\math</Filter>
     </ClCompile>
@@ -7143,6 +7161,12 @@
     </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\utilities\fdmhestongreensfct.cpp">
       <Filter>methods\finitedifferences\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\indexes\equityindex.cpp">
+      <Filter>indexes</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\instruments\equitytotalreturnswap.cpp">
+      <Filter>instruments</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

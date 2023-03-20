@@ -151,7 +151,6 @@ void SwaptionTest::testStrikeDependency() {
                             .withType(k);
                     ext::shared_ptr<Swaption> swaption =
                         vars.makeSwaption(swap,exerciseDate,vol);
-                    // FLOATING_POINT_EXCEPTION
                     values.push_back(swaption->NPV());
                     ext::shared_ptr<Swaption> swaption_cash =
                         vars.makeSwaption(swap,exerciseDate,vol,
@@ -246,7 +245,6 @@ void SwaptionTest::testSpreadDependency() {
                             .withType(k);
                     ext::shared_ptr<Swaption> swaption =
                         vars.makeSwaption(swap,exerciseDate,0.20);
-                    // FLOATING_POINT_EXCEPTION
                     values.push_back(swaption->NPV());
                     ext::shared_ptr<Swaption> swaption_cash =
                         vars.makeSwaption(swap,exerciseDate,0.20,
@@ -330,7 +328,6 @@ void SwaptionTest::testSpreadTreatment() {
                             .withEffectiveDate(startDate)
                             .withFloatingLegSpread(spread)
                             .withType(k);
-                    // FLOATING_POINT_EXCEPTION
                     Spread correction = spread * swap->floatingLegBPS() / swap->fixedLegBPS();
                     ext::shared_ptr<VanillaSwap> equivalentSwap =
                         MakeVanillaSwap(length, vars.index, 0.06 + correction)
@@ -397,7 +394,6 @@ void SwaptionTest::testCachedValue() {
 
     Real cachedNPV = usingAtParCoupons ? 0.036418158579 : 0.036421429684;
 
-    // FLOATING_POINT_EXCEPTION
     if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-12)
         BOOST_ERROR("failed to reproduce cached swaption value:\n" <<
                     std::fixed << std::setprecision(12) <<
@@ -435,7 +431,6 @@ void SwaptionTest::testVega() {
                     for (Real vol : vols) {
                         ext::shared_ptr<Swaption> swaption =
                             vars.makeSwaption(swap, exerciseDate, vol, types[h], methods[h]);
-                        // FLOATING_POINT_EXCEPTION
                         ext::shared_ptr<Swaption> swaption1 = vars.makeSwaption(
                             swap, exerciseDate, vol - shift, types[h], methods[h]);
                         ext::shared_ptr<Swaption> swaption2 = vars.makeSwaption(
@@ -549,7 +544,6 @@ void SwaptionTest::testCashSettledSwaptions() {
             const Leg& swapFixedLeg_a365 = swap_a365->fixedLeg();
 
             // FlatForward curves
-            // FLOATING_POINT_EXCEPTION
             Handle<YieldTermStructure> termStructure_u360(
                 ext::shared_ptr<YieldTermStructure>(
                     new FlatForward(vars.settlement,swap_u360->fairRate(),

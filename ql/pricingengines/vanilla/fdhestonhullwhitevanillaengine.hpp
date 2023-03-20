@@ -18,7 +18,7 @@
 */
 
 /*! \file fdhestonhullwhitevanillaengine.hpp
-    \brief Finite-Differences Heston Hull-White vanilla option engine
+    \brief Finite-differences Heston Hull-White vanilla option engine
 */
 
 #ifndef quantlib_fd_heston_hull_white_vanilla_engine_hpp
@@ -33,8 +33,9 @@
 
 namespace QuantLib {
 
-    //! Finite-Differences Heston Hull-White Vanilla Option engine
+    QL_DEPRECATED_DISABLE_WARNING
 
+    //! Finite-differences Heston Hull-White vanilla option engine
     /*! \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by
@@ -45,11 +46,24 @@ namespace QuantLib {
         : public GenericModelEngine<HestonModel,
                                     DividendVanillaOption::arguments,
                                     DividendVanillaOption::results> {
+        QL_DEPRECATED_ENABLE_WARNING
       public:
-        // Constructor
         FdHestonHullWhiteVanillaEngine(
             const ext::shared_ptr<HestonModel>& model,
             ext::shared_ptr<HullWhiteProcess> hwProcess,
+            Real corrEquityShortRate,
+            Size tGrid = 50,
+            Size xGrid = 100,
+            Size vGrid = 40,
+            Size rGrid = 20,
+            Size dampingSteps = 0,
+            bool controlVariate = true,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+
+        FdHestonHullWhiteVanillaEngine(
+            const ext::shared_ptr<HestonModel>& model,
+            ext::shared_ptr<HullWhiteProcess> hwProcess,
+            DividendSchedule dividends,
             Real corrEquityShortRate,
             Size tGrid = 50,
             Size xGrid = 100,
@@ -67,6 +81,8 @@ namespace QuantLib {
         
       private:
         const ext::shared_ptr<HullWhiteProcess> hwProcess_;
+        DividendSchedule dividends_;
+        bool explicitDividends_;
         const Real corrEquityShortRate_;
         const Size tGrid_, xGrid_, vGrid_, rGrid_;
         const Size dampingSteps_;
@@ -74,9 +90,13 @@ namespace QuantLib {
         const bool controlVariate_;
         
         std::vector<Real> strikes_;
+        QL_DEPRECATED_DISABLE_WARNING
         mutable std::vector<std::pair<DividendVanillaOption::arguments,
                                       DividendVanillaOption::results> >
                                                             cachedArgs2results_;
+        QL_DEPRECATED_ENABLE_WARNING
     };
+
 }
+
 #endif

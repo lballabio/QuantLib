@@ -149,7 +149,7 @@ namespace QuantLib {
         results.thetaPerDay = black.thetaPerDay(S, t);
 
         results.strikeSensitivity  = black.strikeSensitivity();
-        results.additionalResults["strikeGamma"] = results.gamma*squared(S/X);
+        results.additionalResults["strikeGamma"] = Real(results.gamma*squared(S/X));
         results.additionalResults["exerciseType"] = std::string("European");
 
         return results;
@@ -168,7 +168,7 @@ namespace QuantLib {
         results.thetaPerDay = 0.0;
 
         results.strikeSensitivity = -results.delta;
-        results.additionalResults["strikeGamma"] = 0.0;
+        results.additionalResults["strikeGamma"] = Real(0.0);
         results.additionalResults["exerciseType"] = std::string("Immediate");
 
         return results;
@@ -246,8 +246,8 @@ namespace QuantLib {
                 - 1/(2*std::sqrt(squared(bT/variance - 0.5) + 2.0 * rT/variance))
                   * 2*(bT/variance-0.5)/variance);
             const Real BInfinityDq = -X/squared(beta-1.0)*betaDq;
-            const Real B0Dq = (dD <= rfD) ? 0
-                : X*std::log(rfD)/squared(std::log(dD))*tq;
+            const Real B0Dq = (dD <= rfD) ? Real(0.0)
+                : Real(X*std::log(rfD)/squared(std::log(dD))*tq);
 
             const Real htDq = tq * B0 / (BInfinity - B0)
                 - (bT + 2.0*std::sqrt(variance))
@@ -312,7 +312,7 @@ namespace QuantLib {
                 + 1/(2*std::sqrt(squared(bT/variance - 0.5) + 2.0 * rT/variance))
                   * 2*((bT/variance-0.5)/variance + 1/variance));
             const Real BInfinityDr = -X/squared(beta-1.0)*betaDr;
-            const Real B0Dr = (dD <= rfD) ? 0 : -X*tr/std::log(dD);
+            const Real B0Dr = (dD <= rfD) ? Real(0) : Real(-X*tr/std::log(dD));
             const Real htDr = -tr * B0 / (BInfinity - B0)
                 - (bT + 2.0*std::sqrt(variance))
                     *(B0Dr*(BInfinity - B0) - B0*(BInfinityDr - B0Dr))
@@ -415,7 +415,7 @@ namespace QuantLib {
             results.theta = 365*results.thetaPerDay;
 
             results.strikeSensitivity = results.value/X - S/X*results.delta;
-            results.additionalResults["strikeGamma"] = results.gamma*squared(S/X);
+            results.additionalResults["strikeGamma"] = Real(results.gamma*squared(S/X));
 
             results.additionalResults["exerciseType"] = std::string("American");
         }

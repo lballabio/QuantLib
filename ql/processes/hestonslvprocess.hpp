@@ -77,6 +77,10 @@ namespace QuantLib {
 
         const ext::shared_ptr<HestonProcess> hestonProcess_;
         const ext::shared_ptr<LocalVolTermStructure> leverageFct_;
+
+        void setParameters();
     };
+
 }
+
 #endif

@@ -164,7 +164,7 @@ namespace QuantLib {
                          adaptVanDelta_ ? bsPriceWithSmile_ : vanillaOption;
                      results_.additionalResults["BarrierInPrice"] =
                          adaptVanDelta_ ? bsPriceWithSmile_ : vanillaOption;
-                     results_.additionalResults["BarrierOutPrice"] = 0.0;
+                     results_.additionalResults["BarrierOutPrice"] = Real(0.0);
                  }
                  // already in
                  else if ((x0Quote->value() > arguments_.barrier_hi ||
@@ -175,7 +175,7 @@ namespace QuantLib {
                          adaptVanDelta_ ? bsPriceWithSmile_ : vanillaOption;
                      results_.additionalResults["BarrierInPrice"] =
                          adaptVanDelta_ ? bsPriceWithSmile_ : vanillaOption;
-                     results_.additionalResults["BarrierOutPrice"] = 0.0;
+                     results_.additionalResults["BarrierOutPrice"] = Real(0.0);
                  } else {
 
                      // set up BS barrier option pricing

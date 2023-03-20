@@ -164,8 +164,7 @@ namespace QuantLib {
         registerWith(baseCcyIdx_);
         registerWith(quoteCcyIdx_);
         registerWith(collateralHandle_);
-
-        initializeDates();
+        CrossCurrencyBasisSwapRateHelperBase::initializeDates();
     }
 
     void CrossCurrencyBasisSwapRateHelperBase::initializeDates() {

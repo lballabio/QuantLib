@@ -178,7 +178,6 @@ set(QL_SOURCES
     experimental/inflation/yoyoptionlethelpers.cpp
     experimental/lattices/extendedbinomialtree.cpp
     experimental/math/convolvedstudentt.cpp
-    experimental/math/expm.cpp
     experimental/math/fireflyalgorithm.cpp
     experimental/math/gaussiancopulapolicy.cpp
     experimental/math/gaussiannoncentralchisquaredpolynomial.cpp
@@ -235,6 +234,7 @@ set(QL_SOURCES
     experimental/volatility/zabr.cpp
     index.cpp
     indexes/bmaindex.cpp
+    indexes/equityindex.cpp
     indexes/ibor/bibor.cpp
     indexes/ibor/eonia.cpp
     indexes/ibor/estr.cpp
@@ -287,6 +287,7 @@ set(QL_SOURCES
     instruments/dividendvanillaoption.cpp
     instruments/doublebarrieroption.cpp
     instruments/doublebarriertype.cpp
+    instruments/equitytotalreturnswap.cpp
     instruments/europeanoption.cpp
     instruments/floatfloatswap.cpp
     instruments/floatfloatswaption.cpp
@@ -379,6 +380,7 @@ set(QL_SOURCES
     math/matrixutilities/basisincompleteordered.cpp
     math/matrixutilities/bicgstab.cpp
     math/matrixutilities/choleskydecomposition.cpp
+    math/matrixutilities/expm.cpp
     math/matrixutilities/factorreduction.cpp
     math/matrixutilities/getcovariance.cpp
     math/matrixutilities/gmres.cpp
@@ -835,10 +837,10 @@ set(QL_SOURCES
     termstructures/volatility/swaption/cmsmarket.cpp
     termstructures/volatility/swaption/cmsmarketcalibration.cpp
     termstructures/volatility/swaption/gaussian1dswaptionvolatility.cpp
+    termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.cpp
     termstructures/volatility/swaption/spreadedswaptionvol.cpp
     termstructures/volatility/swaption/swaptionconstantvol.cpp
     termstructures/volatility/swaption/swaptionvolcube.cpp
-    termstructures/volatility/swaption/swaptionvolcube2.cpp
     termstructures/volatility/swaption/swaptionvoldiscrete.cpp
     termstructures/volatility/swaption/swaptionvolmatrix.cpp
     termstructures/volatility/swaption/swaptionvolstructure.cpp
@@ -1153,7 +1155,6 @@ set(QL_HEADERS
     experimental/lattices/extendedbinomialtree.hpp
     experimental/math/claytoncopularng.hpp
     experimental/math/convolvedstudentt.hpp
-    experimental/math/expm.hpp
     experimental/math/farliegumbelmorgensterncopularng.hpp
     experimental/math/fireflyalgorithm.hpp
     experimental/math/frankcopularng.hpp
@@ -1218,6 +1219,7 @@ set(QL_HEADERS
     experimental/volatility/noarbsabrinterpolatedsmilesection.hpp
     experimental/volatility/noarbsabrinterpolation.hpp
     experimental/volatility/noarbsabrsmilesection.hpp
+    experimental/volatility/noarbsabrswaptionvolatilitycube.hpp
     experimental/volatility/sabrvolsurface.hpp
     experimental/volatility/sabrvoltermstructure.hpp
     experimental/volatility/sviinterpolatedsmilesection.hpp
@@ -1234,6 +1236,7 @@ set(QL_HEADERS
     handle.hpp
     index.hpp
     indexes/bmaindex.hpp
+    indexes/equityindex.hpp
     indexes/ibor/aonia.hpp
     indexes/ibor/audlibor.hpp
     indexes/ibor/bbsw.hpp
@@ -1273,6 +1276,7 @@ set(QL_HEADERS
     indexes/inflation/aucpi.hpp
     indexes/inflation/euhicp.hpp
     indexes/inflation/frhicp.hpp
+    indexes/inflation/ukhicp.hpp
     indexes/inflation/ukrpi.hpp
     indexes/inflation/uscpi.hpp
     indexes/inflation/zacpi.hpp
@@ -1319,6 +1323,7 @@ set(QL_HEADERS
     instruments/dividendvanillaoption.hpp
     instruments/doublebarrieroption.hpp
     instruments/doublebarriertype.hpp
+    instruments/equitytotalreturnswap.hpp
     instruments/europeanoption.hpp
     instruments/fixedratebondforward.hpp
     instruments/floatfloatswap.hpp
@@ -1456,6 +1461,7 @@ set(QL_HEADERS
     math/matrixutilities/bicgstab.hpp
     math/matrixutilities/choleskydecomposition.hpp
     math/matrixutilities/factorreduction.hpp
+    math/matrixutilities/expm.hpp
     math/matrixutilities/getcovariance.hpp
     math/matrixutilities/gmres.hpp
     math/matrixutilities/pseudosqrt.hpp
@@ -2076,6 +2082,8 @@ set(QL_HEADERS
     termstructures/volatility/swaption/cmsmarket.hpp
     termstructures/volatility/swaption/cmsmarketcalibration.hpp
     termstructures/volatility/swaption/gaussian1dswaptionvolatility.hpp
+    termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp
+    termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp
     termstructures/volatility/swaption/spreadedswaptionvol.hpp
     termstructures/volatility/swaption/swaptionconstantvol.hpp
     termstructures/volatility/swaption/swaptionvolcube.hpp

@@ -118,7 +118,7 @@ namespace QuantLib {
 
         results_.additionalResults["fairPremium"] = fairSpread;
         results_.additionalResults["premiumLegNPV"] = 
-            results_.premiumValue + results_.upfrontPremiumValue;
+            Real(results_.premiumValue + results_.upfrontPremiumValue);
         results_.additionalResults["protectionLegNPV"] = 
             results_.protectionValue;
     }

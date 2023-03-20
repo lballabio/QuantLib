@@ -20,6 +20,7 @@
 */
 
 #include <ql/exercise.hpp>
+#include <ql/instruments/vanillaoption.hpp>
 #include <ql/math/distributions/normaldistribution.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmblackscholesmesher.hpp>
 #include <ql/methods/finitedifferences/meshers/fdmmeshercomposite.hpp>
@@ -180,41 +181,33 @@ namespace QuantLib {
                                                             arguments_.payoff);
             // Calculate the vanilla option
             
-            ext::shared_ptr<DividendVanillaOption> vanillaOption(
-                ext::make_shared<DividendVanillaOption>(payoff,arguments_.exercise,
-                                          dividendCondition->dividendDates(), 
-                                          dividendCondition->dividends()));
+            VanillaOption vanillaOption(payoff, arguments_.exercise);
             
-            vanillaOption->setPricingEngine(
+            vanillaOption.setPricingEngine(
                 ext::make_shared<FdBlackScholesVanillaEngine>(
-                        process_, tGrid_, xGrid_,
+                        process_, dividendSchedule, tGrid_, xGrid_,
                         0, // dampingSteps
                         schemeDesc_, localVol_, illegalLocalVolOverwrite_));
 
             // Calculate the rebate value
-            auto rebateOption =
-                ext::make_shared<BarrierOption>(arguments_.barrierType,
-                                                arguments_.barrier,
-                                                arguments_.rebate,
-                                                payoff, arguments_.exercise);
+            BarrierOption rebateOption(arguments_.barrierType,
+                                       arguments_.barrier,
+                                       arguments_.rebate,
+                                       payoff, arguments_.exercise);
             
             const Size min_grid_size = 50;
             const Size rebateDampingSteps 
                 = (dampingSteps_ > 0) ? std::min(Size(1), dampingSteps_/2) : 0; 
 
-            rebateOption->setPricingEngine(ext::make_shared<FdBlackScholesRebateEngine>(
+            rebateOption.setPricingEngine(ext::make_shared<FdBlackScholesRebateEngine>(
                             process_, dividendSchedule, tGrid_, std::max(min_grid_size, xGrid_/5), 
                             rebateDampingSteps, schemeDesc_, localVol_, 
                             illegalLocalVolOverwrite_));
 
-            results_.value = vanillaOption->NPV()   + rebateOption->NPV()
-                                                    - results_.value;
-            results_.delta = vanillaOption->delta() + rebateOption->delta()
-                                                    - results_.delta;
-            results_.gamma = vanillaOption->gamma() + rebateOption->gamma()
-                                                    - results_.gamma;
-            results_.theta = vanillaOption->theta() + rebateOption->theta()
-                                                    - results_.theta;
+            results_.value = vanillaOption.NPV()   + rebateOption.NPV()   - results_.value;
+            results_.delta = vanillaOption.delta() + rebateOption.delta() - results_.delta;
+            results_.gamma = vanillaOption.gamma() + rebateOption.gamma() - results_.gamma;
+            results_.theta = vanillaOption.theta() + rebateOption.theta() - results_.theta;
         }
     }
 }

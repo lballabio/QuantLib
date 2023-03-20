@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2014 Peter Caspers
+ Copyright (C) 2023 Ignacio Anguita
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,27 +18,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swaptionvolcube1a.hpp
-    \brief Swaption volatility cube, fit-early-interpolate-later approach
-           using the No Arbitrage Sabr model (Doust)
-*/
-
 #ifndef quantlib_swaption_volcube_1a_hpp
 #define quantlib_swaption_volcube_1a_hpp
 
-#include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
+/* Deprecated in version 1.30 */
+
+#pragma message("Warning: this file will disappear in a future release; do not include it.")
+#pragma message("    Include <ql/experimental/volatility/noarbsabrinterpolation.hpp> instead.")
+
 #include <ql/experimental/volatility/noarbsabrinterpolation.hpp>
 
-namespace QuantLib {
-
-    struct SwaptionVolCubeNoArbSabrModel {
-        typedef NoArbSabrInterpolation Interpolation;
-        typedef NoArbSabrSmileSection SmileSection;
-    };
-
-    typedef SwaptionVolCube1x<SwaptionVolCubeNoArbSabrModel> SwaptionVolCube1a;
-
-}
-
 #endif
-

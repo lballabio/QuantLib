@@ -32,8 +32,8 @@
 #include <ql/cashflows/lineartsrpricer.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/termstructures/volatility/swaption/swaptionvolmatrix.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolcube2.hpp>
-#include <ql/termstructures/volatility/swaption/swaptionvolcube1.hpp>
+#include <ql/termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp>
+#include <ql/termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>
@@ -176,7 +176,7 @@ namespace cms_test {
             bool vegaWeightedSmileFit = false;
 
             SabrVolCube2 = Handle<SwaptionVolatilityStructure>(
-                ext::make_shared<SwaptionVolCube2>(atmVol,
+                ext::make_shared<InterpolatedSwaptionVolatilityCube>(atmVol,
                                      optionTenors,
                                      swapTenors,
                                      strikeSpreads,
@@ -205,8 +205,8 @@ namespace cms_test {
             bool isAtmCalibrated = false;
 
             SabrVolCube1 = Handle<SwaptionVolatilityStructure>(
-                ext::shared_ptr<SwaptionVolCube1>(new
-                    SwaptionVolCube1(atmVol,
+                ext::shared_ptr<SabrSwaptionVolatilityCube>(new
+                    SabrSwaptionVolatilityCube(atmVol,
                                      optionTenors,
                                      swapTenors,
                                      strikeSpreads,

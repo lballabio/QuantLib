@@ -252,7 +252,7 @@ namespace QuantLib {
             atmForward -= correction;
             results_.additionalResults["spreadCorrection"] = correction;
         } else {
-            results_.additionalResults["spreadCorrection"] = 0.0;
+            results_.additionalResults["spreadCorrection"] = Real(0.0);
         }
         results_.additionalResults["strike"] = strike;
         results_.additionalResults["atmForward"] = atmForward;
@@ -310,7 +310,7 @@ namespace QuantLib {
         results_.additionalResults["delta"] = Spec().delta(
             w, strike, atmForward, stdDev, annuity, displacement);
         results_.additionalResults["timeToExpiry"] = exerciseTime;
-        results_.additionalResults["impliedVolatility"] = stdDev / std::sqrt(exerciseTime);
+        results_.additionalResults["impliedVolatility"] = Real(stdDev / std::sqrt(exerciseTime));
     }
 
     }  // namespace detail

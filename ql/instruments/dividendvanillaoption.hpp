@@ -33,8 +33,11 @@ namespace QuantLib {
     class GeneralizedBlackScholesProcess;
 
     //! Single-asset vanilla option (no barriers) with discrete dividends
-    /*! \ingroup instruments */
-    class DividendVanillaOption : public OneAssetOption {
+    /*! \deprecated Use VanillaOption instead and pass the dividends
+                    to the desired engine.
+                    Deprecated in version 1.30.
+    */
+    class QL_DEPRECATED DividendVanillaOption : public OneAssetOption {
       public:
         class arguments;
         class engine;
@@ -60,8 +63,6 @@ namespace QuantLib {
         DividendSchedule cashFlow_;
     };
 
-
-    //! %Arguments for dividend vanilla option calculation
     class DividendVanillaOption::arguments : public OneAssetOption::arguments {
       public:
         DividendSchedule cashFlow;
@@ -69,10 +70,11 @@ namespace QuantLib {
         void validate() const override;
     };
 
-    //! %Dividend-vanilla-option %engine base class
+    QL_DEPRECATED_DISABLE_WARNING
     class DividendVanillaOption::engine
         : public GenericEngine<DividendVanillaOption::arguments,
                                DividendVanillaOption::results> {};
+    QL_DEPRECATED_ENABLE_WARNING
 
 }
 

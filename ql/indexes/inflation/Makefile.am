@@ -7,6 +7,7 @@ this_include_HEADERS = \
     aucpi.hpp \
     euhicp.hpp \
     frhicp.hpp \
+	ukhicp.hpp \
     ukrpi.hpp \
     uscpi.hpp \
     zacpi.hpp

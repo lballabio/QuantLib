@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2006 Ferdinando Ametrano
+ Copyright (C) 2023 Ignacio Anguita
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,58 +18,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swaptionvolcube2.hpp
-    \brief Swaption volatility cube, fit-later-interpolate-early approach
-*/
-
 #ifndef quantlib_swaption_volcube_fit_later_interpolate_early_h
 #define quantlib_swaption_volcube_fit_later_interpolate_early_h
 
-#include <ql/termstructures/volatility/swaption/swaptionvolcube.hpp>
-#include <ql/math/interpolations/interpolation2d.hpp>
+/* Deprecated in version 1.30 */
 
-namespace QuantLib {
+#pragma message("Warning: this file will disappear in a future release; do not include it.")
+#pragma message("    Include <ql/termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp> instead.")
 
-    class SwaptionVolCube2 : public SwaptionVolatilityCube{
-      public:
-          /*! The swaption vol cube is made up of ordered swaption vol surface
-              layers, each layer referring to a swap index of a given length
-              (in years), all indexes belonging to the same family. In order
-              to identify the family (and its market conventions) an index of
-              whatever length from that family must be passed in as
-              swapIndexBase.
+#include <ql/termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp>
 
-              Often for short swap length the swap index family is different,
-              e.g. the EUR case: swap vs 6M Euribor is used for length>1Y,
-              while swap vs 3M Euribor is used for the 1Y length. The
-              shortSwapIndexBase is used to identify this second family.
-        */
-        SwaptionVolCube2(
-            const Handle<SwaptionVolatilityStructure>& atmVolStructure,
-            const std::vector<Period>& optionTenors,
-            const std::vector<Period>& swapTenors,
-            const std::vector<Spread>& strikeSpreads,
-            const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-            const ext::shared_ptr<SwapIndex>& swapIndexBase,
-            const ext::shared_ptr<SwapIndex>& shortSwapIndexBase,
-            bool vegaWeightedSmileFit);
-        //! \name LazyObject interface
-        //@{
-        void performCalculations() const override;
-        //@}
-        //! \name SwaptionVolatilityCube inspectors
-        //@{
-        const Matrix& volSpreads(Size i) const { return volSpreadsMatrix_[i]; }
-        ext::shared_ptr<SmileSection> smileSectionImpl(const Date& optionDate,
-                                                       const Period& swapTenor) const override;
-        ext::shared_ptr<SmileSection> smileSectionImpl(Time optionTime,
-                                                       Time swapLength) const override;
-        //@}
-      private:
-        mutable std::vector<Interpolation2D> volSpreadsInterpolator_;
-        mutable std::vector<Matrix> volSpreadsMatrix_;
-    };
-
-}
 
 #endif

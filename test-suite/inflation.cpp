@@ -23,6 +23,7 @@
 #include <ql/cashflows/indexedcashflow.hpp>
 #include <ql/indexes/inflation/ukrpi.hpp>
 #include <ql/indexes/inflation/euhicp.hpp>
+#include <ql/indexes/inflation/ukhicp.hpp>
 #include <ql/termstructures/inflation/piecewisezeroinflationcurve.hpp>
 #include <ql/termstructures/inflation/piecewiseyoyinflationcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
@@ -127,6 +128,18 @@ void InflationTest::testZeroIndex() {
                     << ukrpi.revised() << ", "
                     << ukrpi.interpolated() << ", "
                     << ukrpi.availabilityLag() << ")");
+    }
+
+    UKHICP ukhicp;
+    if (ukhicp.name() != "UK HICP"
+        || ukhicp.frequency() != Monthly
+        || ukhicp.revised() 
+        || ukhicp.availabilityLag() != 1 * Months) {
+        BOOST_ERROR("wrong UK HICP data ("
+                    << ukhicp.name() << ", "
+                    << ukhicp.frequency() << ", "
+                    << ukhicp.revised() << ", "
+                    << ", " << ukhicp.availabilityLag() << ")");
     }
 
     QL_DEPRECATED_ENABLE_WARNING

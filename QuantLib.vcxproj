@@ -735,7 +735,6 @@
     <ClInclude Include="ql\experimental\math\all.hpp" />
     <ClInclude Include="ql\experimental\math\claytoncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\convolvedstudentt.hpp" />
-    <ClInclude Include="ql\experimental\math\expm.hpp" />
     <ClInclude Include="ql\experimental\math\farliegumbelmorgensterncopularng.hpp" />
     <ClInclude Include="ql\experimental\math\fireflyalgorithm.hpp" />
     <ClInclude Include="ql\experimental\math\frankcopularng.hpp" />
@@ -810,6 +809,7 @@
     <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolatedsmilesection.hpp" />
     <ClInclude Include="ql\experimental\volatility\noarbsabrinterpolation.hpp" />
     <ClInclude Include="ql\experimental\volatility\noarbsabrsmilesection.hpp" />
+    <ClInclude Include="ql\experimental\volatility\noarbsabrswaptionvolatilitycube.hpp" />
     <ClInclude Include="ql\experimental\volatility\sabrvolsurface.hpp" />
     <ClInclude Include="ql\experimental\volatility\sabrvoltermstructure.hpp" />
     <ClInclude Include="ql\experimental\volatility\sviinterpolatedsmilesection.hpp" />
@@ -823,6 +823,7 @@
     <ClInclude Include="ql\experimental\volatility\zabrsmilesection.hpp" />
     <ClInclude Include="ql\indexes\all.hpp" />
     <ClInclude Include="ql\indexes\bmaindex.hpp" />
+    <ClInclude Include="ql\indexes\equityindex.hpp" />
     <ClInclude Include="ql\indexes\ibor\all.hpp" />
     <ClInclude Include="ql\indexes\ibor\aonia.hpp" />
     <ClInclude Include="ql\indexes\ibor\audlibor.hpp" />
@@ -864,6 +865,7 @@
     <ClInclude Include="ql\indexes\inflation\aucpi.hpp" />
     <ClInclude Include="ql\indexes\inflation\euhicp.hpp" />
     <ClInclude Include="ql\indexes\inflation\frhicp.hpp" />
+    <ClInclude Include="ql\indexes\inflation\ukhicp.hpp" />
     <ClInclude Include="ql\indexes\inflation\ukrpi.hpp" />
     <ClInclude Include="ql\indexes\inflation\uscpi.hpp" />
     <ClInclude Include="ql\indexes\inflation\zacpi.hpp" />
@@ -912,6 +914,7 @@
     <ClInclude Include="ql\instruments\dividendvanillaoption.hpp" />
     <ClInclude Include="ql\instruments\doublebarrieroption.hpp" />
     <ClInclude Include="ql\instruments\doublebarriertype.hpp" />
+    <ClInclude Include="ql\instruments\equitytotalreturnswap.hpp" />
     <ClInclude Include="ql\instruments\europeanoption.hpp" />
     <ClInclude Include="ql\instruments\fixedratebondforward.hpp" />
     <ClInclude Include="ql\instruments\floatfloatswap.hpp" />
@@ -1031,7 +1034,7 @@
     <ClInclude Include="ql\math\interpolations\backwardflatlinearinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\bicubicsplineinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\bilinearinterpolation.hpp" />
-    <ClInclude Include="ql\math\interpolations\chebyshevinterpolation.hpp" />    
+    <ClInclude Include="ql\math\interpolations\chebyshevinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\convexmonotoneinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\cubicinterpolation.hpp" />
     <ClInclude Include="ql\math\interpolations\extrapolation.hpp" />
@@ -1055,6 +1058,7 @@
     <ClInclude Include="ql\math\matrixutilities\basisincompleteordered.hpp" />
     <ClInclude Include="ql\math\matrixutilities\bicgstab.hpp" />
     <ClInclude Include="ql\math\matrixutilities\choleskydecomposition.hpp" />
+    <ClInclude Include="ql\math\matrixutilities\expm.hpp" />
     <ClInclude Include="ql\math\matrixutilities\factorreduction.hpp" />
     <ClInclude Include="ql\math\matrixutilities\getcovariance.hpp" />
     <ClInclude Include="ql\math\matrixutilities\gmres.hpp" />
@@ -1725,6 +1729,8 @@
     <ClInclude Include="ql\termstructures\volatility\swaption\cmsmarket.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\cmsmarketcalibration.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\gaussian1dswaptionvolatility.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.hpp" />
+    <ClInclude Include="ql\termstructures\volatility\swaption\sabrswaptionvolatilitycube.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\spreadedswaptionvol.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionconstantvol.hpp" />
     <ClInclude Include="ql\termstructures\volatility\swaption\swaptionvolcube.hpp" />
@@ -2061,7 +2067,6 @@
     <ClCompile Include="ql\experimental\inflation\yoyoptionlethelpers.cpp" />
     <ClCompile Include="ql\experimental\lattices\extendedbinomialtree.cpp" />
     <ClCompile Include="ql\experimental\math\convolvedstudentt.cpp" />
-    <ClCompile Include="ql\experimental\math\expm.cpp" />
     <ClCompile Include="ql\experimental\math\fireflyalgorithm.cpp" />
     <ClCompile Include="ql\experimental\math\gaussiancopulapolicy.cpp" />
     <ClCompile Include="ql\experimental\math\gaussiannoncentralchisquaredpolynomial.cpp" />
@@ -2117,6 +2122,7 @@
     <ClCompile Include="ql\experimental\volatility\volcube.cpp" />
     <ClCompile Include="ql\experimental\volatility\zabr.cpp" />
     <ClCompile Include="ql\indexes\bmaindex.cpp" />
+    <ClCompile Include="ql\indexes\equityindex.cpp" />
     <ClCompile Include="ql\indexes\ibor\bibor.cpp" />
     <ClCompile Include="ql\indexes\ibor\eonia.cpp" />
     <ClCompile Include="ql\indexes\ibor\estr.cpp" />
@@ -2169,6 +2175,7 @@
     <ClCompile Include="ql\instruments\dividendvanillaoption.cpp" />
     <ClCompile Include="ql\instruments\doublebarrieroption.cpp" />
     <ClCompile Include="ql\instruments\doublebarriertype.cpp" />
+    <ClCompile Include="ql\instruments\equitytotalreturnswap.cpp" />
     <ClCompile Include="ql\instruments\europeanoption.cpp" />
     <ClCompile Include="ql\instruments\floatfloatswap.cpp" />
     <ClCompile Include="ql\instruments\floatfloatswaption.cpp" />
@@ -2255,11 +2262,12 @@
     <ClCompile Include="ql\math\integrals\integral.cpp" />
     <ClCompile Include="ql\math\integrals\kronrodintegral.cpp" />
     <ClCompile Include="ql\math\integrals\segmentintegral.cpp" />
-    <ClCompile Include="ql\math\interpolations\chebyshevinterpolation.cpp" />    
+    <ClCompile Include="ql\math\interpolations\chebyshevinterpolation.cpp" />
     <ClCompile Include="ql\math\matrix.cpp" />
     <ClCompile Include="ql\math\matrixutilities\basisincompleteordered.cpp" />
     <ClCompile Include="ql\math\matrixutilities\bicgstab.cpp" />
     <ClCompile Include="ql\math\matrixutilities\choleskydecomposition.cpp" />
+    <ClCompile Include="ql\math\matrixutilities\expm.cpp" />
     <ClCompile Include="ql\math\matrixutilities\factorreduction.cpp" />
     <ClCompile Include="ql\math\matrixutilities\getcovariance.cpp" />
     <ClCompile Include="ql\math\matrixutilities\gmres.cpp" />
@@ -2709,10 +2717,10 @@
     <ClCompile Include="ql\termstructures\volatility\swaption\cmsmarket.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\cmsmarketcalibration.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\gaussian1dswaptionvolatility.cpp" />
+    <ClCompile Include="ql\termstructures\volatility\swaption\interpolatedswaptionvolatilitycube.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\spreadedswaptionvol.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionconstantvol.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube.cpp" />
-    <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolcube2.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvoldiscrete.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolmatrix.cpp" />
     <ClCompile Include="ql\termstructures\volatility\swaption\swaptionvolstructure.cpp" />
