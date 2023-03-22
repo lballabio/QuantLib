@@ -47,10 +47,10 @@ namespace QuantLib {
             const std::vector<Date>&,
             Calendar calendar = NullCalendar(),
             BusinessDayConvention convention = Unadjusted,
-            const ext::optional<BusinessDayConvention>& terminationDateConvention = ext::nullopt(),
-            const ext::optional<Period>& tenor = ext::nullopt(),
-            const ext::optional<DateGeneration::Rule>& rule = ext::nullopt(),
-            const ext::optional<bool>& endOfMonth = ext::nullopt(),
+            const ext::optional<BusinessDayConvention>& terminationDateConvention = ext::nullopt,
+            const ext::optional<Period>& tenor = ext::nullopt,
+            const ext::optional<DateGeneration::Rule>& rule = ext::nullopt,
+            const ext::optional<bool>& endOfMonth = ext::nullopt,
             std::vector<bool> isRegular = std::vector<bool>(0));
         /*! rule based constructor */
         Schedule(Date effectiveDate,

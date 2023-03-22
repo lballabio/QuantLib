@@ -65,8 +65,8 @@ namespace QuantLib {
             Real spread2 = 0.0,
             Real cappedRate2 = Null<Real>(),
             Real flooredRate2 = Null<Real>(),
-            const ext::optional<BusinessDayConvention>& paymentConvention1 = ext::nullopt(),
-            const ext::optional<BusinessDayConvention>& paymentConvention2 = ext::nullopt());
+            const ext::optional<BusinessDayConvention>& paymentConvention1 = ext::nullopt,
+            const ext::optional<BusinessDayConvention>& paymentConvention2 = ext::nullopt);
 
         FloatFloatSwap(
             Swap::Type type,
@@ -88,8 +88,8 @@ namespace QuantLib {
             std::vector<Real> spread2 = std::vector<Real>(),
             std::vector<Real> cappedRate2 = std::vector<Real>(),
             std::vector<Real> flooredRate2 = std::vector<Real>(),
-            const ext::optional<BusinessDayConvention>& paymentConvention1 = ext::nullopt(),
-            const ext::optional<BusinessDayConvention>& paymentConvention2 = ext::nullopt());
+            const ext::optional<BusinessDayConvention>& paymentConvention1 = ext::nullopt,
+            const ext::optional<BusinessDayConvention>& paymentConvention2 = ext::nullopt);
 
         //! \name Inspectors
         //@{

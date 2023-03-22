@@ -246,7 +246,7 @@ namespace {
         */
 
         // QuantLib::Settings::instance().includeReferenceDateCashFlows() = true;
-        // QuantLib::Settings::instance().includeTodaysCashFlows() = ext::nullopt();
+        // QuantLib::Settings::instance().includeTodaysCashFlows() = ext::nullopt;
 
         QuantLib::Settings::instance().evaluationDate() = evaluationDate;
     }

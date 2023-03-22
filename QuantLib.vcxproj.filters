@@ -6632,6 +6632,7 @@
     <ClCompile Include="ql\index.cpp" />
     <ClCompile Include="ql\interestrate.cpp" />
     <ClCompile Include="ql\money.cpp" />
+    <ClCompile Include="ql\optional.cpp" />
     <ClCompile Include="ql\position.cpp" />
     <ClCompile Include="ql\prices.cpp" />
     <ClCompile Include="ql\settings.cpp" />

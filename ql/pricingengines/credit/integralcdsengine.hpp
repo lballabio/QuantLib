@@ -36,7 +36,7 @@ namespace QuantLib {
                           Handle<DefaultProbabilityTermStructure>,
                           Real recoveryRate,
                           Handle<YieldTermStructure> discountCurve,
-                          const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt());
+                          const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt);
         void calculate() const override;
 
       private:

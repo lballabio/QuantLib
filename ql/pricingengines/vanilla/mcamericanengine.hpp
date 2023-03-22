@@ -65,7 +65,7 @@ namespace QuantLib {
                          Size polynomialOrder,
                          LsmBasisSystem::PolynomialType polynomialType,
                          Size nCalibrationSamples = Null<Size>(),
-                         const ext::optional<bool>& antitheticVariateCalibration = ext::nullopt(),
+                         const ext::optional<bool>& antitheticVariateCalibration = ext::nullopt,
                          BigNatural seedCalibration = Null<Size>());
 
         void calculate() const override;
@@ -275,7 +275,7 @@ namespace QuantLib {
         ext::shared_ptr<GeneralizedBlackScholesProcess> process)
     : process_(std::move(process)), steps_(Null<Size>()), stepsPerYear_(Null<Size>()),
       samples_(Null<Size>()), maxSamples_(Null<Size>()), tolerance_(Null<Real>()),
-      antitheticCalibration_(ext::nullopt()), seedCalibration_(Null<Size>()) {}
+      antitheticCalibration_(ext::nullopt), seedCalibration_(Null<Size>()) {}
 
     template <class RNG, class S, class RNG_Calibration>
     inline MakeMCAmericanEngine<RNG, S, RNG_Calibration> &

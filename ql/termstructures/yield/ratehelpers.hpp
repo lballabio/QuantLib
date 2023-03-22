@@ -267,7 +267,7 @@ namespace QuantLib {
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
-                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt());
+                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
         SwapRateHelper(const Handle<Quote>& rate,
                        const Period& tenor,
                        Calendar calendar,
@@ -285,7 +285,7 @@ namespace QuantLib {
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
-                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt());
+                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
         SwapRateHelper(Rate rate,
                        const ext::shared_ptr<SwapIndex>& swapIndex,
                        Handle<Quote> spread = {},
@@ -295,7 +295,7 @@ namespace QuantLib {
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
-                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt());
+                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
         SwapRateHelper(Rate rate,
                        const Period& tenor,
                        Calendar calendar,
@@ -313,7 +313,7 @@ namespace QuantLib {
                        Pillar::Choice pillar = Pillar::LastRelevantDate,
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
-                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt());
+                       const ext::optional<bool>& useIndexedCoupons = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;

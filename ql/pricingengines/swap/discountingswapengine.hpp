@@ -36,7 +36,7 @@ namespace QuantLib {
       public:
         DiscountingSwapEngine(
             Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
-            const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt(),
+            const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
             Date settlementDate = Date(),
             Date npvDate = Date());
         void calculate() const override;

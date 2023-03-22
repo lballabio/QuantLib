@@ -17,37 +17,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file optional.hpp
-    \brief Maps optional to either the boost or std implementation
-*/
-
-#ifndef quantlib_optional_hpp
-#define quantlib_optional_hpp
-
-#include <ql/qldefines.hpp>
-
-#if defined(QL_USE_STD_OPTIONAL)
-#include <optional>
-#else
-#include <boost/optional.hpp>
-#endif
+#include <ql/optional.hpp>
 
 namespace QuantLib {
 
     namespace ext {
 
-        #if defined(QL_USE_STD_OPTIONAL)
-        using std::optional;                    // NOLINT(misc-unused-using-decls)
-        // here we can assume C++17
-        inline constexpr const std::nullopt_t& nullopt = std::nullopt;
-        #else
-        using boost::optional;                  // NOLINT(misc-unused-using-decls)
-        // here we can't
-        extern const boost::none_t& nullopt;
+        #if !defined(QL_USE_STD_OPTIONAL)
+        const boost::none_t& nullopt = boost::none;
         #endif
 
     }
 
 }
 
-#endif

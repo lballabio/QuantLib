@@ -644,6 +644,7 @@ set(QL_SOURCES
     models/volatility/constantestimator.cpp
     models/volatility/garch.cpp
     money.cpp
+    optional.cpp
     patterns/observable.cpp
     position.cpp
     prices.cpp

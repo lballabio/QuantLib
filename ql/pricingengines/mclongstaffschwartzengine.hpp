@@ -80,8 +80,8 @@ namespace QuantLib {
                                   Size maxSamples,
                                   BigNatural seed,
                                   Size nCalibrationSamples = Null<Size>(),
-                                  ext::optional<bool> brownianBridgeCalibration = ext::nullopt(),
-                                  ext::optional<bool> antitheticVariateCalibration = ext::nullopt(),
+                                  ext::optional<bool> brownianBridgeCalibration = ext::nullopt,
+                                  ext::optional<bool> antitheticVariateCalibration = ext::nullopt,
                                   BigNatural seedCalibration = Null<Size>());
 
         void calculate() const override;

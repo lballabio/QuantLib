@@ -50,7 +50,7 @@ namespace QuantLib {
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
                       RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                      ext::optional<bool> endOfMonth = ext::nullopt());
+                      ext::optional<bool> endOfMonth = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;

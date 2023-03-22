@@ -36,7 +36,7 @@ namespace QuantLib {
       explicit MonteCarloCatBondEngine(
           ext::shared_ptr<CatRisk> catRisk,
           Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
-          const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt());
+          const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt);
       void calculate() const override;
       Handle<YieldTermStructure> discountCurve() const { return discountCurve_; }
     protected:

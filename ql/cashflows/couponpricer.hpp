@@ -67,7 +67,7 @@ namespace QuantLib {
       public:
         explicit IborCouponPricer(
             Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
-            ext::optional<bool> useIndexedCoupon = ext::nullopt());
+            ext::optional<bool> useIndexedCoupon = ext::nullopt);
 
         bool useIndexedCoupon() const { return useIndexedCoupon_; }
 
@@ -115,7 +115,7 @@ namespace QuantLib {
             const Handle<OptionletVolatilityStructure>& v = Handle<OptionletVolatilityStructure>(),
             const TimingAdjustment timingAdjustment = Black76,
             Handle<Quote> correlation = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))),
-            const ext::optional<bool> useIndexedCoupon = ext::nullopt())
+            const ext::optional<bool> useIndexedCoupon = ext::nullopt)
         : IborCouponPricer(v, useIndexedCoupon), timingAdjustment_(timingAdjustment),
           correlation_(std::move(correlation)) {
             { // this additional scope seems required to avoid a misleading-indentation warning

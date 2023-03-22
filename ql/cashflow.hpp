@@ -48,7 +48,7 @@ namespace QuantLib {
             Settings::includeTodaysCashflows in account
         */
         bool hasOccurred(const Date& refDate = Date(),
-                         ext::optional<bool> includeRefDate = ext::nullopt()) const override;
+                         ext::optional<bool> includeRefDate = ext::nullopt) const override;
         //@}
         //! \name CashFlow interface
         //@{

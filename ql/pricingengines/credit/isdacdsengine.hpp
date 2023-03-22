@@ -98,7 +98,7 @@ namespace QuantLib {
         IsdaCdsEngine(Handle<DefaultProbabilityTermStructure> probability,
                       Real recoveryRate,
                       Handle<YieldTermStructure> discountCurve,
-                      const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt(),
+                      const ext::optional<bool>& includeSettlementDateFlows = ext::nullopt,
                       NumericalFix numericalFix = Taylor,
                       AccrualBias accrualBias = HalfDayBias,
                       ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise);
