@@ -27,9 +27,6 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using namespace std;
-
-//namespace QuantLib {
 
 #undef REPORT_FAILURE
 #define REPORT_FAILURE( \
