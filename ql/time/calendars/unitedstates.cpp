@@ -282,7 +282,8 @@ namespace QuantLib {
                 && y >= 1983)
             // Washington's birthday (third Monday in February)
             || isWashingtonBirthday(d, m, y, w)
-            // Good Friday (2015, 2021, 2023 are half day due to NFP/SIFMA)
+            // Good Friday (2015, 2021, 2023 are half day due to NFP/SIFMA;
+            // see <https://www.sifma.org/resources/general/holiday-schedule/>)
             || (dd == em-3 && y != 2015 && y != 2021 && y != 2023)
             // Memorial Day (last Monday in May)
             || isMemorialDay(d, m, y, w)
