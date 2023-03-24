@@ -336,8 +336,8 @@ AC_ARG_ENABLE([std-any],
               AS_HELP_STRING([--enable-std-any],
                              [If enabled, std::any and related classes and
                               functions will be used instead of boost::any.
-                              If disabled (the default) the Boost facilities
-                              are used.]),
+                              This requires C++17. If disabled (the default)
+                              the Boost facilities are used.]),
               [ql_use_std_any=$enableval],
               [ql_use_std_any=no])
 if test "$ql_use_std_any" = "yes" ; then
@@ -351,7 +351,7 @@ AC_ARG_ENABLE([std-optional],
               AS_HELP_STRING([--enable-std-optional],
                              [If enabled, std::optional and related
                               classes and functions will be used instead
-                              of boost::optional.
+                              of boost::optional. This requires C++17.
                               If disabled (the default) the Boost facilities
                               are used.]),
               [ql_use_std_optional=$enableval],
