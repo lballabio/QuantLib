@@ -23,7 +23,6 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-using namespace std;
 
 void AutocovariancesTest::testConvolutions() {
     BOOST_TEST_MESSAGE("Testing convolutions...");
