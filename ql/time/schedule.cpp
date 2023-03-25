@@ -19,6 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/optional.hpp>
 #include <ql/settings.hpp>
 #include <ql/time/imm.hpp>
 #include <ql/time/schedule.hpp>
@@ -56,16 +57,16 @@ namespace QuantLib {
     Schedule::Schedule(const std::vector<Date>& dates,
                        Calendar calendar,
                        BusinessDayConvention convention,
-                       const boost::optional<BusinessDayConvention>& terminationDateConvention,
-                       const boost::optional<Period>& tenor,
-                       const boost::optional<DateGeneration::Rule>& rule,
-                       const boost::optional<bool>& endOfMonth,
+                       const ext::optional<BusinessDayConvention>& terminationDateConvention,
+                       const ext::optional<Period>& tenor,
+                       const ext::optional<DateGeneration::Rule>& rule,
+                       const ext::optional<bool>& endOfMonth,
                        std::vector<bool> isRegular)
     : tenor_(tenor), calendar_(std::move(calendar)), convention_(convention),
       terminationDateConvention_(terminationDateConvention), rule_(rule), dates_(dates),
       isRegular_(std::move(isRegular)) {
 
-        if (tenor != boost::none && !allowsEndOfMonth(*tenor))
+        if (tenor && !allowsEndOfMonth(*tenor))
             endOfMonth_ = false;
         else
             endOfMonth_ = endOfMonth;

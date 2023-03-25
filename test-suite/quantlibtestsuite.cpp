@@ -247,7 +247,7 @@ namespace {
         */
 
         // QuantLib::Settings::instance().includeReferenceDateCashFlows() = true;
-        // QuantLib::Settings::instance().includeTodaysCashFlows() = boost::none;
+        // QuantLib::Settings::instance().includeTodaysCashFlows() = ext::nullopt;
 
         QuantLib::Settings::instance().evaluationDate() = evaluationDate;
     }
@@ -331,10 +331,11 @@ test_suite* init_unit_test_suite(int, char* []) {
            << (settings.includeReferenceDateEvents()
                ? "reference date events are included,\n"
                : "reference date events are excluded,\n")
-           << (settings.includeTodaysCashFlows() == boost::none ?
-               "" : (*settings.includeTodaysCashFlows() ?
-                     "today's cashflows are included,\n"
-                     : "today's cashflows are excluded,\n"))
+           << (settings.includeTodaysCashFlows()
+               ? (*settings.includeTodaysCashFlows()
+                    ? "today's cashflows are included,\n"
+                    : "today's cashflows are excluded,\n")
+               : "")
            << (settings.enforcesTodaysHistoricFixings()
                ? "today's historic fixings are enforced."
                : "today's historic fixings are not enforced.")

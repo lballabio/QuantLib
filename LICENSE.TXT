@@ -162,6 +162,8 @@ QuantLib is
     Copyright (C) 2022 Jonghee Lee
     Copyright (C) 2022, 2023 Ignacio Anguita
 
+    Copyright (C) 2023 Jonathan Sweemer
+
 QuantLib includes code taken from Peter Jäckel's book "Monte Carlo
 Methods in Finance".
 

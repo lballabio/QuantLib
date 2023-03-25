@@ -27,6 +27,7 @@
 
 #include <ql/termstructures/yield/ratehelpers.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
+#include <ql/optional.hpp>
 
 namespace QuantLib {
 
@@ -49,7 +50,7 @@ namespace QuantLib {
                       Pillar::Choice pillar = Pillar::LastRelevantDate,
                       Date customPillarDate = Date(),
                       RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                      boost::optional<bool> endOfMonth = boost::none);
+                      ext::optional<bool> endOfMonth = ext::nullopt);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
@@ -85,7 +86,7 @@ namespace QuantLib {
       Period forwardStart_;
       Spread overnightSpread_;
       RateAveraging::Type averagingMethod_;
-      boost::optional<bool> endOfMonth_;
+      ext::optional<bool> endOfMonth_;
     };
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates

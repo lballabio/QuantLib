@@ -3738,6 +3738,7 @@
     <ClCompile Include="ql\pricingengines\barrier\discretizedbarrieroption.cpp">
       <Filter>pricingengines\barrier</Filter>
     </ClCompile>
+    <ClInclude Include="ql\any.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
     <ClInclude Include="ql\auto_ptr.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
@@ -3764,6 +3765,7 @@
     <ClInclude Include="ql\money.hpp" />
     <ClInclude Include="ql\numericalmethod.hpp" />
     <ClInclude Include="ql\option.hpp" />
+    <ClInclude Include="ql\optional.hpp" />
     <ClInclude Include="ql\payoff.hpp" />
     <ClInclude Include="ql\position.hpp" />
     <ClInclude Include="ql\prices.hpp" />
@@ -6633,6 +6635,7 @@
     <ClCompile Include="ql\index.cpp" />
     <ClCompile Include="ql\interestrate.cpp" />
     <ClCompile Include="ql\money.cpp" />
+    <ClCompile Include="ql\optional.cpp" />
     <ClCompile Include="ql\position.cpp" />
     <ClCompile Include="ql\prices.cpp" />
     <ClCompile Include="ql\settings.cpp" />

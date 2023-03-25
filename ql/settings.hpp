@@ -29,7 +29,7 @@
 #include <ql/patterns/singleton.hpp>
 #include <ql/time/date.hpp>
 #include <ql/utilities/observablevalue.hpp>
-#include <boost/optional.hpp>
+#include <ql/optional.hpp>
 
 namespace QuantLib {
 
@@ -102,8 +102,8 @@ namespace QuantLib {
             behavior chosen for includeReferenceDate. It cannot be overridden
             locally when calling the CashFlow::hasOccurred method.
         */
-        boost::optional<bool>& includeTodaysCashFlows();
-        boost::optional<bool> includeTodaysCashFlows() const;
+        ext::optional<bool>& includeTodaysCashFlows();
+        ext::optional<bool> includeTodaysCashFlows() const;
 
         bool& enforcesTodaysHistoricFixings();
         bool enforcesTodaysHistoricFixings() const;
@@ -111,7 +111,7 @@ namespace QuantLib {
       private:
         DateProxy evaluationDate_;
         bool includeReferenceDateEvents_ = false;
-        boost::optional<bool> includeTodaysCashFlows_;
+        ext::optional<bool> includeTodaysCashFlows_;
         bool enforcesTodaysHistoricFixings_ = false;
     };
 
@@ -124,7 +124,7 @@ namespace QuantLib {
       private:
         Date evaluationDate_;
         bool includeReferenceDateEvents_;
-        boost::optional<bool> includeTodaysCashFlows_;
+        ext::optional<bool> includeTodaysCashFlows_;
         bool enforcesTodaysHistoricFixings_;
     };
 
@@ -160,11 +160,11 @@ namespace QuantLib {
         return includeReferenceDateEvents_;
     }
 
-    inline boost::optional<bool>& Settings::includeTodaysCashFlows() {
+    inline ext::optional<bool>& Settings::includeTodaysCashFlows() {
         return includeTodaysCashFlows_;
     }
 
-    inline boost::optional<bool> Settings::includeTodaysCashFlows() const {
+    inline ext::optional<bool> Settings::includeTodaysCashFlows() const {
         return includeTodaysCashFlows_;
     }
 

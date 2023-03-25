@@ -20,13 +20,14 @@
 
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
+#include <ql/optional.hpp>
 #include <utility>
 
 namespace QuantLib {
 
     DiscountingBondEngine::DiscountingBondEngine(
         Handle<YieldTermStructure> discountCurve,
-        const boost::optional<bool>& includeSettlementDateFlows)
+        const ext::optional<bool>& includeSettlementDateFlows)
     : discountCurve_(std::move(discountCurve)),
       includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(discountCurve_);

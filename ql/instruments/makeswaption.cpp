@@ -24,6 +24,7 @@
 #include <ql/instruments/makeswaption.hpp>
 #include <ql/instruments/makevanillaswap.hpp>
 #include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/optional.hpp>
 #include <ql/settings.hpp>
 #include <utility>
 
@@ -145,7 +146,7 @@ namespace QuantLib {
         return *this;
     }
 
-    MakeSwaption& MakeSwaption::withIndexedCoupons(const boost::optional<bool>& b) {
+    MakeSwaption& MakeSwaption::withIndexedCoupons(const ext::optional<bool>& b) {
         useIndexedCoupons_ = b;
         return *this;
     }
