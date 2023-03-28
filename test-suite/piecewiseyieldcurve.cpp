@@ -31,6 +31,7 @@
 #include <ql/math/interpolations/backwardflatinterpolation.hpp>
 #include <ql/math/interpolations/convexmonotoneinterpolation.hpp>
 #include <ql/math/interpolations/cubicinterpolation.hpp>
+#include <ql/math/interpolations/forwardflatinterpolation.hpp>
 #include <ql/math/interpolations/linearinterpolation.hpp>
 #include <ql/math/interpolations/loginterpolation.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
@@ -1074,6 +1075,26 @@ void PiecewiseYieldCurveTest::testJpyLibor() {
     }
 }
 
+void PiecewiseYieldCurveTest::testDefaultInstantiation() {
+
+    BOOST_TEST_MESSAGE("Testing instantiation of curves without passing an interpolator...");
+
+    using namespace piecewise_yield_curve_test;
+
+    CommonVars vars;
+
+    // no actual tests at runtime; this tests that all these instantiations compile
+    PiecewiseYieldCurve<Discount, Linear> linear(vars.settlement, vars.instruments, Actual360());
+    PiecewiseYieldCurve<Discount, LogLinear> log_linear(vars.settlement, vars.instruments, Actual360());
+    PiecewiseYieldCurve<Discount, Cubic> cubic(vars.settlement, vars.instruments, Actual360());
+    PiecewiseYieldCurve<Discount, DefaultLogCubic> log_cubic(vars.settlement, vars.instruments, Actual360());
+    PiecewiseYieldCurve<Discount, MonotonicLogCubic> monotonic_log_cubic(vars.settlement, vars.instruments, Actual360());
+    PiecewiseYieldCurve<Discount, KrugerLog> kruger_log_cubic(vars.settlement, vars.instruments, Actual360());
+    PiecewiseYieldCurve<ForwardRate, BackwardFlat> backward(vars.settlement, vars.instruments, Actual360());
+    PiecewiseYieldCurve<ForwardRate, ForwardFlat> forward(vars.settlement, vars.instruments, Actual360());
+    PiecewiseYieldCurve<ForwardRate, ConvexMonotone> convex(vars.settlement, vars.instruments, Actual360());
+}
+
 void PiecewiseYieldCurveTest::testSwapRateHelperLastRelevantDate() {
     BOOST_TEST_MESSAGE("Testing SwapRateHelper last relevant date...");
 
@@ -1512,6 +1533,8 @@ test_suite* PiecewiseYieldCurveTest::suite() {
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testLiborFixing));
+
+    suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testDefaultInstantiation));
 
     suite->add(QUANTLIB_TEST_CASE(&PiecewiseYieldCurveTest::testJpyLibor));
 

@@ -402,7 +402,7 @@ void DefaultProbabilityCurveTest::testUpfrontBootstrap() {
     testBootstrapFromUpfront<HazardRate,BackwardFlat>();
 
     // also ensure that we didn't override the flag permanently
-    boost::optional<bool> flag = Settings::instance().includeTodaysCashFlows();
+    ext::optional<bool> flag = Settings::instance().includeTodaysCashFlows();
     if (flag != false)
         BOOST_ERROR("Cash-flow settings improperly modified");
 }

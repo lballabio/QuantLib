@@ -29,7 +29,7 @@
 #include <ql/pricingengine.hpp>
 #include <ql/utilities/null.hpp>
 #include <ql/time/date.hpp>
-#include <boost/any.hpp>
+#include <ql/any.hpp>
 #include <map>
 #include <string>
 
@@ -58,7 +58,7 @@ namespace QuantLib {
         //! returns any additional result returned by the pricing engine.
         template <typename T> T result(const std::string& tag) const;
         //! returns all additional result returned by the pricing engine.
-        const std::map<std::string,boost::any>& additionalResults() const;
+        const std::map<std::string, ext::any>& additionalResults() const;
 
         //! returns whether the instrument might have value greater than zero.
         virtual bool isExpired() const = 0;
@@ -105,7 +105,7 @@ namespace QuantLib {
         //@{
         mutable Real NPV_, errorEstimate_;
         mutable Date valuationDate_;
-        mutable std::map<std::string,boost::any> additionalResults_;
+        mutable std::map<std::string, ext::any> additionalResults_;
         //@}
         ext::shared_ptr<PricingEngine> engine_;
     };
@@ -120,7 +120,7 @@ namespace QuantLib {
         Real value;
         Real errorEstimate;
         Date valuationDate;
-        std::map<std::string,boost::any> additionalResults;
+        std::map<std::string, ext::any> additionalResults;
     };
 
 
@@ -204,14 +204,14 @@ namespace QuantLib {
     template <class T>
     inline T Instrument::result(const std::string& tag) const {
         calculate();
-        std::map<std::string,boost::any>::const_iterator value =
+        std::map<std::string, ext::any>::const_iterator value =
             additionalResults_.find(tag);
         QL_REQUIRE(value != additionalResults_.end(),
                    tag << " not provided");
-        return boost::any_cast<T>(value->second);
+        return ext::any_cast<T>(value->second);
     }
 
-    inline const std::map<std::string,boost::any>&
+    inline const std::map<std::string, ext::any>&
     Instrument::additionalResults() const {
         calculate();
         return additionalResults_;

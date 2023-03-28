@@ -130,7 +130,7 @@ jobs:
             cc: gcc
             cxx: g++
             cxxflags: "-std=c++17"
-            configureflags: --enable-std-classes
+            configureflags: --enable-std-classes --enable-std-any --enable-std-optional
           - name: "OpenMP enabled"
             shortname: openmp
             tag: rolling

@@ -16,6 +16,7 @@ set(QL_SOURCES
     cashflows/digitaliborcoupon.cpp
     cashflows/dividend.cpp
     cashflows/duration.cpp
+    cashflows/equitycashflow.cpp
     cashflows/fixedratecoupon.cpp
     cashflows/floatingratecoupon.cpp
     cashflows/iborcoupon.cpp
@@ -287,6 +288,7 @@ set(QL_SOURCES
     instruments/dividendvanillaoption.cpp
     instruments/doublebarrieroption.cpp
     instruments/doublebarriertype.cpp
+    instruments/equitytotalreturnswap.cpp
     instruments/europeanoption.cpp
     instruments/floatfloatswap.cpp
     instruments/floatfloatswaption.cpp
@@ -643,6 +645,7 @@ set(QL_SOURCES
     models/volatility/constantestimator.cpp
     models/volatility/garch.cpp
     money.cpp
+    optional.cpp
     patterns/observable.cpp
     position.cpp
     prices.cpp
@@ -924,6 +927,7 @@ set(QL_SOURCES
 )
 
 set(QL_HEADERS
+    any.hpp
     auto_link.hpp
     auto_ptr.hpp
     cashflow.hpp
@@ -943,6 +947,7 @@ set(QL_HEADERS
     cashflows/digitaliborcoupon.hpp
     cashflows/dividend.hpp
     cashflows/duration.hpp
+    cashflows/equitycashflow.hpp
     cashflows/fixedratecoupon.hpp
     cashflows/floatingratecoupon.hpp
     cashflows/iborcoupon.hpp
@@ -1322,6 +1327,7 @@ set(QL_HEADERS
     instruments/dividendvanillaoption.hpp
     instruments/doublebarrieroption.hpp
     instruments/doublebarriertype.hpp
+    instruments/equitytotalreturnswap.hpp
     instruments/europeanoption.hpp
     instruments/fixedratebondforward.hpp
     instruments/floatfloatswap.hpp
@@ -1826,6 +1832,7 @@ set(QL_HEADERS
     money.hpp
     numericalmethod.hpp
     option.hpp
+    optional.hpp
     patterns/composite.hpp
     patterns/curiouslyrecurring.hpp
     patterns/lazyobject.hpp

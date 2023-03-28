@@ -43,6 +43,8 @@ class PiecewiseYieldCurveTest {
 
     static void testParFraRegression();
 
+    static void testDefaultInstantiation();
+
     static void testObservability();
     static void testLiborFixing();
 

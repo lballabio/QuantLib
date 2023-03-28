@@ -30,6 +30,7 @@ class ArrayTest {
     static void testConstruction();
     static void testArrayFunctions();
     static void testArrayResize();
+    static void testArrayOperators();
     static boost::unit_test_framework::test_suite* suite();
 };
 

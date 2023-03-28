@@ -20,7 +20,6 @@
 #include "utilities.hpp"
 #include <ql/indexes/equityindex.hpp>
 #include <ql/time/calendars/target.hpp>
-#include <ql/currencies/europe.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <string>
 

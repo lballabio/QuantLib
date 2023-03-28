@@ -19,6 +19,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/any.hpp>
 #include <ql/exercise.hpp>
 #include <ql/math/functional.hpp>
 #include <ql/math/comparison.hpp>
@@ -27,7 +28,6 @@
 #include <ql/pricingengines/vanilla/bjerksundstenslandengine.hpp>
 #include <utility>
 #include <cmath>
-
 
 namespace QuantLib {
 
@@ -488,7 +488,7 @@ namespace QuantLib {
 
             Real tmp = results_.gamma;
             results_.gamma =
-                boost::any_cast<Real>(results_.additionalResults["strikeGamma"]);
+                ext::any_cast<Real>(results_.additionalResults["strikeGamma"]);
             results_.additionalResults["strikeGamma"] = tmp;
 
             std::swap(results_.rho, results_.dividendRho);
