@@ -41,6 +41,8 @@ class PiecewiseYieldCurveTest {
     static void testConvexMonotoneForwardConsistency();
     static void testLocalBootstrapConsistency();
 
+    static void testParFraRegression();
+
     static void testObservability();
     static void testLiborFixing();
 
