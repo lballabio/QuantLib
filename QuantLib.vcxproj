@@ -517,6 +517,7 @@
     <ClInclude Include="ql\cashflows\digitaliborcoupon.hpp" />
     <ClInclude Include="ql\cashflows\dividend.hpp" />
     <ClInclude Include="ql\cashflows\duration.hpp" />
+    <ClInclude Include="ql\cashflows\equitycashflow.hpp" />
     <ClInclude Include="ql\cashflows\fixedratecoupon.hpp" />
     <ClInclude Include="ql\cashflows\floatingratecoupon.hpp" />
     <ClInclude Include="ql\cashflows\iborcoupon.hpp" />
@@ -1849,6 +1850,7 @@
     <ClInclude Include="ql\utilities\steppingiterator.hpp" />
     <ClInclude Include="ql\utilities\tracing.hpp" />
     <ClInclude Include="ql\utilities\vectors.hpp" />
+    <ClInclude Include="ql\any.hpp" />
     <ClInclude Include="ql\auto_link.hpp" />
     <ClInclude Include="ql\auto_ptr.hpp" />
     <ClInclude Include="ql\cashflow.hpp" />
@@ -1874,6 +1876,7 @@
     <ClInclude Include="ql\money.hpp" />
     <ClInclude Include="ql\numericalmethod.hpp" />
     <ClInclude Include="ql\option.hpp" />
+    <ClInclude Include="ql\optional.hpp" />
     <ClInclude Include="ql\payoff.hpp" />
     <ClInclude Include="ql\position.hpp" />
     <ClInclude Include="ql\prices.hpp" />
@@ -1911,6 +1914,7 @@
     <ClCompile Include="ql\cashflows\digitaliborcoupon.cpp" />
     <ClCompile Include="ql\cashflows\dividend.cpp" />
     <ClCompile Include="ql\cashflows\duration.cpp" />
+    <ClCompile Include="ql\cashflows\equitycashflow.cpp" />
     <ClCompile Include="ql\cashflows\fixedratecoupon.cpp" />
     <ClCompile Include="ql\cashflows\floatingratecoupon.cpp" />
     <ClCompile Include="ql\cashflows\iborcoupon.cpp" />
@@ -2810,6 +2814,7 @@
     <ClCompile Include="ql\index.cpp" />
     <ClCompile Include="ql\interestrate.cpp" />
     <ClCompile Include="ql\money.cpp" />
+    <ClCompile Include="ql\optional.cpp" />
     <ClCompile Include="ql\position.cpp" />
     <ClCompile Include="ql\prices.cpp" />
     <ClCompile Include="ql\rebatedexercise.cpp" />

@@ -15,13 +15,13 @@ jobs:
           - os: [macos-11]
             shortname: stdclasses-11
             cxxflags: "-std=c++17"
-            configureflags: --enable-std-classes
+            configureflags: --enable-std-classes --enable-std-optional
           - os: [macos-12]
             shortname: default-12
           - os: [macos-12]
             shortname: stdclasses-12
             cxxflags: "-std=c++17"
-            configureflags: --enable-std-classes
+            configureflags: --enable-std-classes --enable-std-optional
     steps:
     - uses: actions/checkout@v3
     - name: Setup

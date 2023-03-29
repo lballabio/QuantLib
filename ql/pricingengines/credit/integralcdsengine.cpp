@@ -23,6 +23,7 @@
 #include <ql/instruments/claim.hpp>
 #include <ql/pricingengines/credit/integralcdsengine.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
+#include <ql/optional.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -31,7 +32,7 @@ namespace QuantLib {
                                          Handle<DefaultProbabilityTermStructure> probability,
                                          Real recoveryRate,
                                          Handle<YieldTermStructure> discountCurve,
-                                         const boost::optional<bool>& includeSettlementDateFlows)
+                                         const ext::optional<bool>& includeSettlementDateFlows)
     : integrationStep_(step), probability_(std::move(probability)), recoveryRate_(recoveryRate),
       discountCurve_(std::move(discountCurve)),
       includeSettlementDateFlows_(includeSettlementDateFlows) {

@@ -19,6 +19,7 @@
 
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/experimental/catbonds/montecarlocatbondengine.hpp>
+#include <ql/optional.hpp>
 #include <algorithm>
 #include <utility>
 
@@ -27,7 +28,7 @@ namespace QuantLib {
     MonteCarloCatBondEngine::MonteCarloCatBondEngine(
         ext::shared_ptr<CatRisk> catRisk,
         Handle<YieldTermStructure> discountCurve,
-        const boost::optional<bool>& includeSettlementDateFlows)
+        const ext::optional<bool>& includeSettlementDateFlows)
     : catRisk_(std::move(catRisk)), discountCurve_(std::move(discountCurve)),
       includeSettlementDateFlows_(includeSettlementDateFlows) {
         registerWith(discountCurve_);
