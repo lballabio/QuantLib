@@ -45,7 +45,7 @@ jobs:
           cmake-linux-ci-opts-
     - name: Compile
       run: |
-        cmake --preset linux-ci-build-with-nonstandard-options -DQL_COMPILE_WARNING_AS_ERROR=ON -L
+        cmake --preset linux-ci-build-with-nonstandard-options -L
         cmake --build --preset linux-ci-build-with-nonstandard-options --verbose
     - name: Test
       run: |
@@ -144,7 +144,7 @@ jobs:
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Vc\Auxiliary\Build\vcvarsall.bat" amd64 -vcvars_ver=14.3 || exit 1
-        cmake --preset windows-ci-build-with-nonstandard-options -DQL_COMPILE_WARNING_AS_ERROR=ON -L
+        cmake --preset windows-ci-build-with-nonstandard-options -L
         cmake --build --preset windows-ci-build-with-nonstandard-options --verbose
     - name: Test
       run: |

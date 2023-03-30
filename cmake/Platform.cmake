@@ -32,7 +32,7 @@ if (MSVC)
     add_compile_options(/wd4267 /wd4819 /wd26812)
 
     # prevent warnings when using /std:c++17 and above
-    if(CMAKE_CXX_STANDARD GREATER 14)
+    if(CMAKE_CXX_STANDARD GREATER_EQUAL 17)
         # E.g. caused by #include <boost/numeric/ublas/matrix.hpp>
         # In c++17 std::iterator is deprecated. As of boost 1.81 boost::ublas has not provided a fix for this.
         add_compile_definitions(_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)

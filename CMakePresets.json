@@ -116,7 +116,8 @@
         "QL_HIGH_RESOLUTION_DATE": "ON",
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
-        "QL_USE_STD_CLASSES": "ON"
+        "QL_USE_STD_CLASSES": "ON",
+        "QL_COMPILE_WARNING_AS_ERROR": "ON"
       }
     },
     {
@@ -137,6 +138,7 @@
         "QL_NULL_AS_FUNCTIONS": "ON",
         "QL_USE_INDEXED_COUPON": "ON",
         "QL_USE_STD_CLASSES": "ON",
+        "QL_COMPILE_WARNING_AS_ERROR": "ON",
         "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
       },
       "vendor": {
