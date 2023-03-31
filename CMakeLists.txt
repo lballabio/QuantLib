@@ -47,6 +47,8 @@ option(QL_ENABLE_PARALLEL_UNIT_TEST_RUNNER "Enable the parallel unit test runner
 option(QL_ENABLE_SESSIONS "Singletons return different instances for different sessions" OFF)
 option(QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN "Enable the thread-safe observer pattern" OFF)
 option(QL_ENABLE_TRACING "Tracing messages should be allowed" OFF)
+option(QL_ENABLE_DEFAULT_WARNING_LEVEL "Enable the default warning level to pass the ci pipeline" ON)
+option(QL_COMPILE_WARNING_AS_ERROR "Specify whether to treat warnings on compile as errors." OFF)
 option(QL_ERROR_FUNCTIONS "Error messages should include current function information" OFF)
 option(QL_ERROR_LINES "Error messages should include file and line information" OFF)
 option(QL_EXTRA_SAFETY_CHECKS "Extra safety checks should be performed" OFF)
@@ -100,6 +102,34 @@ if (CMAKE_CXX_STANDARD LESS 17)
         message(FATAL_ERROR "QL_USE_STD_OPTIONAL requires at least C++17")
     endif()
 endif ()
+
+# Set the default warning level we use to pass the GitHub workflows
+if (QL_ENABLE_DEFAULT_WARNING_LEVEL)
+    if (MSVC)
+        # warning level 3
+        # There are also specific warnings disabled for MSCV in cmake/Platform.cmake.
+        add_compile_options(-W3)
+    else()
+        # lots of warnings
+        add_compile_options(-Wall -Wno-unknown-pragmas)
+    endif()
+endif()
+
+# Treat warnings on compile as errors
+if (QL_COMPILE_WARNING_AS_ERROR)
+    # all compiler warnings as errors
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+        # since v3.24 cmake can set all compiler warnings as errors itself
+        set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+    else()
+        # or set them manually
+        if (MSVC)
+            add_compile_options(-WX)
+        else()
+            add_compile_options(-Werror)
+        endif()
+    endif()
+endif()
 
 if (QL_USE_CLANG_TIDY)
     if (NOT DEFINED QL_CLANG_TIDY)
