@@ -140,7 +140,7 @@ void SquareRootCLVModelTest::testSquareRootCLVVanillaPricing() {
 
         const CLVModelPayoff clvModelPayoff(optionType, strike, g);
 
-        const ext::function<Real(Real)> f = [&](Real xi) {
+        const ext::function<Real(Real)> f = [&](Real xi) -> Real {
             return clvModelPayoff(xi) * boost::math::pdf(dist, xi);
         };
 
@@ -238,7 +238,7 @@ void SquareRootCLVModelTest::testSquareRootCLVMappingFunction() {
 
             const CLVModelPayoff clvModelPayoff(optionType, strike, [&](Real x) { return g(t, x); });
 
-            const ext::function<Real(Real)> f = [&](Real xi) {
+            const ext::function<Real(Real)> f = [&](Real xi) -> Real {
                 return clvModelPayoff(xi) * boost::math::pdf(dist, xi);
             };
 

@@ -84,7 +84,7 @@ namespace QuantLib {
         */
         Probability density(const std::vector<Real>& m) const {
             return std::accumulate(m.begin(), m.end(), Real(1.),
-                                   [&](Real x, Real y){ return x*density_(y); });
+                                   [&](Real x, Real y) -> Real { return x*density_(y); });
         }
         /*! Returns the inverse of the cumulative distribution of the (modelled) 
           latent variable (as indexed by iVariable). The normal stability avoids

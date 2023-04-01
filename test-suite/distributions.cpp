@@ -263,7 +263,7 @@ void DistributionTest::testNormal() {
 
     MaddockInverseCumulativeNormal mInvCum(average, sigma);
     std::transform(x.begin(), x.end(), diff.begin(),
-                   [&](Real x) {
+                   [&](Real x) -> Real {
                        return x - mInvCum(cum(x));
                    });
 
