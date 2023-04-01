@@ -162,8 +162,8 @@ void CatBondTest::testBetaRisk() {
             processValue += j.second;
         sum+=processValue;
         sumSquares+=processValue*processValue;
-        poissonSum+=Real(path.size());
-        poissonSumSquares+=Real(path.size()*path.size());
+        poissonSum+=path.size();
+        poissonSumSquares+=path.size()*path.size();
     }
     Real poissonMean = poissonSum/PATHS;
     QL_CHECK_CLOSE(Real(3.0/100.0), poissonMean, 2);

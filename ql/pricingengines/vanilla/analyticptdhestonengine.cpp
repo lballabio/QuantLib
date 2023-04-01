@@ -293,7 +293,7 @@ namespace QuantLib {
             sigmaAvg += model_->sigma(t);
             rhoAvg   += model_->rho(t);
         }
-        kappaAvg/=Real(n); thetaAvg/=Real(n); sigmaAvg/=Real(n); rhoAvg/=Real(n);
+        kappaAvg/=n; thetaAvg/=n; sigmaAvg/=n; rhoAvg/=n;
 
         evaluations_ = 0;
 

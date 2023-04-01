@@ -256,9 +256,9 @@ namespace QuantLib {
                 sumOptimized += lsExercise[j] ? exercise[j] : prices[j];
             }
 
-            sumOptimized /= Real(n);
-            sumNoExercise /= Real(n);
-            sumAlwaysExercise /= Real(n);
+            sumOptimized /= n;
+            sumNoExercise /= n;
+            sumAlwaysExercise /= n;
 
             QL_TRACE(   "Time index: " << i 
                      << ", LowerBound: " << lowerBounds_[i + 1] 

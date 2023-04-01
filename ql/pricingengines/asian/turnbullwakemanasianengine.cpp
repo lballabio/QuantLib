@@ -51,7 +51,7 @@ void TurnbullWakemanAsianEngine::calculate() const {
 
     // If the effective strike is negative, exercise resp. permanent OTM is guaranteed and the
     // valuation is made easy
-    Real m = Real(futureFixings + pastFixings);
+    Size m = futureFixings + pastFixings;
     if (effectiveStrike <= 0.0) {
         // For a reference, see "Option Pricing Formulas", Haug, 2nd ed, p. 193
         if (payoff->optionType() == Option::Type::Call) {

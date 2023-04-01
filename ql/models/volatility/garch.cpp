@@ -338,7 +338,7 @@ namespace QuantLib {
                 }
             }
             if (nn > 0)
-                gamma /= Real(nn);
+                gamma /= nn;
             if (gamma < gammaLower) gamma = gammaLower;
             beta = std::min(gamma, std::max(gamma * (1 - A) - B, 0.0));
             omega = mean_r2 * (1 - gamma);

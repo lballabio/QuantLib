@@ -151,7 +151,7 @@ namespace QuantLib {
             detachAmount_);
             //notional_);
         std::vector<Real> mkft(1, min_ + delta_ /2.);
-        for (Real i = 0; i < nSteps_; i++) {
+        for (Size i = 0; i < nSteps_; i++) {
             std::vector<Real> conditionalProbs;
             for(Size iName=0; iName<notionals_.size(); iName++)
                 conditionalProbs.push_back(

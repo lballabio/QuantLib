@@ -291,7 +291,7 @@ namespace QuantLib
 
         }
 
-        guess/=Real(numberCaplets);
+        guess/=numberCaplets;
 
 
         for (Size step =0; step < inputModel->evolution().numberOfSteps(); ++step)
