@@ -447,7 +447,7 @@ namespace QuantLib {
                 npvCalls= callCostFct->solveFor(dT_[i], sig, npvCalls);
         }
 
-        avgError_ /= calibrationSet_.size();
+        avgError_ /= Real(calibrationSet_.size());
     }
 
     Date AndreasenHugeVolatilityInterpl::maxDate() const {

@@ -618,7 +618,7 @@ void DistributionTest::testBivariateCumulativeStudentVsBivariate() {
 				++m;
 			}
 		}
-		avgDiff /= m;
+		avgDiff /= Real(m);
         if (avgDiff > 3.0e-6)
             BOOST_ERROR("Failed to reproduce average limit value:" <<
                         "\n    rho: " << rho <<

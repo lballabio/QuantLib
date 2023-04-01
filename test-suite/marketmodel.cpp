@@ -178,7 +178,7 @@ namespace market_model_test {
             todaysForwards[i] = 0.03 + 0.0010*i;
             meanForward+= todaysForwards[i];
         }
-        meanForward /= todaysForwards.size();
+        meanForward /= Real(todaysForwards.size());
 
 
 

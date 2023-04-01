@@ -109,9 +109,9 @@ namespace QuantLib {
             }
             pathCount++;
         }
-        lossProbability/=pathCount;
-        exhaustionProbability/=pathCount;
-        expectedLoss/=pathCount;
+        lossProbability/=Real(pathCount);
+        exhaustionProbability/=Real(pathCount);
+        expectedLoss/=Real(pathCount);
         return totalNPV/(pathCount*discountCurve_->discount(npvDate));
     }
 

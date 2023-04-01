@@ -38,7 +38,7 @@ namespace QuantLib {
                     (multiPath[j][i]/multiPath[j][i-1] - 1.0);
             }
         }
-        averagePerformance /= numAssets;
+        averagePerformance /= Real(numAssets);
 
         return discount_ * fraction_
             * std::max<Real>(0.0, std::min(roof_, averagePerformance));
