@@ -51,7 +51,7 @@ namespace QuantLib {
             Size nBuckets,
             Real max = 5.,
             Real min = -5.,
-            Real nSteps = 50)
+            Size nSteps = 50)
         : copula_(copula), 
           nBuckets_(nBuckets), 
           max_(max), min_(min), nSteps_(nSteps), delta_((max - min)/nSteps)
@@ -92,7 +92,7 @@ namespace QuantLib {
         //  multifactor version
         const Real max_;// redundant?
         const Real min_;
-        const Real nSteps_;
+        const Size nSteps_;
         const Real delta_; 
     };
     // \todo Add other loss distribution statistics
