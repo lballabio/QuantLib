@@ -127,10 +127,11 @@ namespace QuantLib {
             itself.
 
             \deprecated This method was introduced to work around incorrect behaviour 
-            caused by limiting notifications from LazyObject instances to the first
-            notification. The default behaviour of LazyObject was changed to forward
-            all notifications so that a call to this method should no longer be
-            necessary.
+                        caused by limiting notifications from LazyObject instances to
+			the first notification. The default behaviour of LazyObject was
+			changed to forward all notifications so that a call to this
+			method should no longer be necessary.
+			Deprecated in version 1.30.
         */
         QL_DEPRECATED void registerWithObservables(const ext::shared_ptr<Observer>&);
         Size unregisterWith(const ext::shared_ptr<Observable>&);
@@ -301,8 +302,16 @@ namespace QuantLib {
         registerWith(const ext::shared_ptr<Observable>&);
         /*! register with all observables of a given observer. Note
             that this does not include registering with the observer
-            itself. */
-        void registerWithObservables(const ext::shared_ptr<Observer>&);
+            itself.
+
+            \deprecated This method was introduced to work around incorrect behaviour 
+                        caused by limiting notifications from LazyObject instances to
+			the first notification. The default behaviour of LazyObject was
+			changed to forward all notifications so that a call to this
+			method should no longer be necessary.
+			Deprecated in version 1.30.
+	*/
+        QL_DEPRECATED void registerWithObservables(const ext::shared_ptr<Observer>&);
         Size unregisterWith(const ext::shared_ptr<Observable>&);
         void unregisterWithAll();
 
