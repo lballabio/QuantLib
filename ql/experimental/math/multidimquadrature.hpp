@@ -60,7 +60,7 @@ namespace QuantLib {
                 Integer i = order()-1;
                 std::vector<Real> term = f(x_[i]);// potential copy! @#$%^!!!
                 std::for_each(term.begin(), term.end(),
-                              [&](Real x){ return x * w_[i]; });
+                              [&](Real x) -> Real { return x * w_[i]; });
                 std::vector<Real> sum = term;
            
                 for (i--; i >= 0; --i) {
@@ -68,7 +68,7 @@ namespace QuantLib {
                     // sum[j] += term[j] * w_[i];
                     std::transform(term.begin(), term.end(), sum.begin(), 
                                    sum.begin(),
-                                   [&](Real x, Real y){ return w_[i]*x + y; });
+                                   [&](Real x, Real y) -> Real { return w_[i]*x + y; });
                 }
                 return sum;
             }

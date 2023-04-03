@@ -737,7 +737,7 @@ void RiskNeutralDensityCalculatorTest::testMassAtZeroCEVProcessRND() {
         const Real ax = 15.0*std::sqrt(t)*alpha*std::pow(f0, beta);
 
         const Real calculated = GaussLobattoIntegral(1000, 1e-8)(
-            [&](Real _x) { return calculator->pdf(_x, t); }, std::max(QL_EPSILON, f0-ax), f0+ax) +
+            [&](Real _x) -> Real { return calculator->pdf(_x, t); }, std::max(QL_EPSILON, f0-ax), f0+ax) +
             calculator->massAtZero(t);
 
         if (std::fabs(calculated - 1.0) > tol) {

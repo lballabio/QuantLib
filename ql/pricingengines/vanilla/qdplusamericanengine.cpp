@@ -209,7 +209,7 @@ namespace QuantLib {
                                 vol*std::sqrt(T), std::exp(-r*T)).value());
 
         if (close(vol, 0.0)) {
-            const auto intrinsic = [&](Real t) {
+            const auto intrinsic = [&](Real t)  -> Real {
                 return std::max(0.0, K*std::exp(-r*t)-S*std::exp(-q*t));
             };
             const Real npv0 = intrinsic(0.0);

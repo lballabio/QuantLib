@@ -158,7 +158,7 @@ namespace equitycashflow_test {
 
         Real time = vars.localCcyInterestHandle->timeFromReference(cf->fixingDate());
         Real rf = vars.localCcyInterestHandle->zeroRate(time, Continuous);
-        Real q = includeDividend ? vars.dividendHandle->zeroRate(time, Continuous) : 0.0;
+        Real q = includeDividend ? vars.dividendHandle->zeroRate(time, Continuous) : Real(0.0);
         Real eqVol = vars.equityVolHandle->blackVol(cf->fixingDate(), strike);
         Real fxVol = vars.fxVolHandle->blackVol(cf->fixingDate(), 1.0);
         Real rho = vars.correlationHandle->value();
