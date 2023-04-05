@@ -34,7 +34,7 @@ namespace QuantLib {
     class LazyObject : public virtual Observable,
                        public virtual Observer {
       public:
-        LazyObject() = default;
+        LazyObject();
         ~LazyObject() override = default;
         //! \name Observer interface
         //@{
@@ -107,11 +107,47 @@ namespace QuantLib {
         */
         virtual void performCalculations() const = 0;
         //@}
-        mutable bool calculated_ = false, frozen_ = false, alwaysForward_ = true;
+        mutable bool calculated_ = false, frozen_ = false, alwaysForward_;
+    };
+
+    //! Per-session settings for the LazyObject class
+    class LazyObjectSettings : public Singleton<LazyObjectSettings> {
+        friend class Singleton<LazyObjectSettings>;
+      private:
+        LazyObjectSettings() = default;
+
+      public:
+        /*! by default, lazy objects created after calling this method
+            will only forward the first notification after successful
+            recalculation; see
+            LazyObject::forwardFirstNotificationOnly for details.
+        */
+        void forwardFirstNotificationOnly() {
+            forwardsAllNotifications_ = false;
+        }
+
+        /*! by default, lazy objects created after calling this method
+            will always forward notifications; see
+            LazyObject::alwaysForwardNotifications for details.
+        */
+        void alwaysForwardNotifications() {
+            forwardsAllNotifications_ = true;
+        }
+
+        //! returns the current default
+        bool forwardsAllNotifications() const {
+            return forwardsAllNotifications_;
+        }
+
+      private:
+        bool forwardsAllNotifications_ = true;
     };
 
 
     // inline definitions
+
+    inline LazyObject::LazyObject()
+    : alwaysForward_(LazyObjectSettings::instance().forwardsAllNotifications()) {}
 
     inline void LazyObject::update() {
         // forwards notifications only the first time
@@ -128,7 +164,7 @@ namespace QuantLib {
                 // already true because of non-lazy observers
         }
     }
- 
+
     inline void LazyObject::recalculate() {
         bool wasFrozen = frozen_;
         calculated_ = frozen_ = false;
