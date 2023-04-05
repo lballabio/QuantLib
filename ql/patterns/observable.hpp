@@ -126,14 +126,16 @@ namespace QuantLib {
             that this does not include registering with the observer
             itself.
 
-            \deprecated This method was introduced to work around incorrect behaviour 
+            \deprecated This method was introduced to work around incorrect behaviour
                         caused by limiting notifications from LazyObject instances to
-			the first notification. The default behaviour of LazyObject was
-			changed to forward all notifications so that a call to this
-			method should no longer be necessary.
-			Deprecated in version 1.30.
+                        the first notification. The default behaviour of LazyObject was
+                        changed to forward all notifications so that a call to this
+                        method should no longer be necessary.
+                        Deprecated in version 1.30.
         */
-        QL_DEPRECATED void registerWithObservables(const ext::shared_ptr<Observer>&);
+        [[deprecated("no longer necessary")]]
+        void registerWithObservables(const ext::shared_ptr<Observer>&);
+
         Size unregisterWith(const ext::shared_ptr<Observable>&);
         void unregisterWithAll();
 
@@ -304,14 +306,16 @@ namespace QuantLib {
             that this does not include registering with the observer
             itself.
 
-            \deprecated This method was introduced to work around incorrect behaviour 
+            \deprecated This method was introduced to work around incorrect behaviour
                         caused by limiting notifications from LazyObject instances to
-			the first notification. The default behaviour of LazyObject was
-			changed to forward all notifications so that a call to this
-			method should no longer be necessary.
-			Deprecated in version 1.30.
-	*/
-        QL_DEPRECATED void registerWithObservables(const ext::shared_ptr<Observer>&);
+                        the first notification. The default behaviour of LazyObject was
+                        changed to forward all notifications so that a call to this
+                        method should no longer be necessary.
+                        Deprecated in version 1.30.
+        */
+        [[deprecated("no longer necessary")]]
+        void registerWithObservables(const ext::shared_ptr<Observer>&);
+
         Size unregisterWith(const ext::shared_ptr<Observable>&);
         void unregisterWithAll();
 
@@ -377,9 +381,9 @@ namespace QuantLib {
         QL_DEPRECATED_ENABLE_WARNING
     };
 
-	namespace detail {
-		class Signal;
-	}
+    namespace detail {
+        class Signal;
+    }
 
     //! Object that notifies its changes to a set of observers
     /*! \ingroup patterns */

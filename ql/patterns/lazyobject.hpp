@@ -68,21 +68,6 @@ namespace QuantLib {
             method, thus re-enabling recalculations.
         */
         void unfreeze();
-        /*! This method causes the object to forward the first notification received,
-            and discard the others until recalculated; the rationale is that observers
-            were already notified, and don't need further notifications until they
-            recalculate, at which point this object would be recalculated too.
-            After recalculation, this object would again forward the first notification
-            received.
-
-            The behaviour is not always correct though and should only be enabled in
-            appropriate configurations.
-        */
-        void forwardFirstNotificationOnly();
-
-        /*! Restore the default behaviour after a call to forwardFirstNotificationOnly(),
-          see above. */
-        void alwaysForwardNotifications();
 
       protected:
         /*! This method performs all needed calculations by calling
@@ -107,6 +92,30 @@ namespace QuantLib {
         */
         virtual void performCalculations() const = 0;
         //@}
+
+      public:
+        //! \name Notification settings
+        //@{
+        /*! This method causes the object to forward the first notification received,
+            and discard the others until recalculated; the rationale is that observers
+            were already notified, and don't need further notifications until they
+            recalculate, at which point this object would be recalculated too.
+            After recalculation, this object would again forward the first notification
+            received.
+
+            The behaviour is not always correct though and should only be enabled in
+            appropriate configurations.  In if doubt, do not use it.
+        */
+        void forwardFirstNotificationOnly();
+
+        /*! This method causes the object to forward all notifications received.
+            The behaviour is already the default, unless changed by calling
+            LazyObjectSettings::forwardFirstNotificationOnly().
+        */
+        void alwaysForwardNotifications();
+        //@}
+
+      protected:
         mutable bool calculated_ = false, frozen_ = false, alwaysForward_;
     };
 
