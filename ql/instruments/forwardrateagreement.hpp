@@ -65,11 +65,8 @@ namespace QuantLib {
     */
     class ForwardRateAgreement: public Instrument {
       public:
-        /*! \deprecated use the new constructors
-                        the second one without the maturityDate
-                        or the third one without the index and
-                        with the term structure handle
-                        deprecated in version 1.30
+        /*! \deprecated Use one of the other constructors.
+                        Deprecated in version 1.30.
         */
         QL_DEPRECATED
         ForwardRateAgreement(
@@ -81,6 +78,10 @@ namespace QuantLib {
             const ext::shared_ptr<IborIndex>& index,
             Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
             bool useIndexedCoupon = true);         
+
+        /*! When using this constructor, the forward rate will be
+            forecast from the passed index.
+        */
         ForwardRateAgreement(
             const Date& valueDate,
             Position::Type type,
@@ -90,12 +91,11 @@ namespace QuantLib {
             Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
             bool useIndexedCoupon = true);
 
-        /*! \brief constructor not taking the index
-            \details constructor not taking the index, Handle<YieldTermStructure> must be provided
-                     with calendar, dayCounter, Compounding and Frequency
-                     the FRA evaluationDate must be specified in Settings::instance().evaluationDate()
-                     the number of fixingDays must be specified for the fixingDate calculation
-                     as well as the businessDayConvention
+        /*! When using this constructor, the forward rate will be
+            forecast directly from the passed term structure.  Lacking
+            an index, we need to pass the number of fixing days and
+            the business day convention explicitly to calculate the
+            relevant dates.
         */
         ForwardRateAgreement(
             const Date& valueDate,
