@@ -30,7 +30,7 @@
 #include <ql/errors.hpp>
 #include <ql/functional.hpp>
 #include <boost/iterator/transform_iterator.hpp>
-#include <boost/iterator/reverse_iterator.hpp>
+#include <iterator>
 #include <algorithm>
 #include <map>
 #include <vector>
@@ -119,7 +119,7 @@ namespace QuantLib {
         // containers.
         template <class container, class iterator_category>
         struct reverse {
-            typedef boost::reverse_iterator<typename container::const_iterator>
+            typedef std::reverse_iterator<typename container::const_iterator>
                                                        const_reverse_iterator;
             reverse(const container& c) : c_(c) {}
             const_reverse_iterator rbegin() const {
