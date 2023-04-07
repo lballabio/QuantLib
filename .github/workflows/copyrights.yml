@@ -14,7 +14,7 @@ jobs:
     - uses: peter-evans/create-pull-request@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        branch: update-copyright-list-${{ github.ref }}
+        branch: update-copyright-list-${{ github.ref_name }}
         delete-branch: true
         commit-message: 'Update copyright list in license'
         title: 'Update copyright list in license'
