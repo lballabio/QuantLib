@@ -24,7 +24,7 @@ jobs:
     - uses: peter-evans/create-pull-request@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        branch: update-generated-headers-${{ github.ref }}
+        branch: update-generated-headers-${{ github.ref_name }}
         delete-branch: true
         commit-message: 'Update generated headers'
         title: 'Update generated headers'

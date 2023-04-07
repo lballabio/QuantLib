@@ -93,6 +93,7 @@
 #include "europeanoption.hpp"
 #include "everestoption.hpp"
 #include "equityindex.hpp"
+#include "equitycashflow.hpp"
 #include "equitytotalreturnswap.hpp"
 #include "exchangerate.hpp"
 #include "extendedtrees.hpp"
@@ -246,7 +247,7 @@ namespace {
         */
 
         // QuantLib::Settings::instance().includeReferenceDateCashFlows() = true;
-        // QuantLib::Settings::instance().includeTodaysCashFlows() = boost::none;
+        // QuantLib::Settings::instance().includeTodaysCashFlows() = ext::nullopt;
 
         QuantLib::Settings::instance().evaluationDate() = evaluationDate;
     }
@@ -330,10 +331,11 @@ test_suite* init_unit_test_suite(int, char* []) {
            << (settings.includeReferenceDateEvents()
                ? "reference date events are included,\n"
                : "reference date events are excluded,\n")
-           << (settings.includeTodaysCashFlows() == boost::none ?
-               "" : (*settings.includeTodaysCashFlows() ?
-                     "today's cashflows are included,\n"
-                     : "today's cashflows are excluded,\n"))
+           << (settings.includeTodaysCashFlows()
+               ? (*settings.includeTodaysCashFlows()
+                    ? "today's cashflows are included,\n"
+                    : "today's cashflows are excluded,\n")
+               : "")
            << (settings.enforcesTodaysHistoricFixings()
                ? "today's historic fixings are enforced."
                : "today's historic fixings are not enforced.")
@@ -389,6 +391,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DistributionTest::suite(speed));
     test->add(DividendOptionTest::suite());
     test->add(EquityIndexTest::suite());
+    test->add(EquityCashFlowTest::suite());
     test->add(EquityTotalReturnSwapTest::suite());
     test->add(EuropeanOptionTest::suite());
     test->add(ExchangeRateTest::suite());

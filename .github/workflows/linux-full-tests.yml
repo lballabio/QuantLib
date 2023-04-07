@@ -141,7 +141,7 @@ jobs:
             tag: rolling
             cc: gcc
             cxx: g++
-            configureflags: --enable-std-classes
+            configureflags: --enable-std-classes --enable-std-any --enable-std-optional
           - name: "Thread-safe observer enabled"
             shortname: threadsafe
             tag: rolling

@@ -19,7 +19,7 @@ jobs:
     - uses: peter-evans/create-pull-request@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        branch: clang-tidy-fixes-${{ github.ref }}
+        branch: clang-tidy-fixes-${{ github.ref_name }}
         delete-branch: true
         commit-message: 'Automated fixes by clang-tidy'
         title: 'Automated fixes by clang-tidy'

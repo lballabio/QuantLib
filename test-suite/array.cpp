@@ -322,7 +322,7 @@ void ArrayTest::testArrayOperators() {
     const auto real_rvalue_quotient = 1.1 / get_array();
 
     QL_CHECK_CLOSE_ARRAY(lvalue_real_quotient, scalar_quotient_1);
-    QL_CHECK_CLOSE_ARRAY(lvalue_real_quotient, scalar_quotient_1);
+    QL_CHECK_CLOSE_ARRAY(rvalue_real_quotient, scalar_quotient_1);
     QL_CHECK_CLOSE_ARRAY(real_lvalue_quotient, scalar_quotient_2);
     QL_CHECK_CLOSE_ARRAY(real_rvalue_quotient, scalar_quotient_2);
 }

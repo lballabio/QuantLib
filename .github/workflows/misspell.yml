@@ -12,7 +12,7 @@ jobs:
     - uses: peter-evans/create-pull-request@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        branch: misspell-fixes-${{ github.ref }}
+        branch: misspell-fixes-${{ github.ref_name }}
         delete-branch: true
         commit-message: 'Fixes by misspell-fixer'
         title: 'Typos fixed by misspell-fixer'

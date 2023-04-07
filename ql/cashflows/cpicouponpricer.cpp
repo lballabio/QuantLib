@@ -2,6 +2,7 @@
 
 /*
  Copyright (C) 2009, 2011 Chris Kenyon
+ Copyright (C) 2022 Quaternion Risk Management Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -108,10 +109,19 @@ namespace QuantLib {
 
 
     Rate CPICouponPricer::adjustedFixing(Rate fixing) const {
-        if (fixing == Null<Rate>())
-            fixing = coupon_->indexFixing() / coupon_->baseCPI();
+        Rate I0 = coupon_->baseCPI();
 
-        // no further adjustment
+        if (I0 == Null<Rate>()) {
+            I0 = CPI::laggedFixing(coupon_->cpiIndex(),
+                                   coupon_->baseDate() + coupon_->observationLag(),
+                                   coupon_->observationLag(), coupon_->observationInterpolation());
+        }
+
+        Rate I1 = coupon_->indexFixing();
+
+        if (fixing == Null<Rate>())
+            fixing = I1 / I0;
+
         return fixing;
     }
 

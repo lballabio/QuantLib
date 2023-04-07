@@ -57,6 +57,7 @@ namespace QuantLib {
         Matrix(const Matrix&);
         Matrix(Matrix&&) noexcept;
         Matrix(std::initializer_list<std::initializer_list<Real>>);
+        ~Matrix() = default;
 
         Matrix& operator=(const Matrix&);
         Matrix& operator=(Matrix&&) noexcept;
@@ -152,16 +153,35 @@ namespace QuantLib {
     /*! \relates Matrix */
     Matrix operator+(const Matrix&, const Matrix&);
     /*! \relates Matrix */
+    Matrix operator+(const Matrix&, Matrix&&);
+    /*! \relates Matrix */
+    Matrix operator+(Matrix&&, const Matrix&);
+    /*! \relates Matrix */
+    Matrix operator+(Matrix&&, Matrix&&);
+    /*! \relates Matrix */
     Matrix operator-(const Matrix&);
+    /*! \relates Matrix */
+    Matrix operator-(Matrix&&);
     /*! \relates Matrix */
     Matrix operator-(const Matrix&, const Matrix&);
     /*! \relates Matrix */
+    Matrix operator-(const Matrix&, Matrix&&);
+    /*! \relates Matrix */
+    Matrix operator-(Matrix&&, const Matrix&);
+    /*! \relates Matrix */
+    Matrix operator-(Matrix&&, Matrix&&);
+    /*! \relates Matrix */
     Matrix operator*(const Matrix&, Real);
+    /*! \relates Matrix */
+    Matrix operator*(Matrix&&, Real);
     /*! \relates Matrix */
     Matrix operator*(Real, const Matrix&);
     /*! \relates Matrix */
+    Matrix operator*(Real, Matrix&&);
+    /*! \relates Matrix */
     Matrix operator/(const Matrix&, Real);
-
+    /*! \relates Matrix */
+    Matrix operator/(Matrix&&, Real);
 
     // vectorial products
 
@@ -513,10 +533,48 @@ namespace QuantLib {
         return temp;
     }
 
+    inline Matrix operator+(const Matrix& m1, Matrix&& m2) {
+        QL_REQUIRE(m1.rows() == m2.rows() &&
+                   m1.columns() == m2.columns(),
+                   "matrices with different sizes (" <<
+                   m1.rows() << "x" << m1.columns() << ", " <<
+                   m2.rows() << "x" << m2.columns() << ") cannot be "
+                   "added");
+        std::transform(m1.begin(), m1.end(), m2.begin(), m2.begin(), std::plus<>());
+        return std::move(m2);
+    }
+
+    inline Matrix operator+(Matrix&& m1, const Matrix& m2) {
+        QL_REQUIRE(m1.rows() == m2.rows() &&
+                   m1.columns() == m2.columns(),
+                   "matrices with different sizes (" <<
+                   m1.rows() << "x" << m1.columns() << ", " <<
+                   m2.rows() << "x" << m2.columns() << ") cannot be "
+                   "added");
+        std::transform(m1.begin(), m1.end(), m2.begin(), m1.begin(), std::plus<>());
+        return std::move(m1);
+    }
+
+    inline Matrix operator+(Matrix&& m1, Matrix&& m2) {
+        QL_REQUIRE(m1.rows() == m2.rows() &&
+                   m1.columns() == m2.columns(),
+                   "matrices with different sizes (" <<
+                   m1.rows() << "x" << m1.columns() << ", " <<
+                   m2.rows() << "x" << m2.columns() << ") cannot be "
+                   "added");
+        std::transform(m1.begin(), m1.end(), m2.begin(), m1.begin(), std::plus<>());
+        return std::move(m1);
+    }
+
     inline Matrix operator-(const Matrix& m1) {
         Matrix temp(m1.rows(), m1.columns());
         std::transform(m1.begin(), m1.end(), temp.begin(), std::negate<>());
         return temp;
+    }
+
+    inline Matrix operator-(Matrix&& m1) {
+        std::transform(m1.begin(), m1.end(), m1.begin(), std::negate<>());
+        return std::move(m1);
     }
 
     inline Matrix operator-(const Matrix& m1, const Matrix& m2) {
@@ -531,10 +589,48 @@ namespace QuantLib {
         return temp;
     }
 
+    inline Matrix operator-(const Matrix& m1, Matrix&& m2) {
+        QL_REQUIRE(m1.rows() == m2.rows() &&
+                   m1.columns() == m2.columns(),
+                   "matrices with different sizes (" <<
+                   m1.rows() << "x" << m1.columns() << ", " <<
+                   m2.rows() << "x" << m2.columns() << ") cannot be "
+                   "subtracted");
+        std::transform(m1.begin(), m1.end(), m2.begin(), m2.begin(), std::minus<>());
+        return std::move(m2);
+    }
+
+    inline Matrix operator-(Matrix&& m1, const Matrix& m2) {
+        QL_REQUIRE(m1.rows() == m2.rows() &&
+                   m1.columns() == m2.columns(),
+                   "matrices with different sizes (" <<
+                   m1.rows() << "x" << m1.columns() << ", " <<
+                   m2.rows() << "x" << m2.columns() << ") cannot be "
+                   "subtracted");
+        std::transform(m1.begin(), m1.end(), m2.begin(), m1.begin(), std::minus<>());
+        return std::move(m1);
+    }
+
+    inline Matrix operator-(Matrix&& m1, Matrix&& m2) {
+        QL_REQUIRE(m1.rows() == m2.rows() &&
+                   m1.columns() == m2.columns(),
+                   "matrices with different sizes (" <<
+                   m1.rows() << "x" << m1.columns() << ", " <<
+                   m2.rows() << "x" << m2.columns() << ") cannot be "
+                   "subtracted");
+        std::transform(m1.begin(), m1.end(), m2.begin(), m1.begin(), std::minus<>());
+        return std::move(m1);
+    }
+
     inline Matrix operator*(const Matrix& m, Real x) {
         Matrix temp(m.rows(),m.columns());
         std::transform(m.begin(), m.end(), temp.begin(), [=](Real y) -> Real { return y * x; });
         return temp;
+    }
+
+    inline Matrix operator*(Matrix&& m, Real x) {
+        std::transform(m.begin(), m.end(), m.begin(), [=](Real y) -> Real { return y * x; });
+        return std::move(m);
     }
 
     inline Matrix operator*(Real x, const Matrix& m) {
@@ -543,10 +639,20 @@ namespace QuantLib {
         return temp;
     }
 
+    inline Matrix operator*(Real x, Matrix&& m) {
+        std::transform(m.begin(), m.end(), m.begin(), [=](Real y) -> Real { return x * y; });
+        return std::move(m);
+    }
+
     inline Matrix operator/(const Matrix& m, Real x) {
         Matrix temp(m.rows(),m.columns());
         std::transform(m.begin(), m.end(), temp.begin(), [=](Real y) -> Real { return y / x; });
         return temp;
+    }
+
+    inline Matrix operator/(Matrix&& m, Real x) {
+        std::transform(m.begin(), m.end(), m.begin(), [=](Real y) -> Real { return y / x; });
+        return std::move(m);
     }
 
     inline Array operator*(const Array& v, const Matrix& m) {

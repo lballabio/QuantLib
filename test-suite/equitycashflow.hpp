@@ -1,9 +1,7 @@
 /* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2004, 2007 Neil Firth
- Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2023 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,34 +17,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_matrices_hpp
-#define quantlib_test_matrices_hpp
+#ifndef quantlib_test_equitycashflow_hpp
+#define quantlib_test_equitycashflow_hpp
 
 #include <boost/test/unit_test.hpp>
 
-/* remember to document new and/or updated tests in the Doxygen
-   comment block of the corresponding class */
-
-class MatricesTest {
+class EquityCashFlowTest {
   public:
-    static void testEigenvectors();
-    static void testSqrt();
-    static void testHighamSqrt();
-    static void testSVD();
-    static void testQRDecomposition();
-    static void testQRSolve();
-    static void testInverse();
-    static void testDeterminant();
-    static void testOrthogonalProjection();
-    static void testCholeskyDecomposition();
-    static void testMoorePenroseInverse();
-    static void testIterativeSolvers();
-    static void testInitializers();
-    static void testSparseMatrixMemory();
-    static void testOperators();
+    static void testSimpleEquityCashFlow();
+    static void testQuantoCorrection();
+    static void testErrorWhenBaseDateAfterFixingDate();
+    static void testErrorWhenQuantoCurveHandleIsEmpty();
+    static void testErrorWhenEquityVolHandleIsEmpty();
+    static void testErrorWhenFXVolHandleIsEmpty();
+    static void testErrorWhenCorrelationHandleIsEmpty();
+    static void testErrorWhenInconsistentMarketDataReferenceDate();
 
     static boost::unit_test_framework::test_suite* suite();
 };
-
 
 #endif

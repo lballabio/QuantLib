@@ -24,6 +24,7 @@
 #ifndef quantlib_commodity_hpp
 #define quantlib_commodity_hpp
 
+#include <ql/any.hpp>
 #include <ql/instrument.hpp>
 #include <ql/money.hpp>
 #include <iosfwd>
@@ -32,7 +33,7 @@
 
 namespace QuantLib {
 
-    typedef std::map<std::string, boost::any> SecondaryCosts;
+    typedef std::map<std::string, ext::any> SecondaryCosts;
     typedef std::map<std::string, Money> SecondaryCostAmounts;
 
     std::ostream& operator<<(std::ostream& out,
