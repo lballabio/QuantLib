@@ -829,7 +829,7 @@ void MatricesTest::testOperators() {
     QL_CHECK_CLOSE_MATRIX(rvalue_rvalue_sum, matrix_sum);
 
     const auto matrix_difference = Matrix(2, 3, 0.0);
-    const auto lvalue_lvalue_difference = m - m;
+    const auto lvalue_lvalue_difference = m - m;  // NOLINT(misc-redundant-expression)
     const auto lvalue_rvalue_difference = m - get_matrix();
     const auto rvalue_lvalue_difference = get_matrix() - m;
     const auto rvalue_rvalue_difference = get_matrix() - get_matrix();
