@@ -88,7 +88,7 @@ namespace equityindex_test {
 }
 
 void EquityIndexTest::testTodaysFixing() {
-    BOOST_TEST_MESSAGE("Testing todays fixing...");
+    BOOST_TEST_MESSAGE("Testing today's fixing...");
 
     using namespace equityindex_test;
 
@@ -113,7 +113,7 @@ void EquityIndexTest::testTodaysFixing() {
 }
 
 void EquityIndexTest::testTodaysFixingWithSpotAsProxy() {
-    BOOST_TEST_MESSAGE("Testing todays fixing with spot as proxy...");
+    BOOST_TEST_MESSAGE("Testing today's fixing with spot as proxy...");
 
     using namespace equityindex_test;
 
@@ -304,7 +304,7 @@ void EquityIndexTest::testFixingObservability() {
 }
 
 void EquityIndexTest::testNoErrorIfTodayIsNotBusinessDay() {
-    BOOST_TEST_MESSAGE("Testing no error if today is not a business day...");
+    BOOST_TEST_MESSAGE("Testing that no error is thrown if today is not a business day...");
 
     using namespace equityindex_test;
 
