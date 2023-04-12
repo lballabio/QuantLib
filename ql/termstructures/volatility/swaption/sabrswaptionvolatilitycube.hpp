@@ -61,7 +61,7 @@ namespace QuantLib {
     */
     template<class Model>
     class XabrSwaptionVolatilityCube : public SwaptionVolatilityCube {
-        class Cube {
+        class Cube { // NOLINT(cppcoreguidelines-special-member-functions)
           public:
             Cube() = default;
             Cube(const std::vector<Date>& optionDates,

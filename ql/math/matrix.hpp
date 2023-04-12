@@ -554,7 +554,7 @@ namespace QuantLib {
         return std::move(m1);
     }
 
-    inline Matrix operator+(Matrix&& m1, Matrix&& m2) {
+    inline Matrix operator+(Matrix&& m1, Matrix&& m2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(m1.rows() == m2.rows() &&
                    m1.columns() == m2.columns(),
                    "matrices with different sizes (" <<
@@ -610,7 +610,7 @@ namespace QuantLib {
         return std::move(m1);
     }
 
-    inline Matrix operator-(Matrix&& m1, Matrix&& m2) {
+    inline Matrix operator-(Matrix&& m1, Matrix&& m2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(m1.rows() == m2.rows() &&
                    m1.columns() == m2.columns(),
                    "matrices with different sizes (" <<

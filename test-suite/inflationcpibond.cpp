@@ -74,7 +74,7 @@ namespace inflation_cpi_bond_test {
     }
 
 
-    struct CommonVars {
+    struct CommonVars { // NOLINT(cppcoreguidelines-special-member-functions)
     
         Calendar calendar;
         BusinessDayConvention convention;

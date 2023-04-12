@@ -840,7 +840,7 @@ namespace QuantLib {
 
     namespace detail {
 
-        struct FormatResetter {
+        struct FormatResetter { // NOLINT(cppcoreguidelines-special-member-functions)
             // An instance of this object will have undefined behaviour
             // if the object out passed in the constructor is destroyed
             // before this instance

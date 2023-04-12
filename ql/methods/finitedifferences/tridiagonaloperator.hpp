@@ -65,6 +65,7 @@ namespace QuantLib {
         TridiagonalOperator(TridiagonalOperator&&) noexcept;
         TridiagonalOperator& operator=(const TridiagonalOperator&);
         TridiagonalOperator& operator=(TridiagonalOperator&&) noexcept;
+        ~TridiagonalOperator() = default;
         //! \name Operator interface
         //@{
         //! apply operator to a given array

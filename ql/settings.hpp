@@ -117,7 +117,7 @@ namespace QuantLib {
 
 
     // helper class to temporarily and safely change the settings
-    class SavedSettings {
+    class SavedSettings { // NOLINT(cppcoreguidelines-special-member-functions)
       public:
         SavedSettings();
         ~SavedSettings();

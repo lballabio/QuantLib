@@ -46,7 +46,7 @@ namespace {
         Size counter_ = 0;
     };
 
-    class RestoreUpdates {
+    class RestoreUpdates { // NOLINT(cppcoreguidelines-special-member-functions)
       public:
         ~RestoreUpdates() {
             ObservableSettings::instance().enableUpdates();

@@ -69,6 +69,7 @@ namespace QuantLib {
         //! creates the array from an iterable sequence
         template <class ForwardIterator>
         Array(ForwardIterator begin, ForwardIterator end);
+        ~Array() = default;
 
         Array& operator=(const Array&);
         Array& operator=(Array&&) noexcept;
@@ -614,7 +615,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array operator+(Array&& v1, Array&& v2) {
+    inline Array operator+(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be added");
@@ -674,7 +675,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array operator-(Array&& v1, Array&& v2) {
+    inline Array operator-(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be subtracted");
@@ -734,7 +735,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array operator*(Array&& v1, Array&& v2) {
+    inline Array operator*(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be multiplied");
@@ -794,7 +795,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Array operator/(Array&& v1, Array&& v2) {
+    inline Array operator/(Array&& v1, Array&& v2) { // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         QL_REQUIRE(v1.size() == v2.size(),
                    "arrays with different sizes (" << v1.size() << ", "
                    << v2.size() << ") cannot be divided");
