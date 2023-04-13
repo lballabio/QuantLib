@@ -85,25 +85,30 @@ namespace QuantLib {
                                                Position::Type type,
                                                Rate strikeForwardRate,
                                                Real notionalAmount,
-                                               Handle<YieldTermStructure> discountCurve,
+                                               //Handle<YieldTermStructure> discountCurve,
+                                               Handle<YieldTermStructure> forecastCurve,
                                                Natural fixingDays,
-                                               BusinessDayConvention businessDayConvention)
+                                               BusinessDayConvention businessDayConvention,
+                                               Handle<YieldTermStructure> discountCurve)
     : fraType_(type), notionalAmount_(notionalAmount),
       useIndexedCoupon_(false), dayCounter_(discountCurve->dayCounter()),
       calendar_(discountCurve->calendar()), businessDayConvention_(businessDayConvention),
       valueDate_(valueDate), maturityDate_(maturityDate),
-      discountCurve_(std::move(discountCurve)), fixingDays_(fixingDays) {
+      discountCurve_(std::move(discountCurve)), fixingDays_(fixingDays),
+      forecastCurve_(std::move(forecastCurve)) {
 
         QL_REQUIRE(notionalAmount > 0.0, "notionalAmount must be positive");
 
         registerWith(Settings::instance().evaluationDate());
-        registerWith(discountCurve_);
         
         maturityDate_ = calendar_.adjust(maturityDate_, businessDayConvention_);
         QL_REQUIRE(valueDate_ < maturityDate_, "valueDate must be earlier than maturityDate");
         strikeForwardRate_ = InterestRate(strikeForwardRate,
-                                          discountCurve_->dayCounter(),
+                                          forecastCurve_->dayCounter(),
                                           Simple, Once);
+        
+        registerWith(discountCurve_);
+        registerWith(forecastCurve_);
     }
 
     Date ForwardRateAgreement::fixingDate() const {
@@ -139,8 +144,15 @@ namespace QuantLib {
     void ForwardRateAgreement::performCalculations() const {
         calculateAmount();
 
-        Handle<YieldTermStructure> discount =
-            discountCurve_.empty() ? index_->forwardingTermStructure() : discountCurve_;
+/*         Handle<YieldTermStructure> discount =
+            discountCurve_.empty() ? index_->forwardingTermStructure() : discountCurve_; */
+        Handle<YieldTermStructure> discount;    
+        if (discountCurve_.empty() && index_)
+            discount = index_->forwardingTermStructure();
+        else if (!discountCurve_.empty())
+            discount = discountCurve_;
+        else
+            discount = forecastCurve_;            
 
         NPV_ = amount_ * discount->discount(valueDate_);
     }
@@ -157,14 +169,18 @@ namespace QuantLib {
                               1.0) /
                                  index_->dayCounter().yearFraction(valueDate_, maturityDate_),
                              index_->dayCounter(), Simple, Once);
-        else // calculating forward rate using the term structure
+        else // calculating forward rate using the forecast curve
             forwardRate_ =
-                InterestRate((discountCurve_->discount(valueDate_) /
+/*                 InterestRate((discountCurve_->discount(valueDate_) /
                               discountCurve_->discount(maturityDate_) -
                               1.0) /
                               discountCurve_->dayCounter().yearFraction(valueDate_, maturityDate_),
-                              discountCurve_->dayCounter(), Simple, Once);
-                          
+                              discountCurve_->dayCounter(), Simple, Once); */
+                InterestRate((forecastCurve_->discount(valueDate_) /
+                              forecastCurve_->discount(maturityDate_) -
+                              1.0) /
+                              forecastCurve_->dayCounter().yearFraction(valueDate_, maturityDate_),
+                              forecastCurve_->dayCounter(), Simple, Once);                          
     }
 
     void ForwardRateAgreement::calculateAmount() const {

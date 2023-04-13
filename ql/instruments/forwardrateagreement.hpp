@@ -103,9 +103,11 @@ namespace QuantLib {
             Position::Type type,
             Rate strikeForwardRate,
             Real notionalAmount,
-            Handle<YieldTermStructure> discountCurve,
+            //Handle<YieldTermStructure> discountCurve,
+            Handle<YieldTermStructure> forecastCurve,
             Natural fixingDays,
-            BusinessDayConvention businessDayConvention);
+            BusinessDayConvention businessDayConvention,
+            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
 
         //! \name Calculations
         //@{
@@ -149,6 +151,8 @@ namespace QuantLib {
         Handle<YieldTermStructure> discountCurve_;
         //! the number of fixingDays for fixingDate calculation without the index
         Natural fixingDays_;
+        //! forecasting curve for fixings calculation
+        Handle<YieldTermStructure> forecastCurve_;
 
       private:
         void calculateForwardRate() const;
