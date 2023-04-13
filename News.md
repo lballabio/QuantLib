@@ -120,7 +120,7 @@ Math
 Deprecated features
 -------------------
 
-- **Removed** features deprecated in version 1.24:
+- **Removed** features deprecated in version 1.25:
   - the protected `spreadLegValue_` data member of `BlackIborCouponPricer`;
   - the `WulinYongDoubleBarrierEngine` alias for `SuoWangDoubleBarrierEngine`;
   - the `settlementDate`, `incomeDiscountCurve`, `spotIncome`,
