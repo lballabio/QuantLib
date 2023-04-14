@@ -18,6 +18,6 @@
 */
 
 // Deprecated in version 1.28
-#pragma message("Warning: this file will disappear in a future release; include <ql/instruments/bonds/amortizingfixedratebond.hpp instead>.")
+#pragma message("Warning: this file will disappear in a future release; include <ql/instruments/bonds/amortizingfixedratebond.hpp> instead.")
 
 #include <ql/instruments/bonds/amortizingfixedratebond.hpp>
