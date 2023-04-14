@@ -137,7 +137,7 @@ namespace QuantLib {
         //! \name Utilities
         //@{
         void resize(Size n);
-        void swap(Array&);  // never throws
+        void swap(Array&) noexcept;
         //@}
 
       private:
@@ -271,7 +271,7 @@ namespace QuantLib {
 
     // utilities
     /*! \relates Array */
-    void swap(Array&, Array&);
+    void swap(Array&, Array&) noexcept;
 
     // format
     /*! \relates Array */
@@ -542,10 +542,9 @@ namespace QuantLib {
         }
     }
 
-    inline void Array::swap(Array& from) {
-        using std::swap;
+    inline void Array::swap(Array& from) noexcept {
         data_.swap(from.data_);
-        swap(n_,from.n_);
+        std::swap(n_, from.n_);
     }
 
     // dot product and norm
@@ -900,7 +899,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline void swap(Array& v, Array& w) {
+    inline void swap(Array& v, Array& w) noexcept {
         v.swap(w);
     }
 

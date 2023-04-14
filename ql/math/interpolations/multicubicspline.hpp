@@ -93,7 +93,7 @@ namespace QuantLib {
             : first(*i), second(i + 1) {}
             Data(const SplineGrid &v)
             : first(v[0]), second(v.begin()+1) {}
-            void swap(Data<X, Y> &d) {
+            void swap(Data<X, Y> &d) noexcept {
                 first.swap(d.first);
                 second.swap(d.second);
             }
@@ -108,7 +108,7 @@ namespace QuantLib {
             Data(const SplineGrid &v)
             : first(v[0]) {}
             Data(std::vector<Real> v) : first(std::move(v)) {}
-            void swap(Data<std::vector<Real>, EmptyArg> &d) {
+            void swap(Data<std::vector<Real>, EmptyArg> &d) noexcept {
                 first.swap(d.first);
             }
             Real operator[](Size n) const {return first[n];}

@@ -58,7 +58,7 @@ namespace QuantLib {
         void axpyb(const Array& a, const TripleBandLinearOp& x,
                    const TripleBandLinearOp& y, const Array& b);
 
-        void swap(TripleBandLinearOp& m);
+        void swap(TripleBandLinearOp& m) noexcept;
 
         SparseMatrix toMatrix() const override;
 

@@ -141,7 +141,7 @@ namespace QuantLib {
 
         //! \name Utilities
         //@{
-        void swap(Matrix&);
+        void swap(Matrix&) noexcept;
         //@}
       private:
         std::unique_ptr<Real[]> data_;
@@ -205,7 +205,7 @@ namespace QuantLib {
     Matrix outerProduct(Iterator1 v1begin, Iterator1 v1end, Iterator2 v2begin, Iterator2 v2end);
 
     /*! \relates Matrix */
-    void swap(Matrix&, Matrix&);
+    void swap(Matrix&, Matrix&) noexcept;
 
     /*! \relates Matrix */
     std::ostream& operator<<(std::ostream&, const Matrix&);
@@ -287,11 +287,10 @@ namespace QuantLib {
         return !this->operator==(to); 
     }
 
-    inline void Matrix::swap(Matrix& from) {
-        using std::swap;
+    inline void Matrix::swap(Matrix& from) noexcept {
         data_.swap(from.data_);
-        swap(rows_,from.rows_);
-        swap(columns_,from.columns_);
+        std::swap(rows_, from.rows_);
+        std::swap(columns_, from.columns_);
     }
 
     inline const Matrix& Matrix::operator+=(const Matrix& m) {
@@ -729,7 +728,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline void swap(Matrix& m1, Matrix& m2) {
+    inline void swap(Matrix& m1, Matrix& m2) noexcept {
         m1.swap(m2);
     }
 
