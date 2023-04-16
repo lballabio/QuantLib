@@ -259,7 +259,7 @@ void ArrayTest::testArrayOperators() {
     QL_CHECK_CLOSE_ARRAY(real_rvalue_sum, scalar_sum);
 
     const auto array_difference = Array{0.0, 0.0, 0.0};
-    const auto lvalue_lvalue_difference = a - a;
+    const auto lvalue_lvalue_difference = a - a;  // NOLINT(misc-redundant-expression)
     const auto lvalue_rvalue_difference = a - get_array();
     const auto rvalue_lvalue_difference = get_array() - a;
     const auto rvalue_rvalue_difference = get_array() - get_array();
@@ -304,7 +304,7 @@ void ArrayTest::testArrayOperators() {
     QL_CHECK_CLOSE_ARRAY(real_rvalue_product, scalar_product);
 
     const auto array_quotient = Array{1.0, 1.0, 1.0};
-    const auto lvalue_lvalue_quotient = a / a;
+    const auto lvalue_lvalue_quotient = a / a;  // NOLINT(misc-redundant-expression)
     const auto lvalue_rvalue_quotient = a / get_array();
     const auto rvalue_lvalue_quotient = get_array() / a;
     const auto rvalue_rvalue_quotient = get_array() / get_array();

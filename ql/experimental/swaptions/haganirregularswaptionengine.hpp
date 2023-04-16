@@ -39,7 +39,7 @@ namespace QuantLib {
         1. P.S. Hagan: "Methodology for Callable Swaps and Bermudan
            'Exercise into Swaptions'"
         2. P.J. Hunt, J.E. Kennedy: "Implied interest rate pricing
-           models", Finance Stochast. 2, 275–293 (1998)
+           models", Finance Stochast. 2, 275-293 (1998)
     
         \warning Currently a spread is not handled correctly; it
                  should be a minor exercise to account for this

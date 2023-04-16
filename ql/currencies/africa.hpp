@@ -39,7 +39,7 @@ namespace QuantLib {
 
     // Angolan kwanza
     /*! The ISO three-letter code is AOA; the numeric code is 973.
-     It is divided into 100 cêntimo.
+     It is divided into 100 cÃªntimo.
      \ingroup currencies
     */
     class AOACurrency : public Currency {
@@ -177,6 +177,7 @@ namespace QuantLib {
       public:
         ZMWCurrency();
     };
+
 }
 
 #if defined(QL_PATCH_MSVC)
